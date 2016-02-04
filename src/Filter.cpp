@@ -55,14 +55,6 @@ bool domSource (const std::string& identifier, Variant& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Filter::Filter ()
-: _startCount (0)
-, _endCount (0)
-, _safety (true)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
 void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
@@ -194,9 +186,9 @@ void Filter::subset (std::vector <Task>& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Filter::hasFilter ()
+bool Filter::hasFilter () const
 {
-  for (auto& a : context.cli2._args)
+  for (const auto& a : context.cli2._args)
     if (a.hasTag ("FILTER"))
       return true;
 
@@ -207,7 +199,7 @@ bool Filter::hasFilter ()
 // If the filter contains no 'or', 'xor' or 'not' operators, and only includes
 // status values 'pending', 'waiting' or 'recurring', then the filter is
 // guaranteed to only need data from pending.data.
-bool Filter::pendingOnly ()
+bool Filter::pendingOnly () const
 {
   // When GC is off, there are no shortcuts.
   if (! context.config.getBoolean ("gc"))
@@ -229,7 +221,7 @@ bool Filter::pendingOnly ()
   int countXor       = 0;
   int countNot       = 0;
 
-  for (auto& a : context.cli2._args)
+  for (const auto& a : context.cli2._args)
   {
     if (a.hasTag ("FILTER"))
     {
@@ -269,13 +261,13 @@ bool Filter::pendingOnly ()
 ////////////////////////////////////////////////////////////////////////////////
 // Disaster avoidance mechanism. If a !READONLY has no filter, then it can cause
 // all tasks to be modified. This is usually not intended.
-void Filter::safety ()
+void Filter::safety () const
 {
   if (_safety)
   {
     bool readonly = true;
     bool filter = false;
-    for (auto& a : context.cli2._args)
+    for (const auto& a : context.cli2._args)
     {
       if (a.hasTag ("CMD") &&
           ! a.hasTag ("READONLY"))

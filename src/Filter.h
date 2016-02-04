@@ -37,19 +37,19 @@ bool domSource (const std::string&, Variant&);
 class Filter
 {
 public:
-  Filter ();
+  Filter () = default;
 
   void subset (const std::vector <Task>&, std::vector <Task>&);
   void subset (std::vector <Task>&);
-  bool hasFilter ();
-  bool pendingOnly ();
-  void safety ();
+  bool hasFilter () const;
+  bool pendingOnly () const;
+  void safety () const;
   void disableSafety ();
 
 private:
-  int  _startCount;
-  int  _endCount;
-  bool _safety;
+  int  _startCount {0};
+  int  _endCount   {0};
+  bool _safety     {true};
 };
 
 #endif
