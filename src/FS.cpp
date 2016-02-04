@@ -32,7 +32,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <pwd.h>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -78,11 +78,6 @@ Path::Path (const std::string& in)
 {
   _original = in;
   _data = expand (in);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Path::~Path ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -213,10 +208,10 @@ bool Path::executable () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::rename (const std::string& new_name)
 {
-  std::string expanded = expand (new_name);
+  auto expanded = expand (new_name);
   if (_data != expanded)
   {
-    if (::rename (_data.c_str (), expanded.c_str ()) == 0)
+    if (std::rename (_data.c_str (), expanded.c_str ()) == 0)
     {
       _data = expanded;
       return true;
@@ -242,7 +237,7 @@ std::string Path::expand (const std::string& in)
   if (tilde != std::string::npos)
   {
     const char *home = getenv("HOME");
-    if (home == NULL)
+    if (home == nullptr)
     {
       struct passwd* pw = getpwuid (getuid ());
       home = pw->pw_dir;
@@ -273,7 +268,7 @@ std::string Path::expand (const std::string& in)
   else if (in.length () > 2 &&
            in.substr (0, 2) == "./")
   {
-    copy = Directory::cwd () + "/" + in.substr (2);
+    copy = Directory::cwd () + in.substr (1);
   }
   else if (in.length () > 1 &&
            in[0] != '.' &&
@@ -292,9 +287,9 @@ std::vector <std::string> Path::glob (const std::string& pattern)
 
   glob_t g;
 #ifdef SOLARIS
-  if (!::glob (pattern.c_str (), GLOB_ERR, NULL, &g))
+  if (!::glob (pattern.c_str (), GLOB_ERR, nullptr, &g))
 #else
-  if (!::glob (pattern.c_str (), GLOB_ERR | GLOB_BRACE | GLOB_TILDE, NULL, &g))
+  if (!::glob (pattern.c_str (), GLOB_ERR | GLOB_BRACE | GLOB_TILDE, nullptr, &g))
 #endif
     for (int i = 0; i < (int) g.gl_pathc; ++i)
       results.push_back (g.gl_pathv[i]);
@@ -306,7 +301,7 @@ std::vector <std::string> Path::glob (const std::string& pattern)
 ////////////////////////////////////////////////////////////////////////////////
 File::File ()
 : Path::Path ()
-, _fh (NULL)
+, _fh (nullptr)
 , _h (-1)
 , _locked (false)
 {
@@ -315,7 +310,7 @@ File::File ()
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const Path& other)
 : Path::Path (other)
-, _fh (NULL)
+, _fh (nullptr)
 , _h (-1)
 , _locked (false)
 {
@@ -324,7 +319,7 @@ File::File (const Path& other)
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const File& other)
 : Path::Path (other)
-, _fh (NULL)
+, _fh (nullptr)
 , _h (-1)
 , _locked (false)
 {
@@ -333,7 +328,7 @@ File::File (const File& other)
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const std::string& in)
 : Path::Path (in)
-, _fh (NULL)
+, _fh (nullptr)
 , _h (-1)
 , _locked (false)
 {
@@ -422,7 +417,7 @@ void File::close ()
       unlock ();
 
     fclose (_fh);
-    _fh = NULL;
+    _fh = nullptr;
     _h = -1;
     _locked = false;
   }
@@ -757,6 +752,33 @@ bool File::remove (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool File::copy (const std::string& from, const std::string& to)
+{
+  // 'from' must exist.
+  if (! access (from.c_str (), F_OK))
+  {
+    std::ifstream src (from, std::ios::binary);
+    std::ofstream dst (to,   std::ios::binary);
+
+    dst << src.rdbuf ();
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool File::move (const std::string& from, const std::string& to)
+{
+  auto expanded = expand (to);
+  if (from != expanded)
+    if (std::rename (from.c_str (), to.c_str ()) == 0)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Directory::Directory ()
 {
 }
@@ -786,17 +808,10 @@ Directory::Directory (const std::string& in)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Directory::~Directory ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Directory& Directory::operator= (const Directory& other)
 {
   if (this != &other)
-  {
     File::operator= (other);
-  }
 
   return *this;
 }
@@ -817,10 +832,10 @@ bool Directory::remove () const
 bool Directory::remove_directory (const std::string& dir) const
 {
   DIR* dp = opendir (dir.c_str ());
-  if (dp != NULL)
+  if (dp != nullptr)
   {
     struct dirent* de;
-    while ((de = readdir (dp)) != NULL)
+    while ((de = readdir (dp)) != nullptr)
     {
       if (!strcmp (de->d_name, ".") ||
           !strcmp (de->d_name, ".."))
@@ -875,7 +890,7 @@ std::string Directory::cwd ()
 {
 #ifdef HAVE_GET_CURRENT_DIR_NAME
   char *buf = get_current_dir_name ();
-  if (buf == NULL)
+  if (buf == nullptr)
     throw std::bad_alloc ();
   std::string result (buf);
   free (buf);
@@ -921,10 +936,10 @@ void Directory::list (
   bool recursive)
 {
   DIR* dp = opendir (base.c_str ());
-  if (dp != NULL)
+  if (dp != nullptr)
   {
     struct dirent* de;
-    while ((de = readdir (dp)) != NULL)
+    while ((de = readdir (dp)) != nullptr)
     {
       if (!strcmp (de->d_name, ".") ||
           !strcmp (de->d_name, ".."))

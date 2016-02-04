@@ -36,9 +36,8 @@ class Path
 {
 public:
   Path ();
-  Path (const Path&);
+  explicit Path (const Path&);
   Path (const std::string&);
-  virtual ~Path ();
 
   Path& operator= (const Path&);
   bool operator== (const Path&);
@@ -70,8 +69,8 @@ class File : public Path
 {
 public:
   File ();
-  File (const Path&);
-  File (const File&);
+  explicit File (const Path&);
+  explicit File (const File&);
   File (const std::string&);
   virtual ~File ();
 
@@ -107,6 +106,8 @@ public:
   static bool write (const std::string&, const std::string&);
   static bool write (const std::string&, const std::vector <std::string>&, bool addNewlines = true);
   static bool remove (const std::string&);
+  static bool copy (const std::string&, const std::string&);
+  static bool move (const std::string&, const std::string&);
   static std::string removeBOM (const std::string&);
 
 private:
@@ -119,11 +120,10 @@ class Directory : public File
 {
 public:
   Directory ();
-  Directory (const Directory&);
-  Directory (const File&);
-  Directory (const Path&);
+  explicit Directory (const Directory&);
+  explicit Directory (const File&);
+  explicit Directory (const Path&);
   Directory (const std::string&);
-  virtual ~Directory ();
 
   Directory& operator= (const Directory&);
 
@@ -143,5 +143,3 @@ private:
 };
 
 #endif
-////////////////////////////////////////////////////////////////////////////////
-
