@@ -42,106 +42,56 @@ bool Variant::searchCaseSensitive = true;
 bool Variant::searchUsingRegex = true;
 
 ////////////////////////////////////////////////////////////////////////////////
-Variant::Variant ()
-: _type (type_boolean)
-, _bool (false)
-, _integer (0)
-, _real (0.0)
-, _string ("")
-, _date (0)
-, _duration (0)
-, _source ("")
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const Variant& other)
-: _type (other._type)
-, _bool (other._bool)
-, _integer (other._integer)
-, _real (other._real)
-, _string (other._string)
-, _date (other._date)
-, _duration (other._duration)
-, _source (other._source)
 {
+  _type     = other._type;
+  _bool     = other._bool;
+  _integer  = other._integer;
+  _real     = other._real;
+  _string   = other._string;
+  _date     = other._date;
+  _duration = other._duration;
+  _source   = other._source;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const bool value)
 : _type (Variant::type_boolean)
 , _bool (value)
-, _integer (0)
-, _real (0.0)
-, _string ("")
-, _date (0)
-, _duration (0)
-, _source ("")
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const int value)
 : _type (Variant::type_integer)
-, _bool (false)
 , _integer (value)
-, _real (0.0)
-, _string ("")
-, _date (0)
-, _duration (0)
-, _source ("")
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const double value)
 : _type (Variant::type_real)
-, _bool (false)
-, _integer (0)
 , _real (value)
-, _string ("")
-, _date (0)
-, _duration (0)
-, _source ("")
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const std::string& value)
 : _type (Variant::type_string)
-, _bool (false)
-, _integer (0)
-, _real (0.0)
 , _string (value)
-, _date (0)
-, _duration (0)
-, _source ("")
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const char* value)
 : _type (Variant::type_string)
-, _bool (false)
-, _integer (0)
-, _real (0.0)
-, _string (std::string (value))
-, _date (0)
-, _duration (0)
-, _source ("")
+, _string (value)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const time_t value, const enum type new_type)
 : _type (new_type)
-, _bool (false)
-, _integer (0)
-, _real (0.0)
-, _string ("")
-, _date (0)
-, _duration (0)
-, _source ("")
 {
   switch (new_type)
   {
@@ -167,17 +117,14 @@ const std::string& Variant::source () const
 ////////////////////////////////////////////////////////////////////////////////
 Variant& Variant::operator= (const Variant& other)
 {
-  if (this != &other)
-  {
-    _type     = other._type;
-    _bool     = other._bool;
-    _integer  = other._integer;
-    _real     = other._real;
-    _string   = other._string;
-    _date     = other._date;
-    _duration = other._duration;
-    _source   = other._source;
-  }
+  _type     = other._type;
+  _bool     = other._bool;
+  _integer  = other._integer;
+  _real     = other._real;
+  _string   = other._string;
+  _date     = other._date;
+  _duration = other._duration;
+  _source   = other._source;
 
   return *this;
 }

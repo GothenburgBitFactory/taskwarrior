@@ -42,7 +42,7 @@ public:
 
   enum type {type_boolean, type_integer, type_real, type_string, type_date, type_duration};
 
-  Variant ();
+  Variant () = default;
   Variant (const Variant&);
   Variant (const bool);
   Variant (const int);
@@ -106,15 +106,15 @@ public:
   time_t             get_duration () const;
 
 private:
-  enum type   _type;
-  bool        _bool;
-  int         _integer;
-  double      _real;
-  std::string _string;
-  time_t      _date;
-  time_t      _duration;
+  enum type   _type     {type_boolean};
+  bool        _bool     {false};
+  int         _integer  {0};
+  double      _real     {0.0};
+  std::string _string   {""};
+  time_t      _date     {0};
+  time_t      _duration {0};
 
-  std::string _source;
+  std::string _source   {""};
 };
 
 #endif
