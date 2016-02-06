@@ -96,6 +96,8 @@
           (thanks to Kent R. Spillner).
 - Included 'problems' script in build dir
           (thanks to Gordon Ball).
+- The 'run_all' script was not correctly using exit code 0 when all tests pass
+          (thanks to Gordon Ball).
 
 ------ current release ---------------------------
 

@@ -129,4 +129,4 @@ if __name__ == "__main__":
         print_category(expected)
 
     # If we encoutered any failures, return non-zero code
-    sys.exit(1 if error_int or unexpected_int else 0)
+    sys.exit(1 if int(error_int) or int(unexpected_int) else 0)
