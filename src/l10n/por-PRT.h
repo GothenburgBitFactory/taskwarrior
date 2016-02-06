@@ -270,6 +270,7 @@
 #define STRING_CMD_URGENCY_RESULT    "Tarefa {1} urgência {2}"
 #define STRING_CMD_ADD_USAGE         "Adiciona uma nova tarefa"
 #define STRING_CMD_ADD_FEEDBACK      "Criada a tarefa {1}."
+#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
 #define STRING_CMD_LOG_USAGE         "Adiciona uma nova tarefa que já está concluída"
 #define STRING_CMD_LOG_NO_RECUR      "Não pode usar o comando 'log' para tarefas recorrentes."
 #define STRING_CMD_LOG_NO_WAITING    "Não pode usar o comando 'log' para tarefas adiadas."

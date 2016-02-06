@@ -270,6 +270,7 @@
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
 #define STRING_CMD_ADD_USAGE         "Ajoute une nouvelle tâche"
 #define STRING_CMD_ADD_FEEDBACK      "Tâche {1} crée."
+#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
 #define STRING_CMD_LOG_USAGE         "Adds a new task that is already completed"
 #define STRING_CMD_LOG_NO_RECUR      "Vous ne pouvez pas journaliser une tâche récurrente."
 #define STRING_CMD_LOG_NO_WAITING    "Vous ne pouvez pas journaliser une tâche en attente."

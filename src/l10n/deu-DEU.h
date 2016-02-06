@@ -270,6 +270,7 @@
 #define STRING_CMD_URGENCY_RESULT    "Aufgabe {1}, Dringlichkeit {2}"
 #define STRING_CMD_ADD_USAGE         "Fügt eine neue Aufgabe hinzu"
 #define STRING_CMD_ADD_FEEDBACK      "Aufgabe {1} hinzugefügt."
+#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
 #define STRING_CMD_LOG_USAGE         "Protokolliert eine Aufgabe"
 #define STRING_CMD_LOG_NO_RECUR      "Wiederholende Aufgaben können nicht protokolliert werden."
 #define STRING_CMD_LOG_NO_WAITING    "Aufgeschobene Aufgaben können nicht protokolliert werden."

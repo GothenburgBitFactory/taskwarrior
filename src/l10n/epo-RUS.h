@@ -270,6 +270,7 @@
 #define STRING_CMD_URGENCY_RESULT    "tasko {1} urĝeco {2}"
 #define STRING_CMD_ADD_USAGE         "Kreas novan taskon"
 #define STRING_CMD_ADD_FEEDBACK      "Kreis taskon {1}."
+#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
 #define STRING_CMD_LOG_USAGE         "Kreas novan jamfinitan taskon"
 #define STRING_CMD_LOG_NO_RECUR      "Oni ne povas fari taskojn reokazantajn kun 'log'."
 #define STRING_CMD_LOG_NO_WAITING    "Oni ne povas fari taskojn atendantajn kun 'log'."

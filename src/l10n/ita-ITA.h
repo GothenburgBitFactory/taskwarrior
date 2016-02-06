@@ -269,6 +269,7 @@
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgenza {2}"
 #define STRING_CMD_ADD_USAGE         "Aggiunge un nuovo task"
 #define STRING_CMD_ADD_FEEDBACK      "Task {1} creato."
+#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
 #define STRING_CMD_LOG_USAGE         "Aggiunge un nuovo task già completato"
 #define STRING_CMD_LOG_NO_RECUR      "Task periodici non possono essere registrati."
 #define STRING_CMD_LOG_NO_WAITING    "Task in attesa non possono essere registrati."

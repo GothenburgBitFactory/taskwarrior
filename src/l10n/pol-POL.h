@@ -270,6 +270,7 @@
 #define STRING_CMD_URGENCY_RESULT    "zadanie {1} ważność {2}"
 #define STRING_CMD_ADD_USAGE         "Dodaje nowe zadanie"
 #define STRING_CMD_ADD_FEEDBACK      "Utworzono zadanie {1}."
+#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
 #define STRING_CMD_LOG_USAGE         "Dodaje nowe, ukończone zadanie"
 #define STRING_CMD_LOG_NO_RECUR      "Nie możesz logować zadania cyklicznego."
 #define STRING_CMD_LOG_NO_WAITING    "Nie możesz logować zadania czekającego."

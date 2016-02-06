@@ -271,6 +271,7 @@
 #define STRING_CMD_URGENCY_RESULT    "tarea {1} urgencia {2}"
 #define STRING_CMD_ADD_USAGE         "Añade una nueva tarea"
 #define STRING_CMD_ADD_FEEDBACK      "Creada tarea {1}."
+#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
 #define STRING_CMD_LOG_USAGE         "Añade una nueva tarea que ya ha sido completada"
 #define STRING_CMD_LOG_NO_RECUR      "No puede registrar tareas recurrentes."
 #define STRING_CMD_LOG_NO_WAITING    "No puede registrar tareas en espera."
