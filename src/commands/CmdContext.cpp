@@ -249,7 +249,7 @@ void CmdContext::listContexts (std::stringstream& out)
         << optionalBlankLine ();
   }
   else
-    throw std::string(STRING_CMD_CONTEXT_LIST_EMPT);
+    throw std::string (STRING_CMD_CONTEXT_LIST_EMPT);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
