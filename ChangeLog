@@ -94,6 +94,8 @@
           (thanks to pawprint).
 - Improved OpenBSD support
           (thanks to Kent R. Spillner).
+- Included 'problems' script in build dir
+          (thanks to Gordon Ball).
 
 ------ current release ---------------------------
 
