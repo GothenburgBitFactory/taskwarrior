@@ -76,6 +76,9 @@
 - TW-1756 The columns.t unit test fails two tests after 2300 local.
 - TW-1763 Removing the due date of a task with no due date modifies the task
           (thanks to Scott Kostyshak).
+- TW-1768 Task sync failed: "Either your credentials are incorrect, or your account
+          doesn't exist on the Taskserver."
+          (thanks to Konstantin).
 - Fixed broken build for Cygwin and older GCC
           (thanks to Richard Boß).
 - The default configuration is now 256-color only.

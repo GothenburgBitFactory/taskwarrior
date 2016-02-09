@@ -156,6 +156,7 @@ int CmdSync::execute (std::string& output)
 
   // Send 'sync' + payload.
   Msg request;
+  request.set ("client",   PACKAGE_STRING);
   request.set ("protocol", "v1");
   request.set ("type",     "sync");
   request.set ("org",      credentials[0]);
