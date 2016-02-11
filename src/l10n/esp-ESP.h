@@ -107,7 +107,7 @@
 #define STRING_PARSER_UNKNOWN_ATTMOD "Error: modificador de atributo no reconocido '{1}'."
 #define STRING_PARSER_ALTERNATE_RC   "Usando el archivo .taskrc alternativo {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
+#define STRING_PARSER_UNEXPECTED_ARG "El comando '{1}' no permite '{2}'."
 
 // Variant
 //
@@ -225,23 +225,23 @@
 #define STRING_COLUMN_LABEL_SCHED    "Programada"
 #define STRING_COLUMN_LABEL_UDA      "Nombre"
 #define STRING_COLUMN_LABEL_TYPE     "Tipo"
-#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
-#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
+#define STRING_COLUMN_LABEL_MODIFY   "Modificable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Solo lectura"
 #define STRING_COLUMN_LABEL_LABEL    "Etiqueta"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defecto"
 #define STRING_COLUMN_LABEL_VALUES   "Valores permitidos"
 #define STRING_COLUMN_LABEL_UDACOUNT "Recuento de uso"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA huérfano"
 
-#define STRING_COLUMN_LABEL_COMMAND  "Command"
-#define STRING_COLUMN_LABEL_CATEGORY "Category"
-#define STRING_COLUMN_LABEL_RO       "R/W"
-#define STRING_COLUMN_LABEL_SHOWS_ID "ID"
-#define STRING_COLUMN_LABEL_GC       "GC"
-#define STRING_COLUMN_LABEL_CONTEXT  "Context"
-#define STRING_COLUMN_LABEL_FILTER   "Filter"
-#define STRING_COLUMN_LABEL_MODS     "Mods"
-#define STRING_COLUMN_LABEL_MISC     "Misc"
+#define STRING_COLUMN_LABEL_COMMAND  "Comando"
+#define STRING_COLUMN_LABEL_CATEGORY "Categoría"
+#define STRING_COLUMN_LABEL_RO       "R/W"  // |esp-ESP|==|eng-USA|
+#define STRING_COLUMN_LABEL_SHOWS_ID "ID"  // |esp-ESP|==|eng-USA|
+#define STRING_COLUMN_LABEL_GC       "GC"  // |esp-ESP|==|eng-USA|
+#define STRING_COLUMN_LABEL_CONTEXT  "Contexto"
+#define STRING_COLUMN_LABEL_FILTER   "Filtro"
+#define STRING_COLUMN_LABEL_MODS     "Mods"  // |esp-ESP|==|eng-USA|
+#define STRING_COLUMN_LABEL_MISC     "Misc"  // |esp-ESP|==|eng-USA|
 
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "casa @tarea"
@@ -271,13 +271,11 @@
 #define STRING_CMD_URGENCY_RESULT    "tarea {1} urgencia {2}"
 #define STRING_CMD_ADD_USAGE         "Añade una nueva tarea"
 #define STRING_CMD_ADD_FEEDBACK      "Creada tarea {1}."
-#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
+#define STRING_CMD_ADD_RECUR         "Creada tarea {1} (modelo de recurrencia)."
 #define STRING_CMD_LOG_USAGE         "Añade una nueva tarea que ya ha sido completada"
 #define STRING_CMD_LOG_NO_RECUR      "No puede registrar tareas recurrentes."
 #define STRING_CMD_LOG_NO_WAITING    "No puede registrar tareas en espera."
-
-//#define STRING_CMD_LOG_LOGGED        "Tarea registrada."
-#define STRING_CMD_LOG_LOGGED        "Logged task {1}."
+#define STRING_CMD_LOG_LOGGED        "Tarea {1} registrada."
 
 #define STRING_CMD_IDS_USAGE_RANGE   "Muestra los IDs de las tareas coincidentes, como un rango"
 #define STRING_CMD_IDS_USAGE_LIST    "Muestra los IDs de las tareas coincidentes, en forma de lista"
@@ -295,7 +293,7 @@
 #define STRING_CMD_INFO_UNTIL        "Hasta"
 #define STRING_CMD_INFO_MODIFICATION "Modificación"
 #define STRING_CMD_INFO_MODIFIED     "Modificada por última vez"
-#define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
+#define STRING_CMD_INFO_VIRTUAL_TAGS "Marcas virtuales"
 #define STRING_CMD_UNDO_USAGE        "Revierte el cambio más reciente a una tarea"
 #define STRING_CMD_STATS_USAGE       "Muestra estadísticas de la base de datos de tareas"
 #define STRING_CMD_STATS_CATEGORY    "Categoría"
@@ -349,9 +347,9 @@
 #define STRING_CMD_GHISTORY_YEAR     "Año"
 #define STRING_CMD_GHISTORY_MONTH    "Mes"
 #define STRING_CMD_GHISTORY_NUMBER   "Número Añadidas/Completadas/Suprimidas"
-#define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
-#define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
-#define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
+#define STRING_CMD_UNIQUE_USAGE      "Genera listas de valores de atributo únicos"
+#define STRING_CMD_UNIQUE_MISSING    "Se debe especificar un atributo. Ver 'task _columns'."
+#define STRING_CMD_UNIQUE_VALID      "Debe especificar un atributo o un UDA."
 
 #define STRING_CMD_DONE_USAGE        "Marca la tarea especificada como completada"
 #define STRING_CMD_DONE_CONFIRM      "¿Completar tarea {1} '{2}'?"
@@ -378,7 +376,7 @@
 #define STRING_CMD_COUNT_USAGE       "Cuenta tareas que coinciden"
 #define STRING_CMD_GET_USAGE         "Método de acceso al DOM"
 #define STRING_CMD_GET_NO_DOM        "Referencia a DOM no especificada."
-#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
+#define STRING_CMD_GET_BAD_REF       "'{1}' no es una referencia a DOM."
 
 #define STRING_CMD_UDAS_NO           "Ningún UDA definido."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA definido"
@@ -467,7 +465,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tareas."
 #define STRING_CMD_IMPORT_FILE       "Importando '{1}'"
 #define STRING_CMD_IMPORT_MISSING    "Archivo '{1}' no encontrado."
-#define STRING_CMD_IMPORT_UUID_BAD   "Not a valid UUID '{1}'."
+#define STRING_CMD_IMPORT_UUID_BAD   "UUID '{1}' no válido."
 #define STRING_TASK_NO_DESC          "La anotación carece de descripción: {1}"
 #define STRING_TASK_NO_ENTRY         "La anotación carece de fecha de entrada: {1}"
 
@@ -511,15 +509,15 @@
 #define STRING_CMD_DIAG_COMMIT       "Commit"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_DIAG_FOUND        "(encontrado)"
 #define STRING_CMD_DIAG_MISSING      "(no encontrado)"
-#define STRING_CMD_DIAG_MISS_DEP     "Task {1} depends on nonexistent task: {2}"
-#define STRING_CMD_DIAG_MISS_PAR     "Task {1} has nonexistent recurrence template: {2}"
+#define STRING_CMD_DIAG_MISS_DEP     "La tarea {1} depende de la tarea inexistente: {2}"
+#define STRING_CMD_DIAG_MISS_PAR     "La tarea {1} tiene un modelo de recurrencia inexistente: {2}"
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
 #define STRING_CMD_DIAG_DISABLED     "deshabilitado"
 #define STRING_CMD_DIAG_CONFIG       "Configuración"
 #define STRING_CMD_DIAG_TESTS        "Comprobaciones"
 #define STRING_CMD_DIAG_UUID_SCAN    "Exploradas {1} tareas buscando UUIDs duplicados:"
-#define STRING_CMD_DIAG_REF_SCAN     "Scanned {1} tasks for broken references:"
-#define STRING_CMD_DIAG_REF_OK       "No broken references found"
+#define STRING_CMD_DIAG_REF_SCAN     "Exploradas {1} tareas buscando referencias rotas:"
+#define STRING_CMD_DIAG_REF_OK       "No se encontraron referencias rotas"
 #define STRING_CMD_DIAG_UUID_DUP     "Encontrado duplicado {1}"
 #define STRING_CMD_DIAG_UUID_NO_DUP  "No se encontraron duplicados"
 #define STRING_CMD_DIAG_NONE         "-ninguno-"
@@ -531,7 +529,7 @@
 #define STRING_CMD_DIAG_HOOK_ENABLE  "Habilitado"
 #define STRING_CMD_DIAG_HOOK_DISABLE "Inhabilitado"
 
-#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
+#define STRING_CMD_COMMANDS_USAGE    "Genera una lista de todos los comandos, con detalles de comportamiento"
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera una lista de todos los comandos, con fines de auto-completado zsh"
 
@@ -551,8 +549,7 @@
 #define STRING_CMD_MODIFY_CONFIRM    "¿Modificar tarea {1} '{2}'?"
 #define STRING_CMD_MODIFY_RECUR      "Esta es una tarea recurrente. ¿Quiere modificar todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Se debe proveer texto adicional."
-//#define STRING_CMD_MODIFY_NEED_TEXT  "Additional text must be provided."  COMPROBAR adicional
-#define STRING_CMD_MODIFY_INACTIVE   "Note: Modified task {1} is {2}.  You may wish to make this task pending with: task {3} modify status:pending"
+#define STRING_CMD_MODIFY_INACTIVE   "Nota: la tarea modificada {1} está {2}. Podría querer marcar esta tarea como pendiente con: task {3} modify status:pending"
 
 #define STRING_CMD_COLOR_USAGE       "Todos los colores, una muestra, o una leyenda"
 #define STRING_CMD_COLOR_HERE        "Aquí están los colores en uso actualmente:"
@@ -610,7 +607,7 @@
 #define STRING_CMD_BURN_USAGE_D      "Muestra un diagrama burndown, por días"
 #define STRING_CMD_BURN_TITLE        "Burndown"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_BURN_TOO_SMALL    "Ventana de terminal demasiado pequeña para dibujar una gráfica."
-#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
+#define STRING_CMD_BURN_TOO_LARGE    "Ventana de terminal demasiado grande para dibujar una gráfica."
 #define STRING_CMD_BURN_DAILY        "Diario"
 #define STRING_CMD_BURN_WEEKLY       "Semanal"
 #define STRING_CMD_BURN_MONTHLY      "Mensual"
@@ -689,9 +686,9 @@
 
 // edit
 #define STRING_EDIT_NO_CHANGES       "No se detectaron modificaciones."
-#define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
+#define STRING_EDIT_FAILED           "Edición fallida con código de salida {1}."
 #define STRING_EDIT_COMPLETE         "Edición completada."
-#define STRING_EDIT_IN_PROGRESS      "Task is already being edited."
+#define STRING_EDIT_IN_PROGRESS      "La tarea ya está siendo editada."
 #define STRING_EDIT_LAUNCHING        "Lanzando '{1}' ahora..."
 #define STRING_EDIT_CHANGES          "Se detectaron modificaciones."
 #define STRING_EDIT_UNPARSEABLE      "Taskwarrior no pudo manejar sus modificaciones. ¿Quiere intentarlo de nuevo?"
@@ -770,9 +767,8 @@
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
 #define STRING_TLS_INIT_FAIL         "Error inicializando TLS. {1}"
 #define STRING_ERROR_DETAILS         "El ajuste 'calendar.details.report' debe contener un único nombre de informe."
-#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-#define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
-#define STRING_ERROR_BAD_STATUS      "The status '{1}' is not valid."
+#define STRING_ERROR_NO_FILTER       "Los filtros de línea de comando no están soportados por este comando."
+#define STRING_ERROR_BAD_STATUS      "El estatus '{1}' no es válido."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
@@ -801,7 +797,7 @@
 #define STRING_FEEDBACK_TAG_NONAG    "La marca especial 'nonag' evitará el recuerdo fastidioso cuando la tarea sea modificada."
 #define STRING_FEEDBACK_TAG_NOCAL    "La marca especial 'nocal' mantendrá esta tarea fuera del informe 'calendar'."
 #define STRING_FEEDBACK_TAG_NEXT     "La etiqueta especial 'next' aumentará la urgencia de esta tarea para que aparezca en el informe 'next'."
-#define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
+#define STRING_FEEDBACK_TAG_VIRTUAL  "Las marcas virtuales (incluída '{1}') están reservadas y no pueden ser añadidas o eliminadas."
 #define STRING_FEEDBACK_UNBLOCKED    "Desbloqueada {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fue eliminada."
 #define STRING_FEEDBACK_BACKLOG      "Hay modificaciones locales.  Se require una sincronización."
@@ -820,8 +816,8 @@
 #define STRING_HOOK_ERROR_NODESC     "Hook Error: falta atributo 'description' en objeto JSON."
 #define STRING_HOOK_ERROR_NOUUID     "Hook Error: falta atributo 'uuid' en objeto JSON."
 #define STRING_HOOK_ERROR_SYNTAX     "Hook Error: error de sintaxis JSON en: {1}"
-#define STRING_HOOK_ERROR_JSON       "Hook Error: JSON "
-#define STRING_HOOK_ERROR_NOPARSE    "Hook Error: JSON falló al analizar: "
+#define STRING_HOOK_ERROR_JSON       "Hook Error: JSON "  // |esp-ESP|==|eng-USA|
+#define STRING_HOOK_ERROR_NOPARSE    "Hook Error: fallo al interpretar JSON: "
 #define STRING_HOOK_ERROR_BAD_NUM    "Hook Error: se esperaba {1} tarea(s) JSON, se encontraron {2}"
 #define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON debe ser para la misma tarea: {1}"
 #define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON debe ser para la misma tarea: {1} != {2}"
@@ -898,10 +894,10 @@
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
 #define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
 #define STRING_TDB2_DIRTY_EXIT       "Saliendo con cambios sin escribir a {1}"
-#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
+#define STRING_TDB2_UNWAIT           "Tarea no en espera '{1}'"
 
 // recur.cpp
-#define STRING_RECUR_CREATE          "Creating recurring task instance '{1}'"
+#define STRING_RECUR_CREATE          "Creando instancia de tarea recurrente '{1}'"
 
 // View
 #define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
