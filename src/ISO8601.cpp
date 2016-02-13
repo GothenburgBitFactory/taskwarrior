@@ -258,9 +258,7 @@ bool ISO8601d::parse (
   else if (parse_date_time     (n)   || // Strictest first.
            parse_date_time_ext (n)   ||
            (ISO8601d::isoEnabled &&
-            (parse_date_time     (n) ||
-             parse_date_time_ext (n) ||
-             parse_date_ext      (n) ||
+            (parse_date_ext      (n) ||
              parse_time_utc_ext  (n) ||
              parse_time_off_ext  (n) ||
              parse_time_ext      (n)))) // Time last, as it is the most permissive.
