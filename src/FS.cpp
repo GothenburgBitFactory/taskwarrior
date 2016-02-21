@@ -520,7 +520,7 @@ void File::append (const std::string& line)
   if (_fh)
   {
     fseek (_fh, 0, SEEK_END);
-    fputs (line.c_str (), _fh);
+    fputs ((line + "\n").c_str (), _fh);
   }
 }
 
@@ -535,7 +535,7 @@ void File::append (const std::vector <std::string>& lines)
   {
     fseek (_fh, 0, SEEK_END);
     for (auto& line : lines)
-      fputs (line.c_str (), _fh);
+      fputs ((line + "\n").c_str (), _fh);
   }
 }
 
