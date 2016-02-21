@@ -99,7 +99,7 @@ std::string Config::_defaults =
   "xterm.title=no                                 # Sets xterm title for some commands\n"
   "expressions=infix                              # Prefer infix over postfix expressions\n"
   "json.array=on                                  # Enclose JSON output in [ ]\n"
-  "json.depends.array=on                          # Encode dependencies as a JSON array\n"
+  "json.depends.array=off                         # Encode dependencies as a JSON array\n"
   "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
   "\n"
   "# Dates\n"

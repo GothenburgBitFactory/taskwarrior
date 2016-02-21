@@ -1,5 +1,7 @@
 2.5.1 () -
 
+- TD-104  Unrecognized taskwarrior file format
+          (thanks to Jeremy John Reeder, Reg).
 - TW-38   Dates in the far future give bad estimates in burndown
           (thanks to Ben Boeckel).
 - TW-188  short help text

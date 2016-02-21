@@ -661,24 +661,40 @@ void Task::parseJSON (const json::object* root_obj)
           addTag (tag->_data);
         }
       }
-      // This is a temporary measure to allow Mirakel sync, and will be removed
-      // in a future release.
+      // This is a temporary measure to accomodate a malformed JSON message from
+      // Mirakel sync.
+      //
+      // 2016-02-21 Mirakel dropped sync support in late 2015. This can be
+      //            removed in a later release.
       else if (i.first == "tags" && i.second->type() == json::j_string)
       {
         json::string* tag = (json::string*)i.second;
         addTag (tag->_data);
       }
 
-      // Dependencies can be exported as a single comma-separated string, or as
-      // an array of strings.
+      // Dependencies can be exported as an array of strings.
+      // 2016-02-21: This will be the only option in future releases.
+      //             See other 2016-02-21 comments for details.
       else if (i.first == "depends" && i.second->type() == json::j_array)
       {
-        json::array* tags = (json::array*)i.second;
-        for (auto& t : tags->_data)
+        json::array* deps = (json::array*)i.second;
+        for (auto& t : deps->_data)
         {
-          json::string* tag = (json::string*)t;
-          addDependency (tag->_data);
+          json::string* dep = (json::string*)t;
+          addDependency (dep->_data);
         }
+      }
+
+      // Dependencies can be exported as a single comma-separated string.
+      // 2016-02-21: Deprecated - see other 2016-02-21 comments for details.
+      else if (i.first == "depends" && i.second->type() == json::j_string)
+      {
+        json::string* deps = (json::string*)i.second;
+        std::vector <std::string> uuids;
+        split (uuids, deps->_data, ',');
+
+        for (const auto& uuid : uuids)
+          addDependency (uuid);
       }
 
       // Strings are decoded.
@@ -892,6 +908,21 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     // Dependencies are an array by default.
     else if (i.first == "depends"
 #ifdef PRODUCT_TASKWARRIOR
+    // 2016-02-20: Taskwarrior 2.5.0 introduced the 'json.depends.array' setting
+    //             which defaulted to 'on', and emitted this JSON for
+    //             dependencies:
+    //
+    //             With json.depends.array=on    "depends":["<uuid>","<uuid>"]
+    //             With json.depends.array=off   "depends":"<uuid>,<uuid>"
+    //
+    //             Taskwarrior 2.5.1 defaults this to 'off', because Taskserver
+    //             1.0.0 and 1.1.0 both expect that. Taskserver 1.2.0 will
+    //             accept both forms, but emit the 'off' variant.
+    //
+    //             When Taskwarrior 2.5.0 is no longer the dominant version,
+    //             and Taskserver 1.2.0 is released, the default for
+    //             'json.depends.array' can revert to 'on'.
+
              && context.config.getBoolean ("json.depends.array")
 #endif
             )
