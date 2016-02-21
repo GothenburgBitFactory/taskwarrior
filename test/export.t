@@ -146,6 +146,7 @@ class TestExportCommand(TestCase):
         self.t(('add', 'everything depends on me task'))
         self.t(('add', 'wrong, everything depends on me task'))
         self.t('1 modify depends:2,3')
+        self.t.config('json.depends.array', 'on')
 
         deps = self.export(1)['depends']
         self.assertType(deps, list)

@@ -207,6 +207,7 @@ class TestImport(TestCase):
 
     def test_import_new_depend(self):
         """One dependency is a single array element"""
+        self.t.config('json.depends.array', 'on')
         _data = """{"uuid":"a0000000-a000-a000-a000-a00000000000","depends":["a1111111-a111-a111-a111-a11111111111"],"description":"zero","project":"A","status":"pending","entry":"1234567889"}"""
         self.t("import", input=self.data1)
         self.t("import", input=_data)
@@ -215,6 +216,7 @@ class TestImport(TestCase):
 
     def test_import_new_depends(self):
         """Several dependencies are an array"""
+        self.t.config('json.depends.array', 'on')
         _data = """{"uuid":"a0000000-a000-a000-a000-a00000000000","depends":["a1111111-a111-a111-a111-a11111111111","a2222222-a222-a222-a222-a22222222222"],"description":"zero","project":"A","status":"pending","entry":"1234567889"}"""
         self.t("import", input=self.data1)
         self.t("import", input=_data)
