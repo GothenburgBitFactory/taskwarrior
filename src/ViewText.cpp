@@ -120,7 +120,7 @@ std::string ViewText::render ()
       unsigned int ideal = 0;
       _columns[col]->measure (_data[row][col], min, ideal);
 
-      if (min   > global_min)   global_min = min;
+      if (min   > global_min)   global_min   = min;
       if (ideal > global_ideal) global_ideal = ideal;
 
       // If a fixed-width column was just measured, there is no point repeating

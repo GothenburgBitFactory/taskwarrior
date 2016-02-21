@@ -546,9 +546,7 @@ void File::write_raw (const std::string& line)
     open ();
 
   if (_fh)
-  {
     fputs (line.c_str (), _fh);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

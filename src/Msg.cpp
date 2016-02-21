@@ -75,7 +75,6 @@ std::string Msg::serialize () const
     output += i.first + ": " + i.second + "\n";
 
   output += "\n" + _payload + "\n";
-
   return output;
 }
 
@@ -96,10 +95,10 @@ bool Msg::parse (const std::string& input)
   {
     auto delimiter = i.find (':');
     if (delimiter == std::string::npos)
-        throw std::string ("ERROR: Malformed message header '") + i + "'";
+      throw std::string ("ERROR: Malformed message header '") + i + "'";
 
     _header[Lexer::trim (i.substr (0, delimiter))] = Lexer::trim (i.substr (delimiter + 1));
-    }
+  }
 
   // Parse payload.
   _payload = input.substr (separator + 2);
