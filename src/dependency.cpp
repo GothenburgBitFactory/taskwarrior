@@ -67,36 +67,42 @@ void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
 // Returns true if the supplied task adds a cycle to the dependency chain.
 bool dependencyIsCircular (const Task& task)
 {
-  std::string task_uuid = task.get ("uuid");
 
-  std::stack <Task> s;
-  s.push (task);
-  while (! s.empty ())
+  // A new task has no UUID assigned yet, and therefore cannot be part of any
+  // dependency chain.
+  if (task.has ("uuid"))
   {
-    Task& current = s.top ();
-    std::vector <std::string> deps_current;
-    current.getDependencies (deps_current);
+    auto task_uuid = task.get ("uuid");
 
-    // This is a basic depth first search that always terminates given the
-    // assumption that any cycles in the dependency graph must have been
-    // introduced by the task that is being checked.
-    // Since any previous cycles would have been prevented by this very
-    // function, this is a reasonable assumption.
-    for (unsigned int i = 0; i < deps_current.size (); i++)
+    std::stack <Task> s;
+    s.push (task);
+    while (! s.empty ())
     {
-      if (context.tdb2.get (deps_current[i], current))
+      Task& current = s.top ();
+      std::vector <std::string> deps_current;
+      current.getDependencies (deps_current);
+
+      // This is a basic depth first search that always terminates given the
+      // assumption that any cycles in the dependency graph must have been
+      // introduced by the task that is being checked.
+      // Since any previous cycles would have been prevented by this very
+      // function, this is a reasonable assumption.
+      for (unsigned int i = 0; i < deps_current.size (); i++)
       {
-        if (task_uuid == current.get ("uuid"))
+        if (context.tdb2.get (deps_current[i], current))
         {
-          // Cycle found, initial task reached for the second time!
-          return true;
+          if (task_uuid == current.get ("uuid"))
+          {
+            // Cycle found, initial task reached for the second time!
+            return true;
+          }
+
+          s.push (current);
         }
-
-        s.push (current);
       }
-    }
 
-    s.pop ();
+      s.pop ();
+    }
   }
 
   return false;
