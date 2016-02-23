@@ -50,7 +50,7 @@ ColumnTags::ColumnTags ()
   _examples  = {STRING_COLUMN_EXAMPLES_TAGS,
                 context.config.get ("tag.indicator"),
                 "[2]"};
-  _hyphenate = context.config.getBoolean ("hyphenate");
+  _hyphenate = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -92,19 +92,23 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
              _style == "list")
     {
       std::string tags = task.get (_name);
-      maximum = utf8_width (tags);
 
-      if (maximum)
+      // Find the widest tag.
+      if (tags.find (',') != std::string::npos)
       {
         std::vector <std::string> all;
         split (all, tags, ',');
-        for (auto& i : all)
+        for (const auto& tag : all)
         {
-          unsigned int length = utf8_width (i);
+          auto length = utf8_width (tag);
           if (length > minimum)
             minimum = length;
         }
       }
+
+      // No need to split a single tag.
+      else
+        minimum = maximum = utf8_width (tags);
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -124,19 +128,21 @@ void ColumnTags::render (
     if (_style == "default" ||
         _style == "list")
     {
-      std::vector <std::string> allTags;
-      split (allTags, tags, ',');
-      if (allTags.size () > 1)
+      if (tags.find (',') != std::string::npos)
       {
-        std::sort (allTags.begin (), allTags.end ());
-        join (tags, " ", allTags);
+        std::vector <std::string> all;
+        split (all, tags, ',');
+        std::sort (all.begin (), all.end ());
+        join (tags, " ", all);
+
+        all.clear ();
+        wrapText (all, tags, width, _hyphenate);
+
+        for (const auto& i : all)
+          renderStringLeft (lines, width, color, i);
       }
-
-      std::vector <std::string> all;
-      wrapText (all, tags, width, _hyphenate);
-
-      for (auto& i : all)
-        renderStringLeft (lines, width, color, i);
+      else
+        renderStringLeft (lines, width, color, tags);
     }
     else if (_style == "indicator")
     {
