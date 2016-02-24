@@ -37,11 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (177);
-
-  // Ensure environment has no influence.
-  unsetenv ("TASKDATA");
-  unsetenv ("TASKRC");
+  UnitTest t (180);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width, bool hyphenate)
   std::string text = "This is a test of the line wrapping code.";
@@ -106,8 +102,18 @@ int main (int, char**)
   text = "AAAAAAAAAABBBBBBBBBB";
   offset = 0;
   extractLine (line, text, 10, true, offset);
-  t.is (line, "AAAAAAAAA-", "extractLine hyphenated unbreakable line");
-  t.diag (line);
+  t.is (line, "AAAAAAAAA-", "extractLine hyphenated unbreakable line 'AAAAAAAAAABBBBBBBBBB'/10 -> 'AAAAAAAAA-'");
+
+  extractLine (line, text, 10, true, offset);
+  t.is (line, "ABBBBBBBB-", "extractLine hyphenated unbreakable line 'AAAAAAAAAABBBBBBBBBB'/10 -> 'ABBBBBBBB-'");
+
+  extractLine (line, text, 10, true, offset);
+  t.is (line, "BB", "extractLine hyphenated unbreakable line 'AAAAAAAAAABBBBBBBBBB'/10 -> 'BB'");
+
+  text = "4444 333  ";
+  offset = 0;
+  while (extractLine (line, text, 9, true, offset))
+    std::cout << "# line '" << line << "' offset " << offset << "\n";
 
   // void split (std::vector<std::string>& results, const std::string& input, const char delimiter)
   std::vector <std::string> items;
@@ -346,6 +352,9 @@ int main (int, char**)
   t.is (leftJustify ("foo", 4), "foo ",  "leftJustify foo,4 -> 'foo '");
   t.is (leftJustify ("foo", 5), "foo  ", "leftJustify foo,5 -> 'foo  '");
   t.is (leftJustify ("föo", 5), "föo  ", "leftJustify föo,5 -> 'föo  '");
+
+  // When a string doesn't fit in the space necessary‥
+  t.is (leftJustify ("foo", 2), "fo",    "leftJustify foo,2 -→ 'fo'");
 
   // std::string rightJustify (const std::string&, const int);
   t.is (rightJustify (123, 3), "123",   "rightJustify 123,3 -> '123'");
