@@ -175,11 +175,11 @@ void ColumnDescription::render (
   if (_style == "default" ||
       _style == "combined")
   {
-    std::map <std::string, std::string> annos;
-    task.getAnnotations (annos);
-    if (annos.size ())
+    if (task.annotation_count)
     {
-      for (auto& i : annos)
+      std::map <std::string, std::string> annos;
+      task.getAnnotations (annos);
+      for (const auto& i : annos)
       {
         ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += "\n" + std::string (_indent, ' ') + dt.toString (_dateformat) + " " + i.second;
@@ -189,7 +189,7 @@ void ColumnDescription::render (
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    for (auto& i : raw)
+    for (const auto& i : raw)
       renderStringLeft (lines, width, color, i);
   }
 
@@ -199,18 +199,18 @@ void ColumnDescription::render (
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    for (auto& i : raw)
+    for (const auto& i : raw)
       renderStringLeft (lines, width, color, i);
   }
 
   // This is a description <date> <anno> ...
   else if (_style == "oneline")
   {
-    std::map <std::string, std::string> annos;
-    task.getAnnotations (annos);
-    if (annos.size ())
+    if (task.annotation_count)
     {
-      for (auto& i : annos)
+      std::map <std::string, std::string> annos;
+      task.getAnnotations (annos);
+      for (const auto& i : annos)
       {
         ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += " " + dt.toString (_dateformat) + " " + i.second;
@@ -220,7 +220,7 @@ void ColumnDescription::render (
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    for (auto& i : raw)
+    for (const auto& i : raw)
       renderStringLeft (lines, width, color, i);
   }
 
@@ -237,31 +237,26 @@ void ColumnDescription::render (
   // This is a description [2]
   else if (_style == "count")
   {
-    std::map <std::string, std::string> annos;
-    task.getAnnotations (annos);
-
-    if (annos.size ())
-      description += " [" + format ((int) annos.size ()) + "]";
+    if (task.annotation_count)
+      description += " [" + format (task.annotation_count) + "]";
 
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    for (auto& i : raw)
+    for (const auto& i : raw)
       renderStringLeft (lines, width, color, i);
   }
 
   // This is a des... [2]
   else if (_style == "truncated_count")
   {
-    std::map <std::string, std::string> annos;
-    task.getAnnotations (annos);
     int len = utf8_width (description);
+
     std::string annos_count;
     int len_annos = 0;
-
-    if (annos.size ())
+    if (task.annotation_count)
     {
-      annos_count = " [" + format ((int) annos.size ()) + "]";
+      annos_count = " [" + format (task.annotation_count) + "]";
       len_annos = utf8_width (annos_count);
       len += len_annos;
     }
