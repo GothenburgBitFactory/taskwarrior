@@ -1,3 +1,9 @@
+2.5.2 () -
+
+- 
+
+------ current release ---------------------------
+
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
 - TD-104  Unrecognized taskwarrior file format
@@ -107,8 +113,6 @@
           (thanks to Gordon Ball).
 - The 'run_all' script was not correctly using exit code 0 when all tests pass
           (thanks to Gordon Ball).
-
------- current release ---------------------------
 
 2.5.0 (2015-10-21) dd5968a61b1fab258b38879cfdbb7d67f1bcd550
 
