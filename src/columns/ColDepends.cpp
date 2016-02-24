@@ -49,7 +49,7 @@ ColumnDepends::ColumnDepends ()
                 "[3]",
                 context.config.get ("dependency.indicator")};
 
-  _hyphenate = context.config.getBoolean ("hyphenate");
+  _hyphenate = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ void ColumnDepends::render (
                _style == "list")
       {
         std::vector <int> blocking_ids;
-        for (auto& t : blocking)
+        for (const auto& t : blocking)
           blocking_ids.push_back (t.id);
 
         std::string combined;
@@ -140,7 +140,7 @@ void ColumnDepends::render (
         std::vector <std::string> all;
         wrapText (all, combined, width, _hyphenate);
 
-        for (auto& i : all)
+        for (const auto& i : all)
           renderStringLeft (lines, width, color, i);
       }
     }
