@@ -630,6 +630,14 @@ std::string leftJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const std::string& input, const int width)
 {
+  auto len = utf8_text_width (input);
+
+  if (len == width)
+    return input;
+
+  if (len > width)
+    return input.substr (0, width);
+
   return input + std::string (width - utf8_text_width (input), ' ');
 }
 
@@ -652,7 +660,14 @@ std::string rightJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string rightJustify (const std::string& input, const int width)
 {
-  unsigned int len = utf8_text_width (input);
+  auto len = utf8_text_width (input);
+
+  if (len == width)
+    return input;
+
+  if (len > width)
+    return input.substr (0, width);
+
   return (((unsigned int) width > len)
            ? std::string (width - len, ' ')
            : "")
