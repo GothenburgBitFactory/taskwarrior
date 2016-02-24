@@ -291,7 +291,7 @@ bool extractLine (
       // No hyphenation, just truncation.
       else
       {
-        line = text.substr (offset, prior_cursor - offset);
+        line = text.substr (offset, cursor - offset);
         offset = cursor;
         return true;
       }
@@ -630,7 +630,7 @@ std::string leftJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const std::string& input, const int width)
 {
-  auto len = utf8_text_width (input);
+  auto len = static_cast <int> (utf8_text_width (input));
 
   if (len == width)
     return input;
@@ -660,7 +660,7 @@ std::string rightJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string rightJustify (const std::string& input, const int width)
 {
-  auto len = utf8_text_width (input);
+  auto len = static_cast <int> (utf8_text_width (input));
 
   if (len == width)
     return input;
@@ -668,7 +668,7 @@ std::string rightJustify (const std::string& input, const int width)
   if (len > width)
     return input.substr (0, width);
 
-  return (((unsigned int) width > len)
+  return ((width > len)
            ? std::string (width - len, ' ')
            : "")
          + input;
