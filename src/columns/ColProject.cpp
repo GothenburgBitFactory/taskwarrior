@@ -107,7 +107,7 @@ void ColumnProject::render (
     std::vector <std::string> raw;
     wrapText (raw, project, width, _hyphenate);
 
-    for (auto& i : raw)
+    for (const auto& i : raw)
       renderStringLeft (lines, width, color, i);
   }
 }
