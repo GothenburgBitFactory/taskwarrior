@@ -83,6 +83,8 @@
 - TW-1768 Task sync failed: "Either your credentials are incorrect, or your account
           doesn't exist on the Taskserver."
           (thanks to Konstantin).
+- TW-1773 one task eaten all my RAM
+          (thanks to Yaroslav Molochko).
 - Fixed broken build for Cygwin and older GCC
           (thanks to Richard Boß).
 - The default configuration is now 256-color only.
