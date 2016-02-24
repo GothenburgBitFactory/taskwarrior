@@ -104,6 +104,8 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
           if (length > minimum)
             minimum = length;
         }
+
+        maximum = utf8_width (tags);
       }
 
       // No need to split a single tag.
