@@ -225,22 +225,7 @@ int longestLine (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Walk the input text looking for a break point.  A break point is one of:
-//   - EOS
-//   - \n
-//   - last space before 'length' characters
-//   - last punctuation (, ; . :) before 'length' characters, even if not
-//     followed by a space
-//   - first 'length' characters
-//
-// text       "one two three\n  four"
-// bytes       0123456789012 3456789
-// characters  1234567890a23 4567890
-//
-// leading_ws
-// ws             ^   ^       ^^
-// punct
-// break                     ^
+// Break UTF8 text into chunks no more than width characters.
 bool extractLine (
   std::string& line,
   const std::string& text,
@@ -249,91 +234,82 @@ bool extractLine (
   unsigned int& offset)
 {
   // Terminate processing.
-  // Note: bytes vs bytes.
   if (offset >= text.length ())
     return false;
 
-  std::string::size_type last_last_bytes = offset;
-  std::string::size_type last_bytes = offset;
-  std::string::size_type bytes = offset;
-  unsigned int last_ws = 0;
-  int character;
-  int char_width = 0;
-  int line_width = 0;
-  while (1)
+  int line_length                     {0};
+  int character                       {0};
+  std::string::size_type lastWordEnd  {std::string::npos};
+  bool something                      {false};
+  std::string::size_type cursor       {offset};
+  std::string::size_type prior_cursor {offset};
+  while ((character = utf8_next_char (text, cursor)))
   {
-    last_last_bytes = last_bytes;
-    last_bytes = bytes;
-    character = utf8_next_char (text, bytes);
-
-    if (character == 0 ||
-        character == '\n')
+    // Premature EOL.
+    if (character == '\n')
     {
-      line = text.substr (offset, last_bytes - offset);
-      offset = bytes;
-      break;
+      line = text.substr (offset, line_length);
+      offset = cursor;
+      return true;
     }
-    else if (character == ' ')
-      last_ws = last_bytes;
 
-    char_width = mk_wcwidth (character);
-    if (line_width + char_width > width)
+    if (! Lexer::isWhitespace (character))
     {
-      int last_last_character = text[last_last_bytes];
-      int last_character = text[last_bytes];
+      something = true;
+      if (! text[cursor] || Lexer::isWhitespace (text[cursor]))
+        lastWordEnd = prior_cursor;
+    }
 
-      // [case 1] one| two --> last_last != 32, last == 32, ws == 0
-      if (last_last_character != ' ' &&
-          last_character      == ' ')
+    line_length += mk_wcwidth (character);
+
+    if (line_length >= width)
+    {
+      // Backtrack to previous word end.
+      if (lastWordEnd != std::string::npos)
       {
-        line = text.substr (offset, last_bytes - offset);
-        offset = last_bytes + 1;
-        break;
+        // Eat one WS after lastWordEnd.
+        std::string::size_type lastBreak = lastWordEnd;
+        utf8_next_char (text, lastBreak);
+
+        // Position offset at following char.
+        std::string::size_type nextStart = lastBreak;
+        utf8_next_char (text, nextStart);
+
+        line = text.substr (offset, lastBreak - offset);
+        offset = nextStart;
+        return true;
       }
 
-      // [case 2] one |two --> last_last == 32, last != 32, ws != 0
-      else if (last_last_character == ' ' &&
-               last_character      != ' ' &&
-               last_ws             != 0)
+      // No backtrack, possible hyphenation.
+      else if (hyphenate)
       {
-        line = text.substr (offset, last_bytes - offset - 1);
-        offset = last_bytes;
-        break;
+        line = text.substr (offset, prior_cursor - offset) + "-";
+        offset = prior_cursor;
+        return true;
       }
 
-      else if (last_last_character != ' ' &&
-               last_character      != ' ')
+      // No hyphenation, just truncation.
+      else
       {
-        // [case 3] one t|wo --> last_last != 32, last != 32, ws != 0
-        if (last_ws != 0)
-        {
-          line = text.substr (offset, last_ws - offset);
-          offset = last_ws + 1;
-          break;
-        }
-        // [case 4] on|e two --> last_last != 32, last != 32, ws == 0
-        else
-        {
-          if (hyphenate)
-          {
-            line = text.substr (offset, last_bytes - offset - 1) + "-";
-            offset = last_last_bytes;
-          }
-          else
-          {
-            line = text.substr (offset, last_bytes - offset);
-            offset = last_bytes;
-          }
-        }
-
-        break;
+        line = text.substr (offset, prior_cursor - offset);
+        offset = cursor;
+        return true;
       }
     }
 
-    line_width += char_width;
+    // Hindsight.
+    prior_cursor = cursor;
   }
 
-  return true;
+  // Residual text.
+  if (something)
+  {
+    line = text.substr (offset, cursor - offset);
+     offset = cursor;
+    return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

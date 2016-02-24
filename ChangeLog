@@ -35,6 +35,8 @@
 - TW-1704 Use Task::identifier to reference the Task in the output
 - TW-1705 Directories in .task/hooks should not be reported as invalid hooks
           (thanks to Tomas Babej).
+- TW-1709 Parsing bug when doing "task undo"
+          (thanks to Scott Kostyshak).
 - TW-1710 Setting wait date on status:completed / status:deleted
           (thanks to Daniel Shahaf).
 - TW-1714 Starting recurring task starts all recurrences
