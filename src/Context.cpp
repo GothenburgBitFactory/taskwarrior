@@ -42,8 +42,16 @@
 #include <util.h>
 #include <main.h>
 #include <i18n.h>
+
 #ifdef HAVE_COMMIT
 #include <commit.h>
+#endif
+
+#include <stdio.h>
+#include <sys/ioctl.h>
+
+#ifdef SOLARIS
+#include <sys/termios.h>
 #endif
 
 // Supported modifiers, synonyms on the same line.
@@ -467,6 +475,70 @@ int Context::dispatch (std::string &out)
 
   assert (commands["help"]);
   return commands["help"]->execute (out);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Context::getWidth ()
+{
+  // Determine window size.
+  int width = config.getInteger ("defaultwidth");
+
+  // A zero width value means 'infinity', which is approximated here by 2^16.
+  if (width == 0)
+    return 65536;
+
+  if (config.getBoolean ("detection"))
+  {
+    if (terminal_width == 0 &&
+        terminal_height == 0)
+    {
+      unsigned short buff[4];
+      if (ioctl (STDOUT_FILENO, TIOCGWINSZ, &buff) != -1)
+      {
+        terminal_height = buff[0];
+        terminal_width = buff[1];
+      }
+    }
+
+    width = terminal_width;
+
+    // Ncurses does this, and perhaps we need to as well, to avoid a problem on
+    // Cygwin where the display goes right up to the terminal width, and causes
+    // an odd color wrapping problem.
+    if (config.getBoolean ("avoidlastcolumn"))
+      --width;
+  }
+
+  return width;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Context::getHeight ()
+{
+  // Determine window size.
+  int height = config.getInteger ("defaultheight");
+
+  // A zero height value means 'infinity', which is approximated here by 2^16.
+  if (height == 0)
+    return 65536;
+
+  if (config.getBoolean ("detection"))
+  {
+    if (terminal_width == 0 &&
+        terminal_height == 0)
+    {
+      unsigned short buff[4];
+      if (ioctl (STDOUT_FILENO, TIOCGWINSZ, &buff) != -1)
+      {
+        terminal_height = buff[0];
+        terminal_width = buff[1];
+      }
+    }
+
+    height = terminal_height;
+  }
+
+  return height;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
