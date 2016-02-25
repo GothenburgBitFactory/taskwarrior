@@ -467,9 +467,9 @@ std::string Chart::render ()
 
   // Draw y-axis labels.
   char label [12];
-  sprintf (label, "%*d", _max_label, _labels[2]);
+  snprintf (label, 12, "%*d", _max_label, _labels[2]);
   _grid.replace (LOC (1,                       _max_label - strlen (label)), strlen (label), label);
-  sprintf (label, "%*d", _max_label, _labels[1]);
+  snprintf (label, 12, "%*d", _max_label, _labels[1]);
   _grid.replace (LOC (1 + (_graph_height / 2), _max_label - strlen (label)), strlen (label), label);
   _grid.replace (LOC (_graph_height + 1,       _max_label - 1),              1,              "0");
 
@@ -527,7 +527,7 @@ std::string Chart::render ()
   calculateRates ();
   char rate[12];
   if (_net_fix_rate != 0.0)
-    sprintf (rate, "%.1f/d", _net_fix_rate);
+    snprintf (rate, 12, "%.1f/d", _net_fix_rate);
   else
     strcpy (rate, "-");
 
@@ -729,24 +729,24 @@ void Chart::generateBars ()
         std::string month = ISO8601d::monthName (cursor.month ());
         bar._major_label = month.substr (0, 3);
 
-        sprintf (str, "%02d", cursor.day ());
+        snprintf (str, 12, "%02d", cursor.day ());
         bar._minor_label = str;
       }
       break;
 
     case 'W': // year/week
-      sprintf (str, "%d", cursor.year ());
+      snprintf (str, 12, "%d", cursor.year ());
       bar._major_label = str;
 
-      sprintf (str, "%02d", cursor.weekOfYear (0));
+      snprintf (str, 12, "%02d", cursor.weekOfYear (0));
       bar._minor_label = str;
       break;
 
     case 'M': // year/month
-      sprintf (str, "%d", cursor.year ());
+      snprintf (str, 12, "%d", cursor.year ());
       bar._major_label = str;
 
-      sprintf (str, "%02d", cursor.month ());
+      snprintf (str, 12, "%02d", cursor.month ());
       bar._minor_label = str;
       break;
     }

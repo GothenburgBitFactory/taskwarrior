@@ -108,7 +108,7 @@ int CmdLogo::execute (std::string& output)
       {
         value += 167;
         char block [24];
-        sprintf (block, "\033[48;5;%dm  \033[0m", value);
+        snprintf (block, 24, "\033[48;5;%dm  \033[0m", value);
         output += block;
       }
     }
@@ -122,7 +122,7 @@ int CmdLogo::execute (std::string& output)
       {
         value += 167;
         char block [24];
-        sprintf (block, "\033[48;5;%dm  \033[0m", value);
+        snprintf (block, 24, "\033[48;5;%dm  \033[0m", value);
         output += block;
       }
     }

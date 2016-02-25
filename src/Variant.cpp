@@ -1782,7 +1782,7 @@ void Variant::cast (const enum type new_type)
     case type_string:
       {
         char temp[24];
-        sprintf (temp, "%d", _integer);
+        snprintf (temp, 24, "%d", _integer);
         _string = temp;
       }
       break;
@@ -1800,7 +1800,7 @@ void Variant::cast (const enum type new_type)
     case type_string:
       {
         char temp[24];
-        sprintf (temp, "%g", _real);
+        snprintf (temp, 24, "%g", _real);
         _string = temp;
       }
       break;

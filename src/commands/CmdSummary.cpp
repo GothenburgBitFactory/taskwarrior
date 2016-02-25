@@ -199,7 +199,7 @@ int CmdSummary::execute (std::string& output)
 
       char percent[12] = "0%";
       if (c + p)
-        sprintf (percent, "%d%%", 100 * c / (c + p));
+        snprintf (percent, 12, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
       processed.push_back (i.first);
     }

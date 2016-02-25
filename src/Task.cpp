@@ -180,7 +180,7 @@ const std::string Task::identifier (bool shortened /* = false */) const
 void Task::setAsNow (const std::string& att)
 {
   char now[16];
-  sprintf (now, "%u", (unsigned int) time (NULL));
+  snprintf (now, 16, "%u", (unsigned int) time (NULL));
   set (att, now);
 
   recalc_urgency = true;
