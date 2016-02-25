@@ -17,7 +17,7 @@ Newly Deprecated Features in Taskwarrior 2.6.0
 
 Removed Features in 2.6.0
 
-  - 
+  - Removed 'alias._query' default configuration.
 
 Known Issues
 

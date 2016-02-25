@@ -96,20 +96,19 @@ std::string legacyCheckForDeprecatedVariables ()
   for (auto& it : context.config)
   {
     // 2014-07-04: report.*.limit removed.
+    // 2016-02-24: alias._query removed.
 
+    // Deprecated in 2.5.0.
     // report.*.annotations
     if (it.first.length () > 19 &&
         it.first.substr (0, 7) == "report." &&
         it.first.substr (it.first.length () - 12) == ".annotations")
       deprecated.push_back (it.first);
 
+    // Deprecated in 2.5.0.
     if (it.first == "next"              ||
         it.first == "annotations"       ||
         it.first == "export.ical.class")
-      deprecated.push_back (it.first);
-
-    // Deprecated іn 2.4.0.
-    if (it.first == "alias._query")
       deprecated.push_back (it.first);
 
     // Deprecated in 2.5.0.
@@ -140,6 +139,7 @@ std::string legacyCheckForDeprecatedColumns ()
   {
     if (it.first.find ("report") == 0)
     {
+      // Deprecated in 2.0.0
       std::string value = context.config.get (it.first);
       if (value.find ("entry_time") != std::string::npos ||
           value.find ("start_time") != std::string::npos ||
