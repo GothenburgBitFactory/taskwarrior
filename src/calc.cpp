@@ -33,6 +33,7 @@
 #include <Dates.h>
 #include <Context.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 
 Context context;
@@ -83,29 +84,7 @@ int main (int argc, char** argv)
       {
         std::cout << "\n"
                   << format (STRING_CMD_VERSION_BUILT, "calc", VERSION)
-#if defined (DARWIN)
-                  << "darwin"
-#elif defined (SOLARIS)
-                  << "solaris"
-#elif defined (CYGWIN)
-                  << "cygwin"
-#elif defined (HAIKU)
-                  << "haiku"
-#elif defined (OPENBSD)
-                  << "openbsd"
-#elif defined (FREEBSD)
-                  << "freebsd"
-#elif defined (NETBSD)
-                  << "netbsd"
-#elif defined (LINUX)
-                  << "linux"
-#elif defined (KFREEBSD)
-                  << "gnu-kfreebsd"
-#elif defined (GNUHURD)
-                  << "gnu-hurd"
-#else
-                  << STRING_CMD_VERSION_UNKNOWN
-#endif
+                  << osName ()
                   << "\n"
                   << STRING_CMD_VERSION_COPY
                   << "\n"
