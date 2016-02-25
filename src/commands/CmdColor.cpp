@@ -219,7 +219,7 @@ int CmdColor::execute (std::string& output)
       char label [12];
       for (int g = 0; g < 6; ++g)
       {
-        sprintf (label, " %d", g);
+        snprintf (label, 12, " %d", g);
         out << Color::colorize (label, "bold green");
         for (int r = 0; r < 6; ++r)
         {

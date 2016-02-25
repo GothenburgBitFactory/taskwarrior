@@ -155,10 +155,10 @@ std::string formatBytes (size_t bytes)
 {
   char formatted[24];
 
-       if (bytes >=  995000000) sprintf (formatted, "%.1f %s", (bytes / 1000000000.0), STRING_UTIL_GIBIBYTES);
-  else if (bytes >=     995000) sprintf (formatted, "%.1f %s", (bytes /    1000000.0), STRING_UTIL_MEBIBYTES);
-  else if (bytes >=        995) sprintf (formatted, "%.1f %s", (bytes /       1000.0), STRING_UTIL_KIBIBYTES);
-  else                          sprintf (formatted, "%d %s",   (int)bytes,             STRING_UTIL_BYTES);
+       if (bytes >=  995000000) snprintf (formatted, 24, "%.1f %s", (bytes / 1000000000.0), STRING_UTIL_GIBIBYTES);
+  else if (bytes >=     995000) snprintf (formatted, 24, "%.1f %s", (bytes /    1000000.0), STRING_UTIL_MEBIBYTES);
+  else if (bytes >=        995) snprintf (formatted, 24, "%.1f %s", (bytes /       1000.0), STRING_UTIL_KIBIBYTES);
+  else                          snprintf (formatted, 24, "%d %s",   (int)bytes,             STRING_UTIL_BYTES);
 
   return Lexer::commify (formatted);
 }

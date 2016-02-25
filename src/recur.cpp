@@ -37,7 +37,6 @@
 #include <stdlib.h>
 #include <pwd.h>
 #include <time.h>
-
 #include <Context.h>
 #include <Lexer.h>
 #include <ISO8601.h>
@@ -80,10 +79,10 @@ void handleRecurrence ()
       }
 
       // Get the mask from the parent task.
-      std::string mask = t.get ("mask");
+      auto mask = t.get ("mask");
 
       // Iterate over the due dates, and check each against the mask.
-      bool changed = false;
+      auto changed = false;
       unsigned int i = 0;
       for (auto& d : due)
       {
@@ -97,18 +96,14 @@ void handleRecurrence ()
           rec.set ("uuid", uuid ());             // New UUID.
           rec.set ("parent", t.get ("uuid"));    // Remember mom.
           rec.setAsNow ("entry");                // New entry date.
-
-          char dueDate[16];
-          sprintf (dueDate, "%u", (unsigned int) d.toEpoch ());
-          rec.set ("due", dueDate);              // Store generated due date.
+          rec.set ("due", format (d.toEpoch ()));
 
           if (t.has ("wait"))
           {
             ISO8601d old_wait (t.get_date ("wait"));
             ISO8601d old_due (t.get_date ("due"));
             ISO8601d due (d);
-            sprintf (dueDate, "%u", (unsigned int) (due + (old_wait - old_due)).toEpoch ());
-            rec.set ("wait", dueDate);
+            rec.set ("wait", format ((due + (old_wait - old_due)).toEpoch ()));
             rec.setStatus (Task::waiting);
             mask += 'W';
           }
@@ -118,10 +113,7 @@ void handleRecurrence ()
             rec.setStatus (Task::pending);
           }
 
-          char indexMask[12];
-          sprintf (indexMask, "%u", (unsigned int) i);
-          rec.set ("imask", indexMask);          // Store index into mask.
-
+          rec.set ("imask", i);
           rec.remove ("mask");                   // Remove the mask of the parent.
 
           // Add the new task to the DB.
