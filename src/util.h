@@ -65,5 +65,7 @@ const std::vector <std::string> extractParents (
   time_t timegm (struct tm *tm);
 #endif
 
+std::string osName ();
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
