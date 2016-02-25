@@ -79,31 +79,7 @@ int CmdDiagnostics::execute (std::string& output)
       << bold.colorize (PACKAGE_STRING)
       << "\n";
 
-  out << "   " << STRING_CMD_DIAG_PLATFORM << ": "
-      <<
-#if defined (DARWIN)
-         "Darwin"
-#elif defined (SOLARIS)
-         "Solaris"
-#elif defined (CYGWIN)
-         "Cygwin"
-#elif defined (HAIKU)
-         "Haiku"
-#elif defined (OPENBSD)
-         "OpenBSD"
-#elif defined (FREEBSD)
-         "FreeBSD"
-#elif defined (NETBSD)
-         "NetBSD"
-#elif defined (LINUX)
-         "Linux"
-#elif defined (KFREEBSD)
-         "GNU/kFreeBSD"
-#elif defined (GNUHURD)
-         "GNU/Hurd"
-#else
-         STRING_CMD_DIAG_UNKNOWN
-#endif
+  out << "   " << STRING_CMD_DIAG_PLATFORM << ": " << osName ()
       << "\n\n";
 
   // Compiler.

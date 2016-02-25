@@ -34,6 +34,7 @@
 #include <Nibbler.h>
 #include <ISO8601.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 
 extern Context context;
@@ -58,14 +59,14 @@ bool getDOM (const std::string& name, Variant& value)
   if (name == "")
     return false;
 
-  int len = name.length ();
+  auto len = name.length ();
   Nibbler n (name);
 
   // rc. --> context.config
   if (len > 3 &&
       ! name.compare (0, 3, "rc.", 3))
   {
-    std::string key = name.substr (3);
+    auto key = name.substr (3);
     auto c = context.config.find (key);
     if (c != context.config.end ())
     {
@@ -117,8 +118,6 @@ bool getDOM (const std::string& name, Variant& value)
       throw format (STRING_DOM_UNREC, name);
   }
 
-  // TODO stats.<name>
-
   // system. --> Implement locally.
   if (len > 7 &&
       ! name.compare (0, 7, "system.", 7))
@@ -133,29 +132,7 @@ bool getDOM (const std::string& name, Variant& value)
     // OS type.
     else if (name == "system.os")
     {
-#if defined (DARWIN)
-      value = Variant ("Darwin");
-#elif defined (SOLARIS)
-      value = Variant ("Solaris");
-#elif defined (CYGWIN)
-      value = Variant ("Cygwin");
-#elif defined (HAIKU)
-      value = Variant ("Haiku");
-#elif defined (OPENBSD)
-      value = Variant ("OpenBSD");
-#elif defined (FREEBSD)
-      value = Variant ("FreeBSD");
-#elif defined (NETBSD)
-      value = Variant ("NetBSD");
-#elif defined (LINUX)
-      value = Variant ("Linux");
-#elif defined (KFREEBSD)
-      value = Variant ("GNU/kFreeBSD");
-#elif defined (GNUHURD)
-      value = Variant ("GNU/Hurd");
-#else
-      value = Variant (STRING_DOM_UNKNOWN);
-#endif
+      value = Variant (osName ());
       return true;
     }
     else
