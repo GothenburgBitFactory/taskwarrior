@@ -31,7 +31,6 @@ set (task_SRCS CLI2.cpp CLI2.h
                dependency.cpp
                feedback.cpp
                i18n.h
-               interactive.cpp
                legacy.cpp
                recur.cpp
                rules.cpp
