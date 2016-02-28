@@ -56,6 +56,8 @@
 - Improved certificate validation diagnostics
           (thanks to Jelle van der Waa).
 
+- TD-64 sync conflict deleted all annotations of the task
+        (thanks to Markus Beppler, Konstantin Vorobyev).
 - Removed deprecated 'alias._query' setting.
 
 ------ current release ---------------------------
