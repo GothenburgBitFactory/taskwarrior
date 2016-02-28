@@ -804,6 +804,7 @@
 
 // File
 #define STRING_FILE_PERMS            "Taskwarrior no tiene los permisos adecuados para '{1}'."
+#define STRING_FILE_TRUNCATE         "Could not truncate file: {1} {2}"
 
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "El proyecto '{1}' ha cambiado."
