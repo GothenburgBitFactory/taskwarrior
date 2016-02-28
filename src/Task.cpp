@@ -270,6 +270,9 @@ void Task::set (const std::string& name, const std::string& value)
 {
   data[name] = json::decode (value);
 
+  if (! name.compare (0, 11, "annotation_", 11))
+    ++annotation_count;
+
   recalc_urgency = true;
 }
 
@@ -286,6 +289,9 @@ void Task::remove (const std::string& name)
 {
   if (data.erase (name))
     recalc_urgency = true;
+
+  if (! name.compare (0, 11, "annotation_", 11))
+    --annotation_count;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
