@@ -280,7 +280,7 @@ int CmdDiagnostics::execute (std::string& output)
       << credentials
       << "\n\n";
 
-  // Disaply hook status.
+  // Display hook status.
   Path hookLocation (context.config.get ("data.location"));
   hookLocation += "hooks";
 
