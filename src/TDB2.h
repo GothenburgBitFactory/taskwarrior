@@ -28,6 +28,7 @@
 #define INCLUDED_TDB2
 
 #include <map>
+#include <unordered_set>
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -54,6 +55,7 @@ public:
 
   void add_task (Task&);
   bool modify_task (const Task&);
+  bool purge_task (const Task&);
   void add_line (const std::string&);
   void clear_tasks ();
   void clear_lines ();
@@ -90,6 +92,7 @@ public:
 
   std::vector <Task> _added_tasks;
   std::vector <Task> _modified_tasks;
+  std::unordered_set <std::string> _purged_tasks;
   std::vector <std::string> _lines;
   std::vector <std::string> _added_lines;
   File _file;
@@ -110,6 +113,7 @@ public:
   void set_location (const std::string&);
   void add (Task&, bool add_to_backlog = true);
   void modify (Task&, bool add_to_backlog = true);
+  void purge (Task&);
   void commit ();
   void get_changes (std::vector <Task>&);
   void revert ();

@@ -219,6 +219,21 @@ bool TF2::modify_task (const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool TF2::purge_task (const Task& task)
+{
+  // Bail out if task is not found in this file
+  std::string uuid = task.get ("uuid");
+  if (!has (uuid))
+    return false;
+
+  // Mark the task to be purged
+  _purged_tasks.insert (uuid);
+  _dirty = true;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TF2::add_line (const std::string& line)
 {
   _lines.push_back (line);
@@ -248,7 +263,7 @@ void TF2::commit ()
   if (_dirty)
   {
     // Special case: added but no modified means just append to the file.
-    if (!_modified_tasks.size () &&
+    if (!_modified_tasks.size () && !_purged_tasks.size () &&
         (_added_tasks.size () || _added_lines.size ()))
     {
       if (_file.open ())
@@ -284,7 +299,9 @@ void TF2::commit ()
         // Only write out _tasks, because any deltas have already been applied.
         _file.append (std::string(""));  // Seek to end of file
         for (auto& task : _tasks)
-          _file.write_raw (task.composeF4 () + "\n");
+          // Skip over the tasks that are marked to be purged
+          if (_purged_tasks.find (task.get ("uuid")) == _purged_tasks.end ())
+            _file.write_raw (task.composeF4 () + "\n");
 
         // Write out all the added lines.
         _file.append (_added_lines);
@@ -492,6 +509,7 @@ void TF2::clear ()
   _tasks.clear ();
   _added_tasks.clear ();
   _modified_tasks.clear ();
+  _purged_tasks.clear ();
   _lines.clear ();
   _added_lines.clear ();
   _I2U.clear ();
@@ -565,17 +583,19 @@ const std::string TF2::dump ()
   std::string tasks          = green.colorize  (rightJustifyZero ((int) _tasks.size (),          4));
   std::string tasks_added    = red.colorize    (rightJustifyZero ((int) _added_tasks.size (),    3));
   std::string tasks_modified = yellow.colorize (rightJustifyZero ((int) _modified_tasks.size (), 3));
+  std::string tasks_purged   = red.colorize    (rightJustifyZero ((int) _purged_tasks.size (),   3));
   std::string lines          = green.colorize  (rightJustifyZero ((int) _lines.size (),          4));
   std::string lines_added    = red.colorize    (rightJustifyZero ((int) _added_lines.size (),    3));
 
   char buffer[256];  // Composed string is actually 246 bytes.  Yikes.
-  snprintf (buffer, 256, "%14s %s %s T%s+%s~%s L%s+%s",
+  snprintf (buffer, 256, "%14s %s %s T%s+%s~%s-%s L%s+%s",
             label.c_str (),
             mode.c_str (),
             hygiene.c_str (),
             tasks.c_str (),
             tasks_added.c_str (),
             tasks_modified.c_str (),
+            tasks_purged.c_str (),
             lines.c_str (),
             lines_added.c_str ());
 
@@ -647,6 +667,13 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
   }
 
   update (task, add_to_backlog);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::purge (Task& task)
+{
+  // Delete the task from completed.data
+  completed.purge_task (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
