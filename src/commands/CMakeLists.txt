@@ -40,6 +40,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdModify.cpp      CmdModify.h
                    CmdPrepend.cpp     CmdPrepend.h
                    CmdProjects.cpp    CmdProjects.h
+                   CmdPurge.cpp       CmdPurge.h
                    CmdReports.cpp     CmdReports.h
                    CmdShow.cpp        CmdShow.h
                    CmdStart.cpp       CmdStart.h

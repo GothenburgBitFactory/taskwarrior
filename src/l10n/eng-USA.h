@@ -396,6 +396,8 @@
 #define STRING_CMD_DUPLICATE_1       "Duplicated {1} task."
 #define STRING_CMD_DUPLICATE_N       "Duplicated {1} tasks."
 
+#define STRING_CMD_PURGE_USAGE       "Removes the specified task from the data files. Causes permanent loss of data."
+
 #define STRING_CMD_START_USAGE       "Marks specified task as started"
 #define STRING_CMD_START_NO          "Task not started."
 #define STRING_CMD_START_ALREADY     "Task {1} '{2}' already started."
