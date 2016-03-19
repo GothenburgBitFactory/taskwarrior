@@ -29,6 +29,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <i18n.h>
+#include <main.h>
 
 extern Context context;
 
@@ -55,9 +56,10 @@ int CmdPurge::execute (std::string&)
   int rc = 0;
   int count = 0;
 
-  // Apply filter.
   Filter filter;
   std::vector <Task> filtered;
+
+  // Apply filter.
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
@@ -67,13 +69,28 @@ int CmdPurge::execute (std::string&)
 
   for (auto& task : filtered)
   {
+    std::string uuid = task.get ("uuid");
+
     if (task.getStatus () == Task::deleted)
     {
-        context.tdb2.purge (task);
-        count++;
+      context.tdb2.purge (task);
+      count++;
+
+      // Remove dependencies on the task being purged
+      for (auto& blockedConst: context.tdb2.all_tasks ())
+      {
+        Task& blocked = const_cast<Task&>(blockedConst);
+        if (blocked.has ("depends") &&
+            blocked.get ("depends").find (uuid) != std::string::npos)
+        {
+            blocked.removeDependency (uuid);
+            context.tdb2.modify (blocked);
+        }
+      }
     }
   }
 
+  feedback_affected (count == 1 ? STRING_CMD_PURGE_1 : STRING_CMD_PURGE_N, count);
   return rc;
 }
 
