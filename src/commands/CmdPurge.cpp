@@ -52,6 +52,25 @@ CmdPurge::CmdPurge ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Makes sure that any task having the dependency on the task being purged
+// has that dependency removed, to preserve referential integrity.
+void CmdPurge::handleDeps (Task& task)
+{
+   std::string uuid = task.get ("uuid");
+
+   for (auto& blockedConst: context.tdb2.all_tasks ())
+   {
+     Task& blocked = const_cast<Task&>(blockedConst);
+     if (blocked.has ("depends") &&
+         blocked.get ("depends").find (uuid) != std::string::npos)
+     {
+         blocked.removeDependency (uuid);
+         context.tdb2.modify (blocked);
+     }
+   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int CmdPurge::execute (std::string&)
 {
   int rc = 0;
@@ -82,19 +101,8 @@ int CmdPurge::execute (std::string&)
       if (permission (question, filtered.size ()))
       {
         context.tdb2.purge (task);
+        handleDeps(task);
         count++;
-
-        // Remove dependencies on the task being purged
-        for (auto& blockedConst: context.tdb2.all_tasks ())
-        {
-          Task& blocked = const_cast<Task&>(blockedConst);
-          if (blocked.has ("depends") &&
-              blocked.get ("depends").find (uuid) != std::string::npos)
-          {
-              blocked.removeDependency (uuid);
-              context.tdb2.modify (blocked);
-          }
-        }
       }
     }
   }
