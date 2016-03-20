@@ -31,6 +31,7 @@
 #include <i18n.h>
 #include <main.h>
 #include <text.h>
+#include <util.h>
 
 extern Context context;
 
@@ -54,10 +55,12 @@ CmdPurge::CmdPurge ()
 ////////////////////////////////////////////////////////////////////////////////
 // Purges the task, while taking care of:
 // - dependencies on this task
+// - child tasks
 void CmdPurge::purgeTask (Task& task, int& count)
 {
   context.tdb2.purge (task);
   handleDeps (task);
+  handleChildren (task, count);
   count++;
 }
 
@@ -79,6 +82,56 @@ void CmdPurge::handleDeps (Task& task)
      }
    }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Makes sure that with any recurrence parent are all the child tasks removed
+// as well. If user chooses not to, the whole command is aborted.
+void CmdPurge::handleChildren (Task& task, int& count)
+{
+  // If this is not a recurrence parent, we have no job here
+  if (!task.has ("mask"))
+    return;
+
+  std::string uuid = task.get ("uuid");
+  std::vector<Task> children;
+
+  // Find all child tasks
+  for (auto& childConst: context.tdb2.all_tasks ())
+  {
+    Task& child = const_cast<Task&> (childConst);
+
+    if (child.get ("parent") == uuid)
+    {
+      if (child.getStatus () != Task::deleted)
+        // In case any child task is not deleted, bail out
+        throw format (STRING_CMD_PURGE_NDEL_CHILD,
+                      task.get ("description"),
+                      child.identifier (true));
+      else
+        children.push_back (child);
+    }
+  }
+
+  // If there are no children, our job is done
+  if (children.empty ())
+    return;
+
+  // Ask for confirmation to purge them, if needed
+  std::string question = format (STRING_CMD_PURGE_CONFIRM_R,
+                                 task.get ("description"),
+                                 children.size ());
+
+  if (context.config.getBoolean ("recurrence.confirmation") ||
+      (context.config.get ("recurrence.confirmation") == "prompt"
+       && confirm (question)))
+  {
+    for (auto& child: children)
+      purgeTask (child, count);
+  }
+  else
+    throw std::string (STRING_CMD_PURGE_ABRT);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 int CmdPurge::execute (std::string&)
