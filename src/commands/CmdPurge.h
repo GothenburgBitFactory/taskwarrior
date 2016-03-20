@@ -32,6 +32,8 @@
 
 class CmdPurge : public Command
 {
+private:
+  void handleDeps (Task& task);
 public:
   CmdPurge ();
   int execute (std::string&);
