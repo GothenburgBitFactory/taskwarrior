@@ -399,8 +399,12 @@
 #define STRING_CMD_DUPLICATE_N       "重複した {1} タスク。"
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
+#define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."
 #define STRING_CMD_PURGE_N           "Purged {1} tasks."
+#define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
+#define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
+#define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
 
 #define STRING_CMD_START_USAGE       "Marks specified task as started"
 #define STRING_CMD_START_NO          "タスク は開始していません。"
