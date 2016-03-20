@@ -403,6 +403,10 @@
 #define STRING_CMD_DUPLICATE_1       "Duplicada {1} tarea."
 #define STRING_CMD_DUPLICATE_N       "Duplicadas {1} tareas."
 
+#define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
+#define STRING_CMD_PURGE_1           "Purged {1} task."
+#define STRING_CMD_PURGE_N           "Purged {1} tasks."
+
 #define STRING_CMD_START_USAGE       "Marca la tarea especificada como comenzada"
 #define STRING_CMD_START_NO          "Tarea no comenzada."
 #define STRING_CMD_START_ALREADY     "Tarea {1} '{2}' ya comenzada."

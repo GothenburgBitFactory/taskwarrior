@@ -398,6 +398,10 @@
 #define STRING_CMD_DUPLICATE_1       "Skopiowano {1} zadanie."
 #define STRING_CMD_DUPLICATE_N       "Skopiowano {1} zadań."
 
+#define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
+#define STRING_CMD_PURGE_1           "Purged {1} task."
+#define STRING_CMD_PURGE_N           "Purged {1} tasks."
+
 #define STRING_CMD_START_USAGE       "Oznacza zadanie jako uruchomione"
 #define STRING_CMD_START_NO          "Zadanie nie uruchomione"
 #define STRING_CMD_START_ALREADY     "Zadanie {1} '{2}' jest już uruchomione"
