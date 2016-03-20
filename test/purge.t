@@ -54,7 +54,7 @@ class TestDelete(TestCase):
         self.assertNotIn(uuid, out)
 
     def test_purge_remove_deps(self):
-        """Verify that purge command removes dependency references"""
+        """Purge command removes broken dependency references"""
         self.t("add one")
         self.t("add two dep:1")
         uuid = self.t("_get 1.uuid")[1].strip()
@@ -71,6 +71,86 @@ class TestDelete(TestCase):
         dependencies = self.t("_get 1.depends")[1].strip()
         self.assertNotIn(uuid, dependencies)
 
+    def test_purge_children(self):
+        """Purge command indirectly purges child tasks"""
+        self.t("add one recur:daily due:yesterday")
+        uuid = self.t("_get 1.uuid")[1].strip()
+
+        # A dummy call to report, so that recurrence tasks get generated
+        self.t("list")
+
+        code, out, err = self.t("1 delete", input="y\ny\n")
+        self.assertIn("Deleted 4 tasks.", out)
+
+        code, out, err = self.t(uuid + " purge", input="y\ny\n")
+        self.assertIn("Purged 4 tasks.", out)
+
+        code, out, err = self.t("uuids")
+        self.assertEqual('\n', out)
+
+    def test_purge_children_fail_pending(self):
+        """Purge aborts if task has pending children"""
+        self.t("add one recur:daily due:yesterday")
+        uuid = self.t("_get 1.uuid")[1].strip()
+
+        # A dummy call to report, so that recurrence tasks get generated
+        self.t("list")
+
+        code, out, err = self.t("1 delete", input="y\nn\n")
+        self.assertIn("Deleted 1 task.", out)
+
+        code, out, err = self.t.runError(uuid + " purge", input="y\n")
+        self.assertIn("child task 1 must be deleted before", err)
+
+        # Check that nothing was purged
+        code, out, err = self.t("count")
+        self.assertEqual('4\n', out)
+
+    def test_purge_children_fail_confirm(self):
+        """Purge aborts if user does not agree with it affecting child tasks"""
+        self.t("add one recur:daily due:yesterday")
+        uuid = self.t("_get 1.uuid")[1].strip()
+
+        # A dummy call to report, so that recurrence tasks get generated
+        self.t("list")
+
+        code, out, err = self.t("1 delete", input="y\ny\n")
+        self.assertIn("Deleted 4 tasks.", out)
+
+        # Do not agree with purging of the child tasks
+        code, out, err = self.t.runError(uuid + " purge", input="y\nn\n")
+        self.assertIn("Purge operation aborted.", err)
+
+        # Check that nothing was purged
+        code, out, err = self.t("count")
+        self.assertEqual('4\n', out)
+
+    def test_purge_children(self):
+        """Purge command removes dependencies on indirectly purged tasks"""
+        self.t("add one recur:daily due:yesterday")
+        uuid = self.t("_get 1.uuid")[1].strip()
+
+        # A dummy call to report, so that recurrence tasks get generated
+        self.t("list")
+        self.t("add two dep:4")
+
+        # Check that the dependency is present
+        dependencies = self.t("_get 5.depends")[1].strip()
+        self.assertNotEqual("", dependencies)
+
+        code, out, err = self.t("1 delete", input="y\ny\n")
+        self.assertIn("Deleted 4 tasks.", out)
+
+        code, out, err = self.t(uuid + " purge", input="y\ny\n")
+        self.assertIn("Purged 4 tasks.", out)
+
+        # Make sure we are dealing with the intended task
+        description = self.t("_get 1.description")[1].strip()
+        self.assertEqual("two", description)
+
+        # Check that the dependency was removed
+        dependencies = self.t("_get 1.depends")[1].strip()
+        self.assertEqual("", dependencies)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
