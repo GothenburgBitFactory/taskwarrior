@@ -398,6 +398,10 @@
 #define STRING_CMD_DUPLICATE_1       "{1} Aufgabe verdoppelt."
 #define STRING_CMD_DUPLICATE_N       "{1} Aufgaben verdoppelt."
 
+#define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
+#define STRING_CMD_PURGE_1           "Purged {1} task."
+#define STRING_CMD_PURGE_N           "Purged {1} tasks."
+
 #define STRING_CMD_START_USAGE       "Kennzeichnet die gewählte Aufgabe als begonnen."
 #define STRING_CMD_START_NO          "Aufgabe nicht begonnen."
 #define STRING_CMD_START_ALREADY     "Aufgabe {1} '{2}' ist bereits gestartet."
