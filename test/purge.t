@@ -47,7 +47,7 @@ class TestDelete(TestCase):
         code, out, err = self.t("1 delete", input="y\n")
         self.assertIn("Deleted 1 task.", out)
 
-        code, out, err = self.t(uuid + " purge")
+        code, out, err = self.t(uuid + " purge", input="y\n")
         self.assertIn("Purged 1 task.", out)
 
         code, out, err = self.t("uuids")
@@ -62,7 +62,7 @@ class TestDelete(TestCase):
         code, out, err = self.t("1 delete", input="y\n")
         self.assertIn("Deleted 1 task.", out)
 
-        code, out, err = self.t(uuid + " purge")
+        code, out, err = self.t(uuid + " purge", input="y\n")
         self.assertIn("Purged 1 task.", out)
 
         code, out, err = self.t("uuids")
