@@ -30,6 +30,7 @@
 #include <Filter.h>
 #include <i18n.h>
 #include <main.h>
+#include <text.h>
 
 extern Context context;
 
@@ -73,18 +74,26 @@ int CmdPurge::execute (std::string&)
 
     if (task.getStatus () == Task::deleted)
     {
-      context.tdb2.purge (task);
-      count++;
+      std::string question;
+      question = format (STRING_CMD_PURGE_CONFIRM,
+                         task.identifier (true),
+                         task.get ("description"));
 
-      // Remove dependencies on the task being purged
-      for (auto& blockedConst: context.tdb2.all_tasks ())
+      if (permission (question, filtered.size ()))
       {
-        Task& blocked = const_cast<Task&>(blockedConst);
-        if (blocked.has ("depends") &&
-            blocked.get ("depends").find (uuid) != std::string::npos)
+        context.tdb2.purge (task);
+        count++;
+
+        // Remove dependencies on the task being purged
+        for (auto& blockedConst: context.tdb2.all_tasks ())
         {
-            blocked.removeDependency (uuid);
-            context.tdb2.modify (blocked);
+          Task& blocked = const_cast<Task&>(blockedConst);
+          if (blocked.has ("depends") &&
+              blocked.get ("depends").find (uuid) != std::string::npos)
+          {
+              blocked.removeDependency (uuid);
+              context.tdb2.modify (blocked);
+          }
         }
       }
     }
