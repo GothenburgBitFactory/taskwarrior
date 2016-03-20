@@ -1408,7 +1408,7 @@ const std::vector <Task> TDB2::children (Task& task)
       if (i.getStatus () != Task::completed &&
           i.getStatus () != Task::deleted)
       {
-        // If task has the same parent, it is a sibling.
+        // If task has the given task as a parent, it is a child task.
         if (i.get ("parent") == parent)
           results.push_back (i);
       }
