@@ -52,6 +52,16 @@ CmdPurge::CmdPurge ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Purges the task, while taking care of:
+// - dependencies on this task
+void CmdPurge::purgeTask (Task& task, int& count)
+{
+  context.tdb2.purge (task);
+  handleDeps (task);
+  count++;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Makes sure that any task having the dependency on the task being purged
 // has that dependency removed, to preserve referential integrity.
 void CmdPurge::handleDeps (Task& task)
@@ -89,8 +99,11 @@ int CmdPurge::execute (std::string&)
 
   for (auto& task : filtered)
   {
-    std::string uuid = task.get ("uuid");
-
+    // Allow purging of deleted tasks only. Hence no need to deal with:
+    // - unblocked tasks notifications (deleted tasks are not blocking)
+    // - project changes (deleted tasks not included in progress)
+    // It also has the nice property of being explicit - users need to
+    // mark tasks as deleted before purging.
     if (task.getStatus () == Task::deleted)
     {
       std::string question;
@@ -99,11 +112,7 @@ int CmdPurge::execute (std::string&)
                          task.get ("description"));
 
       if (permission (question, filtered.size ()))
-      {
-        context.tdb2.purge (task);
-        handleDeps(task);
-        count++;
-      }
+        purgeTask (task, count);
     }
   }
 
