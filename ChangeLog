@@ -56,8 +56,10 @@
 - Improved certificate validation diagnostics
           (thanks to Jelle van der Waa).
 
-- TD-64 sync conflict deleted all annotations of the task
-        (thanks to Markus Beppler, Konstantin Vorobyev).
+- TD-64   sync conflict deleted all annotations of the task
+          (thanks to Markus Beppler, Konstantin Vorobyev).
+- TW-1785 Purge command to remove deleted tasks
+          (thanks to Paul Beckingham)
 - Removed deprecated 'alias._query' setting.
 
 ------ current release ---------------------------
