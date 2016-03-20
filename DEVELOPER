@@ -13,6 +13,7 @@ How to Build Taskwarrior
     $ git checkout 2.6.0                 # Latest dev branch
     $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither.
     $ make VERBOSE=1 -j8                 # Shows details, builds using 8 jobs
+                                         # Alternately 'export MAKEFLAGS=-j 8'.
 
   Running Test Suite:
     $ cd tests
