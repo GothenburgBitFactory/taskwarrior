@@ -75,7 +75,11 @@ bool dependencyIsCircular (const Task& task)
     auto task_uuid = task.get ("uuid");
 
     std::stack <Task> s;
+    std::unordered_set <std::string> visited;
+
     s.push (task);
+    visited.insert (task_uuid);
+
     while (! s.empty ())
     {
       Task& current = s.top ();
@@ -83,21 +87,25 @@ bool dependencyIsCircular (const Task& task)
       current.getDependencies (deps_current);
 
       // This is a basic depth first search that always terminates given the
-      // assumption that any cycles in the dependency graph must have been
-      // introduced by the task that is being checked.
-      // Since any previous cycles would have been prevented by this very
-      // function, this is a reasonable assumption.
+      // fact that we do not visit any task twice
       for (unsigned int i = 0; i < deps_current.size (); i++)
       {
         if (context.tdb2.get (deps_current[i], current))
         {
-          if (task_uuid == current.get ("uuid"))
+          auto current_uuid = current.get ("uuid");
+
+          if (task_uuid == current_uuid)
           {
             // Cycle found, initial task reached for the second time!
             return true;
           }
 
-          s.push (current);
+          if (visited.find (current_uuid) == visited.end ())
+          {
+            // Push the task to the stack, if it has not been processed yet
+            s.push (current);
+            visited.insert (current_uuid);
+          }
         }
       }
 
