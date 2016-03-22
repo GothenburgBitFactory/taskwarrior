@@ -1491,6 +1491,10 @@ void Task::validate (bool applyDefault /* = true */)
       (! has ("end") || get ("end") == ""))
     setAsNow ("end");
 
+  // Pending tasks cannot have an end date, remove if present
+  if ((status == Task::pending) && (get ("end") != ""))
+    remove ("end");
+
   // Provide an entry date unless user already specified one.
   if (! has ("modified") || get ("modified") == "")
     setAsNow ("modified");
