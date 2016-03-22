@@ -4,6 +4,8 @@
           (thanks to Markus Beppler, Konstantin Vorobyev).
 - TW-1785 Purge command to remove deleted tasks
           (thanks to Paul Beckingham)
+- TW-1772 Implementation of circular dependency detection is
+          inefficient (thanks to Michael Meier).
 - Removed deprecated 'alias._query' setting.
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
