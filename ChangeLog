@@ -6,6 +6,8 @@
           (thanks to Paul Beckingham)
 - TW-1772 Implementation of circular dependency detection is
           inefficient (thanks to Michael Meier).
+- TW-1788 Closing a reopened task does not update the end time (thanks
+          to Ralph Bean).
 - Removed deprecated 'alias._query' setting.
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
