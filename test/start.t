@@ -95,6 +95,19 @@ class TestStart(TestCase):
         code, out, err = self.t("long")
         self.assertIn("Nu stannar vi", out)
 
+    def test_start_remove_end(self):
+        """Verify that starting a task removes end timestamp"""
+        self.t("add one")
+        uuid = self.t('_get 1.uuid')[1].strip()
+
+        self.t("1 done")
+        task = self.t.export()[0]
+        self.assertIn("end", task)
+
+        self.t(uuid + " start")
+        task = self.t.export()[0]
+        self.assertNotIn("end", task)
+
 
 class TestActiveTaskHandling(TestCase):
     def setUp(self):
