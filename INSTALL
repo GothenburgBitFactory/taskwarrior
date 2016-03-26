@@ -9,7 +9,7 @@ Dependencies
 ------------
 
 You will need the CMake build system installed in order to build Taskwarrior
-from source. More information on cmake can be obtained at http://cmake.org
+from source. More information on CMake can be obtained at http://cmake.org
 
 You will also need:
   - make
