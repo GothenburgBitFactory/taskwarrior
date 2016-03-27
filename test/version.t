@@ -110,7 +110,7 @@ class TestVersion(TestCase):
         self.assertIn(expected, out)
 
     def test_version_option(self):
-        """Verify that  'task --version' returnes something valid"""
+        """Verify that  'task --version' returns something valid"""
         code, out, err = self.t("--version")
         self.assertRegexpMatches(out, r'^\d\.\d+\.\d+(\.\w+)?$')
 
