@@ -62,8 +62,10 @@
           (thanks to Paul Beckingham)
 - TW-1772 Implementation of circular dependency detection is
           inefficient (thanks to Michael Meier).
-- TW-1788 Closing a reopened task does not update the end time (thanks
-          to Ralph Bean).
+- TW-1788 Closing a reopened task does not update the end time
+          (thanks to Ralph Bean).
+- Added 'juhannus' as a synonym for 'midsommarafton'
+          (thanks to Lynoure Braakman).
 - Removed deprecated 'alias._query' setting.
 
 ------ current release ---------------------------
