@@ -1048,6 +1048,8 @@ task ... due:pentecost
 task ... due:midsommar
 .br
 task ... due:midsommarafton
+.br
+task ... due:juhannus
 .RE
 
 .SS FREQUENCIES

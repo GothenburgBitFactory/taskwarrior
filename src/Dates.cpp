@@ -93,7 +93,7 @@ static void midsommar (struct tm* t)
 static void midsommarafton (struct tm* t)
 {
   t->tm_mon = 5;                          // June.
-  t->tm_mday = 19;                        // Saturday after 20th.
+  t->tm_mday = 19;                        // Friday after 19th.
   t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
   t->tm_isdst = -1;                       // Probably DST, but check.
 
@@ -491,7 +491,8 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t), Variant::type_date);
   }
 
-  else if (closeEnough ("midsommarafton", name, minimum))
+  else if (closeEnough ("midsommarafton", name, minimum) ||
+           closeEnough ("juhannus", name, minimum))
   {
     Variant valueNow = Variant (mktime (t), Variant::type_date);
     midsommarafton (t);
