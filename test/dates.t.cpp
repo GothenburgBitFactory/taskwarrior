@@ -146,6 +146,7 @@ int main (int, char**)
   Variant var_false;      testInit (t, "false", var_false);
   Variant midsommar;      testInit (t, "midsommar", midsommar);
   Variant midsommarafton; testInit (t, "midsommarafton", midsommarafton);
+  Variant juhannus;       testInit (t, "juhannus", juhannus);
   Variant first;          testInit (t, "1st", first);
   Variant second;         testInit (t, "2nd", second);
   Variant third;          testInit (t, "3rd", third);
@@ -173,6 +174,7 @@ int main (int, char**)
   t.ok (easter < eastermonday,      "easter < eastermonday");
   t.ok (easter < midsommarafton,    "easter < midsommarafton");
   t.ok (midsommarafton < midsommar, "midsommarafton < midsommar");
+  t.ok (juhannus == midsommarafton, "juhannus == midsommarafton");
 
   return 0;
 }
