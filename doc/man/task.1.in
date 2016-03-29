@@ -682,7 +682,6 @@ are:
     COMPLETED    Matches if the task has completed status
     DELETED      Matches if the task has deleted status
     DUE          Matches if the task is due
-    DUETODAY     Matches if the task is due today
     LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
     ORPHAN       Matches if the task has any orphaned UDA values

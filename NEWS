@@ -13,7 +13,8 @@ New Configuration Options in Taskwarrior 2.5.2
 
 Newly Deprecated Features in Taskwarrior 2.5.2
 
-  -
+  - The 'DUETODAY' virtual tag is a synonym for the 'TODAY' virtual tag, and is
+    not needed.
 
 Removed Features in 2.5.2
 

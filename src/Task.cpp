@@ -1212,7 +1212,7 @@ bool Task::hasTag (const std::string& tag) const
 #ifdef PRODUCT_TASKWARRIOR
     if (tag == "READY")     return is_ready ();
     if (tag == "DUE")       return is_due ();
-    if (tag == "DUETODAY")  return is_duetoday ();
+    if (tag == "DUETODAY")  return is_duetoday ();          // 2016-03-29: Deprecated in 2.6.0
     if (tag == "TODAY")     return is_duetoday ();
     if (tag == "YESTERDAY") return is_dueyesterday ();
     if (tag == "TOMORROW")  return is_duetomorrow ();

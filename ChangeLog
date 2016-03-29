@@ -10,6 +10,8 @@
           (thanks to Ralph Bean).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
+- Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
+  virtual tag.
 - Removed deprecated 'alias._query' setting.
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
