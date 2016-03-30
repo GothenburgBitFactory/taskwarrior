@@ -416,7 +416,9 @@ void UnitTest::diag (const std::string& text)
 {
   auto start = text.find_first_not_of (" \t\n\r\f");
   auto end   = text.find_last_not_of  (" \t\n\r\f");
-  std::cout << "# " << text.substr (start, end - start + 1) << "\n";
+  if (start != std::string::npos &&
+      end   != std::string::npos)
+    std::cout << "# " << text.substr (start, end - start + 1) << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
