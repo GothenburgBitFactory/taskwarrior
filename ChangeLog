@@ -8,6 +8,8 @@
           inefficient (thanks to Michael Meier).
 - TW-1788 Closing a reopened task does not update the end time
           (thanks to Ralph Bean).
+- TW-1791 taskrc(5) manpage: spurious "pri." in rule.precedence.color
+          (thanks to Sebastien Badia).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
