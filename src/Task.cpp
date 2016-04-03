@@ -1177,6 +1177,22 @@ void Task::getDependencies (std::vector <std::string>& all) const
   all.clear ();
   split (all, get ("depends"), ',');
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::getDependencies (std::vector <Task>& all) const
+{
+  std::vector <std::string> deps;
+  split (deps, get ("depends"), ',');
+
+  all.clear ();
+
+  for (auto& dep : deps)
+  {
+    Task task;
+    context.tdb2.get (dep, task);
+    all.push_back (task);
+  }
+}
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

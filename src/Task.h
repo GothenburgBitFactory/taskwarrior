@@ -142,6 +142,7 @@ public:
   void removeDependency (const std::string&);
   void getDependencies (std::vector <int>&) const;
   void getDependencies (std::vector <std::string>&) const;
+  void getDependencies (std::vector <Task>&) const;
 
   void getUDAOrphans (std::vector <std::string>&) const;
 
