@@ -10,6 +10,8 @@
           (thanks to Ralph Bean).
 - TW-1791 taskrc(5) manpage: spurious "pri." in rule.precedence.color
           (thanks to Sebastien Badia).
+- TW-1792 The info command uses '0' to reference dependencies on non-
+          pending tasks.
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
