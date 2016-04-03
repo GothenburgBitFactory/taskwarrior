@@ -45,6 +45,20 @@ extern Context context;
 static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
 
 ////////////////////////////////////////////////////////////////////////////////
+// Converts a vector of tasks to a human-readable string that represents the tasks.
+std::string taskIdentifiers (const std::vector <Task>& tasks)
+{
+  std::vector <std::string> identifiers;
+  for (auto task: tasks)
+    identifiers.push_back (task.identifier (true));
+
+  std::string result;
+  join (result, ", ", identifiers);
+
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string taskDifferences (const Task& before, const Task& after)
 {
   // Attributes are all there is, so figure the different attribute names
@@ -72,13 +86,11 @@ std::string taskDifferences (const Task& before, const Task& after)
   {
     if (name == "depends")
     {
-      std::vector <int> deps_after;
+      std::vector <Task> deps_after;
       after.getDependencies (deps_after);
-      std::string to;
-      join (to, ", ", deps_after);
 
       out << "  - "
-          << format (STRING_FEEDBACK_DEP_SET, to)
+          << format (STRING_FEEDBACK_DEP_SET, taskIdentifiers (deps_after))
           << "\n";
     }
     else
@@ -100,15 +112,13 @@ std::string taskDifferences (const Task& before, const Task& after)
     {
       if (name == "depends")
       {
-        std::vector <int> deps_before;
+        std::vector <Task> deps_before;
         before.getDependencies (deps_before);
-        std::string from;
-        join (from, ", ", deps_before);
+        std::string from = taskIdentifiers (deps_before);
 
-        std::vector <int> deps_after;
+        std::vector <Task> deps_after;
         after.getDependencies (deps_after);
-        std::string to;
-        join (to, ", ", deps_after);
+        std::string to = taskIdentifiers (deps_after);
 
         out << "  - "
             << format (STRING_FEEDBACK_DEP_MOD, from, to)
@@ -161,10 +171,9 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-        std::vector <int> deps_before;
+        std::vector <Task> deps_before;
         before.getDependencies (deps_before);
-        std::string from;
-        join (from, ", ", deps_before);
+        std::string from = taskIdentifiers (deps_before);
 
         out << format (STRING_FEEDBACK_DEP_DEL, from)
             << "\n";
@@ -191,10 +200,9 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-      std::vector <int> deps_after;
+      std::vector <Task> deps_after;
       after.getDependencies (deps_after);
-      std::string to;
-      join (to, ", ", deps_after);
+      std::string to = taskIdentifiers (deps_after);
 
       out << format (STRING_FEEDBACK_DEP_WAS_SET, to)
           << "\n";
@@ -225,15 +233,13 @@ std::string taskInfoDifferences (
     {
       if (name == "depends")
       {
-        std::vector <int> deps_before;
+        std::vector <Task> deps_before;
         before.getDependencies (deps_before);
-        std::string from;
-        join (from, ", ", deps_before);
+        std::string from = taskIdentifiers (deps_before);
 
-        std::vector <int> deps_after;
+        std::vector <Task> deps_after;
         after.getDependencies (deps_after);
-        std::string to;
-        join (to, ", ", deps_after);
+        std::string to = taskIdentifiers (deps_after);
 
         out << format (STRING_FEEDBACK_DEP_WAS_MOD, from, to)
             << "\n";
