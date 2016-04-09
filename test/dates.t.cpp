@@ -55,7 +55,7 @@ void testInit (UnitTest& t, const std::string& value, Variant& var)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (104);
+  UnitTest t (106);
 
   Variant sunday;    testInit (t, "sunday",    sunday);
   Variant monday;    testInit (t, "monday",    monday);
