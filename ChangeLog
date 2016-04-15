@@ -12,6 +12,8 @@
           (thanks to Sebastien Badia).
 - TW-1792 The info command uses '0' to reference dependencies on non-
           pending tasks.
+- TW-1795 Calendar underline on Day padding
+          (thanks to Renato Alves).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'

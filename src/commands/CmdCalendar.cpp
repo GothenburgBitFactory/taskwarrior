@@ -440,7 +440,7 @@ std::string CmdCalendar::renderMonths (
   {
     if (weekStart == 1)
     {
-      view.add (Column::factory ("string.right", "    "));
+      view.add (Column::factory ("string.right", ""));
       view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (1), 0, 2)));
       view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (2), 0, 2)));
       view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (3), 0, 2)));
@@ -451,7 +451,7 @@ std::string CmdCalendar::renderMonths (
     }
     else
     {
-      view.add (Column::factory ("string.right", "    "));
+      view.add (Column::factory ("string.right", ""));
       view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (0), 0, 2)));
       view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (1), 0, 2)));
       view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (2), 0, 2)));
@@ -516,7 +516,11 @@ std::string CmdCalendar::renderMonths (
       int woy = temp.weekOfYear (weekStart);
 
       if (context.config.getBoolean ("displayweeknumber"))
-        view.set (row, (8 * mpl), woy, color_weeknumber);
+        view.set (row,
+                  (8 * mpl),
+                  // Make sure the week number is always 4 columns, space-padded.
+                  format ((woy < 10 ? "   {1}" : "  {1}"), woy),
+                  color_weeknumber);
 
       // Calculate column id.
       int thisCol = dow +                       // 0 = Sunday
