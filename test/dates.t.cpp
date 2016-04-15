@@ -55,7 +55,7 @@ void testInit (UnitTest& t, const std::string& value, Variant& var)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (106);
+  UnitTest t (105);
 
   Variant sunday;    testInit (t, "sunday",    sunday);
   Variant monday;    testInit (t, "monday",    monday);
@@ -172,7 +172,6 @@ int main (int, char**)
   t.ok (now < someday,              "now < someday");
   t.ok (goodfriday < easter,        "goodfriday < easter");
   t.ok (easter < eastermonday,      "easter < eastermonday");
-  t.ok (easter < midsommarafton,    "easter < midsommarafton");
   t.ok (midsommarafton < midsommar, "midsommarafton < midsommar");
   t.ok (juhannus == midsommarafton, "juhannus == midsommarafton");
 
