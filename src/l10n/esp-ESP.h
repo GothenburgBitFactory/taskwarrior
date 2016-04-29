@@ -1048,7 +1048,7 @@
 #define STRING_UTIL_CONFIRM_NO       "no"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_CONFIRM_ALL      "todos"
 #define STRING_UTIL_CONFIRM_ALL_U    "Todos"
-#define STRING_UTIL_CONFIRM_QUIT     "sal"
+#define STRING_UTIL_CONFIRM_QUIT     "canc"
 #define STRING_UTIL_GIBIBYTES        "GiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_MEBIBYTES        "MiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_KIBIBYTES        "KiB"  // |esp-ESP|==|eng-USA|
