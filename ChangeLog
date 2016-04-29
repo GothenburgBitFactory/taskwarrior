@@ -69,6 +69,8 @@
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
   virtual tag.
 - Removed deprecated 'alias._query' setting.
+- Fixed ambiguity in the esp-ESP localization
+          (thanks to Fidel Mato).
 
 ------ current release ---------------------------
 
