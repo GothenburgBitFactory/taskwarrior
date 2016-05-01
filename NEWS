@@ -15,6 +15,8 @@ Newly Deprecated Features in Taskwarrior 2.6.0
 
   - The 'DUETODAY' virtual tag is a synonym for the 'TODAY' virtual tag, and is
     not needed.
+  - The 'new-uuid' verbosity option is to be removed due to being redundant, its
+    functionality will be merged with 'new-id' option.
 
 Removed Features in 2.6.0
 
