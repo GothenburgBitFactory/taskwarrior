@@ -21,6 +21,8 @@
 - Removed deprecated 'alias._query' setting.
 - Fixed ambiguity in the esp-ESP localization
           (thanks to Fidel Mato).
+- Deprecated the 'new-uuid' verbosity option, since its functionality can be
+  removed by merging with 'new-id'.
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
