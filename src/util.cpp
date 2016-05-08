@@ -399,8 +399,8 @@ int execute (
 #undef max
 
 ////////////////////////////////////////////////////////////////////////////////
-// Accept a list of projects, and return an indented list
-// that reflects the hierarchy.
+// Accept a list of projects, and return an indented list that reflects the
+// hierarchy.
 //
 //      Input  - "one"
 //               "one.two"
