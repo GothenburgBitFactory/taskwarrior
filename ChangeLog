@@ -73,6 +73,8 @@
           (thanks to Fidel Mato).
 - Deprecated the 'new-uuid' verbosity option, since its functionality can be
   removed by merging with 'new-id'.
+- Correct a false-positive warning when a due date is removed and a wait is
+  added.
 
 ------ current release ---------------------------
 
