@@ -387,7 +387,7 @@ void Eval::evaluatePostfixStack (
   // If there is more than one variant left on the stack, then the original
   // expression was not valid.
   if (values.size () != 1)
-    throw std::string (STRING_EVAL_NO_EVAL);
+    throw std::string (STRING_EVAL_NOT_EXPRESSION);
 
   result = values[0];
 }

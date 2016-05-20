@@ -681,6 +681,7 @@
 #define STRING_EVAL_UNSUPPORTED      "Niewspierany operator '{1}'."
 #define STRING_EVAL_OP_EXPECTED      "Oczekiwany operator."
 #define STRING_EVAL_NO_EVAL          "Wyrażenie nie może być przetworzone."
+#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
 #define STRING_PAREN_MISMATCH        "Niedopasowane nawiasy w wyrażeniu"
 
 // edit

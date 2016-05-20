@@ -681,6 +681,7 @@
 #define STRING_EVAL_UNSUPPORTED      "Ne subtenas infikson '{1}'."
 #define STRING_EVAL_OP_EXPECTED      "Anticipis infikson."
 #define STRING_EVAL_NO_EVAL          "Ne povis kalkuli la esprimon."
+#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
 #define STRING_PAREN_MISMATCH        "Malbalancataj parentezoj en esprimo"
 
 // edit

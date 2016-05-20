@@ -14,6 +14,8 @@
           pending tasks.
 - TW-1795 Calendar underline on Day padding
           (thanks to Renato Alves).
+- TW-1806 project:ide is not allowed
+          (thanks to Slaven ʙanovic).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'

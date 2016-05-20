@@ -681,6 +681,7 @@
 #define STRING_EVAL_UNSUPPORTED      "Unsupported operator '{1}'."
 #define STRING_EVAL_OP_EXPECTED      "Operator expected."
 #define STRING_EVAL_NO_EVAL          "式を評価出来ません。"
+#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
 #define STRING_PAREN_MISMATCH        "Mismatched parentheses in expression"
 
 // edit
