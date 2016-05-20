@@ -72,9 +72,9 @@ void testParse (
 int main (int, char**)
 {
 #ifdef PRODUCT_TASKWARRIOR
-  UnitTest t (1025);
+  UnitTest t (1026);
 #else
-  UnitTest t (996);
+  UnitTest t (997);
 #endif
 
   ISO8601d iso;
@@ -657,6 +657,7 @@ int main (int, char**)
     t.is (r32.toString ("v"),        "44", "2015-10-28T12:55:00 -> v ->        44");
     t.is (r32.toString ("J"),       "301", "2015-10-28T12:55:00 -> J ->       301");
     t.is (r32.toString ("j"),       "301", "2015-10-28T12:55:00 -> j ->       301");
+    t.is (r32.toString ("w"),         "3", "2015-10-28T12:55:00 -> w ->         3");
 
     // Test all parse options.
     ISO8601d r33 ("2015 10 28 19 28 01", "Y M D H N S");
