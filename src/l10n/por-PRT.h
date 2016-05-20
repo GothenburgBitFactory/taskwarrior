@@ -681,6 +681,7 @@
 #define STRING_EVAL_UNSUPPORTED      "Operador não suportado '{1}'."
 #define STRING_EVAL_OP_EXPECTED      "Operador em falta."
 #define STRING_EVAL_NO_EVAL          "Não foi possível calcular a expressão."
+#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
 #define STRING_PAREN_MISMATCH        "Parentesis incompatíveis na expressão."
 
 // edit

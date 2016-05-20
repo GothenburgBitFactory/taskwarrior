@@ -124,15 +124,30 @@ void ColumnProject::modify (Task& task, const std::string& value)
   if (lexer.token (domRef, type) &&
       type == Lexer::Type::dom)
   {
-    Eval e;
-    e.addSource (domSource);
-    e.addSource (namedDates);
-    contextTask = task;
+    try
+    {
+      Eval e;
+      e.addSource (domSource);
+      e.addSource (namedDates);
+      contextTask = task;
 
-    Variant v;
-    e.evaluateInfixExpression (value, v);
-    task.set (_name, (std::string) v);
-    context.debug (label + _name + " <-- '" + (std::string) v + "' <-- '" + value + "'");
+      Variant v;
+      e.evaluateInfixExpression (value, v);
+      task.set (_name, (std::string) v);
+      context.debug (label + _name + " <-- '" + (std::string) v + "' <-- '" + value + "'");
+    }
+    catch (const std::string& e)
+    {
+      // If the expression failed because it didn't look like an expression,
+      // simply store it as-is.
+      if (e == STRING_EVAL_NOT_EXPRESSION)
+      {
+        task.set (_name, value);
+        context.debug (label + _name + " <-- '" + value + "'");
+      }
+      else
+        throw;
+    }
   }
   else
   {
