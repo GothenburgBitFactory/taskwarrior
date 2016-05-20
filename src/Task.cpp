@@ -2008,7 +2008,6 @@ float Task::urgency_blocking () const
 // It came from the Command base object, but doesn't really belong there either.
 void Task::modify (modType type, bool text_required /* = false */)
 {
-  context.debug ("Task::modify");
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   // Need this for later comparison.
