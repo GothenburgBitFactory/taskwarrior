@@ -1122,6 +1122,7 @@ const std::string ISO8601d::toString (
     case 'S': formatted << std::setw (2) << std::setfill ('0') << this->second ();        break;
     case 'j': formatted                                        << this->dayOfYear ();     break;
     case 'J': formatted << std::setw (3) << std::setfill ('0') << this->dayOfYear ();     break;
+    case 'w': formatted                                        << this->dayOfWeek ();     break;
     default:  formatted                                        << static_cast <char> (c); break;
     }
   }

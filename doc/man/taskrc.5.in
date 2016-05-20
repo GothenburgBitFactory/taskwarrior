@@ -583,6 +583,8 @@ S  two-digit seconds,      for example 07 or 47
 J  three-digit Julian day, for example 023 or 365
 .br
 j  Julian day,             for example 23 or 365
+.br
+w  Week day,               for example 0 for Monday, 5 for Friday
 .RE
 .RE
 
