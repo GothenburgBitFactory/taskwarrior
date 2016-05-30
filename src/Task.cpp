@@ -475,6 +475,25 @@ bool Task::is_duemonth () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::is_duequarter () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      ISO8601d due (get_date ("due"));
+      if (due.sameQuarter (ISO8601d ()))
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Task::is_dueyear () const
 {
   if (has ("due"))
@@ -1235,6 +1254,7 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "OVERDUE")   return is_overdue ();
     if (tag == "WEEK")      return is_dueweek ();
     if (tag == "MONTH")     return is_duemonth ();
+    if (tag == "QUARTER")   return is_duequarter ();
     if (tag == "YEAR")      return is_dueyear ();
 #endif
     if (tag == "ACTIVE")    return has ("start");
