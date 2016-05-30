@@ -72,9 +72,9 @@ void testParse (
 int main (int, char**)
 {
 #ifdef PRODUCT_TASKWARRIOR
-  UnitTest t (1026);
+  UnitTest t (1032);
 #else
-  UnitTest t (997);
+  UnitTest t (1003);
 #endif
 
   ISO8601d iso;
@@ -256,27 +256,31 @@ int main (int, char**)
     // Loose comparisons.
     ISO8601d left ("7/4/2008", "m/d/Y");
     ISO8601d comp1 ("7/4/2008", "m/d/Y");
-    t.ok (left.sameDay   (comp1), "7/4/2008 is on the same day as 7/4/2008");
-    t.ok (left.sameWeek  (comp1), "7/4/2008 is on the same week as 7/4/2008");
-    t.ok (left.sameMonth (comp1), "7/4/2008 is in the same month as 7/4/2008");
-    t.ok (left.sameYear  (comp1), "7/4/2008 is in the same year as 7/4/2008");
+    t.ok (left.sameDay     (comp1), "7/4/2008 is on the same day as 7/4/2008");
+    t.ok (left.sameWeek    (comp1), "7/4/2008 is on the same week as 7/4/2008");
+    t.ok (left.sameMonth   (comp1), "7/4/2008 is in the same month as 7/4/2008");
+    t.ok (left.sameQuarter (comp1), "7/4/2008 is in the same quarter as 7/4/2008");
+    t.ok (left.sameYear    (comp1), "7/4/2008 is in the same year as 7/4/2008");
 
     ISO8601d comp2 ("7/5/2008", "m/d/Y");
-    t.notok (left.sameDay   (comp2), "7/4/2008 is not on the same day as 7/5/2008");
-    t.ok    (left.sameMonth (comp2), "7/4/2008 is in the same month as 7/5/2008");
-    t.ok    (left.sameYear  (comp2), "7/4/2008 is in the same year as 7/5/2008");
+    t.notok (left.sameDay     (comp2), "7/4/2008 is not on the same day as 7/5/2008");
+    t.ok    (left.sameMonth   (comp2), "7/4/2008 is in the same month as 7/5/2008");
+    t.ok    (left.sameQuarter (comp2), "7/4/2008 is in the same quarter as 7/5/2008");
+    t.ok    (left.sameYear    (comp2), "7/4/2008 is in the same year as 7/5/2008");
 
     ISO8601d comp3 ("8/4/2008", "m/d/Y");
-    t.notok (left.sameDay   (comp3), "7/4/2008 is not on the same day as 8/4/2008");
-    t.notok (left.sameWeek  (comp3), "7/4/2008 is not on the same week as 8/4/2008");
-    t.notok (left.sameMonth (comp3), "7/4/2008 is not in the same month as 8/4/2008");
-    t.ok    (left.sameYear  (comp3), "7/4/2008 is in the same year as 8/4/2008");
+    t.notok (left.sameDay     (comp3), "7/4/2008 is not on the same day as 8/4/2008");
+    t.notok (left.sameWeek    (comp3), "7/4/2008 is not on the same week as 8/4/2008");
+    t.notok (left.sameMonth   (comp3), "7/4/2008 is not in the same month as 8/4/2008");
+    t.ok    (left.sameQuarter (comp3), "7/4/2008 is in the same quarter as 8/4/2008");
+    t.ok    (left.sameYear    (comp3), "7/4/2008 is in the same year as 8/4/2008");
 
     ISO8601d comp4 ("7/4/2009", "m/d/Y");
-    t.notok (left.sameDay   (comp4), "7/4/2008 is not on the same day as 7/4/2009");
-    t.notok (left.sameWeek  (comp3), "7/4/2008 is not on the same week as 7/4/2009");
-    t.notok (left.sameMonth (comp4), "7/4/2008 is not in the same month as 7/4/2009");
-    t.notok (left.sameYear  (comp4), "7/4/2008 is not in the same year as 7/4/2009");
+    t.notok (left.sameDay     (comp4), "7/4/2008 is not on the same day as 7/4/2009");
+    t.notok (left.sameWeek    (comp4), "7/4/2008 is not on the same week as 7/4/2009");
+    t.notok (left.sameMonth   (comp4), "7/4/2008 is not in the same month as 7/4/2009");
+    t.notok (left.sameQuarter (comp4), "7/4/2008 is not in the same quarter as 7/4/2009");
+    t.notok (left.sameYear    (comp4), "7/4/2008 is not in the same year as 7/4/2009");
 
     // Validity.
     t.ok    (ISO8601d::valid (2, 29, 2008), "valid: 2/29/2008");
@@ -528,6 +532,7 @@ int main (int, char**)
 
     ISO8601d r13 ("eom");
     t.ok (r13.sameMonth (now), "eom in same month as now");
+    t.ok (r13.sameQuarter (now), "eom in same quarter as now");
 
     ISO8601d r14 ("eocm");
     t.ok (r14.sameMonth (now), "eocm in same month as now");
@@ -546,6 +551,7 @@ int main (int, char**)
 
     ISO8601d r18 ("socm");
     t.ok (r18.sameMonth (now), "socm in same month as now");
+    t.ok (r18.sameQuarter (now), "socm in same quarter as now");
 
     ISO8601d r19 ("soy");
     t.notok (r19.sameYear (now), "soy not in same year as now");
