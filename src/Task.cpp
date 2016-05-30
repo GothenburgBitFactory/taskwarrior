@@ -445,8 +445,7 @@ bool Task::is_dueweek () const
         status != Task::deleted)
     {
       ISO8601d due (get_date ("due"));
-      if (due >= ISO8601d ("socw") &&
-          due <= ISO8601d ("eocw"))
+      if (due.sameWeek (ISO8601d ()))
         return true;
     }
   }
@@ -465,8 +464,7 @@ bool Task::is_duemonth () const
         status != Task::deleted)
     {
       ISO8601d due (get_date ("due"));
-      if (due >= ISO8601d ("socm") &&
-          due <= ISO8601d ("eocm"))
+      if (due.sameMonth (ISO8601d ()))
         return true;
     }
   }
@@ -503,9 +501,8 @@ bool Task::is_dueyear () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      ISO8601d now;
       ISO8601d due (get_date ("due"));
-      if (now.year () == due.year ())
+      if (due.sameYear (ISO8601d ()))
         return true;
     }
   }
