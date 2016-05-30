@@ -1575,6 +1575,13 @@ bool ISO8601d::sameMonth (const ISO8601d& rhs) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::sameQuarter (const ISO8601d& rhs) const
+{
+  return (this->year () == rhs.year ()) &&
+         ((this->month () - 1) / 4) == ((rhs.month () - 1) / 4);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool ISO8601d::sameYear (const ISO8601d& rhs) const
 {
   return this->year () == rhs.year ();

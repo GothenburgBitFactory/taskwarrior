@@ -86,26 +86,27 @@ public:
   int minute () const;
   int second () const;
 
-  bool operator== (const ISO8601d&) const;
-  bool operator!= (const ISO8601d&) const;
-  bool operator<  (const ISO8601d&) const;
-  bool operator>  (const ISO8601d&) const;
-  bool operator<= (const ISO8601d&) const;
-  bool operator>= (const ISO8601d&) const;
-  bool sameHour   (const ISO8601d&) const;
-  bool sameDay    (const ISO8601d&) const;
-  bool sameWeek   (const ISO8601d&) const;
-  bool sameMonth  (const ISO8601d&) const;
-  bool sameYear   (const ISO8601d&) const;
+  bool operator==  (const ISO8601d&) const;
+  bool operator!=  (const ISO8601d&) const;
+  bool operator<   (const ISO8601d&) const;
+  bool operator>   (const ISO8601d&) const;
+  bool operator<=  (const ISO8601d&) const;
+  bool operator>=  (const ISO8601d&) const;
+  bool sameHour    (const ISO8601d&) const;
+  bool sameDay     (const ISO8601d&) const;
+  bool sameWeek    (const ISO8601d&) const;
+  bool sameMonth   (const ISO8601d&) const;
+  bool sameQuarter (const ISO8601d&) const;
+  bool sameYear    (const ISO8601d&) const;
   ISO8601d operator+  (const int);
   ISO8601d operator-  (const int);
   ISO8601d& operator+= (const int);
   ISO8601d& operator-= (const int);
   time_t operator- (const ISO8601d&);
-  void operator-- ();    // Prefix
-  void operator-- (int); // Postfix
-  void operator++ ();    // Prefix
-  void operator++ (int); // Postfix
+  void operator--  ();    // Prefix
+  void operator--  (int); // Postfix
+  void operator++  ();    // Prefix
+  void operator++  (int); // Postfix
 
 private:
   void clear ();
