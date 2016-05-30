@@ -690,6 +690,7 @@ are:
     PENDING      Matches if the task has pending status
     PRIORITY     Matches if the task has a priority
     PROJECT      Matches if the task has a project
+    QUARTER      Matches if the task is due this quarter
     READY        Matches if the task is actionable
     SCHEDULED    Matches if the task is scheduled
     TAGGED       Matches if the task has tags
