@@ -29,6 +29,7 @@
   removed by merging with 'new-id'.
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
+- Added 'QUARTER' virtual tag.
 
 ------ current release ---------------------------
 
