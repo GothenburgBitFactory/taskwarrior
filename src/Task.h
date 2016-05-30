@@ -107,6 +107,7 @@ public:
   bool is_duetomorrow () const;
   bool is_dueweek () const;
   bool is_duemonth () const;
+  bool is_duequarter () const;
   bool is_dueyear () const;
   bool is_overdue () const;
   bool is_udaPresent () const;
