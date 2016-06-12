@@ -2,6 +2,8 @@
 
 - TD-64   sync conflict deleted all annotations of the task
           (thanks to Markus Beppler, Konstantin Vorobyev).
+- TW-61   Extract only tasks with annotations
+          (thanks to Aikido Guy)
 - TW-1785 Purge command to remove deleted tasks
           (thanks to Paul Beckingham)
 - TW-1772 Implementation of circular dependency detection is
