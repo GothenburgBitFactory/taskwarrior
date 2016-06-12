@@ -18,6 +18,8 @@
           (thanks to Slaven ʙanovic).
 - TW-1807 dateformat lacks a flag to display day of week
           (thanks to Ellington Santos).
+- TW-1813 Range filter doesn't work
+          (thanks to george js).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
