@@ -22,6 +22,8 @@
           (thanks to Ellington Santos).
 - TW-1813 Range filter doesn't work
           (thanks to george js).
+- TW-1820 Install with -DLANGUAGE=2 flag not work.
+          (thanks to E. Manuel Cerr'on Angeles)
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'

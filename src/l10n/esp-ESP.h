@@ -769,6 +769,7 @@
 #define STRING_TLS_INIT_FAIL         "Error inicializando TLS. {1}"
 #define STRING_ERROR_DETAILS         "El ajuste 'calendar.details.report' debe contener un único nombre de informe."
 #define STRING_ERROR_NO_FILTER       "Los filtros de línea de comando no están soportados por este comando."
+#define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 #define STRING_ERROR_BAD_STATUS      "El estatus '{1}' no es válido."
 
 // Feedback
