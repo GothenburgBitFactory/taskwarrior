@@ -162,12 +162,6 @@
 #define STRING_VARIANT_MOD_ZERO      "Ne povas moduli nulon"
 #define STRING_VARIANT_SQRT_NEG      "Ne povas kalkuli kvadratan radikon de negativa nombro."
 
-// Dates
-//
-// These are errors generated when parsing date values.
-#define STRING_DATES_MONTH_31        "Eraro: nenia monato havas pli de 31 tagojn."
-#define STRING_DATES_ORD_MISMATCH    "Eraro: la ordosufikso ne kongruas kun la nombro (ĝuste '1st', malĝuste '1nd')."
-
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "Koloro '{1}' ne rekonata."
 
@@ -501,7 +495,6 @@
 // STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Platform, build and environment details"
 #define STRING_CMD_DIAG_PLATFORM     "Platform"
-#define STRING_CMD_DIAG_UNKNOWN      "<unknown>"
 #define STRING_CMD_DIAG_COMPILER     "Compiler"
 #define STRING_CMD_DIAG_VERSION      "Version"
 #define STRING_CMD_DIAG_CAPS         "Caps"
@@ -760,7 +753,6 @@
 #define STRING_ASSUME_INFO           "Nenia komando specifita.  Supozanta 'information'."
 #define STRING_INFINITE_LOOP         "Finis anstataŭon ĉar ekzistas pli de {1} ŝanĝoj - protekto kontraŭ senfina ripeton."
 #define STRING_UDA_TYPE              "La tipo de uzanto-definitaj atributoj devas esti 'string', 'date', 'duration', aŭ 'numeric'."
-#define STRING_UDA_TYPE_MISSING      "Ne trovis uda.{1}.type.  Oni devas specifid la tipo de UDA '{1}'."
 #define STRING_UDA_NUMERIC           "Valoro '{1}' ne estas valida nombra valoro."
 #define STRING_UDA_COLLISION         "UDA '{1}' kaj enkonstruita atributo havas la saman nomon.  Tio estas malpermesita."
 #define STRING_INVALID_MOD           "Atributo '{1}' ne permesas valoron '{2}'."

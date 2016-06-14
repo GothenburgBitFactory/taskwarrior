@@ -162,12 +162,6 @@
 #define STRING_VARIANT_MOD_ZERO      "Nie można uzyskać modulo z zera"
 #define STRING_VARIANT_SQRT_NEG      "Nie można wyciągnąć pierwiastka kwadratowego z wartości ujemnej."
 
-// Dates
-//
-// These are errors generated when parsing date values.
-#define STRING_DATES_MONTH_31        "Błąd: żaden miesiąc nie ma więcej niż 31 dni."
-#define STRING_DATES_ORD_MISMATCH    "Błąd: niepoprawny sufix (np., '1st', nie '1nd')."
-
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "Kolor '{1}' nie został rozpoznany."
 
@@ -501,7 +495,6 @@
 // STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Szczegóły platformy i środowiska budowania"
 #define STRING_CMD_DIAG_PLATFORM     "Platforma"
-#define STRING_CMD_DIAG_UNKNOWN      "<nieznane>"
 #define STRING_CMD_DIAG_COMPILER     "Kompilator"
 #define STRING_CMD_DIAG_VERSION      "Wersja"
 #define STRING_CMD_DIAG_CAPS         "Flagi"
@@ -760,7 +753,6 @@
 #define STRING_ASSUME_INFO           "Nie podano polecenia - zakładam 'information'."
 #define STRING_INFINITE_LOOP         "Podstawienie anulowane ponieważ wykonano więcej niż {1} zmian - zabezpieczenie przed zapętleniem."
 #define STRING_UDA_TYPE              "Atrybuty definiowane przez użytkownika mogą być typu 'string', 'date', 'duration' lub 'numeric'."
-#define STRING_UDA_TYPE_MISSING      "uda.{1}.type nie znaleziony. UDA '{1}' musi posiadać typ."
 #define STRING_UDA_NUMERIC           "Wartość '{1}' nie jest poprawną wartością numeryczną."
 #define STRING_UDA_COLLISION         "Nazwa UDA '{1}' jest jedną z nazw atrybutów podstawowych i dlatego jest niedozwolona."
 #define STRING_INVALID_MOD           "Atrybut '{1}' nie zezwala na wartość '{2}'."
