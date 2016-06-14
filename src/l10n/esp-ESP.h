@@ -162,12 +162,6 @@
 #define STRING_VARIANT_MOD_ZERO      "No se puede modular cero"
 #define STRING_VARIANT_SQRT_NEG      "No se puede calcular la raíz cuadrada de un tipo desconocido"
 
-// Dates
-//
-// These are errors generated when parsing date values.
-#define STRING_DATES_MONTH_31        "Error: no hay ningún mes que tenga más de 31 días."
-#define STRING_DATES_ORD_MISMATCH    "Error: el sufijo ordinal no corresponde al número (i.e. '1st', no '1nd')."
-
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."
 
@@ -507,7 +501,6 @@
 #define STRING_CMD_SYNC_TRUST_OBS    "Los ajustes de 'taskd.trust' ahora solo pueden contener uno de los valores 'strict', 'ignore hostname' o 'allow all'."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
-#define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
 #define STRING_CMD_DIAG_COMPILER     "Compilador"
 #define STRING_CMD_DIAG_VERSION      "Versión"
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
@@ -769,7 +762,6 @@
 #define STRING_ASSUME_INFO           "No especificó un comando - asumido 'information'."
 #define STRING_INFINITE_LOOP         "Sustitución terminada debido a que se hicieron más de {1} cambios - protección contra ciclo eterno."
 #define STRING_UDA_TYPE              "Los atributos definidos por el usuario solamente pueden ser de los tipos 'string', 'date', 'duration' o 'numeric'."
-#define STRING_UDA_TYPE_MISSING      "No se encontró uda.{1}.type . El UDA '{1}' debe tener algún tipo especificado."
 #define STRING_UDA_NUMERIC           "El valor '{1}' no es un valor numérico válido."
 #define STRING_UDA_COLLISION         "El UDA denominado '{1}' es el mismo que un atributo del núcleo, y no está permitido."
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."

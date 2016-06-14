@@ -162,12 +162,6 @@
 #define STRING_VARIANT_MOD_ZERO      "Cannot modulo zero"
 #define STRING_VARIANT_SQRT_NEG      "Cannot take the square root of a negative number."
 
-// Dates
-//
-// These are errors generated when parsing date values.
-#define STRING_DATES_MONTH_31        "Error: no month has more than 31 days."
-#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (e.g., '1st', not '1nd')."
-
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "Il colore '{1}' non è riconosciuto."
 
@@ -500,7 +494,6 @@
 // STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Dettagli su piattaforma, build e ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Piattaforma"
-#define STRING_CMD_DIAG_UNKNOWN      "<sconoscito>"
 #define STRING_CMD_DIAG_COMPILER     "Compilatore"
 #define STRING_CMD_DIAG_VERSION      "Versione"
 #define STRING_CMD_DIAG_CAPS         "Caps"
@@ -759,7 +752,6 @@
 #define STRING_ASSUME_INFO           "Nessun comando specificato - si assume 'information'."
 #define STRING_INFINITE_LOOP         "Sostituzione terminata poiché più di {1} modifiche sono state fatte - protezione da ciclo infinito"
 #define STRING_UDA_TYPE              "Gli User defined attribute possono solo essere di tipo 'string', 'date', 'duration' o 'numeric'."
-#define STRING_UDA_TYPE_MISSING      "uda.{1}.type non trovato. L'UDA '{1}' deve avere un tipo specificato."
 #define STRING_UDA_NUMERIC           "Il valore '{1}' non è un valore numerico valido."
 #define STRING_UDA_COLLISION         "L'UDA '{1}' ha lo stesso nome di un attributo di sistema, e ciò non è permesso."
 #define STRING_INVALID_MOD           "L'attributo '{1}' non ammette un valore pari a '{2}'."

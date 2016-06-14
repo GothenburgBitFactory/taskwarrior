@@ -162,12 +162,6 @@
 #define STRING_VARIANT_MOD_ZERO      "零で剰余を取ることは出来ません。"
 #define STRING_VARIANT_SQRT_NEG      "負の数は平方根を計算できません。"
 
-// Dates
-//
-// These are errors generated when parsing date values.
-#define STRING_DATES_MONTH_31        "エラー: 月の日付は31日まで。"
-#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (e.g., '1st', not '1nd')."
-
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
 
@@ -501,7 +495,6 @@
 // STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Platform, build and environment details"
 #define STRING_CMD_DIAG_PLATFORM     "Platform"
-#define STRING_CMD_DIAG_UNKNOWN      "<unknown>"
 #define STRING_CMD_DIAG_COMPILER     "Compiler"
 #define STRING_CMD_DIAG_VERSION      "Version"
 #define STRING_CMD_DIAG_CAPS         "Caps"
@@ -760,7 +753,6 @@
 #define STRING_ASSUME_INFO           "コマンドが指定されていません - 'information' を仮定します。"
 #define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
 #define STRING_UDA_TYPE              "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'."
-#define STRING_UDA_TYPE_MISSING      "uda.{1}.type not found. The UDA '{1}' must have a type specified."
 #define STRING_UDA_NUMERIC           "The value '{1}' is not a valid numeric value."
 #define STRING_UDA_COLLISION         "The UDA named '{1}' is the same as a core attribute, and is not permitted."
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
