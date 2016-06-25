@@ -1,0 +1,3 @@
+[submodule "src/libshared"]
+	path = src/libshared
+	url = https://git.tasktools.org/scm/tm/libshared.git
