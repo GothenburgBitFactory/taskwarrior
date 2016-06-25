@@ -40,6 +40,7 @@ add_library (task CLI2.cpp CLI2.h
 add_library (libshared libshared/src/JSON.cpp          libshared/src/JSON.h
                        libshared/src/Pig.cpp           libshared/src/Pig.h
                        libshared/src/RX.cpp            libshared/src/RX.h
+                       libshared/src/Table.cpp         libshared/src/Table.h
                        libshared/src/unicode.cpp       libshared/src/unicode.h
                        libshared/src/utf8.cpp          libshared/src/utf8.h
                        libshared/src/wcwidth6.cpp)
