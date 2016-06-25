@@ -20,7 +20,6 @@ taskmod.t
 tdb2.t
 text.t
 uri.t
-utf8.t
 util.t
 variant_add.t
 variant_and.t
