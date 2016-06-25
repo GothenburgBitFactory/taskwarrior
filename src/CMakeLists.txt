@@ -17,7 +17,6 @@ add_library (task CLI2.cpp CLI2.h
                   FS.cpp FS.h
                   Hooks.cpp Hooks.h
                   ISO8601.cpp ISO8601.h
-                  JSON.cpp JSON.h
                   Lexer.cpp Lexer.h
                   Msg.cpp Msg.h
                   Nibbler.cpp Nibbler.h
@@ -40,7 +39,10 @@ add_library (task CLI2.cpp CLI2.h
                   util.cpp util.h
                   wcwidth6.cpp)
 
-add_library (libshared libshared/src/RX.cpp            libshared/src/RX.h)
+add_library (libshared libshared/src/JSON.cpp          libshared/src/JSON.h
+                       libshared/src/Pig.cpp           libshared/src/Pig.h
+                       libshared/src/RX.cpp            libshared/src/RX.h
+                       libshared/src/unicode.cpp       libshared/src/unicode.h)
 
 add_executable (task_executable main.cpp)
 add_executable (calc_executable calc.cpp)
