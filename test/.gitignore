@@ -13,7 +13,6 @@ fs.t
 i18n.t
 iso8601d.t
 iso8601p.t
-json.t
 lexer.t
 list.t
 msg.t
