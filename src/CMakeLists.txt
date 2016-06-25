@@ -35,14 +35,14 @@ add_library (task CLI2.cpp CLI2.h
                   rules.cpp
                   sort.cpp
                   text.cpp text.h
-                  utf8.cpp utf8.h
-                  util.cpp util.h
-                  wcwidth6.cpp)
+                  util.cpp util.h)
 
 add_library (libshared libshared/src/JSON.cpp          libshared/src/JSON.h
                        libshared/src/Pig.cpp           libshared/src/Pig.h
                        libshared/src/RX.cpp            libshared/src/RX.h
-                       libshared/src/unicode.cpp       libshared/src/unicode.h)
+                       libshared/src/unicode.cpp       libshared/src/unicode.h
+                       libshared/src/utf8.cpp          libshared/src/utf8.h
+                       libshared/src/wcwidth6.cpp)
 
 add_executable (task_executable main.cpp)
 add_executable (calc_executable calc.cpp)
