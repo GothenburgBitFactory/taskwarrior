@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <Variant.h>
 #include <Context.h>
-#include <Nibbler.h>
 #include <ISO8601.h>
 #include <text.h>
 #include <util.h>
@@ -60,7 +59,6 @@ bool getDOM (const std::string& name, Variant& value)
     return false;
 
   auto len = name.length ();
-  Nibbler n (name);
 
   // rc. --> context.config
   if (len > 3 &&
