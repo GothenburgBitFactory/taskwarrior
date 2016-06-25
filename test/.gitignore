@@ -13,7 +13,6 @@ fs.t
 iso8601d.t
 iso8601p.t
 lexer.t
-list.t
 msg.t
 nibbler.t
 t.t
