@@ -3,6 +3,7 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
+                     ${CMAKE_SOURCE_DIR}/src/libshared/src
                      ${TASK_INCLUDE_DIRS})
 
 set (columns_SRCS Column.cpp Column.h
