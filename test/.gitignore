@@ -9,7 +9,6 @@ color.t
 config.t
 dates.t
 eval.t
-fs.t
 iso8601d.t
 iso8601p.t
 lexer.t
