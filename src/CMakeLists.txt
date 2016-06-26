@@ -14,7 +14,6 @@ add_library (task CLI2.cpp CLI2.h
                   Dates.cpp Dates.h
                   Eval.cpp Eval.h
                   Filter.cpp Filter.h
-                  FS.cpp FS.h
                   Hooks.cpp Hooks.h
                   ISO8601.cpp ISO8601.h
                   Lexer.cpp Lexer.h
@@ -37,7 +36,8 @@ add_library (task CLI2.cpp CLI2.h
                   text.cpp text.h
                   util.cpp util.h)
 
-add_library (libshared libshared/src/JSON.cpp          libshared/src/JSON.h
+add_library (libshared libshared/src/FS.cpp            libshared/src/FS.h
+                       libshared/src/JSON.cpp          libshared/src/JSON.h
                        libshared/src/Pig.cpp           libshared/src/Pig.h
                        libshared/src/RX.cpp            libshared/src/RX.h
                        libshared/src/Table.cpp         libshared/src/Table.h
