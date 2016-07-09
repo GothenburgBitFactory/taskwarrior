@@ -16,7 +16,7 @@
           pending tasks.
 - TW-1795 Calendar underline on Day padding
           (thanks to Renato Alves).
-- TW-1806 project:ide is not allowed
+- TW-1805 project:ide is not allowed
           (thanks to Slaven ʙanovic).
 - TW-1807 dateformat lacks a flag to display day of week
           (thanks to Ellington Santos).
