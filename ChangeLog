@@ -36,6 +36,8 @@
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
 - Added 'QUARTER' virtual tag.
+- Fixed unquoted glob in bash completion script
+          (thanks to Ran Benita).
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
