@@ -72,7 +72,7 @@ _task_offer_contexts() {
     COMPREPLY=( $(compgen -W "$($taskcommand _context) define delete list none show" -- $cur) )
 }
 
-_task_context_alias=$($taskcommand show | grep alias.*context | cut -d' ' -f1 | cut -d. -f2)
+_task_context_alias=$($taskcommand show | grep 'alias.*context' | cut -d' ' -f1 | cut -d. -f2)
 
 _task()
 {
