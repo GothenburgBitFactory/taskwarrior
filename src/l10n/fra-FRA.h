@@ -482,7 +482,7 @@
 #define STRING_CMD_SYNC_FAIL_CONNECT "Sync failed.  Could not connect to the Taskserver."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sync failed.  Malformed configuration setting '{1}'"
 #define STRING_CMD_SYNC_NO_TLS       "Taskwarrior was built without GnuTLS support.  Sync is not available."
-#define STRING_CMD_SYNC_INIT         "Please confirm that you wish to upload all your pending tasks to the Taskserver"
+#define STRING_CMD_SYNC_INIT         "Please confirm that you wish to upload all your tasks to the Taskserver"
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will not proceed with first-time sync initialization."
 #define STRING_CMD_SYNC_RELOCATE0    "The server account has been relocated.  Please update your configuration using:"
 #define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
