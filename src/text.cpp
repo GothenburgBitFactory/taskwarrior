@@ -248,7 +248,7 @@ bool extractLine (
     // Premature EOL.
     if (character == '\n')
     {
-      line = text.substr (offset, line_length);
+      line = text.substr (offset, prior_cursor - offset);
       offset = cursor;
       return true;
     }

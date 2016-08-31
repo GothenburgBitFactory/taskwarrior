@@ -8,6 +8,8 @@
           (thanks to Paul Beckingham)
 - TW-1772 Implementation of circular dependency detection is
           inefficient (thanks to Michael Meier).
+- TW-1778 Unicode strings are truncated in task description
+          (thanks to Andrew, bjonnh, OKOMPer, Vladimir).
 - TW-1788 Closing a reopened task does not update the end time
           (thanks to Ralph Bean).
 - TW-1791 taskrc(5) manpage: spurious "pri." in rule.precedence.color
