@@ -68,8 +68,8 @@ The entry must be on a single line, no continuations.
 Values support UTF8 as well as JSON encoding, such as \\uNNNN.
 
 Note that Taskwarrior is flexible about the values used to represent Boolean
-items. You can use "on", "yes", "y", "1" and "true".
-Anything else means "off".
+items. You can use "1" to enable, anything else is interpreted as disabled.
+The values "on", "yes", "y" and "true" are currently supported by deprecated.
 
 .RS
 include <file>
@@ -181,33 +181,33 @@ shell meta character, which will be properly expanded.
 Note that the TASKDATA environment variable overrides this setting.
 
 .TP
-.B locking=on
+.B locking=1
 Determines whether to use file locking when accessing the pending.data and
-completed.data files. Defaults to "on". Solaris users who store the data
-files on an NFS mount may need to set locking to "off". Note that there is
-danger in setting this value to "off" - another program (or another instance of
+completed.data files. Defaults to "1". Solaris users who store the data
+files on an NFS mount may need to set locking to "0". Note that there is
+danger in setting this value to "0" - another program (or another instance of
 task) may write to the task.pending file at the same time.
 
 .TP
-.B gc=on
+.B gc=1
 Can be used to temporarily suspend garbage collection (gc), so that task IDs
 don't change. Note that this should be used in the form of a command line
-override (task rc.gc=off ...), and not permanently used in the .taskrc file,
+override (task rc.gc=0 ...), and not permanently used in the .taskrc file,
 as this significantly affects performance in the long term.
 
 .TP
-.B hooks=on
+.B hooks=1
 This master control switch enables hook script processing. The default value
-is 'on', but certain extensions and environments may need to disable hooks.
+is '1', but certain extensions and environments may need to disable hooks.
 
 .TP
-.B exit.on.missing.db=no
-When set to 'yes' causes the program to exit if the database (~/.task or
-rc.data.location or TASKDATA override) is missing. Default value is 'no'.
+.B exit.on.missing.db=0
+When set to '1' causes the program to exit if the database (~/.task or
+rc.data.location or TASKDATA override) is missing. Default value is '0'.
 
 .SS TERMINAL
 .TP
-.B detection=on
+.B detection=1
 Determines whether to use ioctl to establish the size of the window you are
 using, for text wrapping.
 
@@ -225,14 +225,14 @@ to 24. If set to 0, it is interpreted as infinite height. This is useful when re
 charts to a file for subsequent handling.
 
 .TP
-.B avoidlastcolumn=no
+.B avoidlastcolumn=0
 Causes the width of the terminal minus one to be used as the full width. This
 avoids placing color codes in the last column which can cause problems for
-Cygwin users. Default value is 'no'.
+Cygwin users. Default value is '0'.
 
 .TP
-.B hyphenate=on
-Hyphenates lines when wrapping breaks occur mid-word. Default value is 'on'.
+.B hyphenate=1
+Hyphenates lines when wrapping breaks occur mid-word. Default value is '1'.
 
 .TP
 .B editor=vi
@@ -250,9 +250,9 @@ prompt. This is only referenced when 'limit:page' is used.
 .SS MISCELLANEOUS
 
 .TP
-.B verbose=on|off|nothing|list...
-When set to "on" (the default), helpful explanatory comments are added to all
-output from Taskwarrior. Setting this to "off" means that you would see regular
+.B verbose=1|0|nothing|list...
+When set to "1" (the default), helpful explanatory comments are added to all
+output from Taskwarrior. Setting this to "0" means that you would see regular
 output.
 
 The special value "nothing" can be used to eliminate all optional output, which
@@ -280,15 +280,15 @@ control specific occasions when output is generated. This list may contain:
 
 "affected", "new-id", "new-uuid" "project" and "unwait" imply "footnote".
 
-Note that the "on" setting is equivalent to all the tokens being specified,
+Note that the "1" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
 
 Here are the shortcut equivalents:
 
-    verbose=on
+    verbose=1
     verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait
 
-    verbose=off
+    verbose=0
     verbose=blank,label,new-id,edit
 
     verbose=nothing
@@ -298,16 +298,16 @@ Those additional comments are sent to the standard error for header, footnote
 and project. The others are sent to standard output.
 
 .TP
-.B confirmation=yes
-May be "yes" or "no", and determines whether Taskwarrior will ask for
+.B confirmation=1
+May be "1" or "0", and determines whether Taskwarrior will ask for
 confirmation before deleting a task or performing the undo command. The default
-value is "yes". Consider leaving this setting as "yes", for safety.
+value is "1". Consider leaving this enabled, for safety.
 
 .TP
-.B allow.empty.filter=yes
+.B allow.empty.filter=1
 An empty filter combined with a write command is potentially a way to modify
 all tasks by mistake, and when this is detected, confirmation is required.
-Setting this to 'no' means that it is an error to use a write command with no
+Setting this to '0' means that it is an error to use a write command with no
 filter.
 
 .TP
@@ -344,47 +344,47 @@ Default value is: 'You have more urgent tasks'.
 It is a gentle reminder that you are contradicting your own urgency settings.
 
 .TP
-.B list.all.projects=no
-May be yes or no, and determines whether the 'projects' command lists all the project
+.B list.all.projects=0
+May be "1" or "0", and determines whether the 'projects' command lists all the project
 names you have used, or just the ones used in active tasks. The default value is
-"no".
+"0".
 
 .TP
-.B summary.all.projects=no
-If set to yes, shows all projects in the summary report, even if there are no
-pending tasks.  The default value is "no".
+.B summary.all.projects=0
+If set to "1", shows all projects in the summary report, even if there are no
+pending tasks.  The default value is "0".
 
 .TP
-.B complete.all.tags=yes
-May be yes or no, and determines whether the tab completion scripts consider all
+.B complete.all.tags=1
+May be "1" or "0", and determines whether the tab completion scripts consider all
 the tag names you have used, or just the ones used in active tasks. The default
-value is "no".
+value is "0".
 
 .TP
-.B list.all.tags=yes
-May be yes or no, and determines whether the 'tags' command lists all the tag
+.B list.all.tags=1
+May be "1" or "0", and determines whether the 'tags' command lists all the tag
 names you have used, or just the ones used in active tasks. The default value is
-"no".
+"0".
 
 .TP
-.B print.empty.columns=no
-May be yes or no, and determines whether columns with no data for any task are
-printed. Defaults to no.
+.B print.empty.columns=1
+May be "1" or "0", and determines whether columns with no data for any task are
+printed. Defaults to "0".
 
 .TP
-.B search.case.sensitive=yes
-May be yes or no, and determines whether keyword lookup and substitutions on the
-description and annotations are done in a case sensitive way. Defaults to yes on
-most platforms. Defaults to no on Cygwin due to older regex library problems with
+.B search.case.sensitive=1
+May be "1" or "0", and determines whether keyword lookup and substitutions on the
+description and annotations are done in a case sensitive way. Defaults to "1" on
+most platforms. Defaults to "0" on Cygwin due to older regex library problems with
 case-insensitivity.
 
 .TP
-.B regex=on
-Controls whether regular expression support is enabled. The default value is on.
+.B regex=1
+Controls whether regular expression support is enabled. The default value is "1".
 
 .TP
-.B xterm.title=no
-Sets the xterm window title when reports are run. Defaults to off.
+.B xterm.title=1
+Sets the xterm window title when reports are run. Defaults to "0".
 
 .TP
 .B expressions=infix|postfix
@@ -392,21 +392,21 @@ Sets a preference for infix expressions (1 + 2) or postfix expressions (1 2 +).
 Defaults to infix.
 
 .TP
-.B json.array=on
+.B json.array=1
 Determines whether the export command encloses the JSON output in '[...]' and
 adds ',' after each exported task object to create a properly-formed JSON
 array.
-With json.array=off, export writes raw JSON objects to STDOUT, one per line.
-Defaults to on.
+With json.array=0, export writes raw JSON objects to STDOUT, one per line.
+Defaults to "1".
 
 .TP
-.B json.depends.array=on
+.B json.depends.array=1
 Determines whether the export command encodes dependencies as an array of string
 UUIDs, or one comma-separated string.
-Defaults to on.
+Defaults to "1".
 
 .TP
-.B _forcecolor=no
+.B _forcecolor=1
 Taskwarrior shuts off color automatically when the output is not sent directly
 to a TTY. For example, this command:
 
@@ -421,6 +421,8 @@ will not use any color. To override this, use:
 $ task rc._forcecolor=yes list > file
 .RE
 .RE
+
+Defaults to "0".
 
 .TP
 .B active.indicator=*
@@ -439,9 +441,9 @@ The character or string to show in the depends.indicator column. Defaults to +.
 The character or string to show in the <uda>.indicator column. Defaults to U.
 
 .TP
-.B recurrence=yes
+.B recurrence=1
 Controls whether recurrence is enabled, and whether recurring tasks continue to
-generate new task instances. Defaults to 'yes'.
+generate new task instances. Defaults to "1".
 
 .TP
 .B recurrence.confirmation=prompt
@@ -475,7 +477,7 @@ Minimum length of any abbreviated command/value. This means that "ve", "ver",
 Default is 2.
 
 .TP
-.B debug=off
+.B debug=0
 Taskwarrior has a debug mode that causes diagnostic output to be displayed.
 Typically this is not something anyone would want, but when reporting a bug,
 debug output can be useful. It can also help explain how the command line is
@@ -483,7 +485,7 @@ being parsed, but the information is displayed in a developer-friendly, not a
 user-friendly way.
 
 Turning debug on automatically sets debug.hooks=1, debug.parser=1 and debug.tls=2
-if they do not already have assigned values.
+if they do not already have assigned values. Defaults to "0".
 
 .TP
 .B debug.hooks=0
@@ -647,8 +649,8 @@ field that is set. Otherwise, they are set to the corresponding values of
 .RE
 
 .TP
-.B date.iso=yes
-Enables ISO-8601 date support.  The default value is "yes".
+.B date.iso=1
+Enables ISO-8601 date support.  The default value is "1".
 
 .TP
 .B weekstart=Sunday
@@ -656,10 +658,10 @@ Determines the day a week starts. Valid values are Sunday or Monday only. The
 default value is "Sunday".
 
 .TP
-.B displayweeknumber=yes
+.B displayweeknumber=1
 Determines if week numbers are displayed when using the "task calendar" command.
 The week number is dependent on the day a week starts. The default value is
-"yes".
+"1".
 
 .TP
 .B due=7
@@ -681,9 +683,9 @@ The report to run when displaying the details of tasks with due dates when
 running the "task calendar" command. The default value is "list".
 
 .TP
-.B calendar.offset=off
-If "on" the first month in the calendar report is effectively changed by the
-offset value specified in calendar.offset.value. It defaults to "off".
+.B calendar.offset=0
+If "1" the first month in the calendar report is effectively changed by the
+offset value specified in calendar.offset.value. It defaults to "0".
 
 .TP
 .B calendar.offset.value=-1
@@ -699,15 +701,15 @@ and no details on the holidays will be displayed. The displaying of holidays is
 turned off by setting the variable to none. The default value is "none".
 
 .TP
-.B calendar.legend=yes
-Determines whether the calendar legend is displayed. The default value is "yes".
+.B calendar.legend=1
+Determines whether the calendar legend is displayed. The default value is "1".
 
 .SS JOURNAL ENTRIES
 
 .TP
-.B journal.time=no
-May be yes or no, and determines whether the 'start' and 'stop' commands should
-record an annotation when being executed. The default value is "no". The text of
+.B journal.time=0
+May be "1" or "0", and determines whether the 'start' and 'stop' commands should
+record an annotation when being executed. The default value is "0". The text of
 the corresponding annotations is controlled by:
 
 .TP
@@ -721,9 +723,9 @@ The text of the annotation that is recorded when executing the stop command and
 having set journal.time.
 
 .TP
-.B journal.info=on
+.B journal.info=1
 When enabled, this setting causes a change log of each task to be displayed by
-the 'info' command. Default value is "on".
+the 'info' command. Default value is "1".
 
 .SS HOLIDAYS
 Holidays are entered either directly in the .taskrc file or via an include file
@@ -782,22 +784,22 @@ specified, Taskwarrior will only show as many that will fit.
 .SS DEPENDENCIES
 
 .TP
-.B dependency.reminder=on
+.B dependency.reminder=1
 Determines whether dependency chain violations generate reminders.
 
 .TP
-.B dependency.confirmation=yes
+.B dependency.confirmation=1
 Determines whether dependency chain repair requires confirmation.
 
 .SS COLOR CONTROLS
 
 .TP
-.B color=on
-May be "on" or "off". Determines whether Taskwarrior uses color. When "off",
+.B color=1
+May be "1" or "0". Determines whether Taskwarrior uses color. When "0",
 will use dashes (-----) to underline column headings.
 
 .TP
-.B fontunderline=on
+.B fontunderline=1
 Determines if font underlines or ASCII dashes should be used to underline
 headers, even when color is enabled.
 .RE
@@ -880,11 +882,10 @@ desired. In such cases, use the following option to disable this behaviour:
 .RE
 
 .TP
-.B rule.color.merge=yes
-Can be "yes" or "no". When "no", disables merging of colors produced by
+.B rule.color.merge=1
+Can be "1" or "0". When "0", disables merging of colors produced by
 different color rules. Use if your color scheme produces unpleasing
 foreground and background combinations.
-
 
 See the task-color(5) man pages for color details.
 .RE
@@ -1151,7 +1152,7 @@ The coefficients reflect the relative importance of the various terms in the
 urgency calculation. These are default values, and may be modified to suit your
 preferences, but it is important that you carefully consider any modifications.
 
-.B urgency.inherit=off
+.B urgency.inherit=0
 .RS
 Not actually a coefficient. When enabled, blocking tasks inherit
 the highest urgency value found in the tasks they block. This is
