@@ -192,7 +192,7 @@ class TestImport(TestCase):
         _data = """{"uuid":"a0000000-a000-a000-a000-a00000000000","depends":"a1111111-a111-a111-a111-a11111111111","description":"zero","project":"A","status":"pending","entry":"1234567889"}"""
         self.t("import", input=self.data1)
         self.t("import", input=_data)
-        self.t.config("json.depends.array", "off")
+        self.t.config("json.depends.array", "0")
         _t = self.t.export("a0000000-a000-a000-a000-a00000000000")[0]
         self.assertEqual(_t["depends"], "a1111111-a111-a111-a111-a11111111111")
 
@@ -242,8 +242,8 @@ class TestImportExportRoundtrip(TestCase):
         self.t2 = Task()
 
         for client in (self.t1, self.t2):
-            client.config("dateformat", "m/d/Y")
-            client.config("verbose", "off")
+            client.config("dateformat",   "m/d/Y")
+            client.config("verbose",      "0")
             client.config("defaultwidth", "100")
 
     def _validate_data(self, client):

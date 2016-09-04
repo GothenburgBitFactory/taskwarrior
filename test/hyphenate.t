@@ -40,7 +40,7 @@ class TestHyphenation(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
         self.t.config("defaultwidth", "20")
-        self.t.config("detection",    "off")
+        self.t.config("detection",    "0")
         self.t.config("verbose",      "nothing")
 
     def test_hyphenation_on_space(self):
@@ -63,7 +63,7 @@ class TestBug804(TestCase):
 
     def test_hyphenation(self):
         """Verify hyphenation is controllable"""
-        self.t.config("print.empty.columns",     "yes")
+        self.t.config("print.empty.columns",     "1")
         self.t.config("report.unittest.labels",  "ID,Project,Pri,Description")
         self.t.config("report.unittest.columns", "id,project,priority,description")
         self.t.config("report.unittest.filter",  "status:pending")

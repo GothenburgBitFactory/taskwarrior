@@ -397,7 +397,7 @@ class TestBug899(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t.config("verbose", "on")
+        self.t.config("verbose", "1")
 
     def test_log_project(self):
         """899: Verify task log behaves correctly when logging into a project"""

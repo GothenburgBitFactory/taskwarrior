@@ -40,16 +40,16 @@ class TestOverride(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t.config("regex",   "off")
+        self.t.config("regex",   "0")
         self.t.config("verbose", "nothing")
 
     def test_override(self):
         """Verify override is displayed in 'show' command"""
         code, out, err = self.t("show regex")
-        self.assertRegexpMatches(out, r"regex +off")
+        self.assertRegexpMatches(out, r"regex +0")
 
-        code, out, err = self.t("rc.regex:on show regex")
-        self.assertRegexpMatches(out, r"regex +on")
+        code, out, err = self.t("rc.regex:1 show regex")
+        self.assertRegexpMatches(out, r"regex +1")
 
 
 class TestRCSegfault(TestCase):

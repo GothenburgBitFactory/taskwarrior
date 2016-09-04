@@ -47,14 +47,14 @@ class TestGC(TestCase):
 
     def test_gc_off_id(self):
         """ID retained when GC off"""
-        self.t.config("gc", "off")
+        self.t.config("gc", "0")
         self.t("1 done")
         code, out, err = self.t("gctest")
         self.assertRegexpMatches(out, "1\s+one", "should still have ID")
 
     def test_gc_off_mod(self):
         """mod by ID after done with gc off"""
-        self.t.config("gc", "off")
+        self.t.config("gc", "0")
         self.t("1 done")
         self.t("gctest")
         self.t("2 mod +TWO")
@@ -63,7 +63,7 @@ class TestGC(TestCase):
 
     def test_gc_on_id(self):
         """IDs reshuffle after report when GC on"""
-        self.t.config("gc", "on")
+        self.t.config("gc", "1")
         self.t("1 done")
         self.t("2 mod +TWO")
         code, out, err = self.t("gctest")

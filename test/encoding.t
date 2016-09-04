@@ -63,7 +63,7 @@ class TestUtf8(TestCase):
         """Text alignment in reports with wide utf8 characters"""
         # Originally Bug #455 - Text alignment in reports is broken when text
         #                       contains wide utf8 characters
-        self.t.config("print.empty.columns", "no")
+        self.t.config("print.empty.columns", "0")
 
         self.t(("add", "abc", "pro:Bar\u263a"))
         self.t("add def pro:Foo")

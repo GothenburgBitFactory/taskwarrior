@@ -50,7 +50,7 @@ class TestSugar(TestCase):
         self.assertIn("two", out)
         self.assertNotIn("three", out)
 
-        self.t.config("sugar", "off")
+        self.t.config("sugar", "0")
         code, out, err = self.t("1 2 count")
         self.assertEqual(0, int(out))
 
@@ -64,7 +64,7 @@ class TestSugar(TestCase):
         self.assertIn("three", out)
 
         # sugar off: WYSIWYG parsing.
-        self.t.config("sugar", "off")
+        self.t.config("sugar", "0")
         code, out, err = self.t("3 and '( 2 three )' count")
         self.assertEqual(0, int(out))
 

@@ -81,7 +81,7 @@ class TestAnnotate(TestCase):
         self.t.config("report.rrr.columns",     "id,description")
         self.t.config("report.rrr.sort",        "id+")
         self.t.config("dateformat",             "m/d/Y")
-        self.t.config("color",                  "off")
+        self.t.config("color",                  "0")
 
         code, out, err = self.t("rrr")
 
@@ -154,7 +154,7 @@ class TestAnnotation(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t.config("confirmation", "yes")
+        self.t.config("confirmation", "1")
 
     def test_blank_annotation(self):
         """Verify blank annotations are prevented"""

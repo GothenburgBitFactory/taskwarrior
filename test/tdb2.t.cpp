@@ -52,8 +52,8 @@ int main (int, char**)
     unlink ("./backlog.data");
 
     // Set the context to allow GC.
-    context.config.set ("gc", "on");
-    context.config.set ("debug", "on");
+    context.config.set ("gc", 1);
+    context.config.set ("debug", 1);
 
     context.tdb2.set_location (".");
 
