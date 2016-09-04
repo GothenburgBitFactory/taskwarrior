@@ -43,7 +43,7 @@ class TestSubstitutions(TestCase):
 
     def test_substitution(self):
         """Verify substitution for task description"""
-        self.t.config("regex", "off")
+        self.t.config("regex", "0")
 
         self.t("add foo foo foo")
         self.t("1 modify /foo/FOO/")
@@ -78,7 +78,7 @@ class TestSubstitutions(TestCase):
 
     def test_substitution_regex(self):
         """Verify regex substitution for task description"""
-        self.t.config("regex", "on")
+        self.t.config("regex", "1")
         self.t("add aaa bbb")
         self.t("1 modify /b{3}/BbB/")
         code, out, err = self.t("_get 1.description")

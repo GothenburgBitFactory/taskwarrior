@@ -40,7 +40,7 @@ class TestFeature559(TestCase):
     def setUp(self):
         self.t = Task()
 
-        self.t.config("exit.on.missing.db", "yes")
+        self.t.config("exit.on.missing.db", "1")
 
         # NOTE the framework uses TASKDATA and TASKRC to tell taskwarrior where
         # data is stored. Since these env variables take precedence over

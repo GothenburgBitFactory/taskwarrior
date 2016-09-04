@@ -40,7 +40,7 @@ class BaseTestEnpassant(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
         # No journal log which may contain the words we are looking for
-        self.t.config("journal.info", "off")
+        self.t.config("journal.info", "0")
 
 
 class TestEnpassantMultiple(BaseTestEnpassant):
@@ -84,7 +84,7 @@ class TestEnpassant(BaseTestEnpassant):
     def setUp(self):
         super(TestEnpassant, self).setUp()
 
-        self.t.config("confirmation", "off")
+        self.t.config("confirmation", "0")
 
         self.t("add one")
         self.t("add two")

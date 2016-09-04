@@ -69,7 +69,7 @@ class TestStart(TestCase):
 
     def test_journal_time(self):
         """Verify journal.time tracks state"""
-        self.t.config("journal.time", "on")
+        self.t.config("journal.time", "1")
 
         self.t("add one")
         self.t("1 start")
@@ -82,7 +82,7 @@ class TestStart(TestCase):
 
     def test_journal_annotations(self):
         """Verify journal start/stop annotations are used"""
-        self.t.config("journal.time",                  "on")
+        self.t.config("journal.time",                  "1")
         self.t.config("journal.time.start.annotation", "Nu kör vi")
         self.t.config("journal.time.stop.annotation",  "Nu stannar vi")
 

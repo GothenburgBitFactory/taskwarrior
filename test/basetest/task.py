@@ -72,7 +72,7 @@ class Task(object):
     def activate_hooks(self):
         """Enable self.hooks functionality and activate hooks on config
         """
-        self.config("hooks", "on")
+        self.config("hooks", "1")
         self.hooks = Hooks(self.datadir)
 
     def reset_env(self):

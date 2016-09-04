@@ -41,7 +41,7 @@ from basetest import Task, TestCase
 class TestVerbosity(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t.config("print.empty.columns", "yes")
+        self.t.config("print.empty.columns", "1")
 
         self.t("add Sample")
 

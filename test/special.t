@@ -47,7 +47,7 @@ class TestSpecialTags(TestCase):
         cls.t.config("color.pri.H",       "")
         cls.t.config("color.completed",   "")
         cls.t.config("nag",               "NAG")
-        cls.t.config("color",             "on")
+        cls.t.config("color",             "1")
         cls.t.config("_forcecolor",       "1")
 
     def test_nocolor(self):

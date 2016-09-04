@@ -40,7 +40,7 @@ class TestBug1414(TestCase):
     def setUp(self):
         self.t = Task()
         self.t.config("default.command", "exec echo hello")
-        self.t.config("verbose", "no")
+        self.t.config("verbose", "0")
 
     def test_execute(self):
         """use execute"""

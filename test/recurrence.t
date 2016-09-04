@@ -77,7 +77,7 @@ class TestRecurrenceDisabled(TestCase):
         disabled.
         """
 
-        self.t.config("recurrence", "no")
+        self.t.config("recurrence", "0")
         self.t("add due:today recur:daily Recurrent task.")
 
         # Trigger GC, expect no match and therefore non-zero code
@@ -325,7 +325,7 @@ class TestBug955(TestCase):
         """
 
         # With confirmation:off the first "n\n" has no effect.
-        self.t.config("confirmation", "off")
+        self.t.config("confirmation", "0")
         code, out, err = self.t("2 delete", input="n\ny\n")
         self.assertIn("Deleting task 2", out)
         self.assertIn("Deleted 1 task", out)
@@ -351,7 +351,7 @@ class TestBug955(TestCase):
         """
 
         # With confirmation:on the first "n\n" is obeyed.
-        self.t.config("confirmation", "on")
+        self.t.config("confirmation", "1")
         code, out, err = self.t.runError("2 delete", input="n\ny\n")
         self.assertIn("Deleted 0 tasks.", out)
 

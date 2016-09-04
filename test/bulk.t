@@ -47,50 +47,50 @@ class TestBulk(TestCase):
         self.t("add three")
 
     def test_bulk_confirmations_single_confirmation_off(self):
-        """not bulk delete 1 tasks with confirmation:off deletes it"""
+        """not bulk delete 1 tasks with confirmation:0 deletes it"""
 
         # Test with 1 task.  1 is a special case.
-        code, out, err = self.t("1 delete rc.confirmation:off")
+        code, out, err = self.t("1 delete rc.confirmation:0")
         self.assertNotIn("(yes/no)", out)
         self.assertNotIn("(yes/no/all/quit)", out)
         self.assertIn("Deleting task 1", out)
 
     def test_bulk_confirmations_single_confirmation_on(self):
-        """not bulk delete 1 task with confirmation:on and input >y deletes it"""
+        """not bulk delete 1 task with confirmation:1 and input >y deletes it"""
 
         # Test with 1 task.  1 is a special case.
-        code, out, err = self.t("2 delete rc.confirmation:on", input="y\n")
+        code, out, err = self.t("2 delete rc.confirmation:1", input="y\n")
         self.assertIn("(yes/no)", out)
         self.assertNotIn("(yes/no/all/quit)", out)
         self.assertIn("Deleting task 2", out)
 
     def test_bulk_confirmations_double_confirmation_off(self):
-        """not bulk delete 2 tasks with confirmation:off deletes them"""
+        """not bulk delete 2 tasks with confirmation:0 deletes them"""
 
         # Test with 2 tasks.  2 is greater than 1 and less than bulk.
-        code, out, err = self.t("1-2 delete rc.confirmation:off")
+        code, out, err = self.t("1-2 delete rc.confirmation:0")
         self.assertNotIn("(yes/no)", out)
         self.assertNotIn("(yes/no/all/quit)", out)
         self.assertIn("Deleting task 1", out)
         self.assertIn("Deleting task 2", out)
 
     def test_bulk_confirmations_double_confirmation_on(self):
-        """not bulk delete 2 tasks with confirmation:on and input >y >y deletes them"""
+        """not bulk delete 2 tasks with confirmation:1 and input >y >y deletes them"""
 
         # Test with 2 tasks.  2 is greater than 1 and less than bulk.
-        code, out, err = self.t("1-2 delete rc.confirmation:on", input="y\ny\n")
+        code, out, err = self.t("1-2 delete rc.confirmation:1", input="y\ny\n")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertIn("Deleting task 1", out)
         self.assertIn("Deleting task 2", out)
 
     def test_bulk_confirmations_bulk_confirmation_off(self):
-        """bulk delete 3 tasks with confirmation:off always prompts"""
+        """bulk delete 3 tasks with confirmation:0 always prompts"""
 
         # Test with 3 tasks.  3 is considered bulk. rc.confirmation has no effect on bulk
 
         # Delete task 1 'one'? (yes/no/all/quit) --> timeout
-        code, out, err = self.t.runError("1-3 delete rc.confirmation:off")
+        code, out, err = self.t.runError("1-3 delete rc.confirmation:0")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertNotIn("Deleting task", out)
@@ -102,7 +102,7 @@ class TestBulk(TestCase):
         # Delete task 2 'two'? (yes/no/all/quit) Deleting task 2 'two'.
         # Delete task 3 'three'? (yes/no/all/quit) Deleting task 3 'three'.
         # Deleted 3 tasks.
-        code, out, err = self.t("1-3 delete rc.confirmation:off", input="y\ny\ny\n")
+        code, out, err = self.t("1-3 delete rc.confirmation:0", input="y\ny\ny\n")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertIn("Deleting task 1", out)
@@ -113,7 +113,7 @@ class TestBulk(TestCase):
         """bulk delete 3 tasks with confirmation:on and input >y >y >y deletes them"""
 
         # Test with 3 tasks.  3 is considered bulk. rc.confirmation has no effect on bulk
-        code, out, err = self.t("1-3 delete rc.confirmation:on", input="y\ny\ny\n")
+        code, out, err = self.t("1-3 delete rc.confirmation:1", input="y\ny\ny\n")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertIn("Deleting task 1", out)
@@ -124,14 +124,14 @@ class TestBulk(TestCase):
         """bulk delete >no deletes nothing"""
 
         # Test with 1 task, denying delete.
-        code, out, err = self.t.runError("1 delete rc.confirmation:on", input="n\n")
+        code, out, err = self.t.runError("1 delete rc.confirmation:1", input="n\n")
         self.assertIn("(yes/no)", out)
         self.assertNotIn("(yes/no/all/quit)", out)
         self.assertNotIn("Deleted task 1", out)
         self.assertNotIn("Deleting task", out)
 
         # Test with 2 tasks, denying delete.
-        code, out, err = self.t.runError("1-2 delete rc.confirmation:on", input="n\nn\n")
+        code, out, err = self.t.runError("1-2 delete rc.confirmation:1", input="n\nn\n")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertNotIn("Deleted task 1", out)
@@ -139,7 +139,7 @@ class TestBulk(TestCase):
         self.assertNotIn("Deleting task", out)
 
         # Test with 3 tasks, denying delete.
-        code, out, err = self.t.runError("1-3 delete rc.confirmation:on", input="n\nn\nn\n")
+        code, out, err = self.t.runError("1-3 delete rc.confirmation:1", input="n\nn\nn\n")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertNotIn("Deleted task 1", out)
@@ -150,7 +150,7 @@ class TestBulk(TestCase):
     def test_bulk_delete_all_tests(self):
         """bulk delete >all deletes everything"""
 
-        code, out, err = self.t("1-3 delete rc.confirmation:on", input="all\n")
+        code, out, err = self.t("1-3 delete rc.confirmation:1", input="all\n")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertIn("Deleting task 1", out)
@@ -161,7 +161,7 @@ class TestBulk(TestCase):
     def test_bulk_delete_quit_tests(self):
         """bulk delete >quit deletes nothing"""
 
-        code, out, err = self.t.runError("1-3 delete rc.confirmation:on", input="quit\n")
+        code, out, err = self.t.runError("1-3 delete rc.confirmation:1", input="quit\n")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertIn("Deleted 0 tasks", out)

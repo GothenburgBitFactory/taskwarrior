@@ -131,7 +131,7 @@ class TestDefaultProject(TestCase):
     def test_time_default_project(self):
         """default.project is not applied when start/stop'ing a task"""
         # Allow keeping track of time spent on task
-        self.t.config("journal.time", "yes")
+        self.t.config("journal.time", "1")
 
         self.t("add foobar")
         code, out, err = self.t("1 info")

@@ -62,16 +62,16 @@ class TestUrgencyInherit(TestCase):
 
     def test_urgency_inherit_off(self):
         """No urgency inheritance when switched off"""
-        self.t.config("urgency.inherit", "off")
+        self.t.config("urgency.inherit", "0")
         tl = self.get_tasks()
         self.assertTrue(tl[1]["urgency"] <= tl[2]["urgency"] < tl[3]["urgency"])
 
     def test_gc_off_mod(self):
         """Biggest urgency is inherited recursively"""
-        self.t.config("urgency.inherit", "off")
+        self.t.config("urgency.inherit", "0")
         tl = self.get_tasks()
         oldmax = max(tl[1]["urgency"], tl[2]["urgency"], tl[3]["urgency"])
-        self.t.config("urgency.inherit", "on")
+        self.t.config("urgency.inherit", "1")
         tl = self.get_tasks()
         self.assertTrue(oldmax <= tl[3]["urgency"])
         self.assertTrue(tl[1]["urgency"] >= tl[2]["urgency"] >= tl[3]["urgency"])
