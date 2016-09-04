@@ -17,6 +17,9 @@ Newly Deprecated Features in Taskwarrior 2.6.0
     not needed.
   - The 'new-uuid' verbosity option is to be removed due to being redundant, its
     functionality will be merged with 'new-id' option.
+  - The use of alternate Boolean configuration settings is deprecated. Use values
+    "0" for off, and "1" for on.  Avoid used of "on", "off", "true", "t",
+    "false", "f", "yes", "y", "no", "n".
 
 Removed Features in 2.6.0
 
