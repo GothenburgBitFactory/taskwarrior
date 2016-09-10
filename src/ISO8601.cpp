@@ -707,9 +707,12 @@ bool ISO8601d::parse_date_time_ext (Nibbler& n)
         parse_time_ext (n))
     {
       if (n.skip ('Z'))
+      {
         _utc = true;
+      }
       else if (parse_off_ext (n))
-        ;
+      {
+      }
 
       if (! Lexer::isDigit (n.next ()))
         return true;
