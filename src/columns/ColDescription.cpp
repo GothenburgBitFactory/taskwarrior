@@ -61,15 +61,15 @@ ColumnDescription::ColumnDescription ()
   std::string a3 = STRING_COLUMN_EXAMPLES_ANNO3;
   std::string a4 = STRING_COLUMN_EXAMPLES_ANNO4;
 
-  _examples = {d + "\n  " + t + " " + a1
-                 + "\n  " + t + " " + a2
-                 + "\n  " + t + " " + a3
-                 + "\n  " + t + " " + a4,
+  _examples = {d + "\n  " + t + ' ' + a1
+                 + "\n  " + t + ' ' + a2
+                 + "\n  " + t + ' ' + a3
+                 + "\n  " + t + ' ' + a4,
                d,
-               d + " " + t + " " + a1
-                 + " " + t + " " + a2
-                 + " " + t + " " + a3
-                 + " " + t + " " + a4,
+               d + ' ' + t + ' ' + a1
+                 + ' ' + t + ' ' + a2
+                 + ' ' + t + ' ' + a3
+                 + ' ' + t + ' ' + a4,
                d.substr (0, 20) + "...",
                d + " [4]",
                d.substr (0, 20) + "... [4]"};
