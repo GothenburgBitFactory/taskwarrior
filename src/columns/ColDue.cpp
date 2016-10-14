@@ -26,15 +26,13 @@
 
 #include <cmake.h>
 #include <ColDue.h>
-#include <stdlib.h>
-#include <text.h>
 #include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDue::ColumnDue ()
 {
-  _name      = "due";
-  _label     = STRING_COLUMN_LABEL_DUE;
+  _name  = "due";
+  _label = STRING_COLUMN_LABEL_DUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
