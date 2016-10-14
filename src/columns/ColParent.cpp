@@ -26,7 +26,6 @@
 
 #include <cmake.h>
 #include <ColParent.h>
-#include <math.h>
 #include <text.h>
 #include <i18n.h>
 
