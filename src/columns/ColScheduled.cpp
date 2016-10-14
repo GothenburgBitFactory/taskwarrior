@@ -26,8 +26,6 @@
 
 #include <cmake.h>
 #include <ColScheduled.h>
-#include <stdlib.h>
-#include <text.h>
 #include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
