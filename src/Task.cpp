@@ -799,7 +799,7 @@ void Task::parseLegacy (const std::string& line)
     std::stringstream message;
     message << "Invalid fileformat at line '"
             << line
-            << "'";
+            << '\'';
     context.debug (message.str ());
 #endif
     throw std::string (STRING_TASK_PARSE_UNREC_FF);
@@ -836,13 +836,13 @@ std::string Task::composeF4 () const
         ff4 += encode (json::encode (it.second));
       else
         ff4 += it.second;
-      ff4 += "\"";
+      ff4 += '"';
 
       first = false;
     }
   }
 
-  ff4 += "]";
+  ff4 += ']';
   return ff4;
 }
 
@@ -850,12 +850,12 @@ std::string Task::composeF4 () const
 std::string Task::composeJSON (bool decorate /*= false*/) const
 {
   std::stringstream out;
-  out << "{";
+  out << '{';
 
   // ID inclusion is optional, but not a good idea, because it remains correct
   // only until the next gc.
   if (decorate)
-    out << "\"id\":" << id << ",";
+    out << "\"id\":" << id << ',';
 
   // First the non-annotations.
   int attributes_written = 0;
@@ -870,7 +870,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
         continue;
 
     if (attributes_written)
-      out << ",";
+      out << ',';
 
     std::string type = Task::attributes[i.first];
     if (type == "")
@@ -880,12 +880,12 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (type == "date")
     {
       ISO8601d d (i.second);
-      out << "\""
+      out << '"'
           << (i.first == "modification" ? "modified" : i.first)
           << "\":\""
           // Date was deleted, do not export parsed empty string
           << (i.second == "" ? "" : d.toISO ())
-          << "\"";
+          << '"';
 
       ++attributes_written;
     }
@@ -898,7 +898,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
 */
     else if (type == "numeric")
     {
-      out << "\""
+      out << '"'
           << i.first
           << "\":"
           << i.second;
@@ -918,12 +918,12 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       for (auto i : tags)
       {
         if (count++)
-          out << ",";
+          out << ',';
 
-        out << "\"" << i << "\"";
+        out << '"' << i << '"';
       }
 
-      out << "]";
+      out << ']';
       ++attributes_written;
     }
 
@@ -958,23 +958,23 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       for (auto i : deps)
       {
         if (count++)
-          out << ",";
+          out << ',';
 
-        out << "\"" << i << "\"";
+        out << '"' << i << '"';
       }
 
-      out << "]";
+      out << ']';
       ++attributes_written;
     }
 
     // Everything else is a quoted value.
     else
     {
-      out << "\""
+      out << '"'
           << i.first
           << "\":\""
           << (type == "string" ? json::encode (i.second) : i.second)
-          << "\"";
+          << '"';
 
       ++attributes_written;
     }
@@ -983,7 +983,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
   // Now the annotations, if any.
   if (annotation_count)
   {
-    out << ","
+    out << ','
         << "\"annotations\":[";
 
     int annotations_written = 0;
@@ -992,7 +992,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       if (! i.first.compare (0, 11, "annotation_", 11))
       {
         if (annotations_written)
-          out << ",";
+          out << ',';
 
         ISO8601d d (i.first.substr (11));
         out << "{\"entry\":\""
@@ -1005,18 +1005,18 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       }
     }
 
-    out << "]";
+    out << ']';
   }
 
 #ifdef PRODUCT_TASKWARRIOR
   // Include urgency.
   if (decorate)
-    out << ","
+    out << ','
         << "\"urgency\":"
         << urgency_c ();
 #endif
 
-  out << "}";
+  out << '}';
   return out.str ();
 }
 
@@ -1123,7 +1123,7 @@ void Task::addDependency (const std::string& uuid)
   {
     // Check for extant dependency.
     if (depends.find (uuid) == std::string::npos)
-      set ("depends", depends + "," + uuid);
+      set ("depends", depends + ',' + uuid);
     else
     {
 #ifdef PRODUCT_TASKWARRIOR
@@ -1828,7 +1828,7 @@ float Task::urgency_c () const
         if (end != std::string::npos)
         {
           const std::string uda = var.first.substr (12, end - 12);
-          auto dot = uda.find (".");
+          auto dot = uda.find ('.');
           if (dot == std::string::npos)
           {
             // urgency.uda.<name>.coefficient
@@ -2106,13 +2106,13 @@ void Task::modify (modType type, bool text_required /* = false */)
 
         if (a.attribute ("sign") == "+")
         {
-          context.debug (label + "tags <-- add '" + tag + "'");
+          context.debug (label + "tags <-- add '" + tag + '\'');
           addTag (tag);
           feedback_special_tags (*this, tag);
         }
         else
         {
-          context.debug (label + "tags <-- remove '" + tag + "'");
+          context.debug (label + "tags <-- remove '" + tag + '\'');
           removeTag (tag);
         }
 
@@ -2138,7 +2138,7 @@ void Task::modify (modType type, bool text_required /* = false */)
     switch (type)
     {
     case modReplace:
-      context.debug (label + "description <-- '" + text + "'");
+      context.debug (label + "description <-- '" + text + '\'');
       set ("description", text);
       break;
 
@@ -2148,12 +2148,12 @@ void Task::modify (modType type, bool text_required /* = false */)
       break;
 
     case modAppend:
-      context.debug (label + "description <-- description + '" + text + "'");
+      context.debug (label + "description <-- description + '" + text + '\'');
       set ("description", get ("description") + ' ' + text);
       break;
 
     case modAnnotate:
-      context.debug (label + "new annotation <-- '" + text + "'");
+      context.debug (label + "new annotation <-- '" + text + '\'');
       addAnnotation (text);
       break;
     }

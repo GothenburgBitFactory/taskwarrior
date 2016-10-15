@@ -214,7 +214,7 @@ Chart::Chart (char type)
   std::vector <std::string> words = context.cli2.getWords ();
   std::string filter;
   join (filter, " ", words);
-  _title = "(" + filter + ")";
+  _title = '(' + filter + ')';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -860,7 +860,7 @@ void Chart::calculateRates ()
     _completion = end.toString (format)
                + " ("
                + delta.formatVague ()
-               + ")";
+               + ')';
 
     std::stringstream completion_message;
     completion_message << "Chart::calculateRates ("

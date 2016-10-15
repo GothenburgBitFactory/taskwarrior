@@ -154,7 +154,7 @@ void ColumnTags::render (
     {
       std::vector <std::string> all;
       split (all, tags, ',');
-      renderStringRight (lines, width, color, "[" + format (static_cast <int> (all.size ())) + "]");
+      renderStringRight (lines, width, color, '[' + format (static_cast <int> (all.size ())) + ']');
     }
   }
 }
@@ -187,12 +187,12 @@ void ColumnTags::modify (Task& task, const std::string& value)
       Variant v;
       e.evaluateInfixExpression (value, v);
       task.addTag ((std::string) v);
-      context.debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + "'");
+      context.debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + '\'');
     }
     else
     {
       task.addTag (tag);
-      context.debug (label + "tags <-- '" + tag + "'");
+      context.debug (label + "tags <-- '" + tag + '\'');
     }
 
     feedback_special_tags (task, tag);

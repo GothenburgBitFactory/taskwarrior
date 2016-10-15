@@ -73,7 +73,7 @@ template<typename T>
 const std::string format (int fmt_num, const std::string& fmt, T arg)
 {
     std::string output = fmt;
-    replace_positional (output, "{" + format (fmt_num) + "}", format (arg));
+    replace_positional (output, '{' + format (fmt_num) + '}', format (arg));
     return output;
 }
 

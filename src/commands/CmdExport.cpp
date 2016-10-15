@@ -84,7 +84,7 @@ int CmdExport::execute (std::string& output)
     if (counter)
     {
       if (json_array)
-        output += ",";
+        output += ',';
       output += '\n';
     }
 

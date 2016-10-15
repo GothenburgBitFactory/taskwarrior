@@ -231,7 +231,7 @@ int CmdInfo::execute (std::string& output)
       age = ISO8601p (now - dt).formatVague ();
     }
 
-    view.set (row, 1, entry + " (" + age + ")");
+    view.set (row, 1, entry + " (" + age + ')');
 
     // wait
     if (task.has ("wait"))
@@ -289,7 +289,7 @@ int CmdInfo::execute (std::string& output)
 
       ISO8601d mod (task.get_date ("modified"));
       std::string age = ISO8601p (now - mod).formatVague ();
-      view.set (row, 1, mod.toString (dateformat) + " (" + age + ")");
+      view.set (row, 1, mod.toString (dateformat) + " (" + age + ')');
     }
 
     // tags ...
@@ -399,8 +399,8 @@ int CmdInfo::execute (std::string& output)
           context.columns.find (att) == context.columns.end ())
       {
          row = view.addRow ();
-         view.set (row, 0, "[" + att);
-         view.set (row, 1, task.get (att) + "]");
+         view.set (row, 0, '[' + att);
+         view.set (row, 1, task.get (att) + ']');
       }
     }
 

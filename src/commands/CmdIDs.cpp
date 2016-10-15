@@ -103,7 +103,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
         result << ' ';
 
       if (range_start < range_end)
-        result << ids[range_start] << "-" << ids[range_end];
+        result << ids[range_start] << '-' << ids[range_end];
       else
         result << ids[range_start];
     }
@@ -119,7 +119,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
           result << ' ';
 
         if (range_start < range_end)
-          result << ids[range_start] << "-" << ids[range_end];
+          result << ids[range_start] << '-' << ids[range_end];
         else
           result << ids[range_start];
 
@@ -312,7 +312,7 @@ int CmdZshCompletionUuids::execute (std::string& output)
   std::stringstream out;
   for (auto& task : filtered)
     out << task.get ("uuid")
-        << ":"
+        << ':'
         << str_replace (task.get ("description"), ":", zshColonReplacement)
         << '\n';
 

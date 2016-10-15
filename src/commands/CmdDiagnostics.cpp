@@ -89,7 +89,7 @@ int CmdDiagnostics::execute (std::string& output)
       << "    " << STRING_CMD_DIAG_VERSION << ": "
       << __VERSION__ << '\n'
 #endif
-      << "       " << STRING_CMD_DIAG_CAPS << ":"
+      << "       " << STRING_CMD_DIAG_CAPS << ':'
 #ifdef __STDC__
       << " +stdc"
 #endif
@@ -168,7 +168,7 @@ int CmdDiagnostics::execute (std::string& output)
 #ifdef CMAKE_BUILD_TYPE
       << CMAKE_BUILD_TYPE
 #else
-      << "-"
+      << '-'
 #endif
       << "\n\n";
 
@@ -273,7 +273,7 @@ int CmdDiagnostics::execute (std::string& output)
   auto last_slash = credentials.rfind ('/');
   if (last_slash != std::string::npos)
     credentials = credentials.substr (0, last_slash)
-                + "/"
+                + '/'
                 + std::string (credentials.length () - last_slash - 1, '*');
 
   out << "      Creds: "
@@ -379,7 +379,7 @@ int CmdDiagnostics::execute (std::string& output)
       << (term ? term : STRING_CMD_DIAG_NONE)
       << " ("
       << context.getWidth ()
-      << "x"
+      << 'x'
       << context.getHeight ()
       << ")\n";
 

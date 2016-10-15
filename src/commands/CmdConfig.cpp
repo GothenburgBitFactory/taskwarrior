@@ -65,8 +65,8 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
   for (auto& line : contents)
   {
     // If there is a comment on the line, it must follow the pattern.
-    auto comment = line.find ("#");
-    auto pos     = line.find (name + "=");
+    auto comment = line.find ('#');
+    auto pos     = line.find (name + '=');
 
     if (pos != std::string::npos &&
         (comment == std::string::npos ||
@@ -77,9 +77,9 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
           confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
       {
         if (comment != std::string::npos)
-          line = name + "=" + json::encode (value) + ' ' + line.substr (comment);
+          line = name + '=' + json::encode (value) + ' ' + line.substr (comment);
         else
-          line = name + "=" + json::encode (value);
+          line = name + '=' + json::encode (value);
 
         change = true;
       }
@@ -91,7 +91,7 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
       (!confirmation ||
        confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value))))
   {
-    contents.push_back (name + "=" + json::encode (value));
+    contents.push_back (name + '=' + json::encode (value));
     change = true;
   }
 
@@ -116,8 +116,8 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
     bool lineDeleted = false;
 
     // If there is a comment on the line, it must follow the pattern.
-    auto comment = line->find ("#");
-    auto pos     = line->find (name + "=");
+    auto comment = line->find ('#');
+    auto pos     = line->find (name + '=');
 
     if (pos != std::string::npos &&
         (comment == std::string::npos ||

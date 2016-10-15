@@ -798,7 +798,7 @@ CmdEdit::editResult CmdEdit::editFile (Task& task)
 
   // Complete the command line.
   editor += ' ';
-  editor += "\"" + file.str () + "\"";
+  editor += '"' + file.str () + '"';
 
 ARE_THESE_REALLY_HARMFUL:
   bool changes = false; // No changes made.

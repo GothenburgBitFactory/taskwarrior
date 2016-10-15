@@ -238,7 +238,7 @@ void ColumnDescription::render (
   else if (_style == "count")
   {
     if (task.annotation_count)
-      description += " [" + format (task.annotation_count) + "]";
+      description += " [" + format (task.annotation_count) + ']';
 
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
@@ -256,7 +256,7 @@ void ColumnDescription::render (
     int len_annos = 0;
     if (task.annotation_count)
     {
-      annos_count = " [" + format (task.annotation_count) + "]";
+      annos_count = " [" + format (task.annotation_count) + ']';
       len_annos = utf8_width (annos_count);
       len += len_annos;
     }

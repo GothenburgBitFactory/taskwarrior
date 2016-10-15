@@ -232,7 +232,7 @@ int CmdStats::execute (std::string& output)
     view.set (row, 0, STRING_CMD_STATS_TAGGED);
 
     std::stringstream value;
-    value << std::setprecision (3) << (100.0 * taggedT / totalT) << "%";
+    value << std::setprecision (3) << (100.0 * taggedT / totalT) << '%';
     view.set (row, 1, value.str ());
   }
 

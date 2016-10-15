@@ -60,7 +60,7 @@ int CmdZshAttributes::execute (std::string& output)
 
   std::stringstream out;
   for (auto& col : columns)
-    out << col << ":" << col << '\n';
+    out << col << ':' << col << '\n';
 
   output = out.str ();
   return 0;
