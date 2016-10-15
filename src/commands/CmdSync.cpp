@@ -138,7 +138,7 @@ int CmdSync::execute (std::string& output)
     auto all_tasks = context.tdb2.all_tasks ();
     for (auto& i : all_tasks)
     {
-      payload += i.composeJSON () + "\n";
+      payload += i.composeJSON () + '\n';
       ++upload_count;
     }
   }
@@ -150,7 +150,7 @@ int CmdSync::execute (std::string& output)
       if (i[0] == '{')
         ++upload_count;
 
-      payload += i + "\n";
+      payload += i + '\n';
     }
   }
 
@@ -172,7 +172,7 @@ int CmdSync::execute (std::string& output)
 
   if (context.verbose ("sync"))
     out << format (STRING_CMD_SYNC_PROGRESS, connection)
-        << "\n";
+        << '\n';
 
   // Ignore harmful signals.
   signal (SIGHUP,    SIG_IGN);
@@ -227,7 +227,7 @@ int CmdSync::execute (std::string& output)
                        format (STRING_CMD_SYNC_MOD,
                                uuid,
                                from_server.get ("description")))
-                  << "\n";
+                  << '\n';
             context.tdb2.modify (from_server, false);
           }
           else
@@ -238,7 +238,7 @@ int CmdSync::execute (std::string& output)
                        format (STRING_CMD_SYNC_ADD,
                                uuid,
                                from_server.get ("description")))
-                  << "\n";
+                  << '\n';
             context.tdb2.add (from_server, false);
           }
         }
@@ -259,7 +259,7 @@ int CmdSync::execute (std::string& output)
         context.tdb2.backlog._file.truncate ();
         context.tdb2.backlog.clear_tasks ();
         context.tdb2.backlog.clear_lines ();
-        context.tdb2.backlog.add_line (sync_key + "\n");
+        context.tdb2.backlog.add_line (sync_key + '\n');
 
         // Present a clear status message.
         if (upload_count == 0 && download_count == 0)
@@ -326,7 +326,7 @@ int CmdSync::execute (std::string& output)
   }
 
   if (context.verbose ("sync"))
-    out << "\n";
+    out << '\n';
   output = out.str ();
 
   // Restore signal handling.
@@ -373,7 +373,7 @@ bool CmdSync::send (
     client.ciphers (context.config.get ("taskd.ciphers"));
     client.init (ca, certificate, key);
     client.connect (server, port);
-    client.send (request.serialize () + "\n");
+    client.send (request.serialize () + '\n');
 
     std::string incoming;
     client.recv (incoming);

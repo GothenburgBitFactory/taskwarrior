@@ -109,7 +109,7 @@ int CmdStart::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_START_NO << "\n";
+        std::cout << STRING_CMD_START_NO << '\n';
         rc = 1;
         if (_permission_quit)
           break;
@@ -120,7 +120,7 @@ int CmdStart::execute (std::string&)
       std::cout << format (STRING_CMD_START_ALREADY,
                            task.id,
                            task.get ("description"))
-                << "\n";
+                << '\n';
       rc = 1;
     }
   }

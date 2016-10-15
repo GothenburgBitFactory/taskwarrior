@@ -119,9 +119,9 @@ int CmdColumns::execute (std::string& output)
 
   output = optionalBlankLine ()
          + formats.render ()
-         + "\n"
+         + '\n'
          + STRING_CMD_COLUMNS_NOTE
-         + "\n";
+         + '\n';
 
   return 0;
 }
@@ -154,7 +154,7 @@ int CmdCompletionColumns::execute (std::string& output)
 
   // Render only the column names.
   for (auto& name : names)
-    output += name + "\n";
+    output += name + '\n';
 
   return 0;
 }

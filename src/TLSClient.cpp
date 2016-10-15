@@ -56,7 +56,7 @@ static int verify_certificate_callback (gnutls_session_t);
 ////////////////////////////////////////////////////////////////////////////////
 static void gnutls_log_function (int level, const char* message)
 {
-  std::cout << "c: " << level << " " << message;
+  std::cout << "c: " << level << ' ' << message;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -212,11 +212,11 @@ int CmdSummary::execute (std::string& output)
         << view.render ()
         << optionalBlankLine ();
 
-    out << format (STRING_CMD_PROJECTS_SUMMARY2, view.rows ()) << "\n";
+    out << format (STRING_CMD_PROJECTS_SUMMARY2, view.rows ()) << '\n';
   }
   else
   {
-    out << STRING_CMD_PROJECTS_NO << "\n";
+    out << STRING_CMD_PROJECTS_NO << '\n';
     rc = 1;
   }
 

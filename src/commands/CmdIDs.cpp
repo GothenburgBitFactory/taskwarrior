@@ -70,7 +70,7 @@ int CmdIDs::execute (std::string& output)
       ids.push_back (task.id);
 
   std::sort (ids.begin (), ids.end ());
-  output = compressIds (ids) + "\n";
+  output = compressIds (ids) + '\n';
 
   context.headers.clear ();
   return 0;
@@ -100,7 +100,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
     if (i + 1 == ids.size ())
     {
       if (result.str ().length ())
-        result << " ";
+        result << ' ';
 
       if (range_start < range_end)
         result << ids[range_start] << "-" << ids[range_end];
@@ -116,7 +116,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
       else
       {
         if (result.str ().length ())
-          result << " ";
+          result << ' ';
 
         if (range_start < range_end)
           result << ids[range_start] << "-" << ids[range_end];
@@ -164,7 +164,7 @@ int CmdCompletionIds::execute (std::string& output)
 
   std::sort (ids.begin (), ids.end ());
   join (output, "\n", ids);
-  output += "\n";
+  output += '\n';
 
   context.headers.clear ();
   return 0;
@@ -200,9 +200,9 @@ int CmdZshCompletionIds::execute (std::string& output)
     if (task.getStatus () != Task::deleted &&
         task.getStatus () != Task::completed)
       out << task.id
-          << ":"
+          << ':'
           << str_replace(task.get ("description"), ":", zshColonReplacement)
-          << "\n";
+          << '\n';
 
   output = out.str ();
 
@@ -241,7 +241,7 @@ int CmdUUIDs::execute (std::string& output)
 
   std::sort (uuids.begin (), uuids.end ());
   join (output, " ", uuids);
-  output += "\n";
+  output += '\n';
 
   context.headers.clear ();
   return 0;
@@ -278,7 +278,7 @@ int CmdCompletionUuids::execute (std::string& output)
 
   std::sort (uuids.begin (), uuids.end ());
   join (output, "\n", uuids);
-  output += "\n";
+  output += '\n';
 
   context.headers.clear ();
   return 0;
@@ -314,7 +314,7 @@ int CmdZshCompletionUuids::execute (std::string& output)
     out << task.get ("uuid")
         << ":"
         << str_replace (task.get ("description"), ":", zshColonReplacement)
-        << "\n";
+        << '\n';
 
   output = out.str ();
 

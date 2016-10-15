@@ -213,7 +213,7 @@ const std::string A2::dump () const
     else                             tags += "\033[32m"                + tag + "\033[0m ";
   }
 
-  return output + " " + atts + tags;
+  return output + ' ' + atts + tags;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -632,7 +632,7 @@ void CLI2::prepareFilter ()
       if (a.hasTag ("FILTER"))
       {
         if (combined != "")
-          combined += " ";
+          combined += ' ';
 
         combined += a.attribute ("raw");
       }
@@ -657,7 +657,7 @@ const std::vector <std::string> CLI2::getWords ()
     Color colorOrigArgs ("gray10 on gray4");
     std::string message = " ";
     for (const auto& word : words)
-      message += colorOrigArgs.colorize (word) + " ";
+      message += colorOrigArgs.colorize (word) + ' ';
     context.debug ("CLI2::getWords" + message);
   }
 
@@ -737,13 +737,13 @@ const std::string CLI2::dump (const std::string& title) const
       out << colorFilter.colorize (i->attribute ("raw"));
   }
 
-  out << "\n";
+  out << '\n';
 
   if (_args.size ())
   {
     out << "  _args\n";
     for (const auto& a : _args)
-      out << "    " << a.dump () << "\n";
+      out << "    " << a.dump () << '\n';
   }
 
   if (_id_ranges.size ())
@@ -752,21 +752,21 @@ const std::string CLI2::dump (const std::string& title) const
     for (const auto& range : _id_ranges)
     {
       if (range.first != range.second)
-        out << colorArgs.colorize (range.first + "-" + range.second) << " ";
+        out << colorArgs.colorize (range.first + "-" + range.second) << ' ';
       else
-        out << colorArgs.colorize (range.first) << " ";
+        out << colorArgs.colorize (range.first) << ' ';
     }
 
-    out << "\n";
+    out << '\n';
   }
 
   if (_uuid_list.size ())
   {
     out << "  _uuid_list\n    ";
     for (const auto& uuid : _uuid_list)
-      out << colorArgs.colorize (uuid) << " ";
+      out << colorArgs.colorize (uuid) << ' ';
 
-    out << "\n";
+    out << '\n';
   }
 
   return out.str ();
@@ -1242,7 +1242,7 @@ void CLI2::desugarFilterAttributes ()
       std::vector <A2> values = lexExpression (value);
       if (context.config.getInteger ("debug.parser") >= 2)
       {
-        context.debug ("CLI2::lexExpression " + name + ":" + value);
+        context.debug ("CLI2::lexExpression " + name + ':' + value);
         for (auto& v : values)
           context.debug ("  " + v.dump ());
         context.debug (" ");

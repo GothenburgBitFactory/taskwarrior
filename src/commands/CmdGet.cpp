@@ -91,7 +91,7 @@ int CmdGet::execute (std::string& output)
     throw std::string (STRING_CMD_GET_NO_DOM);
 
   join (output, " ", results);
-  output += "\n";
+  output += '\n';
   return 0;
 }
 

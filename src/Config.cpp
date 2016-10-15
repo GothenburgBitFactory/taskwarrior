@@ -489,7 +489,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
   std::stringstream contents;
   contents << "# [Created by "
            << PACKAGE_STRING
-           << " "
+           << ' '
            << now.toString ("m/d/Y H:N:S")
            << "]\n"
            << _defaults.substr (0, loc + 14)
@@ -509,7 +509,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "#include " << TASK_RCDIR << "/solarized-dark-256.theme\n"
            << "#include " << TASK_RCDIR << "/solarized-light-256.theme\n"
            << "#include " << TASK_RCDIR << "/no-color.theme\n"
-           << "\n";
+           << '\n';
 
   // Write out the new file.
   if (! File::write (rc, contents.str ()))

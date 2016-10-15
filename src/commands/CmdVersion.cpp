@@ -76,7 +76,7 @@ int CmdVersion::execute (std::string& output)
   if (context.color ())
     bold = Color ("bold");
 
-  out << "\n"
+  out << '\n'
       << format (STRING_CMD_VERSION_BUILT, bold.colorize (PACKAGE), bold.colorize (VERSION))
 
 #if defined (DARWIN)
@@ -104,23 +104,23 @@ int CmdVersion::execute (std::string& output)
 #endif
 
 #if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
-      << " "
+      << ' '
       << STRING_LOCALIZATION_DESC
 #endif
 
-      << "\n"
+      << '\n'
       << STRING_CMD_VERSION_COPY
-      << "\n"
-      << "\n"
+      << '\n'
+      << '\n'
       << disclaimer.render ()
-      << "\n"
+      << '\n'
       << link.render ()
-      << "\n";
+      << '\n';
 
 #if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
   out << STRING_LOCALIZATION_AUTHOR
-      << "\n"
-      << "\n";
+      << '\n'
+      << '\n';
 #endif
 
   output = out.str ();
@@ -154,7 +154,7 @@ int CmdCompletionVersion::execute (std::string& output)
 #else
   output = VERSION;
 #endif
-  output += "\n";
+  output += '\n';
   return 0;
 }
 

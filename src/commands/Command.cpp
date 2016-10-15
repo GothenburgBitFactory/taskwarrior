@@ -350,7 +350,7 @@ bool Command::permission (
     return true;
 
   if (context.verbose ("blank") && !_first_iteration)
-    std::cout << "\n";
+    std::cout << '\n';
   int answer = confirm4 (question);
   _first_iteration = false;
   switch (answer)

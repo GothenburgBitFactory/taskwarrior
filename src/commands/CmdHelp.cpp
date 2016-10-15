@@ -32,7 +32,6 @@
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
-#include <iostream> // TODO Remove
 
 extern Context context;
 
@@ -57,13 +56,13 @@ int CmdHelp::execute (std::string& output)
 {
   auto words = context.cli2.getWords ();
   if (words.size () == 1 && closeEnough ("usage", words[0]))
-    output = "\n"
+    output = '\n'
            + composeUsage ()
-           + "\n";
+           + '\n';
   else
-    output = "\n"
+    output = '\n'
            + composeUsage ()
-           + "\n"
+           + '\n'
            + STRING_CMD_HELP_TEXT;
 
   return 0;

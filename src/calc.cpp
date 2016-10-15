@@ -57,7 +57,7 @@ int main (int argc, char** argv)
 
   try
   {
-    bool infix     = true;
+    bool infix {true};
 
     // Add a source for constants.
     Eval e;
@@ -69,29 +69,29 @@ int main (int argc, char** argv)
     for (int i = 1; i < argc; i++)
       if (!strcmp (argv[i], "-h") || ! strcmp (argv[i], "--help"))
       {
-        std::cout << "\n"
+        std::cout << '\n'
                   << "Usage: " << argv[0] << " [options] '<expression>'\n"
-                  << "\n"
+                  << '\n'
                   << "Options:\n"
                   << "  -h|--help         Display this usage\n"
                   << "  -d|--debug        Debug mode\n"
                   << "  -i|--infix        Infix expression (default)\n"
                   << "  -p|--postfix      Postfix expression\n"
-                  << "\n";
+                  << '\n';
         exit (1);
       }
       else if (!strcmp (argv[i], "-v") || !strcmp (argv[i], "--version"))
       {
-        std::cout << "\n"
+        std::cout << '\n'
                   << format (STRING_CMD_VERSION_BUILT, "calc", VERSION)
                   << osName ()
-                  << "\n"
+                  << '\n'
                   << STRING_CMD_VERSION_COPY
-                  << "\n"
-                  << "\n"
+                  << '\n'
+                  << '\n'
                   << STRING_CMD_VERSION_MIT
-                  << "\n"
-                  << "\n";
+                  << '\n'
+                  << '\n';
 
         exit (1);
       }
@@ -102,7 +102,7 @@ int main (int argc, char** argv)
       else if (!strcmp (argv[i], "-p") || !strcmp (argv[i], "--postfix"))
         infix = false;
       else
-        expression += std::string (argv[i]) + " ";
+        expression += std::string (argv[i]) + ' ';
 
     Variant result;
     if (infix)
@@ -112,16 +112,16 @@ int main (int argc, char** argv)
 
     // Show any debug output.
     for (auto& i : context.debugMessages)
-      std::cout << i << "\n";
+      std::cout << i << '\n';
 
     // Show the result in string form.
     std::cout << (std::string) result
-              << "\n";
+              << '\n';
   }
 
   catch (const std::string& error)
   {
-    std::cerr << error << "\n";
+    std::cerr << error << '\n';
     status = -1;
   }
 

@@ -140,7 +140,7 @@ int CmdDenotate::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_DENO_NO << "\n";
+        std::cout << STRING_CMD_DENO_NO << '\n';
         rc = 1;
         if (_permission_quit)
           break;
@@ -148,7 +148,7 @@ int CmdDenotate::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_DENO_NOMATCH, pattern) << "\n";
+      std::cout << format (STRING_CMD_DENO_NOMATCH, pattern) << '\n';
       rc = 1;
     }
   }

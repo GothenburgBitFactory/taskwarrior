@@ -128,11 +128,11 @@ int CmdUDAs::execute (std::string& output)
         << (udas.size () == 1
               ? format (STRING_CMD_UDAS_SUMMARY,  udas.size ())
               : format (STRING_CMD_UDAS_SUMMARY2, udas.size ()))
-        << "\n";
+        << '\n';
   }
   else
   {
-    out << STRING_CMD_UDAS_NO << "\n";
+    out << STRING_CMD_UDAS_NO << '\n';
     rc = 1;
   }
 
@@ -173,7 +173,7 @@ int CmdUDAs::execute (std::string& output)
         << (udas.size () == 1
               ? format (STRING_CMD_UDAS_ORPHAN,  orphans.size ())
               : format (STRING_CMD_UDAS_ORPHANS, orphans.size ()))
-        << "\n";
+        << '\n';
   }
 
   output = out.str ();
@@ -215,7 +215,7 @@ int CmdCompletionUDAs::execute (std::string& output)
   {
     std::sort (udas.begin (), udas.end ());
     join (output, "\n", udas);
-    output += "\n";
+    output += '\n';
   }
 
   return 0;

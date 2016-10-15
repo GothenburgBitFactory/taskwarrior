@@ -97,9 +97,9 @@ int CmdTimesheet::execute (std::string& output)
     if (context.color ())
       bold = Color ("bold");
 
-    out << "\n"
+    out << '\n'
         << bold.colorize (title)
-        << "\n";
+        << '\n';
 
     // Render the completed table.
     ViewText completed;
@@ -145,10 +145,10 @@ int CmdTimesheet::execute (std::string& output)
           std::map <std::string, std::string> annotations;
           task.getAnnotations (annotations);
           for (auto& ann : annotations)
-            description += "\n"
+            description += '\n'
                          + std::string (indent, ' ')
                          + ISO8601d (ann.first.substr (11)).toString (context.config.get ("dateformat"))
-                         + " "
+                         + ' '
                          + ann.second;
 
           completed.set (row, 3, description, c);
@@ -156,11 +156,11 @@ int CmdTimesheet::execute (std::string& output)
       }
     }
 
-    out << "  " << format (STRING_CMD_TIMESHEET_DONE, completed.rows ()) << "\n";
+    out << "  " << format (STRING_CMD_TIMESHEET_DONE, completed.rows ()) << '\n';
 
     if (completed.rows ())
       out << completed.render ()
-          << "\n";
+          << '\n';
 
     // Now render the started table.
     ViewText started;
@@ -201,10 +201,10 @@ int CmdTimesheet::execute (std::string& output)
           std::map <std::string, std::string> annotations;
           task.getAnnotations (annotations);
           for (auto& ann : annotations)
-            description += "\n"
+            description += '\n'
                          + std::string (indent, ' ')
                          + ISO8601d (ann.first.substr (11)).toString (context.config.get ("dateformat"))
-                         + " "
+                         + ' '
                          + ann.second;
 
           started.set (row, 3, description, c);
@@ -212,7 +212,7 @@ int CmdTimesheet::execute (std::string& output)
       }
     }
 
-    out << "  " << format (STRING_CMD_TIMESHEET_STARTED, started.rows ()) << "\n";
+    out << "  " << format (STRING_CMD_TIMESHEET_STARTED, started.rows ()) << '\n';
 
     if (started.rows ())
       out << started.render ()

@@ -174,7 +174,7 @@ int CmdHistoryMonthly::execute (std::string& output)
   if (view.rows ())
   {
     row = view.addRow ();
-    view.set (row, 0, " ");
+    view.set (row, 0, ' ');
     row = view.addRow ();
 
     Color row_color;
@@ -192,7 +192,7 @@ int CmdHistoryMonthly::execute (std::string& output)
   if (view.rows ())
     out << optionalBlankLine ()
         << view.render ()
-        << "\n";
+        << '\n';
   else
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS);
@@ -354,7 +354,7 @@ int CmdHistoryAnnual::execute (std::string& output)
   if (view.rows ())
     out << optionalBlankLine ()
         << view.render ()
-        << "\n";
+        << '\n';
   else
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS);
@@ -498,7 +498,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
         {
           aBar = format (addedGroup[i.first]);
           while (aBar.length () < addedBar)
-            aBar = " " + aBar;
+            aBar = ' ' + aBar;
         }
 
         std::string cBar = "";
@@ -506,7 +506,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
         {
           cBar = format (completedGroup[i.first]);
           while (cBar.length () < completedBar)
-            cBar = " " + cBar;
+            cBar = ' ' + cBar;
         }
 
         std::string dBar = "";
@@ -514,7 +514,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
         {
           dBar = format (deletedGroup[i.first]);
           while (dBar.length () < deletedBar)
-            dBar = " " + dBar;
+            dBar = ' ' + dBar;
         }
 
         bar += std::string (leftOffset - aBar.length (), ' ');
@@ -542,7 +542,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
   {
     out << optionalBlankLine ()
         << view.render ()
-        << "\n";
+        << '\n';
 
     if (context.color ())
       out << format (STRING_CMD_HISTORY_LEGEND,
@@ -550,10 +550,10 @@ int CmdGHistoryMonthly::execute (std::string& output)
                      color_done.colorize (STRING_CMD_HISTORY_COMP),
                      color_delete.colorize (STRING_CMD_HISTORY_DEL))
           << optionalBlankLine ()
-          << "\n";
+          << '\n';
     else
       out << STRING_CMD_HISTORY_LEGEND_A
-          << "\n";
+          << '\n';
   }
   else
   {
@@ -696,7 +696,7 @@ int CmdGHistoryAnnual::execute (std::string& output)
         {
           aBar = format (addedGroup[i.first]);
           while (aBar.length () < addedBar)
-            aBar = " " + aBar;
+            aBar = ' ' + aBar;
         }
 
         std::string cBar = "";
@@ -704,7 +704,7 @@ int CmdGHistoryAnnual::execute (std::string& output)
         {
           cBar = format (completedGroup[i.first]);
           while (cBar.length () < completedBar)
-            cBar = " " + cBar;
+            cBar = ' ' + cBar;
         }
 
         std::string dBar = "";
@@ -712,7 +712,7 @@ int CmdGHistoryAnnual::execute (std::string& output)
         {
           dBar = format (deletedGroup[i.first]);
           while (dBar.length () < deletedBar)
-            dBar = " " + dBar;
+            dBar = ' ' + dBar;
         }
 
         bar += std::string (leftOffset - aBar.length (), ' ');
@@ -739,7 +739,7 @@ int CmdGHistoryAnnual::execute (std::string& output)
   {
     out << optionalBlankLine ()
         << view.render ()
-        << "\n";
+        << '\n';
 
     if (context.color ())
       out << format (STRING_CMD_HISTORY_LEGEND,
@@ -747,10 +747,10 @@ int CmdGHistoryAnnual::execute (std::string& output)
                      color_done.colorize (STRING_CMD_HISTORY_COMP),
                      color_delete.colorize (STRING_CMD_HISTORY_DEL))
           << optionalBlankLine ()
-          << "\n";
+          << '\n';
     else
       out << STRING_CMD_HISTORY_LEGEND_A
-          << "\n";
+          << '\n';
   }
   else
   {

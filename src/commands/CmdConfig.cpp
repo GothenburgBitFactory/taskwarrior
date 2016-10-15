@@ -77,7 +77,7 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
           confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
       {
         if (comment != std::string::npos)
-          line = name + "=" + json::encode (value) + " " + line.substr (comment);
+          line = name + "=" + json::encode (value) + ' ' + line.substr (comment);
         else
           line = name + "=" + json::encode (value);
 
@@ -178,7 +178,7 @@ int CmdConfig::execute (std::string& output)
       for (unsigned int i = 1; i < words.size (); ++i)
       {
         if (i > 1)
-          value += " ";
+          value += ' ';
 
         value += words[i];
       }
@@ -214,10 +214,10 @@ int CmdConfig::execute (std::string& output)
       {
         out << format (STRING_CMD_CONFIG_FILE_MOD,
                        context.config._original_file._data)
-            << "\n";
+            << '\n';
       }
       else
-        out << STRING_CMD_CONFIG_NO_CHANGE << "\n";
+        out << STRING_CMD_CONFIG_NO_CHANGE << '\n';
     }
     else
       throw std::string (STRING_CMD_CONFIG_NO_NAME);
@@ -254,7 +254,7 @@ int CmdCompletionConfig::execute (std::string& output)
   std::sort (configs.begin (), configs.end ());
 
   for (auto& config : configs)
-    output += config + "\n";
+    output += config + '\n';
 
   return 0;
 }

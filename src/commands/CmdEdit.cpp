@@ -102,7 +102,7 @@ std::string CmdEdit::findValue (
   auto found = text.find (name);
   if (found != std::string::npos)
   {
-    auto eol = text.find ("\n", found + 1);
+    auto eol = text.find ('\n', found + 1);
     if (eol != std::string::npos)
     {
       std::string value = text.substr (
@@ -149,7 +149,7 @@ std::vector <std::string> CmdEdit::findValues (
     found = text.find (name, found + 1);
     if (found != std::string::npos)
     {
-      auto eol = text.find ("\n", found + 1);
+      auto eol = text.find ('\n', found + 1);
       if (eol != std::string::npos)
       {
         std::string value = text.substr (
@@ -203,30 +203,30 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   bool verbose = context.verbose ("edit");
 
   if (verbose)
-    before << "# " << STRING_EDIT_HEADER_1 << "\n"
-           << "# " << STRING_EDIT_HEADER_2 << "\n"
-           << "# " << STRING_EDIT_HEADER_3 << "\n"
-           << "# " << STRING_EDIT_HEADER_4 << "\n"
-           << "# " << STRING_EDIT_HEADER_5 << "\n"
-           << "# " << STRING_EDIT_HEADER_6 << "\n"
+    before << "# " << STRING_EDIT_HEADER_1 << '\n'
+           << "# " << STRING_EDIT_HEADER_2 << '\n'
+           << "# " << STRING_EDIT_HEADER_3 << '\n'
+           << "# " << STRING_EDIT_HEADER_4 << '\n'
+           << "# " << STRING_EDIT_HEADER_5 << '\n'
+           << "# " << STRING_EDIT_HEADER_6 << '\n'
            << "#\n"
-           << "# " << STRING_EDIT_HEADER_7 << "\n"
-           << "# " << STRING_EDIT_HEADER_8 << "\n"
-           << "# " << STRING_EDIT_HEADER_9 << "\n"
+           << "# " << STRING_EDIT_HEADER_7 << '\n'
+           << "# " << STRING_EDIT_HEADER_8 << '\n'
+           << "# " << STRING_EDIT_HEADER_9 << '\n'
            << "#\n"
-           << "# " << STRING_EDIT_HEADER_10 << "\n"
-           << "# " << STRING_EDIT_HEADER_11 << "\n"
-           << "# " << STRING_EDIT_HEADER_12 << "\n"
+           << "# " << STRING_EDIT_HEADER_10 << '\n'
+           << "# " << STRING_EDIT_HEADER_11 << '\n'
+           << "# " << STRING_EDIT_HEADER_12 << '\n'
            << "#\n";
 
-  before << "# " << STRING_EDIT_TABLE_HEADER_1 << "\n"
-         << "# " << STRING_EDIT_TABLE_HEADER_2 << "\n"
-         << "# ID:                " << task.id                                                 << "\n"
-         << "# UUID:              " << task.get ("uuid")                                       << "\n"
-         << "# Status:            " << Lexer::ucFirst (Task::statusToText (task.getStatus ())) << "\n"
-         << "# Mask:              " << task.get ("mask")                                       << "\n"
-         << "# iMask:             " << task.get ("imask")                                      << "\n"
-         << "  Project:           " << task.get ("project")                                    << "\n";
+  before << "# " << STRING_EDIT_TABLE_HEADER_1 << '\n'
+         << "# " << STRING_EDIT_TABLE_HEADER_2 << '\n'
+         << "# ID:                " << task.id                                                 << '\n'
+         << "# UUID:              " << task.get ("uuid")                                       << '\n'
+         << "# Status:            " << Lexer::ucFirst (Task::statusToText (task.getStatus ())) << '\n'
+         << "# Mask:              " << task.get ("mask")                                       << '\n'
+         << "# iMask:             " << task.get ("imask")                                      << '\n'
+         << "  Project:           " << task.get ("project")                                    << '\n';
 
   std::vector <std::string> tags;
   task.getTags (tags);
@@ -234,25 +234,25 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   join (allTags, " ", tags);
 
   if (verbose)
-    before << "# " << STRING_EDIT_TAG_SEP << "\n";
+    before << "# " << STRING_EDIT_TAG_SEP << '\n';
 
-  before << "  Tags:              " << allTags                                          << "\n"
-         << "  Description:       " << task.get ("description")                         << "\n"
-         << "  Created:           " << formatDate (task, "entry", dateformat)           << "\n"
-         << "  Started:           " << formatDate (task, "start", dateformat)           << "\n"
-         << "  Ended:             " << formatDate (task, "end", dateformat)             << "\n"
-         << "  Scheduled:         " << formatDate (task, "scheduled", dateformat)       << "\n"
-         << "  Due:               " << formatDate (task, "due", dateformat)             << "\n"
-         << "  Until:             " << formatDate (task, "until", dateformat)           << "\n"
-         << "  Recur:             " << task.get ("recur")                               << "\n"
-         << "  Wait until:        " << formatDate (task, "wait", dateformat)            << "\n"
-         << "# Modified:          " << formatDate (task, "modified", dateformat)        << "\n"
-         << "  Parent:            " << task.get ("parent")                              << "\n";
+  before << "  Tags:              " << allTags                                          << '\n'
+         << "  Description:       " << task.get ("description")                         << '\n'
+         << "  Created:           " << formatDate (task, "entry", dateformat)           << '\n'
+         << "  Started:           " << formatDate (task, "start", dateformat)           << '\n'
+         << "  Ended:             " << formatDate (task, "end", dateformat)             << '\n'
+         << "  Scheduled:         " << formatDate (task, "scheduled", dateformat)       << '\n'
+         << "  Due:               " << formatDate (task, "due", dateformat)             << '\n'
+         << "  Until:             " << formatDate (task, "until", dateformat)           << '\n'
+         << "  Recur:             " << task.get ("recur")                               << '\n'
+         << "  Wait until:        " << formatDate (task, "wait", dateformat)            << '\n'
+         << "# Modified:          " << formatDate (task, "modified", dateformat)        << '\n'
+         << "  Parent:            " << task.get ("parent")                              << '\n';
 
   if (verbose)
-    before << "# " << STRING_EDIT_HEADER_13 << "\n"
-           << "# " << STRING_EDIT_HEADER_14 << "\n"
-           << "# " << STRING_EDIT_HEADER_15 << "\n";
+    before << "# " << STRING_EDIT_HEADER_13 << '\n'
+           << "# " << STRING_EDIT_HEADER_14 << '\n'
+           << "# " << STRING_EDIT_HEADER_15 << '\n';
 
   std::map <std::string, std::string> annotations;
   task.getAnnotations (annotations);
@@ -260,7 +260,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   {
     ISO8601d dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
-           << " -- "                  << json::encode (anno.second) << "\n";
+           << " -- "                  << json::encode (anno.second) << '\n';
   }
 
   ISO8601d now;
@@ -285,9 +285,9 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   }
 
   if (verbose)
-    before << "# " << STRING_EDIT_DEP_SEP << "\n";
+    before << "# " << STRING_EDIT_DEP_SEP << '\n';
 
-  before << "  Dependencies:      " << allDeps.str () << "\n";
+  before << "  Dependencies:      " << allDeps.str () << '\n';
 
   // UDAs
   std::vector <std::string> udas;
@@ -297,7 +297,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   if (udas.size ())
   {
-    before << "# " << STRING_EDIT_UDA_SEP << "\n";
+    before << "# " << STRING_EDIT_UDA_SEP << '\n';
     std::sort (udas.begin (), udas.end ());
     for (auto& uda : udas)
     {
@@ -307,12 +307,12 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
         padding = std::string (pad, ' ');
 
       std::string type = context.config.get ("uda." + uda + ".type");
-      if (type == "string" || type == "numeric")    
-        before << "  UDA " << uda << ": " << padding << task.get (uda) << "\n";
+      if (type == "string" || type == "numeric")
+        before << "  UDA " << uda << ": " << padding << task.get (uda) << '\n';
       else if (type == "date")
-        before << "  UDA " << uda << ": " << padding << formatDate (task, uda, dateformat) << "\n";
+        before << "  UDA " << uda << ": " << padding << formatDate (task, uda, dateformat) << '\n';
       else if (type == "duration")
-        before << "  UDA " << uda << ": " << padding << formatDuration (task, uda) << "\n";
+        before << "  UDA " << uda << ": " << padding << formatDuration (task, uda) << '\n';
     }
   }
 
@@ -322,7 +322,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   if (orphans.size ())
   {
-    before << "# " << STRING_EDIT_UDA_ORPHAN_SEP << "\n";
+    before << "# " << STRING_EDIT_UDA_ORPHAN_SEP << '\n';
     std::sort (orphans.begin (), orphans.end ());
     for (auto& orphan : orphans)
     {
@@ -331,11 +331,11 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
       if (pad > 0)
         padding = std::string (pad, ' ');
 
-      before << "  UDA Orphan " << orphan << ": " << padding << task.get (orphan) << "\n";
+      before << "  UDA Orphan " << orphan << ": " << padding << task.get (orphan) << '\n';
     }
   }
 
-  before << "# " << STRING_EDIT_END << "\n";
+  before << "# " << STRING_EDIT_END << '\n';
   return before.str ();
 }
 
@@ -633,7 +633,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     found += 14;  // Length of "\n  Annotation:".
 
-    auto eol = after.find ("\n", found + 1);
+    auto eol = after.find ('\n', found + 1);
     if (eol != std::string::npos)
     {
       std::string value = Lexer::trim (after.substr (
@@ -797,22 +797,22 @@ CmdEdit::editResult CmdEdit::editFile (Task& task)
   if (editor == "") editor = "vi";
 
   // Complete the command line.
-  editor += " ";
+  editor += ' ';
   editor += "\"" + file.str () + "\"";
 
 ARE_THESE_REALLY_HARMFUL:
   bool changes = false; // No changes made.
 
   // Launch the editor.
-  std::cout << format (STRING_EDIT_LAUNCHING, editor) << "\n";
+  std::cout << format (STRING_EDIT_LAUNCHING, editor) << '\n';
   int exitcode = system (editor.c_str ());
   if (0 == exitcode)
-    std::cout << STRING_EDIT_COMPLETE << "\n";
+    std::cout << STRING_EDIT_COMPLETE << '\n';
   else
   {
-    std::cout << format (STRING_EDIT_FAILED, exitcode) << "\n";
+    std::cout << format (STRING_EDIT_FAILED, exitcode) << '\n';
     if (-1 == exitcode)
-      std::cout << std::strerror (errno) << "\n";
+      std::cout << std::strerror (errno) << '\n';
     return CmdEdit::editResult::error;
   }
 
@@ -824,7 +824,7 @@ ARE_THESE_REALLY_HARMFUL:
   // if changes were made.
   if (before_orig != after)
   {
-    std::cout << STRING_EDIT_CHANGES << "\n";
+    std::cout << STRING_EDIT_CHANGES << '\n';
     std::string problem = "";
     bool oops = false;
 
@@ -841,7 +841,7 @@ ARE_THESE_REALLY_HARMFUL:
 
     if (oops)
     {
-      std::cerr << STRING_ERROR_PREFIX << problem << "\n";
+      std::cerr << STRING_ERROR_PREFIX << problem << '\n';
 
       // Preserve the edits.
       before = after;
@@ -855,7 +855,7 @@ ARE_THESE_REALLY_HARMFUL:
   }
   else
   {
-    std::cout << STRING_EDIT_NO_CHANGES << "\n";
+    std::cout << STRING_EDIT_NO_CHANGES << '\n';
     changes = false;
   }
 

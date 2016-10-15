@@ -127,7 +127,7 @@ int CmdLogo::execute (std::string& output)
       }
     }
 
-    output += "\n";
+    output += '\n';
   }
 
   output += optionalBlankLine ();

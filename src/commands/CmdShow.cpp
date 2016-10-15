@@ -222,7 +222,7 @@ int CmdShow::execute (std::string& output)
   {
     // Disallow partial matches by tacking a leading and trailing space on each
     // variable name.
-    std::string pattern = " " + i.first + " ";
+    std::string pattern = ' ' + i.first + ' ';
     if (recognized.find (pattern) == std::string::npos)
     {
       // These are special configuration variables, because their name is
@@ -320,14 +320,14 @@ int CmdShow::execute (std::string& output)
     }
   }
 
-  out << "\n"
+  out << '\n'
       << view.render ()
       << (view.rows () == 0 ? STRING_CMD_SHOW_NONE : "")
       << (view.rows () == 0 ? "\n\n" : "\n");
 
   if (issue_warning)
   {
-    out << STRING_CMD_SHOW_DIFFER << "\n";
+    out << STRING_CMD_SHOW_DIFFER << '\n';
 
     if (context.color () && warning.nontrivial ())
       out << "  "
@@ -338,13 +338,13 @@ int CmdShow::execute (std::string& output)
   // Display the unrecognized variables.
   if (issue_error)
   {
-    out << STRING_CMD_SHOW_UNREC << "\n";
+    out << STRING_CMD_SHOW_UNREC << '\n';
 
     for (auto& i : unrecognized)
-      out << "  " << i << "\n";
+      out << "  " << i << '\n';
 
     if (context.color () && error.nontrivial ())
-      out << "\n" << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
+      out << '\n' << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
 
     out << "\n\n";
   }
@@ -361,7 +361,7 @@ int CmdShow::execute (std::string& output)
       calendardetails != "sparse" &&
       calendardetails != "none")
     out << format (STRING_CMD_SHOW_CONFIG_ERROR, "calendar.details", calendardetails)
-        << "\n";
+        << '\n';
 
   // Check for bad values in rc.calendar.holidays.
   std::string calendarholidays = context.config.get ("calendar.holidays");
@@ -369,14 +369,14 @@ int CmdShow::execute (std::string& output)
       calendarholidays != "sparse" &&
       calendarholidays != "none")
     out << format (STRING_CMD_SHOW_CONFIG_ERROR, "calendar.holidays", calendarholidays)
-        << "\n";
+        << '\n';
 
   // Verify installation.  This is mentioned in the documentation as the way
   // to ensure everything is properly installed.
 
   if (context.config.size () == 0)
   {
-    out << STRING_CMD_SHOW_EMPTY << "\n";
+    out << STRING_CMD_SHOW_EMPTY << '\n';
     rc = 1;
   }
   else
@@ -384,10 +384,10 @@ int CmdShow::execute (std::string& output)
     Directory location (context.config.get ("data.location"));
 
     if (location._data == "")
-      out << STRING_CMD_SHOW_NO_LOCATION << "\n";
+      out << STRING_CMD_SHOW_NO_LOCATION << '\n';
 
     if (! location.exists ())
-      out << STRING_CMD_SHOW_LOC_EXIST << "\n";
+      out << STRING_CMD_SHOW_LOC_EXIST << '\n';
   }
 
   output = out.str ();
@@ -418,7 +418,7 @@ int CmdShowRaw::execute (std::string& output)
   // Display them all.
   std::stringstream out;
   for (auto& i : all)
-    out << i << '=' << context.config.get (i) << "\n";
+    out << i << '=' << context.config.get (i) << '\n';
 
   output = out.str ();
   return 0;

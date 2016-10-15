@@ -134,7 +134,7 @@ int CmdTags::execute (std::string& output)
     else
       context.footnote (format (STRING_FEEDBACK_TASKS_PLURAL, quantity));
 
-    out << "\n";
+    out << '\n';
   }
   else
   {
@@ -224,7 +224,7 @@ int CmdCompletionTags::execute (std::string& output)
 
   std::stringstream out;
   for (auto& it : unique)
-    out << it.first << "\n";
+    out << it.first << '\n';
 
   output = out.str ();
   return 0;

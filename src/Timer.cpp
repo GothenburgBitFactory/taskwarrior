@@ -55,7 +55,7 @@ Timer::~Timer ()
   std::stringstream s;
   s << "Timer "
     << _description
-    << " "
+    << ' '
     << std::setprecision (6)
     << std::fixed
     << _total / 1000000.0

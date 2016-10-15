@@ -111,7 +111,7 @@ int CmdReports::execute (std::string& output)
       << view.render ()
       << optionalBlankLine ()
       << format (STRING_CMD_REPORTS_SUMMARY, reports.size ())
-      << "\n";
+      << '\n';
 
   output = out.str ();
   return 0;

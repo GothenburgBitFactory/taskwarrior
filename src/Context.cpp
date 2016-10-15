@@ -273,9 +273,9 @@ int Context::initialize (int argc, const char** argv)
     {
       for (auto& d : debugMessages)
         if (color ())
-          std::cerr << colorizeDebug (d) << "\n";
+          std::cerr << colorizeDebug (d) << '\n';
         else
-          std::cerr << d << "\n";
+          std::cerr << d << '\n';
     }
 
     // Dump all headers, controlled by 'header' verbosity token.
@@ -283,9 +283,9 @@ int Context::initialize (int argc, const char** argv)
     {
       for (auto& h : headers)
         if (color ())
-          std::cerr << colorizeHeader (h) << "\n";
+          std::cerr << colorizeHeader (h) << '\n';
         else
-          std::cerr << h << "\n";
+          std::cerr << h << '\n';
     }
 
     // Dump all footnotes, controlled by 'footnote' verbosity token.
@@ -293,18 +293,18 @@ int Context::initialize (int argc, const char** argv)
     {
       for (auto& f : footnotes)
         if (color ())
-          std::cerr << colorizeFootnote (f) << "\n";
+          std::cerr << colorizeFootnote (f) << '\n';
         else
-          std::cerr << f << "\n";
+          std::cerr << f << '\n';
     }
 
     // Dump all errors, non-maskable.
     // Colorized as footnotes.
     for (auto& e : errors)
       if (color ())
-        std::cerr << colorizeFootnote (e) << "\n";
+        std::cerr << colorizeFootnote (e) << '\n';
       else
-        std::cerr << e << "\n";
+        std::cerr << e << '\n';
   }
 
   timer_init.stop ();
@@ -329,13 +329,13 @@ int Context::run ()
     std::stringstream s;
     s << "Perf "
       << PACKAGE_STRING
-      << " "
+      << ' '
 #ifdef HAVE_COMMIT
       << COMMIT
 #else
-      << "-"
+      << '-'
 #endif
-      << " "
+      << ' '
       << ISO8601d ().toISO ()
 
       << " init:"   << timer_init.total ()
@@ -356,7 +356,7 @@ int Context::run ()
                        timer_render.total () -
                        timer_hooks.total ()
       << " total:"  << timer_total.total ()
-      << "\n";
+      << '\n';
     debug (s.str ());
   }
 
@@ -383,9 +383,9 @@ int Context::run ()
   {
     for (auto& d : debugMessages)
       if (color ())
-        std::cerr << colorizeDebug (d) << "\n";
+        std::cerr << colorizeDebug (d) << '\n';
       else
-        std::cerr << d << "\n";
+        std::cerr << d << '\n';
   }
 
   // Dump all headers, controlled by 'header' verbosity token.
@@ -393,9 +393,9 @@ int Context::run ()
   {
     for (auto& h : headers)
       if (color ())
-        std::cerr << colorizeHeader (h) << "\n";
+        std::cerr << colorizeHeader (h) << '\n';
       else
-        std::cerr << h << "\n";
+        std::cerr << h << '\n';
   }
 
   // Dump the report output.
@@ -406,18 +406,18 @@ int Context::run ()
   {
     for (auto& f : footnotes)
       if (color ())
-        std::cerr << colorizeFootnote (f) << "\n";
+        std::cerr << colorizeFootnote (f) << '\n';
       else
-        std::cerr << f << "\n";
+        std::cerr << f << '\n';
   }
 
   // Dump all errors, non-maskable.
   // Colorized as footnotes.
   for (auto& e : errors)
     if (color ())
-      std::cerr << colorizeError (e) << "\n";
+      std::cerr << colorizeError (e) << '\n';
     else
-      std::cerr << e << "\n";
+      std::cerr << e << '\n';
 
   return rc;
 }
@@ -819,7 +819,7 @@ void Context::updateXtermTitle ()
       title += a->attribute ("raw");
     }
 
-    std::cout << "]0;task " << command << " " << title << "";
+    std::cout << "]0;task " << command << ' ' << title << "";
   }
 }
 

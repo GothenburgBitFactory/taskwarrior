@@ -159,7 +159,7 @@ int CmdDelete::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_DELETE_NO << "\n";
+        std::cout << STRING_CMD_DELETE_NO << '\n';
         rc = 1;
         if (_permission_quit)
           break;
@@ -170,7 +170,7 @@ int CmdDelete::execute (std::string&)
       std::cout << format (STRING_CMD_DELETE_NOT_DEL,
                            task.identifier (true),
                            task.get ("description"))
-          << "\n";
+          << '\n';
       rc = 1;
     }
   }

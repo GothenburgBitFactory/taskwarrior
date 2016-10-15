@@ -63,19 +63,19 @@ int CmdAdd::execute (std::string& output)
   if (context.verbose ("new-id") &&
       (status == Task::pending ||
        status == Task::waiting))
-    output += format (STRING_CMD_ADD_FEEDBACK, task.id) + "\n";
+    output += format (STRING_CMD_ADD_FEEDBACK, task.id) + '\n';
 
   else if (context.verbose ("new-id") &&
            status == Task::recurring)
-    output += format (STRING_CMD_ADD_RECUR, task.id) + "\n";
+    output += format (STRING_CMD_ADD_RECUR, task.id) + '\n';
 
   else if (context.verbose ("new-uuid") &&
            status != Task::recurring)
-    output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + "\n";
+    output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + '\n';
 
   else if (context.verbose ("new-uuid") &&
            status == Task::recurring)
-    output += format (STRING_CMD_ADD_RECUR, task.get ("uuid")) + "\n";
+    output += format (STRING_CMD_ADD_RECUR, task.get ("uuid")) + '\n';
 
   if (context.verbose ("project"))
     context.footnote (onProjectChange (task));

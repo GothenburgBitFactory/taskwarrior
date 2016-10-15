@@ -130,10 +130,10 @@ int CmdInfo::execute (std::string& output)
     std::map <std::string, std::string> annotations;
     task.getAnnotations (annotations);
     for (auto& anno : annotations)
-      description += "\n"
+      description += '\n'
                    + std::string (indent, ' ')
                    + ISO8601d (anno.first.substr (11)).toString (dateformatanno)
-                   + " "
+                   + ' '
                    + anno.second;
 
     row = view.addRow ();
@@ -161,7 +161,7 @@ int CmdInfo::execute (std::string& output)
       {
         std::stringstream message;
         for (auto& block : blocked)
-          message << block.id << " " << block.get ("description") << "\n";
+          message << block.id << ' ' << block.get ("description") << '\n';
 
         row = view.addRow ();
         view.set (row, 0, STRING_CMD_INFO_BLOCKED);
@@ -177,7 +177,7 @@ int CmdInfo::execute (std::string& output)
       {
         std::stringstream message;
         for (auto& block : blocking)
-          message << block.id << " " << block.get ("description") << "\n";
+          message << block.id << ' ' << block.get ("description") << '\n';
 
         row = view.addRow ();
         view.set (row, 0, STRING_CMD_INFO_BLOCKING);
@@ -558,15 +558,15 @@ int CmdInfo::execute (std::string& output)
 
     out << optionalBlankLine ()
         << view.render ()
-        << "\n";
+        << '\n';
 
     if (urgencyDetails.rows () > 0)
       out << urgencyDetails.render ()
-          << "\n";
+          << '\n';
 
     if (journal.rows () > 0)
       out << journal.render ()
-          << "\n";
+          << '\n';
   }
 
   output = out.str ();

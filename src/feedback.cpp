@@ -478,7 +478,7 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
       percentage = (count_done * 100 / (count_done + count_pending));
 
     msg << format (STRING_HELPER_PROJECT_COMPL, project, percentage)
-        << " ";
+        << ' ';
 
     if (count_pending == 1 && count_done == 0)
       msg << format (STRING_HELPER_PROJECT_REM1, count_pending);

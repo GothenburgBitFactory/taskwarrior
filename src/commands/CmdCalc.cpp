@@ -69,7 +69,7 @@ int CmdCalc::execute (std::string& output)
   // Compile all the args into one expression.
   std::string expression;
   for (auto& word : context.cli2.getWords ())
-    expression += word + " ";
+    expression += word + ' ';
 
   // Evaluate according to preference.
   Variant result;
@@ -78,7 +78,7 @@ int CmdCalc::execute (std::string& output)
   else
     e.evaluatePostfixExpression (expression, result);
 
-  output = (std::string) result + "\n";
+  output = (std::string) result + '\n';
   return 0;
 }
 

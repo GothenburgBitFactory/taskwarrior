@@ -119,7 +119,7 @@ int CmdCommands::execute (std::string& output)
   output = optionalBlankLine ()
          + view.render ()
          + optionalBlankLine ()
-         + "\n";
+         + '\n';
 
   return 0;
 }
@@ -154,7 +154,7 @@ int CmdCompletionCommands::execute (std::string& output)
 
   std::stringstream out;
   for (auto& c : commands)
-    out << c << "\n";
+    out << c << '\n';
 
   output = out.str ();
   return 0;
@@ -226,7 +226,7 @@ int CmdZshCommands::execute (std::string& output)
   for (auto& zc : commands)
     out << zc._command << ":"
         << Command::categoryNames.at (zc._category) << ":"
-        << zc._description << "\n";
+        << zc._description << '\n';
 
   output = out.str ();
   return 0;

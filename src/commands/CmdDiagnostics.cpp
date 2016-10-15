@@ -75,19 +75,19 @@ int CmdDiagnostics::execute (std::string& output)
     bold = Color ("bold");
 
   std::stringstream out;
-  out << "\n"
+  out << '\n'
       << bold.colorize (PACKAGE_STRING)
-      << "\n";
+      << '\n';
 
   out << "   " << STRING_CMD_DIAG_PLATFORM << ": " << osName ()
       << "\n\n";
 
   // Compiler.
   out << bold.colorize (STRING_CMD_DIAG_COMPILER)
-      << "\n"
+      << '\n'
 #ifdef __VERSION__
       << "    " << STRING_CMD_DIAG_VERSION << ": "
-      << __VERSION__ << "\n"
+      << __VERSION__ << '\n'
 #endif
       << "       " << STRING_CMD_DIAG_CAPS << ":"
 #ifdef __STDC__
@@ -116,7 +116,7 @@ int CmdDiagnostics::execute (std::string& output)
       << " +l"      << 8 * sizeof (long)
       << " +vp"     << 8 * sizeof (void*)
       << " +time_t" << 8 * sizeof (time_t)
-      << "\n";
+      << '\n';
 
   // Compiler compliance level.
   std::string compliance = "non-compliant";
@@ -129,20 +129,20 @@ int CmdDiagnostics::execute (std::string& output)
   else
     compliance = format (level);
 #endif
-  out << " " << STRING_CMD_DIAG_COMPLIANCE
+  out << ' ' << STRING_CMD_DIAG_COMPLIANCE
       << ": "
       << compliance
       << "\n\n";
 
   out << bold.colorize (STRING_CMD_DIAG_FEATURES)
-      << "\n"
+      << '\n'
 
   // Build date.
-      << "      " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << " " << __TIME__ << "\n"
+      << "      " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << ' ' << __TIME__ << '\n'
 #ifdef HAVE_COMMIT
-      << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
+      << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << '\n'
 #endif
-      << "      CMake: " << CMAKE_VERSION << "\n";
+      << "      CMake: " << CMAKE_VERSION << '\n';
 
   out << "    libuuid: "
 #ifdef HAVE_UUID_UNPARSE_LOWER
@@ -150,7 +150,7 @@ int CmdDiagnostics::execute (std::string& output)
 #else
       << "libuuid, no uuid_unparse_lower"
 #endif
-      << "\n";
+      << '\n';
 
   out << "  libgnutls: "
 #ifdef HAVE_LIBGNUTLS
@@ -162,7 +162,7 @@ int CmdDiagnostics::execute (std::string& output)
 #else
       << "n/a"
 #endif
-      << "\n";
+      << '\n';
 
   out << " Build type: "
 #ifdef CMAKE_BUILD_TYPE
@@ -174,20 +174,20 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Config: .taskrc found, readable, writable
   out << bold.colorize (STRING_CMD_DIAG_CONFIG)
-      << "\n"
-      << "       File: " << context.config._original_file._data << " "
+      << '\n'
+      << "       File: " << context.config._original_file._data << ' '
       << (context.config._original_file.exists ()
            ? STRING_CMD_DIAG_FOUND
            : STRING_CMD_DIAG_MISSING)
-      << ", " << context.config._original_file.size () << " " << "bytes"
+      << ", " << context.config._original_file.size () << ' ' << "bytes"
       << ", mode "
       << std::setbase (8)
       << context.config._original_file.mode ()
-      << "\n";
+      << '\n';
 
   // Config: data.location found, readable, writable
   File location (context.config.get ("data.location"));
-  out << "       Data: " << location._data << " "
+  out << "       Data: " << location._data << ' '
       << (location.exists ()
            ? STRING_CMD_DIAG_FOUND
            : STRING_CMD_DIAG_MISSING)
@@ -195,44 +195,44 @@ int CmdDiagnostics::execute (std::string& output)
       << ", mode "
       << std::setbase (8)
       << location.mode ()
-      << "\n";
+      << '\n';
 
   char* env = getenv ("TASKRC");
   if (env)
     out << "     TASKRC: "
         << env
-        << "\n";
+        << '\n';
 
   env = getenv ("TASKDATA");
   if (env)
     out << "   TASKDATA: "
         << env
-        << "\n";
+        << '\n';
 
   out << "    Locking: "
       << (context.config.getBoolean ("locking")
            ? STRING_CMD_DIAG_ENABLED
            : STRING_CMD_DIAG_DISABLED)
-      << "\n";
+      << '\n';
 
   out << "         GC: "
       << (context.config.getBoolean ("gc")
            ? STRING_CMD_DIAG_ENABLED
            : STRING_CMD_DIAG_DISABLED)
-      << "\n";
+      << '\n';
 
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
   if (context.config.get ("editor") != "")
-    out << "  rc.editor: " << context.config.get ("editor") << "\n";
+    out << "  rc.editor: " << context.config.get ("editor") << '\n';
   else if ((peditor = getenv ("VISUAL")) != NULL)
-    out << "    $VISUAL: " << peditor << "\n";
+    out << "    $VISUAL: " << peditor << '\n';
   else if ((peditor = getenv ("EDITOR")) != NULL)
-    out << "    $EDITOR: " << peditor << "\n";
+    out << "    $EDITOR: " << peditor << '\n';
 
   out << "     Server: "
       << context.config.get ("taskd.server")
-      << "\n";
+      << '\n';
 
   if (context.config.get ("taskd.ca") != "")
     out << "         CA: "
@@ -246,7 +246,7 @@ int CmdDiagnostics::execute (std::string& output)
   if (trust_value == "strict" ||
       trust_value == "ignore hostname" ||
       trust_value == "allow all")
-    out << "      Trust: " << trust_value << "\n";
+    out << "      Trust: " << trust_value << '\n';
   else
     out << "      Trust: Bad value - see 'man taskrc'\n";
 
@@ -266,7 +266,7 @@ int CmdDiagnostics::execute (std::string& output)
 
   out << "    Ciphers: "
       << context.config.get ("taskd.ciphers")
-      << "\n";
+      << '\n';
 
   // Get credentials, but mask out the key.
   std::string credentials = context.config.get ("taskd.credentials");
@@ -285,13 +285,13 @@ int CmdDiagnostics::execute (std::string& output)
   hookLocation += "hooks";
 
   out << bold.colorize (STRING_CMD_DIAG_HOOKS)
-      << "\n"
+      << '\n'
       << "     System: "
       << (context.config.getBoolean ("hooks") ? STRING_CMD_DIAG_HOOK_ENABLE : STRING_CMD_DIAG_HOOK_DISABLE)
-      << "\n"
+      << '\n'
       << "   Location: "
       << static_cast <std::string> (hookLocation)
-      << "\n";
+      << '\n';
 
   auto hooks = context.hooks.list ();
   if (hooks.size ())
@@ -323,13 +323,13 @@ int CmdDiagnostics::execute (std::string& output)
           out << std::left << name
               << format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC)
               << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
-              << "\n";
+              << '\n';
         }
       }
     }
 
     if (! count)
-      out << "\n";
+      out << '\n';
 
     out << "   Inactive: ";
     count = 0;
@@ -356,22 +356,22 @@ int CmdDiagnostics::execute (std::string& output)
                    name.substr (0, 9) == "on-modify" ||
                    name.substr (0, 9) == "on-launch" ||
                    name.substr (0, 7) == "on-exit") ? "" : format (" ({1})", STRING_CMD_DIAG_HOOK_NAME))
-              << "\n";
+              << '\n';
         }
       }
     }
 
     if (! count)
-      out << "\n";
+      out << '\n';
   }
   else
     out << format ("             ({1})\n", STRING_CMD_DIAG_NONE);
 
-  out << "\n";
+  out << '\n';
 
   // Verify UUIDs are all unique.
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
-      << "\n";
+      << '\n';
 
   // Determine terminal details.
   const char* term = getenv ("TERM");
@@ -399,17 +399,17 @@ int CmdDiagnostics::execute (std::string& output)
 
   out << "       Dups: "
       << format (STRING_CMD_DIAG_UUID_SCAN, all.size ())
-      << "\n";
+      << '\n';
 
   if (dups.size ())
   {
     for (auto& d : dups)
-      out << "             " << format (STRING_CMD_DIAG_UUID_DUP, d) << "\n";
+      out << "             " << format (STRING_CMD_DIAG_UUID_DUP, d) << '\n';
   }
   else
   {
     out << "             " << STRING_CMD_DIAG_UUID_NO_DUP
-        << "\n";
+        << '\n';
   }
 
 
@@ -418,7 +418,7 @@ int CmdDiagnostics::execute (std::string& output)
   bool noBrokenRefs = true;
   out << " Broken ref: "
       << format (STRING_CMD_DIAG_REF_SCAN, all.size ())
-      << "\n";
+      << '\n';
 
   for (auto& task : all)
   {
@@ -432,7 +432,7 @@ int CmdDiagnostics::execute (std::string& output)
       {
         out << "             "
             << format (STRING_CMD_DIAG_MISS_DEP, task.get ("uuid"), uuid)
-            << "\n";
+            << '\n';
         noBrokenRefs = false;
       }
     }
@@ -444,16 +444,16 @@ int CmdDiagnostics::execute (std::string& output)
     {
       out << "             "
           << format (STRING_CMD_DIAG_MISS_PAR, task.get ("uuid"), parentUUID)
-          << "\n";
+          << '\n';
       noBrokenRefs = false;
     }
   }
 
   if (noBrokenRefs)
     out << "             " << STRING_CMD_DIAG_REF_OK
-        << "\n";
+        << '\n';
 
-  out << "\n";
+  out << '\n';
   output = out.str ();
   return 0;
 }

@@ -71,7 +71,7 @@ int CmdColor::execute (std::string& output)
     // use.
     if (legend)
     {
-      out << "\n" << STRING_CMD_COLOR_HERE << "\n";
+      out << '\n' << STRING_CMD_COLOR_HERE << '\n';
 
       ViewText view;
       view.width (context.getWidth ());
@@ -94,7 +94,7 @@ int CmdColor::execute (std::string& output)
       }
 
       out << view.render ()
-          << "\n";
+          << '\n';
     }
 
     // If there is something in the description, then assume that is a color,
@@ -112,26 +112,26 @@ int CmdColor::execute (std::string& output)
       for (auto word = words.begin (); word != words.end (); ++word)
       {
         if (word != words.begin ())
-          swatch += " ";
+          swatch += ' ';
 
         swatch += *word;
       }
 
       Color sample (swatch);
 
-      out << "\n"
-          << STRING_CMD_COLOR_EXPLANATION                                          << "\n"
+      out << '\n'
+          << STRING_CMD_COLOR_EXPLANATION                                          << '\n'
           << "\n\n"
-          << STRING_CMD_COLOR_16                                                   << "\n"
-          << "  " << one.colorize ("task color black on bright yellow")            << "\n"
-          << "  " << two.colorize ("task color underline cyan on bright blue")     << "\n"
-          << "\n"
-          << STRING_CMD_COLOR_256                                                  << "\n"
-          << "  " << three.colorize ("task color color214 on color202")            << "\n"
-          << "  " << four.colorize ("task color rgb150 on rgb020")                 << "\n"
-          << "  " << five.colorize ("task color underline grey10 on grey3")        << "\n"
-          << "  " << six.colorize ("task color red on color173")                   << "\n"
-          << "\n"
+          << STRING_CMD_COLOR_16                                                   << '\n'
+          << "  " << one.colorize ("task color black on bright yellow")            << '\n'
+          << "  " << two.colorize ("task color underline cyan on bright blue")     << '\n'
+          << '\n'
+          << STRING_CMD_COLOR_256                                                  << '\n'
+          << "  " << three.colorize ("task color color214 on color202")            << '\n'
+          << "  " << four.colorize ("task color rgb150 on rgb020")                 << '\n'
+          << "  " << five.colorize ("task color underline grey10 on grey3")        << '\n'
+          << "  " << six.colorize ("task color red on color173")                   << '\n'
+          << '\n'
           << STRING_CMD_COLOR_YOURS                                                << "\n\n"
           << "  " << sample.colorize ("task color " + swatch)                      << "\n\n";
     }
@@ -139,41 +139,41 @@ int CmdColor::execute (std::string& output)
     // Show all supported colors.  Possibly show some unsupported ones too.
     else
     {
-      out << "\n"
+      out << '\n'
           << STRING_CMD_COLOR_BASIC
-          << "\n"
-          << " " << Color::colorize (" black ",   "black")
-          << " " << Color::colorize (" red ",     "red")
-          << " " << Color::colorize (" blue ",    "blue")
-          << " " << Color::colorize (" green ",   "green")
-          << " " << Color::colorize (" magenta ", "magenta")
-          << " " << Color::colorize (" cyan ",    "cyan")
-          << " " << Color::colorize (" yellow ",  "yellow")
-          << " " << Color::colorize (" white ",   "white")
-          << "\n"
-          << " " << Color::colorize (" black ",   "white on black")
-          << " " << Color::colorize (" red ",     "white on red")
-          << " " << Color::colorize (" blue ",    "white on blue")
-          << " " << Color::colorize (" green ",   "black on green")
-          << " " << Color::colorize (" magenta ", "black on magenta")
-          << " " << Color::colorize (" cyan ",    "black on cyan")
-          << " " << Color::colorize (" yellow ",  "black on yellow")
-          << " " << Color::colorize (" white ",   "black on white")
+          << '\n'
+          << ' ' << Color::colorize (" black ",   "black")
+          << ' ' << Color::colorize (" red ",     "red")
+          << ' ' << Color::colorize (" blue ",    "blue")
+          << ' ' << Color::colorize (" green ",   "green")
+          << ' ' << Color::colorize (" magenta ", "magenta")
+          << ' ' << Color::colorize (" cyan ",    "cyan")
+          << ' ' << Color::colorize (" yellow ",  "yellow")
+          << ' ' << Color::colorize (" white ",   "white")
+          << '\n'
+          << ' ' << Color::colorize (" black ",   "white on black")
+          << ' ' << Color::colorize (" red ",     "white on red")
+          << ' ' << Color::colorize (" blue ",    "white on blue")
+          << ' ' << Color::colorize (" green ",   "black on green")
+          << ' ' << Color::colorize (" magenta ", "black on magenta")
+          << ' ' << Color::colorize (" cyan ",    "black on cyan")
+          << ' ' << Color::colorize (" yellow ",  "black on yellow")
+          << ' ' << Color::colorize (" white ",   "black on white")
           << "\n\n";
 
       out << STRING_CMD_COLOR_EFFECTS
-          << "\n"
-          << " " << Color::colorize (" red ",               "red")
-          << " " << Color::colorize (" bold red ",          "bold red")
-          << " " << Color::colorize (" underline on blue ", "underline on blue")
-          << " " << Color::colorize (" on green ",          "black on green")
-          << " " << Color::colorize (" on bright green ",   "black on bright green")
-          << " " << Color::colorize (" inverse ",           "inverse")
+          << '\n'
+          << ' ' << Color::colorize (" red ",               "red")
+          << ' ' << Color::colorize (" bold red ",          "bold red")
+          << ' ' << Color::colorize (" underline on blue ", "underline on blue")
+          << ' ' << Color::colorize (" on green ",          "black on green")
+          << ' ' << Color::colorize (" on bright green ",   "black on bright green")
+          << ' ' << Color::colorize (" inverse ",           "inverse")
           << "\n\n";
 
       // 16 system colors.
       out << "color0 - color15"
-          << "\n"
+          << '\n'
           << "  0 1 2 . . .\n";
       for (int r = 0; r < 2; ++r)
       {
@@ -185,7 +185,7 @@ int CmdColor::execute (std::string& output)
           out << Color::colorize ("  ", s.str ());
         }
 
-        out << "\n";
+        out << '\n';
       }
 
       out << "          . . . 15\n\n";
@@ -200,21 +200,21 @@ int CmdColor::execute (std::string& output)
           << Color::colorize ("5", "bold green")
           << Color::colorize ("5", "bold blue")
           << " (also color16 - color231)"
-          << "\n"
+          << '\n'
           << "  " << Color::colorize ("0            "
                                       "1            "
                                       "2            "
                                       "3            "
                                       "4            "
                                       "5", "bold red")
-          << "\n"
+          << '\n'
           << "  " << Color::colorize ("0 1 2 3 4 5  "
                                       "0 1 2 3 4 5  "
                                       "0 1 2 3 4 5  "
                                       "0 1 2 3 4 5  "
                                       "0 1 2 3 4 5  "
                                       "0 1 2 3 4 5", "bold blue")
-          << "\n";
+          << '\n';
 
       char label [12];
       for (int g = 0; g < 6; ++g)
@@ -230,13 +230,13 @@ int CmdColor::execute (std::string& output)
             out << Color::colorize ("  ", s.str ());
           }
 
-          out << " ";
+          out << ' ';
         }
 
-        out << "\n";
+        out << '\n';
       }
 
-      out << "\n";
+      out << '\n';
 
       // Grey ramp.
       out << STRING_CMD_COLOR_RAMP
@@ -257,7 +257,7 @@ int CmdColor::execute (std::string& output)
   }
   else
   {
-    out << STRING_CMD_COLOR_OFF << "\n";
+    out << STRING_CMD_COLOR_OFF << '\n';
     rc = 1;
   }
 

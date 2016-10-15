@@ -405,13 +405,13 @@ std::string Chart::render ()
   if (_graph_height < 5 ||     // a 4-line graph is essentially unreadable.
       _graph_width < 2)        // A single-bar graph is useless.
   {
-    return std::string (STRING_CMD_BURN_TOO_SMALL) + "\n";
+    return std::string (STRING_CMD_BURN_TOO_SMALL) + '\n';
   }
 
   else if (_graph_height > 1000 || // each line is a string allloc
            _graph_width  > 1000)
   {
-    return std::string (STRING_CMD_BURN_TOO_LARGE) + "\n";
+    return std::string (STRING_CMD_BURN_TOO_LARGE) + '\n';
   }
 
   if (_max_value == 0)
@@ -420,7 +420,7 @@ std::string Chart::render ()
   // Create a grid, folded into a string.
   _grid = "";
   for (int i = 0; i < _height; ++i)
-    _grid += std::string (_width, ' ') + "\n";
+    _grid += std::string (_width, ' ') + '\n';
 
   // Title.
   std::string full_title;
@@ -437,7 +437,7 @@ std::string Chart::render ()
   {
     if (full_title.length () + 1 + _title.length () < (unsigned) _width)
     {
-      full_title += " " + _title;
+      full_title += ' ' + _title;
       _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
     }
     else
@@ -494,7 +494,7 @@ std::string Chart::render ()
       _grid.replace (LOC (_height - 5, _max_label + 3 + ((_actual_bars - bar._offset - 1) * 3)), bar._minor_label.length (), bar._minor_label);
 
       if (_major_label != bar._major_label)
-        _grid.replace (LOC (_height - 4, _max_label + 2 + ((_actual_bars - bar._offset - 1) * 3)), bar._major_label.length (), " " + bar._major_label);
+        _grid.replace (LOC (_height - 4, _max_label + 2 + ((_actual_bars - bar._offset - 1) * 3)), bar._major_label.length (), ' ' + bar._major_label);
 
       _major_label = bar._major_label;
     }
