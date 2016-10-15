@@ -125,7 +125,7 @@ void ColumnDepends::render (
       dependencyGetBlocking (task, blocking);
 
       if (_style == "count")
-        renderStringRight (lines, width, color, "[" + format (static_cast <int>(blocking.size ())) + "]");
+        renderStringRight (lines, width, color, '[' + format (static_cast <int>(blocking.size ())) + ']');
 
       else if (_style == "default" ||
                _style == "list")

@@ -525,9 +525,9 @@ int CmdGHistoryMonthly::execute (std::string& output)
       }
       else
       {
-        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += "+";
-        std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
-        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
+        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += '+';
+        std::string cBar = ""; while (cBar.length () < completedBar) cBar += 'X';
+        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += '-';
 
         bar += std::string (leftOffset - aBar.length (), ' ');
         bar += aBar + cBar + dBar;
@@ -722,9 +722,9 @@ int CmdGHistoryAnnual::execute (std::string& output)
       }
       else
       {
-        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += "+";
-        std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
-        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
+        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += '+';
+        std::string cBar = ""; while (cBar.length () < completedBar) cBar += 'X';
+        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += '-';
 
         bar += std::string (leftOffset - aBar.length (), ' ');
         bar += aBar + cBar + dBar;

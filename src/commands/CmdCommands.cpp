@@ -224,8 +224,8 @@ int CmdZshCommands::execute (std::string& output)
   // Emit the commands in order.
   std::stringstream out;
   for (auto& zc : commands)
-    out << zc._command << ":"
-        << Command::categoryNames.at (zc._category) << ":"
+    out << zc._command << ':'
+        << Command::categoryNames.at (zc._category) << ':'
         << zc._description << '\n';
 
   output = out.str ();

@@ -64,7 +64,7 @@ static void signal_handler (int s)
 {
   if (s == SIGINT)
   {
-    std::cout << "\n\n" << STRING_ERROR_CONFIRM_SIGINT << "\n";
+    std::cout << "\n\n" << STRING_ERROR_CONFIRM_SIGINT << '\n';
     exit (1);
   }
 }
@@ -89,7 +89,7 @@ bool confirm (const std::string& question)
 
     std::string answer {""};
     std::getline (std::cin, answer);
-    context.debug ("STDIN '" + answer + "'");
+    context.debug ("STDIN '" + answer + '\'');
     answer = std::cin.eof () ? STRING_UTIL_CONFIRM_NO : Lexer::lowerCase (Lexer::trim (answer));
 
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
@@ -121,15 +121,15 @@ int confirm4 (const std::string& question)
   {
     std::cout << question
               << " ("
-              << options[1] << "/"
-              << options[2] << "/"
-              << options[4] << "/"
+              << options[1] << '/'
+              << options[2] << '/'
+              << options[4] << '/'
               << options[5]
               << ") ";
 
     std::string answer {""};
     std::getline (std::cin, answer);
-    context.debug ("STDIN '" + answer + "'");
+    context.debug ("STDIN '" + answer + '\'');
     answer = std::cin.eof () ? STRING_UTIL_CONFIRM_QUIT : Lexer::lowerCase (Lexer::trim (answer));
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }

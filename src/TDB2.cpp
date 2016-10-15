@@ -61,7 +61,7 @@ TF2::~TF2 ()
 {
   if (_dirty && TDB2::debug_mode)
     std::cout << format (STRING_TDB2_DIRTY_EXIT, std::string (_file))
-              << "\n";
+              << '\n';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,7 @@ void TF2::commit ()
         for (auto& task : _tasks)
           // Skip over the tasks that are marked to be purged
           if (_purged_tasks.find (task.get ("uuid")) == _purged_tasks.end ())
-            _file.write_raw (task.composeF4 () + "\n");
+            _file.write_raw (task.composeF4 () + '\n');
 
         // Write out all the added lines.
         _file.append (_added_lines);
@@ -708,9 +708,9 @@ void TDB2::update (
     // old <task>
     // new <task>
     // ---
-    undo.add_line ("time " + ISO8601d ().toEpochString () + "\n");
-    undo.add_line ("old " + original.composeF4 () + "\n");
-    undo.add_line ("new " + task.composeF4 () + "\n");
+    undo.add_line ("time " + ISO8601d ().toEpochString () + '\n');
+    undo.add_line ("old " + original.composeF4 () + '\n');
+    undo.add_line ("new " + task.composeF4 () + '\n');
     undo.add_line ("---\n");
   }
   else
@@ -727,14 +727,14 @@ void TDB2::update (
     //   time <time>
     //   new <task>
     //   ---
-    undo.add_line ("time " + ISO8601d ().toEpochString () + "\n");
-    undo.add_line ("new " + task.composeF4 () + "\n");
+    undo.add_line ("time " + ISO8601d ().toEpochString () + '\n');
+    undo.add_line ("new " + task.composeF4 () + '\n');
     undo.add_line ("---\n");
   }
 
   // Add task to backlog.
   if (add_to_backlog)
-    backlog.add_line (task.composeJSON () + "\n");
+    backlog.add_line (task.composeJSON () + '\n');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -861,7 +861,7 @@ void TDB2::revert ()
     File::write (backlog._file._data, b);
   }
   else
-    std::cout << STRING_CMD_CONFIG_NO_CHANGE << "\n";
+    std::cout << STRING_CMD_CONFIG_NO_CHANGE << '\n';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -909,7 +909,7 @@ void TDB2::revert_pending (
   const std::string& uuid,
   const std::string& prior)
 {
-  std::string uuid_att = "uuid:\"" + uuid + "\"";
+  std::string uuid_att = "uuid:\"" + uuid + '"';
 
   // is 'current' in pending?
   for (auto task = p.begin (); task != p.end (); ++task)
@@ -922,12 +922,12 @@ void TDB2::revert_pending (
       if (prior != "")
       {
         *task = prior;
-        std::cout << STRING_TDB2_REVERTED << "\n";
+        std::cout << STRING_TDB2_REVERTED << '\n';
       }
       else
       {
         p.erase (task);
-        std::cout << STRING_TDB2_REMOVED << "\n";
+        std::cout << STRING_TDB2_REMOVED << '\n';
       }
 
       break;
@@ -942,7 +942,7 @@ void TDB2::revert_completed (
   const std::string& uuid,
   const std::string& prior)
 {
-  std::string uuid_att = "uuid:\"" + uuid + "\"";
+  std::string uuid_att = "uuid:\"" + uuid + '"';
 
   // is 'current' in completed?
   for (auto task = c.begin (); task != c.end (); ++task)
@@ -961,12 +961,12 @@ void TDB2::revert_completed (
         {
           c.erase (task);
           p.push_back (prior);
-          std::cout << STRING_TDB2_REVERTED << "\n";
+          std::cout << STRING_TDB2_REVERTED << '\n';
           context.debug ("TDB::revert_completed - task belongs in pending.data");
         }
         else
         {
-          std::cout << STRING_TDB2_REVERTED << "\n";
+          std::cout << STRING_TDB2_REVERTED << '\n';
           context.debug ("TDB::revert_completed - task belongs in completed.data");
         }
       }
@@ -974,11 +974,11 @@ void TDB2::revert_completed (
       {
         c.erase (task);
 
-        std::cout << STRING_TDB2_REVERTED << "\n";
+        std::cout << STRING_TDB2_REVERTED << '\n';
         context.debug ("TDB::revert_completed - task removed");
       }
 
-      std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";
+      std::cout << STRING_TDB2_UNDO_COMPLETE << '\n';
       break;
     }
   }
@@ -991,7 +991,7 @@ void TDB2::revert_backlog (
   const std::string& current,
   const std::string& prior)
 {
-  std::string uuid_att = "\"uuid\":\"" + uuid + "\"";
+  std::string uuid_att = "\"uuid\":\"" + uuid + '"';
 
   bool found = false;
   for (auto task = b.rbegin (); task != b.rend (); ++task)
@@ -1038,9 +1038,9 @@ void TDB2::show_diff (
 
   if (context.config.get ("undo.style") == "side")
   {
-    std::cout << "\n"
+    std::cout << '\n'
               << format (STRING_TDB2_LAST_MOD, lastChange.toString ())
-              << "\n";
+              << '\n';
 
     // Attributes are all there is, so figure the different attribute names
     // between before and after.
@@ -1114,9 +1114,9 @@ void TDB2::show_diff (
       }
     }
 
-    std::cout << "\n"
+    std::cout << '\n'
               << view.render ()
-              << "\n";
+              << '\n';
   }
 
   // This style looks like this:
@@ -1203,21 +1203,21 @@ void TDB2::show_diff (
         else if (before_att != "" && after_att == "")
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + a + ":", color_red);
+          view.set (row, 0, '-' + a + ':', color_red);
           view.set (row, 1, before_att, color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + a + ":", color_green);
+          view.set (row, 0, '+' + a + ':', color_green);
         }
 
         // Attribute added.
         else if (before_att == "" && after_att != "")
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + a + ":", color_red);
+          view.set (row, 0, '-' + a + ':', color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + a + ":", color_green);
+          view.set (row, 0, '+' + a + ':', color_green);
           view.set (row, 1, after_att, color_green);
         }
 
@@ -1225,19 +1225,19 @@ void TDB2::show_diff (
         else
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + a + ":", color_red);
+          view.set (row, 0, '-' + a + ':', color_red);
           view.set (row, 1, before_att, color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + a + ":", color_green);
+          view.set (row, 0, '+' + a + ':', color_green);
           view.set (row, 1, after_att, color_green);
         }
       }
     }
 
-    std::cout << "\n"
+    std::cout << '\n'
               << view.render ()
-              << "\n";
+              << '\n';
   }
 }
 

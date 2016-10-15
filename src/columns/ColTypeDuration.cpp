@@ -68,7 +68,7 @@ void ColumnTypeDuration::modify (Task& task, const std::string& value)
   if (evaluatedValue.type () == Variant::type_duration)
   {
     // Store the raw value, for 'recur'.
-    context.debug (label + _name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + "'");
+    context.debug (label + _name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + '\'');
     task.set (_name, evaluatedValue);
   }
   else

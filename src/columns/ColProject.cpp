@@ -134,7 +134,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
       Variant v;
       e.evaluateInfixExpression (value, v);
       task.set (_name, (std::string) v);
-      context.debug (label + _name + " <-- '" + (std::string) v + "' <-- '" + value + "'");
+      context.debug (label + _name + " <-- '" + (std::string) v + "' <-- '" + value + '\'');
     }
     catch (const std::string& e)
     {
@@ -143,7 +143,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
       if (e == STRING_EVAL_NOT_EXPRESSION)
       {
         task.set (_name, value);
-        context.debug (label + _name + " <-- '" + value + "'");
+        context.debug (label + _name + " <-- '" + value + '\'');
       }
       else
         throw;
@@ -152,7 +152,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
   else
   {
     task.set (_name, value);
-    context.debug (label + _name + " <-- '" + value + "'");
+    context.debug (label + _name + " <-- '" + value + '\'');
   }
 }
 

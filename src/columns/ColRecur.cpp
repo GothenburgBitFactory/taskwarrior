@@ -129,7 +129,7 @@ void ColumnRecur::modify (Task& task, const std::string& value)
   {
     // Store the raw value, for 'recur'.
     std::string label = "  [1;37;43mMODIFICATION[0m ";
-    context.debug (label + _name + " <-- '" + value + "'");
+    context.debug (label + _name + " <-- '" + value + '\'');
     task.set (_name, value);
   }
   else

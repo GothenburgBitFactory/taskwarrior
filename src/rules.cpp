@@ -207,7 +207,7 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
 static void colorizeUDA (Task& task, const std::string& rule, const Color& base, Color& c, bool merge)
 {
   // Is the rule color.uda.name.value or color.uda.name?
-  auto pos = rule.find (".", 10);
+  auto pos = rule.find ('.', 10);
   if (pos == std::string::npos)
   {
     if (task.has (rule.substr (10)))

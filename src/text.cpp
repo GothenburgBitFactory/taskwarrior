@@ -283,7 +283,7 @@ bool extractLine (
       // No backtrack, possible hyphenation.
       else if (hyphenate)
       {
-        line = text.substr (offset, prior_cursor - offset) + "-";
+        line = text.substr (offset, prior_cursor - offset) + '-';
         offset = prior_cursor;
         return true;
       }
