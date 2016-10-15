@@ -90,7 +90,7 @@ bool getDOM (const std::string& name, Variant& value)
       for (auto& arg : context.cli2._original_args)
       {
         if (commandLine != "")
-           commandLine += " ";
+           commandLine += ' ';
 
         commandLine += arg.attribute("raw");
       }

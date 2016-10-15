@@ -89,7 +89,7 @@ int CmdDuplicate::execute (std::string&)
       dup.remove ("until");
       dup.remove ("imask");
       std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task.identifier ())
-          << "\n";
+          << '\n';
     }
 
     // When duplicating a parent task, create a new parent task.
@@ -97,7 +97,7 @@ int CmdDuplicate::execute (std::string&)
     {
       dup.remove ("mask");
       std::cout << format (STRING_CMD_DUPLICATE_REC, task.identifier ())
-          << "\n";
+          << '\n';
     }
 
     dup.setStatus (Task::pending); // Does not inherit status.
@@ -118,18 +118,18 @@ int CmdDuplicate::execute (std::string&)
       if (context.verbose ("new-id") &&
           (status == Task::pending ||
            status == Task::waiting))
-        std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.id) + "\n";
+        std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.id) + '\n';
 
       else if (context.verbose ("new-uuid") &&
                status != Task::recurring)
-        std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.get ("uuid")) + "\n";
+        std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.get ("uuid")) + '\n';
 
       if (context.verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task);
     }
     else
     {
-      std::cout << STRING_CMD_DUPLICATE_NO << "\n";
+      std::cout << STRING_CMD_DUPLICATE_NO << '\n';
       rc = 1;
       if (_permission_quit)
         break;

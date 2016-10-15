@@ -64,12 +64,12 @@ int CmdImport::execute (std::string&)
   std::vector <std::string> words = context.cli2.getWords ();
   if (! words.size () || (words.size () == 1 && words[0] == "-"))
   {
-    std::cout << format (STRING_CMD_IMPORT_FILE, "STDIN") << "\n";
+    std::cout << format (STRING_CMD_IMPORT_FILE, "STDIN") << '\n';
 
     std::string json;
     std::string line;
     while (std::getline (std::cin, line))
-      json += line + "\n";
+      json += line + '\n';
 
     if (nontrivial (json))
       count = import (json);
@@ -83,7 +83,7 @@ int CmdImport::execute (std::string&)
       if (! incoming.exists ())
         throw format (STRING_CMD_IMPORT_MISSING, word);
 
-      std::cout << format (STRING_CMD_IMPORT_FILE, word) << "\n";
+      std::cout << format (STRING_CMD_IMPORT_FILE, word) << '\n';
 
       // Load the file.
       std::string json;
@@ -224,9 +224,9 @@ void CmdImport::importSingleTask (json::object* obj)
   }
 
   std::cout << task.get ("uuid")
-            << " "
+            << ' '
             << task.get ("description")
-            << "\n";
+            << '\n';
 }
 
 ////////////////////////////////////////////////////////////////////////////////

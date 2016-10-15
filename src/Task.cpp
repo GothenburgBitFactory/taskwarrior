@@ -2144,12 +2144,12 @@ void Task::modify (modType type, bool text_required /* = false */)
 
     case modPrepend:
       context.debug (label + "description <-- '" + text + "' + description");
-      set ("description", text + " " + get ("description"));
+      set ("description", text + ' ' + get ("description"));
       break;
 
     case modAppend:
       context.debug (label + "description <-- description + '" + text + "'");
-      set ("description", get ("description") + " " + text);
+      set ("description", get ("description") + ' ' + text);
       break;
 
     case modAnnotate:

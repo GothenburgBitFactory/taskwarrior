@@ -62,7 +62,7 @@ int CmdCount::execute (std::string& output)
     if (task.getStatus () != Task::recurring)
       ++count;
 
-  output = format (count) + "\n";
+  output = format (count) + '\n';
   return 0;
 }
 

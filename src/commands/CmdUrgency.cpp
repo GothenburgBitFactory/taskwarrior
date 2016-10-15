@@ -74,7 +74,7 @@ int CmdUrgency::execute (std::string& output)
     out << format (STRING_CMD_URGENCY_RESULT,
                    task.identifier (),
                    Lexer::trim (format (task.urgency (), 6, 3)))
-        << "\n";
+        << '\n';
   }
 
   output = out.str ();

@@ -85,7 +85,7 @@ int CmdExport::execute (std::string& output)
     {
       if (json_array)
         output += ",";
-      output += "\n";
+      output += '\n';
     }
 
     output += task.composeJSON (true);
@@ -96,7 +96,7 @@ int CmdExport::execute (std::string& output)
   }
 
   if (filtered.size ())
-    output += "\n";
+    output += '\n';
 
   if (json_array)
     output += "]\n";

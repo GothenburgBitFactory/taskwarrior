@@ -225,7 +225,7 @@ int CmdCustom::execute (std::string& output)
         out << ", "
             << format (STRING_CMD_CUSTOM_TRUNCATED, maxlines - table_header);
 
-      out << "\n";
+      out << '\n';
     }
   }
   else

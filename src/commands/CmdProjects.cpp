@@ -147,15 +147,15 @@ int CmdProjects::execute (std::string& output)
         << (number_projects == 1
               ? format (STRING_CMD_PROJECTS_SUMMARY,  number_projects)
               : format (STRING_CMD_PROJECTS_SUMMARY2, number_projects))
-        << " "
+        << ' '
         << (quantity == 1
               ? format (STRING_CMD_PROJECTS_TASK,  quantity)
               : format (STRING_CMD_PROJECTS_TASKS, quantity))
-        << "\n";
+        << '\n';
   }
   else
   {
-    out << STRING_CMD_PROJECTS_NO << "\n";
+    out << STRING_CMD_PROJECTS_NO << '\n';
     rc = 1;
   }
 
@@ -203,7 +203,7 @@ int CmdCompletionProjects::execute (std::string& output)
 
   for (auto& project : unique)
     if (project.first.length ())
-      output += project.first + "\n";
+      output += project.first + '\n';
 
   return 0;
 }

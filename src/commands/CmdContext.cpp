@@ -94,7 +94,7 @@ std::string CmdContext::joinWords (const std::vector <std::string>& words, unsig
   for (unsigned int i = from; i < to; ++i)
   {
     if (i > from)
-      value += " ";
+      value += ' ';
 
     value += words[i];
   }
@@ -163,7 +163,7 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     if (!success)
       throw format (STRING_CMD_CONTEXT_DEF_FAIL, words[1]);
 
-    out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << "\n";
+    out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << '\n';
   }
   else
     throw std::string (STRING_CMD_CONTEXT_DEF_USAG);
@@ -197,7 +197,7 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
     if (rc != 0)
       throw format (STRING_CMD_CONTEXT_DEL_FAIL, words[1]);
 
-    out << format (STRING_CMD_CONTEXT_DEL_SUCC, words[1]) << "\n";
+    out << format (STRING_CMD_CONTEXT_DEL_SUCC, words[1]) << '\n';
   }
   else
     throw std::string(STRING_CMD_CONTEXT_DEL_USAG);
@@ -279,7 +279,7 @@ void CmdContext::setContext (const std::vector <std::string>& words, std::string
   if (! success)
     throw format (STRING_CMD_CONTEXT_SET_FAIL, value);
 
-  out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << "\n";
+  out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << '\n';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -295,11 +295,11 @@ void CmdContext::showContext (std::stringstream& out)
   auto currentContext = context.config.get ("context");
 
   if (currentContext == "")
-    out << STRING_CMD_CONTEXT_SHOW_EMPT << "\n";
+    out << STRING_CMD_CONTEXT_SHOW_EMPT << '\n';
   else
   {
     std::string currentFilter = context.config.get ("context." + currentContext);
-    out << format (STRING_CMD_CONTEXT_SHOW, currentContext, currentFilter) << "\n";
+    out << format (STRING_CMD_CONTEXT_SHOW, currentContext, currentFilter) << '\n';
   }
 }
 
@@ -318,7 +318,7 @@ void CmdContext::unsetContext (std::stringstream& out)
   if (CmdConfig::unsetConfigVariable ("context", false))
     throw std::string(STRING_CMD_CONTEXT_NON_FAIL);
 
-  out << STRING_CMD_CONTEXT_NON_SUCC << "\n";
+  out << STRING_CMD_CONTEXT_NON_SUCC << '\n';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +341,7 @@ CmdCompletionContext::CmdCompletionContext ()
 int CmdCompletionContext::execute (std::string& output)
 {
   for (auto& contet : CmdContext::getContexts ())
-    output += contet + "\n";
+    output += contet + '\n';
 
   return 0;
 }

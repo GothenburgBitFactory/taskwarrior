@@ -225,7 +225,7 @@ int CmdCalendar::execute (std::string& output)
   int details_mFrom = mFrom;
 
   std::stringstream out;
-  out << "\n";
+  out << '\n';
 
   while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
   {
@@ -269,10 +269,10 @@ int CmdCalendar::execute (std::string& output)
       }
     }
 
-    out << "\n"
+    out << '\n'
         << optionalBlankLine ()
         << renderMonths (mFrom, yFrom, today, tasks, monthsPerLine)
-        << "\n";
+        << '\n';
 
     mFrom += monthsPerLine;
     if (mFrom > 12)
@@ -306,9 +306,9 @@ int CmdCalendar::execute (std::string& output)
         << color_holiday.colorize ("holiday")
         << ", "
         << color_weeknumber.colorize ("weeknumber")
-        << "."
+        << '.'
         << optionalBlankLine ()
-        << "\n";
+        << '\n';
 
   if (context.config.get ("calendar.details") == "full" || context.config.get ("calendar.holidays") == "full")
   {
@@ -409,7 +409,7 @@ int CmdCalendar::execute (std::string& output)
 
       out << optionalBlankLine ()
           << holTable.render ()
-          << "\n";
+          << '\n';
     }
   }
 

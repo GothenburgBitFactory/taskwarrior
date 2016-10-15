@@ -87,7 +87,7 @@ int CmdUnique::execute (std::string& output)
 
   // Generate list of unique values.
   for (auto& value : values)
-    output += value + "\n";
+    output += value + '\n';
 
   context.headers.clear ();
   return 0;

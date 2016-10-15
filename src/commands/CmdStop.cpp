@@ -99,7 +99,7 @@ int CmdStop::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_STOP_NO << "\n";
+        std::cout << STRING_CMD_STOP_NO << '\n';
         rc = 1;
         if (_permission_quit)
           break;
@@ -110,7 +110,7 @@ int CmdStop::execute (std::string&)
       std::cout << format (STRING_CMD_STOP_ALREADY,
                            task.identifier (true),
                            task.get ("description"))
-                << "\n";
+                << '\n';
       rc = 1;
     }
   }

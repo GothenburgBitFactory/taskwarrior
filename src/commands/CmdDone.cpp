@@ -112,7 +112,7 @@ int CmdDone::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_DONE_NO << "\n";
+        std::cout << STRING_CMD_DONE_NO << '\n';
         rc = 1;
         if (_permission_quit)
           break;
@@ -123,7 +123,7 @@ int CmdDone::execute (std::string&)
       std::cout << format (STRING_CMD_DONE_NOTPEND,
                            task.identifier (true),
                            task.get ("description"))
-                << "\n";
+                << '\n';
       rc = 1;
     }
   }

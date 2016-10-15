@@ -92,7 +92,7 @@ int CmdModify::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_MODIFY_NO << "\n";
+        std::cout << STRING_CMD_MODIFY_NO << '\n';
         rc = 1;
         if (_permission_quit)
           break;

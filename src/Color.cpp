@@ -308,7 +308,7 @@ Color::operator std::string () const
     if (_value & _COLOR_BRIGHT)
       description += std::string (description.length () ? " " : "") + "bright";
 
-    description += " " + bg ();
+    description += ' ' + bg ();
   }
 
   return description;
