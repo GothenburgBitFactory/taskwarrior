@@ -3,9 +3,9 @@
 - TD-64   sync conflict deleted all annotations of the task
           (thanks to Markus Beppler, Konstantin Vorobyev).
 - TW-61   Extract only tasks with annotations
-          (thanks to Aikido Guy)
+          (thanks to Aikido Guy).
 - TW-1785 Purge command to remove deleted tasks
-          (thanks to Paul Beckingham)
+          (thanks to Paul Beckingham).
 - TW-1772 Implementation of circular dependency detection is
           inefficient (thanks to Michael Meier).
 - TW-1778 Unicode strings are truncated in task description
@@ -26,6 +26,8 @@
           (thanks to george js).
 - TW-1820 Install with -DLANGUAGE=2 flag not work.
           (thanks to E. Manuel Cerr'on Angeles)
+- TW-1857 Change Task::get call to the more efficient Task::has
+          (thanks to Zachary Manning).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
