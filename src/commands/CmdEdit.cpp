@@ -37,7 +37,7 @@
 #include <Context.h>
 #include <Lexer.h>
 #include <Filter.h>
-#include <Nibbler.h>
+#include <Pig.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -710,10 +710,10 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
           }
           else if (type == "numeric")
           {
-            Nibbler n (value);
+            Pig pig (value);
             double d;
-            if (n.getNumber (d) &&
-                n.depleted ())
+            if (pig.getNumber (d) &&
+                pig.eos ())
               task.set (col.first, value);
             else
               throw format (STRING_UDA_NUMERIC, value);
