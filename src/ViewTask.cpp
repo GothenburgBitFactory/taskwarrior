@@ -28,7 +28,6 @@
 #include <ViewTask.h>
 #include <numeric>
 #include <Context.h>
-#include <Timer.h>
 #include <text.h>
 #include <utf8.h>
 #include <i18n.h>
