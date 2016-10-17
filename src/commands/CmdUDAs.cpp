@@ -26,11 +26,11 @@
 
 #include <cmake.h>
 #include <CmdUDAs.h>
+#include <Table.h>
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
 #include <Filter.h>
-#include <ViewText.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -83,19 +83,19 @@ int CmdUDAs::execute (std::string& output)
 
     // Render a list of UDA name, type, label, allowed values,
     // possible default value, and finally the usage count.
-    ViewText view;
-    view.width (context.getWidth ());
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDA));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_LABEL));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUES));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_DEFAULT));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
+    Table table;
+    table.width (context.getWidth ());
+    table.add (STRING_COLUMN_LABEL_UDA);
+    table.add (STRING_COLUMN_LABEL_TYPE);
+    table.add (STRING_COLUMN_LABEL_LABEL);
+    table.add (STRING_COLUMN_LABEL_VALUES);
+    table.add (STRING_COLUMN_LABEL_DEFAULT);
+    table.add (STRING_COLUMN_LABEL_UDACOUNT);
 
     if (context.color ())
     {
-      Color label (context.config.get ("color.label"));
-      view.colorHeader (label);
+      Color label ("underline " + context.config.get ("color.label"));
+      table.colorHeader (label);
     }
 
     for (auto& uda : udas)
@@ -113,17 +113,17 @@ int CmdUDAs::execute (std::string& output)
         if (i.has (uda))
           ++count;
 
-      int row = view.addRow ();
-      view.set (row, 0, uda);
-      view.set (row, 1, type);
-      view.set (row, 2, label);
-      view.set (row, 3, values);
-      view.set (row, 4, defval);
-      view.set (row, 5, count);
+      int row = table.addRow ();
+      table.set (row, 0, uda);
+      table.set (row, 1, type);
+      table.set (row, 2, label);
+      table.set (row, 3, values);
+      table.set (row, 4, defval);
+      table.set (row, 5, count);
     }
 
     out << optionalBlankLine ()
-        << view.render ()
+        << table.render ()
         << optionalBlankLine ()
         << (udas.size () == 1
               ? format (STRING_CMD_UDAS_SUMMARY,  udas.size ())
@@ -149,26 +149,26 @@ int CmdUDAs::execute (std::string& output)
   if (orphans.size ())
   {
     // Display the orphans and their counts.
-    ViewText orphanView;
-    orphanView.width (context.getWidth ());
-    orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_ORPHAN));
-    orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
+    Table orphanTable;
+    orphanTable.width (context.getWidth ());
+    orphanTable.add (STRING_COLUMN_LABEL_ORPHAN);
+    orphanTable.add (STRING_COLUMN_LABEL_UDACOUNT);
 
     if (context.color ())
     {
-      Color label (context.config.get ("color.label"));
-      orphanView.colorHeader (label);
+      Color label ("underline " + context.config.get ("color.label"));
+      orphanTable.colorHeader (label);
     }
 
     for (auto& o : orphans)
     {
-      int row = orphanView.addRow ();
-      orphanView.set (row, 0, o.first);
-      orphanView.set (row, 1, o.second);
+      int row = orphanTable.addRow ();
+      orphanTable.set (row, 0, o.first);
+      orphanTable.set (row, 1, o.second);
     }
 
     out << optionalBlankLine ()
-        << orphanView.render ()
+        << orphanTable.render ()
         << optionalBlankLine ()
         << (udas.size () == 1
               ? format (STRING_CMD_UDAS_ORPHAN,  orphans.size ())
