@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <CmdContext.h>
 #include <CmdConfig.h>
+#include <Table.h>
 #include <Context.h>
 #include <Filter.h>
 #include <sstream>
@@ -218,16 +219,16 @@ void CmdContext::listContexts (std::stringstream& out)
   {
     std::sort (contexts.begin (), contexts.end ());
 
-    ViewText view;
-    view.width (context.getWidth ());
-    view.add (Column::factory ("string", "Name"));
-    view.add (Column::factory ("string", "Definition"));
-    view.add (Column::factory ("string", "Active"));
+    Table table;
+    table.width (context.getWidth ());
+    table.add ("Name");
+    table.add ("Definition");
+    table.add ("Active");
 
     if (context.color ())
     {
       Color label (context.config.get ("color.label"));
-      view.colorHeader (label);
+      table.colorHeader (label);
     }
 
     std::string activeContext = context.config.get ("context");
@@ -238,14 +239,14 @@ void CmdContext::listContexts (std::stringstream& out)
       if (userContext == activeContext)
           active = "yes";
 
-      int row = view.addRow ();
-      view.set (row, 0, userContext);
-      view.set (row, 1, context.config.get ("context." + userContext));
-      view.set (row, 2, active);
+      int row = table.addRow ();
+      table.set (row, 0, userContext);
+      table.set (row, 1, context.config.get ("context." + userContext));
+      table.set (row, 2, active);
     }
 
     out << optionalBlankLine ()
-        << view.render ()
+        << table.render ()
         << optionalBlankLine ();
   }
   else
