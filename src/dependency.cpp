@@ -159,10 +159,10 @@ void dependencyChainOnComplete (Task& task)
     if (context.config.getBoolean ("dependency.reminder"))
     {
       std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
-                << "\n";
+                << '\n';
 
       for (auto& b : blocking)
-        std::cout << "  " << b.id << ' ' << b.get ("description") << "\n";
+        std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
     }
 
     // If there are both blocking and blocked tasks, the chain is broken.
@@ -171,10 +171,10 @@ void dependencyChainOnComplete (Task& task)
       if (context.config.getBoolean ("dependency.reminder"))
       {
         std::cout << STRING_DEPEND_BLOCKING
-                  << "\n";
+                  << '\n';
 
         for (auto& b : blocked)
-          std::cout << "  " << b.id << ' ' << b.get ("description") << "\n";
+          std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
       }
 
       if (!context.config.getBoolean ("dependency.confirmation") ||
@@ -214,10 +214,10 @@ void dependencyChainOnStart (Task& task)
     if (blocking.size ())
     {
       std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
-                << "\n";
+                << '\n';
 
       for (auto& b : blocking)
-        std::cout << "  " << b.id << ' ' << b.get ("description") << "\n";
+        std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
     }
   }
 }
