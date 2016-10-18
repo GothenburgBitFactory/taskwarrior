@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <Config.h>
+#include <Context.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -382,6 +383,8 @@ std::string Config::_defaults =
   "report.blocking.filter= status:pending +BLOCKING\n"
   "\n";
 
+extern Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
 // DO NOT CALL Config::setDefaults.
 //
@@ -421,6 +424,8 @@ void Config::load (const std::string& file, int nest /* = 1 */)
   std::string contents;
   if (File::read (file, contents) && contents.length ())
     parse (contents, nest);
+
+  context.debug (timer.str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -559,6 +559,7 @@ int Hooks::callHookScript (
     timer_per_hook.start();
 
     status = execute (script, args, inputStr, outputStr);
+    context.debug(timer_per_hook.str ());
   }
   else
     status = execute (script, args, inputStr, outputStr);
