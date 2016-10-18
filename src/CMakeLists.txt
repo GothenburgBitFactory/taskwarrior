@@ -21,7 +21,6 @@ add_library (task CLI2.cpp CLI2.h
                   Nibbler.cpp Nibbler.h
                   TDB2.cpp TDB2.h
                   Task.cpp Task.h
-                  Timer.cpp Timer.h
                   TLSClient.cpp TLSClient.h
                   Variant.cpp Variant.h
                   ViewTask.cpp ViewTask.h
@@ -41,6 +40,7 @@ add_library (libshared libshared/src/FS.cpp            libshared/src/FS.h
                        libshared/src/Pig.cpp           libshared/src/Pig.h
                        libshared/src/RX.cpp            libshared/src/RX.h
                        libshared/src/Table.cpp         libshared/src/Table.h
+                       libshared/src/Timer.cpp         libshared/src/Timer.h
                        libshared/src/unicode.cpp       libshared/src/unicode.h
                        libshared/src/utf8.cpp          libshared/src/utf8.h
                        libshared/src/wcwidth6.cpp)
