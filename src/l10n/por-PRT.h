@@ -862,7 +862,7 @@
 #define STRING_TASK_VALID_BEFORE     "Aviso: Especificou que a data de '{1}' é posterior à data de '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Uma tarefa recorrente necessita de uma data de vencimento."
 #define STRING_TASK_VALID_RECUR      "O valor de recorrência '{1}' não é válido."
-#define STRING_TASK_SAFETY_VALVE     "Este comando não possui um filtro e irá modificar todas as tarefas. Tem a certeza?"
+#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Execução do comando abortada."
 #define STRING_TASK_SAFETY_ALLOW     "Não especificou um filtro e com o valor de 'allow.empty.filter', nenhuma ação foi tomada."
 #define STRING_TASK_INVALID_DUR      "The duration value '{1}' is not supported."
