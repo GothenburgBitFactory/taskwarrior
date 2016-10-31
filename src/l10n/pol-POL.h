@@ -862,7 +862,7 @@
 #define STRING_TASK_VALID_BEFORE     "Uwaga: podałeś datę '{1}' jako datę po '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Zadanie cykliczne musi posiadać datę zakończenia."
 #define STRING_TASK_VALID_RECUR      "Wartość '{1}' określająca okres zadania jest niepoprawna."
-#define STRING_TASK_SAFETY_VALVE     "Nie nałożono filtra, wszystkie zadania zostaną poddane modyfikacji.  Czy chcesz kontynuować?"
+#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Niedopuszczono do wykonania polecenia."
 #define STRING_TASK_SAFETY_ALLOW     "Brak filtra, z aktywną flagą 'allow.empty.filter', nie podjęto akcji."
 #define STRING_TASK_INVALID_DUR      "Wartość czas trwania '{1}' jest niewspierana."

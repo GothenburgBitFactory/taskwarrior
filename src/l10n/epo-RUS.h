@@ -862,7 +862,7 @@
 #define STRING_TASK_VALID_BEFORE     "Averto: Vi specifis daton '{1}' post dato '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Reokazanta tasko devas ankaŭ havi daton 'due'."
 #define STRING_TASK_VALID_RECUR      "Reokaz-valoro '{1}' ne estas valida."
-#define STRING_TASK_SAFETY_VALVE     "Tiu komando ne havas filtrilo, do ĝi modifos ĉian taskon.  Ĉu vi estas certa?"
+#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Antaŭmalebligis komandon."
 #define STRING_TASK_SAFETY_ALLOW     "Vi ne specifis filtrilon. Laŭ la valoro 'allow.empty.filter', ne faros nenion."
 #define STRING_TASK_INVALID_DUR      "The duration value '{1}' is not supported."

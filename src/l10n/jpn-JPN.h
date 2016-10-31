@@ -862,7 +862,7 @@
 #define STRING_TASK_VALID_BEFORE     "Warning: You have specified that the '{1}' date is after the '{2}' date."
 #define STRING_TASK_VALID_REC_DUE    "A recurring task must also have a 'due' date."
 #define STRING_TASK_VALID_RECUR      "The recurrence value '{1}' is not valid."
-#define STRING_TASK_SAFETY_VALVE     "このコマンドにはフィルタが設定されていないため全タスクが変更されます。よいですか?"
+#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "コマンドの実行は中止された。"
 #define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
 #define STRING_TASK_INVALID_DUR      "The duration value '{1}' is not supported."
