@@ -108,7 +108,7 @@ class Taskd(object):
         self.env = os.environ.copy()
 
         # Make sure TASKDDATA points to the temporary folder
-        self.env["TASKDATA"] = self.datadir
+        self.env["TASKDDATA"] = self.datadir
 
     def create_user(self, user=None, group=None, org=None):
         """Create a user/group in the server and return the user
