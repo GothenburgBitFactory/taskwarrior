@@ -53,8 +53,8 @@ int main (int, char**)
   text = "This ☺ is a test of utf8 line extraction.";
   lines.clear ();
   wrapText (lines, text, 7, true);
-  t.is (lines.size (), (size_t) 7, "wrapText 'This ☺ is a test of utf8 line extraction.' -> total 7 lines");
-  t.is (lines[0], "This ☺",        "wrapText line 0 -> 'This ☺'");
+  t.is (lines.size (), (size_t) 7, "wrapText 'This \\u263a is a test of utf8 line extraction.' -> total 7 lines");
+  t.is (lines[0], "This ☺",        "wrapText line 0 -> 'This \\u263a'");
   t.is (lines[1], "is a",          "wrapText line 1 -> 'is a'");
   t.is (lines[2], "test of",       "wrapText line 2 -> 'test of'");
   t.is (lines[3], "utf8",          "wrapText line 3 -> 'utf8'");
@@ -74,7 +74,7 @@ int main (int, char**)
   unsigned int offset = 0;
   std::string line;
   extractLine (line, text, 7, true, offset);
-  t.is (line, "This ☺", "extractLine 7 'This ☺ is a test of utf8 line extraction.' -> 'This ☺'");
+  t.is (line, "This ☺", "extractLine 7 'This \\u263a is a test of utf8 line extraction.' -> 'This \\u263a'");
 
   // void extractLine (std::string& text, std::string& line, int length, bool hyphenate, unsigned int& offset)
   text = "line 1\nlengthy second line that exceeds width";
