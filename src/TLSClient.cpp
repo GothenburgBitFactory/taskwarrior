@@ -86,7 +86,9 @@ TLSClient::~TLSClient ()
 {
   gnutls_deinit (_session);
   gnutls_certificate_free_credentials (_credentials);
+#if GNUTLS_VERSION_NUMBER < 0x030300
   gnutls_global_deinit ();
+#endif
 
   if (_socket)
   {
@@ -144,9 +146,12 @@ void TLSClient::init (
   _cert = cert;
   _key  = key;
 
-  int ret = gnutls_global_init ();
+  int ret;
+#if GNUTLS_VERSION_NUMBER < 0x030300
+  ret = gnutls_global_init ();
   if (ret < 0)
     throw format ("TLS init error. {1}", gnutls_strerror (ret));
+#endif
 
   ret = gnutls_certificate_allocate_credentials (&_credentials);
   if (ret < 0)
