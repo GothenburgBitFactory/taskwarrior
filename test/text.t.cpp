@@ -230,7 +230,7 @@ int main (int, char**)
   t.is (longestWord ("    "),                   0, "longestWord (    ) --> 0");
   t.is (longestWord ("this is a test"),         4, "longestWord (this is a test) --> 4");
   t.is (longestWord ("this is a better test"),  6, "longestWord (this is a better test) --> 6");
-  t.is (longestWord ("house Çirçös clown"),     6, "longestWord (Çirçös) --> 6");
+  t.is (longestWord ("house Çirçös clown"),     6, "longestWord (house ...... clown) --> 6");
 
   // int longestLine (const std::string&)
   t.is (longestLine ("one two three four"),    18, "longestLine (one two three four) --> 18");
