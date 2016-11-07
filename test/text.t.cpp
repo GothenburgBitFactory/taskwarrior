@@ -351,10 +351,10 @@ int main (int, char**)
   t.is (leftJustify ("foo", 3), "foo",   "leftJustify foo,3 -> 'foo'");
   t.is (leftJustify ("foo", 4), "foo ",  "leftJustify foo,4 -> 'foo '");
   t.is (leftJustify ("foo", 5), "foo  ", "leftJustify foo,5 -> 'foo  '");
-  t.is (leftJustify ("föo", 5), "föo  ", "leftJustify föo,5 -> 'föo  '");
+  t.is (leftJustify ("föo", 5), "föo  ", "leftJustify f:oo,5 -> 'f:oo  '");
 
   // When a string doesn't fit in the space necessary‥
-  t.is (leftJustify ("foo", 2), "fo",    "leftJustify foo,2 -→ 'fo'");
+  t.is (leftJustify ("foo", 2), "fo",    "leftJustify foo,2 -> 'fo'");
 
   // std::string rightJustify (const std::string&, const int);
   t.is (rightJustify (123, 3), "123",   "rightJustify 123,3 -> '123'");
@@ -365,7 +365,7 @@ int main (int, char**)
   t.is (rightJustify ("foo", 3), "foo",   "rightJustify foo,3 -> 'foo'");
   t.is (rightJustify ("foo", 4), " foo",  "rightJustify foo,4 -> ' foo'");
   t.is (rightJustify ("foo", 5), "  foo", "rightJustify foo,5 -> '  foo'");
-  t.is (rightJustify ("föo", 5), "  föo", "rightJustify föo,5 -> '  föo'");
+  t.is (rightJustify ("föo", 5), "  föo", "rightJustify f:oo,5 -> '  f:oo'");
 
   // bool closeEnough (const std::string&, const std::string&, unsigned int minLength = 0);
   t.ok (closeEnough ("foobar", "foobar"),      "closeEnough foobar == foobar");
