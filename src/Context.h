@@ -104,7 +104,7 @@ public:
   long                                time_gc_us          {0};
   long                                time_filter_us      {0};
   long                                time_commit_us      {0};
-  Timer                               timer_sort;
+  long                                time_sort_us        {0};
   Timer                               timer_render;
   Timer                               timer_hooks;
 };

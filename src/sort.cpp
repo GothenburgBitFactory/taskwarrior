@@ -47,7 +47,7 @@ void sort_tasks (
   std::vector <int>& order,
   const std::string& keys)
 {
-  context.timer_sort.start ();
+  Timer timer;
 
   global_data = &data;
 
@@ -59,7 +59,7 @@ void sort_tasks (
   if (order.size ())
     std::stable_sort (order.begin (), order.end (), sort_compare);
 
-  context.timer_sort.stop ();
+  context.time_sort_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
