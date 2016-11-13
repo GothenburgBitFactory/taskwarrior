@@ -88,7 +88,6 @@ Context::~Context ()
 int Context::initialize (int argc, const char** argv)
 {
   timer_total.start ();
-  Timer timer_init;
   int rc = 0;
 
   try
@@ -293,7 +292,7 @@ int Context::initialize (int argc, const char** argv)
         std::cerr << e << '\n';
   }
 
-  time_init_us += timer_init.total_us ();
+  time_init_us += timer_total.total_us ();
   return rc;
 }
 
@@ -311,6 +310,7 @@ int Context::run ()
     hooks.onExit ();          // No chance to update data.
 
     timer_total.stop ();
+    time_total_us += timer_total.total_us ();
 
     std::stringstream s;
     s << "Perf "
@@ -325,24 +325,22 @@ int Context::run ()
       << ISO8601d ().toISO ()
 
       << " init:"   << time_init_us
-      << " load:"   << static_cast <long> (timer_load.total_us ())
-      << " gc:"     << time_gc_us - tdb2.load_time_us
+      << " load:"   << time_load_us
+      << " gc:"     << time_gc_us - time_load_us
       << " filter:" << time_filter_us
       << " commit:" << time_commit_us
       << " sort:"   << time_sort_us
       << " render:" << time_render_us
       << " hooks:"  << time_hooks_us
-      << " other:"  << static_cast <long> (timer_total.total_us () -
-                                           time_init_us            -
-                                           timer_load.total_us ()  -
-                                           time_gc_us              -
-                                           tdb2.load_time_us       -
-                                           time_filter_us          -
-                                           time_commit_us          -
-                                           time_sort_us            -
-                                           time_render_us          -
-                                           time_hooks_us)
-      << " total:"  << static_cast <long> (timer_total.total_us ())
+      << " other:"  << time_total_us  -
+                       time_init_us   -
+                       time_gc_us     -
+                       time_filter_us -
+                       time_commit_us -
+                       time_sort_us   -
+                       time_render_us -
+                       time_hooks_us
+      << " total:"  << time_total_us
       << '\n';
     debug (s.str ());
   }

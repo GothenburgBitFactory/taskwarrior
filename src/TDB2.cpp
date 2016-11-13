@@ -425,7 +425,7 @@ void TF2::load_tasks (bool from_gc /* = false */)
     throw e + format (STRING_TDB2_PARSE_ERROR, _file._data, line_number);
   }
 
-  context.tdb2.load_time_us += timer.total_us ();
+  context.time_load_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
