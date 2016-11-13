@@ -329,7 +329,7 @@ int Context::run ()
       << " gc:"     << time_gc_us - tdb2.load_time_us
       << " filter:" << time_filter_us
       << " commit:" << time_commit_us
-      << " sort:"   << static_cast <long> (timer_sort.total_us ())
+      << " sort:"   << time_sort_us
       << " render:" << static_cast <long> (timer_render.total_us ())
       << " hooks:"  << static_cast <long> (timer_hooks.total_us ())
       << " other:"  << static_cast <long> (timer_total.total_us ()  -
@@ -339,7 +339,7 @@ int Context::run ()
                                            tdb2.load_time_us        -
                                            time_filter_us           -
                                            time_commit_us           -
-                                           timer_sort.total_us ()   -
+                                           time_sort_us             -
                                            timer_render.total_us () -
                                            timer_hooks.total_us ())
       << " total:"  << static_cast <long> (timer_total.total_us ())
