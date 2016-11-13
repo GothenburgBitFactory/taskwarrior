@@ -41,7 +41,7 @@
 class Context
 {
 public:
-  Context ();                          // Default constructor
+  Context () = default;                // Default constructor
   ~Context ();                         // Destructor
 
   Context (const Context&);
@@ -77,32 +77,26 @@ private:
   void propagateDebug ();
 
 public:
-  CLI2                                cli2;
-  std::string                         home_dir;
-  File                                rc_file;
-  Path                                data_dir;
-  Config                              config;
-
-  TDB2                                tdb2;
-  Hooks                               hooks;
-
-  bool                                determine_color_use;
-  bool                                use_color;
-
-  bool                                run_gc;
-
-  bool                                verbosity_legacy;
-  std::set <std::string>              verbosity;
-  std::vector <std::string>           headers;
-  std::vector <std::string>           footnotes;
-  std::vector <std::string>           errors;
-  std::vector <std::string>           debugMessages;
-
-  std::map <std::string, Command*>    commands;
-  std::map <std::string, Column*>     columns;
-
-  int                                 terminal_width;
-  int                                 terminal_height;
+  CLI2                                cli2                {};
+  std::string                         home_dir            {};
+  File                                rc_file             {"~/.taskrc"};
+  Path                                data_dir            {"~/.task"};
+  Config                              config              {};
+  TDB2                                tdb2                {};
+  Hooks                               hooks               {};
+  bool                                determine_color_use {true};
+  bool                                use_color           {true};
+  bool                                run_gc              {true};
+  bool                                verbosity_legacy    {false};
+  std::set <std::string>              verbosity           {};
+  std::vector <std::string>           headers             {};
+  std::vector <std::string>           footnotes           {};
+  std::vector <std::string>           errors              {};
+  std::vector <std::string>           debugMessages       {};
+  std::map <std::string, Command*>    commands            {};
+  std::map <std::string, Column*>     columns             {};
+  int                                 terminal_width      {0};
+  int                                 terminal_height     {0};
 
   Timer                               timer_total         {};
   long                                time_init_us        {0};
