@@ -75,21 +75,6 @@ static const char* modifierNames[] =
 #define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
-Context::Context ()
-: rc_file ("~/.taskrc")
-, data_dir ("~/.task")
-, config ()
-, tdb2 ()
-, determine_color_use (true)
-, use_color (true)
-, run_gc (true)
-, verbosity_legacy (false)
-, terminal_width (0)
-, terminal_height (0)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Context::~Context ()
 {
   for (auto& com : commands)
