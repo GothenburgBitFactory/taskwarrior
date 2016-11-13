@@ -104,8 +104,8 @@ public:
   int                                 terminal_width;
   int                                 terminal_height;
 
-  Timer                               timer_total;
-  Timer                               timer_init;
+  Timer                               timer_total         {};
+  long                                time_init_us        {0};
   Timer                               timer_load;
   Timer                               timer_gc;
   Timer                               timer_filter;
