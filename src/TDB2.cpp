@@ -1253,7 +1253,7 @@ void TDB2::show_diff (
 // - waiting task in pending that needs to be un-waited
 void TDB2::gc ()
 {
-  context.timer_gc.start ();
+  Timer timer;
 
   // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
@@ -1290,7 +1290,7 @@ void TDB2::gc ()
       completed.dependency_scan ();
   }
 
-  context.timer_gc.stop ();
+  context.time_gc_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
