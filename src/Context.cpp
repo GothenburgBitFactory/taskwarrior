@@ -331,7 +331,7 @@ int Context::run ()
       << " commit:" << time_commit_us
       << " sort:"   << time_sort_us
       << " render:" << static_cast <long> (timer_render.total_us ())
-      << " hooks:"  << static_cast <long> (timer_hooks.total_us ())
+      << " hooks:"  << time_hooks_us
       << " other:"  << static_cast <long> (timer_total.total_us ()  -
                                            time_init_us             -
                                            timer_load.total_us ()   -
@@ -341,7 +341,7 @@ int Context::run ()
                                            time_commit_us           -
                                            time_sort_us             -
                                            timer_render.total_us () -
-                                           timer_hooks.total_us ())
+                                           time_hooks_us)
       << " total:"  << static_cast <long> (timer_total.total_us ())
       << '\n';
     debug (s.str ());

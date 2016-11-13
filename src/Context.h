@@ -106,7 +106,7 @@ public:
   long                                time_commit_us      {0};
   long                                time_sort_us        {0};
   Timer                               timer_render;
-  Timer                               timer_hooks;
+  long                                time_hooks_us       {0};
 };
 
 #endif

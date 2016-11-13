@@ -111,7 +111,7 @@ void Hooks::onLaunch () const
   if (! _enabled)
     return;
 
-  context.timer_hooks.start ();
+  Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-launch");
   if (matchingScripts.size ())
@@ -144,7 +144,7 @@ void Hooks::onLaunch () const
     }
   }
 
-  context.timer_hooks.stop ();
+  context.time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ void Hooks::onExit () const
   if (! _enabled)
     return;
 
-  context.timer_hooks.start ();
+  Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-exit");
   if (matchingScripts.size ())
@@ -206,7 +206,7 @@ void Hooks::onExit () const
     }
   }
 
-  context.timer_hooks.stop ();
+  context.time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +226,7 @@ void Hooks::onAdd (Task& task) const
   if (! _enabled)
     return;
 
-  context.timer_hooks.start ();
+  Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-add");
   if (matchingScripts.size ())
@@ -271,7 +271,7 @@ void Hooks::onAdd (Task& task) const
     task = Task (input[0]);
   }
 
-  context.timer_hooks.stop ();
+  context.time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -292,7 +292,7 @@ void Hooks::onModify (const Task& before, Task& after) const
   if (! _enabled)
     return;
 
-  context.timer_hooks.start ();
+  Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-modify");
   if (matchingScripts.size ())
@@ -337,7 +337,7 @@ void Hooks::onModify (const Task& before, Task& after) const
     after = Task (input[1]);
   }
 
-  context.timer_hooks.stop ();
+  context.time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
