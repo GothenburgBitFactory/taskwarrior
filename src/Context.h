@@ -99,8 +99,9 @@ public:
   int                                 terminal_height     {0};
 
   Timer                               timer_total         {};
+  long                                time_total_us       {0};
   long                                time_init_us        {0};
-  Timer                               timer_load;
+  long                                time_load_us        {0};
   long                                time_gc_us          {0};
   long                                time_filter_us      {0};
   long                                time_commit_us      {0};

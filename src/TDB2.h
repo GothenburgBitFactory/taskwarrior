@@ -154,7 +154,6 @@ public:
   TF2 completed;
   TF2 undo;
   TF2 backlog;
-  long load_time_us {};
 
 private:
   std::string        _location;
