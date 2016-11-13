@@ -381,7 +381,7 @@ void TF2::load_gc (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_tasks (bool from_gc /* = false */)
 {
-  context.timer_load.start ();
+  Timer timer;
 
   if (! _loaded_lines)
   {
@@ -425,7 +425,7 @@ void TF2::load_tasks (bool from_gc /* = false */)
     throw e + format (STRING_TDB2_PARSE_ERROR, _file._data, line_number);
   }
 
-  context.timer_load.stop ();
+  context.tdb2.load_time_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1254,7 +1254,6 @@ void TDB2::show_diff (
 void TDB2::gc ()
 {
   context.timer_gc.start ();
-  unsigned long load_start = context.timer_load.total ();
 
   // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
@@ -1291,10 +1290,7 @@ void TDB2::gc ()
       completed.dependency_scan ();
   }
 
-  // Stop and remove accumulated load time from the GC time, because they
-  // overlap.
   context.timer_gc.stop ();
-  context.timer_gc.subtract (context.timer_load.total () - load_start);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
