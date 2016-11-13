@@ -28,6 +28,7 @@
 #include <Filter.h>
 #include <algorithm>
 #include <Context.h>
+#include <Timer.h>
 #include <DOM.h>
 #include <Eval.h>
 #include <Variant.h>
@@ -59,7 +60,7 @@ bool domSource (const std::string& identifier, Variant& value)
 // Take an input set of tasks and filter into a subset.
 void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
-  context.timer_filter.start ();
+  Timer timer;
   _startCount = (int) input.size ();
 
   context.cli2.prepareFilter ();
@@ -98,15 +99,14 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
   _endCount = (int) output.size ();
   context.debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
-  context.timer_filter.stop ();
+  context.time_filter_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
 void Filter::subset (std::vector <Task>& output)
 {
-  context.timer_filter.start ();
-
+  Timer timer;
   context.cli2.prepareFilter ();
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
@@ -119,9 +119,9 @@ void Filter::subset (std::vector <Task>& output)
 
   if (precompiled.size ())
   {
-    context.timer_filter.stop ();
+    Timer timer_pending;
     auto pending = context.tdb2.pending.get_tasks ();
-    context.timer_filter.start ();
+    context.time_filter_us -= timer_pending.total_us ();
     _startCount = (int) pending.size ();
 
     Eval eval;
@@ -148,9 +148,9 @@ void Filter::subset (std::vector <Task>& output)
     shortcut = pendingOnly ();
     if (! shortcut)
     {
-      context.timer_filter.stop ();
+      Timer timer_completed;
       auto completed = context.tdb2.completed.get_tasks ();
-      context.timer_filter.start ();
+      context.time_filter_us -= timer_completed.total_us ();
       _startCount += (int) completed.size ();
 
       for (auto& task : completed)
@@ -170,20 +170,19 @@ void Filter::subset (std::vector <Task>& output)
   else
   {
     safety ();
-    context.timer_filter.stop ();
 
+    Timer pending_completed;
     for (auto& task : context.tdb2.pending.get_tasks ())
       output.push_back (task);
 
     for (auto& task : context.tdb2.completed.get_tasks ())
       output.push_back (task);
-
-    context.timer_filter.start ();
+    context.time_filter_us -= pending_completed.total_us ();
   }
 
   _endCount = (int) output.size ();
   context.debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
-  context.timer_filter.stop ();
+  context.time_filter_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

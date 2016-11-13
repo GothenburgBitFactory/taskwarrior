@@ -102,7 +102,7 @@ public:
   long                                time_init_us        {0};
   Timer                               timer_load;
   long                                time_gc_us          {0};
-  Timer                               timer_filter;
+  long                                time_filter_us      {0};
   Timer                               timer_commit;
   Timer                               timer_sort;
   Timer                               timer_render;

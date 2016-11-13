@@ -327,7 +327,7 @@ int Context::run ()
       << " init:"   << time_init_us
       << " load:"   << static_cast <long> (timer_load.total_us ())
       << " gc:"     << time_gc_us - tdb2.load_time_us
-      << " filter:" << static_cast <long> (timer_filter.total_us ())
+      << " filter:" << time_filter_us
       << " commit:" << static_cast <long> (timer_commit.total_us ())
       << " sort:"   << static_cast <long> (timer_sort.total_us ())
       << " render:" << static_cast <long> (timer_render.total_us ())
@@ -337,7 +337,7 @@ int Context::run ()
                                            timer_load.total_us ()   -
                                            time_gc_us               -
                                            tdb2.load_time_us        -
-                                           timer_filter.total_us () -
+                                           time_filter_us           -
                                            timer_commit.total_us () -
                                            timer_sort.total_us ()   -
                                            timer_render.total_us () -
