@@ -740,6 +740,8 @@ void TDB2::update (
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::commit ()
 {
+  Timer timer;
+
   // Ignore harmful signals.
   signal (SIGHUP,    SIG_IGN);
   signal (SIGINT,    SIG_IGN);
@@ -749,10 +751,7 @@ void TDB2::commit ()
   signal (SIGUSR2,   SIG_IGN);
 
   dump ();
-  context.timer_commit.start ();
-
   gather_changes ();
-
   pending.commit ();
   completed.commit ();
   undo.commit ();
@@ -766,7 +765,7 @@ void TDB2::commit ()
   signal (SIGUSR1,   SIG_DFL);
   signal (SIGUSR2,   SIG_DFL);
 
-  context.timer_commit.stop ();
+  context.time_commit_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
