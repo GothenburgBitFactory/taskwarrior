@@ -555,11 +555,9 @@ int Hooks::callHookScript (
   std::string outputStr;
   if (_debug >= 2)
   {
-    Timer timer_per_hook("Hooks::execute (" + script + ")");
-    timer_per_hook.start();
-
+    Timer timer;
     status = execute (script, args, inputStr, outputStr);
-    context.debug(timer_per_hook.str ());
+    context.debugTiming (format ("Hooks::execute ({1})", script), timer);
   }
   else
     status = execute (script, args, inputStr, outputStr);
