@@ -63,7 +63,7 @@ int CmdExport::execute (std::string& output)
   filter.subset (filtered);
 
   // Export == render.
-  context.timer_render.start ();
+  Timer timer;
 
   // Obey 'limit:N'.
   int rows = 0;
@@ -101,7 +101,7 @@ int CmdExport::execute (std::string& output)
   if (json_array)
     output += "]\n";
 
-  context.timer_render.stop ();
+  context.time_render_us += timer.total_us ();
   return rc;
 }
 
