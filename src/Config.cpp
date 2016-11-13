@@ -408,7 +408,7 @@ Config::Config ()
 //
 void Config::load (const std::string& file, int nest /* = 1 */)
 {
-  Timer timer ("Config::load (" + file + ")");
+  Timer timer;
 
   if (nest > 10)
     throw std::string (STRING_CONFIG_OVERNEST);
@@ -425,7 +425,7 @@ void Config::load (const std::string& file, int nest /* = 1 */)
   if (File::read (file, contents) && contents.length ())
     parse (contents, nest);
 
-  context.debug (timer.str ());
+  context.debugTiming (format ("Config::load ({1})", file), timer);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
