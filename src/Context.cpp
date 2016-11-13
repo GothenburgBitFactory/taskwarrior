@@ -103,7 +103,7 @@ Context::~Context ()
 int Context::initialize (int argc, const char** argv)
 {
   timer_total.start ();
-  timer_init.start ();
+  Timer timer_init;
   int rc = 0;
 
   try
@@ -308,7 +308,7 @@ int Context::initialize (int argc, const char** argv)
         std::cerr << e << '\n';
   }
 
-  timer_init.stop ();
+  time_init_us += timer_init.total_us ();
   return rc;
 }
 
@@ -339,24 +339,25 @@ int Context::run ()
       << ' '
       << ISO8601d ().toISO ()
 
-      << " init:"   << timer_init.total ()
-      << " load:"   << timer_load.total ()
-      << " gc:"     << timer_gc.total ()
-      << " filter:" << timer_filter.total ()
-      << " commit:" << timer_commit.total ()
-      << " sort:"   << timer_sort.total ()
-      << " render:" << timer_render.total ()
-      << " hooks:"  << timer_hooks.total ()
-      << " other:"  << timer_total.total ()  -
-                       timer_init.total ()   -
-                       timer_load.total ()   -
-                       timer_gc.total ()     -
-                       timer_filter.total () -
-                       timer_commit.total () -
-                       timer_sort.total ()   -
-                       timer_render.total () -
-                       timer_hooks.total ()
-      << " total:"  << timer_total.total ()
+      << " init:"   << time_init_us
+      << " load:"   << static_cast <long> (timer_load.total_us ())
+      << " gc:"     << static_cast <long> (timer_gc.total_us () - tdb2.load_time_us)
+      << " filter:" << static_cast <long> (timer_filter.total_us ())
+      << " commit:" << static_cast <long> (timer_commit.total_us ())
+      << " sort:"   << static_cast <long> (timer_sort.total_us ())
+      << " render:" << static_cast <long> (timer_render.total_us ())
+      << " hooks:"  << static_cast <long> (timer_hooks.total_us ())
+      << " other:"  << static_cast <long> (timer_total.total_us ()  -
+                                           time_init_us             -
+                                           timer_load.total_us ()   -
+                                           timer_gc.total_us ()     -
+                                           tdb2.load_time_us        -
+                                           timer_filter.total_us () -
+                                           timer_commit.total_us () -
+                                           timer_sort.total_us ()   -
+                                           timer_render.total_us () -
+                                           timer_hooks.total_us ())
+      << " total:"  << static_cast <long> (timer_total.total_us ())
       << '\n';
     debug (s.str ());
   }
