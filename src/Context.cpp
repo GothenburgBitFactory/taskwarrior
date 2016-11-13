@@ -29,6 +29,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <algorithm>
 #include <assert.h>
 #include <stdlib.h>
@@ -799,6 +800,20 @@ void Context::decomposeSortField (
     ascending = true;
     key = field;
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::debugTiming (const std::string& details, const Timer& timer)
+{
+  std::stringstream out;
+  out << "Timer "
+      << details
+      << ' '
+      << std::setprecision (6)
+      << std::fixed
+      << timer.total_us () / 1.0e6
+      << " sec";
+  debug (out.str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

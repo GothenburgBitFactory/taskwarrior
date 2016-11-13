@@ -66,6 +66,7 @@ public:
   void error (const std::string&);     // Error message sink - non-maskable
 
   void decomposeSortField (const std::string&, std::string&, bool&, bool&);
+  void debugTiming (const std::string&, const Timer&);
 
 private:
   void staticInitialization ();
