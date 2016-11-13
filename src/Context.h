@@ -101,7 +101,7 @@ public:
   Timer                               timer_total         {};
   long                                time_init_us        {0};
   Timer                               timer_load;
-  Timer                               timer_gc;
+  long                                time_gc_us          {0};
   Timer                               timer_filter;
   Timer                               timer_commit;
   Timer                               timer_sort;
