@@ -36,7 +36,7 @@ class TLSClient
 public:
   enum trust_level { strict, ignore_hostname, allow_all };
 
-  TLSClient ();
+  TLSClient () = default;
   ~TLSClient ();
   void limit (int);
   void debug (int);
@@ -51,18 +51,18 @@ public:
   void recv (std::string&);
 
 private:
-  std::string                      _ca;
-  std::string                      _cert;
-  std::string                      _key;
-  std::string                      _ciphers;
-  std::string                      _host;
-  std::string                      _port;
-  gnutls_certificate_credentials_t _credentials;
-  gnutls_session_t                 _session;
-  int                              _socket;
-  int                              _limit;
-  bool                             _debug;
-  enum trust_level                 _trust;
+  std::string                      _ca          {""};
+  std::string                      _cert        {""};
+  std::string                      _key         {""};
+  std::string                      _ciphers     {""};
+  std::string                      _host        {""};
+  std::string                      _port        {""};
+  gnutls_certificate_credentials_t _credentials {};
+  gnutls_session_t                 _session     {0};
+  int                              _socket      {0};
+  int                              _limit       {0};
+  bool                             _debug       {false};
+  enum trust_level                 _trust       {strict};
 };
 
 #endif
