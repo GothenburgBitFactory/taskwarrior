@@ -67,21 +67,6 @@ static int verify_certificate_callback (gnutls_session_t session)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TLSClient::TLSClient ()
-: _ca ("")
-, _cert ("")
-, _key ("")
-, _host ("")
-, _port ("")
-, _session(0)
-, _socket (0)
-, _limit (0)
-, _debug (false)
-, _trust(strict)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 TLSClient::~TLSClient ()
 {
   gnutls_deinit (_session);
