@@ -571,8 +571,8 @@ const std::string TF2::dump ()
     label = rightJustify (_file._data.substr (slash + 1), 14);
 
   // File mode.
-  std::string mode = std::string (_file.readable () ? "r" : "-") +
-                     std::string (_file.writable () ? "w" : "-");
+  std::string mode = std::string (_file.exists () && _file.readable () ? "r" : "-") +
+                     std::string (_file.exists () && _file.writable () ? "w" : "-");
        if (mode == "r-") mode = red.colorize (mode);
   else if (mode == "rw") mode = green.colorize (mode);
   else                   mode = yellow.colorize (mode);

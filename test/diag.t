@@ -50,6 +50,8 @@ class TestDiagnostics(TestCase):
         self.tap(out)
         self.assertRegexpMatches(out, "Compliance:\s+C\+\+11")
         self.assertRegexpMatches(out, "libgnutls:\s+\d+\.\d+\.\d+")
+        self.assertIn("edlin", out)
+        self.assertIn("strict", out)
 
 
 if __name__ == "__main__":
