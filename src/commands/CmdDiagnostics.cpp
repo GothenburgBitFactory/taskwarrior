@@ -234,13 +234,53 @@ int CmdDiagnostics::execute (std::string& output)
       << context.config.get ("taskd.server")
       << '\n';
 
-  if (context.config.get ("taskd.ca") != "")
-    out << "         CA: "
-        << context.config.get ("taskd.ca")
-        << (File (context.config.get ("taskd.ca")).readable ()
-             ? ", readable, " : ", not readable, ")
-        << File (context.config.get ("taskd.ca")).size ()
-        << " bytes\n";
+  std::string ca_pem = context.config.get ("taskd.ca");
+  out << "         CA: ";
+  if (ca_pem != "")
+  {
+    File file_ca (ca_pem);
+    if (file_ca.exists ())
+      out << ca_pem
+          << (file_ca.readable () ? ", readable, " : ", not readable, ")
+          << file_ca.size ()
+          << " bytes\n";
+    else
+      out << "not found\n";
+  }
+  else
+    out << "-\n";
+
+  std::string cert_pem = context.config.get ("taskd.certificate");
+  out << "Certificate: ";
+  if (cert_pem != "")
+  {
+    File file_cert (cert_pem);
+    if (file_cert.exists ())
+      out << cert_pem
+          << (file_cert.readable () ? ", readable, " : ", not readable, ")
+          << file_cert.size ()
+          << " bytes\n";
+    else
+      out << "not found\n";
+  }
+  else
+    out << "-\n";
+
+  std::string key_pem = context.config.get ("taskd.key");
+  out << "        Key: ";
+  if (key_pem != "")
+  {
+    File file_key (key_pem);
+    if (file_key.exists ())
+      out << key_pem
+          << (file_key.readable () ? ", readable, " : ", not readable, ")
+          << file_key.size ()
+          << " bytes\n";
+    else
+      out << "not found\n";
+  }
+  else
+    out << "-\n";
 
   std::string trust_value = context.config.get ("taskd.trust");
   if (trust_value == "strict" ||
@@ -249,20 +289,6 @@ int CmdDiagnostics::execute (std::string& output)
     out << "      Trust: " << trust_value << '\n';
   else
     out << "      Trust: Bad value - see 'man taskrc'\n";
-
-  out << "Certificate: "
-      << context.config.get ("taskd.certificate")
-      << (File (context.config.get ("taskd.certificate")).readable ()
-           ? ", readable, " : ", not readable, ")
-      << File (context.config.get ("taskd.certificate")).size ()
-      << " bytes\n";
-
-  out << "        Key: "
-      << context.config.get ("taskd.key")
-      << (File (context.config.get ("taskd.key")).readable ()
-           ? ", readable, " : ", not readable, ")
-      << File (context.config.get ("taskd.key")).size ()
-      << " bytes\n";
 
   out << "    Ciphers: "
       << context.config.get ("taskd.ciphers")
@@ -411,7 +437,6 @@ int CmdDiagnostics::execute (std::string& output)
     out << "             " << STRING_CMD_DIAG_UUID_NO_DUP
         << '\n';
   }
-
 
   // Check all the UUID references
 
