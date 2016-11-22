@@ -81,6 +81,8 @@
 - Deprecated use of alternate Boolean configuration settings. Use values "0" for
   off, and "1" for on. Avoid used of "on", "off", "true", "t", "false", "f",
   "yes", "y", "no", "n".
+- Fixed test harness for Python 3.x.
+          (thanks to jrabbit).
 
 ------ current release ---------------------------
 
