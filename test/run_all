@@ -60,7 +60,10 @@ def run_test(testqueue, outqueue, threadname):
 class TestRunner(object):
     def __init__(self):
         self.threads = []
-        self.tap = open(cmd_args.tapfile, 'w')
+        if sys.version_info > (3,):
+            self.tap = open(cmd_args.tapfile, 'w', errors='ignore')
+        else:
+            self.tap = open(cmd_args.tapfile, 'w')
 
         self._parallelq = Queue()
         self._serialq = Queue()
