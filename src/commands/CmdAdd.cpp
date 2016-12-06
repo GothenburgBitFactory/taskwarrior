@@ -27,9 +27,9 @@
 #include <cmake.h>
 #include <CmdAdd.h>
 #include <Context.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
-#include <util.h>
 #include <main.h>
 
 extern Context context;

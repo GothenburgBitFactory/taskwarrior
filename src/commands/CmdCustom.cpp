@@ -36,6 +36,7 @@
 #include <Lexer.h>
 #include <ViewTask.h>
 #include <i18n.h>
+#include <format.h>
 #include <text.h>
 #include <main.h>
 

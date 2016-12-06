@@ -32,8 +32,8 @@
 #include <Context.h>
 #include <Lexer.h>
 #include <Color.h>
-#include <text.h>
-#include <util.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;
@@ -1480,8 +1480,7 @@ void CLI2::findIDs ()
         else if (a._lextype == Lexer::Type::set)
         {
           // Split the ID list into elements.
-          std::vector <std::string> elements;
-          split (elements, a.attribute ("raw"), ',');
+          auto elements = split (a.attribute ("raw"), ',');
 
           for (auto& element : elements)
           {
@@ -1536,8 +1535,7 @@ void CLI2::findIDs ()
             a.tag ("FILTER");
 
             // Split the ID list into elements.
-            std::vector <std::string> elements;
-            split (elements, raw, ',');
+            auto elements = split (raw, ',');
 
             for (const auto& element : elements)
             {

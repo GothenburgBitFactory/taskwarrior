@@ -43,7 +43,6 @@
 bool confirm (const std::string&);
 int confirm4 (const std::string&);
 std::string formatBytes (size_t);
-int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&, int minimum = 1);
 
 #ifndef HAVE_UUID_UNPARSE_LOWER
 void uuid_unparse_lower (uuid_t uu, char *out);

@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <time.h>
-#include <text.h>
+#include <shared.h>
 #include <ISO8601.h>
 #include <Lexer.h>
 #include <CLI2.h>

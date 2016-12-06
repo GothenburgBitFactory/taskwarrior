@@ -30,7 +30,8 @@
 #include <ViewText.h>
 #include <Context.h>
 #include <i18n.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
 
 extern Context context;

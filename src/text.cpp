@@ -171,33 +171,6 @@ std::string unquoteText (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int longestWord (const std::string& input)
-{
-  int longest = 0;
-  int length = 0;
-  std::string::size_type i = 0;
-  int character;
-
-  while ((character = utf8_next_char (input, i)))
-  {
-    if (character == ' ')
-    {
-      if (length > longest)
-        longest = length;
-
-      length = 0;
-    }
-    else
-      length += mk_wcwidth (character);
-  }
-
-  if (length > longest)
-    longest = length;
-
-  return longest;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int longestLine (const std::string& input)
 {
   int longest = 0;
@@ -313,32 +286,6 @@ bool extractLine (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string str_replace (
-  std::string &str,
-  const std::string& search,
-  const std::string& replacement)
-{
-  std::string::size_type pos = 0;
-  while ((pos = str.find (search, pos)) != std::string::npos)
-  {
-    str.replace (pos, search.length (), replacement);
-    pos += replacement.length ();
-  }
-
-  return str;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string str_replace (
-  const std::string& str,
-  const std::string& search,
-  const std::string& replacement)
-{
-  std::string modified = str;
-  return str_replace (modified, search, replacement);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
   return context.verbose ("blank") ? newline : noline;
@@ -354,127 +301,6 @@ bool nontrivial (const std::string& input)
       return true;
 
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool compare (
-  const std::string& left,
-  const std::string& right,
-  bool sensitive /*= true*/)
-{
-  // Use strcasecmp if required.
-  if (!sensitive)
-    return strcasecmp (left.c_str (), right.c_str ()) == 0 ? true : false;
-
-  // Otherwise, just use std::string::operator==.
-  return left == right;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool closeEnough (
-  const std::string& reference,
-  const std::string& attempt,
-  unsigned int minLength /* = 0 */)
-{
-  // An exact match is accepted first.
-  if (compare (reference, attempt, false))
-    return true;
-
-  // A partial match will suffice.
-  if (attempt.length () < reference.length () &&
-      attempt.length () >= minLength)
-    return compare (reference.substr (0, attempt.length ()), attempt, false);
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string::size_type find (
-  const std::string& text,
-  const std::string& pattern,
-  bool sensitive /*= true*/)
-{
-  // Implement a sensitive find, which is really just a loop withing a loop,
-  // comparing lower-case versions of each character in turn.
-  if (!sensitive)
-  {
-    // Handle empty pattern.
-    const char* p = pattern.c_str ();
-    size_t len = pattern.length ();
-    if (len == 0)
-      return 0;
-
-    // Evaluate these once, for performance reasons.
-    const char* t = text.c_str ();
-    const char* start = t;
-    const char* end = start + text.size ();
-
-    for (; t <= end - len; ++t)
-    {
-      int diff = 0;
-      for (size_t i = 0; i < len; ++i)
-        if ((diff = tolower (t[i]) - tolower (p[i])))
-          break;
-
-      // diff == 0 means there was no break from the loop, which only occurs
-      // when a difference is detected.  Therefore, the loop terminated, and
-      // diff is zero.
-      if (diff == 0)
-        return t - start;
-    }
-
-    return std::string::npos;
-  }
-
-  // Otherwise, just use std::string::find.
-  return text.find (pattern);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string::size_type find (
-  const std::string& text,
-  const std::string& pattern,
-  std::string::size_type begin,
-  bool sensitive /*= true*/)
-{
-  // Implement a sensitive find, which is really just a loop withing a loop,
-  // comparing lower-case versions of each character in turn.
-  if (!sensitive)
-  {
-    // Handle empty pattern.
-    const char* p = pattern.c_str ();
-    size_t len = pattern.length ();
-    if (len == 0)
-      return 0;
-
-    // Handle bad begin.
-    if (begin >= text.length ())
-      return std::string::npos;
-
-    // Evaluate these once, for performance reasons.
-    const char* start = text.c_str ();
-    const char* t = start + begin;
-    const char* end = start + text.size ();
-
-    for (; t <= end - len; ++t)
-    {
-      int diff = 0;
-      for (size_t i = 0; i < len; ++i)
-        if ((diff = tolower (t[i]) - tolower (p[i])))
-          break;
-
-      // diff == 0 means there was no break from the loop, which only occurs
-      // when a difference is detected.  Therefore, the loop terminated, and
-      // diff is zero.
-      if (diff == 0)
-        return t - start;
-    }
-
-    return std::string::npos;
-  }
-
-  // Otherwise, just use std::string::find.
-  return text.find (pattern, begin);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -534,74 +360,6 @@ const std::string obfuscateText (const std::string& input)
   }
 
   return output.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (std::string& value)
-{
-  return value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (const char* value)
-{
-  std::string s (value);
-  return s;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string formatHex (int value)
-{
-  std::stringstream s;
-  s.setf (std::ios::hex, std::ios::basefield);
-  s << value;
-  return s.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (float value, int width, int precision)
-{
-  std::stringstream s;
-  s.width (width);
-  s.precision (precision);
-  if (0 < value && value < 1)
-  {
-    // For value close to zero, width - 2 (2 accounts for the first zero and
-    // the dot) is the number of digits after zero that are significant
-    double factor = 1;
-    for (int i = 2; i < width; i++)
-      factor *= 10;
-    value = roundf (value * factor) / factor;
-  }
-  s << value;
-  return s.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (double value, int width, int precision)
-{
-  std::stringstream s;
-  s.width (width);
-  s.precision (precision);
-  if (0 < value && value < 1)
-  {
-    // For value close to zero, width - 2 (2 accounts for the first zero and
-    // the dot) is the number of digits after zero that are significant
-    double factor = 1;
-    for (int i = 2; i < width; i++)
-      factor *= 10;
-    value = round (value * factor) / factor;
-  }
-  s << value;
-  return s.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (double value)
-{
-  std::stringstream s;
-  s << std::fixed << value;
-  return s.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

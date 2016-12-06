@@ -41,6 +41,7 @@
 #include <JSON.h>
 #include <Lexer.h>
 #include <text.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 

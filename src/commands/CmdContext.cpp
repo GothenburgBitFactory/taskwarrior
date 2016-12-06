@@ -33,7 +33,8 @@
 #include <sstream>
 #include <algorithm>
 #include <i18n.h>
-#include <util.h>
+#include <format.h>
+#include <shared.h>
 #include <text.h>
 
 extern Context context;

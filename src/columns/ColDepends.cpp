@@ -28,7 +28,8 @@
 #include <ColDepends.h>
 #include <algorithm>
 #include <Context.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <utf8.h>
 #include <i18n.h>
 #include <main.h>
@@ -91,8 +92,7 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
       for (auto& i : blocking)
         blocking_ids.push_back (i.id);
 
-      std::string all;
-      join (all, " ", blocking_ids);
+      auto all = join (" ", blocking_ids);
       maximum = all.length ();
 
       unsigned int length;
@@ -134,8 +134,7 @@ void ColumnDepends::render (
         for (const auto& t : blocking)
           blocking_ids.push_back (t.id);
 
-        std::string combined;
-        join (combined, " ", blocking_ids);
+        auto combined = join (" ", blocking_ids);
 
         std::vector <std::string> all;
         wrapText (all, combined, width, _hyphenate);
@@ -150,12 +149,8 @@ void ColumnDepends::render (
 ////////////////////////////////////////////////////////////////////////////////
 void ColumnDepends::modify (Task& task, const std::string& value)
 {
-  // Parse IDs
-  std::vector <std::string> deps;
-  split (deps, value, ',');
-
   // Apply or remove dendencies in turn.
-  for (auto& dep : deps)
+  for (auto& dep : split (value, ','))
   {
     if (dep[0] == '-')
     {

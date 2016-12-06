@@ -46,7 +46,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <gnutls/x509.h>
-#include <text.h>
+#include <format.h>
 #include <i18n.h>
 
 #define MAX_BUF 16384

@@ -35,7 +35,8 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <Dates.h>
 #endif
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <utf8.h>
 #include <i18n.h>
 

@@ -33,7 +33,7 @@
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
-#include <text.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;

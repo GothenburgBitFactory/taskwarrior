@@ -39,10 +39,12 @@
 #include <Context.h>
 #include <Variant.h>
 #include <DOM.h>
+#include <Lexer.h>
 #include <JSON.h>
 #include <Timer.h>
+#include <format.h>
+#include <shared.h>
 #include <text.h>
-#include <util.h>
 #include <i18n.h>
 
 extern Context context;
@@ -468,7 +470,9 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
     }
 
     json::string* up = (json::string*) u->second;
-    std::string json_uuid = json::decode (unquoteText (up->dump ()));
+    auto text = up->dump ();
+    Lexer::dequote (text);
+    std::string json_uuid = json::decode (text);
     if (json_uuid != uuid)
     {
       context.error (format (STRING_HOOK_ERROR_SAME2, uuid, json_uuid));
@@ -562,7 +566,7 @@ int Hooks::callHookScript (
   else
     status = execute (script, args, inputStr, outputStr);
 
-  split (output, outputStr, '\n');
+  output = split (outputStr, '\n');
 
   if (_debug >= 2)
   {

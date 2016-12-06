@@ -30,8 +30,8 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <text.h>
-#include <util.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;

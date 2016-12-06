@@ -32,7 +32,8 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <Dates.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 #include <utf8.h>
 #include <main.h>
@@ -96,8 +97,7 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       // Find the widest tag.
       if (tags.find (',') != std::string::npos)
       {
-        std::vector <std::string> all;
-        split (all, tags, ',');
+        auto all = split (tags, ',');
         for (const auto& tag : all)
         {
           auto length = utf8_width (tag);
@@ -132,10 +132,9 @@ void ColumnTags::render (
     {
       if (tags.find (',') != std::string::npos)
       {
-        std::vector <std::string> all;
-        split (all, tags, ',');
+        auto all = split (tags, ',');
         std::sort (all.begin (), all.end ());
-        join (tags, " ", all);
+        tags = join (" ", all);
 
         all.clear ();
         wrapText (all, tags, width, _hyphenate);
@@ -152,8 +151,7 @@ void ColumnTags::render (
     }
     else if (_style == "count")
     {
-      std::vector <std::string> all;
-      split (all, tags, ',');
+      auto all = split (tags, ',');
       renderStringRight (lines, width, color, '[' + format (static_cast <int> (all.size ())) + ']');
     }
   }
@@ -167,10 +165,7 @@ void ColumnTags::modify (Task& task, const std::string& value)
   // TW-1701
   task.set ("tags", "");
 
-  std::vector <std::string> tags;
-  split (tags, value, ',');
-
-  for (auto& tag : tags)
+  for (auto& tag : split (value, ','))
   {
     // If it's a DOM ref, eval it first.
     Lexer lexer (tag);

@@ -28,7 +28,8 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 #include <Command.h>

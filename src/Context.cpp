@@ -39,8 +39,8 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <ISO8601.h>
-#include <text.h>
-#include <util.h>
+#include <shared.h>
+#include <format.h>
 #include <main.h>
 #include <i18n.h>
 
@@ -576,7 +576,8 @@ bool Context::verbose (const std::string& token)
   if (verbosity.empty ())
   {
     verbosity_legacy = config.getBoolean ("verbose");
-    split (verbosity, config.get ("verbose"), ',');
+    for (auto& token : split (config.get ("verbose"), ','))
+      verbosity.insert (token);
 
     // Regular feedback means almost everything.
     // This odd test is to see if a Boolean-false value is a real one, which
@@ -700,8 +701,7 @@ void Context::staticInitialization ()
         rc.first.substr (rc.first.length () - 7, 7) == ".values")
     {
       std::string name = rc.first.substr (4, rc.first.length () - 7 - 4);
-      std::vector <std::string> values;
-      split (values, rc.second, ',');
+      auto values = split (rc.second, ',');
 
       for (auto r = values.rbegin(); r != values.rend (); ++r)
         Task::customOrder[name].push_back (*r);

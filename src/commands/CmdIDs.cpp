@@ -31,7 +31,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <text.h>
+#include <shared.h>
 #include <i18n.h>
 
 extern Context context;
@@ -163,8 +163,7 @@ int CmdCompletionIds::execute (std::string& output)
       ids.push_back (task.id);
 
   std::sort (ids.begin (), ids.end ());
-  join (output, "\n", ids);
-  output += '\n';
+  output = join ("\n", ids) + '\n';
 
   context.headers.clear ();
   return 0;
@@ -240,8 +239,7 @@ int CmdUUIDs::execute (std::string& output)
     uuids.push_back (task.get ("uuid"));
 
   std::sort (uuids.begin (), uuids.end ());
-  join (output, " ", uuids);
-  output += '\n';
+  output = join (" ", uuids) + '\n';
 
   context.headers.clear ();
   return 0;
@@ -277,8 +275,7 @@ int CmdCompletionUuids::execute (std::string& output)
     uuids.push_back (task.get ("uuid"));
 
   std::sort (uuids.begin (), uuids.end ());
-  join (output, "\n", uuids);
-  output += '\n';
+  output = join ("\n", uuids) + '\n';
 
   context.headers.clear ();
   return 0;

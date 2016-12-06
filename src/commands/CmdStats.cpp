@@ -34,6 +34,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
+#include <format.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>

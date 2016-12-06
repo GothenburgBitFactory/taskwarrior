@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <util.h>
+#include <shared.h>
 // If <iostream> is included, put it after <stdio.h>, because it includes
 // <stdio.h>, and therefore would ignore the _WITH_GETLINE.
 #ifdef FREEBSD
@@ -161,41 +161,6 @@ std::string formatBytes (size_t bytes)
   else                          snprintf (formatted, 24, "%d %s",   (int)bytes,             STRING_UTIL_BYTES);
 
   return Lexer::commify (formatted);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int autoComplete (
-  const std::string& partial,
-  const std::vector<std::string>& list,
-  std::vector<std::string>& matches,
-  int minimum/* = 1*/)
-{
-  matches.clear ();
-
-  // Handle trivial case.
-  unsigned int length = partial.length ();
-  if (length)
-  {
-    for (auto& item : list)
-    {
-      // An exact match is a special case.  Assume there is only one exact match
-      // and return immediately.
-      if (partial == item)
-      {
-        matches.clear ();
-        matches.push_back (item);
-        return 1;
-      }
-
-      // Maintain a list of partial matches.
-      else if (length >= (unsigned) minimum &&
-               length <= item.length ()    &&
-               partial == item.substr (0, length))
-        matches.push_back (item);
-    }
-  }
-
-  return matches.size ();
 }
 
 // Handle the generation of UUIDs on FreeBSD in a separate implementation

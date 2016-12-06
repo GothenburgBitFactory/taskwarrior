@@ -34,7 +34,7 @@
 #include <RX.h>
 #include <Context.h>
 #include <i18n.h>
-#include <text.h>
+#include <format.h>
 #include <util.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>

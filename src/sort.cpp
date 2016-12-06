@@ -32,7 +32,8 @@
 #include <Context.h>
 #include <ISO8601.h>
 #include <Task.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;
@@ -52,8 +53,7 @@ void sort_tasks (
   global_data = &data;
 
   // Split the key defs.
-  global_keys.clear ();
-  split (global_keys, keys, ',');
+  global_keys = split (keys, ',');
 
   // Only sort if necessary.
   if (order.size ())

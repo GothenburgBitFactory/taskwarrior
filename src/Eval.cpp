@@ -31,7 +31,8 @@
 #include <Context.h>
 #include <Task.h>
 #include <Color.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;
