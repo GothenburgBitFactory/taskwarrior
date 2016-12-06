@@ -149,20 +149,6 @@ int confirm4 (const std::string& question)
   return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Convert a quantity in seconds to a more readable format.
-std::string formatBytes (size_t bytes)
-{
-  char formatted[24];
-
-       if (bytes >=  995000000) snprintf (formatted, 24, "%.1f %s", (bytes / 1000000000.0), STRING_UTIL_GIBIBYTES);
-  else if (bytes >=     995000) snprintf (formatted, 24, "%.1f %s", (bytes /    1000000.0), STRING_UTIL_MEBIBYTES);
-  else if (bytes >=        995) snprintf (formatted, 24, "%.1f %s", (bytes /       1000.0), STRING_UTIL_KIBIBYTES);
-  else                          snprintf (formatted, 24, "%d %s",   (int)bytes,             STRING_UTIL_BYTES);
-
-  return Lexer::commify (formatted);
-}
-
 // Handle the generation of UUIDs on FreeBSD in a separate implementation
 // of the uuid () function, since the API is quite different from Linux's.
 // Also, uuid_unparse_lower is not needed on FreeBSD, because the string

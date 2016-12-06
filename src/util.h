@@ -42,7 +42,6 @@
 // util.cpp
 bool confirm (const std::string&);
 int confirm4 (const std::string&);
-std::string formatBytes (size_t);
 
 #ifndef HAVE_UUID_UNPARSE_LOWER
 void uuid_unparse_lower (uuid_t uu, char *out);
