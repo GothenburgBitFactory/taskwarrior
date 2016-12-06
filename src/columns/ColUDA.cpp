@@ -28,7 +28,8 @@
 #include <ColUDA.h>
 #include <Context.h>
 #include <ISO8601.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <utf8.h>
 #include <i18n.h>
 #include <stdlib.h>

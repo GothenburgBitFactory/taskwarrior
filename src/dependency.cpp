@@ -30,7 +30,7 @@
 #include <sstream>
 #include <stack>
 #include <Context.h>
-#include <text.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 #include <main.h>

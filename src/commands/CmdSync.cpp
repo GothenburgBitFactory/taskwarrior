@@ -32,7 +32,8 @@
 #include <Context.h>
 #include <Filter.h>
 #include <Color.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -91,8 +92,7 @@ int CmdSync::execute (std::string& output)
   if (credentials_string == "")
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
-  std::vector <std::string> credentials;
-  split (credentials, credentials_string, "/");
+  auto credentials = split (credentials_string, '/');
   if (credentials.size () != 3)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
@@ -198,8 +198,7 @@ int CmdSync::execute (std::string& output)
 
       int download_count = 0;
       payload = response.getPayload ();
-      std::vector <std::string> lines;
-      split (lines, payload, '\n');
+      auto lines = split (payload, '\n');
 
       // Load all tasks, but only if necessary.  There is always a sync key in
       // the payload, so if there are two or more lines, then we have merging

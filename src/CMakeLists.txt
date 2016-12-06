@@ -35,12 +35,16 @@ add_library (task CLI2.cpp CLI2.h
                   text.cpp text.h
                   util.cpp util.h)
 
-add_library (libshared libshared/src/FS.cpp            libshared/src/FS.h
+add_library (libshared libshared/src/Datetime.cpp      libshared/src/Datetime.h
+                       libshared/src/Duration.cpp      libshared/src/Duration.h
+                       libshared/src/FS.cpp            libshared/src/FS.h
                        libshared/src/JSON.cpp          libshared/src/JSON.h
                        libshared/src/Pig.cpp           libshared/src/Pig.h
                        libshared/src/RX.cpp            libshared/src/RX.h
                        libshared/src/Table.cpp         libshared/src/Table.h
                        libshared/src/Timer.cpp         libshared/src/Timer.h
+                       libshared/src/shared.cpp        libshared/src/shared.h
+                       libshared/src/format.cpp        libshared/src/format.h
                        libshared/src/unicode.cpp       libshared/src/unicode.h
                        libshared/src/utf8.cpp          libshared/src/utf8.h
                        libshared/src/wcwidth6.cpp)

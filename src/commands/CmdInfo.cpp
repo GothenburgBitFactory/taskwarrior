@@ -33,6 +33,8 @@
 #include <Filter.h>
 #include <ISO8601.h>
 #include <main.h>
+#include <shared.h>
+#include <format.h>
 #include <text.h>
 #include <i18n.h>
 

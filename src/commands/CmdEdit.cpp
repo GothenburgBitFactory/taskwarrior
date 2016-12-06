@@ -39,7 +39,8 @@
 #include <Filter.h>
 #include <Pig.h>
 #include <i18n.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 #include <main.h>
@@ -230,8 +231,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   std::vector <std::string> tags;
   task.getTags (tags);
-  std::string allTags;
-  join (allTags, " ", tags);
+  auto allTags = join (" ", tags);
 
   if (verbose)
     before << "# " << STRING_EDIT_TAG_SEP << '\n';
@@ -360,8 +360,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // tags
   value = findValue (after, "\n  Tags:");
-  std::vector <std::string> tags;
-  split (tags, value, ' ');
+  auto tags = split (value, ' ');
   task.remove ("tags");
   task.addTags (tags);
 
@@ -676,8 +675,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // Dependencies
   value = findValue (after, "\n  Dependencies:");
-  std::vector <std::string> dependencies;
-  split (dependencies, value, ",");
+  auto dependencies = split (value, ',');
 
   task.remove ("depends");
   for (auto& dep : dependencies)

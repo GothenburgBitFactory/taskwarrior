@@ -31,7 +31,7 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <Dates.h>
-#include <text.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;

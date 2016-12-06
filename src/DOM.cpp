@@ -32,7 +32,8 @@
 #include <Variant.h>
 #include <Context.h>
 #include <ISO8601.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -189,8 +190,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   }
 
   // split name on '.'
-  std::vector <std::string> elements;
-  split (elements, name, '.');
+  auto elements = split (name, '.');
 
   Task ref (task);
   Nibbler n (elements[0]);

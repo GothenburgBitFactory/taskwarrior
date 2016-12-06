@@ -36,8 +36,8 @@
 #include <ISO8601.h>
 #include <Lexer.h>
 #include <main.h>
-#include <text.h>
-#include <util.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;
@@ -52,10 +52,7 @@ std::string taskIdentifiers (const std::vector <Task>& tasks)
   for (auto task: tasks)
     identifiers.push_back (task.identifier (true));
 
-  std::string result;
-  join (result, ", ", identifiers);
-
-  return result;
+  return join (", ", identifiers);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -29,7 +29,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include <text.h>
+#include <format.h>
 #include <i18n.h>
 #include <main.h>
 #include <Context.h>

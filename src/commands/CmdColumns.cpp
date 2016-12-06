@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <ViewText.h>
 #include <Color.h>
+#include <shared.h>
 #include <text.h>
 #include <i18n.h>
 #include <main.h>

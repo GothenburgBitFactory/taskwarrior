@@ -33,7 +33,8 @@
 #include <Lexer.h>
 #include <Filter.h>
 #include <Dates.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <utf8.h>
 #include <i18n.h>
 

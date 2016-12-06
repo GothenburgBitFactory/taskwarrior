@@ -29,7 +29,8 @@
 #include <iostream>
 #include <Context.h>
 #include <Filter.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 #include <main.h>

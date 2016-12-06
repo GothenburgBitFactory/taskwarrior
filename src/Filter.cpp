@@ -34,8 +34,8 @@
 #include <Variant.h>
 #include <Dates.h>
 #include <i18n.h>
-#include <text.h>
-#include <util.h>
+#include <format.h>
+#include <shared.h>
 
 extern Context context;
 

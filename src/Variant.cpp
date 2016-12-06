@@ -34,7 +34,7 @@
 #include <ISO8601.h>
 #include <Lexer.h>
 #include <RX.h>
-#include <text.h>
+#include <shared.h>
 #include <i18n.h>
 
 std::string Variant::dateFormat = "";

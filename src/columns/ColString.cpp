@@ -27,6 +27,8 @@
 #include <cmake.h>
 #include <ColString.h>
 #include <Context.h>
+#include <format.h>
+#include <shared.h>
 #include <text.h>
 #include <i18n.h>
 

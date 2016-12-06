@@ -33,6 +33,7 @@
 #include <Filter.h>
 #include <ViewText.h>
 #include <ISO8601.h>
+#include <format.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>

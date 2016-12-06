@@ -26,7 +26,7 @@
 
 #include <cmake.h>
 #include <ColMask.h>
-#include <text.h>
+#include <format.h>
 #include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -31,8 +31,8 @@
 #include <Context.h>
 #include <JSON.h>
 #include <i18n.h>
-#include <text.h>
-#include <util.h>
+#include <shared.h>
+#include <format.h>
 
 extern Context context;
 

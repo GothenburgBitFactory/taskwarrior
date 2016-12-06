@@ -28,7 +28,7 @@
 #include <cstddef>
 #include <sstream>
 #include <Context.h>
-#include <text.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;

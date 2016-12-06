@@ -34,7 +34,7 @@
 #include <ISO8601.h>
 #include <main.h>
 #include <i18n.h>
-#include <text.h>
+#include <format.h>
 
 extern Context context;
 

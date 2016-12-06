@@ -51,7 +51,8 @@
 #include <ColUUID.h>
 #include <ColUDA.h>
 #include <ColWait.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;
@@ -186,7 +187,7 @@ Column* Column::uda (const std::string& name)
     c->_name = name;
     c->_label = label;
     if (values != "")
-      split (c->_values, values, ',');
+      c->_values = split (values, ',');
     return c;
   }
   else if (type == "numeric")
@@ -195,7 +196,7 @@ Column* Column::uda (const std::string& name)
     c->_name = name;
     c->_label = label;
     if (values != "")
-      split (c->_values, values, ',');
+      c->_values = split (values, ',');
     return c;
   }
   else if (type == "date")
@@ -204,7 +205,7 @@ Column* Column::uda (const std::string& name)
     c->_name = name;
     c->_label = label;
     if (values != "")
-      split (c->_values, values, ',');
+      c->_values = split (values, ',');
     return c;
   }
   else if (type == "duration")
@@ -213,7 +214,7 @@ Column* Column::uda (const std::string& name)
     c->_name = name;
     c->_label = label;
     if (values != "")
-      split (c->_values, values, ',');
+      c->_values = split (values, ',');
     return c;
   }
   else if (type != "")

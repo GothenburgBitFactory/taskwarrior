@@ -83,21 +83,5 @@ std::string legacyCheckForDeprecatedVariables ();
 std::string legacyCheckForDeprecatedColumns ();
 void legacyAttributeMap (std::string&);
 
-// list template
-///////////////////////////////////////////////////////////////////////////////
-template <class T> void listDiff (
-  const T& left, const T& right, T& leftOnly, T& rightOnly)
-{
-  leftOnly.clear ();
-  for (auto& l : left)
-    if (std::find (right.begin (), right.end (), l) == right.end ())
-      leftOnly.push_back (l);
-
-  rightOnly.clear ();
-  for (auto& r : right)
-    if (std::find (left.begin (), left.end (), r) == left.end ())
-      rightOnly.push_back (r);
-}
-
 #endif
 ////////////////////////////////////////////////////////////////////////////////

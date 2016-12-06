@@ -45,7 +45,8 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <RX.h>
 #endif
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
 
 #include <i18n.h>
@@ -712,8 +713,7 @@ void Task::parseJSON (const json::object* root_obj)
       else if (i.first == "depends" && i.second->type() == json::j_string)
       {
         json::string* deps = (json::string*)i.second;
-        std::vector <std::string> uuids;
-        split (uuids, deps->_data, ',');
+        auto uuids = split (deps->_data, ',');
 
         for (const auto& uuid : uuids)
           addDependency (uuid);
@@ -721,11 +721,19 @@ void Task::parseJSON (const json::object* root_obj)
 
       // Strings are decoded.
       else if (type == "string")
-        set (i.first, json::decode (unquoteText (i.second->dump ())));
+      {
+        auto text = i.second->dump ();
+        Lexer::dequote (text);
+        set (i.first, json::decode (text));
+      }
 
       // Other types are simply added.
       else
-        set (i.first, unquoteText (i.second->dump ()));
+      {
+        auto text = i.second->dump ();
+        Lexer::dequote (text);
+        set (i.first, text);
+      }
     }
 
     // UDA orphans and annotations do not have columns.
@@ -769,7 +777,9 @@ void Task::parseJSON (const json::object* root_obj)
                 << "' --> preserved\n";
         context.debug (message.str ());
 #endif
-        set (i.first, json::decode (unquoteText (i.second->dump ())));
+        auto text = i.second->dump ();
+        Lexer::dequote (text);
+        set (i.first, json::decode (text));
       }
     }
   }
@@ -909,8 +919,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     // Tags are converted to an array.
     else if (i.first == "tags")
     {
-      std::vector <std::string> tags;
-      split (tags, i.second, ',');
+      auto tags = split (i.second, ',');
 
       out << "\"tags\":[";
 
@@ -949,8 +958,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
 #endif
             )
     {
-      std::vector <std::string> deps;
-      split (deps, i.second, ',');
+      auto deps = split (i.second, ',');
 
       out << "\"depends\":[";
 
@@ -1148,16 +1156,13 @@ void Task::addDependency (const std::string& uuid)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeDependency (const std::string& uuid)
 {
-  std::vector <std::string> deps;
-  split (deps, get ("depends"), ',');
+  auto deps = split (get ("depends"), ',');
 
   auto i = std::find (deps.begin (), deps.end (), uuid);
   if (i != deps.end ())
   {
     deps.erase (i);
-    std::string combined;
-    join (combined, ",", deps);
-    set ("depends", combined);
+    set ("depends", join (",", deps));
     recalc_urgency = true;
   }
   else
@@ -1178,8 +1183,7 @@ void Task::removeDependency (int id)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::getDependencies (std::vector <int>& all) const
 {
-  std::vector <std::string> deps;
-  split (deps, get ("depends"), ',');
+  auto deps = split (get ("depends"), ',');
 
   all.clear ();
 
@@ -1190,15 +1194,13 @@ void Task::getDependencies (std::vector <int>& all) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::getDependencies (std::vector <std::string>& all) const
 {
-  all.clear ();
-  split (all, get ("depends"), ',');
+  all = split (get ("depends"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::getDependencies (std::vector <Task>& all) const
 {
-  std::vector <std::string> deps;
-  split (deps, get ("depends"), ',');
+  std::vector <std::string> deps = split (get ("depends"), ',');
 
   all.clear ();
 
@@ -1214,9 +1216,7 @@ void Task::getDependencies (std::vector <Task>& all) const
 ////////////////////////////////////////////////////////////////////////////////
 int Task::getTagCount () const
 {
-  std::vector <std::string> tags;
-  split (tags, get ("tags"), ',');
-
+  auto tags = split (get ("tags"), ',');
   return (int) tags.size ();
 }
 
@@ -1275,8 +1275,7 @@ bool Task::hasTag (const std::string& tag) const
   }
 
   // Concrete tags.
-  std::vector <std::string> tags;
-  split (tags, get ("tags"), ',');
+  auto tags = split (get ("tags"), ',');
 
   if (std::find (tags.begin (), tags.end (), tag) != tags.end ())
     return true;
@@ -1287,15 +1286,12 @@ bool Task::hasTag (const std::string& tag) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::addTag (const std::string& tag)
 {
-  std::vector <std::string> tags;
-  split (tags, get ("tags"), ',');
+  auto tags = split (get ("tags"), ',');
 
   if (std::find (tags.begin (), tags.end (), tag) == tags.end ())
   {
     tags.push_back (tag);
-    std::string combined;
-    join (combined, ",", tags);
-    set ("tags", combined);
+    set ("tags", join (",", tags));
 
     recalc_urgency = true;
   }
@@ -1315,22 +1311,19 @@ void Task::addTags (const std::vector <std::string>& tags)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::getTags (std::vector<std::string>& tags) const
 {
-  split (tags, get ("tags"), ',');
+  tags = split (get ("tags"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeTag (const std::string& tag)
 {
-  std::vector <std::string> tags;
-  split (tags, get ("tags"), ',');
+  auto tags = split (get ("tags"), ',');
 
   auto i = std::find (tags.begin (), tags.end (), tag);
   if (i != tags.end ())
   {
     tags.erase (i);
-    std::string combined;
-    join (combined, ",", tags);
-    set ("tags", combined);
+    set ("tags", join (",", tags));
   }
 
   recalc_urgency = true;

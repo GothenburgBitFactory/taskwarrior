@@ -30,7 +30,8 @@
 #include <Context.h>
 #include <DOM.h>
 #include <main.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;
@@ -90,7 +91,7 @@ int CmdGet::execute (std::string& output)
   if (results.size () == 0)
     throw std::string (STRING_CMD_GET_NO_DOM);
 
-  join (output, " ", results);
+  output = join (" ", results);
   output += '\n';
   return 0;
 }

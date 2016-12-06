@@ -32,7 +32,7 @@
 #include <Filter.h>
 #include <Lexer.h>
 #include <main.h>
-#include <text.h>
+#include <format.h>
 #include <i18n.h>
 
 extern Context context;
