@@ -32,7 +32,8 @@
 #include <Eval.h>
 #include <Dates.h>
 #include <Context.h>
-#include <text.h>
+#include <Task.h>
+#include <format.h>
 #include <util.h>
 #include <i18n.h>
 
