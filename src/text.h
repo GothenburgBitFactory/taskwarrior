@@ -46,7 +46,6 @@ const char* optionalBlankLine ();
 bool nontrivial (const std::string&);
 int strippedLength (const std::string&);
 const std::string obfuscateText (const std::string&);
-void replace_positional (std::string&, const std::string&, const std::string&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

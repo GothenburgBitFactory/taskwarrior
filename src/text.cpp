@@ -363,17 +363,3 @@ const std::string obfuscateText (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void replace_positional (
-  std::string& fmt,
-  const std::string& from,
-  const std::string& to)
-{
-  std::string::size_type pos = 0;
-  while ((pos = fmt.find (from, pos)) != std::string::npos)
-  {
-    fmt.replace (pos, from.length (), to);
-    pos += to.length ();
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
