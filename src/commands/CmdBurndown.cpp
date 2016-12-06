@@ -37,8 +37,8 @@
 #include <ISO8601.h>
 #include <main.h>
 #include <i18n.h>
-#include <text.h>
-#include <util.h>
+#include <shared.h>
+#include <format.h>
 
 extern Context context;
 
@@ -212,8 +212,7 @@ Chart::Chart (char type)
 
   // Set the title.
   std::vector <std::string> words = context.cli2.getWords ();
-  std::string filter;
-  join (filter, " ", words);
+  auto filter = join (" ", words);
   _title = '(' + filter + ')';
 }
 

@@ -48,11 +48,5 @@ int strippedLength (const std::string&);
 const std::string obfuscateText (const std::string&);
 void replace_positional (std::string&, const std::string&, const std::string&);
 
-std::string leftJustify (const int, const int);
-std::string leftJustify (const std::string&, const int);
-std::string rightJustifyZero (const int, const int);
-std::string rightJustify (const int, const int);
-std::string rightJustify (const std::string&, const int);
-
 #endif
 ////////////////////////////////////////////////////////////////////////////////
