@@ -70,37 +70,6 @@ static void signal_handler (int s)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Uses std::getline, because std::cin eats leading whitespace, and that means
-// that if a newline is entered, std::cin eats it and never returns from the
-// "std::cin >> answer;" line, but it does display the newline.  This way, with
-// std::getline, the newline can be detected, and the prompt re-written.
-bool confirm (const std::string& question)
-{
-  std::vector <std::string> options {STRING_UTIL_CONFIRM_YES,
-                                     STRING_UTIL_CONFIRM_NO};
-  std::vector <std::string> matches;
-
-  signal (SIGINT, signal_handler);
-
-  do
-  {
-    std::cout << question
-              << STRING_UTIL_CONFIRM_YN;
-
-    std::string answer {""};
-    std::getline (std::cin, answer);
-    context.debug ("STDIN '" + answer + '\'');
-    answer = std::cin.eof () ? STRING_UTIL_CONFIRM_NO : Lexer::lowerCase (Lexer::trim (answer));
-
-    autoComplete (answer, options, matches, 1); // Hard-coded 1.
-  }
-  while (! std::cin.eof () && matches.size () != 1);
-
-  signal (SIGINT, SIG_DFL);
-  return matches.size () == 1 && matches[0] == STRING_UTIL_CONFIRM_YES ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // 0 = no
 // 1 = yes
 // 2 = all
