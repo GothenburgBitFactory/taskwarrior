@@ -48,8 +48,6 @@ void uuid_unparse_lower (uuid_t uu, char *out);
 #endif
 const std::string uuid ();
 
-int execute (const std::string&, const std::vector <std::string>&, const std::string&, std::string&);
-
 const std::string indentProject (
   const std::string&,
   const std::string& whitespace = "  ",
