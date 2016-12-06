@@ -40,7 +40,6 @@
 #include <Task.h>
 
 // util.cpp
-bool confirm (const std::string&);
 int confirm4 (const std::string&);
 
 #ifndef HAVE_UUID_UNPARSE_LOWER

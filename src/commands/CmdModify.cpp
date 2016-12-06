@@ -31,7 +31,7 @@
 #include <Filter.h>
 #include <main.h>
 #include <format.h>
-#include <util.h>
+#include <shared.h>
 #include <i18n.h>
 
 extern Context context;
