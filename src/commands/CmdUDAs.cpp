@@ -33,6 +33,7 @@
 #include <Filter.h>
 #include <main.h>
 #include <format.h>
+#include <shared.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -215,8 +216,7 @@ int CmdCompletionUDAs::execute (std::string& output)
   if (udas.size ())
   {
     std::sort (udas.begin (), udas.end ());
-    join (output, "\n", udas);
-    output += '\n';
+    output = join ("\n", udas) + '\n';
   }
 
   return 0;

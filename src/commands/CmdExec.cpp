@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <i18n.h>
-#include <text.h>
+#include <shared.h>
 
 extern Context context;
 
@@ -52,9 +52,7 @@ CmdExec::CmdExec ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdExec::execute (std::string&)
 {
-  std::string command_line;
-  join (command_line, " ", context.cli2.getWords ());
-  return system (command_line.c_str ());
+  return system (join (" ", context.cli2.getWords ()).c_str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

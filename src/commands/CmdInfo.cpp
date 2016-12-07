@@ -299,8 +299,7 @@ int CmdInfo::execute (std::string& output)
     task.getTags (tags);
     if (tags.size ())
     {
-      std::string allTags;
-      join (allTags, " ", tags);
+      auto allTags = join (" ", tags);
 
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_TAGS);

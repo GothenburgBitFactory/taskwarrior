@@ -32,6 +32,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <format.h>
+#include <shared.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -147,10 +148,7 @@ int CmdImport::import (const std::string& input)
   //   { ... }
   catch (std::string& e)
   {
-    std::vector <std::string> lines;
-    split (lines, input, '\n');
-
-    for (auto& line : lines)
+    for (auto& line : split (input, '\n'))
     {
       if (line.length ())
       {

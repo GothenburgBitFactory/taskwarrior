@@ -37,6 +37,7 @@
 #include <ViewTask.h>
 #include <i18n.h>
 #include <format.h>
+#include <shared.h>
 #include <text.h>
 #include <main.h>
 
@@ -72,18 +73,15 @@ int CmdCustom::execute (std::string& output)
   std::string reportSort    = context.config.get ("report." + _keyword + ".sort");
   std::string reportFilter  = context.config.get ("report." + _keyword + ".filter");
 
-  std::vector <std::string> columns;
-  split (columns, reportColumns, ',');
+  auto columns = split (reportColumns, ',');
   validateReportColumns (columns);
 
-  std::vector <std::string> labels;
-  split (labels, reportLabels, ',');
+  auto labels = split (reportLabels, ',');
 
   if (columns.size () != labels.size () && labels.size () != 0)
     throw format (STRING_CMD_CUSTOM_MISMATCH, _keyword);
 
-  std::vector <std::string> sortOrder;
-  split (sortOrder, reportSort, ',');
+  auto sortOrder = split (reportSort, ',');
   if (sortOrder.size () != 0 &&
       sortOrder[0] != "none")
     validateSortColumns (sortOrder);

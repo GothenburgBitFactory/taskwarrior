@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <Msg.h>
 #include <Lexer.h>
-#include <text.h>
+#include <shared.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 void Msg::set (const std::string& name, const std::string& value)
@@ -89,9 +89,7 @@ bool Msg::parse (const std::string& input)
     throw std::string ("ERROR: Malformed message");
 
   // Parse header.
-  std::vector <std::string> lines;
-  split (lines, input.substr (0, separator), '\n');
-  for (auto& i : lines)
+  for (auto& i : split (input.substr (0, separator), '\n'))
   {
     auto delimiter = i.find (':');
     if (delimiter == std::string::npos)
