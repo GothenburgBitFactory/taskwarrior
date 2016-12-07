@@ -42,25 +42,7 @@ int main (int, char**)
   unsetenv ("TASKDATA");
   unsetenv ("TASKRC");
 
-  // TODO bool confirm (const std::string&);
   // TODO int confirm4 (const std::string&);
-
-  // std::string formatBytes (size_t);
-  t.is (formatBytes (0), "0 B", "0 -> 0 B");
-
-  t.is (formatBytes (994),  "994 B", "994 -> 994 B");
-  t.is (formatBytes (995),  "1.0 KiB", "995 -> 1.0 KiB");
-  t.is (formatBytes (999),  "1.0 KiB", "999 -> 1.0 KiB");
-  t.is (formatBytes (1000), "1.0 KiB", "1000 -> 1.0 KiB");
-  t.is (formatBytes (1001), "1.0 KiB", "1001 -> 1.0 KiB");
-
-  t.is (formatBytes (999999),  "1.0 MiB", "999999 -> 1.0 MiB");
-  t.is (formatBytes (1000000), "1.0 MiB", "1000000 -> 1.0 MiB");
-  t.is (formatBytes (1000001), "1.0 MiB", "1000001 -> 1.0 MiB");
-
-  t.is (formatBytes (999999999),  "1.0 GiB", "999999999 -> 1.0 GiB");
-  t.is (formatBytes (1000000000), "1.0 GiB", "1000000000 -> 1.0 GiB");
-  t.is (formatBytes (1000000001), "1.0 GiB", "1000000001 -> 1.0 GiB");
 
   // TODO const std::string uuid ();
 
