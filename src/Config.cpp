@@ -40,7 +40,7 @@
 #include <Timer.h>
 #include <JSON.h>
 #include <Lexer.h>
-#include <text.h>
+#include <shared.h>
 #include <format.h>
 #include <util.h>
 #include <i18n.h>
@@ -437,8 +437,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
     return;
 
   // Split the input into lines.
-  std::vector <std::string> lines;
-  split (lines, input, "\n");
+  auto lines = split (input, '\n');
 
   // Parse each line.
   for (auto& line : lines)

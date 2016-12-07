@@ -33,15 +33,6 @@
 #include <vector>
 
 // text.cpp, Non-UTF-8 aware.
-void wrapText (std::vector <std::string>&, const std::string&, const int, bool);
-std::string unquoteText (const std::string&);
-int longestLine (const std::string&);
-bool extractLine (std::string&, const std::string&, int, bool, unsigned int&);
-void split (std::set<std::string>&, const std::string&, const char);
-void split (std::vector<std::string>&, const std::string&, const char);
-void split (std::vector<std::string>&, const std::string&, const std::string&);
-void join (std::string&, const std::string&, const std::vector<std::string>&);
-void join (std::string&, const std::string&, const std::vector<int>&);
 const char* optionalBlankLine ();
 bool nontrivial (const std::string&);
 int strippedLength (const std::string&);

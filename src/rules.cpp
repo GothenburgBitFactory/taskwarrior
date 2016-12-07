@@ -67,8 +67,7 @@ void initializeColorRules ()
     // Load the rule.precedence.color list, split it, then autocomplete against
     // the 'rules' vector loaded above.
     std::vector <std::string> results;
-    std::vector <std::string> precedence;
-    split (precedence, context.config.get ("rule.precedence.color"), ',');
+    auto precedence = split (context.config.get ("rule.precedence.color"), ',');
 
     for (const auto& p : precedence)
     {
