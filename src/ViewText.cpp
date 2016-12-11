@@ -28,7 +28,7 @@
 #include <ViewText.h>
 #include <Context.h>
 #include <format.h>
-#include <text.h>
+#include <util.h>
 #include <utf8.h>
 #include <main.h>
 
