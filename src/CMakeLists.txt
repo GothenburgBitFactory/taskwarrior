@@ -32,7 +32,6 @@ add_library (task CLI2.cpp CLI2.h
                   recur.cpp
                   rules.cpp
                   sort.cpp
-                  text.cpp text.h
                   util.cpp util.h)
 
 add_library (libshared libshared/src/Datetime.cpp      libshared/src/Datetime.h

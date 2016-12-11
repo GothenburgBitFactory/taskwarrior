@@ -32,7 +32,6 @@
 #include <Filter.h>
 #include <ViewText.h>
 #include <format.h>
-#include <text.h>
 #include <util.h>
 #include <i18n.h>
 #include <main.h>
