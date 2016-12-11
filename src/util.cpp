@@ -53,7 +53,6 @@
 #include <sys/select.h>
 
 #include <Lexer.h>
-#include <text.h>
 #include <utf8.h>
 #include <main.h>
 #include <i18n.h>

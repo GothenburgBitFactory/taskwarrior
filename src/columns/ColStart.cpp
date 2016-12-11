@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <ColStart.h>
 #include <Context.h>
-#include <text.h>
 #include <utf8.h>
 #include <i18n.h>
 
