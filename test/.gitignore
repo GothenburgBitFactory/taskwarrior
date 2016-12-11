@@ -16,7 +16,6 @@ nibbler.t
 t.t
 taskmod.t
 tdb2.t
-text.t
 uri.t
 util.t
 variant_add.t
