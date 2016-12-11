@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <CmdLogo.h>
 #include <Context.h>
-#include <text.h>
+#include <util.h>
 #include <i18n.h>
 
 extern Context context;

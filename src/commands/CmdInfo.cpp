@@ -35,7 +35,7 @@
 #include <main.h>
 #include <shared.h>
 #include <format.h>
-#include <text.h>
+#include <util.h>
 #include <i18n.h>
 
 extern Context context;
