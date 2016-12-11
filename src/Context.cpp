@@ -326,7 +326,7 @@ int Context::run ()
 
       << " init:"   << time_init_us
       << " load:"   << time_load_us
-      << " gc:"     << time_gc_us - time_load_us
+      << " gc:"     << (time_gc_us > 0 ? time_gc_us - time_load_us : time_gc_us)
       << " filter:" << time_filter_us
       << " commit:" << time_commit_us
       << " sort:"   << time_sort_us
