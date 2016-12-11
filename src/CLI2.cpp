@@ -399,6 +399,7 @@ void CLI2::lexArguments ()
   {
     bool quoted = Lexer::wasQuoted (_original_args[i].attribute ("raw"));
 
+    // Process single-token arguments.
     std::string lexeme;
     Lexer::Type type;
     Lexer lex (_original_args[i].attribute ("raw"));
@@ -422,11 +423,13 @@ void CLI2::lexArguments ()
 
       _args.push_back (a);
     }
+
+    // Process muktiple-token arguments.
     else
     {
       std::string quote = "'";
       std::string escaped = _original_args[i].attribute ("raw");
-      str_replace (escaped, quote, "\\'");
+      escaped = str_replace (escaped, quote, "\\'");
 
       std::string::size_type cursor = 0;
       std::string word;
