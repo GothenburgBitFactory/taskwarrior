@@ -33,7 +33,7 @@
 #include <ViewText.h>
 #include <Command.h>
 #include <ColString.h>
-#include <text.h>
+#include <util.h>
 #include <i18n.h>
 
 extern Context context;

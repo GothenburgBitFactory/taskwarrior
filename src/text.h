@@ -33,8 +33,6 @@
 #include <vector>
 
 // text.cpp, Non-UTF-8 aware.
-const char* optionalBlankLine ();
-int strippedLength (const std::string&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

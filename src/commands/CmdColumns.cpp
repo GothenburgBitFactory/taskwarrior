@@ -31,7 +31,7 @@
 #include <ViewText.h>
 #include <Color.h>
 #include <shared.h>
-#include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <main.h>
 
