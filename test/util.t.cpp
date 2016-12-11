@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (19);
+  UnitTest t (24);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -85,6 +85,13 @@ int main (int, char**)
   t.ok    (nontrivial ("a   "),                   "nontrivial 'a   ' -> true");
   t.ok    (nontrivial ("  \t\ta"),                "nontrivial '  \\t\\ta' -> true");
   t.ok    (nontrivial ("a\t\t  "),                "nontrivial 'a\\t\\t  ' -> true");
+
+  // int strippedLength (const std::string&);
+  t.is (strippedLength (std::string ("")),                                  0, "strippedLength                              -> 0");
+  t.is (strippedLength (std::string ("abc")),                               3, "strippedLength abc                          -> 3");
+  t.is (strippedLength (std::string ("one\033[5;38;255mtwo\033[0mthree")), 11, "strippedLength one^[[5;38;255mtwo^[[0mthree -> 11");
+  t.is (strippedLength (std::string ("\033[0m")),                           0, "strippedLength ^[[0m                        -> 0");
+  t.is (strippedLength (std::string ("\033[1m\033[0m")),                    0, "strippedLength ^[[1m^[[0m                   -> 0");
 
   return 0;
 }

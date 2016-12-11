@@ -37,14 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (5);
-
-  // int strippedLength (const std::string&);
-  t.is (strippedLength (std::string ("")),                                  0, "strippedLength                              -> 0");
-  t.is (strippedLength (std::string ("abc")),                               3, "strippedLength abc                          -> 3");
-  t.is (strippedLength (std::string ("one\033[5;38;255mtwo\033[0mthree")), 11, "strippedLength one^[[5;38;255mtwo^[[0mthree -> 11");
-  t.is (strippedLength (std::string ("\033[0m")),                           0, "strippedLength ^[[0m                        -> 0");
-  t.is (strippedLength (std::string ("\033[1m\033[0m")),                    0, "strippedLength ^[[1m^[[0m                   -> 0");
+  UnitTest t (0);
 
   return 0;
 }
