@@ -62,6 +62,7 @@ const std::vector <std::string> extractParents (
 
 std::string osName ();
 const std::string obfuscateText (const std::string&);
+bool nontrivial (const std::string&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

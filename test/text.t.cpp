@@ -37,18 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (14);
-
-  // bool nontrivial (const std::string&);
-  t.notok (nontrivial (""),                       "nontrivial '' -> false");
-  t.notok (nontrivial ("   "),                    "nontrivial '   ' -> false");
-  t.notok (nontrivial ("\t\t"),                   "nontrivial '\\t\\t' -> false");
-  t.notok (nontrivial (" \t \t"),                 "nontrivial ' \\t \\t' -> false");
-  t.ok    (nontrivial ("a"),                      "nontrivial 'a' -> true");
-  t.ok    (nontrivial ("   a"),                   "nontrivial '   a' -> true");
-  t.ok    (nontrivial ("a   "),                   "nontrivial 'a   ' -> true");
-  t.ok    (nontrivial ("  \t\ta"),                "nontrivial '  \\t\\ta' -> true");
-  t.ok    (nontrivial ("a\t\t  "),                "nontrivial 'a\\t\\t  ' -> true");
+  UnitTest t (5);
 
   // int strippedLength (const std::string&);
   t.is (strippedLength (std::string ("")),                                  0, "strippedLength                              -> 0");

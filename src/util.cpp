@@ -316,3 +316,15 @@ const std::string obfuscateText (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool nontrivial (const std::string& input)
+{
+  std::string::size_type i = 0;
+  int character;
+  while ((character = utf8_next_char (input, i)))
+    if (! Lexer::isWhitespace (character))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
