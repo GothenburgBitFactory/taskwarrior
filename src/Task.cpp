@@ -662,14 +662,17 @@ void Task::parseJSON (const json::object* root_obj)
       // TW-1274 Standardization.
       else if (i.first == "modification")
       {
-        ISO8601d d (unquoteText (i.second->dump ()));
+        auto text = i.second->dump ();
+        Lexer::dequote (text);
+        ISO8601d d (text);
         set ("modified", d.toEpochString ());
       }
 
       // Dates are converted from ISO to epoch.
       else if (type == "date")
       {
-        std::string text = unquoteText (i.second->dump ());
+        auto text = i.second->dump ();
+        Lexer::dequote (text);
         ISO8601d d (text);
         set (i.first, text == "" ? "" : d.toEpochString ());
       }
