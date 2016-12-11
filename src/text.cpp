@@ -53,18 +53,6 @@ const char* optionalBlankLine ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool nontrivial (const std::string& input)
-{
-  std::string::size_type i = 0;
-  int character;
-  while ((character = utf8_next_char (input, i)))
-    if (! Lexer::isWhitespace (character))
-      return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Return the length, in characters, of the input, subtracting color control
 // codes.
 int strippedLength (const std::string& input)

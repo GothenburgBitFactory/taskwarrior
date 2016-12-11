@@ -34,7 +34,6 @@
 
 // text.cpp, Non-UTF-8 aware.
 const char* optionalBlankLine ();
-bool nontrivial (const std::string&);
 int strippedLength (const std::string&);
 
 #endif

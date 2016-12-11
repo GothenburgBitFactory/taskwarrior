@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (22);
+  UnitTest t (19);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -74,6 +74,17 @@ int main (int, char**)
   t.is (indentProject ("one"),           "one",               "indentProject 'one' -> 'one'");
   t.is (indentProject ("one.two"),       "  two",         "indentProject 'one.two' -> '  two'");
   t.is (indentProject ("one.two.three"), "    three", "indentProject 'one.two.three' -> '    three'");
+
+  // bool nontrivial (const std::string&);
+  t.notok (nontrivial (""),                       "nontrivial '' -> false");
+  t.notok (nontrivial ("   "),                    "nontrivial '   ' -> false");
+  t.notok (nontrivial ("\t\t"),                   "nontrivial '\\t\\t' -> false");
+  t.notok (nontrivial (" \t \t"),                 "nontrivial ' \\t \\t' -> false");
+  t.ok    (nontrivial ("a"),                      "nontrivial 'a' -> true");
+  t.ok    (nontrivial ("   a"),                   "nontrivial '   a' -> true");
+  t.ok    (nontrivial ("a   "),                   "nontrivial 'a   ' -> true");
+  t.ok    (nontrivial ("  \t\ta"),                "nontrivial '  \\t\\ta' -> true");
+  t.ok    (nontrivial ("a\t\t  "),                "nontrivial 'a\\t\\t  ' -> true");
 
   return 0;
 }
