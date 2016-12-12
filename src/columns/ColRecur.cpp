@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <ColRecur.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Duration.h>
 #include <Eval.h>
 #include <Variant.h>
 #include <Lexer.h>
@@ -73,7 +73,7 @@ void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maxi
     if (_style == "default" ||
         _style == "duration")
     {
-      minimum = maximum = ISO8601p (task.get ("recur")).format ().length ();
+      minimum = maximum = Duration (task.get ("recur")).formatISO ().length ();
     }
     else if (_style == "indicator")
     {
@@ -98,7 +98,7 @@ void ColumnRecur::render (
   {
     if (_style == "default" ||
         _style == "duration")
-      renderStringRight (lines, width, color, ISO8601p (task.get ("recur")).format ());
+      renderStringRight (lines, width, color, Duration (task.get ("recur")).formatISO ());
 
     else if (_style == "indicator")
       renderStringRight (lines, width, color, context.config.get ("recurrence.indicator"));
