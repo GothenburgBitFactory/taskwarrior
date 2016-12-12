@@ -54,6 +54,7 @@
 
 #include <Lexer.h>
 #include <utf8.h>
+#include <util.h>
 #include <main.h>
 #include <i18n.h>
 
