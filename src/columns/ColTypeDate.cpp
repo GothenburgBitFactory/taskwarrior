@@ -27,7 +27,8 @@
 #include <cmake.h>
 #include <ColTypeDate.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
@@ -54,16 +55,16 @@ ColumnTypeDate::ColumnTypeDate ()
                 "remaining",
                 "countdown"};
 
-  ISO8601d now;
+  Datetime now;
   now -= 125; // So that "age" is non-zero.
   _examples = {now.toString (context.config.get ("dateformat")),
                format (now.toJulian (), 13, 12),
                now.toEpochString (),
                now.toISO (),
-               ISO8601p (ISO8601d () - now).formatVague (),
-               '-' + ISO8601p (ISO8601d () - now).formatVague (),
+               Duration (Datetime () - now).formatVague (),
+               '-' + Duration (Datetime () - now).formatVague (),
                "",
-               ISO8601p (ISO8601d () - now).format ()};
+               Duration (Datetime () - now).format ()};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +75,7 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
 
   if (task.has (_name))
   {
-    ISO8601d date (task.get_date (_name));
+    Datetime date (task.get_date (_name));
 
     if (_style == "default" ||
         _style == "formatted")
@@ -89,12 +90,12 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
       if (format == "")
         format = context.config.get ("dateformat");
 
-      minimum = maximum = ISO8601d::length (format);
+      minimum = maximum = Datetime::length (format);
     }
     else if (_style == "countdown")
     {
-      ISO8601d now;
-      minimum = maximum = ISO8601p (now - date).formatVague ().length ();
+      Datetime now;
+      minimum = maximum = Duration (now - date).formatVague ().length ();
     }
     else if (_style == "julian")
     {
@@ -110,25 +111,25 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
     }
     else if (_style == "age")
     {
-      ISO8601d now;
+      Datetime now;
       if (now > date)
-        minimum = maximum = ISO8601p (now - date).formatVague ().length ();
+        minimum = maximum = Duration (now - date).formatVague ().length ();
       else
-        minimum = maximum = ISO8601p (date - now).formatVague ().length () + 1;
+        minimum = maximum = Duration (date - now).formatVague ().length () + 1;
     }
     else if (_style == "relative")
     {
-      ISO8601d now;
+      Datetime now;
       if (now < date)
-        minimum = maximum = ISO8601p (date - now).formatVague ().length ();
+        minimum = maximum = Duration (date - now).formatVague ().length ();
       else
-        minimum = maximum = ISO8601p (now - date).formatVague ().length () + 1;
+        minimum = maximum = Duration (now - date).formatVague ().length () + 1;
     }
     else if (_style == "remaining")
     {
-      ISO8601d now;
+      Datetime now;
       if (date > now)
-        minimum = maximum = ISO8601p (date - now).formatVague ().length ();
+        minimum = maximum = Duration (date - now).formatVague ().length ();
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -144,7 +145,7 @@ void ColumnTypeDate::render (
 {
   if (task.has (_name))
   {
-    ISO8601d date (task.get_date (_name));
+    Datetime date (task.get_date (_name));
 
     if (_style == "default" ||
         _style == "formatted")
@@ -165,8 +166,8 @@ void ColumnTypeDate::render (
     }
     else if (_style == "countdown")
     {
-      ISO8601d now;
-      renderStringRight (lines, width, color, ISO8601p (now - date).formatVague ());
+      Datetime now;
+      renderStringRight (lines, width, color, Duration (now - date).formatVague ());
     }
     else if (_style == "julian")
       renderStringRight (lines, width, color, format (date.toJulian (), 13, 12));
@@ -179,26 +180,26 @@ void ColumnTypeDate::render (
 
     else if (_style == "age")
     {
-      ISO8601d now;
+      Datetime now;
       if (now > date)
-        renderStringLeft (lines, width, color, ISO8601p (now - date).formatVague ());
+        renderStringLeft (lines, width, color, Duration (now - date).formatVague ());
       else
-        renderStringLeft (lines, width, color, '-' + ISO8601p (date - now).formatVague ());
+        renderStringLeft (lines, width, color, '-' + Duration (date - now).formatVague ());
     }
     else if (_style == "relative")
     {
-      ISO8601d now;
+      Datetime now;
       if (now < date)
-        renderStringLeft (lines, width, color, ISO8601p (date - now).formatVague ());
+        renderStringLeft (lines, width, color, Duration (date - now).formatVague ());
       else
-        renderStringLeft (lines, width, color, '-' + ISO8601p (now - date).formatVague ());
+        renderStringLeft (lines, width, color, '-' + Duration (now - date).formatVague ());
     }
 
     else if (_style == "remaining")
     {
-      ISO8601d now;
+      Datetime now;
       if (date > now)
-        renderStringRight (lines, width, color, ISO8601p (date - now).formatVague ());
+        renderStringRight (lines, width, color, Duration (date - now).formatVague ());
     }
   }
 }
