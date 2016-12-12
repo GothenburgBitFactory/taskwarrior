@@ -124,7 +124,7 @@ class TestDOM(TestCase):
     def test_dom_due_week(self):
         """ DOM 3.due.week """
         code, out, err = self.t("_get 3.due.week")
-        self.assertEqual("36\n", out)
+        self.assertEqual("35\n", out)
 
     def test_dom_due_weekday(self):
         """ DOM 3.due.weekday """

@@ -32,7 +32,8 @@
 #include <Variant.h>
 #include <Lexer.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <shared.h>
 #include <format.h>
 #include <util.h>
@@ -261,12 +262,12 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
       {
         auto period = ref.get (canonical);
 
-        ISO8601p iso;
+        Duration iso;
         std::string::size_type cursor = 0;
         if (iso.parse (period, cursor))
-          value = Variant ((time_t) iso, Variant::type_duration);
+          value = Variant (iso.toTime_t (), Variant::type_duration);
         else
-          value = Variant ((time_t) ISO8601p (ref.get (canonical)), Variant::type_duration);
+          value = Variant (Duration (ref.get (canonical)).toTime_t (), Variant::type_duration);
       }
       else if (column->type () == "numeric")
         value = Variant (ref.get_float (canonical));
@@ -284,7 +285,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 
     if (ref.data.size () && size == 2 && column && column->type () == "date")
     {
-      ISO8601d date (ref.get_date (canonical));
+      Datetime date (ref.get_date (canonical));
            if (elements[1] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
       else if (elements[1] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
       else if (elements[1] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
@@ -348,7 +349,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
         // <annotations>.<N>.entry.hour
         // <annotations>.<N>.entry.minute
         // <annotations>.<N>.entry.second
-        ISO8601d date (i.first.substr (11));
+        Datetime date (i.first.substr (11));
              if (elements[3] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
         else if (elements[3] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
         else if (elements[3] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
