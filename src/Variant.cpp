@@ -32,6 +32,8 @@
 #include <stdlib.h>
 #include <Variant.h>
 #include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <Lexer.h>
 #include <RX.h>
 #include <shared.h>
@@ -1730,10 +1732,10 @@ Variant::operator std::string () const
     return _string;
 
   case type_date:
-    return ISO8601d (_date).toISOLocalExtended ();
+    return Datetime (_date).toISOLocalExtended ();
 
   case type_duration:
-    return ISO8601p (_duration).format ();
+    return Duration (_duration).formatISO ();
   }
 
   return "";
@@ -1836,11 +1838,11 @@ void Variant::cast (const enum type new_type)
         }
 
         pos = 0;
-        ISO8601p isop;
+        Duration isop;
         if (isop.parse (_string, pos) &&
             pos == _string.length ())
         {
-          _date = ISO8601d ().toEpoch () + (time_t) isop;
+          _date = ISO8601d ().toEpoch () + isop.toTime_t ();
           break;
         }
 
@@ -1855,11 +1857,11 @@ void Variant::cast (const enum type new_type)
       {
         _duration = 0;
         std::string::size_type pos = 0;
-        ISO8601p iso;
+        Duration iso;
         if (iso.parse (_string, pos) &&
             pos == _string.length ())
         {
-          _duration = (time_t) iso;
+          _duration = iso.toTime_t ();
         }
       }
       break;
