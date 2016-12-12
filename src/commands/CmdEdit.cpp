@@ -33,7 +33,8 @@
 #include <algorithm>
 #include <unistd.h>
 #include <cerrno>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <Context.h>
 #include <Lexer.h>
 #include <Filter.h>
@@ -174,10 +175,7 @@ std::string CmdEdit::formatDate (
 {
   std::string value = task.get (attribute);
   if (value.length ())
-  {
-    ISO8601d dt (value);
-    value = dt.toString (dateformat);
-  }
+    value = Datetime (value).toString (dateformat);
 
   return value;
 }
@@ -189,10 +187,7 @@ std::string CmdEdit::formatDuration (
 {
   std::string value = task.get (attribute);
   if (value.length ())
-  {
-    ISO8601p dur (value);
-    value = dur.format ();
-  }
+    value = Duration (value).formatISO ();
 
   return value;
 }
@@ -258,12 +253,12 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   task.getAnnotations (annotations);
   for (auto& anno : annotations)
   {
-    ISO8601d dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
+    Datetime dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
            << " -- "                  << json::encode (anno.second) << '\n';
   }
 
-  ISO8601d now;
+  Datetime now;
   before << "  Annotation:        " << now.toString (dateformat) << " -- \n";
 
   // Add dependencies here.
@@ -386,7 +381,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     if (formatted != value)
     {
       context.footnote (STRING_EDIT_ENTRY_MOD);
-      task.set ("entry", ISO8601d (value, dateformat).toEpochString ());
+      task.set ("entry", Datetime (value, dateformat).toEpochString ());
     }
   }
   else
@@ -403,13 +398,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_START_MOD);
-        task.set ("start", ISO8601d (value, dateformat).toEpochString ());
+        task.set ("start", Datetime (value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_START_MOD);
-      task.set ("start", ISO8601d (value, dateformat).toEpochString ());
+      task.set ("start", Datetime (value, dateformat).toEpochString ());
     }
   }
   else
@@ -432,7 +427,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_END_MOD);
-        task.set ("end", ISO8601d (value, dateformat).toEpochString ());
+        task.set ("end", Datetime (value, dateformat).toEpochString ());
       }
     }
     else if (task.getStatus () != Task::deleted)
@@ -459,13 +454,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_SCHED_MOD);
-        task.set ("scheduled", ISO8601d (value, dateformat).toEpochString ());
+        task.set ("scheduled", Datetime (value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_SCHED_MOD);
-      task.set ("scheduled", ISO8601d (value, dateformat).toEpochString ());
+      task.set ("scheduled", Datetime (value, dateformat).toEpochString ());
     }
   }
   else
@@ -489,13 +484,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_DUE_MOD);
-        task.set ("due", ISO8601d (value, dateformat).toEpochString ());
+        task.set ("due", Datetime (value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_DUE_MOD);
-      task.set ("due", ISO8601d (value, dateformat).toEpochString ());
+      task.set ("due", Datetime (value, dateformat).toEpochString ());
     }
   }
   else
@@ -526,13 +521,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_UNTIL_MOD);
-        task.set ("until", ISO8601d (value, dateformat).toEpochString ());
+        task.set ("until", Datetime (value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_UNTIL_MOD);
-      task.set ("until", ISO8601d (value, dateformat).toEpochString ());
+      task.set ("until", Datetime (value, dateformat).toEpochString ());
     }
   }
   else
@@ -550,7 +545,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     if (value != "")
     {
-      ISO8601p p;
+      Duration p;
       std::string::size_type idx = 0;
       if (p.parse (value, idx))
       {
@@ -588,14 +583,14 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_WAIT_MOD);
-        task.set ("wait", ISO8601d (value, dateformat).toEpochString ());
+        task.set ("wait", Datetime (value, dateformat).toEpochString ());
         task.setStatus (Task::waiting);
       }
     }
     else
     {
       context.footnote (STRING_EDIT_WAIT_MOD);
-      task.set ("wait", ISO8601d (value, dateformat).toEpochString ());
+      task.set ("wait", Datetime (value, dateformat).toEpochString ());
       task.setStatus (Task::waiting);
     }
   }
@@ -649,7 +644,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         // for each line: if the annotation is the same, then it is copied; if
         // the annotation is modified, then its original date may be kept; and
         // if there is no corresponding id, then a new unique date is created).
-        ISO8601d when (value.substr (0, gap), dateformat);
+        Datetime when (value.substr (0, gap), dateformat);
 
         // If the map already contains a annotation for a given timestamp
         // we need to increment until we find an unused key
@@ -694,9 +689,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     {
       std::string value = findValue (after, "\n  UDA " + col.first + ":");
       if ((task.get (col.first) != value) && (type != "date" ||
-           (task.get (col.first) != ISO8601d (value, dateformat).toEpochString ())) &&
+           (task.get (col.first) != Datetime (value, dateformat).toEpochString ())) &&
            (type != "duration" ||
-           (task.get (col.first) != (std::string) ISO8601p (value))))
+           (task.get (col.first) != Duration (value).toString ())))
       {
         if (value != "")
         {
@@ -718,11 +713,11 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
           }
           else if (type == "date")
           {
-            task.set (col.first, ISO8601d (value, dateformat).toEpochString ());
+            task.set (col.first, Datetime (value, dateformat).toEpochString ());
           }
           else if (type == "duration")
           {
-            task.set (col.first, (time_t) ISO8601p (value));
+            task.set (col.first, Duration (value).toTime_t ());
           }
         }
         else
