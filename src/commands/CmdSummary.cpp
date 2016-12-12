@@ -32,7 +32,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <ViewText.h>
-#include <ISO8601.h>
+#include <Duration.h>
 #include <format.h>
 #include <util.h>
 #include <i18n.h>
@@ -175,7 +175,7 @@ int CmdSummary::execute (std::string& output)
 
       view.set (row, 1, countPending[i.first]);
       if (counter[i.first])
-        view.set (row, 2, ISO8601p ((int) (sumEntry[i.first] / (double)counter[i.first])).formatVague ());
+        view.set (row, 2, Duration ((int) (sumEntry[i.first] / (double)counter[i.first])).formatVague ());
 
       int c = countCompleted[i.first];
       int p = countPending[i.first];
