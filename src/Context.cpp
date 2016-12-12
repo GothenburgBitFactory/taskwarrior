@@ -38,6 +38,7 @@
 #include <FS.h>
 #include <Eval.h>
 #include <Variant.h>
+#include <Datetime.h>
 #include <ISO8601.h>
 #include <shared.h>
 #include <format.h>
@@ -689,7 +690,7 @@ void Context::staticInitialization ()
   Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
   Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
   Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
-  ISO8601p::isoEnabled      = ISO8601d::isoEnabled         = config.getBoolean ("date.iso");
+  Datetime::isoEnabled      = ISO8601d::isoEnabled         = config.getBoolean ("date.iso");
 
   TDB2::debug_mode          = config.getBoolean ("debug");
 
