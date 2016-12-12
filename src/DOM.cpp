@@ -30,6 +30,7 @@
 #include <map>
 #include <stdlib.h>
 #include <Variant.h>
+#include <Lexer.h>
 #include <Context.h>
 #include <ISO8601.h>
 #include <shared.h>
@@ -193,26 +194,25 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   auto elements = split (name, '.');
 
   Task ref (task);
-  Nibbler n (elements[0]);
-  n.save ();
-  int id;
-  std::string uuid;
-
-  // If elements[0] is a UUID, load that task (if necessary), and clobber ref.
-  if (n.getPartialUUID (uuid) && n.depleted ())
+  Lexer lexer (elements[0]);
+  std::string token;
+  Lexer::Type type;
+  if (lexer.token (token, type))
   {
-    if (uuid != ref.get ("uuid"))
-      context.tdb2.get (uuid, ref);
-
-    // Eat elements[0]/UUID.
-    elements.erase (elements.begin ());
-  }
-  else
-  {
-    // If elements[0] is a ID, load that task (if necessary), and clobber ref.
-    if (n.getInt (id) && n.depleted ())
+    if (type == Lexer::Type::uuid &&
+        token.length () == elements[0].length ())
     {
-      if (id != ref.id)
+      if (token != ref.get ("uuid"))
+        context.tdb2.get (token, ref);
+
+      // Eat elements[0]/UUID.
+      elements.erase (elements.begin ());
+    }
+    else if (type == Lexer::Type::number &&
+             token.find ('.') == std::string::npos)
+    {
+      auto id = strtol (token.c_str (), NULL, 10);
+      if (id && id != ref.id)
         context.tdb2.get (id, ref);
 
       // Eat elements[0]/ID.
