@@ -35,6 +35,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <ISO8601.h>
+#include <Duration.h>
 #include <main.h>
 #include <i18n.h>
 #include <shared.h>
@@ -838,14 +839,14 @@ void Chart::calculateRates ()
     rate_message << "Chart::calculateRates Net reduction is "
                  << (_peak_count - _current_count)
                  << " tasks in "
-                 << ISO8601p (now.toEpoch () - _peak_epoch).format ()
+                 << Duration (now.toEpoch () - _peak_epoch).formatISO ()
                  << " = "
                  << _net_fix_rate
                  << " tasks/d";
     context.debug (rate_message.str ());
 
-    ISO8601p delta (static_cast <time_t> (_current_count / fix_rate));
-    ISO8601d end = now + delta;
+    Duration delta (static_cast <time_t> (_current_count / fix_rate));
+    ISO8601d end = now + delta.toTime_t ();
 
     // Prefer dateformat.report over dateformat.
     std::string format = context.config.get ("dateformat.report");
