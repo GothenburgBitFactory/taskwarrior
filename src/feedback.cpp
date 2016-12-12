@@ -33,7 +33,8 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <Lexer.h>
 #include <main.h>
 #include <shared.h>
@@ -183,7 +184,7 @@ std::string taskInfoDifferences (
     else if (name == "start")
     {
       out << format (STRING_FEEDBACK_ATT_DEL_DUR, Lexer::ucFirst (name),
-                     ISO8601p (current_timestamp - last_timestamp).format ())
+                     Duration (current_timestamp - last_timestamp).format ())
           << "\n";
     }
     else
@@ -272,7 +273,7 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
         col->type () == "date" &&
         value != "")
     {
-      ISO8601d d ((time_t)strtol (value.c_str (), NULL, 10));
+      Datetime d ((time_t)strtol (value.c_str (), NULL, 10));
       if (format == "")
         return d.toString (context.config.get ("dateformat"));
 
