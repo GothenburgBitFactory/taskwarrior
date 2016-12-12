@@ -41,6 +41,7 @@
 #include <Context.h>
 #include <Pig.h>
 #endif
+#include <Duration.h>
 #include <ISO8601.h>
 #ifdef PRODUCT_TASKWARRIOR
 #include <RX.h>
@@ -1544,9 +1545,9 @@ void Task::validate (bool applyDefault /* = true */)
     {
       if (context.columns["due"]->validate (Task::defaultDue))
       {
-        ISO8601p dur (Task::defaultDue);
-        if ((time_t) dur != 0)
-          set ("due", (ISO8601d () + dur).toEpoch ());
+        Duration dur (Task::defaultDue);
+        if (dur.toTime_t () != 0)
+          set ("due", (ISO8601d () + dur.toTime_t ()).toEpoch ());
         else
           set ("due", ISO8601d (Task::defaultDue).toEpoch ());
       }
@@ -1612,7 +1613,7 @@ void Task::validate (bool applyDefault /* = true */)
     std::string value = get ("recur");
     if (value != "")
     {
-      ISO8601p p;
+      Duration p;
       std::string::size_type i = 0;
       if (! p.parse (value, i))
         throw format (STRING_TASK_VALID_RECUR, value);
