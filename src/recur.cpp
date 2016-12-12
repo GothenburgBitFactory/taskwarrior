@@ -40,6 +40,7 @@
 #include <Context.h>
 #include <Lexer.h>
 #include <ISO8601.h>
+#include <Duration.h>
 #include <format.h>
 #include <util.h>
 #include <i18n.h>
@@ -364,14 +365,12 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
   }
 
   // Add the period to current, and we're done.
-  int secs = 0;
   std::string::size_type idx = 0;
-  ISO8601p p;
+  Duration p;
   if (! p.parse (period, idx))
     throw std::string (format (STRING_TASK_VALID_RECUR, period));
 
-  secs = (time_t) p;
-  return current + secs;
+  return current + p.toTime_t ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
