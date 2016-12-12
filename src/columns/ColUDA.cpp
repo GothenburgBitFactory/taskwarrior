@@ -27,7 +27,8 @@
 #include <cmake.h>
 #include <ColUDA.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <shared.h>
 #include <format.h>
 #include <utf8.h>
@@ -265,14 +266,14 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
         //   rc.report.<report>.dateformat
         //   rc.dateformat.report
         //   rc.dateformat
-        ISO8601d date ((time_t) strtol (value.c_str (), NULL, 10));
+        Datetime date ((time_t) strtol (value.c_str (), NULL, 10));
         std::string format = context.config.get ("report." + _report + ".dateformat");
         if (format == "")
           format = context.config.get ("dateformat.report");
         if (format == "")
           format = context.config.get ("dateformat");
 
-        minimum = maximum = ISO8601d::length (format);
+        minimum = maximum = Datetime::length (format);
       }
     }
     else if (_style == "indicator")
@@ -318,7 +319,7 @@ void ColumnUDADate::render (
           format = context.config.get ("dateformat");
       }
 
-      renderStringLeft (lines, width, color, ISO8601d ((time_t) strtol (value.c_str (), NULL, 10)).toString (format));
+      renderStringLeft (lines, width, color, Datetime ((time_t) strtol (value.c_str (), NULL, 10)).toString (format));
     }
     else if (_style == "indicator")
     {
@@ -374,7 +375,7 @@ void ColumnUDADuration::measure (Task& task, unsigned int& minimum, unsigned int
     {
       std::string value = task.get (_name);
       if (value != "")
-        minimum = maximum = ISO8601p (value).format ().length ();
+        minimum = maximum = Duration (value).formatISO ().length ();
     }
     else if (_style == "indicator")
     {
@@ -406,7 +407,7 @@ void ColumnUDADuration::render (
     if (_style == "default")
     {
       std::string value = task.get (_name);
-      renderStringRight (lines, width, color, ISO8601p (value).format ());
+      renderStringRight (lines, width, color, Duration (value).formatISO ());
     }
     else if (_style == "indicator")
     {
