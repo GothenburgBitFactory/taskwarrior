@@ -30,7 +30,8 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <ViewText.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
@@ -90,7 +91,7 @@ int CmdStats::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (all, filtered);
 
-  ISO8601d now;
+  Datetime now;
   time_t earliest   = time (NULL);
   time_t latest     = 1;
   int totalT        = 0;
@@ -238,47 +239,47 @@ int CmdStats::execute (std::string& output)
 
   if (filtered.size ())
   {
-    ISO8601d e (earliest);
+    Datetime e (earliest);
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_OLDEST);
     view.set (row, 1, e.toString (dateformat));
 
-    ISO8601d l (latest);
+    Datetime l (latest);
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_NEWEST);
     view.set (row, 1, l.toString (dateformat));
 
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_USED_FOR);
-    view.set (row, 1, ISO8601p (latest - earliest).formatVague ());
+    view.set (row, 1, Duration (latest - earliest).formatVague ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_ADD_EVERY);
-    view.set (row, 1, ISO8601p (((latest - earliest) / totalT)).formatVague ());
+    view.set (row, 1, Duration (((latest - earliest) / totalT)).formatVague ());
   }
 
   if (completedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_COMP_EVERY);
-    view.set (row, 1, ISO8601p ((latest - earliest) / completedT).formatVague ());
+    view.set (row, 1, Duration ((latest - earliest) / completedT).formatVague ());
   }
 
   if (deletedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_DEL_EVERY);
-    view.set (row, 1, ISO8601p ((latest - earliest) / deletedT).formatVague ());
+    view.set (row, 1, Duration ((latest - earliest) / deletedT).formatVague ());
   }
 
   if (pendingT || completedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_AVG_PEND);
-    view.set (row, 1, ISO8601p ((int) ((daysPending / (pendingT + completedT)) * 86400)).formatVague ());
+    view.set (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).formatVague ());
   }
 
   if (totalT)
