@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <format.h>
 #include <util.h>
 #include <i18n.h>
@@ -92,10 +92,10 @@ int CmdTags::execute (std::string& output)
   if (unique.size ())
   {
     // Render a list of tags names from the map.
-    ViewText view;
+    Table view;
     view.width (context.getWidth ());
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_TAG));
-    view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_COUNT));
+    view.add (STRING_COLUMN_LABEL_TAG);
+    view.add (STRING_COLUMN_LABEL_COUNT, false);
 
     Color bold;
     if (context.color ())
