@@ -30,7 +30,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <Context.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <Lexer.h>
 #include <i18n.h>
 #include <shared.h>
@@ -368,10 +368,10 @@ int CmdCalendar::execute (std::string& output)
     // Table with holiday information
     if (context.config.get ("calendar.holidays") == "full")
     {
-      ViewText holTable;
+      Table holTable;
       holTable.width (context.getWidth ());
-      holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_DATE));
-      holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_HOL));
+      holTable.add (STRING_CMD_CAL_LABEL_DATE);
+      holTable.add (STRING_CMD_CAL_LABEL_HOL);
       holTable.colorHeader (color_label);
 
       std::map <time_t, std::vector<std::string>> hm; // we need to store multiple holidays per day
@@ -434,32 +434,32 @@ std::string CmdCalendar::renderMonths (
   // Build table for the number of months to be displayed.
   Color label (context.config.get ("color.label"));
 
-  ViewText view;
+  Table view;
   view.colorHeader (label);
   view.width (context.getWidth ());
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
   {
     if (weekStart == 1)
     {
-      view.add (Column::factory ("string.right", ""));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (1), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (2), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (3), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (4), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (5), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (6), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (0), 0, 2)));
+      view.add ("", false);
+      view.add (utf8_substr (ISO8601d::dayName (1), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (2), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (3), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (4), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (5), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (6), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (0), 0, 2), false);
     }
     else
     {
-      view.add (Column::factory ("string.right", ""));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (0), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (1), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (2), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (3), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (4), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (5), 0, 2)));
-      view.add (Column::factory ("string.right", utf8_substr (ISO8601d::dayName (6), 0, 2)));
+      view.add ("", false);
+      view.add (utf8_substr (ISO8601d::dayName (0), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (1), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (2), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (3), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (4), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (5), 0, 2), false);
+      view.add (utf8_substr (ISO8601d::dayName (6), 0, 2), false);
     }
   }
 
