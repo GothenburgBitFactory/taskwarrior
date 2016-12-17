@@ -103,6 +103,8 @@ int CmdInfo::execute (std::string& output)
     view.width (context.getWidth ());
     if (context.config.getBoolean ("obfuscate"))
       view.obfuscate ();
+    if (context.config.getBoolean ("color"))
+      view.forceColor ();
     view.add (STRING_COLUMN_LABEL_NAME);
     view.add (STRING_COLUMN_LABEL_VALUE);
 
@@ -424,6 +426,8 @@ int CmdInfo::execute (std::string& output)
 
       if (context.config.getBoolean ("obfuscate"))
         urgencyDetails.obfuscate ();
+      if (context.config.getBoolean ("color"))
+        view.forceColor ();
 
       urgencyDetails.width (context.getWidth ());
       urgencyDetails.add (""); // Attribute
@@ -526,6 +530,8 @@ int CmdInfo::execute (std::string& output)
 
     if (context.config.getBoolean ("obfuscate"))
       journal.obfuscate ();
+    if (context.config.getBoolean ("color"))
+      journal.forceColor ();
 
     journal.width (context.getWidth ());
     journal.add (STRING_COLUMN_LABEL_DATE);
