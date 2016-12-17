@@ -28,7 +28,7 @@
 #include <CmdColumns.h>
 #include <algorithm>
 #include <Context.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <Color.h>
 #include <shared.h>
 #include <util.h>
@@ -70,13 +70,13 @@ int CmdColumns::execute (std::string& output)
   std::sort (names.begin (), names.end ());
 
   // Render a list of column names, formats and examples.
-  ViewText formats;
+  Table formats;
   formats.width (context.getWidth ());
-  formats.add (Column::factory ("string", STRING_COLUMN_LABEL_COLUMN));
-  formats.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
-  formats.add (Column::factory ("string", STRING_COLUMN_LABEL_MODIFY));
-  formats.add (Column::factory ("string", STRING_COLUMN_LABEL_STYLES));
-  formats.add (Column::factory ("string", STRING_COLUMN_LABEL_EXAMPLES));
+  formats.add (STRING_COLUMN_LABEL_COLUMN);
+  formats.add (STRING_COLUMN_LABEL_TYPE);
+  formats.add (STRING_COLUMN_LABEL_MODIFY);
+  formats.add (STRING_COLUMN_LABEL_STYLES);
+  formats.add (STRING_COLUMN_LABEL_EXAMPLES);
 
   if (context.color ())
   {
