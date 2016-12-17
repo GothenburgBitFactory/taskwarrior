@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <ISO8601.h>
 #include <main.h>
 #include <i18n.h>
@@ -102,12 +102,12 @@ int CmdTimesheet::execute (std::string& output)
         << '\n';
 
     // Render the completed table.
-    ViewText completed;
+    Table completed;
     completed.width (context.getWidth ());
-    completed.add (Column::factory ("string",       "   "));
-    completed.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
-    completed.add (Column::factory ("string.right", STRING_COLUMN_LABEL_DUE));
-    completed.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
+    completed.add ("   ");
+    completed.add (STRING_COLUMN_LABEL_PROJECT);
+    completed.add (STRING_COLUMN_LABEL_DUE, false);
+    completed.add (STRING_COLUMN_LABEL_DESC);
 
     Color label;
     if (context.color ())
@@ -163,12 +163,12 @@ int CmdTimesheet::execute (std::string& output)
           << '\n';
 
     // Now render the started table.
-    ViewText started;
+    Table started;
     started.width (context.getWidth ());
-    started.add (Column::factory ("string",       "   "));
-    started.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
-    started.add (Column::factory ("string.right", STRING_COLUMN_LABEL_DUE));
-    started.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
+    started.add ("   ");
+    started.add (STRING_COLUMN_LABEL_PROJECT);
+    started.add (STRING_COLUMN_LABEL_DUE, false);
+    started.add (STRING_COLUMN_LABEL_DESC);
     started.colorHeader (label);
 
     for (auto& task : all)
