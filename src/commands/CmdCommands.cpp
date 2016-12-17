@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <Command.h>
 #include <ColString.h>
 #include <util.h>
@@ -57,18 +57,18 @@ CmdCommands::CmdCommands ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCommands::execute (std::string& output)
 {
-  ViewText view;
+  Table view;
   view.width (context.getWidth ());
-  view.add (Column::factory ("string",       STRING_COLUMN_LABEL_COMMAND));
-  view.add (Column::factory ("string",       STRING_COLUMN_LABEL_CATEGORY));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_RO));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_SHOWS_ID));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_GC));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_CONTEXT));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_FILTER));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MODS));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MISC));
-  view.add (Column::factory ("string.left",  STRING_COLUMN_LABEL_DESC));
+  view.add (STRING_COLUMN_LABEL_COMMAND);
+  view.add (STRING_COLUMN_LABEL_CATEGORY);
+  view.add (STRING_COLUMN_LABEL_RO,       false);
+  view.add (STRING_COLUMN_LABEL_SHOWS_ID, false);
+  view.add (STRING_COLUMN_LABEL_GC,       false);
+  view.add (STRING_COLUMN_LABEL_CONTEXT,  false);
+  view.add (STRING_COLUMN_LABEL_FILTER,   false);
+  view.add (STRING_COLUMN_LABEL_MODS,     false);
+  view.add (STRING_COLUMN_LABEL_MISC,     false);
+  view.add (STRING_COLUMN_LABEL_DESC);
 
   if (context.color ())
   {
