@@ -30,7 +30,7 @@
 #include <sstream>
 #include <Context.h>
 #include <Filter.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <format.h>
 #include <util.h>
 #include <i18n.h>
@@ -105,10 +105,10 @@ int CmdProjects::execute (std::string& output)
   if (unique.size ())
   {
     // Render a list of project names from the map.
-    ViewText view;
+    Table view;
     view.width (context.getWidth ());
-    view.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
-    view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_TASKS));
+    view.add (STRING_COLUMN_LABEL_PROJECT);
+    view.add (STRING_COLUMN_LABEL_TASKS, false);
 
     if (context.color ())
     {
