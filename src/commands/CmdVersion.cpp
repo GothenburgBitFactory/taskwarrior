@@ -29,7 +29,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
-#include <ViewText.h>
+#include <Table.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
@@ -61,15 +61,15 @@ int CmdVersion::execute (std::string& output)
 
   // Create a table for the disclaimer.
   int width = context.getWidth ();
-  ViewText disclaimer;
+  Table disclaimer;
   disclaimer.width (width);
-  disclaimer.add (Column::factory ("string", ""));
+  disclaimer.add ("");
   disclaimer.set (disclaimer.addRow (), 0, STRING_CMD_VERSION_MIT);
 
   // Create a table for the URL.
-  ViewText link;
+  Table link;
   link.width (width);
-  link.add (Column::factory ("string", ""));
+  link.add ("");
   link.set (link.addRow (), 0, STRING_CMD_VERSION_DOCS);
 
   Color bold;
