@@ -99,10 +99,12 @@ int CmdInfo::execute (std::string& output)
   std::stringstream out;
   for (auto& task : filtered)
   {
-    ViewText view;
+    Table view;
     view.width (context.getWidth ());
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_NAME));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUE));
+    if (context.config.getBoolean ("obfuscate"))
+      view.obfuscate ();
+    view.add (STRING_COLUMN_LABEL_NAME);
+    view.add (STRING_COLUMN_LABEL_VALUE);
 
     // If an alternating row color is specified, notify the table.
     if (context.color ())
@@ -407,7 +409,7 @@ int CmdInfo::execute (std::string& output)
     }
 
     // Create a second table, containing urgency details, if necessary.
-    ViewText urgencyDetails;
+    Table urgencyDetails;
     if (task.urgency () != 0.0)
     {
       if (context.color ())
@@ -420,13 +422,16 @@ int CmdInfo::execute (std::string& output)
         urgencyDetails.colorHeader (label);
       }
 
+      if (context.config.getBoolean ("obfuscate"))
+        urgencyDetails.obfuscate ();
+
       urgencyDetails.width (context.getWidth ());
-      urgencyDetails.add (Column::factory ("string", "")); // Attribute
-      urgencyDetails.add (Column::factory ("string", "")); // Value
-      urgencyDetails.add (Column::factory ("string", "")); // *
-      urgencyDetails.add (Column::factory ("string", "")); // Coefficient
-      urgencyDetails.add (Column::factory ("string", "")); // =
-      urgencyDetails.add (Column::factory ("string", "")); // Result
+      urgencyDetails.add (""); // Attribute
+      urgencyDetails.add (""); // Value
+      urgencyDetails.add (""); // *
+      urgencyDetails.add (""); // Coefficient
+      urgencyDetails.add (""); // =
+      urgencyDetails.add (""); // Result
 
       urgencyTerm (urgencyDetails, "project",     task.urgency_project (),     Task::urgencyProjectCoefficient);
       urgencyTerm (urgencyDetails, "active",      task.urgency_active (),      Task::urgencyActiveCoefficient);
@@ -506,7 +511,7 @@ int CmdInfo::execute (std::string& output)
     }
 
     // Create a third table, containing undo log change details.
-    ViewText journal;
+    Table journal;
 
     // If an alternating row color is specified, notify the table.
     if (context.color ())
@@ -519,9 +524,12 @@ int CmdInfo::execute (std::string& output)
       journal.colorHeader (label);
     }
 
+    if (context.config.getBoolean ("obfuscate"))
+      journal.obfuscate ();
+
     journal.width (context.getWidth ());
-    journal.add (Column::factory ("string", STRING_COLUMN_LABEL_DATE));
-    journal.add (Column::factory ("string", STRING_CMD_INFO_MODIFICATION));
+    journal.add (STRING_COLUMN_LABEL_DATE);
+    journal.add (STRING_CMD_INFO_MODIFICATION);
 
     if (context.config.getBoolean ("journal.info") &&
         undo.size () > 3)
@@ -577,7 +585,7 @@ int CmdInfo::execute (std::string& output)
 
 ////////////////////////////////////////////////////////////////////////////////
 void CmdInfo::urgencyTerm (
-  ViewText& view,
+  Table& view,
   const std::string& label,
   float measure,
   float coefficient) const
