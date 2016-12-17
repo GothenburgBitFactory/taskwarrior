@@ -29,7 +29,7 @@
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <format.h>
 #include <util.h>
 #include <i18n.h>
@@ -86,10 +86,10 @@ int CmdReports::execute (std::string& output)
 
   // Compose the output.
   std::stringstream out;
-  ViewText view;
+  Table view;
   view.width (context.getWidth ());
-  view.add (Column::factory ("string", STRING_CMD_REPORTS_REPORT));
-  view.add (Column::factory ("string", STRING_CMD_REPORTS_DESC));
+  view.add (STRING_CMD_REPORTS_REPORT);
+  view.add (STRING_CMD_REPORTS_DESC);
 
   if (context.color ())
   {
