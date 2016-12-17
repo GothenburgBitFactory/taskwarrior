@@ -34,7 +34,7 @@
 #include <main.h>
 #include <Context.h>
 #include <FS.h>
-#include <ViewText.h>
+#include <Table.h>
 
 extern Context context;
 
@@ -258,10 +258,10 @@ int CmdShow::execute (std::string& output)
       default_values.push_back (i.first);
 
   // Create output view.
-  ViewText view;
+  Table view;
   view.width (width);
-  view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VAR));
-  view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VALUE));
+  view.add (STRING_CMD_SHOW_CONF_VAR);
+  view.add (STRING_CMD_SHOW_CONF_VALUE);
 
   Color error;
   Color warning;
