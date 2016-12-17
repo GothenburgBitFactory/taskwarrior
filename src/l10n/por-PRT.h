@@ -795,10 +795,6 @@
 #define STRING_FEEDBACK_EXPIRED      "Tarefa {1} '{2}' expirou e foi eliminada."
 #define STRING_FEEDBACK_BACKLOG      "Há modificações locais. Necessário sincronizar (sync)."
 
-// File
-#define STRING_FILE_PERMS            "O taskwarrior não encontrou as permissões corretas em '{1}'."
-#define STRING_FILE_TRUNCATE         "Could not truncate file: {1} {2}"
-
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
 #define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
@@ -816,15 +812,6 @@
 #define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON must be for the same task: {1}"
 #define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON must be for the same task: {1} != {2}"
 #define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: Expected feedback from a failing hook script."
-
-// JSON
-#define STRING_JSON_MISSING_VALUE    "Erro: valor em falta após ',' na posição {1}"
-#define STRING_JSON_MISSING_VALUE2   "Erro: valor em falta na posição {1}"
-#define STRING_JSON_MISSING_BRACKET  "Erro: ']' em falta na posição {1}"
-#define STRING_JSON_MISSING_BRACE    "Erro: '}' em falta na posição {1}"
-#define STRING_JSON_MISSING_COLON    "Erro: ':' em falta na posição {1}"
-#define STRING_JSON_MISSING_OPEN     "Erro: esperado '{' ou '[' na posição {1}"
-#define STRING_JSON_EXTRA_CHARACTERS "Erro: caracteres extra encontrados na posição {1}"
 
 // Record
 #define STRING_RECORD_EMPTY          "Registo vazio na entrada fornecida."
@@ -1011,17 +998,12 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (sim/não) "
 #define STRING_UTIL_CONFIRM_YES      "sim"
 #define STRING_UTIL_CONFIRM_YES_U    "Sim"
 #define STRING_UTIL_CONFIRM_NO       "não"
 #define STRING_UTIL_CONFIRM_ALL      "todas"
 #define STRING_UTIL_CONFIRM_ALL_U    "Todas"
 #define STRING_UTIL_CONFIRM_QUIT     "Sair"
-#define STRING_UTIL_GIBIBYTES        "GiB"  // |por-PRT|==|eng-USA|
-#define STRING_UTIL_MEBIBYTES        "MiB"  // |por-PRT|==|eng-USA|
-#define STRING_UTIL_KIBIBYTES        "KiB"  // |por-PRT|==|eng-USA|
-#define STRING_UTIL_BYTES            "B"  // |por-PRT|==|eng-USA|
 
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."

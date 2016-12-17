@@ -804,10 +804,6 @@
 #define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fue eliminada."
 #define STRING_FEEDBACK_BACKLOG      "Hay modificaciones locales.  Se require una sincronización."
 
-// File
-#define STRING_FILE_PERMS            "Taskwarrior no tiene los permisos adecuados para '{1}'."
-#define STRING_FILE_TRUNCATE         "Could not truncate file: {1} {2}"
-
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "El proyecto '{1}' ha cambiado."
 #define STRING_HELPER_PROJECT_COMPL  "El proyecto '{1}' está completado en un {2}%"
@@ -825,15 +821,6 @@
 #define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON debe ser para la misma tarea: {1}"
 #define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON debe ser para la misma tarea: {1} != {2}"
 #define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: se esperaba retro-alimentación desde un hook script que falló."
-
-// JSON
-#define STRING_JSON_MISSING_VALUE    "Error: falta valor después de ',' en posición {1}"
-#define STRING_JSON_MISSING_VALUE2   "Error: falta valor en posición {1}"
-#define STRING_JSON_MISSING_BRACKET  "Error: falta ']' en posición {1}"
-#define STRING_JSON_MISSING_BRACE    "Error: falta '}' en posición {1}"
-#define STRING_JSON_MISSING_COLON    "Error: falta ':' en posición {1}"
-#define STRING_JSON_MISSING_OPEN     "Error: se esperaba '{' or '[' en posición {1}"
-#define STRING_JSON_EXTRA_CHARACTERS "Error: encontrados caracteres extra en posición {1}"
 
 // Record
 #define STRING_RECORD_EMPTY          "Registro vacío en la entrada."
@@ -1036,17 +1023,12 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (sí/no) "
 #define STRING_UTIL_CONFIRM_YES      "sí"
 #define STRING_UTIL_CONFIRM_YES_U    "Sí"
 #define STRING_UTIL_CONFIRM_NO       "no"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_CONFIRM_ALL      "todos"
 #define STRING_UTIL_CONFIRM_ALL_U    "Todos"
 #define STRING_UTIL_CONFIRM_QUIT     "canc"
-#define STRING_UTIL_GIBIBYTES        "GiB"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_MEBIBYTES        "MiB"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_KIBIBYTES        "KiB"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_BYTES            "B"  // |esp-ESP|==|eng-USA|
 
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Encontrado atributo anticuado.  Por favor, cambie '{1}' a '{2}'."
