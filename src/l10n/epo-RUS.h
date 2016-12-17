@@ -795,10 +795,6 @@
 #define STRING_FEEDBACK_EXPIRED      "Tasko {1} '{2}' fortempiĝis do estis viŝata."
 #define STRING_FEEDBACK_BACKLOG      "Estas lokaj ŝanĝoj. Sinkronigo devita."
 
-// File
-#define STRING_FILE_PERMS            "Taskwarrior ne havas la bezonatan permeson por '{1}'."
-#define STRING_FILE_TRUNCATE         "Could not truncate file: {1} {2}"
-
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
 #define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
@@ -816,15 +812,6 @@
 #define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON must be for the same task: {1}"
 #define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON must be for the same task: {1} != {2}"
 #define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: Expected feedback from a failing hook script."
-
-// JSON
-#define STRING_JSON_MISSING_VALUE    "Eraro: mankas valoro post ',' ĉe pozicio {1}"
-#define STRING_JSON_MISSING_VALUE2   "Eraro: mankas valoro ĉe pozicio {1}"
-#define STRING_JSON_MISSING_BRACKET  "Eraro: mankas ']' ĉe pozicio {1}"
-#define STRING_JSON_MISSING_BRACE    "Eraro: mankas '}' ĉe pozicio {1}"
-#define STRING_JSON_MISSING_COLON    "Eraro: mankas ':' ĉe pozicio {1}"
-#define STRING_JSON_MISSING_OPEN     "Eraro: anticipis '{' aŭ '[' ĉe pozicio {1}"
-#define STRING_JSON_EXTRA_CHARACTERS "Eraro: trovis pliajn signojn ĉe pozicio {1}"
 
 // Record
 #define STRING_RECORD_EMPTY          "Malplena rikordo en la inigo."
@@ -1011,17 +998,12 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (jes/ne) "
 #define STRING_UTIL_CONFIRM_YES      "jes"
 #define STRING_UTIL_CONFIRM_YES_U    "Jes"
 #define STRING_UTIL_CONFIRM_NO       "ne"
 #define STRING_UTIL_CONFIRM_ALL      "ĉia"
 #define STRING_UTIL_CONFIRM_ALL_U    "Ĉia"
 #define STRING_UTIL_CONFIRM_QUIT     "eliru"
-#define STRING_UTIL_GIBIBYTES        "GiB"
-#define STRING_UTIL_MEBIBYTES        "MiB"
-#define STRING_UTIL_KIBIBYTES        "KiB"
-#define STRING_UTIL_BYTES            "B"
 
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."

@@ -794,10 +794,6 @@
 #define STRING_FEEDBACK_EXPIRED      "Il task {1} '{2}' è scaduto ed è stato eliminato"
 #define STRING_FEEDBACK_BACKLOG      "There are local changes.  Sync required."
 
-// File
-#define STRING_FILE_PERMS            "Taskwarrior non dispone dei permessi corretti per '{1}'."
-#define STRING_FILE_TRUNCATE         "Could not truncate file: {1} {2}"
-
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "Il progetto '{1}' è stato modificat."
 #define STRING_HELPER_PROJECT_COMPL  "Il progetto '{1}' è {2}% completo"
@@ -815,15 +811,6 @@
 #define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON must be for the same task: {1}"
 #define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON must be for the same task: {1} != {2}"
 #define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: Expected feedback from a failing hook script."
-
-// JSON
-#define STRING_JSON_MISSING_VALUE    "Errore: mancato valore dopo ',' alla posizione {1}"
-#define STRING_JSON_MISSING_VALUE2   "Errore: mancato valore alla posizione {1}"
-#define STRING_JSON_MISSING_BRACKET  "Errore: mancato ']' alla posizione {1}"
-#define STRING_JSON_MISSING_BRACE    "Errore: mancato '}' alla posizione {1}"
-#define STRING_JSON_MISSING_COLON    "Errore: mancato ':' alla posizione {1}"
-#define STRING_JSON_MISSING_OPEN     "Errore: atteso '{' o '[' alla posizione {1}"
-#define STRING_JSON_EXTRA_CHARACTERS "Errore: caratteri in eccesso alla posizione {1}"
 
 // Record
 #define STRING_RECORD_EMPTY          "Voce vuota in ingresso."
@@ -1010,17 +997,12 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (si/no) "
 #define STRING_UTIL_CONFIRM_YES      "si"
 #define STRING_UTIL_CONFIRM_YES_U    "Si"
 #define STRING_UTIL_CONFIRM_NO       "no"
 #define STRING_UTIL_CONFIRM_ALL      "tutti"
 #define STRING_UTIL_CONFIRM_ALL_U    "Tutti"
 #define STRING_UTIL_CONFIRM_QUIT     "esci"
-#define STRING_UTIL_GIBIBYTES        "Gb"
-#define STRING_UTIL_MEBIBYTES        "Mb"
-#define STRING_UTIL_KIBIBYTES        "Kb"
-#define STRING_UTIL_BYTES            "B"
 
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
