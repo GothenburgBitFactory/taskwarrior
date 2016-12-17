@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <CmdColor.h>
 #include <sstream>
-#include <ViewText.h>
+#include <Table.h>
 #include <Context.h>
 #include <main.h>
 #include <Color.h>
@@ -74,10 +74,10 @@ int CmdColor::execute (std::string& output)
     {
       out << '\n' << STRING_CMD_COLOR_HERE << '\n';
 
-      ViewText view;
+      Table view;
       view.width (context.getWidth ());
-      view.add (Column::factory ("string", STRING_CMD_COLOR_COLOR));
-      view.add (Column::factory ("string", STRING_CMD_COLOR_DEFINITION));
+      view.add (STRING_CMD_COLOR_COLOR);
+      view.add (STRING_CMD_COLOR_DEFINITION);
 
       for (auto& item : context.config)
       {
