@@ -29,7 +29,7 @@
 #include <sstream>
 #include <iomanip>
 #include <stdlib.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <Datetime.h>
 #include <Duration.h>
 #include <Context.h>
@@ -159,11 +159,11 @@ int CmdStats::execute (std::string& output)
   }
 
   // Create a table for output.
-  ViewText view;
+  Table view;
   view.width (context.getWidth ());
   view.intraPadding (2);
-  view.add (Column::factory ("string", STRING_CMD_STATS_CATEGORY));
-  view.add (Column::factory ("string", STRING_CMD_STATS_DATA));
+  view.add (STRING_CMD_STATS_CATEGORY);
+  view.add (STRING_CMD_STATS_DATA);
 
   if (context.color ())
   {
