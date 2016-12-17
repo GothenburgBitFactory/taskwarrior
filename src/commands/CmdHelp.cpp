@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <CmdHelp.h>
 #include <algorithm>
-#include <ViewText.h>
+#include <Table.h>
 #include <Context.h>
 #include <i18n.h>
 #include <shared.h>
@@ -72,11 +72,11 @@ int CmdHelp::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 std::string CmdHelp::composeUsage () const
 {
-  ViewText view;
+  Table view;
   view.width (context.getWidth ());
-  view.add (Column::factory ("string.left", ""));
-  view.add (Column::factory ("string.left", ""));
-  view.add (Column::factory ("string.left", ""));
+  view.add ("");
+  view.add ("");
+  view.add ("");
 
   // Static first row.
   int row = view.addRow ();
