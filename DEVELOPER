@@ -125,9 +125,9 @@ Unit Tests Needed
      For example, dependencies.t runs through a long list of commands that test
      dependencies, but do so by using 'add', 'modify', 'done' and 'delete'.
   2. Regression tests that ensure certain bugs are fixed and stay fixed. These
-     tests are named bug.NNN.t where NNN refers to the bug number. While it is
-     not worth creating tests for small fixes like typos, it is for changes to
-     the logic.
+     tests are named tw-NNNN.t where NNNN refers to the bug number. While it is
+     not worth creating tests for small fixes like typos, it is for logic
+     changes.
   3. Small feature tests. When small features are added, we would like small,
      low-level feature tests named feature.t, with a descriptive name and
      focused tests.
@@ -143,19 +143,8 @@ Unit Tests Needed
   - Take a look at the bug database (https://bug.tasktools.org) and notice that
     many issues, open and closed, have the "needsTest" label. These are things
     that we would like to see in the test suite, as regression tests.
-  - Test regex support.
-  - Need unit tests for each bug in the issue list that is marked with the
-    'needsTest' label.
 
   Note that all new unit tests should follow the test/template.t standard.
-
-Work in Progress
-
-  Things that are currently in flux, which is another way of saying leave it
-  alone while it is being worked on.
-
-  - All columns/Col*::validate methods.
-  - New columns/Col*::modify methods.
 
 Current Codebase Condition
 
@@ -167,4 +156,4 @@ Current Codebase Condition
 
 ---
 
-2016-02-24 Updated for 2.6.0
+2016-12-18 Updated for 2.6.0

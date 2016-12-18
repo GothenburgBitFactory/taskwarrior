@@ -25,8 +25,23 @@ Command Line Parsing
   set of modifications.
 
   The CLI2 object is fed command line arguments, then through a succession of
-  calls builds and annotates a parse tree.  To help with this, the Lexer is
+  calls builds and annotates a parse tree. To help with this, the Lexer is
   used to break up strings into tokens.
+
+  The object of the command line parsing is to expand all syntactic sugar to
+  use the low-level syntax, and expand the boolean logic in filters and create
+  a well-formed algebraic expression. For example, this command line:
+
+    task 1-10 +foo lis
+
+  is expanded internally to something like this:
+
+    task ( ( id >= 1 and id <= 10 ) and tags._hastag_ foo ) list
+
+  Note that there are concerns with id ranges, operator precedence, tag
+  checking, and the expansion of the command name. The arguments are then
+  tagged to indicate what part of the command line іt represents, such as a
+  filter, operator, or command.
 
 
 Dispatch
@@ -129,8 +144,8 @@ Sorting
 
 
 Render
-  There are two rendering objects, ViewTask and ViewText. These both have the
-  same tabular grid rendering capabilities. ViewText maintains a 2D vector of
+  There are two rendering objects, ViewTask and Table. These both have the
+  same tabular grid rendering capabilities. Table maintains a 2D vector of
   strings to contain the data to be rendered, so it is used for things like the
   help command output. ViewTask does not copy data, but assumes all data is
   stored externally in a vector of Tasks, which minimizes data copying.
@@ -149,9 +164,9 @@ Render
 
 Test Suite
   A strong and diverse test suite is critical to the successful release of any
-  software. With the complex command set and its myriad permutations, a test
-  suite is the only way to ensure quality levels, and guarantee that big changes
-  are robust.
+  software. With the complex command set and its many permutations, a test suite
+  is the only way to ensure quality levels, and guarantee that big changes are
+  robust.
 
   It is intended that the test suite continues growing, mostly feature tests.
   The test are mostly written in Python. Some tests are written in C++ and all
@@ -196,7 +211,7 @@ Patches
     - Precisely addresses one issue only.
     - Doesn't break unit tests.
     - Doesn't introduce dependencies.
-    - Is accompanied by unit tests, where appropriate, written in Python.
+    - Is accompanied by unit tests, where appropriate.
     - Is accompanied by documentation changes, where appropriate.
     - Conforms to the prevailing coding standards - in other words, it should
       fit right in with the existing code.
