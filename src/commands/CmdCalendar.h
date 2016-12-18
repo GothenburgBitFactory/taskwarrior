@@ -29,7 +29,7 @@
 
 #include <string>
 #include <vector>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <Task.h>
 #include <Command.h>
 
@@ -40,7 +40,7 @@ public:
   int execute (std::string&);
 
 private:
-  std::string renderMonths (int, int, const ISO8601d&, std::vector <Task>&, int);
+  std::string renderMonths (int, int, const Datetime&, std::vector <Task>&, int);
 };
 
 #endif
