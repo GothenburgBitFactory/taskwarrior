@@ -28,7 +28,7 @@
 #include <ColDescription.h>
 #include <stdlib.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <shared.h>
 #include <format.h>
 #include <utf8.h>
@@ -55,7 +55,7 @@ ColumnDescription::ColumnDescription ()
   if (_dateformat == "")
     _dateformat = context.config.get ("dateformat");
 
-  std::string t  = ISO8601d ().toString (_dateformat);
+  std::string t  = Datetime ().toString (_dateformat);
   std::string d  = STRING_COLUMN_EXAMPLES_DESC;
   std::string a1 = STRING_COLUMN_EXAMPLES_ANNO1;
   std::string a2 = STRING_COLUMN_EXAMPLES_ANNO2;
@@ -97,7 +97,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      unsigned int min_anno = _indent + ISO8601d::length (_dateformat);
+      unsigned int min_anno = _indent + Datetime::length (_dateformat);
       if (min_anno > minimum)
         minimum = min_anno;
 
@@ -127,7 +127,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      auto min_anno = ISO8601d::length (_dateformat);
+      auto min_anno = Datetime::length (_dateformat);
       std::map <std::string, std::string> annos;
       task.getAnnotations (annos);
       for (auto& i : annos)
@@ -182,7 +182,7 @@ void ColumnDescription::render (
       task.getAnnotations (annos);
       for (const auto& i : annos)
       {
-        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        Datetime dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += '\n' + std::string (_indent, ' ') + dt.toString (_dateformat) + ' ' + i.second;
       }
     }
@@ -213,7 +213,7 @@ void ColumnDescription::render (
       task.getAnnotations (annos);
       for (const auto& i : annos)
       {
-        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        Datetime dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += ' ' + dt.toString (_dateformat) + ' ' + i.second;
       }
     }
