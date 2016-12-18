@@ -29,7 +29,7 @@
 #include <sstream>
 #include <Context.h>
 #include <Filter.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <main.h>
 #include <format.h>
 #include <util.h>
@@ -103,14 +103,16 @@ int CmdHistoryMonthly::execute (std::string& output)
   }
 
   // Now build the view.
-  ViewText view;
+  Table view;
+  if (context.config.getBoolean ("color"))
+    view.forceColor ();
   view.width (context.getWidth ());
-  view.add (Column::factory ("string",       STRING_CMD_HISTORY_YEAR));
-  view.add (Column::factory ("string",       STRING_CMD_HISTORY_MONTH));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_ADDED));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_COMP));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_DEL));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_NET));
+  view.add (STRING_CMD_HISTORY_YEAR);
+  view.add (STRING_CMD_HISTORY_MONTH);
+  view.add (STRING_CMD_HISTORY_ADDED, false);
+  view.add (STRING_CMD_HISTORY_COMP,  false);
+  view.add (STRING_CMD_HISTORY_DEL,   false);
+  view.add (STRING_CMD_HISTORY_NET,   false);
 
   if (context.color ())
   {
@@ -268,13 +270,15 @@ int CmdHistoryAnnual::execute (std::string& output)
   }
 
   // Now build the view.
-  ViewText view;
+  Table view;
+  if (context.config.getBoolean ("color"))
+    view.forceColor ();
   view.width (context.getWidth ());
-  view.add (Column::factory ("string",       STRING_CMD_HISTORY_YEAR));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_ADDED));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_COMP));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_DEL));
-  view.add (Column::factory ("string.right", STRING_CMD_HISTORY_NET));
+  view.add (STRING_CMD_HISTORY_YEAR);
+  view.add (STRING_CMD_HISTORY_ADDED, false);
+  view.add (STRING_CMD_HISTORY_COMP,  false);
+  view.add (STRING_CMD_HISTORY_DEL,   false);
+  view.add (STRING_CMD_HISTORY_NET,   false);
 
   if (context.color ())
   {
@@ -432,11 +436,13 @@ int CmdGHistoryMonthly::execute (std::string& output)
   int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
 
   // Now build the view.
-  ViewText view;
+  Table view;
+  if (context.config.getBoolean ("color"))
+    view.forceColor ();
   view.width (context.getWidth ());
-  view.add (Column::factory ("string",            STRING_CMD_GHISTORY_YEAR));
-  view.add (Column::factory ("string",            STRING_CMD_GHISTORY_MONTH));
-  view.add (Column::factory ("string.left_fixed", STRING_CMD_GHISTORY_NUMBER));
+  view.add (STRING_CMD_GHISTORY_YEAR);
+  view.add (STRING_CMD_GHISTORY_MONTH);
+  view.add (STRING_CMD_GHISTORY_NUMBER); // Fixed.
 
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
@@ -632,10 +638,12 @@ int CmdGHistoryAnnual::execute (std::string& output)
   int widthOfBar = context.getWidth () - 5;   // 5 == strlen ("YYYY ")
 
   // Now build the view.
-  ViewText view;
+  Table view;
+  if (context.config.getBoolean ("color"))
+    view.forceColor ();
   view.width (context.getWidth ());
-  view.add (Column::factory ("string",            STRING_CMD_GHISTORY_YEAR));
-  view.add (Column::factory ("string.left_fixed", STRING_CMD_GHISTORY_NUMBER));
+  view.add (STRING_CMD_GHISTORY_YEAR);
+  view.add (STRING_CMD_GHISTORY_NUMBER); // Fixed.
 
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
