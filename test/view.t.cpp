@@ -33,7 +33,6 @@
 #include <Column.h>
 #include <Task.h>
 #include <ViewTask.h>
-#include <ViewText.h>
 #include <test.h>
 #include <main.h>
 
@@ -42,7 +41,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (2);
+  UnitTest t (1);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -145,39 +144,6 @@ int main (int, char**)
     // Now render a string-only grid.
     context.config.set ("fontunderline", false);
     Color single_cell ("bold white on red");
-
-    ViewText string_view;
-    string_view.width (context.getWidth ());
-    string_view.leftMargin (4);
-    string_view.extraPadding (0);
-    string_view.intraPadding (1);
-    string_view.colorHeader (header_color);
-    string_view.colorOdd (odd_color);
-    string_view.colorEven (even_color);
-    string_view.intraColorOdd (odd_color);
-    string_view.intraColorEven (even_color);
-
-    string_view.add (Column::factory ("string", "One"));
-    string_view.add (Column::factory ("string", "Two"));
-    string_view.add (Column::factory ("string", "Three"));
-
-    int row = string_view.addRow ();
-    string_view.set (row, 0, "top left");
-    string_view.set (row, 1, "top center");
-    string_view.set (row, 2, "top right");
-
-    row = string_view.addRow ();
-    string_view.set (row, 0, "bottom left", single_cell);
-    string_view.set (row, 1, "bottom center, containing sufficient text that "
-                             "wrapping will occur because it exceeds all "
-                             "reasonable values for default width.  Even in a "
-                             "very wide terminal window.  Just look at the "
-                             "lengths we must go to, to get passing unit tests "
-                             "and not flaky tests.");
-    string_view.set (row, 2, "bottom right");
-
-    std::cout << string_view.render ();
-    t.ok (string_view.lines () > 4, "View::lines > 4");
   }
 
   catch (const std::string& e)
