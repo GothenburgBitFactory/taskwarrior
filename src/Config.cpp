@@ -35,7 +35,7 @@
 #include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <FS.h>
 #include <Timer.h>
 #include <JSON.h>
@@ -490,7 +490,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
   auto loc = _defaults.find ("data.location=~/.task");
   //                                      loc+0^          +14^   +21^
 
-  ISO8601d now;
+  Datetime now;
   std::stringstream contents;
   contents << "# [Created by "
            << PACKAGE_STRING
