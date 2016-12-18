@@ -34,7 +34,7 @@
 #include <math.h>
 #include <Context.h>
 #include <Filter.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <Duration.h>
 #include <main.h>
 #include <i18n.h>
@@ -154,10 +154,10 @@ public:
 private:
   void generateBars ();
   void optimizeGrid ();
-  ISO8601d quantize (const ISO8601d&, char);
+  Datetime quantize (const Datetime&, char);
 
-  ISO8601d increment (const ISO8601d&, char);
-  ISO8601d decrement (const ISO8601d&, char);
+  Datetime increment (const Datetime&, char);
+  Datetime decrement (const Datetime&, char);
   void maxima ();
   void yLabels (std::vector <int>&);
   void calculateRates ();
@@ -175,7 +175,7 @@ public:
   int _estimated_bars;            // Estimated bar count
   int _actual_bars;               // Calculated bar count
   std::map <time_t, Bar> _bars;   // Epoch-indexed set of bars
-  ISO8601d _earliest;             // Date of earliest estimated bar
+  Datetime _earliest;             // Date of earliest estimated bar
   int _carryover_done;            // Number of 'done' tasks prior to chart range
   char _period;                   // D, W, M
   std::string _title;             // Additional description
@@ -231,11 +231,11 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
-    ISO8601d entry = ISO8601d (task.get_date ("entry"));
+    Datetime entry (task.get_date ("entry"));
 
-    ISO8601d end;
+    Datetime end;
     if (task.has ("end"))
-      end = ISO8601d (task.get_date ("end"));
+      end = Datetime (task.get_date ("end"));
 
     while (entry < end)
     {
@@ -269,13 +269,13 @@ void Chart::scan (std::vector <Task>& tasks)
   generateBars ();
 
   // Not quantized, so that "while (xxx < now)" is inclusive.
-  ISO8601d now;
+  Datetime now;
 
   time_t epoch;
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
-    ISO8601d from = quantize (ISO8601d (task.get_date ("entry")), _period);
+    Datetime from = quantize (Datetime (task.get_date ("entry")), _period);
     epoch = from.toEpoch ();
 
     if (_bars.find (epoch) != _bars.end ())
@@ -289,7 +289,7 @@ void Chart::scan (std::vector <Task>& tasks)
     {
       if (task.has ("start"))
       {
-        ISO8601d start = quantize (ISO8601d (task.get_date ("start")), _period);
+        Datetime start = quantize (Datetime (task.get_date ("start")), _period);
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -323,7 +323,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::completed)
     {
       // Truncate history so it starts at 'earliest' for completed tasks.
-      ISO8601d end = quantize (ISO8601d (task.get_date ("end")), _period);
+      Datetime end = quantize (Datetime (task.get_date ("end")), _period);
       epoch = end.toEpoch ();
 
       if (_bars.find (epoch) != _bars.end ())
@@ -359,7 +359,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::deleted)
     {
       // Skip old deleted tasks.
-      ISO8601d end = quantize (ISO8601d (task.get_date ("end")), _period);
+      Datetime end = quantize (Datetime (task.get_date ("end")), _period);
       epoch = end.toEpoch ();
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
@@ -590,7 +590,7 @@ void Chart::optimizeGrid ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::quantize (const ISO8601d& input, char period)
+Datetime Chart::quantize (const Datetime& input, char period)
 {
   if (period == 'D') return input.startOfDay ();
   if (period == 'W') return input.startOfWeek ();
@@ -600,7 +600,7 @@ ISO8601d Chart::quantize (const ISO8601d& input, char period)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::increment (const ISO8601d& input, char period)
+Datetime Chart::increment (const Datetime& input, char period)
 {
   // Move to the next period.
   int d = input.day ();
@@ -612,7 +612,7 @@ ISO8601d Chart::increment (const ISO8601d& input, char period)
   switch (period)
   {
   case 'D':
-    if (++d > ISO8601d::daysInMonth (m, y))
+    if (++d > Datetime::daysInMonth (y, m))
     {
       d = 1;
 
@@ -626,7 +626,7 @@ ISO8601d Chart::increment (const ISO8601d& input, char period)
 
   case 'W':
     d += 7;
-    days = ISO8601d::daysInMonth (m, y);
+    days = Datetime::daysInMonth (y, m);
     if (d > days)
     {
       d -= days;
@@ -649,11 +649,11 @@ ISO8601d Chart::increment (const ISO8601d& input, char period)
     break;
   }
 
-  return ISO8601d (m, d, y, 0, 0, 0);
+  return Datetime (y, m, d, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::decrement (const ISO8601d& input, char period)
+Datetime Chart::decrement (const Datetime& input, char period)
 {
   // Move to the previous period.
   int d = input.day ();
@@ -671,7 +671,7 @@ ISO8601d Chart::decrement (const ISO8601d& input, char period)
         --y;
       }
 
-      d = ISO8601d::daysInMonth (m, y);
+      d = Datetime::daysInMonth (y, m);
     }
     break;
 
@@ -685,7 +685,7 @@ ISO8601d Chart::decrement (const ISO8601d& input, char period)
         y--;
       }
 
-      d += ISO8601d::daysInMonth (m, y);
+      d += Datetime::daysInMonth (y, m);
     }
     break;
 
@@ -699,7 +699,7 @@ ISO8601d Chart::decrement (const ISO8601d& input, char period)
     break;
   }
 
-  return ISO8601d (m, d, y, 0, 0, 0);
+  return Datetime (y, m, d, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -709,12 +709,12 @@ void Chart::generateBars ()
   Bar bar;
 
   // Determine the last bar date.
-  ISO8601d cursor;
+  Datetime cursor;
   switch (_period)
   {
-  case 'D': cursor = ISO8601d ().startOfDay ();   break;
-  case 'W': cursor = ISO8601d ().startOfWeek ();  break;
-  case 'M': cursor = ISO8601d ().startOfMonth (); break;
+  case 'D': cursor = Datetime ().startOfDay ();   break;
+  case 'W': cursor = Datetime ().startOfWeek ();  break;
+  case 'M': cursor = Datetime ().startOfMonth (); break;
   }
 
   // Iterate and determine all the other bar dates.
@@ -726,7 +726,7 @@ void Chart::generateBars ()
     {
     case 'D': // month/day
       {
-        std::string month = ISO8601d::monthName (cursor.month ());
+        std::string month = Datetime::monthName (cursor.month ());
         bar._major_label = month.substr (0, 3);
 
         snprintf (str, 12, "%02d", cursor.day ());
@@ -738,7 +738,7 @@ void Chart::generateBars ()
       snprintf (str, 12, "%d", cursor.year ());
       bar._major_label = str;
 
-      snprintf (str, 12, "%02d", cursor.weekOfYear (0));
+      snprintf (str, 12, "%02d", cursor.week ());
       bar._minor_label = str;
       break;
 
@@ -814,7 +814,7 @@ void Chart::calculateRates ()
   peak_message << "Chart::calculateRates Maximum of "
                << _peak_count
                << " pending tasks on "
-               << (ISO8601d (_peak_epoch).toISO ())
+               << (Datetime (_peak_epoch).toISO ())
                << ", with currently "
                << _current_count
                << " pending tasks";
@@ -826,8 +826,8 @@ void Chart::calculateRates ()
     return;
 
   // If there is a net fix rate, and the peak was at least three days ago.
-  ISO8601d now;
-  ISO8601d peak (_peak_epoch);
+  Datetime now;
+  Datetime peak (_peak_epoch);
   if (_peak_count > _current_count &&
       (now - peak) > 3 * 86400)
   {
@@ -846,7 +846,7 @@ void Chart::calculateRates ()
     context.debug (rate_message.str ());
 
     Duration delta (static_cast <time_t> (_current_count / fix_rate));
-    ISO8601d end = now + delta.toTime_t ();
+    Datetime end = now + delta.toTime_t ();
 
     // Prefer dateformat.report over dateformat.
     std::string format = context.config.get ("dateformat.report");
