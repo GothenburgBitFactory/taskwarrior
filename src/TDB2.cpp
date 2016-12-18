@@ -35,7 +35,7 @@
 #include <signal.h>
 #include <Context.h>
 #include <Color.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <i18n.h>
 #include <Table.h>
 #include <shared.h>
@@ -348,7 +348,7 @@ Task TF2::load_task (const std::string& line)
 // or needs to be 'woken'.
 void TF2::load_gc (Task& task)
 {
-  ISO8601d now;
+  Datetime now;
 
   std::string status = task.get ("status");
   if (status == "pending" ||
@@ -358,7 +358,7 @@ void TF2::load_gc (Task& task)
   }
   else if (status == "waiting")
   {
-    ISO8601d wait (task.get_date ("wait"));
+    Datetime wait (task.get_date ("wait"));
     if (wait < now)
     {
       task.set ("status", "pending");
@@ -709,7 +709,7 @@ void TDB2::update (
     // old <task>
     // new <task>
     // ---
-    undo.add_line ("time " + ISO8601d ().toEpochString () + '\n');
+    undo.add_line ("time " + Datetime ().toEpochString () + '\n');
     undo.add_line ("old " + original.composeF4 () + '\n');
     undo.add_line ("new " + task.composeF4 () + '\n');
     undo.add_line ("---\n");
@@ -728,7 +728,7 @@ void TDB2::update (
     //   time <time>
     //   new <task>
     //   ---
-    undo.add_line ("time " + ISO8601d ().toEpochString () + '\n');
+    undo.add_line ("time " + Datetime ().toEpochString () + '\n');
     undo.add_line ("new " + task.composeF4 () + '\n');
     undo.add_line ("---\n");
   }
@@ -1030,7 +1030,7 @@ void TDB2::show_diff (
   const std::string& prior,
   const std::string& when)
 {
-  ISO8601d lastChange (strtol (when.c_str (), NULL, 10));
+  Datetime lastChange (strtol (when.c_str (), NULL, 10));
 
   // Set the colors.
   Color color_red   (context.color () ? context.config.get ("color.undo.before") : "");
