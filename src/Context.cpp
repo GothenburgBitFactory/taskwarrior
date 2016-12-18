@@ -323,7 +323,7 @@ int Context::run ()
       << '-'
 #endif
       << ' '
-      << ISO8601d ().toISO ()
+      << Datetime ().toISO ()
 
       << " init:"   << time_init_us
       << " load:"   << time_load_us
