@@ -23,7 +23,6 @@ add_library (task CLI2.cpp CLI2.h
                   TLSClient.cpp TLSClient.h
                   Variant.cpp Variant.h
                   ViewTask.cpp ViewTask.h
-                  ViewText.cpp ViewText.h
                   dependency.cpp
                   feedback.cpp
                   i18n.h
