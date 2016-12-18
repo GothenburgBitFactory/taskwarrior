@@ -76,7 +76,7 @@ int CmdCalendar::execute (std::string& output)
   handleRecurrence ();
   auto tasks = context.tdb2.pending.get_tasks ();
 
-  ISO8601d today;
+  Datetime today;
   bool getpendingdate = false;
   int monthsToDisplay = 1;
   int mFrom = today.month ();
@@ -100,7 +100,7 @@ int CmdCalendar::execute (std::string& output)
   // Set up a vector of months, for autoComplete.
   std::vector <std::string> monthNames;
   for (int i = 1; i <= 12; ++i)
-    monthNames.push_back (Lexer::lowerCase (ISO8601d::monthName (i)));
+    monthNames.push_back (Lexer::lowerCase (Datetime::monthName (i)));
 
   // For autoComplete results.
   std::vector <std::string> matches;
@@ -141,7 +141,7 @@ int CmdCalendar::execute (std::string& output)
     // "January" etc.
     else if (autoComplete (Lexer::lowerCase (arg), monthNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
     {
-      argMonth = ISO8601d::monthOfYear (matches[0]);
+      argMonth = Datetime::monthOfYear (matches[0]);
       if (argMonth == -1)
         throw format (STRING_CMD_CAL_BAD_MONTH, arg);
     }
@@ -178,7 +178,7 @@ int CmdCalendar::execute (std::string& output)
   if (getpendingdate == true)
   {
     // Find the oldest pending due date.
-    ISO8601d oldest (12, 31, 2037);
+    Datetime oldest (2037, 12, 31);
     for (auto& task : tasks)
     {
       if (task.getStatus () == Task::pending)
@@ -187,7 +187,7 @@ int CmdCalendar::execute (std::string& output)
             !task.hasTag ("nocal"))
         {
           ++countDueDates;
-          ISO8601d d (task.get ("due"));
+          Datetime d (task.get ("due"));
           if (d < oldest) oldest = d;
         }
       }
@@ -236,7 +236,7 @@ int CmdCalendar::execute (std::string& output)
     // Print month headers (cheating on the width settings, yes)
     for (int i = 0 ; i < monthsPerLine ; i++)
     {
-      std::string month = ISO8601d::monthName (nextM);
+      std::string month = Datetime::monthName (nextM);
 
       //    12345678901234567890123456 = 26 chars wide
       //                ^^             = center
@@ -319,7 +319,7 @@ int CmdCalendar::execute (std::string& output)
       details_mFrom = 12;
       --details_yFrom;
     }
-    int details_dFrom = ISO8601d::daysInMonth (details_mFrom, details_yFrom);
+    int details_dFrom = Datetime::daysInMonth (details_yFrom, details_mFrom);
 
     ++mTo;
     if (mTo == 13)
@@ -328,10 +328,10 @@ int CmdCalendar::execute (std::string& output)
       ++yTo;
     }
 
-    ISO8601d date_after (details_mFrom, details_dFrom, details_yFrom);
+    Datetime date_after (details_yFrom, details_mFrom, details_dFrom);
     std::string after = date_after.toString (context.config.get ("dateformat"));
 
-    ISO8601d date_before (mTo, 1, yTo);
+    Datetime date_before (yTo, mTo, 1);
     std::string before = date_before.toString (context.config.get ("dateformat"));
 
     // Table with due date information
@@ -381,7 +381,7 @@ int CmdCalendar::execute (std::string& output)
           {
             std::string holName = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
             std::string holDate = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
-            ISO8601d hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
+            Datetime hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
               hm[hDate.toEpoch()].push_back(holName);
@@ -398,7 +398,7 @@ int CmdCalendar::execute (std::string& output)
       for (auto& hm_it : hm)
       {
         std::vector <std::string> v = hm_it.second;
-        ISO8601d hDate (hm_it.first);
+        Datetime hDate (hm_it.first);
         std::string d = hDate.toString (format);
         for (size_t i = 0; i < v.size(); i++)
         {
@@ -422,12 +422,12 @@ int CmdCalendar::execute (std::string& output)
 std::string CmdCalendar::renderMonths (
   int firstMonth,
   int firstYear,
-  const ISO8601d& today,
+  const Datetime& today,
   std::vector <Task>& all,
   int monthsPerLine)
 {
   // What day of the week does the user consider the first?
-  int weekStart = ISO8601d::dayOfWeek (context.config.get ("weekstart"));
+  int weekStart = Datetime::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string (STRING_CMD_CAL_SUN_MON);
 
@@ -442,24 +442,24 @@ std::string CmdCalendar::renderMonths (
     if (weekStart == 1)
     {
       view.add ("", false);
-      view.add (utf8_substr (ISO8601d::dayName (1), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (2), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (3), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (4), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (5), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (6), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (0), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (1), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (2), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (3), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (4), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (5), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (6), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (0), 0, 2), false);
     }
     else
     {
       view.add ("", false);
-      view.add (utf8_substr (ISO8601d::dayName (0), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (1), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (2), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (3), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (4), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (5), 0, 2), false);
-      view.add (utf8_substr (ISO8601d::dayName (6), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (0), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (1), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (2), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (3), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (4), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (5), 0, 2), false);
+      view.add (utf8_substr (Datetime::dayName (6), 0, 2), false);
     }
   }
 
@@ -489,7 +489,7 @@ std::string CmdCalendar::renderMonths (
       years.push_back (++thisYear);
     }
     months.push_back (thisMonth);
-    daysInMonth.push_back (ISO8601d::daysInMonth (thisMonth++, thisYear));
+    daysInMonth.push_back (Datetime::daysInMonth (thisYear, thisMonth++));
   }
 
   int row = 0;
@@ -512,9 +512,9 @@ std::string CmdCalendar::renderMonths (
     // Loop through days in month and add to table.
     for (int d = 1; d <= daysInMonth[mpl]; ++d)
     {
-      ISO8601d temp (months[mpl], d, years[mpl]);
+      Datetime temp (years[mpl], months[mpl], d);
       int dow = temp.dayOfWeek ();
-      int woy = temp.weekOfYear (weekStart);
+      int woy = temp.week ();
 
       if (context.config.getBoolean ("displayweeknumber"))
         view.set (row,
@@ -549,7 +549,7 @@ std::string CmdCalendar::renderMonths (
               if (hol.first.substr (hol.first.size () - 4) == "date")
               {
                 std::string value = hol.second;
-                ISO8601d holDate (value.c_str (), context.config.get ("dateformat.holiday"));
+                Datetime holDate (value.c_str (), context.config.get ("dateformat.holiday"));
                 if (holDate.day   () == d           &&
                     holDate.month () == months[mpl] &&
                     holDate.year  () == years[mpl])
@@ -574,7 +574,7 @@ std::string CmdCalendar::renderMonths (
                 task.has ("due"))
             {
               std::string due = task.get ("due");
-              ISO8601d duedmy (strtol (due.c_str(), NULL, 10));
+              Datetime duedmy (strtol (due.c_str(), NULL, 10));
 
               if (duedmy.day   () == d           &&
                   duedmy.month () == months[mpl] &&
