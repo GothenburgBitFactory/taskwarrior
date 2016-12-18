@@ -33,7 +33,6 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
-#include <ViewText.h>
 #include <FS.h>
 #include <Task.h>
 

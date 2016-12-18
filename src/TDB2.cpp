@@ -37,6 +37,7 @@
 #include <Color.h>
 #include <ISO8601.h>
 #include <i18n.h>
+#include <Table.h>
 #include <shared.h>
 #include <format.h>
 #include <main.h>
@@ -1043,12 +1044,12 @@ void TDB2::show_diff (
 
     // Attributes are all there is, so figure the different attribute names
     // between before and after.
-    ViewText view;
+    Table view;
     view.width (context.getWidth ());
     view.intraPadding (2);
-    view.add (Column::factory ("string", ""));
-    view.add (Column::factory ("string", STRING_TDB2_UNDO_PRIOR));
-    view.add (Column::factory ("string", STRING_TDB2_UNDO_CURRENT));
+    view.add ("");
+    view.add (STRING_TDB2_UNDO_PRIOR);
+    view.add (STRING_TDB2_UNDO_CURRENT);
 
     Color label (context.config.get ("color.label"));
     view.colorHeader (label);
@@ -1141,11 +1142,11 @@ void TDB2::show_diff (
     Task after (current);
 
     // Generate table header.
-    ViewText view;
+    Table view;
     view.width (context.getWidth ());
     view.intraPadding (2);
-    view.add (Column::factory ("string", ""));
-    view.add (Column::factory ("string", ""));
+    view.add ("");
+    view.add ("");
 
     int row = view.addRow ();
     view.set (row, 0, STRING_TDB2_DIFF_PREV, color_red);
