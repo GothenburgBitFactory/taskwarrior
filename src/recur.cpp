@@ -39,7 +39,7 @@
 #include <time.h>
 #include <Context.h>
 #include <Lexer.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <Duration.h>
 #include <format.h>
 #include <util.h>
@@ -60,7 +60,7 @@ void handleRecurrence ()
     return;
 
   auto tasks = context.tdb2.pending.get_tasks ();
-  ISO8601d now;
+  Datetime now;
 
   // Look at all tasks and find any recurring ones.
   for (auto& t : tasks)
@@ -69,7 +69,7 @@ void handleRecurrence ()
     {
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
-      std::vector <ISO8601d> due;
+      std::vector <Datetime> due;
       if (!generateDueDates (t, due))
       {
         // Determine the end date.
@@ -101,9 +101,9 @@ void handleRecurrence ()
 
           if (t.has ("wait"))
           {
-            ISO8601d old_wait (t.get_date ("wait"));
-            ISO8601d old_due (t.get_date ("due"));
-            ISO8601d due (d);
+            Datetime old_wait (t.get_date ("wait"));
+            Datetime old_due (t.get_date ("due"));
+            Datetime due (d);
             rec.set ("wait", format ((due + (old_wait - old_due)).toEpoch ()));
             rec.setStatus (Task::waiting);
             mask += 'W';
@@ -139,7 +139,7 @@ void handleRecurrence ()
     else
     {
       if (t.has ("until") &&
-          ISO8601d (t.get_date ("until")) < now)
+          Datetime (t.get_date ("until")) < now)
       {
         t.setStatus (Task::deleted);
         context.tdb2.modify(t);
@@ -154,27 +154,27 @@ void handleRecurrence ()
 // period (recur).  Then generate a set of corresponding dates.
 //
 // Returns false if the parent recurring task is depleted.
-bool generateDueDates (Task& parent, std::vector <ISO8601d>& allDue)
+bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
 {
   // Determine due date, recur period and until date.
-  ISO8601d due (parent.get_date ("due"));
+  Datetime due (parent.get_date ("due"));
   if (due._date == 0)
     return false;
 
   std::string recur = parent.get ("recur");
 
   bool specificEnd = false;
-  ISO8601d until;
+  Datetime until;
   if (parent.get ("until") != "")
   {
-    until = ISO8601d (parent.get ("until"));
+    until = Datetime (parent.get ("until"));
     specificEnd = true;
   }
 
   int recurrence_limit = context.config.getInteger ("recurrence.limit");
   int recurrence_counter = 0;
-  ISO8601d now;
-  for (ISO8601d i = due; ; i = getNextRecurrence (i, recur))
+  Datetime now;
+  for (Datetime i = due; ; i = getNextRecurrence (i, recur))
   {
     allDue.push_back (i);
 
@@ -202,7 +202,7 @@ bool generateDueDates (Task& parent, std::vector <ISO8601d>& allDue)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
+Datetime getNextRecurrence (Datetime& current, std::string& period)
 {
   int m = current.month ();
   int d = current.day ();
@@ -221,10 +221,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "weekdays")
@@ -251,10 +251,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period[0] == 'P'                                            &&
@@ -270,10 +270,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y);
+    return Datetime (y, m, d);
   }
 
   else if (period == "quarterly" ||
@@ -286,10 +286,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
@@ -303,10 +303,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "semiannual" ||
@@ -319,10 +319,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "bimonthly" ||
@@ -335,10 +335,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "biannual" ||
@@ -347,7 +347,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
   {
     y += 2;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "annual" ||
@@ -361,7 +361,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     if (m == 2 && d == 29)
       d = 28;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   // Add the period to current, and we're done.
