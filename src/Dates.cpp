@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <shared.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <Lexer.h>
 #include <CLI2.h>
 #include <i18n.h>
@@ -38,14 +38,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 static bool isMonth (const std::string& name, int& i)
 {
-  i = ISO8601d::monthOfYear (name) - 1;
+  i = Datetime::monthOfYear (name) - 1;
   return i != -2 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static bool isDay (const std::string& name, int& i)
 {
-  i = ISO8601d::dayOfWeek (name);
+  i = Datetime::dayOfWeek (name);
   return i != -1 ? true : false;
 }
 
@@ -303,7 +303,7 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_hour = 24;
     t->tm_min = 0;
     t->tm_sec = -1;
-    t->tm_mday = ISO8601d::daysInMonth (t->tm_mon + 1, t->tm_year + 1900);
+    t->tm_mday = Datetime::daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
@@ -415,7 +415,7 @@ bool namedDates (const std::string& name, Variant& value)
 
         // If it is this month.
         if (d < number &&
-            number <= ISO8601d::daysInMonth (m, y))
+            number <= Datetime::daysInMonth (y, m))
         {
           t->tm_hour = t->tm_min = t->tm_sec = 0;
           t->tm_mon  = m - 1;
