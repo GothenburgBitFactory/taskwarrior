@@ -34,7 +34,7 @@
 #include <format.h>
 #include <util.h>
 #include <i18n.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 
 extern Context context;
 
@@ -72,11 +72,11 @@ int CmdHistoryMonthly::execute (std::string& output)
 
   for (auto& task : filtered)
   {
-    ISO8601d entry (task.get_date ("entry"));
+    Datetime entry (task.get_date ("entry"));
 
-    ISO8601d end;
+    Datetime end;
     if (task.has ("end"))
-      end = ISO8601d (task.get_date ("end"));
+      end = Datetime (task.get_date ("end"));
 
     time_t epoch = entry.startOfMonth ().toEpoch ();
     groups[epoch] = 0;
@@ -134,16 +134,16 @@ int CmdHistoryMonthly::execute (std::string& output)
     totalCompleted += completedGroup [i.first];
     totalDeleted   += deletedGroup   [i.first];
 
-    ISO8601d dt (i.first);
+    Datetime dt (i.first);
     int m, d, y;
-    dt.toMDY (m, d, y);
+    dt.toYMD (y, m, d);
 
     if (y != priorYear)
     {
       view.set (row, 0, y);
       priorYear = y;
     }
-    view.set (row, 1, ISO8601d::monthName(m));
+    view.set (row, 1, Datetime::monthName(m));
 
     int net = 0;
 
@@ -239,11 +239,11 @@ int CmdHistoryAnnual::execute (std::string& output)
 
   for (auto& task : filtered)
   {
-    ISO8601d entry (task.get_date ("entry"));
+    Datetime entry (task.get_date ("entry"));
 
-    ISO8601d end;
+    Datetime end;
     if (task.has ("end"))
-      end = ISO8601d (task.get_date ("end"));
+      end = Datetime (task.get_date ("end"));
 
     time_t epoch = entry.startOfYear ().toEpoch ();
     groups[epoch] = 0;
@@ -300,9 +300,9 @@ int CmdHistoryAnnual::execute (std::string& output)
     totalCompleted += completedGroup [i.first];
     totalDeleted   += deletedGroup   [i.first];
 
-    ISO8601d dt (i.first);
+    Datetime dt (i.first);
     int m, d, y;
-    dt.toMDY (m, d, y);
+    dt.toYMD (y, m, d);
 
     if (y != priorYear)
     {
@@ -403,11 +403,11 @@ int CmdGHistoryMonthly::execute (std::string& output)
 
   for (auto& task : filtered)
   {
-    ISO8601d entry (task.get_date ("entry"));
+    Datetime entry (task.get_date ("entry"));
 
-    ISO8601d end;
+    Datetime end;
     if (task.has ("end"))
-      end = ISO8601d (task.get_date ("end"));
+      end = Datetime (task.get_date ("end"));
 
     time_t epoch = entry.startOfMonth ().toEpoch ();
     groups[epoch] = 0;
@@ -482,16 +482,16 @@ int CmdGHistoryMonthly::execute (std::string& output)
       totalCompleted += completedGroup[i.first];
       totalDeleted   += deletedGroup[i.first];
 
-      ISO8601d dt (i.first);
+      Datetime dt (i.first);
       int m, d, y;
-      dt.toMDY (m, d, y);
+      dt.toYMD (y, m, d);
 
       if (y != priorYear)
       {
         view.set (row, 0, y);
         priorYear = y;
       }
-      view.set (row, 1, ISO8601d::monthName(m));
+      view.set (row, 1, Datetime::monthName(m));
 
       unsigned int addedBar     = (widthOfBar *     addedGroup[i.first]) / maxLine;
       unsigned int completedBar = (widthOfBar * completedGroup[i.first]) / maxLine;
@@ -605,11 +605,11 @@ int CmdGHistoryAnnual::execute (std::string& output)
 
   for (auto& task : filtered)
   {
-    ISO8601d entry (task.get_date ("entry"));
+    Datetime entry (task.get_date ("entry"));
 
-    ISO8601d end;
+    Datetime end;
     if (task.has ("end"))
-      end = ISO8601d (task.get_date ("end"));
+      end = Datetime (task.get_date ("end"));
 
     time_t epoch = entry.startOfYear ().toEpoch ();
     groups[epoch] = 0;
@@ -683,9 +683,9 @@ int CmdGHistoryAnnual::execute (std::string& output)
       totalCompleted += completedGroup[i.first];
       totalDeleted   += deletedGroup[i.first];
 
-      ISO8601d dt (i.first);
+      Datetime dt (i.first);
       int m, d, y;
-      dt.toMDY (m, d, y);
+      dt.toYMD (y, m, d);
 
       if (y != priorYear)
       {
