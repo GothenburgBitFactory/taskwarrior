@@ -253,10 +253,10 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   if (ret < 0)
     throw format (STRING_CMD_SYNC_HANDSHAKE, gnutls_strerror (ret));
 
-#if GNUTLS_VERSION_NUMBER < 0x02090a
+#if GNUTLS_VERSION_NUMBER < 0x020a00
   // The automatic verification for the server certificate with
   // gnutls_certificate_set_verify_function does only work with gnutls
-  // >=2.9.10. So with older versions we should call the verify function
+  // >=2.10.0. So with older versions we should call the verify function
   // manually after the gnutls handshake.
   ret = verify_certificate ();
   if (ret < 0)
