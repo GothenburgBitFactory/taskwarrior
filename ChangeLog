@@ -28,6 +28,8 @@
           (thanks to E. Manuel Cerr'on Angeles)
 - TW-1857 Change Task::get call to the more efficient Task::has
           (thanks to Zachary Manning).
+- TW-1873 Specify different path to extensions/hooks directory
+          (thanks to Eli).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'

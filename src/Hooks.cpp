@@ -54,9 +54,19 @@ void Hooks::initialize ()
 {
   _debug = context.config.getInteger ("debug.hooks");
 
-  // Scan <rc.data.location>/hooks
-  Directory d (context.config.get ("data.location"));
-  d += "hooks";
+  // Scan <rc.hooks.location>
+  //      <rc.data.location>/hooks
+  Directory d;
+  if (context.config.has ("hooks.location"))
+  {
+    d = Directory (context.config.get ("hooks.location"));
+  }
+  else
+  {
+    d = Directory (context.config.get ("data.location"));
+    d += "hooks";
+  }
+
   if (d.is_directory () &&
       d.readable ())
   {

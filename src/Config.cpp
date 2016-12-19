@@ -532,7 +532,11 @@ void Config::createDefaultData (const std::string& data)
 
     d.create ();
 
-    d += "hooks";
+    if (has ("hooks.location"))
+      d = Directory (get ("hooks.location"));
+    else
+      d += "hooks";
+
     d.create ();
   }
 }

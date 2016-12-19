@@ -181,6 +181,10 @@ shell meta character, which will be properly expanded.
 Note that the TASKDATA environment variable overrides this setting.
 
 .TP
+.B hooks.location=$HOME/.task/hooks
+This is a path to the hook scripts directory. By default it is ~/.task/hooks.
+
+.TP
 .B locking=1
 Determines whether to use file locking when accessing the pending.data and
 completed.data files. Defaults to "1". Solaris users who store the data
