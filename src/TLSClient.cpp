@@ -146,6 +146,7 @@ void TLSClient::init (
       (ret = gnutls_certificate_set_x509_trust_file (_credentials, _ca.c_str (), GNUTLS_X509_FMT_PEM)) < 0) // All
     throw format ("Bad CA file. {1}", gnutls_strerror (ret)); // All
 
+  // TODO This may need 0x030111 protection.
   if (_cert != "" &&
       _key != "" &&
       (ret = gnutls_certificate_set_x509_key_file (_credentials, _cert.c_str (), _key.c_str (), GNUTLS_X509_FMT_PEM)) < 0) // 3.1.11
