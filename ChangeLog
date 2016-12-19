@@ -83,6 +83,8 @@
   "yes", "y", "no", "n".
 - Fixed test harness for Python 3.x.
           (thanks to jrabbit).
+- Improved certificate validation diagnostics
+          (thanks to Jelle van der Waa).
 
 ------ current release ---------------------------
 
