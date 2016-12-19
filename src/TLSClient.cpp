@@ -233,6 +233,10 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   if (p == NULL)
     throw format (STRING_CMD_SYNC_CONNECT, host, port);
 
+#if GNUTLS_VERSION_NUMBER >= 0x030100
+  gnutls_handshake_set_timeout (_session, GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT); // 3.1.0
+#endif
+
 #if GNUTLS_VERSION_NUMBER >= 0x030109
   gnutls_transport_set_int (_session, _socket); // 3.1.9
 #else
