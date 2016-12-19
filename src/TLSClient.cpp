@@ -150,6 +150,13 @@ void TLSClient::init (
   if (ret < 0)
     throw format ("TLS allocation error. {1}", gnutls_strerror (ret)); // All
 
+#if GNUTLS_VERSION_NUMBER >= 0x030014
+  // Automatic loading of system installed CA certificates.
+  ret = gnutls_certificate_set_x509_system_trust (_credentials); // 3.0.20
+  if (ret < 0)
+    throw format ("Bad System Trust. {1}", gnutls_strerror (ret)); // All
+#endif
+
   if (_ca != "" &&
       (ret = gnutls_certificate_set_x509_trust_file (_credentials, _ca.c_str (), GNUTLS_X509_FMT_PEM)) < 0) // All
     throw format ("Bad CA file. {1}", gnutls_strerror (ret)); // All
