@@ -258,6 +258,7 @@ std::string Config::_defaults =
   "list.all.tags=0                                # Include old tag names in 'tags' command\n"
   "print.empty.columns=0                          # Print columns which have no data for any task\n"
   "debug=0                                        # Display diagnostics\n"
+  "debug.tls=0                                    # Sync diagnostics\n"
   "sugar=1                                        # Syntactic sugar\n"
   "obfuscate=0                                    # Obfuscate data for error reporting\n"
   "fontunderline=1                                # Uses underlines rather than -------\n"
