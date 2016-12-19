@@ -51,7 +51,11 @@
 
 #define MAX_BUF 16384
 
+#if GNUTLS_VERSION_NUMBER < 0x030406
+#if GNUTLS_VERSION_NUMBER >= 0x020a00
 static int verify_certificate_callback (gnutls_session_t);
+#endif
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 static void gnutls_log_function (int level, const char* message)
@@ -60,11 +64,15 @@ static void gnutls_log_function (int level, const char* message)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#if GNUTLS_VERSION_NUMBER < 0x030406
+#if GNUTLS_VERSION_NUMBER >= 0x020a00
 static int verify_certificate_callback (gnutls_session_t session)
 {
   const TLSClient* client = (TLSClient*) gnutls_session_get_ptr (session); // All
   return client->verify_certificate ();
 }
+#endif
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 TLSClient::~TLSClient ()
@@ -152,12 +160,14 @@ void TLSClient::init (
       (ret = gnutls_certificate_set_x509_key_file (_credentials, _cert.c_str (), _key.c_str (), GNUTLS_X509_FMT_PEM)) < 0) // 3.1.11
     throw format ("Bad CERT file. {1}", gnutls_strerror (ret)); // All
 
-#if GNUTLS_VERSION_NUMBER >= 0x02090a
+#if GNUTLS_VERSION_NUMBER < 0x030406
+#if GNUTLS_VERSION_NUMBER >= 0x020a00
   // The automatic verification for the server certificate with
   // gnutls_certificate_set_verify_function only works with gnutls
   // >=2.9.10. So with older versions we should call the verify function
   // manually after the gnutls handshake.
-  gnutls_certificate_set_verify_function (_credentials, verify_certificate_callback);
+  gnutls_certificate_set_verify_function (_credentials, verify_certificate_callback); // 2.10.0
+#endif
 #endif
   ret = gnutls_init (&_session, GNUTLS_CLIENT); // All
   if (ret < 0)
@@ -189,6 +199,11 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   _host = host;
   _port = port;
 
+  int ret;
+#if GNUTLS_VERSION_NUMBER >= 0x030406
+  gnutls_session_set_verify_cert (_session, _host.c_str (), 0); // 3.4.6
+#endif
+
   // Store the TLSClient instance, so that the verification callback can access
   // it during the handshake below and call the verifcation method.
   gnutls_session_set_ptr (_session, (void*) this); // All
@@ -200,7 +215,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   hints.ai_flags    = AI_PASSIVE; // use my IP
 
   struct addrinfo* res;
-  int ret = ::getaddrinfo (host.c_str (), port.c_str (), &hints, &res);
+  ret = ::getaddrinfo (host.c_str (), port.c_str (), &hints, &res);
   if (ret != 0)
     throw std::string (::gai_strerror (ret));
 
@@ -251,7 +266,23 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   while (ret < 0 && gnutls_error_is_fatal (ret) == 0); // All
 
   if (ret < 0)
-    throw format (STRING_CMD_SYNC_HANDSHAKE, gnutls_strerror (ret));
+  {
+#if GNUTLS_VERSION_NUMBER >= 0x030406
+    if (ret == GNUTLS_E_CERTIFICATE_VERIFICATION_ERROR)
+    {
+      auto type = gnutls_certificate_type_get (_session); // All
+      auto status = gnutls_session_get_verify_cert_status (_session); // 3.4.6
+      gnutls_datum_t out;
+      gnutls_certificate_verification_status_print (status, type, &out, 0);  // 3.1.4
+      gnutls_free (out.data); // All
+
+      std::string error {(const char*) out.data};
+      throw format (STRING_CMD_SYNC_HANDSHAKE, error);
+    }
+#else
+    throw format (STRING_CMD_SYNC_HANDSHAKE, gnutls_strerror (ret)); // All
+#endif
+  }
 
 #if GNUTLS_VERSION_NUMBER < 0x020a00
   // The automatic verification for the server certificate with
