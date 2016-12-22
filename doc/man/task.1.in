@@ -231,9 +231,8 @@ This command is mainly of use to external scripts.
 .TP
 .B task <filter> uuids
 Applies the filter on all tasks (even deleted and completed tasks)
-then extracts only the task UUIDs and presents them as
-a comma-separated list.  This is useful as input to a task command, to achieve
-this:
+then extracts only the task UUIDs and presents them as a space-separated list.
+This is useful as input to a task command, to achieve this:
 
   task $(task project:Home status:completed uuids) modify status:pending
 
