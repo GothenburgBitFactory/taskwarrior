@@ -32,6 +32,8 @@
           (thanks to Zachary Manning).
 - TW-1873 Specify different path to extensions/hooks directory
           (thanks to Eli).
+- TW-1878 uuids subcommand produces a space-delimited list, not comma-delimited
+          (thanks to Scott Kostyshak).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
