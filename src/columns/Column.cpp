@@ -293,12 +293,6 @@ void Column::setStyle (const std::string& style)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Column::validate (const std::string& input) const
-{
-  return input.length () ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // All integer values are right-justified.
 void Column::renderInteger (
   std::vector <std::string>& lines,

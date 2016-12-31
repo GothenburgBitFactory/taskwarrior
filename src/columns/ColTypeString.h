@@ -35,6 +35,7 @@ class ColumnTypeString : public Column
 {
 public:
   ColumnTypeString ();
+  virtual bool validate (const std::string&) const;
   virtual void modify (Task&, const std::string&);
 };
 

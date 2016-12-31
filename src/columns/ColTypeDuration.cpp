@@ -44,6 +44,12 @@ ColumnTypeDuration::ColumnTypeDuration ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeDuration::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeDuration::modify (Task& task, const std::string& value)
 {
   // Try to evaluate 'value'.  It might work.
