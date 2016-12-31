@@ -68,6 +68,7 @@ void ColumnID::render (
   int width,
   Color& color)
 {
+   // Completed and deleted tasks have no ID.
   if (task.id)
     renderInteger (lines, width, color, task.id);
   else
