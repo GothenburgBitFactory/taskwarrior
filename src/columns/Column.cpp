@@ -46,7 +46,6 @@
 #include <ColScheduled.h>
 #include <ColStart.h>
 #include <ColStatus.h>
-#include <ColString.h>
 #include <ColTags.h>
 #include <ColTemplate.h>
 #include <ColUntil.h>
@@ -106,9 +105,6 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "urgency")     c = new ColumnUrgency ();
   else if (column_name == "uuid")        c = new ColumnUUID ();
   else if (column_name == "wait")        c = new ColumnWait ();
-
-  // Special non-task column.
-  else if (column_name == "string")      c = new ColumnString ();
 
   // UDA.
   else if (context.config.has ("uda." + column_name + ".type"))

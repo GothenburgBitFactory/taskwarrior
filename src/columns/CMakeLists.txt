@@ -24,7 +24,6 @@ set (columns_SRCS Column.cpp Column.h
                   ColScheduled.cpp ColScheduled.h
                   ColStart.cpp ColStart.h
                   ColStatus.cpp ColStatus.h
-                  ColString.cpp ColString.h
                   ColTags.cpp ColTags.h
                   ColTemplate.cpp ColTemplate.h
                   ColTypeDate.cpp ColTypeDate.h
