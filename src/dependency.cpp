@@ -82,8 +82,7 @@ bool dependencyIsCircular (const Task& task)
     while (! s.empty ())
     {
       Task& current = s.top ();
-      std::vector <std::string> deps_current;
-      current.getDependencies (deps_current);
+      auto deps_current = current.getDependencyUUIDs ();
 
       // This is a basic depth first search that always terminates given the
       // fact that we do not visit any task twice

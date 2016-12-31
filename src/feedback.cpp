@@ -84,8 +84,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   {
     if (name == "depends")
     {
-      std::vector <Task> deps_after;
-      after.getDependencies (deps_after);
+      auto deps_after = after.getDependencyTasks ();
 
       out << "  - "
           << format (STRING_FEEDBACK_DEP_SET, taskIdentifiers (deps_after))
@@ -110,12 +109,10 @@ std::string taskDifferences (const Task& before, const Task& after)
     {
       if (name == "depends")
       {
-        std::vector <Task> deps_before;
-        before.getDependencies (deps_before);
+        auto deps_before = before.getDependencyTasks ();
         std::string from = taskIdentifiers (deps_before);
 
-        std::vector <Task> deps_after;
-        after.getDependencies (deps_after);
+        auto deps_after = after.getDependencyTasks ();
         std::string to = taskIdentifiers (deps_after);
 
         out << "  - "
@@ -169,11 +166,7 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-        std::vector <Task> deps_before;
-        before.getDependencies (deps_before);
-        std::string from = taskIdentifiers (deps_before);
-
-        out << format (STRING_FEEDBACK_DEP_DEL, from)
+        out << format (STRING_FEEDBACK_DEP_DEL, taskIdentifiers (before.getDependencyTasks ()))
             << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
@@ -198,11 +191,7 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-      std::vector <Task> deps_after;
-      after.getDependencies (deps_after);
-      std::string to = taskIdentifiers (deps_after);
-
-      out << format (STRING_FEEDBACK_DEP_WAS_SET, to)
+      out << format (STRING_FEEDBACK_DEP_WAS_SET, taskIdentifiers (after.getDependencyTasks ()))
           << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
@@ -231,13 +220,8 @@ std::string taskInfoDifferences (
     {
       if (name == "depends")
       {
-        std::vector <Task> deps_before;
-        before.getDependencies (deps_before);
-        std::string from = taskIdentifiers (deps_before);
-
-        std::vector <Task> deps_after;
-        after.getDependencies (deps_after);
-        std::string to = taskIdentifiers (deps_after);
+        auto from = taskIdentifiers (before.getDependencyTasks ());
+        auto to   = taskIdentifiers (after.getDependencyTasks ());
 
         out << format (STRING_FEEDBACK_DEP_WAS_MOD, from, to)
             << "\n";

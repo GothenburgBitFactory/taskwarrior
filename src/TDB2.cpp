@@ -528,10 +528,7 @@ void TF2::dependency_scan ()
   {
     if (left.has ("depends"))
     {
-      std::vector <std::string> deps;
-      left.getDependencies (deps);
-
-      for (auto& dep : deps)
+      for (auto& dep : left.getDependencyUUIDs ())
       {
         for (auto& right : _tasks)
         {
