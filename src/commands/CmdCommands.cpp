@@ -32,7 +32,6 @@
 #include <Context.h>
 #include <Table.h>
 #include <Command.h>
-#include <ColString.h>
 #include <util.h>
 #include <i18n.h>
 
