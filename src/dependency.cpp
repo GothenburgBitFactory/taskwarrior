@@ -38,29 +38,35 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-void dependencyGetBlocked (const Task& task, std::vector <Task>& blocked)
+std::vector <Task> dependencyGetBlocked (const Task& task)
 {
   std::string uuid = task.get ("uuid");
 
-  auto all = context.tdb2.pending.get_tasks ();
-  for (auto& it : all)
+  std::vector <Task> blocked;
+  for (auto& it : context.tdb2.pending.get_tasks ())
     if (it.getStatus () != Task::completed &&
         it.getStatus () != Task::deleted   &&
         it.has ("depends")                 &&
         it.get ("depends").find (uuid) != std::string::npos)
       blocked.push_back (it);
+
+  return blocked;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
+std::vector <Task> dependencyGetBlocking (const Task& task)
 {
   std::string depends = task.get ("depends");
+  std::vector <Task> blocking;
+
   if (depends != "")
     for (auto& it : context.tdb2.pending.get_tasks ())
       if (it.getStatus () != Task::completed &&
           it.getStatus () != Task::deleted   &&
           depends.find (it.get ("uuid")) != std::string::npos)
         blocking.push_back (it);
+
+  return blocking;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -145,14 +151,12 @@ bool dependencyIsCircular (const Task& task)
 //
 void dependencyChainOnComplete (Task& task)
 {
-  std::vector <Task> blocking;
-  dependencyGetBlocking (task, blocking);
+  auto blocking = dependencyGetBlocking (task);
 
   // If the task is anything but the tail end of a dependency chain.
   if (blocking.size ())
   {
-    std::vector <Task> blocked;
-    dependencyGetBlocked (task, blocked);
+    auto blocked = dependencyGetBlocked (task);
 
     // Nag about broken chain.
     if (context.config.getBoolean ("dependency.reminder"))
@@ -205,8 +209,7 @@ void dependencyChainOnStart (Task& task)
 {
   if (context.config.getBoolean ("dependency.reminder"))
   {
-    std::vector <Task> blocking;
-    dependencyGetBlocking (task, blocking);
+    auto blocking = dependencyGetBlocking (task);
 
     // If the task is anything but the tail end of a dependency chain, nag about
     // broken chain.
