@@ -1313,9 +1313,9 @@ void Task::addTags (const std::vector <std::string>& tags)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getTags (std::vector<std::string>& tags) const
+std::vector <std::string> Task::getTags () const
 {
-  tags = split (get ("tags"), ',');
+  return split (get ("tags"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
