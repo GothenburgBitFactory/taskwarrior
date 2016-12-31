@@ -36,6 +36,7 @@
 #include <ColEntry.h>
 #include <ColID.h>
 #include <ColIMask.h>
+#include <ColLast.h>
 #include <ColMask.h>
 #include <ColModified.h>
 #include <ColParent.h>
@@ -88,6 +89,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "entry")       c = new ColumnEntry ();
   else if (column_name == "id")          c = new ColumnID ();
   else if (column_name == "imask")       c = new ColumnIMask ();
+  else if (column_name == "last")        c = new ColumnLast ();
   else if (column_name == "mask")        c = new ColumnMask ();
   else if (column_name == "modified")    c = new ColumnModified ();
   else if (column_name == "parent")      c = new ColumnParent ();
@@ -131,6 +133,7 @@ void Column::factory (std::map <std::string, Column*>& all)
   c = new ColumnEntry ();          all[c->_name] = c;
   c = new ColumnID ();             all[c->_name] = c;
   c = new ColumnIMask ();          all[c->_name] = c;
+  c = new ColumnLast ();           all[c->_name] = c;
   c = new ColumnMask ();           all[c->_name] = c;
   c = new ColumnModified ();       all[c->_name] = c;
   c = new ColumnParent ();         all[c->_name] = c;

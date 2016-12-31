@@ -210,6 +210,7 @@
 #define STRING_COLUMN_LABEL_VALUE    "Wartość"
 #define STRING_COLUMN_LABEL_MASK     "Maska"
 #define STRING_COLUMN_LABEL_MASK_IDX "Indeks Maski"
+#define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_PARENT   "Zadanie rodzic"
 #define STRING_COLUMN_LABEL_TEMPLATE "Template task"
 #define STRING_COLUMN_LABEL_DATE     "Data"
