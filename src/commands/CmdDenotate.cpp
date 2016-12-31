@@ -90,8 +90,7 @@ int CmdDenotate::execute (std::string&)
   {
     Task before (task);
 
-    std::map <std::string, std::string> annotations;
-    task.getAnnotations (annotations);
+    auto annotations = task.getAnnotations ();
 
     if (annotations.size () == 0)
       throw std::string (STRING_CMD_DENO_NONE);
