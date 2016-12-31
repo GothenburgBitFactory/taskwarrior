@@ -256,8 +256,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   before << "  Annotation:        " << now.toString (dateformat) << " -- \n";
 
   // Add dependencies here.
-  std::vector <std::string> dependencies;
-  task.getDependencies (dependencies);
+  auto dependencies = task.getDependencyUUIDs ();
   std::stringstream allDeps;
   for (unsigned int i = 0; i < dependencies.size (); ++i)
   {

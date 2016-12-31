@@ -1186,35 +1186,33 @@ void Task::removeDependency (int id)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getDependencies (std::vector <int>& all) const
+std::vector <int> Task::getDependencyIDs () const
 {
-  auto deps = split (get ("depends"), ',');
-
-  all.clear ();
-
-  for (auto& dep : deps)
+  std::vector <int> all;
+  for (auto& dep : split (get ("depends"), ','))
     all.push_back (context.tdb2.pending.id (dep));
+
+  return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getDependencies (std::vector <std::string>& all) const
+std::vector <std::string> Task::getDependencyUUIDs () const
 {
-  all = split (get ("depends"), ',');
+  return split (get ("depends"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getDependencies (std::vector <Task>& all) const
+std::vector <Task> Task::getDependencyTasks () const
 {
-  std::vector <std::string> deps = split (get ("depends"), ',');
-
-  all.clear ();
-
-  for (auto& dep : deps)
+  std::vector <Task> all;
+  for (auto& dep : split (get ("depends"), ','))
   {
     Task task;
     context.tdb2.get (dep, task);
     all.push_back (task);
   }
+
+  return all;
 }
 #endif
 
