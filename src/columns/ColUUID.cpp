@@ -26,7 +26,6 @@
 
 #include <cmake.h>
 #include <ColUUID.h>
-#include <math.h>
 #include <format.h>
 #include <i18n.h>
 
@@ -45,6 +44,8 @@ ColumnUUID::ColumnUUID ()
 // Set the minimum and maximum widths for the value.
 void ColumnUUID::measure (Task&, unsigned int& minimum, unsigned int& maximum)
 {
+  // Mandatory attribute, no need to check the value.
+
        if (_style == "default" || _style == "long") minimum = maximum = 36;
   else if (_style == "short")                       minimum = maximum = 8;
   else
