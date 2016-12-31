@@ -68,26 +68,28 @@ void ColumnDepends::setStyle (const std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-  std::vector <Task> blocking;
-  dependencyGetBlocking (task, blocking);
-
-  if (_style == "indicator")
+  minimum = maximum = 0;
+  if (task.has (_name))
   {
-    if (task.has (_name))
-      minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
-    else
-      minimum = maximum = 0;
-  }
-  else if (_style == "count")
-  {
-    minimum = maximum = 2 + format ((int) blocking.size ()).length ();
-  }
-  else if (_style == "default" ||
-           _style == "list")
-  {
-    minimum = maximum = 0;
-    if (task.has (_name))
+    if (_style == "indicator")
     {
+      minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
+    }
+
+    else if (_style == "count")
+    {
+      std::vector <Task> blocking;
+      dependencyGetBlocking (task, blocking);
+      minimum = maximum = 2 + format ((int) blocking.size ()).length ();
+    }
+
+    else if (_style == "default" ||
+             _style == "list")
+    {
+      minimum = maximum = 0;
+      std::vector <Task> blocking;
+      dependencyGetBlocking (task, blocking);
+
       std::vector <int> blocking_ids;
       for (auto& i : blocking)
         blocking_ids.push_back (i.id);
@@ -103,9 +105,9 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
           minimum = length;
       }
     }
+    else
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,30 +120,35 @@ void ColumnDepends::render (
   if (task.has (_name))
   {
     if (_style == "indicator")
+    {
       renderStringRight (lines, width, color, context.config.get ("dependency.indicator"));
-    else
+    }
+
+    else if (_style == "count")
     {
       std::vector <Task> blocking;
       dependencyGetBlocking (task, blocking);
 
-      if (_style == "count")
-        renderStringRight (lines, width, color, '[' + format (static_cast <int>(blocking.size ())) + ']');
+      renderStringRight (lines, width, color, '[' + format (static_cast <int>(blocking.size ())) + ']');
+    }
 
-      else if (_style == "default" ||
-               _style == "list")
-      {
-        std::vector <int> blocking_ids;
-        for (const auto& t : blocking)
-          blocking_ids.push_back (t.id);
+    else if (_style == "default" ||
+             _style == "list")
+    {
+      std::vector <Task> blocking;
+      dependencyGetBlocking (task, blocking);
 
-        auto combined = join (" ", blocking_ids);
+      std::vector <int> blocking_ids;
+      for (const auto& t : blocking)
+        blocking_ids.push_back (t.id);
 
-        std::vector <std::string> all;
-        wrapText (all, combined, width, _hyphenate);
+      auto combined = join (" ", blocking_ids);
 
-        for (const auto& i : all)
-          renderStringLeft (lines, width, color, i);
-      }
+      std::vector <std::string> all;
+      wrapText (all, combined, width, _hyphenate);
+
+      for (const auto& i : all)
+        renderStringLeft (lines, width, color, i);
     }
   }
 }
