@@ -32,11 +32,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUrgency::ColumnUrgency ()
 {
-  _name     = "urgency";
-  _style    = "real";
-  _label    = STRING_COLUMN_LABEL_URGENCY;
-  _styles   = {"real", "integer"};
-  _examples = {"4.6", "4"};
+  _name       = "urgency";
+  _style      = "real";
+  _label      = STRING_COLUMN_LABEL_URGENCY;
+  _modifiable = false;
+  _styles     = {"real", "integer"};
+  _examples   = {"4.6", "4"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
