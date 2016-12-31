@@ -122,14 +122,11 @@ void ColumnUDAString::render (
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-      {
-        auto indicator = context.config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
-          indicator = "U";
+      auto indicator = context.config.get ("uda." + _name + ".indicator");
+      if (indicator == "")
+        indicator = "U";
 
-        renderStringRight (lines, width, color, indicator);
-      }
+      renderStringRight (lines, width, color, indicator);
     }
   }
 }
