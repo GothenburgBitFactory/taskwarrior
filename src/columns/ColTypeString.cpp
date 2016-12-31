@@ -44,6 +44,12 @@ ColumnTypeString::ColumnTypeString ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeString::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeString::modify (Task& task, const std::string& value)
 {
   std::string label = "  [1;37;43mMODIFICATION[0m ";

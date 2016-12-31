@@ -205,6 +205,12 @@ void ColumnTypeDate::render (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeDate::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeDate::modify (Task& task, const std::string& value)
 {
   // Try to evaluate 'value'.  It might work.

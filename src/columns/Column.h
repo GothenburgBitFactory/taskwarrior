@@ -57,12 +57,12 @@ public:
   virtual void setLabel  (const std::string& value) { _label = value;  }
   virtual void setReport (const std::string& value) { _report = value; }
 
-  virtual bool validate (const std::string&) const;
   virtual void measure (const std::string&, unsigned int&, unsigned int&)           {};
   virtual void measure (Task&, unsigned int&, unsigned int&)                        {};
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
   virtual void render (std::vector <std::string>&, const std::string&, int, Color&) {};
   virtual void render (std::vector <std::string>&, Task&, int, Color&)              {};
+  virtual bool validate (const std::string&) const                                  {return false;};
   virtual void modify (Task&, const std::string&)                                   {};
 
 protected:
