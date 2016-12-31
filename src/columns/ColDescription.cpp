@@ -40,16 +40,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDescription::ColumnDescription ()
 {
-  _name  = "description";
-  _style = "combined";
-  _label = STRING_COLUMN_LABEL_DESC;
+  _name       = "description";
+  _style      = "combined";
+  _label      = STRING_COLUMN_LABEL_DESC;
+  _modifiable = true;
 
-  _styles = {"combined",
-             "desc",
-             "oneline",
-             "truncated",
-             "count",
-             "truncated_count"};
+  _styles     = {"combined",
+                 "desc",
+                 "oneline",
+                 "truncated",
+                 "count",
+                 "truncated_count"};
 
   _dateformat = context.config.get ("dateformat.annotation");
   if (_dateformat == "")
