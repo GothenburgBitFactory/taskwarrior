@@ -26,8 +26,13 @@
 
 #include <cmake.h>
 #include <ColRType.h>
+#include <Context.h>
+#include <shared.h>
 #include <format.h>
 #include <i18n.h>
+#include <cctype>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRType::ColumnRType ()
@@ -36,8 +41,19 @@ ColumnRType::ColumnRType ()
   _style      = "default";
   _label      = STRING_COLUMN_LABEL_RTYPE;
   _modifiable = false;
-  _styles     = {"default"};
+  _styles     = {"default", "indicator"};
   _examples   = {"periodic", "chained"};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Overriden so that style <----> label are linked.
+// Note that you can not determine which gets called first.
+void ColumnRType::setStyle (const std::string& value)
+{
+  _style = value;
+
+  if (_style == "indicator" && _label == STRING_COLUMN_LABEL_RTYPE)
+    _label = _label.substr (0, context.config.get ("rtype.indicator").length ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,9 +63,11 @@ void ColumnRType::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   minimum = maximum = 0;
   if (task.has (_name))
   {
-    minimum = maximum = task.get (_name).length ();
-
-    if (_style != "default")
+    if (_style == "default")
+      minimum = maximum = task.get (_name).length ();
+    else if (_style == "indicator")
+      minimum = maximum = 1;
+    else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
@@ -62,7 +80,24 @@ void ColumnRType::render (
   Color& color)
 {
   if (task.has (_name))
-    renderStringLeft (lines, width, color, task.get (_name));
+  {
+    if (_style == "default")
+      renderStringRight (lines, width, color, task.get (_name));
+
+    else if (_style == "indicator")
+    {
+      std::string value {" "};
+      value[0] = toupper (task.get (_name)[0]);
+      renderStringRight (lines, width, color, value);
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnRType::validate (const std::string& input) const
+{
+  return input == "periodic" ||
+         input == "chained";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
