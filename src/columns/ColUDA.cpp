@@ -79,23 +79,18 @@ void ColumnUDAString::measure (Task& task, unsigned int& minimum, unsigned int& 
       std::string value = task.get (_name);
       if (value != "")
       {
-        std::string stripped = Color::strip (value);
+        auto stripped = Color::strip (value);
         maximum = longestLine (stripped);
         minimum = longestWord (stripped);
       }
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-      {
-        auto indicator = context.config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
-          indicator = "U";
+      auto indicator = context.config.get ("uda." + _name + ".indicator");
+      if (indicator == "")
+        indicator = "U";
 
-        minimum = maximum = utf8_width (indicator);
-      }
-      else
-        minimum = maximum = 0;
+      minimum = maximum = utf8_width (indicator);
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -169,22 +164,17 @@ void ColumnUDANumeric::measure (Task& task, unsigned int& minimum, unsigned int&
   {
     if (_style == "default")
     {
-      std::string value = task.get (_name);
+      auto value = task.get (_name);
       if (value != "")
         minimum = maximum = value.length ();
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-      {
-        auto indicator = context.config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
-          indicator = "U";
+      auto indicator = context.config.get ("uda." + _name + ".indicator");
+      if (indicator == "")
+        indicator = "U";
 
-        minimum = maximum = utf8_width (indicator);
-      }
-      else
-        minimum = maximum = 0;
+      minimum = maximum = utf8_width (indicator);
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -202,19 +192,16 @@ void ColumnUDANumeric::render (
   {
     if (_style == "default")
     {
-      std::string value = task.get (_name);
+      auto value = task.get (_name);
       renderStringRight (lines, width, color, value);
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-      {
-        auto indicator = context.config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
-          indicator = "U";
+      auto indicator = context.config.get ("uda." + _name + ".indicator");
+      if (indicator == "")
+        indicator = "U";
 
-        renderStringRight (lines, width, color, indicator);
-      }
+      renderStringRight (lines, width, color, indicator);
     }
   }
 }
@@ -257,7 +244,7 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
   {
     if (_style == "default")
     {
-      std::string value = task.get (_name);
+      auto value = task.get (_name);
       if (value != "")
       {
         // Determine the output date format, which uses a hierarchy of definitions.
@@ -265,7 +252,7 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
         //   rc.dateformat.report
         //   rc.dateformat
         Datetime date ((time_t) strtol (value.c_str (), NULL, 10));
-        std::string format = context.config.get ("report." + _report + ".dateformat");
+        auto format = context.config.get ("report." + _report + ".dateformat");
         if (format == "")
           format = context.config.get ("dateformat.report");
         if (format == "")
@@ -276,16 +263,11 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-      {
-        auto indicator = context.config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
-          indicator = "U";
+      auto indicator = context.config.get ("uda." + _name + ".indicator");
+      if (indicator == "")
+        indicator = "U";
 
-        minimum = maximum = utf8_width (indicator);
-      }
-      else
-        minimum = maximum = 0;
+      minimum = maximum = utf8_width (indicator);
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -303,13 +285,13 @@ void ColumnUDADate::render (
   {
     if (_style == "default")
     {
-      std::string value = task.get (_name);
+      auto value = task.get (_name);
 
       // Determine the output date format, which uses a hierarchy of definitions.
       //   rc.report.<report>.dateformat
       //   rc.dateformat.report
       //   rc.dateformat.
-      std::string format = context.config.get ("report." + _report + ".dateformat");
+      auto format = context.config.get ("report." + _report + ".dateformat");
       if (format == "")
       {
         format = context.config.get ("dateformat.report");
@@ -321,14 +303,11 @@ void ColumnUDADate::render (
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-      {
-        auto indicator = context.config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
-          indicator = "U";
+      auto indicator = context.config.get ("uda." + _name + ".indicator");
+      if (indicator == "")
+        indicator = "U";
 
-        renderStringRight (lines, width, color, indicator);
-      }
+      renderStringRight (lines, width, color, indicator);
     }
   }
 }
@@ -371,7 +350,7 @@ void ColumnUDADuration::measure (Task& task, unsigned int& minimum, unsigned int
   {
     if (_style == "default")
     {
-      std::string value = task.get (_name);
+      auto value = task.get (_name);
       if (value != "")
         minimum = maximum = Duration (value).formatISO ().length ();
     }
@@ -404,19 +383,16 @@ void ColumnUDADuration::render (
   {
     if (_style == "default")
     {
-      std::string value = task.get (_name);
+      auto value = task.get (_name);
       renderStringRight (lines, width, color, Duration (value).formatISO ());
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-      {
-        auto indicator = context.config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
-          indicator = "U";
+      auto indicator = context.config.get ("uda." + _name + ".indicator");
+      if (indicator == "")
+        indicator = "U";
 
-        renderStringRight (lines, width, color, indicator);
-      }
+      renderStringRight (lines, width, color, indicator);
     }
   }
 }
