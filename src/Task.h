@@ -145,7 +145,7 @@ public:
   void getDependencies (std::vector <std::string>&) const;
   void getDependencies (std::vector <Task>&) const;
 
-  void getUDAOrphans (std::vector <std::string>&) const;
+  std::vector <std::string> getUDAOrphanUUIDs () const;
 
   void substitute (const std::string&, const std::string&, const std::string&);
 #endif
