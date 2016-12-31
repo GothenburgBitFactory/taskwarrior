@@ -46,6 +46,7 @@
 #include <ColStatus.h>
 #include <ColString.h>
 #include <ColTags.h>
+#include <ColTemplate.h>
 #include <ColUntil.h>
 #include <ColUrgency.h>
 #include <ColUUID.h>
@@ -96,6 +97,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "start")       c = new ColumnStart ();
   else if (column_name == "status")      c = new ColumnStatus ();
   else if (column_name == "tags")        c = new ColumnTags ();
+  else if (column_name == "template")    c = new ColumnTemplate ();
   else if (column_name == "until")       c = new ColumnUntil ();
   else if (column_name == "urgency")     c = new ColumnUrgency ();
   else if (column_name == "uuid")        c = new ColumnUUID ();
@@ -138,6 +140,7 @@ void Column::factory (std::map <std::string, Column*>& all)
   c = new ColumnStart ();          all[c->_name] = c;
   c = new ColumnStatus ();         all[c->_name] = c;
   c = new ColumnTags ();           all[c->_name] = c;
+  c = new ColumnTemplate ();       all[c->_name] = c;
   c = new ColumnUntil ();          all[c->_name] = c;
   c = new ColumnUrgency ();        all[c->_name] = c;
   c = new ColumnUUID ();           all[c->_name] = c;

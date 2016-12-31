@@ -211,6 +211,7 @@
 #define STRING_COLUMN_LABEL_MASK     "Mask"
 #define STRING_COLUMN_LABEL_MASK_IDX "Mask Index"
 #define STRING_COLUMN_LABEL_PARENT   "Parent task"
+#define STRING_COLUMN_LABEL_TEMPLATE "Template task"
 #define STRING_COLUMN_LABEL_DATE     "Date"
 #define STRING_COLUMN_LABEL_COLUMN   "Columns"
 #define STRING_COLUMN_LABEL_STYLES   "Supported Formats"
