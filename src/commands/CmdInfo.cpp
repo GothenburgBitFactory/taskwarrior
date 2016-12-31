@@ -134,9 +134,7 @@ int CmdInfo::execute (std::string& output)
     std::string description = task.get ("description");
     int indent = context.config.getInteger ("indent.annotation");
 
-    std::map <std::string, std::string> annotations;
-    task.getAnnotations (annotations);
-    for (auto& anno : annotations)
+    for (auto& anno : task.getAnnotations ())
       description += '\n'
                    + std::string (indent, ' ')
                    + Datetime (anno.first.substr (11)).toString (dateformatanno)

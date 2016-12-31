@@ -1081,13 +1081,14 @@ void Task::removeAnnotations ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
+std::map <std::string, std::string> Task::getAnnotations () const
 {
-  annotations.clear ();
-
+  std::map <std::string, std::string> a;
   for (auto& ann : data)
     if (! ann.first.compare (0, 11, "annotation_", 11))
-      annotations.insert (ann);
+      a.insert (ann);
+
+  return a;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1357,8 +1358,7 @@ void Task::substitute (
 
   // Get the data to modify.
   std::string description = get ("description");
-  std::map <std::string, std::string> annotations;
-  getAnnotations (annotations);
+  auto annotations = getAnnotations ();
 
   // Count the changes, so we know whether to proceed to annotations, after
   // modifying description.

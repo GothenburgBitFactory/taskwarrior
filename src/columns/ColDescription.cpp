@@ -102,9 +102,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
       if (min_anno > minimum)
         minimum = min_anno;
 
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (auto& i : annos)
+      for (auto& i : task.getAnnotations ())
       {
         unsigned int len = min_anno + 1 + utf8_width (i.second);
         if (len > maximum)
@@ -129,9 +127,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
     if (task.annotation_count)
     {
       auto min_anno = Datetime::length (_dateformat);
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (auto& i : annos)
+      for (auto& i : task.getAnnotations ())
         maximum += min_anno + 1 + utf8_width (i.second);
     }
   }
@@ -179,9 +175,7 @@ void ColumnDescription::render (
   {
     if (task.annotation_count)
     {
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (const auto& i : annos)
+      for (const auto& i : task.getAnnotations ())
       {
         Datetime dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += '\n' + std::string (_indent, ' ') + dt.toString (_dateformat) + ' ' + i.second;
@@ -210,9 +204,7 @@ void ColumnDescription::render (
   {
     if (task.annotation_count)
     {
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (const auto& i : annos)
+      for (const auto& i : task.getAnnotations ())
       {
         Datetime dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += ' ' + dt.toString (_dateformat) + ' ' + i.second;

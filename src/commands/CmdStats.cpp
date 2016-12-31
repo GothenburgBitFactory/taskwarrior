@@ -140,10 +140,7 @@ int CmdStats::execute (std::string& output)
       daysPending += (now.toEpoch () - entry) / 86400.0;
 
     descLength += task.get ("description").length ();
-
-    std::map <std::string, std::string> annotations;
-    task.getAnnotations (annotations);
-    annotationsT += annotations.size ();
+    annotationsT += task.getAnnotations ().size ();
 
     auto tags = task.getTags ();
     if (tags.size ())

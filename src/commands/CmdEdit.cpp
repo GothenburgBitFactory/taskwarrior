@@ -245,9 +245,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
            << "# " << STRING_EDIT_HEADER_14 << '\n'
            << "# " << STRING_EDIT_HEADER_15 << '\n';
 
-  std::map <std::string, std::string> annotations;
-  task.getAnnotations (annotations);
-  for (auto& anno : annotations)
+  for (auto& anno : task.getAnnotations ())
   {
     Datetime dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (dateformat)

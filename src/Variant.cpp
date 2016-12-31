@@ -874,10 +874,7 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
     // in the annotations.
     if (left.source () == "description")
     {
-      std::map <std::string, std::string> annotations;
-      task.getAnnotations (annotations);
-
-      for (auto& a : annotations)
+      for (auto& a : task.getAnnotations ())
         if (r.match (a.second))
           return true;
     }
@@ -909,10 +906,7 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
     // in the annotations.
     if (left.source () == "description")
     {
-      std::map <std::string, std::string> annotations;
-      task.getAnnotations (annotations);
-
-      for (auto& a : annotations)
+      for (auto& a : task.getAnnotations ())
         if (find (a.second, pattern, searchCaseSensitive) != std::string::npos)
           return true;
     }

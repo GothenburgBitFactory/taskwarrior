@@ -142,9 +142,7 @@ int CmdTimesheet::execute (std::string& output)
           std::string description = task.get ("description");
           int indent = context.config.getInteger ("indent.annotation");
 
-          std::map <std::string, std::string> annotations;
-          task.getAnnotations (annotations);
-          for (auto& ann : annotations)
+          for (auto& ann : task.getAnnotations ())
             description += '\n'
                          + std::string (indent, ' ')
                          + Datetime (ann.first.substr (11)).toString (context.config.get ("dateformat"))
@@ -198,9 +196,7 @@ int CmdTimesheet::execute (std::string& output)
           std::string description = task.get ("description");
           int indent = context.config.getInteger ("indent.annotation");
 
-          std::map <std::string, std::string> annotations;
-          task.getAnnotations (annotations);
-          for (auto& ann : annotations)
+          for (auto& ann : task.getAnnotations ())
             description += '\n'
                          + std::string (indent, ' ')
                          + Datetime (ann.first.substr (11)).toString (context.config.get ("dateformat"))

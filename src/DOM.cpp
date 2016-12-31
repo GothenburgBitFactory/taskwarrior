@@ -300,8 +300,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 
   if (ref.data.size () && size == 3 && elements[0] == "annotations")
   {
-    std::map <std::string, std::string> annos;
-    ref.getAnnotations (annos);
+    auto annos = ref.getAnnotations ();
 
     int a = strtol (elements[1].c_str (), NULL, 10);
     int count = 0;
@@ -329,8 +328,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 
   if (ref.data.size () && size == 4 && elements[0] == "annotations" && elements[2] == "entry")
   {
-    std::map <std::string, std::string> annos;
-    ref.getAnnotations (annos);
+    auto annos = ref.getAnnotations ();
 
     int a = strtol (elements[1].c_str (), NULL, 10);
     int count = 0;
