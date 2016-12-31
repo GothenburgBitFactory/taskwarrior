@@ -20,6 +20,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColParent.cpp ColParent.h
                   ColProject.cpp ColProject.h
                   ColRecur.cpp ColRecur.h
+                  ColRType.cpp ColRType.h
                   ColScheduled.cpp ColScheduled.h
                   ColStart.cpp ColStart.h
                   ColStatus.cpp ColStatus.h

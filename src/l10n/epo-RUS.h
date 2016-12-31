@@ -211,6 +211,7 @@
 #define STRING_COLUMN_LABEL_MASK     "Masko"
 #define STRING_COLUMN_LABEL_MASK_IDX "Mask-indico"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
+#define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
 #define STRING_COLUMN_LABEL_PARENT   "Patra tasko"
 #define STRING_COLUMN_LABEL_TEMPLATE "Template task"
 #define STRING_COLUMN_LABEL_DATE     "Dato"

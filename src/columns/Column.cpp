@@ -42,6 +42,7 @@
 #include <ColParent.h>
 #include <ColProject.h>
 #include <ColRecur.h>
+#include <ColRType.h>
 #include <ColScheduled.h>
 #include <ColStart.h>
 #include <ColStatus.h>
@@ -95,6 +96,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "parent")      c = new ColumnParent ();
   else if (column_name == "project")     c = new ColumnProject ();
   else if (column_name == "recur")       c = new ColumnRecur ();
+  else if (column_name == "rtype")       c = new ColumnRType ();
   else if (column_name == "scheduled")   c = new ColumnScheduled ();
   else if (column_name == "start")       c = new ColumnStart ();
   else if (column_name == "status")      c = new ColumnStatus ();
@@ -139,6 +141,7 @@ void Column::factory (std::map <std::string, Column*>& all)
   c = new ColumnParent ();         all[c->_name] = c;
   c = new ColumnProject ();        all[c->_name] = c;
   c = new ColumnRecur ();          all[c->_name] = c;
+  c = new ColumnRType ();          all[c->_name] = c;
   c = new ColumnScheduled ();      all[c->_name] = c;
   c = new ColumnStart ();          all[c->_name] = c;
   c = new ColumnStatus ();         all[c->_name] = c;
