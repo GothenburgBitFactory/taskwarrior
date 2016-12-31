@@ -32,7 +32,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ColumnLast::ColumnLast ()
 {
-  _name       = "imask";
+  _name       = "last";
   _style      = "number";
   _label      = STRING_COLUMN_LABEL_LAST;
   _modifiable = false;
@@ -48,7 +48,7 @@ void ColumnLast::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 
   if (task.has (_name))
   {
-    minimum = maximum = task.get ("imask").length ();
+    minimum = maximum = task.get (_name).length ();
 
     if (_style != "default" &&
         _style != "number")
@@ -64,7 +64,7 @@ void ColumnLast::render (
   Color& color)
 {
   if (task.has (_name))
-    renderStringRight (lines, width, color, task.get ("imask"));
+    renderStringRight (lines, width, color, task.get (_name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
