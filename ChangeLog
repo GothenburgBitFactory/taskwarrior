@@ -30,6 +30,9 @@
           (thanks to Flavio Poletti).
 - TW-1857 Change Task::get call to the more efficient Task::has
           (thanks to Zachary Manning).
+- TW‐1858 Change signature for dependencyGetBlocked
+- TW-1859 Change signature of Task::getTags
+- TW-1860 Change signature of Task::getAnnotations
 - TW-1873 Specify different path to extensions/hooks directory
           (thanks to Eli).
 - TW-1878 uuids subcommand produces a space-delimited list, not comma-delimited

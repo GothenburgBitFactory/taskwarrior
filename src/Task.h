@@ -170,17 +170,17 @@ private:
   const std::string decode (const std::string&) const;
 
 public:
-  float urgency_project () const;
-  float urgency_active () const;
-  float urgency_scheduled () const;
-  float urgency_waiting () const;
-  float urgency_blocked () const;
-  float urgency_inherit () const;
+  float urgency_project     () const;
+  float urgency_active      () const;
+  float urgency_scheduled   () const;
+  float urgency_waiting     () const;
+  float urgency_blocked     () const;
+  float urgency_inherit     () const;
   float urgency_annotations () const;
-  float urgency_tags () const;
-  float urgency_due () const;
-  float urgency_blocking () const;
-  float urgency_age () const;
+  float urgency_tags        () const;
+  float urgency_due         () const;
+  float urgency_blocking    () const;
+  float urgency_age         () const;
 };
 
 #endif

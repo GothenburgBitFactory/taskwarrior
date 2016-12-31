@@ -381,14 +381,12 @@ void feedback_unblocked (const Task& task)
   if (context.verbose ("affected"))
   {
     // Get a list of tasks that depended on this task.
-    std::vector <Task> blocked;
-    dependencyGetBlocked (task, blocked);
+    auto blocked = dependencyGetBlocked (task);
 
     // Scan all the tasks that were blocked by this task
     for (auto& i : blocked)
     {
-      std::vector <Task> blocking;
-      dependencyGetBlocking (i, blocking);
+      auto blocking = dependencyGetBlocking (i);
       if (blocking.size () == 0)
       {
         if (i.id)

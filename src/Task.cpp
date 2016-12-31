@@ -1865,19 +1865,16 @@ float Task::urgency ()
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_inherit () const
 {
+  float v = FLT_MIN;
+#ifdef PRODUCT_TASKWARRIOR
   // Calling dependencyGetBlocked is rather expensive.
   // It is called recursively for each dependency in the chain here.
-  std::vector <Task> blocked;
-#ifdef PRODUCT_TASKWARRIOR
-  dependencyGetBlocked (*this, blocked);
-#endif
-
-  float v = FLT_MIN;
-  for (auto& task : blocked)
+  for (auto& task : dependencyGetBlocked (*this))
   {
     // Find highest urgency in all blocked tasks.
     v = std::max (v, task.urgency ());
   }
+#endif
 
   return v;
 }

@@ -52,8 +52,8 @@ std::string colorizeError (const std::string&);
 std::string colorizeDebug (const std::string&);
 
 // dependency.cpp
-void dependencyGetBlocked (const Task&, std::vector <Task>&);
-void dependencyGetBlocking (const Task&, std::vector <Task>&);
+std::vector <Task> dependencyGetBlocked (const Task&);
+std::vector <Task> dependencyGetBlocking (const Task&);
 bool dependencyIsCircular (const Task&);
 void dependencyChainOnComplete (Task&);
 void dependencyChainOnStart (Task&);

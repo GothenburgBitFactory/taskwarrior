@@ -78,17 +78,14 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
 
     else if (_style == "count")
     {
-      std::vector <Task> blocking;
-      dependencyGetBlocking (task, blocking);
-      minimum = maximum = 2 + format ((int) blocking.size ()).length ();
+      minimum = maximum = 2 + format ((int) dependencyGetBlocking (task).size ()).length ();
     }
 
     else if (_style == "default" ||
              _style == "list")
     {
       minimum = maximum = 0;
-      std::vector <Task> blocking;
-      dependencyGetBlocking (task, blocking);
+      auto blocking = dependencyGetBlocking (task);
 
       std::vector <int> blocking_ids;
       for (auto& i : blocking)
@@ -126,17 +123,13 @@ void ColumnDepends::render (
 
     else if (_style == "count")
     {
-      std::vector <Task> blocking;
-      dependencyGetBlocking (task, blocking);
-
-      renderStringRight (lines, width, color, '[' + format (static_cast <int>(blocking.size ())) + ']');
+      renderStringRight (lines, width, color, '[' + format (static_cast <int>(dependencyGetBlocking (task).size ())) + ']');
     }
 
     else if (_style == "default" ||
              _style == "list")
     {
-      std::vector <Task> blocking;
-      dependencyGetBlocking (task, blocking);
+      auto blocking = dependencyGetBlocking (task);
 
       std::vector <int> blocking_ids;
       for (const auto& t : blocking)
