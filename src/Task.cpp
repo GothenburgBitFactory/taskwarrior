@@ -1336,12 +1336,15 @@ void Task::removeTag (const std::string& tag)
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA Orphan is an attribute that is not represented in context.columns.
-void Task::getUDAOrphans (std::vector <std::string>& names) const
+std::vector <std::string> Task::getUDAOrphanUUIDs () const
 {
+  std::vector <std::string> orphans;
   for (auto& it : data)
     if (it.first.compare (0, 11, "annotation_", 11) != 0)
       if (context.columns.find (it.first) == context.columns.end ())
-        names.push_back (it.first);
+        orphans.push_back (it.first);
+
+  return orphans;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
