@@ -42,7 +42,7 @@ void ColumnScheduled::setStyle (const std::string& value)
 {
   _style = value;
 
-  if (_style == "countdown" && _label == STRING_COLUMN_LABEL_DUE)
+  if (_style == "countdown" && _label == STRING_COLUMN_LABEL_SCHED)
     _label = STRING_COLUMN_LABEL_COUNT;
 }
 
