@@ -125,7 +125,7 @@ public:
   bool hasTag (const std::string&) const;
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);
-  void getTags (std::vector<std::string>&) const;
+  std::vector <std::string> getTags () const;
   void removeTag (const std::string&);
 
   bool hasAnnotations () const;

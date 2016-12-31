@@ -145,8 +145,7 @@ int CmdStats::execute (std::string& output)
     task.getAnnotations (annotations);
     annotationsT += annotations.size ();
 
-    std::vector <std::string> tags;
-    task.getTags (tags);
+    auto tags = task.getTags ();
     if (tags.size ())
       ++taggedT;
 

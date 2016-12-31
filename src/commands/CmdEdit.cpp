@@ -224,14 +224,10 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
          << "# iMask:             " << task.get ("imask")                                      << '\n'
          << "  Project:           " << task.get ("project")                                    << '\n';
 
-  std::vector <std::string> tags;
-  task.getTags (tags);
-  auto allTags = join (" ", tags);
-
   if (verbose)
     before << "# " << STRING_EDIT_TAG_SEP << '\n';
 
-  before << "  Tags:              " << allTags                                          << '\n'
+  before << "  Tags:              " << join (" ", task.getTags ())                      << '\n'
          << "  Description:       " << task.get ("description")                         << '\n'
          << "  Created:           " << formatDate (task, "entry", dateformat)           << '\n'
          << "  Started:           " << formatDate (task, "start", dateformat)           << '\n'
@@ -353,9 +349,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // tags
   value = findValue (after, "\n  Tags:");
-  auto tags = split (value, ' ');
   task.remove ("tags");
-  task.addTags (tags);
+  task.addTags (split (value, ' '));
 
   // description.
   value = findMultilineValue (after, "\n  Description:", "\n  Created:");

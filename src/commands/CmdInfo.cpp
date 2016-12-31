@@ -300,8 +300,7 @@ int CmdInfo::execute (std::string& output)
     }
 
     // tags ...
-    std::vector <std::string> tags;
-    task.getTags (tags);
+    auto tags = task.getTags ();
     if (tags.size ())
     {
       auto allTags = join (" ", tags);
