@@ -62,12 +62,7 @@ void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   if (task.has (_name))
   {
     if (_style == "active")
-    {
-      if (task.has ("start"))
-        minimum = maximum = utf8_width (context.config.get ("active.indicator"));
-      else
-        minimum = maximum = 0;
-    }
+      minimum = maximum = utf8_width (context.config.get ("active.indicator"));
     else
       ColumnTypeDate::measure (task, minimum, maximum);
   }
