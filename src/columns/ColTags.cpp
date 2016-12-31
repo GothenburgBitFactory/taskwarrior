@@ -80,7 +80,7 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
   {
     if (_style == "indicator")
     {
-      if (task.has ("tags"))
+      if (task.has (_name))
         minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
       else
         minimum = maximum = 0;
@@ -163,7 +163,7 @@ void ColumnTags::modify (Task& task, const std::string& value)
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   // TW-1701
-  task.set ("tags", "");
+  task.set (_name, "");
 
   for (auto& tag : split (value, ','))
   {
