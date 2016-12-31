@@ -40,12 +40,13 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUDAString::ColumnUDAString ()
 {
-  _name      = "<uda>";
-  _style     = "default";
-  _label     = "";
-  _uda       = true;
-  _hyphenate = true;
-  _styles    = {_style, "indicator"};
+  _name       = "<uda>";     // Gets overwritten at runtime.
+  _style      = "default";
+  _label      = "";
+  _modifiable = true;
+  _uda        = true;
+  _hyphenate  = true;
+  _styles     = {_style, "indicator"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
