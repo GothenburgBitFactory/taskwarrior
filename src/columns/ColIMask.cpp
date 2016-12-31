@@ -48,7 +48,7 @@ void ColumnIMask::measure (Task& task, unsigned int& minimum, unsigned int& maxi
 
   if (task.has (_name))
   {
-    minimum = maximum = task.get ("imask").length ();
+    minimum = maximum = task.get (_name).length ();
 
     if (_style != "default" &&
         _style != "number")
@@ -64,7 +64,7 @@ void ColumnIMask::render (
   Color& color)
 {
   if (task.has (_name))
-    renderStringRight (lines, width, color, task.get ("imask"));
+    renderStringRight (lines, width, color, task.get (_name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
