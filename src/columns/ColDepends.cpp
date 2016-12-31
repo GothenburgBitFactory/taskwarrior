@@ -73,7 +73,7 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
 
   if (_style == "indicator")
   {
-    if (task.has ("depends"))
+    if (task.has (_name))
       minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
     else
       minimum = maximum = 0;
@@ -86,7 +86,7 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
            _style == "list")
   {
     minimum = maximum = 0;
-    if (task.has ("depends"))
+    if (task.has (_name))
     {
       std::vector <int> blocking_ids;
       for (auto& i : blocking)
