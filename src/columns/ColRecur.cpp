@@ -44,11 +44,12 @@ extern Task& contextTask;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::ColumnRecur ()
 {
-  _name     = "recur";
-  _style    = "duration";
-  _label    = STRING_COLUMN_LABEL_RECUR;
-  _styles   = {"duration", "indicator"};
-  _examples = {"weekly", context.config.get ("recurrence.indicator")};
+  _name       = "recur";
+  _style      = "duration";
+  _label      = STRING_COLUMN_LABEL_RECUR;
+  _modifiable = true;
+  _styles     = {"duration", "indicator"};
+  _examples   = {"weekly", context.config.get ("recurrence.indicator")};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
