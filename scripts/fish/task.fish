@@ -33,7 +33,7 @@
 # set -g task_complete_attribute_modifiers yes
 #
 #
-# Copyright 2014 - 2016, Roman Inflianskas <infroma@gmail.com>
+# Copyright 2014 - 2017, Roman Inflianskas <infroma@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
