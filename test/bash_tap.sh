@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # For more information, see https://github.com/wbsch/bash_tap
 # Subject to the MIT License. See LICENSE file or http://opensource.org/licenses/MIT
-# Copyright (c) 2015-2016 Wilhelm Schürmann
+# Copyright (c) 2015-2017 Wilhelm Schürmann
 
 function bashtap_on_error {
     # A command in the parent script failed, interpret this as a test failure.
