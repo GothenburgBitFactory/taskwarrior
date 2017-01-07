@@ -45,7 +45,6 @@ ColumnIMask::ColumnIMask ()
 void ColumnIMask::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     minimum = maximum = task.get (_name).length ();

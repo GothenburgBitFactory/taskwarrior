@@ -68,7 +68,6 @@ void ColumnRecur::setStyle (const std::string& value)
 void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "default" ||

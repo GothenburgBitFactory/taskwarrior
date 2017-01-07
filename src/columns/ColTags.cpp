@@ -75,7 +75,6 @@ void ColumnTags::setStyle (const std::string& value)
 void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "indicator")

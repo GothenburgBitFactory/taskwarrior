@@ -58,13 +58,14 @@ void ColumnStart::setStyle (const std::string& value)
 void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "active")
       minimum = maximum = utf8_width (context.config.get ("active.indicator"));
     else
       ColumnTypeDate::measure (task, minimum, maximum);
+
+    // TODO Throw on bad format.
   }
 }
 
