@@ -1259,11 +1259,13 @@ bool Task::hasTag (const std::string& tag) const
 #endif
     if (tag == "ACTIVE")    return has ("start");
     if (tag == "SCHEDULED") return has ("scheduled");
-    if (tag == "CHILD")     return has ("parent");
+    if (tag == "CHILD")     return has ("parent");          // 2017-01-07: Deprecated in 2.6.0
+    if (tag == "INSTANCE")  return has ("template");
     if (tag == "UNTIL")     return has ("until");
     if (tag == "ANNOTATED") return hasAnnotations ();
     if (tag == "TAGGED")    return has ("tags");
-    if (tag == "PARENT")    return has ("mask");
+    if (tag == "PARENT")    return has ("mask");            // 2017-01-07: Deprecated in 2.6.0
+    if (tag == "TEMPLATE")  return has ("last");
     if (tag == "WAITING")   return get ("status") == "waiting";
     if (tag == "PENDING")   return get ("status") == "pending";
     if (tag == "COMPLETED") return get ("status") == "completed";
