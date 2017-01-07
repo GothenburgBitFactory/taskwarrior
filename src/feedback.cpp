@@ -84,8 +84,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   {
     if (name == "depends")
     {
-      std::vector <Task> deps_after;
-      after.getDependencies (deps_after);
+      auto deps_after = after.getDependencyTasks ();
 
       out << "  - "
           << format (STRING_FEEDBACK_DEP_SET, taskIdentifiers (deps_after))
@@ -110,12 +109,10 @@ std::string taskDifferences (const Task& before, const Task& after)
     {
       if (name == "depends")
       {
-        std::vector <Task> deps_before;
-        before.getDependencies (deps_before);
+        auto deps_before = before.getDependencyTasks ();
         std::string from = taskIdentifiers (deps_before);
 
-        std::vector <Task> deps_after;
-        after.getDependencies (deps_after);
+        auto deps_after = after.getDependencyTasks ();
         std::string to = taskIdentifiers (deps_after);
 
         out << "  - "
@@ -169,11 +166,7 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-        std::vector <Task> deps_before;
-        before.getDependencies (deps_before);
-        std::string from = taskIdentifiers (deps_before);
-
-        out << format (STRING_FEEDBACK_DEP_DEL, from)
+        out << format (STRING_FEEDBACK_DEP_DEL, taskIdentifiers (before.getDependencyTasks ()))
             << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
@@ -198,11 +191,7 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-      std::vector <Task> deps_after;
-      after.getDependencies (deps_after);
-      std::string to = taskIdentifiers (deps_after);
-
-      out << format (STRING_FEEDBACK_DEP_WAS_SET, to)
+      out << format (STRING_FEEDBACK_DEP_WAS_SET, taskIdentifiers (after.getDependencyTasks ()))
           << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
@@ -231,13 +220,8 @@ std::string taskInfoDifferences (
     {
       if (name == "depends")
       {
-        std::vector <Task> deps_before;
-        before.getDependencies (deps_before);
-        std::string from = taskIdentifiers (deps_before);
-
-        std::vector <Task> deps_after;
-        after.getDependencies (deps_after);
-        std::string to = taskIdentifiers (deps_after);
+        auto from = taskIdentifiers (before.getDependencyTasks ());
+        auto to   = taskIdentifiers (after.getDependencyTasks ());
 
         out << format (STRING_FEEDBACK_DEP_WAS_MOD, from, to)
             << "\n";
@@ -334,22 +318,24 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "ANNOTATED" ||
       tag == "BLOCKED"   ||
       tag == "BLOCKING"  ||
-      tag == "CHILD"     ||
+      tag == "CHILD"     ||   // Deprecated 2.6.0
       tag == "COMPLETED" ||
       tag == "DELETED"   ||
       tag == "DUE"       ||
       tag == "DUETODAY"  ||
+      tag == "INSTANCE"  ||
       tag == "LATEST"    ||
       tag == "MONTH"     ||
       tag == "ORPHAN"    ||
       tag == "OVERDUE"   ||
-      tag == "PARENT"    ||
+      tag == "PARENT"    ||   // Deprecated 2.6.0
       tag == "PENDING"   ||
       tag == "PRIORITY"  ||
       tag == "PROJECT"   ||
       tag == "READY"     ||
       tag == "SCHEDULED" ||
       tag == "TAGGED"    ||
+      tag == "TEMPLATE"  ||
       tag == "TODAY"     ||
       tag == "TOMORROW"  ||
       tag == "UDA"       ||
@@ -397,14 +383,12 @@ void feedback_unblocked (const Task& task)
   if (context.verbose ("affected"))
   {
     // Get a list of tasks that depended on this task.
-    std::vector <Task> blocked;
-    dependencyGetBlocked (task, blocked);
+    auto blocked = dependencyGetBlocked (task);
 
     // Scan all the tasks that were blocked by this task
     for (auto& i : blocked)
     {
-      std::vector <Task> blocking;
-      dependencyGetBlocking (i, blocking);
+      auto blocking = dependencyGetBlocking (i);
       if (blocking.size () == 0)
       {
         if (i.id)

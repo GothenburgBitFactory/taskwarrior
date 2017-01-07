@@ -44,11 +44,12 @@ extern Task& contextTask;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::ColumnRecur ()
 {
-  _name     = "recur";
-  _style    = "duration";
-  _label    = STRING_COLUMN_LABEL_RECUR;
-  _styles   = {"duration", "indicator"};
-  _examples = {"weekly", context.config.get ("recurrence.indicator")};
+  _name       = "recur";
+  _style      = "duration";
+  _label      = STRING_COLUMN_LABEL_RECUR;
+  _modifiable = true;
+  _styles     = {"duration", "indicator"};
+  _examples   = {"weekly", context.config.get ("recurrence.indicator")};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +57,7 @@ ColumnRecur::ColumnRecur ()
 // Note that you can not determine which gets called first.
 void ColumnRecur::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "indicator" && _label == STRING_COLUMN_LABEL_RECUR)
     _label = _label.substr (0, context.config.get ("recurrence.indicator").length ());
@@ -67,23 +68,17 @@ void ColumnRecur::setStyle (const std::string& value)
 void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "default" ||
         _style == "duration")
     {
-      minimum = maximum = Duration (task.get ("recur")).formatISO ().length ();
+      minimum = maximum = Duration (task.get (_name)).formatISO ().length ();
     }
     else if (_style == "indicator")
     {
-      if (task.has ("recur"))
-        minimum = maximum = utf8_width (context.config.get ("recurrence.indicator"));
-      else
-        minimum = maximum = 0;
+      minimum = maximum = utf8_width (context.config.get ("recurrence.indicator"));
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -98,7 +93,7 @@ void ColumnRecur::render (
   {
     if (_style == "default" ||
         _style == "duration")
-      renderStringRight (lines, width, color, Duration (task.get ("recur")).formatISO ());
+      renderStringRight (lines, width, color, Duration (task.get (_name)).formatISO ());
 
     else if (_style == "indicator")
       renderStringRight (lines, width, color, context.config.get ("recurrence.indicator"));

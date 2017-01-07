@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2017, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +24,40 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COLSTRING
-#define INCLUDED_COLSTRING
+#include <cmake.h>
+#include <ColLast.h>
+#include <format.h>
+#include <i18n.h>
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
-
-class ColumnString : public Column
+////////////////////////////////////////////////////////////////////////////////
+ColumnLast::ColumnLast ()
 {
-public:
-  ColumnString ();
-  void setReport (const std::string&);
-  void measure (const std::string&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, const std::string&, int, Color&);
+  _name       = "last";
+  _style      = "number";
+  _label      = STRING_COLUMN_LABEL_LAST;
+  _modifiable = false;
+  _styles     = {"number"};
+  _examples   = {"12"};
+}
 
-private:
-  bool _hyphenate;
-};
+////////////////////////////////////////////////////////////////////////////////
+// Set the minimum and maximum widths for the value.
+void ColumnLast::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+{
+  minimum = maximum = 0;
+  if (task.has (_name))
+    minimum = maximum = task.get (_name).length ();
+}
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+void ColumnLast::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
+{
+  if (task.has (_name))
+    renderStringRight (lines, width, color, task.get (_name));
+}
+
 ////////////////////////////////////////////////////////////////////////////////

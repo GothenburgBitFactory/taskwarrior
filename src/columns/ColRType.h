@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2017, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,45 +24,22 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cmake.h>
-#include <ColUrgency.h>
-#include <format.h>
-#include <i18n.h>
+#ifndef INCLUDED_COLRTYPE
+#define INCLUDED_COLRTYPE
 
-////////////////////////////////////////////////////////////////////////////////
-ColumnUrgency::ColumnUrgency ()
+#include <ColTypeString.h>
+
+class ColumnRType : public ColumnTypeString
 {
-  _name       = "urgency";
-  _style      = "real";
-  _label      = STRING_COLUMN_LABEL_URGENCY;
-  _modifiable = false;
-  _styles     = {"real", "integer"};
-  _examples   = {"4.6", "4"};
-}
+public:
+  ColumnRType ();
+  void setStyle (const std::string&);
+  void measure (Task&, unsigned int&, unsigned int&);
+  void render (std::vector <std::string>&, Task&, int, Color&);
+  bool validate (const std::string&) const;
 
-////////////////////////////////////////////////////////////////////////////////
-// Set the minimum and maximum widths for the value.
-void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
-  if (_style == "default" || _style == "real")
-    minimum = maximum = format (task.urgency (), 4, 3).length ();
+private:
+};
 
-  else if (_style == "integer")
-    minimum = maximum = format ((int)task.urgency ()).length ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnUrgency::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  if (_style == "default" || _style == "real")
-    renderDouble (lines, width, color, task.urgency ());
-
-  else if (_style == "integer")
-    renderInteger (lines, width, color, static_cast <int> (task.urgency ()));
-}
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////

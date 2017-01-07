@@ -224,14 +224,10 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
          << "# iMask:             " << task.get ("imask")                                      << '\n'
          << "  Project:           " << task.get ("project")                                    << '\n';
 
-  std::vector <std::string> tags;
-  task.getTags (tags);
-  auto allTags = join (" ", tags);
-
   if (verbose)
     before << "# " << STRING_EDIT_TAG_SEP << '\n';
 
-  before << "  Tags:              " << allTags                                          << '\n'
+  before << "  Tags:              " << join (" ", task.getTags ())                      << '\n'
          << "  Description:       " << task.get ("description")                         << '\n'
          << "  Created:           " << formatDate (task, "entry", dateformat)           << '\n'
          << "  Started:           " << formatDate (task, "start", dateformat)           << '\n'
@@ -249,9 +245,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
            << "# " << STRING_EDIT_HEADER_14 << '\n'
            << "# " << STRING_EDIT_HEADER_15 << '\n';
 
-  std::map <std::string, std::string> annotations;
-  task.getAnnotations (annotations);
-  for (auto& anno : annotations)
+  for (auto& anno : task.getAnnotations ())
   {
     Datetime dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
@@ -262,8 +256,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   before << "  Annotation:        " << now.toString (dateformat) << " -- \n";
 
   // Add dependencies here.
-  std::vector <std::string> dependencies;
-  task.getDependencies (dependencies);
+  auto dependencies = task.getDependencyUUIDs ();
   std::stringstream allDeps;
   for (unsigned int i = 0; i < dependencies.size (); ++i)
   {
@@ -312,9 +305,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   }
 
   // UDA orphans
-  std::vector <std::string> orphans;
-  task.getUDAOrphans (orphans);
-
+  auto orphans = task.getUDAOrphanUUIDs ();
   if (orphans.size ())
   {
     before << "# " << STRING_EDIT_UDA_ORPHAN_SEP << '\n';
@@ -355,9 +346,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // tags
   value = findValue (after, "\n  Tags:");
-  auto tags = split (value, ' ');
   task.remove ("tags");
-  task.addTags (tags);
+  task.addTags (split (value, ' '));
 
   // description.
   value = findMultilineValue (after, "\n  Description:", "\n  Created:");

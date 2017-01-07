@@ -47,7 +47,7 @@ ColumnStart::ColumnStart ()
 // Note that you can not determine which gets called first.
 void ColumnStart::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "active" && _label == STRING_COLUMN_LABEL_STARTED)
     _label = STRING_COLUMN_LABEL_ACTIVE;
@@ -58,18 +58,14 @@ void ColumnStart::setStyle (const std::string& value)
 void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "active")
-    {
-      if (task.has ("start"))
-        minimum = maximum = utf8_width (context.config.get ("active.indicator"));
-      else
-        minimum = maximum = 0;
-    }
+      minimum = maximum = utf8_width (context.config.get ("active.indicator"));
     else
       ColumnTypeDate::measure (task, minimum, maximum);
+
+    // TODO Throw on bad format.
   }
 }
 

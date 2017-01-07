@@ -79,10 +79,7 @@ int CmdTags::execute (std::string& output)
   std::map <std::string, int> unique;
   for (auto& task : filtered)
   {
-    std::vector <std::string> tags;
-    task.getTags (tags);
-
-    for (auto& tag : tags)
+    for (auto& tag : task.getTags ())
       if (unique.find (tag) != unique.end ())
         unique[tag]++;
       else
@@ -182,13 +179,8 @@ int CmdCompletionTags::execute (std::string& output)
   // names as keys.
   std::map <std::string, int> unique;
   for (auto& task : filtered)
-  {
-    std::vector <std::string> tags;
-    task.getTags (tags);
-
-    for (auto& tag : tags)
+    for (auto& tag : task.getTags ())
       unique[tag] = 0;
-  }
 
   // Add built-in tags to map.
   unique["nocolor"]   = 0;
@@ -199,19 +191,21 @@ int CmdCompletionTags::execute (std::string& output)
   unique["ANNOTATED"] = 0;
   unique["BLOCKED"]   = 0;
   unique["BLOCKING"]  = 0;
-  unique["CHILD"]     = 0;
+  unique["CHILD"]     = 0;     // 2017-01-07: Deprecated in 2.6.0
   unique["COMPLETED"] = 0;
   unique["DELETED"]   = 0;
   unique["DUE"]       = 0;
   unique["DUETODAY"]  = 0;
+  unique["INSTANCE"]  = 0;
   unique["MONTH"]     = 0;
   unique["ORPHAN"]    = 0;
   unique["OVERDUE"]   = 0;
-  unique["PARENT"]    = 0;
+  unique["PARENT"]    = 0;     // 2017-01-07: Deprecated in 2.6.0
   unique["PENDING"]   = 0;
   unique["READY"]     = 0;
   unique["SCHEDULED"] = 0;
   unique["TAGGED"]    = 0;
+  unique["TEMPLATE"]  = 0;
   unique["TODAY"]     = 0;
   unique["TOMORROW"]  = 0;
   unique["UDA"]       = 0;

@@ -24,45 +24,20 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cmake.h>
-#include <ColUrgency.h>
-#include <format.h>
-#include <i18n.h>
+#ifndef INCLUDED_COLLAST
+#define INCLUDED_COLLAST
 
-////////////////////////////////////////////////////////////////////////////////
-ColumnUrgency::ColumnUrgency ()
+#include <ColTypeNumeric.h>
+
+class ColumnLast : public ColumnTypeNumeric
 {
-  _name       = "urgency";
-  _style      = "real";
-  _label      = STRING_COLUMN_LABEL_URGENCY;
-  _modifiable = false;
-  _styles     = {"real", "integer"};
-  _examples   = {"4.6", "4"};
-}
+public:
+  ColumnLast ();
+  void measure (Task&, unsigned int&, unsigned int&);
+  void render (std::vector <std::string>&, Task&, int, Color&);
 
-////////////////////////////////////////////////////////////////////////////////
-// Set the minimum and maximum widths for the value.
-void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
-  if (_style == "default" || _style == "real")
-    minimum = maximum = format (task.urgency (), 4, 3).length ();
+private:
+};
 
-  else if (_style == "integer")
-    minimum = maximum = format ((int)task.urgency ()).length ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnUrgency::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  if (_style == "default" || _style == "real")
-    renderDouble (lines, width, color, task.urgency ());
-
-  else if (_style == "integer")
-    renderInteger (lines, width, color, static_cast <int> (task.urgency ()));
-}
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////

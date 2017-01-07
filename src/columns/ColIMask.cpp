@@ -45,15 +45,8 @@ ColumnIMask::ColumnIMask ()
 void ColumnIMask::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
-  {
-    minimum = maximum = task.get ("imask").length ();
-
-    if (_style != "default" &&
-        _style != "number")
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
-  }
+    minimum = maximum = task.get (_name).length ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +57,7 @@ void ColumnIMask::render (
   Color& color)
 {
   if (task.has (_name))
-    renderStringRight (lines, width, color, task.get ("imask"));
+    renderStringRight (lines, width, color, task.get (_name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

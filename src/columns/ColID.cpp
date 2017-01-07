@@ -55,10 +55,6 @@ void ColumnID::measure (Task& task, unsigned int& minimum, unsigned int& maximum
   else                       length = 1 + (int) log10 ((double) task.id); // Slow
 
   minimum = maximum = length;
-
-  if (_style != "default" &&
-      _style != "number")
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +64,7 @@ void ColumnID::render (
   int width,
   Color& color)
 {
+   // Completed and deleted tasks have no ID.
   if (task.id)
     renderInteger (lines, width, color, task.id);
   else

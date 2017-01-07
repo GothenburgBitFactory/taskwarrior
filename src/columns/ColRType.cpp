@@ -25,92 +25,77 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <ColString.h>
+#include <ColRType.h>
 #include <Context.h>
-#include <format.h>
 #include <shared.h>
-#include <util.h>
+#include <format.h>
 #include <i18n.h>
+#include <cctype>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnString::ColumnString ()
+ColumnRType::ColumnRType ()
 {
-  _name     = "string";
-  _type     = "string";
-  _style    = "left";
-  _label    = "";
-  _styles   = {"left",
-               "right",
-               "left_fixed",
-               "right_fixed"};
-  _examples = {"Hello (wrapped)           ",
-               "           Hello (wrapped)",
-               "Hello (no-wrap)           ",
-               "           Hello (no-wrap)"};
-  _hyphenate = context.config.getBoolean ("hyphenate");
+  _name       = "rtype";
+  _style      = "default";
+  _label      = STRING_COLUMN_LABEL_RTYPE;
+  _modifiable = false;
+  _styles     = {"default", "indicator"};
+  _examples   = {"periodic", "chained"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// ColumnString is unique - it copies the report name into the label.  This is
-// a kludgy reuse of an otherwise unused member.
-void ColumnString::setReport (const std::string& value)
+// Overriden so that style <----> label are linked.
+// Note that you can not determine which gets called first.
+void ColumnRType::setStyle (const std::string& value)
 {
-  _report = _label = value;
+  Column::setStyle (value);
+
+  if (_style == "indicator" && _label == STRING_COLUMN_LABEL_RTYPE)
+    _label = _label.substr (0, context.config.get ("rtype.indicator").length ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-//
-void ColumnString::measure (const std::string& value, unsigned int& minimum, unsigned int& maximum)
+void ColumnRType::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
-  if (_style == "left"  ||
-      _style == "right" ||
-      _style == "default")
+  if (task.has (_name))
   {
-    std::string stripped = Color::strip (value);
-    maximum = longestLine (stripped);
-    minimum = longestWord (stripped);
+    if (_style == "default")
+      minimum = maximum = task.get (_name).length ();
+    else if (_style == "indicator")
+      minimum = maximum = 1;
   }
-  else if (_style == "left_fixed" ||
-           _style == "right_fixed")
-    minimum = maximum = strippedLength (value);
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnString::render (
+void ColumnRType::render (
   std::vector <std::string>& lines,
-  const std::string& value,
+  Task& task,
   int width,
   Color& color)
 {
-  if (_style == "default" || _style == "left")
+  if (task.has (_name))
   {
-    std::vector <std::string> raw;
-    wrapText (raw, value, width, _hyphenate);
+    if (_style == "default")
+      renderStringRight (lines, width, color, task.get (_name));
 
-    for (auto& i : raw)
-      renderStringLeft (lines, width, color, i);
+    else if (_style == "indicator")
+    {
+      std::string value {" "};
+      value[0] = toupper (task.get (_name)[0]);
+      renderStringRight (lines, width, color, value);
+    }
   }
-  else if (_style == "right")
-  {
-    std::vector <std::string> raw;
-    wrapText (raw, value, width, _hyphenate);
+}
 
-    for (auto& i : raw)
-      renderStringRight (lines, width, color, i);
-  }
-
-  else if (_style == "left_fixed")
-    renderStringLeft (lines, width, color, value);
-
-  else if (_style == "right_fixed")
-    renderStringRight (lines, width, color, value);
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnRType::validate (const std::string& input) const
+{
+  return input == "periodic" ||
+         input == "chained";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

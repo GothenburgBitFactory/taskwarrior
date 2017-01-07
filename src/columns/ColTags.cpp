@@ -59,7 +59,7 @@ ColumnTags::ColumnTags ()
 // Note that you can not determine which gets called first.
 void ColumnTags::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "indicator" &&
       _label == STRING_COLUMN_LABEL_TAGS)
@@ -75,15 +75,11 @@ void ColumnTags::setStyle (const std::string& value)
 void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "indicator")
     {
-      if (task.has ("tags"))
-        minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
-      else
-        minimum = maximum = 0;
+      minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
     }
     else if (_style == "count")
     {
@@ -112,8 +108,6 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       else
         minimum = maximum = utf8_width (tags);
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -163,7 +157,7 @@ void ColumnTags::modify (Task& task, const std::string& value)
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   // TW-1701
-  task.set ("tags", "");
+  task.set (_name, "");
 
   for (auto& tag : split (value, ','))
   {

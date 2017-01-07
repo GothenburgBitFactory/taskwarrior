@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2017, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,44 +25,51 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <ColUrgency.h>
+#include <ColTemplate.h>
 #include <format.h>
 #include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnUrgency::ColumnUrgency ()
+ColumnTemplate::ColumnTemplate ()
 {
-  _name       = "urgency";
-  _style      = "real";
-  _label      = STRING_COLUMN_LABEL_URGENCY;
+  _name       = "template";
+  _style      = "long";
+  _label      = STRING_COLUMN_LABEL_TEMPLATE;
   _modifiable = false;
-  _styles     = {"real", "integer"};
-  _examples   = {"4.6", "4"};
+  _styles     = {"long", "short"};
+  _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+void ColumnTemplate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-  if (_style == "default" || _style == "real")
-    minimum = maximum = format (task.urgency (), 4, 3).length ();
-
-  else if (_style == "integer")
-    minimum = maximum = format ((int)task.urgency ()).length ();
+  minimum = maximum = 0;
+  if (task.has (_name))
+  {
+         if (_style == "default" || _style == "long") minimum = maximum = 36;
+    else if (_style == "short")                       minimum = maximum = 8;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUrgency::render (
+void ColumnTemplate::render (
   std::vector <std::string>& lines,
   Task& task,
   int width,
   Color& color)
 {
-  if (_style == "default" || _style == "real")
-    renderDouble (lines, width, color, task.urgency ());
+  if (task.has (_name))
+  {
+    // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
+    // f30cb9c3                              short
+    if (_style == "default" ||
+        _style == "long")
+      renderStringLeft (lines, width, color, task.get(_name));
 
-  else if (_style == "integer")
-    renderInteger (lines, width, color, static_cast <int> (task.urgency ()));
+    else if (_style == "short")
+      renderStringLeft (lines, width, color, task.get (_name).substr (0, 8));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

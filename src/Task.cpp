@@ -1081,13 +1081,14 @@ void Task::removeAnnotations ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
+std::map <std::string, std::string> Task::getAnnotations () const
 {
-  annotations.clear ();
-
+  std::map <std::string, std::string> a;
   for (auto& ann : data)
     if (! ann.first.compare (0, 11, "annotation_", 11))
-      annotations.insert (ann);
+      a.insert (ann);
+
+  return a;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1185,35 +1186,33 @@ void Task::removeDependency (int id)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getDependencies (std::vector <int>& all) const
+std::vector <int> Task::getDependencyIDs () const
 {
-  auto deps = split (get ("depends"), ',');
-
-  all.clear ();
-
-  for (auto& dep : deps)
+  std::vector <int> all;
+  for (auto& dep : split (get ("depends"), ','))
     all.push_back (context.tdb2.pending.id (dep));
+
+  return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getDependencies (std::vector <std::string>& all) const
+std::vector <std::string> Task::getDependencyUUIDs () const
 {
-  all = split (get ("depends"), ',');
+  return split (get ("depends"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getDependencies (std::vector <Task>& all) const
+std::vector <Task> Task::getDependencyTasks () const
 {
-  std::vector <std::string> deps = split (get ("depends"), ',');
-
-  all.clear ();
-
-  for (auto& dep : deps)
+  std::vector <Task> all;
+  for (auto& dep : split (get ("depends"), ','))
   {
     Task task;
     context.tdb2.get (dep, task);
     all.push_back (task);
   }
+
+  return all;
 }
 #endif
 
@@ -1260,11 +1259,13 @@ bool Task::hasTag (const std::string& tag) const
 #endif
     if (tag == "ACTIVE")    return has ("start");
     if (tag == "SCHEDULED") return has ("scheduled");
-    if (tag == "CHILD")     return has ("parent");
+    if (tag == "CHILD")     return has ("parent");          // 2017-01-07: Deprecated in 2.6.0
+    if (tag == "INSTANCE")  return has ("template");
     if (tag == "UNTIL")     return has ("until");
     if (tag == "ANNOTATED") return hasAnnotations ();
     if (tag == "TAGGED")    return has ("tags");
-    if (tag == "PARENT")    return has ("mask");
+    if (tag == "PARENT")    return has ("mask");            // 2017-01-07: Deprecated in 2.6.0
+    if (tag == "TEMPLATE")  return has ("last");
     if (tag == "WAITING")   return get ("status") == "waiting";
     if (tag == "PENDING")   return get ("status") == "pending";
     if (tag == "COMPLETED") return get ("status") == "completed";
@@ -1313,9 +1314,9 @@ void Task::addTags (const std::vector <std::string>& tags)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getTags (std::vector<std::string>& tags) const
+std::vector <std::string> Task::getTags () const
 {
-  tags = split (get ("tags"), ',');
+  return split (get ("tags"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1336,12 +1337,15 @@ void Task::removeTag (const std::string& tag)
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA Orphan is an attribute that is not represented in context.columns.
-void Task::getUDAOrphans (std::vector <std::string>& names) const
+std::vector <std::string> Task::getUDAOrphanUUIDs () const
 {
+  std::vector <std::string> orphans;
   for (auto& it : data)
     if (it.first.compare (0, 11, "annotation_", 11) != 0)
       if (context.columns.find (it.first) == context.columns.end ())
-        names.push_back (it.first);
+        orphans.push_back (it.first);
+
+  return orphans;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1354,8 +1358,7 @@ void Task::substitute (
 
   // Get the data to modify.
   std::string description = get ("description");
-  std::map <std::string, std::string> annotations;
-  getAnnotations (annotations);
+  auto annotations = getAnnotations ();
 
   // Count the changes, so we know whether to proceed to annotations, after
   // modifying description.
@@ -1864,19 +1867,16 @@ float Task::urgency ()
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_inherit () const
 {
+  float v = FLT_MIN;
+#ifdef PRODUCT_TASKWARRIOR
   // Calling dependencyGetBlocked is rather expensive.
   // It is called recursively for each dependency in the chain here.
-  std::vector <Task> blocked;
-#ifdef PRODUCT_TASKWARRIOR
-  dependencyGetBlocked (*this, blocked);
-#endif
-
-  float v = FLT_MIN;
-  for (auto& task : blocked)
+  for (auto& task : dependencyGetBlocked (*this))
   {
     // Find highest urgency in all blocked tasks.
     v = std::max (v, task.urgency ());
   }
+#endif
 
   return v;
 }

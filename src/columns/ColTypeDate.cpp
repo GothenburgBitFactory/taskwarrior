@@ -72,7 +72,6 @@ ColumnTypeDate::ColumnTypeDate ()
 void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     Datetime date (task.get_date (_name));
@@ -131,8 +130,6 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
       if (date > now)
         minimum = maximum = Duration (date - now).formatVague ().length ();
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -202,6 +199,12 @@ void ColumnTypeDate::render (
         renderStringRight (lines, width, color, Duration (date - now).formatVague ());
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeDate::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

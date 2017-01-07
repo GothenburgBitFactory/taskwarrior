@@ -14,16 +14,18 @@ set (columns_SRCS Column.cpp Column.h
                   ColEntry.cpp ColEntry.h
                   ColID.cpp ColID.h
                   ColIMask.cpp ColIMask.h
+                  ColLast.cpp ColLast.h
                   ColMask.cpp ColMask.h
                   ColModified.cpp ColModified.h
                   ColParent.cpp ColParent.h
                   ColProject.cpp ColProject.h
                   ColRecur.cpp ColRecur.h
+                  ColRType.cpp ColRType.h
                   ColScheduled.cpp ColScheduled.h
                   ColStart.cpp ColStart.h
                   ColStatus.cpp ColStatus.h
-                  ColString.cpp ColString.h
                   ColTags.cpp ColTags.h
+                  ColTemplate.cpp ColTemplate.h
                   ColTypeDate.cpp ColTypeDate.h
                   ColTypeDuration.cpp ColTypeDuration.h
                   ColTypeNumeric.cpp ColTypeNumeric.h

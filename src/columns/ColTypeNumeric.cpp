@@ -44,6 +44,12 @@ ColumnTypeNumeric::ColumnTypeNumeric ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeNumeric::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeNumeric::modify (Task& task, const std::string& value)
 {
   // Try to evaluate 'value'.  It might work.

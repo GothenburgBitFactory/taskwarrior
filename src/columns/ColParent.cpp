@@ -45,13 +45,10 @@ ColumnParent::ColumnParent ()
 void ColumnParent::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
          if (_style == "default" || _style == "long") minimum = maximum = 36;
     else if (_style == "short")                       minimum = maximum = 8;
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 

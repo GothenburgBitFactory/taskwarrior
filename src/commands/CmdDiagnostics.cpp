@@ -456,10 +456,7 @@ int CmdDiagnostics::execute (std::string& output)
   for (auto& task : all)
   {
     // Check dependencies
-    std::vector <std::string> dependencies;
-    task.getDependencies(dependencies);
-
-    for (auto& uuid : dependencies)
+    for (auto& uuid : task.getDependencyUUIDs ())
     {
       if (! context.tdb2.has (uuid))
       {

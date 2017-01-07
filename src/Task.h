@@ -125,11 +125,11 @@ public:
   bool hasTag (const std::string&) const;
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);
-  void getTags (std::vector<std::string>&) const;
+  std::vector <std::string> getTags () const;
   void removeTag (const std::string&);
 
   bool hasAnnotations () const;
-  void getAnnotations (std::map <std::string, std::string>&) const;
+  std::map <std::string, std::string> getAnnotations () const;
   void setAnnotations (const std::map <std::string, std::string>&);
   void addAnnotation (const std::string&);
   void removeAnnotations ();
@@ -141,11 +141,11 @@ public:
 #ifdef PRODUCT_TASKWARRIOR
   void removeDependency (int);
   void removeDependency (const std::string&);
-  void getDependencies (std::vector <int>&) const;
-  void getDependencies (std::vector <std::string>&) const;
-  void getDependencies (std::vector <Task>&) const;
+  std::vector <int>         getDependencyIDs () const;
+  std::vector <std::string> getDependencyUUIDs () const;
+  std::vector <Task>        getDependencyTasks () const;
 
-  void getUDAOrphans (std::vector <std::string>&) const;
+  std::vector <std::string> getUDAOrphanUUIDs () const;
 
   void substitute (const std::string&, const std::string&, const std::string&);
 #endif
@@ -170,17 +170,17 @@ private:
   const std::string decode (const std::string&) const;
 
 public:
-  float urgency_project () const;
-  float urgency_active () const;
-  float urgency_scheduled () const;
-  float urgency_waiting () const;
-  float urgency_blocked () const;
-  float urgency_inherit () const;
+  float urgency_project     () const;
+  float urgency_active      () const;
+  float urgency_scheduled   () const;
+  float urgency_waiting     () const;
+  float urgency_blocked     () const;
+  float urgency_inherit     () const;
   float urgency_annotations () const;
-  float urgency_tags () const;
-  float urgency_due () const;
-  float urgency_blocking () const;
-  float urgency_age () const;
+  float urgency_tags        () const;
+  float urgency_due         () const;
+  float urgency_blocking    () const;
+  float urgency_age         () const;
 };
 
 #endif
