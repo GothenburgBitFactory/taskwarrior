@@ -20,6 +20,7 @@ Newly Deprecated Features in Taskwarrior 2.6.0
   - The use of alternate Boolean configuration settings is deprecated. Use values
     "0" for off, and "1" for on.  Avoid used of "on", "off", "true", "t",
     "false", "f", "yes", "y", "no", "n".
+  - The 'PARENT' and 'CHILD' virtual tags are replaced by 'TEMPLATE' and 'INSTANCE'.
 
 Removed Features in 2.6.0
 

@@ -318,22 +318,24 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "ANNOTATED" ||
       tag == "BLOCKED"   ||
       tag == "BLOCKING"  ||
-      tag == "CHILD"     ||
+      tag == "CHILD"     ||   // Deprecated 2.6.0
       tag == "COMPLETED" ||
       tag == "DELETED"   ||
       tag == "DUE"       ||
       tag == "DUETODAY"  ||
+      tag == "INSTANCE"  ||
       tag == "LATEST"    ||
       tag == "MONTH"     ||
       tag == "ORPHAN"    ||
       tag == "OVERDUE"   ||
-      tag == "PARENT"    ||
+      tag == "PARENT"    ||   // Deprecated 2.6.0
       tag == "PENDING"   ||
       tag == "PRIORITY"  ||
       tag == "PROJECT"   ||
       tag == "READY"     ||
       tag == "SCHEDULED" ||
       tag == "TAGGED"    ||
+      tag == "TEMPLATE"  ||
       tag == "TODAY"     ||
       tag == "TOMORROW"  ||
       tag == "UDA"       ||
