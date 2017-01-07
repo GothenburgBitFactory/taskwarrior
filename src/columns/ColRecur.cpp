@@ -79,8 +79,6 @@ void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maxi
     {
       minimum = maximum = utf8_width (context.config.get ("recurrence.indicator"));
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 

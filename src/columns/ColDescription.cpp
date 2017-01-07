@@ -153,9 +153,6 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
     minimum = 4;
     maximum = utf8_width (description) + 1 + 1 + format (task.annotation_count).length () + 1;
   }
-
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -49,9 +49,6 @@ void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& ma
 
   else if (_style == "integer")
     minimum = maximum = format ((int)task.urgency ()).length ();
-
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
