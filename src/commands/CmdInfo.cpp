@@ -197,6 +197,7 @@ int CmdInfo::execute (std::string& output)
     }
 
     // parent
+    // 2017-01-07: Deprecated in 2.6.0
     if (task.has ("parent"))
     {
       row = view.addRow ();
@@ -205,6 +206,7 @@ int CmdInfo::execute (std::string& output)
     }
 
     // mask
+    // 2017-01-07: Deprecated in 2.6.0
     if (task.has ("mask"))
     {
       row = view.addRow ();
@@ -213,11 +215,36 @@ int CmdInfo::execute (std::string& output)
     }
 
     // imask
+    // 2017-01-07: Deprecated in 2.6.0
     if (task.has ("imask"))
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_MASK_IDX);
       view.set (row, 1, task.get ("imask"));
+    }
+
+    // template
+    if (task.has ("template"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_COLUMN_LABEL_TEMPLATE);
+      view.set (row, 1, task.get ("template"));
+    }
+
+    // last
+    if (task.has ("last"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_COLUMN_LABEL_LAST);
+      view.set (row, 1, task.get ("last"));
+    }
+
+    // rtype
+    if (task.has ("rtype"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_COLUMN_LABEL_RTYPE);
+      view.set (row, 1, task.get ("rtype"));
     }
 
     // entry
@@ -315,19 +342,21 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("ANNOTATED")) virtualTags += "ANNOTATED ";
       if (task.hasTag ("BLOCKED"))   virtualTags += "BLOCKED ";
       if (task.hasTag ("BLOCKING"))  virtualTags += "BLOCKING ";
-      if (task.hasTag ("CHILD"))     virtualTags += "CHILD ";
+      if (task.hasTag ("CHILD"))     virtualTags += "CHILD ";          // 2017-01-07: Deprecated in 2.6.0
       if (task.hasTag ("COMPLETED")) virtualTags += "COMPLETED ";
       if (task.hasTag ("DELETED"))   virtualTags += "DELETED ";
       if (task.hasTag ("DUE"))       virtualTags += "DUE ";
       if (task.hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";
+      if (task.hasTag ("INSTANCE"))  virtualTags += "INSTANCE ";
       if (task.hasTag ("MONTH"))     virtualTags += "MONTH ";
       if (task.hasTag ("ORPHAN"))    virtualTags += "ORPHAN ";
       if (task.hasTag ("OVERDUE"))   virtualTags += "OVERDUE ";
-      if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";
+      if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";         // 2017-01-07: Deprecated in 2.6.0
       if (task.hasTag ("PENDING"))   virtualTags += "PENDING ";
       if (task.hasTag ("READY"))     virtualTags += "READY ";
       if (task.hasTag ("SCHEDULED")) virtualTags += "SCHEDULED ";
       if (task.hasTag ("TAGGED"))    virtualTags += "TAGGED ";
+      if (task.hasTag ("TEMPLATE"))  virtualTags += "TEMPLATE ";
       if (task.hasTag ("TODAY"))     virtualTags += "TODAY ";
       if (task.hasTag ("TOMORROW"))  virtualTags += "TOMORROW ";
       if (task.hasTag ("UDA"))       virtualTags += "UDA ";
