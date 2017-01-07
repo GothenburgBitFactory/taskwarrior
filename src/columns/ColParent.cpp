@@ -49,8 +49,6 @@ void ColumnParent::measure (Task& task, unsigned int& minimum, unsigned int& max
   {
          if (_style == "default" || _style == "long") minimum = maximum = 36;
     else if (_style == "short")                       minimum = maximum = 8;
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 

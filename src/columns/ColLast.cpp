@@ -46,13 +46,7 @@ void ColumnLast::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 {
   minimum = maximum = 0;
   if (task.has (_name))
-  {
     minimum = maximum = task.get (_name).length ();
-
-    if (_style != "default" &&
-        _style != "number")
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

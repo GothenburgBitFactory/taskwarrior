@@ -67,8 +67,6 @@ void ColumnRType::measure (Task& task, unsigned int& minimum, unsigned int& maxi
       minimum = maximum = task.get (_name).length ();
     else if (_style == "indicator")
       minimum = maximum = 1;
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 

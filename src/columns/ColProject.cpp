@@ -73,10 +73,6 @@ void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& ma
     {
       project = indentProject (project, "  ", '.');
     }
-    else if (_style != "default"  &&
-             _style != "full"     &&
-             _style != "indented")
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 
     minimum = longestWord (project);
     maximum = utf8_width (project);

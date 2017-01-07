@@ -91,8 +91,6 @@ void ColumnUDAString::measure (Task& task, unsigned int& minimum, unsigned int& 
 
       minimum = maximum = utf8_width (indicator);
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -174,8 +172,6 @@ void ColumnUDANumeric::measure (Task& task, unsigned int& minimum, unsigned int&
 
       minimum = maximum = utf8_width (indicator);
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -266,8 +262,6 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
 
       minimum = maximum = utf8_width (indicator);
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -363,8 +357,6 @@ void ColumnUDADuration::measure (Task& task, unsigned int& minimum, unsigned int
       else
         minimum = maximum = 0;
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 

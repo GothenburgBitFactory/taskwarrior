@@ -130,8 +130,6 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
       if (date > now)
         minimum = maximum = Duration (date - now).formatVague ().length ();
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 

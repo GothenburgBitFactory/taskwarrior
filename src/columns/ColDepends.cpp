@@ -102,8 +102,6 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
           minimum = length;
       }
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
