@@ -57,7 +57,7 @@ ColumnRecur::ColumnRecur ()
 // Note that you can not determine which gets called first.
 void ColumnRecur::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "indicator" && _label == STRING_COLUMN_LABEL_RECUR)
     _label = _label.substr (0, context.config.get ("recurrence.indicator").length ());

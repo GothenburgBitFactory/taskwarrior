@@ -47,7 +47,7 @@ ColumnStart::ColumnStart ()
 // Note that you can not determine which gets called first.
 void ColumnStart::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "active" && _label == STRING_COLUMN_LABEL_STARTED)
     _label = STRING_COLUMN_LABEL_ACTIVE;

@@ -58,7 +58,7 @@ ColumnDepends::ColumnDepends ()
 // Note that you can not determine which gets called first.
 void ColumnDepends::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
        if (_style == "indicator" && _label == STRING_COLUMN_LABEL_DEP) _label = _label.substr (0, context.config.get ("dependency.indicator").length ());
   else if (_style == "count"     && _label == STRING_COLUMN_LABEL_DEP) _label = STRING_COLUMN_LABEL_DEP_S;

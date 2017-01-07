@@ -40,7 +40,7 @@ ColumnScheduled::ColumnScheduled ()
 // Note that you can not determine which gets called first.
 void ColumnScheduled::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "countdown" && _label == STRING_COLUMN_LABEL_SCHED)
     _label = STRING_COLUMN_LABEL_COUNT;
