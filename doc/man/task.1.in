@@ -677,15 +677,16 @@ are:
     ANNOTATED    Matches if the task has annotations
     BLOCKED      Matches if the task is blocked
     BLOCKING     Matches if the task is blocking
-    CHILD        Matches if the task has a parent
+    CHILD        Matches if the task has a parent (deprecated in 2.6.0)
     COMPLETED    Matches if the task has completed status
     DELETED      Matches if the task has deleted status
     DUE          Matches if the task is due
+    INSTANCE     Matches if the task is a recurrent instance
     LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
     ORPHAN       Matches if the task has any orphaned UDA values
     OVERDUE      Matches if the task is overdue
-    PARENT       Matches if the task is a parent
+    PARENT       Matches if the task is a parent (deprecated in 2.6.0)
     PENDING      Matches if the task has pending status
     PRIORITY     Matches if the task has a priority
     PROJECT      Matches if the task has a project
@@ -693,6 +694,7 @@ are:
     READY        Matches if the task is actionable
     SCHEDULED    Matches if the task is scheduled
     TAGGED       Matches if the task has tags
+    TEMPLATE     Matches if the task is a recurrence template
     TODAY        Matches if the task is due today
     TOMORROW     Matches if the task is due sometime tomorrow
     UDA          Matches if the task has any UDA values
