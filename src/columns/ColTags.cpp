@@ -59,7 +59,7 @@ ColumnTags::ColumnTags ()
 // Note that you can not determine which gets called first.
 void ColumnTags::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "indicator" &&
       _label == STRING_COLUMN_LABEL_TAGS)

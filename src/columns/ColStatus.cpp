@@ -46,7 +46,7 @@ ColumnStatus::ColumnStatus ()
 // Note that you can not determine which gets called first.
 void ColumnStatus::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "short" && _label == STRING_COLUMN_LABEL_STATUS)
     _label = STRING_COLUMN_LABEL_STAT;
