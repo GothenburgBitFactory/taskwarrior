@@ -71,7 +71,6 @@ bool ColumnUDAString::validate (const std::string& value) const
 void ColumnUDAString::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "default")
@@ -159,7 +158,6 @@ bool ColumnUDANumeric::validate (const std::string& value) const
 void ColumnUDANumeric::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "default")
@@ -239,7 +237,6 @@ bool ColumnUDADate::validate (const std::string& value) const
 void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "default")
@@ -345,7 +342,6 @@ bool ColumnUDADuration::validate (const std::string& value) const
 void ColumnUDADuration::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "default")

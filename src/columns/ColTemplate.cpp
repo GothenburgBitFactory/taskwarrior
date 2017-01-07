@@ -45,7 +45,6 @@ ColumnTemplate::ColumnTemplate ()
 void ColumnTemplate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
          if (_style == "default" || _style == "long") minimum = maximum = 36;

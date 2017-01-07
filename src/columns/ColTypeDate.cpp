@@ -72,7 +72,6 @@ ColumnTypeDate::ColumnTypeDate ()
 void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     Datetime date (task.get_date (_name));

@@ -59,7 +59,6 @@ ColumnProject::ColumnProject ()
 void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     std::string project = task.get (_name);

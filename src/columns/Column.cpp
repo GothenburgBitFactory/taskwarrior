@@ -154,7 +154,7 @@ void Column::factory (std::map <std::string, Column*>& all)
 ////////////////////////////////////////////////////////////////////////////////
 void Column::uda (std::map <std::string, Column*>& all)
 {
-  // For each UDA, instantiate and initialize ColumnUDA().
+  // For each UDA, instantiate and initialize ColumnUDA.
   std::set <std::string> udas;
 
   for (const auto& i : context.config)
