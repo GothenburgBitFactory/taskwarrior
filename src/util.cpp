@@ -259,34 +259,6 @@ time_t timegm (struct tm *tm)
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string osName ()
-{
-#if defined (DARWIN)
-  return "Darwin";
-#elif defined (SOLARIS)
-  return "Solaris";
-#elif defined (CYGWIN)
-  return "Cygwin";
-#elif defined (HAIKU)
-  return "Haiku";
-#elif defined (OPENBSD)
-  return "OpenBSD";
-#elif defined (FREEBSD)
-  return "FreeBSD";
-#elif defined (NETBSD)
-  return "NetBSD";
-#elif defined (LINUX)
-  return "Linux";
-#elif defined (KFREEBSD)
-  return "GNU/kFreeBSD";
-#elif defined (GNUHURD)
-  return "GNU/Hurd";
-#else
-  return STRING_DOM_UNKNOWN;
-#endif
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool nontrivial (const std::string& input)
 {
   std::string::size_type i = 0;
