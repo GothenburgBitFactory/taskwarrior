@@ -119,19 +119,9 @@ int CmdDiagnostics::execute (std::string& output)
       << '\n';
 
   // Compiler compliance level.
-  std::string compliance = "non-compliant";
-#ifdef __cplusplus
-  int level = __cplusplus;
-  if (level == 199711)
-    compliance = "C++98/03";
-  else if (level == 201103)
-    compliance = "C++11";
-  else
-    compliance = format (level);
-#endif
   out << ' ' << STRING_CMD_DIAG_COMPLIANCE
       << ": "
-      << compliance
+      << cppCompliance ()
       << "\n\n";
 
   out << bold.colorize (STRING_CMD_DIAG_FEATURES)
