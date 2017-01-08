@@ -83,7 +83,7 @@ class TestVersion(TestCase):
         return hash.rstrip("\n")
 
     def test_under_version(self):
-        """_version outputs expected version and syntax"""
+        """_version and diagnostics output expected version and syntax"""
         code, out, err = self.t("_version")
 
         # version = "x.x.x (git-hash)" or simply "x.x.x"
@@ -102,12 +102,8 @@ class TestVersion(TestCase):
         ver_expected = self.slurp()
         self.assertEqual(ver_expected, ver)
 
-    def test_task_git_version(self):
-        """Task binary matches the current git commit"""
-        expected = "Commit: {0}".format(self.slurp_git())
-
         code, out, err = self.t.diag()
-        self.assertIn(expected, out)
+        self.assertIn(ver_expected, out)
 
     def test_version_option(self):
         """Verify that  'task --version' returns something valid"""
