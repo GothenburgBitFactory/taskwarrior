@@ -487,8 +487,6 @@
 #define STRING_CMD_SYNC_RELOCATE0    "Das Server-Konto wurde verschoben.  Bitte Konfiguration folgendermaßen ändern:"
 #define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
 #define STRING_CMD_SYNC_BAD_CA       "CA-Zertifikat nicht gefunden."
-#define STRING_CMD_SYNC_CONNECT      "Konnte nicht mit {1} {2} verbinden."
-#define STRING_CMD_SYNC_HANDSHAKE    "Verbindungsaufbau gescheitert.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "Entweder ein CA-Zertifikat bereitstellen oder Prüfung deaktivieren, nicht jedoch beides."
 #define STRING_CMD_SYNC_TRUST_OBS    "Erlaubte Werte der 'taskd.trust'-Option sind nur noch 'strict', 'ignore hostname' und 'allow all'."
 
@@ -666,7 +664,6 @@
 #define STRING_DEPEND_FIX_CHAIN      "Möchten Sie, dass diese Abhängigkeitskette korrigiert wird?"
 
 // DOM
-#define STRING_DOM_UNKNOWN           "<unbekannt>"
 #define STRING_DOM_UNREC             "DOM: Unbekannten Namen nicht erkannt '{1}'."
 
 // Eval
@@ -757,7 +754,6 @@
 #define STRING_UDA_COLLISION         "Das UDA '{1}' hat den selben Namen wie eine eingebaute Eigenschaft, und ist daher nicht erlaubt."
 #define STRING_INVALID_MOD           "Die '{1}'-Eigenschaft erlaubt keinen Wert '{2}'."
 #define STRING_INVALID_SORT_COL      "Nach Spalte '{1}' kann nicht sortiert weden."
-#define STRING_TLS_INIT_FAIL         "Fehler bei der TLS-Initialisierung. {1}"
 #define STRING_ERROR_DETAILS         "Die Option 'calendar.details.report' muss einen einzelnen Report-Namen enthalten."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."

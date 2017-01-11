@@ -47,7 +47,6 @@
 #include <netdb.h>
 #include <gnutls/x509.h>
 #include <format.h>
-#include <i18n.h>
 
 #define MAX_BUF 16384
 
@@ -191,7 +190,7 @@ void TLSClient::init (
     if (_debug && ret == GNUTLS_E_INVALID_REQUEST)
       std::cout << "c: ERROR Priority error at: " << err << '\n';
 
-    throw format (STRING_TLS_INIT_FAIL, gnutls_strerror (ret)); // All
+    throw format ("Error initializing TLS. {1}", gnutls_strerror (ret)); // All
   }
 
   // Apply the x509 credentials to the current session.
@@ -253,7 +252,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   free (res);
 
   if (p == NULL)
-    throw format (STRING_CMD_SYNC_CONNECT, host, port);
+    throw format ("Could not connect to {1} {2}", host, port);
 
 #if GNUTLS_VERSION_NUMBER >= 0x030100
   gnutls_handshake_set_timeout (_session, GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT); // 3.1.0
@@ -284,10 +283,10 @@ void TLSClient::connect (const std::string& host, const std::string& port)
       gnutls_free (out.data); // All
 
       std::string error {(const char*) out.data};
-      throw format (STRING_CMD_SYNC_HANDSHAKE, error);
+      throw format ("Handshake failed.  {1}", error);
     }
 #else
-    throw format (STRING_CMD_SYNC_HANDSHAKE, gnutls_strerror (ret)); // All
+    throw format ("Handshake failed.  {1}", gnutls_strerror (ret)); // All
 #endif
   }
 
@@ -301,7 +300,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   {
     if (_debug)
       std::cout << "c: ERROR Certificate verification failed.\n";
-    throw format (STRING_TLS_INIT_FAIL, gnutls_strerror (ret)); // All
+    throw format ("Error initializing TLS. {1}", gnutls_strerror (ret)); // All
   }
 #endif
 

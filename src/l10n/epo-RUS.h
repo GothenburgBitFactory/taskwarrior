@@ -487,8 +487,6 @@
 #define STRING_CMD_SYNC_RELOCATE0    "La servila konto transloĝiĝis.  Bonvolu aktualigi via agordo kun:"
 #define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
 #define STRING_CMD_SYNC_BAD_CA       "CA certificate not found."
-#define STRING_CMD_SYNC_CONNECT      "Ne povis konekti al {1} {2}"
-#define STRING_CMD_SYNC_HANDSHAKE    "Handshake failed.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "You should either provide a CA certificate or override verification, but not both."
 #define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
 
@@ -666,7 +664,6 @@
 #define STRING_DEPEND_FIX_CHAIN      "Ĉu vi volas, ke la dependeca ĉeno repariĝus?"
 
 // DOM
-#define STRING_DOM_UNKNOWN           "<nekonata>"
 #define STRING_DOM_UNREC             "DOM: Ne povis inspekti nekonatan nomon '{1}'."
 
 // Eval
@@ -757,7 +754,6 @@
 #define STRING_UDA_COLLISION         "UDA '{1}' kaj enkonstruita atributo havas la saman nomon.  Tio estas malpermesita."
 #define STRING_INVALID_MOD           "Atributo '{1}' ne permesas valoron '{2}'."
 #define STRING_INVALID_SORT_COL      "Kolumno '{1}' ne estas valida kampo por ordigi."
-#define STRING_TLS_INIT_FAIL         "Erara eko de TLS. {1}"
 #define STRING_ERROR_DETAILS         "Agordo 'calendar.details.report' devas enhavi sole unu raportnomon."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."

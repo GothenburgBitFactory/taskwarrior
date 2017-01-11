@@ -487,8 +487,6 @@
 #define STRING_CMD_SYNC_RELOCATE0    "A sua conta no servidor foi relocalizada. Por favor ajuste a configuração usando:"
 #define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"  // |por-PRT|==|eng-USA|
 #define STRING_CMD_SYNC_BAD_CA       "Certificado CA não encontrado."
-#define STRING_CMD_SYNC_CONNECT      "Não foi possível connectar a {1} {2}"
-#define STRING_CMD_SYNC_HANDSHAKE    "'Handshake' falhou. {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "Deve fornecer um certificado CA ou desactivar a verificação, mas não ambos."
 #define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
 
@@ -666,7 +664,6 @@
 #define STRING_DEPEND_FIX_CHAIN      "Deseja que a cadeia de dependências seja corrigida?"
 
 // DOM
-#define STRING_DOM_UNKNOWN           "<desconhecido>"
 #define STRING_DOM_UNREC             "DOM: Não foi possível obter nome não reconhecido '{1}'."
 
 // Eval
@@ -757,7 +754,6 @@
 #define STRING_UDA_COLLISION         "O UDA '{1}' tem o mesmo nome que um atributo interno, tal não é permitido."
 #define STRING_INVALID_MOD           "O atributo '{1}' não permite o valor '{2}'."
 #define STRING_INVALID_SORT_COL      "A coluna '{1}' não pode ser ordenada."
-#define STRING_TLS_INIT_FAIL         "Erro a iniciar componente TLS. {1}"
 #define STRING_ERROR_DETAILS         "A definição 'calendar.details.report' pode apenas indicar um nome de relatório."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."

@@ -495,8 +495,6 @@
 #define STRING_CMD_SYNC_RELOCATE0    "La cuenta del servidor ha sido reubicada. Por favor, actualice su configuración utilizando:"
 #define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"   // |esp-ESP|==|eng-USA|
 #define STRING_CMD_SYNC_BAD_CA       "Certificado CA no encontrado."
-#define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
-#define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "Debe proveer un certificado CA o la verificación de sobrescritura, pero no ambos."
 #define STRING_CMD_SYNC_TRUST_OBS    "Los ajustes de 'taskd.trust' ahora solo pueden contener uno de los valores 'strict', 'ignore hostname' o 'allow all'."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
@@ -675,7 +673,6 @@
 #define STRING_DEPEND_FIX_CHAIN      "¿Desea que la cadena de dependencias sea arreglada?"
 
 // DOM
-#define STRING_DOM_UNKNOWN           "<desconocido>"
 #define STRING_DOM_UNREC             "DOM: No se pudo obtener el nombre no reconocido '{1}'."
 
 // Eval
@@ -766,7 +763,6 @@
 #define STRING_UDA_COLLISION         "El UDA denominado '{1}' es el mismo que un atributo del núcleo, y no está permitido."
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
-#define STRING_TLS_INIT_FAIL         "Error inicializando TLS. {1}"
 #define STRING_ERROR_DETAILS         "El ajuste 'calendar.details.report' debe contener un único nombre de informe."
 #define STRING_ERROR_NO_FILTER       "Los filtros de línea de comando no están soportados por este comando."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
