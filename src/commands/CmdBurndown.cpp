@@ -902,7 +902,7 @@ unsigned Chart::burndown_size (unsigned ntasks)
 
   // Choose the number from here rounded up to the nearest 10% of the next
   // highest power of 10 or half of power of 10.
-  const unsigned count = (unsigned) log10 (std::numeric_limits<unsigned>::max ());
+  const unsigned count = (unsigned) log10 (static_cast<double>(std::numeric_limits<unsigned>::max ()));
   unsigned half = 500;
   unsigned full = 1000;
 
