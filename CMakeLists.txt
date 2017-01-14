@@ -97,6 +97,26 @@ else (HAVE_UUID_UNPARSE_LOWER)
   message ("-- Found libuuid, using internal uuid_unparse_lower")
 endif (HAVE_UUID_UNPARSE_LOWER)
 
+if (SOLARIS)
+  # accept() is in libsocket according to its manpage
+  message("-- Looking for libsocket")
+  find_library (SOCKET_LIBRARY NAMES socket)
+  if (SOCKET_LIBRARY)
+    set (TASK_LIBRARIES    ${TASK_LIBRARIES} ${SOCKET_LIBRARY})
+  else (SOCKET_LIBRARY)
+    message(FATAL_ERROR "-- libsocket not found.")
+  endif (SOCKET_LIBRARY)
+
+  # inet_ntop() is in libnsl according to its manpage
+  message("-- Looking for libnsl")
+  find_library (NSL_LIBRARY NAMES nsl)
+  if (NSL_LIBRARY)
+    set (TASK_LIBRARIES    ${TASK_LIBRARIES} ${NSL_LIBRARY})
+  else (NSL_LIBRARY)
+    message(FATAL_ERROR "-- libnsl not found.")
+  endif (NSL_LIBRARY)
+endif (SOLARIS)
+
 # Set the package language.
 if (LANGUAGE)
   set (PACKAGE_LANGUAGE ${LANGUAGE})
