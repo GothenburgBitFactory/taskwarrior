@@ -58,7 +58,7 @@ class TestBug1837(TestCase):
     def test_chinese_character_search(self):
         """Add a task with Chinese characters and search for them."""
         self.t("add 中文测试zzz")
-        code, out, err = self.t("/中/ info")
+        code, out, err = self.t("rc.debug=1 /中/ info")
         self.tap(out)
         self.tap(err)
 
