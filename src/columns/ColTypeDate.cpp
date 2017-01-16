@@ -61,8 +61,8 @@ ColumnTypeDate::ColumnTypeDate ()
                format (now.toJulian (), 13, 12),
                now.toEpochString (),
                now.toISO (),
-               Duration (Datetime () - now).formatVague (),
-               '-' + Duration (Datetime () - now).formatVague (),
+               Duration (Datetime () - now).formatVague (true),
+               '-' + Duration (Datetime () - now).formatVague (true),
                "",
                Duration (Datetime () - now).format ()};
 }
@@ -94,7 +94,7 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
     else if (_style == "countdown")
     {
       Datetime now;
-      minimum = maximum = Duration (now - date).formatVague ().length ();
+      minimum = maximum = Duration (now - date).formatVague (true).length ();
     }
     else if (_style == "julian")
     {
@@ -112,23 +112,23 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
     {
       Datetime now;
       if (now > date)
-        minimum = maximum = Duration (now - date).formatVague ().length ();
+        minimum = maximum = Duration (now - date).formatVague (true).length ();
       else
-        minimum = maximum = Duration (date - now).formatVague ().length () + 1;
+        minimum = maximum = Duration (date - now).formatVague (true).length () + 1;
     }
     else if (_style == "relative")
     {
       Datetime now;
       if (now < date)
-        minimum = maximum = Duration (date - now).formatVague ().length ();
+        minimum = maximum = Duration (date - now).formatVague (true).length ();
       else
-        minimum = maximum = Duration (now - date).formatVague ().length () + 1;
+        minimum = maximum = Duration (now - date).formatVague (true).length () + 1;
     }
     else if (_style == "remaining")
     {
       Datetime now;
       if (date > now)
-        minimum = maximum = Duration (date - now).formatVague ().length ();
+        minimum = maximum = Duration (date - now).formatVague (true).length ();
     }
   }
 }
@@ -164,7 +164,7 @@ void ColumnTypeDate::render (
     else if (_style == "countdown")
     {
       Datetime now;
-      renderStringRight (lines, width, color, Duration (now - date).formatVague ());
+      renderStringRight (lines, width, color, Duration (now - date).formatVague (true));
     }
     else if (_style == "julian")
       renderStringRight (lines, width, color, format (date.toJulian (), 13, 12));
@@ -179,24 +179,24 @@ void ColumnTypeDate::render (
     {
       Datetime now;
       if (now > date)
-        renderStringLeft (lines, width, color, Duration (now - date).formatVague ());
+        renderStringRight (lines, width, color, Duration (now - date).formatVague (true));
       else
-        renderStringLeft (lines, width, color, '-' + Duration (date - now).formatVague ());
+        renderStringRight (lines, width, color, '-' + Duration (date - now).formatVague (true));
     }
     else if (_style == "relative")
     {
       Datetime now;
       if (now < date)
-        renderStringLeft (lines, width, color, Duration (date - now).formatVague ());
+        renderStringRight (lines, width, color, Duration (date - now).formatVague (true));
       else
-        renderStringLeft (lines, width, color, '-' + Duration (now - date).formatVague ());
+        renderStringRight (lines, width, color, '-' + Duration (now - date).formatVague (true));
     }
 
     else if (_style == "remaining")
     {
       Datetime now;
       if (date > now)
-        renderStringRight (lines, width, color, Duration (date - now).formatVague ());
+        renderStringRight (lines, width, color, Duration (date - now).formatVague (true));
     }
   }
 }
