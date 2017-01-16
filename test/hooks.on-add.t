@@ -147,7 +147,7 @@ class TestHooksOnAdd(TestCase):
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t.runError("add foo")
-        self.assertIn("Hook Error: JSON Object missing 'uuid' attribute.", err)
+        self.assertIn("Hook Error: JSON Object missing 'uuid' attribute from hook script: on-add-misbehave6", err)
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
