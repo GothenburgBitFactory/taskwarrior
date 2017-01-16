@@ -167,6 +167,7 @@ bool getDOM (const std::string& name, Variant& value)
 //   <date>.second
 //
 // Annotations (entry is a date):
+//   annotations.count
 //   annotations.<N>.entry
 //   annotations.<N>.description
 //
@@ -296,6 +297,12 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
       else if (elements[1] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
       else if (elements[1] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
     }
+  }
+
+  if (ref.data.size () && size == 2 && elements[0] == "annotations" && elements[1] == "count")
+  {
+    value = Variant (static_cast<int> (ref.getAnnotationCount ()));
+    return true;
   }
 
   if (ref.data.size () && size == 3 && elements[0] == "annotations")

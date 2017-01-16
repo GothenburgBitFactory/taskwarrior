@@ -146,6 +146,16 @@ class TestDOM(TestCase):
         code, out, err = self.t("_get 3.due.second")
         self.assertEqual("0\n", out)
 
+    def test_dom_annotation_count_1(self):
+        """ DOM 1.annotation.count """
+        code, out, err = self.t("_get 1.annotations.count")
+        self.assertEqual("0\n", out)
+
+    def test_dom_annotation_count_3(self):
+        """ DOM 3.annotation.count """
+        code, out, err = self.t("_get 3.annotations.count")
+        self.assertEqual("1\n", out)
+
     def test_dom_annotation_entry(self):
         """ DOM 3.annotations.1.entry """
         code, out, err = self.t("_get 3.annotations.1.entry")

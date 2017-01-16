@@ -5,6 +5,7 @@ New Features in Taskwarrior 2.5.2
   - The 'help' command now takes a 'usage' argument, which displays only the
     command usage.
   - Improved compatibility with SmartOS, OmniOS and OpenIndiana.
+  - New DOM reference: annotations.count.
 
 New Commands in Taskwarrior 2.5.2
 

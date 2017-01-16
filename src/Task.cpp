@@ -1033,6 +1033,17 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Task::getAnnotationCount () const
+{
+  int count = 0;
+  for (auto& ann : data)
+    if (! ann.first.compare (0, 11, "annotation_", 11))
+      ++count;
+
+  return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Task::hasAnnotations () const
 {
   return annotation_count ? true : false;
