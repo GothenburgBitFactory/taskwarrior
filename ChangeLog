@@ -58,37 +58,7 @@
           (thanks to jrabbit).
 - Improved certificate validation diagnostics
           (thanks to Jelle van der Waa).
-
-- TD-64   sync conflict deleted all annotations of the task
-          (thanks to Markus Beppler, Konstantin Vorobyev).
-- TW-1785 Purge command to remove deleted tasks
-          (thanks to Paul Beckingham)
-- TW-1772 Implementation of circular dependency detection is
-          inefficient (thanks to Michael Meier).
-- TW-1788 Closing a reopened task does not update the end time
-          (thanks to Ralph Bean).
-- Added 'juhannus' as a synonym for 'midsommarafton'
-          (thanks to Lynoure Braakman).
-- Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
-  virtual tag.
-- Removed deprecated 'alias._query' setting.
-- Fixed ambiguity in the esp-ESP localization
-          (thanks to Fidel Mato).
-- Deprecated the 'new-uuid' verbosity option, since its functionality can be
-  removed by merging with 'new-id'.
-- Correct a false-positive warning when a due date is removed and a wait is
-  added.
-- Added 'QUARTER' virtual tag.
-- Fixed unquoted glob in bash completion script
-          (thanks to Ran Benita).
-- Deprecated use of alternate Boolean configuration settings. Use values "0" for
-  off, and "1" for on. Avoid used of "on", "off", "true", "t", "false", "f",
-  "yes", "y", "no", "n".
-- Fixed test harness for Python 3.x.
-          (thanks to jrabbit).
-- Improved certificate validation diagnostics
-          (thanks to Jelle van der Waa).
-- - Improved portability for SunOS-like OSes.
+- Improved portability for SunOS-like OSes.
           (thanks to Antonio Huete Jimenez).
 
 ------ current release ---------------------------
