@@ -1159,6 +1159,7 @@ bool Lexer::isOperator (std::string& token, Lexer::Type& type)
 //   <date>.second
 //
 // Annotations (entry is a date):
+//   annotations.count
 //   annotations.<N>.entry
 //   annotations.<N>.description
 //
@@ -1259,6 +1260,13 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   if (isLiteral ("annotations", true,  false) &&
       isLiteral (".",           false, false))
   {
+    if (isLiteral ("count", false, false))
+    {
+      token = _text.substr (marker, _cursor - marker);
+      type = Lexer::Type::dom;
+      return true;
+    }
+
     std::string extractedToken;
     Lexer::Type extractedType;
     if (isInteger (extractedToken, extractedType))

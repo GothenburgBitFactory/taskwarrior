@@ -32,6 +32,8 @@
           (thanks to george js).
 - TW-1820 Install with -DLANGUAGE=2 flag not work.
           (thanks to E. Manuel Cerr'on Angeles)
+- TW-1827 Extract annotations from a task
+          (thanks to Ryan).
 - TW-1855 "Well-known" CA certificates not properly auto-loaded
           (thanks to Flavio Poletti).
 - TW-1857 Change Task::get call to the more efficient Task::has
