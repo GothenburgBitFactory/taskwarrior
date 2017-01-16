@@ -8,6 +8,8 @@
           (thanks to Eric Fluger).
 - TW-1572 Alternative approach to urgency inheritance
           (thanks to Jens Erat, Wim Schuermann).
+- TW-1667 hooks: upon failure indicate which hook failed
+          (thanks to Daniel Shahaf).
 - TW-1785 Purge command to remove deleted tasks
           (thanks to Paul Beckingham).
 - TW-1772 Implementation of circular dependency detection is

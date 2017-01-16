@@ -47,10 +47,10 @@ private:
   std::vector <std::string> scripts (const std::string&) const;
   void separateOutput (const std::vector <std::string>&, std::vector <std::string>&, std::vector <std::string>&) const;
   bool isJSON (const std::string&) const;
-  void assertValidJSON (const std::vector <std::string>&) const;
-  void assertNTasks (const std::vector <std::string>&, unsigned int) const;
-  void assertSameTask (const std::vector <std::string>&, const Task&) const;
-  void assertFeedback (const std::vector <std::string>&) const;
+  void assertValidJSON (const std::vector <std::string>&, const std::string&) const;
+  void assertNTasks (const std::vector <std::string>&, unsigned int, const std::string&) const;
+  void assertSameTask (const std::vector <std::string>&, const Task&, const std::string&) const;
+  void assertFeedback (const std::vector <std::string>&, const std::string&) const;
   std::vector <std::string>& buildHookScriptArgs (std::vector <std::string>&) const;
   int callHookScript (const std::string&, const std::vector <std::string>&, std::vector <std::string>&) const;
 

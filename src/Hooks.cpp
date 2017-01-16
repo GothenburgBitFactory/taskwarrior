@@ -42,6 +42,7 @@
 #include <Lexer.h>
 #include <JSON.h>
 #include <Timer.h>
+#include <FS.h>
 #include <format.h>
 #include <shared.h>
 #include <util.h>
@@ -138,7 +139,7 @@ void Hooks::onLaunch () const
       std::vector <std::string> outputFeedback;
       separateOutput (output, outputJSON, outputFeedback);
 
-      assertNTasks (outputJSON, 0);
+      assertNTasks (outputJSON, 0, script);
 
       if (status == 0)
       {
@@ -147,7 +148,7 @@ void Hooks::onLaunch () const
       }
       else
       {
-        assertFeedback (outputFeedback);
+        assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
           context.error (message);
 
@@ -200,7 +201,7 @@ void Hooks::onExit () const
       std::vector <std::string> outputFeedback;
       separateOutput (output, outputJSON, outputFeedback);
 
-      assertNTasks (outputJSON, 0);
+      assertNTasks (outputJSON, 0, script);
 
       if (status == 0)
       {
@@ -209,7 +210,7 @@ void Hooks::onExit () const
       }
       else
       {
-        assertFeedback (outputFeedback);
+        assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
           context.error (message);
 
@@ -259,9 +260,9 @@ void Hooks::onAdd (Task& task) const
 
       if (status == 0)
       {
-        assertNTasks    (outputJSON, 1);
-        assertValidJSON (outputJSON);
-        assertSameTask  (outputJSON, task);
+        assertNTasks    (outputJSON, 1, script);
+        assertValidJSON (outputJSON, script);
+        assertSameTask  (outputJSON, task, script);
 
         // Propagate forward to the next script.
         input[0] = outputJSON[0];
@@ -271,7 +272,7 @@ void Hooks::onAdd (Task& task) const
       }
       else
       {
-        assertFeedback (outputFeedback);
+        assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
           context.error (message);
 
@@ -326,9 +327,9 @@ void Hooks::onModify (const Task& before, Task& after) const
 
       if (status == 0)
       {
-        assertNTasks    (outputJSON, 1);
-        assertValidJSON (outputJSON);
-        assertSameTask  (outputJSON, before);
+        assertNTasks    (outputJSON, 1, script);
+        assertValidJSON (outputJSON, script);
+        assertSameTask  (outputJSON, before, script);
 
         // Propagate accepted changes forward to the next script.
         input[1] = outputJSON[0];
@@ -338,7 +339,7 @@ void Hooks::onModify (const Task& before, Task& after) const
       }
       else
       {
-        assertFeedback (outputFeedback);
+        assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
           context.error (message);
 
@@ -399,7 +400,9 @@ bool Hooks::isJSON (const std::string& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Hooks::assertValidJSON (const std::vector <std::string>& input) const
+void Hooks::assertValidJSON (
+  const std::vector <std::string>& input,
+  const std::string& script) const
 {
   for (auto& i : input)
   {
@@ -407,7 +410,7 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
         i[0] != '{'     ||
         i[i.length () - 1] != '}')
     {
-      context.error (STRING_HOOK_ERROR_OBJECT);
+      context.error (format (STRING_HOOK_ERROR_OBJECT, Path (script).name ()));
       throw 0;
     }
 
@@ -416,19 +419,19 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
       json::value* root = json::parse (i);
       if (root->type () != json::j_object)
       {
-        context.error (STRING_HOOK_ERROR_OBJECT);
+        context.error (format (STRING_HOOK_ERROR_OBJECT, Path (script).name ()));
         throw 0;
       }
 
       if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
       {
-        context.error (STRING_HOOK_ERROR_NODESC);
+        context.error (format (STRING_HOOK_ERROR_NODESC, Path (script).name ()));
         throw 0;
       }
 
       if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
       {
-        context.error (STRING_HOOK_ERROR_NOUUID);
+        context.error (format (STRING_HOOK_ERROR_NOUUID, Path (script).name ()));
         throw 0;
       }
 
@@ -452,17 +455,23 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Hooks::assertNTasks (const std::vector <std::string>& input, unsigned int n) const
+void Hooks::assertNTasks (
+  const std::vector <std::string>& input,
+  unsigned int n,
+  const std::string& script) const
 {
   if (input.size () != n)
   {
-    context.error (format (STRING_HOOK_ERROR_BAD_NUM, n, (int) input.size ()));
+    context.error (format (STRING_HOOK_ERROR_BAD_NUM, n, (int) input.size (), Path (script).name ()));
     throw 0;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& task) const
+void Hooks::assertSameTask (
+  const std::vector <std::string>& input,
+  const Task& task,
+  const std::string& script) const
 {
   std::string uuid = task.get ("uuid");
 
@@ -475,7 +484,7 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
     if (u == root_obj->_data.end ()          ||
         u->second->type () != json::j_string)
     {
-      context.error (format (STRING_HOOK_ERROR_SAME1, uuid));
+      context.error (format (STRING_HOOK_ERROR_SAME1, uuid, Path (script).name ()));
       throw 0;
     }
 
@@ -485,7 +494,7 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
     std::string json_uuid = json::decode (text);
     if (json_uuid != uuid)
     {
-      context.error (format (STRING_HOOK_ERROR_SAME2, uuid, json_uuid));
+      context.error (format (STRING_HOOK_ERROR_SAME2, uuid, json_uuid, Path (script).name ()));
       throw 0;
     }
 
@@ -494,7 +503,9 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Hooks::assertFeedback (const std::vector <std::string>& input) const
+void Hooks::assertFeedback (
+  const std::vector <std::string>& input,
+  const std::string& script) const
 {
   bool foundSomething = false;
   for (auto& i : input)
@@ -503,7 +514,7 @@ void Hooks::assertFeedback (const std::vector <std::string>& input) const
 
   if (! foundSomething)
   {
-    context.error (STRING_HOOK_ERROR_NOFEEDBACK);
+    context.error (format (STRING_HOOK_ERROR_NOFEEDBACK, Path (script).name ()));
     throw 0;
   }
 }
