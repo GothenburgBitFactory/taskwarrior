@@ -64,6 +64,7 @@ class TestDefaults(TestCase):
         cls.t.config("default.project",      "PROJECT")
         cls.t.config("uda.priority.default", "M")
         cls.t.config("default.due",          "eom")
+        cls.t.config("default.scheduled",    "eom")
 
     def test_all_defaults(self):
         """Verify all defaults are employed"""
@@ -73,6 +74,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"PROJECT"', out)
         self.assertIn('"priority":"M"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_all_specified(self):
         self.t("add project:specific priority:L due:eoy all specified")
@@ -81,6 +83,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"specific"', out)
         self.assertIn('"priority":"L"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_project_specified(self):
         self.t("add project:specific project specified")
@@ -89,6 +92,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"specific"', out)
         self.assertIn('"priority":"M"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_priority_specified(self):
         self.t("add priority:L priority specified")
@@ -97,6 +101,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"PROJECT"', out)
         self.assertIn('"priority":"L"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_default_command(self):
         self.t("add foo")

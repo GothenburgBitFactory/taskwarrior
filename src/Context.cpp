@@ -686,6 +686,7 @@ void Context::staticInitialization ()
 
   Task::defaultProject      = config.get ("default.project");
   Task::defaultDue          = config.get ("default.due");
+  Task::defaultScheduled    = config.get ("default.scheduled");
 
   Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
   Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");

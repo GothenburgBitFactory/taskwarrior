@@ -67,10 +67,11 @@ extern Task& contextTask;
 static const float epsilon = 0.000001;
 #endif
 
-std::string Task::defaultProject  = "";
-std::string Task::defaultDue      = "";
-bool Task::searchCaseSensitive    = true;
-bool Task::regex                  = false;
+std::string Task::defaultProject   = "";
+std::string Task::defaultDue       = "";
+std::string Task::defaultScheduled = "";
+bool Task::searchCaseSensitive     = true;
+bool Task::regex                   = false;
 std::map <std::string, std::string> Task::attributes;
 
 std::map <std::string, float> Task::coefficients;
@@ -1567,6 +1568,20 @@ void Task::validate (bool applyDefault /* = true */)
       }
     }
 
+    // Override with default.scheduled, if not specified.
+    if (Task::defaultScheduled != "" &&
+        ! has ("scheduled"))
+    {
+      if (context.columns["scheduled"]->validate (Task::defaultScheduled))
+      {
+        Duration dur (Task::defaultScheduled);
+        if (dur.toTime_t () != 0)
+          set ("scheduled", (Datetime () + dur.toTime_t ()).toEpoch ());
+        else
+          set ("scheduled", Datetime (Task::defaultScheduled).toEpoch ());
+      }
+    }
+
     // If a UDA has a default value in the configuration,
     // override with uda.(uda).default, if not specified.
     // Gather a list of all UDAs with a .default value
@@ -2046,8 +2061,9 @@ void Task::modify (modType type, bool text_required /* = false */)
           // ::composeF4 will skip if the value is blank, but the presence of
           // the attribute will prevent ::validate from applying defaults.
           if ((has (name) && get (name) != "") ||
-              (name == "due"     && context.config.has ("default.due")) ||
-              (name == "project" && context.config.has ("default.project")))
+              (name == "due"       && context.config.has ("default.due")) ||
+              (name == "scheduled" && context.config.has ("default.scheduled")) ||
+              (name == "project"   && context.config.has ("default.project")))
           {
             mods = true;
             set (name, "");
