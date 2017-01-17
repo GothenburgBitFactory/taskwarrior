@@ -43,6 +43,8 @@
 - TW‐1858 Change signature for dependencyGetBlocked
 - TW-1859 Change signature of Task::getTags
 - TW-1860 Change signature of Task::getAnnotations
+- TW-1861 Truncated description when adding annotation
+          (thanks to eezewaek).
 - TW-1873 Specify different path to extensions/hooks directory
           (thanks to Eli).
 - TW-1878 uuids subcommand produces a space-delimited list, not comma-delimited
