@@ -49,6 +49,8 @@
           (thanks to Eli).
 - TW-1878 uuids subcommand produces a space-delimited list, not comma-delimited
           (thanks to Scott Kostyshak).
+- TW-1881 Missing last character(s) in Description field
+          (thanks to Hubert Toullec).
 - TW-1881 default.scheduled seems not to work
           (thanks to Onion).
 - Added 'juhannus' as a synonym for 'midsommarafton'
