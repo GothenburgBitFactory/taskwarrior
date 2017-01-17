@@ -1185,6 +1185,14 @@ is assumed to be relative to 'now'. The default is blank.
 
 .TP
 .B
+default.scheduled=...
+Provides a default scheduled date for the
+.I task add
+command, if you don't specify one. You can use a date, or a duration value which
+is assumed to be relative to 'now'. The default is blank.
+
+.TP
+.B
 uda.<name>.default=...
 Provides default values for UDA fields when using the
 .I task add

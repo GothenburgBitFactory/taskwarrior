@@ -102,6 +102,7 @@ syn match taskrcGoodKey '^\s*\Vdefault.command='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.due='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.priority='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.project='he=e-1
+syn match taskrcGoodKey '^\s*\Vdefault.scheduled='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefaultheight='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefaultwidth='he=e-1
 syn match taskrcGoodKey '^\s*\Vdependency.confirmation='he=e-1
