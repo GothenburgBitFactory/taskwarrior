@@ -458,7 +458,6 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     if (task.get ("scheduled") != "")
     {
       context.footnote (STRING_EDIT_SCHED_DEL);
-      task.setStatus (Task::pending);
       task.remove ("scheduled");
     }
   }
