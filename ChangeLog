@@ -47,6 +47,8 @@
           (thanks to eezewaek).
 - TW-1873 Specify different path to extensions/hooks directory
           (thanks to Eli).
+- TW-1877 task done, task edit, task is now pending
+          (thanks to Eric Hymowitz).
 - TW-1878 uuids subcommand produces a space-delimited list, not comma-delimited
           (thanks to Scott Kostyshak).
 - TW-1881 Missing last character(s) in Description field
