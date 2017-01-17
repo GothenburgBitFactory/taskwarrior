@@ -11,7 +11,7 @@ New Commands in Taskwarrior 2.6.0
 
 New Configuration Options in Taskwarrior 2.6.0
 
-  - 
+  - The 'default.scheduled' date/duraiton works just like 'default.due'.
 
 Newly Deprecated Features in Taskwarrior 2.6.0
 
