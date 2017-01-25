@@ -376,9 +376,7 @@ void CLI2::handleArg0 ()
     A2 cal ("calendar", Lexer::Type::word);
     _args.push_back (cal);
   }
-  else if (basename == "task" ||
-           basename == "tw" ||
-           basename == "t")
+  else
   {
     _args.push_back (a);
   }

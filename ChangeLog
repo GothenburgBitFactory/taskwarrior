@@ -45,6 +45,8 @@
 - TW-1860 Change signature of Task::getAnnotations
 - TW-1861 Truncated description when adding annotation
           (thanks to eezewaek).
+- TW-1869 segmentation fault (on unusual installation)
+          (thanks to Eric Hymowitz).
 - TW-1873 Specify different path to extensions/hooks directory
           (thanks to Eli).
 - TW-1877 task done, task edit, task is now pending
