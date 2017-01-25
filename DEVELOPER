@@ -1,8 +1,8 @@
 How to Build Taskwarrior
 
   Satisfy the Requirements:
-    - gcc 4.7 or later, clang 3.3 or later or equivalent. This is because C++11
-      is now used.
+    - gcc 4.9 or later, clang 3.3 or later or equivalent. This is because C++11
+      is now used throughout the source.
     - libuuid
     - gnutls (optional)
     - python 2.7 or 3 (optional, for running the test suite)
@@ -30,6 +30,7 @@ How to Build Taskwarrior
   If you send a patch (support@taskwarrior.org), make sure that patch is made
   against git HEAD on the development branch. We cannot apply patches made
   against the tarball source, or master.
+
 
 General Statement
   This file is intended to convey the current efforts, priorities and needs of
@@ -103,6 +104,7 @@ General Statement
 
   Next are some specific areas that need attention.
 
+
 New Code Needs
   This is code that needs to be written.
 
@@ -117,6 +119,7 @@ New Code Needs
     This 'extension' release is a collection of all the requested features that
     lie outside of the core product, and will be implemented as external scripts
     by anyone who wishes to participate.
+
 
 Unit Tests Needed
   There are always more unit tests needed. More specifically, better unit tests
@@ -157,4 +160,4 @@ Current Codebase Condition
 
 ---
 
-2016-12-18 Updated for 2.6.0
+2017-01-24 Updated for 2.6.0
