@@ -56,7 +56,7 @@ std::vector <Task> dependencyGetBlocked (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <Task> dependencyGetBlocking (const Task& task)
 {
-  std::string depends = task.get ("depends");
+  auto depends = task.get ("depends");
   std::vector <Task> blocking;
 
   if (depends != "")
