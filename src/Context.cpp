@@ -201,8 +201,8 @@ int Context::initialize (int argc, const char** argv)
     cli2.analyze ();
 
     // Extract a recomposed command line.
-    bool foundDefault = false;
-    bool foundAssumed = false;
+    auto foundDefault = false;
+    auto foundAssumed = false;
     std::string combined;
     for (auto& a : cli2._args)
     {
