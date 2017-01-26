@@ -828,7 +828,7 @@ void Context::updateXtermTitle ()
 // This function allows a clean output if the command is a helper subcommand.
 void Context::updateVerbosity ()
 {
-  std::string command = cli2.getCommand ();
+  auto command = cli2.getCommand ();
   if (command != "" &&
       command[0] == '_')
   {
