@@ -809,7 +809,7 @@ void Context::updateXtermTitle ()
 {
   if (config.getBoolean ("xterm.title") && isatty (STDOUT_FILENO))
   {
-    std::string command = cli2.getCommand ();
+    auto command = cli2.getCommand ();
     std::string title;
 
     for (auto a = cli2._args.begin (); a != cli2._args.end (); ++a)
