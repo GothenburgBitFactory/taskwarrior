@@ -68,6 +68,7 @@ int main (int argc, char** argv)
     // Combine all the arguments into one expression string.
     std::string expression;
     for (int i = 1; i < argc; i++)
+    {
       if (!strcmp (argv[i], "-h") || ! strcmp (argv[i], "--help"))
       {
         std::cout << '\n'
@@ -104,6 +105,7 @@ int main (int argc, char** argv)
         infix = false;
       else
         expression += std::string (argv[i]) + ' ';
+    }
 
     Variant result;
     if (infix)
