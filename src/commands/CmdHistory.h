@@ -29,20 +29,90 @@
 
 #include <string>
 #include <Command.h>
+#include <Table.h>
+#include <Datetime.h>
+#include <i18n.h>
 
-class CmdHistoryMonthly : public Command
+template<class HistoryStrategy>
+class CmdHistoryBase : public Command
 {
 public:
-  CmdHistoryMonthly ();
+  CmdHistoryBase ();
   int execute (std::string&);
 };
 
-class CmdHistoryAnnual : public Command
-{
+////////////////////////////////////////////////////////////////////////////i
+class MonthlyHistoryStrategy {
 public:
-  CmdHistoryAnnual ();
-  int execute (std::string&);
+  static Datetime getRelevantDate (const Datetime & dt) {
+    return dt.startOfMonth ();
+  }
+
+  static void setupTableDates (Table & view) {
+    view.add (STRING_CMD_HISTORY_YEAR);
+    view.add (STRING_CMD_HISTORY_MONTH);
+  }
+
+  static void insertRowDate (Table & view, int row, time_t rowTime, time_t lastTime) {
+    Datetime dt (rowTime);
+    int m, d, y;
+    dt.toYMD (y, m, d);
+
+    Datetime last_dt (lastTime);
+    int last_m, last_d, last_y;
+    last_dt.toYMD (last_y, last_m, last_d);
+
+    if (y != last_y)
+    {
+      view.set (row, 0, y);
+    }
+    view.set (row, 1, Datetime::monthName(m));
+  }
+
+  static constexpr const char * keyword = "history.monthly";
+  static constexpr const char * usage = "task <filter> history.monthly";
+  static constexpr const char * description = STRING_CMD_HISTORY_USAGE_M;
+  static constexpr unsigned int dateFieldCount = 2;
 };
+
+typedef CmdHistoryBase<MonthlyHistoryStrategy> CmdHistoryMonthly;
+////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////i
+class AnnualHistoryStrategy {
+public:
+  static Datetime getRelevantDate (const Datetime & dt) {
+    return dt.startOfYear ();
+  }
+
+  static void setupTableDates (Table & view) {
+    view.add (STRING_CMD_HISTORY_YEAR);
+  }
+
+  static void insertRowDate (Table & view, int row, time_t rowTime, time_t lastTime) {
+    Datetime dt (rowTime);
+    int m, d, y;
+    dt.toYMD (y, m, d);
+
+    Datetime last_dt (lastTime);
+    int last_m, last_d, last_y;
+    last_dt.toYMD (last_y, last_m, last_d);
+
+    if (y != last_y)
+    {
+      view.set (row, 0, y);
+    }
+  }
+
+  static constexpr const char * keyword = "history.annual";
+  static constexpr const char * usage = "task <filter> history.annual";
+  static constexpr const char * description = STRING_CMD_HISTORY_USAGE_A;
+  static constexpr unsigned int dateFieldCount = 1;
+};
+
+typedef CmdHistoryBase<AnnualHistoryStrategy> CmdHistoryAnnual;
+////////////////////////////////////////////////////////////////////////////
 
 class CmdGHistoryMonthly : public Command
 {
