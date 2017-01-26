@@ -19,8 +19,8 @@ Startup
 
 
 Command Line Parsing
-  Command line parsing is difficult because of all the ambiguity. The solution
-  is to make multiple passes over the command line. For example, the command
+  Command line parsing is difficult because of lots ambiguity. The solution is
+  to make multiple passes over the command line. For example, the command
   determines whether subsequent arguments are interpreted as part of a filter or
   set of modifications.
 
@@ -42,6 +42,8 @@ Command Line Parsing
   checking, and the expansion of the command name. The arguments are then
   tagged to indicate what part of the command line іt represents, such as a
   filter, operator, or command.
+
+  The CLI2 object will be replaced by a generalized parser and grammar.
 
 
 Dispatch
@@ -73,7 +75,7 @@ TDB2
   isolate code from file I/O, locking and parsing details. It is also
   responsible for minimizing reads, writes and parsing of data files.
 
-  All input is assumed to be UTF8. All stored data is UTF8.
+  All input is assumed to be UTF8. All stored data is treated as UTF8.
 
 
 GC
@@ -107,10 +109,15 @@ Files
   The completed.data file accumulates data over time, and grows unbounded.
 
   The undo.data file accumulates changes over time, and grows unbounded. It
-  provides all the necessary metadata to support the 'undo' command.
+  provides all the necessary metadata to support the 'undo' command. Deleting
+  this file has two effects which are to remove the undo capability, and remove
+  the ability for the 'info' command to show a change history. The undo file
+  can grow quite large, and it can be argued that only the last N transactions
+  are worth keeping, where N is about 10.
 
   The backlog.data file contains an accumulated set of changes that have not
   been transmitted to Taskserver. It grows unbounded between 'sync' commands.
+  If you do not use sync, it is fine to just delete this file to sae space.
 
 
 Filter
