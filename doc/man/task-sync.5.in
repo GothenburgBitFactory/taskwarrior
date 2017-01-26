@@ -5,8 +5,8 @@ task-sync \- A discussion and tutorial for the various task(1) data
 synchronization capabilities.
 
 .SH INTRODUCTION
-Taskwarrior has several sync options, external and internal.  If you wish to
-sync your data, choose one method only; mixing methods is only going to lead to
+Taskwarrior has several sync options, both external and built in.  If you wish
+to sync your data, choose one method only; mixing methods is going to lead to
 problems.  Each of the methods discussed have their own strengths.
 
 .SH ALTERNATIVES
@@ -14,14 +14,15 @@ There are three alternatives for syncing data, which are:
 
 1) Version control systems, such as git, hg, svn
 .br
-2) File hosting systems, such as DropBox
+2) File sharing systems, such as DropBox, Google Drive
 .br
 3) Using the Taskserver and the 'sync' command
 
 
 .SH OPTION 1: VERSION CONTROL SYSTEMS
 There are several good, distributed VCS systems (git, hg, ...) and centralized
-VCS systems (svn ...), and they function in a similar fashion for our purposes.
+VCS systems (svn, cvs ...), and they all function in a similar fashion for our
+purposes.
 
 Setup is straightforward.  You place your .task directory under revision
 control.  You then need to perform a regular commit/push/pull/update to make
@@ -44,8 +45,8 @@ Weaknesses:
   - You need to provide the mechanism for making sure copies are up to date
 
 
-.SH OPTION 2: FILE HOSTING SERVICES
-There are many file hosting services, such as DropBox, Amazon S3, Google Drive,
+.SH OPTION 2: FILE SHARING SERVICES
+There are many file sharing services, such as DropBox, Amazon S3, Google Drive,
 SkyDrive and more.  This technique involves storing your .task directory in a
 shared directory under the control of the file hosting services.
 
@@ -76,7 +77,7 @@ Weaknesses:
 
 
 .SH OPTION 3: TASKSERVER
-The Taskserver was designed for this purpose to be secure, fast and conflict
+The Taskserver was designed for this purpose to be secure, fast and conflict-
 free, allowing data interchange between assorted Taskwarrior clients, and
 tolerant of network connectivity problems.
 
@@ -116,7 +117,7 @@ Taskwarrior to trust any certificate.
 
 After setup, you run a one-time sync initialization, like this:
 
-    $ task sync initialize
+    $ task sync init
 
 This will make sure your client and the server are properly in sync to begin
 with.  From this point on, you never run the 'initialize' command again, just
@@ -129,6 +130,17 @@ safely run the command as often as you like.  When there are no changes to sync,
 nothing happens.  If you do not have connectivity, your task changes accumulate
 so that when you next run 'sync' with proper connectivity, the changes are
 properly handled, in the right order.
+
+If you run multiple clients that sync to the same server, you will need to run
+this command on your primary client (the one you use most often):
+
+    $ task config recurrence on
+
+And on the other clients, run:
+
+    $ task config recurrence off
+
+This protects you against the effects of a sync/duplication bug.
 
 Strengths:
 .br
