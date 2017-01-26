@@ -40,7 +40,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <Task> dependencyGetBlocked (const Task& task)
 {
-  std::string uuid = task.get ("uuid");
+  auto uuid = task.get ("uuid");
 
   std::vector <Task> blocked;
   for (auto& it : context.tdb2.pending.get_tasks ())
