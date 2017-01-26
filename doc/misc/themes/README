@@ -1,5 +1,8 @@
 Themes
 
+These scripts are a way to generate a little sample data, and show the color
+themes.  It is not intended for general use.
+
 To generate samples of themes, first execute the 'setup' script to generate the
 sample data.  Note that this data may need to be tweaked to include qualities
 that need to be illustrated in theme sample.
