@@ -467,7 +467,7 @@ int Context::dispatch (std::string &out)
 int Context::getWidth ()
 {
   // Determine window size.
-  int width = config.getInteger ("defaultwidth");
+  auto width = config.getInteger ("defaultwidth");
 
   // A zero width value means 'infinity', which is approximated here by 2^16.
   if (width == 0)
