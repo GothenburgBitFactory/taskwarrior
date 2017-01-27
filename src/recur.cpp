@@ -229,7 +229,7 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
 
   else if (period == "weekdays")
   {
-    int dow = current.dayOfWeek ();
+    auto dow = current.dayOfWeek ();
     int days;
 
          if (dow == 5) days = 3;
