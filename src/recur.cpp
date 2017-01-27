@@ -425,7 +425,7 @@ bool nag (Task& task)
   if (task.hasTag ("nonag"))
     return false;
 
-  std::string nagMessage = context.config.get ("nag");
+  auto nagMessage = context.config.get ("nag");
   if (nagMessage != "")
   {
     // Scan all pending, non-recurring tasks.
