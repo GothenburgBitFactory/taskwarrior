@@ -57,55 +57,142 @@ CmdHistoryBase<HistoryStrategy>::CmdHistoryBase ()
 }
 
 template<class HistoryStrategy>
-int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
+void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
 {
-  int rc = 0;
+  int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
 
-  // TODO 'groups' should probably be std::set
-  std::map <time_t, int> groups;          // Represents any timeinterval with data
-  std::map <time_t, int> addedGroup;      // Additions by timeinterval
-  std::map <time_t, int> completedGroup;  // Completions by timeinterval
-  std::map <time_t, int> deletedGroup;    // Deletions by timeinterval
+  // Now build the view.
+  Table view;
+  if (context.config.getBoolean ("color"))
+    view.forceColor ();
+  view.width (context.getWidth ());
 
-  // Apply filter.
-  handleRecurrence ();
-  Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  HistoryStrategy::setupTableDates (view);
 
-  for (auto& task : filtered)
+  view.add (STRING_CMD_GHISTORY_NUMBER); // Fixed.
+
+  Color color_add    (context.config.get ("color.history.add"));
+  Color color_done   (context.config.get ("color.history.done"));
+  Color color_delete (context.config.get ("color.history.delete"));
+  Color label        (context.config.get ("color.label"));
+
+  view.colorHeader (label);
+
+  // Determine the longest line, and the longest "added" line.
+  int maxAddedLine = 0;
+  int maxRemovedLine = 0;
+  for (auto& i : groups)
   {
-    Datetime entry (task.get_date ("entry"));
+    if (completedGroup[i.first] + deletedGroup[i.first] > maxRemovedLine)
+      maxRemovedLine = completedGroup[i.first] + deletedGroup[i.first];
 
-    Datetime end;
-    if (task.has ("end"))
-      end = Datetime (task.get_date ("end"));
+    if (addedGroup[i.first] > maxAddedLine)
+      maxAddedLine = addedGroup[i.first];
+  }
 
-    time_t epoch = HistoryStrategy::getRelevantDate (entry).toEpoch ();
-    groups[epoch] = 0;
+  int maxLine = maxAddedLine + maxRemovedLine;
+  if (maxLine > 0)
+  {
+    unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
 
-    // Every task has an entry date, but exclude templates.
-    if (task.getStatus () != Task::recurring)
-      ++addedGroup[epoch];
+    int totalAdded     = 0;
+    int totalCompleted = 0;
+    int totalDeleted   = 0;
 
-    // All deleted tasks have an end date.
-    if (task.getStatus () == Task::deleted)
+    time_t priorTime = 0;
+    int row = 0;
+    for (auto& i : groups)
     {
-      epoch = HistoryStrategy::getRelevantDate (end).toEpoch ();
-      groups[epoch] = 0;
-      ++deletedGroup[epoch];
-    }
+      row = view.addRow ();
 
-    // All completed tasks have an end date.
-    else if (task.getStatus () == Task::completed)
-    {
-      epoch = HistoryStrategy::getRelevantDate (end).toEpoch ();
-      groups[epoch] = 0;
-      ++completedGroup[epoch];
+      totalAdded     += addedGroup[i.first];
+      totalCompleted += completedGroup[i.first];
+      totalDeleted   += deletedGroup[i.first];
+
+      HistoryStrategy::insertRowDate (view, row, i.first, priorTime);
+      priorTime = i.first;
+
+      unsigned int addedBar     = (widthOfBar *     addedGroup[i.first]) / maxLine;
+      unsigned int completedBar = (widthOfBar * completedGroup[i.first]) / maxLine;
+      unsigned int deletedBar   = (widthOfBar *   deletedGroup[i.first]) / maxLine;
+
+      std::string bar = "";
+      if (context.color ())
+      {
+        std::string aBar = "";
+        if (addedGroup[i.first])
+        {
+          aBar = format (addedGroup[i.first]);
+          while (aBar.length () < addedBar)
+            aBar = ' ' + aBar;
+        }
+
+        std::string cBar = "";
+        if (completedGroup[i.first])
+        {
+          cBar = format (completedGroup[i.first]);
+          while (cBar.length () < completedBar)
+            cBar = ' ' + cBar;
+        }
+
+        std::string dBar = "";
+        if (deletedGroup[i.first])
+        {
+          dBar = format (deletedGroup[i.first]);
+          while (dBar.length () < deletedBar)
+            dBar = ' ' + dBar;
+        }
+
+        bar += std::string (leftOffset - aBar.length (), ' ');
+
+        bar += color_add.colorize    (aBar);
+        bar += color_done.colorize   (cBar);
+        bar += color_delete.colorize (dBar);
+      }
+      else
+      {
+        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += '+';
+        std::string cBar = ""; while (cBar.length () < completedBar) cBar += 'X';
+        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += '-';
+
+        bar += std::string (leftOffset - aBar.length (), ' ');
+        bar += aBar + cBar + dBar;
+      }
+
+      view.set (row, HistoryStrategy::dateFieldCount + 0, bar);
     }
   }
 
-  // Now build the view.
+  std::stringstream out;
+  if (view.rows ())
+  {
+    out << optionalBlankLine ()
+        << view.render ()
+        << '\n';
+
+    if (context.color ())
+      out << format (STRING_CMD_HISTORY_LEGEND,
+                     color_add.colorize (STRING_CMD_HISTORY_ADDED),
+                     color_done.colorize (STRING_CMD_HISTORY_COMP),
+                     color_delete.colorize (STRING_CMD_HISTORY_DEL))
+          << optionalBlankLine ()
+          << '\n';
+    else
+      out << STRING_CMD_HISTORY_LEGEND_A
+          << '\n';
+  }
+  else
+  {
+    context.footnote (STRING_FEEDBACK_NO_TASKS);
+    rc = 1;
+  }
+
+  output = out.str ();
+}
+
+template<class HistoryStrategy>
+void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
+{
   Table view;
   if (context.config.getBoolean ("color"))
     view.forceColor ();
@@ -199,414 +286,70 @@ int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
   }
 
   output = out.str ();
+}
+
+template<class HistoryStrategy>
+int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
+{
+  rc = 0;
+
+  // TODO is this necessary?
+  groups.clear ();
+  addedGroup.clear ();
+  deletedGroup.clear ();
+  completedGroup.clear ();
+
+  // Apply filter.
+  handleRecurrence ();
+  Filter filter;
+  std::vector <Task> filtered;
+  filter.subset (filtered);
+
+  for (auto& task : filtered)
+  {
+    Datetime entry (task.get_date ("entry"));
+
+    Datetime end;
+    if (task.has ("end"))
+      end = Datetime (task.get_date ("end"));
+
+    time_t epoch = HistoryStrategy::getRelevantDate (entry).toEpoch ();
+    groups[epoch] = 0;
+
+    // Every task has an entry date, but exclude templates.
+    if (task.getStatus () != Task::recurring)
+      ++addedGroup[epoch];
+
+    // All deleted tasks have an end date.
+    if (task.getStatus () == Task::deleted)
+    {
+      epoch = HistoryStrategy::getRelevantDate (end).toEpoch ();
+      groups[epoch] = 0;
+      ++deletedGroup[epoch];
+    }
+
+    // All completed tasks have an end date.
+    else if (task.getStatus () == Task::completed)
+    {
+      epoch = HistoryStrategy::getRelevantDate (end).toEpoch ();
+      groups[epoch] = 0;
+      ++completedGroup[epoch];
+    }
+  }
+
+  // Now build the view.
+
+  if (HistoryStrategy::graphical) {
+    this->outputGraphical (output);
+  } else {
+    this->outputTabular (output);
+  }
+
   return rc;
 }
 
 // Explicit instantiations, avoiding cpp-inclusion or implementation in header
 template class CmdHistoryBase<MonthlyHistoryStrategy>;
 template class CmdHistoryBase<AnnualHistoryStrategy>;
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-CmdGHistoryMonthly::CmdGHistoryMonthly ()
-{
-  _keyword               = "ghistory.monthly";
-  _usage                 = "task <filter> ghistory.monthly";
-  _description           = STRING_CMD_GHISTORY_USAGE_M;
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = true;
-  _accepts_filter        = true;
-  _accepts_modifications = false;
-  _accepts_miscellaneous = false;
-  _category              = Command::Category::graphs;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int CmdGHistoryMonthly::execute (std::string& output)
-{
-  int rc = 0;
-  std::map <time_t, int> groups;          // Represents any month with data
-  std::map <time_t, int> addedGroup;      // Additions by month
-  std::map <time_t, int> completedGroup;  // Completions by month
-  std::map <time_t, int> deletedGroup;    // Deletions by month
-
-  // Apply filter.
-  handleRecurrence ();
-  Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
-
-  for (auto& task : filtered)
-  {
-    Datetime entry (task.get_date ("entry"));
-
-    Datetime end;
-    if (task.has ("end"))
-      end = Datetime (task.get_date ("end"));
-
-    time_t epoch = entry.startOfMonth ().toEpoch ();
-    groups[epoch] = 0;
-
-    // Every task has an entry date, but exclude templates.
-    if (task.getStatus () != Task::recurring)
-      ++addedGroup[epoch];
-
-    // All deleted tasks have an end date.
-    if (task.getStatus () == Task::deleted)
-    {
-      epoch = end.startOfMonth ().toEpoch ();
-      groups[epoch] = 0;
-      ++deletedGroup[epoch];
-    }
-
-    // All completed tasks have an end date.
-    else if (task.getStatus () == Task::completed)
-    {
-      epoch = end.startOfMonth ().toEpoch ();
-      groups[epoch] = 0;
-      ++completedGroup[epoch];
-    }
-  }
-
-  int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
-
-  // Now build the view.
-  Table view;
-  if (context.config.getBoolean ("color"))
-    view.forceColor ();
-  view.width (context.getWidth ());
-  view.add (STRING_CMD_GHISTORY_YEAR);
-  view.add (STRING_CMD_GHISTORY_MONTH);
-  view.add (STRING_CMD_GHISTORY_NUMBER); // Fixed.
-
-  Color color_add    (context.config.get ("color.history.add"));
-  Color color_done   (context.config.get ("color.history.done"));
-  Color color_delete (context.config.get ("color.history.delete"));
-  Color label        (context.config.get ("color.label"));
-
-  view.colorHeader (label);
-
-  // Determine the longest line, and the longest "added" line.
-  int maxAddedLine = 0;
-  int maxRemovedLine = 0;
-  for (auto& i : groups)
-  {
-    if (completedGroup[i.first] + deletedGroup[i.first] > maxRemovedLine)
-      maxRemovedLine = completedGroup[i.first] + deletedGroup[i.first];
-
-    if (addedGroup[i.first] > maxAddedLine)
-      maxAddedLine = addedGroup[i.first];
-  }
-
-  int maxLine = maxAddedLine + maxRemovedLine;
-  if (maxLine > 0)
-  {
-    unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
-
-    int totalAdded     = 0;
-    int totalCompleted = 0;
-    int totalDeleted   = 0;
-
-    int priorYear = 0;
-    int row = 0;
-    for (auto& i : groups)
-    {
-      row = view.addRow ();
-
-      totalAdded     += addedGroup[i.first];
-      totalCompleted += completedGroup[i.first];
-      totalDeleted   += deletedGroup[i.first];
-
-      Datetime dt (i.first);
-      int m, d, y;
-      dt.toYMD (y, m, d);
-
-      if (y != priorYear)
-      {
-        view.set (row, 0, y);
-        priorYear = y;
-      }
-      view.set (row, 1, Datetime::monthName(m));
-
-      unsigned int addedBar     = (widthOfBar *     addedGroup[i.first]) / maxLine;
-      unsigned int completedBar = (widthOfBar * completedGroup[i.first]) / maxLine;
-      unsigned int deletedBar   = (widthOfBar *   deletedGroup[i.first]) / maxLine;
-
-      std::string bar = "";
-      if (context.color ())
-      {
-        std::string aBar = "";
-        if (addedGroup[i.first])
-        {
-          aBar = format (addedGroup[i.first]);
-          while (aBar.length () < addedBar)
-            aBar = ' ' + aBar;
-        }
-
-        std::string cBar = "";
-        if (completedGroup[i.first])
-        {
-          cBar = format (completedGroup[i.first]);
-          while (cBar.length () < completedBar)
-            cBar = ' ' + cBar;
-        }
-
-        std::string dBar = "";
-        if (deletedGroup[i.first])
-        {
-          dBar = format (deletedGroup[i.first]);
-          while (dBar.length () < deletedBar)
-            dBar = ' ' + dBar;
-        }
-
-        bar += std::string (leftOffset - aBar.length (), ' ');
-
-        bar += color_add.colorize    (aBar);
-        bar += color_done.colorize   (cBar);
-        bar += color_delete.colorize (dBar);
-      }
-      else
-      {
-        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += '+';
-        std::string cBar = ""; while (cBar.length () < completedBar) cBar += 'X';
-        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += '-';
-
-        bar += std::string (leftOffset - aBar.length (), ' ');
-        bar += aBar + cBar + dBar;
-      }
-
-      view.set (row, 2, bar);
-    }
-  }
-
-  std::stringstream out;
-  if (view.rows ())
-  {
-    out << optionalBlankLine ()
-        << view.render ()
-        << '\n';
-
-    if (context.color ())
-      out << format (STRING_CMD_HISTORY_LEGEND,
-                     color_add.colorize (STRING_CMD_HISTORY_ADDED),
-                     color_done.colorize (STRING_CMD_HISTORY_COMP),
-                     color_delete.colorize (STRING_CMD_HISTORY_DEL))
-          << optionalBlankLine ()
-          << '\n';
-    else
-      out << STRING_CMD_HISTORY_LEGEND_A
-          << '\n';
-  }
-  else
-  {
-    context.footnote (STRING_FEEDBACK_NO_TASKS);
-    rc = 1;
-  }
-
-  output = out.str ();
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CmdGHistoryAnnual::CmdGHistoryAnnual ()
-{
-  _keyword               = "ghistory.annual";
-  _usage                 = "task <filter> ghistory.annual";
-  _description           = STRING_CMD_GHISTORY_USAGE_A;
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = true;
-  _accepts_filter        = true;
-  _accepts_modifications = false;
-  _accepts_miscellaneous = false;
-  _category              = Command::Category::graphs;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int CmdGHistoryAnnual::execute (std::string& output)
-{
-  int rc = 0;
-  std::map <time_t, int> groups;          // Represents any month with data
-  std::map <time_t, int> addedGroup;      // Additions by month
-  std::map <time_t, int> completedGroup;  // Completions by month
-  std::map <time_t, int> deletedGroup;    // Deletions by month
-
-  // Apply filter.
-  handleRecurrence ();
-  Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
-
-  for (auto& task : filtered)
-  {
-    Datetime entry (task.get_date ("entry"));
-
-    Datetime end;
-    if (task.has ("end"))
-      end = Datetime (task.get_date ("end"));
-
-    time_t epoch = entry.startOfYear ().toEpoch ();
-    groups[epoch] = 0;
-
-    // Every task has an entry date, but exclude templates.
-    if (task.getStatus () != Task::recurring)
-      ++addedGroup[epoch];
-
-    // All deleted tasks have an end date.
-    if (task.getStatus () == Task::deleted)
-    {
-      epoch = end.startOfYear ().toEpoch ();
-      groups[epoch] = 0;
-      ++deletedGroup[epoch];
-    }
-
-    // All completed tasks have an end date.
-    else if (task.getStatus () == Task::completed)
-    {
-      epoch = end.startOfYear ().toEpoch ();
-      groups[epoch] = 0;
-      ++completedGroup[epoch];
-    }
-  }
-
-  int widthOfBar = context.getWidth () - 5;   // 5 == strlen ("YYYY ")
-
-  // Now build the view.
-  Table view;
-  if (context.config.getBoolean ("color"))
-    view.forceColor ();
-  view.width (context.getWidth ());
-  view.add (STRING_CMD_GHISTORY_YEAR);
-  view.add (STRING_CMD_GHISTORY_NUMBER); // Fixed.
-
-  Color color_add    (context.config.get ("color.history.add"));
-  Color color_done   (context.config.get ("color.history.done"));
-  Color color_delete (context.config.get ("color.history.delete"));
-  Color label        (context.config.get ("color.label"));
-
-  view.colorHeader (label);
-
-  // Determine the longest line, and the longest "added" line.
-  int maxAddedLine = 0;
-  int maxRemovedLine = 0;
-  for (auto& i : groups)
-  {
-    if (completedGroup[i.first] + deletedGroup[i.first] > maxRemovedLine)
-      maxRemovedLine = completedGroup[i.first] + deletedGroup[i.first];
-
-    if (addedGroup[i.first] > maxAddedLine)
-      maxAddedLine = addedGroup[i.first];
-  }
-
-  int maxLine = maxAddedLine + maxRemovedLine;
-  if (maxLine > 0)
-  {
-    unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
-
-    int totalAdded     = 0;
-    int totalCompleted = 0;
-    int totalDeleted   = 0;
-
-    int priorYear = 0;
-    int row = 0;
-    for (auto& i : groups)
-    {
-      row = view.addRow ();
-
-      totalAdded     += addedGroup[i.first];
-      totalCompleted += completedGroup[i.first];
-      totalDeleted   += deletedGroup[i.first];
-
-      Datetime dt (i.first);
-      int m, d, y;
-      dt.toYMD (y, m, d);
-
-      if (y != priorYear)
-      {
-        view.set (row, 0, y);
-        priorYear = y;
-      }
-
-      unsigned int addedBar     = (widthOfBar *     addedGroup[i.first]) / maxLine;
-      unsigned int completedBar = (widthOfBar * completedGroup[i.first]) / maxLine;
-      unsigned int deletedBar   = (widthOfBar *   deletedGroup[i.first]) / maxLine;
-
-      std::string bar = "";
-      if (context.color ())
-      {
-        std::string aBar = "";
-        if (addedGroup[i.first])
-        {
-          aBar = format (addedGroup[i.first]);
-          while (aBar.length () < addedBar)
-            aBar = ' ' + aBar;
-        }
-
-        std::string cBar = "";
-        if (completedGroup[i.first])
-        {
-          cBar = format (completedGroup[i.first]);
-          while (cBar.length () < completedBar)
-            cBar = ' ' + cBar;
-        }
-
-        std::string dBar = "";
-        if (deletedGroup[i.first])
-        {
-          dBar = format (deletedGroup[i.first]);
-          while (dBar.length () < deletedBar)
-            dBar = ' ' + dBar;
-        }
-
-        bar += std::string (leftOffset - aBar.length (), ' ');
-        bar += color_add.colorize    (aBar);
-        bar += color_done.colorize   (cBar);
-        bar += color_delete.colorize (dBar);
-      }
-      else
-      {
-        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += '+';
-        std::string cBar = ""; while (cBar.length () < completedBar) cBar += 'X';
-        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += '-';
-
-        bar += std::string (leftOffset - aBar.length (), ' ');
-        bar += aBar + cBar + dBar;
-      }
-
-      view.set (row, 1, bar);
-    }
-  }
-
-  std::stringstream out;
-  if (view.rows ())
-  {
-    out << optionalBlankLine ()
-        << view.render ()
-        << '\n';
-
-    if (context.color ())
-      out << format (STRING_CMD_HISTORY_LEGEND,
-                     color_add.colorize (STRING_CMD_HISTORY_ADDED),
-                     color_done.colorize (STRING_CMD_HISTORY_COMP),
-                     color_delete.colorize (STRING_CMD_HISTORY_DEL))
-          << optionalBlankLine ()
-          << '\n';
-    else
-      out << STRING_CMD_HISTORY_LEGEND_A
-          << '\n';
-  }
-  else
-  {
-    context.footnote (STRING_FEEDBACK_NO_TASKS);
-    rc = 1;
-  }
-
-  output = out.str ();
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
+template class CmdHistoryBase<MonthlyGHistoryStrategy>;
+template class CmdHistoryBase<AnnualGHistoryStrategy>;
