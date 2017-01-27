@@ -171,7 +171,7 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
     specificEnd = true;
   }
 
-  int recurrence_limit = context.config.getInteger ("recurrence.limit");
+  auto recurrence_limit = context.config.getInteger ("recurrence.limit");
   int recurrence_counter = 0;
   Datetime now;
   for (Datetime i = due; ; i = getNextRecurrence (i, recur))
