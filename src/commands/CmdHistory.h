@@ -47,23 +47,31 @@ private:
   std::map <time_t, int> deletedGroup;    // Deletions by timeinterval
   int rc;
 
-  void outputTabular(std::string&);
-  void outputGraphical(std::string&);
+  void outputTabular (std::string&);
+  void outputGraphical (std::string&);
 };
 
 ////////////////////////////////////////////////////////////////////////////i
-class MonthlyHistoryStrategy {
+class MonthlyHistoryStrategy
+{
 public:
-  static Datetime getRelevantDate (const Datetime & dt) {
+  static Datetime getRelevantDate (const Datetime & dt)
+  {
     return dt.startOfMonth ();
   }
 
-  static void setupTableDates (Table & view) {
+  static void setupTableDates (Table & view)
+  {
     view.add (STRING_CMD_HISTORY_YEAR);
     view.add (STRING_CMD_HISTORY_MONTH);
   }
 
-  static void insertRowDate (Table & view, int row, time_t rowTime, time_t lastTime) {
+  static void insertRowDate (
+    Table& view,
+    int row,
+    time_t rowTime,
+    time_t lastTime)
+  {
     Datetime dt (rowTime);
     int m, d, y;
     dt.toYMD (y, m, d);
@@ -76,33 +84,41 @@ public:
     {
       view.set (row, 0, y);
     }
-    view.set (row, 1, Datetime::monthName(m));
+
+    view.set (row, 1, Datetime::monthName (m));
   }
 
-  static constexpr const char * keyword = "history.monthly";
-  static constexpr const char * usage = "task <filter> history.monthly";
-  static constexpr const char * description = STRING_CMD_HISTORY_USAGE_M;
+  static constexpr const char* keyword         = "history.monthly";
+  static constexpr const char* usage           = "task <filter> history.monthly";
+  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_M;
   static constexpr unsigned int dateFieldCount = 2;
-  static constexpr bool graphical = false;
+  static constexpr bool graphical              = false;
 };
 
 typedef CmdHistoryBase<MonthlyHistoryStrategy> CmdHistoryMonthly;
-////////////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////////////////////i
-class MonthlyGHistoryStrategy {
+class MonthlyGHistoryStrategy
+{
 public:
-  static Datetime getRelevantDate (const Datetime & dt) {
+  static Datetime getRelevantDate (const Datetime & dt)
+  {
     return dt.startOfMonth ();
   }
 
-  static void setupTableDates (Table & view) {
+  static void setupTableDates (Table & view)
+  {
     view.add (STRING_CMD_HISTORY_YEAR);
     view.add (STRING_CMD_HISTORY_MONTH);
   }
 
-  static void insertRowDate (Table & view, int row, time_t rowTime, time_t lastTime) {
+  static void insertRowDate (
+    Table& view,
+     int row,
+     time_t rowTime,
+     time_t lastTime)
+  {
     Datetime dt (rowTime);
     int m, d, y;
     dt.toYMD (y, m, d);
@@ -115,32 +131,40 @@ public:
     {
       view.set (row, 0, y);
     }
-    view.set (row, 1, Datetime::monthName(m));
+
+    view.set (row, 1, Datetime::monthName (m));
   }
 
-  static constexpr const char * keyword = "ghistory.monthly";
-  static constexpr const char * usage = "task <filter> ghistory.monthly";
-  static constexpr const char * description = STRING_CMD_GHISTORY_USAGE_M;
+  static constexpr const char* keyword         = "ghistory.monthly";
+  static constexpr const char* usage           = "task <filter> ghistory.monthly";
+  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_M;
   static constexpr unsigned int dateFieldCount = 2;
-  static constexpr bool graphical = true;
+  static constexpr bool graphical              = true;
 };
 
 typedef CmdHistoryBase<MonthlyGHistoryStrategy> CmdGHistoryMonthly;
-////////////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////////////////////i
-class AnnualHistoryStrategy {
+class AnnualHistoryStrategy
+{
 public:
-  static Datetime getRelevantDate (const Datetime & dt) {
+  static Datetime getRelevantDate (const Datetime & dt) 
+  {
     return dt.startOfYear ();
   }
 
-  static void setupTableDates (Table & view) {
+  static void setupTableDates (Table & view)
+  {
     view.add (STRING_CMD_HISTORY_YEAR);
   }
 
-  static void insertRowDate (Table & view, int row, time_t rowTime, time_t lastTime) {
+  static void insertRowDate (
+    Table& view,
+     int row,
+     time_t rowTime,
+     time_t lastTime)
+  {
     Datetime dt (rowTime);
     int m, d, y;
     dt.toYMD (y, m, d);
@@ -155,29 +179,36 @@ public:
     }
   }
 
-  static constexpr const char * keyword = "history.annual";
-  static constexpr const char * usage = "task <filter> history.annual";
-  static constexpr const char * description = STRING_CMD_HISTORY_USAGE_A;
+  static constexpr const char* keyword         = "history.annual";
+  static constexpr const char* usage           = "task <filter> history.annual";
+  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_A;
   static constexpr unsigned int dateFieldCount = 1;
-  static constexpr bool graphical = false;
+  static constexpr bool graphical              = false;
 };
 
 typedef CmdHistoryBase<AnnualHistoryStrategy> CmdHistoryAnnual;
-////////////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////////////////////i
-class AnnualGHistoryStrategy {
+class AnnualGHistoryStrategy
+{
 public:
-  static Datetime getRelevantDate (const Datetime & dt) {
+  static Datetime getRelevantDate (const Datetime & dt)
+  {
     return dt.startOfYear ();
   }
 
-  static void setupTableDates (Table & view) {
+  static void setupTableDates (Table & view)
+  {
     view.add (STRING_CMD_HISTORY_YEAR);
   }
 
-  static void insertRowDate (Table & view, int row, time_t rowTime, time_t lastTime) {
+  static void insertRowDate (
+    Table& view,
+    int row,
+    time_t rowTime,
+    time_t lastTime)
+  {
     Datetime dt (rowTime);
     int m, d, y;
     dt.toYMD (y, m, d);
@@ -192,14 +223,13 @@ public:
     }
   }
 
-  static constexpr const char * keyword = "ghistory.annual";
-  static constexpr const char * usage = "task <filter> ghistory.annual";
-  static constexpr const char * description = STRING_CMD_GHISTORY_USAGE_A;
+  static constexpr const char* keyword         = "ghistory.annual";
+  static constexpr const char* usage           = "task <filter> ghistory.annual";
+  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_A;
   static constexpr unsigned int dateFieldCount = 1;
-  static constexpr bool graphical = true;
+  static constexpr bool graphical              = true;
 };
 
 typedef CmdHistoryBase<AnnualGHistoryStrategy> CmdGHistoryAnnual;
-////////////////////////////////////////////////////////////////////////////
 
 #endif

@@ -56,6 +56,7 @@ CmdHistoryBase<HistoryStrategy>::CmdHistoryBase ()
   _category              = Command::Category::graphs;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 template<class HistoryStrategy>
 void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
 {
@@ -116,10 +117,10 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
       unsigned int completedBar = (widthOfBar * completedGroup[i.first]) / maxLine;
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i.first]) / maxLine;
 
-      std::string bar = "";
+      std::string bar;
       if (context.color ())
       {
-        std::string aBar = "";
+        std::string aBar;
         if (addedGroup[i.first])
         {
           aBar = format (addedGroup[i.first]);
@@ -127,7 +128,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
             aBar = ' ' + aBar;
         }
 
-        std::string cBar = "";
+        std::string cBar;
         if (completedGroup[i.first])
         {
           cBar = format (completedGroup[i.first]);
@@ -135,7 +136,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
             cBar = ' ' + cBar;
         }
 
-        std::string dBar = "";
+        std::string dBar;
         if (deletedGroup[i.first])
         {
           dBar = format (deletedGroup[i.first]);
@@ -151,9 +152,9 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
       }
       else
       {
-        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += '+';
-        std::string cBar = ""; while (cBar.length () < completedBar) cBar += 'X';
-        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += '-';
+        std::string aBar; while (aBar.length () < addedBar)     aBar += '+';
+        std::string cBar; while (cBar.length () < completedBar) cBar += 'X';
+        std::string dBar; while (dBar.length () < deletedBar)   dBar += '-';
 
         bar += std::string (leftOffset - aBar.length (), ' ');
         bar += aBar + cBar + dBar;
@@ -190,6 +191,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
   output = out.str ();
 }
 
+////////////////////////////////////////////////////////////////////////////////
 template<class HistoryStrategy>
 void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
 {
@@ -288,6 +290,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
   output = out.str ();
 }
 
+////////////////////////////////////////////////////////////////////////////////
 template<class HistoryStrategy>
 int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
 {
@@ -353,3 +356,5 @@ template class CmdHistoryBase<MonthlyHistoryStrategy>;
 template class CmdHistoryBase<AnnualHistoryStrategy>;
 template class CmdHistoryBase<MonthlyGHistoryStrategy>;
 template class CmdHistoryBase<AnnualGHistoryStrategy>;
+
+////////////////////////////////////////////////////////////////////////////////
