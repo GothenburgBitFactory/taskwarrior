@@ -183,7 +183,7 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
       // If i > until, it means there are no more tasks to generate, and if the
       // parent mask contains all + or X, then there never will be another task
       // to generate, and this parent task may be safely reaped.
-      std::string mask = parent.get ("mask");
+      auto mask = parent.get ("mask");
       if (mask.length () == allDue.size () &&
           mask.find ('-') == std::string::npos)
         return false;
