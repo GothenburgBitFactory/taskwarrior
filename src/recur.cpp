@@ -378,14 +378,14 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
 // update it's mask.
 void updateRecurrenceMask (Task& task)
 {
-  std::string uuid = task.get ("parent");
+  auto uuid = task.get ("parent");
   Task parent;
 
   if (uuid != "" &&
       context.tdb2.get (uuid, parent))
   {
     unsigned int index = strtol (task.get ("imask").c_str (), NULL, 10);
-    std::string mask = parent.get ("mask");
+    auto mask = parent.get ("mask");
     if (mask.length () > index)
     {
       mask[index] = (task.getStatus () == Task::pending)   ? '-'
