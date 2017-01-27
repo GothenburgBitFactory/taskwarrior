@@ -122,7 +122,7 @@ std::string legacyCheckForDeprecatedVariables ()
     out << STRING_CONFIG_DEPRECATED_VAR
         << "\n";
 
-    for (auto& dep : deprecated)
+    for (const auto& dep : deprecated)
       out << "  " << dep << "\n";
 
     out << "\n";
@@ -156,7 +156,7 @@ std::string legacyCheckForDeprecatedColumns ()
     out << STRING_CONFIG_DEPRECATED_COL
         << "\n";
 
-    for (auto& dep : deprecated)
+    for (const auto& dep : deprecated)
       out << "  " << dep << "=" << context.config.get (dep) << "\n";
 
     out << "\n";
