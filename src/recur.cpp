@@ -204,12 +204,12 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
 ////////////////////////////////////////////////////////////////////////////////
 Datetime getNextRecurrence (Datetime& current, std::string& period)
 {
-  int m = current.month ();
-  int d = current.day ();
-  int y = current.year ();
-  int ho = current.hour ();
-  int mi = current.minute ();
-  int se = current.second ();
+  auto m = current.month ();
+  auto d = current.day ();
+  auto y = current.year ();
+  auto ho = current.hour ();
+  auto mi = current.minute ();
+  auto se = current.second ();
 
   // Some periods are difficult, because they can be vague.
   if (period == "monthly" ||
