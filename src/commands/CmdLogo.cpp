@@ -49,11 +49,6 @@ CmdLogo::CmdLogo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Algorithm:
-//   Copy file rc.data.location/extensions
-//   Generate UUID
-//   Call the "install" function once, store results in rc:
-//     extension.<uuid>=<JSON>
 int CmdLogo::execute (std::string& output)
 {
   static const char* data[] =
@@ -89,7 +84,7 @@ int CmdLogo::execute (std::string& output)
     ""
   };
 
-  if (!context.color ())
+  if (! context.color ())
     throw std::string (STRING_CMD_LOGO_COLOR_REQ);
 
   std::string indent (context.config.getInteger ("indent.report"), ' ');
