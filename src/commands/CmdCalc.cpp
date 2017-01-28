@@ -54,10 +54,8 @@ CmdCalc::CmdCalc ()
 int CmdCalc::execute (std::string& output)
 {
   // Configurable infix/postfix
-  bool infix = true;
-  if (context.config.get ("expressions") == "infix")
-    infix = true;
-  else if (context.config.get ("expressions") == "postfix")
+  auto infix {true};
+  if (context.config.get ("expressions") == "postfix")
     infix = false;
 
   // Create an evaluator with DOM access.
@@ -68,7 +66,7 @@ int CmdCalc::execute (std::string& output)
 
   // Compile all the args into one expression.
   std::string expression;
-  for (auto& word : context.cli2.getWords ())
+  for (const auto& word : context.cli2.getWords ())
     expression += word + ' ';
 
   // Evaluate according to preference.
