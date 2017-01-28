@@ -59,8 +59,8 @@ int CmdColor::execute (std::string& output)
   int rc = 0;
 
   // Get the non-attribute, non-fancy command line arguments.
-  bool legend = false;
-  std::vector <std::string> words = context.cli2.getWords ();
+  auto legend = false;
+  auto words = context.cli2.getWords ();
   for (auto& word : words)
     if (closeEnough ("legend", word))
       legend = true;
