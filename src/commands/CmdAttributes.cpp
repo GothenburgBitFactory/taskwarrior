@@ -55,11 +55,11 @@ CmdZshAttributes::CmdZshAttributes ()
 int CmdZshAttributes::execute (std::string& output)
 {
   // Get a list of all columns, sort them.
-  std::vector <std::string> columns = context.getColumns ();
+  auto columns = context.getColumns ();
   std::sort (columns.begin (), columns.end ());
 
   std::stringstream out;
-  for (auto& col : columns)
+  for (const auto& col : columns)
     out << col << ':' << col << '\n';
 
   output = out.str ();
