@@ -99,7 +99,7 @@ int CmdAnnotate::execute (std::string&)
              && confirm (STRING_CMD_ANNO_CONFIRM_R)) ||
             context.config.getBoolean ("recurrence.confirmation"))
         {
-          std::vector <Task> siblings = context.tdb2.siblings (task);
+          auto siblings = context.tdb2.siblings (task);
           for (auto& sibling : siblings)
           {
             sibling.modify (Task::modAnnotate, true);
@@ -126,7 +126,7 @@ int CmdAnnotate::execute (std::string&)
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
       context.footnote (change.second);
 
