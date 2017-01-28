@@ -51,7 +51,7 @@ CmdCompletionAliases::CmdCompletionAliases ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionAliases::execute (std::string& output)
 {
-  for (auto& alias : context.config)
+  for (const auto& alias : context.config)
     if (alias.first.substr (0, 6) == "alias.")
       output += alias.first.substr (6) + '\n';
 
