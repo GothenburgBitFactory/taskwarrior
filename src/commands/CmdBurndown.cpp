@@ -50,34 +50,21 @@ extern Context context;
 class Bar
 {
 public:
-  Bar ();
+  Bar () = default;
   Bar (const Bar&);
   Bar& operator= (const Bar&);
-  ~Bar ();
+  ~Bar () = default;
 
 public:
-  int _offset;                   // from left of chart
-  std::string _major_label;      // x-axis label, major (year/-/month)
-  std::string _minor_label;      // x-axis label, minor (month/week/day)
-  int _pending;                  // Number of pending tasks in period
-  int _started;                  // Number of started tasks in period
-  int _done;                     // Number of done tasks in period
-  int _added;                    // Number added in period
-  int _removed;                  // Number removed in period
+  int _offset              {0};    // from left of chart
+  std::string _major_label {""};   // x-axis label, major (year/-/month)
+  std::string _minor_label {""};   // x-axis label, minor (month/week/day)
+  int _pending             {0};    // Number of pending tasks in period
+  int _started             {0};    // Number of started tasks in period
+  int _done                {0};    // Number of done tasks in period
+  int _added               {0};    // Number added in period
+  int _removed             {0};    // Number removed in period
 };
-
-////////////////////////////////////////////////////////////////////////////////
-Bar::Bar ()
-: _offset (0)
-, _major_label ("")
-, _minor_label ("")
-, _pending (0)
-, _started (0)
-, _done (0)
-, _added (0)
-, _removed (0)
-{
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 Bar::Bar (const Bar& other)
@@ -101,11 +88,6 @@ Bar& Bar::operator= (const Bar& other)
   }
 
   return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Bar::~Bar ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
