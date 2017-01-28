@@ -78,9 +78,9 @@ int CmdAppend::execute (std::string&)
     Task before (task);
 
     // Append to the specified task.
-    std::string question = format (STRING_CMD_APPEND_CONFIRM,
-                                   task.identifier (true),
-                                   task.get ("description"));
+    auto question = format (STRING_CMD_APPEND_CONFIRM,
+                            task.identifier (true),
+                            task.get ("description"));
 
     task.modify (Task::modAppend, true);
 
@@ -126,7 +126,7 @@ int CmdAppend::execute (std::string&)
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
       context.footnote (change.second);
 
