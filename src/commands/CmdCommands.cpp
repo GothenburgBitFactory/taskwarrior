@@ -85,7 +85,7 @@ int CmdCommands::execute (std::string& output)
 
   for (auto& command : context.commands)
   {
-    int row = view.addRow ();
+    auto row = view.addRow ();
     view.set (row, 0, command.first);
     view.set (row, 1, Command::categoryNames.at (command.second->category ()));
 
@@ -144,15 +144,14 @@ int CmdCompletionCommands::execute (std::string& output)
 {
   // Get a list of all commands.
   std::vector <std::string> commands;
-
-  for (auto& command : context.commands)
+  for (const auto& command : context.commands)
     commands.push_back (command.first);
 
   // Sort alphabetically.
   std::sort (commands.begin (), commands.end ());
 
   std::stringstream out;
-  for (auto& c : commands)
+  for (const auto& c : commands)
     out << c << '\n';
 
   output = out.str ();
@@ -179,6 +178,7 @@ CmdZshCommands::CmdZshCommands ()
 struct ZshCommand
 {
   bool operator< (const struct ZshCommand&) const;
+
   Command::Category _category;
   std::string _command;
   std::string _description;
@@ -222,7 +222,7 @@ int CmdZshCommands::execute (std::string& output)
 
   // Emit the commands in order.
   std::stringstream out;
-  for (auto& zc : commands)
+  for (const auto& zc : commands)
     out << zc._command << ':'
         << Command::categoryNames.at (zc._category) << ':'
         << zc._description << '\n';
