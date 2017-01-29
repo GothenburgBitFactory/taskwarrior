@@ -60,7 +60,7 @@ CmdHistoryBase<HistoryStrategy>::CmdHistoryBase ()
 template<class HistoryStrategy>
 void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
 {
-  int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
+  auto widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
 
   // Now build the view.
   Table view;
@@ -80,8 +80,8 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
   view.colorHeader (label);
 
   // Determine the longest line, and the longest "added" line.
-  int maxAddedLine = 0;
-  int maxRemovedLine = 0;
+  auto maxAddedLine = 0;
+  auto maxRemovedLine = 0;
   for (auto& i : groups)
   {
     if (completedGroup[i.first] + deletedGroup[i.first] > maxRemovedLine)
@@ -91,17 +91,17 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
       maxAddedLine = addedGroup[i.first];
   }
 
-  int maxLine = maxAddedLine + maxRemovedLine;
+  auto maxLine = maxAddedLine + maxRemovedLine;
   if (maxLine > 0)
   {
     unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
 
-    int totalAdded     = 0;
-    int totalCompleted = 0;
-    int totalDeleted   = 0;
+    auto totalAdded     = 0;
+    auto totalCompleted = 0;
+    auto totalDeleted   = 0;
 
     time_t priorTime = 0;
-    int row = 0;
+    auto row = 0;
     for (auto& i : groups)
     {
       row = view.addRow ();
@@ -213,11 +213,11 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
     view.colorHeader (label);
   }
 
-  int totalAdded     = 0;
-  int totalCompleted = 0;
-  int totalDeleted   = 0;
+  auto totalAdded     = 0;
+  auto totalCompleted = 0;
+  auto totalDeleted   = 0;
 
-  int row = 0;
+  auto row = 0;
   time_t lastTime = 0;
   for (auto& i : groups)
   {
@@ -230,7 +230,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
     HistoryStrategy::insertRowDate (view, row, i.first, lastTime);
     lastTime = i.first;
 
-    int net = 0;
+    auto net = 0;
 
     if (addedGroup.find (i.first) != addedGroup.end ())
     {
@@ -316,7 +316,7 @@ int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
     if (task.has ("end"))
       end = Datetime (task.get_date ("end"));
 
-    time_t epoch = HistoryStrategy::getRelevantDate (entry).toEpoch ();
+    auto epoch = HistoryStrategy::getRelevantDate (entry).toEpoch ();
     groups[epoch] = 0;
 
     // Every task has an entry date, but exclude templates.
@@ -341,12 +341,10 @@ int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
   }
 
   // Now build the view.
-
-  if (HistoryStrategy::graphical) {
+  if (HistoryStrategy::graphical)
     this->outputGraphical (output);
-  } else {
+  else
     this->outputTabular (output);
-  }
 
   return rc;
 }
