@@ -53,14 +53,17 @@ CmdConfig::CmdConfig ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdConfig::setConfigVariable (std::string name, std::string value, bool confirmation /* = false */)
+bool CmdConfig::setConfigVariable (
+  const std::string& name,
+  const std::string& value,
+  bool confirmation /* = false */)
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
   File::read (context.config._original_file, contents);
 
-  bool found = false;
-  bool change = false;
+  auto found = false;
+  auto change = false;
 
   for (auto& line : contents)
   {
@@ -76,10 +79,10 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
       if (!confirmation ||
           confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
       {
+        line = name + '=' + json::encode (value);
+
         if (comment != std::string::npos)
-          line = name + '=' + json::encode (value) + ' ' + line.substr (comment);
-        else
-          line = name + '=' + json::encode (value);
+          line += ' ' + line.substr (comment);
 
         change = true;
       }
@@ -87,8 +90,8 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
   }
 
   // Not found, so append instead.
-  if (!found &&
-      (!confirmation ||
+  if (! found &&
+      (! confirmation ||
        confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value))))
   {
     contents.push_back (name + '=' + json::encode (value));
@@ -102,18 +105,18 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = false */)
+int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /* = false */)
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
   File::read (context.config._original_file, contents);
 
-  bool found = false;
-  bool change = false;
+  auto found = false;
+  auto change = false;
 
   for (auto line = contents.begin (); line != contents.end (); )
   {
-    bool lineDeleted = false;
+    auto lineDeleted = false;
 
     // If there is a comment on the line, it must follow the pattern.
     auto comment = line->find ('#');
@@ -143,9 +146,9 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
   if (change)
     File::write (context.config._original_file, contents);
 
-  if ( change && found )
+  if (change && found)
     return 0;
-  else if ( found )
+  else if (found)
     return 1;
   else
     return 2;
@@ -154,7 +157,7 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
 ////////////////////////////////////////////////////////////////////////////////
 int CmdConfig::execute (std::string& output)
 {
-  int rc = 0;
+  auto rc = 0;
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
@@ -166,10 +169,10 @@ int CmdConfig::execute (std::string& output)
   //   task config name          # remove name
   if (words.size ())
   {
-    bool confirmation = context.config.getBoolean ("confirmation");
-    bool found = false;
+    auto confirmation = context.config.getBoolean ("confirmation");
+    auto found = false;
 
-    std::string name = words[0];
+    auto name = words[0];
     std::string value = "";
 
     // Join the remaining words into config variable's value
@@ -186,7 +189,7 @@ int CmdConfig::execute (std::string& output)
 
     if (name != "")
     {
-      bool change = false;
+      auto change = false;
 
       // task config name value
       // task config name ""
@@ -205,7 +208,7 @@ int CmdConfig::execute (std::string& output)
         else if (rc == 1)
           found = true;
 
-        if (!found)
+        if (! found)
           throw format (STRING_CMD_CONFIG_NO_ENTRY, name);
       }
 
@@ -253,7 +256,7 @@ int CmdCompletionConfig::execute (std::string& output)
   context.config.all (configs);
   std::sort (configs.begin (), configs.end ());
 
-  for (auto& config : configs)
+  for (const auto& config : configs)
     output += config + '\n';
 
   return 0;
