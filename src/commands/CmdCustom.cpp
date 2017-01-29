@@ -65,13 +65,13 @@ CmdCustom::CmdCustom (
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCustom::execute (std::string& output)
 {
-  int rc = 0;
+  auto rc = 0;
 
   // Load report configuration.
-  std::string reportColumns = context.config.get ("report." + _keyword + ".columns");
-  std::string reportLabels  = context.config.get ("report." + _keyword + ".labels");
-  std::string reportSort    = context.config.get ("report." + _keyword + ".sort");
-  std::string reportFilter  = context.config.get ("report." + _keyword + ".filter");
+  auto reportColumns = context.config.get ("report." + _keyword + ".columns");
+  auto reportLabels  = context.config.get ("report." + _keyword + ".labels");
+  auto reportSort    = context.config.get ("report." + _keyword + ".sort");
+  auto reportFilter  = context.config.get ("report." + _keyword + ".filter");
 
   auto columns = split (reportColumns, ',');
   validateReportColumns (columns);
@@ -149,7 +149,7 @@ int CmdCustom::execute (std::string& output)
   std::vector <std::string> sortColumns;
 
   // Add the break columns, if any.
-  for (auto& so : sortOrder)
+  for (const auto& so : sortOrder)
   {
     std::string name;
     bool ascending;
@@ -187,8 +187,8 @@ int CmdCustom::execute (std::string& output)
   }
 
   // Report output can be limited by rows or lines.
-  int maxrows = 0;
-  int maxlines = 0;
+  auto maxrows = 0;
+  auto maxlines = 0;
   context.getLimits (maxrows, maxlines);
 
   // Adjust for fluff in the output.
