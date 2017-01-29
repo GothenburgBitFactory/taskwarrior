@@ -58,12 +58,13 @@ CmdImport::CmdImport ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdImport::execute (std::string&)
 {
-  int rc = 0;
-  int count = 0;
+  auto rc = 0;
+  auto count = 0;
 
   // Get filenames from command line arguments.
-  std::vector <std::string> words = context.cli2.getWords ();
-  if (! words.size () || (words.size () == 1 && words[0] == "-"))
+  auto words = context.cli2.getWords ();
+  if (! words.size () ||
+      (words.size () == 1 && words[0] == "-"))
   {
     std::cout << format (STRING_CMD_IMPORT_FILE, "STDIN") << '\n';
 
@@ -101,7 +102,7 @@ int CmdImport::execute (std::string&)
 ////////////////////////////////////////////////////////////////////////////////
 int CmdImport::import (const std::string& input)
 {
-  int count = 0;
+  auto count = 0;
   try
   {
     json::value* root = json::parse (input);
@@ -171,12 +172,12 @@ void CmdImport::importSingleTask (json::object* obj)
   // Parse the whole thing, validate the data.
   Task task (obj);
 
-  bool hasGeneratedEntry = not task.has ("entry");
-  bool hasExplicitEnd = task.has ("end");
+  auto hasGeneratedEntry = not task.has ("entry");
+  auto hasExplicitEnd = task.has ("end");
 
   task.validate ();
 
-  bool hasGeneratedEnd = not hasExplicitEnd and task.has ("end");
+  auto hasGeneratedEnd = not hasExplicitEnd and task.has ("end");
 
   // Check whether the imported task is new or a modified existing task.
   Task before;
