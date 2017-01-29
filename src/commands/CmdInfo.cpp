@@ -66,7 +66,7 @@ CmdInfo::CmdInfo ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdInfo::execute (std::string& output)
 {
-  int rc = 0;
+  auto rc = 0;
 
   // Apply filter.
   Filter filter;
@@ -87,11 +87,11 @@ int CmdInfo::execute (std::string& output)
   // Determine the output date format, which uses a hierarchy of definitions.
   //   rc.dateformat.info
   //   rc.dateformat
-  std::string dateformat = context.config.get ("dateformat.info");
+  auto dateformat = context.config.get ("dateformat.info");
   if (dateformat == "")
     dateformat = context.config.get ("dateformat");
 
-  std::string dateformatanno = context.config.get ("dateformat.annotation");
+  auto dateformatanno = context.config.get ("dateformat.annotation");
   if (dateformatanno == "")
     dateformatanno = dateformat;
 
@@ -122,7 +122,7 @@ int CmdInfo::execute (std::string& output)
     Datetime now;
 
     // id
-    int row = view.addRow ();
+    auto row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_ID);
     view.set (row, 1, (task.id ? format (task.id) : "-"));
 
@@ -131,8 +131,8 @@ int CmdInfo::execute (std::string& output)
     // description
     Color c;
     autoColorize (task, c);
-    std::string description = task.get ("description");
-    int indent = context.config.getInteger ("indent.annotation");
+    auto description = task.get ("description");
+    auto indent = context.config.getInteger ("indent.annotation");
 
     for (auto& anno : task.getAnnotations ())
       description += '\n'
@@ -254,7 +254,7 @@ int CmdInfo::execute (std::string& output)
     std::string entry = dt.toString (dateformat);
 
     std::string age;
-    std::string created = task.get ("entry");
+    auto created = task.get ("entry");
     if (created.length ())
     {
       Datetime dt (strtol (created.c_str (), NULL, 10));
@@ -379,7 +379,7 @@ int CmdInfo::execute (std::string& output)
     // uuid
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_UUID);
-    std::string uuid = task.get ("uuid");
+    auto uuid = task.get ("uuid");
     view.set (row, 1, uuid);
 
     // Task::urgency
@@ -388,7 +388,7 @@ int CmdInfo::execute (std::string& output)
     view.set (row, 1, format (task.urgency (), 4, 4));
 
     // Show any UDAs
-    std::vector <std::string> all = task.all ();
+    auto all = task.all ();
     std::string type;
     for (auto& att: all)
     {
@@ -397,7 +397,7 @@ int CmdInfo::execute (std::string& output)
         Column* col = context.columns[att];
         if (col->is_uda ())
         {
-          std::string value = task.get (att);
+          auto value = task.get (att);
           if (value != "")
           {
             row = view.addRow ();
@@ -482,7 +482,7 @@ int CmdInfo::execute (std::string& output)
           if (var.first.substr (13, 8) == "project." &&
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
-            std::string project = var.first.substr (21, end - 21);
+            auto project = var.first.substr (21, end - 21);
             if (task.get ("project").find (project) == 0)
               urgencyTerm (urgencyDetails, "PROJECT " + project, 1.0, var.second);
           }
@@ -491,7 +491,7 @@ int CmdInfo::execute (std::string& output)
           if (var.first.substr (13, 4) == "tag." &&
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
-            std::string name = var.first.substr (17, end - 17);
+            auto name = var.first.substr (17, end - 17);
             if (task.hasTag (name))
               urgencyTerm (urgencyDetails, "TAG " + name, 1.0, var.second);
           }
@@ -500,7 +500,7 @@ int CmdInfo::execute (std::string& output)
           if (var.first.substr (13, 8) == "keyword." &&
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
-            std::string keyword = var.first.substr (21, end - 21);
+            auto keyword = var.first.substr (21, end - 21);
             if (task.get ("description").find (keyword) != std::string::npos)
               urgencyTerm (urgencyDetails, "KEYWORD " + keyword, 1.0, var.second);
           }
@@ -514,7 +514,7 @@ int CmdInfo::execute (std::string& output)
           auto end = var.first.find (".coefficient");
           if (end != std::string::npos)
           {
-            const std::string uda = var.first.substr (12, end - 12);
+            auto uda = var.first.substr (12, end - 12);
             auto dot = uda.find (".");
             if (dot == std::string::npos)
             {
@@ -620,10 +620,10 @@ void CmdInfo::urgencyTerm (
   float measure,
   float coefficient) const
 {
-  float value = measure * coefficient;
+  auto value = measure * coefficient;
   if (value != 0.0)
   {
-    int row = view.addRow ();
+    auto row = view.addRow ();
     view.set (row, 0, "    " + label);
     view.set (row, 1, rightJustify (format (measure, 5, 3), 6));
     view.set (row, 2, "*");
