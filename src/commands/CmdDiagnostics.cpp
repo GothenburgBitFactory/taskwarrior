@@ -224,7 +224,7 @@ int CmdDiagnostics::execute (std::string& output)
       << context.config.get ("taskd.server")
       << '\n';
 
-  std::string ca_pem = context.config.get ("taskd.ca");
+  auto ca_pem = context.config.get ("taskd.ca");
   out << "         CA: ";
   if (ca_pem != "")
   {
@@ -240,7 +240,7 @@ int CmdDiagnostics::execute (std::string& output)
   else
     out << "-\n";
 
-  std::string cert_pem = context.config.get ("taskd.certificate");
+  auto cert_pem = context.config.get ("taskd.certificate");
   out << "Certificate: ";
   if (cert_pem != "")
   {
@@ -256,7 +256,7 @@ int CmdDiagnostics::execute (std::string& output)
   else
     out << "-\n";
 
-  std::string key_pem = context.config.get ("taskd.key");
+  auto key_pem = context.config.get ("taskd.key");
   out << "        Key: ";
   if (key_pem != "")
   {
@@ -272,7 +272,7 @@ int CmdDiagnostics::execute (std::string& output)
   else
     out << "-\n";
 
-  std::string trust_value = context.config.get ("taskd.trust");
+  auto trust_value = context.config.get ("taskd.trust");
   if (trust_value == "strict" ||
       trust_value == "ignore hostname" ||
       trust_value == "allow all")
@@ -285,7 +285,7 @@ int CmdDiagnostics::execute (std::string& output)
       << '\n';
 
   // Get credentials, but mask out the key.
-  std::string credentials = context.config.get ("taskd.credentials");
+  auto credentials = context.config.get ("taskd.credentials");
   auto last_slash = credentials.rfind ('/');
   if (last_slash != std::string::npos)
     credentials = credentials.substr (0, last_slash)
@@ -408,7 +408,7 @@ int CmdDiagnostics::execute (std::string& output)
       << ")\n";
 
   // Scan tasks for duplicate UUIDs.
-  std::vector <Task> all = context.tdb2.all_tasks ();
+  auto all = context.tdb2.all_tasks ();
   std::map <std::string, int> seen;
   std::vector <std::string> dups;
   std::string uuid;
@@ -458,7 +458,7 @@ int CmdDiagnostics::execute (std::string& output)
     }
 
     // Check recurrence parent
-    std::string parentUUID = task.get ("parent");
+    auto parentUUID = task.get ("parent");
 
     if (parentUUID != "" && ! context.tdb2.has (parentUUID))
     {
