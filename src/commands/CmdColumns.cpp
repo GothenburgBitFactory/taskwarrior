@@ -58,13 +58,13 @@ int CmdColumns::execute (std::string& output)
 {
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  std::vector <std::string> words = context.cli2.getWords ();
+  auto words = context.cli2.getWords ();
   if (words.size () > 1)
     throw std::string (STRING_CMD_COLUMNS_ARGS);
 
   // Include all columns in the table.
   std::vector <std::string> names;
-  for (auto& col : context.columns)
+  for (const auto& col : context.columns)
     names.push_back (col.first);
 
   std::sort (names.begin (), names.end ());
@@ -88,17 +88,17 @@ int CmdColumns::execute (std::string& output)
     formats.intraColorOdd (alternate);
   }
 
-  for (auto& name : names)
+  for (const auto& name : names)
   {
     if (words.size () == 0 ||
         find (name, words[0], false) != std::string::npos)
     {
-      const std::vector <std::string> styles   = context.columns[name]->styles ();
-      const std::vector <std::string> examples = context.columns[name]->examples ();
+      auto styles   = context.columns[name]->styles ();
+      auto examples = context.columns[name]->examples ();
 
       for (unsigned int i = 0; i < styles.size (); ++i)
       {
-        int row = formats.addRow ();
+        auto row = formats.addRow ();
         formats.set (row, 0, i == 0 ? name : "");
         formats.set (row, 1, i == 0 ? context.columns[name]->type () : "");
         formats.set (row, 2, i == 0 ? (context.columns[name]->modifiable () ? STRING_COLUMN_LABEL_MODIFY : STRING_COLUMN_LABEL_NOMODIFY) : "");
@@ -108,7 +108,7 @@ int CmdColumns::execute (std::string& output)
     }
   }
 
-  int row = formats.addRow ();
+  auto row = formats.addRow ();
   formats.set (row, 0, "<uda>");
   formats.set (row, 1, "<type>");
   formats.set (row, 2, "Modifiable");
@@ -148,13 +148,13 @@ int CmdCompletionColumns::execute (std::string& output)
 {
   // Include all columns.
   std::vector <std::string> names;
-  for (auto& col : context.columns)
+  for (const auto& col : context.columns)
     names.push_back (col.first);
 
   std::sort (names.begin (), names.end ());
 
   // Render only the column names.
-  for (auto& name : names)
+  for (const auto& name : names)
     output += name + '\n';
 
   return 0;
