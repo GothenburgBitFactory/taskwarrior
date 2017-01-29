@@ -55,7 +55,7 @@ CmdModify::CmdModify ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdModify::execute (std::string&)
 {
-  int rc = 0;
+  auto rc = 0;
 
   // Apply filter.
   Filter filter;
@@ -70,7 +70,7 @@ int CmdModify::execute (std::string&)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  int count = 0;
+  auto count = 0;
   for (auto& task : filtered)
   {
     Task before (task);
@@ -81,10 +81,9 @@ int CmdModify::execute (std::string&)
       // Abort if change introduces inconsistencies.
       checkConsistency(before, task);
 
-      std::string question;
-      question = format (STRING_CMD_MODIFY_CONFIRM,
-                         task.identifier (true),
-                         task.get ("description"));
+      auto question = format (STRING_CMD_MODIFY_CONFIRM,
+                              task.identifier (true),
+                              task.get ("description"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
@@ -101,7 +100,7 @@ int CmdModify::execute (std::string&)
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
       context.footnote (change.second);
 
@@ -110,22 +109,23 @@ int CmdModify::execute (std::string&)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Why is this not in Task::validate?
 void CmdModify::checkConsistency (Task &before, Task &after)
 {
   // Perform some logical consistency checks.
   if (after.has ("recur")  &&
-      !after.has ("due")   &&
-      !before.has ("due"))
+      ! after.has ("due")   &&
+      ! before.has ("due"))
     throw std::string (STRING_CMD_MODIFY_NO_DUE);
 
   if (before.has ("recur") &&
       before.has ("due")   &&
-      (!after.has ("due")  ||
+      (! after.has ("due")  ||
         after.get ("due") == ""))
     throw std::string (STRING_CMD_MODIFY_REM_DUE);
 
   if (before.has ("recur")  &&
-      (!after.has ("recur") ||
+      (! after.has ("recur") ||
         after.get ("recur") == ""))
     throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
 }
@@ -136,7 +136,7 @@ int CmdModify::modifyAndUpdate (
   std::map <std::string, std::string> *projectChanges /* = NULL */)
 {
   // This task.
-  int count = 1;
+  auto count = 1;
 
   updateRecurrenceMask (after);
   feedback_affected (STRING_CMD_MODIFY_TASK, after);
@@ -161,7 +161,7 @@ int CmdModify::modifyRecurrenceSiblings (
   Task &task,
   std::map <std::string, std::string> *projectChanges /* = NULL */)
 {
-  int count = 0;
+  auto count = 0;
 
   if ((context.config.get ("recurrence.confirmation") == "prompt"
         && confirm (STRING_CMD_MODIFY_RECUR)) ||
@@ -196,9 +196,9 @@ int CmdModify::modifyRecurrenceParent (
   Task &task,
   std::map <std::string, std::string> *projectChanges /* = NULL */)
 {
-  int count = 0;
+  auto count = 0;
 
-  std::vector <Task> children = context.tdb2.children (task);
+  auto children = context.tdb2.children (task);
   if (children.size () &&
       (! context.config.getBoolean ("recurrence.confirmation") ||
         confirm (STRING_CMD_MODIFY_RECUR)))
