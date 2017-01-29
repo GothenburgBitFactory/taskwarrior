@@ -64,11 +64,11 @@ int CmdCalendar::execute (std::string& output)
 
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
-  int width = context.getWidth ();
-  int preferredMonthsPerLine = (context.config.getInteger ("monthsperline"));
-  int monthsThatFit = width / 26;
+  auto width = context.getWidth ();
+  auto preferredMonthsPerLine = context.config.getInteger ("monthsperline");
+  auto monthsThatFit = width / 26;
 
-  int monthsPerLine = monthsThatFit;
+  auto monthsPerLine = monthsThatFit;
   if (preferredMonthsPerLine != 0 && preferredMonthsPerLine < monthsThatFit)
     monthsPerLine = preferredMonthsPerLine;
 
@@ -77,12 +77,12 @@ int CmdCalendar::execute (std::string& output)
   auto tasks = context.tdb2.pending.get_tasks ();
 
   Datetime today;
-  bool getpendingdate = false;
-  int monthsToDisplay = 1;
-  int mFrom = today.month ();
-  int yFrom = today.year ();
-  int mTo = mFrom;
-  int yTo = yFrom;
+  auto getPendingDate = false;
+  auto monthsToDisplay = 1;
+  auto mFrom = today.month ();
+  auto yFrom = today.year ();
+  auto mTo = mFrom;
+  auto yTo = yFrom;
 
   // Defaults.
   monthsToDisplay = monthsPerLine;
@@ -90,12 +90,10 @@ int CmdCalendar::execute (std::string& output)
   yFrom = today.year ();
 
   // Set up a vector of commands (1), for autoComplete.
-  std::vector <std::string> commandNames;
-  commandNames.push_back ("calendar");
+  std::vector <std::string> commandNames {"calendar"};
 
   // Set up a vector of keywords, for autoComplete.
-  std::vector <std::string> keywordNames;
-  keywordNames.push_back ("due");
+  std::vector <std::string> keywordNames {"due"};
 
   // Set up a vector of months, for autoComplete.
   std::vector <std::string> monthNames;
@@ -106,13 +104,11 @@ int CmdCalendar::execute (std::string& output)
   std::vector <std::string> matches;
 
   // Look at all args, regardless of sequence.
-  int argMonth = 0;
-  int argYear = 0;
-  bool argWholeYear = false;
+  auto argMonth = 0;
+  auto argYear = 0;
+  auto argWholeYear = false;
 
-  std::vector <std::string> words = context.cli2.getWords ();
-
-  for (auto& arg : words)
+  for (auto& arg : context.cli2.getWords ())
   {
     // Some version of "calendar".
     if (autoComplete (Lexer::lowerCase (arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
@@ -120,7 +116,7 @@ int CmdCalendar::execute (std::string& output)
 
     // "due".
     else if (autoComplete (Lexer::lowerCase (arg), keywordNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
-      getpendingdate = true;
+      getPendingDate = true;
 
     // "y".
     else if (Lexer::lowerCase (arg) == "y")
@@ -152,7 +148,7 @@ int CmdCalendar::execute (std::string& output)
 
   // Supported combinations:
   //
-  //   Command line  monthsToDisplay  mFrom  yFrom  getpendingdate
+  //   Command line  monthsToDisplay  mFrom  yFrom  getPendingDate
   //   ------------  ---------------  -----  -----  --------------
   //   cal             monthsPerLine  today  today           false
   //   cal y                      12  today  today           false
@@ -174,8 +170,8 @@ int CmdCalendar::execute (std::string& output)
     yFrom = argYear;
 
   // Now begin the data subset and rendering.
-  int countDueDates = 0;
-  if (getpendingdate == true)
+  auto countDueDates = 0;
+  if (getPendingDate == true)
   {
     // Find the oldest pending due date.
     Datetime oldest (2037, 12, 31);
@@ -198,8 +194,8 @@ int CmdCalendar::execute (std::string& output)
 
   if (context.config.getBoolean ("calendar.offset"))
   {
-    int moffset = context.config.getInteger ("calendar.offset.value") % 12;
-    int yoffset = context.config.getInteger ("calendar.offset.value") / 12;
+    auto moffset = context.config.getInteger ("calendar.offset.value") % 12;
+    auto yoffset = context.config.getInteger ("calendar.offset.value") / 12;
     mFrom += moffset;
     yFrom += yoffset;
     if (mFrom < 1)
@@ -222,21 +218,21 @@ int CmdCalendar::execute (std::string& output)
     yTo++;
   }
 
-  int details_yFrom = yFrom;
-  int details_mFrom = mFrom;
+  auto details_yFrom = yFrom;
+  auto details_mFrom = mFrom;
 
   std::stringstream out;
   out << '\n';
 
   while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
   {
-    int nextM = mFrom;
-    int nextY = yFrom;
+    auto nextM = mFrom;
+    auto nextY = yFrom;
 
     // Print month headers (cheating on the width settings, yes)
     for (int i = 0 ; i < monthsPerLine ; i++)
     {
-      std::string month = Datetime::monthName (nextM);
+      auto month = Datetime::monthName (nextM);
 
       //    12345678901234567890123456 = 26 chars wide
       //                ^^             = center
@@ -252,10 +248,10 @@ int CmdCalendar::execute (std::string& output)
       //   |  31 27 28 29 30 31       |
       //   +--------------------------+
 
-      int totalWidth = 26;
-      int labelWidth = month.length () + 5;  // 5 = " 2009"
-      int leftGap = (totalWidth / 2) - (labelWidth / 2);
-      int rightGap = totalWidth - leftGap - labelWidth;
+      auto totalWidth = 26;
+      auto labelWidth = month.length () + 5;  // 5 = " 2009"
+      auto leftGap = (totalWidth / 2) - (labelWidth / 2);
+      auto rightGap = totalWidth - leftGap - labelWidth;
 
       out << std::setw (leftGap) << ' '
           << month
@@ -329,16 +325,16 @@ int CmdCalendar::execute (std::string& output)
     }
 
     Datetime date_after (details_yFrom, details_mFrom, details_dFrom);
-    std::string after = date_after.toString (context.config.get ("dateformat"));
+    auto after = date_after.toString (context.config.get ("dateformat"));
 
     Datetime date_before (yTo, mTo, 1);
-    std::string before = date_before.toString (context.config.get ("dateformat"));
+    auto before = date_before.toString (context.config.get ("dateformat"));
 
     // Table with due date information
     if (context.config.get ("calendar.details") == "full")
     {
       // Assert that 'report' is a valid report.
-      std::string report = context.config.get ("calendar.details.report");
+      auto report = context.config.get ("calendar.details.report");
       if (context.commands.find (report) == context.commands.end ())
         throw std::string (STRING_ERROR_DETAILS);
 
@@ -346,7 +342,7 @@ int CmdCalendar::execute (std::string& output)
       //                 calendar --> taskendar
 
       // If the executable was "cal" or equivalent, replace it with "task".
-      std::string executable = context.cli2._original_args[0].attribute ("raw");
+      auto executable = context.cli2._original_args[0].attribute ("raw");
       auto cal = executable.find ("cal");
       if (cal != std::string::npos)
         executable = executable.substr (0, cal) + PACKAGE;
@@ -379,17 +375,17 @@ int CmdCalendar::execute (std::string& output)
         if (it.first.substr (0, 8) == "holiday.")
           if (it.first.substr (it.first.size () - 4) == "name")
           {
-            std::string holName = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
-            std::string holDate = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
+            auto holName = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
+            auto holDate = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
             Datetime hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
-              hm[hDate.toEpoch()].push_back(holName);
+              hm[hDate.toEpoch()].push_back (holName);
           }
 
-      std::string format = context.config.get ("report." +
-                                               context.config.get ("calendar.details.report") +
-                                               ".dateformat");
+      auto format = context.config.get ("report." +
+                                        context.config.get ("calendar.details.report") +
+                                        ".dateformat");
       if (format == "")
         format = context.config.get ("dateformat.report");
       if (format == "")
@@ -397,12 +393,12 @@ int CmdCalendar::execute (std::string& output)
 
       for (auto& hm_it : hm)
       {
-        std::vector <std::string> v = hm_it.second;
+        auto v = hm_it.second;
         Datetime hDate (hm_it.first);
-        std::string d = hDate.toString (format);
+        auto d = hDate.toString (format);
         for (size_t i = 0; i < v.size(); i++)
         {
-          int row = holTable.addRow ();
+          auto row = holTable.addRow ();
           holTable.set (row, 0, d);
           holTable.set (row, 1, v[i]);
         }
@@ -427,7 +423,7 @@ std::string CmdCalendar::renderMonths (
   int monthsPerLine)
 {
   // What day of the week does the user consider the first?
-  int weekStart = Datetime::dayOfWeek (context.config.get ("weekstart"));
+  auto weekStart = Datetime::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string (STRING_CMD_CAL_SUN_MON);
 
@@ -492,7 +488,7 @@ std::string CmdCalendar::renderMonths (
     daysInMonth.push_back (Datetime::daysInMonth (thisYear, thisMonth++));
   }
 
-  int row = 0;
+  auto row = 0;
 
   Color color_today      (context.config.get ("color.calendar.today"));
   Color color_due        (context.config.get ("color.calendar.due"));
@@ -513,8 +509,8 @@ std::string CmdCalendar::renderMonths (
     for (int d = 1; d <= daysInMonth[mpl]; ++d)
     {
       Datetime temp (years[mpl], months[mpl], d);
-      int dow = temp.dayOfWeek ();
-      int woy = temp.week ();
+      auto dow = temp.dayOfWeek ();
+      auto woy = temp.week ();
 
       if (context.config.getBoolean ("displayweeknumber"))
         view.set (row,
@@ -524,9 +520,9 @@ std::string CmdCalendar::renderMonths (
                   color_weeknumber);
 
       // Calculate column id.
-      int thisCol = dow +                       // 0 = Sunday
-                    (weekStart == 1 ? 0 : 1) +  // Offset for weekStart
-                    (8 * mpl);                  // Columns in 1 month
+      auto thisCol = dow +                       // 0 = Sunday
+                     (weekStart == 1 ? 0 : 1) +  // Offset for weekStart
+                     (8 * mpl);                  // Columns in 1 month
 
       if (thisCol == (8 * mpl))
         thisCol += 7;
