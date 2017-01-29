@@ -56,9 +56,9 @@ CmdDenotate::CmdDenotate ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdDenotate::execute (std::string&)
 {
-  int rc = 0;
-  int count = 0;
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+  auto rc = 0;
+  auto count = 0;
+  auto sensitive = context.config.getBoolean ("search.case.sensitive");
 
   // Apply filter.
   Filter filter;
@@ -96,7 +96,7 @@ int CmdDenotate::execute (std::string&)
       throw std::string (STRING_CMD_DENO_NONE);
 
     std::string anno;
-    bool match = false;
+    auto match = false;
     for (auto i = annotations.begin (); i != annotations.end (); ++i)
     {
       if (i->second == pattern)
@@ -126,9 +126,9 @@ int CmdDenotate::execute (std::string&)
 
     if (before.data != task.data)
     {
-      std::string question = format (STRING_CMD_DENO_CONFIRM,
-                                     task.identifier (true),
-                                     task.get ("description"));
+      auto question = format (STRING_CMD_DENO_CONFIRM,
+                              task.identifier (true),
+                              task.get ("description"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
@@ -154,7 +154,7 @@ int CmdDenotate::execute (std::string&)
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
       context.footnote (change.second);
 
