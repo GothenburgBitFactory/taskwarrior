@@ -55,8 +55,8 @@ CmdDuplicate::CmdDuplicate ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdDuplicate::execute (std::string&)
 {
-  int rc = 0;
-  int count = 0;
+  auto rc = 0;
+  auto count = 0;
 
   // Apply filter.
   Filter filter;
@@ -137,7 +137,7 @@ int CmdDuplicate::execute (std::string&)
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
       context.footnote (change.second);
 
