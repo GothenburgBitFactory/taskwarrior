@@ -92,8 +92,8 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
 {
   std::stringstream result;
 
-  int range_start = 0;
-  int range_end = 0;
+  auto range_start = 0;
+  auto range_end = 0;
 
   for (unsigned int i = 0; i < ids.size (); ++i)
   {
