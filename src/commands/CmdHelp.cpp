@@ -79,7 +79,7 @@ std::string CmdHelp::composeUsage () const
   view.add ("");
 
   // Static first row.
-  int row = view.addRow ();
+  auto row = view.addRow ();
   view.set (row, 0, STRING_CMD_HELP_USAGE_LABEL);
   view.set (row, 1, "task");
   view.set (row, 2, STRING_CMD_HELP_USAGE_DESC);
