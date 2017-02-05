@@ -58,7 +58,7 @@ int main (int argc, char** argv)
 
   try
   {
-    auto infix {true};
+    bool infix {true};
 
     // Add a source for constants.
     Eval e;
