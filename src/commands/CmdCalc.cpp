@@ -54,7 +54,7 @@ CmdCalc::CmdCalc ()
 int CmdCalc::execute (std::string& output)
 {
   // Configurable infix/postfix
-  auto infix {true};
+  bool infix {true};
   if (context.config.get ("expressions") == "postfix")
     infix = false;
 
