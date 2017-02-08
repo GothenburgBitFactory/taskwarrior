@@ -134,9 +134,13 @@ void Command::factory (std::map <std::string, Command*>& all)
 #endif
   c = new CmdExport ();             all[c->keyword ()] = c;
   c = new CmdGet ();                all[c->keyword ()] = c;
+  c = new CmdGHistoryDaily ();      all[c->keyword ()] = c;
+  c = new CmdGHistoryWeekly ();     all[c->keyword ()] = c;
   c = new CmdGHistoryMonthly ();    all[c->keyword ()] = c;
   c = new CmdGHistoryAnnual ();     all[c->keyword ()] = c;
   c = new CmdHelp ();               all[c->keyword ()] = c;
+  c = new CmdHistoryDaily ();       all[c->keyword ()] = c;
+  c = new CmdHistoryWeekly ();      all[c->keyword ()] = c;
   c = new CmdHistoryMonthly ();     all[c->keyword ()] = c;
   c = new CmdHistoryAnnual ();      all[c->keyword ()] = c;
   c = new CmdIDs ();                all[c->keyword ()] = c;

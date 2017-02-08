@@ -519,9 +519,215 @@ public:
   static constexpr bool graphical              = false;
 };
 
+
+////////////////////////////////////////////////////////////////////////////i
+class DailyHistoryStrategy
+{
+public:
+  static Datetime getRelevantDate (const Datetime & dt)
+  {
+    return dt.startOfDay ();
+  }
+
+  static void setupTableDates (Table & view)
+  {
+    view.add (STRING_CMD_HISTORY_YEAR);
+    view.add (STRING_CMD_HISTORY_MONTH);
+    view.add (STRING_CMD_HISTORY_DAY);
+  }
+
+  static void insertRowDate (
+    Table& view,
+    int row,
+    time_t rowTime,
+    time_t lastTime)
+  {
+    Datetime dt (rowTime);
+    int m, d, y;
+    dt.toYMD (y, m, d);
+
+    Datetime last_dt (lastTime);
+    int last_m, last_d, last_y;
+    last_dt.toYMD (last_y, last_m, last_d);
+
+    if ((y != last_y) || (lastTime == 0))
+    {
+      view.set (row, 0, y);
+    }
+
+    if ((m != last_m) || (lastTime == 0))
+    {
+      view.set (row, 1, Datetime::monthName (m));
+    }
+
+    view.set (row, 2, d);
+  }
+
+  static constexpr const char* keyword         = "history.daily";
+  static constexpr const char* usage           = "task <filter> history.daily";
+  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_D;
+  static constexpr unsigned int dateFieldCount = 3;
+  static constexpr bool graphical              = false;
+};
+
+////////////////////////////////////////////////////////////////////////////i
+class DailyGHistoryStrategy
+{
+public:
+  static Datetime getRelevantDate (const Datetime & dt)
+  {
+    return dt.startOfDay ();
+  }
+
+  static void setupTableDates (Table & view)
+  {
+    view.add (STRING_CMD_HISTORY_YEAR);
+    view.add (STRING_CMD_HISTORY_MONTH);
+    view.add (STRING_CMD_HISTORY_DAY);
+  }
+
+  static void insertRowDate (
+    Table& view,
+     int row,
+     time_t rowTime,
+     time_t lastTime)
+  {
+    Datetime dt (rowTime);
+    int m, d, y;
+    dt.toYMD (y, m, d);
+
+    Datetime last_dt (lastTime);
+    int last_m, last_d, last_y;
+    last_dt.toYMD (last_y, last_m, last_d);
+
+    if ((y != last_y) || (lastTime == 0))
+    {
+      view.set (row, 0, y);
+    }
+
+    if ((m != last_m) || (lastTime == 0))
+    {
+      view.set (row, 1, Datetime::monthName (m));
+    }
+
+    view.set (row, 2, d);
+  }
+
+  static constexpr const char* keyword         = "ghistory.daily";
+  static constexpr const char* usage           = "task <filter> ghistory.daily";
+  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_D;
+  static constexpr unsigned int dateFieldCount = 3;
+  static constexpr bool graphical              = true;
+};
+
+////////////////////////////////////////////////////////////////////////////i
+class WeeklyHistoryStrategy
+{
+public:
+  static Datetime getRelevantDate (const Datetime & dt)
+  {
+    return dt.startOfWeek ();
+  }
+
+  static void setupTableDates (Table & view)
+  {
+    view.add (STRING_CMD_HISTORY_YEAR);
+    view.add (STRING_CMD_HISTORY_MONTH);
+    view.add (STRING_CMD_HISTORY_DAY);
+  }
+
+  static void insertRowDate (
+    Table& view,
+    int row,
+    time_t rowTime,
+    time_t lastTime)
+  {
+    Datetime dt (rowTime);
+    int m, d, y;
+    dt.toYMD (y, m, d);
+
+    Datetime last_dt (lastTime);
+    int last_m, last_d, last_y;
+    last_dt.toYMD (last_y, last_m, last_d);
+
+    if ((y != last_y) || (lastTime == 0))
+    {
+      view.set (row, 0, y);
+    }
+
+    if ((m != last_m) || (lastTime == 0))
+    {
+      view.set (row, 1, Datetime::monthName (m));
+    }
+
+    view.set (row, 2, d);
+  }
+
+  static constexpr const char* keyword         = "history.weekly";
+  static constexpr const char* usage           = "task <filter> history.weekly";
+  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_W;
+  static constexpr unsigned int dateFieldCount = 3;
+  static constexpr bool graphical              = false;
+};
+
+////////////////////////////////////////////////////////////////////////////i
+class WeeklyGHistoryStrategy
+{
+public:
+  static Datetime getRelevantDate (const Datetime & dt)
+  {
+    return dt.startOfWeek ();
+  }
+
+  static void setupTableDates (Table & view)
+  {
+    view.add (STRING_CMD_HISTORY_YEAR);
+    view.add (STRING_CMD_HISTORY_MONTH);
+    view.add (STRING_CMD_HISTORY_DAY);
+  }
+
+  static void insertRowDate (
+    Table& view,
+     int row,
+     time_t rowTime,
+     time_t lastTime)
+  {
+    Datetime dt (rowTime);
+    int m, d, y;
+    dt.toYMD (y, m, d);
+
+    Datetime last_dt (lastTime);
+    int last_m, last_d, last_y;
+    last_dt.toYMD (last_y, last_m, last_d);
+
+    if ((y != last_y) || (lastTime == 0))
+    {
+      view.set (row, 0, y);
+    }
+
+    if ((m != last_m) || (lastTime == 0))
+    {
+      view.set (row, 1, Datetime::monthName (m));
+    }
+
+    view.set (row, 2, d);
+  }
+
+  static constexpr const char* keyword         = "ghistory.weekly";
+  static constexpr const char* usage           = "task <filter> ghistory.weekly";
+  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_W;
+  static constexpr unsigned int dateFieldCount = 3;
+  static constexpr bool graphical              = true;
+};
+
+
 // Explicit instantiations, avoiding cpp-inclusion or implementation in header
+template class CmdHistoryBase<DailyHistoryStrategy>;
+template class CmdHistoryBase<WeeklyHistoryStrategy>;
 template class CmdHistoryBase<MonthlyHistoryStrategy>;
 template class CmdHistoryBase<AnnualHistoryStrategy>;
+template class CmdHistoryBase<DailyGHistoryStrategy>;
+template class CmdHistoryBase<WeeklyGHistoryStrategy>;
 template class CmdHistoryBase<MonthlyGHistoryStrategy>;
 template class CmdHistoryBase<AnnualGHistoryStrategy>;
 
