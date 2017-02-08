@@ -201,6 +201,14 @@ Shows a graphical report of task status by month.  Note that 'ghistory' is
 an alias to 'ghistory.monthly'.
 
 .TP
+.B task <filter> ghistory.weekly
+Shows a graphical report of task status by week.
+
+.TP
+.B task <filter> ghistory.daily
+Shows a graphical report of task status by day.
+
+.TP
 .B task help
 Shows the long usage text.
 
@@ -212,6 +220,14 @@ Shows a report of task history by year.
 .B task <filter> history.monthly
 Shows a report of task history by month.  Note that 'history' is
 an alias to 'history.monthly'.
+
+.TP
+.B task <filter> history.weekly
+Shows a report of task history by week.
+
+.TP
+.B task <filter> history.daily
+Shows a report of task history by day.
 
 .TP
 .B task <filter> ids
@@ -1312,4 +1328,3 @@ You can contact the project by emailing
 .TP
 Bugs in Taskwarrior may be reported to the issue-tracker at
 <https://bug.tasktools.org/>
-
