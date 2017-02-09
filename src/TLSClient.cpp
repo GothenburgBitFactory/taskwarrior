@@ -210,14 +210,6 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   gnutls_session_set_verify_cert (_session, _host.c_str (), 0); // 3.4.6
 #endif
 
-  // SNI.  Only permitted when _host is a DNS name, not an IPv4/6 address.
-  if (_host.find_first_not_of ("0123456789abcdefABCDEF:.") != std::string::npos)
-  {
-    ret = gnutls_server_name_set (_session, GNUTLS_NAME_DNS, _host.c_str (), _host.length ()); // All
-    if (ret < 0)
-      throw format ("TLS SNI error. {1}", gnutls_strerror (ret)); // All
-  }
-
   // Store the TLSClient instance, so that the verification callback can access
   // it during the handshake below and call the verification method.
   gnutls_session_set_ptr (_session, (void*) this); // All
