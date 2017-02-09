@@ -272,6 +272,15 @@
 #define STRING_CMD_TAGS_NO_TAGS      "No hay marcas."
 #define STRING_CMD_HISTORY_USAGE_M   "Muestra un informe de historia de tareas, por mes"
 
+#define STRING_CMD_HISTORY_USAGE_D   "Shows a report of task history, by day"
+#define STRING_CMD_HISTORY_USAGE_W   "Shows a report of task history, by week"
+#define STRING_CMD_HISTORY_DAY       "Day"
+#define STRING_CMD_GHISTORY_USAGE_D  "Shows a graphical report of task history, by day"
+#define STRING_CMD_GHISTORY_USAGE_W  "Shows a graphical report of task history, by week"
+#define STRING_CMD_GHISTORY_USAGE_D  "Shows a graphical report of task history, by day"
+#define STRING_CMD_GHISTORY_USAGE_W  "Shows a graphical report of task history, by week"
+#define STRING_CMD_GHISTORY_DAY      "Day"
+
 #define STRING_CMD_HISTORY_YEAR      "Año"
 #define STRING_CMD_HISTORY_MONTH     "Mes"
 #define STRING_CMD_HISTORY_ADDED     "Añadidas"
@@ -837,19 +846,19 @@
 
 // ****************************************************************************************************
 // Usage text.  This is an exception, and contains \n characters and formatting.
-/* FIXME más abajo 
-  "  task project:Casa due.before:hoy          <command> <mods>\n" 
-  "  task project:Home due.before:today        <command> <mods>\n" 
- y 
-  "  task <filter> <command> project:Casa\n" 
-  "  task <filter> <command> +finde +jardín due:mañana\n" 
-  "  task <filter> <command> Texto anotación/descripción\n" 
- en vez de: 
-  "  task <filter> <command> project:Home\n" 
-  "  task <filter> <command> +weekend +garden due:tomorrow\n" 
-  "  task <filter> <command> Description/annotation text\n" 
- y 
-  "  task add -- project:Casa necesita programación\n" 
+/* FIXME más abajo
+  "  task project:Casa due.before:hoy          <command> <mods>\n"
+  "  task project:Home due.before:today        <command> <mods>\n"
+ y
+  "  task <filter> <command> project:Casa\n"
+  "  task <filter> <command> +finde +jardín due:mañana\n"
+  "  task <filter> <command> Texto anotación/descripción\n"
+ en vez de:
+  "  task <filter> <command> project:Home\n"
+  "  task <filter> <command> +weekend +garden due:tomorrow\n"
+  "  task <filter> <command> Description/annotation text\n"
+ y
+  "  task add -- project:Casa necesita programación\n"
   "  task add -- project:Home needs scheduling\n" */
  #define STRING_CMD_HELP_TEXT \
   "La documentación de Taskwarrior se puede consultar usando 'man task', 'man taskrc'" \
@@ -959,7 +968,7 @@
 
 /*
   To be included later, before the 'precendence' line.
- 
+
   "  +  -                    Addition, subtraction\n" \
   "  !                       Inversion\n" \
   "  ~  !~                   Match, no match\n" \
