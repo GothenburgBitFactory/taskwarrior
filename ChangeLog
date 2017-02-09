@@ -80,6 +80,9 @@
           (thanks to Jelle van der Waa).
 - Improved portability for SunOS-like OSes.
           (thanks to Antonio Huete Jimenez).
+- Updated the 'timesheet' command with a more compact report that accepts a
+  filter, and has a default filter showing the last four weeks of completed and
+  started tasks.
 
 ------ current release ---------------------------
 

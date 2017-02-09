@@ -539,7 +539,7 @@
 #define STRING_CMD_CUSTOM_COUNT      "1 task"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} tasks"
 #define STRING_CMD_CUSTOM_TRUNCATED  "truncated to {1} lines"
-#define STRING_CMD_TIMESHEET_USAGE   "Weekly summary of completed and started tasks"
+#define STRING_CMD_TIMESHEET_USAGE   "Summary of completed and started tasks"
 #define STRING_CMD_TIMESHEET_STARTED "Started ({1} tasks)"
 #define STRING_CMD_TIMESHEET_DONE    "Completed ({1} tasks)"
 #define STRING_CMD_BURN_USAGE_M      "Shows a graphical burndown chart, by month"

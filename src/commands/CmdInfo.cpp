@@ -103,7 +103,7 @@ int CmdInfo::execute (std::string& output)
     view.width (context.getWidth ());
     if (context.config.getBoolean ("obfuscate"))
       view.obfuscate ();
-    if (context.config.getBoolean ("color"))
+    if (context.color ())
       view.forceColor ();
     view.add (STRING_COLUMN_LABEL_NAME);
     view.add (STRING_COLUMN_LABEL_VALUE);
@@ -113,11 +113,11 @@ int CmdInfo::execute (std::string& output)
     {
       Color alternate (context.config.get ("color.alternate"));
       view.colorOdd (alternate);
-      view.intraColorOdd (alternate);
 
-      Color label (context.config.get ("color.label"));
-      view.colorHeader (label);
+      view.colorHeader (Color ("underline " + context.config.get ("color.label")));
     }
+    else
+      view.underlineHeaders ();
 
     Datetime now;
 
@@ -444,8 +444,7 @@ int CmdInfo::execute (std::string& output)
         urgencyDetails.colorOdd (alternate);
         urgencyDetails.intraColorOdd (alternate);
 
-        Color label (context.config.get ("color.label"));
-        urgencyDetails.colorHeader (label);
+        urgencyDetails.colorHeader (Color ("underline " + context.config.get ("color.label")));
       }
 
       if (context.config.getBoolean ("obfuscate"))
@@ -548,9 +547,10 @@ int CmdInfo::execute (std::string& output)
       journal.colorOdd (alternate);
       journal.intraColorOdd (alternate);
 
-      Color label (context.config.get ("color.label"));
-      journal.colorHeader (label);
+      journal.colorHeader (Color ("underline " + context.config.get ("color.label")));
     }
+    else
+      journal.underlineHeaders ();
 
     if (context.config.getBoolean ("obfuscate"))
       journal.obfuscate ();

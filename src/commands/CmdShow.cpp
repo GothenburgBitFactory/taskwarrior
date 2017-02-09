@@ -147,6 +147,7 @@ int CmdShow::execute (std::string& output)
     " default.scheduled"
     " defaultheight"
     " defaultwidth"
+    " default.timesheet.filter"
     " dependency.confirmation"
     " dependency.indicator"
     " dependency.reminder"

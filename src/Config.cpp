@@ -251,6 +251,7 @@ std::string Config::_defaults =
   "#default.due=eom                               # Default due date for 'add' command\n"
   "#default.scheduled=eom                         # Default scheduled date for 'add' command\n"
   "default.command=next                           # When no arguments are specified\n"
+  "default.timesheet.filter=( +PENDING and start.after:now-4wks ) or ( +COMPLETED and end.after:now-4wks )\n"
   "\n"
   "_forcecolor=0                                  # Forces color to be on, even for non TTY output\n"
   "complete.all.tags=0                            # Include old tag names in '_ags' command\n"
@@ -383,7 +384,9 @@ std::string Config::_defaults =
   "report.blocking.labels=ID,UUID,A,Deps,Project,Tags,R,W,Sch,Due,Until,Description,Urg\n"
   "report.blocking.columns=id,uuid.short,start.active,depends,project,tags,recur,wait,scheduled.remaining,due.relative,until.remaining,description.count,urgency\n"
   "report.blocking.sort=urgency-,due+,entry+\n"
-  "report.blocking.filter= status:pending +BLOCKING\n"
+  "report.blocking.filter=status:pending +BLOCKING\n"
+  "\n"
+  "report.timesheet.filter=(+PENDING and start.after:now-4wks) or (+COMPLETED and end.after:now-4wks)\n"
   "\n";
 
 extern Context context;
