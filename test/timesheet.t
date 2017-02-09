@@ -70,32 +70,27 @@ class TestTimesheet(TestCase):
         cls.t("log C1 entry:{0} end:{1}".format(fourteen, seven))
         cls.t("log C2 entry:{0} end:{0}".format(fourteen))
 
-    def test_one_week(self):
-        """One week of started and completed"""
-        code, out, err = self.t("timesheet")
-
-        expected = re.compile("Completed.+C0.+Started.+PS0", re.DOTALL)
-        self.assertRegexpMatches(out, expected)
-
-    def test_two_weeks(self):
-        """Two weeks of started and completed"""
-        code, out, err = self.t("timesheet 2")
-
-        expected = re.compile(
-            "Completed.+C0.+Started.+PS0.+"
-            "Completed.+C1.+Started.+PS1", re.DOTALL)
-        self.assertRegexpMatches(out, expected)
-
     def test_three_weeks(self):
         """Three weeks of started and completed"""
-        code, out, err = self.t("timesheet 3")
+        code, out, err = self.t("timesheet")
 
         expected = re.compile(
-            "Completed.+C0.+Started.+PS0.+"
-            "Completed.+C1.+Started.+PS1.+"
-            "Completed.+C2.+Started.+PS2", re.DOTALL)
+            "Started.+PS2.+Completed.+C2.+"
+            "Started.+PS1.+Completed.+C1.+"
+            "Started.+PS0.+Completed.+C0", re.DOTALL)
         self.assertRegexpMatches(out, expected)
 
+    def test_one_week(self):
+        """One week of started and completed"""
+        # This is the default filter, reduced from 4 weeks to 1.
+        code, out, err = self.t("timesheet (+PENDING and start.after:now-1wk) or (+COMPLETED and end.after:now-1wk)")
+
+        expected = re.compile("Started.+PS0.+Completed.+C0", re.DOTALL)
+        self.assertRegexpMatches(out, expected)
+        self.assertNotIn("PS1", out)
+        self.assertNotIn("PS2", out)
+        self.assertNotIn("C1", out)
+        self.assertNotIn("C2", out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

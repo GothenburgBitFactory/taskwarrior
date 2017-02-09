@@ -1279,6 +1279,9 @@ will be presented in the order (if any) in which they are selected.
 This adds a filter to the report X so that only tasks matching the filter
 criteria are displayed in the generated report.
 
+There is a special case for 'report.timesheet.filter', which may be specified
+even though the 'timesheet' report is not very customizable.
+
 .TP
 .B report.X.dateformat
 This adds a dateformat to the report X that will be used by the "due date"

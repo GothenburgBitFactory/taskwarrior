@@ -6,22 +6,27 @@ New Features in Taskwarrior 2.5.2
     command usage.
   - Improved compatibility with SmartOS, OmniOS and OpenIndiana.
   - New DOM reference: annotations.count.
+  - Renovated 'timesheet' command with a more compact report that accepts a
+    filter, and has a default filter showing the last four weeks of completed
+    and started tasks.
 
 New Commands in Taskwarrior 2.5.2
 
-  - The 'purge' command was introduced.
+  - The 'purge' command was added, which completely removes old tasks.
 
 New Configuration Options in Taskwarrior 2.5.2
 
   - New 'relative' column format for 'date' type columns does what 'remaining'
     and 'countdown' do, but in one format.
   - The 'default.scheduled' date/duraiton works just like 'default.due'.
+  - The 'report.timesheet.filter' setting controls the tasks shown by the
+    'timesheet' command.
 
 Newly Deprecated Features in Taskwarrior 2.5.2
 
   - The 'DUETODAY' virtual tag is a synonym for the 'TODAY' virtual tag, and is
     not needed.
-  - The 'new-uuid' verbosity option is to be removed due to being redundant, its
+  - The 'new-uuid' verbosity option is to be removed, as it is redundant, its
     functionality will be merged with 'new-id' option.
   - The use of alternate Boolean configuration settings is deprecated. Use values
     "0" for off, and "1" for on.  Avoid used of "on", "off", "true", "t",
