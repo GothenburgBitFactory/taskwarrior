@@ -270,9 +270,12 @@
 #define STRING_CMD_TAGS_SINGLE       "1 Schlagwort"
 #define STRING_CMD_TAGS_PLURAL       "{1} Schlagworte"
 #define STRING_CMD_TAGS_NO_TAGS      "Keine Schlagworte."
+#define STRING_CMD_HISTORY_USAGE_D   "Zeigt die tägliche Aufgabenentwicklung"
+#define STRING_CMD_HISTORY_USAGE_W   "Zeigt die wöchentliche Aufgabenentwicklung"
 #define STRING_CMD_HISTORY_USAGE_M   "Zeigt die monatliche Aufgabenentwicklung"
 #define STRING_CMD_HISTORY_YEAR      "Jahr"
 #define STRING_CMD_HISTORY_MONTH     "Monat"
+#define STRING_CMD_HISTORY_DAY       "Tag"
 #define STRING_CMD_HISTORY_ADDED     "Hinzugefügt"
 #define STRING_CMD_HISTORY_COMP      "Erledigt"
 #define STRING_CMD_HISTORY_DEL       "Gelöscht"
@@ -281,10 +284,13 @@
 #define STRING_CMD_HISTORY_AVERAGE   "Durchschnitt"
 #define STRING_CMD_HISTORY_LEGEND    "Legende: {1}, {2}, {3}"
 #define STRING_CMD_HISTORY_LEGEND_A  "Legende: + hinzugefügt, X erledigt, - gelöscht"
+#define STRING_CMD_GHISTORY_USAGE_D  "Zeigt die tägliche Aufgabenentwicklung grafisch"
+#define STRING_CMD_GHISTORY_USAGE_W  "Zeigt die wöchentliche Aufgabenentwicklung grafisch"
 #define STRING_CMD_GHISTORY_USAGE_M  "Zeigt die monatliche Aufgabenentwicklung grafisch"
 #define STRING_CMD_GHISTORY_USAGE_A  "Zeigt die jährliche Aufgabenentwicklung grafisch"
 #define STRING_CMD_GHISTORY_YEAR     "Jahr"
 #define STRING_CMD_GHISTORY_MONTH    "Monat"
+#define STRING_CMD_GHISTORY_MONTH    "Tag"
 #define STRING_CMD_GHISTORY_NUMBER   "Anzahl Hinzugefügt/Erledigt/Gelöscht"
 #define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
@@ -940,7 +946,7 @@
 
 /*
   To be included later, before the 'precendence' line.
- 
+
   "  +  -                    Addition, Subtraktion\n" \
   "  !                       Negation\n" \
   "  ~  !~                   Treffer, kein Treffer\n" \
