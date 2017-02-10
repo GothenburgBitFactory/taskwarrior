@@ -11,6 +11,8 @@ New Features in Taskwarrior 2.6.0
 New Commands in Taskwarrior 2.6.0
 
   - The 'purge' command was added, which completely removes old tasks.
+  - Added new 'history.weekly', 'history.daily', 'ghistory.weekly',
+    'ghistory.daily' reports.
 
 New Configuration Options in Taskwarrior 2.6.0
 
