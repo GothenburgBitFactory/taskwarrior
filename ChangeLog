@@ -83,6 +83,9 @@
 - Updated the 'timesheet' command with a more compact report that accepts a
   filter, and has a default filter showing the last four weeks of completed and
   started tasks.
+- Added 'history.weekly', 'history.daily', 'ghistory.weekly', 'ghistory.daily'
+  report variations, with code refactoring.
+          (thanks to Lukas Barth).
 
 ------ current release ---------------------------
 
