@@ -46,6 +46,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <gnutls/x509.h>
+#include <shared.h>
 #include <format.h>
 
 #define MAX_BUF 16384
@@ -209,6 +210,17 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 #if GNUTLS_VERSION_NUMBER >= 0x030406
   gnutls_session_set_verify_cert (_session, _host.c_str (), 0); // 3.4.6
 #endif
+
+  // SNI.  Only permitted when _host is a DNS name, not an IPv4/6 address.
+  std::string dummyAddress;
+  int dummyPort;
+  if (! isIPv4Address (_host, dummyAddress, dummyPort) &&
+      ! isIPv6Address (_host, dummyAddress, dummyPort))
+  {
+    ret = gnutls_server_name_set (_session, GNUTLS_NAME_DNS, _host.c_str (), _host.length ()); // All
+    if (ret < 0)
+      throw format ("TLS SNI error. {1}", gnutls_strerror (ret)); // All
+  }
 
   // Store the TLSClient instance, so that the verification callback can access
   // it during the handshake below and call the verification method.
