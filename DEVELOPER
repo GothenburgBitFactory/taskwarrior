@@ -11,7 +11,7 @@ How to Build Taskwarrior
     $ git clone --recursive https://git.tasktools.org/scm/tm/task.git task.git
     $ cd task.git
     $ git checkout 2.6.0                 # Latest dev branch
-    $ git submodule init                 # This is now done by cmake (beta)
+    $ git submodule init                 # This is now done by cmake as a test
     $ git submodule update               # Update the libhsared.git submodule
     $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither
     $ make VERBOSE=1 -j8                 # Shows details, builds using 8 jobs
