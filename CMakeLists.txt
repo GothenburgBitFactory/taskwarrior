@@ -20,6 +20,15 @@ else (ENABLE_SYNC)
   message (WARNING "ENABLE_SYNC=OFF. Not building sync support.")
 endif (ENABLE_SYNC)
 
+message ("-- Looking for libshared")
+if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+  message ("-- Found libshared")
+else (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+  message ("-- Cloning libshared")
+  execute_process (COMMAND git submodule update --init
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endif (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+
 message ("-- Looking for SHA1 references")
 if (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
   set (HAVE_COMMIT true)
