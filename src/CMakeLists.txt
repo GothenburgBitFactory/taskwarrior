@@ -52,10 +52,10 @@ add_executable (task_executable main.cpp)
 add_executable (calc_executable calc.cpp)
 add_executable (lex_executable lex.cpp)
 
-# Yes, 'task' is included twice, otherwise linking fails on assorted OSes.
-target_link_libraries (task_executable task commands columns libshared task ${TASK_LIBRARIES})
-target_link_libraries (calc_executable task commands columns libshared task ${TASK_LIBRARIES})
-target_link_libraries (lex_executable  task commands columns libshared task ${TASK_LIBRARIES})
+# Yes, 'task' (and hence libshared) is included twice, otherwise linking fails on assorted OSes.
+target_link_libraries (task_executable task commands columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (calc_executable task commands columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (lex_executable  task commands columns libshared task libshared ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
