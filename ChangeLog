@@ -57,6 +57,8 @@
           (thanks to Hubert Toullec).
 - TW-1881 default.scheduled seems not to work
           (thanks to Onion).
+- TW-1885 Task Sync does not send TLS SNI headers
+          (thanks to Dan Callahan).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
