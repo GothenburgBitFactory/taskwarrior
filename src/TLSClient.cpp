@@ -208,7 +208,11 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 
   int ret;
 #if GNUTLS_VERSION_NUMBER >= 0x030406
-  gnutls_session_set_verify_cert (_session, _host.c_str (), 0); // 3.4.6
+  // For _trust == TLSClient::allow_all we perform no action
+  if (_trust == TLSClient::ignore_hostname)
+    gnutls_session_set_verify_cert (_session, NULL, 0); // 3.4.6
+  else if (_trust == TLSClient::strict)
+    gnutls_session_set_verify_cert (_session, _host.c_str (), 0); // 3.4.6
 #endif
 
   // SNI.  Only permitted when _host is a DNS name, not an IPv4/6 address.
