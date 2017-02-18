@@ -296,10 +296,10 @@ void TLSClient::connect (const std::string& host, const std::string& port)
       std::string error {(const char*) out.data};
       gnutls_free (out.data); // All
 
-      throw format ("Handshake failed.  {1}", error); // All
+      throw format ("Handshake failed. {1}", error); // All
     }
 #else
-    throw format ("Handshake failed.  {1}", gnutls_strerror (ret)); // All
+    throw format ("Handshake failed. {1}", gnutls_strerror (ret)); // All
 #endif
   }
 
