@@ -292,10 +292,11 @@ void TLSClient::connect (const std::string& host, const std::string& port)
       auto status = gnutls_session_get_verify_cert_status (_session); // 3.4.6
       gnutls_datum_t out;
       gnutls_certificate_verification_status_print (status, type, &out, 0);  // 3.1.4
-      gnutls_free (out.data); // All
 
       std::string error {(const char*) out.data};
-      throw format ("Handshake failed.  {1}", error);
+      gnutls_free (out.data); // All
+
+      throw format ("Handshake failed.  {1}", error); // All
     }
 #else
     throw format ("Handshake failed.  {1}", gnutls_strerror (ret)); // All
