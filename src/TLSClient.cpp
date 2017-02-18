@@ -157,15 +157,24 @@ void TLSClient::init (
     throw format ("Bad System Trust. {1}", gnutls_strerror (ret)); // All
 #endif
 
-  if (_ca != "" &&
-      (ret = gnutls_certificate_set_x509_trust_file (_credentials, _ca.c_str (), GNUTLS_X509_FMT_PEM)) < 0) // All
-    throw format ("Bad CA file. {1}", gnutls_strerror (ret)); // All
+  if (_ca != "")
+  {
+    // The gnutls_certificate_set_x509_key_file call returns number of
+    // certificates parsed on success (including 0, when no certificate was
+    // found) and negative values on error
+    ret = gnutls_certificate_set_x509_trust_file (_credentials, _ca.c_str (), GNUTLS_X509_FMT_PEM); // All
+    if (ret == 0)
+      throw format ("CA file {1} contains no certificate.", _ca);
+    else if (ret < 0)
+      throw format ("Bad CA file: {1}", gnutls_strerror (ret)); // All
+
+  }
 
   // TODO This may need 0x030111 protection.
   if (_cert != "" &&
       _key != "" &&
       (ret = gnutls_certificate_set_x509_key_file (_credentials, _cert.c_str (), _key.c_str (), GNUTLS_X509_FMT_PEM)) < 0) // 3.1.11
-    throw format ("Bad CERT file. {1}", gnutls_strerror (ret)); // All
+    throw format ("Bad client CERT/KEY file. {1}", gnutls_strerror (ret)); // All
 
 #if GNUTLS_VERSION_NUMBER < 0x030406
 #if GNUTLS_VERSION_NUMBER >= 0x020a00
