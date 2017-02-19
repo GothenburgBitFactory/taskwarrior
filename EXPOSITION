@@ -117,7 +117,7 @@ Files
 
   The backlog.data file contains an accumulated set of changes that have not
   been transmitted to Taskserver. It grows unbounded between 'sync' commands.
-  If you do not use sync, it is fine to just delete this file to sae space.
+  If you do not use sync, it is fine to just delete this file to save space.
 
 
 Filter
