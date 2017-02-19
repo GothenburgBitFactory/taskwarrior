@@ -1,8 +1,8 @@
 How to Build Taskwarrior
 
   Satisfy the Requirements:
-    - gcc 4.9 or later, clang 3.4 or later or equivalent. This is because C++11
-      is now used throughout the source.
+    - gcc 4.9 or later, clang 3.4 or later, or a compiler with full C++11
+      support.
     - libuuid
     - gnutls (optional)
     - python 2.7 or 3 (optional, for running the test suite)
