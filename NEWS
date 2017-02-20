@@ -1,7 +1,7 @@
 
 New Features in Taskwarrior 2.6.0
 
-  - The 'QUARTER' virutal tag was added.
+  - The 'QUARTER' virtual tag was added.
   - Improved compatibility with SmartOS, OmniOS and OpenIndiana.
   - New DOM reference: annotations.count.
   - Renovated 'timesheet' command with a more compact report that accepts a
