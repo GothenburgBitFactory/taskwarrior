@@ -315,7 +315,7 @@
           John Reeder).
 - TW-1630 "Due" parsing behavior seems inconsistent (thanks to Jim B).
 - TW-1632 Japanese translation for Taskwarrior(150713) (thanks to ribbon).
-- TW-1634 due.not:<date> excludes only tasks scheduled at mitnight (thanks to
+- TW-1634 due.not:<date> excludes only tasks scheduled at midnight (thanks to
           Tomas Babej).
 - TW-1635 Running "task anystringatall" does not filter anything (thanks to
           Tomas Babej).
