@@ -1441,7 +1441,7 @@ Bugs
   Michelle Crane).
 - Fixed bug #823, so that recurring task change propagations are now always
   confirmed (thanks to Miguel de Val Borro).
-- Fixed bug #824, which caused probles when completing recurring tasks (thanks
+- Fixed bug #824, which caused problems when completing recurring tasks (thanks
   to Matt Kraai).
 - Fixed bug #831, which prevented some date fields from being properly parsed.
 - Fixed bug #835, which prevented hierarchical projects from being recognized.
