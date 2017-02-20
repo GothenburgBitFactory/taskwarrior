@@ -20,7 +20,7 @@ New Configuration Options in Taskwarrior 2.5.2
 
   - New 'relative' column format for 'date' type columns does what 'remaining'
     and 'countdown' do, but in one format.
-  - The 'default.scheduled' date/duraiton works just like 'default.due'.
+  - The 'default.scheduled' date/duration works just like 'default.due'.
   - The 'report.timesheet.filter' setting controls the tasks shown by the
     'timesheet' command.
 
