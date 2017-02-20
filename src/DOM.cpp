@@ -171,7 +171,7 @@ bool getDOM (const std::string& name, Variant& value)
 //   annotations.<N>.entry
 //   annotations.<N>.description
 //
-// This code emphasizes speed, hence 'id' and 'urgecny' being evaluated first
+// This code emphasizes speed, hence 'id' and 'urgency' being evaluated first
 // as special cases.
 bool getDOM (const std::string& name, const Task& task, Variant& value)
 {
