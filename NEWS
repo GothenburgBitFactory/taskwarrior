@@ -16,7 +16,7 @@ New Commands in Taskwarrior 2.6.0
 
 New Configuration Options in Taskwarrior 2.6.0
 
-  - The 'default.scheduled' date/duraiton works just like 'default.due'.
+  - The 'default.scheduled' date/duration works just like 'default.due'.
   - The 'report.timesheet.filter' setting controls the tasks shown by the
     'timesheet' command.
 
