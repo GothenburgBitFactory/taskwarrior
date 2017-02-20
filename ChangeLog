@@ -975,7 +975,7 @@ Features
 - Stop consider new tasks after quitting a bulk change.
 - Removed deprecated 'fg:' and 'bg:' attributes.
 - The 'diagnostics' command now reports libuuid details.
-- New characters for parsing and formating dates ('n', 's' and 'v').
+- New characters for parsing and formatting dates ('n', 's' and 'v').
 - Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, OVERDUE, TODAY,
   ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
 - New 'modified' attribute, which contains the most recent modification date,
