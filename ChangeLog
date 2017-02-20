@@ -261,7 +261,7 @@
 - TW-1488 You have more urgent tasks (thanks to Stefan Betz, Denis Kasak).
 - TW-1496 Translation manuals are outdated/miss information (thanks to Jens
           Erat).
-- TW-1499 Invalid due date produces jump to beggining of the unix epoch (thanks
+- TW-1499 Invalid due date produces jump to beginning of the unix epoch (thanks
           to Tomas Babej).
 - TW-1511 Project titles not properly parsed if they contain hyphens (thanks to
           Leon Feng, Blake Sweeney, Dylan Mikus).
