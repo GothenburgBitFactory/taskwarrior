@@ -1520,7 +1520,7 @@ Bugs
   (thanks to Michal Vyskocil).
 - Fixed problem where update-holidays.pl did not properly handle UTF8 JSON
   data.
-- Fixed problem where update-holidays.pl did not use the YYYYMMDD date foramt.
+- Fixed problem where update-holidays.pl did not use the YYYYMMDD date format.
 - Fixed problem where urgency was not properly calculated for waiting tasks.
 - Fixed problem where 'project' was not supported as a verbosity token (thanks
   to Adam Gibbins).
