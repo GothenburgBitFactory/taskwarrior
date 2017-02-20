@@ -909,7 +909,7 @@ Bugs
   .taskrc file (thanks to Haitham Gad).
 - #1247 Tests now create a local dir, rather than use the insecure /tmp dir
   (thanks to Jakub Wilk).
-- #1248 Merge tests no longer connect to takwarrior.org (thank to Jakub Wilk).
+- #1248 Merge tests no longer connect to taskwarrior.org (thank to Jakub Wilk).
 - #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
   Wilk).
 - #1263 The 'waiting' report properly lists only pending tasks with a wait date
