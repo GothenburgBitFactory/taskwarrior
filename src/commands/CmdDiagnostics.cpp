@@ -398,15 +398,12 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
       << '\n';
 
-  // Determine terminal details.
-  const char* term = getenv ("TERM");
-  out << "      $TERM: "
-      << (term ? term : STRING_CMD_DIAG_NONE)
-      << " ("
+  // Report terminal dimensions.
+  out << "   Terminal: "
       << context.getWidth ()
       << 'x'
       << context.getHeight ()
-      << ")\n";
+      << '\n';
 
   // Scan tasks for duplicate UUIDs.
   auto all = context.tdb2.all_tasks ();

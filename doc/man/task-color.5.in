@@ -4,22 +4,9 @@
 task-color \- A color tutorial for the Taskwarrior command line todo manager.
 
 .SH SETUP
-The first thing you need is a terminal program that supports color.  All
-terminal programs support color, but only a few support lots of colors.  First
-tell your terminal program to use color by specifying the TERM environment
-variable like this:
-
-    TERM=xterm-color
-
-In this example, xterm-color is used - a common value, and one that doesn't
-require that you use xterm.  This works for most setups.  This setting belongs
-in your shell profile (~/.bash_profile, ~/.bashrc, ~/.cshrc etc, depending on
-which shell you use).  If this is a new setting, you will need to either run
-that profile script, or close and reopen the terminal window (which does the
-same thing).
-
-Now tell Taskwarrior that you want to use color.  This is the default for
-Taskwarrior, so the following step may be unnecessary.
+The first thing you need is make sure you tell Taskwarrior that you want to use
+color.  This is the default for Taskwarrior, so the following step may be
+unnecessary.
 
     $ task config color on
 
