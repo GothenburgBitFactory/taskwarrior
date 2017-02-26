@@ -4,7 +4,6 @@
 *.log
 *.runlog
 col.t
-config.t
 dates.t
 eval.t
 iso8601d.t

@@ -60,7 +60,7 @@ bool CmdConfig::setConfigVariable (
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
-  File::read (context.config._original_file, contents);
+  File::read (context.config.file (), contents);
 
   auto found = false;
   auto change = false;
@@ -99,7 +99,7 @@ bool CmdConfig::setConfigVariable (
   }
 
   if (change)
-    File::write (context.config._original_file, contents);
+    File::write (context.config.file (), contents);
 
   return change;
 }
@@ -109,7 +109,7 @@ int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
-  File::read (context.config._original_file, contents);
+  File::read (context.config.file (), contents);
 
   auto found = false;
   auto change = false;
@@ -144,7 +144,7 @@ int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /
   }
 
   if (change)
-    File::write (context.config._original_file, contents);
+    File::write (context.config.file (), contents);
 
   if (change && found)
     return 0;
@@ -216,7 +216,7 @@ int CmdConfig::execute (std::string& output)
       if (change)
       {
         out << format (STRING_CMD_CONFIG_FILE_MOD,
-                       context.config._original_file._data)
+                       context.config.file ())
             << '\n';
       }
       else
@@ -252,8 +252,7 @@ CmdCompletionConfig::CmdCompletionConfig ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionConfig::execute (std::string& output)
 {
-  std::vector <std::string> configs;
-  context.config.all (configs);
+  auto configs = context.config.all ();
   std::sort (configs.begin (), configs.end ());
 
   for (const auto& config : configs)

@@ -29,7 +29,7 @@
 
 #include <Command.h>
 #include <Column.h>
-#include <Config.h>
+#include <Configuration.h>
 #include <Task.h>
 #include <TDB2.h>
 #include <Hooks.h>
@@ -81,7 +81,7 @@ public:
   std::string                         home_dir            {};
   File                                rc_file             {"~/.taskrc"};
   Path                                data_dir            {"~/.task"};
-  Config                              config              {};
+  Configuration                       config              {};
   TDB2                                tdb2                {};
   Hooks                               hooks               {};
   bool                                determine_color_use {true};

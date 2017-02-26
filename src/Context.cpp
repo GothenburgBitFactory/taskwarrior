@@ -1071,9 +1071,7 @@ void Context::staticInitialization ()
   Task::urgencyAgeMax                 = config.getReal ("urgency.age.max");
 
   // Tag- and project-specific coefficients.
-  std::vector <std::string> all;
-  config.all (all);
-  for (auto& var : all)
+  for (auto& var : config.all ())
     if (var.substr (0, 13) == "urgency.user." ||
         var.substr (0, 12) == "urgency.uda.")
       Task::coefficients[var] = config.getReal (var);

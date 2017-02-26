@@ -7,7 +7,6 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${TASK_INCLUDE_DIRS})
 
 add_library (task CLI2.cpp CLI2.h
-                  Config.cpp Config.h
                   Context.cpp Context.h
                   DOM.cpp DOM.h
                   Dates.cpp Dates.h
@@ -32,6 +31,7 @@ add_library (task CLI2.cpp CLI2.h
                   util.cpp util.h)
 
 add_library (libshared libshared/src/Color.cpp         libshared/src/Color.h
+                       libshared/src/Configuration.cpp libshared/src/Configuration.h
                        libshared/src/Datetime.cpp      libshared/src/Datetime.h
                        libshared/src/Duration.cpp      libshared/src/Duration.h
                        libshared/src/FS.cpp            libshared/src/FS.h
