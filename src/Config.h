@@ -42,10 +42,6 @@ public:
   void load (const std::string&, int nest = 1);
   void parse (const std::string&, int nest = 1);
 
-  void createDefaultRC (const std::string&, const std::string&);
-  void createDefaultData (const std::string&);
-  void setDefaults ();
-
   bool        has        (const std::string&);
   std::string get        (const std::string&);
   int         getInteger (const std::string&);

@@ -37,6 +37,7 @@
 #include <Table.h>
 
 extern Context context;
+extern std::string configurationDefaults;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdShow::CmdShow ()
@@ -253,7 +254,7 @@ int CmdShow::execute (std::string& output)
   // Find all the values that match the defaults, for highlighting.
   std::vector <std::string> default_values;
   Config default_config;
-  default_config.setDefaults ();
+  default_config.parse (configurationDefaults);
 
   for (auto& i : context.config)
     if (i.second != default_config.get (i.first))

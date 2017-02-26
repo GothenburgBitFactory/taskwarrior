@@ -37,6 +37,7 @@
 #include <main.h>
 
 Context context;
+extern std::string configurationDefaults;
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
@@ -50,7 +51,7 @@ int main (int, char**)
   try
   {
     // Set up configuration.
-    context.config.setDefaults ();
+    context.config.parse (configurationDefaults);
     context.config.set ("fontunderline", true);
     context.config.set ("tag.indicator", "+");
     context.config.set ("dependency.indicator", "D");
