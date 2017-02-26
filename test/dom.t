@@ -184,6 +184,30 @@ class TestDOM(TestCase):
         self.assertEqual(len(out) > 4, True)
         self.assertNotIn("<unknown>", out)
 
+    def test_dom_tw_program(self):
+        """ DOM tw.program """
+        code, out, err = self.t("_get tw.program")
+        self.assertEqual(code, 0)
+        self.assertIn("task", out)
+
+    def test_dom_tw_args(self):
+        """ DOM tw.args """
+        code, out, err = self.t("_get tw.args")
+        self.assertEqual(code, 0)
+        self.assertIn("task _get tw.args", out)
+
+    def test_dom_tw_width(self):
+        """ DOM tw.width """
+        code, out, err = self.t("_get tw.width")
+        self.assertEqual(code, 0)
+        self.assertRegexpMatches(out, r"\d+")
+
+    def test_dom_tw_height(self):
+        """ DOM tw.height """
+        code, out, err = self.t("_get tw.height")
+        self.assertEqual(code, 0)
+        self.assertRegexpMatches(out, r"\d+")
+
     def test_dom_context_program(self):
         """ DOM context.program """
         code, out, err = self.t("_get context.program")
@@ -248,6 +272,30 @@ class TestDOM(TestCase):
         """ DOM 3.due.year """
         code, out, err = self.t("_get 4.ticketdate.year")
         self.assertEqual("2015\n", out)
+
+class TestDOMSync(TestCase):
+    """
+    This class verifies that the 'tw.syncneeded' DOM reference properly
+    evaluates whether sync is needed based on data in backlog.data contents.
+    """
+
+    def setUp(self):
+        self.t = Task()
+
+    def test_dom_tw_syncneeded_false(self):
+        """ DOM tw.syncneeded --> false """
+        code, out, err = self.t("_get tw.syncneeded")
+        self.assertEqual(code, 0)
+        self.assertIn("false", out)
+        self.assertNotIn("true", out)
+
+    def test_dom_tw_syncneeded_true(self):
+        """ DOM tw.syncneeded --> true """
+        self.t("add foo")
+        code, out, err = self.t("_get tw.syncneeded")
+        self.assertEqual(code, 0)
+        self.assertNotIn("false", out)
+        self.assertIn("true", out)
 
 
 class TestDOMDirectReferencesOnAddition(TestCase):
