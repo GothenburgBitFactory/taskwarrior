@@ -47,11 +47,18 @@ extern Context context;
 // Configuration:
 //   rc.<name>
 //
+// Taskwarrior:
+//   tw.syncneeded
+//   tw.program
+//   tw.args
+//   tw.width
+//   tw.height
+//
 // System:
-//   context.program
-//   context.args
-//   context.width
-//   context.height
+//   context.program         // 2017-02-25 Deprecated in 2.6.0
+//   context.args            // 2017-02-25 Deprecated in 2.6.0
+//   context.width           // 2017-02-25 Deprecated in 2.6.0
+//   context.height          // 2017-02-25 Deprecated in 2.6.0
 //   system.version
 //   system.os
 //
@@ -76,6 +83,61 @@ bool getDOM (const std::string& name, Variant& value)
     }
 
     return false;
+  }
+
+  // tw.*
+  if (len > 3 &&
+      ! name.compare (0, 3, "tw.", 3))
+  {
+    if (name == "tw.syncneeded")
+    {
+      value = Variant (false);
+      for (const auto& line : context.tdb2.backlog.get_lines ())
+      {
+        if (line[0] == '{')
+        {
+          value = Variant (true);
+          break;
+        }
+      }
+
+      return true;
+    }
+    else if (name == "tw.program")
+    {
+      value = Variant (context.cli2.getBinary ());
+      return true;
+    }
+    else if (name == "tw.args")
+    {
+      std::string commandLine;
+      for (auto& arg : context.cli2._original_args)
+      {
+        if (commandLine != "")
+           commandLine += ' ';
+
+        commandLine += arg.attribute("raw");
+      }
+
+      value = Variant (commandLine);
+      return true;
+    }
+    else if (name == "tw.width")
+    {
+      value = Variant (static_cast<int> (context.terminal_width
+                                           ? context.terminal_width
+                                           : context.getWidth ()));
+      return true;
+    }
+    else if (name == "tw.height")
+    {
+      value = Variant (static_cast<int> (context.terminal_height
+                                           ? context.terminal_height
+                                           : context.getHeight ()));
+      return true;
+    }
+    else
+      throw format (STRING_DOM_UNREC, name);
   }
 
   // context.*

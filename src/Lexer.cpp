@@ -1132,10 +1132,15 @@ bool Lexer::isOperator (std::string& token, Lexer::Type& type)
 //   rc.<name>
 //
 // System:
-//   context.program
-//   context.args
-//   context.width
-//   context.height
+//   tw.syncneeded
+//   tw.program
+//   tw.args
+//   tw.width
+//   tw.height
+//   context.program      // 2017-02-25 Deprecated in 2.6.0
+//   context.args         // 2017-02-25 Deprecated in 2.6.0
+//   context.width        // 2017-02-25 Deprecated in 2.6.0
+//   context.height       // 2017-02-25 Deprecated in 2.6.0
 //   system.version
 //   system.os
 //
@@ -1179,7 +1184,12 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   else
     _cursor = marker;
 
-  if (isOneOf ({"context.program",
+  if (isOneOf ({"tw.syncneeded",
+                "tw.program",
+                "tw.args",
+                "tw.width",
+                "tw.height",
+                "context.program",
                 "context.args",
                 "context.width",
                 "context.height",

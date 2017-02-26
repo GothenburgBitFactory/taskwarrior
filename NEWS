@@ -5,7 +5,8 @@ New Features in Taskwarrior 2.5.2
   - The 'help' command now takes a 'usage' argument, which displays only the
     command usage.
   - Improved compatibility with SmartOS, OmniOS and OpenIndiana.
-  - New DOM reference: annotations.count.
+  - New DOM references: annotations.count, tw.syncneeded, tw.program, tw.args,
+    tw.width, tw.height.
   - Renovated 'timesheet' command with a more compact report that accepts a
     filter, and has a default filter showing the last four weeks of completed
     and started tasks.
@@ -33,6 +34,9 @@ Newly Deprecated Features in Taskwarrior 2.5.2
   - The use of alternate Boolean configuration settings is deprecated. Use values
     "0" for off, and "1" for on.  Avoid used of "on", "off", "true", "t",
     "false", "f", "yes", "y", "no", "n".
+  - The 'context.program', 'context.args', 'context.width' and 'context.height'
+    DOM references are deprecated, replaced by similarly-named 'tw.xxx'
+    references.
 
 Removed Features in 2.5.2
 
