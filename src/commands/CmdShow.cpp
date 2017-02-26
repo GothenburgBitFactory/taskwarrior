@@ -253,7 +253,7 @@ int CmdShow::execute (std::string& output)
 
   // Find all the values that match the defaults, for highlighting.
   std::vector <std::string> default_values;
-  Config default_config;
+  Configuration default_config;
   default_config.parse (configurationDefaults);
 
   for (auto& i : context.config)
@@ -411,11 +411,8 @@ CmdShowRaw::CmdShowRaw ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdShowRaw::execute (std::string& output)
 {
-  // Get all the settings.
-  std::vector <std::string> all;
-  context.config.all (all);
-
-  // Sort alphabetically by name.
+  // Get all the settings and sort alphabetically by name.
+  auto all = context.config.all ();
   std::sort (all.begin (), all.end ());
 
   // Display them all.
