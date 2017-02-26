@@ -633,11 +633,16 @@ Accesses and displays the DOM reference(s).  Used to extract individual values
 from tasks, or the system.  Supported DOM references are:
 
   rc.<name>
-  context.program
-  context.args
-  context.width
-  context.height
-  system.version
+  tw.syncneeded
+  tw.program
+  tw.args
+  tw.width
+  tw.height
+  context.program    (Deprecated in 2.6.0)
+  context.args       (Deprecated in 2.6.0)
+  context.width      (Deprecated in 2.6.0)
+  context.height     (Deprecated in 2.6.0)
+  system.versio
   system.os
   <id>.<attribute>
   <uuid>.<attribute>
