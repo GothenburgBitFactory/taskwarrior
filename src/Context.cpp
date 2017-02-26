@@ -455,8 +455,14 @@ int Context::initialize (int argc, const char** argv)
       header (format (STRING_CONTEXT_RC_OVERRIDE, rc_file._data));
     }
 
-    config.parse (configurationDefaults);
-    config.load (rc_file);
+    // Artificial scope for timing purposes.
+    {
+      Timer timer;
+      config.parse (configurationDefaults);
+      config.load (rc_file._data);
+      debugTiming (format ("Config::load ({1})", rc_file._data), timer);
+    }
+
     CLI2::applyOverrides (argc, argv);
 
     ////////////////////////////////////////////////////////////////////////////
