@@ -45,7 +45,6 @@ public:
   void createDefaultRC (const std::string&, const std::string&);
   void createDefaultData (const std::string&);
   void setDefaults ();
-  void clear ();
 
   bool        has        (const std::string&);
   std::string get        (const std::string&);
