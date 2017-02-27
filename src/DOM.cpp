@@ -136,8 +136,8 @@ bool getDOM (const std::string& name, Variant& value)
                                            : context.getHeight ()));
       return true;
     }
-    else
-      throw format (STRING_DOM_UNREC, name);
+
+    return false;
   }
 
   // context.*
@@ -177,8 +177,8 @@ bool getDOM (const std::string& name, Variant& value)
                                            : context.getHeight ()));
       return true;
     }
-    else
-      throw format (STRING_DOM_UNREC, name);
+
+    return false;
   }
 
   // system. --> Implement locally.
@@ -198,8 +198,8 @@ bool getDOM (const std::string& name, Variant& value)
       value = Variant (osName ());
       return true;
     }
-    else
-      throw format (STRING_DOM_UNREC, name);
+
+    return false;
   }
 
   // Empty string if nothing is found.
