@@ -572,7 +572,7 @@ bool Lexer::isDate (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::duration
-//   <ISO8106p> | <Duration>
+//   <ISO8601p> | <Duration>
 bool Lexer::isDuration (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
