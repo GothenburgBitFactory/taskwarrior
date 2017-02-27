@@ -1002,8 +1002,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_date:
       {
         left.cast (type_date);
-        ISO8601d left_date (left._date);
-        ISO8601d right_date (right._date);
+        Datetime left_date (left._date);
+        Datetime right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1023,8 +1023,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_date:
       {
         left.cast (type_date);
-        ISO8601d left_date (left._date);
-        ISO8601d right_date (right._date);
+        Datetime left_date (left._date);
+        Datetime right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1049,8 +1049,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_date:
       {
         left.cast (type_date);
-        ISO8601d left_date (left._date);
-        ISO8601d right_date (right._date);
+        Datetime left_date (left._date);
+        Datetime right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1095,8 +1095,8 @@ bool Variant::operator_partial (const Variant& other) const
           return false;
 
         left.cast (type_date);
-        ISO8601d left_date (left._date);
-        ISO8601d right_date (right._date);
+        Datetime left_date (left._date);
+        Datetime right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1121,8 +1121,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_duration:
       {
         right.cast (type_date);
-        ISO8601d left_date (left._date);
-        ISO8601d right_date (right._date);
+        Datetime left_date (left._date);
+        Datetime right_date (right._date);
         return left_date.sameDay (right_date);
       }
     }
@@ -1886,7 +1886,7 @@ void Variant::cast (const enum type new_type)
         if (isop.parse (_string, pos) &&
             pos == _string.length ())
         {
-          _date = ISO8601d ().toEpoch () + isop.toTime_t ();
+          _date = Datetime ().toEpoch () + isop.toTime_t ();
           break;
         }
 
