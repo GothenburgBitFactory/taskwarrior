@@ -286,16 +286,16 @@ class TestDOMSync(TestCase):
         """ DOM tw.syncneeded --> false """
         code, out, err = self.t("_get tw.syncneeded")
         self.assertEqual(code, 0)
-        self.assertIn("false", out)
-        self.assertNotIn("true", out)
+        self.assertIn("0", out)
+        self.assertNotIn("1k", out)
 
     def test_dom_tw_syncneeded_true(self):
         """ DOM tw.syncneeded --> true """
         self.t("add foo")
         code, out, err = self.t("_get tw.syncneeded")
         self.assertEqual(code, 0)
-        self.assertNotIn("false", out)
-        self.assertIn("true", out)
+        self.assertNotIn("0", out)
+        self.assertIn("1", out)
 
 
 class TestDOMDirectReferencesOnAddition(TestCase):
