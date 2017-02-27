@@ -19,12 +19,11 @@ Thank you for taking a look at Taskwarrior!
 
 Taskwarrior is a GTD, todo list, task management, command line utility with a
 multitude of features. It is a portable, well supported and very active Open
-Source project. Taskwarrior has binary distributions, online documentation,
-demonstration movies, and you'll find all the details at:
+Source project. Take a look at the site:
 
     http://taskwarrior.org
 
-At the site you'll find online documentation, downloads, news and more.
+There you'll find online documentation, downloads, news and more.
 
 Your contributions are especially welcome. Whether it comes in the form of
 code patches, ideas, discussion, bug reports, encouragement or criticism, your
