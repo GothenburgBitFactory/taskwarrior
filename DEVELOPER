@@ -14,8 +14,8 @@ How to Build Taskwarrior
     $ git submodule init                 # This is now done by cmake as a test
     $ git submodule update               # Update the libhsared.git submodule
     $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither
-    $ make VERBOSE=1 -j8                 # Shows details, builds using 8 jobs
-                                         # Alternately 'export MAKEFLAGS=-j 8'
+    $ make VERBOSE=1 -j4                 # Shows details, builds using 4 jobs
+                                         # Alternately 'export MAKEFLAGS=-j 4'
 
   Running Test Suite:
     $ cd tests
