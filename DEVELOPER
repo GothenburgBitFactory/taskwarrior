@@ -137,7 +137,7 @@ Patches
     - Is accompanied by unit tests, where appropriate.
     - Is accompanied by documentation changes, where appropriate.
     - Conforms to the prevailing coding standards - in other words, it should
-      fit right in with the existing code.
+      fit in with the existing code.
 
   A patch may be rejected for violating any of the above rules, and more.
   Bad patches may be accepted and modified depending on work load and mood. It
