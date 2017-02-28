@@ -52,7 +52,7 @@ General Statement
   - Review documentation: there are man pages, online articles, tutorials and
     so on, and these may contain errors, or they may not convey ideas in the
     best way. Perhaps you can help improve it. Contact us - documentation is
-    a separate effort from the codebase, and includes all web sites, and all
+    a separate effort from the code base, and includes all web sites, and all
     are available as git repositories.
 
   - Take a look at the bug database, and help triage the bug list. This is a
