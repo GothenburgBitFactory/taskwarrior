@@ -122,7 +122,7 @@ Unit Tests Needed
     many issues, open and closed, have the "needsTest" label. These are things
     that we would like to see in the test suite, as regression tests.
 
-  Note that all new unit tests should follow the test/template.t standard.
+  All new unit tests should follow the test/template.t standard.
 
 Patches
   Patches are encouraged and welcomed. Either attach them to the appropriate
