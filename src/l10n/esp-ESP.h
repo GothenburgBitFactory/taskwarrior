@@ -754,7 +754,7 @@
 #define STRING_FEEDBACK_TAG_VIRTUAL  "Las marcas virtuales (incluída '{1}') están reservadas y no pueden ser añadidas o eliminadas."
 #define STRING_FEEDBACK_UNBLOCKED    "Desbloqueada {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fue eliminada."
-#define STRING_FEEDBACK_BACKLOG      "Hay modificaciones locales.  Se require una sincronización."
+#define STRING_FEEDBACK_BACKLOG      "Hay {1} modificaciones locales.  Se require una sincronización."
 
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "El proyecto '{1}' ha cambiado."

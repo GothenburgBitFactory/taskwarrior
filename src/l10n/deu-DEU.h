@@ -742,7 +742,7 @@
 #define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
 #define STRING_FEEDBACK_UNBLOCKED    "Aufgabe {1} '{2}' entsperrt."
 #define STRING_FEEDBACK_EXPIRED      "Aufgabe {1} '{2}' ist abgelaufen und wurde gelöscht."
-#define STRING_FEEDBACK_BACKLOG      "Lokale Änderungen.  Datenabgleich erforderlich."
+#define STRING_FEEDBACK_BACKLOG      "{1} Lokale Änderungen.  Datenabgleich erforderlich."
 
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."

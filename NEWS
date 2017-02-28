@@ -10,6 +10,8 @@ New Features in Taskwarrior 2.5.2
   - Renovated 'timesheet' command with a more compact report that accepts a
     filter, and has a default filter showing the last four weeks of completed
     and started tasks.
+  - The message telling you to sync now indicates how many local changes will be
+    synced.
 
 New Commands in Taskwarrior 2.5.2
 
