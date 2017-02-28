@@ -415,15 +415,14 @@ void feedback_backlog ()
   if (context.config.get ("taskd.server") != "" &&
       context.verbose ("sync"))
   {
+    int count = 0;
     std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
     for (auto& line : lines)
-    {
       if ((line)[0] == '{')
-      {
-        context.footnote (STRING_FEEDBACK_BACKLOG);
-        break;
-      }
-    }
+        ++count;
+
+    if (count)
+      context.footnote (format (STRING_FEEDBACK_BACKLOG, count));
   }
 }
 

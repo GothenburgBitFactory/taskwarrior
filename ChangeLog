@@ -89,6 +89,8 @@
   report variations, with code refactoring.
           (thanks to Lukas Barth).
 - New DOM references: annotations.count, tw.syncneeded.
+- The message telling you to sync now indicates how many local changes will be
+  synced.
 
 ------ current release ---------------------------
 
