@@ -770,13 +770,14 @@ ARE_THESE_REALLY_HARMFUL:
   // Launch the editor.
   std::cout << format (STRING_EDIT_LAUNCHING, editor) << '\n';
   int exitcode = system (editor.c_str ());
+  auto captured_errno = errno;
   if (0 == exitcode)
     std::cout << STRING_EDIT_COMPLETE << '\n';
   else
   {
     std::cout << format (STRING_EDIT_FAILED, exitcode) << '\n';
     if (-1 == exitcode)
-      std::cout << std::strerror (errno) << '\n';
+      std::cout << std::strerror (captured_errno) << '\n';
     return CmdEdit::editResult::error;
   }
 
