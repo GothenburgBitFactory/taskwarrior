@@ -48,7 +48,6 @@
 #include <string.h>
 #include <signal.h>
 #include <pwd.h>
-#include <errno.h>
 #include <signal.h>
 #include <sys/select.h>
 
