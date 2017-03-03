@@ -57,8 +57,8 @@ std::vector <Task> dependencyGetBlocked (const Task& task)
 std::vector <Task> dependencyGetBlocking (const Task& task)
 {
   auto depends = task.get ("depends");
-  std::vector <Task> blocking;
 
+  std::vector <Task> blocking;
   if (depends != "")
     for (auto& it : context.tdb2.pending.get_tasks ())
       if (it.getStatus () != Task::completed &&
@@ -80,9 +80,9 @@ bool dependencyIsCircular (const Task& task)
     auto task_uuid = task.get ("uuid");
 
     std::stack <Task> s;
-    std::unordered_set <std::string> visited;
-
     s.push (task);
+
+    std::unordered_set <std::string> visited;
     visited.insert (task_uuid);
 
     while (! s.empty ())
@@ -164,7 +164,7 @@ void dependencyChainOnComplete (Task& task)
       std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
                 << '\n';
 
-      for (auto& b : blocking)
+      for (const auto& b : blocking)
         std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
     }
 
@@ -176,7 +176,7 @@ void dependencyChainOnComplete (Task& task)
         std::cout << STRING_DEPEND_BLOCKING
                   << '\n';
 
-        for (auto& b : blocked)
+        for (const auto& b : blocked)
           std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
       }
 
@@ -189,7 +189,7 @@ void dependencyChainOnComplete (Task& task)
         {
           left.removeDependency (task.id);
 
-          for (auto& right : blocking)
+          for (const auto& right : blocking)
             left.addDependency (right.id);
         }
 
@@ -218,7 +218,7 @@ void dependencyChainOnStart (Task& task)
       std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
                 << '\n';
 
-      for (auto& b : blocking)
+      for (const auto& b : blocking)
         std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
     }
   }
