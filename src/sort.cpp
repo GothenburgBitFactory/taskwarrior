@@ -118,8 +118,8 @@ static bool sort_compare (int left, int right)
              field == "imask"       ||
              field == "mask")
     {
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -138,8 +138,8 @@ static bool sort_compare (int left, int right)
              field == "modified" ||
              field == "scheduled")
     {
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string != "" && right_string == "")
         return true;
@@ -158,8 +158,8 @@ static bool sort_compare (int left, int right)
     else if (field == "depends")
     {
       // Raw data is a comma-separated list of uuids
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -184,8 +184,8 @@ static bool sort_compare (int left, int right)
     // Duration.
     else if (field == "recur")
     {
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -202,8 +202,8 @@ static bool sort_compare (int left, int right)
       std::string type = column->type ();
       if (type == "numeric")
       {
-        const float left_real  = strtof (((*global_data)[left].get_ref  (field)).c_str (), NULL);
-        const float right_real = strtof (((*global_data)[right].get_ref (field)).c_str (), NULL);
+        auto left_real  = strtof (((*global_data)[left].get_ref  (field)).c_str (), NULL);
+        auto right_real = strtof (((*global_data)[right].get_ref (field)).c_str (), NULL);
 
         if (left_real == right_real)
           continue;
@@ -213,8 +213,8 @@ static bool sort_compare (int left, int right)
       }
       else if (type == "string")
       {
-        const std::string left_string = (*global_data)[left].get_ref (field);
-        const std::string right_string = (*global_data)[right].get_ref (field);
+        auto left_string = (*global_data)[left].get_ref (field);
+        auto right_string = (*global_data)[right].get_ref (field);
 
         if (left_string == right_string)
           continue;
@@ -243,8 +243,8 @@ static bool sort_compare (int left, int right)
 
       else if (type == "date")
       {
-        const std::string& left_string  = (*global_data)[left].get_ref  (field);
-        const std::string& right_string = (*global_data)[right].get_ref (field);
+        auto left_string  = (*global_data)[left].get_ref  (field);
+        auto right_string = (*global_data)[right].get_ref (field);
 
         if (left_string != "" && right_string == "")
           return true;
@@ -260,8 +260,8 @@ static bool sort_compare (int left, int right)
       }
       else if (type == "duration")
       {
-        const std::string& left_string  = (*global_data)[left].get_ref  (field);
-        const std::string& right_string = (*global_data)[right].get_ref (field);
+        auto left_string  = (*global_data)[left].get_ref  (field);
+        auto right_string = (*global_data)[right].get_ref (field);
 
         if (left_string == right_string)
           continue;
