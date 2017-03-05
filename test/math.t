@@ -44,7 +44,7 @@ class TestMath(TestCase):
         cls.t.config("dateformat", "YYYY-MM-DD")
 
         # YYYY-12-21.
-        cls.when = "%d-12-21T23:59:59\n" % datetime.now().year
+        cls.when = "%d-12-22T00:00:00\n" % datetime.now().year
 
         # Different ways of specifying YYYY-12-21.
         cls.t("add one   due:eoy-10days")
@@ -52,7 +52,7 @@ class TestMath(TestCase):
         cls.t("add three 'due:eoy-10days'")
         cls.t("add four  due:'eoy - 10days'")
         cls.t("add five  'due:eoy - 10days'")
-        cls.t("add six   'due:%d-12-31T23:59:59 - 10days'" % datetime.now().year)
+        cls.t("add six   'due:%d-01-01T00:00:00 - 10days'".format (datetime.now().year + 1))
 
     def test_compact_unquoted(self):
         """compact unquoted"""
