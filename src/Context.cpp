@@ -39,7 +39,6 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Datetime.h>
-#include <ISO8601.h>
 #include <shared.h>
 #include <format.h>
 #include <main.h>
@@ -1030,7 +1029,6 @@ void Context::staticInitialization ()
 {
   CLI2::minimumMatchLength     = config.getInteger ("abbreviation.minimum");
   Lexer::minimumMatchLength    = config.getInteger ("abbreviation.minimum");
-  ISO8601d::minimumMatchLength = config.getInteger ("abbreviation.minimum");
 
   Task::defaultProject      = config.get ("default.project");
   Task::defaultDue          = config.get ("default.due");
@@ -1039,11 +1037,9 @@ void Context::staticInitialization ()
   Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
   Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
   Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
-  Datetime::isoEnabled      = ISO8601d::isoEnabled         = config.getBoolean ("date.iso");
+  Datetime::isoEnabled      = config.getBoolean ("date.iso");
 
   TDB2::debug_mode          = config.getBoolean ("debug");
-
-  ISO8601d::weekstart       = config.get ("weekstart");
 
   for (auto& rc : config)
   {
