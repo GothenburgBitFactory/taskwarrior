@@ -32,7 +32,6 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
-#include <Dates.h>
 #include <format.h>
 #include <i18n.h>
 
@@ -216,7 +215,6 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    e.addSource (namedDates);
     contextTask = task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
@@ -231,9 +229,9 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
   if (evaluatedValue.type () == Variant::type_duration)
   {
     context.debug (label + _name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + '\'');
-    Variant now;
-    if (namedDates ("now", now))
-      evaluatedValue += now;
+    Datetime date_now;
+    Variant now (date_now.toEpoch (), Variant::type_date);
+    evaluatedValue += now;
   }
   else
   {
