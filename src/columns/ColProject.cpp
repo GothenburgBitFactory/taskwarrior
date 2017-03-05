@@ -31,7 +31,6 @@
 #include <Variant.h>
 #include <Lexer.h>
 #include <Filter.h>
-#include <Dates.h>
 #include <shared.h>
 #include <format.h>
 #include <utf8.h>
@@ -124,7 +123,6 @@ void ColumnProject::modify (Task& task, const std::string& value)
     {
       Eval e;
       e.addSource (domSource);
-      e.addSource (namedDates);
       contextTask = task;
 
       Variant v;
