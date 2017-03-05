@@ -28,6 +28,7 @@
 #include <Lexer.h>
 #include <algorithm>
 #include <ctype.h>
+#include <Datetime.h>
 #include <ISO8601.h>
 #include <utf8.h>
 
@@ -553,12 +554,12 @@ bool Lexer::isString (std::string& token, Lexer::Type& type, const std::string& 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::date
-//   <ISO8601d>
+//   <Datetime>
 bool Lexer::isDate (std::string& token, Lexer::Type& type)
 {
   // Try an ISO date parse.
   std::size_t iso_i = 0;
-  ISO8601d iso;
+  Datetime iso;
   if (iso.parse (_text.substr (_cursor), iso_i, Lexer::dateFormat))
   {
     type = Lexer::Type::date;
