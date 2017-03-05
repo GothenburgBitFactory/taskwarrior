@@ -9,7 +9,6 @@ include_directories (${CMAKE_SOURCE_DIR}
 add_library (task CLI2.cpp CLI2.h
                   Context.cpp Context.h
                   DOM.cpp DOM.h
-                  Dates.cpp Dates.h
                   Eval.cpp Eval.h
                   Filter.cpp Filter.h
                   Hooks.cpp Hooks.h
