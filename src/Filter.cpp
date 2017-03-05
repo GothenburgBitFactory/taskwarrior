@@ -32,7 +32,6 @@
 #include <DOM.h>
 #include <Eval.h>
 #include <Variant.h>
-#include <Dates.h>
 #include <i18n.h>
 #include <format.h>
 #include <shared.h>
@@ -74,7 +73,6 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   {
     Eval eval;
     eval.addSource (domSource);
-    eval.addSource (namedDates);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
@@ -126,7 +124,6 @@ void Filter::subset (std::vector <Task>& output)
 
     Eval eval;
     eval.addSource (domSource);
-    eval.addSource (namedDates);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
