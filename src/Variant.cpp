@@ -31,7 +31,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <Variant.h>
-#include <ISO8601.h>
 #include <Datetime.h>
 #include <Duration.h>
 #include <Lexer.h>
@@ -1872,7 +1871,7 @@ void Variant::cast (const enum type new_type)
     case type_date:
       {
         _date = 0;
-        ISO8601d iso;
+        Datetime iso;
         std::string::size_type pos = 0;
         if (iso.parse (_string, pos, dateFormat) &&
             pos == _string.length ())
@@ -1892,7 +1891,7 @@ void Variant::cast (const enum type new_type)
 
         if (dateFormat != "")
         {
-          _date = ISO8601d (_string, dateFormat).toEpoch ();
+          _date = Datetime (_string, dateFormat).toEpoch ();
           break;
         }
       }
