@@ -28,7 +28,6 @@
 #include <CmdCalc.h>
 #include <Filter.h>
 #include <Eval.h>
-#include <Dates.h>
 #include <main.h>
 #include <i18n.h>
 
@@ -61,7 +60,6 @@ int CmdCalc::execute (std::string& output)
   // Create an evaluator with DOM access.
   Eval e;
   e.addSource (domSource);
-  e.addSource (namedDates);
   e.debug (context.config.getBoolean ("debug"));
 
   // Compile all the args into one expression.
