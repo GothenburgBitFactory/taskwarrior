@@ -14,7 +14,6 @@ add_library (task CLI2.cpp CLI2.h
                   Filter.cpp Filter.h
                   Hooks.cpp Hooks.h
                   Lexer.cpp Lexer.h
-                  Nibbler.cpp Nibbler.h
                   TDB2.cpp TDB2.h
                   Task.cpp Task.h
                   TLSClient.cpp TLSClient.h
