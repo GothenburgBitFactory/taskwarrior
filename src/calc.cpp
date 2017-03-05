@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Eval.h>
-#include <Dates.h>
 #include <Context.h>
 #include <Task.h>
 #include <shared.h>
@@ -62,7 +61,6 @@ int main (int argc, char** argv)
 
     // Add a source for constants.
     Eval e;
-    e.addSource (namedDates);
     e.addSource (get);
 
     // Combine all the arguments into one expression string.
