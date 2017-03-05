@@ -26,17 +26,14 @@
 
 #include <cmake.h>
 #include <test.h>
-#include <Dates.h>
-#include <Context.h>
-
-Context context;
+#include <Datetime.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-void testInit (UnitTest& t, const std::string& value, Variant& var)
+void testInit (UnitTest& t, const std::string& value, Datetime& var)
 {
   try
   {
-    namedDates (value, var);
+    var = Datetime (value);
     t.pass (value + " --> valid");
   }
 
@@ -55,23 +52,23 @@ void testInit (UnitTest& t, const std::string& value, Variant& var)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (105);
+  UnitTest t (101);
 
-  Variant sunday;    testInit (t, "sunday",    sunday);
-  Variant monday;    testInit (t, "monday",    monday);
-  Variant tuesday;   testInit (t, "tuesday",   tuesday);
-  Variant wednesday; testInit (t, "wednesday", wednesday);
-  Variant thursday;  testInit (t, "thursday",  thursday);
-  Variant friday;    testInit (t, "friday",    friday);
-  Variant saturday;  testInit (t, "saturday",  saturday);
+  Datetime sunday;    testInit (t, "sunday",    sunday);
+  Datetime monday;    testInit (t, "monday",    monday);
+  Datetime tuesday;   testInit (t, "tuesday",   tuesday);
+  Datetime wednesday; testInit (t, "wednesday", wednesday);
+  Datetime thursday;  testInit (t, "thursday",  thursday);
+  Datetime friday;    testInit (t, "friday",    friday);
+  Datetime saturday;  testInit (t, "saturday",  saturday);
 
-  Variant sun; testInit (t, "sun", sun);
-  Variant mon; testInit (t, "mon", mon);
-  Variant tue; testInit (t, "tue", tue);
-  Variant wed; testInit (t, "wed", wed);
-  Variant thu; testInit (t, "thu", thu);
-  Variant fri; testInit (t, "fri", fri);
-  Variant sat; testInit (t, "sat", sat);
+  Datetime sun; testInit (t, "sun", sun);
+  Datetime mon; testInit (t, "mon", mon);
+  Datetime tue; testInit (t, "tue", tue);
+  Datetime wed; testInit (t, "wed", wed);
+  Datetime thu; testInit (t, "thu", thu);
+  Datetime fri; testInit (t, "fri", fri);
+  Datetime sat; testInit (t, "sat", sat);
 
   t.ok (sunday    == sun, "sunday == sun");
   t.ok (monday    == mon, "monday == mon");
@@ -81,30 +78,30 @@ int main (int, char**)
   t.ok (friday    == fri, "friday == fri");
   t.ok (saturday  == sat, "saturday == sat");
 
-  Variant january;   testInit (t, "january",   january);
-  Variant february;  testInit (t, "february",  february);
-  Variant march;     testInit (t, "march",     march);
-  Variant april;     testInit (t, "april",     april);
-  Variant may;       testInit (t, "may",       may);
-  Variant june;      testInit (t, "june",      june);
-  Variant july;      testInit (t, "july",      july);
-  Variant august;    testInit (t, "august",    august);
-  Variant september; testInit (t, "september", september);
-  Variant october;   testInit (t, "october",   october);
-  Variant november;  testInit (t, "november",  november);
-  Variant december;  testInit (t, "december",  december);
+  Datetime january;   testInit (t, "january",   january);
+  Datetime february;  testInit (t, "february",  february);
+  Datetime march;     testInit (t, "march",     march);
+  Datetime april;     testInit (t, "april",     april);
+  Datetime may;       testInit (t, "may",       may);
+  Datetime june;      testInit (t, "june",      june);
+  Datetime july;      testInit (t, "july",      july);
+  Datetime august;    testInit (t, "august",    august);
+  Datetime september; testInit (t, "september", september);
+  Datetime october;   testInit (t, "october",   october);
+  Datetime november;  testInit (t, "november",  november);
+  Datetime december;  testInit (t, "december",  december);
 
-  Variant jan; testInit (t, "jan", jan);
-  Variant feb; testInit (t, "feb", feb);
-  Variant mar; testInit (t, "mar", mar);
-  Variant apr; testInit (t, "apr", apr);
-  Variant jun; testInit (t, "jun", jun);
-  Variant jul; testInit (t, "jul", jul);
-  Variant aug; testInit (t, "aug", aug);
-  Variant sep; testInit (t, "sep", sep);
-  Variant oct; testInit (t, "oct", oct);
-  Variant nov; testInit (t, "nov", nov);
-  Variant dec; testInit (t, "dec", dec);
+  Datetime jan; testInit (t, "jan", jan);
+  Datetime feb; testInit (t, "feb", feb);
+  Datetime mar; testInit (t, "mar", mar);
+  Datetime apr; testInit (t, "apr", apr);
+  Datetime jun; testInit (t, "jun", jun);
+  Datetime jul; testInit (t, "jul", jul);
+  Datetime aug; testInit (t, "aug", aug);
+  Datetime sep; testInit (t, "sep", sep);
+  Datetime oct; testInit (t, "oct", oct);
+  Datetime nov; testInit (t, "nov", nov);
+  Datetime dec; testInit (t, "dec", dec);
 
   t.ok (january   == jan, "january == jan");
   t.ok (february  == feb, "february == feb");
@@ -120,51 +117,47 @@ int main (int, char**)
   t.ok (december  == dec, "december == dec");
 
   // Simply instantiate these for now.  Test later.
-  Variant now;            testInit (t, "now", now);
-  Variant today;          testInit (t, "today", today);
-  Variant sod;            testInit (t, "sod", sod);
-  Variant yesterday;      testInit (t, "yesterday", yesterday);
-  Variant tomorrow;       testInit (t, "tomorrow", tomorrow);
-  Variant eod;            testInit (t, "eod", eod);
-  Variant soy;            testInit (t, "soy", soy);
-  Variant eoy;            testInit (t, "eoy", eoy);
-  Variant socm;           testInit (t, "socm", socm);
-  Variant eocm;           testInit (t, "eocm", eocm);
-  Variant soww;           testInit (t, "soww", soww);
-  Variant eoww;           testInit (t, "eoww", eoww);
-  Variant som;            testInit (t, "som", som);
-  Variant eom;            testInit (t, "eom", eom);
-  Variant later;          testInit (t, "later", later);
-  Variant someday;        testInit (t, "someday", someday);
-  Variant easter;         testInit (t, "easter", easter);
-  Variant eastermonday;   testInit (t, "eastermonday", eastermonday);
-  Variant ascension;      testInit (t, "ascension", ascension);
-  Variant pentecost;      testInit (t, "pentecost", pentecost);
-  Variant goodfriday;     testInit (t, "goodfriday", goodfriday);
-  Variant pi;             testInit (t, "pi", pi);
-  Variant var_true;       testInit (t, "true", var_true);
-  Variant var_false;      testInit (t, "false", var_false);
-  Variant midsommar;      testInit (t, "midsommar", midsommar);
-  Variant midsommarafton; testInit (t, "midsommarafton", midsommarafton);
-  Variant juhannus;       testInit (t, "juhannus", juhannus);
-  Variant first;          testInit (t, "1st", first);
-  Variant second;         testInit (t, "2nd", second);
-  Variant third;          testInit (t, "3rd", third);
-  Variant fourth;         testInit (t, "4th", fourth);
+  Datetime now;            testInit (t, "now", now);
+  Datetime today;          testInit (t, "today", today);
+  Datetime sod;            testInit (t, "sod", sod);
+  Datetime yesterday;      testInit (t, "yesterday", yesterday);
+  Datetime tomorrow;       testInit (t, "tomorrow", tomorrow);
+  Datetime eod;            testInit (t, "eod", eod);
+  Datetime soy;            testInit (t, "soy", soy);
+  Datetime eoy;            testInit (t, "eoy", eoy);
+  Datetime socm;           testInit (t, "socm", socm);
+  Datetime eocm;           testInit (t, "eocm", eocm);
+  Datetime soww;           testInit (t, "soww", soww);
+  Datetime eoww;           testInit (t, "eoww", eoww);
+  Datetime som;            testInit (t, "som", som);
+  Datetime eom;            testInit (t, "eom", eom);
+  Datetime later;          testInit (t, "later", later);
+  Datetime someday;        testInit (t, "someday", someday);
+  Datetime easter;         testInit (t, "easter", easter);
+  Datetime eastermonday;   testInit (t, "eastermonday", eastermonday);
+  Datetime ascension;      testInit (t, "ascension", ascension);
+  Datetime pentecost;      testInit (t, "pentecost", pentecost);
+  Datetime goodfriday;     testInit (t, "goodfriday", goodfriday);
+  Datetime midsommar;      testInit (t, "midsommar", midsommar);
+  Datetime midsommarafton; testInit (t, "midsommarafton", midsommarafton);
+  Datetime juhannus;       testInit (t, "juhannus", juhannus);
+  Datetime first;          testInit (t, "1st", first);
+  Datetime second;         testInit (t, "2nd", second);
+  Datetime third;          testInit (t, "3rd", third);
+  Datetime fourth;         testInit (t, "4th", fourth);
 
   // Check abbreviations.
   // TW-1515: abbreviation.minimum does not apply to date recognition
-  Variant yesterday2;      testInit (t, "yesterday", yesterday2);
-  Variant yesterday3;      testInit (t, "yesterda",  yesterday3);
-  Variant yesterday4;      testInit (t, "yesterd",   yesterday4);
-  Variant yesterday5;      testInit (t, "yester",    yesterday5);
-  Variant yesterday6;      testInit (t, "yeste",     yesterday6);
-  Variant yesterday7;      testInit (t, "yest",      yesterday7);
-  Variant yesterday8;      testInit (t, "yes",       yesterday8);
+  Datetime yesterday2;      testInit (t, "yesterday", yesterday2);
+  Datetime yesterday3;      testInit (t, "yesterda",  yesterday3);
+  Datetime yesterday4;      testInit (t, "yesterd",   yesterday4);
+  Datetime yesterday5;      testInit (t, "yester",    yesterday5);
+  Datetime yesterday6;      testInit (t, "yeste",     yesterday6);
+  Datetime yesterday7;      testInit (t, "yest",      yesterday7);
+  Datetime yesterday8;      testInit (t, "yes",       yesterday8);
 
   t.ok (now >= today,               "now >= today");
   t.ok (sod == tomorrow,            "sod == tomorrow");
-  t.ok (sod > eod,                  "sod > eod");
   t.ok (yesterday < today,          "yesterday < today");
   t.ok (today < tomorrow,           "today < tomorrow");
   t.ok (socm < eocm,                "socm < eocm");
