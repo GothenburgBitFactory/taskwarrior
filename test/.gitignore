@@ -6,7 +6,6 @@
 col.t
 dates.t
 eval.t
-iso8601d.t
 lexer.t
 nibbler.t
 t.t
