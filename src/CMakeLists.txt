@@ -13,7 +13,6 @@ add_library (task CLI2.cpp CLI2.h
                   Eval.cpp Eval.h
                   Filter.cpp Filter.h
                   Hooks.cpp Hooks.h
-                  ISO8601.cpp ISO8601.h
                   Lexer.cpp Lexer.h
                   Nibbler.cpp Nibbler.h
                   TDB2.cpp TDB2.h
