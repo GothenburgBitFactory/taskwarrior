@@ -7,7 +7,6 @@ col.t
 dates.t
 eval.t
 lexer.t
-nibbler.t
 t.t
 taskmod.t
 tdb2.t
