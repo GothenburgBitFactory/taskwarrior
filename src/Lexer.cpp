@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <ctype.h>
 #include <Datetime.h>
-#include <ISO8601.h>
+#include <Duration.h>
 #include <utf8.h>
 
 static const std::string uuid_pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
@@ -573,21 +573,21 @@ bool Lexer::isDate (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::duration
-//   <ISO8601p> | <Duration>
+//   <Duration>
 bool Lexer::isDuration (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
   std::string extractedToken;
   Lexer::Type extractedType;
-  if (isOperator(extractedToken, extractedType))
+  if (isOperator (extractedToken, extractedType))
   {
     _cursor = marker;
     return false;
   }
 
   marker = 0;
-  ISO8601p iso;
+  Duration iso;
   if (iso.parse (_text.substr (_cursor), marker))
   {
     type = Lexer::Type::duration;
