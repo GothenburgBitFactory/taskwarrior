@@ -30,7 +30,6 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
-#include <Dates.h>
 #include <format.h>
 #include <i18n.h>
 
@@ -58,7 +57,6 @@ void ColumnTypeDuration::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    e.addSource (namedDates);
     contextTask = task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
