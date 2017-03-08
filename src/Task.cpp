@@ -447,7 +447,8 @@ bool Task::is_dueweek () const
         status != Task::deleted)
     {
       Datetime due (get_date ("due"));
-      if (due.sameWeek (Datetime ()))
+      if (due >= Datetime ("sow") &&
+          due <= Datetime ("eow"))
         return true;
     }
   }
