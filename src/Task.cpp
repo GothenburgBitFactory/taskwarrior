@@ -467,7 +467,8 @@ bool Task::is_duemonth () const
         status != Task::deleted)
     {
       Datetime due (get_date ("due"));
-      if (due.sameMonth (Datetime ()))
+      if (due >= Datetime ("som") &&
+          due <= Datetime ("eom"))
         return true;
     }
   }
