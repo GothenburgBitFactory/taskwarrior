@@ -487,7 +487,8 @@ bool Task::is_duequarter () const
         status != Task::deleted)
     {
       Datetime due (get_date ("due"));
-      if (due.sameQuarter (Datetime ()))
+      if (due >= Datetime ("soq") &&
+          due <= Datetime ("eoq"))
         return true;
     }
   }
