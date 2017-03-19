@@ -52,7 +52,7 @@ class TestMath(TestCase):
         cls.t("add three 'due:eoy-10days'")
         cls.t("add four  due:'eoy - 10days'")
         cls.t("add five  'due:eoy - 10days'")
-        cls.t("add six   'due:%d-01-01T00:00:00 - 10days'".format (datetime.now().year + 1))
+        cls.t("add six   'due:{}-01-01T00:00:00 - 10days'".format (datetime.now().year + 1))
 
     def test_compact_unquoted(self):
         """compact unquoted"""
