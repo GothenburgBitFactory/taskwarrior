@@ -30,9 +30,8 @@
 #include <string.h>
 #include <test.h>
 #include <Lexer.h>
-#include <Context.h>
-
-Context context;
+#include <Datetime.h>
+#include <Duration.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
@@ -42,6 +41,12 @@ int main (int, char**)
 #else
   UnitTest t (1262);
 #endif
+
+  // Use same Datetime/Duraiton configuration as Context∴:staticInitialization.
+  Datetime::isoEnabled               = true;
+  Datetime::standaloneDateEnabled    = false;
+  Datetime::standaloneTimeEnabled    = false;
+  Duration::standaloneSecondsEnabled = false;
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -178,17 +183,17 @@ int main (int, char**)
   t.is (tokens[0].first,         "1",                         "tokens[0] == '1'");
   t.is ((int) tokens[0].second,  (int) Lexer::Type::number,   "tokens[0] == Type::number");
   t.is (tokens[1].first,         "12",                        "tokens[1] == '12'");
-  t.is ((int) tokens[1].second,  (int) Lexer::Type::number,   "tokens[1] == Type::date");
+  t.is ((int) tokens[1].second,  (int) Lexer::Type::number,   "tokens[1] == Type::number");
   t.is (tokens[2].first,         "123",                       "tokens[2] == '123'");
   t.is ((int) tokens[2].second,  (int) Lexer::Type::number,   "tokens[2] == Type::number"); // 70
   t.is (tokens[3].first,         "1234",                      "tokens[3] == '1234'");
-  t.is ((int) tokens[3].second,  (int) Lexer::Type::date,     "tokens[3] == Type::date");
+  t.is ((int) tokens[3].second,  (int) Lexer::Type::number,   "tokens[3] == Type::number");
   t.is (tokens[4].first,         "12345",                     "tokens[4] == '12345'");
   t.is ((int) tokens[4].second,  (int) Lexer::Type::number,   "tokens[4] == Type::number");
   t.is (tokens[5].first,         "123456",                    "tokens[5] == '123456'");
-  t.is ((int) tokens[5].second,  (int) Lexer::Type::date,     "tokens[5] == Type::date");
+  t.is ((int) tokens[5].second,  (int) Lexer::Type::number,   "tokens[5] == Type::number");
   t.is (tokens[6].first,         "1234567",                   "tokens[6] == '1234567'");
-  t.is ((int) tokens[6].second,  (int) Lexer::Type::duration, "tokens[6] == Type::number");
+  t.is ((int) tokens[6].second,  (int) Lexer::Type::number,   "tokens[6] == Type::number");
 
   // void split (std::vector<std::string>&, const std::string&);
   std::string unsplit = " ( A or B ) ";
