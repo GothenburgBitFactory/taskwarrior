@@ -39,6 +39,7 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Datetime.h>
+#include <Duration.h>
 #include <shared.h>
 #include <format.h>
 #include <main.h>
@@ -1027,19 +1028,23 @@ void Context::getLimits (int& rows, int& lines)
 // easier, it has been decoupled from Context.
 void Context::staticInitialization ()
 {
-  CLI2::minimumMatchLength     = config.getInteger ("abbreviation.minimum");
-  Lexer::minimumMatchLength    = config.getInteger ("abbreviation.minimum");
+  CLI2::minimumMatchLength           = config.getInteger ("abbreviation.minimum");
+  Lexer::minimumMatchLength          = config.getInteger ("abbreviation.minimum");
 
-  Task::defaultProject      = config.get ("default.project");
-  Task::defaultDue          = config.get ("default.due");
-  Task::defaultScheduled    = config.get ("default.scheduled");
+  Task::defaultProject               = config.get ("default.project");
+  Task::defaultDue                   = config.get ("default.due");
+  Task::defaultScheduled             = config.get ("default.scheduled");
 
-  Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
-  Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
-  Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
-  Datetime::isoEnabled      = config.getBoolean ("date.iso");
+  Task::searchCaseSensitive          = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
+  Task::regex                        = Variant::searchUsingRegex    = config.getBoolean ("regex");
+  Lexer::dateFormat                  = Variant::dateFormat          = config.get ("dateformat");
 
-  TDB2::debug_mode          = config.getBoolean ("debug");
+  Datetime::isoEnabled               = config.getBoolean ("date.iso");
+  Datetime::standaloneDateEnabled    = false;
+  Datetime::standaloneTimeEnabled    = false;
+  Duration::standaloneSecondsEnabled = false;
+
+  TDB2::debug_mode                   = config.getBoolean ("debug");
 
   for (auto& rc : config)
   {
