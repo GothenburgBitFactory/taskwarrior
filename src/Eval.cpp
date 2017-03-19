@@ -352,7 +352,7 @@ void Eval::evaluatePostfixStack (
           }
 
           // An identifier that fails lookup is a string.
-          if (!found)
+          if (! found)
           {
             v.cast (Variant::type_string);
             if (_debug)

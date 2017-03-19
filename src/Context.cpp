@@ -1086,7 +1086,7 @@ void Context::createDefaultConfig ()
   if (rc_file._data != "" && ! rc_file.exists ())
   {
     if (config.getBoolean ("confirmation") &&
-        !confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
+        ! confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
       throw std::string (STRING_CONTEXT_NEED_RC);
 
     // Override data.location in the defaults.
