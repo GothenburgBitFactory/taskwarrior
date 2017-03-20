@@ -35,6 +35,7 @@
 #include <Context.h>
 #include <FS.h>
 #include <Table.h>
+#include <util.h>
 
 extern Context context;
 extern std::string configurationDefaults;
@@ -265,6 +266,7 @@ int CmdShow::execute (std::string& output)
   view.width (width);
   view.add (STRING_CMD_SHOW_CONF_VAR);
   view.add (STRING_CMD_SHOW_CONF_VALUE);
+  setHeaderUnderline (view);
 
   Color error;
   Color warning;
@@ -272,9 +274,6 @@ int CmdShow::execute (std::string& output)
   {
     error   = Color (context.config.get ("color.error"));
     warning = Color (context.config.get ("color.warning"));
-
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
   }
 
   bool issue_error = false;
