@@ -64,6 +64,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
 
   // Now build the view.
   Table view;
+  setHeaderUnderline (view);
   if (context.config.getBoolean ("color"))
     view.forceColor ();
   view.width (context.getWidth ());
@@ -196,6 +197,7 @@ template<class HistoryStrategy>
 void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
 {
   Table view;
+  setHeaderUnderline (view);
   if (context.config.getBoolean ("color"))
     view.forceColor ();
   view.width (context.getWidth ());
