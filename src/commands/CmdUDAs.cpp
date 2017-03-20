@@ -92,12 +92,7 @@ int CmdUDAs::execute (std::string& output)
     table.add (STRING_COLUMN_LABEL_VALUES);
     table.add (STRING_COLUMN_LABEL_DEFAULT);
     table.add (STRING_COLUMN_LABEL_UDACOUNT);
-
-    if (context.color ())
-    {
-      Color label ("underline " + context.config.get ("color.label"));
-      table.colorHeader (label);
-    }
+    setHeaderUnderline (table);
 
     for (auto& uda : udas)
     {
@@ -154,12 +149,7 @@ int CmdUDAs::execute (std::string& output)
     orphanTable.width (context.getWidth ());
     orphanTable.add (STRING_COLUMN_LABEL_ORPHAN);
     orphanTable.add (STRING_COLUMN_LABEL_UDACOUNT);
-
-    if (context.color ())
-    {
-      Color label ("underline " + context.config.get ("color.label"));
-      orphanTable.colorHeader (label);
-    }
+    setHeaderUnderline (orphanTable);
 
     for (auto& o : orphans)
     {
