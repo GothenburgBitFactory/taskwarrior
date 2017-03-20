@@ -301,7 +301,7 @@ public:
     return dt.startOfMonth ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR,  false);
     view.add (STRING_CMD_HISTORY_MONTH, false);
@@ -404,7 +404,7 @@ public:
     return dt.startOfMonth ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR,  false);
     view.add (STRING_CMD_HISTORY_MONTH, false);
@@ -448,7 +448,7 @@ public:
     return dt.startOfYear ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR, false);
   }
@@ -489,7 +489,7 @@ public:
     return dt.startOfYear ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR, false);
   }
@@ -531,7 +531,7 @@ public:
     return dt.startOfDay ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR,  false);
     view.add (STRING_CMD_HISTORY_MONTH, false);
@@ -581,7 +581,7 @@ public:
     return dt.startOfDay ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR,  false);
     view.add (STRING_CMD_HISTORY_MONTH, false);
@@ -631,7 +631,7 @@ public:
     return dt.startOfWeek ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR,  false);
     view.add (STRING_CMD_HISTORY_MONTH, false);
@@ -681,7 +681,7 @@ public:
     return dt.startOfWeek ();
   }
 
-  static void setupTableDates (Table & view)
+  static void setupTableDates (Table& view)
   {
     view.add (STRING_CMD_HISTORY_YEAR,  false);
     view.add (STRING_CMD_HISTORY_MONTH, false);
