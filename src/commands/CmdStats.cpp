@@ -160,12 +160,7 @@ int CmdStats::execute (std::string& output)
   view.intraPadding (2);
   view.add (STRING_CMD_STATS_CATEGORY);
   view.add (STRING_CMD_STATS_DATA);
-
-  if (context.color ())
-  {
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
-  }
+  setHeaderUnderline (view);
 
   int row = view.addRow ();
   view.set (row, 0, STRING_COLUMN_LABEL_STAT_PE);
