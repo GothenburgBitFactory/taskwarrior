@@ -93,15 +93,11 @@ int CmdTags::execute (std::string& output)
     view.width (context.getWidth ());
     view.add (STRING_COLUMN_LABEL_TAG);
     view.add (STRING_COLUMN_LABEL_COUNT, false);
+    setHeaderUnderline (view);
 
     Color bold;
     if (context.color ())
-    {
       bold = Color ("bold");
-
-      Color label (context.config.get ("color.label"));
-      view.colorHeader (label);
-    }
 
     bool special = false;
     for (auto& i : unique)
