@@ -68,20 +68,10 @@ int CmdCommands::execute (std::string& output)
   view.add (STRING_COLUMN_LABEL_MODS,     false);
   view.add (STRING_COLUMN_LABEL_MISC,     false);
   view.add (STRING_COLUMN_LABEL_DESC);
-
-  if (context.color ())
-  {
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
-
-    Color alternate (context.config.get ("color.alternate"));
-    view.colorOdd (alternate);
-    view.intraColorOdd (alternate);
-  }
-
   view.leftMargin (context.config.getInteger ("indent.report"));
   view.extraPadding (context.config.getInteger ("row.padding"));
   view.intraPadding (context.config.getInteger ("column.padding"));
+  setHeaderUnderline (view);
 
   for (auto& command : context.commands)
   {
