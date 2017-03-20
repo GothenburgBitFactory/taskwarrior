@@ -37,7 +37,7 @@
 #else
 #include <uuid/uuid.h>
 #endif
-#include <Task.h>
+#include <Table.h>
 
 // util.cpp
 int confirm4 (const std::string&);
@@ -63,6 +63,7 @@ const std::vector <std::string> extractParents (
 bool nontrivial (const std::string&);
 int strippedLength (const std::string&);
 const char* optionalBlankLine ();
+void setHeaderUnderline (Table&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

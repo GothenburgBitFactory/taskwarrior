@@ -303,3 +303,32 @@ const char* optionalBlankLine ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void setHeaderUnderline (Table& table)
+{
+  // If an alternating row color is specified, notify the table.
+  if (context.color ())
+  {
+    Color alternate (context.config.get ("color.alternate"));
+    table.colorOdd (alternate);
+    table.intraColorOdd (alternate);
+
+    if (context.config.getBoolean ("fontunderline"))
+    {
+      table.colorHeader (Color ("underline " + context.config.get ("color.label")));
+    }
+    else
+    {
+      table.colorHeader (Color (context.config.get ("color.label")));
+      table.underlineHeaders ();
+    }
+  }
+  else
+  {
+    if (context.config.getBoolean ("fontunderline"))
+      table.colorHeader (Color ("underline"));
+    else
+      table.underlineHeaders ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
