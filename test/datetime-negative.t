@@ -103,8 +103,9 @@ class TestIncorrectDate(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_day_two_hundred_in_YYYY_WwwD(self):
         self.assertInvalidDatetimeFormat('2014-W24200')
 
-    def test_set_incorrect_datetime_month_zero_in_YYYY_MM(self):
-        self.assertInvalidDatetimeFormat('2014-00')
+    # Disabled: Looks like 'hhmm-hh'
+    #def test_set_incorrect_datetime_month_zero_in_YYYY_MM(self):
+    #    self.assertInvalidDatetimeFormat('2014-00')
 
     def test_set_incorrect_datetime_overflow_month_in_YYYY_MM(self):
         self.assertInvalidDatetimeFormat('2014-13')
