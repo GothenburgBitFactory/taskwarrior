@@ -114,10 +114,28 @@ int CmdInfo::execute (std::string& output)
       Color alternate (context.config.get ("color.alternate"));
       view.colorOdd (alternate);
 
-      view.colorHeader (Color ("underline " + context.config.get ("color.label")));
+      if (context.config.getBoolean ("fontunderline"))
+      {
+        view.colorHeader (Color ("underline " + context.config.get ("color.label")));
+      }
+      else
+      {
+        view.underlineHeaders ();
+        view.colorHeader (Color (context.config.get ("color.label")));
+      }
     }
     else
-      view.underlineHeaders ();
+    {
+      if (context.config.getBoolean ("fontunderline"))
+      {
+        view.colorHeader (Color ("underline " + context.config.get ("color.label")));
+      }
+      else
+      {
+        view.underlineHeaders ();
+        view.colorHeader (Color (context.config.get ("color.label")));
+      }
+    }
 
     Datetime now;
 
@@ -415,7 +433,27 @@ int CmdInfo::execute (std::string& output)
         urgencyDetails.colorOdd (alternate);
         urgencyDetails.intraColorOdd (alternate);
 
-        urgencyDetails.colorHeader (Color ("underline " + context.config.get ("color.label")));
+        if (context.config.getBoolean ("fontunderline"))
+        {
+          urgencyDetails.colorHeader (Color ("underline " + context.config.get ("color.label")));
+        }
+        else
+        {
+          urgencyDetails.underlineHeaders ();
+          urgencyDetails.colorHeader (Color (context.config.get ("color.label")));
+        }
+      }
+      else
+      {
+        if (context.config.getBoolean ("fontunderline"))
+        {
+          urgencyDetails.colorHeader (Color ("underline " + context.config.get ("color.label")));
+        }
+        else
+        {
+          urgencyDetails.underlineHeaders ();
+          urgencyDetails.colorHeader (Color (context.config.get ("color.label")));
+        }
       }
 
       if (context.config.getBoolean ("obfuscate"))
@@ -518,10 +556,28 @@ int CmdInfo::execute (std::string& output)
       journal.colorOdd (alternate);
       journal.intraColorOdd (alternate);
 
-      journal.colorHeader (Color ("underline " + context.config.get ("color.label")));
+      if (context.config.getBoolean ("fontunderline"))
+      {
+        journal.colorHeader (Color ("underline " + context.config.get ("color.label")));
+      }
+      else
+      {
+        journal.underlineHeaders ();
+        journal.colorHeader (Color (context.config.get ("color.label")));
+      }
     }
     else
-      journal.underlineHeaders ();
+    {
+      if (context.config.getBoolean ("fontunderline"))
+      {
+        journal.colorHeader (Color ("underline " + context.config.get ("color.label")));
+      }
+      else
+      {
+        journal.underlineHeaders ();
+        journal.colorHeader (Color (context.config.get ("color.label")));
+      }
+    }
 
     if (context.config.getBoolean ("obfuscate"))
       journal.obfuscate ();
