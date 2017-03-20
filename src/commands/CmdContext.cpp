@@ -225,12 +225,7 @@ void CmdContext::listContexts (std::stringstream& out)
     table.add ("Name");
     table.add ("Definition");
     table.add ("Active");
-
-    if (context.color ())
-    {
-      Color label (context.config.get ("color.label"));
-      table.colorHeader (label);
-    }
+    setHeaderUnderline (table);
 
     std::string activeContext = context.config.get ("context");
 
