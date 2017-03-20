@@ -125,15 +125,7 @@ int CmdTimesheet::execute (std::string& output)
   table.add ("Project");
   table.add ("Due");
   table.add ("Task");
-
-  if (context.color ())
-  {
-    table.forceColor ();
-    table.colorHeader (Color ("underline " + context.config.get ("color.label")));
-    table.colorOdd    (Color (context.config.get ("color.alternate")));
-  }
-  else
-    table.underlineHeaders ();
+  setHeaderUnderline (table);
 
   auto dateformat = context.config.get ("dateformat");
 
