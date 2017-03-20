@@ -109,12 +109,7 @@ int CmdProjects::execute (std::string& output)
     view.width (context.getWidth ());
     view.add (STRING_COLUMN_LABEL_PROJECT);
     view.add (STRING_COLUMN_LABEL_TASKS, false);
-
-    if (context.color ())
-    {
-      Color label (context.config.get ("color.label"));
-      view.colorHeader (label);
-    }
+    setHeaderUnderline (view);
 
     std::vector <std::string> processed;
     for (auto& project : unique)
