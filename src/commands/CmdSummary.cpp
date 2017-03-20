@@ -138,6 +138,7 @@ int CmdSummary::execute (std::string& output)
   view.add (STRING_CMD_SUMMARY_AVG_AGE,   false);
   view.add (STRING_CMD_SUMMARY_COMPLETE,  false);
   view.add ("0%                        100%");
+  setHeaderUnderline (view);
 
   Color bar_color;
   Color bg_color;
@@ -145,9 +146,6 @@ int CmdSummary::execute (std::string& output)
   {
     bar_color = Color (context.config.get ("color.summary.bar"));
     bg_color  = Color (context.config.get ("color.summary.background"));
-
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
   }
 
   int barWidth = 30;
