@@ -77,16 +77,7 @@ int CmdColumns::execute (std::string& output)
   formats.add (STRING_COLUMN_LABEL_MODIFY);
   formats.add (STRING_COLUMN_LABEL_STYLES);
   formats.add (STRING_COLUMN_LABEL_EXAMPLES);
-
-  if (context.color ())
-  {
-    Color label (context.config.get ("color.label"));
-    formats.colorHeader (label);
-
-    Color alternate (context.config.get ("color.alternate"));
-    formats.colorOdd (alternate);
-    formats.intraColorOdd (alternate);
-  }
+  setHeaderUnderline (formats);
 
   for (const auto& name : names)
   {
