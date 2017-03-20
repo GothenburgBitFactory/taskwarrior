@@ -107,35 +107,7 @@ int CmdInfo::execute (std::string& output)
       view.forceColor ();
     view.add (STRING_COLUMN_LABEL_NAME);
     view.add (STRING_COLUMN_LABEL_VALUE);
-
-    // If an alternating row color is specified, notify the table.
-    if (context.color ())
-    {
-      Color alternate (context.config.get ("color.alternate"));
-      view.colorOdd (alternate);
-
-      if (context.config.getBoolean ("fontunderline"))
-      {
-        view.colorHeader (Color ("underline " + context.config.get ("color.label")));
-      }
-      else
-      {
-        view.underlineHeaders ();
-        view.colorHeader (Color (context.config.get ("color.label")));
-      }
-    }
-    else
-    {
-      if (context.config.getBoolean ("fontunderline"))
-      {
-        view.colorHeader (Color ("underline " + context.config.get ("color.label")));
-      }
-      else
-      {
-        view.underlineHeaders ();
-        view.colorHeader (Color (context.config.get ("color.label")));
-      }
-    }
+    setHeaderUnderline (view);
 
     Datetime now;
 
@@ -456,33 +428,12 @@ int CmdInfo::execute (std::string& output)
     Table urgencyDetails;
     if (task.urgency () != 0.0)
     {
+      setHeaderUnderline (urgencyDetails);
       if (context.color ())
       {
         Color alternate (context.config.get ("color.alternate"));
         urgencyDetails.colorOdd (alternate);
         urgencyDetails.intraColorOdd (alternate);
-
-        if (context.config.getBoolean ("fontunderline"))
-        {
-          urgencyDetails.colorHeader (Color ("underline " + context.config.get ("color.label")));
-        }
-        else
-        {
-          urgencyDetails.underlineHeaders ();
-          urgencyDetails.colorHeader (Color (context.config.get ("color.label")));
-        }
-      }
-      else
-      {
-        if (context.config.getBoolean ("fontunderline"))
-        {
-          urgencyDetails.colorHeader (Color ("underline " + context.config.get ("color.label")));
-        }
-        else
-        {
-          urgencyDetails.underlineHeaders ();
-          urgencyDetails.colorHeader (Color (context.config.get ("color.label")));
-        }
       }
 
       if (context.config.getBoolean ("obfuscate"))
@@ -577,36 +528,7 @@ int CmdInfo::execute (std::string& output)
 
     // Create a third table, containing undo log change details.
     Table journal;
-
-    // If an alternating row color is specified, notify the table.
-    if (context.color ())
-    {
-      Color alternate (context.config.get ("color.alternate"));
-      journal.colorOdd (alternate);
-      journal.intraColorOdd (alternate);
-
-      if (context.config.getBoolean ("fontunderline"))
-      {
-        journal.colorHeader (Color ("underline " + context.config.get ("color.label")));
-      }
-      else
-      {
-        journal.underlineHeaders ();
-        journal.colorHeader (Color (context.config.get ("color.label")));
-      }
-    }
-    else
-    {
-      if (context.config.getBoolean ("fontunderline"))
-      {
-        journal.colorHeader (Color ("underline " + context.config.get ("color.label")));
-      }
-      else
-      {
-        journal.underlineHeaders ();
-        journal.colorHeader (Color (context.config.get ("color.label")));
-      }
-    }
+    setHeaderUnderline (journal);
 
     if (context.config.getBoolean ("obfuscate"))
       journal.obfuscate ();
