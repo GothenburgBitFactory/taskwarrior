@@ -41,6 +41,7 @@
 #include <shared.h>
 #include <format.h>
 #include <main.h>
+#include <util.h>
 
 extern Context context;
 
@@ -1047,9 +1048,7 @@ void TDB2::show_diff (
     view.add ("");
     view.add (STRING_TDB2_UNDO_PRIOR);
     view.add (STRING_TDB2_UNDO_CURRENT);
-
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
+    setHeaderUnderline (view);
 
     Task after (current);
 
