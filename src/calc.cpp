@@ -32,6 +32,8 @@
 #include <Eval.h>
 #include <Context.h>
 #include <Task.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <shared.h>
 #include <format.h>
 #include <i18n.h>
@@ -57,6 +59,11 @@ int main (int argc, char** argv)
 
   try
   {
+    // Same operating parameters as Context::staticInitialization.
+    Datetime::standaloneDateEnabled    = false;
+    Datetime::standaloneTimeEnabled    = false;
+    Duration::standaloneSecondsEnabled = false;
+
     bool infix {true};
 
     // Add a source for constants.
