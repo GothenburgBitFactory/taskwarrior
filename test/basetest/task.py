@@ -114,18 +114,17 @@ class Task(object):
         """
         if taskd_user is None:
             if default:
-                user, group, org, userkey = self.taskd.default_user
+                user, org, userkey = self.taskd.default_user
             else:
-                user, group, org, userkey = self.taskd.create_user()
+                user, org, userkey = self.taskd.create_user()
         else:
-            user, group, org, userkey = taskd_user
+            user, org, userkey = taskd_user
 
         credentials = "/".join((org, user, userkey))
         self.config("taskd.credentials", credentials)
 
         self.credentials = {
             "user": user,
-            "group": group,
             "org": org,
             "userkey": userkey,
         }
