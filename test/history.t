@@ -64,8 +64,8 @@ class TestHistoryDaily(TestCase):
         self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.daily")
-        self.assertRegexpMatches(out, "2015 January  2\s+\++X+\s")
-        self.assertRegexpMatches(out, "\s+February 2\s+\++X+\-+")
+        self.assertRegexpMatches(out, "2015\s+January\s+1\s+\++X+\s")
+        self.assertRegexpMatches(out, "\s+February\s+1\s+\++X+\-+")
 
 class TestHistoryWeekly(TestCase):
     def setUp(self):
@@ -97,8 +97,8 @@ class TestHistoryWeekly(TestCase):
         self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.weekly")
-        self.assertRegexpMatches(out, "2014 December 28\s+\++X+\s")
-        self.assertRegexpMatches(out, "2015 February 1\s+\++X+\-+")
+        self.assertRegexpMatches(out, "2014\s+December\s+28\s+\++X+\s")
+        self.assertRegexpMatches(out, "2015\s+February\s+1\s+\++X+\-+")
 
 
 class TestHistoryMonthly(TestCase):
