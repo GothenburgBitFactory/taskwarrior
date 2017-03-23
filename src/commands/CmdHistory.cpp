@@ -60,7 +60,7 @@ CmdHistoryBase<HistoryStrategy>::CmdHistoryBase ()
 template<class HistoryStrategy>
 void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
 {
-  auto widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
+  auto widthOfBar = context.getWidth () - HistoryStrategy::labelWidth;
 
   // Now build the view.
   Table view;
@@ -319,6 +319,7 @@ public:
   static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_M;
   static constexpr unsigned int dateFieldCount = 2;
   static constexpr bool graphical              = false;
+  static constexpr unsigned int labelWidth     = 0;  // unused.
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -420,6 +421,7 @@ public:
   static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_M;
   static constexpr unsigned int dateFieldCount = 2;
   static constexpr bool graphical              = true;
+  static constexpr unsigned int labelWidth     = 15;  // length '2017 September ' = 15
 };
 
 ////////////////////////////////////////////////////////////////////////////i
@@ -459,6 +461,7 @@ public:
   static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_A;
   static constexpr unsigned int dateFieldCount = 1;
   static constexpr bool graphical              = true;
+  static constexpr unsigned int labelWidth     = 5;  // length '2017 ' = 5
 };
 
 ////////////////////////////////////////////////////////////////////////////i
@@ -498,6 +501,7 @@ public:
   static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_A;
   static constexpr unsigned int dateFieldCount = 1;
   static constexpr bool graphical              = false;
+  static constexpr unsigned int labelWidth     = 0;  // unused.
 };
 
 
@@ -545,6 +549,7 @@ public:
   static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_D;
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = false;
+  static constexpr unsigned int labelWidth     = 0;  // unused.
 };
 
 ////////////////////////////////////////////////////////////////////////////i
@@ -591,6 +596,7 @@ public:
   static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_D;
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = true;
+  static constexpr unsigned int labelWidth     = 19;  // length '2017 September Day ' = 19
 };
 
 ////////////////////////////////////////////////////////////////////////////i
@@ -637,6 +643,7 @@ public:
   static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_W;
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = false;
+  static constexpr unsigned int labelWidth     = 0;  // unused.
 };
 
 ////////////////////////////////////////////////////////////////////////////i
@@ -683,6 +690,7 @@ public:
   static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_W;
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = true;
+  static constexpr unsigned int labelWidth     = 19;  // length '2017 September Day ' = 19
 };
 
 
