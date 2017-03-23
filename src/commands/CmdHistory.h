@@ -62,13 +62,13 @@ class AnnualHistoryStrategy;
 class AnnualGHistoryStrategy;
 
 // typedef the templates to nice names to be used outside this class
-typedef CmdHistoryBase<DailyHistoryStrategy> CmdHistoryDaily;
-typedef CmdHistoryBase<DailyGHistoryStrategy> CmdGHistoryDaily;
-typedef CmdHistoryBase<WeeklyHistoryStrategy> CmdHistoryWeekly;
-typedef CmdHistoryBase<WeeklyGHistoryStrategy> CmdGHistoryWeekly;
-typedef CmdHistoryBase<MonthlyHistoryStrategy> CmdHistoryMonthly;
+typedef CmdHistoryBase<DailyHistoryStrategy>    CmdHistoryDaily;
+typedef CmdHistoryBase<DailyGHistoryStrategy>   CmdGHistoryDaily;
+typedef CmdHistoryBase<WeeklyHistoryStrategy>   CmdHistoryWeekly;
+typedef CmdHistoryBase<WeeklyGHistoryStrategy>  CmdGHistoryWeekly;
+typedef CmdHistoryBase<MonthlyHistoryStrategy>  CmdHistoryMonthly;
 typedef CmdHistoryBase<MonthlyGHistoryStrategy> CmdGHistoryMonthly;
-typedef CmdHistoryBase<AnnualHistoryStrategy> CmdHistoryAnnual;
-typedef CmdHistoryBase<AnnualGHistoryStrategy> CmdGHistoryAnnual;
+typedef CmdHistoryBase<AnnualHistoryStrategy>   CmdHistoryAnnual;
+typedef CmdHistoryBase<AnnualGHistoryStrategy>  CmdGHistoryAnnual;
 
 #endif
