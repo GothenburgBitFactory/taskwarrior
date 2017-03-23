@@ -270,33 +270,6 @@ bool nontrivial (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Return the length, in characters, of the input, subtracting color control
-// codes.
-int strippedLength (const std::string& input)
-{
-  int length = input.length ();
-  bool inside = false;
-  int count = 0;
-  for (int i = 0; i < length; ++i)
-  {
-    if (inside)
-    {
-      if (input[i] == 'm')
-        inside = false;
-    }
-    else
-    {
-      if (input[i] == 033)
-        inside = true;
-      else
-        ++count;
-    }
-  }
-
-  return count;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
   return context.verbose ("blank") ? newline : noline;

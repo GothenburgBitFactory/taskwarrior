@@ -61,7 +61,6 @@ const std::vector <std::string> extractParents (
 #endif
 
 bool nontrivial (const std::string&);
-int strippedLength (const std::string&);
 const char* optionalBlankLine ();
 void setHeaderUnderline (Table&);
 
