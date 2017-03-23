@@ -137,7 +137,7 @@ int CmdSummary::execute (std::string& output)
   view.add (STRING_CMD_SUMMARY_REMAINING, false);
   view.add (STRING_CMD_SUMMARY_AVG_AGE,   false);
   view.add (STRING_CMD_SUMMARY_COMPLETE,  false);
-  view.add ("0%                        100%");
+  view.add ("0%                        100%", true, false);
   setHeaderUnderline (view);
 
   Color bar_color;
