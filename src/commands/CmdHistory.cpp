@@ -146,7 +146,6 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
         }
 
         bar += std::string (leftOffset - aBar.length (), ' ');
-
         bar += color_add.colorize    (aBar);
         bar += color_done.colorize   (cBar);
         bar += color_delete.colorize (dBar);
@@ -322,9 +321,7 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if (y != last_y)
-    {
       view.set (row, 0, y);
-    }
 
     view.set (row, 1, Datetime::monthName (m));
   }
@@ -425,9 +422,7 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if (y != last_y)
-    {
       view.set (row, 0, y);
-    }
 
     view.set (row, 1, Datetime::monthName (m));
   }
@@ -468,9 +463,7 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if (y != last_y)
-    {
       view.set (row, 0, y);
-    }
   }
 
   static constexpr const char* keyword         = "ghistory.annual";
@@ -509,9 +502,7 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if (y != last_y)
-    {
       view.set (row, 0, y);
-    }
   }
 
   static constexpr const char* keyword         = "history.annual";
@@ -553,14 +544,10 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if ((y != last_y) || (lastTime == 0))
-    {
       view.set (row, 0, y);
-    }
 
     if ((m != last_m) || (lastTime == 0))
-    {
       view.set (row, 1, Datetime::monthName (m));
-    }
 
     view.set (row, 2, d);
   }
@@ -603,14 +590,10 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if ((y != last_y) || (lastTime == 0))
-    {
       view.set (row, 0, y);
-    }
 
     if ((m != last_m) || (lastTime == 0))
-    {
       view.set (row, 1, Datetime::monthName (m));
-    }
 
     view.set (row, 2, d);
   }
@@ -653,14 +636,10 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if ((y != last_y) || (lastTime == 0))
-    {
       view.set (row, 0, y);
-    }
 
     if ((m != last_m) || (lastTime == 0))
-    {
       view.set (row, 1, Datetime::monthName (m));
-    }
 
     view.set (row, 2, d);
   }
@@ -703,14 +682,10 @@ public:
     last_dt.toYMD (last_y, last_m, last_d);
 
     if ((y != last_y) || (lastTime == 0))
-    {
       view.set (row, 0, y);
-    }
 
     if ((m != last_m) || (lastTime == 0))
-    {
       view.set (row, 1, Datetime::monthName (m));
-    }
 
     view.set (row, 2, d);
   }
