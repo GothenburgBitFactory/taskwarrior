@@ -58,7 +58,7 @@ CmdHistoryBase<HistoryStrategy>::CmdHistoryBase ()
 
 ////////////////////////////////////////////////////////////////////////////////
 template<class HistoryStrategy>
-void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
+void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
 {
   auto widthOfBar = context.getWidth () - HistoryStrategy::labelWidth;
 
@@ -189,7 +189,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
 
 ////////////////////////////////////////////////////////////////////////////////
 template<class HistoryStrategy>
-void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
+void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
 {
   Table view;
   setHeaderUnderline (view);
@@ -283,7 +283,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
 class MonthlyHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfMonth ();
   }
@@ -385,7 +385,7 @@ int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
 class MonthlyGHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfMonth ();
   }
@@ -428,7 +428,7 @@ public:
 class AnnualGHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfYear ();
   }
@@ -468,7 +468,7 @@ public:
 class AnnualHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfYear ();
   }
@@ -509,7 +509,7 @@ public:
 class DailyHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfDay ();
   }
@@ -556,7 +556,7 @@ public:
 class DailyGHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfDay ();
   }
@@ -603,7 +603,7 @@ public:
 class WeeklyHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfWeek ();
   }
@@ -650,7 +650,7 @@ public:
 class WeeklyGHistoryStrategy
 {
 public:
-  static Datetime getRelevantDate (const Datetime & dt)
+  static Datetime getRelevantDate (const Datetime& dt)
   {
     return dt.startOfWeek ();
   }
