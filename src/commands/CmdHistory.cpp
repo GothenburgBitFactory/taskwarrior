@@ -69,7 +69,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
 
   HistoryStrategy::setupTableDates (view);
 
-  view.add (STRING_CMD_GHISTORY_NUMBER); // Fixed.
+  view.add (STRING_CMD_GHISTORY_NUMBER, true, false); // Fixed.
 
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
