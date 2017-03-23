@@ -40,15 +40,15 @@ class TestHistoryDaily(TestCase):
         self.t = Task()
 
         self.data = """[
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20150102T000000Z","wait":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20150102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z","due":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20150102T000000Z","end":"20150102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"}
+{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20150102T120000Z","wait":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20150102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z","due":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20150102T120000Z","end":"20150102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"}
 ]"""
         self.t("import -", input=self.data)
 
@@ -64,8 +64,8 @@ class TestHistoryDaily(TestCase):
         self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.daily")
-        self.assertRegexpMatches(out, "2015\s+January\s+1\s+\++X+\s")
-        self.assertRegexpMatches(out, "\s+February\s+1\s+\++X+\-+")
+        self.assertRegexpMatches(out, "2015\s+January\s+2\s+\++X+\s")
+        self.assertRegexpMatches(out, "\s+February\s+2\s+\++X+\-+")
 
 class TestHistoryWeekly(TestCase):
     def setUp(self):
@@ -73,15 +73,15 @@ class TestHistoryWeekly(TestCase):
         self.t = Task()
 
         self.data = """[
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20150102T000000Z","wait":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20150102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z","due":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20150102T000000Z","end":"20150102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"}
+{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20150102T120000Z","wait":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20150102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z","due":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20150102T120000Z","end":"20150102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"}
 ]"""
         self.t("import -", input=self.data)
 
@@ -107,15 +107,15 @@ class TestHistoryMonthly(TestCase):
         self.t = Task()
 
         self.data = """[
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20150102T000000Z","wait":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20150102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z","due":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20150102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20150102T000000Z","end":"20150102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"}
+{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20150102T120000Z","wait":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20150102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z","due":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20150102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20150102T120000Z","end":"20150102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"}
 ]"""
         self.t("import -", input=self.data)
 
@@ -145,15 +145,15 @@ class TestHistoryAnnual(TestCase):
         self.t = Task()
 
         self.data = """[
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20140102T000000Z","wait":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20140102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20140102T000000Z","end":"20150202T000000Z","due":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20140102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20140102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20140102T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20140102T000000Z","end":"20140102T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"},
-{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T000000Z","end":"20150202T000000Z"}
+{"uuid":"00000000-0000-0000-0000-000000000000","description":"PLW","status":"pending","entry":"20140102T120000Z","wait":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000001","description":"PL","status":"pending","entry":"20140102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000002","description":"DLN","status":"deleted","entry":"20140102T120000Z","end":"20150202T120000Z","due":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000003","description":"DLN2","status":"deleted","entry":"20140102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000004","description":"DNN","status":"deleted","entry":"20140102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000005","description":"CLN","status":"completed","entry":"20140102T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000006","description":"CLL","status":"completed","entry":"20140102T120000Z","end":"20140102T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000007","description":"CNN","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"},
+{"uuid":"00000000-0000-0000-0000-000000000008","description":"CNN2","status":"completed","entry":"20150202T120000Z","end":"20150202T120000Z"}
 ]"""
         self.t("import -", input=self.data)
 
