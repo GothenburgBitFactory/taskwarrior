@@ -65,8 +65,6 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
   // Now build the view.
   Table view;
   setHeaderUnderline (view);
-  if (context.config.getBoolean ("color"))
-    view.forceColor ();
   view.width (context.getWidth ());
 
   HistoryStrategy::setupTableDates (view);
@@ -77,8 +75,6 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string &output)
   Color color_done   (context.config.get ("color.history.done"));
   Color color_delete (context.config.get ("color.history.delete"));
   Color label        (context.config.get ("color.label"));
-
-  view.colorHeader (label);
 
   // Determine the longest line, and the longest "added" line.
   auto maxAddedLine = 0;
@@ -197,8 +193,6 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
 {
   Table view;
   setHeaderUnderline (view);
-  if (context.config.getBoolean ("color"))
-    view.forceColor ();
   view.width (context.getWidth ());
 
   HistoryStrategy::setupTableDates (view);
@@ -207,12 +201,6 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string &output)
   view.add (STRING_CMD_HISTORY_COMP,  false);
   view.add (STRING_CMD_HISTORY_DEL,   false);
   view.add (STRING_CMD_HISTORY_NET,   false);
-
-  if (context.color ())
-  {
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
-  }
 
   auto totalAdded     = 0;
   auto totalCompleted = 0;
