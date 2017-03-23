@@ -67,7 +67,7 @@ class TestHistoryDaily(TestCase):
         self.assertRegexpMatches(out, "2015 January  2\s+\++X+\s")
         self.assertRegexpMatches(out, "\s+February 2\s+\++X+\-+")
 
-class TestHistoryDaily(TestCase):
+class TestHistoryWeekly(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
@@ -85,7 +85,7 @@ class TestHistoryDaily(TestCase):
 ]"""
         self.t("import -", input=self.data)
 
-    def test_history_daily(self):
+    def test_history_weekly(self):
         """Verify 'history.weekly' correctly categorizes data"""
         code, out, err = self.t("history.weekly")
         self.assertRegexpMatches(out, "7\s+1\s+0\s+6")
