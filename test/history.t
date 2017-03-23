@@ -131,7 +131,7 @@ class TestHistoryMonthly(TestCase):
         self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.monthly")
-        self.assertRegexpMatches(out, "2015 January\s+\++X+\s")
+        self.assertRegexpMatches(out, "2015\s+January\s+\++X+\s")
         self.assertRegexpMatches(out, "\s+February\s+\++X+\-+")
 
 
