@@ -290,8 +290,8 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR,  false);
-    view.add (STRING_CMD_HISTORY_MONTH, false);
+    view.add (STRING_CMD_HISTORY_YEAR,  true);
+    view.add (STRING_CMD_HISTORY_MONTH, true);
   }
 
   static void insertRowDate (
@@ -392,8 +392,8 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR,  false);
-    view.add (STRING_CMD_HISTORY_MONTH, false);
+    view.add (STRING_CMD_HISTORY_YEAR,  true);
+    view.add (STRING_CMD_HISTORY_MONTH, true);
   }
 
   static void insertRowDate (
@@ -435,7 +435,7 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR, false);
+    view.add (STRING_CMD_HISTORY_YEAR, true);
   }
 
   static void insertRowDate (
@@ -475,7 +475,7 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR, false);
+    view.add (STRING_CMD_HISTORY_YEAR, true);
   }
 
   static void insertRowDate (
@@ -516,8 +516,8 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR,  false);
-    view.add (STRING_CMD_HISTORY_MONTH, false);
+    view.add (STRING_CMD_HISTORY_YEAR,  true);
+    view.add (STRING_CMD_HISTORY_MONTH, true);
     view.add (STRING_CMD_HISTORY_DAY,   false);
   }
 
@@ -563,8 +563,8 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR,  false);
-    view.add (STRING_CMD_HISTORY_MONTH, false);
+    view.add (STRING_CMD_HISTORY_YEAR,  true);
+    view.add (STRING_CMD_HISTORY_MONTH, true);
     view.add (STRING_CMD_HISTORY_DAY,   false);
   }
 
@@ -610,8 +610,8 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR,  false);
-    view.add (STRING_CMD_HISTORY_MONTH, false);
+    view.add (STRING_CMD_HISTORY_YEAR,  true);
+    view.add (STRING_CMD_HISTORY_MONTH, true);
     view.add (STRING_CMD_HISTORY_DAY,   false);
   }
 
@@ -657,8 +657,8 @@ public:
 
   static void setupTableDates (Table& view)
   {
-    view.add (STRING_CMD_HISTORY_YEAR,  false);
-    view.add (STRING_CMD_HISTORY_MONTH, false);
+    view.add (STRING_CMD_HISTORY_YEAR,  true);
+    view.add (STRING_CMD_HISTORY_MONTH, true);
     view.add (STRING_CMD_HISTORY_DAY,   false);
   }
 
