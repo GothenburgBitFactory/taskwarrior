@@ -385,6 +385,14 @@ class TestVirtualTags(TestCase):
         code, out, err = self.t.runError("-TEMPLATE status:recurring all")
         self.assertNotIn("is_recurring", out)
 
+    def test_virtual_tag_INSTANCE(self):
+        """Verify 'INSTANCE' appears when expected"""
+        code, out, err = self.t("+INSTANCE status:pending all")
+        self.assertIn("is_recurring", out)
+
+        code, out, err = self.t("-INSTANCE status:pending all")
+        self.assertNotIn("is_recurring", out)
+
 
 class TestVirtualTagUDA(TestCase):
     def setUp(self):
