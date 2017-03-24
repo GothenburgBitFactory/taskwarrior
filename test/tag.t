@@ -369,6 +369,14 @@ class TestVirtualTags(TestCase):
         code, out, err = self.t("-READY all")
         self.assertIn("is_scheduled", out)
 
+    def test_virtual_tag_SCHEDULED(self):
+        """Verify 'SCHEDULED' appears when expected"""
+        code, out, err = self.t("+SCHEDULED all")
+        self.assertIn("is_scheduled", out)
+
+        code, out, err = self.t("-SCHEDULED all")
+        self.assertNotIn("is_scheduled", out)
+
 
 class TestVirtualTagUDA(TestCase):
     def setUp(self):
