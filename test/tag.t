@@ -377,6 +377,14 @@ class TestVirtualTags(TestCase):
         code, out, err = self.t("-SCHEDULED all")
         self.assertNotIn("is_scheduled", out)
 
+    def test_virtual_tag_TEMPLATE(self):
+        """Verify 'TEMPLATE' appears when expected"""
+        code, out, err = self.t("+TEMPLATE status:recurring all")
+        self.assertIn("is_recurring", out)
+
+        code, out, err = self.t.runError("-TEMPLATE status:recurring all")
+        self.assertNotIn("is_recurring", out)
+
 
 class TestVirtualTagUDA(TestCase):
     def setUp(self):
