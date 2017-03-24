@@ -377,6 +377,14 @@ class TestVirtualTags(TestCase):
         code, out, err = self.t("-SCHEDULED all")
         self.assertNotIn("is_scheduled", out)
 
+    def test_virtual_tag_UNTIL(self):
+        """Verify 'UNTIL' appears when expected"""
+        self.t("add has_until until:eonm")
+        code, out, err = self.t("+UNTIL all")
+        self.assertIn("has_until", out)
+
+        code, out, err = self.t("-UNTIL all")
+        self.assertNotIn("has_until", out)
 
 class TestVirtualTagUDA(TestCase):
     def setUp(self):
