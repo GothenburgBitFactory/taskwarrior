@@ -1262,7 +1262,7 @@ bool Task::hasTag (const std::string& tag) const
 #ifdef PRODUCT_TASKWARRIOR
     if (tag == "READY")     return is_ready ();
     if (tag == "DUE")       return is_due ();
-    if (tag == "DUETODAY")  return is_duetoday ();          // 2016-03-29: Deprecated in 2.6.0
+    if (tag == "DUETODAY")  return is_duetoday ();                     // 2016-03-29: Deprecated in 2.6.0
     if (tag == "TODAY")     return is_duetoday ();
     if (tag == "YESTERDAY") return is_dueyesterday ();
     if (tag == "TOMORROW")  return is_duetomorrow ();
@@ -1274,13 +1274,13 @@ bool Task::hasTag (const std::string& tag) const
 #endif
     if (tag == "ACTIVE")    return has ("start");
     if (tag == "SCHEDULED") return has ("scheduled");
-    if (tag == "CHILD")     return has ("parent");          // 2017-01-07: Deprecated in 2.6.0
-    if (tag == "INSTANCE")  return has ("template");
+    if (tag == "CHILD")     return has ("parent") || has ("template"); // 2017-01-07: Deprecated in 2.6.0
+    if (tag == "INSTANCE")  return has ("template") || has ("parent");
     if (tag == "UNTIL")     return has ("until");
     if (tag == "ANNOTATED") return hasAnnotations ();
     if (tag == "TAGGED")    return has ("tags");
-    if (tag == "PARENT")    return has ("mask");            // 2017-01-07: Deprecated in 2.6.0
-    if (tag == "TEMPLATE")  return has ("last");
+    if (tag == "PARENT")    return has ("mask") || has ("last");       // 2017-01-07: Deprecated in 2.6.0
+    if (tag == "TEMPLATE")  return has ("last") || has ("mask");
     if (tag == "WAITING")   return get ("status") == "waiting";
     if (tag == "PENDING")   return get ("status") == "pending";
     if (tag == "COMPLETED") return get ("status") == "completed";
