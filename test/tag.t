@@ -91,6 +91,8 @@ class TestVirtualTags(TestCase):
         cls.t("add blocked depends:2")
         cls.t("add due_eom due:eom")
         cls.t("add due_eow due:eow")
+        cls.t("add is_recurring due:eonm recur:weekly")
+        cls.t("add is_scheduled scheduled:eonm")
 
     def setUp(self):
         """Executed before each test in the class"""
@@ -358,6 +360,14 @@ class TestVirtualTags(TestCase):
         self.assertIn("nocolor", out)
         self.assertIn("nonag", out)
         self.assertIn("tag", out)
+
+    def test_virtual_tag_READY(self):
+        """Verify 'READY' appears when expected"""
+        code, out, err = self.t("+READY all")
+        self.assertNotIn("is_scheduled", out)
+
+        code, out, err = self.t("-READY all")
+        self.assertIn("is_scheduled", out)
 
 
 class TestVirtualTagUDA(TestCase):
