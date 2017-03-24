@@ -386,6 +386,15 @@ class TestVirtualTags(TestCase):
         code, out, err = self.t("-UNTIL all")
         self.assertNotIn("has_until", out)
 
+    def test_virtual_tag_WAITING(self):
+        """Verify 'WAITING' appears when expected"""
+        self.t("add is_waiting wait:eonm")
+        code, out, err = self.t("+WAITING all")
+        self.assertIn("is_waiting", out)
+
+        code, out, err = self.t("-WAITING all")
+        self.assertNotIn("is_waiting", out)
+
 class TestVirtualTagUDA(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
