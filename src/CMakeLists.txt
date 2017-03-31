@@ -22,6 +22,7 @@ add_library (task CLI2.cpp CLI2.h
                   feedback.cpp
                   i18n.h
                   legacy.cpp
+                  nag.cpp
                   recur.cpp
                   rules.cpp
                   sort.cpp

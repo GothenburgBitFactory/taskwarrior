@@ -41,6 +41,8 @@ void handleRecurrence ();
 Datetime getNextRecurrence (Datetime&, std::string&);
 bool generateDueDates (Task&, std::vector <Datetime>&);
 void updateRecurrenceMask (Task&);
+
+// nag.cpp
 bool nag (Task&);
 
 // rules.cpp
