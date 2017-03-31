@@ -54,6 +54,11 @@ extern Context context;
 // child tasks need to be generated to fill gaps.
 void handleRecurrence ()
 {
+  // TODO This is inserted here to create parallel recurrence implememntations
+  //      during feature development. This eliminates the need to inject this
+  //      call into 11 command implementations.
+  handleRecurrence2 ();
+
   // Recurrence can be disabled.
   // Note: This is currently a workaround for TD-44, TW-1520.
   if (! context.config.getBoolean ("recurrence"))
