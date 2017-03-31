@@ -740,7 +740,8 @@
 #define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
 #define STRING_FEEDBACK_UNBLOCKED    "Unblocked {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "Task {1} '{2}' expired and was deleted."
-#define STRING_FEEDBACK_BACKLOG      "There are {1} local changes.  Sync required."
+#define STRING_FEEDBACK_BACKLOG_N    "There are {1} local changes.  Sync required."
+#define STRING_FEEDBACK_BACKLOG      "There is {1} local change.  Sync required."
 
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."

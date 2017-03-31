@@ -742,6 +742,7 @@
 #define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
 #define STRING_FEEDBACK_UNBLOCKED    "Malblokis {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "Tasko {1} '{2}' fortempiĝis do estis viŝata."
+#define STRING_FEEDBACK_BACKLOG_N    "Estas {1} lokaj ŝanĝoj. Sinkronigo devita."
 #define STRING_FEEDBACK_BACKLOG      "Estas {1} lokaj ŝanĝoj. Sinkronigo devita."
 
 // helpers
