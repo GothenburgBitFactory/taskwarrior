@@ -413,36 +413,3 @@ void updateRecurrenceMask (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Returns a Boolean indicator as to whether a nag message was generated, so
-// that commands can control the number of nag messages displayed (ie one is
-// enough).
-//
-// Otherwise generates a nag message, if one is defined, if there are tasks of
-// higher urgency.
-bool nag (Task& task)
-{
-  // Special tag overrides nagging.
-  if (task.hasTag ("nonag"))
-    return false;
-
-  auto nagMessage = context.config.get ("nag");
-  if (nagMessage != "")
-  {
-    // Scan all pending, non-recurring tasks.
-    auto pending = context.tdb2.pending.get_tasks ();
-    for (auto& t : pending)
-    {
-      if ((t.getStatus () == Task::pending ||
-           t.getStatus () == Task::waiting) &&
-          t.urgency () > task.urgency ())
-      {
-        context.footnote (nagMessage);
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
