@@ -422,7 +422,8 @@ void feedback_backlog ()
         ++count;
 
     if (count)
-      context.footnote (format (STRING_FEEDBACK_BACKLOG, count));
+      context.footnote (format (count > 1 ? STRING_FEEDBACK_BACKLOG_N
+                                          : STRING_FEEDBACK_BACKLOG, count));
   }
 }
 
