@@ -30,21 +30,17 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scans all tasks, and for any recurring tasks, determines whether any new
-// child tasks need to be generated to fill gaps.
+static void synthesizeTasks (const Task&)
+{
+
+
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Generates all necessary recurring task instances.
 void handleRecurrence2 ()
 {
-  // Recurrence can be disabled.
-  // Note: This is currently a workaround for TD-44, TW-1520.
-  if (context.config.getBoolean ("recurrence"))
-  {
-    context.debug ("handleRecurrence2 start");
-
-
-
-
-    context.debug ("handleRecurrence2 end");
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

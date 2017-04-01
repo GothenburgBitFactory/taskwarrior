@@ -1530,6 +1530,7 @@ void Task::validate (bool applyDefault /* = true */)
   else if (! has ("status") || get ("status") == "")
     status = Task::pending;
 
+  // Default to 'periodic' type recurrence.
   if (status == Task::recurring &&
       (! has ("rtype") || get ("rtype") == ""))
   {
@@ -1658,6 +1659,7 @@ void Task::validate (bool applyDefault /* = true */)
       Duration p;
       std::string::size_type i = 0;
       if (! p.parse (value, i))
+        // TODO Ideal location to map unsupported old recurrence periods to supported values.
         throw format (STRING_TASK_VALID_RECUR, value);
     }
   }

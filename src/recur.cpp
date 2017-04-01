@@ -75,7 +75,7 @@ void handleRecurrence ()
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
       std::vector <Datetime> due;
-      if (!generateDueDates (t, due))
+      if (! generateDueDates (t, due))
       {
         // Determine the end date.
         t.setStatus (Task::deleted);
