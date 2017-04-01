@@ -41,6 +41,11 @@ static void synthesizeTasks (const Task&)
 // Generates all necessary recurring task instances.
 void handleRecurrence2 ()
 {
+  // Note: Disabling recurrence is currently a workaround for TD-44, TW-1520.
+  if (context.config.getBoolean ("recurrence"))
+    for (auto& t : context.tdb2.pending.get_tasks ())
+      if (t.getStatus () == Task::recurring)
+        synthesizeTasks (t);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
