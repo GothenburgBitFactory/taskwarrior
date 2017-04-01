@@ -1515,7 +1515,7 @@ void Task::validate (bool applyDefault /* = true */)
       has ("due")                                 &&
       has ("recur")                               &&
       (! has ("parent") || get ("parent") == "")  &&
-      (! has ("tenplate") || get ("tenplate") == ""))
+      (! has ("template") || get ("template") == ""))
   {
     status = Task::recurring;
   }
