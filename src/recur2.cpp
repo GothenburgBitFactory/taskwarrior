@@ -30,6 +30,16 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+// Given an old-style task, upgrades it perfectly.
+// Note: Works for both parent and child.
+static Task upgradeTask (const Task&)
+{
+  Task upgraded;
+
+  return upgraded;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Calculates the due date for a new new instance N.
 static Datetime calculateDueN (const Task&, int)
 {
