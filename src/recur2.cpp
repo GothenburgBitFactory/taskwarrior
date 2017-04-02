@@ -30,6 +30,14 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+// Checklist:
+// - last: Most recently generated instance integer. The first instance
+//   generated is '1'.
+// - Sync must merge duplicate N.
+// - Remove recurrence.limit. Now always 1. It is not something that can be done
+//   with rtype:chained tasks.
+
+////////////////////////////////////////////////////////////////////////////////
 // Given an old-style task, upgrades it perfectly.
 // Note: Works for both parent and child.
 static Task upgradeTask (const Task&)
@@ -51,9 +59,14 @@ static Datetime calculateDueN (const Task&, int)
 ////////////////////////////////////////////////////////////////////////////////
 static void synthesizeTasks (const Task&)
 {
+  context.debug ("synthesizeTasks start");
+
+  // TODO 'due' = starting point
+  // TODO 'recur' = frequency
+  // TODO 'last' = index of most recently synthesized instance
 
 
-
+  context.debug ("synthesizeTasks end");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
