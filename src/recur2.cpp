@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Datetime.h>
 #include <Context.h>
 
 extern Context context;
@@ -36,6 +37,7 @@ extern Context context;
 // - Sync must merge duplicate N.
 // - Remove recurrence.limit. Now always 1. It is not something that can be done
 //   with rtype:chained tasks.
+// - Handle until.
 
 ////////////////////////////////////////////////////////////////////////////////
 // Given an old-style task, upgrades it perfectly.
@@ -64,7 +66,6 @@ static void synthesizeTasks (const Task&)
   // TODO 'due' = starting point
   // TODO 'recur' = frequency
   // TODO 'last' = index of most recently synthesized instance
-
 
   context.debug ("synthesizeTasks end");
 }
