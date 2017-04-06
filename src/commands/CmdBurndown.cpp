@@ -927,6 +927,7 @@ int CmdBurndownMonthly::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -962,6 +963,7 @@ int CmdBurndownWeekly::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -997,6 +999,7 @@ int CmdBurndownDaily::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

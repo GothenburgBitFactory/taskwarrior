@@ -335,6 +335,7 @@ int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
   completedGroup.clear ();
 
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

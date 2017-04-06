@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <Datetime.h>
 #include <Context.h>
+#include <main.h>
 
 extern Context context;
 
@@ -79,6 +80,25 @@ void handleRecurrence2 ()
     for (auto& t : context.tdb2.pending.get_tasks ())
       if (t.getStatus () == Task::recurring)
         synthesizeTasks (t);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Delete expired tasks.
+void handleUntil ()
+{
+  Datetime now;
+  auto tasks = context.tdb2.pending.get_tasks ();
+  for (auto& t : tasks)
+  {
+    if (t.getStatus () == Task::pending &&
+        t.has ("until")                 &&
+        Datetime (t.get_date ("until")) < now)
+    {
+      t.setStatus (Task::deleted);
+      context.tdb2.modify(t);
+      context.footnote (onExpiration (t));
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

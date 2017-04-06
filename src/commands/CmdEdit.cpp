@@ -72,6 +72,7 @@ CmdEdit::CmdEdit ()
 int CmdEdit::execute (std::string&)
 {
   // Filter the tasks.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

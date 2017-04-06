@@ -91,6 +91,7 @@ int CmdCustom::execute (std::string& output)
     context.cli2.addFilter (reportFilter);
 
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

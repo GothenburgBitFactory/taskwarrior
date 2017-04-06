@@ -58,6 +58,7 @@ CmdIDs::CmdIDs ()
 int CmdIDs::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -151,6 +152,7 @@ CmdCompletionIds::CmdCompletionIds ()
 int CmdCompletionIds::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -189,6 +191,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
 int CmdZshCompletionIds::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -229,6 +232,7 @@ CmdUUIDs::CmdUUIDs ()
 int CmdUUIDs::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -265,6 +269,7 @@ CmdCompletionUuids::CmdCompletionUuids ()
 int CmdCompletionUuids::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -301,6 +306,7 @@ CmdZshCompletionUuids::CmdZshCompletionUuids ()
 int CmdZshCompletionUuids::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

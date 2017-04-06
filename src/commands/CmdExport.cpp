@@ -55,6 +55,7 @@ int CmdExport::execute (std::string& output)
   int rc = 0;
 
   // Make sure reccurent tasks are generated.
+  handleUntil ();
   handleRecurrence ();
 
   // Apply filter.

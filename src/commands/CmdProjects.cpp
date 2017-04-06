@@ -60,6 +60,7 @@ int CmdProjects::execute (std::string& output)
   int rc = 0;
 
   // Get all the tasks.
+  handleUntil ();
   handleRecurrence ();
   auto tasks = context.tdb2.pending.get_tasks ();
 
@@ -178,6 +179,7 @@ CmdCompletionProjects::CmdCompletionProjects ()
 int CmdCompletionProjects::execute (std::string& output)
 {
   // Get all the tasks.
+  handleUntil ();
   handleRecurrence ();
   auto tasks = context.tdb2.pending.get_tasks ();
 

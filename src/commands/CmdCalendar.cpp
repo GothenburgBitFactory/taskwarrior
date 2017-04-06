@@ -73,6 +73,7 @@ int CmdCalendar::execute (std::string& output)
     monthsPerLine = preferredMonthsPerLine;
 
   // Load the pending tasks.
+  handleUntil ();
   handleRecurrence ();
   auto tasks = context.tdb2.pending.get_tasks ();
 

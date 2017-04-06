@@ -51,6 +51,7 @@ CmdCount::CmdCount ()
 int CmdCount::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

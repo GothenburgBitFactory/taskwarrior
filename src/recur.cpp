@@ -139,18 +139,6 @@ void handleRecurrence ()
           context.footnote (format (STRING_RECUR_CREATE, t.get ("description")));
       }
     }
-
-    // Non-recurring tasks expire too.
-    else
-    {
-      if (t.has ("until") &&
-          Datetime (t.get_date ("until")) < now)
-      {
-        t.setStatus (Task::deleted);
-        context.tdb2.modify(t);
-        context.footnote (onExpiration (t));
-      }
-    }
   }
 }
 

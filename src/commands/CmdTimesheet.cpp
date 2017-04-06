@@ -81,6 +81,7 @@ int CmdTimesheet::execute (std::string& output)
   }
 
   // Apply filter to get a set of tasks.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

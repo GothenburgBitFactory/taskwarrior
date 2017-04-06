@@ -44,6 +44,7 @@ void updateRecurrenceMask (Task&);
 
 // recur2.cpp
 void handleRecurrence2 ();
+void handleUntil ();
 
 // nag.cpp
 bool nag (Task&);

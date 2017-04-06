@@ -66,6 +66,7 @@ int CmdSummary::execute (std::string& output)
   bool showAllProjects = context.config.getBoolean ("summary.all.projects");
 
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
