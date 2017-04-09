@@ -47,6 +47,10 @@ static Task upgradeTask (const Task&)
 {
   Task upgraded;
 
+  // TODO Convert 'mask' to 'last' <-- length (mask)
+  // TODO Convert 'parent' to 'template'.
+  // TODO Convert 'imask' to 'index'.
+  // TODO Add 'rtype:periodic'.
   return upgraded;
 }
 
