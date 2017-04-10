@@ -1519,6 +1519,16 @@ void Task::validate (bool applyDefault /* = true */)
   {
     status = Task::recurring;
   }
+/*
+  // TODO Add for 2.6.0
+  if (status == Task::pending &&
+      has ("due")             &&
+      has ("recur")          &&
+      (! has ("template") || get ("template") == ""))
+  {
+    status = Task::recurring;
+  }
+*/
 
   // Tasks with a wait: date get a special status.
   else if (status == Task::pending &&
