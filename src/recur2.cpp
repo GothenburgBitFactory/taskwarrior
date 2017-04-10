@@ -321,6 +321,7 @@ static std::vector <Datetime> generateAllDueDates (const Task& templateTask)
 static void synthesizeTasks (const Task& templateTask)
 {
   context.debug ("synthesizeTasks start");
+  context.debug ("  template " + templateTask.get ("uuid"));
 
   // TODO 'due' = starting point
   // TODO 'recur' = frequency
