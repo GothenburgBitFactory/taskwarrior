@@ -333,7 +333,6 @@ static void synthesizeTasks (const Task& templateTask)
 
   // TODO Create task instances for each period between N and now.
 
-
   context.debug ("synthesizeTasks end");
 }
 
