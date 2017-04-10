@@ -26,7 +26,9 @@
 
 #include <cmake.h>
 #include <Datetime.h>
+#include <Duration.h>
 #include <Context.h>
+#include <format.h>
 #include <main.h>
 
 extern Context context;
@@ -55,11 +57,208 @@ static Task upgradeTask (const Task&)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Calculates the due date for a new new instance N.
-static Datetime calculateDueN (const Task&, int)
+// Calculates the due date for a new instance N.
+static Datetime generateNextDueDate (
+  const Datetime& first,
+  const std::string& period,
+  const int n)
 {
-  Datetime due;
+  auto y  = first.year ();
+  auto m  = first.month ();
+  auto d  = first.day ();
+  auto hh = first.hour ();
+  auto mm = first.minute ();
+  auto ss = first.second ();
 
+  Duration dur (period);
+  auto normalized = dur.formatISO ();
+  context.debug ("      period " + period + " --> " + normalized);
+
+  if (! dur._year    &&
+        dur._month   &&
+      ! dur._weeks   &&
+      ! dur._day     &&
+      ! dur._hours   &&
+      ! dur._minutes &&
+      ! dur._seconds)
+  {
+    m += dur._month * n;
+    while (m > 12)
+    {
+      y += 1;
+      m -= 12;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d, hh, mm, ss);
+  }
+
+/*
+  // Some periods are difficult, because they can be vague.
+  if (period == "monthly" ||
+      period == "P1M")
+  {
+    if (++m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  else if (period == "weekdays")
+  {
+    auto dow = current.dayOfWeek ();
+    int days;
+
+         if (dow == 5) days = 3;
+    else if (dow == 6) days = 2;
+    else               days = 1;
+
+    return current + (days * 86400);
+  }
+
+  else if (Lexer::isDigit (period[0]) &&
+           period[period.length () - 1] == 'm')
+  {
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+
+    m += increment;
+    while (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  else if (period[0] == 'P'                                            &&
+           Lexer::isAllDigits (period.substr (1, period.length () - 2)) &&
+           period[period.length () - 1] == 'M')
+  {
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+
+    m += increment;
+    while (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d);
+  }
+
+  else if (period == "quarterly" ||
+           period == "P3M")
+  {
+    m += 3;
+    if (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
+  {
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+
+    m += 3 * increment;
+    while (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  else if (period == "semiannual" ||
+           period == "P6M")
+  {
+    m += 6;
+    if (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  else if (period == "bimonthly" ||
+           period == "P2M")
+  {
+    m += 2;
+    if (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Datetime::valid (y, m, d))
+      --d;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  else if (period == "biannual" ||
+           period == "biyearly" ||
+           period == "P2Y")
+  {
+    y += 2;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  else if (period == "annual" ||
+           period == "yearly" ||
+           period == "P1Y")
+  {
+    y += 1;
+
+    // If the due data just happens to be 2/29 in a leap year, then simply
+    // incrementing y is going to create an invalid date.
+    if (m == 2 && d == 29)
+      d = 28;
+
+    return Datetime (y, m, d, ho, mi, se);
+  }
+
+  // Add the period to current, and we're done.
+  std::string::size_type idx = 0;
+  Duration p;
+  if (! p.parse (period, idx))
+    throw std::string (format (STRING_TASK_VALID_RECUR, period));
+
+  return current + p.toTime_t ();
+*/
+
+  Datetime due;
   return due;
 }
 
