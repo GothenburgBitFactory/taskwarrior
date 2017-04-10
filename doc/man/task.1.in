@@ -642,7 +642,7 @@ from tasks, or the system.  Supported DOM references are:
   context.args       (Deprecated in 2.6.0)
   context.width      (Deprecated in 2.6.0)
   context.height     (Deprecated in 2.6.0)
-  system.versio
+  system.version
   system.os
   <id>.<attribute>
   <uuid>.<attribute>
