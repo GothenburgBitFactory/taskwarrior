@@ -327,6 +327,10 @@ static void synthesizeTasks (const Task& templateTask)
   // TODO 'recur' = frequency
   // TODO 'last' = index of most recently synthesized instance
 
+  auto all = generateAllDueDates (templateTask);
+  for (auto& date : all)
+    context.debug ("      date " + date.toISOLocalExtended ());
+
   // TODO Create task instances for each period between N and now.
 
 
