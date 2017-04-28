@@ -28,10 +28,27 @@
 #define INCLUDED_DOM
 
 #include <string>
+#include <Tree.h>
 #include <Variant.h>
 #include <Task.h>
 
+// 2017-04-22 Deprecated.
 bool getDOM (const std::string&, Variant&);
 bool getDOM (const std::string&, const Task&, Variant&);
+
+// DOM Tree
+class DOM;
+
+class DOM
+{
+public:
+  void addSource (const std::string&, bool (*)(const std::string&, Variant&));
+  bool valid (const std::string&) const;
+  Variant get (const Task&, const std::string&) const;
+  Variant get (const std::string&) const;
+
+private:
+  std::vector <std::string> decomposeReference (const std::string&) const;
+};
 
 #endif
