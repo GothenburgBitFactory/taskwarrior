@@ -435,3 +435,72 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// DOM Class
+//
+// References are paths into a tree structure. For example:
+//
+//   1.due.month.number
+//   1.due.day.number
+//
+// Are represented internally as:
+//
+//   1
+//   +- due
+//     +- day
+//     | +- number
+//     +- month
+//       +- number
+//
+// The tree is augmented by other elements:
+//
+//   1
+//   +- due
+//   | +- day
+//   | | +- number
+//   | +- month
+//   |   +- number
+//   +- system
+//      +- os
+//
+// Each node in the tree has a name ("due", "system", "day"), and each node may
+// have a data source attached to it.
+//
+// The DOM class is independent of the project, in that it knows nothing about
+// the internal data or program structure. It knows only that certain DOM path
+// elements have handlers which will provide the data.
+//
+// The DOM class is therefore responsible for maintaining a tree of named nodes
+// with associated proividers. When a reference value is requested, the DOM
+// class will decompose the reference path, and navigate the tree to the lowest
+// level provider, and call it.
+//
+// This makes the DOM class a reusible object.
+
+////////////////////////////////////////////////////////////////////////////////
+bool DOM::valid (const std::string& reference) const
+{
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Variant DOM::get (const std::string& reference) const
+{
+  Variant v ("");
+
+  // Find the provider.
+  // TODO Start at the root of the tree.
+  for (const auto& element : decomposeReference (reference))
+  {
+    // TODO If tree contains a named node 'element', capture the provider, if any.
+  }
+
+  return v;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> DOM::decomposeReference (const std::string& reference) const
+{
+  return split (reference, '.');
+}
+
+////////////////////////////////////////////////////////////////////////////////
