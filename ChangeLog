@@ -90,7 +90,8 @@
 - Added 'history.weekly', 'history.daily', 'ghistory.weekly', 'ghistory.daily'
   report variations, with code refactoring.
           (thanks to Lukas Barth).
-- New DOM references: annotations.count, tw.syncneeded.
+- New DOM references: annotations.count, tw.syncneeded, tw.program, tw.args,
+  tw.width, tw.height, tw.version.
 - The message telling you to sync now indicates how many local changes will be
   synced.
 

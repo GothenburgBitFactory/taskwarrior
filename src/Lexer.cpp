@@ -1190,6 +1190,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
                 "tw.args",
                 "tw.width",
                 "tw.height",
+                "tw.version",
                 "context.program",
                 "context.args",
                 "context.width",
