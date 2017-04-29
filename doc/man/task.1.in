@@ -638,6 +638,7 @@ from tasks, or the system.  Supported DOM references are:
   tw.args
   tw.width
   tw.height
+  tw.version
   context.program    (Deprecated in 2.6.0)
   context.args       (Deprecated in 2.6.0)
   context.width      (Deprecated in 2.6.0)

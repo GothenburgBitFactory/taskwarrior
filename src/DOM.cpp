@@ -53,6 +53,7 @@ extern Context context;
 //   tw.args
 //   tw.width
 //   tw.height
+//   tw.version
 //
 // System:
 //   context.program         // 2017-02-25 Deprecated in 2.6.0
@@ -134,6 +135,12 @@ bool getDOM (const std::string& name, Variant& value)
       value = Variant (static_cast<int> (context.terminal_height
                                            ? context.terminal_height
                                            : context.getHeight ()));
+      return true;
+    }
+
+    else if (name == "tw.version")
+    {
+      value = Variant (VERSION);
       return true;
     }
 

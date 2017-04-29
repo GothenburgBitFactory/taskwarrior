@@ -6,7 +6,7 @@ New Features in Taskwarrior 2.5.2
     command usage.
   - Improved compatibility with SmartOS, OmniOS and OpenIndiana.
   - New DOM references: annotations.count, tw.syncneeded, tw.program, tw.args,
-    tw.width, tw.height.
+    tw.width, tw.height, tw.version.
   - Renovated 'timesheet' command with a more compact report that accepts a
     filter, and has a default filter showing the last four weeks of completed
     and started tasks.
