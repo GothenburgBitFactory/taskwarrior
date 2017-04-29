@@ -477,8 +477,17 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 // This makes the DOM class a reusible object.
 
 ////////////////////////////////////////////////////////////////////////////////
+void DOM::addSource (
+  const std::string&,
+  bool (*provider)(const std::string&, Variant&))
+{
+  // TODO Implement.
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool DOM::valid (const std::string& reference) const
 {
+  // TODO Implement.
   return false;
 }
 
@@ -501,6 +510,90 @@ Variant DOM::get (const std::string& reference) const
 std::vector <std::string> DOM::decomposeReference (const std::string& reference) const
 {
   return split (reference, '.');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int DOM::count () const
+{
+  // This branch.
+  int total = 1;
+
+  // Recurse and count the branches.
+  for (auto& i : _branches)
+    total += i->count ();
+
+  return total;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::shared_ptr <DOM> DOM::find (const std::string& path)
+{
+  std::vector <std::string> elements = split (path, '.');
+
+  // Must start at the trunk.
+  auto cursor = std::make_shared <DOM> (*this);
+  auto it = elements.begin ();
+  if (cursor->_name != *it)
+    return nullptr;
+
+  // Perhaps the trunk is what is needed?
+  if (elements.size () == 1)
+    return cursor;
+
+  // Now look for the next branch.
+  for (++it; it != elements.end (); ++it)
+  {
+    bool found = false;
+
+    // If the cursor has a branch that matches *it, proceed.
+    for (auto i = cursor->_branches.begin (); i != cursor->_branches.end (); ++i)
+    {
+      if ((*i)->_name == *it)
+      {
+        cursor = *i;
+        found = true;
+        break;
+      }
+    }
+
+    if (! found)
+      return nullptr;
+  }
+
+  return cursor;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string DOM::dumpNode (
+  const std::shared_ptr <DOM> t,
+  int depth) const
+{
+  std::stringstream out;
+
+  // Dump node
+  for (int i = 0; i < depth; ++i)
+    out << "  ";
+
+  out
+      // Useful for debugging tree node new/delete errors.
+      // << std::hex << t << " "
+      << "\033[1m" << t->_name << "\033[0m\n";
+
+  // Recurse for branches.
+  for (auto& b : t->_branches)
+    out << dumpNode (b, depth + 1);
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string DOM::dump () const
+{
+  std::stringstream out;
+  out << "DOM (" << count () << " nodes)\n"
+      << dumpNode (std::make_shared <DOM> (*this), 1);
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
