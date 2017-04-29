@@ -515,10 +515,8 @@ std::vector <std::string> DOM::decomposeReference (const std::string& reference)
 ////////////////////////////////////////////////////////////////////////////////
 int DOM::count () const
 {
-  // This branch.
-  int total = 1;
-
   // Recurse and count the branches.
+  int total {0};
   for (auto& i : _branches)
     total += i->count ();
 
