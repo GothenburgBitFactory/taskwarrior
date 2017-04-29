@@ -208,6 +208,12 @@ class TestDOM(TestCase):
         self.assertEqual(code, 0)
         self.assertRegexpMatches(out, r"\d+")
 
+    def test_dom_tw_version(self):
+        """ DOM tw.version """
+        code, out, err = self.t("_get tw.version")
+        self.assertEqual(code, 0)
+        self.assertRegexpMatches(out, r"\d\.\d+\.\d+")
+
     def test_dom_context_program(self):
         """ DOM context.program """
         code, out, err = self.t("_get context.program")
