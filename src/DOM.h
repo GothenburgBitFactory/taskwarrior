@@ -28,16 +28,12 @@
 #define INCLUDED_DOM
 
 #include <string>
-#include <Tree.h>
 #include <Variant.h>
 #include <Task.h>
 
-// 2017-04-22 Deprecated.
+// 2017-04-22 Deprecated, use DOM::get.
 bool getDOM (const std::string&, Variant&);
 bool getDOM (const std::string&, const Task&, Variant&);
-
-// DOM Tree
-class DOM;
 
 class DOM
 {
@@ -46,9 +42,18 @@ public:
   bool valid (const std::string&) const;
   Variant get (const Task&, const std::string&) const;
   Variant get (const std::string&) const;
+  int count () const;
+  std::shared_ptr <DOM> find (const std::string&);
+  std::string dump () const;
 
 private:
   std::vector <std::string> decomposeReference (const std::string&) const;
+  std::string dumpNode (const std::shared_ptr <DOM>, int) const;
+
+private:
+  std::string                                              _name     {"Unknown"};
+  std::shared_ptr <bool (*)(const std::string&, Variant&)> _provider {nullptr};
+  std::vector <std::shared_ptr <DOM>>                      _branches {};
 };
 
 #endif
