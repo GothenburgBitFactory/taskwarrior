@@ -4,6 +4,7 @@
 *.log
 *.runlog
 col.t
+dom.t
 eval.t
 lexer.t
 t.t
