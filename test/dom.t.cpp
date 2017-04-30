@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <iostream> // TODO Remove.
 #include <test.h>
 #include <DOM.h>
 #include <Variant.h>
@@ -33,12 +34,67 @@
 Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+bool providerString (const std::string& path, Variant& var)
+{
+  if (path == "name")
+  {
+    var = Variant ("value");
+    return true;
+  }
+  else if (path == "name.next")
+  {
+    var = Variant ("value.next");
+    return true;
+  }
+  else if (path == "foo")
+  {
+    var = Variant ("bar");
+    return true;
+  }
+  else if (path == "name.size")
+  {
+    var = Variant (6);
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (1);
+  UnitTest t (12);
 
   DOM dom;
-  t.is (dom.count (), 0, "DOM empty count is zero");
+  t.is (dom.count (), 0,               "DOM empty count is zero");
+
+  dom.addSource ("name",      &providerString);
+  dom.addSource ("name.next", &providerString);
+  dom.addSource ("name.size", &providerString);
+  dom.addSource ("foo",       &providerString);
+  std::cout << dom.dump () << '\n';
+  t.is (dom.count (), 4,               "DOM now contains 4 nodes");
+
+  t.ok    (dom.valid ("name"),         "DOM 'name' valid");
+  t.ok    (dom.valid ("name.next"),    "DOM 'name.next' valid");
+  t.ok    (dom.valid ("name.size"),    "DOM 'name.size' valid");
+  t.ok    (dom.valid ("foo"),          "DOM 'foo' valid");
+  t.notok (dom.valid ("missing"),      "DOM 'missing' not valid");
+
+  auto v = dom.get ("name");
+  t.is (v.get_string (), "value",      "DOM get 'name' --> 'value'");
+
+  v = dom.get ("name.next");
+  t.is (v.get_string (), "value.next", "DOM get 'name.next' --> 'value.next'");
+
+  v = dom.get ("name.size");
+  t.is (v.get_integer (), 6,           "DOM get 'name.size' --> 6");
+
+  v = dom.get ("foo");
+  t.is (v.get_string (), "bar",        "DOM get 'name.size' --> 6");
+
+  v = dom.get ("missing");
+  t.is (v.get_string (), "",           "DOM get 'missing' --> ''");
 
   return 0;
 }
