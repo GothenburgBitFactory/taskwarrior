@@ -41,10 +41,13 @@ public:
   ~DOM ();
   void addSource (const std::string&, bool (*)(const std::string&, Variant&));
   bool valid (const std::string&) const;
+/*
+  // TODO Task object should register a generic provider.
   Variant get (const Task&, const std::string&) const;
+*/
   Variant get (const std::string&) const;
   int count () const;
-  std::shared_ptr <DOM> find (const std::string&);
+  static std::vector <std::string> decomposeReference (const std::string&);
   std::string dump () const;
 
 private:
@@ -52,6 +55,17 @@ private:
   {
   public:
     ~Node ();
+    void addSource (const std::string&, bool (*)(const std::string&, Variant&));
+    bool valid (const std::string&) const;
+    const DOM::Node* find (const std::string&) const;
+    int count () const;
+    std::string dumpNode (const DOM::Node*, int) const;
+    std::string dump () const;
+
+  public:
+    std::string                                  _name     {"Unknown"};
+    bool (*_provider)(const std::string&, Variant&)        {nullptr};
+    std::vector <DOM::Node*>                     _branches {};
   };
 
 private:
