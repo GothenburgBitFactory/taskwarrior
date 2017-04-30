@@ -38,6 +38,7 @@ bool getDOM (const std::string&, const Task&, Variant&);
 class DOM
 {
 public:
+  ~DOM ();
   void addSource (const std::string&, bool (*)(const std::string&, Variant&));
   bool valid (const std::string&) const;
   Variant get (const Task&, const std::string&) const;
@@ -47,13 +48,15 @@ public:
   std::string dump () const;
 
 private:
-  std::vector <std::string> decomposeReference (const std::string&) const;
-  std::string dumpNode (const std::shared_ptr <DOM>, int) const;
+  class Node
+  {
+  public:
+    ~Node ();
+  };
 
 private:
-  std::string                                              _name     {"Unknown"};
-  std::shared_ptr <bool (*)(const std::string&, Variant&)> _provider {nullptr};
-  std::vector <std::shared_ptr <DOM>>                      _branches {};
+  DOM::Node* _node {nullptr};
 };
 
 #endif
+////////////////////////////////////////////////////////////////////////////////

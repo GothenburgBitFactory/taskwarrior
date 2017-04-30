@@ -484,6 +484,12 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 // This makes the DOM class a reusible object.
 
 ////////////////////////////////////////////////////////////////////////////////
+DOM::~DOM ()
+{
+  delete _node;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void DOM::addSource (
   const std::string&,
   bool (*provider)(const std::string&, Variant&))
