@@ -491,17 +491,19 @@ DOM::~DOM ()
 
 ////////////////////////////////////////////////////////////////////////////////
 void DOM::addSource (
-  const std::string&,
+  const std::string& reference,
   bool (*provider)(const std::string&, Variant&))
 {
-  // TODO Implement.
+  if (_node == nullptr)
+    _node = new DOM::Node ();
+
+  _node->addSource (reference, provider);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool DOM::valid (const std::string& reference) const
 {
-  // TODO Implement.
-  return false;
+  return _node && _node->find (reference) != nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -509,100 +511,161 @@ Variant DOM::get (const std::string& reference) const
 {
   Variant v ("");
 
-  // Find the provider.
-  // TODO Start at the root of the tree.
-  for (const auto& element : decomposeReference (reference))
+  if (_node)
   {
-    // TODO If tree contains a named node 'element', capture the provider, if any.
+    auto node = _node->find (reference);
+    if (node            != nullptr &&
+        node->_provider != nullptr)
+    {
+      if (node->_provider (reference, v))
+        return v;
+    }
   }
 
   return v;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> DOM::decomposeReference (const std::string& reference) const
+int DOM::count () const
+{
+  if (_node)
+    return _node->count ();
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> DOM::decomposeReference (const std::string& reference)
 {
   return split (reference, '.');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int DOM::count () const
+std::string DOM::dump () const
 {
-  // Recurse and count the branches.
-  int total {0};
-  for (auto& i : _branches)
-    total += i->count ();
+  if (_node)
+    return _node->dump ();
 
-  return total;
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::shared_ptr <DOM> DOM::find (const std::string& path)
+DOM::Node::~Node ()
 {
-  std::vector <std::string> elements = split (path, '.');
+  for (auto& branch : _branches)
+    delete branch;
+}
 
-  // Must start at the trunk.
-  auto cursor = std::make_shared <DOM> (*this);
-  auto it = elements.begin ();
-  if (cursor->_name != *it)
-    return nullptr;
-
-  // Perhaps the trunk is what is needed?
-  if (elements.size () == 1)
-    return cursor;
-
-  // Now look for the next branch.
-  for (++it; it != elements.end (); ++it)
+////////////////////////////////////////////////////////////////////////////////
+void DOM::Node::addSource (
+  const std::string& reference,
+  bool (*provider)(const std::string&, Variant&))
+{
+  auto cursor = this;
+  for (const auto& element : DOM::decomposeReference (reference))
   {
-    bool found = false;
-
-    // If the cursor has a branch that matches *it, proceed.
-    for (auto i = cursor->_branches.begin (); i != cursor->_branches.end (); ++i)
+    auto found {false};
+    for (auto& branch : cursor->_branches)
     {
-      if ((*i)->_name == *it)
+      if (branch->_name == element)
       {
-        cursor = *i;
+        cursor = branch;
         found = true;
         break;
       }
     }
 
     if (! found)
-      return nullptr;
+    {
+      auto branch = new DOM::Node ();
+      branch->_name = element;
+      cursor->_branches.push_back (branch);
+      cursor = branch;
+    }
   }
 
-  return cursor;
+  cursor->_provider = provider;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string DOM::dumpNode (
-  const std::shared_ptr <DOM> t,
+// A valid reference is one that has a provider function.
+bool DOM::Node::valid (const std::string& reference) const
+{
+  return find (reference) != nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const DOM::Node* DOM::Node::find (const std::string& reference) const
+{
+  auto cursor = this;
+  for (const auto& element : DOM::decomposeReference (reference))
+  {
+    auto found {false};
+    for (auto& branch : cursor->_branches)
+    {
+      if (branch->_name == element)
+      {
+        cursor = branch;
+        found = true;
+        break;
+      }
+    }
+
+    if (! found)
+      break;
+  }
+
+  if (reference.length () && cursor != this)
+    return cursor;
+
+  return nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int DOM::Node::count () const
+{
+  // Recurse and count the branches.
+  int total {0};
+  for (auto& branch : _branches)
+  {
+    if (branch->_provider)
+      ++total;
+    total += branch->count ();
+  }
+
+  return total;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string DOM::Node::dumpNode (
+  const DOM::Node* node,
   int depth) const
 {
   std::stringstream out;
 
-  // Dump node
-  for (int i = 0; i < depth; ++i)
-    out << "  ";
+  // Indent.
+  out << std::string (depth * 2, ' ');
 
-  out
-      // Useful for debugging tree node new/delete errors.
-      // << std::hex << t << " "
-      << "\033[1m" << t->_name << "\033[0m\n";
+  out << "\033[31m" << node->_name << "\033[0m";
+
+  if (node->_provider)
+    out << " 0x" << std::hex << (long long) (void*) node->_provider;
+
+  out << '\n';
 
   // Recurse for branches.
-  for (auto& b : t->_branches)
+  for (auto& b : node->_branches)
     out << dumpNode (b, depth + 1);
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string DOM::dump () const
+std::string DOM::Node::dump () const
 {
   std::stringstream out;
-  out << "DOM (" << count () << " nodes)\n"
-      << dumpNode (std::make_shared <DOM> (*this), 1);
+  out << "DOM::Node (" << count () << " nodes)\n"
+      << dumpNode (this, 1);
 
   return out.str ();
 }
