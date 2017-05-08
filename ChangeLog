@@ -61,6 +61,8 @@
           (thanks to Dan Callahan).
 - TW-1903 grammar error -- There are 1 local changes.
           (thanks to Eric Hymowitz).
+- TW-1910 unreachable statement
+          (thanks to Martin Strunz).
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
