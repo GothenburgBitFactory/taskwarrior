@@ -1953,8 +1953,6 @@ bool Variant::trivial () const
          (_type == type_string   && _string   == "")  ||
          (_type == type_date     && _date     == 0)   ||
          (_type == type_duration && _duration == 0);
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
