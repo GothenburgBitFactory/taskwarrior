@@ -43,6 +43,7 @@
 #include <sys/errno.h>
 #endif
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <netdb.h>
 #include <gnutls/x509.h>
 #include <shared.h>
