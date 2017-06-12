@@ -1035,6 +1035,70 @@ class Test1634(TestCase):
         self.assertIn("OFF7", out)
 
 
+class TestBug1915(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t("add project:A thingA")
+        self.t("add project:B thingB")
+        self.t("add project:C thingC")
+
+    def test_complex_and_or_query_variant_one(self):
+        """1915: Make sure parser handles complex and-or queries correctly (1)"""
+        code, out, err = self.t("rc.verbose:nothing '(project:A or project:B) and status:pending' all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
+    def test_complex_and_or_query_variant_two(self):
+        """1915: Make sure parser handles complex and-or queries correctly (2)"""
+        code, out, err = self.t("rc.verbose:nothing '( project:A or project:B ) and status:pending' all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
+    def test_complex_and_or_query_variant_three(self):
+        """1915: Make sure parser handles complex and-or queries correctly (3)"""
+        code, out, err = self.t("rc.verbose:nothing 'status:pending and (project:A or project:B)' all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
+    def test_complex_and_or_query_variant_four(self):
+        """1915: Make sure parser handles complex and-or queries correctly (4)"""
+        code, out, err = self.t("rc.verbose:nothing 'status:pending and ( project:A or project:B )' all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
+    def test_complex_and_or_query_variant_five(self):
+        """1915: Make sure parser handles complex and-or queries correctly (5)"""
+        code, out, err = self.t("rc.verbose:nothing status:pending and '(project:A or project:B)' all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
+    def test_complex_and_or_query_variant_six(self):
+        """1915: Make sure parser handles complex and-or queries correctly (6)"""
+        code, out, err = self.t("rc.verbose:nothing status:pending and '( project:A or project:B )' all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
+    def test_complex_and_or_query_variant_seven(self):
+        """1915: Make sure parser handles complex and-or queries correctly (7)"""
+        code, out, err = self.t("rc.verbose:nothing status:pending and \\( project:A or project:B \\) all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
+    def test_complex_and_or_query_variant_eight(self):
+        """1915: Make sure parser handles complex and-or queries correctly (8)"""
+        code, out, err = self.t("rc.verbose:nothing status:pending and \\(project:A or project:B\\) all")
+        self.assertIn("thingA", out)
+        self.assertIn("thingB", out)
+        self.assertNotIn("thingC", out)
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
