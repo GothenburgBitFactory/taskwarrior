@@ -130,8 +130,8 @@ my $current = (localtime (time))[5] + 1900;
 my $next    = $current + 1;
 
 # Construct the holidata.net URL.
-my $url_current = "http://holidata.net/${locale}/${current}.json";
-my $url_next    = "http://holidata.net/${locale}/${next}.json";
+my $url_current = "https://holidata.net/${locale}/${current}.json";
+my $url_next    = "https://holidata.net/${locale}/${next}.json";
 
 # Fetch data for the current year.
 my $data_current = get ($url_current);
