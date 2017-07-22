@@ -54,7 +54,7 @@ extern Context context;
 // child tasks need to be generated to fill gaps.
 void handleRecurrence ()
 {
-  // TODO This is inserted here to create parallel recurrence implememntations
+  // TODO This is inserted here to create parallel recurrence implementation
   //      during feature development. This eliminates the need to inject this
   //      call into 11 command implementations.
   handleRecurrence2 ();
