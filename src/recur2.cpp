@@ -355,13 +355,18 @@ void handleUntil ()
   auto tasks = context.tdb2.pending.get_tasks ();
   for (auto& t : tasks)
   {
+    // TODO What about expiring template tasks?
     if (t.getStatus () == Task::pending &&
-        t.has ("until")                 &&
-        Datetime (t.get_date ("until")) < now)
+        t.has ("until"))
     {
-      t.setStatus (Task::deleted);
-      context.tdb2.modify(t);
-      context.footnote (onExpiration (t));
+      auto until = Datetime (t.get_date ("until"));
+      if (until < now)
+      {
+        context.debug (format ("handleUntil: recurrence expired until {1} < now {2}", until.toISOLocalExtended (), now.toISOLocalExtended ()));
+        t.setStatus (Task::deleted);
+        context.tdb2.modify(t);
+        context.footnote (onExpiration (t));
+      }
     }
   }
 }
