@@ -523,6 +523,7 @@
 #define STRING_CMD_CONTEXT_DEF_ABRT  "Context definition aborted."
 #define STRING_CMD_CONTEXT_DEF_ABRT2 "Filter validation failed: {1}"
 #define STRING_CMD_CONTEXT_DEF_CONF  "The filter '{1}' matches 0 pending tasks. Do you wish to continue?"
+#define STRING_CMD_CONTEXT_DEF_INVLD "The name '{1}' is reserved and not allowed to use as a context name."
 #define STRING_CMD_CONTEXT_DEL_SUCC  "Context '{1}' deleted."
 #define STRING_CMD_CONTEXT_DEL_FAIL  "Context '{1}' not deleted."
 #define STRING_CMD_CONTEXT_DEL_USAG  "Context name needs to be specified."
