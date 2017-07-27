@@ -540,6 +540,7 @@
 #define STRING_CMD_CONTEXT_DEF_ABRT  "Definición de contexto abortada."
 #define STRING_CMD_CONTEXT_DEF_ABRT2 "Validación de filtro fallida: {1}"
 #define STRING_CMD_CONTEXT_DEF_CONF  "El filtro '{1}' coincide con 0 tareas pendientes. ¿Quiere continuar?"
+#define STRING_CMD_CONTEXT_DEF_INVLD "The name '{1}' is reserved and not allowed to use as a context name."
 #define STRING_CMD_CONTEXT_DEL_SUCC  "Contexto '{1}' eliminado."
 #define STRING_CMD_CONTEXT_DEL_FAIL  "Contexto '{1}' no eliminado."
 #define STRING_CMD_CONTEXT_DEL_USAG  "El nombre del contexto necesita ser especificado."

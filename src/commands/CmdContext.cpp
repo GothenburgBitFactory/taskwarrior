@@ -137,6 +137,12 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     auto name = "context." + words[1];
     auto value = joinWords (words, 2);
 
+    // Make sure nobody creates a context with name 'list', 'none' or 'show'
+    if (words[1] == "none" or words[1] == "list" or words[1] == "show")
+    {
+      throw format (STRING_CMD_CONTEXT_DEF_INVLD, words[1]);
+    }
+
     // Check if the value is a proper filter by filtering current pending.data
     Filter filter;
     std::vector <Task> filtered;
