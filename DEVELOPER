@@ -8,7 +8,7 @@ How to Build Taskwarrior
     - python 2.7 or 3 (optional, for running the test suite)
 
   Obtain and build code:
-    $ git clone --recursive https://git.tasktools.org/scm/tm/task.git task.git
+    $ git clone --recursive https://git.tasktools.org/TM/task.git task.git
     $ cd task.git
     $ git checkout 2.5.2                 # Latest dev branch
     $ git submodule init                 # This is now done by cmake as a test
