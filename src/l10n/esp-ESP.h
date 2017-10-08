@@ -465,7 +465,7 @@
 #define STRING_CMD_DIAG_FOUND        "(encontrado)"
 #define STRING_CMD_DIAG_MISSING      "(no encontrado)"
 #define STRING_CMD_DIAG_MISS_DEP     "La tarea {1} depende de la tarea inexistente: {2}"
-#define STRING_CMD_DIAG_MISS_PAR     "La tarea {1} tiene un modelo de recurrencia inexistente: {2}"
+#define STRING_CMD_DIAG_MISS_PAR     "La tarea {1} tiene un modelo de recurrencia inexistente {2}"
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
 #define STRING_CMD_DIAG_DISABLED     "deshabilitado"
 #define STRING_CMD_DIAG_CONFIG       "Configuración"
