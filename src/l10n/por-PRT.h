@@ -461,7 +461,7 @@
 #define STRING_CMD_DIAG_FOUND        "(presente)"
 #define STRING_CMD_DIAG_MISSING      "(em falta)"
 #define STRING_CMD_DIAG_MISS_DEP     "Task {1} depends on nonexistent task: {2}"
-#define STRING_CMD_DIAG_MISS_PAR     "Task {1} has nonexistent recurrence template: {2}"
+#define STRING_CMD_DIAG_MISS_PAR     "Task {1} has nonexistent recurrence template {2}"
 #define STRING_CMD_DIAG_ENABLED      "Ativado"
 #define STRING_CMD_DIAG_DISABLED     "Desativado"
 #define STRING_CMD_DIAG_CONFIG       "Configuração"
