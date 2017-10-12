@@ -37,8 +37,7 @@ Please send your code patches to:
 
     support@taskwarrior.org
 
-Consider joining bug.tasktools.org, answers.tasktools.org and participating in
-the future of Taskwarrior.
+Consider joining bug.tasktools.org and participating in the future of Taskwarrior.
 
 ---
 
