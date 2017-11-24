@@ -277,16 +277,23 @@ void CLI2::applyOverrides (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
   {
+
+    // Don't process any arguments after a '--'
     std::string raw = argv[i];
     if (raw == "--")
       break;
 
+    // Overrides always start with 'rc.'
     if (raw.length () > 3 &&
         raw.substr (0, 3) == "rc.")
     {
+
+      // Our separator can either be '=' or ':', so try and find both.
       auto sep = raw.find ('=', 3);
       if (sep == std::string::npos)
         sep = raw.find (':', 3);
+
+      // Process our override if well-formed
       if (sep != std::string::npos)
       {
         std::string name  = raw.substr (3, sep - 3);
