@@ -280,17 +280,18 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
     unwait     Notification when a task leaves the 'waiting' state
+    override   Notification when configuration options are overriden
     recur      Notification when a new recurring task instance is created
 
-"affected", "new-id", "new-uuid" "project" and "unwait" imply "footnote".
+"affected", "new-id", "new-uuid", "project", "override" and "unwait" imply "footnote".
 
 Note that the "1" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
 
 Here are the shortcut equivalents:
 
-    verbose=1
-    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait
+    verbose=on
+    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait,override
 
     verbose=0
     verbose=blank,label,new-id,edit

@@ -88,7 +88,7 @@ std::string configurationDefaults =
   "\n"
   "# Miscellaneous\n"
   "#                                              # Comma-separated list.  May contain any subset of:\n"
-  "verbose=blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,unwait,recur\n"
+  "verbose=blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,unwait,override,recur\n"
   "confirmation=1                                 # Confirmation on delete, big changes\n"
   "recurrence=1                                   # Enable recurrence\n"
   "recurrence.confirmation=prompt                 # Confirmation for propagating changes among recurring tasks (yes/no/prompt)\n"
@@ -949,6 +949,7 @@ bool Context::verbose (const std::string& token)
           v != "sync"     &&  //
           v != "filter"   &&  //
           v != "unwait"   &&  //
+          v != "override" &&  //
           v != "recur")       //
       {
         // This list emulates rc.verbose=off in version 1.9.4.
@@ -960,7 +961,7 @@ bool Context::verbose (const std::string& token)
     if (! verbosity.count ("footnote"))
     {
       // TODO: Some of these may not use footnotes yet.  They should.
-      for (auto flag : {"affected", "new-id", "new-uuid", "project", "unwait", "recur"})
+      for (auto flag : {"affected", "new-id", "new-uuid", "project", "unwait", "override", "recur"})
       {
         if (verbosity.count (flag))
         {

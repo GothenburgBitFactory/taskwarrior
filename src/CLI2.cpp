@@ -299,7 +299,9 @@ void CLI2::applyOverrides (int argc, const char** argv)
         std::string name  = raw.substr (3, sep - 3);
         std::string value = raw.substr (sep + 1);
         context.config.set (name, value);
-        context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
+
+        if (context.verbose("override"))
+          context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
       }
     }
   }
