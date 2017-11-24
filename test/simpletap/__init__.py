@@ -155,12 +155,12 @@ class TAPTestResult(unittest.result.TestResult):
         if status:
 
             if status == "SKIP":
-                self.stream.writeln("{0} {1} - {2}: {3}".format(
-                    color("skip", "yellow"), self.testsRun, filename, desc)
+                self.stream.writeln("{0} {1} - {2}: {3} # skip".format(
+                    color("ok", "yellow"), self.testsRun, filename, desc)
                 )
             elif status == "EXPECTED_FAILURE":
-                self.stream.writeln("{0} {1} - {2}: {3}".format(
-                    color("skip", "yellow"), self.testsRun, filename, desc)
+                self.stream.writeln("{0} {1} - {2}: {3} # TODO".format(
+                    color("not ok", "yellow"), self.testsRun, filename, desc)
                 )
             else:
                 self.stream.writeln("{0} {1} - {2}: {3}".format(
@@ -226,6 +226,10 @@ class TAPTestRunner(unittest.runner.TextTestRunner):
         result = self._makeResult()
         unittest.signals.registerResult(result)
         result.failfast = self.failfast
+
+        # TAP requires output is on STDOUT.
+        # TODO: Define this at __init__ time
+        result.stream = unittest.runner._WritelnDecorator(sys.stdout)
 
         with warnings.catch_warnings():
             if getattr(self, "warnings", None):

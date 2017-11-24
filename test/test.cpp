@@ -452,11 +452,12 @@ void UnitTest::skip (const std::string& text)
 {
   ++_counter;
   ++_skipped;
-  std::cout << yellow ("skip")
+  std::cout << yellow ("ok")
             << " "
             << _counter
             << " - "
             << text
+            << " # skip"
             << "\n";
 }
 
