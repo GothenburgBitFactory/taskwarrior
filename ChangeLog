@@ -63,6 +63,8 @@
           (thanks to Eric Hymowitz).
 - TW-1910 unreachable statement
           (thanks to Martin Strunz).
+- TW-1930 Typo in help
+          (thanks to Kai HTML).
 - TW-1936 Tweak tests to have fuller TAP compliance
           (thanks to Paul J. Fenwick)
 - TW-1935 Separate verbosity category for rc overrides

@@ -926,8 +926,8 @@
   "  ----------------  -----------------  -------------------  -------------------------\n" \
   "                    due:today          due = today          Fuzzy match\n" \
   "  not               due.not:today      due != today         Fuzzy non-match\n" \
-  "  before, below     due.before:today   due < tomorrow       Exact date comparison\n" \
-  "  after, above      due.after:today    due > tomorrow       Exact date comparison\n" \
+  "  before, below     due.before:today   due < today          Exact date comparison\n" \
+  "  after, above      due.after:today    due >= tomorrow      Exact date comparison\n" \
   "  none              project.none:      project == ''        Empty\n" \
   "  any               project.any:       project !== ''       Not empty\n" \
   "  is, equals        project.is:x       project == x         Exact match\n" \
