@@ -65,6 +65,8 @@
           (thanks to Martin Strunz).
 - TW-1936 Tweak tests to have fuller TAP compliance
           (thanks to Paul J. Fenwick)
+- TW-1935 Separate verbosity category for rc overrides
+          (thanks to Paul J. Fenwick)
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
