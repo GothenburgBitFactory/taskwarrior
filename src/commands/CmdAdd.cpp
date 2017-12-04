@@ -60,7 +60,21 @@ int CmdAdd::execute (std::string& output)
 
   // Do not display ID 0, users cannot query by that
   auto status = task.getStatus ();
-  if (context.verbose ("new-id") &&
+
+  // We may have a situation where both new-id and new-uuid config
+  // variables are set. In that case, we'll show the new-uuid, as
+  // it's enduring and never changes, and it's unlikely the caller
+  // asked for this if they just wanted a human-friendly number.
+
+  if (context.verbose ("new-uuid") &&
+           status != Task::recurring)
+    output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + '\n';
+
+  else if (context.verbose ("new-uuid") &&
+           status == Task::recurring)
+    output += format (STRING_CMD_ADD_RECUR, task.get ("uuid")) + '\n';
+
+  else if (context.verbose ("new-id") &&
       (status == Task::pending ||
        status == Task::waiting))
     output += format (STRING_CMD_ADD_FEEDBACK, task.id) + '\n';
@@ -68,14 +82,6 @@ int CmdAdd::execute (std::string& output)
   else if (context.verbose ("new-id") &&
            status == Task::recurring)
     output += format (STRING_CMD_ADD_RECUR, task.id) + '\n';
-
-  else if (context.verbose ("new-uuid") &&
-           status != Task::recurring)
-    output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + '\n';
-
-  else if (context.verbose ("new-uuid") &&
-           status == Task::recurring)
-    output += format (STRING_CMD_ADD_RECUR, task.get ("uuid")) + '\n';
 
   if (context.verbose ("project"))
     context.footnote (onProjectChange (task));
