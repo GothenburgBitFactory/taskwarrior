@@ -43,6 +43,7 @@
 #cmakedefine FREEBSD
 #cmakedefine OPENBSD
 #cmakedefine NETBSD
+#cmakedefine DRAGONFLY
 #cmakedefine HAIKU
 #cmakedefine SOLARIS
 #cmakedefine KFREEBSD
