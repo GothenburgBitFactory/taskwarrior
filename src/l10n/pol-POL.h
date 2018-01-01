@@ -1,6 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
+2018////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2017, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2018, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -203,7 +203,7 @@
 #define STRING_CMD_VERSION_DOCS      "Dokumentację dla taskwarrior można znaleźć z pomocą 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' lub pod adresem http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} zbudowane dla "
 #define STRING_CMD_VERSION_UNKNOWN   "nieznana"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2017 P. Beckingham, F. Hernandez."
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
 #define STRING_CMD_LOGO_USAGE        "Wyświetla logo Taskwarrior"
 #define STRING_CMD_LOGO_COLOR_REQ    "Polecenie logo wymaga wsparcia kolorowania."
 #define STRING_CMD_EXEC_USAGE        "Wykonuje zewnętrzne polecenia i skrypty"

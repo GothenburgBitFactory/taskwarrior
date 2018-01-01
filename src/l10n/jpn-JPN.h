@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2017, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2018, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -203,7 +203,7 @@
 #define STRING_CMD_VERSION_DOCS      "taskwarrior のドキュメントは 'man task', 'man taskrc', 'man task-color', 'man task-sync' あるいは http://taskwarrior.org にあります。"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} built for "
 #define STRING_CMD_VERSION_UNKNOWN   "unknown"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2017 P. Beckingham, F. Hernandez."
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
 #define STRING_CMD_LOGO_USAGE        "Taskwarrior ロゴの表示"
 #define STRING_CMD_LOGO_COLOR_REQ    "色のサポートをする logo コマンドが有効になりました。"
 #define STRING_CMD_EXEC_USAGE        "外部コマンドまたはスクリプトの実行"
