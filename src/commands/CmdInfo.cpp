@@ -198,7 +198,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("mask"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_MASK);
+      view.set (row, 0, "Mask");
       view.set (row, 1, task.get ("mask"));
     }
 
@@ -206,7 +206,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("imask"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_MASK_IDX);
+      view.set (row, 0, "Mask Index");
       view.set (row, 1, task.get ("imask"));
     }
 

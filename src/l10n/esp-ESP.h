@@ -156,8 +156,6 @@
 #define STRING_COLUMN_LABEL_URGENCY  "Urgencia"
 #define STRING_COLUMN_LABEL_NAME     "Nombre"
 #define STRING_COLUMN_LABEL_VALUE    "Valor"
-#define STRING_COLUMN_LABEL_MASK     "Máscara"
-#define STRING_COLUMN_LABEL_MASK_IDX "Máscara de Índice"
 #define STRING_COLUMN_LABEL_PARENT   "Tarea madre"
 #define STRING_COLUMN_LABEL_DATE     "Fecha"
 #define STRING_COLUMN_LABEL_COLUMN   "Columnas"

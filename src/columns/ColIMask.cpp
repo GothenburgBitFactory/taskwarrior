@@ -27,14 +27,13 @@
 #include <cmake.h>
 #include <ColIMask.h>
 #include <format.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnIMask::ColumnIMask ()
 {
   _name       = "imask";
   _style      = "number";
-  _label      = STRING_COLUMN_LABEL_MASK_IDX;
+  _label      = "Mask Index";
   _modifiable = false;
   _styles     = {"number"};
   _examples   = {"12"};
