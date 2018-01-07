@@ -706,7 +706,6 @@
 #define STRING_ASSUME_INFO           "Kein Befehl angegeben - nehme 'information' an."
 #define STRING_INFINITE_LOOP         "Beende Ersetzung, weil mehr als {1} Änderungen durchgeführt wurden - Schutz vor Endlosschleifen."
 #define STRING_UDA_TYPE              "UDAs müssen vom Typ 'string', 'date', 'duration' oder 'numeric' sein."
-#define STRING_UDA_NUMERIC           "Der Wert '{1}' ist kein zulässiger Zahlenwert."
 #define STRING_UDA_COLLISION         "Das UDA '{1}' hat den selben Namen wie eine eingebaute Eigenschaft, und ist daher nicht erlaubt."
 #define STRING_INVALID_MOD           "Die '{1}'-Eigenschaft erlaubt keinen Wert '{2}'."
 #define STRING_INVALID_SORT_COL      "Nach Spalte '{1}' kann nicht sortiert weden."

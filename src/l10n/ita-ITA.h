@@ -707,7 +707,6 @@
 #define STRING_ASSUME_INFO           "Nessun comando specificato - si assume 'information'."
 #define STRING_INFINITE_LOOP         "Sostituzione terminata poiché più di {1} modifiche sono state fatte - protezione da ciclo infinito"
 #define STRING_UDA_TYPE              "Gli User defined attribute possono solo essere di tipo 'string', 'date', 'duration' o 'numeric'."
-#define STRING_UDA_NUMERIC           "Il valore '{1}' non è un valore numerico valido."
 #define STRING_UDA_COLLISION         "L'UDA '{1}' ha lo stesso nome di un attributo di sistema, e ciò non è permesso."
 #define STRING_INVALID_MOD           "L'attributo '{1}' non ammette un valore pari a '{2}'."
 #define STRING_INVALID_SORT_COL      "La colonna '{1}' non è un campo di ordinamento valido."
