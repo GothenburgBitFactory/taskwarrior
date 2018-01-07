@@ -155,8 +155,6 @@
 #define STRING_COLUMN_LABEL_URGENCY  "Pilność"
 #define STRING_COLUMN_LABEL_NAME     "Nazwa"
 #define STRING_COLUMN_LABEL_VALUE    "Wartość"
-#define STRING_COLUMN_LABEL_MASK     "Maska"
-#define STRING_COLUMN_LABEL_MASK_IDX "Indeks Maski"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
 #define STRING_COLUMN_LABEL_PARENT   "Zadanie rodzic"

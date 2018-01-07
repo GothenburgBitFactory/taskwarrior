@@ -27,14 +27,13 @@
 #include <cmake.h>
 #include <ColMask.h>
 #include <format.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnMask::ColumnMask ()
 {
   _name       = "mask";
   _style      = "default";
-  _label      = STRING_COLUMN_LABEL_MASK;
+  _label      = "Mask";
   _modifiable = false;
   _styles     = {"default"};
   _examples   = {"++++---"};
