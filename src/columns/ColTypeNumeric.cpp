@@ -31,7 +31,6 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 extern Task& contextTask;
@@ -72,7 +71,7 @@ void ColumnTypeNumeric::modify (Task& task, const std::string& value)
   // If the result is not readily convertible to a numeric value, then this is
   // an error.
   if (evaluatedValue.type () == Variant::type_string)
-    throw format (STRING_UDA_NUMERIC, evaluatedValue.get_string ());
+    throw format ("The value '{1}' is not a valid numeric value.", evaluatedValue.get_string ());
 
   task.set (_name, evaluatedValue);
 }

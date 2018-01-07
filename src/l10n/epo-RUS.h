@@ -703,7 +703,6 @@
 #define STRING_ASSUME_INFO           "Nenia komando specifita.  Supozanta 'information'."
 #define STRING_INFINITE_LOOP         "Finis anstataŭon ĉar ekzistas pli de {1} ŝanĝoj - protekto kontraŭ senfina ripeton."
 #define STRING_UDA_TYPE              "La tipo de uzanto-definitaj atributoj devas esti 'string', 'date', 'duration', aŭ 'numeric'."
-#define STRING_UDA_NUMERIC           "Valoro '{1}' ne estas valida nombra valoro."
 #define STRING_UDA_COLLISION         "UDA '{1}' kaj enkonstruita atributo havas la saman nomon.  Tio estas malpermesita."
 #define STRING_INVALID_MOD           "Atributo '{1}' ne permesas valoron '{2}'."
 #define STRING_INVALID_SORT_COL      "Kolumno '{1}' ne estas valida kampo por ordigi."

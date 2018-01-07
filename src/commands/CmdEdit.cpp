@@ -681,7 +681,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
                 pig.eos ())
               task.set (col.first, value);
             else
-              throw format (STRING_UDA_NUMERIC, value);
+              throw format ("The value '{1}' is not a valid numeric value.", value);
           }
           else if (type == "date")
           {
