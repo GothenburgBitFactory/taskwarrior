@@ -711,7 +711,6 @@
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Error: "  // |esp-ESP|==|eng-USA|
-#define STRING_UNKNOWN_ERROR         "Error desconocido."
 #define STRING_TRIVIAL_INPUT         "Debe especificar un comando o una tarea a modificar."
 #define STRING_ASSUME_INFO           "No especificó un comando - asumido 'information'."
 #define STRING_INFINITE_LOOP         "Sustitución terminada debido a que se hicieron más de {1} cambios - protección contra ciclo eterno."

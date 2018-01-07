@@ -700,7 +700,6 @@
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Errore: "
-#define STRING_UNKNOWN_ERROR         "Errore sconosciuto."
 #define STRING_TRIVIAL_INPUT         "Specificare un comando o un task da modificare"
 #define STRING_ASSUME_INFO           "Nessun comando specificato - si assume 'information'."
 #define STRING_INFINITE_LOOP         "Sostituzione terminata poiché più di {1} modifiche sono state fatte - protezione da ciclo infinito"

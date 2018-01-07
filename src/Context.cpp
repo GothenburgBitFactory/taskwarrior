@@ -595,7 +595,7 @@ int Context::initialize (int argc, const char** argv)
 
   catch (...)
   {
-    error (STRING_UNKNOWN_ERROR);
+    error ("Unknown error. Please report.");
     rc = 3;
   }
 
@@ -708,7 +708,7 @@ int Context::run ()
 
   catch (...)
   {
-    error (STRING_UNKNOWN_ERROR);
+    error ("Unknown error. Please report.");
     rc = 3;
   }
 

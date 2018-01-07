@@ -969,7 +969,7 @@ void CLI2::categorizeArgs ()
                cmd->accepts_miscellaneous ())
     {
       // Error: internally inconsistent.
-      throw std::string (STRING_UNKNOWN_ERROR);
+      throw std::string ("Unknown error. Please report.");
     }
     else if (cmd                             &&
                cmd->accepts_filter ()        &&
@@ -1009,7 +1009,7 @@ void CLI2::categorizeArgs ()
                cmd->accepts_miscellaneous ())
     {
       // Error: internally inconsistent.
-      throw std::string (STRING_UNKNOWN_ERROR);
+      throw std::string ("Unknown error. Please report.");
     }
   }
 
