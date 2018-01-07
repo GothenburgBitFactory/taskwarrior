@@ -704,7 +704,6 @@
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Błąd: "
-#define STRING_UNKNOWN_ERROR         "Nieznany błąd."
 #define STRING_TRIVIAL_INPUT         "Musisz podać polecenie lub zadanie do zmiany."
 #define STRING_ASSUME_INFO           "Nie podano polecenia - zakładam 'information'."
 #define STRING_INFINITE_LOOP         "Podstawienie anulowane ponieważ wykonano więcej niż {1} zmian - zabezpieczenie przed zapętleniem."

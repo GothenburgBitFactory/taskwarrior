@@ -28,7 +28,6 @@
 #include <iostream>
 #include <new>
 #include <cstring>
-#include <i18n.h>
 #include <Context.h>
 
 Context context;
@@ -66,7 +65,7 @@ int main (int argc, const char** argv)
 
     catch (...)
     {
-      std::cerr << STRING_UNKNOWN_ERROR << "\n";
+      std::cerr << "Unknown error. Please report.\n";
       status = -2;
     }
   }
