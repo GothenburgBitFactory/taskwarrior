@@ -67,7 +67,7 @@ static void signal_handler (int s)
 {
   if (s == SIGINT)
   {
-    std::cout << "\n\n" << STRING_ERROR_CONFIRM_SIGINT << '\n';
+    std::cout << "\n\nInterrupted: No changes made.\n";
     exit (1);
   }
 }
