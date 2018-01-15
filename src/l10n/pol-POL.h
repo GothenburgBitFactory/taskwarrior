@@ -582,7 +582,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "Plik konfiguracji nie może zostać znaleziony w {1}\n\nCzy pragniesz utworzenia przykładowego pliku {2} tak aby taskwarrior mógł kontynuować?"
-#define STRING_CONTEXT_NEED_RC       "Nie można kontynuować bez pliku rc."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC nadpisane: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA nadpisane: {1}"
 
