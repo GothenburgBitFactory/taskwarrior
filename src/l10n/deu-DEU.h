@@ -583,7 +583,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "Keine Konfigurationsdatei in {1} gefunden.\n\nMöchten Sie ein Beispiel {2} erstellt haben, sodass taskwarrior fortfahren kann?"
-#define STRING_CONTEXT_NEED_RC       "Kann nicht ohne rc-Datei fortfahren."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC außer Kraft gesetzt durch: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA außer Kraft gesetzt durch: {1}"
 

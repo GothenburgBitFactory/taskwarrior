@@ -585,7 +585,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "O ficheiro de configuração não foi encontrado em {1}\n\nDeseja criar um {2} como exemplo, para que o taskwarrior possa continuar?"
-#define STRING_CONTEXT_NEED_RC       "Não é possível continuar sem um ficheiro rc."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC alternativo em uso: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA alternativo em uso: {1}"
 

@@ -1091,7 +1091,7 @@ void Context::createDefaultConfig ()
   {
     if (config.getBoolean ("confirmation") &&
         ! confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
-      throw std::string (STRING_CONTEXT_NEED_RC);
+      throw std::string ("Cannot proceed without rc file.");
 
     // Override data.location in the defaults.
     auto loc = configurationDefaults.find ("data.location=~/.task");

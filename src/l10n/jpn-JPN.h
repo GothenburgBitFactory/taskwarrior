@@ -585,7 +585,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "設定ファイルが {1} 中で見つけられませんでした。\n\nサンプルの {2} を作って taskwarrior が処理できるようにして良いですか?"
-#define STRING_CONTEXT_NEED_RC       "Cannot proceed without rc file."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC override: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA override: {1}"
 
