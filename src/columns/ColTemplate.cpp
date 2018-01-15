@@ -27,14 +27,13 @@
 #include <cmake.h>
 #include <ColTemplate.h>
 #include <format.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTemplate::ColumnTemplate ()
 {
   _name       = "template";
   _style      = "long";
-  _label      = STRING_COLUMN_LABEL_TEMPLATE;
+  _label      = "Template task";
   _modifiable = false;
   _styles     = {"long", "short"};
   _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};

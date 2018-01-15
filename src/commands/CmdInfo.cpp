@@ -217,7 +217,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("template"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_TEMPLATE);
+      view.set (row, 0, "Template task");
       view.set (row, 1, task.get ("template"));
     }
 
