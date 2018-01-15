@@ -572,7 +572,6 @@
 #define STRING_CMD_BURN_DONE         "Hechas"              // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Pend."               // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "No converge"
-#define STRING_CMD_HELP_USAGE_LABEL  "Uso:"
 #define STRING_CMD_CAL_USAGE         "Muestra un calendario con las tareas fechadas resaltadas"
 #define STRING_CMD_CAL_BAD_MONTH     "El argumento '{1}' no es un mes válido."
 #define STRING_CMD_CAL_BAD_ARG       "No se pudo reconocer el argumento '{1}'."

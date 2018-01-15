@@ -562,7 +562,6 @@
 #define STRING_CMD_BURN_DONE         "Done"             // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "Brak konwergencji" // ?
-#define STRING_CMD_HELP_USAGE_LABEL  "Użycie:"
 #define STRING_CMD_CAL_USAGE         "Wyświetla kalendarz z zadaniami z terminem"
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' nie jest poprawnym miesiącem"
 #define STRING_CMD_CAL_BAD_ARG       "Nie rozpoznany argument '{1}'."

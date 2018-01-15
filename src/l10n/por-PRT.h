@@ -562,8 +562,6 @@
 #define STRING_CMD_BURN_DONE         "Conclu."          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Penden."          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "Não converge"
-#define STRING_CMD_HELP_USAGE_LABEL  "Uso:"
-#define STRING_CMD_HELP_USAGE_DESC   "Executa rc.default.command, se especificado."
 #define STRING_CMD_CAL_USAGE         "Mostra um calendário, com datas de vencimento assinaladas"
 #define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' não é um mês válido."
 #define STRING_CMD_CAL_BAD_ARG       "Não foi possível reconhecer o argumento '{1}'."

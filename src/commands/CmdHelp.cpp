@@ -29,7 +29,6 @@
 #include <algorithm>
 #include <Table.h>
 #include <Context.h>
-#include <i18n.h>
 #include <shared.h>
 #include <format.h>
 #include <util.h>
@@ -191,7 +190,7 @@ std::string CmdHelp::composeUsage () const
 
   // Static first row.
   auto row = view.addRow ();
-  view.set (row, 0, STRING_CMD_HELP_USAGE_LABEL);
+  view.set (row, 0, "Usage:");
   view.set (row, 1, "task");
   view.set (row, 2, "Runs rc.default.command, if specified.");
 
