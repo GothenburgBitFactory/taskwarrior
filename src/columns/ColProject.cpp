@@ -134,7 +134,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
     {
       // If the expression failed because it didn't look like an expression,
       // simply store it as-is.
-      if (e == STRING_EVAL_NOT_EXPRESSION)
+      if (e == "The value is not an expression.")
       {
         task.set (_name, value);
         context.debug (label + _name + " <-- '" + value + '\'');
