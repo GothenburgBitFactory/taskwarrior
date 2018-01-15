@@ -583,7 +583,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "Keine Konfigurationsdatei in {1} gefunden.\n\nMöchten Sie ein Beispiel {2} erstellt haben, sodass taskwarrior fortfahren kann?"
-#define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA außer Kraft gesetzt durch: {1}"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' ist kein gültiges Datum im '{2}'-Format."

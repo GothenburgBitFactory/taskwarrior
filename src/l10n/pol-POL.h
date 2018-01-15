@@ -585,7 +585,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "Plik konfiguracji nie może zostać znaleziony w {1}\n\nCzy pragniesz utworzenia przykładowego pliku {2} tak aby taskwarrior mógł kontynuować?"
-#define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA nadpisane: {1}"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' nie jest poprawną wartością daty w formacie '{2}'."
