@@ -595,7 +595,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "No se pudo encontrar un archivo de configuración en {1}\n\n¿Desearía que se creara un {2} de ejemplo, para que taskwarrior pueda continuar?"
-#define STRING_CONTEXT_RC_OVERRIDE   "TASKRC sobreescrito: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA sobreescrito: {1}"
 
 // Date
