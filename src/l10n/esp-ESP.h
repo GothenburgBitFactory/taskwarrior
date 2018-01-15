@@ -546,9 +546,6 @@
 #define STRING_DEPEND_BLOCKING       "y está bloqueando:"
 #define STRING_DEPEND_FIX_CHAIN      "¿Desea que la cadena de dependencias sea arreglada?"
 
-// DOM
-#define STRING_DOM_UNREC             "DOM: No se pudo obtener el nombre no reconocido '{1}'."
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "No se detectaron modificaciones."
 #define STRING_EDIT_FAILED           "Edición fallida con código de salida {1}."
