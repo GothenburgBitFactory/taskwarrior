@@ -562,7 +562,6 @@
 #define STRING_CMD_BURN_NO_CONVERGE  "Keine Konvergenz"
 #define STRING_CMD_HELP_USAGE_LABEL  "Benutzung:"
 #define STRING_CMD_HELP_USAGE_DESC   "Führt rc.default.command aus, sofern angegeben"
-#define STRING_CMD_HELP_ALIASED      "Alias zu '{1}'"
 #define STRING_CMD_CAL_USAGE         "Zeigt einen Kalender mit hervorgehobenen fälligen Aufgaben"
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' ist kein zulässiger Monat."
 #define STRING_CMD_CAL_BAD_ARG       "Konnte Argument '{1}' nicht erkennen."

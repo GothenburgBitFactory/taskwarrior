@@ -562,7 +562,6 @@
 #define STRING_CMD_BURN_NO_CONVERGE  "Nenia konverĝo"
 #define STRING_CMD_HELP_USAGE_LABEL  "Uzo:"
 #define STRING_CMD_HELP_USAGE_DESC   "Lanĉas rc.default.command, se specifita."
-#define STRING_CMD_HELP_ALIASED      "Alinomo de '{1}'"
 #define STRING_CMD_CAL_USAGE         "Montras kalendaron, kun markoj por datlimitaj taskoj"
 #define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' ne estas valida monato."
 #define STRING_CMD_CAL_BAD_ARG       "Ne povis rekoni argumenton '{1}'."
