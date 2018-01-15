@@ -568,7 +568,7 @@ int Context::initialize (int argc, const char** argv)
       header ("[" + combined + "]");
 
     if (foundAssumed)
-      header (STRING_ASSUME_INFO);
+      header ("No command specified - assuming 'information'.");
 
     ////////////////////////////////////////////////////////////////////////////
     //
