@@ -537,9 +537,6 @@
 #define STRING_DEPEND_BLOCKING       "und blockiert:"
 #define STRING_DEPEND_FIX_CHAIN      "Möchten Sie, dass diese Abhängigkeitskette korrigiert wird?"
 
-// DOM
-#define STRING_DOM_UNREC             "DOM: Unbekannten Namen nicht erkannt '{1}'."
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "Keine Änderungen entdeckt."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."

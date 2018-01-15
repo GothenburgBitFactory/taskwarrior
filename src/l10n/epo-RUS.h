@@ -537,9 +537,6 @@
 #define STRING_DEPEND_BLOCKING       "kaj ĝi blokas:"
 #define STRING_DEPEND_FIX_CHAIN      "Ĉu vi volas, ke la dependeca ĉeno repariĝus?"
 
-// DOM
-#define STRING_DOM_UNREC             "DOM: Ne povis inspekti nekonatan nomon '{1}'."
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "Ne detektis nenian redakton."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
