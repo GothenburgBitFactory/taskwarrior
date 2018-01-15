@@ -559,7 +559,6 @@
 #define STRING_CMD_BURN_DONE         "Done"             // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "Brak konwergencji" // ?
-#define STRING_CMD_HELP_USAGE        "Wyświetla tą pomoc"
 #define STRING_CMD_HELP_USAGE_LABEL  "Użycie:"
 #define STRING_CMD_HELP_USAGE_DESC   "Wykonuje rc.default.command, jeśli podano."
 #define STRING_CMD_HELP_ALIASED      "Alias na '{1}'"

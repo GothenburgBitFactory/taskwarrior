@@ -41,7 +41,7 @@ CmdHelp::CmdHelp ()
 {
   _keyword               = "help";
   _usage                 = "task          help ['usage']";
-  _description           = STRING_CMD_HELP_USAGE;
+  _description           = "Displays this usage help text";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
