@@ -562,7 +562,6 @@
 #define STRING_CMD_BURN_PENDING      "Da fare"          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "No convergenza"
 #define STRING_CMD_HELP_USAGE_LABEL  "Uso:"
-#define STRING_CMD_HELP_USAGE_DESC   "Esegue rc.default.command, se specificato."
 #define STRING_CMD_CAL_USAGE         "Mostra un calendario, con i task da svolgere marcati"
 #define STRING_CMD_CAL_BAD_MONTH     "L'argomento '{1}' non è un mese valido."
 #define STRING_CMD_CAL_BAD_ARG       "Impossibile riconosce l'argomento '{1}'."

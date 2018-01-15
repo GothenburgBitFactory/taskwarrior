@@ -559,7 +559,6 @@
 #define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "No convergence"
 #define STRING_CMD_HELP_USAGE_LABEL  "Usage:"
-#define STRING_CMD_HELP_USAGE_DESC   "Runs rc.default.command, if specified."
 #define STRING_CMD_CAL_USAGE         "Shows a calendar, with due tasks marked"
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' is not a valid month."
 #define STRING_CMD_CAL_BAD_ARG       "Could not recognize argument '{1}'."
