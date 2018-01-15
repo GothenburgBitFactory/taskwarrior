@@ -787,7 +787,6 @@
 #define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Befehl an Ausführung gehindert."
 #define STRING_TASK_SAFETY_ALLOW     "Kein Filter angegeben, und durch den konfigurierten 'allow.empty.filter'-Wert wurde keine Aktion durchgeführt."
-#define STRING_TASK_INVALID_DUR      "Zeitdauer '{1}' nicht unterstützt."
 #define STRING_TASK_INVALID_COL_TYPE "Nicht erkannter Typ '{1}' für Spalte '{2}'"
 
 // TDB2

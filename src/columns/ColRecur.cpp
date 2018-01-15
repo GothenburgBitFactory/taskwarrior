@@ -127,7 +127,7 @@ void ColumnRecur::modify (Task& task, const std::string& value)
     task.set (_name, value);
   }
   else
-    throw format (STRING_TASK_INVALID_DUR, value);
+    throw format ("The duration value '{1}' is not supported.", value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
