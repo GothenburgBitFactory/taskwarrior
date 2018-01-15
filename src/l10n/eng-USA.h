@@ -718,14 +718,6 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."
 
-// util
-#define STRING_UTIL_CONFIRM_YES      "yes"
-#define STRING_UTIL_CONFIRM_YES_U    "Yes"
-#define STRING_UTIL_CONFIRM_NO       "no"
-#define STRING_UTIL_CONFIRM_ALL      "all"
-#define STRING_UTIL_CONFIRM_ALL_U    "All"
-#define STRING_UTIL_CONFIRM_QUIT     "quit"
-
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 

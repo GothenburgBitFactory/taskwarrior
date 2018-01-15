@@ -723,14 +723,6 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "O relatório tem uma largura mínima de {1} e não cabe na largura disponível {2}."
 
-// util
-#define STRING_UTIL_CONFIRM_YES      "sim"
-#define STRING_UTIL_CONFIRM_YES_U    "Sim"
-#define STRING_UTIL_CONFIRM_NO       "não"
-#define STRING_UTIL_CONFIRM_ALL      "todas"
-#define STRING_UTIL_CONFIRM_ALL_U    "Todas"
-#define STRING_UTIL_CONFIRM_QUIT     "Sair"
-
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 

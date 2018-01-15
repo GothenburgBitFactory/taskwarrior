@@ -50,12 +50,17 @@
 #include <pwd.h>
 #include <signal.h>
 #include <sys/select.h>
-
 #include <Lexer.h>
 #include <utf8.h>
 #include <util.h>
 #include <main.h>
-#include <i18n.h>
+
+#define STRING_UTIL_CONFIRM_YES      "yes"
+#define STRING_UTIL_CONFIRM_YES_U    "Yes"
+#define STRING_UTIL_CONFIRM_NO       "no"
+#define STRING_UTIL_CONFIRM_ALL      "all"
+#define STRING_UTIL_CONFIRM_ALL_U    "All"
+#define STRING_UTIL_CONFIRM_QUIT     "quit"
 
 extern Context context;
 

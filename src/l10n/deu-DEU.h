@@ -721,14 +721,6 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "Dieser Report hat eine Mindestbreite von {1} und passt nicht in die Bildschirmbreite von {2}."
 
-// util
-#define STRING_UTIL_CONFIRM_YES      "ja"
-#define STRING_UTIL_CONFIRM_YES_U    "Ja"
-#define STRING_UTIL_CONFIRM_NO       "nein"
-#define STRING_UTIL_CONFIRM_ALL      "alle"
-#define STRING_UTIL_CONFIRM_ALL_U    "Alle"
-#define STRING_UTIL_CONFIRM_QUIT     "abbrechen"
-
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 

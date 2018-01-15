@@ -721,14 +721,6 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "La raporto havas larĝecminimumon {1}, al kio ne konformas la disponebla larĝeco {2}."
 
-// util
-#define STRING_UTIL_CONFIRM_YES      "jes"
-#define STRING_UTIL_CONFIRM_YES_U    "Jes"
-#define STRING_UTIL_CONFIRM_NO       "ne"
-#define STRING_UTIL_CONFIRM_ALL      "ĉia"
-#define STRING_UTIL_CONFIRM_ALL_U    "Ĉia"
-#define STRING_UTIL_CONFIRM_QUIT     "eliru"
-
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 

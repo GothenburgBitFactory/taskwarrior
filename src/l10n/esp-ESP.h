@@ -734,14 +734,6 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
 
-// util
-#define STRING_UTIL_CONFIRM_YES      "sí"
-#define STRING_UTIL_CONFIRM_YES_U    "Sí"
-#define STRING_UTIL_CONFIRM_NO       "no"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_CONFIRM_ALL      "todos"
-#define STRING_UTIL_CONFIRM_ALL_U    "Todos"
-#define STRING_UTIL_CONFIRM_QUIT     "canc"
-
 // Legacy
 #define STRING_LEGACY_PRIORITY       "Encontrado atributo anticuado.  Por favor, cambie '{1}' a '{2}'."
 
