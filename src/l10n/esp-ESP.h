@@ -552,14 +552,6 @@
 // DOM
 #define STRING_DOM_UNREC             "DOM: No se pudo obtener el nombre no reconocido '{1}'."
 
-// Eval
-#define STRING_EVAL_NO_EXPRESSION    "Ninguna expresión para evaluar."
-#define STRING_EVAL_UNSUPPORTED      "Operador no soportado '{1}'."
-#define STRING_EVAL_OP_EXPECTED      "Se esperaba operador."
-#define STRING_EVAL_NO_EVAL          "La expresión podría no ser evaluada."
-#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
-#define STRING_PAREN_MISMATCH        "Paréntesis desemparejados en expresión"
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "No se detectaron modificaciones."
 #define STRING_EDIT_FAILED           "Edición fallida con código de salida {1}."

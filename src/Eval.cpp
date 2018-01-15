@@ -33,7 +33,8 @@
 #include <Color.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
+
+#define STRING_EVAL_NO_EVAL "The expression could not be evaluated."
 
 extern Context context;
 extern Task& contextTask;
@@ -221,7 +222,7 @@ void Eval::evaluatePostfixStack (
   Variant& result) const
 {
   if (tokens.size () == 0)
-    throw std::string (STRING_EVAL_NO_EXPRESSION);
+    throw std::string ("No expression to evaluate.");
 
   // This is stack used by the postfix evaluator.
   std::vector <Variant> values;
@@ -303,7 +304,7 @@ void Eval::evaluatePostfixStack (
       else if (token.first == "_hastag_") result = left.operator_hastag (right, contextTask);
       else if (token.first == "_notag_")  result = left.operator_notag (right, contextTask);
       else
-        throw format (STRING_EVAL_UNSUPPORTED, token.first);
+        throw format ("Unsupported operator '{1}'.", token.first);
 
       values.push_back (result);
 
@@ -333,7 +334,7 @@ void Eval::evaluatePostfixStack (
         break;
 
       case Lexer::Type::op:
-        throw std::string (STRING_EVAL_OP_EXPECTED);
+        throw std::string ("Operator expected.");
         break;
 
       case Lexer::Type::dom:
@@ -388,7 +389,7 @@ void Eval::evaluatePostfixStack (
   // If there is more than one variant left on the stack, then the original
   // expression was not valid.
   if (values.size () != 1)
-    throw std::string (STRING_EVAL_NOT_EXPRESSION);
+    throw std::string ("The value is not an expression.");
 
   result = values[0];
 }
@@ -796,7 +797,7 @@ void Eval::infixToPostfix (
   {
     if (op_stack.back ().first == "(" ||
         op_stack.back ().first == ")")
-      throw std::string (STRING_PAREN_MISMATCH);
+      throw std::string ("Mismatched parentheses in expression");
 
     postfix.push_back (op_stack.back ());
     op_stack.pop_back ();

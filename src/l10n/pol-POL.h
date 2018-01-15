@@ -542,14 +542,6 @@
 // DOM
 #define STRING_DOM_UNREC             "DOM: Nie mogę pobrać nierozpoznanej nazwy '{1}'."
 
-// Eval
-#define STRING_EVAL_NO_EXPRESSION    "Brak wyrażenia do przetworzenia."
-#define STRING_EVAL_UNSUPPORTED      "Niewspierany operator '{1}'."
-#define STRING_EVAL_OP_EXPECTED      "Oczekiwany operator."
-#define STRING_EVAL_NO_EVAL          "Wyrażenie nie może być przetworzone."
-#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
-#define STRING_PAREN_MISMATCH        "Niedopasowane nawiasy w wyrażeniu"
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "Nie znaleziono żadnych edycji."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."

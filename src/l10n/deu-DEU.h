@@ -540,14 +540,6 @@
 // DOM
 #define STRING_DOM_UNREC             "DOM: Unbekannten Namen nicht erkannt '{1}'."
 
-// Eval
-#define STRING_EVAL_NO_EXPRESSION    "Kein Ausdruck auszuwerten."
-#define STRING_EVAL_UNSUPPORTED      "Nicht unterstützter Operator: '{1}'."
-#define STRING_EVAL_OP_EXPECTED      "Operator erwartet."
-#define STRING_EVAL_NO_EVAL          "Der Ausdruck konnte nicht ausgewertet werden."
-#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
-#define STRING_PAREN_MISMATCH        "Ungültige Klammerung in Ausdruck."
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "Keine Änderungen entdeckt."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."

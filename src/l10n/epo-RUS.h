@@ -540,14 +540,6 @@
 // DOM
 #define STRING_DOM_UNREC             "DOM: Ne povis inspekti nekonatan nomon '{1}'."
 
-// Eval
-#define STRING_EVAL_NO_EXPRESSION    "Nenia esprimo por kalkuli."
-#define STRING_EVAL_UNSUPPORTED      "Ne subtenas infikson '{1}'."
-#define STRING_EVAL_OP_EXPECTED      "Anticipis infikson."
-#define STRING_EVAL_NO_EVAL          "Ne povis kalkuli la esprimon."
-#define STRING_EVAL_NOT_EXPRESSION   "The value is not an expression."
-#define STRING_PAREN_MISMATCH        "Malbalancataj parentezoj en esprimo"
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "Ne detektis nenian redakton."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
