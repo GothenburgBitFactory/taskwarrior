@@ -587,7 +587,6 @@
 #define STRING_CONFIG_READ_INCLUDE   "No se pudo leer el archivo include '{1}'."
 #define STRING_CONFIG_INCLUDE_PATH   "Sólo se pueden incluir archivos con paths absolutos, no '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Formato incorrecto en entrada '{1}' en archivo de configuración."
-#define STRING_CONFIG_BAD_WRITE      "No se pudo escribir a '{1}'."
 #define STRING_CONFIG_DEPRECATED_COL "Su archivo .taskrc contiene informes con columnas en desuso. Por favor, consulte entry_time, start_time o end_time en:"
 #define STRING_CONFIG_DEPRECATED_VAR "Su archivo .taskrc contiene variables que están en desuso:"
 
