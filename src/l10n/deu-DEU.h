@@ -736,18 +736,6 @@
 #define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
 #define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
 
-// Hooks
-#define STRING_HOOK_ERROR_OBJECT     "Hook Error: JSON Object '{...}' expected from hook script: {1}"
-#define STRING_HOOK_ERROR_NODESC     "Hook Error: JSON Object missing 'description' attribute from hook script: {1}"
-#define STRING_HOOK_ERROR_NOUUID     "Hook Error: JSON Object missing 'uuid' attribute from hook script: {1}"
-#define STRING_HOOK_ERROR_SYNTAX     "Hook Error: JSON syntax error in: {1}"
-#define STRING_HOOK_ERROR_JSON       "Hook Error: JSON "
-#define STRING_HOOK_ERROR_NOPARSE    "Hook Error: JSON failed to parse: "
-#define STRING_HOOK_ERROR_BAD_NUM    "Hook Error: Expected {1} JSON task(s), found {2}, in hook script: {3}"
-#define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON must be for the same task: {1}, in hook script: {2}"
-#define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON must be for the same task: {1} != {2}, in hook script: {3}"
-#define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: Expected feedback from failing hook script: {1}"
-
 // Record
 #define STRING_RECORD_EMPTY          "Leerer Datensatz in der Eingabe."
 #define STRING_RECORD_JUNK_AT_EOL    "Unerkannte Zeichen am Ende der Eingabe."
