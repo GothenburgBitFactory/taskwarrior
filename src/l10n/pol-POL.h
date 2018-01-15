@@ -157,7 +157,6 @@
 #define STRING_COLUMN_LABEL_VALUE    "Wartość"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
-#define STRING_COLUMN_LABEL_PARENT   "Zadanie rodzic"
 #define STRING_COLUMN_LABEL_TEMPLATE "Template task"
 #define STRING_COLUMN_LABEL_DATE     "Data"
 #define STRING_COLUMN_LABEL_COLUMN   "Kolumny"

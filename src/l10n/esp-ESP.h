@@ -158,7 +158,6 @@
 #define STRING_COLUMN_LABEL_VALUE    "Valor"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
-#define STRING_COLUMN_LABEL_PARENT   "Tarea madre"
 #define STRING_COLUMN_LABEL_TEMPLATE "Template task"
 #define STRING_COLUMN_LABEL_DATE     "Fecha"
 #define STRING_COLUMN_LABEL_COLUMN   "Columnas"

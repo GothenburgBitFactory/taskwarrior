@@ -191,7 +191,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("parent"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_PARENT);
+      view.set (row, 0, "Parent task");
       view.set (row, 1, task.get ("parent"));
     }
 
