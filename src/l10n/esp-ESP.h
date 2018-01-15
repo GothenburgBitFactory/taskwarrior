@@ -590,9 +590,6 @@
 #define STRING_CONFIG_DEPRECATED_COL "Su archivo .taskrc contiene informes con columnas en desuso. Por favor, consulte entry_time, start_time o end_time en:"
 #define STRING_CONFIG_DEPRECATED_VAR "Su archivo .taskrc contiene variables que están en desuso:"
 
-// Context
-#define STRING_CONTEXT_CREATE_RC     "No se pudo encontrar un archivo de configuración en {1}\n\n¿Desearía que se creara un {2} de ejemplo, para que taskwarrior pueda continuar?"
-
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' no es una fecha válida según el formato '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "La variable de configuración 'weekstart' solamente puede contener 'Sunday' (domingo) o 'Monday' (lunes)."

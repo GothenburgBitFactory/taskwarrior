@@ -43,7 +43,6 @@
 #include <shared.h>
 #include <format.h>
 #include <main.h>
-#include <i18n.h>
 
 #ifdef HAVE_COMMIT
 #include <commit.h>
@@ -1090,7 +1089,7 @@ void Context::createDefaultConfig ()
   if (rc_file._data != "" && ! rc_file.exists ())
   {
     if (config.getBoolean ("confirmation") &&
-        ! confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
+        ! confirm ( format ("A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so Taskwarrior can proceed?", home_dir, rc_file._data)))
       throw std::string ("Cannot proceed without rc file.");
 
     // Override data.location in the defaults.
