@@ -723,7 +723,4 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "Raport ma minimalną szerokość {1} i nie mieści się w dostępnej przestrzeni {2}."
 
-// Legacy
-#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
-
 #endif
