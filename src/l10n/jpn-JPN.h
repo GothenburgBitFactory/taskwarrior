@@ -725,7 +725,4 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."
 
-// Legacy
-#define STRING_LEGACY_PRIORITY       "古い属性が見つかった。'{1}' を '{2}' に変更してください。"
-
 #endif

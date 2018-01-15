@@ -31,6 +31,8 @@
 #include <format.h>
 #include <i18n.h>
 
+#define STRING_LEGACY_PRIORITY "Legacy attribute found.  Please change '{1}' to '{2}'."
+
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////

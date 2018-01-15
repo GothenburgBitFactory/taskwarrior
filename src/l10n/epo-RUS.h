@@ -723,7 +723,4 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "La raporto havas larĝecminimumon {1}, al kio ne konformas la disponebla larĝeco {2}."
 
-// Legacy
-#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
-
 #endif

@@ -723,7 +723,4 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "Dieser Report hat eine Mindestbreite von {1} und passt nicht in die Bildschirmbreite von {2}."
 
-// Legacy
-#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
-
 #endif

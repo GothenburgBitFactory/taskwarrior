@@ -736,7 +736,4 @@
 // View
 #define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
 
-// Legacy
-#define STRING_LEGACY_PRIORITY       "Encontrado atributo anticuado.  Por favor, cambie '{1}' a '{2}'."
-
 #endif
