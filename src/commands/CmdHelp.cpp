@@ -193,7 +193,7 @@ std::string CmdHelp::composeUsage () const
   auto row = view.addRow ();
   view.set (row, 0, STRING_CMD_HELP_USAGE_LABEL);
   view.set (row, 1, "task");
-  view.set (row, 2, STRING_CMD_HELP_USAGE_DESC);
+  view.set (row, 2, "Runs rc.default.command, if specified.");
 
   // Obsolete method of getting a list of all commands.
   std::vector <std::string> all;

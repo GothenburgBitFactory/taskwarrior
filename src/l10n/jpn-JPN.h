@@ -560,7 +560,6 @@
 #define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "No convergence"
 #define STRING_CMD_HELP_USAGE_LABEL  "使用法:"
-#define STRING_CMD_HELP_USAGE_DESC   "もしも指定されていれば rc.default.command を実行します。"
 #define STRING_CMD_CAL_USAGE         "Shows a calendar, with due tasks marked"
 #define STRING_CMD_CAL_BAD_MONTH     "引数 '{1}' は正しい月ではありません。"
 #define STRING_CMD_CAL_BAD_ARG       "引数'{1}' を認識できません。"
