@@ -31,7 +31,6 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 extern Task& contextTask;
@@ -76,7 +75,7 @@ void ColumnTypeDuration::modify (Task& task, const std::string& value)
     task.set (_name, evaluatedValue);
   }
   else
-    throw format (STRING_TASK_INVALID_DUR, value);
+    throw format ("The duration value '{1}' is not supported.", value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
