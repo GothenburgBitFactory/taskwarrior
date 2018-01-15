@@ -155,7 +155,6 @@
 #define STRING_COLUMN_LABEL_URGENCY  "Urgence"
 #define STRING_COLUMN_LABEL_NAME     "Nom"
 #define STRING_COLUMN_LABEL_VALUE    "Valeur"
-#define STRING_COLUMN_LABEL_PARENT   "Tâche mère"
 #define STRING_COLUMN_LABEL_DATE     "Date"
 #define STRING_COLUMN_LABEL_COLUMN   "Colonnes"
 #define STRING_COLUMN_LABEL_STYLES   "Formats supportés"

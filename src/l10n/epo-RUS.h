@@ -155,7 +155,6 @@
 #define STRING_COLUMN_LABEL_URGENCY  "Urĝeco"
 #define STRING_COLUMN_LABEL_NAME     "Nomo"
 #define STRING_COLUMN_LABEL_VALUE    "Valoro"
-#define STRING_COLUMN_LABEL_PARENT   "Patra tasko"
 #define STRING_COLUMN_LABEL_DATE     "Dato"
 #define STRING_COLUMN_LABEL_COLUMN   "Kolumnoj"
 #define STRING_COLUMN_LABEL_STYLES   "Formaĝoj Subtenataj"
