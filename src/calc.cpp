@@ -36,7 +36,6 @@
 #include <Duration.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 
 Context context;
 
@@ -90,13 +89,13 @@ int main (int argc, char** argv)
       else if (!strcmp (argv[i], "-v") || !strcmp (argv[i], "--version"))
       {
         std::cout << '\n'
-                  << format (STRING_CMD_VERSION_BUILT, "calc", VERSION)
+                  << format ("calc {2} built for ", VERSION)
                   << osName ()
                   << '\n'
-                  << STRING_CMD_VERSION_COPY
+                  << "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
                   << '\n'
                   << '\n'
-                  << STRING_CMD_VERSION_MIT
+                  << "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit."
                   << '\n'
                   << '\n';
 

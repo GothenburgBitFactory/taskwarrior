@@ -64,7 +64,7 @@ int CmdVersion::execute (std::string& output)
   Table disclaimer;
   disclaimer.width (width);
   disclaimer.add ("");
-  disclaimer.set (disclaimer.addRow (), 0, STRING_CMD_VERSION_MIT);
+  disclaimer.set (disclaimer.addRow (), 0, "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit.");
 
   // Create a table for the URL.
   Table link;
@@ -77,7 +77,7 @@ int CmdVersion::execute (std::string& output)
     bold = Color ("bold");
 
   out << '\n'
-      << format (STRING_CMD_VERSION_BUILT, bold.colorize (PACKAGE), bold.colorize (VERSION))
+      << format ("{1} {2} built for ", bold.colorize (PACKAGE), bold.colorize (VERSION))
 
 #if defined (DARWIN)
       << "darwin"
@@ -109,7 +109,7 @@ int CmdVersion::execute (std::string& output)
 #endif
 
       << '\n'
-      << STRING_CMD_VERSION_COPY
+      << "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
       << '\n'
       << '\n'
       << disclaimer.render ()
