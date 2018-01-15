@@ -560,7 +560,6 @@
 #define STRING_CMD_BURN_DONE         "Finis"         // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Pendas"        // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "Nenia konverĝo"
-#define STRING_CMD_HELP_USAGE        "Montras ĉi tiun helpantan tekston"
 #define STRING_CMD_HELP_USAGE_LABEL  "Uzo:"
 #define STRING_CMD_HELP_USAGE_DESC   "Lanĉas rc.default.command, se specifita."
 #define STRING_CMD_HELP_ALIASED      "Alinomo de '{1}'"

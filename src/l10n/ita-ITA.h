@@ -561,7 +561,6 @@
 #define STRING_CMD_BURN_DONE         "Chiuso"             // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Da fare"          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "No convergenza"
-#define STRING_CMD_HELP_USAGE        "Mostra questo testo di aiuto"
 #define STRING_CMD_HELP_USAGE_LABEL  "Uso:"
 #define STRING_CMD_HELP_USAGE_DESC   "Esegue rc.default.command, se specificato."
 #define STRING_CMD_HELP_ALIASED      "Sinonimo: '{1}'"

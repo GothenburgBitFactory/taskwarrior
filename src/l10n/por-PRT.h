@@ -562,7 +562,6 @@
 #define STRING_CMD_BURN_DONE         "Conclu."          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Penden."          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "Não converge"
-#define STRING_CMD_HELP_USAGE        "Mostra este texto de ajuda"
 #define STRING_CMD_HELP_USAGE_LABEL  "Uso:"
 #define STRING_CMD_HELP_USAGE_DESC   "Executa rc.default.command, se especificado."
 #define STRING_CMD_HELP_ALIASED      "'Alias'ado para '{1}'"
