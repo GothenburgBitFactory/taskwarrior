@@ -581,9 +581,6 @@
 #define STRING_CONFIG_DEPRECATED_COL "Via dosiero .taskrc enhavas raportojn kun arkaikaj kolumnoj.  Bonvolu serĉi entry_time, start_time, aŭ end_time ĉe:"
 #define STRING_CONFIG_DEPRECATED_VAR "Via dosiero .taskrc enhavas arkaikajn variablojn:"
 
-// Context
-#define STRING_CONTEXT_CREATE_RC     "Ne povis trovi agordan dosieron ĉe {1}\n\nĈu vi volas, ke ekzemplero {2} kreiĝus por permesi vin procedi?"
-
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' ne estas valida dato laŭ stilo '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "Argorda variablo 'weekstart' devas esti 'Sunday' aŭ 'Monday'."

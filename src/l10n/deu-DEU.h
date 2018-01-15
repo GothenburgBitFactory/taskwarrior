@@ -581,9 +581,6 @@
 #define STRING_CONFIG_DEPRECATED_COL "Ihre .taskrc-Datei enthält Repots mit veralteten Spalten.  Bitte entfernen Sie entry_time, start_time oder end_time in:"
 #define STRING_CONFIG_DEPRECATED_VAR "Ihre .taskrc-Datei enthält veraltete Optionen:"
 
-// Context
-#define STRING_CONTEXT_CREATE_RC     "Keine Konfigurationsdatei in {1} gefunden.\n\nMöchten Sie ein Beispiel {2} erstellt haben, sodass taskwarrior fortfahren kann?"
-
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' ist kein gültiges Datum im '{2}'-Format."
 #define STRING_DATE_BAD_WEEKSTART    "Die 'weekstart'-Konfigurationsoption darf nur 'Sunday' oder 'Monday' lauten."
