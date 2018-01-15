@@ -603,7 +603,6 @@
 #define STRING_DATE_NOVEMBER         "novembre"
 #define STRING_DATE_DECEMBER         "decembre"
 
-#define STRING_DATE_SUNDAY           "domenica"
 #define STRING_DATE_MONDAY           "lunedì"
 #define STRING_DATE_TUESDAY          "martedì"
 #define STRING_DATE_WEDNESDAY        "mercoledì"

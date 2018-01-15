@@ -121,9 +121,7 @@ std::string configurationDefaults =
   "dateformat.report=                             # Preferred display date format for reports\n"
   "dateformat.annotation=                         # Preferred display date format for annotations\n"
   "date.iso=1                                     # Enable ISO date support\n"
-  "weekstart="
-             STRING_DATE_SUNDAY
-                  "                               # Sunday or Monday only\n"
+  "weekstart=sunday                               # Sunday or Monday only\n"
   "displayweeknumber=1                            # Show week numbers on calendar\n"
   "due=7                                          # Task is considered due in 7 days\n"
   "\n"
