@@ -745,18 +745,6 @@
 #define STRING_HELPER_PROJECT_REM    "({1} de {2} tareas restantes)."
 #define STRING_HELPER_PROJECT_REM1   "({1} tarea restante)."
 
-// Hooks
-#define STRING_HOOK_ERROR_OBJECT     "Hook Error: se esperaba 0bjeto JSON '{...}' hook script: {1}"
-#define STRING_HOOK_ERROR_NODESC     "Hook Error: falta atributo 'description' en objeto JSON hook script: {1}."
-#define STRING_HOOK_ERROR_NOUUID     "Hook Error: falta atributo 'uuid' en objeto JSON hook script: {1}."
-#define STRING_HOOK_ERROR_SYNTAX     "Hook Error: error de sintaxis JSON en: {1}"
-#define STRING_HOOK_ERROR_JSON       "Hook Error: JSON "  // |esp-ESP|==|eng-USA|
-#define STRING_HOOK_ERROR_NOPARSE    "Hook Error: fallo al interpretar JSON: "
-#define STRING_HOOK_ERROR_BAD_NUM    "Hook Error: se esperaba {1} tarea(s) JSON, se encontraron {2}, hook script: {3}"
-#define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON debe ser para la misma tarea: {1}, hook script: {2}"
-#define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON debe ser para la misma tarea: {1} != {2}, hook script: {3}"
-#define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: se esperaba retro-alimentación desde un hook script que falló: {1}"
-
 // Record
 #define STRING_RECORD_EMPTY          "Registro vacío en la entrada."
 #define STRING_RECORD_JUNK_AT_EOL    "Caracteres no reconocidos al final de línea."
