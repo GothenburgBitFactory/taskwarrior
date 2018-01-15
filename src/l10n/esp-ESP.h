@@ -199,12 +199,9 @@
 #define STRING_CMD_CONFLICT          "informe personalizado '{1}' en conflicto con comando interno de taskwarrior."
 #define STRING_CMD_VERSION_USAGE     "Muestra el número de versión de taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Muestra el número de versión (solamente) de taskwarrior"
-#define STRING_CMD_VERSION_MIT       "Taskwarrior solamente se puede copiar bajo los términos de la licencia MIT, que se pueden encontrar en el conjunto de código fuente de taskwarrior."
 
 #define STRING_CMD_VERSION_DOCS      "La documentación de Taskwarrior se puede consultar usando 'man task', 'man taskrc', 'man task-color', y 'man task-sync' o en http://taskwarrior.org."
-#define STRING_CMD_VERSION_BUILT     "{1} {2} construido para "
 #define STRING_CMD_VERSION_UNKNOWN   "desconocido"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_LOGO_USAGE        "Muestra el logo de Taskwarrior"
 #define STRING_CMD_LOGO_COLOR_REQ    "El comando logo requiere que el soporte de color esté habilitado."
 #define STRING_CMD_EXEC_USAGE        "Ejecuta comandos y scripts externos"
