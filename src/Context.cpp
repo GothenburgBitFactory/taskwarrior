@@ -450,7 +450,7 @@ int Context::initialize (int argc, const char** argv)
     if (override)
     {
       rc_file = File (override);
-      header (format (STRING_CONTEXT_RC_OVERRIDE, rc_file._data));
+      header (format ("TASKRC override: {1}", rc_file._data));
     }
 
     // Artificial scope for timing purposes.

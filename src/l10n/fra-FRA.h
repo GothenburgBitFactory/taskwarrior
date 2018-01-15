@@ -582,7 +582,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so taskwarrior can proceed?"
-#define STRING_CONTEXT_RC_OVERRIDE   "TASKRC override: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA override: {1}"
 
 // Date
