@@ -605,7 +605,6 @@
 #define STRING_DATE_NOVEMBER         "novembro"
 #define STRING_DATE_DECEMBER         "decembro"
 
-#define STRING_DATE_SUNDAY           "dimanĉo"
 #define STRING_DATE_MONDAY           "lundo"
 #define STRING_DATE_TUESDAY          "mardo"
 #define STRING_DATE_WEDNESDAY        "merkredo"

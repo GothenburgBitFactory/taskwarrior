@@ -607,7 +607,6 @@
 #define STRING_DATE_NOVEMBER         "listopad"
 #define STRING_DATE_DECEMBER         "grudzień"
 
-#define STRING_DATE_SUNDAY           "niedziela"
 #define STRING_DATE_MONDAY           "poniedziałek"
 #define STRING_DATE_TUESDAY          "wtorek"
 #define STRING_DATE_WEDNESDAY        "środa"
