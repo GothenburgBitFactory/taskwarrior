@@ -1,4 +1,4 @@
-2018////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2006 - 2018, Paul Beckingham, Federico Hernandez.
 //
@@ -21,71 +21,6 @@
 // SOFTWARE.
 //
 // http://www.opensource.org/licenses/mit-license.php
-//
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// This file contains all the strings that should be localized.  If a string is
-// *not* in this file, then either:
-//   (a) it should not be localized, or
-//   (b) you have found a bug - please report it
-//
-// Strings that should be localized:
-//   - text output that the user sees
-//
-// Strings that should NOT be localized:
-//   - .taskrc configuration variable names
-//   - command names
-//   - extension function names
-//   - certain literals associated with parsing
-//   - debug strings
-//   - attribute names
-//   - modifier names
-//   - logical operators (and, or, xor)
-//
-// Rules:
-//   - Localized strings should not in general  contain leading or trailing
-//     white space, including \n, thus allowing the code to compose strings.
-//   - Retain the tense of the original string.
-//   - Retain the same degree of verbosity of the original string.
-//
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// Translators:
-//   1. Copy this file (eng-USA.h) to a new file with the target locale as the
-//      file name.  Using German as an example, do this:
-//
-//        cp eng-USA.h deu-DEU.h
-//
-//   2. Modify all the strings below.
-//        i.e. change "Unknown error." to "Unbekannter Fehler.".
-//
-//   3. Add your new translation to the task.git/src/i18n.h file, if necessary,
-//      by inserting:
-//
-//        #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
-//        #include <deu-DEU.h>
-//
-//   4. Add your new language to task.git/CMakeLists.txt, making sure that
-//      number is unique:
-//
-//        set (LANGUAGE_DEU_DEU 3)
-//
-//   5. Add your new language to task.git/cmake.h.in:
-//
-//        #define LANGUAGE_DEU_DEU ${LANGUAGE_DEU_DEU}
-//
-//   6. Build your localized Taskwarrior with these commands:
-//
-//      cd task.git
-//      cmake -D LANGUAGE=3 .
-//      make
-//
-//   7. Submit your translation to support@taskwarrior.org, where it will be
-//      shared with others.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
