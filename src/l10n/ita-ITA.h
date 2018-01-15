@@ -698,7 +698,6 @@
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Errore: "
 #define STRING_TRIVIAL_INPUT         "Specificare un comando o un task da modificare"
-#define STRING_ASSUME_INFO           "Nessun comando specificato - si assume 'information'."
 #define STRING_INFINITE_LOOP         "Sostituzione terminata poiché più di {1} modifiche sono state fatte - protezione da ciclo infinito"
 #define STRING_UDA_TYPE              "Gli User defined attribute possono solo essere di tipo 'string', 'date', 'duration' o 'numeric'."
 #define STRING_UDA_COLLISION         "L'UDA '{1}' ha lo stesso nome di un attributo di sistema, e ciò non è permesso."

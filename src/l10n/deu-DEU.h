@@ -697,7 +697,6 @@
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Fehler: "
 #define STRING_TRIVIAL_INPUT         "Sie müssen einen Befehl oder eine Aufgabe zum ändern angeben."
-#define STRING_ASSUME_INFO           "Kein Befehl angegeben - nehme 'information' an."
 #define STRING_INFINITE_LOOP         "Beende Ersetzung, weil mehr als {1} Änderungen durchgeführt wurden - Schutz vor Endlosschleifen."
 #define STRING_UDA_TYPE              "UDAs müssen vom Typ 'string', 'date', 'duration' oder 'numeric' sein."
 #define STRING_UDA_COLLISION         "Das UDA '{1}' hat den selben Namen wie eine eingebaute Eigenschaft, und ist daher nicht erlaubt."
