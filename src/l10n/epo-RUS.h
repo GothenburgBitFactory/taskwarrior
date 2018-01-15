@@ -580,7 +580,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "Ne povis trovi agordan dosieron ĉe {1}\n\nĈu vi volas, ke ekzemplero {2} kreiĝus por permesi vin procedi?"
-#define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA-superrego: {1}"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' ne estas valida dato laŭ stilo '{2}'."

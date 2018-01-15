@@ -582,7 +582,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "O ficheiro de configuração não foi encontrado em {1}\n\nDeseja criar um {2} como exemplo, para que o taskwarrior possa continuar?"
-#define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA alternativo em uso: {1}"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' não é uma data válida no formato '{2}'."

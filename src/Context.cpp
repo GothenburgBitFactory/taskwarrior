@@ -481,7 +481,7 @@ int Context::initialize (int argc, const char** argv)
     {
       data_dir = Directory (override);
       config.set ("data.location", data_dir._data);
-      header (format (STRING_CONTEXT_DATA_OVERRIDE, data_dir._data));
+      header (format ("TASKDATA override: {1}", data_dir._data));
     }
 
     tdb2.set_location (data_dir);

@@ -578,7 +578,6 @@
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so Taskwarrior can proceed?"
-#define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA override: {1}"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' is not a valid date in the '{2}' format."
