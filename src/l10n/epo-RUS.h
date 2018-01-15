@@ -706,7 +706,6 @@
 #define STRING_UDA_TYPE              "La tipo de uzanto-definitaj atributoj devas esti 'string', 'date', 'duration', aŭ 'numeric'."
 #define STRING_UDA_COLLISION         "UDA '{1}' kaj enkonstruita atributo havas la saman nomon.  Tio estas malpermesita."
 #define STRING_INVALID_MOD           "Atributo '{1}' ne permesas valoron '{2}'."
-#define STRING_INVALID_SORT_COL      "Kolumno '{1}' ne estas valida kampo por ordigi."
 #define STRING_ERROR_DETAILS         "Agordo 'calendar.details.report' devas enhavi sole unu raportnomon."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
