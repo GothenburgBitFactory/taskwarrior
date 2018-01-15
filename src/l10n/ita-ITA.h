@@ -579,7 +579,6 @@
 #define STRING_CONFIG_READ_INCLUDE   "Impossibile leggere il file di inclusione '{1}'."
 #define STRING_CONFIG_INCLUDE_PATH   "E` possibile includere solo file con percorso assoluto, non '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Voce malformata '{1}' nel file di configurazione."
-#define STRING_CONFIG_BAD_WRITE      "Impossibile scrivere su'{1}'."
 #define STRING_CONFIG_DEPRECATED_COL "Il file .taskrc contiene report con nomi di colonna deprecati. Verificare entry_time, start_time o end_time in:"
 #define STRING_CONFIG_DEPRECATED_VAR "Il file .taskrc contiene variabili deprecate:"
 

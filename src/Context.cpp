@@ -1125,7 +1125,7 @@ void Context::createDefaultConfig ()
 
     // Write out the new file.
     if (! File::write (rc_file._data, contents.str ()))
-      throw format (STRING_CONFIG_BAD_WRITE, rc_file._data);
+      throw format ("Could not write to '{1}'.", rc_file._data);
   }
 
   // Create data location, if necessary.
