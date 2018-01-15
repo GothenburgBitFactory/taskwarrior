@@ -705,7 +705,6 @@
 #define STRING_UDA_TYPE              "Atrybuty definiowane przez użytkownika mogą być typu 'string', 'date', 'duration' lub 'numeric'."
 #define STRING_UDA_COLLISION         "Nazwa UDA '{1}' jest jedną z nazw atrybutów podstawowych i dlatego jest niedozwolona."
 #define STRING_INVALID_MOD           "Atrybut '{1}' nie zezwala na wartość '{2}'."
-#define STRING_INVALID_SORT_COL      "Kolumna '{1}' nie jest poprawnym parametrem sortowania."
 #define STRING_ERROR_DETAILS         "Zmienna 'calendar.details.report' musi zawierać nazwę raportu."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."

@@ -34,7 +34,6 @@
 #include <Task.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -273,7 +272,7 @@ static bool sort_compare (int left, int right)
       }
     }
     else
-      throw format (STRING_INVALID_SORT_COL, field);
+      throw format ("The '{1}' column is not a valid sort field.", field);
   }
 
   return false;

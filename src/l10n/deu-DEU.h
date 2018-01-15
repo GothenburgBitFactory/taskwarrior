@@ -703,7 +703,6 @@
 #define STRING_UDA_TYPE              "UDAs müssen vom Typ 'string', 'date', 'duration' oder 'numeric' sein."
 #define STRING_UDA_COLLISION         "Das UDA '{1}' hat den selben Namen wie eine eingebaute Eigenschaft, und ist daher nicht erlaubt."
 #define STRING_INVALID_MOD           "Die '{1}'-Eigenschaft erlaubt keinen Wert '{2}'."
-#define STRING_INVALID_SORT_COL      "Nach Spalte '{1}' kann nicht sortiert weden."
 #define STRING_ERROR_DETAILS         "Die Option 'calendar.details.report' muss einen einzelnen Report-Namen enthalten."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."

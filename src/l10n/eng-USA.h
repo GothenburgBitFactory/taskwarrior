@@ -701,7 +701,6 @@
 #define STRING_UDA_TYPE              "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'."
 #define STRING_UDA_COLLISION         "The UDA named '{1}' is the same as a core attribute, and is not permitted."
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
-#define STRING_INVALID_SORT_COL      "The '{1}' column is not a valid sort field."
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
