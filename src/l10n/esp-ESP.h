@@ -699,7 +699,6 @@
 #define STRING_TASK_VALID_BLANK      "No se puede añadir una tarea que está en blanco."
 #define STRING_TASK_VALID_BEFORE     "Advertencia: ha especificado que la fecha '{1}' es después de la fecha '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Una tarea recurrente debe tener también una fecha de vencimiento."
-#define STRING_TASK_VALID_RECUR      "El valor de recurrencia '{1}' no es válido."
 #define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Se impidió la ejecución del comando."
 #define STRING_TASK_SAFETY_ALLOW     "No especificó un filtro, y con el valor de 'allow.empty.filter', no se toma ninguna acción."

@@ -368,7 +368,7 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
   std::string::size_type idx = 0;
   Duration p;
   if (! p.parse (period, idx))
-    throw std::string (format (STRING_TASK_VALID_RECUR, period));
+    throw std::string (format ("The recurrence value '{1}' is not valid.", period));
 
   return current + p.toTime_t ();
 }

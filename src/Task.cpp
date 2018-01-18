@@ -1646,7 +1646,8 @@ void Task::validate (bool applyDefault /* = true */)
       Duration p;
       std::string::size_type i = 0;
       if (! p.parse (value, i))
-        throw format (STRING_TASK_VALID_RECUR, value);
+        // TODO Ideal location to map unsupported old recurrence periods to supported values.
+        throw format ("The recurrence value '{1}' is not valid.", value);
     }
   }
 }
