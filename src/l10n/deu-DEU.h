@@ -689,7 +689,6 @@
 #define STRING_TASK_VALID_BLANK      "Leere Aufgaben können nicht angelegt werden."
 #define STRING_TASK_VALID_BEFORE     "Warnung: Das '{1}'-Datum ist nach dem '{2}'-Datum."
 #define STRING_TASK_VALID_REC_DUE    "Wiederholende Aufgaben müssen eine Fälligkeit besitzen."
-#define STRING_TASK_VALID_RECUR      "Wiederhol-Periode '{1}' ist ungültig."
 #define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Befehl an Ausführung gehindert."
 #define STRING_TASK_SAFETY_ALLOW     "Kein Filter angegeben, und durch den konfigurierten 'allow.empty.filter'-Wert wurde keine Aktion durchgeführt."

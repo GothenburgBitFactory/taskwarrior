@@ -689,7 +689,6 @@
 #define STRING_TASK_VALID_BLANK      "Ne povas krei blankan taskon."
 #define STRING_TASK_VALID_BEFORE     "Averto: Vi specifis daton '{1}' post dato '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Reokazanta tasko devas ankaŭ havi daton 'due'."
-#define STRING_TASK_VALID_RECUR      "Reokaz-valoro '{1}' ne estas valida."
 #define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Antaŭmalebligis komandon."
 #define STRING_TASK_SAFETY_ALLOW     "Vi ne specifis filtrilon. Laŭ la valoro 'allow.empty.filter', ne faros nenion."
