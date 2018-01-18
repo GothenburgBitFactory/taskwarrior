@@ -156,7 +156,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Zeigt die UUIDs passender Aufgaben als kommaseparierte Liste"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Zeigt die UUIDs passender Aufgaben als Liste"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Zeigt die UUIDs und Beschreibungen passender Aufgaben"
-#define STRING_CMD_EXPORT_USAGE      "Exportiert Aufgaben im JSON-Format"
 #define STRING_CMD_INFO_USAGE        "Zeigt alle Daten und Metadaten"
 #define STRING_CMD_INFO_BLOCKED      "Aufgabe blockiert durch"
 #define STRING_CMD_INFO_BLOCKING     "Aufgabe blockiert"

@@ -155,7 +155,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Muestra los UUIDs de las tareas coincidentes, como una lista separada por comas"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Muestra los UUIDs de las tareas coincidentes, como una lista"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Muestra los UUIDs y descripciones de las tareas coincidentes"
-#define STRING_CMD_EXPORT_USAGE      "Exporta tareas en formato JSON"
 // metadatos: RAE 3ªed
 #define STRING_CMD_INFO_USAGE        "Muestra todos los datos y metadatos"
 #define STRING_CMD_INFO_BLOCKED      "Esta tarea está bloqueada por"

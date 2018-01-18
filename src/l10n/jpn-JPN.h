@@ -156,7 +156,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Shows the UUIDs of matching tasks, as a comma-separated list"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Shows the UUIDs of matching tasks, as a list"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Shows the UUIDs and descriptions of matching tasks"
-#define STRING_CMD_EXPORT_USAGE      "JSON 形式で タスク をエクスポート"
 #define STRING_CMD_INFO_USAGE        "すべてのデータとメタデータを表示"
 #define STRING_CMD_INFO_BLOCKED      "This task blocked by"
 #define STRING_CMD_INFO_BLOCKING     "This task is blocking"

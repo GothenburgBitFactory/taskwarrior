@@ -29,7 +29,6 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -38,7 +37,7 @@ CmdExport::CmdExport ()
 {
   _keyword               = "export";
   _usage                 = "task <filter> export";
-  _description           = STRING_CMD_EXPORT_USAGE;
+  _description           = "Exports tasks in JSON format";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;

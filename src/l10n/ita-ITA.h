@@ -155,7 +155,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Mostra gli UUID dei task corrispondenti, come lista separata da virgole"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Mostra gli UUID dei task corrispondenti, come lista"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Mostra gli UUID e le descrizioni dei task corrispondenti"
-#define STRING_CMD_EXPORT_USAGE      "Esporta i task in formato JSON"
 #define STRING_CMD_INFO_USAGE        "Mostra tutti i dati e i metadati"
 #define STRING_CMD_INFO_BLOCKED      "Questo task è bloccato da"
 #define STRING_CMD_INFO_BLOCKING     "Questo task sta bloccando"
