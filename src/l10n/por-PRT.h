@@ -158,7 +158,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Exibe como lista separada por vírgulas, os UUIDs das tarefas correspondentes"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Exibe como lista, os UUIDs das tarefas correspondentes"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Exibe os UUIDs e descrições das tarefas correspondentes"
-#define STRING_CMD_EXPORT_USAGE      "Exporta tarefas para o formato JSON"
 #define STRING_CMD_INFO_USAGE        "Exibe todos os dados e meta-dados"
 #define STRING_CMD_INFO_BLOCKED      "Esta tarefa está bloqueada por"
 #define STRING_CMD_INFO_BLOCKING     "Esta tarefa bloqueia"

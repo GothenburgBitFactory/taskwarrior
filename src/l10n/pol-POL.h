@@ -158,7 +158,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Pokazuje UUID pasujących zadań, w formie listy rozdzilonej przecinkami"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Pokazuje UUID pasujących zadań, w formie listy"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Pokazuje UUID i opis pasujących zadań"
-#define STRING_CMD_EXPORT_USAGE      "Eksportuje zadania do formatu JSON"
 #define STRING_CMD_INFO_USAGE        "Pokazuje wszystkie dane i metadane"
 #define STRING_CMD_INFO_BLOCKED      "To zadanie jest blokowane przez"
 #define STRING_CMD_INFO_BLOCKING     "To zadanie blokuje"

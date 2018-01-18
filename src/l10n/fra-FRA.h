@@ -158,7 +158,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Affiche le UUIDs des tâches correspondantes, comme une liste séparée par des virgules"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Affiche le UUIDs des tâches correspondantes, comme une liste"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Affiche le UUIDs et les descriptions des tâches correspondantes"
-#define STRING_CMD_EXPORT_USAGE      "Exporte les tâches au format JSON"
 #define STRING_CMD_INFO_USAGE        "Affiche toutes les données et méta-données"
 #define STRING_CMD_INFO_BLOCKED      "Cette tâche est bloquée par"
 #define STRING_CMD_INFO_BLOCKING     "Cette tâche bloque"

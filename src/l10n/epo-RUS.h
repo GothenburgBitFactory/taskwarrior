@@ -158,7 +158,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Montras la UUID-identigilon de ĉia kongruanta tasko, en forma de listo perkome disigita"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Montras la UUID-identigilon de ĉia kongruanta tasko, en forma de listo"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Montras la UUID-identigilon kaj la priskribojn de ĉia kongruanta tasko"
-#define STRING_CMD_EXPORT_USAGE      "Eksportas taskojn, je JSON-aranĝo"
 #define STRING_CMD_INFO_USAGE        "Montras datumojn kaj metadatumojn"
 #define STRING_CMD_INFO_BLOCKED      "Tiu tasko blokata per"
 #define STRING_CMD_INFO_BLOCKING     "Tiu tasko blokas"
