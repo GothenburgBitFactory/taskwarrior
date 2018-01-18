@@ -136,7 +136,7 @@ void handleRecurrence ()
         context.tdb2.modify (t);
 
         if (context.verbose ("recur"))
-          context.footnote (format (STRING_RECUR_CREATE, t.get ("description")));
+          context.footnote (format ("Creating recurring task instance '{1}'", t.get ("description")));
       }
     }
   }

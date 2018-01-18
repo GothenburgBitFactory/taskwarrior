@@ -712,9 +712,6 @@
 #define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 #define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
-// recur.cpp
-#define STRING_RECUR_CREATE          "Creating recurring task instance '{1}'"
-
 // View
 #define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."
 
