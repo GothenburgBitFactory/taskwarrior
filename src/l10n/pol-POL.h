@@ -715,7 +715,4 @@
 #define STRING_TDB2_DIRTY_EXIT       "Zamykanie z niezapisanymi zmianami w {1}"
 #define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
-// View
-#define STRING_VIEW_TOO_SMALL        "Raport ma minimalną szerokość {1} i nie mieści się w dostępnej przestrzeni {2}."
-
 #endif

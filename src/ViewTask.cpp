@@ -208,7 +208,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   // Not enough for minimum.
   else if (overage < 0)
   {
-    context.error (format (STRING_VIEW_TOO_SMALL, sum_minimal + all_extra, _width));
+    context.error (format ("The report has a minimum width of {1} and does not fit in the available width of {2}.", sum_minimal + all_extra, _width));
     widths = minimal;
   }
 

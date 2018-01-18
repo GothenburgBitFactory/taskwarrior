@@ -713,7 +713,4 @@
 #define STRING_TDB2_DIRTY_EXIT       "Eliranta kun neskribitajn ŝanĝojn al {1}"
 #define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
-// View
-#define STRING_VIEW_TOO_SMALL        "La raporto havas larĝecminimumon {1}, al kio ne konformas la disponebla larĝeco {2}."
-
 #endif

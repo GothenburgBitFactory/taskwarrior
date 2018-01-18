@@ -714,7 +714,4 @@
 #define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 #define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
-// View
-#define STRING_VIEW_TOO_SMALL        "Il report ha larghezza minima di {1} e non entra nella larghezza disponibile di {2}."
-
 #endif

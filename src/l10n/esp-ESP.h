@@ -726,7 +726,4 @@
 #define STRING_TDB2_DIRTY_EXIT       "Saliendo con cambios sin escribir a {1}"
 #define STRING_TDB2_UNWAIT           "Tarea no en espera '{1}'"
 
-// View
-#define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
-
 #endif
