@@ -526,12 +526,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "{1} Lokale Änderungen.  Datenabgleich erforderlich."
 #define STRING_FEEDBACK_BACKLOG      "{1} Lokale Änderungen.  Datenabgleich erforderlich."
 
-// helpers
-#define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
-#define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
-#define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
-#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Zeigt alle Konfigurations-Optionen oder eine Teilmenge davon"
 #define STRING_CMD_SHOW_ARGS         "Sie müssen 'all' oder ein Suchwort angeben."

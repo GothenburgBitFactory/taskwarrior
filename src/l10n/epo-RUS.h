@@ -526,12 +526,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "Estas {1} lokaj ŝanĝoj. Sinkronigo devita."
 #define STRING_FEEDBACK_BACKLOG      "Estas {1} lokaj ŝanĝoj. Sinkronigo devita."
 
-// helpers
-#define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
-#define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
-#define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
-#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Montras ĉian agordan variablon, aŭ subaron"
 #define STRING_CMD_SHOW_ARGS         "Oni sole povas specifi 'all' aŭ serĉĉenon."

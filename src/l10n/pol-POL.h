@@ -528,12 +528,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "Wykryto {1} lokalne zmiany. Wymagana synchronizacja."
 #define STRING_FEEDBACK_BACKLOG      "Wykryto {1} lokalne zmiany. Wymagana synchronizacja."
 
-// helpers
-#define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
-#define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
-#define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
-#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Pokazuje wszystkie zmienne konfiguracji lub ich podzbiór"
 #define STRING_CMD_SHOW_ARGS         "Możesz jedynie wybrać wszystkie lub wyszukać na podstawie ciągu."
