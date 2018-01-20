@@ -29,7 +29,6 @@
 #include <sstream>
 #include <Context.h>
 #include <format.h>
-#include <i18n.h>
 
 #define STRING_LEGACY_PRIORITY "Legacy attribute found.  Please change '{1}' to '{2}'."
 
@@ -154,8 +153,7 @@ std::string legacyCheckForDeprecatedColumns ()
 
   if (deprecated.size ())
   {
-    out << STRING_CONFIG_DEPRECATED_COL
-        << "\n";
+    out << "Your .taskrc file contains reports with deprecated columns.  Please check for entry_time, start_time or end_time in:\n";
 
     for (const auto& dep : deprecated)
       out << "  " << dep << "=" << context.config.get (dep) << "\n";

@@ -502,7 +502,6 @@
 #define STRING_CONFIG_READ_INCLUDE   "インクルードファイル '{1}' が読み込めません。"
 #define STRING_CONFIG_INCLUDE_PATH   "Can only include files with absolute paths, not '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Malformed entry '{1}' in config file."
-#define STRING_CONFIG_DEPRECATED_COL "Your .taskrc file contains reports with deprecated columns.  Please check for entry_time, start_time or end_time in:"
 
 // dependency
 #define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"

@@ -502,7 +502,6 @@
 #define STRING_CONFIG_READ_INCLUDE   "Nie można przeczytać dołączonego pliku '{1}'."
 #define STRING_CONFIG_INCLUDE_PATH   "Scieżka dołączanych plików musi mieć postać adresu bezwzględnego, nie '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Uszkodzony wpis '{1}' w pliku konfiguracyjnym."
-#define STRING_CONFIG_DEPRECATED_COL "Twój plik .taskrc zawiera raport z przestarzałymi nazwami kolumn.  Sprawdź proszę entry_time, start_time lub end_time w:"
 
 // dependency
 #define STRING_DEPEND_BLOCKED        "Zadanie {1} jest blokowane przez:"
