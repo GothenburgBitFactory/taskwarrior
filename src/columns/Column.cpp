@@ -105,7 +105,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
     c = Column::uda (column_name);
 
   else
-    throw format (STRING_COLUMN_BAD_NAME, column_name);
+    throw format ("Unrecognized column name '{1}'.", column_name);
 
   c->setReport (report);
   c->setStyle (column_style);

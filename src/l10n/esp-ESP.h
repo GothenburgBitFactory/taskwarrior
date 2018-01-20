@@ -28,7 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_BAD_NAME       "Nombre de columna no reconocido '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Formato de columna no reconocido '{1}.{2}'"
 #define STRING_COLUMN_LABEL_TASKS    "Tareas"
 #define STRING_COLUMN_LABEL_DEP      "Depende"
