@@ -223,7 +223,7 @@ Column* Column::uda (const std::string& name)
     return c;
   }
   else if (type != "")
-    throw std::string (STRING_UDA_TYPE);
+    throw std::string ("User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'.");
 
   return NULL;
 }

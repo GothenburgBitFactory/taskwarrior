@@ -483,7 +483,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_UDA_TYPE              "Gli User defined attribute possono solo essere di tipo 'string', 'date', 'duration' o 'numeric'."
 #define STRING_UDA_COLLISION         "L'UDA '{1}' ha lo stesso nome di un attributo di sistema, e ciò non è permesso."
 #define STRING_INVALID_MOD           "L'attributo '{1}' non ammette un valore pari a '{2}'."
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
