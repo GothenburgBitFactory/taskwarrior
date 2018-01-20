@@ -2083,7 +2083,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           Column* column = context.columns[name];
           if (! column ||
               ! column->modifiable ())
-            throw format (STRING_INVALID_MOD, name, value);
+            throw format ("The '{1}' attribute does not allow a value of '{2}'.", name, value);
 
           // Delegate modification to the column object or their base classes.
           if (name == "depends"             ||
