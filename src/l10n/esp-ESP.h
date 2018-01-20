@@ -571,10 +571,6 @@
 #define STRING_EDIT_HEADER_14        "El separador ' -- ' entre la fecha y el campo de texto no debe ser eliminado."
 #define STRING_EDIT_HEADER_15        "La última es una \"entrada en blanco\" para añadir una anotación, si le conviene:"
 
-// Maintain the same spacing.
-#define STRING_EDIT_TABLE_HEADER_1   "Nombre             Detalles modificables"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"  // |esp-ESP|==|eng-USA|
-
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Error: "  // |esp-ESP|==|eng-USA|

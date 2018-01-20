@@ -561,10 +561,6 @@
 #define STRING_EDIT_HEADER_14        "Le séparateur ' -- ' entre les champs de date et de texte ne devrai pas être supprimé."
 #define STRING_EDIT_HEADER_15        "Il y a un champs vide ci-dessous pour ajouter une annotation facilement."
 
-// Maintain the same spacing.
-#define STRING_EDIT_TABLE_HEADER_1   "Nom                Détails éditables"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"
-
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Erreur : "

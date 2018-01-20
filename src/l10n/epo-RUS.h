@@ -559,10 +559,6 @@
 #define STRING_EDIT_HEADER_14        "nombro de komentojn.  Ne viŝus la apartigilon ' -- ' inter la dato kaj la"
 #define STRING_EDIT_HEADER_15        "teksto.  Malplena loko sekvas por simpligi la aldonon de komenton."
 
-// Maintain the same spacing.
-#define STRING_EDIT_TABLE_HEADER_1   "Nomo               Redakteblaj detaloj"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"
-
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Eraro: "
