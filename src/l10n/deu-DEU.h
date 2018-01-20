@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "Deutsche Übersetzung"
 #define STRING_LOCALIZATION_AUTHOR   "Ins Deutsche übersetzt von Jens Erat."
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "Maximale Alias-Schachteltiefe von {1} erreicht."
-#define STRING_PARSER_OVERRIDE_RC    "Konfigurations außer Kraft gesetzt durch: rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "Fehler: Nicht erkannter Attribut-Operator '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "Verwende alternative .taskrc-Datei {1}"
-#define STRING_PARSER_ALTERNATE_DATA "Verwende alternative data.location {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Spaltenname '{1}' nicht erkannt."
 #define STRING_COLUMN_BAD_FORMAT     "Spaltenformat '{1}.{2}' nicht erkannt"

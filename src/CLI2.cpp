@@ -236,7 +236,7 @@ void CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc
       if (last_slash != std::string::npos)
         home = rc.parent ();
 
-      context.header (format (STRING_PARSER_ALTERNATE_RC, rc._data));
+      context.header (format ("Using alternate .taskrc file {1}", rc._data));
 
       // Keep looping, because if there are multiple rc:file arguments, the last
       // one should dominate.
@@ -263,7 +263,7 @@ void CLI2::getDataLocation (int argc, const char** argv, Path& data)
         raw.substr (0, 16) == "rc.data.location")
     {
       data = Directory (raw.substr (17));
-      context.header (format (STRING_PARSER_ALTERNATE_DATA, (std::string) data));
+      context.header (format ("Using alternate data.location {1}", (std::string) data));
 
       // Keep looping, because if there are multiple rc:file arguments, the last
       // one should dominate.
@@ -301,7 +301,7 @@ void CLI2::applyOverrides (int argc, const char** argv)
         context.config.set (name, value);
 
         if (context.verbose("override"))
-          context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
+          context.footnote (format ("Configuration override rc.{1}:{2}", name, value));
       }
     }
   }
@@ -855,7 +855,7 @@ void CLI2::aliasExpansion ()
   while (action && counter++ < safetyValveDefault);
 
   if (counter >= safetyValveDefault)
-    context.debug (format (STRING_PARSER_ALIAS_NEST, safetyValveDefault));
+    context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 2)
@@ -945,7 +945,7 @@ void CLI2::categorizeArgs ()
              ! cmd->accepts_miscellaneous ())
     {
       // No commands were expected --> error.
-      throw format (STRING_PARSER_UNEXPECTED_ARG, command, a.attribute ("raw"));
+      throw format ("The '{1}' command does not allow '{2}'.", command, a.attribute ("raw"));
     }
     else if (cmd                             &&
              ! cmd->accepts_filter ()        &&
@@ -1367,7 +1367,7 @@ void CLI2::desugarFilterAttributes ()
 #endif
         }
         else
-          throw format (STRING_PARSER_UNKNOWN_ATTMOD, mod);
+          throw format ("Error: unrecognized attribute modifier '{1}'.", mod);
 
         reconstructed.push_back (lhs);
         reconstructed.push_back (op);

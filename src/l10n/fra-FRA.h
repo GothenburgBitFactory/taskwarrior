@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "Traduction française"
 #define STRING_LOCALIZATION_AUTHOR   "Traduit en français par Leowzukw et Jeremy John Reeder."
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "Atteignit la limite d'amboîtage des pseudonymes, {1}."
-#define STRING_PARSER_OVERRIDE_RC    "Configuration écrasée : rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "Erreur : attribut de modification non reconnu '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "Utilise un fichier .taskrc alternatif : {1}"
-#define STRING_PARSER_ALTERNATE_DATA "Utilise une data.location alternative : {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nom de colonne non reconnu '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Format de colonne non reconnu '{1}.{2}'"

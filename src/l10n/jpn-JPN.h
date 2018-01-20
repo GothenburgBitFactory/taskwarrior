@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "Japanese localization"
 #define STRING_LOCALIZATION_AUTHOR   "Translated into Japanese by Oota Toshiya."
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "ネストされたエイリアスの制限 {1} に到達した。"
-#define STRING_PARSER_OVERRIDE_RC    "設定は上書きされた rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "エラー: 不明な属性変更子 '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "代替の .taskrc ファイル {1} を使用"
-#define STRING_PARSER_ALTERNATE_DATA "代替の data.location {1} を使用"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "認識できないカラム名 '{1}'。"
 #define STRING_COLUMN_BAD_FORMAT     "認識出来ないカラム形式 '{1}.{2}'"

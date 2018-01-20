@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "Tłumaczenie polskie"
 #define STRING_LOCALIZATION_AUTHOR   "Przetłumaczył na język polski Ł. Panek."
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "Limit {1} zagnieżdżonych aliasów osiągnięty"
-#define STRING_PARSER_OVERRIDE_RC    "Nadpisanie konfiguracji rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "Błąd: nierozpoznany atrybut '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "Wczytanie alternatywnego pliku .taskrc {1}"
-#define STRING_PARSER_ALTERNATE_DATA "Alternatywne data.location {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nierozpoznano nazwy kolumny '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Nierozpoznano formatu kolumny '{1}.{2}'"
