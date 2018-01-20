@@ -89,7 +89,7 @@ int main (int argc, char** argv)
       else if (!strcmp (argv[i], "-v") || !strcmp (argv[i], "--version"))
       {
         std::cout << '\n'
-                  << format ("calc {2} built for ", VERSION)
+                  << format ("calc {1} built for ", VERSION)
                   << osName ()
                   << '\n'
                   << "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
