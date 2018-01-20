@@ -497,11 +497,6 @@
 #define STRING_CMD_EDIT_USAGE        "Lanĉas redaktilo por rekte modifi taskon"
 #define STRING_CMD_CALC_USAGE        "Kalkulilo"
 
-// dependency
-#define STRING_DEPEND_BLOCKED        "Tasko {1} estas blokata per:"
-#define STRING_DEPEND_BLOCKING       "kaj ĝi blokas:"
-#define STRING_DEPEND_FIX_CHAIN      "Ĉu vi volas, ke la dependeca ĉeno repariĝus?"
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "Ne detektis nenian redakton."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
