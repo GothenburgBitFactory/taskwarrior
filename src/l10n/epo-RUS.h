@@ -506,7 +506,6 @@
 #define STRING_CONFIG_DEPRECATED_VAR "Via dosiero .taskrc enhavas arkaikajn variablojn:"
 
 // Date
-#define STRING_DATE_INVALID_FORMAT   "'{1}' ne estas valida dato laŭ stilo '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "Argorda variablo 'weekstart' devas esti 'Sunday' aŭ 'Monday'."
 
 // dependency

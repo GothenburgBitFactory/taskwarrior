@@ -508,7 +508,6 @@
 #define STRING_CONFIG_DEPRECATED_VAR "Twój plik .taskrc zawiera przestarzałe zmienne:"
 
 // Date
-#define STRING_DATE_INVALID_FORMAT   "'{1}' nie jest poprawną wartością daty w formacie '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "Zmienna konfiguracji 'weekstart' może przyjmować tylko wartość 'Sunday' lub 'Monday'."
 
 // dependency
