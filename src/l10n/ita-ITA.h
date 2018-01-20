@@ -506,9 +506,6 @@
 #define STRING_CONFIG_DEPRECATED_COL "Il file .taskrc contiene report con nomi di colonna deprecati. Verificare entry_time, start_time o end_time in:"
 #define STRING_CONFIG_DEPRECATED_VAR "Il file .taskrc contiene variabili deprecate:"
 
-// Date
-#define STRING_DATE_BAD_WEEKSTART    "La variabile di configurazione 'weekstart' può solo contenere 'Domenica' o 'Lunedì'."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Il task {1} è bloccato da:"
 #define STRING_DEPEND_BLOCKING       "e sta bloccando:"

@@ -505,9 +505,6 @@
 #define STRING_CONFIG_DEPRECATED_COL "Ihre .taskrc-Datei enthält Repots mit veralteten Spalten.  Bitte entfernen Sie entry_time, start_time oder end_time in:"
 #define STRING_CONFIG_DEPRECATED_VAR "Ihre .taskrc-Datei enthält veraltete Optionen:"
 
-// Date
-#define STRING_DATE_BAD_WEEKSTART    "Die 'weekstart'-Konfigurationsoption darf nur 'Sunday' oder 'Monday' lauten."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Aufgabe {1} wird blockiert durch:"
 #define STRING_DEPEND_BLOCKING       "und blockiert:"
