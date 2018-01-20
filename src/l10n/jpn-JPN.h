@@ -315,11 +315,6 @@
 #define STRING_CMD_ANNO_1            "{1} task に注釈付加."
 #define STRING_CMD_ANNO_N            "{1} task に注釈付加."
 
-#define STRING_CMD_COLUMNS_USAGE     "All supported columns and formatting styles"
-#define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent."
-#define STRING_CMD_COLUMNS_USAGE2    "Displays only a list of supported columns"
-#define STRING_CMD_COLUMNS_ARGS      "You can only specify one search string."
-
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
 #define STRING_CMD_DENO_NONE         "指定されたtaskには注釈がないので削除できません。"
 #define STRING_CMD_DENO_CONFIRM      "タスク {1} から注釈 '{2}' を削除しますか?"

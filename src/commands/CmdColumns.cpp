@@ -35,6 +35,8 @@
 #include <i18n.h>
 #include <main.h>
 
+#define STRING_CMD_COLUMNS_USAGE     "All supported columns and formatting styles"
+
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +62,7 @@ int CmdColumns::execute (std::string& output)
   // have already been handled.
   auto words = context.cli2.getWords ();
   if (words.size () > 1)
-    throw std::string (STRING_CMD_COLUMNS_ARGS);
+    throw std::string ("You can only specify one search string.");
 
   // Include all columns in the table.
   std::vector <std::string> names;
@@ -112,8 +114,7 @@ int CmdColumns::execute (std::string& output)
   output = optionalBlankLine ()
          + formats.render ()
          + '\n'
-         + STRING_CMD_COLUMNS_NOTE
-         + '\n';
+         + "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent.\n";
 
   return 0;
 }
@@ -123,7 +124,7 @@ CmdCompletionColumns::CmdCompletionColumns ()
 {
   _keyword               = "_columns";
   _usage                 = "task          _columns";
-  _description           = STRING_CMD_COLUMNS_USAGE2;
+  _description           = "Displays only a list of supported columns";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;

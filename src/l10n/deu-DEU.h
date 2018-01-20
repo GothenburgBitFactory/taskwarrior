@@ -313,11 +313,6 @@
 #define STRING_CMD_ANNO_1            "{1} Aufgabe kommentiert."
 #define STRING_CMD_ANNO_N            "{1} Aufgaben kommentiert."
 
-#define STRING_CMD_COLUMNS_USAGE     "Alle unterstützten Spalten und Darstellungsoptionen"
-#define STRING_CMD_COLUMNS_NOTE      "* kennzeichnet das Standardformat, und ist daher optional.  Zum Beispiel sind 'due' und 'due.formatted' gleichwertig."
-#define STRING_CMD_COLUMNS_USAGE2    "Zeigt ausschließlich eine Liste der unterstützten Spalten"
-#define STRING_CMD_COLUMNS_ARGS      "Es darf nur ein Suchwort angegeben werden."
-
 #define STRING_CMD_DENO_USAGE        "Löscht einen Kommentar"
 #define STRING_CMD_DENO_NONE         "Die gewählte Aufgabe hat keine Kommentare, welche gelöscht werden können."
 #define STRING_CMD_DENO_CONFIRM      "Kommentar in Aufgabe {1} '{2}' löschen?"
