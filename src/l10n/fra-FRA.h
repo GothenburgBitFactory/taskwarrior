@@ -512,7 +512,6 @@
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-#define STRING_ERROR_BAD_STATUS      "The status '{1}' is not valid."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."
