@@ -511,19 +511,6 @@
 #define STRING_DATE_INVALID_FORMAT   "'{1}' n'est pas une date au format '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "La variable de configuration 'weekstart' ne peut contenir que 'dimanche' ou 'lundi'."
 
-#define STRING_DATE_JANUARY          "janvier"
-#define STRING_DATE_FEBRUARY         "février"
-#define STRING_DATE_MARCH            "mars"
-#define STRING_DATE_APRIL            "avril"
-#define STRING_DATE_MAY              "mai"
-#define STRING_DATE_JUNE             "juin"
-#define STRING_DATE_JULY             "juillet"
-#define STRING_DATE_AUGUST           "août"
-#define STRING_DATE_SEPTEMBER        "septembre"
-#define STRING_DATE_OCTOBER          "octobre"
-#define STRING_DATE_NOVEMBER         "novembre"
-#define STRING_DATE_DECEMBER         "décembre"
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Tâche {1} est bloquée par :"
 #define STRING_DEPEND_BLOCKING       "et bloque :"
