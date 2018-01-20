@@ -434,7 +434,7 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
   if (project != "")
   {
     if (scope)
-      msg << format (STRING_HELPER_PROJECT_CHANGE, project)
+      msg << format ("The project '{1}' has changed.", project)
           << "  ";
 
     // Count pending and done tasks, for this project.
@@ -457,13 +457,13 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     else
       percentage = (count_done * 100 / (count_done + count_pending));
 
-    msg << format (STRING_HELPER_PROJECT_COMPL, project, percentage)
+    msg << format ("Project '{1}' is {2}% complete", project, percentage)
         << ' ';
 
     if (count_pending == 1 && count_done == 0)
-      msg << format (STRING_HELPER_PROJECT_REM1, count_pending);
+      msg << format ("({1} task remaining).", count_pending);
     else
-      msg << format (STRING_HELPER_PROJECT_REM, count_pending, count_pending + count_done);
+      msg << format ("({1} of {2} tasks remaining).", count_pending, count_pending + count_done);
   }
 
   return msg.str ();

@@ -525,12 +525,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "There are {1} local changes.  Sync required."
 #define STRING_FEEDBACK_BACKLOG      "There is {1} local change.  Sync required."
 
-// helpers
-#define STRING_HELPER_PROJECT_CHANGE "Il progetto '{1}' è stato modificat."
-#define STRING_HELPER_PROJECT_COMPL  "Il progetto '{1}' è {2}% completo"
-#define STRING_HELPER_PROJECT_REM    "({1} di {2} task rimanenti)."
-#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Mostra i sottoinsiemi di variabili di configurazione"
 #define STRING_CMD_SHOW_ARGS         "Solo 'all' può essere specificata come stringa di ricerca."
