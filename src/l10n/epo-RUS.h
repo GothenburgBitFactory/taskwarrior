@@ -502,7 +502,6 @@
 #define STRING_CONFIG_READ_INCLUDE   "Ne povis legi enkluzivitan dosieron '{1}'."
 #define STRING_CONFIG_INCLUDE_PATH   "Oni sole povas enkluzivi dosierojn kun absoluta pado, ne '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Malbone formita enskribo '{1}' en agorda dosiero."
-#define STRING_CONFIG_DEPRECATED_COL "Via dosiero .taskrc enhavas raportojn kun arkaikaj kolumnoj.  Bonvolu serĉi entry_time, start_time, aŭ end_time ĉe:"
 
 // dependency
 #define STRING_DEPEND_BLOCKED        "Tasko {1} estas blokata per:"

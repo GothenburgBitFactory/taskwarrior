@@ -502,7 +502,6 @@
 #define STRING_CONFIG_READ_INCLUDE   "Konnte eingebundene Datei '{1}' nicht lesen."
 #define STRING_CONFIG_INCLUDE_PATH   "Nur Dateien mit absolutem Pfad können eingebunden werden, nicht '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Fehlerhafter Eintrag '{1}' in Konfigurationsdatei."
-#define STRING_CONFIG_DEPRECATED_COL "Ihre .taskrc-Datei enthält Repots mit veralteten Spalten.  Bitte entfernen Sie entry_time, start_time oder end_time in:"
 
 // dependency
 #define STRING_DEPEND_BLOCKED        "Aufgabe {1} wird blockiert durch:"
