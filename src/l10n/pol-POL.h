@@ -482,7 +482,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_UDA_TYPE              "Atrybuty definiowane przez użytkownika mogą być typu 'string', 'date', 'duration' lub 'numeric'."
 #define STRING_UDA_COLLISION         "Nazwa UDA '{1}' jest jedną z nazw atrybutów podstawowych i dlatego jest niedozwolona."
 #define STRING_INVALID_MOD           "Atrybut '{1}' nie zezwala na wartość '{2}'."
 #define STRING_ERROR_DETAILS         "Zmienna 'calendar.details.report' musi zawierać nazwę raportu."

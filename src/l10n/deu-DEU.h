@@ -480,7 +480,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_UDA_TYPE              "UDAs müssen vom Typ 'string', 'date', 'duration' oder 'numeric' sein."
 #define STRING_UDA_COLLISION         "Das UDA '{1}' hat den selben Namen wie eine eingebaute Eigenschaft, und ist daher nicht erlaubt."
 #define STRING_INVALID_MOD           "Die '{1}'-Eigenschaft erlaubt keinen Wert '{2}'."
 #define STRING_ERROR_DETAILS         "Die Option 'calendar.details.report' muss einen einzelnen Report-Namen enthalten."
