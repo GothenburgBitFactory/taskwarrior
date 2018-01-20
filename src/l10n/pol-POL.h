@@ -473,10 +473,6 @@
 #define STRING_CMD_CAL_SUN_MON       "Początek tygodnia może mieć wartość 'Niedziela' lub 'Poniedziałek'."
 #define STRING_CMD_CALC_USAGE        "Kalkulator"
 
-// Errors
-// TODO Move each of these to appropriate section.
-#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Brak zadań."
 #define STRING_FEEDBACK_NO_TASKS_SP  "Nie określono zadań"

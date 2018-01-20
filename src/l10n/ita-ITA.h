@@ -472,10 +472,6 @@
 #define STRING_CMD_CAL_SUN_MON       "La variabile di configurazione 'weekstart' può solo contenere i valori 'Domenica' or 'Lunedì'."
 #define STRING_CMD_CALC_USAGE        "Calculator"
 
-// Errors
-// TODO Move each of these to appropriate section.
-#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nessun task."
 #define STRING_FEEDBACK_NO_TASKS_SP  "Nessun task specificat."
