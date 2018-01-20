@@ -35,7 +35,6 @@
 #include <shared.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -44,7 +43,7 @@ CmdSync::CmdSync ()
 {
   _keyword               = "synchronize";
   _usage                 = "task          synchronize [initialize]";
-  _description           = STRING_CMD_SYNC_USAGE;
+  _description           = "Synchronizes data with the Taskserver";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -74,10 +73,10 @@ int CmdSync::execute (std::string& output)
     if (closeEnough ("initialize", word, 4))
     {
       if (!context.config.getBoolean ("confirmation") ||
-          confirm (STRING_CMD_SYNC_INIT))
+          confirm ("Please confirm that you wish to upload all your tasks to the Taskserver"))
         first_time_init = true;
       else
-        throw std::string (STRING_CMD_SYNC_NO_INIT);
+        throw std::string ("Taskwarrior will not proceed with first-time sync initialization.");
     }
   }
 
@@ -85,23 +84,23 @@ int CmdSync::execute (std::string& output)
   std::string connection = context.config.get ("taskd.server");
   if (connection == "" ||
       connection.rfind (':') == std::string::npos)
-    throw std::string (STRING_CMD_SYNC_NO_SERVER);
+    throw std::string ("Taskserver is not configured.");
 
   // Obtain credentials.
   std::string credentials_string = context.config.get ("taskd.credentials");
   if (credentials_string == "")
-    throw std::string (STRING_CMD_SYNC_BAD_CRED);
+    throw std::string ("Taskserver credentials malformed.");
 
   auto credentials = split (credentials_string, '/');
   if (credentials.size () != 3)
-    throw std::string (STRING_CMD_SYNC_BAD_CRED);
+    throw std::string ("Taskserver credentials malformed.");
 
   // This was a Boolean value in 2.3.0, and is a tri-state since 2.4.0.
   std::string trust_value = context.config.get ("taskd.trust");
   if (trust_value != "strict" &&
       trust_value != "ignore hostname" &&
       trust_value != "allow all")
-    throw std::string (STRING_CMD_SYNC_TRUST_OBS);
+    throw std::string ("The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'.");
 
   enum TLSClient::trust_level trust = TLSClient::strict;
   if (trust_value  == "allow all")
@@ -112,18 +111,18 @@ int CmdSync::execute (std::string& output)
   // CA must exist, if provided.
   File ca (context.config.get ("taskd.ca"));
   if (ca._data != "" && ! ca.exists ())
-    throw std::string (STRING_CMD_SYNC_BAD_CA);
+    throw std::string ("CA certificate not found.");
 
   if (trust == TLSClient::allow_all && ca._data != "")
-    throw std::string (STRING_CMD_SYNC_TRUST_CA);
+    throw std::string ("You should either provide a CA certificate or override verification, but not both.");
 
   File certificate (context.config.get ("taskd.certificate"));
   if (! certificate.exists ())
-    throw std::string (STRING_CMD_SYNC_BAD_CERT);
+    throw std::string ("Taskserver certificate missing.");
 
   File key (context.config.get ("taskd.key"));
   if (! key.exists ())
-    throw std::string (STRING_CMD_SYNC_BAD_KEY);
+    throw std::string ("Taskserver key missing.");
 
   // If this is a first-time initialization, send pending.data and
   // completed.data, but not backlog.data.
@@ -171,7 +170,7 @@ int CmdSync::execute (std::string& output)
   request.setPayload (payload);
 
   if (context.verbose ("sync"))
-    out << format (STRING_CMD_SYNC_PROGRESS, connection)
+    out << format ("Syncing with {1}", connection)
         << '\n';
 
   // Ignore harmful signals.
@@ -223,7 +222,7 @@ int CmdSync::execute (std::string& output)
             if (context.verbose ("sync"))
               out << "  "
                   << colorChanged.colorize (
-                       format (STRING_CMD_SYNC_MOD,
+                       format ("modify {1} '{2}'",
                                uuid,
                                from_server.get ("description")))
                   << '\n';
@@ -234,7 +233,7 @@ int CmdSync::execute (std::string& output)
             if (context.verbose ("sync"))
               out << "  "
                   << colorAdded.colorize (
-                       format (STRING_CMD_SYNC_ADD,
+                       format ("   add {1} '{2}'",
                                uuid,
                                from_server.get ("description")))
                   << '\n';
@@ -263,38 +262,38 @@ int CmdSync::execute (std::string& output)
         // Present a clear status message.
         if (upload_count == 0 && download_count == 0)
           // Note: should not happen - expect code 201 instead.
-          context.footnote (STRING_CMD_SYNC_SUCCESS0);
+          context.footnote ("Sync successful.");
         else if (upload_count == 0 && download_count > 0)
-          context.footnote (format (STRING_CMD_SYNC_SUCCESS2, download_count));
+          context.footnote (format ("Sync successful.  {1} changes downloaded.", download_count));
         else if (upload_count > 0 && download_count == 0)
-          context.footnote (format (STRING_CMD_SYNC_SUCCESS1, upload_count));
+          context.footnote (format ("Sync successful.  {1} changes uploaded.", upload_count));
         else if (upload_count > 0 && download_count > 0)
-          context.footnote (format (STRING_CMD_SYNC_SUCCESS3, upload_count, download_count));
+          context.footnote (format ("Sync successful.  {1} changes uploaded, {2} changes downloaded.", upload_count, download_count));
       }
 
       status = 0;
     }
     else if (code == "201")
     {
-      context.footnote (STRING_CMD_SYNC_SUCCESS_NOP);
+      context.footnote ("Sync successful.  No changes.");
       status = 0;
     }
     else if (code == "301")
     {
       std::string new_server = response.get ("info");
       context.config.set ("taskd.server", new_server);
-      context.error (STRING_CMD_SYNC_RELOCATE0);
-      context.error ("  " + format (STRING_CMD_SYNC_RELOCATE1, new_server));
+      context.error ("The server account has been relocated.  Please update your configuration using:");
+      context.error ("  " + format ("task config taskd.server {1}", new_server));
       status = 2;
     }
     else if (code == "430")
     {
-      context.error (STRING_CMD_SYNC_FAIL_ACCOUNT);
+      context.error ("Sync failed.  Either your credentials are incorrect, or your account doesn't exist on the Taskserver.");
       status = 2;
     }
     else
     {
-      context.error (format (STRING_CMD_SYNC_FAIL_ERROR,
+      context.error (format ("Sync failed.  The Taskserver returned error: {1} {2}",
                              code,
                              response.get ("status")));
       status = 2;
@@ -320,7 +319,7 @@ int CmdSync::execute (std::string& output)
   //   - No signal/cable
   else
   {
-    context.error (STRING_CMD_SYNC_FAIL_CONNECT);
+    context.error ("Sync failed.  Could not connect to the Taskserver.");
     status = 1;
   }
 
@@ -338,7 +337,7 @@ int CmdSync::execute (std::string& output)
 
 #else
   // Without GnuTLS found at compile time, there is no working sync command.
-  throw std::string (STRING_CMD_SYNC_NO_TLS);
+  throw std::string ("Taskwarrior was built without GnuTLS support.  Sync is not available.");
 #endif
   return status;
 }
@@ -358,7 +357,7 @@ bool CmdSync::send (
   // IPv6 addresses.
   auto colon = to.rfind (':');
   if (colon == std::string::npos)
-    throw format (STRING_CMD_SYNC_BAD_SERVER, to);
+    throw format ("Sync failed.  Malformed configuration setting '{1}'", to);
 
   std::string server = to.substr (0, colon);
   std::string port = to.substr (colon + 1);
