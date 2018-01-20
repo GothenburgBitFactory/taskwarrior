@@ -27,15 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-// Note that for English, the following two lines are not displayed.  For all
-// other localizations, these lines will appear in the output of the 'version'
-// and 'diagnostics' commands.
-//
-// DO NOT include a copyright in the translation.
-//
-#define STRING_LOCALIZATION_DESC     "Traduzione in Italiano"
-#define STRING_LOCALIZATION_AUTHOR   "Tradotto in Italiano da Tullio Facchinetti."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nome di colonna '{1}' non riconosciuto."
 #define STRING_COLUMN_BAD_FORMAT     "Formato di colonna '{1}.{2}' non riconosciuto"

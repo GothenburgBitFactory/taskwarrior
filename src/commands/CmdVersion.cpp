@@ -102,12 +102,6 @@ int CmdVersion::execute (std::string& output)
 #else
       << STRING_CMD_VERSION_UNKNOWN
 #endif
-
-#if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
-      << ' '
-      << STRING_LOCALIZATION_DESC
-#endif
-
       << '\n'
       << "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
       << '\n'
@@ -116,12 +110,6 @@ int CmdVersion::execute (std::string& output)
       << '\n'
       << link.render ()
       << '\n';
-
-#if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
-  out << STRING_LOCALIZATION_AUTHOR
-      << '\n'
-      << '\n';
-#endif
 
   output = out.str ();
   return 0;
