@@ -335,7 +335,7 @@ int CmdCalendar::execute (std::string& output)
       // Assert that 'report' is a valid report.
       auto report = context.config.get ("calendar.details.report");
       if (context.commands.find (report) == context.commands.end ())
-        throw std::string (STRING_ERROR_DETAILS);
+        throw std::string ("The setting 'calendar.details.report' must contain a single report name.");
 
       // TODO Fix this:  cal      --> task
       //                 calendar --> taskendar

@@ -483,7 +483,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_DETAILS         "El ajuste 'calendar.details.report' debe contener un único nombre de informe."
 #define STRING_ERROR_NO_FILTER       "Los filtros de línea de comando no están soportados por este comando."
 
 // Feedback
