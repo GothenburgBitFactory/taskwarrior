@@ -28,7 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_BAD_NAME       "Nekonata kolumna nomo '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Nekonata kolumna formiĝo '{1}.{2}'"
 #define STRING_COLUMN_LABEL_TASKS    "Tasko"
 #define STRING_COLUMN_LABEL_DEP      "Dependoj"
