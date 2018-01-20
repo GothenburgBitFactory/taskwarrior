@@ -487,7 +487,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_PREFIX          "エラー: "
 #define STRING_TRIVIAL_INPUT         "変更したいコマンドまたはタスクを指定しなければなりません。"
 #define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
 #define STRING_UDA_TYPE              "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'."

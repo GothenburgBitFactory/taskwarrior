@@ -487,7 +487,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_PREFIX          "Błąd: "
 #define STRING_TRIVIAL_INPUT         "Musisz podać polecenie lub zadanie do zmiany."
 #define STRING_INFINITE_LOOP         "Podstawienie anulowane ponieważ wykonano więcej niż {1} zmian - zabezpieczenie przed zapętleniem."
 #define STRING_UDA_TYPE              "Atrybuty definiowane przez użytkownika mogą być typu 'string', 'date', 'duration' lub 'numeric'."

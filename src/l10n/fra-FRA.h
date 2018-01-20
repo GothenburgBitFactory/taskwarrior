@@ -507,7 +507,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_PREFIX          "Erreur : "
 #define STRING_TRIVIAL_INPUT         "Il vous faut spécifier une commande ou une tâche à modifier."
 #define STRING_INFINITE_LOOP         "Substitution arrêté parce que plus de {1} changements ont été faits - protection contre les boucles infinies."
 #define STRING_UDA_TYPE              "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'."
