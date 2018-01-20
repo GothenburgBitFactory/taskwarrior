@@ -307,21 +307,6 @@
 #define STRING_CMD_ZSHATTS_USAGE     "Genera una lista de todos los atributos, con fines de auto-completado zsh"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
 
-#define STRING_CMD_MODIFY_USAGE1     "Modifica la tarea existente con los argumentos provistos."
-//#define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
-#define STRING_CMD_MODIFY_NO_DUE     "No puede especificar una tarea recurrente sin una fecha de vencimiento."
-#define STRING_CMD_MODIFY_REM_DUE    "No puede eliminar la fecha de vencimiento de una tarea recurrente."
-#define STRING_CMD_MODIFY_REC_ALWAYS "No puede eliminar la recurrencia de una tarea recurrente."
-#define STRING_CMD_MODIFY_TASK       "Modificando tarea {1} '{2}'."
-#define STRING_CMD_MODIFY_TASK_R     "Modificando tarea recurrente {1} '{2}'."
-#define STRING_CMD_MODIFY_1          "Modificada {1} tarea."
-#define STRING_CMD_MODIFY_N          "Modificada {1} tareas."
-#define STRING_CMD_MODIFY_NO         "Tarea no modificada."
-#define STRING_CMD_MODIFY_CONFIRM    "¿Modificar tarea {1} '{2}'?"
-#define STRING_CMD_MODIFY_RECUR      "Esta es una tarea recurrente. ¿Quiere modificar todas las recurrencias pendientes de esta misma tarea?"
-#define STRING_CMD_MODIFY_NEED_TEXT  "Se debe proveer texto adicional."
-#define STRING_CMD_MODIFY_INACTIVE   "Nota: la tarea modificada {1} está {2}. Podría querer marcar esta tarea como pendiente con: task {3} modify status:pending"
-
 #define STRING_CMD_COLOR_USAGE       "Todos los colores, una muestra, o una leyenda"
 #define STRING_CMD_COLOR_HERE        "Aquí están los colores en uso actualmente:"
 #define STRING_CMD_COLOR_COLOR       "Color"  // |esp-ESP|==|eng-USA|

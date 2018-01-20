@@ -2199,7 +2199,7 @@ void Task::modify (modType type, bool text_required /* = false */)
     }
   }
   else if (! mods && text_required)
-    throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
+    throw std::string ("Additional text must be provided.");
 
   // Modifying completed/deleted tasks generates a message, if the modification
   // does not change status.
@@ -2207,7 +2207,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       getStatus () == originalStatus)
   {
     auto uuid = get ("uuid").substr (0, 8);
-    context.footnote (format (STRING_CMD_MODIFY_INACTIVE, uuid, get ("status"), uuid));
+    context.footnote (format ("Note: Modified task {1} is {2}.  You may wish to make this task pending with: task {3} modify status:pending", uuid, get ("status"), uuid));
   }
 }
 #endif
