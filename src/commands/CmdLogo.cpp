@@ -28,7 +28,6 @@
 #include <CmdLogo.h>
 #include <Context.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -37,7 +36,7 @@ CmdLogo::CmdLogo ()
 {
   _keyword               = "logo";
   _usage                 = "task          logo";
-  _description           = STRING_CMD_LOGO_USAGE;
+  _description           = "Displays the Taskwarrior logo";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -85,7 +84,7 @@ int CmdLogo::execute (std::string& output)
   };
 
   if (! context.color ())
-    throw std::string (STRING_CMD_LOGO_COLOR_REQ);
+    throw std::string ("The logo command requires that color support is enabled.");
 
   std::string indent (context.config.getInteger ("indent.report"), ' ');
   output += optionalBlankLine ();
