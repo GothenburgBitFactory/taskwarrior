@@ -471,7 +471,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_UDA_COLLISION         "UDA '{1}' kaj enkonstruita atributo havas la saman nomon.  Tio estas malpermesita."
 #define STRING_INVALID_MOD           "Atributo '{1}' ne permesas valoron '{2}'."
 #define STRING_ERROR_DETAILS         "Agordo 'calendar.details.report' devas enhavi sole unu raportnomon."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."

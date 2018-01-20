@@ -473,7 +473,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_UDA_COLLISION         "O UDA '{1}' tem o mesmo nome que um atributo interno, tal não é permitido."
 #define STRING_INVALID_MOD           "O atributo '{1}' não permite o valor '{2}'."
 #define STRING_ERROR_DETAILS         "A definição 'calendar.details.report' pode apenas indicar um nome de relatório."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."

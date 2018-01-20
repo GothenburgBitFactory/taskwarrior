@@ -162,7 +162,7 @@ void Column::uda (std::map <std::string, Column*>& all)
   for (const auto& uda : udas)
   {
     if (all.find (uda) != all.end ())
-      throw format (STRING_UDA_COLLISION, uda);
+      throw format ("The UDA named '{1}' is the same as a core attribute, and is not permitted.", uda);
 
     Column* c = Column::uda (uda);
     if (c)
