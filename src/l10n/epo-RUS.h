@@ -315,11 +315,6 @@
 #define STRING_CMD_ANNO_1            "Komentis {1} taskon."
 #define STRING_CMD_ANNO_N            "Komentis {1} taskojn."
 
-#define STRING_CMD_COLUMNS_USAGE     "Ĉia kolumno kaj stilo subtenata"
-#define STRING_CMD_COLUMNS_NOTE      "* Signifas defaŭltan stilon, do ne estas deviga.  Ekzemple, 'due' estas identa kun 'due.formatted'."
-#define STRING_CMD_COLUMNS_USAGE2    "Montras liston sole de subtenataj kolumnoj"
-#define STRING_CMD_COLUMNS_ARGS      "Oni ne povas specifi plu de unu serĉĉenon."
-
 #define STRING_CMD_DENO_USAGE        "Viŝas komenton"
 #define STRING_CMD_DENO_NONE         "La specifita tasko ne havas nenian viŝeblan komenton."
 #define STRING_CMD_DENO_CONFIRM      "Malkomenti taskon {1} '{2}'?"

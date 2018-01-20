@@ -317,11 +317,6 @@
 #define STRING_CMD_ANNO_1            "Skomentowano {1} zadanie."
 #define STRING_CMD_ANNO_N            "Skomentowano {1} zadań."
 
-#define STRING_CMD_COLUMNS_USAGE     "Wszystkie kolumny i wspierane style formatowania"
-#define STRING_CMD_COLUMNS_NOTE      "* Oznacza domyślne formatowanie, w konsekwencji niewymagane explicite. Na przykład: 'due' i 'due.formatted' są równoznaczne."
-#define STRING_CMD_COLUMNS_USAGE2    "Wyświetla tylko listę wspieranych kolumn"
-#define STRING_CMD_COLUMNS_ARGS      "Możesz podać tylko jeden szukany ciąg znaków."
-
 #define STRING_CMD_DENO_USAGE        "Usuwa komentarz"
 #define STRING_CMD_DENO_NONE         "Wybrane zadanie nie posiada komentarza do usunięcia."
 #define STRING_CMD_DENO_CONFIRM      "Usunąć komentarz zadania {1} '{2}'?"

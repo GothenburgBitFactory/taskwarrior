@@ -316,11 +316,6 @@
 #define STRING_CMD_ANNO_1            "Aggiunta al task {1}."
 #define STRING_CMD_ANNO_N            "Aggiunte ai task {1}."
 
-#define STRING_CMD_COLUMNS_USAGE     "Tutte le colonne e gli stili di formattazione"
-#define STRING_CMD_COLUMNS_NOTE      "* significa formato di default, quindi opzionale. Per esempio, 'due' e 'due.formatted' sono equivalenti."
-#define STRING_CMD_COLUMNS_USAGE2    "Mostra solo una lista delle colonne supportate"
-#define STRING_CMD_COLUMNS_ARGS      "Può essere specificata solo una stringa di ricerca."
-
 #define STRING_CMD_DENO_USAGE        "Cancella una annotazione"
 #define STRING_CMD_DENO_NONE         "Il task specificato non ha annotazioni che possano essere cancellate."
 #define STRING_CMD_DENO_CONFIRM      "Denotare il task {1} '{2}'?"

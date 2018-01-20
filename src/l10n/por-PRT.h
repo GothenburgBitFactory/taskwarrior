@@ -317,11 +317,6 @@
 #define STRING_CMD_ANNO_1            "Anotada {1} tarefa."
 #define STRING_CMD_ANNO_N            "Anotadas {1} tarefas."
 
-#define STRING_CMD_COLUMNS_USAGE     "Todas as colunas suportadas e os estilos de formatação"
-#define STRING_CMD_COLUMNS_NOTE      "* Significa formato por defeito, e por consequência opcional. Por exemplo 'due' e 'due.formatted' são equivalentes."
-#define STRING_CMD_COLUMNS_USAGE2    "Exibe apenas a lista de colunas suportadas"
-#define STRING_CMD_COLUMNS_ARGS      "Pode apenas especificar uma frase para procura."
-
 #define STRING_CMD_DENO_USAGE        "Elimina uma anotação"
 #define STRING_CMD_DENO_NONE         "A tarefa especificada não tem anotações que possam ser eliminadas."
 #define STRING_CMD_DENO_CONFIRM      "Remover anotação da tarefa {1} '{2}'?"
