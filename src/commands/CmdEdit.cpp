@@ -216,8 +216,8 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
            << "# " << STRING_EDIT_HEADER_12 << '\n'
            << "#\n";
 
-  before << "# " << STRING_EDIT_TABLE_HEADER_1 << '\n'
-         << "# " << STRING_EDIT_TABLE_HEADER_2 << '\n'
+  before << "# Name               Editable details\n"
+         << "# -----------------  ----------------------------------------------------\n"
          << "# ID:                " << task.id                                                 << '\n'
          << "# UUID:              " << task.get ("uuid")                                       << '\n'
          << "# Status:            " << Lexer::ucFirst (Task::statusToText (task.getStatus ())) << '\n'

@@ -563,10 +563,6 @@
 #define STRING_EDIT_HEADER_14        "O separador ' -- ' entre os campos data e texto deverá ser mantido."
 #define STRING_EDIT_HEADER_15        "Segue-se uma \"linha em branco\" onde adicionar anotações para sua conveniência."
 
-// Maintain the same spacing.
-#define STRING_EDIT_TABLE_HEADER_1   "Nome               Detalhes editáveis"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"  // |por-PRT|==|eng-USA|
-
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Erro: "

@@ -561,10 +561,6 @@
 #define STRING_EDIT_HEADER_14        "Die ' -- '-Trennung zwischen Datum und Text darf nicht entfernt werden."
 #define STRING_EDIT_HEADER_15        "Zum einfachen hinzufügen neuer Kommentare folgt ein leeres Kommentarfeld."
 
-// Maintain the same spacing.
-#define STRING_EDIT_TABLE_HEADER_1   "Name               Bearbeitbare Details"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"
-
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Fehler: "

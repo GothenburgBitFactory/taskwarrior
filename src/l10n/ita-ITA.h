@@ -562,10 +562,6 @@
 #define STRING_EDIT_HEADER_14        "Il separatore ' -- ' tra la data e il campo di teso non dovrebbe essere rimosso."
 #define STRING_EDIT_HEADER_15        "Una linea preimpostata per aggiungere una annotazione è stata aggiunta per comodità."
 
-// Maintain the same spacing.
-#define STRING_EDIT_TABLE_HEADER_1   "Nome               Dati modificabili"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"
-
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Errore: "
