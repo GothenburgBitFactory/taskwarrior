@@ -696,25 +696,4 @@
 #define STRING_TASK_SAFETY_ALLOW     "Não especificou um filtro e com o valor de 'allow.empty.filter', nenhuma ação foi tomada."
 #define STRING_TASK_INVALID_COL_TYPE "Unrecognized column type '{1}' for column '{2}'"
 
-// TDB2
-#define STRING_TDB2_PARSE_ERROR      " em {1} na linha {2}"
-#define STRING_TDB2_UUID_NOT_UNIQUE  "Não é possível adicionar a tarefa porque o 'uuid' '{1}' não é único."
-#define STRING_TDB2_MISSING          "Em falta                      {1}  \"{2}\""
-#define STRING_TDB2_NO_UNDO          "Não existem alterações que possam ser revertidas."
-#define STRING_TDB2_LAST_MOD         "A última modificação foi feita {1}"
-#define STRING_TDB2_UNDO_PRIOR       "Valores anteriores"
-#define STRING_TDB2_UNDO_CURRENT     "Valores atuais"
-#define STRING_TDB2_DIFF_PREV        "--- estado prévio "             // Same length
-#define STRING_TDB2_DIFF_PREV_DESC   "Reverter restaurará este estado"//   ||
-#define STRING_TDB2_DIFF_CURR        "+++ estado atual  "             // Same length
-#define STRING_TDB2_DIFF_CURR_DESC   "Alteração efetuada {1}"
-#define STRING_TDB2_UNDO_CONFIRM     "O comando 'undo' não é reversível. Tem a certeza que deseja reverter para o estado anterior?"
-#define STRING_TDB2_MISSING_UUID     "Não foi possível localizar o UUID na tarefa a reverter."
-#define STRING_TDB2_REVERTED         "Tarefa modificada revertida."
-#define STRING_TDB2_REMOVED          "Tarefa removida."
-#define STRING_TDB2_UNDO_COMPLETE    "Reversão concluída."
-#define STRING_TDB2_UNDO_SYNCED      "Não é possível reverter a alteração porque a tarefa já foi syncronizada. Em vez disso modifique a tarefa."
-#define STRING_TDB2_DIRTY_EXIT       "Saindo com modificações por gravar de {1}"
-#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
-
 #endif

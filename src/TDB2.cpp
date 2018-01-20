@@ -36,12 +36,13 @@
 #include <Context.h>
 #include <Color.h>
 #include <Datetime.h>
-#include <i18n.h>
 #include <Table.h>
 #include <shared.h>
 #include <format.h>
 #include <main.h>
 #include <util.h>
+
+#define STRING_TDB2_REVERTED         "Modified task reverted."
 
 extern Context context;
 
@@ -62,8 +63,7 @@ TF2::TF2 ()
 TF2::~TF2 ()
 {
   if (_dirty && TDB2::debug_mode)
-    std::cout << format (STRING_TDB2_DIRTY_EXIT, std::string (_file))
-              << '\n';
+    std::cout << format ("Exiting with unwritten changes to {1}\n", std::string (_file));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -369,7 +369,7 @@ void TF2::load_gc (Task& task)
       context.tdb2.pending._dirty = true;
 
       if (context.verbose ("unwait"))
-        context.footnote (format (STRING_TDB2_UNWAIT, task.get ("description")));
+        context.footnote (format ("Un-waiting task '{1}'", task.get ("description")));
     }
 
     context.tdb2.pending._tasks.push_back (task);
@@ -424,7 +424,7 @@ void TF2::load_tasks (bool from_gc /* = false */)
 
   catch (const std::string& e)
   {
-    throw e + format (STRING_TDB2_PARSE_ERROR, _file._data, line_number);
+    throw e + format (" in {1} at line {2}", _file._data, line_number);
   }
 
   context.time_load_us += timer.total_us ();
@@ -640,7 +640,7 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   // If the tasks are loaded, then verify that this uuid is not already in
   // the file.
   if (!verifyUniqueUUID (uuid))
-    throw format (STRING_TDB2_UUID_NOT_UNIQUE, uuid);
+    throw format ("Cannot add task because the uuid '{1}' is not unique.", uuid);
 
   // Only locally-added tasks trigger hooks.  This means that tasks introduced
   // via 'sync' do not trigger hooks.
@@ -804,7 +804,7 @@ void TDB2::revert ()
   // Display diff and confirm.
   show_diff (current, prior, when);
   if (! context.config.getBoolean ("confirmation") ||
-      confirm (STRING_TDB2_UNDO_CONFIRM))
+      confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
   {
     // There are six kinds of change possible.  Determine which one, and act
     // accordingly.
@@ -859,7 +859,7 @@ void TDB2::revert ()
     File::write (backlog._file._data, b);
   }
   else
-    std::cout << STRING_CMD_CONFIG_NO_CHANGE << '\n';
+    std::cout << "No changes made.\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -871,7 +871,7 @@ void TDB2::revert_undo (
   std::string& prior)
 {
   if (u.size () < 3)
-    throw std::string (STRING_TDB2_NO_UNDO);
+    throw std::string ("There are no recorded transactions to undo.");
 
   // pop last tx
   u.pop_back (); // separator.
@@ -898,7 +898,7 @@ void TDB2::revert_undo (
   if (uuidAtt != std::string::npos)
     uuid = current.substr (uuidAtt + 6, 36); // "uuid:"<uuid>" --> <uuid>
   else
-    throw std::string (STRING_TDB2_MISSING_UUID);
+    throw std::string ("Cannot locate UUID in task to undo.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -925,7 +925,7 @@ void TDB2::revert_pending (
       else
       {
         p.erase (task);
-        std::cout << STRING_TDB2_REMOVED << '\n';
+        std::cout << "Task removed.\n";
       }
 
       break;
@@ -976,7 +976,7 @@ void TDB2::revert_completed (
         context.debug ("TDB::revert_completed - task removed");
       }
 
-      std::cout << STRING_TDB2_UNDO_COMPLETE << '\n';
+      std::cout << "Undo complete.\n";
       break;
     }
   }
@@ -1019,7 +1019,7 @@ void TDB2::revert_backlog (
   }
 
   if (!found)
-    throw std::string (STRING_TDB2_UNDO_SYNCED);
+    throw std::string ("Cannot undo change because the task was already synced.  Modify the task instead.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1037,7 +1037,7 @@ void TDB2::show_diff (
   if (context.config.get ("undo.style") == "side")
   {
     std::cout << '\n'
-              << format (STRING_TDB2_LAST_MOD, lastChange.toString ())
+              << format ("The last modification was made {1}", lastChange.toString ())
               << '\n';
 
     // Attributes are all there is, so figure the different attribute names
@@ -1046,8 +1046,8 @@ void TDB2::show_diff (
     view.width (context.getWidth ());
     view.intraPadding (2);
     view.add ("");
-    view.add (STRING_TDB2_UNDO_PRIOR);
-    view.add (STRING_TDB2_UNDO_CURRENT);
+    view.add ("Prior Values");
+    view.add ("Current Values");
     setHeaderUnderline (view);
 
     Task after (current);
@@ -1145,12 +1145,12 @@ void TDB2::show_diff (
     view.add ("");
 
     int row = view.addRow ();
-    view.set (row, 0, STRING_TDB2_DIFF_PREV, color_red);
-    view.set (row, 1, STRING_TDB2_DIFF_PREV_DESC, color_red);
+    view.set (row, 0, "--- previous state", color_red);
+    view.set (row, 1, "Undo will restore this state", color_red);
 
     row = view.addRow ();
-    view.set (row, 0, STRING_TDB2_DIFF_CURR, color_green);  // Note trailing space.
-    view.set (row, 1, format (STRING_TDB2_DIFF_CURR_DESC,
+    view.set (row, 0, "+++ current state ", color_green);
+    view.set (row, 1, format ("Change made {1}",
                               lastChange.toString (context.config.get ("dateformat"))),
                       color_green);
 

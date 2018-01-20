@@ -694,25 +694,4 @@
 #define STRING_TASK_SAFETY_ALLOW     "Kein Filter angegeben, und durch den konfigurierten 'allow.empty.filter'-Wert wurde keine Aktion durchgeführt."
 #define STRING_TASK_INVALID_COL_TYPE "Nicht erkannter Typ '{1}' für Spalte '{2}'"
 
-// TDB2
-#define STRING_TDB2_PARSE_ERROR      " in {1} in Zeile {2}"
-#define STRING_TDB2_UUID_NOT_UNIQUE  "Kann Aufgabe nicht hinzufügen, weil UUID '{1}' nicht eindeutig ist."
-#define STRING_TDB2_MISSING          "Fehlendes                     {1}  \"{2}\""
-#define STRING_TDB2_NO_UNDO          "Keine rückgängig zu machenden Transaktionen."
-#define STRING_TDB2_LAST_MOD         "Die letzte Änderung wurde {1} durchgeführt"
-#define STRING_TDB2_UNDO_PRIOR       "Vorherige Werte"
-#define STRING_TDB2_UNDO_CURRENT     "Aktuelle Werte"
-#define STRING_TDB2_DIFF_PREV        "--- Vorheriger Zustand"             // Same length
-#define STRING_TDB2_DIFF_PREV_DESC   "undo wird folgenden Zustand wiederherstellen" //   ||
-#define STRING_TDB2_DIFF_CURR        "+++ Aktueller Zustand "             // Same length
-#define STRING_TDB2_DIFF_CURR_DESC   "Change made {1}"
-#define STRING_TDB2_UNDO_CONFIRM     "Der undo-Befehl ist nicht rückgängig zu machen.  Wollen Sie wirklich zum vorherigen Zustand zurückkehren?"
-#define STRING_TDB2_MISSING_UUID     "Kann UUID der rückgängig zu machenden Aufgabe nicht finden."
-#define STRING_TDB2_REVERTED         "Veränderte Aufgabe wiederhergestellt."
-#define STRING_TDB2_REMOVED          "Aufgabe entfernt."
-#define STRING_TDB2_UNDO_COMPLETE    "Rückgängig machen abgeschlossen."
-#define STRING_TDB2_UNDO_SYNCED      "Kann Änderung nicht rückgängig machen, weil die Aufgabe bereits abgeglichen wurde.  Aufgabe stattdessen löschen."
-#define STRING_TDB2_DIRTY_EXIT       "Beende mit ungeschriebenen Änderungen auf {1}"
-#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
-
 #endif

@@ -696,25 +696,4 @@
 #define STRING_TASK_SAFETY_ALLOW     "Brak filtra, z aktywną flagą 'allow.empty.filter', nie podjęto akcji."
 #define STRING_TASK_INVALID_COL_TYPE "Nierozpoznany typ kolumny '{1}' dla kolumny '{2}'"
 
-// TDB2
-#define STRING_TDB2_PARSE_ERROR      " w {1} w lini {2}"
-#define STRING_TDB2_UUID_NOT_UNIQUE  "Nie można dodać zadania ponieważ uuid '{1}' nie jest unikalny."
-#define STRING_TDB2_MISSING          "Brakuje                       {1}  \"{2}\""
-#define STRING_TDB2_NO_UNDO          "Nie ma żadnych zapisanych transakcji do cofnięcia."
-#define STRING_TDB2_LAST_MOD         "Ostatnia dokonana modyfikcaja {1}"
-#define STRING_TDB2_UNDO_PRIOR       "Prior Wartości"
-#define STRING_TDB2_UNDO_CURRENT     "Aktualne Wartości"
-#define STRING_TDB2_DIFF_PREV        "--- poprzedni stan"             // Same length
-#define STRING_TDB2_DIFF_PREV_DESC   "Cofnij przywróci ten stan"      //   ||
-#define STRING_TDB2_DIFF_CURR        "+++ aktualny stan "             // Same length
-#define STRING_TDB2_DIFF_CURR_DESC   "Zmiana w {1}"
-#define STRING_TDB2_UNDO_CONFIRM     "Polecenie cofnij jest nieodwracalne.  Czy jesteś pewien że chcesz przywrócić poprzedni stan?"
-#define STRING_TDB2_MISSING_UUID     "Nie można zlokalizować UUID w zadaniu do cofnięcia."
-#define STRING_TDB2_REVERTED         "Zrewerotowano zmienione zadania."
-#define STRING_TDB2_REMOVED          "Zadanie usunięte."
-#define STRING_TDB2_UNDO_COMPLETE    "Operacja cofnięcia zakończona."
-#define STRING_TDB2_UNDO_SYNCED      "Nie można cofnąć zmian ponieważ zadanie zostało zsynchronizowane.  Zmodyfikuj zadanie."
-#define STRING_TDB2_DIRTY_EXIT       "Zamykanie z niezapisanymi zmianami w {1}"
-#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
-
 #endif
