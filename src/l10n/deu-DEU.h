@@ -522,13 +522,6 @@
 #define STRING_DATE_NOVEMBER         "November"
 #define STRING_DATE_DECEMBER         "Dezember"
 
-#define STRING_DATE_MONDAY           "Montag"
-#define STRING_DATE_TUESDAY          "Dienstag"
-#define STRING_DATE_WEDNESDAY        "Mittwoch"
-#define STRING_DATE_THURSDAY         "Donnerstag"
-#define STRING_DATE_FRIDAY           "Freitag"
-#define STRING_DATE_SATURDAY         "Samstag"
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Aufgabe {1} wird blockiert durch:"
 #define STRING_DEPEND_BLOCKING       "und blockiert:"
