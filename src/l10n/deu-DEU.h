@@ -607,11 +607,6 @@
 #define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
 #define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
 
-// Record
-#define STRING_RECORD_EMPTY          "Leerer Datensatz in der Eingabe."
-#define STRING_RECORD_JUNK_AT_EOL    "Unerkannte Zeichen am Ende der Eingabe."
-#define STRING_RECORD_NOT_FF4        "Datensatz nicht als Format 4 erkannt."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Zeigt alle Konfigurations-Optionen oder eine Teilmenge davon"
 #define STRING_CMD_SHOW_ARGS         "Sie müssen 'all' oder ein Suchwort angeben."

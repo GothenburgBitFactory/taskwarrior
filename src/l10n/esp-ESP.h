@@ -619,11 +619,6 @@
 #define STRING_HELPER_PROJECT_REM    "({1} de {2} tareas restantes)."
 #define STRING_HELPER_PROJECT_REM1   "({1} tarea restante)."
 
-// Record
-#define STRING_RECORD_EMPTY          "Registro vacío en la entrada."
-#define STRING_RECORD_JUNK_AT_EOL    "Caracteres no reconocidos al final de línea."
-#define STRING_RECORD_NOT_FF4        "Registro no reconocido como formato 4."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Muestra todas las variables de configuración o un subconjunto"
 #define STRING_CMD_SHOW_ARGS         "Solo puede especificar 'all' o un término de búsqueda."

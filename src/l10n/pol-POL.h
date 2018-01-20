@@ -609,11 +609,6 @@
 #define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
 #define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
 
-// Record
-#define STRING_RECORD_EMPTY          "Pusty wpis na wejściu."
-#define STRING_RECORD_JUNK_AT_EOL    "Nierozpoznawalny znak na koncu lini."
-#define STRING_RECORD_NOT_FF4        "Wpis nie rozpoznany jako wersja 4."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Pokazuje wszystkie zmienne konfiguracji lub ich podzbiór"
 #define STRING_CMD_SHOW_ARGS         "Możesz jedynie wybrać wszystkie lub wyszukać na podstawie ciągu."
