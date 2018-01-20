@@ -109,7 +109,7 @@ int CmdProjects::execute (std::string& output)
     Table view;
     view.width (context.getWidth ());
     view.add (STRING_COLUMN_LABEL_PROJECT);
-    view.add (STRING_COLUMN_LABEL_TASKS, false);
+    view.add ("Tasks", false);
     setHeaderUnderline (view);
 
     std::vector <std::string> processed;
