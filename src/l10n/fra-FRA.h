@@ -196,14 +196,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_DONE_USAGE        "Marque la tâche spécifiée comme terminée"
-#define STRING_CMD_DONE_CONFIRM      "Terminer la tâche {1} '{2}'?"
-#define STRING_CMD_DONE_TASK         "Tâche {1} '{2}' terminée."
-#define STRING_CMD_DONE_NO           "Tâche non terminée."
-#define STRING_CMD_DONE_NOTPEND      "Tâche {1} '{2}' n'est plus ni en cours, ni en attente."
-#define STRING_CMD_DONE_1            "{1} tâche terminée."
-#define STRING_CMD_DONE_N            "{1} tâches terminées."
-
 #define STRING_CMD_PROJECTS_USAGE    "Shows all project names used"
 #define STRING_CMD_PROJECTS_USAGE_2  "Shows only a list of all project names used"
 #define STRING_CMD_PROJECTS_NO       "No projects."

@@ -194,14 +194,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_DONE_USAGE        "Markas la specifatan taskon kiel finita"
-#define STRING_CMD_DONE_CONFIRM      "Fini taskon {1} '{2}'?"
-#define STRING_CMD_DONE_TASK         "Finis taskon {1} '{2}'."
-#define STRING_CMD_DONE_NO           "Tasko nefinita."
-#define STRING_CMD_DONE_NOTPEND      "La tasko {1} '{2}' ne estas ni pendanta ni atendanta."
-#define STRING_CMD_DONE_1            "Finis {1} taskon."
-#define STRING_CMD_DONE_N            "Finis {1} taskojn."
-
 #define STRING_CMD_PROJECTS_USAGE    "Montras la uzatajn projekt-nomojn"
 #define STRING_CMD_PROJECTS_USAGE_2  "Montras sole liston de ĉia uzata projekt-nomo"
 #define STRING_CMD_PROJECTS_NO       "Nenia projekto."

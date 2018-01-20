@@ -41,7 +41,7 @@ CmdDone::CmdDone ()
 {
   _keyword               = "done";
   _usage                 = "task <filter> done <mods>";
-  _description           = STRING_CMD_DONE_USAGE;
+  _description           = "Marks the specified task as completed";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -80,7 +80,7 @@ int CmdDone::execute (std::string&)
         task.getStatus () == Task::waiting)
     {
       // Complete the specified task.
-      std::string question = format (STRING_CMD_DONE_CONFIRM,
+      std::string question = format ("Complete task {1} '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
 
@@ -102,7 +102,7 @@ int CmdDone::execute (std::string&)
         updateRecurrenceMask (task);
         context.tdb2.modify (task);
         ++count;
-        feedback_affected (STRING_CMD_DONE_TASK, task);
+        feedback_affected ("Completed task {1} '{2}'.", task);
         feedback_unblocked (task);
         if (!nagged)
           nagged = nag (task);
@@ -112,7 +112,7 @@ int CmdDone::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_DONE_NO << '\n';
+        std::cout << "Task not completed.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -120,7 +120,7 @@ int CmdDone::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_DONE_NOTPEND,
+      std::cout << format ("Task {1} '{2}' is neither pending nor waiting.",
                            task.identifier (true),
                            task.get ("description"))
                 << '\n';
@@ -133,7 +133,7 @@ int CmdDone::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_DONE_1 : STRING_CMD_DONE_N, count);
+  feedback_affected (count == 1 ? "Completed {1} task." : "Completed {1} tasks.", count);
   return rc;
 }
 
