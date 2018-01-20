@@ -473,7 +473,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_DETAILS         "Die Option 'calendar.details.report' muss einen einzelnen Report-Namen enthalten."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 
 // Feedback
