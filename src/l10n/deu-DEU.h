@@ -445,7 +445,6 @@
 #define STRING_CMD_CONFIG_CONFIRM3   "Wirklich die Option '{1}' entfernen?"
 #define STRING_CMD_CONFIG_NO_ENTRY   "Kein Eintrag '{1}' gefunden."
 #define STRING_CMD_CONFIG_FILE_MOD   "Konfigurationsdatei {1} verändert."
-#define STRING_CMD_CONFIG_NO_CHANGE  "Keine Änderungen durchgeführt."
 #define STRING_CMD_CONFIG_NO_NAME    "Geben Sie den Wert der zu ändernden Option an."
 #define STRING_CMD_HCONFIG_USAGE     "Zeigt alle unterstützten Konfigurations-Optionen zur AUtovervollständigung"
 #define STRING_CMD_CONTEXT_USAGE     "Set and define contexts (default filters)"

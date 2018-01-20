@@ -445,7 +445,6 @@
 #define STRING_CMD_CONFIG_CONFIRM3   "Are you sure you want to remove '{1}'?"
 #define STRING_CMD_CONFIG_NO_ENTRY   "No entry named '{1}' found."
 #define STRING_CMD_CONFIG_FILE_MOD   "Agorda dosiero {1} modifita."
-#define STRING_CMD_CONFIG_NO_CHANGE  "Ne ŝanĝis nenion."
 #define STRING_CMD_CONFIG_NO_NAME    "Specifu la nomon de agordvariablo, kiun vi volas modifi."
 #define STRING_CMD_HCONFIG_USAGE     "Listigas çiun subtenatan agordan variablon, por motivo memkompletada"
 #define STRING_CMD_CONTEXT_USAGE     "Set and define contexts (default filters)"

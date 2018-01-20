@@ -447,7 +447,6 @@
 #define STRING_CMD_CONFIG_CONFIRM3   "Are you sure you want to remove '{1}'?"
 #define STRING_CMD_CONFIG_NO_ENTRY   "No entry named '{1}' found."
 #define STRING_CMD_CONFIG_FILE_MOD   "Config file {1} modified."
-#define STRING_CMD_CONFIG_NO_CHANGE  "No changes made."
 #define STRING_CMD_CONFIG_NO_NAME    "Specify the name of a config variable to modify."
 #define STRING_CMD_HCONFIG_USAGE     "Lists all supported configuration variables, for completion purposes"
 #define STRING_CMD_CONTEXT_USAGE     "Set and define contexts (default filters)"
