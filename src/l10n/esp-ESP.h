@@ -44,9 +44,6 @@
 #define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"
 #define STRING_PARSER_UNEXPECTED_ARG "El comando '{1}' no permite '{2}'."
 
-// Color
-#define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nombre de columna no reconocido '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Formato de columna no reconocido '{1}.{2}'"

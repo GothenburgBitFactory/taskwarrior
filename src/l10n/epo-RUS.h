@@ -44,9 +44,6 @@
 #define STRING_PARSER_ALTERNATE_DATA "Uzanta alterna data.location {1}"
 #define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
 
-// Color
-#define STRING_COLOR_UNRECOGNIZED    "Koloro '{1}' ne rekonata."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nekonata kolumna nomo '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Nekonata kolumna formiĝo '{1}.{2}'"

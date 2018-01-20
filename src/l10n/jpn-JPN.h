@@ -44,9 +44,6 @@
 #define STRING_PARSER_ALTERNATE_DATA "代替の data.location {1} を使用"
 #define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
 
-// Color
-#define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "認識できないカラム名 '{1}'。"
 #define STRING_COLUMN_BAD_FORMAT     "認識出来ないカラム形式 '{1}.{2}'"
