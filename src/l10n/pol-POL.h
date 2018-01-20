@@ -475,7 +475,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_INVALID_MOD           "Atrybut '{1}' nie zezwala na wartość '{2}'."
 #define STRING_ERROR_DETAILS         "Zmienna 'calendar.details.report' musi zawierać nazwę raportu."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 

@@ -31,7 +31,8 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <format.h>
-#include <i18n.h>
+
+#define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
 
 extern Context context;
 extern Task& contextTask;
