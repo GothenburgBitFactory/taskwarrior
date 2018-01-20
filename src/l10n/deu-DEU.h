@@ -504,7 +504,6 @@
 #define STRING_CONFIG_DEPRECATED_VAR "Ihre .taskrc-Datei enthält veraltete Optionen:"
 
 // Date
-#define STRING_DATE_INVALID_FORMAT   "'{1}' ist kein gültiges Datum im '{2}'-Format."
 #define STRING_DATE_BAD_WEEKSTART    "Die 'weekstart'-Konfigurationsoption darf nur 'Sunday' oder 'Monday' lauten."
 
 // dependency

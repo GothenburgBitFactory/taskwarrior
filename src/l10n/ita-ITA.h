@@ -505,7 +505,6 @@
 #define STRING_CONFIG_DEPRECATED_VAR "Il file .taskrc contiene variabili deprecate:"
 
 // Date
-#define STRING_DATE_INVALID_FORMAT   "'{1}' non è una data valida nel formato '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "La variabile di configurazione 'weekstart' può solo contenere 'Domenica' o 'Lunedì'."
 
 // dependency

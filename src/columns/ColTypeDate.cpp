@@ -242,7 +242,7 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
   // If a date doesn't parse (2/29/2014) then it evaluates to zero.
   if (value != "" &&
       evaluatedValue.get_date () == 0)
-    throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
+    throw format ("'{1}' is not a valid date in the '{2}' format.", value, Variant::dateFormat);
 
   task.set (_name, evaluatedValue.get_date ());
 }
