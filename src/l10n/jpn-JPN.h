@@ -487,7 +487,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
 #define STRING_UDA_TYPE              "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'."
 #define STRING_UDA_COLLISION         "The UDA named '{1}' is the same as a core attribute, and is not permitted."
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."

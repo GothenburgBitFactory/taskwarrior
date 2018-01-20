@@ -487,7 +487,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_INFINITE_LOOP         "Substituição terminada. Efectuadas mais de {1} alterações - protecção de ciclos infinitos."
 #define STRING_UDA_TYPE              "Atributos definidos pelo utilizador (UDAs) apenas podem ser do tipo 'texto', 'data', 'duração' ou 'numérico'."
 #define STRING_UDA_COLLISION         "O UDA '{1}' tem o mesmo nome que um atributo interno, tal não é permitido."
 #define STRING_INVALID_MOD           "O atributo '{1}' não permite o valor '{2}'."
