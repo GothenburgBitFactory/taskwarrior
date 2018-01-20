@@ -524,7 +524,6 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "Konnte keine Abhängigkeit zu Aufgabe {1} löschen - nicht gefunden."
 #define STRING_TASK_DEPEND_DUP       "Aufgabe {1} hängt bereits von Aufgabe {2} ab."
 #define STRING_TASK_DEPEND_CIRCULAR  "Verbotene zyklische Abhängigkeit erkannt."
-#define STRING_TASK_VALID_DESC       "Aufgaben müssen eine Beschreibung haben."
 #define STRING_TASK_VALID_BLANK      "Leere Aufgaben können nicht angelegt werden."
 #define STRING_TASK_VALID_BEFORE     "Warnung: Das '{1}'-Datum ist nach dem '{2}'-Datum."
 #define STRING_TASK_VALID_REC_DUE    "Wiederholende Aufgaben müssen eine Fälligkeit besitzen."

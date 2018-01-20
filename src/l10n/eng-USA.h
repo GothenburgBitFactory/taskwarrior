@@ -521,7 +521,6 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "Could not delete a dependency on task {1} - not found."
 #define STRING_TASK_DEPEND_DUP       "Task {1} already depends on task {2}."
 #define STRING_TASK_DEPEND_CIRCULAR  "Circular dependency detected and disallowed."
-#define STRING_TASK_VALID_DESC       "A task must have a description."
 #define STRING_TASK_VALID_BLANK      "Cannot add a task that is blank."
 #define STRING_TASK_VALID_BEFORE     "Warning: You have specified that the '{1}' date is after the '{2}' date."
 #define STRING_TASK_VALID_REC_DUE    "A recurring task must also have a 'due' date."

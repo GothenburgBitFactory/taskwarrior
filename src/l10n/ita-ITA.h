@@ -525,7 +525,6 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "Impossibile cancellare la dipendenza dal task {1} - non trovato."
 #define STRING_TASK_DEPEND_DUP       "Task {1} già dipende da {2}."
 #define STRING_TASK_DEPEND_CIRCULAR  "Dipendenza circolare riscontrata ed evitata."
-#define STRING_TASK_VALID_DESC       "Un task deve avere una descrizione."
 #define STRING_TASK_VALID_BLANK      "Impossibile aggiungere un task vuoto."
 #define STRING_TASK_VALID_BEFORE     "Warning: data '{1}' con valore successivo alla data '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Un task periodico deve avere una data di scadenza."

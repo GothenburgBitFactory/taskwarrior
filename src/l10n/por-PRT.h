@@ -526,7 +526,6 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "Não foi possível eliminar a dependência da tarefa {1} - esta não existe."
 #define STRING_TASK_DEPEND_DUP       "Tarefa {1} já depende da tarefa {2}."
 #define STRING_TASK_DEPEND_CIRCULAR  "Dependência circular detetada e não permitida."
-#define STRING_TASK_VALID_DESC       "Uma tarefa necessita de uma descrição."
 #define STRING_TASK_VALID_BLANK      "Não é possível adicionar uma tarefa em branco."
 #define STRING_TASK_VALID_BEFORE     "Aviso: Especificou que a data de '{1}' é posterior à data de '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Uma tarefa recorrente necessita de uma data de vencimento."
