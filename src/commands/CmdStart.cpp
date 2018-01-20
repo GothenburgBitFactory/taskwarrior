@@ -41,7 +41,7 @@ CmdStart::CmdStart ()
 {
   _keyword               = "start";
   _usage                 = "task <filter> start <mods>";
-  _description           = STRING_CMD_START_USAGE;
+  _description           = "Marks specified task as started";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -79,7 +79,7 @@ int CmdStart::execute (std::string&)
       Task before (task);
 
       // Start the specified task.
-      std::string question = format (STRING_CMD_START_CONFIRM,
+      std::string question = format ("Start task {1} '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
       task.modify (Task::modAnnotate);
@@ -100,7 +100,7 @@ int CmdStart::execute (std::string&)
         updateRecurrenceMask (task);
         context.tdb2.modify (task);
         ++count;
-        feedback_affected (STRING_CMD_START_TASK, task);
+        feedback_affected ("Starting task {1} '{2}'.", task);
         if (!nagged)
           nagged = nag (task);
         dependencyChainOnStart (task);
@@ -109,7 +109,7 @@ int CmdStart::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_START_NO << '\n';
+        std::cout << "Task not started.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -117,7 +117,7 @@ int CmdStart::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_START_ALREADY,
+      std::cout << format ("Task {1} '{2}' already started.",
                            task.id,
                            task.get ("description"))
                 << '\n';
@@ -130,7 +130,7 @@ int CmdStart::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_START_1 : STRING_CMD_START_N, count);
+  feedback_affected (count == 1 ? "Started {1} task." : "Started {1} tasks.", count);
   return rc;
 }
 

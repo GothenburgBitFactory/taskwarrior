@@ -106,7 +106,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_CONFLICT          "Raport urzytkownika '{1}' jest w konflikcie z wbudowanym poleceniem."
 #define STRING_CMD_VERSION_USAGE     "Pokazuje wersję programu taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Pokazuje numer wersji programu taskwarrior"
 #define STRING_CMD_VERSION_DOCS      "Dokumentację dla taskwarrior można znaleźć z pomocą 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' lub pod adresem http://taskwarrior.org"
@@ -260,14 +259,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Oznacza zadanie jako uruchomione"
-#define STRING_CMD_START_NO          "Zadanie nie uruchomione"
-#define STRING_CMD_START_ALREADY     "Zadanie {1} '{2}' jest już uruchomione"
-#define STRING_CMD_START_TASK        "Uruchamianie zadania {1} '{2}'"
-#define STRING_CMD_START_CONFIRM     "Uruchomić zadanie {1} '{2}'?"
-#define STRING_CMD_START_1           "Uruchomiono {1} zadanie."
-#define STRING_CMD_START_N           "Uruchomiono {1} zadań."
 
 #define STRING_CMD_STOP_USAGE        "Usuwa marker 'start' z zadania"
 #define STRING_CMD_STOP_NO           "Zadanie nie zatrzymane"

@@ -106,7 +106,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_CONFLICT          "Le rapport personnalisé '{1}' entre en conflit avec une commande prédéfinie de task."
 #define STRING_CMD_VERSION_USAGE     "Affiche le numéro de version de taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Affiche uniquement le numéro de version de taskwarrior"
 #define STRING_CMD_VERSION_DOCS      "On peut trouver les documents de taskwarrior en utilisant 'man task', 'man taskrc', 'man task-color', 'man task-sync', ou chez http://taskwarrior.org"
@@ -260,14 +259,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Marks specified task as started"
-#define STRING_CMD_START_NO          "Tâche non démarrée."
-#define STRING_CMD_START_ALREADY     "Tâche {1} '{2}' déjà démarré."
-#define STRING_CMD_START_TASK        "Starting task {1} '{2}'."
-#define STRING_CMD_START_CONFIRM     "Start task {1} '{2}'?"
-#define STRING_CMD_START_1           "Started {1} task."
-#define STRING_CMD_START_N           "Started {1} tasks."
 
 #define STRING_CMD_STOP_USAGE        "Suppression de l'attribut 'start' d'une tâche"
 #define STRING_CMD_STOP_NO           "Tâche non arrếtée"

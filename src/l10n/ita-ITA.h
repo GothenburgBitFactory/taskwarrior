@@ -105,7 +105,6 @@
 #define STRING_COLUMN_EXAMPLES_ANNO4 "Se non si va a tagliare i capelli"
 
 // commands/Cmd*
-#define STRING_CMD_CONFLICT          "Report personalizzato '{1}' provoca conflitto con un comando standard."
 #define STRING_CMD_VERSION_USAGE     "Mostra il numero di versione di taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Mostra solo il numero di versione di taskwarrior"
 #define STRING_CMD_VERSION_DOCS      "La documentazione di taskwarrior è consultabile con 'man task', 'man taskrc', 'man task-color', 'man task-sync' o presso http://taskwarrior.org"
@@ -259,14 +258,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Contrassegna i task specificati come avviati"
-#define STRING_CMD_START_NO          "Task non avviato."
-#define STRING_CMD_START_ALREADY     "Task {1} '{2}' già avviati."
-#define STRING_CMD_START_TASK        "Avvio task {1} '{2}'."
-#define STRING_CMD_START_CONFIRM     "Avviare task {1} '{2}'?"
-#define STRING_CMD_START_1           "Task {1} avviato."
-#define STRING_CMD_START_N           "Task {1} avviati."
 
 #define STRING_CMD_STOP_USAGE        "Rimuove il tempo di 'avvio' dal task"
 #define STRING_CMD_STOP_NO           "Task non fermato."
