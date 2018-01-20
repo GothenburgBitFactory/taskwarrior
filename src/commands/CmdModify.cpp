@@ -34,6 +34,9 @@
 #include <shared.h>
 #include <i18n.h>
 
+#define STRING_CMD_MODIFY_TASK_R     "Modifying recurring task {1} '{2}'."
+#define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
+
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +44,7 @@ CmdModify::CmdModify ()
 {
   _keyword               = "modify";
   _usage                 = "task <filter> modify <mods>";
-  _description           = STRING_CMD_MODIFY_USAGE1;
+  _description           = "Modifies the existing task with provided arguments.";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -81,7 +84,7 @@ int CmdModify::execute (std::string&)
       // Abort if change introduces inconsistencies.
       checkConsistency(before, task);
 
-      auto question = format (STRING_CMD_MODIFY_CONFIRM,
+      auto question = format ("Modify task {1} '{2}'?",
                               task.identifier (true),
                               task.get ("description"));
 
@@ -91,7 +94,7 @@ int CmdModify::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_MODIFY_NO << '\n';
+        std::cout << "Task not modified.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -104,7 +107,7 @@ int CmdModify::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_MODIFY_1 : STRING_CMD_MODIFY_N, count);
+  feedback_affected (count == 1 ?  "Modified {1} task." : "Modified {1} tasks.", count);
   return rc;
 }
 
@@ -116,18 +119,18 @@ void CmdModify::checkConsistency (Task &before, Task &after)
   if (after.has ("recur")  &&
       ! after.has ("due")   &&
       ! before.has ("due"))
-    throw std::string (STRING_CMD_MODIFY_NO_DUE);
+    throw std::string ("You cannot specify a recurring task without a due date.");
 
   if (before.has ("recur") &&
       before.has ("due")   &&
       (! after.has ("due")  ||
         after.get ("due") == ""))
-    throw std::string (STRING_CMD_MODIFY_REM_DUE);
+    throw std::string ("You cannot remove the due date from a recurring task.");
 
   if (before.has ("recur")  &&
       (! after.has ("recur") ||
         after.get ("recur") == ""))
-    throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
+    throw std::string ("You cannot remove the recurrence from a recurring task.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,7 +142,7 @@ int CmdModify::modifyAndUpdate (
   auto count = 1;
 
   updateRecurrenceMask (after);
-  feedback_affected (STRING_CMD_MODIFY_TASK, after);
+  feedback_affected ("Modifying task {1} '{2}'.", after);
   feedback_unblocked (after);
   context.tdb2.modify (after);
   if (context.verbose ("project") && projectChanges)
