@@ -504,7 +504,6 @@
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_ERROR_DETAILS         "El ajuste 'calendar.details.report' debe contener un único nombre de informe."
 #define STRING_ERROR_NO_FILTER       "Los filtros de línea de comando no están soportados por este comando."
-#define STRING_ERROR_BAD_STATUS      "El estatus '{1}' no es válido."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
