@@ -534,7 +534,7 @@ void CLI2::analyze ()
   {
     defaultCommand ();
     if (! findCommand ())
-      throw std::string (STRING_TRIVIAL_INPUT);
+      throw std::string ("You must specify a command or a task to modify.");
   }
 
   demotion ();

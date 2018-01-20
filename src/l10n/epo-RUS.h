@@ -487,7 +487,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_TRIVIAL_INPUT         "Oni devas specifi komandon, aŭ taskon ke vi volas modifi."
 #define STRING_INFINITE_LOOP         "Finis anstataŭon ĉar ekzistas pli de {1} ŝanĝoj - protekto kontraŭ senfina ripeton."
 #define STRING_UDA_TYPE              "La tipo de uzanto-definitaj atributoj devas esti 'string', 'date', 'duration', aŭ 'numeric'."
 #define STRING_UDA_COLLISION         "UDA '{1}' kaj enkonstruita atributo havas la saman nomon.  Tio estas malpermesita."
