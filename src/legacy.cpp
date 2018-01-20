@@ -121,8 +121,7 @@ std::string legacyCheckForDeprecatedVariables ()
   std::stringstream out;
   if (deprecated.size ())
   {
-    out << STRING_CONFIG_DEPRECATED_VAR
-        << "\n";
+    out << "Your .taskrc file contains variables that are deprecated:\n";
 
     for (const auto& dep : deprecated)
       out << "  " << dep << "\n";

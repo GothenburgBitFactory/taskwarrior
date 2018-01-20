@@ -503,7 +503,6 @@
 #define STRING_CONFIG_INCLUDE_PATH   "Apenas é permitido incluir ficheiros com caminhos absolutos, não '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Entrada anómala '{1}' no ficheiro de configuração."
 #define STRING_CONFIG_DEPRECATED_COL "O seu ficheiro .taskrc contém relatórios com colunas obsoletas. Verifique entry_time, start_time e end_time em:"
-#define STRING_CONFIG_DEPRECATED_VAR "O seu ficheiro .taskrc contém variáveis obsoletas:"
 
 // dependency
 #define STRING_DEPEND_BLOCKED        "Tarefa {1} encontra-se bloqueada por:"
