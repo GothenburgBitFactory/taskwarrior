@@ -39,7 +39,6 @@
 #define STRING_COLUMN_LABEL_MOD      "Zmienione"
 #define STRING_COLUMN_LABEL_ADDED    "Dodane"
 #define STRING_COLUMN_LABEL_AGE      "Wiek"
-#define STRING_COLUMN_LABEL_ID       "ID"
 #define STRING_COLUMN_LABEL_PROJECT  "Projekt"
 #define STRING_COLUMN_LABEL_UNTIL    "Do"
 #define STRING_COLUMN_LABEL_WAIT     "Czeka"

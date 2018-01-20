@@ -39,7 +39,6 @@
 #define STRING_COLUMN_LABEL_MOD      "Modifo"
 #define STRING_COLUMN_LABEL_ADDED    "Kreita"
 #define STRING_COLUMN_LABEL_AGE      "Aĝo"
-#define STRING_COLUMN_LABEL_ID       "ID"
 #define STRING_COLUMN_LABEL_PROJECT  "Projekto"
 #define STRING_COLUMN_LABEL_UNTIL    "Ĝis"
 #define STRING_COLUMN_LABEL_WAIT     "Atendu"
