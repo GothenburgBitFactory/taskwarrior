@@ -692,25 +692,4 @@
 #define STRING_TASK_SAFETY_ALLOW     "Vi ne specifis filtrilon. Laŭ la valoro 'allow.empty.filter', ne faros nenion."
 #define STRING_TASK_INVALID_COL_TYPE "Unrecognized column type '{1}' for column '{2}'"
 
-// TDB2
-#define STRING_TDB2_PARSE_ERROR      " en {1} ĉe vico {2}"
-#define STRING_TDB2_UUID_NOT_UNIQUE  "Ne povis krei la taskon ĉar UUID-identigilo '{}' ne estas unika."
-#define STRING_TDB2_MISSING          "Mankanta                      {1}  \"{2}\""
-#define STRING_TDB2_NO_UNDO          "Ne estas nenia registrita ago por malfari."
-#define STRING_TDB2_LAST_MOD         "Laste modifis ĝin je {1}"
-#define STRING_TDB2_UNDO_PRIOR       "Antaŭaj Valoroj"
-#define STRING_TDB2_UNDO_CURRENT     "Aktualaj Valoroj"
-#define STRING_TDB2_DIFF_PREV        "--- antaŭa stato "               // Same length
-#define STRING_TDB2_DIFF_PREV_DESC   "Malfarado restaŭros tiun staton" //   ||
-#define STRING_TDB2_DIFF_CURR        "+++ aktuala stato"               // Same length
-#define STRING_TDB2_DIFF_CURR_DESC   "Ŝanĝis tion je {1}"
-#define STRING_TDB2_UNDO_CONFIRM     "Komando 'undo' ne estas inversigebla.  Ĉu vi estas certa, ke vi volas reveni al la antaŭa stato?"
-#define STRING_TDB2_MISSING_UUID     "Ne povis loki UUID-identigilon en tasko, do ne povos malfari."
-#define STRING_TDB2_REVERTED         "Revenis taskon al la antaŭa stato."
-#define STRING_TDB2_REMOVED          "Elprenis taskon."
-#define STRING_TDB2_UNDO_COMPLETE    "Malfaris komplete."
-#define STRING_TDB2_UNDO_SYNCED      "Ne povos malfari ŝanĝon ĉar la tasko estis jam sinkronigita.  Modifu anstataŭe la taskon."
-#define STRING_TDB2_DIRTY_EXIT       "Eliranta kun neskribitajn ŝanĝojn al {1}"
-#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
-
 #endif

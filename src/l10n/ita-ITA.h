@@ -693,25 +693,4 @@
 #define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
 #define STRING_TASK_INVALID_COL_TYPE "Unrecognized column type '{1}' for column '{2}'"
 
-// TDB2
-#define STRING_TDB2_PARSE_ERROR      " in {1} alla linea {2}"
-#define STRING_TDB2_UUID_NOT_UNIQUE  "Impossibile aggiungere il task in quanto l'uuid '{1}' non è unico."
-#define STRING_TDB2_MISSING          "Mancante                       {1}  \"{2}\""
-#define STRING_TDB2_NO_UNDO          "Nessuna transazione memorizzata da ripristinare."
-#define STRING_TDB2_LAST_MOD         "L'ultima modifica è stat effettuata {1}"
-#define STRING_TDB2_UNDO_PRIOR       "Valori precedenti"
-#define STRING_TDB2_UNDO_CURRENT     "Valori correnti"
-#define STRING_TDB2_DIFF_PREV        "--- stato precedente"             // Same length
-#define STRING_TDB2_DIFF_PREV_DESC   "L'undo ripristinerà questo stato"   //   ||
-#define STRING_TDB2_DIFF_CURR        "+++ stato corrente "             // Same length
-#define STRING_TDB2_DIFF_CURR_DESC   "Modifiche effettuate {1}"
-#define STRING_TDB2_UNDO_CONFIRM     "Il comando undo non è reversibile. Sicuro di voler ripristinare lo stato precedente?"
-#define STRING_TDB2_MISSING_UUID     "Impossibile individuare l'UUID nel task da ripristinare."
-#define STRING_TDB2_REVERTED         "Modifiche al task ripristinate."
-#define STRING_TDB2_REMOVED          "Task rimosso."
-#define STRING_TDB2_UNDO_COMPLETE    "Undo completato."
-#define STRING_TDB2_UNDO_SYNCED      "Cannot undo change because the task was already synced.  Modify the task instead."
-#define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
-#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
-
 #endif

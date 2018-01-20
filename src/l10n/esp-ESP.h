@@ -704,26 +704,4 @@
 #define STRING_TASK_SAFETY_ALLOW     "No especificó un filtro, y con el valor de 'allow.empty.filter', no se toma ninguna acción."
 #define STRING_TASK_INVALID_COL_TYPE "Tipo de columna no reconocido '{1}' para la columna '{2}'"
 
-// TDB2
-#define STRING_TDB2_PARSE_ERROR      " en {1} en la línea {2}"
-#define STRING_TDB2_UUID_NOT_UNIQUE  "No se puede añadir la tarea porque el uuid '{1}' no es único."
-
-#define STRING_TDB2_MISSING          "Falta                         {1}  \"{2}\""
-#define STRING_TDB2_NO_UNDO          "No hay transacciones registradas para deshacer."
-#define STRING_TDB2_LAST_MOD         "La última modificación fue hecha {1}"
-#define STRING_TDB2_UNDO_PRIOR       "Valores Previos"
-#define STRING_TDB2_UNDO_CURRENT     "Valores Actuales"
-#define STRING_TDB2_DIFF_PREV        "--- estado previo "             // Same length
-#define STRING_TDB2_DIFF_PREV_DESC   "Deshacer restaurará este estado"//   ||
-#define STRING_TDB2_DIFF_CURR        "+++ estado actual "             // Same length
-#define STRING_TDB2_DIFF_CURR_DESC   "Cambio hecho {1}"
-#define STRING_TDB2_UNDO_CONFIRM     "El comando undo es irreversible. ¿Está seguro de querer revertir al estado anterior?"
-#define STRING_TDB2_MISSING_UUID     "No se pudo localizar el UUID en la tarea a deshacer."
-#define STRING_TDB2_REVERTED         "Tarea modificada revertida."
-#define STRING_TDB2_REMOVED          "Tarea eliminada."
-#define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
-#define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
-#define STRING_TDB2_DIRTY_EXIT       "Saliendo con cambios sin escribir a {1}"
-#define STRING_TDB2_UNWAIT           "Tarea no en espera '{1}'"
-
 #endif
