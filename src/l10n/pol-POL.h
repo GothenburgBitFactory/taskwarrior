@@ -28,7 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_LABEL_TASKS    "Zadania"
 #define STRING_COLUMN_LABEL_DEP      "Związane"
 #define STRING_COLUMN_LABEL_DEP_S    "Zwi"
 #define STRING_COLUMN_LABEL_DESC     "Opis"

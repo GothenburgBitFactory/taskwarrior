@@ -28,7 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_LABEL_TASKS    "Tasko"
 #define STRING_COLUMN_LABEL_DEP      "Dependoj"
 #define STRING_COLUMN_LABEL_DEP_S    "Dep"
 #define STRING_COLUMN_LABEL_DESC     "Priskribo"
