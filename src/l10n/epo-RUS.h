@@ -256,14 +256,6 @@
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
 
-#define STRING_CMD_STOP_USAGE        "Viŝas la ek-tempon de tasko"
-#define STRING_CMD_STOP_NO           "Tasko ne haltita."
-#define STRING_CMD_STOP_ALREADY      "Tasko {1} '{2}' ne ekita."
-#define STRING_CMD_STOP_TASK         "Haltanta taskon {1} '{2}'."
-#define STRING_CMD_STOP_CONFIRM      "Halti taskon {1} '{2}'?"
-#define STRING_CMD_STOP_1            "Haltis {1} taskon."
-#define STRING_CMD_STOP_N            "Haltis {1} taskojn."
-
 #define STRING_CMD_APPEND_USAGE      "Aldonas tekston post task-priskribo"
 #define STRING_CMD_APPEND_1          "Aldonis al {1} tasko."
 #define STRING_CMD_APPEND_N          "Aldonis al {1} taskoj."

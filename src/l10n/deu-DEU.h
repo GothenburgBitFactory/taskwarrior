@@ -256,14 +256,6 @@
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
 
-#define STRING_CMD_STOP_USAGE        "Entfernt die 'start'-Zeit einer Aufgabe"
-#define STRING_CMD_STOP_NO           "Aufgabe nicht beendet."
-#define STRING_CMD_STOP_ALREADY      "Aufgabe {1} '{2}' nicht beendet."
-#define STRING_CMD_STOP_TASK         "Beende Aufgabe {1} '{2}'."
-#define STRING_CMD_STOP_CONFIRM      "Aufgabe {1} '{2}' beenden?"
-#define STRING_CMD_STOP_1            "{1} Aufgabe beendet."
-#define STRING_CMD_STOP_N            "{1} Aufgaben beendet."
-
 #define STRING_CMD_APPEND_USAGE      "Fügt einer Aufgabenbeschreibung Text hinzu"
 #define STRING_CMD_APPEND_1          "Zu {1} Aufgabe hinzugefügt."
 #define STRING_CMD_APPEND_N          "Zu {1} Aufgaben hinzugefügt."

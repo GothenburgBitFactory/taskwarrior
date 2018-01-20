@@ -258,14 +258,6 @@
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
 
-#define STRING_CMD_STOP_USAGE        "Removes the 'start' time from a task"
-#define STRING_CMD_STOP_NO           "Task は停止できません。"
-#define STRING_CMD_STOP_ALREADY      "Task {1} '{2}' は停止できません。"
-#define STRING_CMD_STOP_TASK         "task {1} '{2}' を停止中。"
-#define STRING_CMD_STOP_CONFIRM      "task {1} '{2}' を停止?"
-#define STRING_CMD_STOP_1            "{1} タスク を停止。"
-#define STRING_CMD_STOP_N            "{1} タスク を停止。"
-
 #define STRING_CMD_APPEND_USAGE      "存在する task 説明文にテキストを追加"
 #define STRING_CMD_APPEND_1          "{1} タスク を追加。"
 #define STRING_CMD_APPEND_N          "{1} タスク を追加。"
