@@ -27,15 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-// Note that for English, the following two lines are not displayed.  For all
-// other localizations, these lines will appear in the output of the 'version'
-// and 'diagnostics' commands.
-//
-// DO NOT include a copyright in the translation.
-//
-#define STRING_LOCALIZATION_DESC     "Japanese localization"
-#define STRING_LOCALIZATION_AUTHOR   "Translated into Japanese by Oota Toshiya."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "認識できないカラム名 '{1}'。"
 #define STRING_COLUMN_BAD_FORMAT     "認識出来ないカラム形式 '{1}.{2}'"

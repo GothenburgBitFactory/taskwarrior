@@ -27,15 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-// Note that for English, the following two lines are not displayed.  For all
-// other localizations, these lines will appear in the output of the 'version'
-// and 'diagnostics' commands.
-//
-// DO NOT include a copyright in the translation.
-//
-#define STRING_LOCALIZATION_DESC     "Deutsche Übersetzung"
-#define STRING_LOCALIZATION_AUTHOR   "Ins Deutsche übersetzt von Jens Erat."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Spaltenname '{1}' nicht erkannt."
 #define STRING_COLUMN_BAD_FORMAT     "Spaltenformat '{1}.{2}' nicht erkannt"
