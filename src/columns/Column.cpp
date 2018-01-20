@@ -55,7 +55,6 @@
 #include <ColWait.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -283,7 +282,7 @@ void Column::setStyle (const std::string& style)
 {
   if (style != "default" &&
       std::find (_styles.begin (), _styles.end (), style) == _styles.end ())
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, style);
+    throw format ("Unrecognized column format '{1}.{2}'", _name, style);
 
   _style = style;
 }

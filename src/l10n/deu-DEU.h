@@ -28,7 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_BAD_FORMAT     "Spaltenformat '{1}.{2}' nicht erkannt"
 #define STRING_COLUMN_LABEL_TASKS    "Aufgaben"
 #define STRING_COLUMN_LABEL_DEP      "Abhängig von"
 #define STRING_COLUMN_LABEL_DEP_S    "Abh."
