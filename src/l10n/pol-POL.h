@@ -528,7 +528,6 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "Nie można usunąć zależności dla zadania {1} - nie znaleziono."
 #define STRING_TASK_DEPEND_DUP       "Zadanie {1} już jest zależne od zadania {2}."
 #define STRING_TASK_DEPEND_CIRCULAR  "Wykryto i nie dopuszczono do zależności cyklicznej."
-#define STRING_TASK_VALID_DESC       "Zadanie musi posiadać opis."
 #define STRING_TASK_VALID_BLANK      "Nie można dodać pustego zadania."
 #define STRING_TASK_VALID_BEFORE     "Uwaga: podałeś datę '{1}' jako datę po '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Zadanie cykliczne musi posiadać datę zakończenia."

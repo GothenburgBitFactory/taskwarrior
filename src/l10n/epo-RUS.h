@@ -526,7 +526,6 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "Ne povis viŝi dependecon de tasko {1} - netrovita."
 #define STRING_TASK_DEPEND_DUP       "Tasko {1} jam dependas de tasko {2}."
 #define STRING_TASK_DEPEND_CIRCULAR  "Detektis kaj malpermesis ciklan dependecon."
-#define STRING_TASK_VALID_DESC       "Tasko devas havi priskribon."
 #define STRING_TASK_VALID_BLANK      "Ne povas krei blankan taskon."
 #define STRING_TASK_VALID_BEFORE     "Averto: Vi specifis daton '{1}' post dato '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Reokazanta tasko devas ankaŭ havi daton 'due'."

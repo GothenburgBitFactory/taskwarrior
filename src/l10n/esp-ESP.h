@@ -538,7 +538,6 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "No se pudo eliminar una dependencia de la tarea {1} - no encontrada."
 #define STRING_TASK_DEPEND_DUP       "La tarea {1} ya depende de la tarea {2}."
 #define STRING_TASK_DEPEND_CIRCULAR  "Dependencia circular detectada y anulada."
-#define STRING_TASK_VALID_DESC       "Una tarea debe tener descripción."
 #define STRING_TASK_VALID_BLANK      "No se puede añadir una tarea que está en blanco."
 #define STRING_TASK_VALID_BEFORE     "Advertencia: ha especificado que la fecha '{1}' es después de la fecha '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Una tarea recurrente debe tener también una fecha de vencimiento."

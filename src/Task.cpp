@@ -1654,7 +1654,7 @@ void Task::validate (bool applyDefault /* = true */)
 
   // There is no fixing a missing description.
   if (! has ("description"))
-    throw std::string (STRING_TASK_VALID_DESC);
+    throw std::string ("A task must have a description.");
   else if (get ("description") == "")
     throw std::string (STRING_TASK_VALID_BLANK);
 
