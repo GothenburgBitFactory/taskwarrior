@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "- localización española"
 #define STRING_LOCALIZATION_AUTHOR   "Traducido al español por Fidel Mato y Jeremy John Reeder."
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "Límite de alias anidados ({1}) alcanzado."
-#define STRING_PARSER_OVERRIDE_RC    "Sobrescritura de configuración rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "Error: modificador de atributo no reconocido '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "Usando el archivo .taskrc alternativo {1}"
-#define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "El comando '{1}' no permite '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nombre de columna no reconocido '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Formato de columna no reconocido '{1}.{2}'"

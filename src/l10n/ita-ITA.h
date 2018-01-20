@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "Traduzione in Italiano"
 #define STRING_LOCALIZATION_AUTHOR   "Tradotto in Italiano da Tullio Facchinetti."
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "Nested alias limit of {1} reached."
-#define STRING_PARSER_OVERRIDE_RC    "Modifica configurazione rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "Errore: modificatore di attributo non riconosciuto '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "Uso del file .taskrc alternativo {1}"
-#define STRING_PARSER_ALTERNATE_DATA "Uso di data.location alternativa {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nome di colonna '{1}' non riconosciuto."
 #define STRING_COLUMN_BAD_FORMAT     "Formato di colonna '{1}.{2}' non riconosciuto"

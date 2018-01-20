@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "English localization"
 #define STRING_LOCALIZATION_AUTHOR   "Translated into English by A. Person."
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "Nested alias limit of {1} reached."
-#define STRING_PARSER_OVERRIDE_RC    "Configuration override rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "Error: unrecognized attribute modifier '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "Using alternate .taskrc file {1}"
-#define STRING_PARSER_ALTERNATE_DATA "Using alternate data.location {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Unrecognized column name '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Unrecognized column format '{1}.{2}'"

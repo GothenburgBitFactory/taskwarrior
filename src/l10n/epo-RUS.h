@@ -36,14 +36,6 @@
 #define STRING_LOCALIZATION_DESC     "— Esperanta lokalaĵo"
 #define STRING_LOCALIZATION_AUTHOR   "Tradukita al la Internacia Lingvo per Jeremy John Reeder"
 
-// Parser
-#define STRING_PARSER_ALIAS_NEST     "Atingis la limon de {1} nest-niveloj de alinomoj."
-#define STRING_PARSER_OVERRIDE_RC    "Agorda superrego rc.{1}:{2}"
-#define STRING_PARSER_UNKNOWN_ATTMOD "Eraro: nekonata atributa modifanto '{1}'."
-#define STRING_PARSER_ALTERNATE_RC   "Uzanta alterna .taskrc-dosiero {1}"
-#define STRING_PARSER_ALTERNATE_DATA "Uzanta alterna data.location {1}"
-#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
-
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Nekonata kolumna nomo '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Nekonata kolumna formiĝo '{1}.{2}'"
