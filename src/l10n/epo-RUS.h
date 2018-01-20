@@ -104,7 +104,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_CONFLICT          "Personala raporto '{1}' konfliktas kun enkonstruita taskkomando."
 #define STRING_CMD_VERSION_USAGE     "Montras la versinombro de taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Montras sole la versinombro de taskwarrior"
 #define STRING_CMD_VERSION_DOCS      "Oni povas trovi la dokumentojn por Taskwarrior kun 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq', aŭ ĉe http://taskwarrior.org."
@@ -256,14 +255,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Markas la specifatan taskon kiel ekita"
-#define STRING_CMD_START_NO          "Ne ekis taskon."
-#define STRING_CMD_START_ALREADY     "Tasko {1} '{2}' jam ekita."
-#define STRING_CMD_START_TASK        "Ekanta taskon {1} '{2}'."
-#define STRING_CMD_START_CONFIRM     "Eki taskon {1} '{2}'?"
-#define STRING_CMD_START_1           "Ekis {1} taskon."
-#define STRING_CMD_START_N           "Ekis {1} taskojn."
 
 #define STRING_CMD_STOP_USAGE        "Viŝas la ek-tempon de tasko"
 #define STRING_CMD_STOP_NO           "Tasko ne haltita."

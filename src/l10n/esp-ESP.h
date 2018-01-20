@@ -104,7 +104,6 @@
 #define STRING_COLUMN_EXAMPLES_ANNO4 "Si no te estás cortando el pelo"
 
 // commands/Cmd*
-#define STRING_CMD_CONFLICT          "informe personalizado '{1}' en conflicto con comando interno de taskwarrior."
 #define STRING_CMD_VERSION_USAGE     "Muestra el número de versión de taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Muestra el número de versión (solamente) de taskwarrior"
 
@@ -264,14 +263,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Marca la tarea especificada como comenzada"
-#define STRING_CMD_START_NO          "Tarea no comenzada."
-#define STRING_CMD_START_ALREADY     "Tarea {1} '{2}' ya comenzada."
-#define STRING_CMD_START_TASK        "Comenzando tarea {1} '{2}'."
-#define STRING_CMD_START_CONFIRM     "¿Comenzar tarea {1} '{2}'?"
-#define STRING_CMD_START_1           "Comenzada {1} tarea."
-#define STRING_CMD_START_N           "Comenzadas {1} tareas."
 
 #define STRING_CMD_STOP_USAGE        "Elimina el tiempo de 'comienzo' de una tarea"
 

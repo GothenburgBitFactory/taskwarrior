@@ -31,7 +31,6 @@
 #include <shared.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 #include <Command.h>
 #include <main.h>
 
@@ -190,7 +189,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   {
     // Make sure a custom report does not clash with a built-in command.
     if (all.find (report) != all.end ())
-      throw format (STRING_CMD_CONFLICT, report);
+      throw format ("Custom report '{1}' conflicts with built-in task command.", report);
 
     c = new CmdCustom (
               report,

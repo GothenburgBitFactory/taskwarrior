@@ -104,7 +104,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_CONFLICT          "Custom report '{1}' conflicts with built-in task command."
 #define STRING_CMD_VERSION_USAGE     "taskwarrior バージョン番号の表示"
 #define STRING_CMD_VERSION_USAGE2    "taskwarrior バージョン番号のみの表示"
 #define STRING_CMD_VERSION_DOCS      "taskwarrior のドキュメントは 'man task', 'man taskrc', 'man task-color', 'man task-sync' あるいは http://taskwarrior.org にあります。"
@@ -258,14 +257,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Marks specified task as started"
-#define STRING_CMD_START_NO          "タスク は開始していません。"
-#define STRING_CMD_START_ALREADY     "タスク {1} '{2}' は既に開始しています。"
-#define STRING_CMD_START_TASK        "タスク {1} '{2}' を開始。"
-#define STRING_CMD_START_CONFIRM     "タスク {1} '{2}' を開始?"
-#define STRING_CMD_START_1           " {1} タスク を開始しました。"
-#define STRING_CMD_START_N           " {1} タスク を開始しました。"
 
 #define STRING_CMD_STOP_USAGE        "Removes the 'start' time from a task"
 #define STRING_CMD_STOP_NO           "Task は停止できません。"

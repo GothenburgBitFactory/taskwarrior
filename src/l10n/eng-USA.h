@@ -104,7 +104,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_CONFLICT          "Custom report '{1}' conflicts with built-in task command."
 #define STRING_CMD_VERSION_USAGE     "Shows the Taskwarrior version number"
 #define STRING_CMD_VERSION_USAGE2    "Shows only the Taskwarrior version number"
 #define STRING_CMD_VERSION_DOCS      "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org"
@@ -253,14 +252,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Marks specified task as started"
-#define STRING_CMD_START_NO          "Task not started."
-#define STRING_CMD_START_ALREADY     "Task {1} '{2}' already started."
-#define STRING_CMD_START_TASK        "Starting task {1} '{2}'."
-#define STRING_CMD_START_CONFIRM     "Start task {1} '{2}'?"
-#define STRING_CMD_START_1           "Started {1} task."
-#define STRING_CMD_START_N           "Started {1} tasks."
 
 #define STRING_CMD_STOP_USAGE        "Removes the 'start' time from a task"
 #define STRING_CMD_STOP_NO           "Task not stopped."

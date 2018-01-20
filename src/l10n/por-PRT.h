@@ -104,7 +104,6 @@
 #define STRING_COLUMN_EXAMPLES_ANNO4 "Se não vais cortar o cabelo"
 
 // commands/Cmd*
-#define STRING_CMD_CONFLICT          "Conflito entre relatório personalizado '{1}' e um comando interno do taskwarrior."
 #define STRING_CMD_VERSION_USAGE     "Exibe o número de versão do taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Exibe apenas o número de versão do taskwarrior"
 #define STRING_CMD_VERSION_DOCS      "A documentação do taskwarrior pode ser encontrada usando os comandos 'man task', 'man taskrc', 'man task-color', 'man task-sync' ou em http://taskwarrior.org"
@@ -258,14 +257,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Assinala a tarefa especificada como iniciada"
-#define STRING_CMD_START_NO          "Tarefa não iniciada."
-#define STRING_CMD_START_ALREADY     "Tarefa {1} '{2}' já iniciada."
-#define STRING_CMD_START_TASK        "A iniciar tarefa {1} '{2}'."
-#define STRING_CMD_START_CONFIRM     "Iniciar tarefa {1} '{2}'?"
-#define STRING_CMD_START_1           "Iniciada {1} tarefa."
-#define STRING_CMD_START_N           "Iniciadas {1} tarefas."
 
 #define STRING_CMD_STOP_USAGE        "Remove o estado de iniciado 'start' de uma tarefa"
 #define STRING_CMD_STOP_NO           "Tarefa não parada."

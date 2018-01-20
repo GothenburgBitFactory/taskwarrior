@@ -104,7 +104,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_CONFLICT          "Benutzerdefinierter Report '{1}' steht mit eingebautem task-Befehl in Konflikt."
 #define STRING_CMD_VERSION_USAGE     "Zeigt die taskwarrior-Versionsnummer"
 #define STRING_CMD_VERSION_USAGE2    "Zeigt ausschließlich die taskwarrior-Versionsnummer"
 #define STRING_CMD_VERSION_DOCS      "Dokumentation für taskwarrior finden Sie in 'man task', 'man taskrc', 'man task-color', 'man task-sync' oder auf http://taskwarrior.org"
@@ -256,14 +255,6 @@
 #define STRING_CMD_PURGE_CONFIRM     "Permanently remove task {1} '{2}'?"
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
-
-#define STRING_CMD_START_USAGE       "Kennzeichnet die gewählte Aufgabe als begonnen."
-#define STRING_CMD_START_NO          "Aufgabe nicht begonnen."
-#define STRING_CMD_START_ALREADY     "Aufgabe {1} '{2}' ist bereits gestartet."
-#define STRING_CMD_START_TASK        "Starte Aufgabe {1} '{2}'."
-#define STRING_CMD_START_CONFIRM     "Aufgabe {1} '{2}' starten?"
-#define STRING_CMD_START_1           "{1} Aufgabe gestartet."
-#define STRING_CMD_START_N           "{1} Aufgaben gestartet."
 
 #define STRING_CMD_STOP_USAGE        "Entfernt die 'start'-Zeit einer Aufgabe"
 #define STRING_CMD_STOP_NO           "Aufgabe nicht beendet."
