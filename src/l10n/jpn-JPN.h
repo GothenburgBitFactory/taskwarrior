@@ -198,14 +198,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_DONE_USAGE        "Marks the specified task as completed"
-#define STRING_CMD_DONE_CONFIRM      "タスク {1} '{2}' を完了?"
-#define STRING_CMD_DONE_TASK         "タスク {1} '{2}' を完了します。"
-#define STRING_CMD_DONE_NO           "タスク は完了しなかった。"
-#define STRING_CMD_DONE_NOTPEND      "Task {1} '{2}' is neither pending nor waiting."
-#define STRING_CMD_DONE_1            "{1} task を完了。"
-#define STRING_CMD_DONE_N            "{1} task を完了。"
-
 #define STRING_CMD_PROJECTS_USAGE    "Shows all project names used"
 #define STRING_CMD_PROJECTS_USAGE_2  "Shows only a list of all project names used"
 #define STRING_CMD_PROJECTS_NO       "プロジェクトがない。"
