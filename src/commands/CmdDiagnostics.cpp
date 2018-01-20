@@ -33,7 +33,6 @@
 #include <time.h>
 #include <RX.h>
 #include <Context.h>
-#include <i18n.h>
 #include <shared.h>
 #include <format.h>
 #ifdef HAVE_COMMIT
@@ -44,7 +43,6 @@
 #include <gnutls/gnutls.h>
 #endif
 
-
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +50,7 @@ CmdDiagnostics::CmdDiagnostics ()
 {
   _keyword               = "diagnostics";
   _usage                 = "task          diagnostics";
-  _description           = STRING_CMD_DIAG_USAGE;
+  _description           = "Platform, build and environment details";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -79,17 +77,17 @@ int CmdDiagnostics::execute (std::string& output)
       << bold.colorize (PACKAGE_STRING)
       << '\n';
 
-  out << "   " << STRING_CMD_DIAG_PLATFORM << ": " << osName ()
+  out << "   Platform: " << osName ()
       << "\n\n";
 
   // Compiler.
-  out << bold.colorize (STRING_CMD_DIAG_COMPILER)
+  out << bold.colorize ("Compiler")
       << '\n'
 #ifdef __VERSION__
-      << "    " << STRING_CMD_DIAG_VERSION << ": "
+      << "    Version: "
       << __VERSION__ << '\n'
 #endif
-      << "       " << STRING_CMD_DIAG_CAPS << ':'
+      << "       Caps:"
 #ifdef __STDC__
       << " +stdc"
 #endif
@@ -119,18 +117,17 @@ int CmdDiagnostics::execute (std::string& output)
       << '\n';
 
   // Compiler compliance level.
-  out << ' ' << STRING_CMD_DIAG_COMPLIANCE
-      << ": "
+  out << " Compliance: "
       << cppCompliance ()
       << "\n\n";
 
-  out << bold.colorize (STRING_CMD_DIAG_FEATURES)
+  out << bold.colorize ("Build Features")
       << '\n'
 
   // Build date.
-      << "      " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << ' ' << __TIME__ << '\n'
+      << "      Built: " << __DATE__ << ' ' << __TIME__ << '\n'
 #ifdef HAVE_COMMIT
-      << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << '\n'
+      << "     Commit: " << COMMIT << '\n'
 #endif
       << "      CMake: " << CMAKE_VERSION << '\n';
 
@@ -164,12 +161,12 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Config: .taskrc found, readable, writable
   File rcFile (context.config.file ());
-  out << bold.colorize (STRING_CMD_DIAG_CONFIG)
+  out << bold.colorize ("Configuration")
       << '\n'
       << "       File: " << rcFile._data << ' '
       << (rcFile.exists ()
-           ? STRING_CMD_DIAG_FOUND
-           : STRING_CMD_DIAG_MISSING)
+           ? "(found)"
+           : "(missing)")
       << ", " << rcFile.size () << ' ' << "bytes"
       << ", mode "
       << std::setbase (8)
@@ -180,8 +177,8 @@ int CmdDiagnostics::execute (std::string& output)
   File location (context.config.get ("data.location"));
   out << "       Data: " << location._data << ' '
       << (location.exists ()
-           ? STRING_CMD_DIAG_FOUND
-           : STRING_CMD_DIAG_MISSING)
+           ? "(found)"
+           : "(missing)")
       << ", " << (location.is_directory () ? "dir" : "?")
       << ", mode "
       << std::setbase (8)
@@ -202,14 +199,14 @@ int CmdDiagnostics::execute (std::string& output)
 
   out << "    Locking: "
       << (context.config.getBoolean ("locking")
-           ? STRING_CMD_DIAG_ENABLED
-           : STRING_CMD_DIAG_DISABLED)
+           ? "Enabled"
+           : "Disabled")
       << '\n';
 
   out << "         GC: "
       << (context.config.getBoolean ("gc")
-           ? STRING_CMD_DIAG_ENABLED
-           : STRING_CMD_DIAG_DISABLED)
+           ? "Enabled"
+           : "Disabled")
       << '\n';
 
   // Determine rc.editor/$EDITOR/$VISUAL.
@@ -309,10 +306,10 @@ int CmdDiagnostics::execute (std::string& output)
     hookLocation += "hooks";
   }
 
-  out << bold.colorize (STRING_CMD_DIAG_HOOKS)
+  out << bold.colorize ("Hooks")
       << '\n'
       << "     System: "
-      << (context.config.getBoolean ("hooks") ? STRING_CMD_DIAG_HOOK_ENABLE : STRING_CMD_DIAG_HOOK_DISABLE)
+      << (context.config.getBoolean ("hooks") ? "Enabled" : "Disabled")
       << '\n'
       << "   Location: "
       << static_cast <std::string> (hookLocation)
@@ -346,8 +343,8 @@ int CmdDiagnostics::execute (std::string& output)
 
           out.width (longest);
           out << std::left << name
-              << format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC)
-              << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
+              << " (executable)"
+              << (p.is_link () ? " (symlink)" : "")
               << '\n';
         }
       }
@@ -375,12 +372,12 @@ int CmdDiagnostics::execute (std::string& output)
 
           out.width (longest);
           out << std::left << name
-              << (p.executable () ? format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC) : format (" ({1})", STRING_CMD_DIAG_HOOK_NO_EXEC))
-              << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
+              << (p.executable () ? " (executable)" : " (not executable)")
+              << (p.is_link () ? " (symlink)" : "")
               << ((name.substr (0, 6) == "on-add" ||
                    name.substr (0, 9) == "on-modify" ||
                    name.substr (0, 9) == "on-launch" ||
-                   name.substr (0, 7) == "on-exit") ? "" : format (" ({1})", STRING_CMD_DIAG_HOOK_NAME))
+                   name.substr (0, 7) == "on-exit") ? "" : "unrecognized hook name")
               << '\n';
         }
       }
@@ -390,12 +387,12 @@ int CmdDiagnostics::execute (std::string& output)
       out << '\n';
   }
   else
-    out << format ("             ({1})\n", STRING_CMD_DIAG_NONE);
+    out << "             (-none-)\n";
 
   out << '\n';
 
   // Verify UUIDs are all unique.
-  out << bold.colorize (STRING_CMD_DIAG_TESTS)
+  out << bold.colorize ("Tests")
       << '\n';
 
   // Report terminal dimensions.
@@ -420,25 +417,24 @@ int CmdDiagnostics::execute (std::string& output)
   }
 
   out << "       Dups: "
-      << format (STRING_CMD_DIAG_UUID_SCAN, all.size ())
+      << format ("Scanned {1} tasks for duplicate UUIDs:", all.size ())
       << '\n';
 
   if (dups.size ())
   {
     for (auto& d : dups)
-      out << "             " << format (STRING_CMD_DIAG_UUID_DUP, d) << '\n';
+      out << "             " << format ("Found duplicate {1}", d) << '\n';
   }
   else
   {
-    out << "             " << STRING_CMD_DIAG_UUID_NO_DUP
-        << '\n';
+    out << "             No duplicates found\n";
   }
 
   // Check all the UUID references
 
   bool noBrokenRefs = true;
   out << " Broken ref: "
-      << format (STRING_CMD_DIAG_REF_SCAN, all.size ())
+      << format ("Scanned {1} tasks for broken references:", all.size ())
       << '\n';
 
   for (auto& task : all)
@@ -449,7 +445,7 @@ int CmdDiagnostics::execute (std::string& output)
       if (! context.tdb2.has (uuid))
       {
         out << "             "
-            << format (STRING_CMD_DIAG_MISS_DEP, task.get ("uuid"), uuid)
+            << format ("Task {1} depends on nonexistent task: {2}", task.get ("uuid"), uuid)
             << '\n';
         noBrokenRefs = false;
       }
@@ -461,15 +457,14 @@ int CmdDiagnostics::execute (std::string& output)
     if (parentUUID != "" && ! context.tdb2.has (parentUUID))
     {
       out << "             "
-          << format (STRING_CMD_DIAG_MISS_PAR, task.get ("uuid"), parentUUID)
+          << format ("Task {1} has nonexistent recurrence template {2}", task.get ("uuid"), parentUUID)
           << '\n';
       noBrokenRefs = false;
     }
   }
 
   if (noBrokenRefs)
-    out << "             " << STRING_CMD_DIAG_REF_OK
-        << '\n';
+    out << "             No broken references found\n";
 
   out << '\n';
   output = out.str ();
