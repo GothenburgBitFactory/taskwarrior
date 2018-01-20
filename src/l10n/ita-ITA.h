@@ -39,7 +39,6 @@
 #define STRING_COLUMN_LABEL_MOD      "Modificato"
 #define STRING_COLUMN_LABEL_ADDED    "Aggiunto"
 #define STRING_COLUMN_LABEL_AGE      "Età"
-#define STRING_COLUMN_LABEL_ID       "ID"
 #define STRING_COLUMN_LABEL_PROJECT  "Progetto"
 #define STRING_COLUMN_LABEL_UNTIL    "Fino a"
 #define STRING_COLUMN_LABEL_WAIT     "Attesa"

@@ -28,14 +28,13 @@
 #include <ColID.h>
 #include <math.h>
 #include <format.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnID::ColumnID ()
 {
   _name       = "id";
   _style      = "number";
-  _label      = STRING_COLUMN_LABEL_ID;
+  _label      = "ID";
   _modifiable = false;
   _styles     = {"number"};
   _examples   = {"123"};

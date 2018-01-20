@@ -39,7 +39,6 @@
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_ADDED    "Añadida"
 #define STRING_COLUMN_LABEL_AGE      "Edad"
-#define STRING_COLUMN_LABEL_ID       "ID"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_PROJECT  "Proyecto"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"
 #define STRING_COLUMN_LABEL_WAIT     "Espera"
