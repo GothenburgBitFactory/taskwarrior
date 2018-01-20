@@ -469,10 +469,6 @@
 #define STRING_CMD_CAL_SUN_MON       "agordvariablo 'weekstart' devas esti 'Sunday' aŭ 'Monday'."
 #define STRING_CMD_CALC_USAGE        "Kalkulilo"
 
-// Errors
-// TODO Move each of these to appropriate section.
-#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nenia tasko."
 #define STRING_FEEDBACK_NO_TASKS_SP  "Nenia tasko specifata."

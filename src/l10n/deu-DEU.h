@@ -469,10 +469,6 @@
 #define STRING_CMD_CAL_SUN_MON       "Die 'weekstart'-Konfigurationsoption darf nur 'Sunday' oder 'Monday' lauten."
 #define STRING_CMD_CALC_USAGE        "Rechner"
 
-// Errors
-// TODO Move each of these to appropriate section.
-#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Keine Aufgaben."
 #define STRING_FEEDBACK_NO_TASKS_SP  "Keine Aufgaben angegeben."

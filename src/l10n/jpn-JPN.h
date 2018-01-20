@@ -471,10 +471,6 @@
 #define STRING_CMD_CAL_SUN_MON       "'weekstart' 設定変数は 'Sunday' または 'Monday' のみが使えます。"
 #define STRING_CMD_CALC_USAGE        "電卓"
 
-// Errors
-// TODO Move each of these to appropriate section.
-#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "タスクがない。"
 #define STRING_FEEDBACK_NO_TASKS_SP  "タスクが1つも指定されていません。"

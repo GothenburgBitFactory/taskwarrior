@@ -491,10 +491,6 @@
 #define STRING_EDIT_HEADER_14        "Le séparateur ' -- ' entre les champs de date et de texte ne devrai pas être supprimé."
 #define STRING_EDIT_HEADER_15        "Il y a un champs vide ci-dessous pour ajouter une annotation facilement."
 
-// Errors
-// TODO Move each of these to appropriate section.
-#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."
 #define STRING_FEEDBACK_NO_TASKS_SP  "No tasks specified."

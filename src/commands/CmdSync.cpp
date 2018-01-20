@@ -64,7 +64,7 @@ int CmdSync::execute (std::string& output)
 
   Filter filter;
   if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
+    throw std::string ("Command line filters are not supported by this command.");
 
   // Loog for the 'init' keyword to indicate one-time pending.data upload.
   bool first_time_init = false;
