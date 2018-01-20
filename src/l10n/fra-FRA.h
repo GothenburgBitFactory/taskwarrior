@@ -495,7 +495,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_UDA_COLLISION         "L'ADU nommé '{1}' est le même qu'un attribut du noyau, et ce n'est pas autorisé."
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
