@@ -32,8 +32,9 @@
 #include <Context.h>
 #include <format.h>
 #include <shared.h>
-#include <i18n.h>
 #include <main.h>
+
+#define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
 
 extern Context context;
 
@@ -173,15 +174,14 @@ void dependencyChainOnComplete (Task& task)
     {
       if (context.config.getBoolean ("dependency.reminder"))
       {
-        std::cout << STRING_DEPEND_BLOCKING
-                  << '\n';
+        std::cout << "and is blocking:\n";
 
         for (const auto& b : blocked)
           std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
       }
 
       if (!context.config.getBoolean ("dependency.confirmation") ||
-          confirm (STRING_DEPEND_FIX_CHAIN))
+          confirm ("Would you like the dependency chain fixed?"))
       {
         // Repair the chain - everything in blocked should now depend on
         // everything in blocking, instead of task.id.

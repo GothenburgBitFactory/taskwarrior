@@ -507,11 +507,6 @@
 #define STRING_CMD_EDIT_USAGE        "Lanza un editor para modificar una tarea directamente"
 #define STRING_CMD_CALC_USAGE        "Calculadora"
 
-// dependency
-#define STRING_DEPEND_BLOCKED        "La tarea {1} está bloqueada por:"
-#define STRING_DEPEND_BLOCKING       "y está bloqueando:"
-#define STRING_DEPEND_FIX_CHAIN      "¿Desea que la cadena de dependencias sea arreglada?"
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "No se detectaron modificaciones."
 #define STRING_EDIT_FAILED           "Edición fallida con código de salida {1}."

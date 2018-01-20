@@ -497,11 +497,6 @@
 #define STRING_CMD_EDIT_USAGE        "task を直接変更するためにエディタを起動します"
 #define STRING_CMD_CALC_USAGE        "電卓"
 
-// dependency
-#define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
-#define STRING_DEPEND_BLOCKING       "and is blocking:"
-#define STRING_DEPEND_FIX_CHAIN      "Would you like the dependency chain fixed?"
-
 // edit
 #define STRING_EDIT_NO_CHANGES       "No edits were detected."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
