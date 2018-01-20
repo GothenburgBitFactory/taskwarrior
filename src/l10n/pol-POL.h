@@ -445,7 +445,6 @@
 #define STRING_CMD_CONFIG_CONFIRM3   "Czy na pewno chcesz usunąć '{1}'?"
 #define STRING_CMD_CONFIG_NO_ENTRY   "Nie znaleziono wpisu '{1}'."
 #define STRING_CMD_CONFIG_FILE_MOD   "Plik konfiguracyjny {1} został zmodyfikowany."
-#define STRING_CMD_CONFIG_NO_CHANGE  "Brak zmian."
 #define STRING_CMD_CONFIG_NO_NAME    "Podaj nazwę zmiennej w konfiguracji do zmiany."
 #define STRING_CMD_HCONFIG_USAGE     "Wylistuj wszystkie zmienne konfiguracji."
 #define STRING_CMD_CONTEXT_USAGE     "Set and define contexts (default filters)"

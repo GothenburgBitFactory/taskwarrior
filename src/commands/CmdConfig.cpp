@@ -220,7 +220,7 @@ int CmdConfig::execute (std::string& output)
             << '\n';
       }
       else
-        out << STRING_CMD_CONFIG_NO_CHANGE << '\n';
+        out << "No changes made.\n";
     }
     else
       throw std::string (STRING_CMD_CONFIG_NO_NAME);
