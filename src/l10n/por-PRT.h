@@ -489,7 +489,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_PREFIX          "Erro: "
 #define STRING_TRIVIAL_INPUT         "Deve específicar um comando ou a tarefa a modificar."
 #define STRING_INFINITE_LOOP         "Substituição terminada. Efectuadas mais de {1} alterações - protecção de ciclos infinitos."
 #define STRING_UDA_TYPE              "Atributos definidos pelo utilizador (UDAs) apenas podem ser do tipo 'texto', 'data', 'duração' ou 'numérico'."
