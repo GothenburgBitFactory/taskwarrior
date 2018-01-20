@@ -499,12 +499,6 @@
 #define STRING_CMD_EDIT_USAGE        "task を直接変更するためにエディタを起動します"
 #define STRING_CMD_CALC_USAGE        "電卓"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "構成ファイルのネストが10以上になっています - これは間違いです。"
-#define STRING_CONFIG_READ_INCLUDE   "インクルードファイル '{1}' が読み込めません。"
-#define STRING_CONFIG_INCLUDE_PATH   "Can only include files with absolute paths, not '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Malformed entry '{1}' in config file."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
 #define STRING_DEPEND_BLOCKING       "and is blocking:"

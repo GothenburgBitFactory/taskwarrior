@@ -499,12 +499,6 @@
 #define STRING_CMD_EDIT_USAGE        "Inicia um editor externo para modificar a tarefa diretamente"
 #define STRING_CMD_CALC_USAGE        "Calculadora"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "Ficheiro de configuração com inclusões a mais de 10 níveis de profundidade - isto certamente é um erro."
-#define STRING_CONFIG_READ_INCLUDE   "Não foi possível ler o ficheiro incluído '{1}'."
-#define STRING_CONFIG_INCLUDE_PATH   "Apenas é permitido incluir ficheiros com caminhos absolutos, não '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Entrada anómala '{1}' no ficheiro de configuração."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Tarefa {1} encontra-se bloqueada por:"
 #define STRING_DEPEND_BLOCKING       "e está a bloquear:"

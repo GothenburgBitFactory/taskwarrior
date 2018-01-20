@@ -498,12 +498,6 @@
 #define STRING_CMD_EDIT_USAGE        "Esegue un editor per la modifica diretta di un task"
 #define STRING_CMD_CALC_USAGE        "Calculator"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "File di configurazione annidato più di 10 livelli - deve trattarsi di un errore."
-#define STRING_CONFIG_READ_INCLUDE   "Impossibile leggere il file di inclusione '{1}'."
-#define STRING_CONFIG_INCLUDE_PATH   "E` possibile includere solo file con percorso assoluto, non '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Voce malformata '{1}' nel file di configurazione."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Il task {1} è bloccato da:"
 #define STRING_DEPEND_BLOCKING       "e sta bloccando:"

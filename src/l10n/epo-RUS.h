@@ -497,12 +497,6 @@
 #define STRING_CMD_EDIT_USAGE        "Lanĉas redaktilo por rekte modifi taskon"
 #define STRING_CMD_CALC_USAGE        "Kalkulilo"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "Agorda dosiero nestita ĝis plu de 10 niveloj de profundeco - certe eraro."
-#define STRING_CONFIG_READ_INCLUDE   "Ne povis legi enkluzivitan dosieron '{1}'."
-#define STRING_CONFIG_INCLUDE_PATH   "Oni sole povas enkluzivi dosierojn kun absoluta pado, ne '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Malbone formita enskribo '{1}' en agorda dosiero."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Tasko {1} estas blokata per:"
 #define STRING_DEPEND_BLOCKING       "kaj ĝi blokas:"

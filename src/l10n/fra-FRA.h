@@ -499,12 +499,6 @@
 #define STRING_CMD_EDIT_USAGE        "Launches an editor to modify a task directly"
 #define STRING_CMD_CALC_USAGE        "Calculator"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
-#define STRING_CONFIG_READ_INCLUDE   "Could not read include file '{1}'."
-#define STRING_CONFIG_INCLUDE_PATH   "Can only include files with absolute paths, not '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Malformed entry '{1}' in config file."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Tâche {1} est bloquée par :"
 #define STRING_DEPEND_BLOCKING       "et bloque :"

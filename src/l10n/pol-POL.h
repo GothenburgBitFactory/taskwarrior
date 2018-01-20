@@ -499,12 +499,6 @@
 #define STRING_CMD_EDIT_USAGE        "Uruchamia edytor do zmiany zadania"
 #define STRING_CMD_CALC_USAGE        "Kalkulator"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "Plik konfiguracji zagnieżdzony na więcej niż 10 poziomów - to musi być jakaś pomyłka."
-#define STRING_CONFIG_READ_INCLUDE   "Nie można przeczytać dołączonego pliku '{1}'."
-#define STRING_CONFIG_INCLUDE_PATH   "Scieżka dołączanych plików musi mieć postać adresu bezwzględnego, nie '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Uszkodzony wpis '{1}' w pliku konfiguracyjnym."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Zadanie {1} jest blokowane przez:"
 #define STRING_DEPEND_BLOCKING       "oraz blokuje:"
