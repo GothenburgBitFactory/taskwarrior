@@ -505,9 +505,6 @@
 #define STRING_CONFIG_DEPRECATED_COL "Twój plik .taskrc zawiera raport z przestarzałymi nazwami kolumn.  Sprawdź proszę entry_time, start_time lub end_time w:"
 #define STRING_CONFIG_DEPRECATED_VAR "Twój plik .taskrc zawiera przestarzałe zmienne:"
 
-// Date
-#define STRING_DATE_BAD_WEEKSTART    "Zmienna konfiguracji 'weekstart' może przyjmować tylko wartość 'Sunday' lub 'Monday'."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Zadanie {1} jest blokowane przez:"
 #define STRING_DEPEND_BLOCKING       "oraz blokuje:"

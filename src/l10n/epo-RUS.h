@@ -503,9 +503,6 @@
 #define STRING_CONFIG_DEPRECATED_COL "Via dosiero .taskrc enhavas raportojn kun arkaikaj kolumnoj.  Bonvolu serĉi entry_time, start_time, aŭ end_time ĉe:"
 #define STRING_CONFIG_DEPRECATED_VAR "Via dosiero .taskrc enhavas arkaikajn variablojn:"
 
-// Date
-#define STRING_DATE_BAD_WEEKSTART    "Argorda variablo 'weekstart' devas esti 'Sunday' aŭ 'Monday'."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Tasko {1} estas blokata per:"
 #define STRING_DEPEND_BLOCKING       "kaj ĝi blokas:"
