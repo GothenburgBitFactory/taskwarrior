@@ -110,8 +110,6 @@
 #define STRING_CMD_VERSION_USAGE2    "Exibe apenas o número de versão do taskwarrior"
 #define STRING_CMD_VERSION_DOCS      "A documentação do taskwarrior pode ser encontrada usando os comandos 'man task', 'man taskrc', 'man task-color', 'man task-sync' ou em http://taskwarrior.org"
 #define STRING_CMD_VERSION_UNKNOWN   "desconhecido"
-#define STRING_CMD_LOGO_USAGE        "Exibe o logotipo do Taskwarrior"
-#define STRING_CMD_LOGO_COLOR_REQ    "O comando logo requer que o suporte de cor seja ativado."
 #define STRING_CMD_EXEC_USAGE        "Executa comandos e scripts externos"
 #define STRING_CMD_URGENCY_USAGE     "Exibe o valor de urgência de uma tarefa"
 #define STRING_CMD_URGENCY_RESULT    "Tarefa {1} urgência {2}"
