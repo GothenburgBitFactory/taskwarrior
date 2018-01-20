@@ -256,14 +256,6 @@
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
 
-#define STRING_CMD_STOP_USAGE        "Remove o estado de iniciado 'start' de uma tarefa"
-#define STRING_CMD_STOP_NO           "Tarefa não parada."
-#define STRING_CMD_STOP_ALREADY      "Tarefa {1} '{2}' não iniciada."
-#define STRING_CMD_STOP_TASK         "A parar tarefa {1} '{2}'."
-#define STRING_CMD_STOP_CONFIRM      "Parar tarefa {1} '{2}'?"
-#define STRING_CMD_STOP_1            "Parada {1} tarefa."
-#define STRING_CMD_STOP_N            "Paradas {1} tarefas."
-
 #define STRING_CMD_APPEND_USAGE      "Acrescenta texto à descrição de uma tarefa existente"
 #define STRING_CMD_APPEND_1          "Acrescentada {1} tarefa."
 #define STRING_CMD_APPEND_N          "Acrescentadas {1} tarefas."

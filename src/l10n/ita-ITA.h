@@ -255,14 +255,6 @@
 #define STRING_CMD_PURGE_CONFIRM_R   "Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?"
 #define STRING_CMD_PURGE_NDEL_CHILD  "Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged."
 
-#define STRING_CMD_STOP_USAGE        "Rimuove il tempo di 'avvio' dal task"
-#define STRING_CMD_STOP_NO           "Task non fermato."
-#define STRING_CMD_STOP_ALREADY      "Task {1} '{2}' non fermato."
-#define STRING_CMD_STOP_TASK         "Sto fermando il task {1} '{2}'."
-#define STRING_CMD_STOP_CONFIRM      "Fermare task {1} '{2}'?"
-#define STRING_CMD_STOP_1            "Task {1} fermato."
-#define STRING_CMD_STOP_N            "Task {1} fermati."
-
 #define STRING_CMD_APPEND_USAGE      "Aggiunge testo alla fine di una descrizione di un task esistente"
 #define STRING_CMD_APPEND_1          "Aggiunta al task {1}."
 #define STRING_CMD_APPEND_N          "Aggiunte ai task {1}."

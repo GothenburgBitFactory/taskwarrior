@@ -40,7 +40,7 @@ CmdStop::CmdStop ()
 {
   _keyword               = "stop";
   _usage                 = "task <filter> stop <mods>";
-  _description           = STRING_CMD_STOP_USAGE;
+  _description           = "Removes the 'start' time from a task";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -77,7 +77,7 @@ int CmdStop::execute (std::string&)
       Task before (task);
 
       // Stop the specified task.
-      std::string question = format (STRING_CMD_STOP_CONFIRM,
+      std::string question = format ("Stop task {1} '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
 
@@ -92,14 +92,14 @@ int CmdStop::execute (std::string&)
         updateRecurrenceMask (task);
         context.tdb2.modify (task);
         ++count;
-        feedback_affected (STRING_CMD_STOP_TASK, task);
+        feedback_affected ("Stopping task {1} '{2}'.", task);
         dependencyChainOnStart (task);
         if (context.verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task, false);
       }
       else
       {
-        std::cout << STRING_CMD_STOP_NO << '\n';
+        std::cout << "Task not stopped.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -107,7 +107,7 @@ int CmdStop::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_STOP_ALREADY,
+      std::cout << format ("Task {1} '{2}' not started.",
                            task.identifier (true),
                            task.get ("description"))
                 << '\n';
@@ -120,7 +120,7 @@ int CmdStop::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_STOP_1 : STRING_CMD_STOP_N, count);
+  feedback_affected (count == 1 ?  "Stopped {1} task." : "Stopped {1} tasks.", count);
   return rc;
 }
 
