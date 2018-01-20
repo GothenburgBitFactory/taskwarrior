@@ -495,12 +495,6 @@
 #define STRING_CMD_EDIT_USAGE        "Startet einen Editor, um eine Aufgabe direkt zu bearbeiten"
 #define STRING_CMD_CALC_USAGE        "Rechner"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "Konfigurationsdatei mehr als 10 Ebenen verschachtelt - das muss ein Fehler sein."
-#define STRING_CONFIG_READ_INCLUDE   "Konnte eingebundene Datei '{1}' nicht lesen."
-#define STRING_CONFIG_INCLUDE_PATH   "Nur Dateien mit absolutem Pfad können eingebunden werden, nicht '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Fehlerhafter Eintrag '{1}' in Konfigurationsdatei."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "Aufgabe {1} wird blockiert durch:"
 #define STRING_DEPEND_BLOCKING       "und blockiert:"

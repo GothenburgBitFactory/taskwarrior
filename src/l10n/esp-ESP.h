@@ -507,12 +507,6 @@
 #define STRING_CMD_EDIT_USAGE        "Lanza un editor para modificar una tarea directamente"
 #define STRING_CMD_CALC_USAGE        "Calculadora"
 
-// Config
-#define STRING_CONFIG_OVERNEST       "Archivo de configuración anidado hasta más de 10 niveles de profundidad - esto tiene que ser un error."
-#define STRING_CONFIG_READ_INCLUDE   "No se pudo leer el archivo include '{1}'."
-#define STRING_CONFIG_INCLUDE_PATH   "Sólo se pueden incluir archivos con paths absolutos, no '{1}'"
-#define STRING_CONFIG_BAD_ENTRY      "Formato incorrecto en entrada '{1}' en archivo de configuración."
-
 // dependency
 #define STRING_DEPEND_BLOCKED        "La tarea {1} está bloqueada por:"
 #define STRING_DEPEND_BLOCKING       "y está bloqueando:"
