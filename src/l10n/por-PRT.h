@@ -231,15 +231,6 @@
 #define STRING_CMD_DELETE_1          "Eliminada {1} tarefa."
 #define STRING_CMD_DELETE_N          "Eliminadas {1} tarefas."
 
-#define STRING_CMD_DUPLICATE_USAGE   "Duplica as tarefas especificadas"
-#define STRING_CMD_DUPLICATE_REC     "Nota: A tarefa {1} era uma tarefa mãe periódica. A tarefa duplicada também."
-#define STRING_CMD_DUPLICATE_NON_REC "Nota: A tarefa {1} era uma tarefa periódica. A tarefa duplicada não é."
-#define STRING_CMD_DUPLICATE_CONFIRM "Duplicar tarefa {1} '{2}'?"
-#define STRING_CMD_DUPLICATE_TASK    "Tarefa duplicada {1} '{2}'."
-#define STRING_CMD_DUPLICATE_NO      "Tarefa não duplicada."
-#define STRING_CMD_DUPLICATE_1       "Duplicada {1} tarefa."
-#define STRING_CMD_DUPLICATE_N       "Duplicadas {1} tarefas."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

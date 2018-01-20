@@ -230,15 +230,6 @@
 #define STRING_CMD_DELETE_1          "Task {1} cancellato."
 #define STRING_CMD_DELETE_N          "Task {1} cancellati."
 
-#define STRING_CMD_DUPLICATE_USAGE   "Duplica il task specificato"
-#define STRING_CMD_DUPLICATE_REC     "Nota: il task {1} genera task periodici.  Il task duplicato anche."
-#define STRING_CMD_DUPLICATE_NON_REC "Nota: il task {1} era un task periodico.  Il task duplicato non lo è."
-#define STRING_CMD_DUPLICATE_CONFIRM "Duplicare il task {1} '{2}'?"
-#define STRING_CMD_DUPLICATE_TASK    "Duplicated task {1} '{2}'."
-#define STRING_CMD_DUPLICATE_NO      "Task non duplicato"
-#define STRING_CMD_DUPLICATE_1       "Task {1} duplicato."
-#define STRING_CMD_DUPLICATE_N       "Task {1} duplicati."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

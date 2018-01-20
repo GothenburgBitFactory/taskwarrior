@@ -41,7 +41,7 @@ CmdDuplicate::CmdDuplicate ()
 {
   _keyword               = "duplicate";
   _usage                 = "task <filter> duplicate <mods>";
-  _description           = STRING_CMD_DUPLICATE_USAGE;
+  _description           = "Duplicates the specified tasks";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -88,7 +88,7 @@ int CmdDuplicate::execute (std::string&)
       dup.remove ("recur");
       dup.remove ("until");
       dup.remove ("imask");
-      std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task.identifier ())
+      std::cout << format ("Note: task {1} was a recurring task.  The duplicated task is not.", task.identifier ())
           << '\n';
     }
 
@@ -96,7 +96,7 @@ int CmdDuplicate::execute (std::string&)
     else if (dup.getStatus () == Task::recurring)
     {
       dup.remove ("mask");
-      std::cout << format (STRING_CMD_DUPLICATE_REC, task.identifier ())
+      std::cout << format ("Note: task {1} was a parent recurring task.  The duplicated task is too.", task.identifier ())
           << '\n';
     }
 
@@ -105,14 +105,14 @@ int CmdDuplicate::execute (std::string&)
 
     dup.modify (Task::modAnnotate);
 
-    if (permission (format (STRING_CMD_DUPLICATE_CONFIRM,
+    if (permission (format ("Duplicate task {1} '{2}'?",
                             task.identifier (true),
                             task.get ("description")),
                     filtered.size ()))
     {
       context.tdb2.add (dup);
       ++count;
-      feedback_affected (STRING_CMD_DUPLICATE_TASK, task);
+      feedback_affected ("Duplicated task {1} '{2}'.", task);
 
       auto status = dup.getStatus ();
       if (context.verbose ("new-id") &&
@@ -129,7 +129,7 @@ int CmdDuplicate::execute (std::string&)
     }
     else
     {
-      std::cout << STRING_CMD_DUPLICATE_NO << '\n';
+      std::cout << "Task not duplicated.\n";
       rc = 1;
       if (_permission_quit)
         break;
@@ -141,7 +141,8 @@ int CmdDuplicate::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_DUPLICATE_1 : STRING_CMD_DUPLICATE_N, count);
+  feedback_affected (count == 1 ? "Duplicated {1} task." : "Duplicated {1} tasks.", count);
+
   return rc;
 }
 

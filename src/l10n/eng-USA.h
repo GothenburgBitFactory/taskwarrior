@@ -226,15 +226,6 @@
 #define STRING_CMD_DELETE_1          "Deleted {1} task."
 #define STRING_CMD_DELETE_N          "Deleted {1} tasks."
 
-#define STRING_CMD_DUPLICATE_USAGE   "Duplicates the specified tasks"
-#define STRING_CMD_DUPLICATE_REC     "Note: task {1} was a parent recurring task.  The duplicated task is too."
-#define STRING_CMD_DUPLICATE_NON_REC "Note: task {1} was a recurring task.  The duplicated task is not."
-#define STRING_CMD_DUPLICATE_CONFIRM "Duplicate task {1} '{2}'?"
-#define STRING_CMD_DUPLICATE_TASK    "Duplicated task {1} '{2}'."
-#define STRING_CMD_DUPLICATE_NO      "Task not duplicated."
-#define STRING_CMD_DUPLICATE_1       "Duplicated {1} task."
-#define STRING_CMD_DUPLICATE_N       "Duplicated {1} tasks."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

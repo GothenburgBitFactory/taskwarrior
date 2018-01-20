@@ -237,15 +237,6 @@
 #define STRING_CMD_DELETE_1          "Suprimida {1} tarea."
 #define STRING_CMD_DELETE_N          "Suprimidas {1} tareas."
 
-#define STRING_CMD_DUPLICATE_USAGE   "Duplica las tareas especificadas"
-#define STRING_CMD_DUPLICATE_REC     "Nota: la tarea {1} era una tarea madre recurrente. La tarea duplicada también lo es."
-#define STRING_CMD_DUPLICATE_NON_REC "Nota: la tarea {1} era una tarea recurrente. La tarea duplicada no lo es."
-#define STRING_CMD_DUPLICATE_CONFIRM "¿Duplicar tarea {1} '{2}'?"
-#define STRING_CMD_DUPLICATE_TASK    "Duplicada tarea {1} '{2}'."
-#define STRING_CMD_DUPLICATE_NO      "Tarea no duplicada."
-#define STRING_CMD_DUPLICATE_1       "Duplicada {1} tarea."
-#define STRING_CMD_DUPLICATE_N       "Duplicadas {1} tareas."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

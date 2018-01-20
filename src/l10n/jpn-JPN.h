@@ -231,15 +231,6 @@
 #define STRING_CMD_DELETE_1          " {1} タスク を削除しました。"
 #define STRING_CMD_DELETE_N          " {1} タスク を削除しました。"
 
-#define STRING_CMD_DUPLICATE_USAGE   "指定したタスクが重複しています"
-#define STRING_CMD_DUPLICATE_REC     "Note: task {1} was a parent recurring task.  The duplicated task is too."
-#define STRING_CMD_DUPLICATE_NON_REC "Note: task {1} was a recurring task.  The duplicated task is not."
-#define STRING_CMD_DUPLICATE_CONFIRM "タスク {1} '{2}' が重複?"
-#define STRING_CMD_DUPLICATE_TASK    "タスク {1} '{2}' が重複。"
-#define STRING_CMD_DUPLICATE_NO      "タスク は重複していません。"
-#define STRING_CMD_DUPLICATE_1       "重複した {1} タスク。"
-#define STRING_CMD_DUPLICATE_N       "重複した {1} タスク。"
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."
