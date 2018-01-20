@@ -58,6 +58,8 @@
 #include <Variant.h>
 #include <Filter.h>
 
+#define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
+
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
 extern Context context;

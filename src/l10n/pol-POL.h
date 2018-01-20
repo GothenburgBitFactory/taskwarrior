@@ -489,7 +489,6 @@
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_INFINITE_LOOP         "Podstawienie anulowane ponieważ wykonano więcej niż {1} zmian - zabezpieczenie przed zapętleniem."
 #define STRING_UDA_TYPE              "Atrybuty definiowane przez użytkownika mogą być typu 'string', 'date', 'duration' lub 'numeric'."
 #define STRING_UDA_COLLISION         "Nazwa UDA '{1}' jest jedną z nazw atrybutów podstawowych i dlatego jest niedozwolona."
 #define STRING_INVALID_MOD           "Atrybut '{1}' nie zezwala na wartość '{2}'."
