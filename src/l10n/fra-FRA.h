@@ -611,11 +611,6 @@
 #define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
 #define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
 
-// Record
-#define STRING_RECORD_EMPTY          "Empty record in input."
-#define STRING_RECORD_JUNK_AT_EOL    "Unrecognized characters at end of line."
-#define STRING_RECORD_NOT_FF4        "Record not recognized as format 4."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Shows all configuration variables or subset"
 #define STRING_CMD_SHOW_ARGS         "You can only specify 'all' or a search string."

@@ -609,11 +609,6 @@
 #define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
 #define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
 
-// Record
-#define STRING_RECORD_EMPTY          "Malplena rikordo en la inigo."
-#define STRING_RECORD_JUNK_AT_EOL    "Nekonataj signoj ĉe vicfino."
-#define STRING_RECORD_NOT_FF4        "Rikordo ne rekonata kiel aranĝo 4."
-
 // 'show' command
 #define STRING_CMD_SHOW              "Montras ĉian agordan variablon, aŭ subaron"
 #define STRING_CMD_SHOW_ARGS         "Oni sole povas specifi 'all' aŭ serĉĉenon."

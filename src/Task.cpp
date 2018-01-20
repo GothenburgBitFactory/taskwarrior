@@ -589,7 +589,7 @@ void Task::parse (const std::string& input)
           (pig.skip ('\n') || pig.eos ()))
       {
         if (line.length () == 0)
-          throw std::string (STRING_RECORD_EMPTY);
+          throw std::string ("Empty record in input.");
 
         Pig attLine (line);
         std::string name;
@@ -616,13 +616,13 @@ void Task::parse (const std::string& input)
         std::string remainder;
         attLine.getRemainder (remainder);
         if (remainder.length ())
-          throw std::string (STRING_RECORD_JUNK_AT_EOL);
+          throw std::string ("Unrecognized characters at end of line.");
       }
     }
     else if (input[0] == '{')
       parseJSON (input);
     else
-      throw std::string (STRING_RECORD_NOT_FF4);
+      throw std::string ("Record not recognized as format 4.");
   }
 
   catch (const std::string&)
