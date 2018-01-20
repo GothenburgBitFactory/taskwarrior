@@ -233,15 +233,6 @@
 #define STRING_CMD_DELETE_1          "Usunięto {1} zadanie "
 #define STRING_CMD_DELETE_N          "Usunięto {1} zadań"
 
-#define STRING_CMD_DUPLICATE_USAGE   "Tworzy kopię wybranego zadania"
-#define STRING_CMD_DUPLICATE_REC     "Uwaga: zadanie {1} było cyklicznym zadaniem-rodzicem. Kopia jest nim również"
-#define STRING_CMD_DUPLICATE_NON_REC "Uwaga: zadanie {1} było cykliczne. Kopia nie jest cykliczna."
-#define STRING_CMD_DUPLICATE_CONFIRM "Skopiować zadanie {1} '{2}'?"
-#define STRING_CMD_DUPLICATE_TASK    "Skopiowano zadanie {1} '{2}'."
-#define STRING_CMD_DUPLICATE_NO      "Nie skopiowano zadańia"
-#define STRING_CMD_DUPLICATE_1       "Skopiowano {1} zadanie."
-#define STRING_CMD_DUPLICATE_N       "Skopiowano {1} zadań."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

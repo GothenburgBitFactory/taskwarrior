@@ -231,15 +231,6 @@
 #define STRING_CMD_DELETE_1          "{1} Aufgabe gelöscht."
 #define STRING_CMD_DELETE_N          "{1} Aufgaben gelöscht."
 
-#define STRING_CMD_DUPLICATE_USAGE   "Dupliziere die gewählte Aufgabe"
-#define STRING_CMD_DUPLICATE_REC     "Hinweis: Aufgabe {1} ist Vorgänger für wiederholende Aufgaben.  Die duplizierte Aufgabe ist dies auch."
-#define STRING_CMD_DUPLICATE_NON_REC "Hinweis: Aufgabe {1} ist eine wiederholende Aufgabe.  Die duplizierte Aufgabe ist dies nicht."
-#define STRING_CMD_DUPLICATE_CONFIRM "Aufgabe {1} '{2}' duplizieren?"
-#define STRING_CMD_DUPLICATE_TASK    "Aufgabe {1} '{2}' dupliziert."
-#define STRING_CMD_DUPLICATE_NO      "Aufgabe nicht verdoppelt."
-#define STRING_CMD_DUPLICATE_1       "{1} Aufgabe verdoppelt."
-#define STRING_CMD_DUPLICATE_N       "{1} Aufgaben verdoppelt."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."
