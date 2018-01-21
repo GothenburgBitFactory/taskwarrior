@@ -320,19 +320,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Tygodniowe podsumowanie z ukończonych i uruchomionych zadań"
 #define STRING_CMD_TIMESHEET_STARTED "Uruchomiono ({1} zadań)"
 #define STRING_CMD_TIMESHEET_DONE    "Ukończono ({1} zadań)"
-#define STRING_CMD_BURN_USAGE_M      "Wyświetla miesięczny postęp w postaci wykresu."
-#define STRING_CMD_BURN_USAGE_W      "Wyświetla tygodniowy postęp w postaci wykresu."
-#define STRING_CMD_BURN_USAGE_D      "Wyświetla dzienny postęp w postaci wykresu."
-#define STRING_CMD_BURN_TITLE        "Postęp"
-#define STRING_CMD_BURN_TOO_SMALL    "Okno terminal jest za małe do wyświetlenia wykresu."
-#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
-#define STRING_CMD_BURN_DAILY        "Dzienny"
-#define STRING_CMD_BURN_WEEKLY       "Tygodniowy"
-#define STRING_CMD_BURN_MONTHLY      "Miesięczny"
-#define STRING_CMD_BURN_STARTED      "Started"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_DONE         "Done"             // Must be 7 or fewer characters
-#define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_NO_CONVERGE  "Brak konwergencji" // ?
 #define STRING_CMD_CAL_USAGE         "Wyświetla kalendarz z zadaniami z terminem"
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' nie jest poprawnym miesiącem"
 #define STRING_CMD_CAL_BAD_ARG       "Nie rozpoznany argument '{1}'."

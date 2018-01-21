@@ -320,19 +320,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Sumário semanal de tarefas concluídas e iniciadas"
 #define STRING_CMD_TIMESHEET_STARTED "Iniciadas ({1} tarefas)"
 #define STRING_CMD_TIMESHEET_DONE    "Concluídas ({1} tarefas)"
-#define STRING_CMD_BURN_USAGE_M      "Mostra um gráfico de burndown, por mês"
-#define STRING_CMD_BURN_USAGE_W      "Mostra um gráfico de burndown, por semana"
-#define STRING_CMD_BURN_USAGE_D      "Mostra um gráfico de burndown, por dia"
-#define STRING_CMD_BURN_TITLE        "Burndown"  // |por-PRT|==|eng-USA|
-#define STRING_CMD_BURN_TOO_SMALL    "Janela do terminal demasiado pequena para desenhar o gráfico."
-#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
-#define STRING_CMD_BURN_DAILY        "Diário"
-#define STRING_CMD_BURN_WEEKLY       "Semanal"
-#define STRING_CMD_BURN_MONTHLY      "Mensal"
-#define STRING_CMD_BURN_STARTED      "Inicia."          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_DONE         "Conclu."          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_PENDING      "Penden."          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_NO_CONVERGE  "Não converge"
 #define STRING_CMD_CAL_USAGE         "Mostra um calendário, com datas de vencimento assinaladas"
 #define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' não é um mês válido."
 #define STRING_CMD_CAL_BAD_ARG       "Não foi possível reconhecer o argumento '{1}'."

@@ -318,19 +318,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Ĉiusemajna resumo de ĉia tasko finita aŭ ekita"
 #define STRING_CMD_TIMESHEET_STARTED "Ekis ({1} taskojn)"
 #define STRING_CMD_TIMESHEET_DONE    "Finis ({1} taskojn)"
-#define STRING_CMD_BURN_USAGE_M      "Montras ĉiumonatan abakon de taskbrulo"
-#define STRING_CMD_BURN_USAGE_W      "Montras ĉiusemajnan abakon de taskbrulo"
-#define STRING_CMD_BURN_USAGE_D      "Montras ĉiutagan abakon de taskbrulo"
-#define STRING_CMD_BURN_TITLE        "Brulo"
-#define STRING_CMD_BURN_TOO_SMALL    "Terminala fenestro tro malgranda por vidigi grafeon."
-#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
-#define STRING_CMD_BURN_DAILY        "Ĉiutaga"
-#define STRING_CMD_BURN_WEEKLY       "Ĉiusemajna"
-#define STRING_CMD_BURN_MONTHLY      "Ĉiumonata"
-#define STRING_CMD_BURN_STARTED      "Ekis"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_DONE         "Finis"         // Must be 7 or fewer characters
-#define STRING_CMD_BURN_PENDING      "Pendas"        // Must be 7 or fewer characters
-#define STRING_CMD_BURN_NO_CONVERGE  "Nenia konverĝo"
 #define STRING_CMD_CAL_USAGE         "Montras kalendaron, kun markoj por datlimitaj taskoj"
 #define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' ne estas valida monato."
 #define STRING_CMD_CAL_BAD_ARG       "Ne povis rekoni argumenton '{1}'."

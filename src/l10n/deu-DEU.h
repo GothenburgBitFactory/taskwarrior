@@ -318,19 +318,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Wöchentliche Zusammenfassung abgeschlossener und anfgefangener Aufgaben"
 #define STRING_CMD_TIMESHEET_STARTED "Begonnen ({1} Aufgaben)"
 #define STRING_CMD_TIMESHEET_DONE    "Abgeschlossen ({1} Aufgaben)"
-#define STRING_CMD_BURN_USAGE_M      "Zeigt ein Burn-Down-Diagramm, per Monat"
-#define STRING_CMD_BURN_USAGE_W      "Zeigt ein Burn-Down-Diagramm, per Woche"
-#define STRING_CMD_BURN_USAGE_D      "Zeigt ein Burn-Down-Diagramm, per Tag"
-#define STRING_CMD_BURN_TITLE        "Burn-Down"
-#define STRING_CMD_BURN_TOO_SMALL    "Terminal-Fenster zu klein um Graph zu zeichnen"
-#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
-#define STRING_CMD_BURN_DAILY        "Tägliches"
-#define STRING_CMD_BURN_WEEKLY       "Wöchentliches"
-#define STRING_CMD_BURN_MONTHLY      "Monatliches"
-#define STRING_CMD_BURN_STARTED      "Angef."          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_DONE         "Beendet"             // Must be 7 or fewer characters
-#define STRING_CMD_BURN_PENDING      "Offen"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_NO_CONVERGE  "Keine Konvergenz"
 #define STRING_CMD_CAL_USAGE         "Zeigt einen Kalender mit hervorgehobenen fälligen Aufgaben"
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' ist kein zulässiger Monat."
 #define STRING_CMD_CAL_BAD_ARG       "Konnte Argument '{1}' nicht erkennen."
