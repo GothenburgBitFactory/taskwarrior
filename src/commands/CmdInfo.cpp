@@ -132,7 +132,7 @@ int CmdInfo::execute (std::string& output)
                    + anno.second;
 
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_DESC);
+    view.set (row, 0, "Description");
     view.set (row, 1, description, c);
 
     // status

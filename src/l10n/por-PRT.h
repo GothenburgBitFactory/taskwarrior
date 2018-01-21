@@ -42,7 +42,6 @@
 #define STRING_COLUMN_LABEL_COUNT    "Contagem"
 #define STRING_COLUMN_LABEL_DATE     "Data"
 #define STRING_COLUMN_LABEL_DEFAULT  "Por omissão"
-#define STRING_COLUMN_LABEL_DESC     "Descrição"
 #define STRING_COLUMN_LABEL_DUE      "Vence"
 #define STRING_COLUMN_LABEL_END      "Fim"
 #define STRING_COLUMN_LABEL_ENTERED  "Criada"
