@@ -31,7 +31,6 @@
 #include <Table.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -40,7 +39,7 @@ CmdReports::CmdReports ()
 {
   _keyword               = "reports";
   _usage                 = "task          reports";
-  _description           = STRING_CMD_REPORTS_USAGE;
+  _description           = "Lists all supported reports";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -87,8 +86,8 @@ int CmdReports::execute (std::string& output)
   std::stringstream out;
   Table view;
   view.width (context.getWidth ());
-  view.add (STRING_CMD_REPORTS_REPORT);
-  view.add (STRING_CMD_REPORTS_DESC);
+  view.add ("Report");
+  view.add ("Description");
   setHeaderUnderline (view);
 
   for (auto& report : reports)
@@ -101,8 +100,7 @@ int CmdReports::execute (std::string& output)
   out << optionalBlankLine ()
       << view.render ()
       << optionalBlankLine ()
-      << format (STRING_CMD_REPORTS_SUMMARY, reports.size ())
-      << '\n';
+      << format ("{1} reports\n", reports.size ());
 
   output = out.str ();
   return 0;
