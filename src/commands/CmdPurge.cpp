@@ -40,7 +40,7 @@ CmdPurge::CmdPurge ()
 {
   _keyword               = "purge";
   _usage                 = "task <filter> purge";
-  _description           = STRING_CMD_PURGE_USAGE;
+  _description           = "Removes the specified tasks from the data files. Causes permanent loss of data.";
   _read_only             = false;
   _displays_id           = false;
   _needs_confirm         = true;
@@ -104,7 +104,7 @@ void CmdPurge::handleChildren (Task& task, int& count)
     {
       if (child.getStatus () != Task::deleted)
         // In case any child task is not deleted, bail out
-        throw format (STRING_CMD_PURGE_NDEL_CHILD,
+        throw format ("Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged.",
                       task.get ("description"),
                       child.identifier (true));
       else
@@ -117,7 +117,7 @@ void CmdPurge::handleChildren (Task& task, int& count)
     return;
 
   // Ask for confirmation to purge them, if needed
-  std::string question = format (STRING_CMD_PURGE_CONFIRM_R,
+  std::string question = format ("Task '{1}' is a recurrence template. All its {2} deleted children tasks will be purged as well. Continue?",
                                  task.get ("description"),
                                  children.size ());
 
@@ -129,7 +129,7 @@ void CmdPurge::handleChildren (Task& task, int& count)
       purgeTask (child, count);
   }
   else
-    throw std::string (STRING_CMD_PURGE_ABRT);
+    throw std::string ("Purge operation aborted.");
 }
 
 
@@ -160,7 +160,7 @@ int CmdPurge::execute (std::string&)
     if (task.getStatus () == Task::deleted)
     {
       std::string question;
-      question = format (STRING_CMD_PURGE_CONFIRM,
+      question = format ("Permanently remove task {1} '{2}'?",
                          task.identifier (true),
                          task.get ("description"));
 
@@ -169,7 +169,7 @@ int CmdPurge::execute (std::string&)
     }
   }
 
-  feedback_affected (count == 1 ? STRING_CMD_PURGE_1 : STRING_CMD_PURGE_N, count);
+  feedback_affected (count == 1 ? "Purged {1} task." : "Purged {1} tasks.", count);
   return rc;
 }
 
