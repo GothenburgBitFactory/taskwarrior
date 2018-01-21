@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <CmdReports.h>
 #include <sstream>
-#include <algorithm>
 #include <Context.h>
 #include <Table.h>
 #include <format.h>
