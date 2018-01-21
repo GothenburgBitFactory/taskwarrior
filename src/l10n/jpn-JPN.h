@@ -318,19 +318,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Summary of completed and started tasks"
 #define STRING_CMD_TIMESHEET_STARTED "Started ({1} tasks)"
 #define STRING_CMD_TIMESHEET_DONE    "Completed ({1} tasks)"
-#define STRING_CMD_BURN_USAGE_M      "Shows a graphical burndown chart, by month"
-#define STRING_CMD_BURN_USAGE_W      "Shows a graphical burndown chart, by week"
-#define STRING_CMD_BURN_USAGE_D      "Shows a graphical burndown chart, by day"
-#define STRING_CMD_BURN_TITLE        "Burndown"
-#define STRING_CMD_BURN_TOO_SMALL    "Terminal window too small to draw a graph."
-#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
-#define STRING_CMD_BURN_DAILY        "Daily"
-#define STRING_CMD_BURN_WEEKLY       "Weekly"
-#define STRING_CMD_BURN_MONTHLY      "Monthly"
-#define STRING_CMD_BURN_STARTED      "Started"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_DONE         "Done"             // Must be 7 or fewer characters
-#define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_NO_CONVERGE  "No convergence"
 #define STRING_CMD_CAL_USAGE         "Shows a calendar, with due tasks marked"
 #define STRING_CMD_CAL_BAD_MONTH     "引数 '{1}' は正しい月ではありません。"
 #define STRING_CMD_CAL_BAD_ARG       "引数'{1}' を認識できません。"

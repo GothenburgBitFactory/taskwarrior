@@ -387,13 +387,13 @@ std::string Chart::render ()
   if (_graph_height < 5 ||     // a 4-line graph is essentially unreadable.
       _graph_width < 2)        // A single-bar graph is useless.
   {
-    return std::string (STRING_CMD_BURN_TOO_SMALL) + '\n';
+    return std::string ("Terminal window too small to draw a graph.\n");
   }
 
   else if (_graph_height > 1000 || // each line is a string allloc
            _graph_width  > 1000)
   {
-    return std::string (STRING_CMD_BURN_TOO_LARGE) + '\n';
+    return std::string ("Terminal window too large to draw a graph.\n");
   }
 
   if (_max_value == 0)
@@ -408,12 +408,12 @@ std::string Chart::render ()
   std::string full_title;
   switch (_period)
   {
-  case 'D': full_title = STRING_CMD_BURN_DAILY;   break;
-  case 'W': full_title = STRING_CMD_BURN_WEEKLY;  break;
-  case 'M': full_title = STRING_CMD_BURN_MONTHLY; break;
+  case 'D': full_title = "Daily";   break;
+  case 'W': full_title = "Weekly";  break;
+  case 'M': full_title = "Monthly"; break;
   }
 
-  full_title += std::string (" ") + STRING_CMD_BURN_TITLE;
+  full_title += std::string (" Burndown");
 
   if (_title.length ())
   {
@@ -434,9 +434,9 @@ std::string Chart::render ()
   }
 
   // Legend.
-  _grid.replace (LOC (_graph_height / 2 - 1, _width - 10), 10, "DD " + leftJustify (STRING_CMD_BURN_DONE,    7));
-  _grid.replace (LOC (_graph_height / 2,     _width - 10), 10, "SS " + leftJustify (STRING_CMD_BURN_STARTED, 7));
-  _grid.replace (LOC (_graph_height / 2 + 1, _width - 10), 10, "PP " + leftJustify (STRING_CMD_BURN_PENDING, 7));
+  _grid.replace (LOC (_graph_height / 2 - 1, _width - 10), 10, "DD " + leftJustify ("Done",    7));
+  _grid.replace (LOC (_graph_height / 2,     _width - 10), 10, "SS " + leftJustify ("Started", 7));
+  _grid.replace (LOC (_graph_height / 2 + 1, _width - 10), 10, "PP " + leftJustify ("Pending", 7));
 
   // Determine y-axis labelling.
   std::vector <int> _labels;
@@ -857,7 +857,7 @@ void Chart::calculateRates ()
   }
   else
   {
-    _completion = STRING_CMD_BURN_NO_CONVERGE;
+    _completion = "No convergence";
   }
 }
 
@@ -910,7 +910,7 @@ CmdBurndownMonthly::CmdBurndownMonthly ()
 {
   _keyword               = "burndown.monthly";
   _usage                 = "task <filter> burndown.monthly";
-  _description           = STRING_CMD_BURN_USAGE_M;
+  _description           = "Shows a graphical burndown chart, by month";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -945,7 +945,7 @@ CmdBurndownWeekly::CmdBurndownWeekly ()
 {
   _keyword               = "burndown.weekly";
   _usage                 = "task <filter> burndown.weekly";
-  _description           = STRING_CMD_BURN_USAGE_W;
+  _description           = "Shows a graphical burndown chart, by week";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -980,7 +980,7 @@ CmdBurndownDaily::CmdBurndownDaily ()
 {
   _keyword               = "burndown.daily";
   _usage                 = "task <filter> burndown.daily";
-  _description           = STRING_CMD_BURN_USAGE_D;
+  _description           = "Shows a graphical burndown chart, by day";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;

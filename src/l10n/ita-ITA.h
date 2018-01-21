@@ -317,19 +317,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Sommario settimanale dei task completati e avviati"
 #define STRING_CMD_TIMESHEET_STARTED "Avviati ({1} task)"
 #define STRING_CMD_TIMESHEET_DONE    "Completati ({1} task)"
-#define STRING_CMD_BURN_USAGE_M      "Mostra un grafico del lavoro da svolgere, per mese"
-#define STRING_CMD_BURN_USAGE_W      "Mostra un grafico del lavoro da svolgere, per settimana"
-#define STRING_CMD_BURN_USAGE_D      "Mostra un grafico del lavoro da svolgere, per giorno"
-#define STRING_CMD_BURN_TITLE        "Lavoro da svolgere"
-#define STRING_CMD_BURN_TOO_SMALL    "Finestra troppo piccola per mostrare il grafico."
-#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
-#define STRING_CMD_BURN_DAILY        "Giornaliero"
-#define STRING_CMD_BURN_WEEKLY       "Settimanale"
-#define STRING_CMD_BURN_MONTHLY      "Mensile"
-#define STRING_CMD_BURN_STARTED      "Avviato"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_DONE         "Chiuso"             // Must be 7 or fewer characters
-#define STRING_CMD_BURN_PENDING      "Da fare"          // Must be 7 or fewer characters
-#define STRING_CMD_BURN_NO_CONVERGE  "No convergenza"
 #define STRING_CMD_CAL_USAGE         "Mostra un calendario, con i task da svolgere marcati"
 #define STRING_CMD_CAL_BAD_MONTH     "L'argomento '{1}' non è un mese valido."
 #define STRING_CMD_CAL_BAD_ARG       "Impossibile riconosce l'argomento '{1}'."
