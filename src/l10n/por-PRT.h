@@ -42,7 +42,6 @@
 #define STRING_CMD_UUIDS_USAGE_LIST  "Exibe como lista, os UUIDs das tarefas correspondentes"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Exibe como lista separada por vírgulas, os UUIDs das tarefas correspondentes"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Exibe os UUIDs e descrições das tarefas correspondentes"
-#define STRING_CMD_ZSHATTS_USAGE     "Gera uma lista de todos os atributos, para terminação automática em zsh"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Imediatamente antes do almoço"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Se vais jogar no torneio esta tarde"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Antes de escrever para casa"

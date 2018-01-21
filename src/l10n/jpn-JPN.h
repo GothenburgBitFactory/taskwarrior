@@ -42,7 +42,6 @@
 #define STRING_CMD_UUIDS_USAGE_LIST  "Shows the UUIDs of matching tasks, as a list"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Shows the UUIDs of matching tasks, as a comma-separated list"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Shows the UUIDs and descriptions of matching tasks"
-#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Immediately before your lunch"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "If you are playing in the match this afternoon"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Before you write your letter home"

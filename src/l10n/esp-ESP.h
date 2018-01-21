@@ -42,7 +42,6 @@
 #define STRING_CMD_UUIDS_USAGE_LIST  "Muestra los UUIDs de las tareas coincidentes, como una lista"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Muestra los UUIDs de las tareas coincidentes, como una lista separada por comas"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Muestra los UUIDs y descripciones de las tareas coincidentes"
-#define STRING_CMD_ZSHATTS_USAGE     "Genera una lista de todos los atributos, con fines de auto-completado zsh"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Inmediatamente antes de comer"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Si juegas en el partido de esta tarde"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Antes de que escribas a casa"
