@@ -207,15 +207,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Predonis al taskon {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Ne predonis al tasko."
 
-#define STRING_CMD_ANNO_USAGE        "Donas komenton al ekzistanta tasko"
-#define STRING_CMD_ANNO_CONFIRM      "Komenti taskon {1} '{2}'?"
-#define STRING_CMD_ANNO_TASK         "Komentanta taskon {1} '{2}'."
-#define STRING_CMD_ANNO_TASK_R       "Komentanta reokazantan taskon {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "Tiu esta reokazanta tasko. Ĉu vi volas komenti ĉia pendanta okazaĵo de tiu tasko?"
-#define STRING_CMD_ANNO_NO           "Ne komentis taskon."
-#define STRING_CMD_ANNO_1            "Komentis {1} taskon."
-#define STRING_CMD_ANNO_N            "Komentis {1} taskojn."
-
 #define STRING_CMD_DENO_USAGE        "Viŝas komenton"
 #define STRING_CMD_DENO_NONE         "La specifita tasko ne havas nenian viŝeblan komenton."
 #define STRING_CMD_DENO_CONFIRM      "Malkomenti taskon {1} '{2}'?"

@@ -41,7 +41,7 @@ CmdAnnotate::CmdAnnotate ()
 {
   _keyword               = "annotate";
   _usage                 = "task <filter> annotate <mods>";
-  _description           = STRING_CMD_ANNO_USAGE;
+  _description           = "Adds an annotation to an existing task";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -78,7 +78,7 @@ int CmdAnnotate::execute (std::string&)
     Task before (task);
 
     // Annotate the specified task.
-    std::string question = format (STRING_CMD_ANNO_CONFIRM,
+    std::string question = format ("Annotate task {1} '{2}'?",
                                    task.identifier (true),
                                    task.get ("description"));
 
@@ -88,7 +88,7 @@ int CmdAnnotate::execute (std::string&)
     {
       context.tdb2.modify (task);
       ++count;
-      feedback_affected (STRING_CMD_ANNO_TASK, task);
+      feedback_affected ("Annotating task {1} '{2}'.", task);
       if (context.verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
@@ -96,7 +96,7 @@ int CmdAnnotate::execute (std::string&)
       if (task.has ("parent"))
       {
         if ((context.config.get ("recurrence.confirmation") == "prompt"
-             && confirm (STRING_CMD_ANNO_CONFIRM_R)) ||
+             && confirm ("This is a recurring task.  Do you want to annotate all pending recurrences of this same task?")) ||
             context.config.getBoolean ("recurrence.confirmation"))
         {
           auto siblings = context.tdb2.siblings (task);
@@ -105,7 +105,7 @@ int CmdAnnotate::execute (std::string&)
             sibling.modify (Task::modAnnotate, true);
             context.tdb2.modify (sibling);
             ++count;
-            feedback_affected (STRING_CMD_ANNO_TASK_R, sibling);
+            feedback_affected ("Annotating recurring task {1} '{2}'.", sibling);
           }
 
           // Annotate the parent
@@ -118,7 +118,7 @@ int CmdAnnotate::execute (std::string&)
     }
     else
     {
-      std::cout << STRING_CMD_ANNO_NO << '\n';
+      std::cout << "Task not annotated.\n";
       rc = 1;
       if (_permission_quit)
         break;
@@ -130,7 +130,7 @@ int CmdAnnotate::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_ANNO_1 : STRING_CMD_ANNO_N, count);
+  feedback_affected (count == 1 ? "Annotated {1} task." : "Annotated {1} tasks.", count);
   return rc;
 }
 

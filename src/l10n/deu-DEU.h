@@ -207,15 +207,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Vor Aufgabe {1} '{2}' anfügen?"
 #define STRING_CMD_PREPEND_NO        "Nicht vor Aufgabe angefügt."
 
-#define STRING_CMD_ANNO_USAGE        "Kommentiert eine bestehene Aufgabe"
-#define STRING_CMD_ANNO_CONFIRM      "Aufgabe {1} '{2}' kommentieren?"
-#define STRING_CMD_ANNO_TASK         "Kommentiere Aufgabe {1} '{2}'."
-#define STRING_CMD_ANNO_TASK_R       "Kommentiere wiederholende Aufgabe {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "Dies ist eine wiederholende Aufgabe.  Möchten Sie alle offenen Wiederholungen dieser Aufgabe kommentieren?"
-#define STRING_CMD_ANNO_NO           "Aufgabe nicht kommentiert."
-#define STRING_CMD_ANNO_1            "{1} Aufgabe kommentiert."
-#define STRING_CMD_ANNO_N            "{1} Aufgaben kommentiert."
-
 #define STRING_CMD_DENO_USAGE        "Löscht einen Kommentar"
 #define STRING_CMD_DENO_NONE         "Die gewählte Aufgabe hat keine Kommentare, welche gelöscht werden können."
 #define STRING_CMD_DENO_CONFIRM      "Kommentar in Aufgabe {1} '{2}' löschen?"

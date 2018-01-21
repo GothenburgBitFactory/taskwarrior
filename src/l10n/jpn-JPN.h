@@ -209,15 +209,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Prepend to task {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Task not prepended."
 
-#define STRING_CMD_ANNO_USAGE        "既存のタスクに注釈を追加"
-#define STRING_CMD_ANNO_CONFIRM      "Annotate task {1} '{2}'?"
-#define STRING_CMD_ANNO_TASK         "タスク{1} に注釈 '{2}' を追加"
-#define STRING_CMD_ANNO_TASK_R       "Annotating recurring task {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "This is a recurring task.  Do you want to annotate all pending recurrences of this same task?"
-#define STRING_CMD_ANNO_NO           "Task not annotated."
-#define STRING_CMD_ANNO_1            "{1} task に注釈付加."
-#define STRING_CMD_ANNO_N            "{1} task に注釈付加."
-
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
 #define STRING_CMD_DENO_NONE         "指定されたtaskには注釈がないので削除できません。"
 #define STRING_CMD_DENO_CONFIRM      "タスク {1} から注釈 '{2}' を削除しますか?"

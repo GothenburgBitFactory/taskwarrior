@@ -208,15 +208,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Aggiungere all'inizio della descrizione del task {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Aggiunta non effettuata."
 
-#define STRING_CMD_ANNO_USAGE        "Aggiunge una annotazione a un task esistente"
-#define STRING_CMD_ANNO_CONFIRM      "Aggiungere una annotazione al task {1} '{2}'?"
-#define STRING_CMD_ANNO_TASK         "Aggiunta al task {1} '{2}'."
-#define STRING_CMD_ANNO_TASK_R       "Aggiunta al task periodico {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "Questo è un task periodico. Aggiungere una annotazione a tutti i task associati?"
-#define STRING_CMD_ANNO_NO           "Aggiunta non effettuata."
-#define STRING_CMD_ANNO_1            "Aggiunta al task {1}."
-#define STRING_CMD_ANNO_N            "Aggiunte ai task {1}."
-
 #define STRING_CMD_DENO_USAGE        "Cancella una annotazione"
 #define STRING_CMD_DENO_NONE         "Il task specificato non ha annotazioni che possano essere cancellate."
 #define STRING_CMD_DENO_CONFIRM      "Denotare il task {1} '{2}'?"

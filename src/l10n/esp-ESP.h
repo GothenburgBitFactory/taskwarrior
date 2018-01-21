@@ -213,15 +213,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "¿Anteponer texto a la tarea {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Texto no antepuesto."
 
-#define STRING_CMD_ANNO_USAGE        "Añade una anotación a una tarea existente"
-#define STRING_CMD_ANNO_CONFIRM      "¿Anotar la tarea {1} '{2}'?"
-#define STRING_CMD_ANNO_TASK         "Anotando la tarea {1} '{2}'."
-#define STRING_CMD_ANNO_TASK_R       "Anotando la tarea recurrente {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "Esta es una tarea recurrente. ¿Quiere anotar todas las recurrencias pendientes de esta misma tarea?"
-#define STRING_CMD_ANNO_NO           "Tarea no anotada."
-#define STRING_CMD_ANNO_1            "Anotada {1} tarea."
-#define STRING_CMD_ANNO_N            "Anotadas {1} tareas."
-
 #define STRING_CMD_DENO_USAGE        "Elimina una anotación"
 #define STRING_CMD_DENO_NONE         "La tarea especificada no tiene anotaciones que puedan ser eliminadas."
 #define STRING_CMD_DENO_CONFIRM      "¿Desanotar la tarea {1} '{2}'?"

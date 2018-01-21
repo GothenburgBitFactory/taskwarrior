@@ -209,15 +209,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Dodać ciąg do opisu zadania {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Nie dodano ciągu do opisu."
 
-#define STRING_CMD_ANNO_USAGE        "Dodaje komentarz do istniejącego zadania"
-#define STRING_CMD_ANNO_CONFIRM      "Skomentować zadanie {1} '{2}'?"
-#define STRING_CMD_ANNO_TASK         "Komentowanie zadania {1} '{2}'."
-#define STRING_CMD_ANNO_TASK_R       "Komentowanie zadania cyklicznego {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "To zadanie jest cykliczne. Czy chcesz skomentować kolejne zadania w cyklu?"
-#define STRING_CMD_ANNO_NO           "Nie skomentowano zadania."
-#define STRING_CMD_ANNO_1            "Skomentowano {1} zadanie."
-#define STRING_CMD_ANNO_N            "Skomentowano {1} zadań."
-
 #define STRING_CMD_DENO_USAGE        "Usuwa komentarz"
 #define STRING_CMD_DENO_NONE         "Wybrane zadanie nie posiada komentarza do usunięcia."
 #define STRING_CMD_DENO_CONFIRM      "Usunąć komentarz zadania {1} '{2}'?"
