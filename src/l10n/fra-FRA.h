@@ -27,8 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_UDAS_COMPL_USAGE  "Affiche les ADUs définis, pour la complétion"
-#define STRING_CMD_UDAS_USAGE        "Affiche les détails de tous les ADUs définis"
 #define STRING_CMD_UNDO_USAGE        "Annule les changements les plus récents sur une tâche"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Juste avant votre repas"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "If you are playing in the match this afternoon"

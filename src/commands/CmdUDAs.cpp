@@ -44,7 +44,7 @@ CmdUDAs::CmdUDAs ()
 {
   _keyword               = "udas";
   _usage                 = "task          udas";
-  _description           = STRING_CMD_UDAS_USAGE;
+  _description           = "Shows all the defined UDA details";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -176,7 +176,7 @@ CmdCompletionUDAs::CmdCompletionUDAs ()
 {
   _keyword               = "_udas";
   _usage                 = "task          _udas";
-  _description           = STRING_CMD_UDAS_COMPL_USAGE;
+  _description           = "Shows the defined UDAs for completion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;

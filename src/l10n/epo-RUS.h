@@ -27,8 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_UDAS_COMPL_USAGE  "Montras ĉian definitan UDA, por motivo memkompletada"
-#define STRING_CMD_UDAS_USAGE        "Montras la detalojn de ĉia definita UDA"
 #define STRING_CMD_UNDO_USAGE        "Malfaras la plej malfrua modifado al tasko"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Juste antaŭ tagmanĝi"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Se vi ludos en la maĉo hodiaŭ posttagmeze"
