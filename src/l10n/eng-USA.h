@@ -28,15 +28,9 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Shows only a list of all tags used, for autocompletion purposes"
-#define STRING_CMD_IDS_USAGE_LIST    "Shows the IDs of matching tasks, in the form of a list"
-#define STRING_CMD_IDS_USAGE_RANGE   "Shows the IDs of matching tasks, as a range"
-#define STRING_CMD_IDS_USAGE_ZSH     "Shows the IDs and descriptions of matching tasks"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Shows the defined UDAs for completion purposes"
 #define STRING_CMD_UDAS_USAGE        "Shows all the defined UDA details"
 #define STRING_CMD_UNDO_USAGE        "Reverts the most recent change to a task"
-#define STRING_CMD_UUIDS_USAGE_LIST  "Shows the UUIDs of matching tasks, as a list"
-#define STRING_CMD_UUIDS_USAGE_RANGE "Shows the UUIDs of matching tasks, as a comma-separated list"
-#define STRING_CMD_UUIDS_USAGE_ZSH   "Shows the UUIDs and descriptions of matching tasks"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Immediately before your lunch"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "If you are playing in the match this afternoon"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Before you write your letter home"

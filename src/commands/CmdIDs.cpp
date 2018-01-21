@@ -32,7 +32,6 @@
 #include <Filter.h>
 #include <main.h>
 #include <shared.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -43,7 +42,7 @@ CmdIDs::CmdIDs ()
 {
   _keyword               = "ids";
   _usage                 = "task <filter> ids";
-  _description           = STRING_CMD_IDS_USAGE_RANGE;
+  _description           = "Shows the IDs of matching tasks, as a range";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -137,7 +136,7 @@ CmdCompletionIds::CmdCompletionIds ()
 {
   _keyword               = "_ids";
   _usage                 = "task <filter> _ids";
-  _description           = STRING_CMD_IDS_USAGE_LIST;
+  _description           = "Shows the IDs of matching tasks, in the form of a list";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -176,7 +175,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
 {
   _keyword               = "_zshids";
   _usage                 = "task <filter> _zshids";
-  _description           = STRING_CMD_IDS_USAGE_ZSH;
+  _description           = "Shows the IDs and descriptions of matching tasks";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -217,7 +216,7 @@ CmdUUIDs::CmdUUIDs ()
 {
   _keyword               = "uuids";
   _usage                 = "task <filter> uuids";
-  _description           = STRING_CMD_UUIDS_USAGE_RANGE;
+  _description           = "Shows the UUIDs of matching tasks, as a comma-separated list";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -254,7 +253,7 @@ CmdCompletionUuids::CmdCompletionUuids ()
 {
   _keyword               = "_uuids";
   _usage                 = "task <filter> _uuids";
-  _description           = STRING_CMD_UUIDS_USAGE_LIST;
+  _description           = "Shows the UUIDs of matching tasks, as a list";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -291,7 +290,7 @@ CmdZshCompletionUuids::CmdZshCompletionUuids ()
 {
   _keyword               = "_zshuuids";
   _usage                 = "task <filter> _zshuuids";
-  _description           = STRING_CMD_UUIDS_USAGE_ZSH;
+  _description           = "Shows the UUIDs and descriptions of matching tasks";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;

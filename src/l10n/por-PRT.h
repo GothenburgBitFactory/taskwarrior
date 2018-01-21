@@ -28,15 +28,9 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Exibe apenas a lista de todas as marcas em uso, para fins de terminação automática"
-#define STRING_CMD_IDS_USAGE_LIST    "Exibe em formato de lista, os IDs das tarefas correspondentes"
-#define STRING_CMD_IDS_USAGE_RANGE   "Exibe como intervalo, os IDs das tarefas correspondentes"
-#define STRING_CMD_IDS_USAGE_ZSH     "Exibe os IDs e descrições das tarefas correspondentes"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Exibe os UDAs definidos para fins de terminação automática"
 #define STRING_CMD_UDAS_USAGE        "Exibe os detalhes de todas os UDA definidos"
 #define STRING_CMD_UNDO_USAGE        "Reverte a mais recente modificação a uma tarefa"
-#define STRING_CMD_UUIDS_USAGE_LIST  "Exibe como lista, os UUIDs das tarefas correspondentes"
-#define STRING_CMD_UUIDS_USAGE_RANGE "Exibe como lista separada por vírgulas, os UUIDs das tarefas correspondentes"
-#define STRING_CMD_UUIDS_USAGE_ZSH   "Exibe os UUIDs e descrições das tarefas correspondentes"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Imediatamente antes do almoço"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Se vais jogar no torneio esta tarde"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Antes de escrever para casa"

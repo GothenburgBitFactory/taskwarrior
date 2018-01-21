@@ -28,15 +28,9 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Mostra solo una lista dei tag utilizzati, per autocompletamento"
-#define STRING_CMD_IDS_USAGE_LIST    "Mostra gli ID dei task corrispondenti, in forma di lista"
-#define STRING_CMD_IDS_USAGE_RANGE   "Mostra gli ID dei task corrispondenti, come intervallo"
-#define STRING_CMD_IDS_USAGE_ZSH     "Mostra gli ID e le descrizioni dei task corrispondenti"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Mostra gli UDA definiti per il completamento"
 #define STRING_CMD_UDAS_USAGE        "Mostra tutti i dettagli degli UDA definiti"
 #define STRING_CMD_UNDO_USAGE        "Ritorna alla più recente modifica di un task"
-#define STRING_CMD_UUIDS_USAGE_LIST  "Mostra gli UUID dei task corrispondenti, come lista"
-#define STRING_CMD_UUIDS_USAGE_RANGE "Mostra gli UUID dei task corrispondenti, come lista separata da virgole"
-#define STRING_CMD_UUIDS_USAGE_ZSH   "Mostra gli UUID e le descrizioni dei task corrispondenti"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Immediatamente prima di pranzo"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Se si sta giocando la partita questo pomeriggio"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Prima di scrivere la lettera a casa"

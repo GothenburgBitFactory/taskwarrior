@@ -28,15 +28,9 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Affiche uniquement une liste des étiquettes utilisées, pour la complétion"
-#define STRING_CMD_IDS_USAGE_LIST    "Affiche les IDs des tâches correspondantes, sous forme de liste"
-#define STRING_CMD_IDS_USAGE_RANGE   "Affiche les IDs des tâches correspondantes, comme une plage"
-#define STRING_CMD_IDS_USAGE_ZSH     "Affiche les IDs  et les descriptions des tâches correspondantes"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Affiche les ADUs définis, pour la complétion"
 #define STRING_CMD_UDAS_USAGE        "Affiche les détails de tous les ADUs définis"
 #define STRING_CMD_UNDO_USAGE        "Annule les changements les plus récents sur une tâche"
-#define STRING_CMD_UUIDS_USAGE_LIST  "Affiche le UUIDs des tâches correspondantes, comme une liste"
-#define STRING_CMD_UUIDS_USAGE_RANGE "Affiche le UUIDs des tâches correspondantes, comme une liste séparée par des virgules"
-#define STRING_CMD_UUIDS_USAGE_ZSH   "Affiche le UUIDs et les descriptions des tâches correspondantes"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Juste avant votre repas"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "If you are playing in the match this afternoon"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Before you write your letter home"
