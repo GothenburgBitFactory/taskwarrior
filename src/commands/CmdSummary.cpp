@@ -210,11 +210,11 @@ int CmdSummary::execute (std::string& output)
         << view.render ()
         << optionalBlankLine ();
 
-    out << format (STRING_CMD_PROJECTS_SUMMARY2, view.rows ()) << '\n';
+    out << format ("{1} projects\n", view.rows ());
   }
   else
   {
-    out << STRING_CMD_PROJECTS_NO << '\n';
+    out << "No projects.\n";
     rc = 1;
   }
 

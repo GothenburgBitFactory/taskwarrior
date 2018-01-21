@@ -43,7 +43,7 @@ CmdProjects::CmdProjects ()
 {
   _keyword               = "projects";
   _usage                 = "task <filter> projects";
-  _description           = STRING_CMD_PROJECTS_USAGE;
+  _description           = "Shows all project names used";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -126,7 +126,7 @@ int CmdProjects::execute (std::string& output)
       }
       int row = view.addRow ();
       view.set (row, 0, (project.first == ""
-                          ? STRING_CMD_PROJECTS_NONE
+                          ? "(none)"
                           : indentProject (project.first, "  ", '.')));
       view.set (row, 1, project.second);
       processed.push_back (project.first);
@@ -140,17 +140,17 @@ int CmdProjects::execute (std::string& output)
         << view.render ()
         << optionalBlankLine ()
         << (number_projects == 1
-              ? format (STRING_CMD_PROJECTS_SUMMARY,  number_projects)
-              : format (STRING_CMD_PROJECTS_SUMMARY2, number_projects))
+              ? format ("{1} project",  number_projects)
+              : format ("{1} projects", number_projects))
         << ' '
         << (quantity == 1
-              ? format (STRING_CMD_PROJECTS_TASK,  quantity)
-              : format (STRING_CMD_PROJECTS_TASKS, quantity))
+              ? format ("({1} task)",  quantity)
+              : format ("({1} tasks)", quantity))
         << '\n';
   }
   else
   {
-    out << STRING_CMD_PROJECTS_NO << '\n';
+    out << "No projects.\n";
     rc = 1;
   }
 
@@ -163,7 +163,7 @@ CmdCompletionProjects::CmdCompletionProjects ()
 {
   _keyword               = "_projects";
   _usage                 = "task <filter> _projects";
-  _description           = STRING_CMD_PROJECTS_USAGE_2;
+  _description           = "Shows only a list of all project names used";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;

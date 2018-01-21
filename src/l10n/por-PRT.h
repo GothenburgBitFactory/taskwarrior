@@ -172,15 +172,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_PROJECTS_USAGE    "Exibe todos os nomes de projeto em uso"
-#define STRING_CMD_PROJECTS_USAGE_2  "Exibe apenas uma lista de todos os nomes de projeto em uso"
-#define STRING_CMD_PROJECTS_NO       "Sem projetos."
-#define STRING_CMD_PROJECTS_NONE     "(nenhum)"
-#define STRING_CMD_PROJECTS_SUMMARY  "{1} projeto"
-#define STRING_CMD_PROJECTS_SUMMARY2 "{1} projetos"
-#define STRING_CMD_PROJECTS_TASK     "({1} tarefa)"
-#define STRING_CMD_PROJECTS_TASKS    "({1} tarefas)"
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."
