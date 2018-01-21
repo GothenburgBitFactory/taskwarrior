@@ -182,7 +182,6 @@
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} projektów"
 #define STRING_CMD_PROJECTS_TASK     "({1} zadanie)"
 #define STRING_CMD_PROJECTS_TASKS    "({1} zadań)"
-#define STRING_CMD_COUNT_USAGE       "Zlicza pasujące zadania"
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
