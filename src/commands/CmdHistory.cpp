@@ -36,6 +36,13 @@
 #include <i18n.h>
 #include <Datetime.h>
 
+#define STRING_CMD_HISTORY_YEAR      "Year"
+#define STRING_CMD_HISTORY_MONTH     "Month"
+#define STRING_CMD_HISTORY_DAY       "Day"
+#define STRING_CMD_HISTORY_ADDED     "Added"
+#define STRING_CMD_HISTORY_COMP      "Completed"
+#define STRING_CMD_HISTORY_DEL       "Deleted"
+
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +76,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
 
   HistoryStrategy::setupTableDates (view);
 
-  view.add (STRING_CMD_GHISTORY_NUMBER, true, false); // Fixed.
+  view.add ("Number Added/Completed/Deleted", true, false); // Fixed.
 
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
@@ -168,15 +175,14 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
         << '\n';
 
     if (context.color ())
-      out << format (STRING_CMD_HISTORY_LEGEND,
+      out << format ("Legend: {1}, {2}, {3}",
                      color_add.colorize (STRING_CMD_HISTORY_ADDED),
                      color_done.colorize (STRING_CMD_HISTORY_COMP),
                      color_delete.colorize (STRING_CMD_HISTORY_DEL))
           << optionalBlankLine ()
           << '\n';
     else
-      out << STRING_CMD_HISTORY_LEGEND_A
-          << '\n';
+      out << "Legend: + Added, X Completed, - Deleted\n";
   }
   else
   {
@@ -200,7 +206,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
   view.add (STRING_CMD_HISTORY_ADDED, false);
   view.add (STRING_CMD_HISTORY_COMP,  false);
   view.add (STRING_CMD_HISTORY_DEL,   false);
-  view.add (STRING_CMD_HISTORY_NET,   false);
+  view.add ("Net",                    false);
 
   auto totalAdded     = 0;
   auto totalCompleted = 0;
@@ -258,7 +264,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
     if (context.color ())
       row_color = Color (Color::nocolor, Color::nocolor, false, true, false);
 
-    view.set (row, HistoryStrategy::dateFieldCount - 1, STRING_CMD_HISTORY_AVERAGE, row_color);
+    view.set (row, HistoryStrategy::dateFieldCount - 1, "Average", row_color);
     view.set (row, HistoryStrategy::dateFieldCount + 0, totalAdded     / (view.rows () - 2), row_color);
     view.set (row, HistoryStrategy::dateFieldCount + 1, totalCompleted / (view.rows () - 2), row_color);
     view.set (row, HistoryStrategy::dateFieldCount + 2, totalDeleted   / (view.rows () - 2), row_color);
@@ -316,7 +322,7 @@ public:
 
   static constexpr const char* keyword         = "history.monthly";
   static constexpr const char* usage           = "task <filter> history.monthly";
-  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_M;
+  static constexpr const char* description     = "Shows a report of task history, by month";
   static constexpr unsigned int dateFieldCount = 2;
   static constexpr bool graphical              = false;
   static constexpr unsigned int labelWidth     = 0;  // unused.
@@ -419,7 +425,7 @@ public:
 
   static constexpr const char* keyword         = "ghistory.monthly";
   static constexpr const char* usage           = "task <filter> ghistory.monthly";
-  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_M;
+  static constexpr const char* description     = "Shows a graphical report of task history, by month";
   static constexpr unsigned int dateFieldCount = 2;
   static constexpr bool graphical              = true;
   static constexpr unsigned int labelWidth     = 15;  // length '2017 September ' = 15
@@ -459,7 +465,7 @@ public:
 
   static constexpr const char* keyword         = "ghistory.annual";
   static constexpr const char* usage           = "task <filter> ghistory.annual";
-  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_A;
+  static constexpr const char* description     = "Shows a graphical report of task history, by year";
   static constexpr unsigned int dateFieldCount = 1;
   static constexpr bool graphical              = true;
   static constexpr unsigned int labelWidth     = 5;  // length '2017 ' = 5
@@ -499,7 +505,7 @@ public:
 
   static constexpr const char* keyword         = "history.annual";
   static constexpr const char* usage           = "task <filter> history.annual";
-  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_A;
+  static constexpr const char* description     = "Shows a report of task history, by year";
   static constexpr unsigned int dateFieldCount = 1;
   static constexpr bool graphical              = false;
   static constexpr unsigned int labelWidth     = 0;  // unused.
@@ -547,7 +553,7 @@ public:
 
   static constexpr const char* keyword         = "history.daily";
   static constexpr const char* usage           = "task <filter> history.daily";
-  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_D;
+  static constexpr const char* description     = "Shows a report of task history, by day";
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = false;
   static constexpr unsigned int labelWidth     = 0;  // unused.
@@ -594,7 +600,7 @@ public:
 
   static constexpr const char* keyword         = "ghistory.daily";
   static constexpr const char* usage           = "task <filter> ghistory.daily";
-  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_D;
+  static constexpr const char* description     = "Shows a graphical report of task history, by day";
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = true;
   static constexpr unsigned int labelWidth     = 19;  // length '2017 September Day ' = 19
@@ -641,7 +647,7 @@ public:
 
   static constexpr const char* keyword         = "history.weekly";
   static constexpr const char* usage           = "task <filter> history.weekly";
-  static constexpr const char* description     = STRING_CMD_HISTORY_USAGE_W;
+  static constexpr const char* description     = "Shows a report of task history, by week";
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = false;
   static constexpr unsigned int labelWidth     = 0;  // unused.
@@ -688,7 +694,7 @@ public:
 
   static constexpr const char* keyword         = "ghistory.weekly";
   static constexpr const char* usage           = "task <filter> ghistory.weekly";
-  static constexpr const char* description     = STRING_CMD_GHISTORY_USAGE_W;
+  static constexpr const char* description     = "Shows a graphical report of task history, by week";
   static constexpr unsigned int dateFieldCount = 3;
   static constexpr bool graphical              = true;
   static constexpr unsigned int labelWidth     = 19;  // length '2017 September Day ' = 19
