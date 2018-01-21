@@ -209,15 +209,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Prepend to task {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Tâche not prepended."
 
-#define STRING_CMD_DENO_USAGE        "Deletes an annotation"
-#define STRING_CMD_DENO_NONE         "The specified task has no annotations that can be deleted."
-#define STRING_CMD_DENO_CONFIRM      "Denotate task {1} '{2}'?"
-#define STRING_CMD_DENO_FOUND        "Found annotation '{1}' and deleted it."
-#define STRING_CMD_DENO_NOMATCH      "Did not find any matching annotation to be deleted for '{1}'."
-#define STRING_CMD_DENO_NO           "Tâche non désannotée."
-#define STRING_CMD_DENO_1            "Denotated {1} task."
-#define STRING_CMD_DENO_N            "Denotated {1} tasks."
-
 #define STRING_CMD_IMPORT_USAGE      "Imports JSON files"
 #define STRING_CMD_IMPORT_SUMMARY    "Imported {1} tasks."
 #define STRING_CMD_IMPORT_FILE       "Importing '{1}'"

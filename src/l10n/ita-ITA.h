@@ -208,15 +208,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Aggiungere all'inizio della descrizione del task {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Aggiunta non effettuata."
 
-#define STRING_CMD_DENO_USAGE        "Cancella una annotazione"
-#define STRING_CMD_DENO_NONE         "Il task specificato non ha annotazioni che possano essere cancellate."
-#define STRING_CMD_DENO_CONFIRM      "Denotare il task {1} '{2}'?"
-#define STRING_CMD_DENO_FOUND        "Annotazione '{1}' trovata e cancellata."
-#define STRING_CMD_DENO_NOMATCH      "Nessuna annotazione da cancellare trovata per '{1}'."
-#define STRING_CMD_DENO_NO           "Annotazione non rimossa."
-#define STRING_CMD_DENO_1            "Annotazione rimossa da task {1}."
-#define STRING_CMD_DENO_N            "Annotazioni rimosse da task {1}."
-
 #define STRING_CMD_IMPORT_USAGE      "Importa file JSON"
 #define STRING_CMD_IMPORT_SUMMARY    "Importati {1} task."
 #define STRING_CMD_IMPORT_FILE       "Importazione di '{1}'"

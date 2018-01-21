@@ -209,15 +209,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Prepend to task {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Task not prepended."
 
-#define STRING_CMD_DENO_USAGE        "Deletes an annotation"
-#define STRING_CMD_DENO_NONE         "指定されたtaskには注釈がないので削除できません。"
-#define STRING_CMD_DENO_CONFIRM      "タスク {1} から注釈 '{2}' を削除しますか?"
-#define STRING_CMD_DENO_FOUND        "注釈 '{1}' が見つかったので削除します。"
-#define STRING_CMD_DENO_NOMATCH      "'{1}' に一致する注釈が見つからなかったので削除できません。"
-#define STRING_CMD_DENO_NO           "Task not denotated."
-#define STRING_CMD_DENO_1            "Denotated {1} task."
-#define STRING_CMD_DENO_N            "Denotated {1} tasks."
-
 #define STRING_CMD_IMPORT_USAGE      "JSON ファイルをインポート"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} task をインポートしました。"
 #define STRING_CMD_IMPORT_FILE       "'{1}' をインポート中"

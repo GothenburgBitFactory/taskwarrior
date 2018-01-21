@@ -209,15 +209,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Dodać ciąg do opisu zadania {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Nie dodano ciągu do opisu."
 
-#define STRING_CMD_DENO_USAGE        "Usuwa komentarz"
-#define STRING_CMD_DENO_NONE         "Wybrane zadanie nie posiada komentarza do usunięcia."
-#define STRING_CMD_DENO_CONFIRM      "Usunąć komentarz zadania {1} '{2}'?"
-#define STRING_CMD_DENO_FOUND        "Znaleziono i usunięto komentarz '{1}'."
-#define STRING_CMD_DENO_NOMATCH      "Nie znaleziono żadnego pasującego komentarza do usunięcia '{1}'."
-#define STRING_CMD_DENO_NO           "Nie usunięto komentarza."
-#define STRING_CMD_DENO_1            "Usunięto {1} komentarz."
-#define STRING_CMD_DENO_N            "Usunięto {1} komentarzy."
-
 #define STRING_CMD_IMPORT_USAGE      "Importuje pliki JSON"
 #define STRING_CMD_IMPORT_SUMMARY    "Zaimportowano {1} zadań."
 #define STRING_CMD_IMPORT_FILE       "Importowanie '{1}'"
