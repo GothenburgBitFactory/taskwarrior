@@ -28,8 +28,6 @@
 #include <CmdLog.h>
 #include <Context.h>
 #include <format.h>
-#include <i18n.h>
-#include <util.h>
 #include <main.h>
 
 extern Context context;
@@ -39,7 +37,7 @@ CmdLog::CmdLog ()
 {
   _keyword               = "log";
   _usage                 = "task          log <mods>";
-  _description           = STRING_CMD_LOG_USAGE;
+  _description           = "Adds a new task that is already completed";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -60,11 +58,11 @@ int CmdLog::execute (std::string& output)
 
   // Cannot log recurring tasks.
   if (task.has ("recur"))
-    throw std::string (STRING_CMD_LOG_NO_RECUR);
+    throw std::string ("You cannot log recurring tasks.");
 
   // Cannot log waiting tasks.
   if (task.has ("wait"))
-    throw std::string (STRING_CMD_LOG_NO_WAITING);
+    throw std::string ("You cannot log waiting tasks.");
 
   context.tdb2.add (task);
 
@@ -72,7 +70,7 @@ int CmdLog::execute (std::string& output)
     context.footnote (onProjectChange (task));
 
   if (context.verbose ("new-uuid"))
-    output = format (STRING_CMD_LOG_LOGGED, task.get ("uuid")) + '\n';
+    output = format ("Logged task {1}.\n", task.get ("uuid"));
 
   return 0;
 }

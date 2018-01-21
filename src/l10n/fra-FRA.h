@@ -108,13 +108,6 @@
 #define STRING_CMD_ADD_USAGE         "Ajoute une nouvelle tâche"
 #define STRING_CMD_ADD_FEEDBACK      "Tâche {1} crée."
 #define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_LOG_USAGE         "Adds a new task that is already completed"
-#define STRING_CMD_LOG_NO_RECUR      "Vous ne pouvez pas journaliser une tâche récurrente."
-#define STRING_CMD_LOG_NO_WAITING    "Vous ne pouvez pas journaliser une tâche en attente."
-
-//#define STRING_CMD_LOG_LOGGED        "Tâche journalisée."
-#define STRING_CMD_LOG_LOGGED        "Logged task {1}."
-
 #define STRING_CMD_IDS_USAGE_RANGE   "Affiche les IDs des tâches correspondantes, comme une plage"
 #define STRING_CMD_IDS_USAGE_LIST    "Affiche les IDs des tâches correspondantes, sous forme de liste"
 #define STRING_CMD_IDS_USAGE_ZSH     "Affiche les IDs  et les descriptions des tâches correspondantes"

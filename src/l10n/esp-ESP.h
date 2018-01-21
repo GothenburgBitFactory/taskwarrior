@@ -108,11 +108,6 @@
 #define STRING_CMD_ADD_USAGE         "Añade una nueva tarea"
 #define STRING_CMD_ADD_FEEDBACK      "Creada tarea {1}."
 #define STRING_CMD_ADD_RECUR         "Creada tarea {1} (modelo de recurrencia)."
-#define STRING_CMD_LOG_USAGE         "Añade una nueva tarea que ya ha sido completada"
-#define STRING_CMD_LOG_NO_RECUR      "No puede registrar tareas recurrentes."
-#define STRING_CMD_LOG_NO_WAITING    "No puede registrar tareas en espera."
-#define STRING_CMD_LOG_LOGGED        "Tarea {1} registrada."
-
 #define STRING_CMD_IDS_USAGE_RANGE   "Muestra los IDs de las tareas coincidentes, como un rango"
 #define STRING_CMD_IDS_USAGE_LIST    "Muestra los IDs de las tareas coincidentes, en forma de lista"
 #define STRING_CMD_IDS_USAGE_ZSH     "Muestra los IDs y descripciones de las tareas coincidentes"
