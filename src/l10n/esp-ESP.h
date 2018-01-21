@@ -178,15 +178,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "Se debe especificar un atributo. Ver 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "Debe especificar un atributo o un UDA."
 
-#define STRING_CMD_APPEND_USAGE      "Añade texto al final de la descripción de una tarea existente"
-#define STRING_CMD_APPEND_1          "Añadiendo texto a {1} tarea."
-#define STRING_CMD_APPEND_N          "Añadiendo texto a {1} tareas."
-#define STRING_CMD_APPEND_TASK       "Añadiendo texto a la tarea {1} '{2}'."
-#define STRING_CMD_APPEND_TASK_R     "Añadiendo texto a la tarea recurrente {1} '{2}'."
-#define STRING_CMD_APPEND_CONFIRM_R  "Esta es una tarea recurrente. ¿Quiere añadir a todas las recurrencias pendientes de esta misma tarea?"
-#define STRING_CMD_APPEND_CONFIRM    "¿Añadir a la tarea {1} '{2}'?"
-#define STRING_CMD_APPEND_NO         "Texto no añadido a la tarea."
-
 #define STRING_CMD_PREPEND_USAGE     "Antepone texto a la descripción de una tarea existente"
 #define STRING_CMD_PREPEND_1         "Antepuesto texto a {1} tarea."
 #define STRING_CMD_PREPEND_N         "Antepuesto texto a {1} tareas."

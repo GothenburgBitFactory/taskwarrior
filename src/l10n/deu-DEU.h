@@ -172,15 +172,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_APPEND_USAGE      "Fügt einer Aufgabenbeschreibung Text hinzu"
-#define STRING_CMD_APPEND_1          "Zu {1} Aufgabe hinzugefügt."
-#define STRING_CMD_APPEND_N          "Zu {1} Aufgaben hinzugefügt."
-#define STRING_CMD_APPEND_TASK       "Füge zur Aufgabe {1} '{2}' hinzu."
-#define STRING_CMD_APPEND_TASK_R     "Füge zur wiederholenden Aufgabe {1} '{2}' hinzu."
-#define STRING_CMD_APPEND_CONFIRM_R  "Dies ist eine wiederholende Aufgabe.  Möchten Sie zu allen offenen Wiederholungen dieser Aufgabe hinzufügen?"
-#define STRING_CMD_APPEND_CONFIRM    "Zu Aufgabe {1} '{2}' hinzufügen?"
-#define STRING_CMD_APPEND_NO         "Nicht zu Aufgabe hinzugefügt."
-
 #define STRING_CMD_PREPEND_USAGE     "Stellt einer Aufgabenbeschreibung Text voran"
 #define STRING_CMD_PREPEND_1         "Vor {1} Aufgabe vorangestellt."
 #define STRING_CMD_PREPEND_N         "Vor {1} Aufgaben vorangestellt."

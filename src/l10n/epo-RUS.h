@@ -172,15 +172,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_APPEND_USAGE      "Aldonas tekston post task-priskribo"
-#define STRING_CMD_APPEND_1          "Aldonis al {1} tasko."
-#define STRING_CMD_APPEND_N          "Aldonis al {1} taskoj."
-#define STRING_CMD_APPEND_TASK       "Aldonanta al tasko {1} '{2}'."
-#define STRING_CMD_APPEND_TASK_R     "Aldonanta al reokazanta tasko {1} '{2}'."
-#define STRING_CMD_APPEND_CONFIRM_R  "Tio estas reokazanta tasko. Ĉu vi volas aldoni al ĉia pendanta okazaĵo de ĉi tiu tasko?"
-#define STRING_CMD_APPEND_CONFIRM    "Aldoni al tasko {1} '{2}'?"
-#define STRING_CMD_APPEND_NO         "Ne aldonis al tasko."
-
 #define STRING_CMD_PREPEND_USAGE     "Aldonas tekston antaŭ task-priskribo"
 #define STRING_CMD_PREPEND_1         "Predonis al {1} tasko."
 #define STRING_CMD_PREPEND_N         "Predonis {1} taskoj."

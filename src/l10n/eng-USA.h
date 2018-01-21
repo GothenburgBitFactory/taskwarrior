@@ -169,15 +169,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_APPEND_USAGE      "Appends text to an existing task description"
-#define STRING_CMD_APPEND_1          "Appended {1} task."
-#define STRING_CMD_APPEND_N          "Appended {1} tasks."
-#define STRING_CMD_APPEND_TASK       "Appending to task {1} '{2}'."
-#define STRING_CMD_APPEND_TASK_R     "Appending to recurring task {1} '{2}'."
-#define STRING_CMD_APPEND_CONFIRM_R  "This is a recurring task.  Do you want to append to all pending recurrences of this same task?"
-#define STRING_CMD_APPEND_CONFIRM    "Append to task {1} '{2}'?"
-#define STRING_CMD_APPEND_NO         "Task not appended."
-
 #define STRING_CMD_PREPEND_USAGE     "Prepends text to an existing task description"
 #define STRING_CMD_PREPEND_1         "Prepended {1} task."
 #define STRING_CMD_PREPEND_N         "Prepended {1} tasks."
