@@ -27,12 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_CAL_BAD_ARG       "Ne povis rekoni argumenton '{1}'."
-#define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' ne estas valida monato."
-#define STRING_CMD_CAL_LABEL_DATE    "Dato"
-#define STRING_CMD_CAL_LABEL_HOL     "Ferio"
-#define STRING_CMD_CAL_SUN_MON       "agordvariablo 'weekstart' devas esti 'Sunday' aŭ 'Monday'."
-#define STRING_CMD_CAL_USAGE         "Montras kalendaron, kun markoj por datlimitaj taskoj"
 #define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Montras sole listo de ĉia uzata etikedo, por motivo memkompletada"
 #define STRING_CMD_CUSTOM_COUNT      "1 tasko"

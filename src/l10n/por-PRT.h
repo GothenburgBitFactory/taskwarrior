@@ -27,12 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_CAL_BAD_ARG       "Não foi possível reconhecer o argumento '{1}'."
-#define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' não é um mês válido."
-#define STRING_CMD_CAL_LABEL_DATE    "Data"
-#define STRING_CMD_CAL_LABEL_HOL     "Feriado"
-#define STRING_CMD_CAL_SUN_MON       "A variável de configuração 'weekstart' apenas pode conter 'domingo' ou 'segunda-feira'."
-#define STRING_CMD_CAL_USAGE         "Mostra um calendário, com datas de vencimento assinaladas"
 #define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Exibe apenas a lista de todas as marcas em uso, para fins de terminação automática"
 #define STRING_CMD_CUSTOM_COUNT      "1 tarefa"
