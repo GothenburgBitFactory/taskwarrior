@@ -372,22 +372,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "There are {1} local changes.  Sync required."
 #define STRING_FEEDBACK_BACKLOG      "There is {1} local change.  Sync required."
 
-// 'show' command
-#define STRING_CMD_SHOW              "Shows all configuration variables or subset"
-#define STRING_CMD_SHOW_ARGS         "You can only specify 'all' or a search string."
-#define STRING_CMD_SHOW_NONE         "No matching configuration variables."
-#define STRING_CMD_SHOW_UNREC        "Your .taskrc file contains these unrecognized variables:"
-#define STRING_CMD_SHOW_DIFFER       "Some of your .taskrc variables differ from the default values."
-#define STRING_CMD_SHOW_EMPTY        "Configuration error: .taskrc contains no entries."
-#define STRING_CMD_SHOW_DIFFER_COLOR "These are highlighted in {1} above."
-#define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
-#define STRING_CMD_SHOW_NO_LOCATION  "Configuration error: data.location not specified in .taskrc file."
-#define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
-#define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
-#define STRING_CMD_SHOW_CONF_VALUE   "Value"
-#define STRING_CMD_SHOW_CONF_DEFAULT "Default value"
-#define STRING_CMD_SHOWRAW           "Shows all configuration settings in a machine-readable format"
-
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009."

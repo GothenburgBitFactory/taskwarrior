@@ -385,22 +385,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "Hay {1} modificaciones locales.  Se require una sincronización."
 #define STRING_FEEDBACK_BACKLOG      "Hay {1} modificaciones locales.  Se require una sincronización."
 
-// 'show' command
-#define STRING_CMD_SHOW              "Muestra todas las variables de configuración o un subconjunto"
-#define STRING_CMD_SHOW_ARGS         "Solo puede especificar 'all' o un término de búsqueda."
-#define STRING_CMD_SHOW_NONE         "No hay variables de configuración que coincidan."
-#define STRING_CMD_SHOW_UNREC        "Su archivo .taskrc contiene estas variables no reconocidas:"
-#define STRING_CMD_SHOW_DIFFER       "Algunas de sus variables .taskrc difieren de los valores por defecto."
-#define STRING_CMD_SHOW_EMPTY        "Error de configuración: .taskrc no contiene ninguna entrada."
-#define STRING_CMD_SHOW_DIFFER_COLOR "Las cambiadas aparecen resaltadas en {1} más arriba."
-#define STRING_CMD_SHOW_CONFIG_ERROR "Error de configuración: {1} contiene un valor '{2}' no reconocido."
-#define STRING_CMD_SHOW_NO_LOCATION  "Error de configuración: data.location no especificado en el archivo .taskrc ."
-#define STRING_CMD_SHOW_LOC_EXIST    "Error de configuración: data.location contiene un nombre de directorio que no existe o no se puede leer."
-#define STRING_CMD_SHOW_CONF_VAR     "Variable Config"
-#define STRING_CMD_SHOW_CONF_VALUE   "Valor"
-#define STRING_CMD_SHOW_CONF_DEFAULT "Valor por defecto"
-#define STRING_CMD_SHOWRAW           "Muestra todas las variables de configuración en un formato legible por la máquina"
-
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre de 2006 y el 31 de diciembre de 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior ya no admite el formato de archivo 2, usado originalmente entre el 1 de enero de 2008 y el 12 de abril de 2009."

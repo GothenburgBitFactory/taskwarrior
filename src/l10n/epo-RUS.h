@@ -375,22 +375,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "Estas {1} lokaj ŝanĝoj. Sinkronigo devita."
 #define STRING_FEEDBACK_BACKLOG      "Estas {1} lokaj ŝanĝoj. Sinkronigo devita."
 
-// 'show' command
-#define STRING_CMD_SHOW              "Montras ĉian agordan variablon, aŭ subaron"
-#define STRING_CMD_SHOW_ARGS         "Oni sole povas specifi 'all' aŭ serĉĉenon."
-#define STRING_CMD_SHOW_NONE         "Nenia kongruanta agordvariablo."
-#define STRING_CMD_SHOW_UNREC        "Via dosiero .taskrc enhavas nekonatajn variablojn:"
-#define STRING_CMD_SHOW_DIFFER       "Variabloj ĉe .taskrc diferencas de la defaŭltaj valoroj."
-#define STRING_CMD_SHOW_EMPTY        "Erara agordo: .taskrc ne enhavas nenion."
-#define STRING_CMD_SHOW_DIFFER_COLOR "Tioj estas markitaj supre, ĉe {1}."
-#define STRING_CMD_SHOW_CONFIG_ERROR "Erara agordo: {1} enhavas nekonatan valoron '{2}'."
-#define STRING_CMD_SHOW_NO_LOCATION  "Erara agordo: data.location ne specifita ĉe dosiero .taskrc."
-#define STRING_CMD_SHOW_LOC_EXIST    "Erara agordo: data.location enhavas dosierumnomon neekzistantan aŭ nelegeblan."
-#define STRING_CMD_SHOW_CONF_VAR     "Agordvariablo"
-#define STRING_CMD_SHOW_CONF_VALUE   "Valoro"
-#define STRING_CMD_SHOW_CONF_DEFAULT "Defaŭlta valoro"
-#define STRING_CMD_SHOWRAW           "Montras ĉia agordvariablon je maŝinlegebla aranĝo"
-
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ne pli subtenas dosier-aranĝon 1, kiu estis originale uzata inter la 27-a de novembro 2006 kaj la 31-a de decembro 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior ne pli subtenas dosier-aranĝon 2, kiu estis originale uzata inter la 1-a de januaro 2008 kaj la 12-a de aprilo 2009."

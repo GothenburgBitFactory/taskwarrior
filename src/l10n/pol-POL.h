@@ -377,22 +377,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "Wykryto {1} lokalne zmiany. Wymagana synchronizacja."
 #define STRING_FEEDBACK_BACKLOG      "Wykryto {1} lokalne zmiany. Wymagana synchronizacja."
 
-// 'show' command
-#define STRING_CMD_SHOW              "Pokazuje wszystkie zmienne konfiguracji lub ich podzbiór"
-#define STRING_CMD_SHOW_ARGS         "Możesz jedynie wybrać wszystkie lub wyszukać na podstawie ciągu."
-#define STRING_CMD_SHOW_NONE         "Brak dopasowania zmiennych konfiguracyjnych."
-#define STRING_CMD_SHOW_UNREC        "Twój plik .taskrc zawiera następujące nierozpoznane zmienne:"
-#define STRING_CMD_SHOW_DIFFER       "Niektóre ze zmiennych w twoim .taskrc różnią się od wartości domyślnych."
-#define STRING_CMD_SHOW_EMPTY        "Błąd konfiguracji: .taskrc jest puste."
-#define STRING_CMD_SHOW_DIFFER_COLOR "Są one podświetlone na {1}."
-#define STRING_CMD_SHOW_CONFIG_ERROR "Błąd konfiguracji: {1} zawiera nierozpoznaną wartość '{2}'."
-#define STRING_CMD_SHOW_NO_LOCATION  "Błąd konfiguracji: data.location nie ustawione w pliku .taskrc."
-#define STRING_CMD_SHOW_LOC_EXIST    "Błąd konfiguracji: data.location zawiera nazwę katalogu który nie istnieje lub jest nieosiągalny."
-#define STRING_CMD_SHOW_CONF_VAR     "Zmienna Konfiguracji"
-#define STRING_CMD_SHOW_CONF_VALUE   "Wartość"
-#define STRING_CMD_SHOW_CONF_DEFAULT "Domyślna wartość"
-#define STRING_CMD_SHOWRAW           "Pokazuje kompletną konfiguracjię w formacie dogodnym dla maszyny"
-
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior nie wspiera więcej formatu plików 1, wcześniej używanego pomiędzy 27 Listopada 2006 i 31 Grudnia 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior nie wspiera więcej formatu plików 2, wcześniej używanego pomiędzy 1 Stycznia 2008 i 12 Kwietnia 2009."
