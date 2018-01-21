@@ -171,15 +171,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_PREPEND_USAGE     "Aggiunge testo all'inizio di una descrizione di un task esistente"
-#define STRING_CMD_PREPEND_1         "Aggiunta al task {1}."
-#define STRING_CMD_PREPEND_N         "Aggiunte ai task {1}."
-#define STRING_CMD_PREPEND_TASK      "Aggiunta al task {1} '{2}'."
-#define STRING_CMD_PREPEND_TASK_R    "Aggiunta al task periodico {1} '{2}'."
-#define STRING_CMD_PREPEND_CONFIRM_R "Questo è un task periodico. Aggiungere il testo all'inizio della descrizione di tutti i task associati?"
-#define STRING_CMD_PREPEND_CONFIRM   "Aggiungere all'inizio della descrizione del task {1} '{2}'?"
-#define STRING_CMD_PREPEND_NO        "Aggiunta non effettuata."
-
 #define STRING_CMD_IMPORT_USAGE      "Importa file JSON"
 #define STRING_CMD_IMPORT_SUMMARY    "Importati {1} task."
 #define STRING_CMD_IMPORT_FILE       "Importazione di '{1}'"

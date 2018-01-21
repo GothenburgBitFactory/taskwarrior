@@ -176,15 +176,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "Se debe especificar un atributo. Ver 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "Debe especificar un atributo o un UDA."
 
-#define STRING_CMD_PREPEND_USAGE     "Antepone texto a la descripción de una tarea existente"
-#define STRING_CMD_PREPEND_1         "Antepuesto texto a {1} tarea."
-#define STRING_CMD_PREPEND_N         "Antepuesto texto a {1} tareas."
-#define STRING_CMD_PREPEND_TASK      "Anteponiendo texto a la tarea {1} '{2}'."
-#define STRING_CMD_PREPEND_TASK_R    "Antepuesto texto a la tarea recurrente {1} '{2}'."
-#define STRING_CMD_PREPEND_CONFIRM_R "Esta es una tarea recurrente. ¿Quiere anteponer texto a todas las recurrencias pendientes de esta misma tarea?"
-#define STRING_CMD_PREPEND_CONFIRM   "¿Anteponer texto a la tarea {1} '{2}'?"
-#define STRING_CMD_PREPEND_NO        "Texto no antepuesto."
-
 #define STRING_CMD_IMPORT_USAGE      "Importa archivos JSON"
 #define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tareas."
 #define STRING_CMD_IMPORT_FILE       "Importando '{1}'"

@@ -170,15 +170,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_PREPEND_USAGE     "Aldonas tekston antaŭ task-priskribo"
-#define STRING_CMD_PREPEND_1         "Predonis al {1} tasko."
-#define STRING_CMD_PREPEND_N         "Predonis {1} taskoj."
-#define STRING_CMD_PREPEND_TASK      "Predonanta al tasko {1} '{2}'."
-#define STRING_CMD_PREPEND_TASK_R    "Predonanta al reokazanta tasko {1} '{2}'."
-#define STRING_CMD_PREPEND_CONFIRM_R "Tio estas reokazanta tasko. Ĉu vi volas predoni al ĉia pendanta okazaĵo de ĉi tiu tasko?"
-#define STRING_CMD_PREPEND_CONFIRM   "Predonis al taskon {1} '{2}'?"
-#define STRING_CMD_PREPEND_NO        "Ne predonis al tasko."
-
 #define STRING_CMD_IMPORT_USAGE      "Importas JSON-dosierojn"
 #define STRING_CMD_IMPORT_SUMMARY    "Importis {1} taskojn."
 #define STRING_CMD_IMPORT_FILE       "Importanta '{1}'"
