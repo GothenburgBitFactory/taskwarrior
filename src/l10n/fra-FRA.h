@@ -135,10 +135,6 @@
 #define STRING_CMD_TAGS_SINGLE       "1 étiquette"
 #define STRING_CMD_TAGS_PLURAL       "{1} étiquettes"
 #define STRING_CMD_TAGS_NO_TAGS      "Pas d'étiquettes."
-#define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
-#define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
-#define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
-
 #define STRING_CMD_IMPORT_USAGE      "Imports JSON files"
 #define STRING_CMD_IMPORT_SUMMARY    "Imported {1} tasks."
 #define STRING_CMD_IMPORT_FILE       "Importing '{1}'"

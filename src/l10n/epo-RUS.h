@@ -135,10 +135,6 @@
 #define STRING_CMD_TAGS_SINGLE       "1 etikedo"
 #define STRING_CMD_TAGS_PLURAL       "{1} etikedoj"
 #define STRING_CMD_TAGS_NO_TAGS      "Nenia etikedo."
-#define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
-#define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
-#define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
-
 #define STRING_CMD_IMPORT_USAGE      "Importas JSON-dosierojn"
 #define STRING_CMD_IMPORT_SUMMARY    "Importis {1} taskojn."
 #define STRING_CMD_IMPORT_FILE       "Importanta '{1}'"
