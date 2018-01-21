@@ -1506,7 +1506,7 @@ void Task::validate (bool applyDefault /* = true */)
     std::string token;
     Lexer::Type type;
     if (! lex.isUUID (token, type, true))
-      throw format (STRING_CMD_IMPORT_UUID_BAD, uid);
+      throw format ("Not a valid UUID '{1}'.", uid);
   }
   else
     set ("uuid", uuid ());

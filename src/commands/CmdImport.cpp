@@ -32,7 +32,6 @@
 #include <format.h>
 #include <shared.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -41,7 +40,7 @@ CmdImport::CmdImport ()
 {
   _keyword               = "import";
   _usage                 = "task          import [<file> ...]";
-  _description           = STRING_CMD_IMPORT_USAGE;
+  _description           = "Imports JSON files";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -63,7 +62,7 @@ int CmdImport::execute (std::string&)
   if (! words.size () ||
       (words.size () == 1 && words[0] == "-"))
   {
-    std::cout << format (STRING_CMD_IMPORT_FILE, "STDIN") << '\n';
+    std::cout << format ("Importing '{1}'\n", "STDIN");
 
     std::string json;
     std::string line;
@@ -80,9 +79,9 @@ int CmdImport::execute (std::string&)
     {
       File incoming (word);
       if (! incoming.exists ())
-        throw format (STRING_CMD_IMPORT_MISSING, word);
+        throw format ("File '{1}' not found.", word);
 
-      std::cout << format (STRING_CMD_IMPORT_FILE, word) << '\n';
+      std::cout << format ("Importing '{1}'\n", word);
 
       // Load the file.
       std::string json;
@@ -92,7 +91,7 @@ int CmdImport::execute (std::string&)
     }
   }
 
-  context.footnote (format (STRING_CMD_IMPORT_SUMMARY, count));
+  context.footnote (format ("Imported {1} tasks.", count));
   return rc;
 }
 
