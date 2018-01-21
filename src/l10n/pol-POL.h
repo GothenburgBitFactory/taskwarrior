@@ -174,15 +174,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_PREPEND_USAGE     "Dodaje ciąg na początku opisu zadania"
-#define STRING_CMD_PREPEND_1         "Dodano ciąg do opisu {1} zadania."
-#define STRING_CMD_PREPEND_N         "Dodano ciąg do opisu {1} zadań."
-#define STRING_CMD_PREPEND_TASK      "Dodawanie ciągu do opisu zadania {1} '{2}'."
-#define STRING_CMD_PREPEND_TASK_R    "Dodawanie ciągu do opisu zadania cyklicznego {1} '{2}'."
-#define STRING_CMD_PREPEND_CONFIRM_R "To zadanie jest cykliczne. Czy chcesz dodać ciąg do opisu kolejnych zadań w cyklu?"
-#define STRING_CMD_PREPEND_CONFIRM   "Dodać ciąg do opisu zadania {1} '{2}'?"
-#define STRING_CMD_PREPEND_NO        "Nie dodano ciągu do opisu."
-
 #define STRING_CMD_IMPORT_USAGE      "Importuje pliki JSON"
 #define STRING_CMD_IMPORT_SUMMARY    "Zaimportowano {1} zadań."
 #define STRING_CMD_IMPORT_FILE       "Importowanie '{1}'"

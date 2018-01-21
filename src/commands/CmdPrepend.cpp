@@ -31,7 +31,6 @@
 #include <Filter.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -41,7 +40,7 @@ CmdPrepend::CmdPrepend ()
 {
   _keyword               = "prepend";
   _usage                 = "task <filter> prepend <mods>";
-  _description           = STRING_CMD_PREPEND_USAGE;
+  _description           = "Prepends text to an existing task description";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -78,7 +77,7 @@ int CmdPrepend::execute (std::string&)
     Task before (task);
 
     // Prepend to the specified task.
-    std::string question = format (STRING_CMD_PREPEND_CONFIRM,
+    std::string question = format ("Prepend to task {1} '{2}'?",
                                    task.identifier (true),
                                    task.get ("description"));
 
@@ -88,7 +87,7 @@ int CmdPrepend::execute (std::string&)
     {
       context.tdb2.modify (task);
       ++count;
-      feedback_affected (STRING_CMD_PREPEND_TASK, task);
+      feedback_affected ("Prepending to task {1} '{2}'.", task);
       if (context.verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
@@ -96,7 +95,7 @@ int CmdPrepend::execute (std::string&)
       if (task.has ("parent"))
       {
         if ((context.config.get ("recurrence.confirmation") == "prompt"
-             && confirm (STRING_CMD_PREPEND_CONFIRM_R)) ||
+             && confirm ("This is a recurring task.  Do you want to prepend to all pending recurrences of this same task?")) ||
             context.config.getBoolean ("recurrence.confirmation"))
         {
           std::vector <Task> siblings = context.tdb2.siblings (task);
@@ -105,7 +104,7 @@ int CmdPrepend::execute (std::string&)
             sibling.modify (Task::modPrepend, true);
             context.tdb2.modify (sibling);
             ++count;
-            feedback_affected (STRING_CMD_PREPEND_TASK_R, sibling);
+            feedback_affected ("Prepending to recurring task {1} '{2}'.", sibling);
           }
 
           // Prepend to the parent
@@ -118,7 +117,7 @@ int CmdPrepend::execute (std::string&)
     }
     else
     {
-      std::cout << STRING_CMD_PREPEND_NO << '\n';
+      std::cout << "Task not prepended.\n";
       rc = 1;
       if (_permission_quit)
         break;
@@ -130,7 +129,7 @@ int CmdPrepend::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_PREPEND_1 : STRING_CMD_PREPEND_N, count);
+  feedback_affected (count == 1 ? "Prepended {1} task." : "Prepended {1} tasks.", count);
   return rc;
 }
 

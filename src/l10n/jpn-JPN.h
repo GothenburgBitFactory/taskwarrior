@@ -174,15 +174,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_PREPEND_USAGE     "Prepends text to an existing task description"
-#define STRING_CMD_PREPEND_1         "Prepended {1} task."
-#define STRING_CMD_PREPEND_N         "Prepended {1} tasks."
-#define STRING_CMD_PREPEND_TASK      "Prepending to task {1} '{2}'."
-#define STRING_CMD_PREPEND_TASK_R    "Prepending to recurring task {1} '{2}'."
-#define STRING_CMD_PREPEND_CONFIRM_R "This is a recurring task.  Do you want to prepend to all pending recurrences of this same task?"
-#define STRING_CMD_PREPEND_CONFIRM   "Prepend to task {1} '{2}'?"
-#define STRING_CMD_PREPEND_NO        "Task not prepended."
-
 #define STRING_CMD_IMPORT_USAGE      "JSON ファイルをインポート"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} task をインポートしました。"
 #define STRING_CMD_IMPORT_FILE       "'{1}' をインポート中"

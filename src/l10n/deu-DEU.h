@@ -172,15 +172,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_PREPEND_USAGE     "Stellt einer Aufgabenbeschreibung Text voran"
-#define STRING_CMD_PREPEND_1         "Vor {1} Aufgabe vorangestellt."
-#define STRING_CMD_PREPEND_N         "Vor {1} Aufgaben vorangestellt."
-#define STRING_CMD_PREPEND_TASK      "Stelle Aufgabe {1} '{2}' voran."
-#define STRING_CMD_PREPEND_TASK_R    "Stelle wiederholender Aufgabe {1} '{2}' voran."
-#define STRING_CMD_PREPEND_CONFIRM_R "Dies ist eine wiederholende Aufgabe.  Möchten Sie vor allen offenen Wiederholungen dieser Aufgabe anfügen?"
-#define STRING_CMD_PREPEND_CONFIRM   "Vor Aufgabe {1} '{2}' anfügen?"
-#define STRING_CMD_PREPEND_NO        "Nicht vor Aufgabe angefügt."
-
 #define STRING_CMD_IMPORT_USAGE      "Importiert eine JSON-Datei"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} Aufgabe importiert."
 #define STRING_CMD_IMPORT_FILE       "Importiere '{1}'"
