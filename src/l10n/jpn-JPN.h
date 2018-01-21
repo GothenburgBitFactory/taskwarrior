@@ -215,16 +215,6 @@
 #define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_DELETE_USAGE      "指定されたタスクの削除"
-#define STRING_CMD_DELETE_CONFIRM    "完全にタスク {1} '{2}' を削除して良いですか?"
-#define STRING_CMD_DELETE_TASK       "タスク {1} '{2}' を削除中。"
-#define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "This is a recurring task.  Do you want to delete all pending recurrences of this same task?"
-#define STRING_CMD_DELETE_NO         "タスク は削除されませんでした。"
-#define STRING_CMD_DELETE_NOT_DEL    "タスク {1} '{2}' は削除できません。"
-#define STRING_CMD_DELETE_1          " {1} タスク を削除しました。"
-#define STRING_CMD_DELETE_N          " {1} タスク を削除しました。"
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

@@ -213,16 +213,6 @@
 #define STRING_CMD_GET_NO_DOM        "Keine DOM-Referenz spezifiziert."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_DELETE_USAGE      "Löscht die gewählte Aufgabe"
-#define STRING_CMD_DELETE_CONFIRM    "Aufgabe {1} '{2}' dauerhaft löschen?"
-#define STRING_CMD_DELETE_TASK       "Lösche Aufgabe {1} '{2}'."
-#define STRING_CMD_DELETE_TASK_R     "Lösche wiederholende Aufgabe {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "Dies ist eine wiederholende Aufgabe.  Möchten Sie alle offenen Wiederholungen dieser Aufgabe löschen?"
-#define STRING_CMD_DELETE_NO         "Aufgabe nicht gelöscht."
-#define STRING_CMD_DELETE_NOT_DEL    "Aufgabe {1} '{2}' kann nicht gelöscht werden."
-#define STRING_CMD_DELETE_1          "{1} Aufgabe gelöscht."
-#define STRING_CMD_DELETE_N          "{1} Aufgaben gelöscht."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

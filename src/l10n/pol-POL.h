@@ -215,16 +215,6 @@
 #define STRING_CMD_GET_NO_DOM        "Brak zdefiniowanej referencji do DOM."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_DELETE_USAGE      "Usuwa wybrane zadanie"
-#define STRING_CMD_DELETE_CONFIRM    "Usunąć zadanie {1} '{2}'?"
-#define STRING_CMD_DELETE_TASK       "Usuwanie zadania {1} '{2}'."
-#define STRING_CMD_DELETE_TASK_R     "Usuwanie zadania cyklicznego {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "To zadanie jest cykliczne. Czy chcesz usunąć wszystkie pozostałe cykle tego zadania?"
-#define STRING_CMD_DELETE_NO         "Zadanie nie zostało usunięte"
-#define STRING_CMD_DELETE_NOT_DEL    "Zadanie {1} '{2}' jest nieusuwalne."
-#define STRING_CMD_DELETE_1          "Usunięto {1} zadanie "
-#define STRING_CMD_DELETE_N          "Usunięto {1} zadań"
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

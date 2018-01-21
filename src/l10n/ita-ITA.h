@@ -214,16 +214,6 @@
 #define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_DELETE_USAGE      "Cancella il task specificato"
-#define STRING_CMD_DELETE_CONFIRM    "Cancellare permanentemente il task {1} '{2}'?"
-#define STRING_CMD_DELETE_TASK       "Cancellazione del task {1} '{2}'."
-#define STRING_CMD_DELETE_TASK_R     "Cancellazione del task periodico {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "Questo è un task periodico. Cancellare tutti i task pendenti associati a queso task?"
-#define STRING_CMD_DELETE_NO         "Task non cancellato."
-#define STRING_CMD_DELETE_NOT_DEL    "Il task {1} '{2}' non può essere elminato."
-#define STRING_CMD_DELETE_1          "Task {1} cancellato."
-#define STRING_CMD_DELETE_N          "Task {1} cancellati."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."
