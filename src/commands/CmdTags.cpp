@@ -43,7 +43,7 @@ CmdTags::CmdTags ()
 {
   _keyword               = "tags";
   _usage                 = "task <filter> tags";
-  _description           = STRING_CMD_TAGS_USAGE;
+  _description           = "Shows a list of all tags used";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -119,9 +119,9 @@ int CmdTags::execute (std::string& output)
         << optionalBlankLine ();
 
     if (unique.size () == 1)
-      context.footnote (STRING_CMD_TAGS_SINGLE);
+      context.footnote ("1 tag");
     else
-      context.footnote (format (STRING_CMD_TAGS_PLURAL, unique.size ()));
+      context.footnote (format ("{1} tags", unique.size ()));
 
     if (quantity == 1)
       context.footnote (STRING_FEEDBACK_TASKS_SINGLE);
@@ -132,7 +132,7 @@ int CmdTags::execute (std::string& output)
   }
   else
   {
-    context.footnote (STRING_CMD_TAGS_NO_TAGS);
+    context.footnote ("No tags.");
     rc = 1;
   }
 
