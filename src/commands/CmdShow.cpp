@@ -30,12 +30,14 @@
 #include <sstream>
 #include <algorithm>
 #include <format.h>
-#include <i18n.h>
 #include <main.h>
 #include <Context.h>
 #include <FS.h>
 #include <Table.h>
 #include <util.h>
+
+#define STRING_CMD_SHOW_DIFFER_COLOR "These are highlighted in {1} above."
+#define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
 
 extern Context context;
 extern std::string configurationDefaults;
@@ -45,7 +47,7 @@ CmdShow::CmdShow ()
 {
   _keyword               = "show";
   _usage                 = "task          show [all | substring]";
-  _description           = STRING_CMD_SHOW;
+  _description           = "Shows all configuration variables or subset";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -66,7 +68,7 @@ int CmdShow::execute (std::string& output)
   // have already been handled.
   std::vector <std::string> words = context.cli2.getWords ();
   if (words.size () > 1)
-    throw std::string (STRING_CMD_SHOW_ARGS);
+    throw std::string ("You can only specify 'all' or a search string.");
 
   int width = context.getWidth ();
 
@@ -264,8 +266,8 @@ int CmdShow::execute (std::string& output)
   // Create output view.
   Table view;
   view.width (width);
-  view.add (STRING_CMD_SHOW_CONF_VAR);
-  view.add (STRING_CMD_SHOW_CONF_VALUE);
+  view.add ("Config Variable");
+  view.add ("Value");
   setHeaderUnderline (view);
 
   Color error;
@@ -316,7 +318,7 @@ int CmdShow::execute (std::string& output)
           default_config[i.first] != "")
       {
         row = view.addRow ();
-        view.set (row, 0, std::string ("  ") + STRING_CMD_SHOW_CONF_DEFAULT, color);
+        view.set (row, 0, std::string ("  ") + "Default value", color);
         view.set (row, 1, default_config[i.first], color);
       }
     }
@@ -324,12 +326,12 @@ int CmdShow::execute (std::string& output)
 
   out << '\n'
       << view.render ()
-      << (view.rows () == 0 ? STRING_CMD_SHOW_NONE : "")
+      << (view.rows () == 0 ? "No matching configuration variables." : "")
       << (view.rows () == 0 ? "\n\n" : "\n");
 
   if (issue_warning)
   {
-    out << STRING_CMD_SHOW_DIFFER << '\n';
+    out << "Some of your .taskrc variables differ from the default values.\n";
 
     if (context.color () && warning.nontrivial ())
       out << "  "
@@ -340,7 +342,7 @@ int CmdShow::execute (std::string& output)
   // Display the unrecognized variables.
   if (issue_error)
   {
-    out << STRING_CMD_SHOW_UNREC << '\n';
+    out << "Your .taskrc file contains these unrecognized variables:\n";
 
     for (auto& i : unrecognized)
       out << "  " << i << '\n';
@@ -378,7 +380,7 @@ int CmdShow::execute (std::string& output)
 
   if (context.config.size () == 0)
   {
-    out << STRING_CMD_SHOW_EMPTY << '\n';
+    out << "Configuration error: .taskrc contains no entries.\n";
     rc = 1;
   }
   else
@@ -386,10 +388,10 @@ int CmdShow::execute (std::string& output)
     Directory location (context.config.get ("data.location"));
 
     if (location._data == "")
-      out << STRING_CMD_SHOW_NO_LOCATION << '\n';
+      out << "Configuration error: data.location not specified in .taskrc file.\n";
 
     if (! location.exists ())
-      out << STRING_CMD_SHOW_LOC_EXIST << '\n';
+      out << "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable.\n";
   }
 
   output = out.str ();
@@ -401,7 +403,7 @@ CmdShowRaw::CmdShowRaw ()
 {
   _keyword     = "_show";
   _usage       = "task          _show";
-  _description = STRING_CMD_SHOWRAW;
+  _description = "Shows all configuration settings in a machine-readable format";
   _read_only   = true;
   _displays_id = false;
   _category    = Command::Category::internal;

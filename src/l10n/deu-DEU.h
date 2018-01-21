@@ -373,22 +373,6 @@
 #define STRING_FEEDBACK_BACKLOG_N    "{1} Lokale Änderungen.  Datenabgleich erforderlich."
 #define STRING_FEEDBACK_BACKLOG      "{1} Lokale Änderungen.  Datenabgleich erforderlich."
 
-// 'show' command
-#define STRING_CMD_SHOW              "Zeigt alle Konfigurations-Optionen oder eine Teilmenge davon"
-#define STRING_CMD_SHOW_ARGS         "Sie müssen 'all' oder ein Suchwort angeben."
-#define STRING_CMD_SHOW_NONE         "Keine zutreffendern Konfigurations-Optionen."
-#define STRING_CMD_SHOW_UNREC        "Die .taskrc-Datei enthält folgende nicht erkannte Optionen:"
-#define STRING_CMD_SHOW_DIFFER       "Manche Ihrer .taskrc-Optionen unterscheiden sich von den Standardwerten."
-#define STRING_CMD_SHOW_EMPTY        "Konfigurationsfehler: .taskrc enthält keine Werte."
-#define STRING_CMD_SHOW_DIFFER_COLOR "Diese sind oben in {1} hervorgehoben."
-#define STRING_CMD_SHOW_CONFIG_ERROR "Konfigurationsfehler: {1} enthält nicht erkannten Wert '{2}'."
-#define STRING_CMD_SHOW_NO_LOCATION  "Konfigurationsfehler: data.location nicht in .taskrc-Datei angegeben."
-#define STRING_CMD_SHOW_LOC_EXIST    "Konfigurationsfehler: data.location enthält einen fehlenden oder nicht lesbaren Ordner."
-#define STRING_CMD_SHOW_CONF_VAR     "Konfigurations-Option"
-#define STRING_CMD_SHOW_CONF_VALUE   "Wert"
-#define STRING_CMD_SHOW_CONF_DEFAULT "Standardwert"
-#define STRING_CMD_SHOWRAW           "Zeigt alle Konfigurations-Optionen in maschinenlesbarem Format"
-
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior unterstützt Datei-Format 1 nicht mehr, welches ursprünglich zwischen dem 27. November 2006 und 31. Dezember 2007 eingesetzt wurde."
 #define STRING_TASK_NO_FF2           "Taskwarrior unterstützt Datei-Format 2 nicht mehr, welches ursprünglich zwischen dem 1. Januar 2008 und 12. April 2009 eingesetzt wurde."
