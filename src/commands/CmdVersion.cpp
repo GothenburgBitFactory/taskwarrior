@@ -33,6 +33,7 @@
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
+#include <shared.h>
 #include <format.h>
 #include <i18n.h>
 
@@ -78,30 +79,7 @@ int CmdVersion::execute (std::string& output)
 
   out << '\n'
       << format ("{1} {2} built for ", bold.colorize (PACKAGE), bold.colorize (VERSION))
-
-#if defined (DARWIN)
-      << "darwin"
-#elif defined (SOLARIS)
-      << "solaris"
-#elif defined (CYGWIN)
-      << "cygwin"
-#elif defined (HAIKU)
-      << "haiku"
-#elif defined (OPENBSD)
-      << "openbsd"
-#elif defined (FREEBSD)
-      << "freebsd"
-#elif defined (NETBSD)
-      << "netbsd"
-#elif defined (LINUX)
-      << "linux"
-#elif defined (KFREEBSD)
-      << "gnu-kfreebsd"
-#elif defined (GNUHURD)
-      << "gnu-hurd"
-#else
-      << STRING_CMD_VERSION_UNKNOWN
-#endif
+      << osName ()
       << '\n'
       << "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
       << '\n'
