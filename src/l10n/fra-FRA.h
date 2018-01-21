@@ -195,7 +195,6 @@
 #define STRING_CMD_CAL_LABEL_DATE    "Date"
 #define STRING_CMD_CAL_LABEL_HOL     "Holiday"
 #define STRING_CMD_CAL_SUN_MON       "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
-#define STRING_CMD_CALC_USAGE        "Calculator"
 
 // These four blocks can be replaced, but the number of lines must not change.
 #define STRING_EDIT_HEADER_1         "La commande 'task <id> edit' vous permet de modifier tous les aspects d'une tâche"

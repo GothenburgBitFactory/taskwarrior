@@ -190,7 +190,6 @@
 #define STRING_CMD_CAL_LABEL_DATE    "Date"
 #define STRING_CMD_CAL_LABEL_HOL     "Holiday"
 #define STRING_CMD_CAL_SUN_MON       "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
-#define STRING_CMD_CALC_USAGE        "Calculator"
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."
