@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMTAGS_USAGE     "Affiche uniquement une liste des étiquettes utilisées, pour la complétion"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Affiche les ADUs définis, pour la complétion"
 #define STRING_CMD_UDAS_USAGE        "Affiche les détails de tous les ADUs définis"
 #define STRING_CMD_UNDO_USAGE        "Annule les changements les plus récents sur une tâche"

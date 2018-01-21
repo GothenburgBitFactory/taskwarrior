@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMTAGS_USAGE     "Shows only a list of all tags used, for autocompletion purposes"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Shows the defined UDAs for completion purposes"
 #define STRING_CMD_UDAS_USAGE        "Shows all the defined UDA details"
 #define STRING_CMD_UNDO_USAGE        "Reverts the most recent change to a task"
