@@ -27,11 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_EXAMPLES_ANNO1 "Immediatamente prima di pranzo"
-#define STRING_COLUMN_EXAMPLES_ANNO2 "Se si sta giocando la partita questo pomeriggio"
-#define STRING_COLUMN_EXAMPLES_ANNO3 "Prima di scrivere la lettera a casa"
-#define STRING_COLUMN_EXAMPLES_ANNO4 "Se non si va a tagliare i capelli"
-#define STRING_COLUMN_EXAMPLES_DESC  "Spostare i vestiti sul gancio più basso"
 #define STRING_COLUMN_EXAMPLES_IND   "  casa.giardino"
 #define STRING_COLUMN_EXAMPLES_PAR   "casa"
 #define STRING_COLUMN_EXAMPLES_PROJ  "casa.giardino"

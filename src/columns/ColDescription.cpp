@@ -33,7 +33,6 @@
 #include <format.h>
 #include <utf8.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -42,7 +41,7 @@ ColumnDescription::ColumnDescription ()
 {
   _name       = "description";
   _style      = "combined";
-  _label      = STRING_COLUMN_LABEL_DESC;
+  _label      = "Description";
   _modifiable = true;
 
   _styles     = {"combined",
@@ -57,11 +56,11 @@ ColumnDescription::ColumnDescription ()
     _dateformat = context.config.get ("dateformat");
 
   std::string t  = Datetime ().toString (_dateformat);
-  std::string d  = STRING_COLUMN_EXAMPLES_DESC;
-  std::string a1 = STRING_COLUMN_EXAMPLES_ANNO1;
-  std::string a2 = STRING_COLUMN_EXAMPLES_ANNO2;
-  std::string a3 = STRING_COLUMN_EXAMPLES_ANNO3;
-  std::string a4 = STRING_COLUMN_EXAMPLES_ANNO4;
+  std::string d  = "Move your clothes down on to the lower peg";
+  std::string a1 = "Immediately before your lunch";
+  std::string a2 = "If you are playing in the match this afternoon";
+  std::string a3 = "Before you write your letter home";
+  std::string a4 = "If you're not getting your hair cut";
 
   _examples = {d + "\n  " + t + ' ' + a1
                  + "\n  " + t + ' ' + a2
