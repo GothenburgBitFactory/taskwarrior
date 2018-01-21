@@ -27,8 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_UDAS_COMPL_USAGE  "Pokazuje zdefiniowane UDA w celach autouzupełniania"
-#define STRING_CMD_UDAS_USAGE        "Pokazuje zdefiniowane UDA"
 #define STRING_CMD_UNDO_USAGE        "Odwraca ostatnią zmianę w zadaniu"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Odrazu przed obiadem"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Jesli grasz mecz tego popołudnia"

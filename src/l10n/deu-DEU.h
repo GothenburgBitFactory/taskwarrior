@@ -27,8 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_UDAS_COMPL_USAGE  "Zeigt festgelegte UDAs zur Autovervollständigung"
-#define STRING_CMD_UDAS_USAGE        "Zeigt alle festgelegten Eigenschaften von UDAs"
 #define STRING_CMD_UNDO_USAGE        "Macht die letzte Änderung an einer Aufgabe Rückgängig"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Direkt vor dem Mittagessen"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Wenn Du heute Nachmittag in der Partie mitspielst"
