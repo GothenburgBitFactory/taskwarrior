@@ -110,13 +110,6 @@
 #define STRING_CMD_ADD_USAGE         "Adiciona uma nova tarefa"
 #define STRING_CMD_ADD_FEEDBACK      "Criada a tarefa {1}."
 #define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_LOG_USAGE         "Adiciona uma nova tarefa que já está concluída"
-#define STRING_CMD_LOG_NO_RECUR      "Não pode usar o comando 'log' para tarefas recorrentes."
-#define STRING_CMD_LOG_NO_WAITING    "Não pode usar o comando 'log' para tarefas adiadas."
-
-//#define STRING_CMD_LOG_LOGGED        "Tarefa registada."
-#define STRING_CMD_LOG_LOGGED        "Logged task {1}."
-
 #define STRING_CMD_IDS_USAGE_RANGE   "Exibe como intervalo, os IDs das tarefas correspondentes"
 #define STRING_CMD_IDS_USAGE_LIST    "Exibe em formato de lista, os IDs das tarefas correspondentes"
 #define STRING_CMD_IDS_USAGE_ZSH     "Exibe os IDs e descrições das tarefas correspondentes"

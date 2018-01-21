@@ -109,13 +109,6 @@
 #define STRING_CMD_ADD_USAGE         "Aggiunge un nuovo task"
 #define STRING_CMD_ADD_FEEDBACK      "Task {1} creato."
 #define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_LOG_USAGE         "Aggiunge un nuovo task già completato"
-#define STRING_CMD_LOG_NO_RECUR      "Task periodici non possono essere registrati."
-#define STRING_CMD_LOG_NO_WAITING    "Task in attesa non possono essere registrati."
-
-//#define STRING_CMD_LOG_LOGGED        "Task registrato."
-#define STRING_CMD_LOG_LOGGED        "Logged task {1}."
-
 #define STRING_CMD_IDS_USAGE_RANGE   "Mostra gli ID dei task corrispondenti, come intervallo"
 #define STRING_CMD_IDS_USAGE_LIST    "Mostra gli ID dei task corrispondenti, in forma di lista"
 #define STRING_CMD_IDS_USAGE_ZSH     "Mostra gli ID e le descrizioni dei task corrispondenti"

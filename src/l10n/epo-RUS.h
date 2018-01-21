@@ -110,13 +110,6 @@
 #define STRING_CMD_ADD_USAGE         "Kreas novan taskon"
 #define STRING_CMD_ADD_FEEDBACK      "Kreis taskon {1}."
 #define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_LOG_USAGE         "Kreas novan jamfinitan taskon"
-#define STRING_CMD_LOG_NO_RECUR      "Oni ne povas fari taskojn reokazantajn kun 'log'."
-#define STRING_CMD_LOG_NO_WAITING    "Oni ne povas fari taskojn atendantajn kun 'log'."
-
-//#define STRING_CMD_LOG_LOGGED        "Registris taskon."
-#define STRING_CMD_LOG_LOGGED        "Logged task {1}."
-
 #define STRING_CMD_IDS_USAGE_RANGE   "Montras la identigilon de ĉia kongruanta tasko, kiel atingopovo"
 #define STRING_CMD_IDS_USAGE_LIST    "Montras la identigilon de ĉia kongruanta tasko, kiel listo"
 #define STRING_CMD_IDS_USAGE_ZSH     "Montras la identigilon kaj la priskribon de ĉia kongruanta tasko"

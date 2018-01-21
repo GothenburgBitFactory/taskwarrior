@@ -110,13 +110,6 @@
 #define STRING_CMD_ADD_USAGE         "Dodaje nowe zadanie"
 #define STRING_CMD_ADD_FEEDBACK      "Utworzono zadanie {1}."
 #define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_LOG_USAGE         "Dodaje nowe, ukończone zadanie"
-#define STRING_CMD_LOG_NO_RECUR      "Nie możesz logować zadania cyklicznego."
-#define STRING_CMD_LOG_NO_WAITING    "Nie możesz logować zadania czekającego."
-
-//#define STRING_CMD_LOG_LOGGED        "Zadanie w logu."
-#define STRING_CMD_LOG_LOGGED        "Logged task {1}."
-
 #define STRING_CMD_IDS_USAGE_RANGE   "Pokazuje IDki pasujących zadań, w formie zakresu"
 #define STRING_CMD_IDS_USAGE_LIST    "Pokazuje IDki pasujących zadań, w formie listy"
 #define STRING_CMD_IDS_USAGE_ZSH     "Pokazuje IDki i opisy pasujących zadań"
