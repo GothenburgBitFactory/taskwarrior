@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ALIASES_USAGE     "Erzeugt eine Liste aller Aliase zur Auto-Vervollständigung"
 #define STRING_CMD_CAL_BAD_ARG       "Konnte Argument '{1}' nicht erkennen."
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' ist kein zulässiger Monat."
 #define STRING_CMD_CAL_LABEL_DATE    "Datum"
