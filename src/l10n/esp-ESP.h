@@ -27,9 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ADD_FEEDBACK      "Creada tarea {1}."
-#define STRING_CMD_ADD_RECUR         "Creada tarea {1} (modelo de recurrencia)."
-#define STRING_CMD_ADD_USAGE         "Añade una nueva tarea"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
 #define STRING_CMD_CAL_BAD_ARG       "No se pudo reconocer el argumento '{1}'."
 #define STRING_CMD_CAL_BAD_MONTH     "El argumento '{1}' no es un mes válido."

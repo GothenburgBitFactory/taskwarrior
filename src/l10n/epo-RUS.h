@@ -27,9 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ADD_FEEDBACK      "Kreis taskon {1}."
-#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_ADD_USAGE         "Kreas novan taskon"
 #define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
 #define STRING_CMD_CAL_BAD_ARG       "Ne povis rekoni argumenton '{1}'."
 #define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' ne estas valida monato."
