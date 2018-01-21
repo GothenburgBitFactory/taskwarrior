@@ -30,7 +30,6 @@
 #include <algorithm>
 #include <Context.h>
 #include <JSON.h>
-#include <i18n.h>
 #include <shared.h>
 #include <format.h>
 
@@ -41,7 +40,7 @@ CmdConfig::CmdConfig ()
 {
   _keyword               = "config";
   _usage                 = "task          config [name [value | '']]";
-  _description           = STRING_CMD_CONFIG_USAGE;
+  _description           = "Change settings in the task configuration";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -77,7 +76,7 @@ bool CmdConfig::setConfigVariable (
     {
       found = true;
       if (!confirmation ||
-          confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
+          confirm (format ("Are you sure you want to change the value of '{1}' from '{2}' to '{3}'?", name, context.config.get (name), value)))
       {
         line = name + '=' + json::encode (value);
 
@@ -92,7 +91,7 @@ bool CmdConfig::setConfigVariable (
   // Not found, so append instead.
   if (! found &&
       (! confirmation ||
-       confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value))))
+       confirm (format ("Are you sure you want to add '{1}' with a value of '{2}'?", name, value))))
   {
     contents.push_back (name + '=' + json::encode (value));
     change = true;
@@ -130,7 +129,7 @@ int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /
 
       // Remove name
       if (!confirmation ||
-          confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
+          confirm (format ("Are you sure you want to remove '{1}'?", name)))
       {
         // vector::erase method returns a valid iterator to the next object
         line = contents.erase (line);
@@ -209,26 +208,25 @@ int CmdConfig::execute (std::string& output)
           found = true;
 
         if (! found)
-          throw format (STRING_CMD_CONFIG_NO_ENTRY, name);
+          throw format ("No entry named '{1}' found.", name);
       }
 
       // Show feedback depending on whether .taskrc has been rewritten
       if (change)
       {
-        out << format (STRING_CMD_CONFIG_FILE_MOD,
-                       context.config.file ())
+        out << format ("Config file {1} modified.", context.config.file ())
             << '\n';
       }
       else
         out << "No changes made.\n";
     }
     else
-      throw std::string (STRING_CMD_CONFIG_NO_NAME);
+      throw std::string ("Specify the name of a config variable to modify.");
 
     output = out.str ();
   }
   else
-    throw std::string (STRING_CMD_CONFIG_NO_NAME);
+    throw std::string ("Specify the name of a config variable to modify.");
 
   return rc;
 }
@@ -238,7 +236,7 @@ CmdCompletionConfig::CmdCompletionConfig ()
 {
   _keyword               = "_config";
   _usage                 = "task          _config";
-  _description           = STRING_CMD_HCONFIG_USAGE;
+  _description           = "Lists all supported configuration variables, for completion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
