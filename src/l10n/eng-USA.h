@@ -204,9 +204,6 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Complete"
 #define STRING_CMD_SUMMARY_NONE      "(none)"
 #define STRING_CMD_COUNT_USAGE       "Counts matching tasks"
-#define STRING_CMD_GET_USAGE         "DOM Accessor"
-#define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
-#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."

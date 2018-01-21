@@ -215,9 +215,6 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Completas"
 #define STRING_CMD_SUMMARY_NONE      "(ninguna)"
 #define STRING_CMD_COUNT_USAGE       "Cuenta tareas que coinciden"
-#define STRING_CMD_GET_USAGE         "Método de acceso al DOM"
-#define STRING_CMD_GET_NO_DOM        "Referencia a DOM no especificada."
-#define STRING_CMD_GET_BAD_REF       "'{1}' no es una referencia a DOM."
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
