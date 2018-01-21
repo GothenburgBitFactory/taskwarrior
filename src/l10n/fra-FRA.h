@@ -42,8 +42,6 @@
 #define STRING_CMD_UDAS_COMPL_USAGE  "Affiche les ADUs définis, pour la complétion"
 #define STRING_CMD_UDAS_USAGE        "Affiche les détails de tous les ADUs définis"
 #define STRING_CMD_UNDO_USAGE        "Annule les changements les plus récents sur une tâche"
-#define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
-#define STRING_CMD_URGENCY_USAGE     "Affiche l'indice d'urgence de la tâche"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Affiche le UUIDs des tâches correspondantes, comme une liste"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Affiche le UUIDs des tâches correspondantes, comme une liste séparée par des virgules"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Affiche le UUIDs et les descriptions des tâches correspondantes"

@@ -42,8 +42,6 @@
 #define STRING_CMD_UDAS_COMPL_USAGE  "Pokazuje zdefiniowane UDA w celach autouzupełniania"
 #define STRING_CMD_UDAS_USAGE        "Pokazuje zdefiniowane UDA"
 #define STRING_CMD_UNDO_USAGE        "Odwraca ostatnią zmianę w zadaniu"
-#define STRING_CMD_URGENCY_RESULT    "zadanie {1} ważność {2}"
-#define STRING_CMD_URGENCY_USAGE     "Wyświetla pomiar ważności zadania"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Pokazuje UUID pasujących zadań, w formie listy"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Pokazuje UUID pasujących zadań, w formie listy rozdzilonej przecinkami"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Pokazuje UUID i opis pasujących zadań"

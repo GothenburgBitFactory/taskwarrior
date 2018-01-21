@@ -42,8 +42,6 @@
 #define STRING_CMD_UDAS_COMPL_USAGE  "Exibe os UDAs definidos para fins de terminação automática"
 #define STRING_CMD_UDAS_USAGE        "Exibe os detalhes de todas os UDA definidos"
 #define STRING_CMD_UNDO_USAGE        "Reverte a mais recente modificação a uma tarefa"
-#define STRING_CMD_URGENCY_RESULT    "Tarefa {1} urgência {2}"
-#define STRING_CMD_URGENCY_USAGE     "Exibe o valor de urgência de uma tarefa"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Exibe como lista, os UUIDs das tarefas correspondentes"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Exibe como lista separada por vírgulas, os UUIDs das tarefas correspondentes"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Exibe os UUIDs e descrições das tarefas correspondentes"

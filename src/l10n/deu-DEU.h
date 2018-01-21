@@ -42,8 +42,6 @@
 #define STRING_CMD_UDAS_COMPL_USAGE  "Zeigt festgelegte UDAs zur Autovervollständigung"
 #define STRING_CMD_UDAS_USAGE        "Zeigt alle festgelegten Eigenschaften von UDAs"
 #define STRING_CMD_UNDO_USAGE        "Macht die letzte Änderung an einer Aufgabe Rückgängig"
-#define STRING_CMD_URGENCY_RESULT    "Aufgabe {1}, Dringlichkeit {2}"
-#define STRING_CMD_URGENCY_USAGE     "Zeigt die Dringlichkeit einer Aufgabe an"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Zeigt die UUIDs passender Aufgaben als Liste"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Zeigt die UUIDs passender Aufgaben als kommaseparierte Liste"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Zeigt die UUIDs und Beschreibungen passender Aufgaben"

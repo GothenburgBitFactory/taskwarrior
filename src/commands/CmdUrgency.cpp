@@ -33,7 +33,6 @@
 #include <Lexer.h>
 #include <main.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -42,7 +41,7 @@ CmdUrgency::CmdUrgency ()
 {
   _keyword               = "_urgency";
   _usage                 = "task <filter> _urgency";
-  _description           = STRING_CMD_URGENCY_USAGE;
+  _description           = "Displays the urgency measure of a task";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -71,7 +70,7 @@ int CmdUrgency::execute (std::string& output)
   std::stringstream out;
   for (auto& task : filtered)
   {
-    out << format (STRING_CMD_URGENCY_RESULT,
+    out << format ("task {1} urgency {2}",
                    task.identifier (),
                    Lexer::trim (format (task.urgency (), 6, 3)))
         << '\n';
