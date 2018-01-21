@@ -29,14 +29,13 @@
 #include <Filter.h>
 #include <main.h>
 #include <format.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCount::CmdCount ()
 {
   _keyword               = "count";
   _usage                 = "task <filter> count";
-  _description           = STRING_CMD_COUNT_USAGE;
+  _description           = "Counts matching tasks";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;

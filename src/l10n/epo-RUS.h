@@ -178,7 +178,6 @@
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} projektoj"
 #define STRING_CMD_PROJECTS_TASK     "({1} tasko)"
 #define STRING_CMD_PROJECTS_TASKS    "({1} taskoj)"
-#define STRING_CMD_COUNT_USAGE       "Nombras kongruantajn taskojn"
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
