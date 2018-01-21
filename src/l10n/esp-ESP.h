@@ -34,7 +34,6 @@
 #define STRING_CMD_CUSTOM_MISMATCH   "Hay diferente número de columnas y etiquetas para el informe '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} mostrada(s)"
 #define STRING_CMD_CUSTOM_TRUNCATED  "truncado a {1} líneas"
-#define STRING_CMD_EXEC_USAGE        "Ejecuta comandos y scripts externos"
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_IDS_USAGE_LIST    "Muestra los IDs de las tareas coincidentes, en forma de lista"
 #define STRING_CMD_IDS_USAGE_RANGE   "Muestra los IDs de las tareas coincidentes, como un rango"

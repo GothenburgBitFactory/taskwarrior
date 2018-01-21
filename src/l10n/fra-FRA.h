@@ -34,7 +34,6 @@
 #define STRING_CMD_CUSTOM_MISMATCH   "There are different numbers of columns and labels for report '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} affichées"
 #define STRING_CMD_CUSTOM_TRUNCATED  "tronquées sur {1} lignes"
-#define STRING_CMD_EXEC_USAGE        "Lance les commandes et les scripts externes."
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_IDS_USAGE_LIST    "Affiche les IDs des tâches correspondantes, sous forme de liste"
 #define STRING_CMD_IDS_USAGE_RANGE   "Affiche les IDs des tâches correspondantes, comme une plage"

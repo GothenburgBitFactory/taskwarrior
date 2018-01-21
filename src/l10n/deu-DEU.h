@@ -34,7 +34,6 @@
 #define STRING_CMD_CUSTOM_MISMATCH   "Die Anzahl von Spalten und Beschriftungen für Report '{1}' unterscheidet sich."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} gezeigt"
 #define STRING_CMD_CUSTOM_TRUNCATED  "auf {1} Zeilen gekürzt"
-#define STRING_CMD_EXEC_USAGE        "Führt externe Befehle und Skripte aus"
 #define STRING_CMD_HCOMMANDS_USAGE   "Erzeugt eine Liste aller Befehle zur Auto-Vervollständigung"
 #define STRING_CMD_IDS_USAGE_LIST    "Zeigt die IDs passender Aufgaben als Liste"
 #define STRING_CMD_IDS_USAGE_RANGE   "Zeigt die IDs passender Aufgaben als Folge"

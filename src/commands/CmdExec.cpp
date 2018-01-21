@@ -28,7 +28,6 @@
 #include <CmdExec.h>
 #include <stdlib.h>
 #include <Context.h>
-#include <i18n.h>
 #include <shared.h>
 
 extern Context context;
@@ -38,7 +37,7 @@ CmdExec::CmdExec ()
 {
   _keyword               = "execute";
   _usage                 = "task          execute <external command>";
-  _description           = STRING_CMD_EXEC_USAGE;
+  _description           = "Executes external commands and scripts";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;

@@ -34,7 +34,6 @@
 #define STRING_CMD_CUSTOM_MISMATCH   "La nombroj de kolumnoj kaj de siaj titoloj ne kongruas por raporto '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} montritaj"
 #define STRING_CMD_CUSTOM_TRUNCATED  "stumpigis al {1} vicojn"
-#define STRING_CMD_EXEC_USAGE        "Lanĉas komandojn kaj skribojn eksternajn"
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_IDS_USAGE_LIST    "Montras la identigilon de ĉia kongruanta tasko, kiel listo"
 #define STRING_CMD_IDS_USAGE_RANGE   "Montras la identigilon de ĉia kongruanta tasko, kiel atingopovo"
