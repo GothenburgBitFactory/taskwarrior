@@ -213,12 +213,6 @@
 #define STRING_CMD_GET_NO_DOM        "Referência DOM não especificada."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_UDAS_NO           "Nenhum UDA definido."
-#define STRING_CMD_UDAS_SUMMARY      "{1} UDA definido"
-#define STRING_CMD_UDAS_SUMMARY2     "{1} UDAs definidos"
-#define STRING_CMD_UDAS_ORPHAN       "{1} UDA orfão"
-#define STRING_CMD_UDAS_ORPHANS      "{1} UDAs orfãos"
-
 #define STRING_CMD_DELETE_USAGE      "Elimina a tarefa indicada"
 #define STRING_CMD_DELETE_CONFIRM    "Eliminar permanentemente a tarefa {1} '{2}'?"
 #define STRING_CMD_DELETE_TASK       "A eliminar tarefa {1} '{2}'."
