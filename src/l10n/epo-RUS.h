@@ -205,15 +205,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Predonis al taskon {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Ne predonis al tasko."
 
-#define STRING_CMD_DENO_USAGE        "Viŝas komenton"
-#define STRING_CMD_DENO_NONE         "La specifita tasko ne havas nenian viŝeblan komenton."
-#define STRING_CMD_DENO_CONFIRM      "Malkomenti taskon {1} '{2}'?"
-#define STRING_CMD_DENO_FOUND        "Trovis kaj viŝis komenton '{1}'."
-#define STRING_CMD_DENO_NOMATCH      "Ne trovis nenian komenton por viŝi, kiu kongruas al '{1}'."
-#define STRING_CMD_DENO_NO           "Ne malkomentis taskon."
-#define STRING_CMD_DENO_1            "Malkomentis {1} taskon."
-#define STRING_CMD_DENO_N            "Malkomentis {1} taskojn."
-
 #define STRING_CMD_IMPORT_USAGE      "Importas JSON-dosierojn"
 #define STRING_CMD_IMPORT_SUMMARY    "Importis {1} taskojn."
 #define STRING_CMD_IMPORT_FILE       "Importanta '{1}'"

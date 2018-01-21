@@ -207,15 +207,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Antepor à tarefa {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Tarefa não anteposta."
 
-#define STRING_CMD_DENO_USAGE        "Elimina uma anotação"
-#define STRING_CMD_DENO_NONE         "A tarefa especificada não tem anotações que possam ser eliminadas."
-#define STRING_CMD_DENO_CONFIRM      "Remover anotação da tarefa {1} '{2}'?"
-#define STRING_CMD_DENO_FOUND        "Foi encontrada e removida a anotação '{1}'."
-#define STRING_CMD_DENO_NOMATCH      "Não foi encontrada nenhuma anotação a remover que corresponda a '{1}'."
-#define STRING_CMD_DENO_NO           "Nenhuma anotação removida da tarefa."
-#define STRING_CMD_DENO_1            "Removida(s) anotação(ôes) de {1} tarefa."
-#define STRING_CMD_DENO_N            "Removida(s) anotação(ôes) de {1} tarefas."
-
 #define STRING_CMD_IMPORT_USAGE      "Importa ficheiros JSON"
 #define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tarefas."
 #define STRING_CMD_IMPORT_FILE       "A importar '{1}'"

@@ -205,15 +205,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Vor Aufgabe {1} '{2}' anfügen?"
 #define STRING_CMD_PREPEND_NO        "Nicht vor Aufgabe angefügt."
 
-#define STRING_CMD_DENO_USAGE        "Löscht einen Kommentar"
-#define STRING_CMD_DENO_NONE         "Die gewählte Aufgabe hat keine Kommentare, welche gelöscht werden können."
-#define STRING_CMD_DENO_CONFIRM      "Kommentar in Aufgabe {1} '{2}' löschen?"
-#define STRING_CMD_DENO_FOUND        "Kommentar '{1}' gefunden und gelöscht."
-#define STRING_CMD_DENO_NOMATCH      "Keine passenden Kommentare zu '{1}' gefunden und gelöscht."
-#define STRING_CMD_DENO_NO           "Keine Kommentare gelöscht."
-#define STRING_CMD_DENO_1            "Kommentar zu {1} Aufgabe gelöscht."
-#define STRING_CMD_DENO_N            "Kommentare zu {1} Aufgaben gelöscht."
-
 #define STRING_CMD_IMPORT_USAGE      "Importiert eine JSON-Datei"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} Aufgabe importiert."
 #define STRING_CMD_IMPORT_FILE       "Importiere '{1}'"
