@@ -102,10 +102,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_VERSION_USAGE     "taskwarrior バージョン番号の表示"
-#define STRING_CMD_VERSION_USAGE2    "taskwarrior バージョン番号のみの表示"
-#define STRING_CMD_VERSION_DOCS      "taskwarrior のドキュメントは 'man task', 'man taskrc', 'man task-color', 'man task-sync' あるいは http://taskwarrior.org にあります。"
-#define STRING_CMD_VERSION_UNKNOWN   "unknown"
 #define STRING_CMD_EXEC_USAGE        "外部コマンドまたはスクリプトの実行"
 #define STRING_CMD_URGENCY_USAGE     "Displays the urgency measure of a task"
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"

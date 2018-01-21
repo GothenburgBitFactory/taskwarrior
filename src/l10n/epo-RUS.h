@@ -102,10 +102,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_VERSION_USAGE     "Montras la versinombro de taskwarrior"
-#define STRING_CMD_VERSION_USAGE2    "Montras sole la versinombro de taskwarrior"
-#define STRING_CMD_VERSION_DOCS      "Oni povas trovi la dokumentojn por Taskwarrior kun 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq', aŭ ĉe http://taskwarrior.org."
-#define STRING_CMD_VERSION_UNKNOWN   "nekonata"
 #define STRING_CMD_EXEC_USAGE        "Lanĉas komandojn kaj skribojn eksternajn"
 #define STRING_CMD_URGENCY_USAGE     "Montras la urĝec-mezuro de tasko"
 #define STRING_CMD_URGENCY_RESULT    "tasko {1} urĝeco {2}"

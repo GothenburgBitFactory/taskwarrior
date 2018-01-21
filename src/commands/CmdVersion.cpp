@@ -35,7 +35,6 @@
 #endif
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -44,7 +43,7 @@ CmdVersion::CmdVersion ()
 {
   _keyword               = "version";
   _usage                 = "task          version";
-  _description           = STRING_CMD_VERSION_USAGE;
+  _description           = "Shows the Taskwarrior version number";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -71,7 +70,7 @@ int CmdVersion::execute (std::string& output)
   Table link;
   link.width (width);
   link.add ("");
-  link.set (link.addRow (), 0, STRING_CMD_VERSION_DOCS);
+  link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org");
 
   Color bold;
   if (context.color ())
@@ -98,7 +97,7 @@ CmdCompletionVersion::CmdCompletionVersion ()
 {
   _keyword               = "_version";
   _usage                 = "task          _version";
-  _description           = STRING_CMD_VERSION_USAGE2;
+  _description           = "Shows only the Taskwarrior version number";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;

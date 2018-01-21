@@ -102,10 +102,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_VERSION_USAGE     "Pokazuje wersję programu taskwarrior"
-#define STRING_CMD_VERSION_USAGE2    "Pokazuje numer wersji programu taskwarrior"
-#define STRING_CMD_VERSION_DOCS      "Dokumentację dla taskwarrior można znaleźć z pomocą 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' lub pod adresem http://taskwarrior.org"
-#define STRING_CMD_VERSION_UNKNOWN   "nieznana"
 #define STRING_CMD_EXEC_USAGE        "Wykonuje zewnętrzne polecenia i skrypty"
 #define STRING_CMD_URGENCY_USAGE     "Wyświetla pomiar ważności zadania"
 #define STRING_CMD_URGENCY_RESULT    "zadanie {1} ważność {2}"
