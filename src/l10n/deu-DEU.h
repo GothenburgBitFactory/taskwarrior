@@ -27,11 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_EXAMPLES_ANNO1 "Direkt vor dem Mittagessen"
-#define STRING_COLUMN_EXAMPLES_ANNO2 "Wenn Du heute Nachmittag in der Partie mitspielst"
-#define STRING_COLUMN_EXAMPLES_ANNO3 "Bevor Du den Brief nach Hause schreibst"
-#define STRING_COLUMN_EXAMPLES_ANNO4 "Wenn Dein Haar nicht geschnitten wird"
-#define STRING_COLUMN_EXAMPLES_DESC  "Bekleidung einen Haken tiefer hängen"
 #define STRING_COLUMN_EXAMPLES_IND   "  Haus.Garten"
 #define STRING_COLUMN_EXAMPLES_PAR   "Haus"
 #define STRING_COLUMN_EXAMPLES_PROJ  "Haus.Garten"

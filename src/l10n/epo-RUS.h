@@ -27,11 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_EXAMPLES_ANNO1 "Juste antaŭ tagmanĝi"
-#define STRING_COLUMN_EXAMPLES_ANNO2 "Se vi ludos en la maĉo hodiaŭ posttagmeze"
-#define STRING_COLUMN_EXAMPLES_ANNO3 "Antaŭ skribi poŝtaĵon hejmen"
-#define STRING_COLUMN_EXAMPLES_ANNO4 "Se vi ne faŝonas al si la hararon"
-#define STRING_COLUMN_EXAMPLES_DESC  "Transloki vian robon suben al la fundan kejlon"
 #define STRING_COLUMN_EXAMPLES_IND   "  domo.ĝardeno"
 #define STRING_COLUMN_EXAMPLES_PAR   "domo"
 #define STRING_COLUMN_EXAMPLES_PROJ  "domo.ĝardeno"
