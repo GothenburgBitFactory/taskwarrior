@@ -28,8 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_LABEL_DEP      "Depende"
-#define STRING_COLUMN_LABEL_DEP_S    "Dep"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_DESC     "Descrição"
 #define STRING_COLUMN_LABEL_DUE      "Vence"
 #define STRING_COLUMN_LABEL_END      "Fim"

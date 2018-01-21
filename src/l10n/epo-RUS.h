@@ -28,8 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_LABEL_DEP      "Dependoj"
-#define STRING_COLUMN_LABEL_DEP_S    "Dep"
 #define STRING_COLUMN_LABEL_DESC     "Priskribo"
 #define STRING_COLUMN_LABEL_DUE      "Datlimo"
 #define STRING_COLUMN_LABEL_END      "Fino"

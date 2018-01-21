@@ -28,8 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_LABEL_DEP      "Depende"
-#define STRING_COLUMN_LABEL_DEP_S    "Dep"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_DESC     "Descripción"
 #define STRING_COLUMN_LABEL_DUE      "Vencimiento"
 #define STRING_COLUMN_LABEL_END      "Fin"
