@@ -32,7 +32,6 @@
 #include <Context.h>
 #include <Table.h>
 #include <Lexer.h>
-#include <i18n.h>
 #include <shared.h>
 #include <format.h>
 #include <util.h>
@@ -46,7 +45,7 @@ CmdCalendar::CmdCalendar ()
 {
   _keyword               = "calendar";
   _usage                 = "task          calendar [due|<month> <year>|<year>] [y]";
-  _description           = STRING_CMD_CAL_USAGE;
+  _description           = "Shows a calendar, with due tasks marked";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -132,7 +131,7 @@ int CmdCalendar::execute (std::string& output)
     {
       argMonth = strtol (arg.c_str (), NULL, 10);
       if (argMonth < 1 || argMonth > 12)
-        throw format (STRING_CMD_CAL_BAD_MONTH, arg);
+        throw format ("Argument '{1}' is not a valid month.", arg);
     }
 
     // "January" etc.
@@ -140,11 +139,11 @@ int CmdCalendar::execute (std::string& output)
     {
       argMonth = Datetime::monthOfYear (matches[0]);
       if (argMonth == -1)
-        throw format (STRING_CMD_CAL_BAD_MONTH, arg);
+        throw format ("Argument '{1}' is not a valid month.", arg);
     }
 
     else
-      throw format (STRING_CMD_CAL_BAD_ARG, arg);
+      throw format ("Could not recognize argument '{1}'.", arg);
   }
 
   // Supported combinations:
@@ -366,8 +365,8 @@ int CmdCalendar::execute (std::string& output)
     {
       Table holTable;
       holTable.width (context.getWidth ());
-      holTable.add (STRING_CMD_CAL_LABEL_DATE);
-      holTable.add (STRING_CMD_CAL_LABEL_HOL);
+      holTable.add ("Date");
+      holTable.add ("Holiday");
       setHeaderUnderline (holTable);
 
       std::map <time_t, std::vector<std::string>> hm; // we need to store multiple holidays per day
@@ -425,7 +424,7 @@ std::string CmdCalendar::renderMonths (
   // What day of the week does the user consider the first?
   auto weekStart = Datetime::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
-    throw std::string (STRING_CMD_CAL_SUN_MON);
+    throw std::string ("The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'.");
 
   // Build table for the number of months to be displayed.
   Table view;

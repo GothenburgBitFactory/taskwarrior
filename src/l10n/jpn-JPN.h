@@ -27,12 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_CAL_BAD_ARG       "引数'{1}' を認識できません。"
-#define STRING_CMD_CAL_BAD_MONTH     "引数 '{1}' は正しい月ではありません。"
-#define STRING_CMD_CAL_LABEL_DATE    "Date"
-#define STRING_CMD_CAL_LABEL_HOL     "Holiday"
-#define STRING_CMD_CAL_SUN_MON       "'weekstart' 設定変数は 'Sunday' または 'Monday' のみが使えます。"
-#define STRING_CMD_CAL_USAGE         "Shows a calendar, with due tasks marked"
 #define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Shows only a list of all tags used, for autocompletion purposes"
 #define STRING_CMD_CUSTOM_COUNT      "1 task"

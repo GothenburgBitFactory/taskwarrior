@@ -27,12 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_CAL_BAD_ARG       "Could not recognize argument '{1}'."
-#define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' is not a valid month."
-#define STRING_CMD_CAL_LABEL_DATE    "Date"
-#define STRING_CMD_CAL_LABEL_HOL     "Holiday"
-#define STRING_CMD_CAL_SUN_MON       "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
-#define STRING_CMD_CAL_USAGE         "Shows a calendar, with due tasks marked"
 #define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Shows only a list of all tags used, for autocompletion purposes"
 #define STRING_CMD_CUSTOM_COUNT      "1 task"
