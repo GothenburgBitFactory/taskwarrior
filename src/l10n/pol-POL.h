@@ -28,8 +28,6 @@
 #define INCLUDED_STRINGS
 
 // columns/Col*
-#define STRING_COLUMN_LABEL_DEP      "Związane"
-#define STRING_COLUMN_LABEL_DEP_S    "Zwi"
 #define STRING_COLUMN_LABEL_DESC     "Opis"
 #define STRING_COLUMN_LABEL_DUE      "Do"
 #define STRING_COLUMN_LABEL_END      "Koniec"

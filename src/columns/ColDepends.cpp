@@ -31,9 +31,10 @@
 #include <shared.h>
 #include <format.h>
 #include <utf8.h>
-#include <i18n.h>
 #include <main.h>
 #include <stdlib.h>
+
+#define STRING_COLUMN_LABEL_DEP "Depends"
 
 extern Context context;
 
@@ -61,7 +62,7 @@ void ColumnDepends::setStyle (const std::string& value)
   Column::setStyle (value);
 
        if (_style == "indicator" && _label == STRING_COLUMN_LABEL_DEP) _label = _label.substr (0, context.config.get ("dependency.indicator").length ());
-  else if (_style == "count"     && _label == STRING_COLUMN_LABEL_DEP) _label = STRING_COLUMN_LABEL_DEP_S;
+  else if (_style == "count"     && _label == STRING_COLUMN_LABEL_DEP) _label = "Dep";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
