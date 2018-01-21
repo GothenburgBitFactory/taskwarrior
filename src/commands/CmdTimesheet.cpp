@@ -35,7 +35,6 @@
 #include <Datetime.h>
 #include <main.h>
 #include <util.h>
-#include <i18n.h>
 #include <format.h>
 
 extern Context context;
@@ -45,7 +44,7 @@ CmdTimesheet::CmdTimesheet ()
 {
   _keyword               = "timesheet";
   _usage                 = "task [filter] timesheet";
-  _description           = STRING_CMD_TIMESHEET_USAGE;
+  _description           = "Summary of completed and started tasks";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
