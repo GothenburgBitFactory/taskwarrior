@@ -215,12 +215,6 @@
 #define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_UDAS_NO           "UDAが一つも定義されていません。"
-#define STRING_CMD_UDAS_SUMMARY      "{1} UDA が定義されました。"
-#define STRING_CMD_UDAS_SUMMARY2     "{1} UDA が定義されました。"
-#define STRING_CMD_UDAS_ORPHAN       "{1} Orphan UDA"
-#define STRING_CMD_UDAS_ORPHANS      "{1} Orphan UDAs"
-
 #define STRING_CMD_DELETE_USAGE      "指定されたタスクの削除"
 #define STRING_CMD_DELETE_CONFIRM    "完全にタスク {1} '{2}' を削除して良いですか?"
 #define STRING_CMD_DELETE_TASK       "タスク {1} '{2}' を削除中。"

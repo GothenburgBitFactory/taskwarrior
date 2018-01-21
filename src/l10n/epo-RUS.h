@@ -213,12 +213,6 @@
 #define STRING_CMD_GET_NO_DOM        "Nenia DOM-referenco specifata."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_UDAS_NO           "Nenia UDA definita."
-#define STRING_CMD_UDAS_SUMMARY      "{1} UDA definita"
-#define STRING_CMD_UDAS_SUMMARY2     "{1} UDA definitaj"
-#define STRING_CMD_UDAS_ORPHAN       "{1} Orfa UDA"
-#define STRING_CMD_UDAS_ORPHANS      "{1} Orfaj UDA"
-
 #define STRING_CMD_DELETE_USAGE      "Viŝas la specifatan taskon"
 #define STRING_CMD_DELETE_CONFIRM    "Forviŝi taskon {1} '{2}'?"
 #define STRING_CMD_DELETE_TASK       "Viŝanta taskon {1} '{2}'."

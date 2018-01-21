@@ -215,12 +215,6 @@
 #define STRING_CMD_GET_NO_DOM        "Aucune référence de DOM spécifié."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_UDAS_NO           "Aucuns ADUs définies."
-#define STRING_CMD_UDAS_SUMMARY      "{1} ADU définie"
-#define STRING_CMD_UDAS_SUMMARY2     "{1} ADUs définies"
-#define STRING_CMD_UDAS_ORPHAN       "{1} ADU orphelin"
-#define STRING_CMD_UDAS_ORPHANS      "{1} ADUs orphelins"
-
 #define STRING_CMD_DELETE_USAGE      "Deletes the specified task"
 #define STRING_CMD_DELETE_CONFIRM    "Permanently delete task {1} '{2}'?"
 #define STRING_CMD_DELETE_TASK       "Deleting task {1} '{2}'."
