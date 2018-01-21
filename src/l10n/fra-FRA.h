@@ -28,11 +28,6 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Affiche uniquement une liste des étiquettes utilisées, pour la complétion"
-#define STRING_CMD_CUSTOM_COUNT      "1 tâche"
-#define STRING_CMD_CUSTOM_COUNTN     "{1} tâches"
-#define STRING_CMD_CUSTOM_MISMATCH   "There are different numbers of columns and labels for report '{1}'."
-#define STRING_CMD_CUSTOM_SHOWN      "{1} affichées"
-#define STRING_CMD_CUSTOM_TRUNCATED  "tronquées sur {1} lignes"
 #define STRING_CMD_IDS_USAGE_LIST    "Affiche les IDs des tâches correspondantes, sous forme de liste"
 #define STRING_CMD_IDS_USAGE_RANGE   "Affiche les IDs des tâches correspondantes, comme une plage"
 #define STRING_CMD_IDS_USAGE_ZSH     "Affiche les IDs  et les descriptions des tâches correspondantes"
