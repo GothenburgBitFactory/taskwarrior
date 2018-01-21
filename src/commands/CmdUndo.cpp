@@ -27,8 +27,6 @@
 #include <cmake.h>
 #include <CmdUndo.h>
 #include <Context.h>
-#include <Filter.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -37,7 +35,7 @@ CmdUndo::CmdUndo ()
 {
   _keyword               = "undo";
   _usage                 = "task          undo";
-  _description           = STRING_CMD_UNDO_USAGE;
+  _description           = "Reverts the most recent change to a task";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
