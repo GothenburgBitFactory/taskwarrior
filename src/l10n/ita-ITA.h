@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_UNDO_USAGE        "Ritorna alla più recente modifica di un task"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Immediatamente prima di pranzo"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Se si sta giocando la partita questo pomeriggio"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Prima di scrivere la lettera a casa"

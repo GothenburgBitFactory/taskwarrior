@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_UNDO_USAGE        "Odwraca ostatnią zmianę w zadaniu"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Odrazu przed obiadem"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Jesli grasz mecz tego popołudnia"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Przed napisaniem listu do domu"
