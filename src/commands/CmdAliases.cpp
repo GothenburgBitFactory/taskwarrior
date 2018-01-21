@@ -28,7 +28,6 @@
 #include <CmdAliases.h>
 #include <Context.h>
 #include <Command.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -37,7 +36,7 @@ CmdCompletionAliases::CmdCompletionAliases ()
 {
   _keyword               = "_aliases";
   _usage                 = "task          _aliases";
-  _description           = STRING_CMD_ALIASES_USAGE;
+  _description           = "Generates a list of all aliases, for autocompletion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;

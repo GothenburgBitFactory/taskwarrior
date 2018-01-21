@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ALIASES_USAGE     "Genera la lista di tutti gli alias, per autocompletamento"
 #define STRING_CMD_CAL_BAD_ARG       "Impossibile riconosce l'argomento '{1}'."
 #define STRING_CMD_CAL_BAD_MONTH     "L'argomento '{1}' non è un mese valido."
 #define STRING_CMD_CAL_LABEL_DATE    "Data"

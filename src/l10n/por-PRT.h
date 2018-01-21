@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ALIASES_USAGE     "Gera uma lista com todos os 'alias', para fins de terminação automática"
 #define STRING_CMD_CAL_BAD_ARG       "Não foi possível reconhecer o argumento '{1}'."
 #define STRING_CMD_CAL_BAD_MONTH     "Argumento '{1}' não é um mês válido."
 #define STRING_CMD_CAL_LABEL_DATE    "Data"

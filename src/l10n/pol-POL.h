@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ALIASES_USAGE     "Generuje listę wszystkich aliasów dla funkcji autouzupełniania"
 #define STRING_CMD_CAL_BAD_ARG       "Nie rozpoznany argument '{1}'."
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' nie jest poprawnym miesiącem"
 #define STRING_CMD_CAL_LABEL_DATE    "Data"
