@@ -28,10 +28,8 @@
 #include <CmdAttributes.h>
 #include <sstream>
 #include <algorithm>
-#include <stdlib.h>
 #include <Context.h>
 #include <Command.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -40,7 +38,7 @@ CmdZshAttributes::CmdZshAttributes ()
 {
   _keyword               = "_zshattributes";
   _usage                 = "task          _zshattributes";
-  _description           = STRING_CMD_ZSHATTS_USAGE;
+  _description           = "Generates a list of all attributes, for zsh autocompletion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;

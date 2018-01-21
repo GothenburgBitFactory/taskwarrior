@@ -42,7 +42,6 @@
 #define STRING_CMD_UUIDS_USAGE_LIST  "Zeigt die UUIDs passender Aufgaben als Liste"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Zeigt die UUIDs passender Aufgaben als kommaseparierte Liste"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Zeigt die UUIDs und Beschreibungen passender Aufgaben"
-#define STRING_CMD_ZSHATTS_USAGE     "Erzeugt eine Liste Eigenschaften zur ZSH-Auto-Vervollständigung"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Direkt vor dem Mittagessen"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Wenn Du heute Nachmittag in der Partie mitspielst"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Bevor Du den Brief nach Hause schreibst"

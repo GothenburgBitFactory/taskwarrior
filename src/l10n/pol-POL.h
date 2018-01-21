@@ -42,7 +42,6 @@
 #define STRING_CMD_UUIDS_USAGE_LIST  "Pokazuje UUID pasujących zadań, w formie listy"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Pokazuje UUID pasujących zadań, w formie listy rozdzilonej przecinkami"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Pokazuje UUID i opis pasujących zadań"
-#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Odrazu przed obiadem"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Jesli grasz mecz tego popołudnia"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Przed napisaniem listu do domu"
