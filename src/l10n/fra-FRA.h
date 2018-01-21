@@ -27,14 +27,12 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Affiche uniquement une liste des étiquettes utilisées, pour la complétion"
 #define STRING_CMD_CUSTOM_COUNT      "1 tâche"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} tâches"
 #define STRING_CMD_CUSTOM_MISMATCH   "There are different numbers of columns and labels for report '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} affichées"
 #define STRING_CMD_CUSTOM_TRUNCATED  "tronquées sur {1} lignes"
-#define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_IDS_USAGE_LIST    "Affiche les IDs des tâches correspondantes, sous forme de liste"
 #define STRING_CMD_IDS_USAGE_RANGE   "Affiche les IDs des tâches correspondantes, comme une plage"
 #define STRING_CMD_IDS_USAGE_ZSH     "Affiche les IDs  et les descriptions des tâches correspondantes"
@@ -45,7 +43,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Affiche le UUIDs des tâches correspondantes, comme une liste séparée par des virgules"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Affiche le UUIDs et les descriptions des tâches correspondantes"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
-#define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Juste avant votre repas"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "If you are playing in the match this afternoon"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Before you write your letter home"

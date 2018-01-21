@@ -27,14 +27,12 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Montras sole listo de ĉia uzata etikedo, por motivo memkompletada"
 #define STRING_CMD_CUSTOM_COUNT      "1 tasko"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} taskoj"
 #define STRING_CMD_CUSTOM_MISMATCH   "La nombroj de kolumnoj kaj de siaj titoloj ne kongruas por raporto '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} montritaj"
 #define STRING_CMD_CUSTOM_TRUNCATED  "stumpigis al {1} vicojn"
-#define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_IDS_USAGE_LIST    "Montras la identigilon de ĉia kongruanta tasko, kiel listo"
 #define STRING_CMD_IDS_USAGE_RANGE   "Montras la identigilon de ĉia kongruanta tasko, kiel atingopovo"
 #define STRING_CMD_IDS_USAGE_ZSH     "Montras la identigilon kaj la priskribon de ĉia kongruanta tasko"
@@ -45,7 +43,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Montras la UUID-identigilon de ĉia kongruanta tasko, en forma de listo perkome disigita"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Montras la UUID-identigilon kaj la priskribojn de ĉia kongruanta tasko"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
-#define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Juste antaŭ tagmanĝi"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Se vi ludos en la maĉo hodiaŭ posttagmeze"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Antaŭ skribi poŝtaĵon hejmen"

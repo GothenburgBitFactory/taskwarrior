@@ -27,14 +27,12 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Listet ausschließlich alle genutzten Schlagwörter zur Auto-Vervollständigung"
 #define STRING_CMD_CUSTOM_COUNT      "1 Aufgabe"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} Aufgaben"
 #define STRING_CMD_CUSTOM_MISMATCH   "Die Anzahl von Spalten und Beschriftungen für Report '{1}' unterscheidet sich."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} gezeigt"
 #define STRING_CMD_CUSTOM_TRUNCATED  "auf {1} Zeilen gekürzt"
-#define STRING_CMD_HCOMMANDS_USAGE   "Erzeugt eine Liste aller Befehle zur Auto-Vervollständigung"
 #define STRING_CMD_IDS_USAGE_LIST    "Zeigt die IDs passender Aufgaben als Liste"
 #define STRING_CMD_IDS_USAGE_RANGE   "Zeigt die IDs passender Aufgaben als Folge"
 #define STRING_CMD_IDS_USAGE_ZSH     "Zeigt die IDs und Beschreibungen passender Aufgaben"
@@ -45,7 +43,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Zeigt die UUIDs passender Aufgaben als kommaseparierte Liste"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Zeigt die UUIDs und Beschreibungen passender Aufgaben"
 #define STRING_CMD_ZSHATTS_USAGE     "Erzeugt eine Liste Eigenschaften zur ZSH-Auto-Vervollständigung"
-#define STRING_CMD_ZSHCOMMANDS_USAGE "Erzeugt eine Liste aller Befehle zur ZSH-Auto-Verfollständigung"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Direkt vor dem Mittagessen"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Wenn Du heute Nachmittag in der Partie mitspielst"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Bevor Du den Brief nach Hause schreibst"

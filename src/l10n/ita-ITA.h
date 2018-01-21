@@ -27,14 +27,12 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_COMTAGS_USAGE     "Mostra solo una lista dei tag utilizzati, per autocompletamento"
 #define STRING_CMD_CUSTOM_COUNT      "1 task"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} task"
 #define STRING_CMD_CUSTOM_MISMATCH   "Differente numero di colonne ed etichette per il report '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} mostrato"
 #define STRING_CMD_CUSTOM_TRUNCATED  "troncato alla linea {1}"
-#define STRING_CMD_HCOMMANDS_USAGE   "Genera la lista di tutti i comandi, per autocompletamento"
 #define STRING_CMD_IDS_USAGE_LIST    "Mostra gli ID dei task corrispondenti, in forma di lista"
 #define STRING_CMD_IDS_USAGE_RANGE   "Mostra gli ID dei task corrispondenti, come intervallo"
 #define STRING_CMD_IDS_USAGE_ZSH     "Mostra gli ID e le descrizioni dei task corrispondenti"
@@ -45,7 +43,6 @@
 #define STRING_CMD_UUIDS_USAGE_RANGE "Mostra gli UUID dei task corrispondenti, come lista separata da virgole"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Mostra gli UUID e le descrizioni dei task corrispondenti"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
-#define STRING_CMD_ZSHCOMMANDS_USAGE "Genera la lista di tutti i comandi, per autocompletamento in zsh"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Immediatamente prima di pranzo"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Se si sta giocando la partita questo pomeriggio"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Prima di scrivere la lettera a casa"
