@@ -42,7 +42,6 @@
 #define STRING_COLUMN_LABEL_COUNT    "Anzahl"
 #define STRING_COLUMN_LABEL_DATE     "Datum"
 #define STRING_COLUMN_LABEL_DEFAULT  "Standard"
-#define STRING_COLUMN_LABEL_DESC     "Beschreibung"
 #define STRING_COLUMN_LABEL_DUE      "Fällig"
 #define STRING_COLUMN_LABEL_END      "Ende"
 #define STRING_COLUMN_LABEL_ENTERED  "Erfasst"

@@ -67,7 +67,7 @@ int CmdCommands::execute (std::string& output)
   view.add (STRING_COLUMN_LABEL_FILTER,   false);
   view.add (STRING_COLUMN_LABEL_MODS,     false);
   view.add (STRING_COLUMN_LABEL_MISC,     false);
-  view.add (STRING_COLUMN_LABEL_DESC);
+  view.add ("Description");
   view.leftMargin (context.config.getInteger ("indent.report"));
   view.extraPadding (context.config.getInteger ("row.padding"));
   view.intraPadding (context.config.getInteger ("column.padding"));

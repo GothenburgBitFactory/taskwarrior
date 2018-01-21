@@ -42,7 +42,6 @@
 #define STRING_COLUMN_LABEL_COUNT    "Recuento"
 #define STRING_COLUMN_LABEL_DATE     "Fecha"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defecto"
-#define STRING_COLUMN_LABEL_DESC     "Descripción"
 #define STRING_COLUMN_LABEL_DUE      "Vencimiento"
 #define STRING_COLUMN_LABEL_END      "Fin"
 #define STRING_COLUMN_LABEL_ENTERED  "Entrada"
