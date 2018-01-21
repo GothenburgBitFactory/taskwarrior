@@ -211,16 +211,6 @@
 #define STRING_CMD_GET_NO_DOM        "Nenia DOM-referenco specifata."
 #define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
-#define STRING_CMD_DELETE_USAGE      "Viŝas la specifatan taskon"
-#define STRING_CMD_DELETE_CONFIRM    "Forviŝi taskon {1} '{2}'?"
-#define STRING_CMD_DELETE_TASK       "Viŝanta taskon {1} '{2}'."
-#define STRING_CMD_DELETE_TASK_R     "Viŝanta reokazantan taskon {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "Tio estas reokazanta tasko. Ĉu vi volas viŝi ĉian pendantan okazon?"
-#define STRING_CMD_DELETE_NO         "Ne viŝis taskon."
-#define STRING_CMD_DELETE_NOT_DEL    "Tasko {1} '{2}' ne estas viŝebla."
-#define STRING_CMD_DELETE_1          "Viŝis {1} taskon."
-#define STRING_CMD_DELETE_N          "Viŝis {1} taskojn."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

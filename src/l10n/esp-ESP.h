@@ -219,16 +219,6 @@
 #define STRING_CMD_GET_NO_DOM        "Referencia a DOM no especificada."
 #define STRING_CMD_GET_BAD_REF       "'{1}' no es una referencia a DOM."
 
-#define STRING_CMD_DELETE_USAGE      "Suprime la tarea especificada"
-#define STRING_CMD_DELETE_CONFIRM    "¿Suprimir permanentemente la tarea {1} '{2}'?"
-#define STRING_CMD_DELETE_TASK       "Suprimiendo tarea {1} '{2}'."
-#define STRING_CMD_DELETE_TASK_R     "Suprimiendo tarea recurrente {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "Esta es una tarea recurrente. ¿Quiere suprimir todas las recurrencias pendientes de esta misma tarea?"
-#define STRING_CMD_DELETE_NO         "Tarea no suprimida."
-#define STRING_CMD_DELETE_NOT_DEL    "La tarea {1} '{2}' no es suprimible."
-#define STRING_CMD_DELETE_1          "Suprimida {1} tarea."
-#define STRING_CMD_DELETE_N          "Suprimidas {1} tareas."
-
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."
 #define STRING_CMD_PURGE_1           "Purged {1} task."

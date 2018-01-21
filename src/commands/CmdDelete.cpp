@@ -34,6 +34,9 @@
 #include <i18n.h>
 #include <main.h>
 
+#define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
+#define STRING_CMD_DELETE_CONFIRM_R  "This is a recurring task.  Do you want to delete all pending recurrences of this same task?"
+
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +44,7 @@ CmdDelete::CmdDelete ()
 {
   _keyword               = "delete";
   _usage                 = "task <filter> delete <mods>";
-  _description           = STRING_CMD_DELETE_USAGE;
+  _description           = "Deletes the specified task";
   _read_only             = false;
   _displays_id           = false;
   _needs_confirm         = true;
@@ -80,7 +83,7 @@ int CmdDelete::execute (std::string&)
     {
       // Delete the specified task.
       std::string question;
-      question = format (STRING_CMD_DELETE_CONFIRM,
+      question = format ("Delete task {1} '{2}'?",
                          task.identifier (true),
                          task.get ("description"));
 
@@ -94,7 +97,7 @@ int CmdDelete::execute (std::string&)
         updateRecurrenceMask (task);
         ++count;
         context.tdb2.modify (task);
-        feedback_affected (STRING_CMD_DELETE_TASK, task);
+        feedback_affected ("Deleting task {1} '{2}'.", task);
         feedback_unblocked (task);
         dependencyChainOnComplete (task);
         if (context.verbose ("project"))
@@ -159,7 +162,7 @@ int CmdDelete::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_DELETE_NO << '\n';
+        std::cout << "Task not deleted.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -167,7 +170,7 @@ int CmdDelete::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_DELETE_NOT_DEL,
+      std::cout << format ("Task {1} '{2}' is not deletable.",
                            task.identifier (true),
                            task.get ("description"))
           << '\n';
@@ -180,7 +183,8 @@ int CmdDelete::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_DELETE_1 : STRING_CMD_DELETE_N, count);
+  feedback_affected (count == 1 ? "Deleted {1} task." : "Deleted {1} tasks.", count);
+
   return rc;
 }
 
