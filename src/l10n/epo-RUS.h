@@ -209,9 +209,6 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Finitaj"
 #define STRING_CMD_SUMMARY_NONE      "(nenio)"
 #define STRING_CMD_COUNT_USAGE       "Nombras kongruantajn taskojn"
-#define STRING_CMD_GET_USAGE         "DOM-enirilo"
-#define STRING_CMD_GET_NO_DOM        "Nenia DOM-referenco specifata."
-#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
 #define STRING_CMD_PURGE_ABRT        "Purge operation aborted."

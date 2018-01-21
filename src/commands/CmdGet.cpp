@@ -32,7 +32,6 @@
 #include <main.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -41,7 +40,7 @@ CmdGet::CmdGet ()
 {
   _keyword               = "_get";
   _usage                 = "task          _get <DOM> [<DOM> ...]";
-  _description           = STRING_CMD_GET_USAGE;
+  _description           = "DOM Accessor";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -81,7 +80,7 @@ int CmdGet::execute (std::string& output)
     case Lexer::Type::identifier:
       if (! arg.hasTag ("BINARY") &&
           ! arg.hasTag ("CMD"))
-        throw format (STRING_CMD_GET_BAD_REF, arg.attribute ("raw"));
+        throw format ("'{1}' is not a DOM reference.", arg.attribute ("raw"));
 
     default:
       break;
@@ -89,7 +88,7 @@ int CmdGet::execute (std::string& output)
   }
 
   if (results.size () == 0)
-    throw std::string (STRING_CMD_GET_NO_DOM);
+    throw std::string ("No DOM reference specified.");
 
   output = join (" ", results);
   output += '\n';
