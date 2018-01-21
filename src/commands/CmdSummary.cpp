@@ -45,7 +45,7 @@ CmdSummary::CmdSummary ()
 {
   _keyword               = "summary";
   _usage                 = "task <filter> summary";
-  _description           = STRING_CMD_SUMMARY_USAGE;
+  _description           = "Shows a report of task status by project";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -133,10 +133,10 @@ int CmdSummary::execute (std::string& output)
   // Create a table for output.
   Table view;
   view.width (context.getWidth ());
-  view.add (STRING_CMD_SUMMARY_PROJECT);
-  view.add (STRING_CMD_SUMMARY_REMAINING, false);
-  view.add (STRING_CMD_SUMMARY_AVG_AGE,   false);
-  view.add (STRING_CMD_SUMMARY_COMPLETE,  false);
+  view.add ("Project");
+  view.add ("Remaining", false);
+  view.add ("Avg age",   false);
+  view.add ("Complete",  false);
   view.add ("0%                        100%", true, false);
   setHeaderUnderline (view);
 
@@ -168,7 +168,7 @@ int CmdSummary::execute (std::string& output)
 
       int row = view.addRow ();
       view.set (row, 0, (i.first == ""
-                          ? STRING_CMD_SUMMARY_NONE
+                          ? "(none)"
                           : indentProject (i.first, "  ", '.')));
 
       view.set (row, 1, countPending[i.first]);

@@ -202,12 +202,6 @@
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} projektów"
 #define STRING_CMD_PROJECTS_TASK     "({1} zadanie)"
 #define STRING_CMD_PROJECTS_TASKS    "({1} zadań)"
-#define STRING_CMD_SUMMARY_USAGE     "Pokazuje raport ze stanu zadań per projekt"
-#define STRING_CMD_SUMMARY_PROJECT   "Projekt"
-#define STRING_CMD_SUMMARY_REMAINING "Pozostało"
-#define STRING_CMD_SUMMARY_AVG_AGE   "Średni wiek"
-#define STRING_CMD_SUMMARY_COMPLETE  "Ukończone"
-#define STRING_CMD_SUMMARY_NONE      "(brak)"
 #define STRING_CMD_COUNT_USAGE       "Zlicza pasujące zadania"
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."

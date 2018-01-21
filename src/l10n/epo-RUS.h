@@ -200,12 +200,6 @@
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} projektoj"
 #define STRING_CMD_PROJECTS_TASK     "({1} tasko)"
 #define STRING_CMD_PROJECTS_TASKS    "({1} taskoj)"
-#define STRING_CMD_SUMMARY_USAGE     "Montras raporton de taska statuso per projekto"
-#define STRING_CMD_SUMMARY_PROJECT   "Projekto"
-#define STRING_CMD_SUMMARY_REMAINING "Restantaj"
-#define STRING_CMD_SUMMARY_AVG_AGE   "Meznª aĝo"
-#define STRING_CMD_SUMMARY_COMPLETE  "Finitaj"
-#define STRING_CMD_SUMMARY_NONE      "(nenio)"
 #define STRING_CMD_COUNT_USAGE       "Nombras kongruantajn taskojn"
 
 #define STRING_CMD_PURGE_USAGE       "Removes the specified tasks from the data files. Causes permanent loss of data."
