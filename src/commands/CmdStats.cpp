@@ -46,7 +46,7 @@ CmdStats::CmdStats ()
 {
   _keyword               = "stats";
   _usage                 = "task <filter> stats";
-  _description           = STRING_CMD_STATS_USAGE;
+  _description           = "Shows task database statistics";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -158,8 +158,8 @@ int CmdStats::execute (std::string& output)
   Table view;
   view.width (context.getWidth ());
   view.intraPadding (2);
-  view.add (STRING_CMD_STATS_CATEGORY);
-  view.add (STRING_CMD_STATS_DATA);
+  view.add ("Category");
+  view.add ("Data");
   setHeaderUnderline (view);
 
   int row = view.addRow ();
@@ -183,45 +183,45 @@ int CmdStats::execute (std::string& output)
   view.set (row, 1, deletedT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_TOTAL);
+  view.set (row, 0, "Total");
   view.set (row, 1, totalT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_ANNOTATIONS);
+  view.set (row, 0, "Annotations");
   view.set (row, 1, annotationsT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_UNIQUE_TAGS);
+  view.set (row, 0, "Unique tags");
   view.set (row, 1, (int)allTags.size ());
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_PROJECTS);
+  view.set (row, 0, "Projects");
   view.set (row, 1, (int)allProjects.size ());
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_BLOCKED);
+  view.set (row, 0, "Blocked tasks");
   view.set (row, 1, blockedT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_BLOCKING);
+  view.set (row, 0, "Blocking tasks");
   view.set (row, 1, blockingT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_DATA_SIZE);
+  view.set (row, 0, "Data size");
   view.set (row, 1, formatBytes (dataSize));
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_UNDO_TXNS);
+  view.set (row, 0, "Undo transactions");
   view.set (row, 1, undoCount);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_BACKLOG);
+  view.set (row, 0, "Sync backlog transactions");
   view.set (row, 1, backlogCount);
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_TAGGED);
+    view.set (row, 0, "Tasks tagged");
 
     std::stringstream value;
     value << std::setprecision (3) << (100.0 * taggedT / totalT) << '%';
@@ -232,52 +232,52 @@ int CmdStats::execute (std::string& output)
   {
     Datetime e (earliest);
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_OLDEST);
+    view.set (row, 0, "Oldest task");
     view.set (row, 1, e.toString (dateformat));
 
     Datetime l (latest);
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_NEWEST);
+    view.set (row, 0, "Newest task");
     view.set (row, 1, l.toString (dateformat));
 
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_USED_FOR);
+    view.set (row, 0, "Task used for");
     view.set (row, 1, Duration (latest - earliest).formatVague ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_ADD_EVERY);
+    view.set (row, 0, "Task added every");
     view.set (row, 1, Duration (((latest - earliest) / totalT)).formatVague ());
   }
 
   if (completedT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_COMP_EVERY);
+    view.set (row, 0, "Task completed every");
     view.set (row, 1, Duration ((latest - earliest) / completedT).formatVague ());
   }
 
   if (deletedT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_DEL_EVERY);
+    view.set (row, 0, "Task deleted every");
     view.set (row, 1, Duration ((latest - earliest) / deletedT).formatVague ());
   }
 
   if (pendingT || completedT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_AVG_PEND);
+    view.set (row, 0, "Average time pending");
     view.set (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).formatVague ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_DESC_LEN);
-    view.set (row, 1, format (STRING_CMD_STATS_CHARS, (int) (descLength / totalT)));
+    view.set (row, 0, "Average desc length");
+    view.set (row, 1, format ("{1} characters", (int) (descLength / totalT)));
   }
 
   // If an alternating row color is specified, notify the table.
