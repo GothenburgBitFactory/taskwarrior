@@ -41,7 +41,7 @@ CmdAppend::CmdAppend ()
 {
   _keyword               = "append";
   _usage                 = "task <filter> append <mods>";
-  _description           = STRING_CMD_APPEND_USAGE;
+  _description           = "Appends text to an existing task description";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -78,7 +78,7 @@ int CmdAppend::execute (std::string&)
     Task before (task);
 
     // Append to the specified task.
-    auto question = format (STRING_CMD_APPEND_CONFIRM,
+    auto question = format ("Append to task {1} '{2}'?",
                             task.identifier (true),
                             task.get ("description"));
 
@@ -88,7 +88,7 @@ int CmdAppend::execute (std::string&)
     {
       context.tdb2.modify (task);
       ++count;
-      feedback_affected (STRING_CMD_APPEND_TASK, task);
+      feedback_affected ("Appending to task {1} '{2}'.", task);
       if (context.verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
@@ -96,7 +96,7 @@ int CmdAppend::execute (std::string&)
       if (task.has ("parent"))
       {
         if ((context.config.get ("recurrence.confirmation") == "prompt"
-             && confirm (STRING_CMD_APPEND_CONFIRM_R)) ||
+             && confirm ("This is a recurring task.  Do you want to append to all pending recurrences of this same task?")) ||
             context.config.getBoolean ("recurrence.confirmation"))
         {
           std::vector <Task> siblings = context.tdb2.siblings (task);
@@ -105,7 +105,7 @@ int CmdAppend::execute (std::string&)
             sibling.modify (Task::modAppend, true);
             context.tdb2.modify (sibling);
             ++count;
-            feedback_affected (STRING_CMD_APPEND_TASK_R, sibling);
+            feedback_affected ("Appending to recurring task {1} '{2}'.", sibling);
           }
 
           // Append to the parent
@@ -118,7 +118,7 @@ int CmdAppend::execute (std::string&)
     }
     else
     {
-      std::cout << STRING_CMD_APPEND_NO << '\n';
+      std::cout << "Task not appended.\n";
       rc = 1;
       if (_permission_quit)
         break;
@@ -130,7 +130,7 @@ int CmdAppend::execute (std::string&)
     if (change.first != "")
       context.footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_APPEND_1 : STRING_CMD_APPEND_N, count);
+  feedback_affected (count == 1 ? "Appended {1} task." : "Appended {1} tasks.", count);
   return rc;
 }
 

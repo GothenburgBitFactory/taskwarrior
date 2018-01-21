@@ -172,15 +172,6 @@
 #define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
 #define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
-#define STRING_CMD_APPEND_USAGE      "存在する task 説明文にテキストを追加"
-#define STRING_CMD_APPEND_1          "{1} タスク を追加。"
-#define STRING_CMD_APPEND_N          "{1} タスク を追加。"
-#define STRING_CMD_APPEND_TASK       "タスク {1} '{2}' を追加中。"
-#define STRING_CMD_APPEND_TASK_R     "Appending to recurring task {1} '{2}'."
-#define STRING_CMD_APPEND_CONFIRM_R  "This is a recurring task.  Do you want to append to all pending recurrences of this same task?"
-#define STRING_CMD_APPEND_CONFIRM    "タスク {1} '{2}' を追加?"
-#define STRING_CMD_APPEND_NO         "タスク を追加できませんでした。"
-
 #define STRING_CMD_PREPEND_USAGE     "Prepends text to an existing task description"
 #define STRING_CMD_PREPEND_1         "Prepended {1} task."
 #define STRING_CMD_PREPEND_N         "Prepended {1} tasks."
