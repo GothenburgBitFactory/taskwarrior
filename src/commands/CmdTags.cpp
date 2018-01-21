@@ -145,7 +145,7 @@ CmdCompletionTags::CmdCompletionTags ()
 {
   _keyword               = "_tags";
   _usage                 = "task <filter> _tags";
-  _description           = STRING_CMD_COMTAGS_USAGE;
+  _description           = "Shows only a list of all tags used, for autocompletion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;

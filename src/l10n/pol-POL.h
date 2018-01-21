@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMTAGS_USAGE     "Pokazuje listę użytych tagów dla celów autouzupełniania"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Pokazuje zdefiniowane UDA w celach autouzupełniania"
 #define STRING_CMD_UDAS_USAGE        "Pokazuje zdefiniowane UDA"
 #define STRING_CMD_UNDO_USAGE        "Odwraca ostatnią zmianę w zadaniu"

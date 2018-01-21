@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMTAGS_USAGE     "Listet ausschließlich alle genutzten Schlagwörter zur Auto-Vervollständigung"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Zeigt festgelegte UDAs zur Autovervollständigung"
 #define STRING_CMD_UDAS_USAGE        "Zeigt alle festgelegten Eigenschaften von UDAs"
 #define STRING_CMD_UNDO_USAGE        "Macht die letzte Änderung an einer Aufgabe Rückgängig"

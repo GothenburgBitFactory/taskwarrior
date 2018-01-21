@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_COMTAGS_USAGE     "Montras sole listo de ĉia uzata etikedo, por motivo memkompletada"
 #define STRING_CMD_UDAS_COMPL_USAGE  "Montras ĉian definitan UDA, por motivo memkompletada"
 #define STRING_CMD_UDAS_USAGE        "Montras la detalojn de ĉia definita UDA"
 #define STRING_CMD_UNDO_USAGE        "Malfaras la plej malfrua modifado al tasko"
