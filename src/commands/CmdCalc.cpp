@@ -28,7 +28,6 @@
 #include <CmdCalc.h>
 #include <Filter.h>
 #include <Eval.h>
-#include <main.h>
 #include <i18n.h>
 
 extern Context context;
