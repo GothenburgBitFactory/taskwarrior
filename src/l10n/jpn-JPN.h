@@ -193,7 +193,6 @@
 #define STRING_CMD_CAL_LABEL_DATE    "Date"
 #define STRING_CMD_CAL_LABEL_HOL     "Holiday"
 #define STRING_CMD_CAL_SUN_MON       "'weekstart' 設定変数は 'Sunday' または 'Monday' のみが使えます。"
-#define STRING_CMD_CALC_USAGE        "電卓"
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "タスクがない。"

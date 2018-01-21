@@ -191,7 +191,6 @@
 #define STRING_CMD_CAL_LABEL_DATE    "Dato"
 #define STRING_CMD_CAL_LABEL_HOL     "Ferio"
 #define STRING_CMD_CAL_SUN_MON       "agordvariablo 'weekstart' devas esti 'Sunday' aŭ 'Monday'."
-#define STRING_CMD_CALC_USAGE        "Kalkulilo"
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nenia tasko."

@@ -193,7 +193,6 @@
 #define STRING_CMD_CAL_LABEL_DATE    "Data"
 #define STRING_CMD_CAL_LABEL_HOL     "Feriado"
 #define STRING_CMD_CAL_SUN_MON       "A variável de configuração 'weekstart' apenas pode conter 'domingo' ou 'segunda-feira'."
-#define STRING_CMD_CALC_USAGE        "Calculadora"
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nenhuma tarefa."

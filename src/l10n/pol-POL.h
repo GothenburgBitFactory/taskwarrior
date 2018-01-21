@@ -193,7 +193,6 @@
 #define STRING_CMD_CAL_LABEL_DATE    "Data"
 #define STRING_CMD_CAL_LABEL_HOL     "Wakacje"
 #define STRING_CMD_CAL_SUN_MON       "Początek tygodnia może mieć wartość 'Niedziela' lub 'Poniedziałek'."
-#define STRING_CMD_CALC_USAGE        "Kalkulator"
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Brak zadań."

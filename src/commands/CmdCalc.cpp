@@ -28,7 +28,6 @@
 #include <CmdCalc.h>
 #include <Filter.h>
 #include <Eval.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -37,7 +36,7 @@ CmdCalc::CmdCalc ()
 {
   _keyword               = "calc";
   _usage                 = "task          calc <expression>";
-  _description           = STRING_CMD_CALC_USAGE;
+  _description           = "Calculator";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
