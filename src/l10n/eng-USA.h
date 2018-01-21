@@ -202,15 +202,6 @@
 #define STRING_CMD_PREPEND_CONFIRM   "Prepend to task {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Task not prepended."
 
-#define STRING_CMD_ANNO_USAGE        "Adds an annotation to an existing task"
-#define STRING_CMD_ANNO_CONFIRM      "Annotate task {1} '{2}'?"
-#define STRING_CMD_ANNO_TASK         "Annotating task {1} '{2}'."
-#define STRING_CMD_ANNO_TASK_R       "Annotating recurring task {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "This is a recurring task.  Do you want to annotate all pending recurrences of this same task?"
-#define STRING_CMD_ANNO_NO           "Task not annotated."
-#define STRING_CMD_ANNO_1            "Annotated {1} task."
-#define STRING_CMD_ANNO_N            "Annotated {1} tasks."
-
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
 #define STRING_CMD_DENO_NONE         "The specified task has no annotations that can be deleted."
 #define STRING_CMD_DENO_CONFIRM      "Denotate task {1} '{2}'?"
