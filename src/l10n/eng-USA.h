@@ -104,10 +104,6 @@
 
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
-#define STRING_CMD_VERSION_USAGE     "Shows the Taskwarrior version number"
-#define STRING_CMD_VERSION_USAGE2    "Shows only the Taskwarrior version number"
-#define STRING_CMD_VERSION_DOCS      "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org"
-#define STRING_CMD_VERSION_UNKNOWN   "unknown"
 #define STRING_CMD_EXEC_USAGE        "Executes external commands and scripts"
 #define STRING_CMD_URGENCY_USAGE     "Displays the urgency measure of a task"
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"

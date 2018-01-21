@@ -104,11 +104,6 @@
 #define STRING_COLUMN_EXAMPLES_ANNO4 "Si no te estás cortando el pelo"
 
 // commands/Cmd*
-#define STRING_CMD_VERSION_USAGE     "Muestra el número de versión de taskwarrior"
-#define STRING_CMD_VERSION_USAGE2    "Muestra el número de versión (solamente) de taskwarrior"
-
-#define STRING_CMD_VERSION_DOCS      "La documentación de Taskwarrior se puede consultar usando 'man task', 'man taskrc', 'man task-color', y 'man task-sync' o en http://taskwarrior.org."
-#define STRING_CMD_VERSION_UNKNOWN   "desconocido"
 #define STRING_CMD_EXEC_USAGE        "Ejecuta comandos y scripts externos"
 #define STRING_CMD_URGENCY_USAGE     "Muestra la medida de urgencia de una tarea"
 #define STRING_CMD_URGENCY_RESULT    "tarea {1} urgencia {2}"
