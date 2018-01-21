@@ -46,7 +46,7 @@ CmdInfo::CmdInfo ()
 {
   _keyword               = "information";
   _usage                 = "task <filter> information";
-  _description           = STRING_CMD_INFO_USAGE;
+  _description           = "Shows all data and metadata";
   _read_only             = true;
 
   // This is inaccurate, but it does prevent a GC.  While this doesn't make a
@@ -158,7 +158,7 @@ int CmdInfo::execute (std::string& output)
           message << block.id << ' ' << block.get ("description") << '\n';
 
         row = view.addRow ();
-        view.set (row, 0, STRING_CMD_INFO_BLOCKED);
+        view.set (row, 0, "This task blocked by");
         view.set (row, 1, message.str ());
       }
     }
@@ -173,7 +173,7 @@ int CmdInfo::execute (std::string& output)
           message << block.id << ' ' << block.get ("description") << '\n';
 
         row = view.addRow ();
-        view.set (row, 0, STRING_CMD_INFO_BLOCKING);
+        view.set (row, 0, "This task is blocking");
         view.set (row, 1, message.str ());
       }
     }
@@ -270,7 +270,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("until"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_UNTIL);
+      view.set (row, 0, "Until");
       view.set (row, 1, Datetime (task.get_date ("until")).toString (dateformat));
     }
 
@@ -278,7 +278,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("modified"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_MODIFIED);
+      view.set (row, 0, "Last modified");
 
       Datetime mod (task.get_date ("modified"));
       std::string age = Duration (now - mod).formatVague ();
@@ -333,7 +333,7 @@ int CmdInfo::execute (std::string& output)
       // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_VIRTUAL_TAGS);
+      view.set (row, 0, "Virtual tags");
       view.set (row, 1, virtualTags);
     }
 
@@ -508,7 +508,7 @@ int CmdInfo::execute (std::string& output)
 
     journal.width (context.getWidth ());
     journal.add (STRING_COLUMN_LABEL_DATE);
-    journal.add (STRING_CMD_INFO_MODIFICATION);
+    journal.add ("Modification");
 
     if (context.config.getBoolean ("journal.info") &&
         undo.size () > 3)
