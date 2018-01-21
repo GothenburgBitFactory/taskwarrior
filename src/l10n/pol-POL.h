@@ -28,11 +28,6 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Pokazuje listę użytych tagów dla celów autouzupełniania"
-#define STRING_CMD_CUSTOM_COUNT      "1 zadanie"
-#define STRING_CMD_CUSTOM_COUNTN     "{1} zadań"
-#define STRING_CMD_CUSTOM_MISMATCH   "Liczba kolumn i nagłówków nie zgadza się dla raportu '{1}'."
-#define STRING_CMD_CUSTOM_SHOWN      "{1} pokazanych"
-#define STRING_CMD_CUSTOM_TRUNCATED  "przycięte do {1} linii"
 #define STRING_CMD_IDS_USAGE_LIST    "Pokazuje IDki pasujących zadań, w formie listy"
 #define STRING_CMD_IDS_USAGE_RANGE   "Pokazuje IDki pasujących zadań, w formie zakresu"
 #define STRING_CMD_IDS_USAGE_ZSH     "Pokazuje IDki i opisy pasujących zadań"

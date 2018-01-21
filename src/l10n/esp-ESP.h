@@ -28,11 +28,6 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Muestra una lista de todas las marcas (solo nombres) en uso, con fines de auto-completado"
-#define STRING_CMD_CUSTOM_COUNT      "1 tarea"
-#define STRING_CMD_CUSTOM_COUNTN     "{1} tareas"
-#define STRING_CMD_CUSTOM_MISMATCH   "Hay diferente número de columnas y etiquetas para el informe '{1}'."
-#define STRING_CMD_CUSTOM_SHOWN      "{1} mostrada(s)"
-#define STRING_CMD_CUSTOM_TRUNCATED  "truncado a {1} líneas"
 #define STRING_CMD_IDS_USAGE_LIST    "Muestra los IDs de las tareas coincidentes, en forma de lista"
 #define STRING_CMD_IDS_USAGE_RANGE   "Muestra los IDs de las tareas coincidentes, como un rango"
 #define STRING_CMD_IDS_USAGE_ZSH     "Muestra los IDs y descripciones de las tareas coincidentes"

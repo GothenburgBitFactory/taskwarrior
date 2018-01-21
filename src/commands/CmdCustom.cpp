@@ -79,7 +79,7 @@ int CmdCustom::execute (std::string& output)
   auto labels = split (reportLabels, ',');
 
   if (columns.size () != labels.size () && labels.size () != 0)
-    throw format (STRING_CMD_CUSTOM_MISMATCH, _keyword);
+    throw format ("There are different numbers of columns and labels for report '{1}'.", _keyword);
 
   auto sortOrder = split (reportSort, ',');
   if (sortOrder.size () != 0 &&
@@ -214,15 +214,15 @@ int CmdCustom::execute (std::string& output)
     if (context.verbose ("affected"))
     {
       out << (filtered.size () == 1
-                ? STRING_CMD_CUSTOM_COUNT
-                : format (STRING_CMD_CUSTOM_COUNTN, filtered.size ()));
+                ?  "1 task"
+                : format ("{1} tasks", filtered.size ()));
 
       if (maxrows && maxrows < (int)filtered.size ())
-        out << ", " << format (STRING_CMD_CUSTOM_SHOWN, maxrows);
+        out << ", " << format ("{1} shown", maxrows);
 
       if (maxlines && maxlines < (int)filtered.size ())
         out << ", "
-            << format (STRING_CMD_CUSTOM_TRUNCATED, maxlines - table_header);
+            << format ("truncated to {1} lines", maxlines - table_header);
 
       out << '\n';
     }

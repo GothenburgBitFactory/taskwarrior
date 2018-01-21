@@ -28,11 +28,6 @@
 #define INCLUDED_STRINGS
 
 #define STRING_CMD_COMTAGS_USAGE     "Mostra solo una lista dei tag utilizzati, per autocompletamento"
-#define STRING_CMD_CUSTOM_COUNT      "1 task"
-#define STRING_CMD_CUSTOM_COUNTN     "{1} task"
-#define STRING_CMD_CUSTOM_MISMATCH   "Differente numero di colonne ed etichette per il report '{1}'."
-#define STRING_CMD_CUSTOM_SHOWN      "{1} mostrato"
-#define STRING_CMD_CUSTOM_TRUNCATED  "troncato alla linea {1}"
 #define STRING_CMD_IDS_USAGE_LIST    "Mostra gli ID dei task corrispondenti, in forma di lista"
 #define STRING_CMD_IDS_USAGE_RANGE   "Mostra gli ID dei task corrispondenti, come intervallo"
 #define STRING_CMD_IDS_USAGE_ZSH     "Mostra gli ID e le descrizioni dei task corrispondenti"
