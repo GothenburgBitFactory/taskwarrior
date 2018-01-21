@@ -255,7 +255,6 @@
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nenhuma tarefa."
-#define STRING_FEEDBACK_NO_TASKS_SP  "Nenhuma tarefa especificada."
 #define STRING_FEEDBACK_NO_MATCH     "Nenhuma correspondência."
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 tarefa)"
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} tarefas)"

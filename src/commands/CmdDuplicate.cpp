@@ -64,7 +64,7 @@ int CmdDuplicate::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    context.footnote ("No tasks specified.");
     return 1;
   }
 

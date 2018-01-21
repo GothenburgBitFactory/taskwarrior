@@ -63,7 +63,7 @@ int CmdUrgency::execute (std::string& output)
 
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    context.footnote ("No tasks specified.");
     return 1;
   }
 
