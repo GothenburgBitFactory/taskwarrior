@@ -32,7 +32,6 @@
 #include <main.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -64,7 +63,7 @@ int CmdStart::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    context.footnote ("No tasks specified.");
     return 1;
   }
 

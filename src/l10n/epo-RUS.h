@@ -255,7 +255,6 @@
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nenia tasko."
-#define STRING_FEEDBACK_NO_TASKS_SP  "Nenia tasko specifata."
 #define STRING_FEEDBACK_NO_MATCH     "Nenia kongruanto."
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 tasko)"
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} taskoj)"

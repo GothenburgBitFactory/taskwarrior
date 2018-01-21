@@ -32,7 +32,6 @@
 #include <main.h>
 #include <format.h>
 #include <shared.h>
-#include <i18n.h>
 
 #define STRING_CMD_MODIFY_TASK_R     "Modifying recurring task {1} '{2}'."
 #define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
@@ -66,7 +65,7 @@ int CmdModify::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    context.footnote ("No tasks specified.");
     return 1;
   }
 

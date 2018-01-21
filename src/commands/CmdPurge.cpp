@@ -28,7 +28,6 @@
 #include <CmdPurge.h>
 #include <Context.h>
 #include <Filter.h>
-#include <i18n.h>
 #include <main.h>
 #include <format.h>
 #include <shared.h>
@@ -146,7 +145,7 @@ int CmdPurge::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    context.footnote ("No tasks specified.");
     return 1;
   }
 

@@ -31,7 +31,6 @@
 #include <Filter.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 #include <main.h>
 
 #define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
@@ -68,7 +67,7 @@ int CmdDelete::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    context.footnote ("No tasks specified.");
     return 1;
   }
 

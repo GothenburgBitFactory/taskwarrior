@@ -263,7 +263,6 @@
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
-#define STRING_FEEDBACK_NO_TASKS_SP  "No se especificaron tareas."
 #define STRING_FEEDBACK_NO_MATCH     "Ninguna coincidencia."
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 tarea)"
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} tareas)"
