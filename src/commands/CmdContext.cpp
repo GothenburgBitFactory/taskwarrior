@@ -32,7 +32,6 @@
 #include <Filter.h>
 #include <sstream>
 #include <algorithm>
-#include <i18n.h>
 #include <format.h>
 #include <shared.h>
 #include <util.h>
@@ -44,7 +43,7 @@ CmdContext::CmdContext ()
 {
   _keyword               = "context";
   _usage                 = "task          context [<name> | <subcommand>]";
-  _description           = STRING_CMD_CONTEXT_USAGE;
+  _description           = "Set and define contexts (default filters)";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -140,7 +139,7 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     // Make sure nobody creates a context with name 'list', 'none' or 'show'
     if (words[1] == "none" or words[1] == "list" or words[1] == "show")
     {
-      throw format (STRING_CMD_CONTEXT_DEF_INVLD, words[1]);
+      throw format ("The name '{1}' is reserved and not allowed to use as a context name.", words[1]);
     }
 
     // Check if the value is a proper filter by filtering current pending.data
@@ -156,25 +155,25 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     }
     catch (std::string exception)
     {
-      throw format (STRING_CMD_CONTEXT_DEF_ABRT2, exception);
+      throw format ("Filter validation failed: {1}", exception);
     }
 
     // Make user explicitly confirm filters that are matching no pending tasks
     if (filtered.size () == 0)
       if (confirmation &&
-          ! confirm (format (STRING_CMD_CONTEXT_DEF_CONF, value)))
-        throw std::string (STRING_CMD_CONTEXT_DEF_ABRT);
+          ! confirm (format ("The filter '{1}' matches 0 pending tasks. Do you wish to continue?", value)))
+        throw std::string ("Context definition aborted.");
 
     // Set context definition config variable
     bool success = CmdConfig::setConfigVariable (name, value, confirmation);
 
     if (!success)
-      throw format (STRING_CMD_CONTEXT_DEF_FAIL, words[1]);
+      throw format ("Context '{1}' not defined.", words[1]);
 
-    out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << '\n';
+    out << format ("Context '{1}' defined. Use 'task context {1}' to activate.\n", words[1]);
   }
   else
-    throw std::string (STRING_CMD_CONTEXT_DEF_USAG);
+    throw std::string ("Both context name and its definition must be provided.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -203,12 +202,12 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
 
     // Output feedback
     if (rc != 0)
-      throw format (STRING_CMD_CONTEXT_DEL_FAIL, words[1]);
+      throw format ("Context '{1}' not deleted.", words[1]);
 
-    out << format (STRING_CMD_CONTEXT_DEL_SUCC, words[1]) << '\n';
+    out << format ("Context '{1}' deleted.\n", words[1]);
   }
   else
-    throw std::string(STRING_CMD_CONTEXT_DEL_USAG);
+    throw std::string("Context name needs to be specified.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,7 +251,7 @@ void CmdContext::listContexts (std::stringstream& out)
         << optionalBlankLine ();
   }
   else
-    throw std::string (STRING_CMD_CONTEXT_LIST_EMPT);
+    throw std::string ("No contexts defined.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -273,16 +272,16 @@ void CmdContext::setContext (const std::vector <std::string>& words, std::string
 
   // Check that the specified context is defined
   if (std::find (contexts.begin (), contexts.end (), value) == contexts.end ())
-    throw format (STRING_CMD_CONTEXT_SET_NFOU, value);
+    throw format ("Context '{1}' not found.", value);
 
   // Set the active context.
   // Should always succeed, as we do not require confirmation.
   bool success = CmdConfig::setConfigVariable ("context", value, false);
 
   if (! success)
-    throw format (STRING_CMD_CONTEXT_SET_FAIL, value);
+    throw format ("Context '{1}' not applied.", value);
 
-  out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << '\n';
+  out << format ("Context '{1}' set. Use 'task context none' to remove.\n", value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -298,11 +297,11 @@ void CmdContext::showContext (std::stringstream& out)
   auto currentContext = context.config.get ("context");
 
   if (currentContext == "")
-    out << STRING_CMD_CONTEXT_SHOW_EMPT << '\n';
+    out << "No context is currently applied.\n";
   else
   {
     std::string currentFilter = context.config.get ("context." + currentContext);
-    out << format (STRING_CMD_CONTEXT_SHOW, currentContext, currentFilter) << '\n';
+    out << format ("Context '{1}' with filter '{2}' is currently applied.\n", currentContext, currentFilter);
   }
 }
 
@@ -319,9 +318,9 @@ void CmdContext::showContext (std::stringstream& out)
 void CmdContext::unsetContext (std::stringstream& out)
 {
   if (CmdConfig::unsetConfigVariable ("context", false))
-    throw std::string(STRING_CMD_CONTEXT_NON_FAIL);
+    throw std::string ("Context not unset.");
 
-  out << STRING_CMD_CONTEXT_NON_SUCC << '\n';
+  out << "Context unset.\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -329,7 +328,7 @@ CmdCompletionContext::CmdCompletionContext ()
 {
   _keyword               = "_context";
   _usage                 = "task          _context";
-  _description           = STRING_CMD_HCONTEXT_USAGE;
+  _description           = "Lists all supported contexts, for completion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
