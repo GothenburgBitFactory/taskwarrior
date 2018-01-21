@@ -31,7 +31,6 @@
 #include <Context.h>
 #include <Filter.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -40,7 +39,7 @@ CmdUnique::CmdUnique ()
 {
   _keyword               = "_unique";
   _usage                 = "task <filter> _unique <attribute>";
-  _description           = STRING_CMD_UNIQUE_USAGE;
+  _description           = "Generates lists of unique attribute values";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -66,12 +65,12 @@ int CmdUnique::execute (std::string& output)
   // Just the first arg.
   auto words = context.cli2.getWords ();
   if (words.size () == 0)
-    throw std::string (STRING_CMD_UNIQUE_MISSING);
+    throw std::string ("An attribute must be specified.  See 'task _columns'.");
   attribute = words[0];
 
   std::string canonical;
   if (! context.cli2.canonicalize (canonical, "attribute", attribute))
-    throw std::string (STRING_CMD_UNIQUE_VALID);
+    throw std::string ("You must specify an attribute or UDA.");
 
   // Find the unique set of matching tasks.
   std::set <std::string> values;

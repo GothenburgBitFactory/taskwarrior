@@ -133,10 +133,6 @@
 #define STRING_CMD_TAGS_SINGLE       "1 Schlagwort"
 #define STRING_CMD_TAGS_PLURAL       "{1} Schlagworte"
 #define STRING_CMD_TAGS_NO_TAGS      "Keine Schlagworte."
-#define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
-#define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
-#define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
-
 #define STRING_CMD_IMPORT_USAGE      "Importiert eine JSON-Datei"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} Aufgabe importiert."
 #define STRING_CMD_IMPORT_FILE       "Importiere '{1}'"

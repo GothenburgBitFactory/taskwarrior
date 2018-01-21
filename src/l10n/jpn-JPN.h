@@ -133,10 +133,6 @@
 #define STRING_CMD_TAGS_SINGLE       "1 つのタグ"
 #define STRING_CMD_TAGS_PLURAL       "{1} 個のタグ"
 #define STRING_CMD_TAGS_NO_TAGS      "タグがない。"
-#define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
-#define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
-#define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
-
 #define STRING_CMD_IMPORT_USAGE      "JSON ファイルをインポート"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} task をインポートしました。"
 #define STRING_CMD_IMPORT_FILE       "'{1}' をインポート中"
