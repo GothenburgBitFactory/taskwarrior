@@ -27,9 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ADD_FEEDBACK      "Tâche {1} crée."
-#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_ADD_USAGE         "Ajoute une nouvelle tâche"
 #define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
 #define STRING_CMD_CAL_BAD_ARG       "Could not recognize argument '{1}'."
 #define STRING_CMD_CAL_BAD_MONTH     "Argument '{1}' is not a valid month."

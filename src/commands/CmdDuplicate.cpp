@@ -31,7 +31,6 @@
 #include <Filter.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -118,11 +117,11 @@ int CmdDuplicate::execute (std::string&)
       if (context.verbose ("new-id") &&
           (status == Task::pending ||
            status == Task::waiting))
-        std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.id) + '\n';
+        std::cout << format ("Created task {1}.\n", dup.id);
 
       else if (context.verbose ("new-uuid") &&
                status != Task::recurring)
-        std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.get ("uuid")) + '\n';
+        std::cout << format ("Created task {1}.\n", dup.get ("uuid"));
 
       if (context.verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task);

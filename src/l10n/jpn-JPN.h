@@ -27,9 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_CMD_ADD_FEEDBACK      "タスク {1} が生成されました。"
-#define STRING_CMD_ADD_RECUR         "Created task {1} (recurrence template)."
-#define STRING_CMD_ADD_USAGE         "新しいタスクの追加"
 #define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
 #define STRING_CMD_CAL_BAD_ARG       "引数'{1}' を認識できません。"
 #define STRING_CMD_CAL_BAD_MONTH     "引数 '{1}' は正しい月ではありません。"

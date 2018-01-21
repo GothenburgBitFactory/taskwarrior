@@ -28,7 +28,6 @@
 #include <CmdAdd.h>
 #include <Context.h>
 #include <format.h>
-#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -38,7 +37,7 @@ CmdAdd::CmdAdd ()
 {
   _keyword               = "add";
   _usage                 = "task          add <mods>";
-  _description           = STRING_CMD_ADD_USAGE;
+  _description           = "Adds a new task";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -67,20 +66,20 @@ int CmdAdd::execute (std::string& output)
 
   if (context.verbose ("new-uuid") &&
            status != Task::recurring)
-    output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + '\n';
+    output += format ("Created task {1}.\n", task.get ("uuid"));
 
   else if (context.verbose ("new-uuid") &&
            status == Task::recurring)
-    output += format (STRING_CMD_ADD_RECUR, task.get ("uuid")) + '\n';
+    output += format ("Created task {1} (recurrence template).\n", task.get ("uuid"));
 
   else if (context.verbose ("new-id") &&
       (status == Task::pending ||
        status == Task::waiting))
-    output += format (STRING_CMD_ADD_FEEDBACK, task.id) + '\n';
+    output += format ("Created task {1}.\n", task.id);
 
   else if (context.verbose ("new-id") &&
            status == Task::recurring)
-    output += format (STRING_CMD_ADD_RECUR, task.id) + '\n';
+    output += format ("Created task {1} (recurrence template).\n", task.id);
 
   if (context.verbose ("project"))
     context.footnote (onProjectChange (task));
