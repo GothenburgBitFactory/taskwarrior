@@ -28,10 +28,8 @@
 #include <CmdUnique.h>
 #include <string>
 #include <set>
-#include <algorithm>
 #include <Context.h>
 #include <Filter.h>
-#include <main.h>
 #include <format.h>
 #include <i18n.h>
 
