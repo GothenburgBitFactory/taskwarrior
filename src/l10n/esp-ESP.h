@@ -29,17 +29,6 @@
 
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_RECUR    "Recur"  // |esp-ESP|==|eng-USA|
-#define STRING_COLUMN_LABEL_STAT     "Est"
-#define STRING_COLUMN_LABEL_STAT_C   "C"  // |esp-ESP|==|eng-USA|
-#define STRING_COLUMN_LABEL_STAT_CO  "Completadas"
-#define STRING_COLUMN_LABEL_STAT_D   "S"
-#define STRING_COLUMN_LABEL_STAT_DE  "Suprimidas"
-#define STRING_COLUMN_LABEL_STAT_P   "P"  // |esp-ESP|==|eng-USA|
-#define STRING_COLUMN_LABEL_STAT_PE  "Pendientes"
-#define STRING_COLUMN_LABEL_STAT_R   "R"  // |esp-ESP|==|eng-USA|
-#define STRING_COLUMN_LABEL_STAT_RE  "Recurrentes"
-#define STRING_COLUMN_LABEL_STAT_W   "E"
-#define STRING_COLUMN_LABEL_STAT_WA  "Esperando"
 #define STRING_COLUMN_LABEL_TAG      "Marca"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"
 #define STRING_COLUMN_LABEL_URGENCY  "Urgencia"
