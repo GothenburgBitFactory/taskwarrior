@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_TAG      "Schlagwort"
 #define STRING_COLUMN_LABEL_UNTIL    "Bis"
 #define string_column_label_urgency  "dringlichkeit"
 #define string_column_label_uuid     "uuid"

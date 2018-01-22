@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_TAG      "Marca"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"
 #define STRING_COLUMN_LABEL_URGENCY  "Urgencia"
 #define STRING_COLUMN_LABEL_UUID     "UUID"  // |esp-ESP|==|eng-USA|
