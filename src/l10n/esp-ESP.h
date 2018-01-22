@@ -27,8 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_ADDED    "Añadida"
-#define STRING_COLUMN_LABEL_AGE      "Edad"
 #define STRING_COLUMN_LABEL_CATEGORY "Categoría"
 #define STRING_COLUMN_LABEL_COLUMN   "Columnas"
 #define STRING_COLUMN_LABEL_COMMAND  "Comando"
