@@ -47,9 +47,9 @@ ColumnProject::ColumnProject ()
   _style     = "full";
   _label     = STRING_COLUMN_LABEL_PROJECT;
   _styles    = {"full", "parent", "indented"};
-  _examples  = {STRING_COLUMN_EXAMPLES_PROJ,
-                STRING_COLUMN_EXAMPLES_PAR,
-                STRING_COLUMN_EXAMPLES_IND};
+  _examples  = {"home.garden",
+                "home",
+                "  home.garden"};
   _hyphenate = context.config.getBoolean ("hyphenate");
 }
 

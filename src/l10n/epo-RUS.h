@@ -27,10 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_EXAMPLES_IND   "  domo.ĝardeno"
-#define STRING_COLUMN_EXAMPLES_PAR   "domo"
-#define STRING_COLUMN_EXAMPLES_PROJ  "domo.ĝardeno"
-#define STRING_COLUMN_EXAMPLES_TAGS  "domo @aĉo next"
 #define STRING_COLUMN_LABEL_ACTIVE   "Ak"
 #define STRING_COLUMN_LABEL_ADDED    "Kreita"
 #define STRING_COLUMN_LABEL_AGE      "Aĝo"

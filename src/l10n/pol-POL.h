@@ -27,10 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_EXAMPLES_IND   "  dom.ogród"
-#define STRING_COLUMN_EXAMPLES_PAR   "dom"
-#define STRING_COLUMN_EXAMPLES_PROJ  "dom.ogród"
-#define STRING_COLUMN_EXAMPLES_TAGS  "home @chore next"
 #define STRING_COLUMN_LABEL_ACTIVE   "A"
 #define STRING_COLUMN_LABEL_ADDED    "Dodane"
 #define STRING_COLUMN_LABEL_AGE      "Wiek"

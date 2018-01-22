@@ -47,7 +47,7 @@ ColumnTags::ColumnTags ()
   _style     = "list";
   _label     = STRING_COLUMN_LABEL_TAGS;
   _styles    = {"list", "indicator", "count"};
-  _examples  = {STRING_COLUMN_EXAMPLES_TAGS,
+  _examples  = {"home @chore next",
                 context.config.get ("tag.indicator"),
                 "[2]"};
   _hyphenate = false;
