@@ -72,7 +72,6 @@
 #define STRING_COLUMN_LABEL_LABEL    "Etiqueta"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defecto"
 #define STRING_COLUMN_LABEL_VALUES   "Valores permitidos"
-#define STRING_COLUMN_LABEL_WAIT     "Espera"
 #define STRING_COLUMN_LABEL_WAITING  "Esperando hasta"
 #define STRING_FEEDBACK_ANN_ADD      "Anotación de '{1}' añadida."
 #define STRING_FEEDBACK_ANN_DEL      "Anotación '{1}' eliminada."

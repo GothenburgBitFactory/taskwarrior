@@ -72,7 +72,6 @@
 #define STRING_COLUMN_LABEL_LABEL    "Rubriko"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defaŭlto"
 #define STRING_COLUMN_LABEL_VALUES   "Valoroj permesataj"
-#define STRING_COLUMN_LABEL_WAIT     "Atendu"
 #define STRING_COLUMN_LABEL_WAITING  "Atendu ĝis"
 #define STRING_FEEDBACK_ANN_ADD      "Aldonis komenton '{1}'."
 #define STRING_FEEDBACK_ANN_DEL      "Viŝis komenton '{1}'."

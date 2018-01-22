@@ -72,7 +72,6 @@
 #define STRING_COLUMN_LABEL_LABEL    "Etykieta"
 #define STRING_COLUMN_LABEL_DEFAULT  "Domyślne"
 #define STRING_COLUMN_LABEL_VALUES   "Dozwolone Wartości"
-#define STRING_COLUMN_LABEL_WAIT     "Czeka"
 #define STRING_COLUMN_LABEL_WAITING  "Czeka dopóki"
 #define STRING_FEEDBACK_ANN_ADD      "Notatka '{1}' dodana."
 #define STRING_FEEDBACK_ANN_DEL      "Notatka '{1}' usunięta."

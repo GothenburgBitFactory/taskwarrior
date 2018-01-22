@@ -71,7 +71,6 @@
 #define STRING_COLUMN_LABEL_LABEL    "Beschreibung"
 #define STRING_COLUMN_LABEL_DEFAULT  "Standard"
 #define STRING_COLUMN_LABEL_VALUES   "Erlaubte Werte"
-#define STRING_COLUMN_LABEL_WAIT     "Aufgeschoben"
 #define STRING_COLUMN_LABEL_WAITING  "Aufgeschoben bis"
 #define STRING_FEEDBACK_ANN_ADD      "Kommentar von '{1}' hinzugefügt."
 #define STRING_FEEDBACK_ANN_DEL      "Kommentar '{1}' gelöscht."
