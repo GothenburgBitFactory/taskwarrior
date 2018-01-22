@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_TAG      "Étiq"
 #define STRING_COLUMN_LABEL_UNTIL    "Until"
 #define STRING_FEEDBACK_ANN_ADD      "Annotation of '{1}' added."
 #define STRING_FEEDBACK_ANN_DEL      "Annotation '{1}' deleted."

@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_TAG      "Marca"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"
 #define STRING_FEEDBACK_ANN_ADD      "Anotación de '{1}' añadida."
 #define STRING_FEEDBACK_ANN_DEL      "Anotación '{1}' eliminada."

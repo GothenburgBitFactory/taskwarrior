@@ -34,7 +34,6 @@
 #include <Table.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -91,7 +90,7 @@ int CmdTags::execute (std::string& output)
     // Render a list of tags names from the map.
     Table view;
     view.width (context.getWidth ());
-    view.add (STRING_COLUMN_LABEL_TAG);
+    view.add ("Tag");
     view.add ("Count", false);
     setHeaderUnderline (view);
 
@@ -124,9 +123,9 @@ int CmdTags::execute (std::string& output)
       context.footnote (format ("{1} tags", unique.size ()));
 
     if (quantity == 1)
-      context.footnote (STRING_FEEDBACK_TASKS_SINGLE);
+      context.footnote ("(1 task)");
     else
-      context.footnote (format (STRING_FEEDBACK_TASKS_PLURAL, quantity));
+      context.footnote (format ("({1} tasks)", quantity));
 
     out << '\n';
   }

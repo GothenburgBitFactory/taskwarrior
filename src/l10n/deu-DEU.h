@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_TAG      "Schlagwort"
 #define STRING_COLUMN_LABEL_UNTIL    "Bis"
 #define STRING_FEEDBACK_ANN_ADD      "Kommentar von '{1}' hinzugefügt."
 #define STRING_FEEDBACK_ANN_DEL      "Kommentar '{1}' gelöscht."

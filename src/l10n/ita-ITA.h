@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_TAG      "Tag"
 #define STRING_COLUMN_LABEL_UNTIL    "Fino a"
 #define STRING_FEEDBACK_ANN_ADD      "Annotazione di '{1}' aggiunta."
 #define STRING_FEEDBACK_ANN_DEL      "Annotazione '{1}' cancellata."
