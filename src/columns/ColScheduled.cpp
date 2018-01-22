@@ -26,7 +26,6 @@
 
 #include <cmake.h>
 #include <ColScheduled.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnScheduled::ColumnScheduled ()

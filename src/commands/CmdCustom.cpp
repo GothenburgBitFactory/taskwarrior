@@ -35,7 +35,6 @@
 #include <Filter.h>
 #include <Lexer.h>
 #include <ViewTask.h>
-#include <i18n.h>
 #include <format.h>
 #include <shared.h>
 #include <util.h>

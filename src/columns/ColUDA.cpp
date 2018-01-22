@@ -32,7 +32,6 @@
 #include <shared.h>
 #include <format.h>
 #include <utf8.h>
-#include <i18n.h>
 #include <stdlib.h>
 
 extern Context context;

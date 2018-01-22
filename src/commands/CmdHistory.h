@@ -31,7 +31,6 @@
 #include <Command.h>
 #include <Table.h>
 #include <Datetime.h>
-#include <i18n.h>
 
 template<class HistoryStrategy>
 class CmdHistoryBase : public Command
