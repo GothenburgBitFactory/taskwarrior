@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_ENTERED  "Entrée"
 #define STRING_COLUMN_LABEL_LABEL    "Étiq"
-#define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Modifiée"
 #define STRING_COLUMN_LABEL_NAME     "Nom"
 #define STRING_COLUMN_LABEL_ORPHAN   "ADU orphelins"

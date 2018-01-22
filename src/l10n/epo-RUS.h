@@ -27,15 +27,14 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_ENTERED  "Kreita"
-#define STRING_COLUMN_LABEL_LABEL    "Rubriko"
-#define STRING_COLUMN_LABEL_LAST     "Last instance"
-#define STRING_COLUMN_LABEL_MOD      "Modifo"
-#define STRING_COLUMN_LABEL_NAME     "Nomo"
-#define STRING_COLUMN_LABEL_ORPHAN   "Orfa UDA"
-#define STRING_COLUMN_LABEL_PROJECT  "Projekto"
-#define STRING_COLUMN_LABEL_RECUR    "Reokazas"
-#define STRING_COLUMN_LABEL_RECUR_L  "Reokazas ĉiu"
+#define STRING_COLUMN_LABEL_ENTERED  "Entered"
+#define STRING_COLUMN_LABEL_LABEL    "Label"
+#define STRING_COLUMN_LABEL_MOD      "Modified"
+#define STRING_COLUMN_LABEL_NAME     "Name"
+#define STRING_COLUMN_LABEL_ORPHAN   "Orphan UDA"
+#define STRING_COLUMN_LABEL_PROJECT  "Project"
+#define STRING_COLUMN_LABEL_RECUR    "Recur"
+#define STRING_COLUMN_LABEL_RECUR_L  "Recurrence"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
 #define STRING_COLUMN_LABEL_START    "Eko"
 #define STRING_COLUMN_LABEL_STAT     "St"

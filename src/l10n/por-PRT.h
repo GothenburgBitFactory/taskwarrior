@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_ENTERED  "Criada"
 #define STRING_COLUMN_LABEL_LABEL    "Rótulo"
-#define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_NAME     "Nome"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA Orfão"

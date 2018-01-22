@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_ENTERED  "Entered"
 #define STRING_COLUMN_LABEL_LABEL    "Label"
-#define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Modified"
 #define STRING_COLUMN_LABEL_NAME     "Name"
 #define STRING_COLUMN_LABEL_ORPHAN   "Orphan UDA"

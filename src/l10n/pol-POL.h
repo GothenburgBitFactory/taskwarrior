@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_ENTERED  "Dodane"
 #define STRING_COLUMN_LABEL_LABEL    "Etykieta"
-#define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Zmienione"
 #define STRING_COLUMN_LABEL_NAME     "Nazwa"
 #define STRING_COLUMN_LABEL_ORPHAN   "Osierocone UDA"

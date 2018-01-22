@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_ENTERED  "Inserito"
 #define STRING_COLUMN_LABEL_LABEL    "Etichetta"
-#define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Modificato"
 #define STRING_COLUMN_LABEL_NAME     "Nome"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA Orfano"
