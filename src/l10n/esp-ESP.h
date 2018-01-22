@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_RECUR    "Recur"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_TAG      "Marca"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"

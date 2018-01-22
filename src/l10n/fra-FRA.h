@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_MOD      "Modifiée"
 #define STRING_COLUMN_LABEL_RECUR    "Récur"
 #define STRING_COLUMN_LABEL_TAG      "Étiq"
 #define STRING_COLUMN_LABEL_UNTIL    "Until"
