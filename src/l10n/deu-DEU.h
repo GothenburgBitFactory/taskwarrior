@@ -40,7 +40,6 @@
 #define STRING_COLUMN_LABEL_RECUR    "Wiederh."
 #define STRING_COLUMN_LABEL_RECUR_L  "Wiederholung"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
-#define STRING_COLUMN_LABEL_SCHED    "Geplant"
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STATUS   "Status"
 #define STRING_COLUMN_LABEL_STAT_C   "E"

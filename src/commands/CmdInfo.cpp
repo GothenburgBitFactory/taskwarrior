@@ -238,7 +238,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("scheduled"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_SCHED);
+      view.set (row, 0, "Scheduled");
       view.set (row, 1, Datetime (task.get_date ("scheduled")).toString (dateformat));
     }
 
