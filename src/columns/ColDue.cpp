@@ -26,14 +26,13 @@
 
 #include <cmake.h>
 #include <ColDue.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDue::ColumnDue ()
 {
   _name       = "due";
   _modifiable = true;
-  _label      = STRING_COLUMN_LABEL_DUE;
+  _label      = "Due";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +42,7 @@ void ColumnDue::setStyle (const std::string& value)
 {
   Column::setStyle (value);
 
-  if (_style == "countdown" && _label == STRING_COLUMN_LABEL_DUE)
+  if (_style == "countdown" && _label == "Due")
     _label = "Count";
 }
 

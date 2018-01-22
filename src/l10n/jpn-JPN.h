@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_DATE     "Date"
 #define STRING_COLUMN_LABEL_DEFAULT  "Default"
-#define STRING_COLUMN_LABEL_DUE      "Due"
 #define STRING_COLUMN_LABEL_END      "End"
 #define STRING_COLUMN_LABEL_ENTERED  "Entered"
 #define STRING_COLUMN_LABEL_LABEL    "Label"

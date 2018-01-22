@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_DATE     "Data"
 #define STRING_COLUMN_LABEL_DEFAULT  "Predefinito"
-#define STRING_COLUMN_LABEL_DUE      "Scadenza"
 #define STRING_COLUMN_LABEL_END      "Fine"
 #define STRING_COLUMN_LABEL_ENTERED  "Inserito"
 #define STRING_COLUMN_LABEL_LABEL    "Etichetta"

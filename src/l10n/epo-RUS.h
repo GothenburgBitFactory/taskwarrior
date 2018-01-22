@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_DATE     "Dato"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defaŭlto"
-#define STRING_COLUMN_LABEL_DUE      "Datlimo"
 #define STRING_COLUMN_LABEL_END      "Fino"
 #define STRING_COLUMN_LABEL_ENTERED  "Kreita"
 #define STRING_COLUMN_LABEL_LABEL    "Rubriko"

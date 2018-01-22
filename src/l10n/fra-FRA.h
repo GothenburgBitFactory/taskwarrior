@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_DATE     "Date"
 #define STRING_COLUMN_LABEL_DEFAULT  "Défaut"
-#define STRING_COLUMN_LABEL_DUE      "Échéance"
 #define STRING_COLUMN_LABEL_END      "Fin"
 #define STRING_COLUMN_LABEL_ENTERED  "Entrée"
 #define STRING_COLUMN_LABEL_LABEL    "Étiq"
