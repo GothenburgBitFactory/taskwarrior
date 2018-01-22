@@ -225,7 +225,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("last"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_LAST);
+      view.set (row, 0, "Last instance");
       view.set (row, 1, task.get ("last"));
     }
 

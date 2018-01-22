@@ -27,14 +27,13 @@
 #include <cmake.h>
 #include <ColLast.h>
 #include <format.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnLast::ColumnLast ()
 {
   _name       = "last";
   _style      = "number";
-  _label      = STRING_COLUMN_LABEL_LAST;
+  _label      = "Last instance";
   _modifiable = false;
   _styles     = {"number"};
   _examples   = {"12"};
