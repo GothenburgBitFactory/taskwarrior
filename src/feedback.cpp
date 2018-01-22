@@ -39,7 +39,6 @@
 #include <main.h>
 #include <shared.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -77,7 +76,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   std::stringstream out;
   for (auto& name : beforeOnly)
     out << "  - "
-        << format (STRING_FEEDBACK_DELETED, Lexer::ucFirst (name))
+        << format ("{1} will be deleted.", Lexer::ucFirst (name))
         << "\n";
 
   for (auto& name : afterOnly)
@@ -87,12 +86,12 @@ std::string taskDifferences (const Task& before, const Task& after)
       auto deps_after = after.getDependencyTasks ();
 
       out << "  - "
-          << format (STRING_FEEDBACK_DEP_SET, taskIdentifiers (deps_after))
+          << format ("Dependencies will be set to '{1}'.", taskIdentifiers (deps_after))
           << "\n";
     }
     else
       out << "  - "
-          << format (STRING_FEEDBACK_ATT_SET,
+          << format ("{1} will be set to '{2}'.",
                      Lexer::ucFirst (name),
                      renderAttribute (name, after.get (name)))
           << "\n";
@@ -116,12 +115,12 @@ std::string taskDifferences (const Task& before, const Task& after)
         std::string to = taskIdentifiers (deps_after);
 
         out << "  - "
-            << format (STRING_FEEDBACK_DEP_MOD, from, to)
+            << format ("Dependencies will be changed from '{1}' to '{2}'.", from, to)
             << "\n";
       }
       else
         out << "  - "
-            << format (STRING_FEEDBACK_ATT_MOD,
+            << format ("{1} will be changed from '{2}' to '{3}'.",
                        Lexer::ucFirst (name),
                        renderAttribute (name, before.get (name)),
                        renderAttribute (name, after.get (name)))
@@ -131,9 +130,7 @@ std::string taskDifferences (const Task& before, const Task& after)
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << "  - "
-        << STRING_FEEDBACK_NOP
-        << "\n";
+    out << "  - No changes will be made.\n";
 
   return out.str ();
 }
@@ -166,24 +163,23 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-        out << format (STRING_FEEDBACK_DEP_DEL, taskIdentifiers (before.getDependencyTasks ()))
+        out << format ("Dependencies '{1}' deleted.", taskIdentifiers (before.getDependencyTasks ()))
             << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
     {
-      out << format (STRING_FEEDBACK_ANN_DEL, before.get (name))
-          << "\n";
+      out << format ("Annotation '{1}' deleted.\n", before.get (name));
     }
     else if (name == "start")
     {
-      out << format (STRING_FEEDBACK_ATT_DEL_DUR, Lexer::ucFirst (name),
+      out << format ("{1} deleted (duration: {2}).",
+                     Lexer::ucFirst (name),
                      Duration (current_timestamp - last_timestamp).format ())
           << "\n";
     }
     else
     {
-      out << format (STRING_FEEDBACK_ATT_DEL, Lexer::ucFirst (name))
-          << "\n";
+      out << format ("{1} deleted.\n", Lexer::ucFirst (name));
     }
   }
 
@@ -191,20 +187,19 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-      out << format (STRING_FEEDBACK_DEP_WAS_SET, taskIdentifiers (after.getDependencyTasks ()))
+      out << format ("Dependencies set to '{1}'.", taskIdentifiers (after.getDependencyTasks ()))
           << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
     {
-      out << format (STRING_FEEDBACK_ANN_ADD, after.get (name))
-          << "\n";
+      out << format ("Annotation of '{1}' added.\n", after.get (name));
     }
     else
     {
       if (name == "start")
           last_timestamp = current_timestamp;
 
-      out << format (STRING_FEEDBACK_ATT_WAS_SET,
+      out << format ("{1} set to '{2}'.",
                      Lexer::ucFirst (name),
                      renderAttribute (name, after.get (name), dateformat))
           << "\n";
@@ -223,16 +218,14 @@ std::string taskInfoDifferences (
         auto from = taskIdentifiers (before.getDependencyTasks ());
         auto to   = taskIdentifiers (after.getDependencyTasks ());
 
-        out << format (STRING_FEEDBACK_DEP_WAS_MOD, from, to)
-            << "\n";
+        out << format ("Dependencies changed from '{1}' to '{2}'.\n", from, to);
       }
       else if (name.substr (0, 11) == "annotation_")
       {
-        out << format (STRING_FEEDBACK_ANN_WAS_MOD, after.get (name))
-            << "\n";
+        out << format ("Annotation changed to '{1}'.\n", after.get (name));
       }
       else
-        out << format (STRING_FEEDBACK_ATT_WAS_MOD,
+        out << format ("{1} changed from '{2}' to '{3}'.",
                        Lexer::ucFirst (name),
                        renderAttribute (name, before.get (name), dateformat),
                        renderAttribute (name, after.get (name), dateformat))
@@ -241,8 +234,7 @@ std::string taskInfoDifferences (
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << STRING_FEEDBACK_WAS_NOP
-        << "\n";
+    out << "No changes made.\n";
 
   return out.str ();
 }
@@ -346,7 +338,7 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "YEAR"      ||
       tag == "YESTERDAY")
   {
-    throw format (STRING_FEEDBACK_TAG_VIRTUAL, tag);
+    throw format ("Virtual tags (including '{1}') are reserved and may not be added or removed.", tag);
   }
 }
 
@@ -358,10 +350,10 @@ void feedback_special_tags (const Task& task, const std::string& tag)
   {
     std::string msg;
     std::string explanation;
-         if (tag == "nocolor") msg = STRING_FEEDBACK_TAG_NOCOLOR;
-    else if (tag == "nonag")   msg = STRING_FEEDBACK_TAG_NONAG;
-    else if (tag == "nocal")   msg = STRING_FEEDBACK_TAG_NOCAL;
-    else if (tag == "next")    msg = STRING_FEEDBACK_TAG_NEXT;
+         if (tag == "nocolor") msg = "The 'nocolor' special tag will disable color rules for this task.";
+    else if (tag == "nonag")   msg = "The 'nonag' special tag will prevent nagging when this task is modified.";
+    else if (tag == "nocal")   msg = "The 'nocal' special tag will keep this task off the 'calendar' report.";
+    else if (tag == "next")    msg = "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report.";
 
     if (msg.length ())
     {
@@ -392,14 +384,14 @@ void feedback_unblocked (const Task& task)
       if (blocking.size () == 0)
       {
         if (i.id)
-          std::cout << format (STRING_FEEDBACK_UNBLOCKED,
+          std::cout << format ("Unblocked {1} '{2}'.",
                                i.id,
                                i.get ("description"))
                     << "\n";
         else
         {
           std::string uuid = i.get ("uuid");
-          std::cout << format (STRING_FEEDBACK_UNBLOCKED,
+          std::cout << format ("Unblocked {1} '{2}'.",
                                i.get ("uuid"),
                                i.get ("description"))
                     << "\n";
@@ -422,8 +414,8 @@ void feedback_backlog ()
         ++count;
 
     if (count)
-      context.footnote (format (count > 1 ? STRING_FEEDBACK_BACKLOG_N
-                                          : STRING_FEEDBACK_BACKLOG, count));
+      context.footnote (format (count > 1 ?  "There are {1} local changes.  Sync required."
+                                          : "There is {1} local change.  Sync required.", count));
   }
 }
 
@@ -492,7 +484,7 @@ std::string onExpiration (Task& task)
   std::stringstream msg;
 
   if (context.verbose ("affected"))
-    msg << format (STRING_FEEDBACK_EXPIRED,
+    msg << format ("Task {1} '{2}' expired and was deleted.",
                    task.identifier (true),
                    task.get ("description"));
 
