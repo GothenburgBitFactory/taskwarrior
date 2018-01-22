@@ -29,7 +29,6 @@
 
 #define STRING_COLUMN_LABEL_DATE     "Data"
 #define STRING_COLUMN_LABEL_DEFAULT  "Domyślne"
-#define STRING_COLUMN_LABEL_DUE      "Do"
 #define STRING_COLUMN_LABEL_END      "Koniec"
 #define STRING_COLUMN_LABEL_ENTERED  "Dodane"
 #define STRING_COLUMN_LABEL_LABEL    "Etykieta"

@@ -254,7 +254,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("due"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_DUE);
+      view.set (row, 0, "Due");
       view.set (row, 1, Datetime (task.get_date ("due")).toString (dateformat));
     }
 
