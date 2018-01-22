@@ -126,23 +126,6 @@ if (SOLARIS)
   endif (NSL_LIBRARY)
 endif (SOLARIS)
 
-# Set the package language.
-if (LANGUAGE)
-  set (PACKAGE_LANGUAGE ${LANGUAGE})
-else (LANGUAGE)
-  set (PACKAGE_LANGUAGE 1)
-endif (LANGUAGE)
-
-set (LANGUAGE_ENG_USA 1)
-set (LANGUAGE_ESP_ESP 2)
-set (LANGUAGE_DEU_DEU 3)
-set (LANGUAGE_FRA_FRA 4)
-set (LANGUAGE_ITA_ITA 5)
-set (LANGUAGE_POR_PRT 6)
-set (LANGUAGE_EPO_RUS 7)
-set (LANGUAGE_POL_POL 8)
-set (LANGUAGE_JPN_JPN 9)
-
 message ("-- Configuring cmake.h")
 configure_file (
   ${CMAKE_SOURCE_DIR}/cmake.h.in

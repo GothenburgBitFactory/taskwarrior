@@ -106,6 +106,7 @@
   tw.width, tw.height, tw.version.
 - The message telling you to sync now indicates how many local changes will be
   synced.
+- Removed compile-time language settings and I18N.
 
 ------ current release ---------------------------
 

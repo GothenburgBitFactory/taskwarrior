@@ -103,26 +103,6 @@ In order to build Taskwarrior without "sync" support, call cmake with the
 and proceed as described in "Basic Installation".
 
 
-Localizations
--------------
-
-To make use of a translation, specify a language number, as found in cmake.h:
-
-  $ cmake -DLANGUAGE=2 .
-
-Currently the defined languages are:
-
-  eng_USA 1
-  esp_ESP 2
-  deu_DEU 3
-  fra_FRA 4
-  ita_ITA 5
-  por_PRT 6
-  epo_RUS 7
-  pol_POL 8
-  jpn-JPN 9
-
-
 Uninstallation
 --------------
 
