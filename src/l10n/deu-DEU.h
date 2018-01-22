@@ -29,7 +29,5 @@
 
 #define STRING_FEEDBACK_NO_MATCH     "Keine treffer."
 #define STRING_FEEDBACK_NO_TASKS     "Keine Aufgaben."
-#define STRING_FEEDBACK_TASKS_PLURAL "({1} Aufgaben)"
-#define STRING_FEEDBACK_TASKS_SINGLE "(1 Aufgabe)"
 
 #endif

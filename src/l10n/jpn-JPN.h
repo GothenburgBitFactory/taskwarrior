@@ -29,7 +29,5 @@
 
 #define STRING_FEEDBACK_NO_MATCH     "一致したものはありません。"
 #define STRING_FEEDBACK_NO_TASKS     "タスクがない。"
-#define STRING_FEEDBACK_TASKS_PLURAL "({1} タスク)"
-#define STRING_FEEDBACK_TASKS_SINGLE "(1 タスク)"
 
 #endif
