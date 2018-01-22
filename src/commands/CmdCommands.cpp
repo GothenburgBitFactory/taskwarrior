@@ -33,7 +33,6 @@
 #include <Table.h>
 #include <Command.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -58,15 +57,15 @@ int CmdCommands::execute (std::string& output)
 {
   Table view;
   view.width (context.getWidth ());
-  view.add (STRING_COLUMN_LABEL_COMMAND);
-  view.add (STRING_COLUMN_LABEL_CATEGORY);
-  view.add (STRING_COLUMN_LABEL_RO,       false);
-  view.add (STRING_COLUMN_LABEL_SHOWS_ID, false);
-  view.add (STRING_COLUMN_LABEL_GC,       false);
-  view.add (STRING_COLUMN_LABEL_CONTEXT,  false);
-  view.add (STRING_COLUMN_LABEL_FILTER,   false);
-  view.add (STRING_COLUMN_LABEL_MODS,     false);
-  view.add (STRING_COLUMN_LABEL_MISC,     false);
+  view.add ("Command");
+  view.add ("Category");
+  view.add ("R/W",     false);
+  view.add ("ID",      false);
+  view.add ("GC",      false);
+  view.add ("Context", false);
+  view.add ("Filter",  false);
+  view.add ("Mods",    false);
+  view.add ("Misc",    false);
   view.add ("Description");
   view.leftMargin (context.config.getInteger ("indent.report"));
   view.extraPadding (context.config.getInteger ("row.padding"));

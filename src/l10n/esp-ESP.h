@@ -27,11 +27,8 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_CATEGORY "Categoría"
 #define STRING_COLUMN_LABEL_COLUMN   "Columnas"
-#define STRING_COLUMN_LABEL_COMMAND  "Comando"
 #define STRING_COLUMN_LABEL_COMPLETE "Completada"
-#define STRING_COLUMN_LABEL_CONTEXT  "Contexto"
 #define STRING_COLUMN_LABEL_COUNT    "Recuento"
 #define STRING_COLUMN_LABEL_DATE     "Fecha"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defecto"
@@ -39,24 +36,18 @@
 #define STRING_COLUMN_LABEL_END      "Fin"
 #define STRING_COLUMN_LABEL_ENTERED  "Entrada"
 #define STRING_COLUMN_LABEL_EXAMPLES "Ejemplo"
-#define STRING_COLUMN_LABEL_FILTER   "Filtro"
-#define STRING_COLUMN_LABEL_GC       "GC"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_LABEL    "Etiqueta"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
-#define STRING_COLUMN_LABEL_MISC     "Misc"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_MODIFY   "Modificable"
-#define STRING_COLUMN_LABEL_MODS     "Mods"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_NAME     "Nombre"
 #define STRING_COLUMN_LABEL_NOMODIFY "Solo lectura"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA huérfano"
 #define STRING_COLUMN_LABEL_PROJECT  "Proyecto"
 #define STRING_COLUMN_LABEL_RECUR    "Recur"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_RECUR_L  "Recurrencia"
-#define STRING_COLUMN_LABEL_RO       "R/W"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
 #define STRING_COLUMN_LABEL_SCHED    "Programada"
-#define STRING_COLUMN_LABEL_SHOWS_ID "ID"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_START    "Comienzo"
 #define STRING_COLUMN_LABEL_STAT     "Est"
 #define STRING_COLUMN_LABEL_STATUS   "Estatus"
