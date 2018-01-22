@@ -28,7 +28,6 @@
 #include <ColStart.h>
 #include <Context.h>
 #include <utf8.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -36,7 +35,7 @@ extern Context context;
 ColumnStart::ColumnStart ()
 {
   _name  = "start";
-  _label = STRING_COLUMN_LABEL_STARTED;
+  _label = "Started";
 
   _styles.push_back ("active");
   _examples.push_back (context.config.get ("active.indicator"));
@@ -49,8 +48,8 @@ void ColumnStart::setStyle (const std::string& value)
 {
   Column::setStyle (value);
 
-  if (_style == "active" && _label == STRING_COLUMN_LABEL_STARTED)
-    _label = STRING_COLUMN_LABEL_ACTIVE;
+  if (_style == "active" && _label == "Started")
+    _label = "A";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

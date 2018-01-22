@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_ACTIVE   "A"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_ADDED    "Adicionada"
 #define STRING_COLUMN_LABEL_AGE      "Idade"
 #define STRING_COLUMN_LABEL_CATEGORY "Category"
@@ -61,7 +60,6 @@
 #define STRING_COLUMN_LABEL_SCHED    "Agendado"
 #define STRING_COLUMN_LABEL_SHOWS_ID "ID"
 #define STRING_COLUMN_LABEL_START    "Início"
-#define STRING_COLUMN_LABEL_STARTED  "Iniciada"
 #define STRING_COLUMN_LABEL_STAT     "Es"
 #define STRING_COLUMN_LABEL_STATUS   "Estado"
 #define STRING_COLUMN_LABEL_STAT_C   "C"  // |por-PRT|==|eng-USA|
