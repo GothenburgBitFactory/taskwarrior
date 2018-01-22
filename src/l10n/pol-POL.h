@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_DEFAULT  "Domyślne"
 #define STRING_COLUMN_LABEL_END      "Koniec"
 #define STRING_COLUMN_LABEL_ENTERED  "Dodane"
 #define STRING_COLUMN_LABEL_LABEL    "Etykieta"
