@@ -28,6 +28,5 @@
 #define INCLUDED_STRINGS
 
 #define STRING_FEEDBACK_NO_MATCH     "No matches."
-#define STRING_FEEDBACK_NO_TASKS     "No tasks."
 
 #endif

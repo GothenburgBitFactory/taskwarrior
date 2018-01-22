@@ -28,6 +28,5 @@
 #define INCLUDED_STRINGS
 
 #define STRING_FEEDBACK_NO_MATCH     "一致したものはありません。"
-#define STRING_FEEDBACK_NO_TASKS     "タスクがない。"
 
 #endif
