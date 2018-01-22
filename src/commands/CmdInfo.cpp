@@ -37,7 +37,6 @@
 #include <shared.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -75,7 +74,7 @@ int CmdInfo::execute (std::string& output)
 
   if (! filtered.size ())
   {
-    context.footnote (STRING_FEEDBACK_NO_MATCH);
+    context.footnote ("No matches.");
     rc = 1;
   }
 
@@ -105,8 +104,8 @@ int CmdInfo::execute (std::string& output)
       view.obfuscate ();
     if (context.color ())
       view.forceColor ();
-    view.add (STRING_COLUMN_LABEL_NAME);
-    view.add (STRING_COLUMN_LABEL_VALUE);
+    view.add ("Name");
+    view.add ("Value");
     setHeaderUnderline (view);
 
     Datetime now;
@@ -137,14 +136,14 @@ int CmdInfo::execute (std::string& output)
 
     // status
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_STATUS);
+    view.set (row, 0, "Status");
     view.set (row, 1, status);
 
     // project
     if (task.has ("project"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_PROJECT);
+      view.set (row, 0, "Project");
       view.set (row, 1, task.get ("project"));
     }
 
@@ -182,7 +181,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("recur"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_RECUR_L);
+      view.set (row, 0, "Recurrence");
       view.set (row, 1, task.get ("recur"));
     }
 
@@ -212,7 +211,7 @@ int CmdInfo::execute (std::string& output)
 
     // entry
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
+    view.set (row, 0, "Entered");
     Datetime dt (task.get_date ("entry"));
     std::string entry = dt.toString (dateformat);
 
@@ -230,7 +229,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("wait"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_WAITING);
+      view.set (row, 0, "Waiting until");
       view.set (row, 1, Datetime (task.get_date ("wait")).toString (dateformat));
     }
 
@@ -246,7 +245,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("start"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_START);
+      view.set (row, 0, "Start");
       view.set (row, 1, Datetime (task.get_date ("start")).toString (dateformat));
     }
 
@@ -292,7 +291,7 @@ int CmdInfo::execute (std::string& output)
       auto allTags = join (" ", tags);
 
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_TAGS);
+      view.set (row, 0, "Tags");
       view.set (row, 1, allTags);
     }
 
@@ -339,13 +338,13 @@ int CmdInfo::execute (std::string& output)
 
     // uuid
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_UUID);
+    view.set (row, 0, "UUID");
     auto uuid = task.get ("uuid");
     view.set (row, 1, uuid);
 
     // Task::urgency
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
+    view.set (row, 0, "Urgency");
     view.set (row, 1, format (task.urgency (), 4, 4));
 
     // Show any UDAs

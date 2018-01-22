@@ -35,7 +35,7 @@ ColumnStatus::ColumnStatus ()
 {
   _name     = "status";
   _style    = "long";
-  _label    = STRING_COLUMN_LABEL_STATUS;
+  _label    = "Status";
   _styles   = {"long", "short"};
   _examples = {STRING_COLUMN_LABEL_STAT_PE,
                STRING_COLUMN_LABEL_STAT_P};
@@ -48,7 +48,7 @@ void ColumnStatus::setStyle (const std::string& value)
 {
   Column::setStyle (value);
 
-  if (_style == "short" && _label == STRING_COLUMN_LABEL_STATUS)
+  if (_style == "short" && _label == "Status")
     _label = STRING_COLUMN_LABEL_STAT;
 }
 

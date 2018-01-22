@@ -45,7 +45,7 @@ ColumnTags::ColumnTags ()
 {
   _name      = "tags";
   _style     = "list";
-  _label     = STRING_COLUMN_LABEL_TAGS;
+  _label     = "Tags";
   _styles    = {"list", "indicator", "count"};
   _examples  = {"home @chore next",
                 context.config.get ("tag.indicator"),
@@ -61,12 +61,12 @@ void ColumnTags::setStyle (const std::string& value)
   Column::setStyle (value);
 
   if (_style == "indicator" &&
-      _label == STRING_COLUMN_LABEL_TAGS)
+      _label == "Tags")
     _label = _label.substr (0, context.config.get ("tag.indicator").length ());
 
   else if (_style == "count" &&
-            _label == STRING_COLUMN_LABEL_TAGS)
-    _label = STRING_COLUMN_LABEL_TAG;
+            _label == "Tags")
+    _label = "Tag";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
