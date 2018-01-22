@@ -26,14 +26,13 @@
 
 #include <cmake.h>
 #include <ColEntry.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnEntry::ColumnEntry ()
 {
   _name       = "entry";
   _modifiable = true;
-  _label      = STRING_COLUMN_LABEL_ADDED;
+  _label      = "Added";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,8 +43,8 @@ void ColumnEntry::setStyle (const std::string& value)
   Column::setStyle (value);
 
   if (_style == "age" &&
-      _label == STRING_COLUMN_LABEL_ADDED)
-    _label = STRING_COLUMN_LABEL_AGE;
+      _label == "Added")
+    _label = "Age";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

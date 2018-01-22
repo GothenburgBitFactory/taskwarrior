@@ -27,8 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_ADDED    "Kreita"
-#define STRING_COLUMN_LABEL_AGE      "Aĝo"
 #define STRING_COLUMN_LABEL_CATEGORY "Category"
 #define STRING_COLUMN_LABEL_COLUMN   "Kolumnoj"
 #define STRING_COLUMN_LABEL_COMMAND  "Command"
