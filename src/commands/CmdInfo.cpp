@@ -507,7 +507,7 @@ int CmdInfo::execute (std::string& output)
       journal.forceColor ();
 
     journal.width (context.getWidth ());
-    journal.add (STRING_COLUMN_LABEL_DATE);
+    journal.add ("Date");
     journal.add ("Modification");
 
     if (context.config.getBoolean ("journal.info") &&
