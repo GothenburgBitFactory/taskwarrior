@@ -50,7 +50,6 @@
 #include <format.h>
 #include <util.h>
 
-#include <i18n.h>
 #ifdef PRODUCT_TASKWARRIOR
 #include <main.h>
 
@@ -58,7 +57,6 @@
 #include <Variant.h>
 #include <Filter.h>
 
-#define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
@@ -763,10 +761,10 @@ void Task::parseJSON (const json::object* root_obj)
           json::string* what = (json::string*)annotation->_data["description"];
 
           if (! when)
-            throw format (STRING_TASK_NO_ENTRY, root_obj->dump ());
+            throw format ("Annotation is missing an entry date: {1}", root_obj-> dump ());
 
           if (! what)
-            throw format (STRING_TASK_NO_DESC, root_obj->dump ());
+            throw format ("Annotation is missing a description: {1}", root_obj->dump ());
 
           std::string name = "annotation_" + Datetime (when->_data).toEpochString ();
           annos.insert (std::make_pair (name, json::decode (what->_data)));
@@ -802,13 +800,13 @@ void Task::parseLegacy (const std::string& line)
   switch (determineVersion (line))
   {
   // File format version 1, from 2006-11-27 - 2007-12-31, v0.x+ - v0.9.3
-  case 1: throw std::string (STRING_TASK_NO_FF1);
+  case 1: throw std::string ("Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007.");
 
   // File format version 2, from 2008-1-1 - 2009-3-23, v0.9.3 - v1.5.0
-  case 2: throw std::string (STRING_TASK_NO_FF2);
+  case 2: throw std::string ("Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009.");
 
   // File format version 3, from 2009-3-23 - 2009-05-16, v1.6.0 - v1.7.1
-  case 3: throw std::string (STRING_TASK_NO_FF3);
+  case 3: throw std::string ("Taskwarrior no longer supports file format 3, originally used between 23 March 2009 and 16 May 2009.");
 
   // File format version 4, from 2009-05-16 - today, v1.7.1+
   case 4:
@@ -822,7 +820,7 @@ void Task::parseLegacy (const std::string& line)
             << '\'';
     context.debug (message.str ());
 #endif
-    throw std::string (STRING_TASK_PARSE_UNREC_FF);
+    throw std::string ("Unrecognized Taskwarrior file format or blank line in data.");
     break;
   }
 
@@ -1128,12 +1126,12 @@ void Task::addDependency (int depid)
   // Check that id is resolvable.
   std::string uuid = context.tdb2.pending.uuid (depid);
   if (uuid == "")
-    throw format (STRING_TASK_DEPEND_MISS_CREA, depid);
+    throw format ("Could not create a dependency on task {1} - not found.", depid);
 
   std::string depends = get ("depends");
   if (depends.find (uuid) != std::string::npos)
   {
-    context.footnote (format (STRING_TASK_DEPEND_DUP, id, depid));
+    context.footnote (format ("Task {1} already depends on task {2}.", id, depid));
     return;
   }
 
@@ -1145,7 +1143,7 @@ void Task::addDependency (int depid)
 void Task::addDependency (const std::string& uuid)
 {
   if (uuid == get ("uuid"))
-    throw std::string (STRING_TASK_DEPEND_ITSELF);
+    throw std::string ("A task cannot be dependent on itself.");
 
   // Store the dependency.
   std::string depends = get ("depends");
@@ -1157,7 +1155,7 @@ void Task::addDependency (const std::string& uuid)
     else
     {
 #ifdef PRODUCT_TASKWARRIOR
-      context.footnote (format (STRING_TASK_DEPEND_DUP, get ("uuid"), uuid));
+      context.footnote (format ("Task {1} already depends on task {2}.", get ("uuid"), uuid));
 #endif
       return;
     }
@@ -1168,7 +1166,7 @@ void Task::addDependency (const std::string& uuid)
   // Prevent circular dependencies.
 #ifdef PRODUCT_TASKWARRIOR
   if (dependencyIsCircular (*this))
-    throw std::string (STRING_TASK_DEPEND_CIRCULAR);
+    throw std::string ("Circular dependency detected and disallowed.");
 #endif
 
   recalc_urgency = true;
@@ -1188,7 +1186,7 @@ void Task::removeDependency (const std::string& uuid)
     recalc_urgency = true;
   }
   else
-    throw format (STRING_TASK_DEPEND_MISS_DEL, uuid);
+    throw format ("Could not delete a dependency on task {1} - not found.", uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1199,7 +1197,7 @@ void Task::removeDependency (int id)
   if (uuid != "" && depends.find (uuid) != std::string::npos)
     removeDependency (uuid);
   else
-    throw format (STRING_TASK_DEPEND_MISS_DEL, id);
+    throw format ("Could not delete a dependency on task {1} - not found.", id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1447,7 +1445,7 @@ void Task::substitute (
         done = true;
 
       if (++counter > APPROACHING_INFINITY)
-        throw format (STRING_INFINITE_LOOP, APPROACHING_INFINITY);
+        throw format ("Terminated substitution because more than {1} changes were made - infinite loop protection.", APPROACHING_INFINITY);
     }
 
     if (!done)
@@ -1470,7 +1468,7 @@ void Task::substitute (
             done = true;
 
           if (++counter > APPROACHING_INFINITY)
-            throw format (STRING_INFINITE_LOOP, APPROACHING_INFINITY);
+            throw format ("Terminated substitution because more than {1} changes were made - infinite loop protection.", APPROACHING_INFINITY);
         }
       }
     }
@@ -1656,11 +1654,11 @@ void Task::validate (bool applyDefault /* = true */)
   if (! has ("description"))
     throw std::string ("A task must have a description.");
   else if (get ("description") == "")
-    throw std::string (STRING_TASK_VALID_BLANK);
+    throw std::string ("Cannot add a task that is blank.");
 
   // Cannot have a recur frequency with no due date - when would it recur?
   if (has ("recur") && (! has ("due") || get ("due") == ""))
-    throw std::string (STRING_TASK_VALID_REC_DUE);
+    throw std::string ("A recurring task must also have a 'due' date.");
 
   // Recur durations must be valid.
   if (has ("recur"))
@@ -1689,7 +1687,7 @@ void Task::validate_before (const std::string& left, const std::string& right)
 
     // if date is zero, then it is being removed (e.g. "due: wait:1day")
     if (date_left > date_right && date_right.toEpoch () != 0)
-      context.footnote (format (STRING_TASK_VALID_BEFORE, left, right));
+      context.footnote (format ("Warning: You have specified that the '{1}' date is after the '{2}' date.", left, right));
   }
 #endif
 }
@@ -2122,7 +2120,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           }
 
           else
-            throw format (STRING_TASK_INVALID_COL_TYPE, column->type (), name);
+            throw format ("Unrecognized column type '{1}' for column '{2}'", column->type (), name);
         }
       }
 
