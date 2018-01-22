@@ -92,7 +92,7 @@ int CmdTags::execute (std::string& output)
     Table view;
     view.width (context.getWidth ());
     view.add (STRING_COLUMN_LABEL_TAG);
-    view.add (STRING_COLUMN_LABEL_COUNT, false);
+    view.add ("Count", false);
     setHeaderUnderline (view);
 
     Color bold;

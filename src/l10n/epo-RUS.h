@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COUNT    "Nombro"
 #define STRING_COLUMN_LABEL_DATE     "Dato"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defaŭlto"
 #define STRING_COLUMN_LABEL_DUE      "Datlimo"

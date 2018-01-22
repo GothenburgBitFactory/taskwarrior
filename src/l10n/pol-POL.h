@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COUNT    "Ile"
 #define STRING_COLUMN_LABEL_DATE     "Data"
 #define STRING_COLUMN_LABEL_DEFAULT  "Domyślne"
 #define STRING_COLUMN_LABEL_DUE      "Do"

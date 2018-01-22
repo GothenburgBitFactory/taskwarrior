@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COUNT    "Anzahl"
 #define STRING_COLUMN_LABEL_DATE     "Datum"
 #define STRING_COLUMN_LABEL_DEFAULT  "Standard"
 #define STRING_COLUMN_LABEL_DUE      "Fällig"
