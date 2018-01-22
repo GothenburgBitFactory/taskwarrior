@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_ACTIVE   "A"
 #define STRING_COLUMN_LABEL_ADDED    "Hinzugefügt"
 #define STRING_COLUMN_LABEL_AGE      "Alter"
 #define STRING_COLUMN_LABEL_CATEGORY "Category"
@@ -60,7 +59,6 @@
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
 #define STRING_COLUMN_LABEL_SCHED    "Geplant"
 #define STRING_COLUMN_LABEL_SHOWS_ID "ID"
-#define STRING_COLUMN_LABEL_STARTED  "Begonnen"
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STATUS   "Status"
 #define STRING_COLUMN_LABEL_STAT_C   "E"
