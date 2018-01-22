@@ -40,7 +40,6 @@
 #define STRING_COLUMN_LABEL_RECUR    "Recur"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_RECUR_L  "Recurrencia"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
-#define STRING_COLUMN_LABEL_SCHED    "Programada"
 #define STRING_COLUMN_LABEL_START    "Comienzo"
 #define STRING_COLUMN_LABEL_STAT     "Est"
 #define STRING_COLUMN_LABEL_STATUS   "Estatus"

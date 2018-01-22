@@ -40,7 +40,6 @@
 #define STRING_COLUMN_LABEL_RECUR    "Recur"
 #define STRING_COLUMN_LABEL_RECUR_L  "Recurrence"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
-#define STRING_COLUMN_LABEL_SCHED    "Scheduled"
 #define STRING_COLUMN_LABEL_START    "Start"
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STATUS   "Status"

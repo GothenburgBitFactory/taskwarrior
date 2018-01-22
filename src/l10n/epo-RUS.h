@@ -40,7 +40,6 @@
 #define STRING_COLUMN_LABEL_RECUR    "Reokazas"
 #define STRING_COLUMN_LABEL_RECUR_L  "Reokazas ĉiu"
 #define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
-#define STRING_COLUMN_LABEL_SCHED    "Fiksa"
 #define STRING_COLUMN_LABEL_START    "Eko"
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STATUS   "Stato"
