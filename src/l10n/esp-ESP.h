@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COUNT    "Recuento"
 #define STRING_COLUMN_LABEL_DATE     "Fecha"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defecto"
 #define STRING_COLUMN_LABEL_DUE      "Vencimiento"

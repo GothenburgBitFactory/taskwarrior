@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COUNT    "Contagem"
 #define STRING_COLUMN_LABEL_DATE     "Data"
 #define STRING_COLUMN_LABEL_DEFAULT  "Por omissão"
 #define STRING_COLUMN_LABEL_DUE      "Vence"
