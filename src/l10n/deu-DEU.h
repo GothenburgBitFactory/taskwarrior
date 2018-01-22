@@ -27,9 +27,7 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_LABEL    "Beschreibung"
 #define STRING_COLUMN_LABEL_MOD      "Geändert"
-#define STRING_COLUMN_LABEL_ORPHAN   "Verwaiste UDA"
 #define STRING_COLUMN_LABEL_RECUR    "Wiederh."
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STAT_C   "E"
@@ -43,13 +41,10 @@
 #define STRING_COLUMN_LABEL_STAT_W   "A"
 #define STRING_COLUMN_LABEL_STAT_WA  "Wartet"
 #define STRING_COLUMN_LABEL_TAG      "Schlagwort"
-#define STRING_COLUMN_LABEL_UDA      "Name"
-#define STRING_COLUMN_LABEL_UDACOUNT "Nutzungshäufigkeit"
 #define STRING_COLUMN_LABEL_UNTIL    "Bis"
-#define STRING_COLUMN_LABEL_URGENCY  "Dringlichkeit"
-#define STRING_COLUMN_LABEL_UUID     "UUID"
-#define STRING_COLUMN_LABEL_VALUE    "Wert"
-#define STRING_COLUMN_LABEL_VALUES   "Erlaubte Werte"
+#define string_column_label_urgency  "dringlichkeit"
+#define string_column_label_uuid     "uuid"
+#define string_column_label_value    "wert"
 #define STRING_FEEDBACK_ANN_ADD      "Kommentar von '{1}' hinzugefügt."
 #define STRING_FEEDBACK_ANN_DEL      "Kommentar '{1}' gelöscht."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Kommentar zu '{1}' geändert."

@@ -27,9 +27,7 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_LABEL    "Etykieta"
 #define STRING_COLUMN_LABEL_MOD      "Zmienione"
-#define STRING_COLUMN_LABEL_ORPHAN   "Osierocone UDA"
 #define STRING_COLUMN_LABEL_RECUR    "Period"
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STAT_C   "C"
@@ -43,13 +41,10 @@
 #define STRING_COLUMN_LABEL_STAT_W   "W"
 #define STRING_COLUMN_LABEL_STAT_WA  "Zawieszone"
 #define STRING_COLUMN_LABEL_TAG      "Tag"
-#define STRING_COLUMN_LABEL_UDA      "Nazwa"
-#define STRING_COLUMN_LABEL_UDACOUNT "Licznik Użycia"
 #define STRING_COLUMN_LABEL_UNTIL    "Do"
 #define STRING_COLUMN_LABEL_URGENCY  "Pilność"
 #define STRING_COLUMN_LABEL_UUID     "UUID"
 #define STRING_COLUMN_LABEL_VALUE    "Wartość"
-#define STRING_COLUMN_LABEL_VALUES   "Dozwolone Wartości"
 #define STRING_FEEDBACK_ANN_ADD      "Notatka '{1}' dodana."
 #define STRING_FEEDBACK_ANN_DEL      "Notatka '{1}' usunięta."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Notatka zmieniona na '{1}'."

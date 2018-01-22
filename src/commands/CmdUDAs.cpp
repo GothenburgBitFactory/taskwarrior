@@ -35,7 +35,6 @@
 #include <format.h>
 #include <shared.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -86,12 +85,12 @@ int CmdUDAs::execute (std::string& output)
     // possible default value, and finally the usage count.
     Table table;
     table.width (context.getWidth ());
-    table.add (STRING_COLUMN_LABEL_UDA);
+    table.add ("Name");
     table.add ("Type");
-    table.add (STRING_COLUMN_LABEL_LABEL);
-    table.add (STRING_COLUMN_LABEL_VALUES);
+    table.add ("Label");
+    table.add ("Allowed Values");
     table.add ("Default");
-    table.add (STRING_COLUMN_LABEL_UDACOUNT);
+    table.add ("Usage Count");
     setHeaderUnderline (table);
 
     for (auto& uda : udas)
@@ -147,8 +146,8 @@ int CmdUDAs::execute (std::string& output)
     // Display the orphans and their counts.
     Table orphanTable;
     orphanTable.width (context.getWidth ());
-    orphanTable.add (STRING_COLUMN_LABEL_ORPHAN);
-    orphanTable.add (STRING_COLUMN_LABEL_UDACOUNT);
+    orphanTable.add ("Orphan UDA");
+    orphanTable.add ("Usage Count");
     setHeaderUnderline (orphanTable);
 
     for (auto& o : orphans)
