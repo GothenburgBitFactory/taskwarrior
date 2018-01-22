@@ -27,14 +27,13 @@
 #include <cmake.h>
 #include <ColUrgency.h>
 #include <format.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUrgency::ColumnUrgency ()
 {
   _name       = "urgency";
   _style      = "real";
-  _label      = STRING_COLUMN_LABEL_URGENCY;
+  _label      = "Urgency";
   _modifiable = false;
   _styles     = {"real", "integer"};
   _examples   = {"4.6", "4"};

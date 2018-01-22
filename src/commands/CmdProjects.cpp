@@ -33,7 +33,6 @@
 #include <Table.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -108,7 +107,7 @@ int CmdProjects::execute (std::string& output)
     // Render a list of project names from the map.
     Table view;
     view.width (context.getWidth ());
-    view.add (STRING_COLUMN_LABEL_PROJECT);
+    view.add ("Project");
     view.add ("Tasks", false);
     setHeaderUnderline (view);
 

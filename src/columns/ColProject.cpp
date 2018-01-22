@@ -35,7 +35,6 @@
 #include <format.h>
 #include <utf8.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 extern Task& contextTask;
@@ -45,7 +44,7 @@ ColumnProject::ColumnProject ()
 {
   _name      = "project";
   _style     = "full";
-  _label     = STRING_COLUMN_LABEL_PROJECT;
+  _label     = "Project";
   _styles    = {"full", "parent", "indented"};
   _examples  = {"home.garden",
                 "home",

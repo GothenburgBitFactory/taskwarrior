@@ -27,18 +27,11 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_ENTERED  "Criada"
 #define STRING_COLUMN_LABEL_LABEL    "Rótulo"
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
-#define STRING_COLUMN_LABEL_NAME     "Nome"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA Orfão"
-#define STRING_COLUMN_LABEL_PROJECT  "Projeto"
 #define STRING_COLUMN_LABEL_RECUR    "Period"
-#define STRING_COLUMN_LABEL_RECUR_L  "Periodicidade"
-#define STRING_COLUMN_LABEL_RTYPE    "Recurrence type"
-#define STRING_COLUMN_LABEL_START    "Início"
 #define STRING_COLUMN_LABEL_STAT     "Es"
-#define STRING_COLUMN_LABEL_STATUS   "Estado"
 #define STRING_COLUMN_LABEL_STAT_C   "C"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_STAT_CO  "Concluídas"
 #define STRING_COLUMN_LABEL_STAT_D   "E"
@@ -50,15 +43,10 @@
 #define STRING_COLUMN_LABEL_STAT_W   "A"
 #define STRING_COLUMN_LABEL_STAT_WA  "Adiadas"
 #define STRING_COLUMN_LABEL_TAG      "Marca"
-#define STRING_COLUMN_LABEL_TAGS     "Marcas"
 #define STRING_COLUMN_LABEL_UDA      "Nome"
 #define STRING_COLUMN_LABEL_UDACOUNT "Contagem de Uso"
 #define STRING_COLUMN_LABEL_UNTIL    "Até"
-#define STRING_COLUMN_LABEL_URGENCY  "Urgência"
-#define STRING_COLUMN_LABEL_UUID     "UUID"  // |por-PRT|==|eng-USA|
-#define STRING_COLUMN_LABEL_VALUE    "Valor"
 #define STRING_COLUMN_LABEL_VALUES   "Valores Permitidos"
-#define STRING_COLUMN_LABEL_WAITING  "Adiada até"
 #define STRING_FEEDBACK_ANN_ADD      "Adicionada anotação de '{1}'."
 #define STRING_FEEDBACK_ANN_DEL      "Eliminada anotação '{1}'."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Anotação alterada para '{1}'."
