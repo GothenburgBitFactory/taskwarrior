@@ -230,7 +230,7 @@ int CmdCustom::execute (std::string& output)
   }
   else
   {
-    context.footnote (STRING_FEEDBACK_NO_MATCH);
+    context.footnote ("No matches.");
     rc = 1;
   }
 

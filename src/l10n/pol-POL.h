@@ -27,6 +27,5 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_FEEDBACK_NO_MATCH     "Nie znaleziono pasujących."
 
 #endif
