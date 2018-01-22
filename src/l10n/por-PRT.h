@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COLUMN   "Colunas"
 #define STRING_COLUMN_LABEL_COMPLETE "Concluída"
 #define STRING_COLUMN_LABEL_COUNT    "Contagem"
 #define STRING_COLUMN_LABEL_DATE     "Data"
@@ -35,13 +34,10 @@
 #define STRING_COLUMN_LABEL_DUE      "Vence"
 #define STRING_COLUMN_LABEL_END      "Fim"
 #define STRING_COLUMN_LABEL_ENTERED  "Criada"
-#define STRING_COLUMN_LABEL_EXAMPLES "Exemplo"
 #define STRING_COLUMN_LABEL_LABEL    "Rótulo"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
-#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
 #define STRING_COLUMN_LABEL_NAME     "Nome"
-#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA Orfão"
 #define STRING_COLUMN_LABEL_PROJECT  "Projeto"
 #define STRING_COLUMN_LABEL_RECUR    "Period"
@@ -61,10 +57,8 @@
 #define STRING_COLUMN_LABEL_STAT_RE  "Recorrentes"
 #define STRING_COLUMN_LABEL_STAT_W   "A"
 #define STRING_COLUMN_LABEL_STAT_WA  "Adiadas"
-#define STRING_COLUMN_LABEL_STYLES   "Formatos Suportados"
 #define STRING_COLUMN_LABEL_TAG      "Marca"
 #define STRING_COLUMN_LABEL_TAGS     "Marcas"
-#define STRING_COLUMN_LABEL_TYPE     "Tipo"
 #define STRING_COLUMN_LABEL_UDA      "Nome"
 #define STRING_COLUMN_LABEL_UDACOUNT "Contagem de Uso"
 #define STRING_COLUMN_LABEL_UNTIL    "Até"

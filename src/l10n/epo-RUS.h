@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COLUMN   "Kolumnoj"
 #define STRING_COLUMN_LABEL_COMPLETE "Finita"
 #define STRING_COLUMN_LABEL_COUNT    "Nombro"
 #define STRING_COLUMN_LABEL_DATE     "Dato"
@@ -35,13 +34,10 @@
 #define STRING_COLUMN_LABEL_DUE      "Datlimo"
 #define STRING_COLUMN_LABEL_END      "Fino"
 #define STRING_COLUMN_LABEL_ENTERED  "Kreita"
-#define STRING_COLUMN_LABEL_EXAMPLES "Ekzemplo"
 #define STRING_COLUMN_LABEL_LABEL    "Rubriko"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Modifo"
-#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
 #define STRING_COLUMN_LABEL_NAME     "Nomo"
-#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_ORPHAN   "Orfa UDA"
 #define STRING_COLUMN_LABEL_PROJECT  "Projekto"
 #define STRING_COLUMN_LABEL_RECUR    "Reokazas"
@@ -61,10 +57,8 @@
 #define STRING_COLUMN_LABEL_STAT_RE  "Reokazanta"
 #define STRING_COLUMN_LABEL_STAT_W   "At"
 #define STRING_COLUMN_LABEL_STAT_WA  "Atendanta"
-#define STRING_COLUMN_LABEL_STYLES   "Formaĝoj Subtenataj"
 #define STRING_COLUMN_LABEL_TAG      "Etik"
 #define STRING_COLUMN_LABEL_TAGS     "Etikedoj"
-#define STRING_COLUMN_LABEL_TYPE     "Tipo"
 #define STRING_COLUMN_LABEL_UDA      "Nomo"
 #define STRING_COLUMN_LABEL_UDACOUNT "Nombro de uzoj"
 #define STRING_COLUMN_LABEL_UNTIL    "Ĝis"
