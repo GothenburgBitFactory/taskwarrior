@@ -20,7 +20,6 @@ add_library (task CLI2.cpp CLI2.h
                   ViewTask.cpp ViewTask.h
                   dependency.cpp
                   feedback.cpp
-                  i18n.h
                   legacy.cpp
                   nag.cpp
                   recur.cpp

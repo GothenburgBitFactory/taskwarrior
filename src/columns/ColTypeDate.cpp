@@ -33,7 +33,6 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <format.h>
-#include <i18n.h>
 
 extern Context context;
 extern Task& contextTask;
