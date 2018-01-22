@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_UNTIL    "Do"
 #define STRING_FEEDBACK_ANN_ADD      "Notatka '{1}' dodana."
 #define STRING_FEEDBACK_ANN_DEL      "Notatka '{1}' usunięta."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Notatka zmieniona na '{1}'."
