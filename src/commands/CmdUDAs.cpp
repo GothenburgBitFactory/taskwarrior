@@ -90,7 +90,7 @@ int CmdUDAs::execute (std::string& output)
     table.add ("Type");
     table.add (STRING_COLUMN_LABEL_LABEL);
     table.add (STRING_COLUMN_LABEL_VALUES);
-    table.add (STRING_COLUMN_LABEL_DEFAULT);
+    table.add ("Default");
     table.add (STRING_COLUMN_LABEL_UDACOUNT);
     setHeaderUnderline (table);
 
