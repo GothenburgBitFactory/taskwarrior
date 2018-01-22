@@ -35,7 +35,6 @@
 #include <shared.h>
 #include <format.h>
 #include <utf8.h>
-#include <i18n.h>
 
 extern Context context;
 extern Task& contextTask;
@@ -45,7 +44,7 @@ ColumnRecur::ColumnRecur ()
 {
   _name       = "recur";
   _style      = "duration";
-  _label      = STRING_COLUMN_LABEL_RECUR;
+  _label      = "Recur";
   _modifiable = true;
   _styles     = {"duration", "indicator"};
   _examples   = {"weekly", context.config.get ("recurrence.indicator")};
@@ -58,7 +57,7 @@ void ColumnRecur::setStyle (const std::string& value)
 {
   Column::setStyle (value);
 
-  if (_style == "indicator" && _label == STRING_COLUMN_LABEL_RECUR)
+  if (_style == "indicator" && _label == "Recur")
     _label = _label.substr (0, context.config.get ("recurrence.indicator").length ());
 }
 

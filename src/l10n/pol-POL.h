@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_RECUR    "Period"
 #define STRING_COLUMN_LABEL_TAG      "Tag"
 #define STRING_COLUMN_LABEL_UNTIL    "Do"
 #define STRING_FEEDBACK_ANN_ADD      "Notatka '{1}' dodana."

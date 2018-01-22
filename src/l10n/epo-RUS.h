@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_RECUR    "Recur"
 #define STRING_COLUMN_LABEL_TAG      "Etik"
 #define STRING_COLUMN_LABEL_UNTIL    "Ĝis"
 #define STRING_FEEDBACK_ANN_ADD      "Aldonis komenton '{1}'."
