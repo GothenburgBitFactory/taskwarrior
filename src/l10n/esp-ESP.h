@@ -27,10 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_EXAMPLES_IND   "  casa.jardín"
-#define STRING_COLUMN_EXAMPLES_PAR   "casa"
-#define STRING_COLUMN_EXAMPLES_PROJ  "casa.jardín"
-#define STRING_COLUMN_EXAMPLES_TAGS  "casa @tarea"
 #define STRING_COLUMN_LABEL_ACTIVE   "A"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_ADDED    "Añadida"
 #define STRING_COLUMN_LABEL_AGE      "Edad"
