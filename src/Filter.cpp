@@ -32,7 +32,6 @@
 #include <DOM.h>
 #include <Eval.h>
 #include <Variant.h>
-#include <i18n.h>
 #include <format.h>
 #include <shared.h>
 
@@ -278,15 +277,15 @@ void Filter::safety () const
         ! filter)
     {
       if (! context.config.getBoolean ("allow.empty.filter"))
-         throw std::string (STRING_TASK_SAFETY_ALLOW);
+         throw std::string ("You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken.");
 
       // If user is willing to be asked, this can be avoided.
       if (context.config.getBoolean ("confirmation") &&
-          confirm (STRING_TASK_SAFETY_VALVE))
+          confirm ("This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"))
         return;
 
       // Sound the alarm.
-      throw std::string (STRING_TASK_SAFETY_FAIL);
+      throw std::string ("Command prevented from running.");
     }
   }
 }

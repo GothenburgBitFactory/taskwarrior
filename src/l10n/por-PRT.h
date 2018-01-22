@@ -31,8 +31,5 @@
 #define STRING_FEEDBACK_NO_TASKS     "Nenhuma tarefa."
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} tarefas)"
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 tarefa)"
-#define STRING_TASK_SAFETY_ALLOW     "Não especificou um filtro e com o valor de 'allow.empty.filter', nenhuma ação foi tomada."
-#define STRING_TASK_SAFETY_FAIL      "Execução do comando abortada."
-#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 
 #endif

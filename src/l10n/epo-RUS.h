@@ -31,8 +31,5 @@
 #define STRING_FEEDBACK_NO_TASKS     "Nenia tasko."
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} taskoj)"
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 tasko)"
-#define STRING_TASK_SAFETY_ALLOW     "Vi ne specifis filtrilon. Laŭ la valoro 'allow.empty.filter', ne faros nenion."
-#define STRING_TASK_SAFETY_FAIL      "Antaŭmalebligis komandon."
-#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 
 #endif
