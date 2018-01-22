@@ -28,6 +28,5 @@
 #define INCLUDED_STRINGS
 
 #define STRING_FEEDBACK_NO_MATCH     "Nie znaleziono pasujących."
-#define STRING_FEEDBACK_NO_TASKS     "Brak zadań."
 
 #endif

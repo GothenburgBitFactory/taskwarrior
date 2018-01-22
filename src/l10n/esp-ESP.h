@@ -28,6 +28,5 @@
 #define INCLUDED_STRINGS
 
 #define STRING_FEEDBACK_NO_MATCH     "Ninguna coincidencia."
-#define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
 
 #endif

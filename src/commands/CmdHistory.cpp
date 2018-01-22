@@ -33,7 +33,6 @@
 #include <main.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 #include <Datetime.h>
 
 #define STRING_CMD_HISTORY_YEAR      "Year"
@@ -186,7 +185,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
   }
   else
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS);
+    context.footnote ("No tasks.");
     rc = 1;
   }
 
@@ -278,7 +277,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
         << '\n';
   else
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS);
+    context.footnote ("No tasks.");
     rc = 1;
   }
 

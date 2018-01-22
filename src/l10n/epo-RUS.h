@@ -28,6 +28,5 @@
 #define INCLUDED_STRINGS
 
 #define STRING_FEEDBACK_NO_MATCH     "Nenia kongruanto."
-#define STRING_FEEDBACK_NO_TASKS     "Nenia tasko."
 
 #endif
