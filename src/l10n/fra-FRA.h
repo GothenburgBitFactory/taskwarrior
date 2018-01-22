@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COMPLETE "Complétée"
 #define STRING_COLUMN_LABEL_COUNT    "Temps restant"
 #define STRING_COLUMN_LABEL_DATE     "Date"
 #define STRING_COLUMN_LABEL_DEFAULT  "Défaut"
