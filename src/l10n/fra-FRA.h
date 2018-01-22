@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_COLUMN   "Colonnes"
 #define STRING_COLUMN_LABEL_COMPLETE "Complétée"
 #define STRING_COLUMN_LABEL_COUNT    "Temps restant"
 #define STRING_COLUMN_LABEL_DATE     "Date"
@@ -35,13 +34,10 @@
 #define STRING_COLUMN_LABEL_DUE      "Échéance"
 #define STRING_COLUMN_LABEL_END      "Fin"
 #define STRING_COLUMN_LABEL_ENTERED  "Entrée"
-#define STRING_COLUMN_LABEL_EXAMPLES "Exemple"
 #define STRING_COLUMN_LABEL_LABEL    "Étiq"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"
 #define STRING_COLUMN_LABEL_MOD      "Modifiée"
-#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
 #define STRING_COLUMN_LABEL_NAME     "Nom"
-#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_ORPHAN   "ADU orphelins"
 #define STRING_COLUMN_LABEL_PROJECT  "Projet"
 #define STRING_COLUMN_LABEL_RECUR    "Récur"
@@ -61,10 +57,8 @@
 #define STRING_COLUMN_LABEL_STAT_RE  "Récurrente"
 #define STRING_COLUMN_LABEL_STAT_W   "A"
 #define STRING_COLUMN_LABEL_STAT_WA  "En attente"
-#define STRING_COLUMN_LABEL_STYLES   "Formats supportés"
 #define STRING_COLUMN_LABEL_TAG      "Étiq"
 #define STRING_COLUMN_LABEL_TAGS     "Étiquettes"
-#define STRING_COLUMN_LABEL_TYPE     "Type"
 #define STRING_COLUMN_LABEL_UDA      "Nom"
 #define STRING_COLUMN_LABEL_UDACOUNT "Compte d’utilisation"
 #define STRING_COLUMN_LABEL_UNTIL    "Until"

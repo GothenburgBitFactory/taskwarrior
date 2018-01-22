@@ -87,7 +87,7 @@ int CmdUDAs::execute (std::string& output)
     Table table;
     table.width (context.getWidth ());
     table.add (STRING_COLUMN_LABEL_UDA);
-    table.add (STRING_COLUMN_LABEL_TYPE);
+    table.add ("Type");
     table.add (STRING_COLUMN_LABEL_LABEL);
     table.add (STRING_COLUMN_LABEL_VALUES);
     table.add (STRING_COLUMN_LABEL_DEFAULT);

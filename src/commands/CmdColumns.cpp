@@ -32,10 +32,7 @@
 #include <Color.h>
 #include <shared.h>
 #include <util.h>
-#include <i18n.h>
 #include <main.h>
-
-#define STRING_CMD_COLUMNS_USAGE     "All supported columns and formatting styles"
 
 extern Context context;
 
@@ -44,7 +41,7 @@ CmdColumns::CmdColumns ()
 {
   _keyword               = "columns";
   _usage                 = "task          columns [substring]";
-  _description           = STRING_CMD_COLUMNS_USAGE;
+  _description           = "All supported columns and formatting styles";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -74,11 +71,11 @@ int CmdColumns::execute (std::string& output)
   // Render a list of column names, formats and examples.
   Table formats;
   formats.width (context.getWidth ());
-  formats.add (STRING_COLUMN_LABEL_COLUMN);
-  formats.add (STRING_COLUMN_LABEL_TYPE);
-  formats.add (STRING_COLUMN_LABEL_MODIFY);
-  formats.add (STRING_COLUMN_LABEL_STYLES);
-  formats.add (STRING_COLUMN_LABEL_EXAMPLES);
+  formats.add ("Columns");
+  formats.add ("Type");
+  formats.add ("Modifiable");
+  formats.add ("Supported Formats");
+  formats.add ("Example");
   setHeaderUnderline (formats);
 
   for (const auto& name : names)
@@ -94,7 +91,7 @@ int CmdColumns::execute (std::string& output)
         auto row = formats.addRow ();
         formats.set (row, 0, i == 0 ? name : "");
         formats.set (row, 1, i == 0 ? context.columns[name]->type () : "");
-        formats.set (row, 2, i == 0 ? (context.columns[name]->modifiable () ? STRING_COLUMN_LABEL_MODIFY : STRING_COLUMN_LABEL_NOMODIFY) : "");
+        formats.set (row, 2, i == 0 ? (context.columns[name]->modifiable () ? "Modifiable" : "Read Only") : "");
         formats.set (row, 3, styles[i] + (i == 0 ? "*" : ""));
         formats.set (row, 4, i < examples.size () ? examples[i] : "");
       }
