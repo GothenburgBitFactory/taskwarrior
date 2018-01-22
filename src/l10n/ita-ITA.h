@@ -27,9 +27,7 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_LABEL    "Etichetta"
 #define STRING_COLUMN_LABEL_MOD      "Modificato"
-#define STRING_COLUMN_LABEL_ORPHAN   "UDA Orfano"
 #define STRING_COLUMN_LABEL_RECUR    "Period"
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STAT_C   "C"
@@ -43,10 +41,7 @@
 #define STRING_COLUMN_LABEL_STAT_W   "W"
 #define STRING_COLUMN_LABEL_STAT_WA  "In attesa"
 #define STRING_COLUMN_LABEL_TAG      "Tag"
-#define STRING_COLUMN_LABEL_UDA      "Nome"
-#define STRING_COLUMN_LABEL_UDACOUNT "Conteggio Uso"
 #define STRING_COLUMN_LABEL_UNTIL    "Fino a"
-#define STRING_COLUMN_LABEL_VALUES   "Valori consentiti"
 #define STRING_FEEDBACK_ANN_ADD      "Annotazione di '{1}' aggiunta."
 #define STRING_FEEDBACK_ANN_DEL      "Annotazione '{1}' cancellata."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Annotazione modificata in '{1}'."

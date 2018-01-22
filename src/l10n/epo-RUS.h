@@ -27,9 +27,7 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_LABEL    "Label"
 #define STRING_COLUMN_LABEL_MOD      "Modified"
-#define STRING_COLUMN_LABEL_ORPHAN   "Orphan UDA"
 #define STRING_COLUMN_LABEL_RECUR    "Recur"
 #define STRING_COLUMN_LABEL_STAT     "St"
 #define STRING_COLUMN_LABEL_STAT_C   "Fn"
@@ -43,10 +41,7 @@
 #define STRING_COLUMN_LABEL_STAT_W   "At"
 #define STRING_COLUMN_LABEL_STAT_WA  "Atendanta"
 #define STRING_COLUMN_LABEL_TAG      "Etik"
-#define STRING_COLUMN_LABEL_UDA      "Nomo"
-#define STRING_COLUMN_LABEL_UDACOUNT "Nombro de uzoj"
 #define STRING_COLUMN_LABEL_UNTIL    "Ĝis"
-#define STRING_COLUMN_LABEL_VALUES   "Valoroj permesataj"
 #define STRING_FEEDBACK_ANN_ADD      "Aldonis komenton '{1}'."
 #define STRING_FEEDBACK_ANN_DEL      "Viŝis komenton '{1}'."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Komento iĝis '{1}'."
