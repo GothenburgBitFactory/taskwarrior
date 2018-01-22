@@ -29,7 +29,5 @@
 
 #define STRING_FEEDBACK_NO_MATCH     "Nessuna corrispondenza."
 #define STRING_FEEDBACK_NO_TASKS     "Nessun task."
-#define STRING_FEEDBACK_TASKS_PLURAL "({1} task)"
-#define STRING_FEEDBACK_TASKS_SINGLE "(1 task)"
 
 #endif
