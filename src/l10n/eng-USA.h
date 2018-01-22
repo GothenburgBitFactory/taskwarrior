@@ -61,7 +61,6 @@
 #define STRING_COLUMN_LABEL_UUID     "UUID"
 #define STRING_COLUMN_LABEL_VALUE    "Value"
 #define STRING_COLUMN_LABEL_VALUES   "Allowed Values"
-#define STRING_COLUMN_LABEL_WAIT     "Wait"
 #define STRING_COLUMN_LABEL_WAITING  "Waiting until"
 #define STRING_FEEDBACK_ANN_ADD      "Annotation of '{1}' added."
 #define STRING_FEEDBACK_ANN_DEL      "Annotation '{1}' deleted."

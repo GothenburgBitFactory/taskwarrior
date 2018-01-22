@@ -61,7 +61,6 @@
 #define STRING_COLUMN_LABEL_UUID     "UUID"
 #define STRING_COLUMN_LABEL_VALUE    "Valoro"
 #define STRING_COLUMN_LABEL_VALUES   "Valoroj permesataj"
-#define STRING_COLUMN_LABEL_WAIT     "Atendu"
 #define STRING_COLUMN_LABEL_WAITING  "Atendu ĝis"
 #define STRING_FEEDBACK_ANN_ADD      "Aldonis komenton '{1}'."
 #define STRING_FEEDBACK_ANN_DEL      "Viŝis komenton '{1}'."

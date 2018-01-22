@@ -61,7 +61,6 @@
 #define STRING_COLUMN_LABEL_UUID     "UUID"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_VALUE    "Valor"
 #define STRING_COLUMN_LABEL_VALUES   "Valores Permitidos"
-#define STRING_COLUMN_LABEL_WAIT     "Adiada"
 #define STRING_COLUMN_LABEL_WAITING  "Adiada até"
 #define STRING_FEEDBACK_ANN_ADD      "Adicionada anotação de '{1}'."
 #define STRING_FEEDBACK_ANN_DEL      "Eliminada anotação '{1}'."
