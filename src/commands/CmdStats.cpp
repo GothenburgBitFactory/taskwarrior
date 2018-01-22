@@ -37,7 +37,6 @@
 #include <main.h>
 #include <format.h>
 #include <util.h>
-#include <i18n.h>
 
 extern Context context;
 
@@ -163,23 +162,23 @@ int CmdStats::execute (std::string& output)
   setHeaderUnderline (view);
 
   int row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_PE);
+  view.set (row, 0, "Pending");
   view.set (row, 1, pendingT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_WA);
+  view.set (row, 0, "Waiting");
   view.set (row, 1, waitingT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_RE);
+  view.set (row, 0, "Recurring");
   view.set (row, 1, recurringT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_CO);
+  view.set (row, 0, "Completed");
   view.set (row, 1, completedT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_DE);
+  view.set (row, 0, "Deleted");
   view.set (row, 1, deletedT);
 
   row = view.addRow ();
