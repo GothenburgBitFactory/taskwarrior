@@ -31,8 +31,5 @@
 #define STRING_FEEDBACK_NO_TASKS     "Brak zadań."
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} zadania)"
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 zadanie)"
-#define STRING_TASK_SAFETY_ALLOW     "Brak filtra, z aktywną flagą 'allow.empty.filter', nie podjęto akcji."
-#define STRING_TASK_SAFETY_FAIL      "Niedopuszczono do wykonania polecenia."
-#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"
 
 #endif
