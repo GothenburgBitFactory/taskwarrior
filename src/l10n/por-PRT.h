@@ -27,7 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_END      "Fim"
 #define STRING_COLUMN_LABEL_ENTERED  "Criada"
 #define STRING_COLUMN_LABEL_LABEL    "Rótulo"
 #define STRING_COLUMN_LABEL_LAST     "Last instance"

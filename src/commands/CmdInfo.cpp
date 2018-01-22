@@ -289,7 +289,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("end"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_END);
+      view.set (row, 0, "End");
       view.set (row, 1, Datetime (task.get_date ("end")).toString (dateformat));
     }
 
