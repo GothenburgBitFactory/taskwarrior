@@ -27,10 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_UNTIL    "Bis"
-#define string_column_label_urgency  "dringlichkeit"
-#define string_column_label_uuid     "uuid"
-#define string_column_label_value    "wert"
 #define STRING_FEEDBACK_ANN_ADD      "Kommentar von '{1}' hinzugefügt."
 #define STRING_FEEDBACK_ANN_DEL      "Kommentar '{1}' gelöscht."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Kommentar zu '{1}' geändert."

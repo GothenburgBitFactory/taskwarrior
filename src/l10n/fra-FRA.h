@@ -27,10 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_UNTIL    "Until"
-#define STRING_COLUMN_LABEL_URGENCY  "Urgence"
-#define STRING_COLUMN_LABEL_UUID     "UUID"
-#define STRING_COLUMN_LABEL_VALUE    "Valeur"
 #define STRING_FEEDBACK_ANN_ADD      "Annotation of '{1}' added."
 #define STRING_FEEDBACK_ANN_DEL      "Annotation '{1}' deleted."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Annotation changed to '{1}'."

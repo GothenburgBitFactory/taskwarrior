@@ -27,10 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_UNTIL    "Ĝis"
-#define STRING_COLUMN_LABEL_URGENCY  "Urĝeco"
-#define STRING_COLUMN_LABEL_UUID     "UUID"
-#define STRING_COLUMN_LABEL_VALUE    "Valoro"
 #define STRING_FEEDBACK_ANN_ADD      "Aldonis komenton '{1}'."
 #define STRING_FEEDBACK_ANN_DEL      "Viŝis komenton '{1}'."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Komento iĝis '{1}'."

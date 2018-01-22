@@ -27,10 +27,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-#define STRING_COLUMN_LABEL_UNTIL    "Até"
-#define STRING_COLUMN_LABEL_URGENCY  "Urgência"
-#define STRING_COLUMN_LABEL_UUID     "UUID"  // |por-PRT|==|eng-USA|
-#define STRING_COLUMN_LABEL_VALUE    "Valor"
 #define STRING_FEEDBACK_ANN_ADD      "Adicionada anotação de '{1}'."
 #define STRING_FEEDBACK_ANN_DEL      "Eliminada anotação '{1}'."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Anotação alterada para '{1}'."
