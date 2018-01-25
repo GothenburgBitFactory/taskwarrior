@@ -229,11 +229,10 @@ class TestColorRulesMerging(TestCase):
         self.t.config('color.tagged','on white')
         self.t.config('rule.color.precedence', 'due,tagged')
 
-        self.t('add due:today +home hometask')  # Task that matches both color rules
+        self.t('add due:tomorrow +home hometask')  # Task that matches both color rules
 
     @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping color merge test for Cygwin')
     @unittest.skipIf('FreeBSD' in platform.system(), 'Skipping color merge test for FREEBSD')
-    @unittest.expectedFailure
     def test_colors_merge(self):
         """Tests whether colors merge"""
         code, out, err = self.t('1 info')
@@ -241,8 +240,6 @@ class TestColorRulesMerging(TestCase):
 
     @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping color merge test for Cygwin')
     @unittest.skipIf('FreeBSD' in platform.system(), 'Skipping color merge test for FREEBSD')
-    @unittest.expectedFailure
-    @unittest.expectedFailure
     def test_colors_merge_off(self):
         """No color merge behaviour with rule.color.merge=no"""
         self.t.config('rule.color.merge', 'no')
