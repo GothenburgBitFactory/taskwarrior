@@ -1279,7 +1279,7 @@ void CLI2::desugarFilterAttributes ()
         A2 op ("", Lexer::Type::op);
         op.tag ("FILTER");
 
-        A2 rhs ("", Lexer::Type::string);
+        A2 rhs ("", values[0]._lextype);
         rhs.tag ("FILTER");
 
         // Special case for '<name>:<value>'.
@@ -1372,16 +1372,21 @@ void CLI2::desugarFilterAttributes ()
         reconstructed.push_back (op);
 
         // Do not modify this construct without full understanding.
-        if (values.size () == 1 || ! evalSupported)
+        // Getting this wrong breaks a whole lot of filtering tests.
+        if (values.size () > 1 || evalSupported)
         {
-          if (Lexer::isDOM (rhs.attribute ("raw")))
-            rhs._lextype = Lexer::Type::dom;
-
+          for (auto& v : values)
+            reconstructed.push_back (v);
+        }
+        else if (Lexer::isDOM (rhs.attribute ("raw")))
+        {
+          rhs._lextype = Lexer::Type::dom;
           reconstructed.push_back (rhs);
         }
         else
-          for (auto& v : values)
-            reconstructed.push_back (v);
+        {
+          reconstructed.push_back (rhs);
+        }
 
         found = true;
       }
