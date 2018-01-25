@@ -144,13 +144,6 @@ const std::string Lexer::typeName (const Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::isAlpha (int c)
-{
-  return (c >= 'A' && c <= 'Z') ||
-         (c >= 'a' && c <= 'z');
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Digits 0-9.
 //
 // TODO This list should be derived from the Unicode database.
@@ -225,7 +218,7 @@ bool Lexer::isBoundary (int left, int right)
   if (right == '\0')                                          return true;
 
   // XOR
-  if (isAlpha (left)           != isAlpha (right))            return true;
+  if (unicodeLatinAlpha (left) != unicodeLatinAlpha (right))  return true;
   if (isDigit (left)           != isDigit (right))            return true;
   if (unicodeWhitespace (left) != unicodeWhitespace (right))  return true;
 
@@ -262,7 +255,7 @@ bool Lexer::isPunctuation (int c)
          c != '$'      &&
          c != '_'      &&
          ! isDigit (c) &&
-         ! isAlpha (c);
+         ! unicodeLatinAlpha (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1217,7 +1210,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
     }
 
     // Lookahead: !<alpha>
-    else if (! isAlpha (_text[marker]))
+    else if (! unicodeLatinAlpha (_text[marker]))
     {
       token = _text.substr (marker, _cursor - marker);
       type = Lexer::Type::dom;
