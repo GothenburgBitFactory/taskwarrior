@@ -144,7 +144,7 @@ class TestColorRules(TestCase):
 
     def test_color_footnote(self):
         """Footnote color."""
-        code, out, err = self.t('rc.verbose=footnote /control/')
+        code, out, err = self.t('rc.verbose=on /control/')
         self.assertIn('\x1b[31mConfiguration override', err)
 
     def test_color_debug(self):
