@@ -726,7 +726,7 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
       }
     }
 
-    // Lookahread: !<isWhitespace> | !<isSingleCharOperator>
+    // Lookahead: !<isWhitespace> | !<isSingleCharOperator>
     // If there is an immediately consecutive character, that is not an operator, fail.
     if (_eos > marker &&
         ! isWhitespace (_text[marker]) &&
@@ -1173,6 +1173,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
+  // rc. ...
   std::string partialToken;
   Lexer::Type partialType;
   if (isLiteral ("rc.", false, false) &&
@@ -1185,6 +1186,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   else
     _cursor = marker;
 
+  // Literals
   if (isOneOf ({"tw.syncneeded",
                 "tw.program",
                 "tw.args",
@@ -1233,7 +1235,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   else
     _cursor = checkpoint;
 
-  // [prefix]attribute
+  // [prefix]attribute (bounded)
   if (isOneOf (attributes, false, true))
   {
     token = _text.substr (marker, _cursor - marker);
@@ -1241,7 +1243,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
     return true;
   }
 
-  // [prefix]attribute.
+  // [prefix]attribute. (unbounded)
   if (isOneOf (attributes, false, false))
   {
     if (isLiteral (".", false, false))
@@ -1259,13 +1261,19 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
         type = Lexer::Type::dom;
         return true;
       }
+
+      _cursor = checkpoint;
     }
-    else
+
+    // Lookahead: !<alpha>
+    else if (! isAlpha (_text[marker]))
     {
       token = _text.substr (marker, _cursor - marker);
       type = Lexer::Type::dom;
       return true;
     }
+
+    _cursor = checkpoint;
   }
 
   // [prefix]annotations.
@@ -1310,6 +1318,8 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
         }
       }
     }
+    else
+      _cursor = checkpoint;
   }
 
   _cursor = marker;
@@ -1450,6 +1460,7 @@ bool Lexer::isAllDigits (const std::string& text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// This is intentionally looking for a single token.
 bool Lexer::isDOM (const std::string& text)
 {
   Lexer lex (text);
