@@ -29,6 +29,7 @@
 #include <Duration.h>
 #include <Context.h>
 #include <format.h>
+#include <unicode.h>
 #include <main.h>
 
 extern Context context;
@@ -124,7 +125,7 @@ static Datetime generateNextDueDate (
     return current + (days * 86400);
   }
 
-  else if (Lexer::isDigit (period[0]) &&
+  else if (unicodeLatinDigit (period[0]) &&
            period[period.length () - 1] == 'm')
   {
     int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
@@ -177,7 +178,7 @@ static Datetime generateNextDueDate (
     return Datetime (y, m, d, ho, mi, se);
   }
 
-  else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
+  else if (unicodeLatinDigit (period[0]) && period[period.length () - 1] == 'q')
   {
     int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
 
