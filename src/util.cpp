@@ -51,6 +51,7 @@
 #include <signal.h>
 #include <sys/select.h>
 #include <Lexer.h>
+#include <unicode.h>
 #include <utf8.h>
 #include <util.h>
 #include <main.h>
@@ -268,7 +269,7 @@ bool nontrivial (const std::string& input)
   std::string::size_type i = 0;
   int character;
   while ((character = utf8_next_char (input, i)))
-    if (! Lexer::isWhitespace (character))
+    if (! unicodeWhitespace (character))
       return true;
 
   return false;
