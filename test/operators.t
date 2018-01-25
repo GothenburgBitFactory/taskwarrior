@@ -269,6 +269,16 @@ class TestOperatorsQuantity(TestCase):
         self.assertNotIn("four", out)
         self.assertNotIn("five", out)
 
+    def test_urgency_over(self):
+        """operator urgency.over:10.0"""
+        code, out, err = self.t("ls urgency.over:10.0")
+
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertNotIn("three", out)
+        self.assertNotIn("four", out)
+        self.assertNotIn("five", out)
+
     # < operator #
 
     def test_due_before(self):
@@ -324,6 +334,16 @@ class TestOperatorsQuantity(TestCase):
     def test_urgency_smaller(self):
         """operator urgency < 10.0"""
         code, out, err = self.t("ls urgency < 10.0")
+
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertIn("three", out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
+
+    def test_urgency_under(self):
+        """operator urgency.under:10.0"""
+        code, out, err = self.t("ls urgency.under:10.0")
 
         self.assertNotIn("one", out)
         self.assertNotIn("two", out)
