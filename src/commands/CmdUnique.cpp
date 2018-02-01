@@ -32,8 +32,6 @@
 #include <Filter.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdUnique::CmdUnique ()
 {
@@ -63,13 +61,13 @@ int CmdUnique::execute (std::string& output)
   std::string attribute {};
 
   // Just the first arg.
-  auto words = context.cli2.getWords ();
+  auto words = Context::getContext ().cli2.getWords ();
   if (words.size () == 0)
     throw std::string ("An attribute must be specified.  See 'task _columns'.");
   attribute = words[0];
 
   std::string canonical;
-  if (! context.cli2.canonicalize (canonical, "attribute", attribute))
+  if (! Context::getContext ().cli2.canonicalize (canonical, "attribute", attribute))
     throw std::string ("You must specify an attribute or UDA.");
 
   // Find the unique set of matching tasks.
@@ -92,7 +90,7 @@ int CmdUnique::execute (std::string& output)
   for (auto& value : values)
     output += value + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 

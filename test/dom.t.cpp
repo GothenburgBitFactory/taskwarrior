@@ -25,13 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream> // TODO Remove.
 #include <test.h>
 #include <DOM.h>
 #include <Variant.h>
-#include <Context.h>
-
-Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 bool providerString (const std::string& path, Variant& var)
@@ -72,7 +68,7 @@ int main (int, char**)
   dom.addSource ("name.next", &providerString);
   dom.addSource ("name.size", &providerString);
   dom.addSource ("foo",       &providerString);
-  std::cout << dom.dump () << '\n';
+  t.diag (dom.dump ());
   t.is (dom.count (), 4,               "DOM now contains 4 nodes");
 
   t.ok    (dom.valid ("name"),         "DOM 'name' valid");

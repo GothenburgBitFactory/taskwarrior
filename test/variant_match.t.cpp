@@ -28,10 +28,8 @@
 #include <iostream>
 #include <test.h>
 #include <Variant.h>
-#include <Context.h>
 #include <Task.h>
 
-Context context;
 Task task;
 
 ////////////////////////////////////////////////////////////////////////////////

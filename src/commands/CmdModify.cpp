@@ -36,8 +36,6 @@
 #define STRING_CMD_MODIFY_TASK_R     "Modifying recurring task {1} '{2}'."
 #define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdModify::CmdModify ()
 {
@@ -65,7 +63,7 @@ int CmdModify::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -104,7 +102,7 @@ int CmdModify::execute (std::string&)
   // Now list the project changes.
   for (const auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ?  "Modified {1} task." : "Modified {1} tasks.", count);
   return rc;
@@ -143,8 +141,8 @@ int CmdModify::modifyAndUpdate (
   updateRecurrenceMask (after);
   feedback_affected ("Modifying task {1} '{2}'.", after);
   feedback_unblocked (after);
-  context.tdb2.modify (after);
-  if (context.verbose ("project") && projectChanges)
+  Context::getContext ().tdb2.modify (after);
+  if (Context::getContext ().verbose ("project") && projectChanges)
     (*projectChanges)[after.get ("project")] = onProjectChange (before, after);
 
   // Task has siblings - modify them.
@@ -165,11 +163,11 @@ int CmdModify::modifyRecurrenceSiblings (
 {
   auto count = 0;
 
-  if ((context.config.get ("recurrence.confirmation") == "prompt"
+  if ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
         && confirm (STRING_CMD_MODIFY_RECUR)) ||
-      context.config.getBoolean ("recurrence.confirmation"))
+      Context::getContext ().config.getBoolean ("recurrence.confirmation"))
   {
-    std::vector <Task> siblings = context.tdb2.siblings (task);
+    std::vector <Task> siblings = Context::getContext ().tdb2.siblings (task);
     for (auto& sibling : siblings)
     {
       Task alternate (sibling);
@@ -178,16 +176,16 @@ int CmdModify::modifyRecurrenceSiblings (
       ++count;
       feedback_affected (STRING_CMD_MODIFY_TASK_R, sibling);
       feedback_unblocked (sibling);
-      context.tdb2.modify (sibling);
-      if (context.verbose ("project") && projectChanges)
+      Context::getContext ().tdb2.modify (sibling);
+      if (Context::getContext ().verbose ("project") && projectChanges)
         (*projectChanges)[sibling.get ("project")] = onProjectChange (alternate, sibling);
     }
 
     // Modify the parent
     Task parent;
-    context.tdb2.get (task.get ("parent"), parent);
+    Context::getContext ().tdb2.get (task.get ("parent"), parent);
     parent.modify (Task::modReplace);
-    context.tdb2.modify (parent);
+    Context::getContext ().tdb2.modify (parent);
   }
 
   return count;
@@ -200,9 +198,9 @@ int CmdModify::modifyRecurrenceParent (
 {
   auto count = 0;
 
-  auto children = context.tdb2.children (task);
+  auto children = Context::getContext ().tdb2.children (task);
   if (children.size () &&
-      (! context.config.getBoolean ("recurrence.confirmation") ||
+      (! Context::getContext ().config.getBoolean ("recurrence.confirmation") ||
         confirm (STRING_CMD_MODIFY_RECUR)))
   {
     for (auto& child : children)
@@ -210,8 +208,8 @@ int CmdModify::modifyRecurrenceParent (
       Task alternate (child);
       child.modify (Task::modReplace);
       updateRecurrenceMask (child);
-      context.tdb2.modify (child);
-      if (context.verbose ("project") && projectChanges)
+      Context::getContext ().tdb2.modify (child);
+      if (Context::getContext ().verbose ("project") && projectChanges)
         (*projectChanges)[child.get ("project")] = onProjectChange (alternate, child);
       ++count;
       feedback_affected (STRING_CMD_MODIFY_TASK_R, child);

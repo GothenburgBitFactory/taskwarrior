@@ -37,8 +37,6 @@
 #include <util.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdTimesheet::CmdTimesheet ()
 {
@@ -62,7 +60,7 @@ int CmdTimesheet::execute (std::string& output)
 
   // Detect a filter.
   bool hasFilter {false};
-  for (auto& a : context.cli2._args)
+  for (auto& a : Context::getContext ().cli2._args)
   {
     if (a.hasTag ("FILTER"))
     {
@@ -73,10 +71,10 @@ int CmdTimesheet::execute (std::string& output)
 
   if (! hasFilter)
   {
-    auto defaultFilter = context.config.get ("report.timesheet.filter");
+    auto defaultFilter = Context::getContext ().config.get ("report.timesheet.filter");
     if (defaultFilter == "")
       defaultFilter = "(+PENDING and start.after:now-4wks) or (+COMPLETED and end.after:now-4wks)";
-    context.cli2.addFilter (defaultFilter);
+    Context::getContext ().cli2.addFilter (defaultFilter);
   }
 
   // Apply filter to get a set of tasks.
@@ -114,8 +112,8 @@ int CmdTimesheet::execute (std::string& output)
 
   // Render the completed table.
   Table table;
-  table.width (context.getWidth ());
-  if (context.config.getBoolean ("obfuscate"))
+  table.width (Context::getContext ().getWidth ());
+  if (Context::getContext ().config.getBoolean ("obfuscate"))
     table.obfuscate ();
   table.add ("Wk");
   table.add ("Date");
@@ -126,7 +124,7 @@ int CmdTimesheet::execute (std::string& output)
   table.add ("Task");
   setHeaderUnderline (table);
 
-  auto dateformat = context.config.get ("dateformat");
+  auto dateformat = Context::getContext ().config.get ("dateformat");
 
   int previous_week = -1;
   std::string previous_date = "";
@@ -188,7 +186,7 @@ int CmdTimesheet::execute (std::string& output)
         << table.render ()
         << '\n';
 
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
     out << format ("{1} completed, {2} started.", num_completed, num_started)
         << '\n';
 

@@ -31,8 +31,6 @@
 #include <shared.h>
 #include <main.h>
 
-extern Context context;
-
 static std::map <std::string, Color> gsColor;
 static std::vector <std::string> gsPrecedence;
 static Datetime now;
@@ -41,7 +39,7 @@ static Datetime now;
 void initializeColorRules ()
 {
   // If color is not enable/supported, short circuit.
-  if (! context.color ())
+  if (! Context::getContext ().color ())
     return;
 
   try
@@ -52,7 +50,7 @@ void initializeColorRules ()
     // Load all the configuration values, filter to only the ones that begin with
     // "color.", then store name/value in gsColor, and name in rules.
     std::vector <std::string> rules;
-    for (const auto& v : context.config)
+    for (const auto& v : Context::getContext ().config)
     {
       if (! v.first.compare (0, 6, "color.", 6))
       {
@@ -66,7 +64,7 @@ void initializeColorRules ()
     // Load the rule.precedence.color list, split it, then autocomplete against
     // the 'rules' vector loaded above.
     std::vector <std::string> results;
-    auto precedence = split (context.config.get ("rule.precedence.color"), ',');
+    auto precedence = split (Context::getContext ().config.get ("rule.precedence.color"), ',');
 
     for (const auto& p : precedence)
     {
@@ -81,7 +79,7 @@ void initializeColorRules ()
 
   catch (const std::string& e)
   {
-    context.error (e);
+    Context::getContext ().error (e);
   }
 }
 
@@ -149,7 +147,7 @@ static void colorizeTag (Task& task, const std::string& rule, const Color& base,
 static void colorizeProject (Task& task, const std::string& rule, const Color& base, Color& c, bool merge)
 {
   // Observe the case sensitivity setting.
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+  bool sensitive = Context::getContext ().config.getBoolean ("search.case.sensitive");
 
   auto project = task.get ("project");
   auto rule_trunc = rule.substr (14);
@@ -178,7 +176,7 @@ static void colorizeTagNone (Task& task, const Color& base, Color& c, bool merge
 static void colorizeKeyword (Task& task, const std::string& rule, const Color& base, Color& c, bool merge)
 {
   // Observe the case sensitivity setting.
-  auto sensitive = context.config.getBoolean ("search.case.sensitive");
+  auto sensitive = Context::getContext ().config.getBoolean ("search.case.sensitive");
 
   // The easiest thing to check is the description, because it is just one
   // attribute.
@@ -286,14 +284,14 @@ static void colorizeDeleted (Task& task, const Color& base, Color& c, bool merge
 void autoColorize (Task& task, Color& c)
 {
   // The special tag 'nocolor' overrides all auto and specific colorization.
-  if (! context.color () ||
+  if (! Context::getContext ().color () ||
       task.hasTag ("nocolor"))
   {
     c = Color ();
     return;
   }
 
-  auto merge = context.config.getBoolean ("rule.color.merge");
+  auto merge = Context::getContext ().config.getBoolean ("rule.color.merge");
 
   // Note: c already contains colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is King, hence the

@@ -38,8 +38,6 @@
 #include <format.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
 //
@@ -75,8 +73,8 @@ bool getDOM (const std::string& name, Variant& value)
       ! name.compare (0, 3, "rc.", 3))
   {
     auto key = name.substr (3);
-    auto c = context.config.find (key);
-    if (c != context.config.end ())
+    auto c = Context::getContext ().config.find (key);
+    if (c != Context::getContext ().config.end ())
     {
       value = Variant (c->second);
       return true;
@@ -92,7 +90,7 @@ bool getDOM (const std::string& name, Variant& value)
     if (name == "tw.syncneeded")
     {
       value = Variant (0);
-      for (const auto& line : context.tdb2.backlog.get_lines ())
+      for (const auto& line : Context::getContext ().tdb2.backlog.get_lines ())
       {
         if (line[0] == '{')
         {
@@ -105,13 +103,13 @@ bool getDOM (const std::string& name, Variant& value)
     }
     else if (name == "tw.program")
     {
-      value = Variant (context.cli2.getBinary ());
+      value = Variant (Context::getContext ().cli2.getBinary ());
       return true;
     }
     else if (name == "tw.args")
     {
       std::string commandLine;
-      for (auto& arg : context.cli2._original_args)
+      for (auto& arg : Context::getContext ().cli2._original_args)
       {
         if (commandLine != "")
            commandLine += ' ';
@@ -124,16 +122,16 @@ bool getDOM (const std::string& name, Variant& value)
     }
     else if (name == "tw.width")
     {
-      value = Variant (static_cast<int> (context.terminal_width
-                                           ? context.terminal_width
-                                           : context.getWidth ()));
+      value = Variant (static_cast<int> (Context::getContext ().terminal_width
+                                           ? Context::getContext ().terminal_width
+                                           : Context::getContext ().getWidth ()));
       return true;
     }
     else if (name == "tw.height")
     {
-      value = Variant (static_cast<int> (context.terminal_height
-                                           ? context.terminal_height
-                                           : context.getHeight ()));
+      value = Variant (static_cast<int> (Context::getContext ().terminal_height
+                                           ? Context::getContext ().terminal_height
+                                           : Context::getContext ().getHeight ()));
       return true;
     }
 
@@ -152,13 +150,13 @@ bool getDOM (const std::string& name, Variant& value)
   {
     if (name == "context.program")
     {
-      value = Variant (context.cli2.getBinary ());
+      value = Variant (Context::getContext ().cli2.getBinary ());
       return true;
     }
     else if (name == "context.args")
     {
       std::string commandLine;
-      for (auto& arg : context.cli2._original_args)
+      for (auto& arg : Context::getContext ().cli2._original_args)
       {
         if (commandLine != "")
            commandLine += ' ';
@@ -171,16 +169,16 @@ bool getDOM (const std::string& name, Variant& value)
     }
     else if (name == "context.width")
     {
-      value = Variant (static_cast<int> (context.terminal_width
-                                           ? context.terminal_width
-                                           : context.getWidth ()));
+      value = Variant (static_cast<int> (Context::getContext ().terminal_width
+                                           ? Context::getContext ().terminal_width
+                                           : Context::getContext ().getWidth ()));
       return true;
     }
     else if (name == "context.height")
     {
-      value = Variant (static_cast<int> (context.terminal_height
-                                           ? context.terminal_height
-                                           : context.getHeight ()));
+      value = Variant (static_cast<int> (Context::getContext ().terminal_height
+                                           ? Context::getContext ().terminal_height
+                                           : Context::getContext ().getHeight ()));
       return true;
     }
 
@@ -273,7 +271,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
         token.length () == elements[0].length ())
     {
       if (token != ref.get ("uuid"))
-        context.tdb2.get (token, ref);
+        Context::getContext ().tdb2.get (token, ref);
 
       // Eat elements[0]/UUID.
       elements.erase (elements.begin ());
@@ -283,7 +281,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     {
       auto id = strtol (token.c_str (), NULL, 10);
       if (id && id != ref.id)
-        context.tdb2.get (id, ref);
+        Context::getContext ().tdb2.get (id, ref);
 
       // Eat elements[0]/ID.
       elements.erase (elements.begin ());
@@ -293,7 +291,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   auto size = elements.size ();
 
   std::string canonical;
-  if ((size == 1 || size == 2) && context.cli2.canonicalize (canonical, "attribute", elements[0]))
+  if ((size == 1 || size == 2) && Context::getContext ().cli2.canonicalize (canonical, "attribute", elements[0]))
   {
     // Now that 'ref' is the contextual task, and any ID/UUID is chopped off the
     // elements vector, DOM resolution is now simple.
@@ -309,7 +307,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
       return true;
     }
 
-    Column* column = context.columns[canonical];
+    Column* column = Context::getContext ().columns[canonical];
 
     if (ref.data.size () && size == 1 && column)
     {

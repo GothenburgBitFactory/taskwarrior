@@ -40,8 +40,6 @@
 #include <util.h>
 #include <main.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdCustom::CmdCustom (
   const std::string& keyword,
@@ -67,10 +65,10 @@ int CmdCustom::execute (std::string& output)
   auto rc = 0;
 
   // Load report configuration.
-  auto reportColumns = context.config.get ("report." + _keyword + ".columns");
-  auto reportLabels  = context.config.get ("report." + _keyword + ".labels");
-  auto reportSort    = context.config.get ("report." + _keyword + ".sort");
-  auto reportFilter  = context.config.get ("report." + _keyword + ".filter");
+  auto reportColumns = Context::getContext ().config.get ("report." + _keyword + ".columns");
+  auto reportLabels  = Context::getContext ().config.get ("report." + _keyword + ".labels");
+  auto reportSort    = Context::getContext ().config.get ("report." + _keyword + ".sort");
+  auto reportFilter  = Context::getContext ().config.get ("report." + _keyword + ".filter");
 
   auto columns = split (reportColumns, ',');
   validateReportColumns (columns);
@@ -87,7 +85,7 @@ int CmdCustom::execute (std::string& output)
 
   // Add the report filter to any existing filter.
   if (reportFilter != "")
-    context.cli2.addFilter (reportFilter);
+    Context::getContext ().cli2.addFilter (reportFilter);
 
   // Apply filter.
   handleRecurrence ();
@@ -100,10 +98,10 @@ int CmdCustom::execute (std::string& output)
       sortOrder[0] == "none")
   {
     // Assemble a sequence vector that represents the tasks listed in
-    // context.cli2._uuid_ranges, in the order in which they appear. This
+    // Context::getContext ().cli2._uuid_ranges, in the order in which they appear. This
     // equates to no sorting, just a specified order.
     sortOrder.clear ();
-    for (auto& i : context.cli2._uuid_list)
+    for (auto& i : Context::getContext ().cli2._uuid_list)
       for (unsigned int t = 0; t < filtered.size (); ++t)
         if (filtered[t].get ("uuid") == i)
           sequence.push_back (t);
@@ -122,21 +120,21 @@ int CmdCustom::execute (std::string& output)
 
   // Configure the view.
   ViewTask view;
-  view.width (context.getWidth ());
-  view.leftMargin (context.config.getInteger ("indent.report"));
-  view.extraPadding (context.config.getInteger ("row.padding"));
-  view.intraPadding (context.config.getInteger ("column.padding"));
+  view.width (Context::getContext ().getWidth ());
+  view.leftMargin (Context::getContext ().config.getInteger ("indent.report"));
+  view.extraPadding (Context::getContext ().config.getInteger ("row.padding"));
+  view.intraPadding (Context::getContext ().config.getInteger ("column.padding"));
 
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
-    Color label (context.config.get ("color.label"));
+    Color label (Context::getContext ().config.get ("color.label"));
     view.colorHeader (label);
 
-    Color label_sort (context.config.get ("color.label.sort"));
+    Color label_sort (Context::getContext ().config.get ("color.label.sort"));
     view.colorSortHeader (label_sort);
 
     // If an alternating row color is specified, notify the table.
-    Color alternate (context.config.get ("color.alternate"));
+    Color alternate (Context::getContext ().config.get ("color.alternate"));
     if (alternate.nontrivial ())
     {
       view.colorOdd (alternate);
@@ -153,7 +151,7 @@ int CmdCustom::execute (std::string& output)
     std::string name;
     bool ascending;
     bool breakIndicator;
-    context.decomposeSortField (so, name, ascending, breakIndicator);
+    Context::getContext ().decomposeSortField (so, name, ascending, breakIndicator);
 
     if (breakIndicator)
       view.addBreak (name);
@@ -177,9 +175,9 @@ int CmdCustom::execute (std::string& output)
 
   // How many lines taken up by table header?
   int table_header = 0;
-  if (context.verbose ("label"))
+  if (Context::getContext ().verbose ("label"))
   {
-    if (context.color () && context.config.getBoolean ("fontunderline"))
+    if (Context::getContext ().color () && Context::getContext ().config.getBoolean ("fontunderline"))
       table_header = 1;  // Underlining doesn't use extra line.
     else
       table_header = 2;  // Dashes use an extra line.
@@ -188,15 +186,15 @@ int CmdCustom::execute (std::string& output)
   // Report output can be limited by rows or lines.
   auto maxrows = 0;
   auto maxlines = 0;
-  context.getLimits (maxrows, maxlines);
+  Context::getContext ().getLimits (maxrows, maxlines);
 
   // Adjust for fluff in the output.
   if (maxlines)
     maxlines -= table_header
-              + (context.verbose ("blank") ? 1 : 0)
-              + (context.verbose ("footnote") ? context.footnotes.size () : 0)
-              + (context.verbose ("affected") ? 1 : 0)
-              + context.config.getInteger ("reserved.lines");  // For prompt, etc.
+              + (Context::getContext ().verbose ("blank") ? 1 : 0)
+              + (Context::getContext ().verbose ("footnote") ? Context::getContext ().footnotes.size () : 0)
+              + (Context::getContext ().verbose ("affected") ? 1 : 0)
+              + Context::getContext ().config.getInteger ("reserved.lines");  // For prompt, etc.
 
   // Render.
   std::stringstream out;
@@ -210,7 +208,7 @@ int CmdCustom::execute (std::string& output)
         << optionalBlankLine ();
 
     // Print the number of rendered tasks
-    if (context.verbose ("affected"))
+    if (Context::getContext ().verbose ("affected"))
     {
       out << (filtered.size () == 1
                 ?  "1 task"
@@ -228,7 +226,7 @@ int CmdCustom::execute (std::string& output)
   }
   else
   {
-    context.footnote ("No matches.");
+    Context::getContext ().footnote ("No matches.");
     rc = 1;
   }
 

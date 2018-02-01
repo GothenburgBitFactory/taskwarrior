@@ -43,8 +43,6 @@
 #include <gnutls/gnutls.h>
 #endif
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdDiagnostics::CmdDiagnostics ()
 {
@@ -69,7 +67,7 @@ CmdDiagnostics::CmdDiagnostics ()
 int CmdDiagnostics::execute (std::string& output)
 {
   Color bold;
-  if (context.color ())
+  if (Context::getContext ().color ())
     bold = Color ("bold");
 
   std::stringstream out;
@@ -160,7 +158,7 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n\n";
 
   // Config: .taskrc found, readable, writable
-  File rcFile (context.config.file ());
+  File rcFile (Context::getContext ().config.file ());
   out << bold.colorize ("Configuration")
       << '\n'
       << "       File: " << rcFile._data << ' '
@@ -174,7 +172,7 @@ int CmdDiagnostics::execute (std::string& output)
       << '\n';
 
   // Config: data.location found, readable, writable
-  File location (context.config.get ("data.location"));
+  File location (Context::getContext ().config.get ("data.location"));
   out << "       Data: " << location._data << ' '
       << (location.exists ()
            ? "(found)"
@@ -198,31 +196,31 @@ int CmdDiagnostics::execute (std::string& output)
         << '\n';
 
   out << "    Locking: "
-      << (context.config.getBoolean ("locking")
+      << (Context::getContext ().config.getBoolean ("locking")
            ? "Enabled"
            : "Disabled")
       << '\n';
 
   out << "         GC: "
-      << (context.config.getBoolean ("gc")
+      << (Context::getContext ().config.getBoolean ("gc")
            ? "Enabled"
            : "Disabled")
       << '\n';
 
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
-  if (context.config.get ("editor") != "")
-    out << "  rc.editor: " << context.config.get ("editor") << '\n';
+  if (Context::getContext ().config.get ("editor") != "")
+    out << "  rc.editor: " << Context::getContext ().config.get ("editor") << '\n';
   else if ((peditor = getenv ("VISUAL")) != NULL)
     out << "    $VISUAL: " << peditor << '\n';
   else if ((peditor = getenv ("EDITOR")) != NULL)
     out << "    $EDITOR: " << peditor << '\n';
 
   out << "     Server: "
-      << context.config.get ("taskd.server")
+      << Context::getContext ().config.get ("taskd.server")
       << '\n';
 
-  auto ca_pem = context.config.get ("taskd.ca");
+  auto ca_pem = Context::getContext ().config.get ("taskd.ca");
   out << "         CA: ";
   if (ca_pem != "")
   {
@@ -238,7 +236,7 @@ int CmdDiagnostics::execute (std::string& output)
   else
     out << "-\n";
 
-  auto cert_pem = context.config.get ("taskd.certificate");
+  auto cert_pem = Context::getContext ().config.get ("taskd.certificate");
   out << "Certificate: ";
   if (cert_pem != "")
   {
@@ -254,7 +252,7 @@ int CmdDiagnostics::execute (std::string& output)
   else
     out << "-\n";
 
-  auto key_pem = context.config.get ("taskd.key");
+  auto key_pem = Context::getContext ().config.get ("taskd.key");
   out << "        Key: ";
   if (key_pem != "")
   {
@@ -270,7 +268,7 @@ int CmdDiagnostics::execute (std::string& output)
   else
     out << "-\n";
 
-  auto trust_value = context.config.get ("taskd.trust");
+  auto trust_value = Context::getContext ().config.get ("taskd.trust");
   if (trust_value == "strict" ||
       trust_value == "ignore hostname" ||
       trust_value == "allow all")
@@ -279,11 +277,11 @@ int CmdDiagnostics::execute (std::string& output)
     out << "      Trust: Bad value - see 'man taskrc'\n";
 
   out << "    Ciphers: "
-      << context.config.get ("taskd.ciphers")
+      << Context::getContext ().config.get ("taskd.ciphers")
       << '\n';
 
   // Get credentials, but mask out the key.
-  auto credentials = context.config.get ("taskd.credentials");
+  auto credentials = Context::getContext ().config.get ("taskd.credentials");
   auto last_slash = credentials.rfind ('/');
   if (last_slash != std::string::npos)
     credentials = credentials.substr (0, last_slash)
@@ -296,26 +294,26 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Display hook status.
   Path hookLocation;
-  if (context.config.has ("hooks.location"))
+  if (Context::getContext ().config.has ("hooks.location"))
   {
-    hookLocation = Path (context.config.get ("hooks.location"));
+    hookLocation = Path (Context::getContext ().config.get ("hooks.location"));
   }
   else
   {
-    hookLocation = Path (context.config.get ("data.location"));
+    hookLocation = Path (Context::getContext ().config.get ("data.location"));
     hookLocation += "hooks";
   }
 
   out << bold.colorize ("Hooks")
       << '\n'
       << "     System: "
-      << (context.config.getBoolean ("hooks") ? "Enabled" : "Disabled")
+      << (Context::getContext ().config.getBoolean ("hooks") ? "Enabled" : "Disabled")
       << '\n'
       << "   Location: "
       << static_cast <std::string> (hookLocation)
       << '\n';
 
-  auto hooks = context.hooks.list ();
+  auto hooks = Context::getContext ().hooks.list ();
   if (hooks.size ())
   {
     unsigned int longest = 0;
@@ -397,13 +395,13 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Report terminal dimensions.
   out << "   Terminal: "
-      << context.getWidth ()
+      << Context::getContext ().getWidth ()
       << 'x'
-      << context.getHeight ()
+      << Context::getContext ().getHeight ()
       << '\n';
 
   // Scan tasks for duplicate UUIDs.
-  auto all = context.tdb2.all_tasks ();
+  auto all = Context::getContext ().tdb2.all_tasks ();
   std::map <std::string, int> seen;
   std::vector <std::string> dups;
   std::string uuid;
@@ -442,7 +440,7 @@ int CmdDiagnostics::execute (std::string& output)
     // Check dependencies
     for (auto& uuid : task.getDependencyUUIDs ())
     {
-      if (! context.tdb2.has (uuid))
+      if (! Context::getContext ().tdb2.has (uuid))
       {
         out << "             "
             << format ("Task {1} depends on nonexistent task: {2}", task.get ("uuid"), uuid)
@@ -454,7 +452,7 @@ int CmdDiagnostics::execute (std::string& output)
     // Check recurrence parent
     auto parentUUID = task.get ("parent");
 
-    if (parentUUID != "" && ! context.tdb2.has (parentUUID))
+    if (parentUUID != "" && ! Context::getContext ().tdb2.has (parentUUID))
     {
       out << "             "
           << format ("Task {1} has nonexistent recurrence template {2}", task.get ("uuid"), parentUUID)

@@ -53,8 +53,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 // Supports the complete column definition:
 //
@@ -100,7 +98,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "wait")        c = new ColumnWait ();
 
   // UDA.
-  else if (context.config.has ("uda." + column_name + ".type"))
+  else if (Context::getContext ().config.has ("uda." + column_name + ".type"))
     c = Column::uda (column_name);
 
   else
@@ -147,7 +145,7 @@ void Column::uda (std::map <std::string, Column*>& all)
   // For each UDA, instantiate and initialize ColumnUDA.
   std::set <std::string> udas;
 
-  for (const auto& i : context.config)
+  for (const auto& i : Context::getContext ().config)
   {
     if (i.first.substr (0, 4) == "uda.")
     {
@@ -172,9 +170,9 @@ void Column::uda (std::map <std::string, Column*>& all)
 ////////////////////////////////////////////////////////////////////////////////
 Column* Column::uda (const std::string& name)
 {
-  auto type   = context.config.get ("uda." + name + ".type");
-  auto label  = context.config.get ("uda." + name + ".label");
-  auto values = context.config.get ("uda." + name + ".values");
+  auto type   = Context::getContext ().config.get ("uda." + name + ".type");
+  auto label  = Context::getContext ().config.get ("uda." + name + ".label");
+  auto values = Context::getContext ().config.get ("uda." + name + ".values");
 
   if (type == "string")
   {
@@ -242,7 +240,7 @@ void Column::renderHeader (
   int width,
   Color& color)
 {
-  if (context.verbose ("label") &&
+  if (Context::getContext ().verbose ("label") &&
       _label != "")
   {
     // Create a basic label.
@@ -254,8 +252,8 @@ void Column::renderHeader (
     Color c = color;
 
     // Now underline the header, or add a dashed line.
-    if (context.color () &&
-        context.config.getBoolean ("fontunderline"))
+    if (Context::getContext ().color () &&
+        Context::getContext ().config.getBoolean ("fontunderline"))
     {
       c.blend (Color (Color::nocolor, Color::nocolor, true, false, false));
       lines.push_back (c.colorize (leftJustify (header, width)));

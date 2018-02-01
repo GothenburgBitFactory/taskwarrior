@@ -38,8 +38,6 @@
 #include <utf8.h>
 #include <main.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdCalendar::CmdCalendar ()
 {
@@ -63,8 +61,8 @@ int CmdCalendar::execute (std::string& output)
 
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
-  auto width = context.getWidth ();
-  auto preferredMonthsPerLine = context.config.getInteger ("monthsperline");
+  auto width = Context::getContext ().getWidth ();
+  auto preferredMonthsPerLine = Context::getContext ().config.getInteger ("monthsperline");
   auto monthsThatFit = width / 26;
 
   auto monthsPerLine = monthsThatFit;
@@ -73,7 +71,7 @@ int CmdCalendar::execute (std::string& output)
 
   // Load the pending tasks.
   handleRecurrence ();
-  auto tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 
   Datetime today;
   auto getPendingDate = false;
@@ -107,14 +105,14 @@ int CmdCalendar::execute (std::string& output)
   auto argYear = 0;
   auto argWholeYear = false;
 
-  for (auto& arg : context.cli2.getWords ())
+  for (auto& arg : Context::getContext ().cli2.getWords ())
   {
     // Some version of "calendar".
-    if (autoComplete (Lexer::lowerCase (arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    if (autoComplete (Lexer::lowerCase (arg), commandNames, matches, Context::getContext ().config.getInteger ("abbreviation.minimum")) == 1)
       continue;
 
     // "due".
-    else if (autoComplete (Lexer::lowerCase (arg), keywordNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (Lexer::lowerCase (arg), keywordNames, matches, Context::getContext ().config.getInteger ("abbreviation.minimum")) == 1)
       getPendingDate = true;
 
     // "y".
@@ -134,7 +132,7 @@ int CmdCalendar::execute (std::string& output)
     }
 
     // "January" etc.
-    else if (autoComplete (Lexer::lowerCase (arg), monthNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (Lexer::lowerCase (arg), monthNames, matches, Context::getContext ().config.getInteger ("abbreviation.minimum")) == 1)
     {
       argMonth = Datetime::monthOfYear (matches[0]);
       if (argMonth == -1)
@@ -191,10 +189,10 @@ int CmdCalendar::execute (std::string& output)
     yFrom = oldest.year();
   }
 
-  if (context.config.getBoolean ("calendar.offset"))
+  if (Context::getContext ().config.getBoolean ("calendar.offset"))
   {
-    auto moffset = context.config.getInteger ("calendar.offset.value") % 12;
-    auto yoffset = context.config.getInteger ("calendar.offset.value") / 12;
+    auto moffset = Context::getContext ().config.getInteger ("calendar.offset.value") % 12;
+    auto yoffset = Context::getContext ().config.getInteger ("calendar.offset.value") / 12;
     mFrom += moffset;
     yFrom += yoffset;
     if (mFrom < 1)
@@ -278,15 +276,15 @@ int CmdCalendar::execute (std::string& output)
     }
   }
 
-  Color color_today      (context.config.get ("color.calendar.today"));
-  Color color_due        (context.config.get ("color.calendar.due"));
-  Color color_duetoday   (context.config.get ("color.calendar.due.today"));
-  Color color_overdue    (context.config.get ("color.calendar.overdue"));
-  Color color_weekend    (context.config.get ("color.calendar.weekend"));
-  Color color_holiday    (context.config.get ("color.calendar.holiday"));
-  Color color_weeknumber (context.config.get ("color.calendar.weeknumber"));
+  Color color_today      (Context::getContext ().config.get ("color.calendar.today"));
+  Color color_due        (Context::getContext ().config.get ("color.calendar.due"));
+  Color color_duetoday   (Context::getContext ().config.get ("color.calendar.due.today"));
+  Color color_overdue    (Context::getContext ().config.get ("color.calendar.overdue"));
+  Color color_weekend    (Context::getContext ().config.get ("color.calendar.weekend"));
+  Color color_holiday    (Context::getContext ().config.get ("color.calendar.holiday"));
+  Color color_weeknumber (Context::getContext ().config.get ("color.calendar.weeknumber"));
 
-  if (context.color () && context.config.getBoolean ("calendar.legend"))
+  if (Context::getContext ().color () && Context::getContext ().config.getBoolean ("calendar.legend"))
     out << "Legend: "
         << color_today.colorize ("today")
         << ", "
@@ -305,7 +303,7 @@ int CmdCalendar::execute (std::string& output)
         << optionalBlankLine ()
         << '\n';
 
-  if (context.config.get ("calendar.details") == "full" || context.config.get ("calendar.holidays") == "full")
+  if (Context::getContext ().config.get ("calendar.details") == "full" || Context::getContext ().config.get ("calendar.holidays") == "full")
   {
     --details_mFrom;
     if (details_mFrom == 0)
@@ -323,30 +321,30 @@ int CmdCalendar::execute (std::string& output)
     }
 
     Datetime date_after (details_yFrom, details_mFrom, details_dFrom);
-    auto after = date_after.toString (context.config.get ("dateformat"));
+    auto after = date_after.toString (Context::getContext ().config.get ("dateformat"));
 
     Datetime date_before (yTo, mTo, 1);
-    auto before = date_before.toString (context.config.get ("dateformat"));
+    auto before = date_before.toString (Context::getContext ().config.get ("dateformat"));
 
     // Table with due date information
-    if (context.config.get ("calendar.details") == "full")
+    if (Context::getContext ().config.get ("calendar.details") == "full")
     {
       // Assert that 'report' is a valid report.
-      auto report = context.config.get ("calendar.details.report");
-      if (context.commands.find (report) == context.commands.end ())
+      auto report = Context::getContext ().config.get ("calendar.details.report");
+      if (Context::getContext ().commands.find (report) == Context::getContext ().commands.end ())
         throw std::string ("The setting 'calendar.details.report' must contain a single report name.");
 
       // TODO Fix this:  cal      --> task
       //                 calendar --> taskendar
 
       // If the executable was "cal" or equivalent, replace it with "task".
-      auto executable = context.cli2._original_args[0].attribute ("raw");
+      auto executable = Context::getContext ().cli2._original_args[0].attribute ("raw");
       auto cal = executable.find ("cal");
       if (cal != std::string::npos)
         executable = executable.substr (0, cal) + PACKAGE;
 
       std::vector <std::string> args;
-      args.push_back ("rc:" + context.rc_file._data);
+      args.push_back ("rc:" + Context::getContext ().rc_file._data);
       args.push_back ("rc.due:0");
       args.push_back ("rc.verbose:label,affected,blank");
       args.push_back ("due.after:" + after);
@@ -360,34 +358,34 @@ int CmdCalendar::execute (std::string& output)
     }
 
     // Table with holiday information
-    if (context.config.get ("calendar.holidays") == "full")
+    if (Context::getContext ().config.get ("calendar.holidays") == "full")
     {
       Table holTable;
-      holTable.width (context.getWidth ());
+      holTable.width (Context::getContext ().getWidth ());
       holTable.add ("Date");
       holTable.add ("Holiday");
       setHeaderUnderline (holTable);
 
       std::map <time_t, std::vector<std::string>> hm; // we need to store multiple holidays per day
-      for (auto& it : context.config)
+      for (auto& it : Context::getContext ().config)
         if (it.first.substr (0, 8) == "holiday.")
           if (it.first.substr (it.first.size () - 4) == "name")
           {
-            auto holName = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
-            auto holDate = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
-            Datetime hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
+            auto holName = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
+            auto holDate = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
+            Datetime hDate (holDate.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
               hm[hDate.toEpoch()].push_back (holName);
           }
 
-      auto format = context.config.get ("report." +
-                                        context.config.get ("calendar.details.report") +
+      auto format = Context::getContext ().config.get ("report." +
+                                        Context::getContext ().config.get ("calendar.details.report") +
                                         ".dateformat");
       if (format == "")
-        format = context.config.get ("dateformat.report");
+        format = Context::getContext ().config.get ("dateformat.report");
       if (format == "")
-        format = context.config.get ("dateformat");
+        format = Context::getContext ().config.get ("dateformat");
 
       for (auto& hm_it : hm)
       {
@@ -421,14 +419,14 @@ std::string CmdCalendar::renderMonths (
   int monthsPerLine)
 {
   // What day of the week does the user consider the first?
-  auto weekStart = Datetime::dayOfWeek (context.config.get ("weekstart"));
+  auto weekStart = Datetime::dayOfWeek (Context::getContext ().config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string ("The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'.");
 
   // Build table for the number of months to be displayed.
   Table view;
   setHeaderUnderline (view);
-  view.width (context.getWidth ());
+  view.width (Context::getContext ().getWidth ());
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
   {
     if (weekStart == 1)
@@ -486,13 +484,13 @@ std::string CmdCalendar::renderMonths (
 
   auto row = 0;
 
-  Color color_today      (context.config.get ("color.calendar.today"));
-  Color color_due        (context.config.get ("color.calendar.due"));
-  Color color_duetoday   (context.config.get ("color.calendar.due.today"));
-  Color color_overdue    (context.config.get ("color.calendar.overdue"));
-  Color color_weekend    (context.config.get ("color.calendar.weekend"));
-  Color color_holiday    (context.config.get ("color.calendar.holiday"));
-  Color color_weeknumber (context.config.get ("color.calendar.weeknumber"));
+  Color color_today      (Context::getContext ().config.get ("color.calendar.today"));
+  Color color_due        (Context::getContext ().config.get ("color.calendar.due"));
+  Color color_duetoday   (Context::getContext ().config.get ("color.calendar.due.today"));
+  Color color_overdue    (Context::getContext ().config.get ("color.calendar.overdue"));
+  Color color_weekend    (Context::getContext ().config.get ("color.calendar.weekend"));
+  Color color_holiday    (Context::getContext ().config.get ("color.calendar.holiday"));
+  Color color_weeknumber (Context::getContext ().config.get ("color.calendar.weeknumber"));
 
   // Loop through months to be added on this line.
   for (int mpl = 0; mpl < monthsPerLine ; mpl++)
@@ -508,7 +506,7 @@ std::string CmdCalendar::renderMonths (
       auto dow = temp.dayOfWeek ();
       auto woy = temp.week ();
 
-      if (context.config.getBoolean ("displayweeknumber"))
+      if (Context::getContext ().config.getBoolean ("displayweeknumber"))
         view.set (row,
                   (8 * mpl),
                   // Make sure the week number is always 4 columns, space-padded.
@@ -525,7 +523,7 @@ std::string CmdCalendar::renderMonths (
 
       view.set (row, thisCol, d);
 
-      if (context.color ())
+      if (Context::getContext ().color ())
       {
         Color cellColor;
 
@@ -534,14 +532,14 @@ std::string CmdCalendar::renderMonths (
           cellColor.blend (color_weekend);
 
         // colorize holidays
-        if (context.config.get ("calendar.holidays") != "none")
+        if (Context::getContext ().config.get ("calendar.holidays") != "none")
         {
-          for (auto& hol : context.config)
+          for (auto& hol : Context::getContext ().config)
             if (hol.first.substr (0, 8) == "holiday.")
               if (hol.first.substr (hol.first.size () - 4) == "date")
               {
                 std::string value = hol.second;
-                Datetime holDate (value.c_str (), context.config.get ("dateformat.holiday"));
+                Datetime holDate (value.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
                 if (holDate.day   () == d           &&
                     holDate.month () == months[mpl] &&
                     holDate.year  () == years[mpl])
@@ -556,9 +554,9 @@ std::string CmdCalendar::renderMonths (
           cellColor.blend (color_today);
 
         // colorize due tasks
-        if (context.config.get ("calendar.details") != "none")
+        if (Context::getContext ().config.get ("calendar.details") != "none")
         {
-          context.config.set ("due", 0);
+          Context::getContext ().config.set ("due", 0);
           for (auto& task : all)
           {
             if (task.getStatus () == Task::pending &&

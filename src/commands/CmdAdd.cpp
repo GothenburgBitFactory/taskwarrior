@@ -30,8 +30,6 @@
 #include <format.h>
 #include <main.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdAdd::CmdAdd ()
 {
@@ -54,7 +52,7 @@ int CmdAdd::execute (std::string& output)
   // Apply the command line modifications to the new task.
   Task task;
   task.modify (Task::modReplace, true);
-  context.tdb2.add (task);
+  Context::getContext ().tdb2.add (task);
 
   // Do not display ID 0, users cannot query by that
   auto status = task.getStatus ();
@@ -64,25 +62,25 @@ int CmdAdd::execute (std::string& output)
   // it's enduring and never changes, and it's unlikely the caller
   // asked for this if they just wanted a human-friendly number.
 
-  if (context.verbose ("new-uuid") &&
+  if (Context::getContext ().verbose ("new-uuid") &&
            status != Task::recurring)
     output += format ("Created task {1}.\n", task.get ("uuid"));
 
-  else if (context.verbose ("new-uuid") &&
+  else if (Context::getContext ().verbose ("new-uuid") &&
            status == Task::recurring)
     output += format ("Created task {1} (recurrence template).\n", task.get ("uuid"));
 
-  else if (context.verbose ("new-id") &&
+  else if (Context::getContext ().verbose ("new-id") &&
       (status == Task::pending ||
        status == Task::waiting))
     output += format ("Created task {1}.\n", task.id);
 
-  else if (context.verbose ("new-id") &&
+  else if (Context::getContext ().verbose ("new-id") &&
            status == Task::recurring)
     output += format ("Created task {1} (recurrence template).\n", task.id);
 
-  if (context.verbose ("project"))
-    context.footnote (onProjectChange (task));
+  if (Context::getContext ().verbose ("project"))
+    Context::getContext ().footnote (onProjectChange (task));
 
   return 0;
 }

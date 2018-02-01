@@ -36,7 +36,6 @@
 
 #define STRING_EVAL_NO_EVAL "The expression could not be evaluated."
 
-extern Context context;
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,15 +128,15 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
-    context.debug ("[1;37;42mFILTER[0m Infix        " + dump (tokens));
+    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix        " + dump (tokens));
   infixParse (tokens);
   if (_debug)
-    context.debug ("[1;37;42mFILTER[0m Infix parsed " + dump (tokens));
+    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix parsed " + dump (tokens));
 
   // Convert infix --> postfix.
   infixToPostfix (tokens);
   if (_debug)
-    context.debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
+    Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
 
   // Call the postfix evaluator.
   evaluatePostfixStack (tokens, v);
@@ -155,7 +154,7 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
 
   if (_debug)
-    context.debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
+    Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
 
   // Call the postfix evaluator.
   evaluatePostfixStack (tokens, v);
@@ -169,15 +168,15 @@ void Eval::compileExpression (
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
-    context.debug ("[1;37;42mFILTER[0m Infix        " + dump (_compiled));
+    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix        " + dump (_compiled));
   infixParse (_compiled);
   if (_debug)
-    context.debug ("[1;37;42mFILTER[0m Infix parsed " + dump (_compiled));
+    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix parsed " + dump (_compiled));
 
   // Convert infix --> postfix.
   infixToPostfix (_compiled);
   if (_debug)
-    context.debug ("[1;37;42mFILTER[0m Postfix      " + dump (_compiled));
+    Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (_compiled));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +239,7 @@ void Eval::evaluatePostfixStack (
       Variant result = ! right;
       values.push_back (result);
       if (_debug)
-        context.debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
+        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
     }
     else if (token.second == Lexer::Type::op &&
              token.first == "_neg_")
@@ -256,14 +255,14 @@ void Eval::evaluatePostfixStack (
       values.push_back (result);
 
       if (_debug)
-        context.debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
+        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
     }
     else if (token.second == Lexer::Type::op &&
              token.first == "_pos_")
     {
       // The _pos_ operator is a NOP.
       if (_debug)
-        context.debug (format ("[{1}] eval op {2} NOP", values.size (), token.first));
+        Context::getContext ().debug (format ("[{1}] eval op {2} NOP", values.size (), token.first));
     }
 
     // Binary operators.
@@ -309,7 +308,7 @@ void Eval::evaluatePostfixStack (
       values.push_back (result);
 
       if (_debug)
-        context.debug (format ("Eval ↓'{1}' {2} ↓'{3}' → ↑'{4}'", (std::string) left, token.first, (std::string) right, (std::string) result));
+        Context::getContext ().debug (format ("Eval ↓'{1}' {2} ↓'{3}' → ↑'{4}'", (std::string) left, token.first, (std::string) right, (std::string) result));
     }
 
     // Literals and identifiers.
@@ -323,13 +322,13 @@ void Eval::evaluatePostfixStack (
         {
           v.cast (Variant::type_integer);
           if (_debug)
-            context.debug (format ("Eval literal number ↑'{1}'", (std::string) v));
+            Context::getContext ().debug (format ("Eval literal number ↑'{1}'", (std::string) v));
         }
         else
         {
           v.cast (Variant::type_real);
           if (_debug)
-            context.debug (format ("Eval literal decimal ↑'{1}'", (std::string) v));
+            Context::getContext ().debug (format ("Eval literal decimal ↑'{1}'", (std::string) v));
         }
         break;
 
@@ -346,7 +345,7 @@ void Eval::evaluatePostfixStack (
             if ((*source) (token.first, v))
             {
               if (_debug)
-                context.debug (format ("Eval identifier source '{1}' → ↑'{2}'", token.first, (std::string) v));
+                Context::getContext ().debug (format ("Eval identifier source '{1}' → ↑'{2}'", token.first, (std::string) v));
               found = true;
               break;
             }
@@ -357,7 +356,7 @@ void Eval::evaluatePostfixStack (
           {
             v.cast (Variant::type_string);
             if (_debug)
-              context.debug (format ("Eval identifier source failed '{1}'", token.first));
+              Context::getContext ().debug (format ("Eval identifier source failed '{1}'", token.first));
           }
         }
         break;
@@ -365,20 +364,20 @@ void Eval::evaluatePostfixStack (
       case Lexer::Type::date:
         v.cast (Variant::type_date);
         if (_debug)
-          context.debug (format ("Eval literal date ↑'{1}'", (std::string) v));
+          Context::getContext ().debug (format ("Eval literal date ↑'{1}'", (std::string) v));
         break;
 
       case Lexer::Type::duration:
         v.cast (Variant::type_duration);
         if (_debug)
-          context.debug (format ("Eval literal duration ↑'{1}'", (std::string) v));
+          Context::getContext ().debug (format ("Eval literal duration ↑'{1}'", (std::string) v));
         break;
 
       // Nothing to do.
       case Lexer::Type::string:
       default:
         if (_debug)
-          context.debug (format ("Eval literal string ↑'{1}'", (std::string) v));
+          Context::getContext ().debug (format ("Eval literal string ↑'{1}'", (std::string) v));
         break;
       }
 

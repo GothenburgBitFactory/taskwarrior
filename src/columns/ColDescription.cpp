@@ -34,8 +34,6 @@
 #include <utf8.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDescription::ColumnDescription ()
 {
@@ -51,9 +49,9 @@ ColumnDescription::ColumnDescription ()
                  "count",
                  "truncated_count"};
 
-  _dateformat = context.config.get ("dateformat.annotation");
+  _dateformat = Context::getContext ().config.get ("dateformat.annotation");
   if (_dateformat == "")
-    _dateformat = context.config.get ("dateformat");
+    _dateformat = Context::getContext ().config.get ("dateformat");
 
   std::string t  = Datetime ().toString (_dateformat);
   std::string d  = "Move your clothes down on to the lower peg";
@@ -75,9 +73,9 @@ ColumnDescription::ColumnDescription ()
                d + " [4]",
                d.substr (0, 20) + "... [4]"};
 
-  _hyphenate = context.config.getBoolean ("hyphenate");
+  _hyphenate = Context::getContext ().config.getBoolean ("hyphenate");
 
-  _indent = context.config.getInteger ("indent.annotation");
+  _indent = Context::getContext ().config.getInteger ("indent.annotation");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

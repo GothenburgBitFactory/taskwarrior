@@ -38,8 +38,6 @@
 #include <format.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdInfo::CmdInfo ()
 {
@@ -74,23 +72,23 @@ int CmdInfo::execute (std::string& output)
 
   if (! filtered.size ())
   {
-    context.footnote ("No matches.");
+    Context::getContext ().footnote ("No matches.");
     rc = 1;
   }
 
   // Get the undo data.
   std::vector <std::string> undo;
-  if (context.config.getBoolean ("journal.info"))
-    undo = context.tdb2.undo.get_lines ();
+  if (Context::getContext ().config.getBoolean ("journal.info"))
+    undo = Context::getContext ().tdb2.undo.get_lines ();
 
   // Determine the output date format, which uses a hierarchy of definitions.
   //   rc.dateformat.info
   //   rc.dateformat
-  auto dateformat = context.config.get ("dateformat.info");
+  auto dateformat = Context::getContext ().config.get ("dateformat.info");
   if (dateformat == "")
-    dateformat = context.config.get ("dateformat");
+    dateformat = Context::getContext ().config.get ("dateformat");
 
-  auto dateformatanno = context.config.get ("dateformat.annotation");
+  auto dateformatanno = Context::getContext ().config.get ("dateformat.annotation");
   if (dateformatanno == "")
     dateformatanno = dateformat;
 
@@ -99,10 +97,10 @@ int CmdInfo::execute (std::string& output)
   for (auto& task : filtered)
   {
     Table view;
-    view.width (context.getWidth ());
-    if (context.config.getBoolean ("obfuscate"))
+    view.width (Context::getContext ().getWidth ());
+    if (Context::getContext ().config.getBoolean ("obfuscate"))
       view.obfuscate ();
-    if (context.color ())
+    if (Context::getContext ().color ())
       view.forceColor ();
     view.add ("Name");
     view.add ("Value");
@@ -121,7 +119,7 @@ int CmdInfo::execute (std::string& output)
     Color c;
     autoColorize (task, c);
     auto description = task.get ("description");
-    auto indent = context.config.getInteger ("indent.annotation");
+    auto indent = Context::getContext ().config.getInteger ("indent.annotation");
 
     for (auto& anno : task.getAnnotations ())
       description += '\n'
@@ -352,9 +350,9 @@ int CmdInfo::execute (std::string& output)
     std::string type;
     for (auto& att: all)
     {
-      if (context.columns.find (att) != context.columns.end ())
+      if (Context::getContext ().columns.find (att) != Context::getContext ().columns.end ())
       {
-        Column* col = context.columns[att];
+        Column* col = Context::getContext ().columns[att];
         if (col->is_uda ())
         {
           auto value = task.get (att);
@@ -386,7 +384,7 @@ int CmdInfo::execute (std::string& output)
     for (auto& att : all)
     {
       if (att.substr (0, 11) != "annotation_" &&
-          context.columns.find (att) == context.columns.end ())
+          Context::getContext ().columns.find (att) == Context::getContext ().columns.end ())
       {
          row = view.addRow ();
          view.set (row, 0, '[' + att);
@@ -399,19 +397,19 @@ int CmdInfo::execute (std::string& output)
     if (task.urgency () != 0.0)
     {
       setHeaderUnderline (urgencyDetails);
-      if (context.color ())
+      if (Context::getContext ().color ())
       {
-        Color alternate (context.config.get ("color.alternate"));
+        Color alternate (Context::getContext ().config.get ("color.alternate"));
         urgencyDetails.colorOdd (alternate);
         urgencyDetails.intraColorOdd (alternate);
       }
 
-      if (context.config.getBoolean ("obfuscate"))
+      if (Context::getContext ().config.getBoolean ("obfuscate"))
         urgencyDetails.obfuscate ();
-      if (context.config.getBoolean ("color"))
+      if (Context::getContext ().config.getBoolean ("color"))
         view.forceColor ();
 
-      urgencyDetails.width (context.getWidth ());
+      urgencyDetails.width (Context::getContext ().getWidth ());
       urgencyDetails.add (""); // Attribute
       urgencyDetails.add (""); // Value
       urgencyDetails.add (""); // *
@@ -500,16 +498,16 @@ int CmdInfo::execute (std::string& output)
     Table journal;
     setHeaderUnderline (journal);
 
-    if (context.config.getBoolean ("obfuscate"))
+    if (Context::getContext ().config.getBoolean ("obfuscate"))
       journal.obfuscate ();
-    if (context.config.getBoolean ("color"))
+    if (Context::getContext ().config.getBoolean ("color"))
       journal.forceColor ();
 
-    journal.width (context.getWidth ());
+    journal.width (Context::getContext ().getWidth ());
     journal.add ("Date");
     journal.add ("Modification");
 
-    if (context.config.getBoolean ("journal.info") &&
+    if (Context::getContext ().config.getBoolean ("journal.info") &&
         undo.size () > 3)
     {
       // Scan the undo data for entries matching this task, without making

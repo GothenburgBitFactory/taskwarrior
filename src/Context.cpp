@@ -414,6 +414,20 @@ static const char* modifierNames[] =
 
 #define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
 
+Context* Context::context;
+
+////////////////////////////////////////////////////////////////////////////////
+Context& Context::getContext ()
+{
+  return *Context::context;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::setContext (Context* context)
+{
+  Context::context = context;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 Context::~Context ()
 {

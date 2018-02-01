@@ -35,8 +35,6 @@
 #include <format.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdTags::CmdTags ()
 {
@@ -60,10 +58,10 @@ int CmdTags::execute (std::string& output)
   std::stringstream out;
 
   // Get all the tasks.
-  auto tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 
-  if (context.config.getBoolean ("list.all.tags"))
-    for (auto& task : context.tdb2.completed.get_tasks ())
+  if (Context::getContext ().config.getBoolean ("list.all.tags"))
+    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
       tasks.push_back (task);
 
   int quantity = tasks.size ();
@@ -89,20 +87,20 @@ int CmdTags::execute (std::string& output)
   {
     // Render a list of tags names from the map.
     Table view;
-    view.width (context.getWidth ());
+    view.width (Context::getContext ().getWidth ());
     view.add ("Tag");
     view.add ("Count", false);
     setHeaderUnderline (view);
 
     Color bold;
-    if (context.color ())
+    if (Context::getContext ().color ())
       bold = Color ("bold");
 
     bool special = false;
     for (auto& i : unique)
     {
       // Highlight the special tags.
-      special = (context.color () &&
+      special = (Context::getContext ().color () &&
                  (i.first == "nocolor" ||
                   i.first == "nonag"   ||
                   i.first == "nocal"   ||
@@ -118,20 +116,20 @@ int CmdTags::execute (std::string& output)
         << optionalBlankLine ();
 
     if (unique.size () == 1)
-      context.footnote ("1 tag");
+      Context::getContext ().footnote ("1 tag");
     else
-      context.footnote (format ("{1} tags", unique.size ()));
+      Context::getContext ().footnote (format ("{1} tags", unique.size ()));
 
     if (quantity == 1)
-      context.footnote ("(1 task)");
+      Context::getContext ().footnote ("(1 task)");
     else
-      context.footnote (format ("({1} tasks)", quantity));
+      Context::getContext ().footnote (format ("({1} tasks)", quantity));
 
     out << '\n';
   }
   else
   {
-    context.footnote ("No tags.");
+    Context::getContext ().footnote ("No tags.");
     rc = 1;
   }
 
@@ -159,10 +157,10 @@ CmdCompletionTags::CmdCompletionTags ()
 int CmdCompletionTags::execute (std::string& output)
 {
   // Get all the tasks.
-  auto tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 
-  if (context.config.getBoolean ("complete.all.tags"))
-    for (auto& task : context.tdb2.completed.get_tasks ())
+  if (Context::getContext ().config.getBoolean ("complete.all.tags"))
+    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
       tasks.push_back (task);
 
   // Apply filter.

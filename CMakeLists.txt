@@ -11,6 +11,13 @@ project (task)
 set (PROJECT_VERSION "2.5.2")
 include (CXXSniffer)
 
+OPTION (ENABLE_WASM "Enable 'wasm' support" OFF)
+
+if (ENABLE_WASM)
+  message ("Enabling WASM support.")
+  set(CMAKE_EXECUTABLE_SUFFIX ".js")
+endif (ENABLE_WASM)
+
 OPTION (ENABLE_SYNC "Enable 'task sync' support" ON)
 
 if (ENABLE_SYNC)

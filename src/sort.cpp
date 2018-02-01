@@ -35,8 +35,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Context context;
-
 static std::vector <Task>* global_data = NULL;
 static std::vector <std::string> global_keys;
 static bool sort_compare (int, int);
@@ -58,7 +56,7 @@ void sort_tasks (
   if (order.size ())
     std::stable_sort (order.begin (), order.end (), sort_compare);
 
-  context.time_sort_us += timer.total_us ();
+  Context::getContext ().time_sort_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +77,7 @@ static bool sort_compare (int left, int right)
 
   for (auto& k : global_keys)
   {
-    context.decomposeSortField (k, field, ascending, breakIndicator);
+    Context::getContext ().decomposeSortField (k, field, ascending, breakIndicator);
 
     // Urgency.
     if (field == "urgency")
@@ -170,8 +168,8 @@ static bool sort_compare (int left, int right)
         return !ascending;
 
       // Sort on the first dependency.
-      left_number  = context.tdb2.id (left_string.substr (0, 36));
-      right_number = context.tdb2.id (right_string.substr (0, 36));
+      left_number  = Context::getContext ().tdb2.id (left_string.substr (0, 36));
+      right_number = Context::getContext ().tdb2.id (right_string.substr (0, 36));
 
       if (left_number == right_number)
         continue;
@@ -196,7 +194,7 @@ static bool sort_compare (int left, int right)
     }
 
     // UDAs.
-    else if ((column = context.columns[field]) != NULL)
+    else if ((column = Context::getContext ().columns[field]) != NULL)
     {
       std::string type = column->type ();
       if (type == "numeric")

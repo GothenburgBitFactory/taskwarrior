@@ -42,8 +42,6 @@
 #define STRING_CMD_HISTORY_COMP      "Completed"
 #define STRING_CMD_HISTORY_DEL       "Deleted"
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 template<class HistoryStrategy>
 CmdHistoryBase<HistoryStrategy>::CmdHistoryBase ()
@@ -66,21 +64,21 @@ CmdHistoryBase<HistoryStrategy>::CmdHistoryBase ()
 template<class HistoryStrategy>
 void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
 {
-  auto widthOfBar = context.getWidth () - HistoryStrategy::labelWidth;
+  auto widthOfBar = Context::getContext ().getWidth () - HistoryStrategy::labelWidth;
 
   // Now build the view.
   Table view;
   setHeaderUnderline (view);
-  view.width (context.getWidth ());
+  view.width (Context::getContext ().getWidth ());
 
   HistoryStrategy::setupTableDates (view);
 
   view.add ("Number Added/Completed/Deleted", true, false); // Fixed.
 
-  Color color_add    (context.config.get ("color.history.add"));
-  Color color_done   (context.config.get ("color.history.done"));
-  Color color_delete (context.config.get ("color.history.delete"));
-  Color label        (context.config.get ("color.label"));
+  Color color_add    (Context::getContext ().config.get ("color.history.add"));
+  Color color_done   (Context::getContext ().config.get ("color.history.done"));
+  Color color_delete (Context::getContext ().config.get ("color.history.delete"));
+  Color label        (Context::getContext ().config.get ("color.label"));
 
   // Determine the longest line, and the longest "added" line.
   auto maxAddedLine = 0;
@@ -121,7 +119,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i.first]) / maxLine;
 
       std::string bar;
-      if (context.color ())
+      if (Context::getContext ().color ())
       {
         std::string aBar;
         if (addedGroup[i.first])
@@ -173,7 +171,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
         << view.render ()
         << '\n';
 
-    if (context.color ())
+    if (Context::getContext ().color ())
       out << format ("Legend: {1}, {2}, {3}",
                      color_add.colorize (STRING_CMD_HISTORY_ADDED),
                      color_done.colorize (STRING_CMD_HISTORY_COMP),
@@ -185,7 +183,7 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
   }
   else
   {
-    context.footnote ("No tasks.");
+    Context::getContext ().footnote ("No tasks.");
     rc = 1;
   }
 
@@ -198,7 +196,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
 {
   Table view;
   setHeaderUnderline (view);
-  view.width (context.getWidth ());
+  view.width (Context::getContext ().getWidth ());
 
   HistoryStrategy::setupTableDates (view);
 
@@ -245,7 +243,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
     }
 
     Color net_color;
-    if (context.color () && net)
+    if (Context::getContext ().color () && net)
       net_color = net > 0
                     ? Color (Color::red)
                     : Color (Color::green);
@@ -260,7 +258,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
     row = view.addRow ();
 
     Color row_color;
-    if (context.color ())
+    if (Context::getContext ().color ())
       row_color = Color (Color::nocolor, Color::nocolor, false, true, false);
 
     view.set (row, HistoryStrategy::dateFieldCount - 1, "Average", row_color);
@@ -277,7 +275,7 @@ void CmdHistoryBase<HistoryStrategy>::outputTabular (std::string& output)
         << '\n';
   else
   {
-    context.footnote ("No tasks.");
+    Context::getContext ().footnote ("No tasks.");
     rc = 1;
   }
 

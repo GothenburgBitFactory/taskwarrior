@@ -47,6 +47,9 @@ public:
   Context (const Context&);
   Context& operator= (const Context&);
 
+  static Context& getContext ();
+  static void setContext (Context*);
+
   int initialize (int, const char**);  // all startup
   int run ();
   int dispatch (std::string&);         // command handler dispatch
@@ -75,6 +78,8 @@ private:
   void updateVerbosity ();
   void loadAliases ();
   void propagateDebug ();
+
+  static Context* context;
 
 public:
   CLI2                                cli2                {};

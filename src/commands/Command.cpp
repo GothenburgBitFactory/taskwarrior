@@ -90,8 +90,6 @@
 #include <ColProject.h>
 #include <ColDue.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 void Command::factory (std::map <std::string, Command*>& all)
 {
@@ -174,7 +172,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 
   // Instantiate a command object for each custom report.
   std::vector <std::string> reports;
-  for (auto &i : context.config)
+  for (auto &i : Context::getContext ().config)
   {
     if (i.first.substr (0, 7) == "report.")
     {
@@ -194,7 +192,7 @@ void Command::factory (std::map <std::string, Command*>& all)
     c = new CmdCustom (
               report,
               "task <filter> " + report,
-              context.config.get ("report." + report + ".description"));
+              Context::getContext ().config.get ("report." + report + ".description"));
 
     all[c->keyword ()] = c;
   }
@@ -334,8 +332,8 @@ bool Command::permission (
 
   // What remains are write commands that have not yet selected 'all' or 'quit'.
   // Describe the task.
-  bool         confirmation = context.config.getBoolean ("confirmation");
-  unsigned int bulk         = context.config.getInteger ("bulk");
+  bool         confirmation = Context::getContext ().config.getBoolean ("confirmation");
+  unsigned int bulk         = Context::getContext ().config.getInteger ("bulk");
 
   // Quantity 1 modifications have optional confirmation, and only (y/n).
   if (quantity == 1)
@@ -353,7 +351,7 @@ bool Command::permission (
   if ((bulk == 0 || quantity < bulk) && (!_needs_confirm || !confirmation))
     return true;
 
-  if (context.verbose ("blank") && !_first_iteration)
+  if (Context::getContext ().verbose ("blank") && !_first_iteration)
     std::cout << '\n';
   int answer = confirm4 (question);
   _first_iteration = false;

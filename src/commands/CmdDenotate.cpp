@@ -38,8 +38,6 @@
 #define STRING_CMD_DENO_1            "Denotated {1} task."
 #define STRING_CMD_DENO_N            "Denotated {1} tasks."
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdDenotate::CmdDenotate ()
 {
@@ -61,7 +59,7 @@ int CmdDenotate::execute (std::string&)
 {
   auto rc = 0;
   auto count = 0;
-  auto sensitive = context.config.getBoolean ("search.case.sensitive");
+  auto sensitive = Context::getContext ().config.getBoolean ("search.case.sensitive");
 
   // Apply filter.
   Filter filter;
@@ -69,13 +67,13 @@ int CmdDenotate::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
   // Extract all the ORIGINAL MODIFICATION args as simple text patterns.
   std::string pattern = "";
-  for (auto& a : context.cli2._args)
+  for (auto& a : Context::getContext ().cli2._args)
   {
     if (a.hasTag ("MISCELLANEOUS"))
     {
@@ -136,9 +134,9 @@ int CmdDenotate::execute (std::string&)
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         ++count;
-        context.tdb2.modify (task);
+        Context::getContext ().tdb2.modify (task);
         feedback_affected (format ("Found annotation '{1}' and deleted it.", anno));
-        if (context.verbose ("project"))
+        if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task, false);
       }
       else
@@ -159,7 +157,7 @@ int CmdDenotate::execute (std::string&)
   // Now list the project changes.
   for (const auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_DENO_1 : STRING_CMD_DENO_N, count);
   return rc;

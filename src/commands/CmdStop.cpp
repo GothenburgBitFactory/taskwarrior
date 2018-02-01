@@ -32,8 +32,6 @@
 #include <main.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdStop::CmdStop ()
 {
@@ -62,7 +60,7 @@ int CmdStop::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -83,17 +81,17 @@ int CmdStop::execute (std::string&)
       task.modify (Task::modAnnotate);
       task.remove ("start");
 
-      if (context.config.getBoolean ("journal.time"))
-        task.addAnnotation (context.config.get ("journal.time.stop.annotation"));
+      if (Context::getContext ().config.getBoolean ("journal.time"))
+        task.addAnnotation (Context::getContext ().config.get ("journal.time.stop.annotation"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
-        context.tdb2.modify (task);
+        Context::getContext ().tdb2.modify (task);
         ++count;
         feedback_affected ("Stopping task {1} '{2}'.", task);
         dependencyChainOnStart (task);
-        if (context.verbose ("project"))
+        if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task, false);
       }
       else
@@ -117,7 +115,7 @@ int CmdStop::execute (std::string&)
   // Now list the project changes.
   for (auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ?  "Stopped {1} task." : "Stopped {1} tasks.", count);
   return rc;

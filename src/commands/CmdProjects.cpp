@@ -35,8 +35,6 @@
 #include <util.h>
 #include <main.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdProjects::CmdProjects ()
 {
@@ -60,10 +58,10 @@ int CmdProjects::execute (std::string& output)
 
   // Get all the tasks.
   handleRecurrence ();
-  auto tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 
-  if (context.config.getBoolean ("list.all.projects"))
-    for (auto& task : context.tdb2.completed.get_tasks ())
+  if (Context::getContext ().config.getBoolean ("list.all.projects"))
+    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
       tasks.push_back (task);
 
   // Apply the filter.
@@ -105,7 +103,7 @@ int CmdProjects::execute (std::string& output)
   {
     // Render a list of project names from the map.
     Table view;
-    view.width (context.getWidth ());
+    view.width (Context::getContext ().getWidth ());
     view.add ("Project");
     view.add ("Tasks", false);
     setHeaderUnderline (view);
@@ -178,10 +176,10 @@ int CmdCompletionProjects::execute (std::string& output)
 {
   // Get all the tasks.
   handleRecurrence ();
-  auto tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 
-  if (context.config.getBoolean ("list.all.projects"))
-    for (auto& task : context.tdb2.completed.get_tasks ())
+  if (Context::getContext ().config.getBoolean ("list.all.projects"))
+    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
       tasks.push_back (task);
 
   // Apply the filter.
