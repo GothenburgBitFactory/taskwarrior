@@ -32,8 +32,6 @@
 
 #define STRING_LEGACY_PRIORITY "Legacy attribute found.  Please change '{1}' to '{2}'."
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 void legacyColumnMap (std::string& name)
 {
@@ -57,7 +55,7 @@ void legacyColumnMap (std::string& name)
   auto found = legacyMap.find (name);
   if (found != legacyMap.end ())
   {
-    context.footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
+    Context::getContext ().footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
     name = found->second;
   }
 }
@@ -85,7 +83,7 @@ void legacySortColumnMap (std::string& name)
   auto found = legacyMap.find (name);
   if (found != legacyMap.end ())
   {
-    context.footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
+    Context::getContext ().footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
     name = found->second;
   }
 }
@@ -94,7 +92,7 @@ void legacySortColumnMap (std::string& name)
 std::string legacyCheckForDeprecatedVariables ()
 {
   std::vector <std::string> deprecated;
-  for (auto& it : context.config)
+  for (auto& it : Context::getContext ().config)
   {
     // 2014-07-04: report.*.limit removed.
     // 2016-02-24: alias._query removed.
@@ -135,12 +133,12 @@ std::string legacyCheckForDeprecatedVariables ()
 std::string legacyCheckForDeprecatedColumns ()
 {
   std::vector <std::string> deprecated;
-  for (auto& it : context.config)
+  for (auto& it : Context::getContext ().config)
   {
     if (it.first.find ("report") == 0)
     {
       // Deprecated in 2.0.0
-      std::string value = context.config.get (it.first);
+      std::string value = Context::getContext ().config.get (it.first);
       if (value.find ("entry_time") != std::string::npos ||
           value.find ("start_time") != std::string::npos ||
           value.find ("end_time")   != std::string::npos)
@@ -156,7 +154,7 @@ std::string legacyCheckForDeprecatedColumns ()
     out << "Your .taskrc file contains reports with deprecated columns.  Please check for entry_time, start_time or end_time in:\n";
 
     for (const auto& dep : deprecated)
-      out << "  " << dep << "=" << context.config.get (dep) << "\n";
+      out << "  " << dep << "=" << Context::getContext ().config.get (dep) << "\n";
 
     out << "\n";
   }

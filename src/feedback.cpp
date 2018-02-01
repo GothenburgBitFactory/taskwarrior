@@ -40,8 +40,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Context context;
-
 static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -242,16 +240,16 @@ std::string taskInfoDifferences (
 ////////////////////////////////////////////////////////////////////////////////
 std::string renderAttribute (const std::string& name, const std::string& value, const std::string& format /* = "" */)
 {
-  if (context.columns.find (name) != context.columns.end ())
+  if (Context::getContext ().columns.find (name) != Context::getContext ().columns.end ())
   {
-    Column* col = context.columns[name];
+    Column* col = Context::getContext ().columns[name];
     if (col                    &&
         col->type () == "date" &&
         value != "")
     {
       Datetime d ((time_t)strtol (value.c_str (), NULL, 10));
       if (format == "")
-        return d.toString (context.config.get ("dateformat"));
+        return d.toString (Context::getContext ().config.get ("dateformat"));
 
       return d.toString (format);
     }
@@ -265,7 +263,7 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
 //    <string>
 void feedback_affected (const std::string& effect)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
     std::cout << effect << "\n";
 }
 
@@ -277,7 +275,7 @@ void feedback_affected (const std::string& effect)
 //    {1}    Quantity
 void feedback_affected (const std::string& effect, int quantity)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
     std::cout << format (effect, quantity)
               << "\n";
 }
@@ -291,7 +289,7 @@ void feedback_affected (const std::string& effect, int quantity)
 //    {2}    Description
 void feedback_affected (const std::string& effect, const Task& task)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
   {
     std::cout << format (effect,
                          task.identifier (true),
@@ -346,7 +344,7 @@ void feedback_reserved_tags (const std::string& tag)
 // Implements feedback when adding special tags to a task.
 void feedback_special_tags (const Task& task, const std::string& tag)
 {
-  if (context.verbose ("special"))
+  if (Context::getContext ().verbose ("special"))
   {
     std::string msg;
     std::string explanation;
@@ -372,7 +370,7 @@ void feedback_special_tags (const Task& task, const std::string& tag)
 //    Unblocked <id> '<description>'
 void feedback_unblocked (const Task& task)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
   {
     // Get a list of tasks that depended on this task.
     auto blocked = dependencyGetBlocked (task);
@@ -404,18 +402,18 @@ void feedback_unblocked (const Task& task)
 ///////////////////////////////////////////////////////////////////////////////
 void feedback_backlog ()
 {
-  if (context.config.get ("taskd.server") != "" &&
-      context.verbose ("sync"))
+  if (Context::getContext ().config.get ("taskd.server") != "" &&
+      Context::getContext ().verbose ("sync"))
   {
     int count = 0;
-    std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
+    std::vector <std::string> lines = Context::getContext ().tdb2.backlog.get_lines ();
     for (auto& line : lines)
       if ((line)[0] == '{')
         ++count;
 
     if (count)
-      context.footnote (format (count > 1 ?  "There are {1} local changes.  Sync required."
-                                          : "There is {1} local change.  Sync required.", count));
+      Context::getContext ().footnote (format (count > 1 ?  "There are {1} local changes.  Sync required."
+                                                         : "There is {1} local change.  Sync required.", count));
   }
 }
 
@@ -434,7 +432,7 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     // Count pending and done tasks, for this project.
     int count_pending = 0;
     int count_done = 0;
-    std::vector <Task> all = context.tdb2.all_tasks ();
+    std::vector <Task> all = Context::getContext ().tdb2.all_tasks ();
     countTasks (all, project, count_pending, count_done);
 
     // count_done  count_pending  percentage
@@ -483,7 +481,7 @@ std::string onExpiration (Task& task)
 {
   std::stringstream msg;
 
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
     msg << format ("Task {1} '{2}' expired and was deleted.",
                    task.identifier (true),
                    task.get ("description"));

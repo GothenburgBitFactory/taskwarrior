@@ -34,7 +34,6 @@
 #include <Filter.h>
 #include <format.h>
 
-extern Context context;
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +54,7 @@ ColumnTypeDate::ColumnTypeDate ()
 
   Datetime now;
   now -= 125; // So that "age" is non-zero.
-  _examples = {now.toString (context.config.get ("dateformat")),
+  _examples = {now.toString (Context::getContext ().config.get ("dateformat")),
                format (now.toJulian (), 13, 12),
                now.toEpochString (),
                now.toISO (),
@@ -81,11 +80,11 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
       //   rc.report.<report>.dateformat
       //   rc.dateformat.report
       //   rc.dateformat.
-      std::string format = context.config.get ("report." + _report + ".dateformat");
+      std::string format = Context::getContext ().config.get ("report." + _report + ".dateformat");
       if (format == "")
-        format = context.config.get ("dateformat.report");
+        format = Context::getContext ().config.get ("dateformat.report");
       if (format == "")
-        format = context.config.get ("dateformat");
+        format = Context::getContext ().config.get ("dateformat");
 
       minimum = maximum = Datetime::length (format);
     }
@@ -149,12 +148,12 @@ void ColumnTypeDate::render (
       //   rc.report.<report>.dateformat
       //   rc.dateformat.report
       //   rc.dateformat
-      std::string format = context.config.get ("report." + _report + ".dateformat");
+      std::string format = Context::getContext ().config.get ("report." + _report + ".dateformat");
       if (format == "")
       {
-        format = context.config.get ("dateformat.report");
+        format = Context::getContext ().config.get ("dateformat.report");
         if (format == "")
-          format = context.config.get ("dateformat");
+          format = Context::getContext ().config.get ("dateformat");
       }
 
       renderStringLeft (lines, width, color, date.toString (format));
@@ -227,7 +226,7 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
   std::string label = "  [1;37;43mMODIFICATION[0m ";
   if (evaluatedValue.type () == Variant::type_duration)
   {
-    context.debug (label + _name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + '\'');
+    Context::getContext ().debug (label + _name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + '\'');
     Datetime date_now;
     Variant now (date_now.toEpoch (), Variant::type_date);
     evaluatedValue += now;
@@ -235,7 +234,7 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
   else
   {
     evaluatedValue.cast (Variant::type_date);
-    context.debug (label + _name + " <-- '" + format ("{1}", evaluatedValue.get_date ()) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + '\'');
+    Context::getContext ().debug (label + _name + " <-- '" + format ("{1}", evaluatedValue.get_date ()) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + '\'');
   }
 
   // If a date doesn't parse (2/29/2014) then it evaluates to zero.

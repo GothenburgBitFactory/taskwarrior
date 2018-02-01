@@ -36,8 +36,6 @@
 
 #define STRING_COLUMN_LABEL_DEP "Depends"
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDepends::ColumnDepends ()
 {
@@ -49,7 +47,7 @@ ColumnDepends::ColumnDepends ()
                 "indicator"};
   _examples  = {"1 2 10",
                 "[3]",
-                context.config.get ("dependency.indicator")};
+                Context::getContext ().config.get ("dependency.indicator")};
 
   _hyphenate = false;
 }
@@ -61,7 +59,7 @@ void ColumnDepends::setStyle (const std::string& value)
 {
   Column::setStyle (value);
 
-       if (_style == "indicator" && _label == STRING_COLUMN_LABEL_DEP) _label = _label.substr (0, context.config.get ("dependency.indicator").length ());
+       if (_style == "indicator" && _label == STRING_COLUMN_LABEL_DEP) _label = _label.substr (0, Context::getContext ().config.get ("dependency.indicator").length ());
   else if (_style == "count"     && _label == STRING_COLUMN_LABEL_DEP) _label = "Dep";
 }
 
@@ -74,7 +72,7 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
   {
     if (_style == "indicator")
     {
-      minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
+      minimum = maximum = utf8_width (Context::getContext ().config.get ("dependency.indicator"));
     }
 
     else if (_style == "count")
@@ -117,7 +115,7 @@ void ColumnDepends::render (
   {
     if (_style == "indicator")
     {
-      renderStringRight (lines, width, color, context.config.get ("dependency.indicator"));
+      renderStringRight (lines, width, color, Context::getContext ().config.get ("dependency.indicator"));
     }
 
     else if (_style == "count")

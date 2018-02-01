@@ -29,8 +29,6 @@
 #include <Filter.h>
 #include <Eval.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdCalc::CmdCalc ()
 {
@@ -52,17 +50,17 @@ int CmdCalc::execute (std::string& output)
 {
   // Configurable infix/postfix
   bool infix {true};
-  if (context.config.get ("expressions") == "postfix")
+  if (Context::getContext ().config.get ("expressions") == "postfix")
     infix = false;
 
   // Create an evaluator with DOM access.
   Eval e;
   e.addSource (domSource);
-  e.debug (context.config.getBoolean ("debug"));
+  e.debug (Context::getContext ().config.getBoolean ("debug"));
 
   // Compile all the args into one expression.
   std::string expression;
-  for (const auto& word : context.cli2.getWords ())
+  for (const auto& word : Context::getContext ().cli2.getWords ())
     expression += word + ' ';
 
   // Evaluate according to preference.

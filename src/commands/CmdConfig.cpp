@@ -33,8 +33,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdConfig::CmdConfig ()
 {
@@ -59,7 +57,7 @@ bool CmdConfig::setConfigVariable (
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
-  File::read (context.config.file (), contents);
+  File::read (Context::getContext ().config.file (), contents);
 
   auto found = false;
   auto change = false;
@@ -76,7 +74,7 @@ bool CmdConfig::setConfigVariable (
     {
       found = true;
       if (!confirmation ||
-          confirm (format ("Are you sure you want to change the value of '{1}' from '{2}' to '{3}'?", name, context.config.get (name), value)))
+          confirm (format ("Are you sure you want to change the value of '{1}' from '{2}' to '{3}'?", name, Context::getContext ().config.get (name), value)))
       {
         line = name + '=' + json::encode (value);
 
@@ -98,7 +96,7 @@ bool CmdConfig::setConfigVariable (
   }
 
   if (change)
-    File::write (context.config.file (), contents);
+    File::write (Context::getContext ().config.file (), contents);
 
   return change;
 }
@@ -108,7 +106,7 @@ int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
-  File::read (context.config.file (), contents);
+  File::read (Context::getContext ().config.file (), contents);
 
   auto found = false;
   auto change = false;
@@ -143,7 +141,7 @@ int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /
   }
 
   if (change)
-    File::write (context.config.file (), contents);
+    File::write (Context::getContext ().config.file (), contents);
 
   if (change && found)
     return 0;
@@ -160,7 +158,7 @@ int CmdConfig::execute (std::string& output)
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
-  std::vector <std::string> words = context.cli2.getWords ();
+  std::vector <std::string> words = Context::getContext ().cli2.getWords ();
 
   // Support:
   //   task config name value    # set name to value
@@ -168,7 +166,7 @@ int CmdConfig::execute (std::string& output)
   //   task config name          # remove name
   if (words.size ())
   {
-    auto confirmation = context.config.getBoolean ("confirmation");
+    auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
     auto found = false;
 
     auto name = words[0];
@@ -214,7 +212,7 @@ int CmdConfig::execute (std::string& output)
       // Show feedback depending on whether .taskrc has been rewritten
       if (change)
       {
-        out << format ("Config file {1} modified.", context.config.file ())
+        out << format ("Config file {1} modified.", Context::getContext ().config.file ())
             << '\n';
       }
       else
@@ -250,7 +248,7 @@ CmdCompletionConfig::CmdCompletionConfig ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionConfig::execute (std::string& output)
 {
-  auto configs = context.config.all ();
+  auto configs = Context::getContext ().config.all ();
   std::sort (configs.begin (), configs.end ());
 
   for (const auto& config : configs)

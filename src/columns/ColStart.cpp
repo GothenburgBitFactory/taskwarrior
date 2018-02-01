@@ -29,8 +29,6 @@
 #include <Context.h>
 #include <utf8.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::ColumnStart ()
 {
@@ -38,7 +36,7 @@ ColumnStart::ColumnStart ()
   _label = "Started";
 
   _styles.push_back ("active");
-  _examples.push_back (context.config.get ("active.indicator"));
+  _examples.push_back (Context::getContext ().config.get ("active.indicator"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +58,7 @@ void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   if (task.has (_name))
   {
     if (_style == "active")
-      minimum = maximum = utf8_width (context.config.get ("active.indicator"));
+      minimum = maximum = utf8_width (Context::getContext ().config.get ("active.indicator"));
     else
       ColumnTypeDate::measure (task, minimum, maximum);
 
@@ -80,7 +78,7 @@ void ColumnStart::render (
     if (_style == "active")
     {
       if (! task.has ("end"))
-        renderStringRight (lines, width, color, context.config.get ("active.indicator"));
+        renderStringRight (lines, width, color, Context::getContext ().config.get ("active.indicator"));
     }
     else
       ColumnTypeDate::render (lines, task, width, color);

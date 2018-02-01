@@ -36,8 +36,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdVersion::CmdVersion ()
 {
@@ -60,7 +58,7 @@ int CmdVersion::execute (std::string& output)
   std::stringstream out;
 
   // Create a table for the disclaimer.
-  int width = context.getWidth ();
+  int width = Context::getContext ().getWidth ();
   Table disclaimer;
   disclaimer.width (width);
   disclaimer.add ("");
@@ -73,7 +71,7 @@ int CmdVersion::execute (std::string& output)
   link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org");
 
   Color bold;
-  if (context.color ())
+  if (Context::getContext ().color ())
     bold = Color ("bold");
 
   out << '\n'

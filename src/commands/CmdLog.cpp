@@ -30,8 +30,6 @@
 #include <format.h>
 #include <main.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdLog::CmdLog ()
 {
@@ -64,12 +62,12 @@ int CmdLog::execute (std::string& output)
   if (task.has ("wait"))
     throw std::string ("You cannot log waiting tasks.");
 
-  context.tdb2.add (task);
+  Context::getContext ().tdb2.add (task);
 
-  if (context.verbose ("project"))
-    context.footnote (onProjectChange (task));
+  if (Context::getContext ().verbose ("project"))
+    Context::getContext ().footnote (onProjectChange (task));
 
-  if (context.verbose ("new-uuid"))
+  if (Context::getContext ().verbose ("new-uuid"))
     output = format ("Logged task {1}.\n", task.get ("uuid"));
 
   return 0;

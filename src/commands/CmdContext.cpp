@@ -36,8 +36,6 @@
 #include <shared.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdContext::CmdContext ()
 {
@@ -60,7 +58,7 @@ int CmdContext::execute (std::string& output)
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
-  auto words = context.cli2.getWords ();
+  auto words = Context::getContext ().cli2.getWords ();
   if (words.size () > 0)
   {
     auto subcommand = words[0];
@@ -110,7 +108,7 @@ std::vector <std::string> CmdContext::getContexts ()
 {
   std::vector <std::string> contexts;
 
-  for (auto& name : context.config)
+  for (auto& name : Context::getContext ().config)
     if (name.first.substr (0, 8) == "context.")
       contexts.push_back (name.first.substr (8));
 
@@ -129,7 +127,7 @@ std::vector <std::string> CmdContext::getContexts ()
 //
 void CmdContext::defineContext (const std::vector <std::string>& words, std::stringstream& out)
 {
-  auto confirmation = context.config.getBoolean ("confirmation");
+  auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
 
   if (words.size () > 2)
   {
@@ -145,12 +143,12 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     // Check if the value is a proper filter by filtering current pending.data
     Filter filter;
     std::vector <Task> filtered;
-    auto pending = context.tdb2.pending.get_tasks ();
+    auto pending = Context::getContext ().tdb2.pending.get_tasks ();
 
     try
     {
       // This result is not used, and is just to check validity.
-      context.cli2.addFilter (value);
+      Context::getContext ().cli2.addFilter (value);
       filter.subset (pending, filtered);
     }
     catch (std::string exception)
@@ -193,11 +191,11 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
     // Delete the specified context
     auto name = "context." + words[1];
 
-    auto confirmation = context.config.getBoolean ("confirmation");
+    auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
     auto rc = CmdConfig::unsetConfigVariable(name, confirmation);
 
     // If the currently set context was deleted, unset it
-    if (context.config.get ("context") == words[1])
+    if (Context::getContext ().config.get ("context") == words[1])
       CmdConfig::unsetConfigVariable("context", false);
 
     // Output feedback
@@ -226,13 +224,13 @@ void CmdContext::listContexts (std::stringstream& out)
     std::sort (contexts.begin (), contexts.end ());
 
     Table table;
-    table.width (context.getWidth ());
+    table.width (Context::getContext ().getWidth ());
     table.add ("Name");
     table.add ("Definition");
     table.add ("Active");
     setHeaderUnderline (table);
 
-    std::string activeContext = context.config.get ("context");
+    std::string activeContext = Context::getContext ().config.get ("context");
 
     for (auto& userContext : contexts)
     {
@@ -242,7 +240,7 @@ void CmdContext::listContexts (std::stringstream& out)
 
       int row = table.addRow ();
       table.set (row, 0, userContext);
-      table.set (row, 1, context.config.get ("context." + userContext));
+      table.set (row, 1, Context::getContext ().config.get ("context." + userContext));
       table.set (row, 2, active);
     }
 
@@ -294,13 +292,13 @@ void CmdContext::setContext (const std::vector <std::string>& words, std::string
 //
 void CmdContext::showContext (std::stringstream& out)
 {
-  auto currentContext = context.config.get ("context");
+  auto currentContext = Context::getContext ().config.get ("context");
 
   if (currentContext == "")
     out << "No context is currently applied.\n";
   else
   {
-    std::string currentFilter = context.config.get ("context." + currentContext);
+    std::string currentFilter = Context::getContext ().config.get ("context." + currentContext);
     out << format ("Context '{1}' with filter '{2}' is currently applied.\n", currentContext, currentFilter);
   }
 }

@@ -31,8 +31,6 @@
 #include <Context.h>
 #include <Command.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdZshAttributes::CmdZshAttributes ()
 {
@@ -53,7 +51,7 @@ CmdZshAttributes::CmdZshAttributes ()
 int CmdZshAttributes::execute (std::string& output)
 {
   // Get a list of all columns, sort them.
-  auto columns = context.getColumns ();
+  auto columns = Context::getContext ().getColumns ();
   std::sort (columns.begin (), columns.end ());
 
   std::stringstream out;

@@ -33,8 +33,6 @@
 #include <format.h>
 #include <main.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdPrepend::CmdPrepend ()
 {
@@ -63,7 +61,7 @@ int CmdPrepend::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -85,33 +83,33 @@ int CmdPrepend::execute (std::string&)
 
     if (permission (taskDifferences (before, task) + question, filtered.size ()))
     {
-      context.tdb2.modify (task);
+      Context::getContext ().tdb2.modify (task);
       ++count;
       feedback_affected ("Prepending to task {1} '{2}'.", task);
-      if (context.verbose ("project"))
+      if (Context::getContext ().verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
       // Prepend to siblings.
       if (task.has ("parent"))
       {
-        if ((context.config.get ("recurrence.confirmation") == "prompt"
+        if ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
              && confirm ("This is a recurring task.  Do you want to prepend to all pending recurrences of this same task?")) ||
-            context.config.getBoolean ("recurrence.confirmation"))
+            Context::getContext ().config.getBoolean ("recurrence.confirmation"))
         {
-          std::vector <Task> siblings = context.tdb2.siblings (task);
+          std::vector <Task> siblings = Context::getContext ().tdb2.siblings (task);
           for (auto& sibling : siblings)
           {
             sibling.modify (Task::modPrepend, true);
-            context.tdb2.modify (sibling);
+            Context::getContext ().tdb2.modify (sibling);
             ++count;
             feedback_affected ("Prepending to recurring task {1} '{2}'.", sibling);
           }
 
           // Prepend to the parent
           Task parent;
-          context.tdb2.get (task.get ("parent"), parent);
+          Context::getContext ().tdb2.get (task.get ("parent"), parent);
           parent.modify (Task::modPrepend, true);
-          context.tdb2.modify (parent);
+          Context::getContext ().tdb2.modify (parent);
         }
       }
     }
@@ -127,7 +125,7 @@ int CmdPrepend::execute (std::string&)
   // Now list the project changes.
   for (auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ? "Prepended {1} task." : "Prepended {1} tasks.", count);
   return rc;

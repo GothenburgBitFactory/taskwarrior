@@ -33,8 +33,6 @@
 #include <shared.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdImport::CmdImport ()
 {
@@ -58,7 +56,7 @@ int CmdImport::execute (std::string&)
   auto count = 0;
 
   // Get filenames from command line arguments.
-  auto words = context.cli2.getWords ();
+  auto words = Context::getContext ().cli2.getWords ();
   if (! words.size () ||
       (words.size () == 1 && words[0] == "-"))
   {
@@ -91,7 +89,7 @@ int CmdImport::execute (std::string&)
     }
   }
 
-  context.footnote (format ("Imported {1} tasks.", count));
+  Context::getContext ().footnote (format ("Imported {1} tasks.", count));
   return rc;
 }
 
@@ -177,7 +175,7 @@ void CmdImport::importSingleTask (json::object* obj)
 
   // Check whether the imported task is new or a modified existing task.
   Task before;
-  if (context.tdb2.get (task.get ("uuid"), before))
+  if (Context::getContext ().tdb2.get (task.get ("uuid"), before))
   {
     // We need to neglect updates from attributes with dynamic defaults
     // unless they have been explicitly specified on import.
@@ -214,7 +212,7 @@ void CmdImport::importSingleTask (json::object* obj)
   }
   else
   {
-    context.tdb2.add (task);
+    Context::getContext ().tdb2.add (task);
     std::cout << " add  ";
   }
 

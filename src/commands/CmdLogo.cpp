@@ -29,8 +29,6 @@
 #include <Context.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdLogo::CmdLogo ()
 {
@@ -83,10 +81,10 @@ int CmdLogo::execute (std::string& output)
     ""
   };
 
-  if (! context.color ())
+  if (! Context::getContext ().color ())
     throw std::string ("The logo command requires that color support is enabled.");
 
-  std::string indent (context.config.getInteger ("indent.report"), ' ');
+  std::string indent (Context::getContext ().config.getInteger ("indent.report"), ' ');
   output += optionalBlankLine ();
 
   for (int line = 0; data[line][0]; ++line)

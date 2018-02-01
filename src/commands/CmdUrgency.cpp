@@ -34,8 +34,6 @@
 #include <main.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdUrgency::CmdUrgency ()
 {
@@ -62,7 +60,7 @@ int CmdUrgency::execute (std::string& output)
 
   if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 

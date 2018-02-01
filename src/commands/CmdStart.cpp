@@ -33,8 +33,6 @@
 #include <format.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdStart::CmdStart ()
 {
@@ -63,7 +61,7 @@ int CmdStart::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -91,19 +89,19 @@ int CmdStart::execute (std::string&)
         task.setStatus (Task::pending);
       }
 
-      if (context.config.getBoolean ("journal.time"))
-        task.addAnnotation (context.config.get ("journal.time.start.annotation"));
+      if (Context::getContext ().config.getBoolean ("journal.time"))
+        task.addAnnotation (Context::getContext ().config.get ("journal.time.start.annotation"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
-        context.tdb2.modify (task);
+        Context::getContext ().tdb2.modify (task);
         ++count;
         feedback_affected ("Starting task {1} '{2}'.", task);
         if (!nagged)
           nagged = nag (task);
         dependencyChainOnStart (task);
-        if (context.verbose ("project"))
+        if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task, false);
       }
       else
@@ -127,7 +125,7 @@ int CmdStart::execute (std::string&)
   // Now list the project changes.
   for (auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ? "Started {1} task." : "Started {1} tasks.", count);
   return rc;

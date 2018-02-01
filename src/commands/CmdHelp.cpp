@@ -33,8 +33,6 @@
 #include <format.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdHelp::CmdHelp ()
 {
@@ -54,7 +52,7 @@ CmdHelp::CmdHelp ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdHelp::execute (std::string& output)
 {
-  auto words = context.cli2.getWords ();
+  auto words = Context::getContext ().cli2.getWords ();
   if (words.size () == 1 && closeEnough ("usage", words[0]))
     output = '\n'
            + composeUsage ()
@@ -183,7 +181,7 @@ int CmdHelp::execute (std::string& output)
 std::string CmdHelp::composeUsage () const
 {
   Table view;
-  view.width (context.getWidth ());
+  view.width (Context::getContext ().getWidth ());
   view.add ("");
   view.add ("");
   view.add ("");
@@ -196,7 +194,7 @@ std::string CmdHelp::composeUsage () const
 
   // Obsolete method of getting a list of all commands.
   std::vector <std::string> all;
-  for (auto& cmd : context.commands)
+  for (auto& cmd : Context::getContext ().commands)
     all.push_back (cmd.first);
 
   // Sort alphabetically by usage.
@@ -208,8 +206,8 @@ std::string CmdHelp::composeUsage () const
     if (name[0] != '_')
     {
       row = view.addRow ();
-      view.set (row, 1, context.commands[name]->usage ());
-      view.set (row, 2, context.commands[name]->description ());
+      view.set (row, 1, Context::getContext ().commands[name]->usage ());
+      view.set (row, 2, Context::getContext ().commands[name]->description ());
     }
   }
 
@@ -219,8 +217,8 @@ std::string CmdHelp::composeUsage () const
     if (name[0] == '_')
     {
       row = view.addRow ();
-      view.set (row, 1, context.commands[name]->usage ());
-      view.set (row, 2, context.commands[name]->description ());
+      view.set (row, 1, Context::getContext ().commands[name]->usage ());
+      view.set (row, 2, Context::getContext ().commands[name]->description ());
     }
   }
 
@@ -228,7 +226,7 @@ std::string CmdHelp::composeUsage () const
   row = view.addRow ();
   view.set (row, 1, " ");
 
-  for (auto& alias : context.config)
+  for (auto& alias : Context::getContext ().config)
   {
     if (alias.first.substr (0, 6) == "alias.")
     {

@@ -38,8 +38,6 @@
 #include <format.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdStats::CmdStats ()
 {
@@ -62,23 +60,23 @@ int CmdStats::execute (std::string& output)
   int rc = 0;
   std::stringstream out;
 
-  std::string dateformat = context.config.get ("dateformat");
+  std::string dateformat = Context::getContext ().config.get ("dateformat");
 
   // Go get the file sizes.
-  size_t dataSize = context.tdb2.pending._file.size ()
-                  + context.tdb2.completed._file.size ()
-                  + context.tdb2.undo._file.size ()
-                  + context.tdb2.backlog._file.size ();
+  size_t dataSize = Context::getContext ().tdb2.pending._file.size ()
+                  + Context::getContext ().tdb2.completed._file.size ()
+                  + Context::getContext ().tdb2.undo._file.size ()
+                  + Context::getContext ().tdb2.backlog._file.size ();
 
   // Count the undo transactions.
-  std::vector <std::string> undoTxns = context.tdb2.undo.get_lines ();
+  std::vector <std::string> undoTxns = Context::getContext ().tdb2.undo.get_lines ();
   int undoCount = 0;
   for (auto& tx : undoTxns)
     if (tx == "---")
       ++undoCount;
 
   // Count the backlog transactions.
-  std::vector <std::string> backlogTxns = context.tdb2.backlog.get_lines ();
+  std::vector <std::string> backlogTxns = Context::getContext ().tdb2.backlog.get_lines ();
   int backlogCount = 0;
   for (auto& tx : backlogTxns)
     if (tx[0] == '{')
@@ -86,7 +84,7 @@ int CmdStats::execute (std::string& output)
 
   // Get all the tasks.
   Filter filter;
-  std::vector <Task> all = context.tdb2.all_tasks ();
+  std::vector <Task> all = Context::getContext ().tdb2.all_tasks ();
   std::vector <Task> filtered;
   filter.subset (all, filtered);
 
@@ -155,7 +153,7 @@ int CmdStats::execute (std::string& output)
 
   // Create a table for output.
   Table view;
-  view.width (context.getWidth ());
+  view.width (Context::getContext ().getWidth ());
   view.intraPadding (2);
   view.add ("Category");
   view.add ("Data");
@@ -280,9 +278,9 @@ int CmdStats::execute (std::string& output)
   }
 
   // If an alternating row color is specified, notify the table.
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
-    Color alternate (context.config.get ("color.alternate"));
+    Color alternate (Context::getContext ().config.get ("color.alternate"));
     if (alternate.nontrivial ())
     {
       view.colorOdd (alternate);

@@ -31,8 +31,6 @@
 #include <format.h>
 #include <cctype>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRType::ColumnRType ()
 {
@@ -52,7 +50,7 @@ void ColumnRType::setStyle (const std::string& value)
   Column::setStyle (value);
 
   if (_style == "indicator" && _label == "Recurrence type")
-    _label = _label.substr (0, context.config.get ("rtype.indicator").length ());
+    _label = _label.substr (0, Context::getContext ().config.get ("rtype.indicator").length ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

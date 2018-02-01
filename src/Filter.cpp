@@ -35,8 +35,6 @@
 #include <format.h>
 #include <shared.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 // Const iterator that can be derefenced into a Task by domSource.
 static Task dummy;
@@ -61,10 +59,10 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   Timer timer;
   _startCount = (int) input.size ();
 
-  context.cli2.prepareFilter ();
+  Context::getContext ().cli2.prepareFilter ();
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
-  for (auto& a : context.cli2._args)
+  for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
       precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
 
@@ -75,7 +73,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 3 ? true : false);
+    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
     eval.compileExpression (precompiled);
 
     for (auto& task : input)
@@ -95,8 +93,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     output = input;
 
   _endCount = (int) output.size ();
-  context.debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
-  context.time_filter_us += timer.total_us ();
+  Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
+  Context::getContext ().time_filter_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,10 +102,10 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 void Filter::subset (std::vector <Task>& output)
 {
   Timer timer;
-  context.cli2.prepareFilter ();
+  Context::getContext ().cli2.prepareFilter ();
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
-  for (auto& a : context.cli2._args)
+  for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
       precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
 
@@ -117,8 +115,8 @@ void Filter::subset (std::vector <Task>& output)
   if (precompiled.size ())
   {
     Timer timer_pending;
-    auto pending = context.tdb2.pending.get_tasks ();
-    context.time_filter_us -= timer_pending.total_us ();
+    auto pending = Context::getContext ().tdb2.pending.get_tasks ();
+    Context::getContext ().time_filter_us -= timer_pending.total_us ();
     _startCount = (int) pending.size ();
 
     Eval eval;
@@ -126,7 +124,7 @@ void Filter::subset (std::vector <Task>& output)
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 3 ? true : false);
+    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
     eval.compileExpression (precompiled);
 
     output.clear ();
@@ -145,8 +143,8 @@ void Filter::subset (std::vector <Task>& output)
     if (! shortcut)
     {
       Timer timer_completed;
-      auto completed = context.tdb2.completed.get_tasks ();
-      context.time_filter_us -= timer_completed.total_us ();
+      auto completed = Context::getContext ().tdb2.completed.get_tasks ();
+      Context::getContext ().time_filter_us -= timer_completed.total_us ();
       _startCount += (int) completed.size ();
 
       for (auto& task : completed)
@@ -168,23 +166,23 @@ void Filter::subset (std::vector <Task>& output)
     safety ();
 
     Timer pending_completed;
-    for (auto& task : context.tdb2.pending.get_tasks ())
+    for (auto& task : Context::getContext ().tdb2.pending.get_tasks ())
       output.push_back (task);
 
-    for (auto& task : context.tdb2.completed.get_tasks ())
+    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
       output.push_back (task);
-    context.time_filter_us -= pending_completed.total_us ();
+    Context::getContext ().time_filter_us -= pending_completed.total_us ();
   }
 
   _endCount = (int) output.size ();
-  context.debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
-  context.time_filter_us += timer.total_us ();
+  Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
+  Context::getContext ().time_filter_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Filter::hasFilter () const
 {
-  for (const auto& a : context.cli2._args)
+  for (const auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
       return true;
 
@@ -198,7 +196,7 @@ bool Filter::hasFilter () const
 bool Filter::pendingOnly () const
 {
   // When GC is off, there are no shortcuts.
-  if (! context.config.getBoolean ("gc"))
+  if (! Context::getContext ().config.getBoolean ("gc"))
     return false;
 
   // To skip loading completed.data, there should be:
@@ -211,13 +209,13 @@ bool Filter::pendingOnly () const
   int countPending   = 0;
   int countWaiting   = 0;
   int countRecurring = 0;
-  int countId        = (int) context.cli2._id_ranges.size ();
-  int countUUID      = (int) context.cli2._uuid_list.size ();
+  int countId        = (int) Context::getContext ().cli2._id_ranges.size ();
+  int countUUID      = (int) Context::getContext ().cli2._uuid_list.size ();
   int countOr        = 0;
   int countXor       = 0;
   int countNot       = 0;
 
-  for (const auto& a : context.cli2._args)
+  for (const auto& a : Context::getContext ().cli2._args)
   {
     if (a.hasTag ("FILTER"))
     {
@@ -263,7 +261,7 @@ void Filter::safety () const
   {
     bool readonly = true;
     bool filter = false;
-    for (const auto& a : context.cli2._args)
+    for (const auto& a : Context::getContext ().cli2._args)
     {
       if (a.hasTag ("CMD") &&
           ! a.hasTag ("READONLY"))
@@ -276,11 +274,11 @@ void Filter::safety () const
     if (! readonly &&
         ! filter)
     {
-      if (! context.config.getBoolean ("allow.empty.filter"))
+      if (! Context::getContext ().config.getBoolean ("allow.empty.filter"))
          throw std::string ("You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken.");
 
       // If user is willing to be asked, this can be avoided.
-      if (context.config.getBoolean ("confirmation") &&
+      if (Context::getContext ().config.getBoolean ("confirmation") &&
           confirm ("This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"))
         return;
 

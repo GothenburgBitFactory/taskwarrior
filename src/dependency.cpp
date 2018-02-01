@@ -36,15 +36,13 @@
 
 #define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <Task> dependencyGetBlocked (const Task& task)
 {
   auto uuid = task.get ("uuid");
 
   std::vector <Task> blocked;
-  for (auto& it : context.tdb2.pending.get_tasks ())
+  for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
     if (it.getStatus () != Task::completed &&
         it.getStatus () != Task::deleted   &&
         it.has ("depends")                 &&
@@ -61,7 +59,7 @@ std::vector <Task> dependencyGetBlocking (const Task& task)
 
   std::vector <Task> blocking;
   if (depends != "")
-    for (auto& it : context.tdb2.pending.get_tasks ())
+    for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
       if (it.getStatus () != Task::completed &&
           it.getStatus () != Task::deleted   &&
           depends.find (it.get ("uuid")) != std::string::npos)
@@ -95,7 +93,7 @@ bool dependencyIsCircular (const Task& task)
       // fact that we do not visit any task twice
       for (unsigned int i = 0; i < deps_current.size (); i++)
       {
-        if (context.tdb2.get (deps_current[i], current))
+        if (Context::getContext ().tdb2.get (deps_current[i], current))
         {
           auto current_uuid = current.get ("uuid");
 
@@ -160,7 +158,7 @@ void dependencyChainOnComplete (Task& task)
     auto blocked = dependencyGetBlocked (task);
 
     // Nag about broken chain.
-    if (context.config.getBoolean ("dependency.reminder"))
+    if (Context::getContext ().config.getBoolean ("dependency.reminder"))
     {
       std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
                 << '\n';
@@ -172,7 +170,7 @@ void dependencyChainOnComplete (Task& task)
     // If there are both blocking and blocked tasks, the chain is broken.
     if (blocked.size ())
     {
-      if (context.config.getBoolean ("dependency.reminder"))
+      if (Context::getContext ().config.getBoolean ("dependency.reminder"))
       {
         std::cout << "and is blocking:\n";
 
@@ -180,7 +178,7 @@ void dependencyChainOnComplete (Task& task)
           std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
       }
 
-      if (!context.config.getBoolean ("dependency.confirmation") ||
+      if (!Context::getContext ().config.getBoolean ("dependency.confirmation") ||
           confirm ("Would you like the dependency chain fixed?"))
       {
         // Repair the chain - everything in blocked should now depend on
@@ -195,10 +193,10 @@ void dependencyChainOnComplete (Task& task)
 
         // Now update TDB2, now that the updates have all occurred.
         for (auto& left : blocked)
-          context.tdb2.modify (left);
+          Context::getContext ().tdb2.modify (left);
 
         for (auto& right : blocking)
-          context.tdb2.modify (right);
+          Context::getContext ().tdb2.modify (right);
       }
     }
   }
@@ -207,7 +205,7 @@ void dependencyChainOnComplete (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void dependencyChainOnStart (Task& task)
 {
-  if (context.config.getBoolean ("dependency.reminder"))
+  if (Context::getContext ().config.getBoolean ("dependency.reminder"))
   {
     auto blocking = dependencyGetBlocking (task);
 

@@ -63,8 +63,6 @@
 #define STRING_UTIL_CONFIRM_ALL_U    "All"
 #define STRING_UTIL_CONFIRM_QUIT     "quit"
 
-extern Context context;
-
 static const char* newline = "\n";
 static const char* noline  = "";
 
@@ -107,7 +105,7 @@ int confirm4 (const std::string& question)
 
     std::string answer {""};
     std::getline (std::cin, answer);
-    context.debug ("STDIN '" + answer + '\'');
+    Context::getContext ().debug ("STDIN '" + answer + '\'');
     answer = std::cin.eof () ? STRING_UTIL_CONFIRM_QUIT : Lexer::lowerCase (Lexer::trim (answer));
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
@@ -278,32 +276,32 @@ bool nontrivial (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
-  return context.verbose ("blank") ? newline : noline;
+  return Context::getContext ().verbose ("blank") ? newline : noline;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void setHeaderUnderline (Table& table)
 {
   // If an alternating row color is specified, notify the table.
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
-    Color alternate (context.config.get ("color.alternate"));
+    Color alternate (Context::getContext ().config.get ("color.alternate"));
     table.colorOdd (alternate);
     table.intraColorOdd (alternate);
 
-    if (context.config.getBoolean ("fontunderline"))
+    if (Context::getContext ().config.getBoolean ("fontunderline"))
     {
-      table.colorHeader (Color ("underline " + context.config.get ("color.label")));
+      table.colorHeader (Color ("underline " + Context::getContext ().config.get ("color.label")));
     }
     else
     {
-      table.colorHeader (Color (context.config.get ("color.label")));
+      table.colorHeader (Color (Context::getContext ().config.get ("color.label")));
       table.underlineHeaders ();
     }
   }
   else
   {
-    if (context.config.getBoolean ("fontunderline"))
+    if (Context::getContext ().config.getBoolean ("fontunderline"))
       table.colorHeader (Color ("underline"));
     else
       table.underlineHeaders ();

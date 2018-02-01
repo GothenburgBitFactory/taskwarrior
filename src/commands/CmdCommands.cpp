@@ -34,8 +34,6 @@
 #include <Command.h>
 #include <util.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdCommands::CmdCommands ()
 {
@@ -56,7 +54,7 @@ CmdCommands::CmdCommands ()
 int CmdCommands::execute (std::string& output)
 {
   Table view;
-  view.width (context.getWidth ());
+  view.width (Context::getContext ().getWidth ());
   view.add ("Command");
   view.add ("Category");
   view.add ("R/W",     false);
@@ -67,12 +65,12 @@ int CmdCommands::execute (std::string& output)
   view.add ("Mods",    false);
   view.add ("Misc",    false);
   view.add ("Description");
-  view.leftMargin (context.config.getInteger ("indent.report"));
-  view.extraPadding (context.config.getInteger ("row.padding"));
-  view.intraPadding (context.config.getInteger ("column.padding"));
+  view.leftMargin (Context::getContext ().config.getInteger ("indent.report"));
+  view.extraPadding (Context::getContext ().config.getInteger ("row.padding"));
+  view.intraPadding (Context::getContext ().config.getInteger ("column.padding"));
   setHeaderUnderline (view);
 
-  for (auto& command : context.commands)
+  for (auto& command : Context::getContext ().commands)
   {
     auto row = view.addRow ();
     view.set (row, 0, command.first);
@@ -133,7 +131,7 @@ int CmdCompletionCommands::execute (std::string& output)
 {
   // Get a list of all commands.
   std::vector <std::string> commands;
-  for (const auto& command : context.commands)
+  for (const auto& command : Context::getContext ().commands)
     commands.push_back (command.first);
 
   // Sort alphabetically.
@@ -199,7 +197,7 @@ int CmdZshCommands::execute (std::string& output)
   // denominator alternative: a custom struct type.
 
   std::vector <ZshCommand> commands;
-  for (auto& command : context.commands)
+  for (auto& command : Context::getContext ().commands)
   {
     ZshCommand zshCommand {command.second->category (),
                            command.first,

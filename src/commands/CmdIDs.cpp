@@ -33,8 +33,6 @@
 #include <main.h>
 #include <shared.h>
 
-extern Context context;
-
 std::string zshColonReplacement = ",";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +70,7 @@ int CmdIDs::execute (std::string& output)
   std::sort (ids.begin (), ids.end ());
   output = compressIds (ids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -166,7 +164,7 @@ int CmdCompletionIds::execute (std::string& output)
   std::sort (ids.begin (), ids.end ());
   output = join ("\n", ids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -207,7 +205,7 @@ int CmdZshCompletionIds::execute (std::string& output)
 
   output = out.str ();
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -244,7 +242,7 @@ int CmdUUIDs::execute (std::string& output)
   std::sort (uuids.begin (), uuids.end ());
   output = join (" ", uuids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -281,7 +279,7 @@ int CmdCompletionUuids::execute (std::string& output)
   std::sort (uuids.begin (), uuids.end ());
   output = join ("\n", uuids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -320,7 +318,7 @@ int CmdZshCompletionUuids::execute (std::string& output)
 
   output = out.str ();
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 

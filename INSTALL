@@ -158,6 +158,14 @@ OpenBSD
 
   See: https://bug.tasktools.org/browse/TW-1579
 
+WASM
+  Using the Emscripten compiler, you can achieve it like this:
+
+    cmake -DCMAKE_CXX_COMPILER=emcc -DENABLE_SYNC=OFF -DCMAKE_BUILD_TYPE=release -DENABLE_WASM=ON \
+          -DCMAKE_EXE_LINKER_FLAGS="-m32 -s NO_DYNAMIC_EXECUTION=1 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s INVOKE_RUN=0" \
+          -DCMAKE_CXX_FLAGS_RELEASE="-O2 -m32"
+
+  This will produce an optimized WASM with a main() that is callable multiple times.
 
 Troubleshooting
 ---------------

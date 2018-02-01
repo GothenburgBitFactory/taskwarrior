@@ -58,23 +58,21 @@
 #define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON must be for the same task: {1} != {2}, in hook script: {3}"
 #define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: Expected feedback from failing hook script: {1}"
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 void Hooks::initialize ()
 {
-  _debug = context.config.getInteger ("debug.hooks");
+  _debug = Context::getContext ().config.getInteger ("debug.hooks");
 
   // Scan <rc.hooks.location>
   //      <rc.data.location>/hooks
   Directory d;
-  if (context.config.has ("hooks.location"))
+  if (Context::getContext ().config.has ("hooks.location"))
   {
-    d = Directory (context.config.get ("hooks.location"));
+    d = Directory (Context::getContext ().config.get ("hooks.location"));
   }
   else
   {
-    d = Directory (context.config.get ("data.location"));
+    d = Directory (Context::getContext ().config.get ("data.location"));
     d += "hooks";
   }
 
@@ -96,17 +94,17 @@ void Hooks::initialize ()
               name.substr (0, 9) == "on-modify" ||
               name.substr (0, 9) == "on-launch" ||
               name.substr (0, 7) == "on-exit")
-            context.debug ("Found hook script " + i);
+            Context::getContext ().debug ("Found hook script " + i);
           else
-            context.debug ("Found misnamed hook script " + i);
+            Context::getContext ().debug ("Found misnamed hook script " + i);
         }
       }
     }
   }
   else if (_debug >= 1)
-    context.debug ("Hook directory not readable: " + d._data);
+    Context::getContext ().debug ("Hook directory not readable: " + d._data);
 
-  _enabled = context.config.getBoolean ("hooks");
+  _enabled = Context::getContext ().config.getBoolean ("hooks");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,20 +152,20 @@ void Hooks::onLaunch () const
       if (status == 0)
       {
         for (auto& message : outputFeedback)
-          context.footnote (message);
+          Context::getContext ().footnote (message);
       }
       else
       {
         assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
-          context.error (message);
+          Context::getContext ().error (message);
 
         throw 0;  // This is how hooks silently terminate processing.
       }
     }
   }
 
-  context.time_hooks_us += timer.total_us ();
+  Context::getContext ().time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +192,7 @@ void Hooks::onExit () const
   {
     // Get the set of changed tasks.
     std::vector <Task> tasks;
-    context.tdb2.get_changes (tasks);
+    Context::getContext ().tdb2.get_changes (tasks);
 
     // Convert to a vector of strings.
     std::vector <std::string> input;
@@ -216,20 +214,20 @@ void Hooks::onExit () const
       if (status == 0)
       {
         for (auto& message : outputFeedback)
-          context.footnote (message);
+          Context::getContext ().footnote (message);
       }
       else
       {
         assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
-          context.error (message);
+          Context::getContext ().error (message);
 
         throw 0;  // This is how hooks silently terminate processing.
       }
     }
   }
 
-  context.time_hooks_us += timer.total_us ();
+  Context::getContext ().time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -278,13 +276,13 @@ void Hooks::onAdd (Task& task) const
         input[0] = outputJSON[0];
 
         for (auto& message : outputFeedback)
-          context.footnote (message);
+          Context::getContext ().footnote (message);
       }
       else
       {
         assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
-          context.error (message);
+          Context::getContext ().error (message);
 
         throw 0;  // This is how hooks silently terminate processing.
       }
@@ -294,7 +292,7 @@ void Hooks::onAdd (Task& task) const
     task = Task (input[0]);
   }
 
-  context.time_hooks_us += timer.total_us ();
+  Context::getContext ().time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -345,13 +343,13 @@ void Hooks::onModify (const Task& before, Task& after) const
         input[1] = outputJSON[0];
 
         for (auto& message : outputFeedback)
-          context.footnote (message);
+          Context::getContext ().footnote (message);
       }
       else
       {
         assertFeedback (outputFeedback, script);
         for (auto& message : outputFeedback)
-          context.error (message);
+          Context::getContext ().error (message);
 
         throw 0;  // This is how hooks silently terminate processing.
       }
@@ -360,7 +358,7 @@ void Hooks::onModify (const Task& before, Task& after) const
     after = Task (input[1]);
   }
 
-  context.time_hooks_us += timer.total_us ();
+  Context::getContext ().time_hooks_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -420,7 +418,7 @@ void Hooks::assertValidJSON (
         i[0] != '{'     ||
         i[i.length () - 1] != '}')
     {
-      context.error (format (STRING_HOOK_ERROR_OBJECT, Path (script).name ()));
+      Context::getContext ().error (format (STRING_HOOK_ERROR_OBJECT, Path (script).name ()));
       throw 0;
     }
 
@@ -429,19 +427,19 @@ void Hooks::assertValidJSON (
       json::value* root = json::parse (i);
       if (root->type () != json::j_object)
       {
-        context.error (format (STRING_HOOK_ERROR_OBJECT, Path (script).name ()));
+        Context::getContext ().error (format (STRING_HOOK_ERROR_OBJECT, Path (script).name ()));
         throw 0;
       }
 
       if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
       {
-        context.error (format (STRING_HOOK_ERROR_NODESC, Path (script).name ()));
+        Context::getContext ().error (format (STRING_HOOK_ERROR_NODESC, Path (script).name ()));
         throw 0;
       }
 
       if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
       {
-        context.error (format (STRING_HOOK_ERROR_NOUUID, Path (script).name ()));
+        Context::getContext ().error (format (STRING_HOOK_ERROR_NOUUID, Path (script).name ()));
         throw 0;
       }
 
@@ -450,15 +448,15 @@ void Hooks::assertValidJSON (
 
     catch (const std::string& e)
     {
-      context.error (format (STRING_HOOK_ERROR_SYNTAX, i));
+      Context::getContext ().error (format (STRING_HOOK_ERROR_SYNTAX, i));
       if (_debug)
-        context.error (STRING_HOOK_ERROR_JSON + e);
+        Context::getContext ().error (STRING_HOOK_ERROR_JSON + e);
       throw 0;
     }
 
     catch (...)
     {
-      context.error (STRING_HOOK_ERROR_NOPARSE + i);
+      Context::getContext ().error (STRING_HOOK_ERROR_NOPARSE + i);
       throw 0;
     }
   }
@@ -472,7 +470,7 @@ void Hooks::assertNTasks (
 {
   if (input.size () != n)
   {
-    context.error (format (STRING_HOOK_ERROR_BAD_NUM, n, (int) input.size (), Path (script).name ()));
+    Context::getContext ().error (format (STRING_HOOK_ERROR_BAD_NUM, n, (int) input.size (), Path (script).name ()));
     throw 0;
   }
 }
@@ -494,7 +492,7 @@ void Hooks::assertSameTask (
     if (u == root_obj->_data.end ()          ||
         u->second->type () != json::j_string)
     {
-      context.error (format (STRING_HOOK_ERROR_SAME1, uuid, Path (script).name ()));
+      Context::getContext ().error (format (STRING_HOOK_ERROR_SAME1, uuid, Path (script).name ()));
       throw 0;
     }
 
@@ -504,7 +502,7 @@ void Hooks::assertSameTask (
     std::string json_uuid = json::decode (text);
     if (json_uuid != uuid)
     {
-      context.error (format (STRING_HOOK_ERROR_SAME2, uuid, json_uuid, Path (script).name ()));
+      Context::getContext ().error (format (STRING_HOOK_ERROR_SAME2, uuid, json_uuid, Path (script).name ()));
       throw 0;
     }
 
@@ -524,7 +522,7 @@ void Hooks::assertFeedback (
 
   if (! foundSomething)
   {
-    context.error (format (STRING_HOOK_ERROR_NOFEEDBACK, Path (script).name ()));
+    Context::getContext ().error (format (STRING_HOOK_ERROR_NOFEEDBACK, Path (script).name ()));
     throw 0;
   }
 }
@@ -542,13 +540,13 @@ std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>
   args.push_back ("args:" + std::string (v));
 
   // Command to be executed.
-  args.push_back ("command:" + context.cli2.getCommand ());
+  args.push_back ("command:" + Context::getContext ().cli2.getCommand ());
 
   // rc file used after applying all overrides.
-  args.push_back ("rc:" + context.rc_file._data);
+  args.push_back ("rc:" + Context::getContext ().rc_file._data);
 
   // Directory containing *.data files.
-  args.push_back ("data:" + context.data_dir._data);
+  args.push_back ("data:" + Context::getContext ().data_dir._data);
 
   // Taskwarrior version, same as returned by "task --version"
   args.push_back ("version:" + std::string(VERSION));
@@ -563,13 +561,13 @@ int Hooks::callHookScript (
   std::vector <std::string>& output) const
 {
   if (_debug >= 1)
-    context.debug ("Hook: Calling " + script);
+    Context::getContext ().debug ("Hook: Calling " + script);
 
   if (_debug >= 2)
   {
-    context.debug ("Hook: input");
+    Context::getContext ().debug ("Hook: input");
     for (const auto& i : input)
-      context.debug ("  " + i);
+      Context::getContext ().debug ("  " + i);
   }
 
   std::string inputStr;
@@ -580,9 +578,9 @@ int Hooks::callHookScript (
   buildHookScriptArgs (args);
   if (_debug >= 2)
   {
-    context.debug ("Hooks: args");
+    Context::getContext ().debug ("Hooks: args");
     for (const auto& arg: args)
-      context.debug ("  " + arg);
+      Context::getContext ().debug ("  " + arg);
   }
 
   // Measure time for each hook if running in debug
@@ -592,7 +590,7 @@ int Hooks::callHookScript (
   {
     Timer timer;
     status = execute (script, args, inputStr, outputStr);
-    context.debugTiming (format ("Hooks::execute ({1})", script), timer);
+    Context::getContext ().debugTiming (format ("Hooks::execute ({1})", script), timer);
   }
   else
     status = execute (script, args, inputStr, outputStr);
@@ -601,13 +599,13 @@ int Hooks::callHookScript (
 
   if (_debug >= 2)
   {
-    context.debug ("Hook: output");
+    Context::getContext ().debug ("Hook: output");
     for (const auto& i : output)
       if (i != "")
-        context.debug ("  " + i);
+        Context::getContext ().debug ("  " + i);
 
-    context.debug (format ("Hook: Completed with status {1}", status));
-    context.debug (" "); // Blank line
+    Context::getContext ().debug (format ("Hook: Completed with status {1}", status));
+    Context::getContext ().debug (" "); // Blank line
   }
 
   return status;

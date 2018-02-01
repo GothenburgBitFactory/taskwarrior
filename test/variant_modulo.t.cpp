@@ -28,9 +28,6 @@
 #include <iostream>
 #include <test.h>
 #include <Variant.h>
-#include <Context.h>
-
-Context context;
 
 #define EPSILON 0.0001
 

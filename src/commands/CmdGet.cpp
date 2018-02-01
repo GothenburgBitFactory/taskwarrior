@@ -33,8 +33,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdGet::CmdGet ()
 {
@@ -60,7 +58,7 @@ CmdGet::CmdGet ()
 int CmdGet::execute (std::string& output)
 {
   std::vector <std::string> results;
-  for (auto& arg : context.cli2._args)
+  for (auto& arg : Context::getContext ().cli2._args)
   {
     switch (arg._lextype)
     {

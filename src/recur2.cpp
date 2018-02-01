@@ -32,8 +32,6 @@
 #include <unicode.h>
 #include <main.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 // Checklist:
 // - last: Most recently generated instance integer. The first instance
@@ -73,7 +71,7 @@ static Datetime generateNextDueDate (
 
   Duration dur (period);
   auto normalized = dur.formatISO ();
-  context.debug ("      period " + period + " --> " + normalized);
+  Context::getContext ().debug ("      period " + period + " --> " + normalized);
 
   if (! dur._year    &&
         dur._month   &&
@@ -271,13 +269,13 @@ static std::vector <Datetime> generateAllDueDates (const Task& templateTask)
 
   // Determine due date, recur period and until date.
   Datetime due (templateTask.get_date ("due"));
-  context.debug ("    due " + due.toISOLocalExtended ());
+  Context::getContext ().debug ("    due " + due.toISOLocalExtended ());
 
   auto recur = templateTask.get ("recur");
-  context.debug ("    recur " + recur);
+  Context::getContext ().debug ("    recur " + recur);
 
   auto lastN = std::max (1, templateTask.get_int ("last"));
-  context.debug (format ("    last {1}", lastN));
+  Context::getContext ().debug (format ("    last {1}", lastN));
 
   bool end_in_sight = false;
   Datetime until;
@@ -285,11 +283,11 @@ static std::vector <Datetime> generateAllDueDates (const Task& templateTask)
   {
     until = Datetime (templateTask.get ("until"));
     end_in_sight = true;
-    context.debug ("    until " + until.toISOLocalExtended ());
+    Context::getContext ().debug ("    until " + until.toISOLocalExtended ());
   }
 
-  auto recurrence_limit = context.config.getInteger ("recurrence.limit");
-  context.debug (format ("    recurrence.limit {1}", recurrence_limit));
+  auto recurrence_limit = Context::getContext ().config.getInteger ("recurrence.limit");
+  Context::getContext ().debug (format ("    recurrence.limit {1}", recurrence_limit));
   int recurrence_counter = 0;
   Datetime now;
 
@@ -321,8 +319,8 @@ static std::vector <Datetime> generateAllDueDates (const Task& templateTask)
 ////////////////////////////////////////////////////////////////////////////////
 static void synthesizeTasks (const Task& templateTask)
 {
-  context.debug ("synthesizeTasks start");
-  context.debug ("  template " + templateTask.get ("uuid"));
+  Context::getContext ().debug ("synthesizeTasks start");
+  Context::getContext ().debug ("  template " + templateTask.get ("uuid"));
 
   // TODO 'due' = starting point
   // TODO 'recur' = frequency
@@ -330,11 +328,11 @@ static void synthesizeTasks (const Task& templateTask)
 
   auto all = generateAllDueDates (templateTask);
   for (auto& date : all)
-    context.debug ("      date " + date.toISOLocalExtended ());
+    Context::getContext ().debug ("      date " + date.toISOLocalExtended ());
 
   // TODO Create task instances for each period between N and now.
 
-  context.debug ("synthesizeTasks end");
+  Context::getContext ().debug ("synthesizeTasks end");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -342,8 +340,8 @@ static void synthesizeTasks (const Task& templateTask)
 void handleRecurrence2 ()
 {
   // Note: Disabling recurrence is currently a workaround for TD-44, TW-1520.
-  if (context.config.getBoolean ("recurrence"))
-    for (auto& t : context.tdb2.pending.get_tasks ())
+  if (Context::getContext ().config.getBoolean ("recurrence"))
+    for (auto& t : Context::getContext ().tdb2.pending.get_tasks ())
       if (t.getStatus () == Task::recurring)
         synthesizeTasks (t);
 }
@@ -353,7 +351,7 @@ void handleRecurrence2 ()
 void handleUntil ()
 {
   Datetime now;
-  auto tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
   for (auto& t : tasks)
   {
     // TODO What about expiring template tasks?
@@ -363,10 +361,10 @@ void handleUntil ()
       auto until = Datetime (t.get_date ("until"));
       if (until < now)
       {
-        context.debug (format ("handleUntil: recurrence expired until {1} < now {2}", until.toISOLocalExtended (), now.toISOLocalExtended ()));
+        Context::getContext ().debug (format ("handleUntil: recurrence expired until {1} < now {2}", until.toISOLocalExtended (), now.toISOLocalExtended ()));
         t.setStatus (Task::deleted);
-        context.tdb2.modify(t);
-        context.footnote (onExpiration (t));
+        Context::getContext ().tdb2.modify(t);
+        Context::getContext ().footnote (onExpiration (t));
       }
     }
   }

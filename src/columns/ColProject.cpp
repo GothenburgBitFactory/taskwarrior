@@ -36,7 +36,6 @@
 #include <utf8.h>
 #include <util.h>
 
-extern Context context;
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +48,7 @@ ColumnProject::ColumnProject ()
   _examples  = {"home.garden",
                 "home",
                 "  home.garden"};
-  _hyphenate = context.config.getBoolean ("hyphenate");
+  _hyphenate = Context::getContext ().config.getBoolean ("hyphenate");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +126,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
       Variant v;
       e.evaluateInfixExpression (value, v);
       task.set (_name, (std::string) v);
-      context.debug (label + _name + " <-- '" + (std::string) v + "' <-- '" + value + '\'');
+      Context::getContext ().debug (label + _name + " <-- '" + (std::string) v + "' <-- '" + value + '\'');
     }
     catch (const std::string& e)
     {
@@ -136,7 +135,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
       if (e == "The value is not an expression.")
       {
         task.set (_name, value);
-        context.debug (label + _name + " <-- '" + value + '\'');
+        Context::getContext ().debug (label + _name + " <-- '" + value + '\'');
       }
       else
         throw;
@@ -145,7 +144,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
   else
   {
     task.set (_name, value);
-    context.debug (label + _name + " <-- '" + value + '\'');
+    Context::getContext ().debug (label + _name + " <-- '" + value + '\'');
   }
 }
 

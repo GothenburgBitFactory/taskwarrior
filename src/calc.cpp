@@ -37,8 +37,6 @@
 #include <shared.h>
 #include <format.h>
 
-Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 // Constants.
 bool get (const std::string&, Variant&)
@@ -58,6 +56,9 @@ int main (int argc, char** argv)
 
   try
   {
+    Context globalContext;
+    Context::setContext (&globalContext);
+
     // Same operating parameters as Context::staticInitialization.
     Datetime::standaloneDateEnabled    = false;
     Datetime::standaloneTimeEnabled    = false;
@@ -118,7 +119,7 @@ int main (int argc, char** argv)
       e.evaluatePostfixExpression (expression, result);
 
     // Show any debug output.
-    for (const auto& i : context.debugMessages)
+    for (const auto& i : Context::getContext ().debugMessages)
       std::cout << i << '\n';
 
     // Show the result in string form.

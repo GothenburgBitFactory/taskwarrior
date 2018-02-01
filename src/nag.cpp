@@ -27,8 +27,6 @@
 #include <cmake.h>
 #include <Context.h>
 
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 // Returns a Boolean indicator as to whether a nag message was generated, so
 // that commands can control the number of nag messages displayed (ie one is
@@ -42,18 +40,18 @@ bool nag (Task& task)
   if (task.hasTag ("nonag"))
     return false;
 
-  auto msg = context.config.get ("nag");
+  auto msg = Context::getContext ().config.get ("nag");
   if (msg != "")
   {
     // Scan all pending, non-recurring tasks.
-    auto pending = context.tdb2.pending.get_tasks ();
+    auto pending = Context::getContext ().tdb2.pending.get_tasks ();
     for (auto& t : pending)
     {
       if ((t.getStatus () == Task::pending ||
            t.getStatus () == Task::waiting) &&
           t.urgency () > task.urgency ())
       {
-        context.footnote (msg);
+        Context::getContext ().footnote (msg);
         return true;
       }
     }

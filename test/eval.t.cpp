@@ -27,9 +27,6 @@
 #include <cmake.h>
 #include <test.h>
 #include <Eval.h>
-#include <Context.h>
-
-Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // A few hard-coded symbols.
