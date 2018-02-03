@@ -34,8 +34,6 @@
 #include <shared.h>
 #include <format.h>
 
-#define STRING_EVAL_NO_EVAL "The expression could not be evaluated."
-
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +230,7 @@ void Eval::evaluatePostfixStack (
         token.first == "!")
     {
       if (values.size () < 1)
-        throw std::string (STRING_EVAL_NO_EVAL);
+        throw std::string ("The expression could not be evaluated.");
 
       Variant right = values.back ();
       values.pop_back ();
@@ -245,7 +243,7 @@ void Eval::evaluatePostfixStack (
              token.first == "_neg_")
     {
       if (values.size () < 1)
-        throw std::string (STRING_EVAL_NO_EVAL);
+        throw std::string ("The expression could not be evaluated.");
 
       Variant right = values.back ();
       values.pop_back ();
@@ -269,7 +267,7 @@ void Eval::evaluatePostfixStack (
     else if (token.second == Lexer::Type::op)
     {
       if (values.size () < 2)
-        throw std::string (STRING_EVAL_NO_EVAL);
+        throw std::string ("The expression could not be evaluated.");
 
       Variant right = values.back ();
       values.pop_back ();
