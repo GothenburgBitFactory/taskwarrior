@@ -69,7 +69,7 @@ Values support UTF8 as well as JSON encoding, such as \\uNNNN.
 
 Note that Taskwarrior is flexible about the values used to represent Boolean
 items. You can use "1" to enable, anything else is interpreted as disabled.
-The values "on", "yes", "y" and "true" are currently supported by deprecated.
+The values "on", "yes", "y" and "true" are currently supported but deprecated.
 
 .RS
 include <file>
@@ -449,6 +449,10 @@ The character or string to show in the <uda>.indicator column. Defaults to U.
 .B recurrence=1
 Controls whether recurrence is enabled, and whether recurring tasks continue to
 generate new task instances. Defaults to "1".
+
+If you are syncing multiple clients, then it is adviѕed that you set 'recurrence=1'
+on your primary client, and 'recurrence=0' on ALL other clients. This is a workaround
+for a duplication bug.
 
 .TP
 .B recurrence.confirmation=prompt
