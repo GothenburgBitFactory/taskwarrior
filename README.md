@@ -21,7 +21,7 @@ Taskwarrior is a GTD, todo list, task management, command line utility with a
 multitude of features. It is a portable, well supported and very active Open
 Source project. Take a look at the site:
 
-    http://taskwarrior.org
+http://taskwarrior.org
 
 There you'll find online documentation, downloads, news and more.
 
@@ -31,11 +31,11 @@ input is needed.
 
 For support options, take a look at:
 
-    http://taskwarrior.org/support
+http://taskwarrior.org/support
 
 Please send your code patches to:
 
-    support@taskwarrior.org
+support@taskwarrior.org
 
 Consider joining bug.tasktools.org and participating in the future of Taskwarrior.
 
