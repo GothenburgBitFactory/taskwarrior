@@ -9,3 +9,4 @@
 
 * Clearly describe the feature.
 * Clearly state the use case. We are only interested in use cases, do not waste time with implementation details or suggested syntax.
+* Please see our notes on [How to request a feature](https://taskwarrior.org/docs/features.html)
