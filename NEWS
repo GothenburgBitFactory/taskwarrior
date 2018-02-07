@@ -54,6 +54,8 @@ Removed Features in 2.5.2
 
 Known Issues
 
+  - https://github.com/GothenburgBitFactory/taskwarrior
+
 Taskwarrior has been built and tested on the following configurations:
 
   * macOS
@@ -69,11 +71,11 @@ Taskwarrior has been built and tested on the following configurations:
 While Taskwarrior has undergone testing, bugs are sure to remain.  If you
 encounter a bug, please enter a new issue at:
 
-  https://bug.tasktools.org
+  https://github.com/GothenburgBitFactory/taskwarrior<Paste>
 
 Or just send a message to:
 
-  support@taskwarrior.org
+  support@GothenburgBitFactory.org
 
 Thank you.
 

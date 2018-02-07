@@ -1531,14 +1531,13 @@ The official site at
 
 .TP
 The official code repository at
-<https://git.tasktools.org/scm/tm/task.git>
+<https://github.com/GothenburgBitFactory/taskwarrior>
 
 .TP
 You can contact the project by emailing
-<support@taskwarrior.org>
+<support@GothenburgBitFactory.org>
 
 .SH REPORTING BUGS
 .TP
 Bugs in Taskwarrior may be reported to the issue-tracker at
-<https://bug.tasktools.org/>
-
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>
