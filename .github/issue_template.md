@@ -1,9 +1,11 @@
-### To Report a bug...
+#### To report a bug...
 
-#### Paste the output of the ```task diag``` command
+* What command(s) did you run?
+* What did you expect to happen?
+* What actually happened?
+* Paste the output of the ```task diag``` command.
 
-#### What command(s) did you run?
+#### To request a feature...
 
-#### What did you expect to happen?
-
-#### What actually happened?
+* Clearly describe the feature.
+* Clearly state the use case. We are only interested in use cases, do not waste time with implementation details or suggested syntax.
