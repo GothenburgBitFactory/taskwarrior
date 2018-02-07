@@ -91,8 +91,8 @@ If you wish to contribute tests, please consider the following guidelines:
     test script, such as filter.t, export.t, whichever is appropriate.
 
   * Tests created after bugs or feature requests should (ideally) have an entry
-    on https://bug.tasktools.org/ and should include the issue ID in a
-    docstring or comment.
+    on https://github.com/GothenburgBitFactory/taskwarrior/issues and should
+    include the issue ID in a docstring or comment.
 
   * Class and method names should be descriptive of what they are testing.
     Example: TestFilterOnReports

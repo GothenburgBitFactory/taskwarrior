@@ -18,7 +18,6 @@
                                          # Alternately 'export MAKEFLAGS=-j 4'
 ```
 ## Running Test Suite:
-
 ```
     $ cd tests
     $ make VERBOSE=1                     # Shows details
@@ -117,9 +116,10 @@
 
 ## Tests needed
 
-  * Take a look at the bug database (https://bug.tasktools.org) and notice that
-    many issues, open and closed, have the "needsTest" label. These are things
-    that we would like to see in the test suite, as regression tests.
+  * Take a look at the bug database (https://github.com/GothenburgBitFactory/taskwarrior/issues)
+    and notice that many issues, open and closed, have the "needsTest" label.
+    These are things that we would like to see in the test suite, as regression
+    tests.
 
   All new unit tests should follow the test/template.t standard.
 
@@ -153,5 +153,3 @@
   * Current development branch no plans yet.
 
 ---
-
-__2017-02-28__ Updated for 2.6.0

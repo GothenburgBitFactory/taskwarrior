@@ -33,11 +33,12 @@ For support options, take a look at:
 
 http://taskwarrior.org/support
 
-Please send your code patches to:
+Please use pull requests, or send your code patches to:
 
-support@taskwarrior.org
+support@GothenburgBitFactory.org
 
-Consider joining bug.tasktools.org and participating in the future of Taskwarrior.
+Visit https://github.com/GothenburgBitFactory/taskwarrior and participate in
+the future of Taskwarrior.
 
 ---
 
