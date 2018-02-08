@@ -6,7 +6,7 @@ Taskwarrior is a GTD, todo list, task management, command line utility with a
 multitude of features. It is a portable, well supported and very active Open
 Source project.
 
-# Documentation
+## Documentation
 
 There is extensive online documentation.
 You'll find all the details at:
@@ -15,7 +15,7 @@ You'll find all the details at:
 
 At the site you'll find online documentation, downloads, news and more.
 
-# Support
+## Support
 
 For support options, take a look at:
 
@@ -25,7 +25,7 @@ Please use pull requests, or send your code patches to:
 
     support@gothenburgbitfactory.org
 
-# Branching Model
+## Branching Model
 
 We use the following branching model:
 
@@ -38,7 +38,7 @@ We use the following branching model:
   may not even build or pass tests, and should be treated accordingly.
   Make backups.
 
-# Installing
+## Installing
 
 There are many binary packages available, but to install from source requires:
 
