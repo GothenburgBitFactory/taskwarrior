@@ -9,21 +9,16 @@ Source project.
 ## Documentation
 
 There is extensive online documentation.
-You'll find all the details at:
-
-    http://taskwarrior.org/docs
+You'll find all the details at [taskwarrior.org/docs](http://taskwarrior.org/docs)
 
 At the site you'll find online documentation, downloads, news and more.
 
 ## Support
 
-For support options, take a look at:
+For support options, take a look at [taskwarrior.org/support](http://taskwarrior.org/support)
 
-    http://taskwarrior.org/support
-
-Please use pull requests, or send your code patches to:
-
-    support@gothenburgbitfactory.org
+Please use pull requests, or alternately send your code patches to
+[support@gothenburgbitfactory.org](mailto:support@gothenburgbitfactory.org)
 
 ## Branching Model
 
@@ -73,7 +68,7 @@ Then build:
 Your contributions are especially welcome.
 Whether it comes in the form of code patches, ideas, discussion, bug reports, encouragement or criticism, your input is needed.
 
-Visit https://github.com/GothenburgBitFactory/taskwarrior and participate in the future of Taskwarrior.
+Visit [Github](https://github.com/GothenburgBitFactory/taskwarrior) and participate in the future of Taskwarrior.
 
 ## License
 
