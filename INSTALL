@@ -180,7 +180,7 @@ CMake with no reported problems, and the build will fail later.  This is
 almost always because CMake is mistaken about some assumption.
 
 If a build does not succeed, please send the contents of the 'CMakeCache.txt'
-and 'CMakeFiles/CMakeOutput.log' files to support@taskwarrior.org.
+and 'CMakeFiles/CMakeOutput.log' files to support@gothenburgbitfactory.org.
 
 If CMake runs but Taskwarrior does not build, please send the contents of the
 above files as well as a transcript from the build, which is not written to a
