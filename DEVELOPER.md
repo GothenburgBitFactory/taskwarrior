@@ -8,8 +8,8 @@
 
 ## Obtain and build code:
 ```
-    $ git clone --recursive https://git.tasktools.org/TM/task.git task.git
-    $ cd task.git
+    $ git clone --recursive https://github.com/GothenburgBitFactory/taskwarrior taskwarrior.git
+    $ cd taskwarrior.git
     $ git checkout 2.6.0                 # Latest dev branch
     $ git submodule init                 # This is now done by cmake as a test
     $ git submodule update               # Update the libhsared.git submodule
@@ -29,7 +29,7 @@
   current development branch. The source tarballs do not reflect HEAD, and do
   not contain the test suite.
 
-  If you send a patch (support@taskwarrior.org), make sure that patch is made
+  If you send a patch (support@gothenburgbitfactory.org), make sure that patch is made
   against git HEAD on the development branch. We cannot apply patches made
   against the tarball source, or master.
 

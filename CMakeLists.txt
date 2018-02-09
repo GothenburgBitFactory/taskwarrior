@@ -50,7 +50,7 @@ endif (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
 
 set (PACKAGE "${PROJECT_NAME}")
 set (VERSION "${PROJECT_VERSION}")
-set (PACKAGE_BUGREPORT "support@taskwarrior.org")
+set (PACKAGE_BUGREPORT "support@gothenburgbitfactory.org")
 set (PACKAGE_NAME "${PACKAGE}")
 set (PACKAGE_TARNAME "${PACKAGE}")
 set (PACKAGE_VERSION "${VERSION}")

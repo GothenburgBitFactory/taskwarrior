@@ -17,7 +17,7 @@ elseif (_HAS_GNU0X)
   message (WARNING "Enabling -std=gnu++0x draft compile flag. Your compiler does not support the standard '-std=c++11' option. Consider upgrading.")
   set (_CXX11_FLAGS "-std=gnu++0x")
 else (_HAS_CXX11)
- message (FATAL_ERROR "C++11 support missing. Try upgrading your C++ compiler. If you have a good reason for using an outdated compiler, please let us know at support@taskwarrior.org.")
+ message (FATAL_ERROR "C++11 support missing. Try upgrading your C++ compiler. If you have a good reason for using an outdated compiler, please let us know at support@gothenburgbitfactory.org.")
 endif (_HAS_CXX11)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
