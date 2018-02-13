@@ -53,6 +53,11 @@ Or clone this repository:
     $ git clone --recursive -b 2.6.0 https://github.com/GothenburgBitFactory/taskwarrior.git
     $ cd taskwarrior
 
+In case of errors with libshared (URL pointing to git.tasktools.org):
+
+    $ sed -i 's/git.tasktools.org\/TM/github.com\/GothenburgBitFactory/' .git/config
+    $ git submodule update
+
 Then build:
 
     $ cmake -DCMAKE_BUILD_TYPE=release .
