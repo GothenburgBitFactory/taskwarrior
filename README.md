@@ -40,13 +40,13 @@ There are many binary packages available, but to install from source requires:
 * git
 * cmake
 * make
-* C++ compiler, currently gcc 4.7+ or clang 3.3+ for full C++11 support
+* C++ compiler, currently gcc 5.0+ or clang 3.4+ for full C++11 support
 
 Download the tarball, and expand it:
 
-    $ curl -O https://taskwarrior.org/download/task-2.5.1.tar.gz
-    $ tar xzf task-2.5.1.tar.gz
-    $ cd task-2.5.1
+    $ curl -O https://taskwarrior.org/download/task-2.6.0.tar.gz
+    $ tar xzf task-2.6.0.tar.gz
+    $ cd task-2.6.0
 
 Or clone this repository:
 
