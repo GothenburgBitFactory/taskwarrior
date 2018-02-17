@@ -53,9 +53,15 @@ Or clone this repository:
     $ git clone --recursive -b 2.6.0 https://github.com/GothenburgBitFactory/taskwarrior.git
     $ cd taskwarrior
 
-In case of errors with libshared (URL pointing to git.tasktools.org):
+In case of errors with libshared - URL pointing to git.tasktools.org in either .git/config or .gitmodules:
 
     $ sed -i 's/git.tasktools.org\/TM/github.com\/GothenburgBitFactory/' .git/config
+    $ git submodule update
+
+or
+
+    $ sed -i 's/git.tasktools.org\/TM/github.com\/GothenburgBitFactory/' .gitmodules
+    $ git submodule init
     $ git submodule update
 
 Then build:
