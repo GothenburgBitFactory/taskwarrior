@@ -156,7 +156,7 @@ OpenBSD
 
   and build normally.
 
-  See: https://bug.tasktools.org/browse/TW-1579
+  See: https://github.com/GothenburgBitFactory/taskwarrior/issues/1605
 
 WASM
   Using the Emscripten compiler, you can achieve it like this:
