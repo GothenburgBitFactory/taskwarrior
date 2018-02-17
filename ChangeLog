@@ -1,117 +1,123 @@
 2.5.2 () -
 
 - TD-64   sync conflict deleted all annotations of the task
-          (thanks to Markus Beppler, Konstantin Vorobyev).
+          Thanks to Markus Beppler, Konstantin Vorobyev
 - TI-91   Timewarrior does not compile on DragonFly
-          (thanks to Michael Neumann).
+          Thanks to Michael Neumann
 - TW-54/#115 Reduce output for timesheet
-          (thanks to Aikido guy).
+          Thanks to Aikido guy
 - TW-61   Extract only tasks with annotations
-          (thanks to Aikido Guy).
+          Thanks to Aikido Guy
 - TW-213  Align countdown column on boundary between number and text.
-          (thanks to Eric Fluger).
+          Thanks to Eric Fluger
 - TW-1572 Alternative approach to urgency inheritance
-          (thanks to Jens Erat, Wim Schuermann).
+          Thanks to Jens Erat, Wim Schuermann
 - TW-1667 hooks: upon failure indicate which hook failed
-          (thanks to Daniel Shahaf).
+          Thanks to Daniel Shahaf
 - TW-1785 Purge command to remove deleted tasks
-          (thanks to Paul Beckingham).
-- TW-1772 Implementation of circular dependency detection is
-          inefficient (thanks to Michael Meier).
+          Thanks to Paul Beckingham
+- TW-1772 Implementation of circular dependency detection is inefficient
+          Thanks to Michael Meier
 - TW-1778 Unicode strings are truncated in task description
-          (thanks to Andrew, bjonnh, OKOMPer, Vladimir).
+          Thanks to Andrew, bjonnh, OKOMPer, Vladimir
 - TW-1788 Closing a reopened task does not update the end time
-          (thanks to Ralph Bean).
+          Thanks to Ralph Bean
 - TW-1791 taskrc(5) manpage: spurious "pri." in rule.precedence.color
-          (thanks to Sebastien Badia).
+          Thanks to Sebastien Badia
 - TW-1792 The info command uses '0' to reference dependencies on non-
           pending tasks.
 - TW-1795 Calendar underline on Day padding
-          (thanks to Renato Alves).
+          Thanks to Renato Alves
 - TW-1805 project:ide is not allowed
-          (thanks to Slaven ʙanovic).
+          Thanks to Slaven ʙanovic
 - TW-1807 dateformat lacks a flag to display day of week
-          (thanks to Ellington Santos).
+          Thanks to Ellington Santos
 - TW-1813 Range filter doesn't work
-          (thanks to george js).
+          Thanks to george js
 - TW-1820 Install with -DLANGUAGE=2 flag not work.
-          (thanks to E. Manuel Cerr'on Angeles)
+          Thanks to E. Manuel Cerr'on Angeles
 - TW-1823 Incorrect unicode text wrapping / justifying.
-          (thanks to Sergey Trofimov).
+          Thanks to Sergey Trofimov
 - TW-1827 Extract annotations from a task
-          (thanks to Ryan).
+          Thanks to Ryan
 - TW-1855 "Well-known" CA certificates not properly auto-loaded
-          (thanks to Flavio Poletti).
+          Thanks to Flavio Poletti
 - TW-1857 Change Task::get call to the more efficient Task::has
-          (thanks to Zachary Manning).
+          Thanks to Zachary Manning
 - TW‐1858 Change signature for dependencyGetBlocked
 - TW-1859 Change signature of Task::getTags
 - TW-1860 Change signature of Task::getAnnotations
 - TW-1861 Truncated description when adding annotation
-          (thanks to eezewaek).
+          Thanks to eezewaek
 - TW-1869 segmentation fault (on unusual installation)
-          (thanks to Eric Hymowitz).
+          Thanks to Eric Hymowitz
 - TW-1873 Specify different path to extensions/hooks directory
-          (thanks to Eli).
+          Thanks to Eli
 - TW-1877 task done, task edit, task is now pending
-          (thanks to Eric Hymowitz).
+          Thanks to Eric Hymowitz
 - TW-1878 uuids subcommand produces a space-delimited list, not comma-delimited
-          (thanks to Scott Kostyshak).
+          Thanks to Scott Kostyshak
 - TW-1881 Missing last character(s) in Description field
-          (thanks to Hubert Toullec).
+          Thanks to Hubert Toullec
 - TW-1881 default.scheduled seems not to work
-          (thanks to Onion).
+          Thanks to Onion
 - TW-1885 Task Sync does not send TLS SNI headers
-          (thanks to Dan Callahan).
+          Thanks to Dan Callahan
 - TW-1903 grammar error -- There are 1 local changes.
-          (thanks to Eric Hymowitz).
+          Thanks to Eric Hymowitz
 - TW-1906/#1919 sync sub-command is missing from task(1) manual page
-          (thanks to rjc).
+          Thanks to rjc
 - TW-1910 unreachable statement
-          (thanks to Martin Strunz).
+          Thanks to Martin Strunz
 = TW-1917/#1930 "above" does a string comparison, even when the value is numeric
-          (thanks to Dirk Deimeke).
+          Thanks to Dirk Deimeke
 - TW-1930 Typo in help
-          (thanks to Kai HTML).
+          Thanks to Kai HTML
 - TW-1935 Separate verbosity category for rc overrides
-          (thanks to Paul J. Fenwick).
+          Thanks to Paul J. Fenwick
 - TW-1936 Tweak tests to have fuller TAP compliance
-          (thanks to Paul J. Fenwick).
+          Thanks to Paul J. Fenwick
 - TW-1938 Adjust behaviour of new-uuid and new-id verbosity levels
-          (thanks to Paul J. Fenwick).
+          Thanks to Paul J. Fenwick
 - TW-1947 "urgency.over" filter seems to not work correct
-          (thanks to Marc Richter).
+          Thanks to Marc Richter
 - #1964 task burndown shows extra brackets #1964
-          (thanks to php-coder).
+          Thanks to php-coder
+- #1966 Tests: Don't hardcode errno constants #1966
+          Thanks to Jakub Wilk
+- #2 Update to markdown and rename DEVELOPER to DEVELOPER.md
+          Thanks to Lynoure Braakman
+- #1 URL formating
+          Thanks to buhtz
 - Added 'juhannus' as a synonym for 'midsommarafton'
-          (thanks to Lynoure Braakman).
+          Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
   virtual tag.
 - Removed deprecated 'alias._query' setting.
 - Fixed ambiguity in the esp-ESP localization
-          (thanks to Fidel Mato).
+          Thanks to Fidel Mato
 - Deprecated the 'new-uuid' verbosity option, since its functionality can be
   removed by merging with 'new-id'.
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
 - Added 'QUARTER' virtual tag.
 - Fixed unquoted glob in bash completion script
-          (thanks to Ran Benita).
+          Thanks to Ran Benita
 - Deprecated use of alternate Boolean configuration settings. Use values "0" for
   off, and "1" for on. Avoid used of "on", "off", "true", "t", "false", "f",
   "yes", "y", "no", "n".
 - Fixed test harness for Python 3.x.
-          (thanks to jrabbit).
+          Thanks to jrabbit
 - Improved certificate validation diagnostics
-          (thanks to Jelle van der Waa).
+          Thanks to Jelle van der Waa
 - Improved portability for SunOS-like OSes.
-          (thanks to Antonio Huete Jimenez).
+          Thanks to Antonio Huete Jimenez
 - Updated the 'timesheet' command with a more compact report that accepts a
   filter, and has a default filter showing the last four weeks of completed and
   started tasks.
 - Added 'history.weekly', 'history.daily', 'ghistory.weekly', 'ghistory.daily'
   report variations, with code refactoring.
-          (thanks to Lukas Barth).
+          Thanks to Lukas Barth
 - New DOM references: annotations.count, tw.syncneeded, tw.program, tw.args,
   tw.width, tw.height, tw.version.
 - The message telling you to sync now indicates how many local changes will be
