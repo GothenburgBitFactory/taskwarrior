@@ -67,10 +67,10 @@ class TestBug1575(TestCase):
 
            tw-1575: `task log` mangles URLs when quoted
         """
-        self.t("log testing123 https://bug.tasktools.org")
+        self.t("log testing123 https://foo.example.com")
 
         code, out, err = self.t("completed")
-        self.assertIn("testing123 https://bug.tasktools.org", out)
+        self.assertIn("testing123 https://foo.example.com", out)
 
 
 if __name__ == "__main__":
