@@ -530,6 +530,25 @@ Shows statistics of the tasks defined by the filter.
 Shows a report of aggregated task status by project.
 
 .TP
+.B task sync [init]
+The sync command synchronizes data with the Taskserver, if configured.
+
+The init subcommand should only ever be run once, and only on one client, because
+it sends all data to the Taskserver. This allows all the subsequent sync commands
+to only send small deltas.
+
+Note: If you use multiple sync clients, make sure this setting (which is the default)
+is on your primary client:
+
+  recurrence=on
+
+and on all other clients (this is not the default):
+
+  recurrence=off
+
+This is a workaround to avoid a recurrence bug that duplicates recurring tasks.
+
+.TP
 .B task <filter> tags
 Show a list of all tags used. Any special tags used are highlighted. Note that
 virtual tags are not listed - they don't really exist, and are just a convenient
