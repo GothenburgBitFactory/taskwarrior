@@ -144,27 +144,25 @@ private:
   unsigned burndown_size (unsigned);
 
 public:
-  int _width;                     // Terminal width
-  int _height;                    // Terminal height
-  int _graph_width;               // Width of plot area
-  int _graph_height;              // Height of plot area
-  int _max_value;                 // Largest combined bar value
-  int _max_label;                 // Longest y-axis label
-  std::vector <int> _labels;      // Y-axis labels
-  int _estimated_bars;            // Estimated bar count
-  int _actual_bars;               // Calculated bar count
-  std::map <time_t, Bar> _bars;   // Epoch-indexed set of bars
-  Datetime _earliest;             // Date of earliest estimated bar
-  int _carryover_done;            // Number of 'done' tasks prior to chart range
-  char _period;                   // D, W, M
-  std::string _title;             // Additional description
-  std::string _grid;              // String representing grid of characters
-
-  time_t _peak_epoch;             // Quantized (D) date of highest pending peak
-  int _peak_count;                // Corresponding peak pending count
-  int _current_count;             // Current pending count
-  float _net_fix_rate;            // Calculated fix rate
-  std::string _completion;        // Estimated completion date
+  int _width                    {};        // Terminal width
+  int _height                   {};        // Terminal height
+  int _graph_width              {};        // Width of plot area
+  int _graph_height             {};        // Height of plot area
+  int _max_value                {0};      // Largest combined bar value
+  int _max_label                {1};      // Longest y-axis label
+  std::vector <int> _labels     {};        // Y-axis labels
+  int _estimated_bars           {};        // Estimated bar count
+  int _actual_bars              {0};      // Calculated bar count
+  std::map <time_t, Bar> _bars  {};        // Epoch-indexed set of bars
+  Datetime _earliest            {};        // Date of earliest estimated bar
+  int _carryover_done           {0};      // Number of 'done' tasks prior to chart range
+  char _period                  {};        // D, W, M
+  std::string _grid             {};        // String representing grid of characters
+  time_t _peak_epoch            {};        // Quantized (D) date of highest pending peak
+  int _peak_count               {0};      // Corresponding peak pending count
+  int _current_count            {0};      // Current pending count
+  float _net_fix_rate           {0.0};    // Calculated fix rate
+  std::string _completion       {};       // Estimated completion date
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,8 +172,6 @@ Chart::Chart (char type)
   // maximum space, and the width drives various other parameters.
   _width = Context::getContext ().getWidth ();
   _height = Context::getContext ().getHeight () - 1;  // Allow for new line with prompt.
-  _max_value = 0;
-  _max_label = 1;
   _graph_height = _height - 7;
   _graph_width = _width - _max_label - 14;
 
@@ -183,17 +179,7 @@ Chart::Chart (char type)
   // potentially enormous data set.
   _estimated_bars = (_width - 1 - 14) / 3;
 
-  _actual_bars = 0;
   _period = type;
-  _carryover_done = 0;
-
-  // Rates are calculated last.
-  _net_fix_rate = 0.0;
-
-  // Set the title.
-  std::vector <std::string> words = Context::getContext ().cli2.getWords ();
-  auto filter = join (" ", words);
-  _title = '(' + filter + ')';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +215,6 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
   }
 
   // Find the peak, peak date and current.
-  _peak_count = 0;
   for (auto& count : pending)
   {
     if (count.second > _peak_count)
@@ -402,33 +387,11 @@ std::string Chart::render ()
     _grid += std::string (_width, ' ') + '\n';
 
   // Title.
-  std::string full_title;
-  switch (_period)
-  {
-  case 'D': full_title = "Daily";   break;
-  case 'W': full_title = "Weekly";  break;
-  case 'M': full_title = "Monthly"; break;
-  }
-
-  full_title += std::string (" Burndown");
-
-  if (_title.length ())
-  {
-    if (full_title.length () + 1 + _title.length () < (unsigned) _width)
-    {
-      full_title += ' ' + _title;
-      _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
-    }
-    else
-    {
-      _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
-      _grid.replace (LOC (1, (_width - _title.length ()) / 2), _title.length (), _title);
-    }
-  }
-  else
-  {
-    _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
-  }
+  std::string title = _period == 'D' ? "Daily"
+                    : _period == 'W' ? "Weekly"
+                    :                  "Monthly";
+  title += std::string (" Burndown");
+  _grid.replace (LOC (0, (_width - title.length ()) / 2), title.length (), title);
 
   // Legend.
   _grid.replace (LOC (_graph_height / 2 - 1, _width - 10), 10, "DD " + leftJustify ("Done",    7));
