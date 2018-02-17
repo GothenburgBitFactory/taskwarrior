@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division, print_function
+import errno
 import os
 import tempfile
 import shutil
@@ -310,7 +311,7 @@ class Taskd(object):
         try:
             shutil.rmtree(self.datadir)
         except OSError as e:
-            if e.errno == 2:
+            if e.errno == errno.ENOENT:
                 # Directory no longer exists
                 pass
             else:
