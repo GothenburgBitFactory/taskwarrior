@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.0)
 
 # See this CMake issue before complaining about the following.
 # https://cmake.org/Bug/view.php?id=16062
