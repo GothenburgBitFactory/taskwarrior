@@ -76,7 +76,9 @@
 - TW-1938 Adjust behaviour of new-uuid and new-id verbosity levels
           (thanks to Paul J. Fenwick)
 - TW-1947 "urgency.over" filter seems to not work correct
-          (thanks to Marc Richter).
+          (thanks to Marc Richter)
+- #1964 task burndown shows extra brackets #1964
+          (thanks to php-coder)
 - Added 'juhannus' as a synonym for 'midsommarafton'
           (thanks to Lynoure Braakman).
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
