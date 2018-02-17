@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import atexit
+import errno
 import json
 import os
 import shlex
@@ -274,7 +275,7 @@ class Task(object):
         try:
             shutil.rmtree(self.datadir)
         except OSError as e:
-            if e.errno == 2:
+            if e.errno == errno.ENOENT:
                 # Directory no longer exists
                 pass
             else:
