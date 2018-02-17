@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
+import errno
 import os
 import sys
 import socket
@@ -212,8 +213,8 @@ def _get_output(arguments, timeout=None):
         try:
             os.kill(pid, signal.SIGABRT)
         except OSError as e:
-            # 3 means the process finished/died between last check and now
-            if e.errno != 3:
+            # ESRCH means the process finished/died between last check and now
+            if e.errno != errno.ESRCH:
                 raise
 
         # Wait for process to finish (should die/exit after signal)
