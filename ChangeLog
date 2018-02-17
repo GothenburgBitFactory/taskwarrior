@@ -63,6 +63,8 @@
           (thanks to Dan Callahan).
 - TW-1903 grammar error -- There are 1 local changes.
           (thanks to Eric Hymowitz).
+- TW-1906/#1919 sync sub-command is missing from task(1) manual page
+          (thanks to rjc).
 - TW-1910 unreachable statement
           (thanks to Martin Strunz).
 - TW-1930 Typo in help
