@@ -55,7 +55,7 @@ default, sample
 .I .taskrc
 file in the user's home directory.
 
-The .taskrc file follows a very simply syntax defining name/value pairs:
+The .taskrc file follows a very simple syntax defining name/value pairs:
 
 .RS
 <name> = <value>
