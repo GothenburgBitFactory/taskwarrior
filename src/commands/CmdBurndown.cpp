@@ -171,7 +171,17 @@ Chart::Chart (char type)
   // How much space is there to render in?  This chart will occupy the
   // maximum space, and the width drives various other parameters.
   _width = Context::getContext ().getWidth ();
-  _height = Context::getContext ().getHeight () - 1;  // Allow for new line with prompt.
+
+  // check the PS1 to determine how many newlines to leave for the prompt
+  char* _ps1 = getenv("PS1");
+  int _ps1_lines = 1;
+  char* _substr = _ps1;
+  while ((_substr = strstr(_substr, "\\n")) != NULL) {
+    _ps1_lines++;
+    ++_substr;
+  }
+
+  _height = Context::getContext ().getHeight () - _ps1_lines;
   _graph_height = _height - 7;
   _graph_width = _width - _max_label - 14;
 
