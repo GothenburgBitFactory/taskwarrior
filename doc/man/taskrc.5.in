@@ -280,7 +280,7 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
     unwait     Notification when a task leaves the 'waiting' state
-    override   Notification when configuration options are overriden
+    override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
 
 "affected", "new-id", "new-uuid", "project", "override" and "unwait" imply "footnote".
@@ -450,7 +450,7 @@ The character or string to show in the <uda>.indicator column. Defaults to U.
 Controls whether recurrence is enabled, and whether recurring tasks continue to
 generate new task instances. Defaults to "1".
 
-If you are syncing multiple clients, then it is adviѕed that you set 'recurrence=1'
+If you are syncing multiple clients, then it is advised that you set 'recurrence=1'
 on your primary client, and 'recurrence=0' on ALL other clients. This is a workaround
 for a duplication bug.
 
