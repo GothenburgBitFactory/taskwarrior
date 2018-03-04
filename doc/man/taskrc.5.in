@@ -283,7 +283,8 @@ control specific occasions when output is generated. This list may contain:
     override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
 
-"affected", "new-id", "new-uuid", "project", "override" and "unwait" imply "footnote".
+"affected", "new-id", "new-uuid", "project", "unwait", "override" and "recur"
+imply "footnote".
 
 Note that the "1" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
