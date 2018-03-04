@@ -3,20 +3,6 @@
 .SH NAME
 task-color \- A color tutorial for the Taskwarrior command line todo manager.
 
-.SH SETUP
-The first thing you need is make sure you tell Taskwarrior that you want to use
-color.  This is the default for Taskwarrior, so the following step may be
-unnecessary.
-
-    $ task config color on
-
-This command will make sure there is an entry in your ~/.taskrc file that looks
-like:
-
-    color=on
-
-Now Taskwarrior is ready.
-
 .SH AUTOMATIC MONOCHROME
 It should be mentioned that Taskwarrior is aware of whether its output is going
 to a terminal, or to a file or through a pipe.  When Taskwarrior output goes to
