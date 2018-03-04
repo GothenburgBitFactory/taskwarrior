@@ -313,7 +313,7 @@ https://www.opensource.org/licenses/mit-license.php for more information.
 .BR taskrc(5),
 .BR task-sync(5)
 
-For more information regarding Taskwarrior, the following may be referenced:
+For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
@@ -324,10 +324,10 @@ The official code repository at
 <https://github.com/GothenburgBitFactory/taskwarrior>
 
 .TP
-You can contact the project by writing an email to
-<support@gothenburgbitfactory.org>
+You can contact the project by emailing
+<support@GothenburgBitFactory.org>
 
 .SH REPORTING BUGS
 .TP
 Bugs in Taskwarrior may be reported to the issue-tracker at
-<https://taskwarrior.org>
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>
