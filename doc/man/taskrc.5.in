@@ -267,8 +267,8 @@ Alternatively, you can specify a comma-separated list of verbosity tokens that
 control specific occasions when output is generated. This list may contain:
 
     blank      Inserts extra blank lines in output, for clarity
-    header     Messages that appear before report output
-    footnote   Messages that appear after report output
+    header     Messages that appear before report output (this includes .taskrc/.task overrides and the "[task next]" message)
+    footnote   Messages that appear after report output (mostly status messages and change descriptions)
     label      Column labels on tabular reports
     new-id     Provides feedback of any new task IDs
     new-uuid   Provides feedback of any new task UUIDs. Deprecated, to be
