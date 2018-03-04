@@ -21,7 +21,7 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ## SOFTWARE.
 ##
-## http://www.opensource.org/licenses/mit-license.php
+## https://www.opensource.org/licenses/mit-license.php
 ##
 ################################################################################
 
@@ -209,7 +209,7 @@ if (open my $fh, '>:utf8', $file)
         "# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n",
         "# SOFTWARE.\n",
         "#\n",
-        "# http://www.opensource.org/licenses/mit-license.php\n",
+        "# https://www.opensource.org/licenses/mit-license.php\n",
         "#\n",
         "###############################################################################\n",
         "\n",

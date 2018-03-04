@@ -53,7 +53,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 
 # NOTE: remember that sed on OS X is different in some aspects. E.g. it does
 #       not understand \t for tabs.
