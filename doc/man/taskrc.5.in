@@ -680,11 +680,11 @@ considered due, and is colored accordingly. The default value is 7.
 
 .TP
 .B calendar.details=sparse
-If set to full running "task calendar" will display the details of tasks with
+If set to "full" running "task calendar" will display the details of tasks with
 due dates that fall into the calendar period. The corresponding days will be
-color-coded in the calendar. If set to sparse only the corresponding days will
+color-coded in the calendar. If set to "sparse" only the corresponding days will
 be color coded and no details will be displayed. The displaying of due dates
-with details is turned off by setting the variable to none. The default value
+with details is turned off by setting the variable to "none". The default value
 is "sparse".
 
 .TP
