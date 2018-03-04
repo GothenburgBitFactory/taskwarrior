@@ -108,12 +108,6 @@ certificate, which means you will need one of the following additional entries:
     $ task config taskd.ca          ~/.task/ca.cert.pem
 
 The CA (Certificate Authority) will be used to verify the server certificate.
-Alternatively, you can override the cert verification process using:
-
-    $ task config taskd.trust       'allow all'
-
-This is an insecure option that should be used with caution, because it directs
-Taskwarrior to trust any certificate.
 
 After setup, you run a one-time sync initialization, like this:
 
