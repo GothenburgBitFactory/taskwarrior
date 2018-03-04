@@ -136,7 +136,7 @@ This protects you against the effects of a sync/duplication bug.
 
 Strengths:
 .br
-  - Always secure
+  - Secure communication
 .br
   - Minimal bandwidth
 .br
