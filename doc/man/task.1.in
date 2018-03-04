@@ -151,12 +151,12 @@ the specified month and year.  If the 'due' argument is provided, will show
 the starting month of the earliest due task.
 
 .TP
-.B task colors [sample | legend]
+.B task colors [<sample> | legend]
 Displays all possible colors, a named sample, or a legend containing all
 currently defined colors.
 
 .TP
-.B task columns [substring]
+.B task columns [<substring>]
 Displays all supported columns and formatting styles.  Useful when creating
 custom reports.  If a substring is provided, only matching column names are
 shown.
@@ -431,7 +431,7 @@ Examples:
     2015-03-31T23:59:59
 
 .TP
-.B task config [name [value | '']]
+.B task config [<name> [<value> | '']]
 Add, modify and remove settings directly in the Taskwarrior configuration.
 This command either modifies the 'name' setting with a new value of 'value',
 or adds a new entry that is equivalent to 'name=value':
@@ -516,7 +516,7 @@ Lists all supported reports.  This includes the built-in reports, and any custom
 reports you have defined.
 
 .TP
-.B task show [all | substring]
+.B task show [all | <substring>]
 Shows all the current settings.  If a
 substring is specified just the settings containing that substring will be
 displayed.
@@ -556,7 +556,7 @@ notation for other task metadata. It is an error to attempt to add or remove a
 virtual tag.
 
 .TP
-.B task timesheet [weeks]
+.B task timesheet [<weeks>]
 Shows a weekly report of tasks completed and started.
 
 .TP
@@ -681,7 +681,7 @@ extracted by DOM references.
 
 For a full list of supported attribute-specific DOM references, consult
 the online documentation at:
-<http://taskwarrior.org/docs/dom.html>
+<https://taskwarrior.org/docs/dom.html>
 
 .SH ATTRIBUTES AND METADATA
 
@@ -1295,7 +1295,7 @@ the 'data.location' configuration setting of the task data directory.
 For examples please see the online documentation starting at
 
 .RS
-<http://taskwarrior.org/docs>
+<https://taskwarrior.org/docs>
 .RE
 
 Note that the online documentation can be more detailed and more current than
@@ -1330,7 +1330,7 @@ The file that contains information needed by the "undo" command.
 Copyright (C) 2006 \- 2018 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
-http://www.opensource.org/licenses/mit-license.php for more information.
+https://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR taskrc(5),
@@ -1341,7 +1341,7 @@ For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at

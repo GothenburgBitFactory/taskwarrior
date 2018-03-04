@@ -63,8 +63,6 @@ configuration variable like this:
 
 Strengths:
 .br
-  - Always secure
-.br
   - Good client support
 .br
   - Easy setup
@@ -87,7 +85,7 @@ done on demand.
 
 Setup is a matter of creating an account on a Taskserver (see your Taskserver
 provider or operate your own - see
-http://taskwarrior.org/docs/server_setup.html)
+https://taskwarrior.org/docs/server_setup.html)
 
 Once you have an account, you'll receive a certificate, key, and credentials.
 You'll need to put the certificate and key somewhere like this:
@@ -108,12 +106,6 @@ certificate, which means you will need one of the following additional entries:
     $ task config taskd.ca          ~/.task/ca.cert.pem
 
 The CA (Certificate Authority) will be used to verify the server certificate.
-Alternatively, you can override the cert verification process using:
-
-    $ task config taskd.trust       'allow all'
-
-This is an insecure option that should be used with caution, because it directs
-Taskwarrior to trust any certificate.
 
 After setup, you run a one-time sync initialization, like this:
 
@@ -144,7 +136,7 @@ This protects you against the effects of a sync/duplication bug.
 
 Strengths:
 .br
-  - Always secure
+  - Secure communication
 .br
   - Minimal bandwidth
 .br
@@ -158,28 +150,28 @@ Weaknesses:
 Copyright (C) 2006 \- 2018 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
-http://www.opensource.org/licenses/mit-license.php for more information.
+https://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
 .BR taskrc(5),
 .BR task-color(5),
 
-For more information regarding task, the following may be referenced:
+For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at
 <https://github.com/GothenburgBitFactory/taskwarrior>
 
 .TP
-You can contact the project by writing an email to
-<support@gothenburgBitFactory.org>
+You can contact the project by emailing
+<support@GothenburgBitFactory.org>
 
 .SH REPORTING BUGS
 .TP
-Bugs in task may be reported to the issue-tracker at
-<http://taskwarrior.org>
+Bugs in Taskwarrior may be reported to the issue-tracker at
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>

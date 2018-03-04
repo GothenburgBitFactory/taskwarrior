@@ -680,11 +680,11 @@ considered due, and is colored accordingly. The default value is 7.
 
 .TP
 .B calendar.details=sparse
-If set to full running "task calendar" will display the details of tasks with
+If set to "full" running "task calendar" will display the details of tasks with
 due dates that fall into the calendar period. The corresponding days will be
-color-coded in the calendar. If set to sparse only the corresponding days will
+color-coded in the calendar. If set to "sparse" only the corresponding days will
 be color coded and no details will be displayed. The displaying of due dates
-with details is turned off by setting the variable to none. The default value
+with details is turned off by setting the variable to "none". The default value
 is "sparse".
 
 .TP
@@ -820,7 +820,7 @@ automatic coloring of that task. A list of valid colors, depending on your
 terminal, can be obtained by running the command:
 
 .RS
-.B task color
+.B task colors
 .RE
 
 .RS
@@ -1517,7 +1517,7 @@ Copyright (C) 2006 \- 2018 P. Beckingham, F. Hernandez.
 This man page was originally written by Federico Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
-http://www.opensource.org/licenses/mit-license.php for more information.
+https://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
@@ -1528,7 +1528,7 @@ For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at

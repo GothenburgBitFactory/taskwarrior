@@ -9,13 +9,13 @@ Source project.
 ## Documentation
 
 There is extensive online documentation.
-You'll find all the details at [taskwarrior.org/docs](http://taskwarrior.org/docs)
+You'll find all the details at [taskwarrior.org/docs](https://taskwarrior.org/docs)
 
 At the site you'll find online documentation, downloads, news and more.
 
 ## Support
 
-For support options, take a look at [taskwarrior.org/support](http://taskwarrior.org/support)
+For support options, take a look at [taskwarrior.org/support](https://taskwarrior.org/support)
 
 Please use pull requests, or alternately send your code patches to
 [support@gothenburgbitfactory.org](mailto:support@gothenburgbitfactory.org)

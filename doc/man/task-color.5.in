@@ -3,20 +3,6 @@
 .SH NAME
 task-color \- A color tutorial for the Taskwarrior command line todo manager.
 
-.SH SETUP
-The first thing you need is make sure you tell Taskwarrior that you want to use
-color.  This is the default for Taskwarrior, so the following step may be
-unnecessary.
-
-    $ task config color on
-
-This command will make sure there is an entry in your ~/.taskrc file that looks
-like:
-
-    color=on
-
-Now Taskwarrior is ready.
-
 .SH AUTOMATIC MONOCHROME
 It should be mentioned that Taskwarrior is aware of whether its output is going
 to a terminal, or to a file or through a pipe.  When Taskwarrior output goes to
@@ -300,34 +286,34 @@ You can also see how the theme will color the various tasks with the command:
     $ task color legend
 
 Better yet, create your own, and share it.  We will gladly host the theme file
-on <http://taskwarrior.org>.
+on <https://taskwarrior.org>.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2018 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
-http://www.opensource.org/licenses/mit-license.php for more information.
+https://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
 .BR taskrc(5),
 .BR task-sync(5)
 
-For more information regarding Taskwarrior, the following may be referenced:
+For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at
 <https://github.com/GothenburgBitFactory/taskwarrior>
 
 .TP
-You can contact the project by writing an email to
-<support@gothenburgbitfactory.org>
+You can contact the project by emailing
+<support@GothenburgBitFactory.org>
 
 .SH REPORTING BUGS
 .TP
 Bugs in Taskwarrior may be reported to the issue-tracker at
-<http://taskwarrior.org>
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>
