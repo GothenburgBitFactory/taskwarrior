@@ -267,8 +267,8 @@ Alternatively, you can specify a comma-separated list of verbosity tokens that
 control specific occasions when output is generated. This list may contain:
 
     blank      Inserts extra blank lines in output, for clarity
-    header     Messages that appear before report output
-    footnote   Messages that appear after report output
+    header     Messages that appear before report output (this includes .taskrc/.task overrides and the "[task next]" message)
+    footnote   Messages that appear after report output (mostly status messages and change descriptions)
     label      Column labels on tabular reports
     new-id     Provides feedback of any new task IDs
     new-uuid   Provides feedback of any new task UUIDs. Deprecated, to be
@@ -280,10 +280,11 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
     unwait     Notification when a task leaves the 'waiting' state
-    override   Notification when configuration options are overriden
+    override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
 
-"affected", "new-id", "new-uuid", "project", "override" and "unwait" imply "footnote".
+"affected", "new-id", "new-uuid", "project", "unwait", "override" and "recur"
+imply "footnote".
 
 Note that the "1" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
@@ -450,7 +451,7 @@ The character or string to show in the <uda>.indicator column. Defaults to U.
 Controls whether recurrence is enabled, and whether recurring tasks continue to
 generate new task instances. Defaults to "1".
 
-If you are syncing multiple clients, then it is adviѕed that you set 'recurrence=1'
+If you are syncing multiple clients, then it is advised that you set 'recurrence=1'
 on your primary client, and 'recurrence=0' on ALL other clients. This is a workaround
 for a duplication bug.
 
