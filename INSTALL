@@ -141,7 +141,7 @@ Darwin, 32bit
     cmake -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 .
 
   See:
-    http://taskwarrior.org/issues/817
+    https://taskwarrior.org/issues/817
     http://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
     http://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
     http://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt

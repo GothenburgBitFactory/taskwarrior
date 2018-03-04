@@ -2069,7 +2069,7 @@ Bugs
 - Supports 'rc.name:value' for a command line override to .taskrc data
   (thanks to Federico Hernandez).
 - Removed obsolete DEVELOPERS file.  The online support forums at
-  http://taskwarrior.org will provide better information.
+  https://taskwarrior.org will provide better information.
 - Fixed bug that kept some deleted tasks showing up on the calendar report
   (thanks to Federico Hernandez).
 - Now asks the user to confirm large changes if configuration variable
