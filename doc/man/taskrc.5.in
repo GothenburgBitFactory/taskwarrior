@@ -820,7 +820,7 @@ automatic coloring of that task. A list of valid colors, depending on your
 terminal, can be obtained by running the command:
 
 .RS
-.B task color
+.B task colors
 .RE
 
 .RS
