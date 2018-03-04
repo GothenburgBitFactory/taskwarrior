@@ -681,7 +681,7 @@ extracted by DOM references.
 
 For a full list of supported attribute-specific DOM references, consult
 the online documentation at:
-<http://taskwarrior.org/docs/dom.html>
+<https://taskwarrior.org/docs/dom.html>
 
 .SH ATTRIBUTES AND METADATA
 
@@ -1293,7 +1293,7 @@ the 'data.location' configuration setting of the task data directory.
 For examples please see the online documentation starting at
 
 .RS
-<http://taskwarrior.org/docs>
+<https://taskwarrior.org/docs>
 .RE
 
 Note that the online documentation can be more detailed and more current than
@@ -1339,7 +1339,7 @@ For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at

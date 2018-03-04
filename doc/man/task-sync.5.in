@@ -87,7 +87,7 @@ done on demand.
 
 Setup is a matter of creating an account on a Taskserver (see your Taskserver
 provider or operate your own - see
-http://taskwarrior.org/docs/server_setup.html)
+https://taskwarrior.org/docs/server_setup.html)
 
 Once you have an account, you'll receive a certificate, key, and credentials.
 You'll need to put the certificate and key somewhere like this:
@@ -169,7 +169,7 @@ For more information regarding task, the following may be referenced:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at
@@ -182,4 +182,4 @@ You can contact the project by writing an email to
 .SH REPORTING BUGS
 .TP
 Bugs in task may be reported to the issue-tracker at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
