@@ -222,7 +222,7 @@ variable 'rule.precedence.color', which by default contains:
     deleted,completed,active,keyword.,tag.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,uda.
 
 These are just the color rules with the 'color.' prefix removed.  The
-rule 'color.due.today' is the highest precedence, and 'color.deleted' is the lowest.
+rule 'color.deleted' has the highest precedence, and 'color.uda.' the lowest.
 
 The keyword rule shown here as 'keyword.' corresponds to a wildcard pattern,
 meaning 'color.keyword.*', or in other words all the keyword rules.  Similarly
