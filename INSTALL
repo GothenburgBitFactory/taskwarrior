@@ -14,7 +14,7 @@ from source. More information on CMake can be obtained at https://cmake.org
 You will also need:
   - make
 
-You will need a C++ compiler that supports full C++11, which includes:
+You will need a C++ compiler that supports full C++14, which includes:
   - gcc 5.0   (released 2013-12-23)
   - clang 3.4 (released 2014-01-02)
 
