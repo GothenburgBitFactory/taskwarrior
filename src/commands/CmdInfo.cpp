@@ -217,7 +217,7 @@ int CmdInfo::execute (std::string& output)
     auto created = task.get ("entry");
     if (created.length ())
     {
-      Datetime dt (strtol (created.c_str (), NULL, 10));
+      Datetime dt (strtol (created.c_str (), nullptr, 10));
       age = Duration (now - dt).formatVague ();
     }
 
@@ -531,7 +531,7 @@ int CmdInfo::execute (std::string& output)
           {
             int row = journal.addRow ();
 
-            Datetime timestamp (strtol (undo[when].substr (5).c_str (), NULL, 10));
+            Datetime timestamp (strtol (undo[when].substr (5).c_str (), nullptr, 10));
             journal.set (row, 0, timestamp.toString (dateformat));
 
             Task before (undo[previous].substr (4));

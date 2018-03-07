@@ -1864,9 +1864,9 @@ void Variant::cast (const enum type new_type)
                _string == "0.0") ? false : true;
       break;
     case type_integer:
-      _integer = (int) strtol (_string.c_str (), NULL, (_string.substr (0, 2) == "0x" ? 16 : 10));
+      _integer = (int) strtol (_string.c_str (), nullptr, (_string.substr (0, 2) == "0x" ? 16 : 10));
       break;
-    case type_real:     _real = strtod (_string.c_str (), NULL);              break;
+    case type_real:     _real = strtod (_string.c_str (), nullptr);              break;
     case type_string:                                                         break;
     case type_date:
       {

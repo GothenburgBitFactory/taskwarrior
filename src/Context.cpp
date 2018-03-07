@@ -1027,7 +1027,7 @@ void Context::getLimits (int& rows, int& lines)
     }
     else
     {
-      rows = (int) strtol (limit.c_str (), NULL, 10);
+      rows = (int) strtol (limit.c_str (), nullptr, 10);
       lines = 0;
     }
   }

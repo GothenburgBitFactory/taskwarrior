@@ -249,7 +249,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   for (auto& anno : task.getAnnotations ())
   {
-    Datetime dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
+    Datetime dt (strtol (anno.first.substr (11).c_str (), nullptr, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
            << " -- "                  << json::encode (anno.second) << '\n';
   }
@@ -652,7 +652,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     if (dep.length () >= 7)
       task.addDependency (dep);
     else
-      task.addDependency ((int) strtol (dep.c_str (), NULL, 10));
+      task.addDependency ((int) strtol (dep.c_str (), nullptr, 10));
   }
 
   // UDAs

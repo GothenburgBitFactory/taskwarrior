@@ -218,7 +218,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 #if GNUTLS_VERSION_NUMBER >= 0x030406
   // For _trust == TLSClient::allow_all we perform no action
   if (_trust == TLSClient::ignore_hostname)
-    gnutls_session_set_verify_cert (_session, NULL, 0); // 3.4.6
+    gnutls_session_set_verify_cert (_session, nullptr, 0); // 3.4.6
   else if (_trust == TLSClient::strict)
     gnutls_session_set_verify_cert (_session, _host.c_str (), 0); // 3.4.6
 #endif
@@ -251,7 +251,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 
   // Try them all, stop on success.
   struct addrinfo* p;
-  for (p = res; p != NULL; p = p->ai_next)
+  for (p = res; p != nullptr; p = p->ai_next)
   {
     if ((_socket = ::socket (p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
       continue;
@@ -275,7 +275,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 
   free (res);
 
-  if (p == NULL)
+  if (p == nullptr)
     throw format ("Could not connect to {1} {2}", host, port);
 
 #if GNUTLS_VERSION_NUMBER >= 0x030100
@@ -362,7 +362,7 @@ int TLSClient::verify_certificate () const
   const char* hostname = _host.c_str();
 #if GNUTLS_VERSION_NUMBER >= 0x030104
   if (_trust == TLSClient::ignore_hostname)
-    hostname = NULL;
+    hostname = nullptr;
 
   int ret = gnutls_certificate_verify_peers3 (_session, hostname, &status); // 3.1.4
   if (ret < 0)
