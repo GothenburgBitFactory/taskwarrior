@@ -181,7 +181,7 @@ const std::string Task::identifier (bool shortened /* = false */) const
 void Task::setAsNow (const std::string& att)
 {
   char now[16];
-  snprintf (now, 16, "%u", (unsigned int) time (NULL));
+  snprintf (now, 16, "%u", (unsigned int) time (nullptr));
   set (att, now);
 
   recalc_urgency = true;
@@ -231,7 +231,7 @@ int Task::get_int (const std::string& name) const
 {
   auto i = data.find (name);
   if (i != data.end ())
-    return strtol (i->second.c_str (), NULL, 10);
+    return strtol (i->second.c_str (), nullptr, 10);
 
   return 0;
 }
@@ -241,7 +241,7 @@ unsigned long Task::get_ulong (const std::string& name) const
 {
   auto i = data.find (name);
   if (i != data.end ())
-    return strtoul (i->second.c_str (), NULL, 10);
+    return strtoul (i->second.c_str (), nullptr, 10);
 
   return 0;
 }
@@ -251,7 +251,7 @@ float Task::get_float (const std::string& name) const
 {
   auto i = data.find (name);
   if (i != data.end ())
-    return strtof (i->second.c_str (), NULL);
+    return strtof (i->second.c_str (), nullptr);
 
   return 0.0;
 }
@@ -261,7 +261,7 @@ time_t Task::get_date (const std::string& name) const
 {
   auto i = data.find (name);
   if (i != data.end ())
-    return (time_t) strtoul (i->second.c_str (), NULL, 10);
+    return (time_t) strtoul (i->second.c_str (), nullptr, 10);
 
   return 0;
 }
@@ -1060,7 +1060,7 @@ bool Task::hasAnnotations () const
 // timestamp.
 void Task::addAnnotation (const std::string& description)
 {
-  time_t now = time (NULL);
+  time_t now = time (nullptr);
   std::string key;
 
   do
@@ -1953,7 +1953,7 @@ float Task::urgency_active () const
 float Task::urgency_scheduled () const
 {
   if (has ("scheduled") &&
-      get_date ("scheduled") < time (NULL))
+      get_date ("scheduled") < time (nullptr))
     return 1.0;
 
   return 0.0;

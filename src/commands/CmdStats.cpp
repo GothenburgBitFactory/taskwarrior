@@ -89,7 +89,7 @@ int CmdStats::execute (std::string& output)
   filter.subset (all, filtered);
 
   Datetime now;
-  time_t earliest   = time (NULL);
+  time_t earliest   = time (nullptr);
   time_t latest     = 1;
   int totalT        = 0;
   int deletedT      = 0;
@@ -123,13 +123,13 @@ int CmdStats::execute (std::string& output)
     if (task.is_blocked)  ++blockedT;
     if (task.is_blocking) ++blockingT;
 
-    time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
+    time_t entry = strtol (task.get ("entry").c_str (), nullptr, 10);
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
     if (status == Task::completed)
     {
-      time_t end = strtol (task.get ("end").c_str (), NULL, 10);
+      time_t end = strtol (task.get ("end").c_str (), nullptr, 10);
       daysPending += (end - entry) / 86400.0;
     }
 
