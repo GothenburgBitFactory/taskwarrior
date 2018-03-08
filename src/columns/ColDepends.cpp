@@ -154,14 +154,14 @@ void ColumnDepends::modify (Task& task, const std::string& value)
       if (dep.length () == 37)
         task.removeDependency (dep.substr (1));
       else
-        task.removeDependency (strtol (dep.substr (1).c_str (), NULL, 10));
+        task.removeDependency (strtol (dep.substr (1).c_str (), nullptr, 10));
     }
     else
     {
       if (dep.length () == 36)
         task.addDependency (dep);
       else
-        task.addDependency (strtol (dep.c_str (), NULL, 10));
+        task.addDependency (strtol (dep.c_str (), nullptr, 10));
     }
   }
 }

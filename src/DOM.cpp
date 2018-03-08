@@ -279,7 +279,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     else if (type == Lexer::Type::number &&
              token.find ('.') == std::string::npos)
     {
-      auto id = strtol (token.c_str (), NULL, 10);
+      auto id = strtol (token.c_str (), nullptr, 10);
       if (id && id != ref.id)
         Context::getContext ().tdb2.get (id, ref);
 
@@ -375,7 +375,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   {
     auto annos = ref.getAnnotations ();
 
-    int a = strtol (elements[1].c_str (), NULL, 10);
+    int a = strtol (elements[1].c_str (), nullptr, 10);
     int count = 0;
 
     // Count off the 'a'th annotation.
@@ -403,7 +403,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   {
     auto annos = ref.getAnnotations ();
 
-    int a = strtol (elements[1].c_str (), NULL, 10);
+    int a = strtol (elements[1].c_str (), nullptr, 10);
     int count = 0;
 
     // Count off the 'a'th annotation.

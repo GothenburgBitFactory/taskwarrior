@@ -80,7 +80,7 @@ int CmdSummary::execute (std::string& output)
   std::map <std::string, int> countCompleted;
   std::map <std::string, double> sumEntry;
   std::map <std::string, int> counter;
-  time_t now = time (NULL);
+  time_t now = time (nullptr);
 
   // Initialize counters.
   for (auto& project : allProjects)
@@ -108,7 +108,7 @@ int CmdSummary::execute (std::string& output)
       {
         ++countPending[parent];
 
-        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
+        time_t entry = strtol (task.get ("entry").c_str (), nullptr, 10);
         if (entry)
           sumEntry[parent] = sumEntry[parent] + (double) (now - entry);
       }
@@ -120,8 +120,8 @@ int CmdSummary::execute (std::string& output)
       {
         ++countCompleted[parent];
 
-        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
-        time_t end   = strtol (task.get ("end").c_str (), NULL, 10);
+        time_t entry = strtol (task.get ("entry").c_str (), nullptr, 10);
+        time_t end   = strtol (task.get ("end").c_str (), nullptr, 10);
         if (entry && end)
           sumEntry[parent] = sumEntry[parent] + (double) (end - entry);
       }

@@ -241,7 +241,7 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
         //   rc.report.<report>.dateformat
         //   rc.dateformat.report
         //   rc.dateformat
-        Datetime date ((time_t) strtol (value.c_str (), NULL, 10));
+        Datetime date ((time_t) strtol (value.c_str (), nullptr, 10));
         auto format = Context::getContext ().config.get ("report." + _report + ".dateformat");
         if (format == "")
           format = Context::getContext ().config.get ("dateformat.report");
@@ -287,7 +287,7 @@ void ColumnUDADate::render (
           format = Context::getContext ().config.get ("dateformat");
       }
 
-      renderStringLeft (lines, width, color, Datetime ((time_t) strtol (value.c_str (), NULL, 10)).toString (format));
+      renderStringLeft (lines, width, color, Datetime ((time_t) strtol (value.c_str (), nullptr, 10)).toString (format));
     }
     else if (_style == "indicator")
     {

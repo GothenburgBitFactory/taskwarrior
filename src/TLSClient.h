@@ -58,7 +58,7 @@ private:
   std::string                      _host        {""};
   std::string                      _port        {""};
   gnutls_certificate_credentials_t _credentials {};
-  gnutls_session_t                 _session     {0};
+  gnutls_session_t                 _session     {nullptr};
   int                              _socket      {0};
   int                              _limit       {0};
   bool                             _debug       {false};

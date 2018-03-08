@@ -232,7 +232,7 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
   else if (unicodeLatinDigit (period[0]) &&
            period[period.length () - 1] == 'm')
   {
-    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
     m += increment;
     while (m > 12)
@@ -251,7 +251,7 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
            Lexer::isAllDigits (period.substr (1, period.length () - 2)) &&
            period[period.length () - 1] == 'M')
   {
-    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
     m += increment;
     while (m > 12)
@@ -284,7 +284,7 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
 
   else if (unicodeLatinDigit (period[0]) && period[period.length () - 1] == 'q')
   {
-    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
     m += 3 * increment;
     while (m > 12)
@@ -374,7 +374,7 @@ void updateRecurrenceMask (Task& task)
   if (uuid != "" &&
       Context::getContext ().tdb2.get (uuid, parent))
   {
-    unsigned int index = strtol (task.get ("imask").c_str (), NULL, 10);
+    unsigned int index = strtol (task.get ("imask").c_str (), nullptr, 10);
     auto mask = parent.get ("mask");
     if (mask.length () > index)
     {

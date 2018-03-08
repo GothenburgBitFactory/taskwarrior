@@ -171,7 +171,7 @@ void ColumnDescription::render (
     {
       for (const auto& i : task.getAnnotations ())
       {
-        Datetime dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        Datetime dt (strtol (i.first.substr (11).c_str (), nullptr, 10));
         description += '\n' + std::string (_indent, ' ') + dt.toString (_dateformat) + ' ' + i.second;
       }
     }
@@ -200,7 +200,7 @@ void ColumnDescription::render (
     {
       for (const auto& i : task.getAnnotations ())
       {
-        Datetime dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        Datetime dt (strtol (i.first.substr (11).c_str (), nullptr, 10));
         description += ' ' + dt.toString (_dateformat) + ' ' + i.second;
       }
     }
