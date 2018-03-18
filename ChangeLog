@@ -4,6 +4,10 @@
           Thanks to Markus Beppler, Konstantin Vorobyev
 - TI-91   Timewarrior does not compile on DragonFly
           Thanks to Michael Neumann
+- TW #1 URL formating
+           Thanks to buhtz
+- TW #2 Update to markdown and rename DEVELOPER to DEVELOPER.md
+           Thanks to Lynoure Braakman
 - TW-54/#115 Reduce output for timesheet
           Thanks to Aikido guy
 - TW-61   Extract only tasks with annotations
@@ -85,12 +89,10 @@
            Thanks to php-coder
 - TW #1966 Tests: Don't hardcode errno constants #1966
            Thanks to Jakub Wilk
-- TW #2 Update to markdown and rename DEVELOPER to DEVELOPER.md
-           Thanks to Lynoure Braakman
-- TW #1 URL formating
-           Thanks to buhtz
 - TW #1973 Don't nag when no tasks are READY
            Thanks to Martin F. Krafft
+- TW #1986 [Nit] Update DEVELOPER.md after migration to Github
+           Thanks to Kirill Bobyrev
 - Added 'juhannus' as a synonym for 'midsommarafton'
           Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
