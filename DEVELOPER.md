@@ -2,7 +2,7 @@
 
 ## Satisfy the Requirements:
  * CMake 3.0 or later
- * gcc 5.0 or later, clang 3.4 or later, or a compiler with full C++11 support
+ * gcc 5.0 or later, clang 3.4 or later, or a compiler with full C++14 support
  * libuuid (if not on macOS)
  * gnutls (optional)
  * python 2.7 or 3 (optional, for running the test suite)
