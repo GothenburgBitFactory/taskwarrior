@@ -36,11 +36,13 @@ from basetest import Task, TestCase
 
 
 class TestNagging(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        """Executed once before any test in the class"""
-        cls.t = Task()
-        cls.t.config("nag", "NAG")
+
+    def setUp(self):
+        """Executed before each test in the class"""
+        # Used to initialize objects that should be re-initialized or
+        # re-created for each individual test
+        self.t = Task()
+        self.t.config("nag", "NAG")
 
     def test_nagging(self):
         """Verify that nagging works when tasks are done in the 'wrong' order"""
@@ -73,6 +75,21 @@ class TestNagging(TestCase):
         code, out, err = self.t("1 done")
         self.assertNotIn("NAG", err)
 
+    def test_nagging_ready(self):
+        """Verify that nagging occurs when there are READY tasks of higher urgency"""
+        self.t("add one")                                # low urgency
+        self.t("add two due:10days scheduled:yesterday") # medium urgency, ready
+
+        code, out, err = self.t("1 done")
+        self.assertIn("NAG", err)
+
+    def test_nagging_not_ready(self):
+        """Verify that nagging does not occur when there are unREADY tasks of higher urgency"""
+        self.t("add one")                             # low urgency
+        self.t("add two due:10days scheduled:10days") # medium urgency, not ready
+
+        code, out, err = self.t("1 done")
+        self.assertNotIn("NAG", err)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
