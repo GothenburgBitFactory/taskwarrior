@@ -47,8 +47,9 @@ bool nag (Task& task)
     auto pending = Context::getContext ().tdb2.pending.get_tasks ();
     for (auto& t : pending)
     {
-      if ((t.getStatus () == Task::pending ||
+      if ((t.getStatus () == Task::pending  ||
            t.getStatus () == Task::waiting) &&
+          t.hasTag ("READY")                &&
           t.urgency () > task.urgency ())
       {
         Context::getContext ().footnote (msg);

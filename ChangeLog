@@ -69,7 +69,7 @@
           Thanks to rjc
 - TW-1910 unreachable statement
           Thanks to Martin Strunz
-= TW-1917/#1930 "above" does a string comparison, even when the value is numeric
+- TW-1917/#1930 "above" does a string comparison, even when the value is numeric
           Thanks to Dirk Deimeke
 - TW-1930 Typo in help
           Thanks to Kai HTML
@@ -81,14 +81,16 @@
           Thanks to Paul J. Fenwick
 - TW-1947 "urgency.over" filter seems to not work correct
           Thanks to Marc Richter
-- #1964 task burndown shows extra brackets #1964
-          Thanks to php-coder
-- #1966 Tests: Don't hardcode errno constants #1966
-          Thanks to Jakub Wilk
-- #2 Update to markdown and rename DEVELOPER to DEVELOPER.md
-          Thanks to Lynoure Braakman
-- #1 URL formating
-          Thanks to buhtz
+- TW #1964 task burndown shows extra brackets #1964
+           Thanks to php-coder
+- TW #1966 Tests: Don't hardcode errno constants #1966
+           Thanks to Jakub Wilk
+- TW #2 Update to markdown and rename DEVELOPER to DEVELOPER.md
+           Thanks to Lynoure Braakman
+- TW #1 URL formating
+           Thanks to buhtz
+- TW #1973 Don't nag when no tasks are READY
+           Thanks to Martin F. Krafft
 - Added 'juhannus' as a synonym for 'midsommarafton'
           Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
