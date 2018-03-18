@@ -329,7 +329,7 @@ int CmdDiagnostics::execute (std::string& output)
       Path p (hook);
       if (! p.is_directory ())
       {
-        std::string name = p.name ();
+        auto name = p.name ();
 
         if (p.executable () &&
             (name.substr (0, 6) == "on-add"    ||
@@ -358,7 +358,7 @@ int CmdDiagnostics::execute (std::string& output)
       Path p (hook);
       if (! p.is_directory ())
       {
-        std::string name = p.name ();
+        auto name = p.name ();
 
         if (! p.executable () ||
             (name.substr (0, 6) != "on-add"    &&
