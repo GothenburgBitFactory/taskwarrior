@@ -125,16 +125,16 @@
   All new unit tests should follow the test/template.t standard.
 
 # Patches
-  Patches are encouraged and welcomed. Either attach them to the appropriate
-  Jira issue, or send them to support@taskwarrior.org. A good patch:
+  Patches are encouraged and welcomed. Either send a pull request on Github or
+  email a patch to support@taskwarrior.org. A good patch:
 
     * Maintains the MIT license, and does not contain code lifted from other
       sources. You will have written 100% of the code in the patch, otherwise
       we cannot maintain the license.
     * Precisely addresses one issue only.
-    * Doesn't break unit tests.
+    * Doesn't break unit tests. This means yes, run the unit tests.
     * Doesn't introduce dependencies.
-    * Is accompanied by unit tests, where appropriate.
+    * Is accompanied by new or updated unit tests, where appropriate.
     * Is accompanied by documentation changes, where appropriate.
     * Conforms to the prevailing coding standards - in other words, it should
       fit in with the existing code.
