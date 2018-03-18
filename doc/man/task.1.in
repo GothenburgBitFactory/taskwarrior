@@ -177,8 +177,8 @@ Displays only a count of tasks matching the filter.
 .B task <filter> export
 Exports all tasks in the JSON format.  Redirect the output to a file, if you
 wish to save it, or pipe it to another command or script to convert it to
-another format. The standard task release comes with a few example scripts,
-such as:
+another format. You'll find these example scripts online at
+<https://taskwarrior.org/tools/>:
 
   export-csv.pl
   export-sql.py
