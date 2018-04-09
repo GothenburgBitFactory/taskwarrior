@@ -828,6 +828,13 @@ Attribute modifiers improve filters.  Supported modifiers are:
 .B  noword
 .RE
 
+They can be applied to all regular attributes (see above) and the following
+calculated attributes:
+
+.RS
+\fBurgency\fR (or short \fBurg\fR)
+.RE
+
 For example:
 
 .RS
