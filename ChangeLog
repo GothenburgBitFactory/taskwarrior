@@ -95,6 +95,8 @@
            Thanks to Kirill Bobyrev
 - TW #1922 Can't find export scripts
            Thanks to tom-doerr
+- TW #2020 reserved.lines is not affecting the burndown height
+           Thanks to ad₋si
 - Added 'juhannus' as a synonym for 'midsommarafton'
           Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
