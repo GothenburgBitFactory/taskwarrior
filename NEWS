@@ -1,37 +1,24 @@
 
-New Features in Taskwarrior 2.5.1
-
-  - As a bug-fix, code cleanup and performance release, new features are
-    limited to only small tweaks.
-  - The 'help' command now takes a 'usage' argument, which displays only the
-    command usage.
-
-New Commands in Taskwarrior 2.5.1
-
-  - None.
-
-New Configuration Options in Taskwarrior 2.5.1
-
-  - New 'relative' column format for 'date' type columns does what 'remaining'
-    and 'countdown' do, but in one format.
-
-Newly Deprecated Features in Taskwarrior 2.5.1
+New Features in Taskwarrior 2.5.2
 
   -
 
-Removed Features in 2.5.1
+New Commands in Taskwarrior 2.5.2
 
-  - There is no longer a 16-color default configuration for some platforms,
-    making all platforms 256-color.
-  - The configuration setting 'burndown.bias' is no longer used.
-  - The algorithm used to estimate completion on the 'burndown' reports has
-    been replaced by something less icky. Estimates are now based on the net
-    completion rate after the peak number of pending tasks.
-  - The unused 'dom' and 'shell.prompt' configuration settings were removed.
+  -
+
+New Configuration Options in Taskwarrior 2.5.2
+
+  -
+
+Newly Deprecated Features in Taskwarrior 2.5.2
+
+  -
+
+Removed Features in 2.5.2
+
 
 Known Issues
-
-  - https://bug.tasktools.org/
 
 Taskwarrior has been built and tested on the following configurations:
 
