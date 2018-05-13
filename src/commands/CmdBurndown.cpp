@@ -171,7 +171,9 @@ Chart::Chart (char type)
   // How much space is there to render in?  This chart will occupy the
   // maximum space, and the width drives various other parameters.
   _width = Context::getContext ().getWidth ();
-  _height = Context::getContext ().getHeight () - 1;  // Allow for new line with prompt.
+  _height = Context::getContext ().getHeight ()
+          - Context::getContext ().config.getInteger ("reserved.lines")
+          - 1;  // Allow for new line with prompt.
   _graph_height = _height - 7;
   _graph_width = _width - _max_label - 14;
 
