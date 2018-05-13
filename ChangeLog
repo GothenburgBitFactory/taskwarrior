@@ -1,4 +1,6 @@
-2.5.2 (?) ?
+2.5.2 () -
+
+- Removed deprecated 'alias._query' setting.
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
@@ -110,8 +112,14 @@
 - The 'run_all' script was not correctly using exit code 0 when all tests pass
           (thanks to Gordon Ball).
 
+<<<<<<< HEAD
 ------ current release ---------------------------
 
+||||||| parent of 19b2151f... Cleanup: Removed deprecated 'alias._query' setting
+=======
+------ old releases ------------------------------
+
+>>>>>>> 19b2151f... Cleanup: Removed deprecated 'alias._query' setting
 2.5.0 (2015-10-21) dd5968a61b1fab258b38879cfdbb7d67f1bcd550
 
 - TW-20   Task edit loses annotation precision, causing journal updating code
@@ -324,8 +332,6 @@
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
 - When GC is turned off, disable the query shortcuts, which no longer apply.
-
------- old releases ------------------------------
 
 2.4.4 (2015-05-10) df49aaba126484b668c41d3ff9301f8d8ec49987
 
