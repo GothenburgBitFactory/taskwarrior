@@ -139,8 +139,8 @@ void handleRecurrence ()
           Datetime (t.get_date ("until")) < now)
       {
         t.setStatus (Task::deleted);
-        context.tdb2.modify(t);
-        context.footnote (onExpiration (t));
+        Context::getContext ().tdb2.modify(t);
+        Context::getContext ().footnote (onExpiration (t));
       }
     }
   }
