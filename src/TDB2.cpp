@@ -367,7 +367,7 @@ void TF2::load_gc (Task& task)
       Context::getContext ().tdb2.pending._dirty = true;
 
       if (Context::getContext ().verbose ("unwait"))
-        Context::getContext ().footnote (format ("Un-waiting task '{1}'", task.get ("description")));
+        Context::getContext ().footnote (format ("Un-waiting task {1} '{2}'", task.id, task.get ("description")));
     }
 
     Context::getContext ().tdb2.pending._tasks.push_back (task);
