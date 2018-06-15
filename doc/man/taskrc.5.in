@@ -1476,14 +1476,14 @@ User identification for the Taskserver, which includes a private key.
 .B taskd.certificate=<path>
 .RS
 Specifies the path to the client certificate used for identification with the
-Taskserver.
+Taskserver. Optional, unless taskd.key is provided.
 .RE
 
 .TP
 .B taskd.key=<path>
 .RS
 Specifies the path to the client key used for encrypted communication with the
-Taskserver.
+Taskserver. Optional, unless taskd.certificate is provided.
 .RE
 
 .TP

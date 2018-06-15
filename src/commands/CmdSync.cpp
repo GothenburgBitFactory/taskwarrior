@@ -115,11 +115,13 @@ int CmdSync::execute (std::string& output)
     throw std::string ("You should either provide a CA certificate or override verification, but not both.");
 
   File certificate (Context::getContext ().config.get ("taskd.certificate"));
-  if (! certificate.exists ())
+  File key (Context::getContext ().config.get ("taskd.key"));
+
+  if (key.exists () && !certificate.exists ())
     throw std::string ("Taskserver certificate missing.");
 
-  File key (Context::getContext ().config.get ("taskd.key"));
-  if (! key.exists ())
+
+  if (certificate.exists () && !key.exists ())
     throw std::string ("Taskserver key missing.");
 
   // If this is a first-time initialization, send pending.data and

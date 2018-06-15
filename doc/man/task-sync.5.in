@@ -100,6 +100,10 @@ Then you configure Taskwarrior, using the provided details:
     $ task config taskd.credentials <organization>/<name>/<UUID>
     $ task config taskd.server      <server domain>:<port>
 
+If the server is configured not to require client certificates and instead
+depend only on credentials as means of authentication, the above steps will
+not be necessary.
+
 If you are using a private server, you are likely also using a self-signed
 certificate, which means you will need one of the following additional entries:
 
