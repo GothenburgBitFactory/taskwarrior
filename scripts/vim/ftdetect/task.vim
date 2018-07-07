@@ -16,6 +16,7 @@ au BufRead,BufNewFile backlog.data	set filetype=javascript
 
 " Taskwarrior configuration file
 au BufRead,BufNewFile .taskrc				set filetype=taskrc
+au BufRead,BufNewFile taskrc				set filetype=taskrc
 
 " Taskwarrior handling of 'task 42 edit'
 au BufRead,BufNewFile *.task				set filetype=taskedit
