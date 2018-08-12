@@ -101,6 +101,8 @@
            Thanks to ad₋si
 - TW #2051 doc/man: ready tasks sorted with started tasks 1st
            Thanks to Simon Désaulniers
+- TW #2053 Do not set CMP0037 on CMake 3.11.0 and above
+           Thanks to Janik Rabe
 - Added 'juhannus' as a synonym for 'midsommarafton'
           Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
