@@ -95,6 +95,8 @@
            Thanks to Kirill Bobyrev
 - TW #1922 Can't find export scripts
            Thanks to tom-doerr
+- TW #2007 Compute number of current tasks correctly
+           Thanks to Janik Rabe
 - TW #2020 reserved.lines is not affecting the burndown height
            Thanks to ad₋si
 - TW #2051 doc/man: ready tasks sorted with started tasks 1st
