@@ -195,6 +195,8 @@ Chart::~Chart ()
 void Chart::scanForPeak (std::vector <Task>& tasks)
 {
   std::map <time_t, int> pending;
+  _current_count = 0;
+
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
@@ -203,6 +205,8 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
     Datetime end;
     if (task.has ("end"))
       end = Datetime (task.get_date ("end"));
+    else
+      ++_current_count;
 
     while (entry < end)
     {
@@ -216,7 +220,7 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
     }
   }
 
-  // Find the peak, peak date and current.
+  // Find the peak and peak date.
   for (auto& count : pending)
   {
     if (count.second > _peak_count)
@@ -224,8 +228,6 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
       _peak_count = count.second;
       _peak_epoch = count.first;
     }
-
-    _current_count = count.second;
   }
 }
 
