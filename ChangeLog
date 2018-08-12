@@ -99,6 +99,8 @@
            Thanks to Janik Rabe
 - TW #2020 reserved.lines is not affecting the burndown height
            Thanks to ad₋si
+- TW #2047 Exiting the task editor with an error code doesn't remove the lock file
+           Thanks to coaxial
 - TW #2051 doc/man: ready tasks sorted with started tasks 1st
            Thanks to Simon Désaulniers
 - TW #2053 Do not set CMP0037 on CMake 3.11.0 and above

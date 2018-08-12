@@ -781,6 +781,7 @@ ARE_THESE_REALLY_HARMFUL:
     std::cout << format ("Editing failed with exit code {1}.\n", exitcode);
     if (-1 == exitcode)
       std::cout << std::strerror (captured_errno) << '\n';
+    File::remove (file.str ());
     return CmdEdit::editResult::error;
   }
 
