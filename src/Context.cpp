@@ -285,7 +285,6 @@ std::string configurationDefaults =
   "alias.history=history.monthly                  # Prefer monthly over annual history reports\n"
   "alias.ghistory=ghistory.monthly                # Prefer monthly graphical over annual history reports\n"
   "alias.burndown=burndown.weekly                 # Prefer the weekly burndown chart\n"
-  "alias.shell=exec tasksh                        # Alias old shell command to new shell\n"
   "\n"
   "# Reports\n"
   "\n"
