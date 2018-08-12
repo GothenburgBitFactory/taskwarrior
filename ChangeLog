@@ -97,6 +97,8 @@
            Thanks to tom-doerr
 - TW #2020 reserved.lines is not affecting the burndown height
            Thanks to ad₋si
+- TW #2051 doc/man: ready tasks sorted with started tasks 1st
+           Thanks to Simon Désaulniers
 - Added 'juhannus' as a synonym for 'midsommarafton'
           Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
