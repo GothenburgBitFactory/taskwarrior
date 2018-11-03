@@ -36,6 +36,21 @@
 #include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
+template <char delimiter>
+struct ProjectCompare
+{
+  bool operator() (std::string a, std::string b)
+  {
+    // Replace project delimiter character to give it the highest sorting
+    // precedence
+    replace (a.begin (), a.end (), delimiter, '\0');
+    replace (b.begin (), b.end (), delimiter, '\0');
+
+    return a < b;
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
 CmdProjects::CmdProjects ()
 {
   _keyword               = "projects";
@@ -75,7 +90,7 @@ int CmdProjects::execute (std::string& output)
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
-  std::map <std::string, int> unique;
+  std::map <std::string, int, ProjectCompare<'.'>> unique;
   bool no_project = false;
   std::string project;
   for (auto& task : filtered)
