@@ -1,0 +1,9 @@
+[package]
+name = "rask"
+version = "0.1.0"
+authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
+
+[dependencies]
+clap = "2.32"
+console = "0.6.2"
+indicatif = "0.9.0"
