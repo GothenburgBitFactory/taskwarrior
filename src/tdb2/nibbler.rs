@@ -1,3 +1,6 @@
+//! A minimal implementation of the "Nibbler" parsing utility from the Taskwarrior
+//! source.
+
 pub struct Nibbler<'a> {
     input: &'a [u8],
     cursor: usize,
