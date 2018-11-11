@@ -1,9 +1,8 @@
 use std::str;
 use std::io::{Result, Error, ErrorKind};
-use std::collections::HashMap;
 
 use super::nibbler::Nibbler;
-use super::super::task::Task;
+use task::{TaskBuilder, Task};
 
 /// Rust implementation of part of utf8_codepoint from Taskwarrior's src/utf8.cpp
 ///
@@ -88,7 +87,7 @@ fn decode(value: String) -> String {
 /// While Taskwarrior supports additional formats, this is the only format supported by rask.
 pub(super) fn parse_ff4(line: &str) -> Result<Task> {
     let mut nib = Nibbler::new(line.as_bytes());
-    let mut data = HashMap::new();
+    let mut builder = TaskBuilder::new();
 
     if !nib.skip(b'[') {
         return Err(Error::new(ErrorKind::Other, "bad line"));
@@ -97,13 +96,14 @@ pub(super) fn parse_ff4(line: &str) -> Result<Task> {
         let mut nib = Nibbler::new(line);
         while !nib.depleted() {
             if let Some(name) = nib.get_until(b':') {
+                let name = str::from_utf8(name).unwrap();
                 if !nib.skip(b':') {
                     return Err(Error::new(ErrorKind::Other, "bad line"));
                 }
                 if let Some(value) = nib.get_quoted(b'"') {
                     let value = json_decode(value);
                     let value = decode(value);
-                    data.insert(String::from_utf8(name.to_vec()).unwrap(), value);
+                    builder = builder.set(name, value);
                 } else {
                     return Err(Error::new(ErrorKind::Other, "bad line"));
                 }
@@ -121,12 +121,13 @@ pub(super) fn parse_ff4(line: &str) -> Result<Task> {
     if !nib.depleted() {
         return Err(Error::new(ErrorKind::Other, "bad line"));
     }
-    Ok(Task::from_data(data))
+    Ok(builder.finish())
 }
 
 #[cfg(test)]
 mod test {
     use super::{decode, json_decode, hex_to_unicode, parse_ff4};
+    use task::Pending;
 
     #[test]
     fn test_hex_to_unicode_digits() {
@@ -217,7 +218,11 @@ mod test {
 
     #[test]
     fn test_parse_ff4() {
-        let task = parse_ff4("[description:\"desc\"]").unwrap();
-        assert_eq!(task.description(), "desc");
+        let s = "[description:\"desc\" entry:\"1437855511\" modified:\"1479480556\" \
+                 priority:\"L\" project:\"lists\" status:\"pending\" tags:\"watch\" \
+                 uuid:\"83ce989e-8634-4d62-841c-eb309383ff1f\"]";
+        let task = parse_ff4(s).unwrap();
+        assert_eq!(task.status, Pending);
+        assert_eq!(task.description, "desc");
     }
 }

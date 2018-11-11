@@ -1,3 +1,6 @@
+extern crate chrono;
+extern crate uuid;
+
 mod tdb2;
 mod task;
 
