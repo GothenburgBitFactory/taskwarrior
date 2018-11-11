@@ -1,7 +1,7 @@
 use std::str;
 use std::io::{Result, Error, ErrorKind};
 
-use super::nibbler::Nibbler;
+use super::pig::Pig;
 use task::{TaskBuilder, Task};
 
 /// Rust implementation of part of utf8_codepoint from Taskwarrior's src/utf8.cpp
@@ -86,28 +86,28 @@ fn decode(value: String) -> String {
 ///
 /// While Taskwarrior supports additional formats, this is the only format supported by rask.
 pub(super) fn parse_ff4(line: &str) -> Result<Task> {
-    let mut nib = Nibbler::new(line.as_bytes());
+    let mut pig = Pig::new(line.as_bytes());
     let mut builder = TaskBuilder::new();
 
-    if !nib.skip(b'[') {
+    if !pig.skip(b'[') {
         return Err(Error::new(ErrorKind::Other, "bad line"));
     }
-    if let Some(line) = nib.get_until(b']') {
-        let mut nib = Nibbler::new(line);
-        while !nib.depleted() {
-            if let Some(name) = nib.get_until(b':') {
+    if let Some(line) = pig.get_until(b']') {
+        let mut pig = Pig::new(line);
+        while !pig.depleted() {
+            if let Some(name) = pig.get_until(b':') {
                 let name = str::from_utf8(name).unwrap();
-                if !nib.skip(b':') {
+                if !pig.skip(b':') {
                     return Err(Error::new(ErrorKind::Other, "bad line"));
                 }
-                if let Some(value) = nib.get_quoted(b'"') {
+                if let Some(value) = pig.get_quoted(b'"') {
                     let value = json_decode(value);
                     let value = decode(value);
                     builder = builder.set(name, value);
                 } else {
                     return Err(Error::new(ErrorKind::Other, "bad line"));
                 }
-                nib.skip(b' ');
+                pig.skip(b' ');
             } else {
                 return Err(Error::new(ErrorKind::Other, "bad line"));
             }
@@ -115,10 +115,10 @@ pub(super) fn parse_ff4(line: &str) -> Result<Task> {
     } else {
         return Err(Error::new(ErrorKind::Other, "bad line"));
     }
-    if !nib.skip(b']') {
+    if !pig.skip(b']') {
         return Err(Error::new(ErrorKind::Other, "bad line"));
     }
-    if !nib.depleted() {
+    if !pig.depleted() {
         return Err(Error::new(ErrorKind::Other, "bad line"));
     }
     Ok(builder.finish())

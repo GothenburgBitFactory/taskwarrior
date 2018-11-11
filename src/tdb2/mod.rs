@@ -1,4 +1,4 @@
-mod nibbler;
+mod pig;
 mod ff4;
 
 use std::io::{BufRead, Result};

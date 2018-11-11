@@ -1,14 +1,14 @@
-//! A minimal implementation of the "Nibbler" parsing utility from the Taskwarrior
+//! A minimal implementation of the "Pig" parsing utility from the Taskwarrior
 //! source.
 
-pub struct Nibbler<'a> {
+pub struct Pig<'a> {
     input: &'a [u8],
     cursor: usize,
 }
 
-impl<'a> Nibbler<'a> {
+impl<'a> Pig<'a> {
     pub fn new(input: &'a [u8]) -> Self {
-        Nibbler {
+        Pig {
             input: input,
             cursor: 0,
         }
@@ -136,160 +136,160 @@ impl<'a> Nibbler<'a> {
 
 #[cfg(test)]
 mod test {
-    use super::Nibbler;
+    use super::Pig;
 
     #[test]
     fn test_get_until() {
         let s = b"abc:123";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_until(b':'), Some(&s[..3]));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_until(b':'), Some(&s[..3]));
     }
 
     #[test]
     fn test_get_until_empty() {
         let s = b"abc:123";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_until(b'a'), Some(&s[..0]));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_until(b'a'), Some(&s[..0]));
     }
 
     #[test]
     fn test_get_until_not_found() {
         let s = b"abc:123";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_until(b'/'), Some(&s[..]));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_until(b'/'), Some(&s[..]));
     }
 
     #[test]
     fn test_get_until_eos() {
         let s = b"abc:123";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_until_eos(), Some(&s[..]));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_until_eos(), Some(&s[..]));
     }
 
     #[test]
     fn test_get_quoted() {
         let s = b"'abcd'efg";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_quoted(b'\''), Some(&s[1..5]));
-        assert_eq!(nib.next(), Some(b'e'));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_quoted(b'\''), Some(&s[1..5]));
+        assert_eq!(pig.next(), Some(b'e'));
     }
 
     #[test]
     fn test_get_quoted_unopened() {
         let s = b"abcd'efg";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_quoted(b'\''), None);
-        assert_eq!(nib.next(), Some(b'a')); // nothing consumed
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_quoted(b'\''), None);
+        assert_eq!(pig.next(), Some(b'a')); // nothing consumed
     }
 
     #[test]
     fn test_get_quoted_unclosed() {
         let s = b"'abcdefg";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_quoted(b'\''), None);
-        assert_eq!(nib.next(), Some(b'\'')); // nothing consumed
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_quoted(b'\''), None);
+        assert_eq!(pig.next(), Some(b'\'')); // nothing consumed
     }
 
     #[test]
     fn test_get_quoted_escaped() {
         let s = b"'abc\\'de'fg";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_quoted(b'\''), Some(&s[1..8]));
-        assert_eq!(nib.next(), Some(b'f'));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_quoted(b'\''), Some(&s[1..8]));
+        assert_eq!(pig.next(), Some(b'f'));
     }
 
     #[test]
     fn test_get_quoted_double_escaped() {
         let s = b"'abc\\\\'de'fg";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_quoted(b'\''), Some(&s[1..6]));
-        assert_eq!(nib.next(), Some(b'd'));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_quoted(b'\''), Some(&s[1..6]));
+        assert_eq!(pig.next(), Some(b'd'));
     }
 
     #[test]
     fn test_get_quoted_triple_escaped() {
         let s = b"'abc\\\\\\'de'fg";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_quoted(b'\''), Some(&s[1..10]));
-        assert_eq!(nib.next(), Some(b'f'));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_quoted(b'\''), Some(&s[1..10]));
+        assert_eq!(pig.next(), Some(b'f'));
     }
 
     #[test]
     fn test_get_quoted_all_escapes() {
         let s = b"'\\\\\\'\\\\'fg";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.get_quoted(b'\''), Some(&s[1..7]));
-        assert_eq!(nib.next(), Some(b'f'));
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.get_quoted(b'\''), Some(&s[1..7]));
+        assert_eq!(pig.next(), Some(b'f'));
     }
 
     #[test]
     fn test_skip_n() {
         let s = b"abc:123";
-        let mut nib = Nibbler::new(s);
-        assert!(nib.skip_n(3));
-        assert_eq!(nib.get_until_eos(), Some(&s[3..]));
+        let mut pig = Pig::new(s);
+        assert!(pig.skip_n(3));
+        assert_eq!(pig.get_until_eos(), Some(&s[3..]));
     }
 
     #[test]
     fn test_skip_n_too_long() {
         let s = b"abc:123";
-        let mut nib = Nibbler::new(s);
-        assert!(!nib.skip_n(33));
+        let mut pig = Pig::new(s);
+        assert!(!pig.skip_n(33));
         // nothing is consumed
-        assert_eq!(nib.get_until_eos(), Some(&s[..]));
+        assert_eq!(pig.get_until_eos(), Some(&s[..]));
     }
 
     #[test]
     fn test_skip_n_exact_eos() {
         let s = b"abc:123";
-        let mut nib = Nibbler::new(s);
-        assert!(nib.skip_n(7));
-        assert_eq!(nib.get_until_eos(), None);
+        let mut pig = Pig::new(s);
+        assert!(pig.skip_n(7));
+        assert_eq!(pig.get_until_eos(), None);
     }
 
     #[test]
     fn test_skip_match() {
         let s = b"foo";
-        let mut nib = Nibbler::new(s);
-        assert!(nib.skip(b'f'));
-        assert_eq!(nib.get_until_eos(), Some(&s[1..]));
+        let mut pig = Pig::new(s);
+        assert!(pig.skip(b'f'));
+        assert_eq!(pig.get_until_eos(), Some(&s[1..]));
     }
 
     #[test]
     fn test_skip_no_match() {
         let s = b"foo";
-        let mut nib = Nibbler::new(s);
-        assert!(!nib.skip(b'x'));
-        assert_eq!(nib.get_until_eos(), Some(&s[..]));
+        let mut pig = Pig::new(s);
+        assert!(!pig.skip(b'x'));
+        assert_eq!(pig.get_until_eos(), Some(&s[..]));
     }
 
     #[test]
     fn test_skip_eos() {
         let s = b"foo";
-        let mut nib = Nibbler::new(s);
-        assert!(nib.skip_n(3));
-        assert!(!nib.skip(b'x'));
+        let mut pig = Pig::new(s);
+        assert!(pig.skip_n(3));
+        assert!(!pig.skip(b'x'));
     }
 
     #[test]
     fn test_next() {
         let s = b"foo";
-        let mut nib = Nibbler::new(s);
-        assert_eq!(nib.next(), Some(b'f'));
-        assert_eq!(nib.next(), Some(b'o'));
-        assert_eq!(nib.next(), Some(b'o'));
-        assert_eq!(nib.next(), None);
-        assert_eq!(nib.next(), None);
+        let mut pig = Pig::new(s);
+        assert_eq!(pig.next(), Some(b'f'));
+        assert_eq!(pig.next(), Some(b'o'));
+        assert_eq!(pig.next(), Some(b'o'));
+        assert_eq!(pig.next(), None);
+        assert_eq!(pig.next(), None);
     }
 
     #[test]
     fn test_depleted() {
         let s = b"xy";
-        let mut nib = Nibbler::new(s);
-        assert!(!nib.depleted());
-        assert_eq!(nib.next(), Some(b'x'));
-        assert!(!nib.depleted());
-        assert_eq!(nib.next(), Some(b'y'));
-        assert!(nib.depleted());
+        let mut pig = Pig::new(s);
+        assert!(!pig.depleted());
+        assert_eq!(pig.next(), Some(b'x'));
+        assert!(!pig.depleted());
+        assert_eq!(pig.next(), Some(b'y'));
+        assert!(pig.depleted());
     }
 }
