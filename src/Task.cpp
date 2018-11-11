@@ -1703,12 +1703,8 @@ const std::string Task::encode (const std::string& value) const
 
 ////////////////////////////////////////////////////////////////////////////////
 // Decode values after parse.
-//   "  <- &dquot;
-//   '  <- &squot; or &quot;
-//   ,  <- &comma;
 //   [  <- &open;
 //   ]  <- &close;
-//   :  <- &colon;
 const std::string Task::decode (const std::string& value) const
 {
   if (value.find ('&') == std::string::npos)
