@@ -103,18 +103,15 @@ pub(super) fn parse_ff4(line: &str) -> Result<Task> {
         let name = subpig.get_until(b':')?;
         let name = str::from_utf8(name)?;
         subpig.skip(b':')?;
-        if let Some(value) = subpig.get_quoted(b'"') {
-            let value = json_decode(value)?;
-            let value = decode(value);
-            builder = builder.set(name, value);
-        } else {
-            bail!("bad line 3");
-        }
+        let value = subpig.get_quoted(b'"')?;
+        let value = json_decode(value)?;
+        let value = decode(value);
+        builder = builder.set(name, value);
         subpig.skip(b' ').ok(); // ignore if not found..
     }
     pig.skip(b']')?;
     if !pig.depleted() {
-        bail!("bad line 5");
+        bail!("trailing characters on line");
     }
     Ok(builder.finish())
 }
