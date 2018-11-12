@@ -1,15 +1,21 @@
+//! TDB2 is Taskwarrior's on-disk database format.  This module implements
+//! support for the data structure as a  compatibility layer.
+
 mod pig;
 mod ff4;
+pub(super) mod errors;
 
 use std::io::BufRead;
 use task::Task;
 use self::ff4::parse_ff4;
-use errors::*;
+use self::errors::*;
 
-pub(super) fn parse(reader: impl BufRead) -> Result<Vec<Task>> {
+pub(super) fn parse(filename: String, reader: impl BufRead) -> Result<Vec<Task>> {
     let mut tasks = vec![];
-    for line in reader.lines() {
-        tasks.push(parse_ff4(&line?)?);
+    for (i, line) in reader.lines().enumerate() {
+        tasks.push(parse_ff4(&line?).chain_err(|| {
+            ErrorKind::ParseError(filename.clone(), i as u64 + 1)
+        })?);
     }
     Ok(tasks)
 }

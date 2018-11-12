@@ -1,7 +1,7 @@
 //! A minimal implementation of the "Pig" parsing utility from the Taskwarrior
 //! source.  This is just enough to parse FF4 lines.
 
-use errors::*;
+use super::errors::*;
 
 pub struct Pig<'a> {
     input: &'a [u8],

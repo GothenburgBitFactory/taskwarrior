@@ -2,7 +2,7 @@ use std::str;
 
 use super::pig::Pig;
 use task::{TaskBuilder, Task};
-use errors::*;
+use super::errors::*;
 
 /// Rust implementation of part of utf8_codepoint from Taskwarrior's src/utf8.cpp
 ///
