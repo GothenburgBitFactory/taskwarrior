@@ -1,6 +1,8 @@
 //! A minimal implementation of the "Pig" parsing utility from the Taskwarrior
 //! source.
 
+use errors::*;
+
 pub struct Pig<'a> {
     input: &'a [u8],
     cursor: usize,
@@ -14,9 +16,9 @@ impl<'a> Pig<'a> {
         }
     }
 
-    pub fn get_until(&mut self, c: u8) -> Option<&'a [u8]> {
+    pub fn get_until(&mut self, c: u8) -> Result<&'a [u8]> {
         if self.cursor >= self.input.len() {
-            return None;
+            return Err(Error::from("input truncated"));
         }
 
         let mut i = self.cursor;
@@ -24,13 +26,13 @@ impl<'a> Pig<'a> {
             if self.input[i] == c {
                 let rv = &self.input[self.cursor..i];
                 self.cursor = i;
-                return Some(rv);
+                return Ok(rv);
             }
             i += 1;
         }
         let rv = &self.input[self.cursor..];
         self.cursor = self.input.len();
-        Some(rv)
+        Ok(rv)
     }
 
     // TODO: get_until_str
@@ -104,12 +106,15 @@ impl<'a> Pig<'a> {
         return false;
     }
 
-    pub fn skip(&mut self, c: u8) -> bool {
+    pub fn skip(&mut self, c: u8) -> Result<()> {
         if self.cursor < self.input.len() && self.input[self.cursor] == c {
             self.cursor += 1;
-            return true;
+            return Ok(());
         }
-        false
+        bail!(format!(
+            "expected character `{}`",
+            String::from_utf8(vec![c])?
+        ));
     }
 
     // TODO: skip_all_one_of
@@ -142,21 +147,21 @@ mod test {
     fn test_get_until() {
         let s = b"abc:123";
         let mut pig = Pig::new(s);
-        assert_eq!(pig.get_until(b':'), Some(&s[..3]));
+        assert_eq!(pig.get_until(b':').unwrap(), &s[..3]);
     }
 
     #[test]
     fn test_get_until_empty() {
         let s = b"abc:123";
         let mut pig = Pig::new(s);
-        assert_eq!(pig.get_until(b'a'), Some(&s[..0]));
+        assert_eq!(pig.get_until(b'a').unwrap(), &s[..0]);
     }
 
     #[test]
     fn test_get_until_not_found() {
         let s = b"abc:123";
         let mut pig = Pig::new(s);
-        assert_eq!(pig.get_until(b'/'), Some(&s[..]));
+        assert_eq!(pig.get_until(b'/').unwrap(), &s[..]);
     }
 
     #[test]
@@ -251,7 +256,7 @@ mod test {
     fn test_skip_match() {
         let s = b"foo";
         let mut pig = Pig::new(s);
-        assert!(pig.skip(b'f'));
+        assert!(pig.skip(b'f').is_ok());
         assert_eq!(pig.get_until_eos(), Some(&s[1..]));
     }
 
@@ -259,7 +264,7 @@ mod test {
     fn test_skip_no_match() {
         let s = b"foo";
         let mut pig = Pig::new(s);
-        assert!(!pig.skip(b'x'));
+        assert!(pig.skip(b'x').is_err());
         assert_eq!(pig.get_until_eos(), Some(&s[..]));
     }
 
@@ -268,7 +273,7 @@ mod test {
         let s = b"foo";
         let mut pig = Pig::new(s);
         assert!(pig.skip_n(3));
-        assert!(!pig.skip(b'x'));
+        assert!(pig.skip(b'x').is_err());
     }
 
     #[test]

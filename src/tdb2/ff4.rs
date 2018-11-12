@@ -1,38 +1,38 @@
 use std::str;
-use std::io::{Result, Error, ErrorKind};
 
 use super::pig::Pig;
 use task::{TaskBuilder, Task};
+use errors::*;
 
 /// Rust implementation of part of utf8_codepoint from Taskwarrior's src/utf8.cpp
 ///
 /// Note that the original function will return garbage for invalid hex sequences;
 /// this panics instead.
-fn hex_to_unicode(value: &[u8]) -> String {
+fn hex_to_unicode(value: &[u8]) -> Result<String> {
     if value.len() < 4 {
-        panic!(format!("unicode escape too short -- {:?}", value));
+        bail!(format!("too short"));
     }
 
-    fn nyb(c: u8) -> u16 {
+    fn nyb(c: u8) -> Result<u16> {
         match c {
-            b'0'...b'9' => (c - b'0') as u16,
-            b'a'...b'f' => (c - b'a' + 10) as u16,
-            b'A'...b'F' => (c - b'A' + 10) as u16,
-            _ => panic!(format!("invalid hex character {:?}", c)),
+            b'0'...b'9' => Ok((c - b'0') as u16),
+            b'a'...b'f' => Ok((c - b'a' + 10) as u16),
+            b'A'...b'F' => Ok((c - b'A' + 10) as u16),
+            _ => bail!("invalid hex character"),
         }
     };
 
     let words = [
-        nyb(value[0]) << 12 | nyb(value[1]) << 8 | nyb(value[2]) << 4 | nyb(value[3]),
+        nyb(value[0])? << 12 | nyb(value[1])? << 8 | nyb(value[2])? << 4 | nyb(value[3])?,
     ];
-    return String::from_utf16(&words[..]).unwrap();
+    Ok(String::from_utf16(&words[..])?)
 }
 
 /// Rust implementation of JSON::decode in Taskwarrior's src/JSON.cpp
 ///
 /// Decode the given byte slice into a string using Taskwarrior JSON's escaping The slice is
 /// assumed to be ASCII; unicode escapes within it will be expanded.
-fn json_decode(value: &[u8]) -> String {
+fn json_decode(value: &[u8]) -> Result<String> {
     let length = value.len();
     let mut rv = String::with_capacity(length);
 
@@ -54,7 +54,14 @@ fn json_decode(value: &[u8]) -> String {
                 b'r' => rv.push('\r' as char),
                 b't' => rv.push('\t' as char),
                 b'u' => {
-                    rv.push_str(&hex_to_unicode(&value[pos + 1..]));
+                    let unicode = hex_to_unicode(&value[pos + 1..pos + 5]).chain_err(|| {
+                        let esc = &value[pos - 1..pos + 5];
+                        match str::from_utf8(esc) {
+                            Ok(s) => format!("invalid unicode escape `{}`", s),
+                            Err(_) => format!("invalid unicode escape bytes {:?}", esc),
+                        }
+                    })?;
+                    rv.push_str(&unicode);
                     pos += 4;
                 }
                 _ => {
@@ -68,7 +75,7 @@ fn json_decode(value: &[u8]) -> String {
         pos += 1;
     }
 
-    rv
+    Ok(rv)
 }
 
 /// Rust implementation of Task::decode in Taskwarrior's src/Task.cpp
@@ -89,37 +96,25 @@ pub(super) fn parse_ff4(line: &str) -> Result<Task> {
     let mut pig = Pig::new(line.as_bytes());
     let mut builder = TaskBuilder::new();
 
-    if !pig.skip(b'[') {
-        return Err(Error::new(ErrorKind::Other, "bad line"));
-    }
-    if let Some(line) = pig.get_until(b']') {
-        let mut pig = Pig::new(line);
-        while !pig.depleted() {
-            if let Some(name) = pig.get_until(b':') {
-                let name = str::from_utf8(name).unwrap();
-                if !pig.skip(b':') {
-                    return Err(Error::new(ErrorKind::Other, "bad line"));
-                }
-                if let Some(value) = pig.get_quoted(b'"') {
-                    let value = json_decode(value);
-                    let value = decode(value);
-                    builder = builder.set(name, value);
-                } else {
-                    return Err(Error::new(ErrorKind::Other, "bad line"));
-                }
-                pig.skip(b' ');
-            } else {
-                return Err(Error::new(ErrorKind::Other, "bad line"));
-            }
+    pig.skip(b'[')?;
+    let line = pig.get_until(b']')?;
+    let mut subpig = Pig::new(line);
+    while !subpig.depleted() {
+        let name = subpig.get_until(b':')?;
+        let name = str::from_utf8(name)?;
+        subpig.skip(b':')?;
+        if let Some(value) = subpig.get_quoted(b'"') {
+            let value = json_decode(value)?;
+            let value = decode(value);
+            builder = builder.set(name, value);
+        } else {
+            bail!("bad line 3");
         }
-    } else {
-        return Err(Error::new(ErrorKind::Other, "bad line"));
+        subpig.skip(b' ').ok(); // ignore if not found..
     }
-    if !pig.skip(b']') {
-        return Err(Error::new(ErrorKind::Other, "bad line"));
-    }
+    pig.skip(b']')?;
     if !pig.depleted() {
-        return Err(Error::new(ErrorKind::Other, "bad line"));
+        bail!("bad line 5");
     }
     Ok(builder.finish())
 }
@@ -131,77 +126,96 @@ mod test {
 
     #[test]
     fn test_hex_to_unicode_digits() {
-        assert_eq!(hex_to_unicode(b"1234"), "\u{1234}");
+        assert_eq!(hex_to_unicode(b"1234").unwrap(), "\u{1234}");
     }
 
     #[test]
     fn test_hex_to_unicode_lower() {
-        assert_eq!(hex_to_unicode(b"abcd"), "\u{abcd}");
+        assert_eq!(hex_to_unicode(b"abcd").unwrap(), "\u{abcd}");
     }
 
     #[test]
     fn test_hex_to_unicode_upper() {
-        assert_eq!(hex_to_unicode(b"ABCD"), "\u{abcd}");
+        assert_eq!(hex_to_unicode(b"ABCD").unwrap(), "\u{abcd}");
+    }
+
+    #[test]
+    fn test_hex_to_unicode_too_short() {
+        assert!(hex_to_unicode(b"AB").is_err());
+    }
+
+    #[test]
+    fn test_hex_to_unicode_invalid() {
+        assert!(hex_to_unicode(b"defg").is_err());
     }
 
     #[test]
     fn test_json_decode_no_change() {
-        assert_eq!(json_decode(b"abcd"), "abcd");
+        assert_eq!(json_decode(b"abcd").unwrap(), "abcd");
     }
 
     #[test]
     fn test_json_decode_escape_quote() {
-        assert_eq!(json_decode(b"ab\\\"cd"), "ab\"cd");
+        assert_eq!(json_decode(b"ab\\\"cd").unwrap(), "ab\"cd");
     }
 
     #[test]
     fn test_json_decode_escape_backslash() {
-        assert_eq!(json_decode(b"ab\\\\cd"), "ab\\cd");
+        assert_eq!(json_decode(b"ab\\\\cd").unwrap(), "ab\\cd");
     }
 
     #[test]
     fn test_json_decode_escape_frontslash() {
-        assert_eq!(json_decode(b"ab\\/cd"), "ab/cd");
+        assert_eq!(json_decode(b"ab\\/cd").unwrap(), "ab/cd");
     }
 
     #[test]
     fn test_json_decode_escape_b() {
-        assert_eq!(json_decode(b"ab\\bcd"), "ab\x08cd");
+        assert_eq!(json_decode(b"ab\\bcd").unwrap(), "ab\x08cd");
     }
 
     #[test]
     fn test_json_decode_escape_f() {
-        assert_eq!(json_decode(b"ab\\fcd"), "ab\x0ccd");
+        assert_eq!(json_decode(b"ab\\fcd").unwrap(), "ab\x0ccd");
     }
 
     #[test]
     fn test_json_decode_escape_n() {
-        assert_eq!(json_decode(b"ab\\ncd"), "ab\ncd");
+        assert_eq!(json_decode(b"ab\\ncd").unwrap(), "ab\ncd");
     }
 
     #[test]
     fn test_json_decode_escape_r() {
-        assert_eq!(json_decode(b"ab\\rcd"), "ab\rcd");
+        assert_eq!(json_decode(b"ab\\rcd").unwrap(), "ab\rcd");
     }
 
     #[test]
     fn test_json_decode_escape_t() {
-        assert_eq!(json_decode(b"ab\\tcd"), "ab\tcd");
+        assert_eq!(json_decode(b"ab\\tcd").unwrap(), "ab\tcd");
     }
 
     #[test]
     fn test_json_decode_escape_other() {
-        assert_eq!(json_decode(b"ab\\xcd"), "ab\\xcd");
+        assert_eq!(json_decode(b"ab\\xcd").unwrap(), "ab\\xcd");
     }
 
     #[test]
     fn test_json_decode_escape_eos() {
-        assert_eq!(json_decode(b"ab\\"), "ab\\");
+        assert_eq!(json_decode(b"ab\\").unwrap(), "ab\\");
     }
 
     #[test]
     fn test_json_decode_escape_unicode() {
-        assert_eq!(json_decode(b"ab\\u1234"), "ab\u{1234}");
+        assert_eq!(json_decode(b"ab\\u1234").unwrap(), "ab\u{1234}");
+    }
+
+    #[test]
+    fn test_json_decode_escape_unicode_bad() {
+        let rv = json_decode(b"ab\\uwxyz");
+        assert_eq!(
+            rv.unwrap_err().to_string(),
+            "invalid unicode escape `\\uwxyz`"
+        );
     }
 
     #[test]
@@ -224,5 +238,12 @@ mod test {
         let task = parse_ff4(s).unwrap();
         assert_eq!(task.status, Pending);
         assert_eq!(task.description, "desc");
+    }
+
+    #[test]
+    fn test_parse_ff4_fail() {
+        assert!(parse_ff4("abc:10]").is_err());
+        assert!(parse_ff4("[abc:10").is_err());
+        assert!(parse_ff4("[abc:10  123:123]").is_err());
     }
 }
