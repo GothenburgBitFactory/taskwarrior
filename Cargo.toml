@@ -1,5 +1,5 @@
 [package]
-name = "rask"
+name = "taskwarrior"
 version = "0.1.0"
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
 

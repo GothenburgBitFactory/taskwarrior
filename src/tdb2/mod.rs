@@ -10,11 +10,11 @@ use task::Task;
 use self::ff4::parse_ff4;
 use self::errors::*;
 
-pub(super) fn parse(filename: String, reader: impl BufRead) -> Result<Vec<Task>> {
+pub(crate) fn parse(filename: &str, reader: impl BufRead) -> Result<Vec<Task>> {
     let mut tasks = vec![];
     for (i, line) in reader.lines().enumerate() {
         tasks.push(parse_ff4(&line?).chain_err(|| {
-            ErrorKind::ParseError(filename.clone(), i as u64 + 1)
+            ErrorKind::ParseError(filename.to_string(), i as u64 + 1)
         })?);
     }
     Ok(tasks)

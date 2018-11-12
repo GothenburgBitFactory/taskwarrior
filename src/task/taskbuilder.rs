@@ -97,6 +97,7 @@ impl TaskBuilder {
         const ANNOTATION_PREFIX: &str = "annotation_";
         if name.starts_with(ANNOTATION_PREFIX) {
             let entry = parse_timestamp(&name[ANNOTATION_PREFIX.len()..]).unwrap();
+            // TODO: sort by entry time
             self.annotations.push(Annotation {
                 entry,
                 description: value.to_string(),
