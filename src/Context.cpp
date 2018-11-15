@@ -447,20 +447,22 @@ int Context::initialize (int argc, const char** argv)
     //
     // [1] Load the correct config file.
     //     - Default to ~/.taskrc (ctor).
-    //     - Allow command line override rc:<file>
     //     - Allow $TASKRC override.
+    //     - Allow command line override rc:<file>
     //     - Load resultant file.
     //     - Apply command line overrides to the config.
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    CLI2::getOverride (argc, argv, home_dir, rc_file);
-
-    char* override = getenv ("TASKRC");
-    if (override)
+    bool taskrc_overridden = CLI2::getOverride (argc, argv, home_dir, rc_file);
+    if (! taskrc_overridden)
     {
-      rc_file = File (override);
-      header (format ("TASKRC override: {1}", rc_file._data));
+      char *override = getenv ("TASKRC");
+      if (override)
+      {
+        rc_file = File (override);
+        taskrc_overridden = true;
+      }
     }
 
     // Artificial scope for timing purposes.
@@ -473,26 +475,33 @@ int Context::initialize (int argc, const char** argv)
 
     CLI2::applyOverrides (argc, argv);
 
+    if (taskrc_overridden && verbose ("override"))
+      header (format ("TASKRC override: {1}", rc_file._data));
+
     ////////////////////////////////////////////////////////////////////////////
     //
     // [2] Locate the data directory.
     //     - Default to ~/.task (ctor).
-    //     - Allow command line override rc.data.location:<dir>
     //     - Allow $TASKDATA override.
+    //     - Allow command line override rc.data.location:<dir>
     //     - Inform TDB2 where to find data.
     //     - Create the rc_file and data_dir, if necessary.
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    CLI2::getDataLocation (argc, argv, data_dir);
-
-    override = getenv ("TASKDATA");
-    if (override)
+    bool taskdata_overridden = CLI2::getDataLocation (argc, argv, data_dir);
+    if (! taskdata_overridden)
     {
-      data_dir = Directory (override);
-      config.set ("data.location", data_dir._data);
-      header (format ("TASKDATA override: {1}", data_dir._data));
+      char *override = getenv("TASKDATA");
+      if (override)
+      {
+        data_dir = Directory (override);
+        config.set ("data.location", data_dir._data);
+        taskdata_overridden = true;
+      }
     }
+    if (taskdata_overridden && verbose ("override"))
+      header (format ("TASKDATA override: {1}", data_dir._data));
 
     tdb2.set_location (data_dir);
     createDefaultConfig ();
