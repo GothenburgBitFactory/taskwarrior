@@ -272,36 +272,35 @@ void CLI2::getDataLocation (int argc, const char** argv, Path& data)
 // Static method.
 void CLI2::applyOverrides (int argc, const char** argv)
 {
-  for (int i = 0; i < argc; ++i)
+  auto& context = Context::getContext ();
+  auto last = std::find (argv, argv + argc, std::string ("--"));
+  auto is_override = [] (const std::string& s)
   {
-
-    // Don't process any arguments after a '--'
-    std::string raw = argv[i];
-    if (raw == "--")
-      break;
-
-    // Overrides always start with 'rc.'
-    if (raw.length () > 3 &&
-        raw.substr (0, 3) == "rc.")
-    {
-
-      // Our separator can either be '=' or ':', so try and find both.
-      auto sep = raw.find ('=', 3);
-      if (sep == std::string::npos)
-        sep = raw.find (':', 3);
-
-      // Process our override if well-formed
-      if (sep != std::string::npos)
-      {
-        std::string name  = raw.substr (3, sep - 3);
-        std::string value = raw.substr (sep + 1);
-        Context::getContext ().config.set (name, value);
-
-        if (Context::getContext ().verbose("override"))
-          Context::getContext ().footnote (format ("Configuration override rc.{1}:{2}", name, value));
-      }
-    }
-  }
+    return s.compare (0, 3, "rc.") == 0;
+  };
+  auto get_sep = [&] (const std::string& s)
+  {
+    if (is_override (s))
+      return s.find_first_of (":=", 3);
+    return std::string::npos;
+  };
+  auto override_settings = [&] (std::string raw)
+  {
+    auto sep = get_sep (raw);
+    if (sep == std::string::npos)
+      return;
+    std::string name  = raw.substr (3, sep - 3);
+    std::string value = raw.substr (sep + 1);
+    context.config.set (name, value);
+  };
+  auto display_overrides = [&] (std::string raw)
+  {
+    if (is_override (raw))
+      context.footnote (format ("Configuration override {1}", raw));
+  };
+  std::for_each (argv, last, override_settings);
+  if (context.verbose ("override"))
+    std::for_each (argv, last, display_overrides);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
