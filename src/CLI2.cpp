@@ -214,58 +214,56 @@ const std::string A2::dump () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Static method.
-void CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc)
+static
+const char* getValue (int argc, const char** argv, std::string arg)
 {
-  for (int i = 0; i < argc; ++i)
+  const auto is_arg = [&] (std::string s)
   {
-    std::string raw = argv[i];
-    if (raw == "--")
-      return;
+    return s.size () > arg.size () + 1
+      && (s[arg.size ()] == ':' || s[arg.size ()] == '=')
+      && s.compare (0, arg.size (), arg) == 0;
+  };
+  // find last argument before --
+  auto last = std::make_reverse_iterator (argv);
+  auto first = std::make_reverse_iterator (
+    std::find (argv, argv + argc, std::string ("--")));
+  auto it = std::find_if (first, last, is_arg);
+  if (it == last)
+    return nullptr;
+  // return the string after : or =
+  return *it + arg.size () + 1;
+}
 
-    if (raw.length () >= 3 &&
-        raw.substr (0, 3) == "rc:")
-    {
-      rc = raw.substr (3);
-
-      home = ".";
-      auto last_slash = rc._data.rfind ("/");
-      if (last_slash != std::string::npos)
-        home = rc.parent ();
-
-      Context::getContext ().header (format ("Using alternate .taskrc file {1}", rc._data));
-
-      // Keep looping, because if there are multiple rc:file arguments, the last
-      // one should dominate.
-    }
-  }
+////////////////////////////////////////////////////////////////////////////////
+// Static method.
+bool CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc)
+{
+  const char* value = getValue (argc, argv, "rc");
+  if (value == nullptr)
+    return false;
+  rc = File (value);
+  if (rc._data.rfind ("/") != std::string::npos)
+    home = rc.parent ();
+  else
+    home = ".";
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Look for CONFIG data.location and initialize a Path object.
 // Static method.
-void CLI2::getDataLocation (int argc, const char** argv, Path& data)
+bool CLI2::getDataLocation (int argc, const char** argv, Path& data)
 {
-  std::string location = Context::getContext ().config.get ("data.location");
-  if (location != "")
-    data = location;
-
-  for (int i = 0; i < argc; ++i)
+  const char* value = getValue (argc, argv, "rc.data.location");
+  if (value == nullptr)
   {
-    std::string raw = argv[i];
-    if (raw == "--")
-      break;
-
-    if (raw.length () > 17 &&
-        raw.substr (0, 16) == "rc.data.location")
-    {
-      data = Directory (raw.substr (17));
-      Context::getContext ().header (format ("Using alternate data.location {1}", (std::string) data));
-
-      // Keep looping, because if there are multiple rc:file arguments, the last
-      // one should dominate.
-    }
+    std::string location = Context::getContext ().config.get ("data.location");
+    if (location != "")
+      data = location;
+    return false;
   }
+  data = Directory (value);
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
