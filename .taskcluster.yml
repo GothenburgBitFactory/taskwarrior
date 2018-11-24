@@ -8,6 +8,7 @@ tasks:
           - pull_request.opened
           - pull_request.reopened
           - pull_request.synchronize
+          - push
     payload:
       maxRunTime: 3600
       image: 'rust:latest'
