@@ -119,6 +119,7 @@ int CmdTimesheet::execute (std::string& output)
   table.add ("Wk");
   table.add ("Date");
   table.add ("Day");
+  table.add ("ID");
   table.add ("Action");
   table.add ("Project");
   table.add ("Due");
@@ -170,10 +171,11 @@ int CmdTimesheet::execute (std::string& output)
     table.set (row, 0, (week != previous_week ? format ("W{1}", week) : ""));
     table.set (row, 1, (date != previous_date ? date                  : ""));
     table.set (row, 2, (day != previous_day   ? day                   : ""));
-    table.set (row, 3, label);
-    table.set (row, 4, task.get ("project"));
-    table.set (row, 5, due);
-    table.set (row, 6, task.get ("description"), task_color);
+    table.set (row, 3, task.identifier(true));
+    table.set (row, 4, label);
+    table.set (row, 5, task.get ("project"));
+    table.set (row, 6, due);
+    table.set (row, 7, task.get ("description"), task_color);
 
     previous_week = week;
     previous_date = date;
