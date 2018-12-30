@@ -150,9 +150,28 @@ int CmdSummary::execute (std::string& output)
   std::vector <std::string> processed;
   for (auto& i : allProjects)
   {
-    if (showAllProjects || countPending[i.first] > 0)
+    // store project name
+    std::string project_name = i.first;
+    // catch project names including '-'
+    if (project_name.find ('-') != std::string::npos)
     {
-      const std::vector <std::string> parents = extractParents (i.first);
+      // replace '-' with '=' which has a higher ASCII code
+      // and will therefore be processed later
+      std::string new_project = project_name;
+      std::replace(new_project.begin (), new_project.end (), '-', '=');
+      allProjects[new_project] = i.second;
+      continue;
+    }
+    // catch project names including '='
+    // (assuming the user did not create any such projects himself)
+    if (project_name.find ('=') != std::string::npos)
+    {
+      // revert '=' into '-' for correct displaying
+      std::replace(project_name.begin (), project_name.end (), '=', '-');
+    }
+    if (showAllProjects || countPending[project_name] > 0)
+    {
+      const std::vector <std::string> parents = extractParents (project_name);
       for (auto& parent : parents)
       {
         if (std::find (processed.begin (), processed.end (), parent)
@@ -165,16 +184,16 @@ int CmdSummary::execute (std::string& output)
       }
 
       int row = view.addRow ();
-      view.set (row, 0, (i.first == ""
+      view.set (row, 0, (project_name == ""
                           ? "(none)"
-                          : indentProject (i.first, "  ", '.')));
+                          : indentProject (project_name, "  ", '.')));
 
-      view.set (row, 1, countPending[i.first]);
-      if (counter[i.first])
-        view.set (row, 2, Duration ((int) (sumEntry[i.first] / (double)counter[i.first])).formatVague ());
+      view.set (row, 1, countPending[project_name]);
+      if (counter[project_name])
+        view.set (row, 2, Duration ((int) (sumEntry[project_name] / (double)counter[project_name])).formatVague ());
 
-      int c = countCompleted[i.first];
-      int p = countPending[i.first];
+      int c = countCompleted[project_name];
+      int p = countPending[project_name];
       int completedBar = 0;
       if (c + p)
         completedBar = (c * barWidth) / (c + p);
@@ -197,7 +216,7 @@ int CmdSummary::execute (std::string& output)
       if (c + p)
         snprintf (percent, 12, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
-      processed.push_back (i.first);
+      processed.push_back (project_name);
     }
   }
 
