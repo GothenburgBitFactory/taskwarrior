@@ -110,9 +110,31 @@ int CmdProjects::execute (std::string& output)
     setHeaderUnderline (view);
 
     std::vector <std::string> processed;
+    int project_number_correction = 0;
     for (auto& project : unique)
     {
-      const std::vector <std::string> parents = extractParents (project.first);
+      // store project name
+      std::string project_name = project.first;
+      // catch project names including '-'
+      if (project_name.find ('-') != std::string::npos)
+      {
+        // replace '-' with '=' which has a higher ASCII code
+        // and will therefore be processed later
+        std::string new_project = project_name;
+        std::replace(new_project.begin (), new_project.end (), '-', '=');
+        unique[new_project] = project.second;
+        // account for the "additional project"
+        project_number_correction++;
+        continue;
+      }
+      // catch project names including '='
+      // (assuming the user did not create any such projects himself)
+      if (project_name.find ('=') != std::string::npos)
+      {
+        // revert '=' into '-' for correct displaying
+        std::replace(project_name.begin (), project_name.end (), '=', '-');
+      }
+      const std::vector <std::string> parents = extractParents (project_name);
       for (auto& parent : parents)
       {
         if (std::find (processed.begin (), processed.end (), parent) == processed.end ())
@@ -123,14 +145,14 @@ int CmdProjects::execute (std::string& output)
         }
       }
       int row = view.addRow ();
-      view.set (row, 0, (project.first == ""
+      view.set (row, 0, (project_name == ""
                           ? "(none)"
-                          : indentProject (project.first, "  ", '.')));
+                          : indentProject (project_name, "  ", '.')));
       view.set (row, 1, project.second);
-      processed.push_back (project.first);
+      processed.push_back (project_name);
     }
 
-    int number_projects = unique.size ();
+    int number_projects = unique.size () - project_number_correction;
     if (no_project)
       --number_projects;
 
