@@ -63,6 +63,44 @@ class TestSummaryPercentage(TestCase):
         self.assertIn("No projects.", out)
 
 
+class TestBug1904(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def add_tasks(self):
+        self.t("add pro:a-b test1")
+        self.t("add pro:a.b test2")
+
+    def validate_order(self, out):
+        order = (
+                "a",
+                "  b",
+                "a-b",
+        )
+
+        lines = out.splitlines(True)
+        # position where project names start on the lines list
+        position = 3
+
+        for i, proj in enumerate(order):
+            pos = position + i
+
+            self.assertTrue(
+                lines[pos].startswith(proj),
+                msg=("Project '{0}' is not in line #{1} or has an unexpected "
+                     "indentation.{2}".format(proj, pos, out))
+            )
+
+    def test_project_eval(self):
+        """1904: verify correct order under summary command"""
+        self.add_tasks()
+
+        code, out, err = self.t("summary")
+
+        self.validate_order(out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
