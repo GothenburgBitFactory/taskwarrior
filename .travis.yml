@@ -22,4 +22,4 @@ install:
   - pushd $TRAVIS_BUILD_DIR
   - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; fi
 script:
-  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; else uname -a; fi
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose up test-$CONTAINER; else bash test/scripts/test_osx.sh ; fi
