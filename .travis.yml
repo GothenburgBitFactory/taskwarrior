@@ -20,6 +20,6 @@ matrix:
 install:
   # Build the docker container
   - pushd $TRAVIS_BUILD_DIR
-  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; done
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; fi
 script:
-  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; else uname -a; done
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; else uname -a; fi
