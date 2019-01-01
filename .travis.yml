@@ -22,7 +22,7 @@ matrix:
       os: linux
       env: CONTAINER=ubuntu1804
       services: docker
-    - name: "Mac OS X"
+    - name: "Mac OS X 10.13"
       os: osx
       env: CONTAINER=osx
 install:
