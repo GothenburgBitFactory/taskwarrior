@@ -12,6 +12,6 @@ task --version
 
 pushd test
 make
-./run_all
+./run_all -v
 cat all.log | grep 'not ok'
 ./problems
