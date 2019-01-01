@@ -29,4 +29,4 @@ RUN task --version
 WORKDIR /root/code/test/
 RUN make
 
-CMD ["bash", "-c", "./run_all ; cat all.log | grep 'not ok' ; ./problems"]
+CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]
