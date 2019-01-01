@@ -28,6 +28,6 @@ matrix:
 install:
   # Build the docker container
   - pushd $TRAVIS_BUILD_DIR
-  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER || travis_terminate 1; fi
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER ; fi
 script:
-  - if [[ $CONTAINER != "osx" ]]; then docker-compose up test-$CONTAINER || travis_terminate 1; else bash test/scripts/test_osx.sh || travis_terminate 1 ; fi
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose run test-$CONTAINER; else bash test/scripts/test_osx.sh ; fi
