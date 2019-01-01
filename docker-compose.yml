@@ -1,6 +1,6 @@
 version: '3'
 services:
-  test-f28:
+  test-fedora28:
     build:
         context: .
         dockerfile: test/docker/fedora28
