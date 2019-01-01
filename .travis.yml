@@ -22,6 +22,10 @@ matrix:
       os: linux
       env: CONTAINER=ubuntu1804
       services: docker
+    - name: "Gentoo (latest)"
+      os: linux
+      env: CONTAINER=gentoo
+      services: docker
     - name: "Mac OS X 10.13"
       os: osx
       env: CONTAINER=osx
