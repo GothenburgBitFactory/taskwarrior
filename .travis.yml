@@ -1,13 +1,25 @@
 sudo: required
-env:
-  - CONTAINER=fedora28
-  - CONTAINER=debianstable
-  - CONTAINER=ubuntu1604
-services:
-  - docker
+language: python
+matrix:
+  include:
+    - name: "Fedora 28"
+      os: linux
+      env: CONTAINER=fedora28
+      services: docker
+    - name: "Debian Stable"
+    - os: linux
+      env: CONTAINER=debianstable
+      services: docker
+    - name: "Ubuntu 16.04"
+    - os: linux
+      env: CONTAINER=ubuntu1604
+      services: docker
+    - name: "Mac OS X"
+      os: osx
+      env: CONTAINER=osx
 install:
   # Build the docker container
   - pushd $TRAVIS_BUILD_DIR
-  - docker-compose build test-$CONTAINER
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; done
 script:
-  - docker-compose run test-$CONTAINER
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER; else uname -a; done
