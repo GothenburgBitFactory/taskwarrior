@@ -64,3 +64,11 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
+  test-arch180101:
+    build:
+        context: .
+        dockerfile: test/docker/arch180101
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
