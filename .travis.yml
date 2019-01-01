@@ -2,6 +2,10 @@ sudo: required
 language: generic
 matrix:
   include:
+    - name: "Gentoo (latest)"
+      os: linux
+      env: CONTAINER=gentoo
+      services: docker
     - name: "Fedora 28"
       os: linux
       env: CONTAINER=fedora28
@@ -25,10 +29,6 @@ matrix:
     - name: "Ubuntu 18.04"
       os: linux
       env: CONTAINER=ubuntu1804
-      services: docker
-    - name: "Gentoo (latest)"
-      os: linux
-      env: CONTAINER=gentoo
       services: docker
     - name: "OpenSUSE 15.0"
       os: linux
