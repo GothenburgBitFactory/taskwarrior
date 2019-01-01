@@ -1,0 +1,26 @@
+version: '3'
+services:
+  test-f28:
+    build:
+        context: .
+        dockerfile: test/docker/fedora28
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-ubuntu1604:
+    build:
+        context: .
+        dockerfile: test/docker/ubuntu1604
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-debianstable:
+    build:
+        context: .
+        dockerfile: test/docker/debianstable
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
