@@ -1,0 +1,13 @@
+sudo: required
+env:
+  - CONTAINER=fedora28
+  - CONTAINER=debianstable
+  - CONTAINER=ubuntu1604
+services:
+  - docker
+install:
+  # Build the docker container
+  - pushd $TRAVIS_BUILD_DIR
+  - docker-compose build test-$CONTAINER
+script:
+  - docker-compose run test-$CONTAINER
