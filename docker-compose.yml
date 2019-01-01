@@ -56,3 +56,11 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
+  test-opensuse1500:
+    build:
+        context: .
+        dockerfile: test/docker/opensuse1500
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
