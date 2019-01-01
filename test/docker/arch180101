@@ -1,0 +1,27 @@
+FROM base/archlinux:2018.01.01
+
+RUN pacman -Sy --noconfirm archlinux-keyring
+RUN pacman -Syyu --noconfirm
+RUN pacman -S --noconfirm gnutls util-linux bash-completion cmake python git
+RUN pacman -S --noconfirm make gcc
+
+# Setup language environment
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Setup taskwarrior
+ADD . /root/code/
+WORKDIR /root/code/
+RUN git clean -dfx
+RUN git submodule init
+RUN git submodule update
+RUN cmake -DCMAKE_BUILD_TYPE=debug .
+RUN make -j2
+RUN make install
+RUN task --version
+
+# Setup tests
+WORKDIR /root/code/test/
+RUN make
+
+CMD ["bash", "-c", "./run_all ; cat all.log | grep 'not ok' ; ./problems"]
