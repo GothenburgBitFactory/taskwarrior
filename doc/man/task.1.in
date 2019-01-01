@@ -1334,7 +1334,7 @@ The file that contains the completed ("done") tasks.
 The file that contains information needed by the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2018 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2019 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 https://www.opensource.org/licenses/mit-license.php for more information.

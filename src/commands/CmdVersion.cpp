@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2018, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -78,7 +78,7 @@ int CmdVersion::execute (std::string& output)
       << format ("{1} {2} built for ", bold.colorize (PACKAGE), bold.colorize (VERSION))
       << osName ()
       << '\n'
-      << "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
+      << "Copyright (C) 2006 - 2019 P. Beckingham, F. Hernandez."
       << '\n'
       << '\n'
       << disclaimer.render ()
