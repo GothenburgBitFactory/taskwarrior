@@ -14,6 +14,10 @@ matrix:
       os: linux
       env: CONTAINER=debianstable
       services: docker
+    - name: "Debian Testing"
+      os: linux
+      env: CONTAINER=debiantesting
+      services: docker
     - name: "Ubuntu 16.04"
       os: linux
       env: CONTAINER=ubuntu1604

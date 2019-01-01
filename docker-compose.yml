@@ -40,6 +40,14 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
+  test-debiantesting:
+    build:
+        context: .
+        dockerfile: test/docker/debiantesting
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
   test-gentoo:
     build:
         context: .
