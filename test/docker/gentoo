@@ -1,0 +1,32 @@
+# name the portage image
+FROM gentoo/portage:latest as portage
+
+# image is based on stage3-x86
+FROM gentoo/stage3-x86:latest
+
+# copy the entire portage volume in
+COPY --from=portage /usr/portage /usr/portage
+
+RUN emerge -qv sys-libs/readline:0 net-libs/gnutls:0= sys-apps/util-linux dev-util/cmake sys-devel/make dev-vcs/git
+
+# Setup language environment
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Setup taskwarrior
+ADD . /root/code/
+WORKDIR /root/code/
+RUN git clean -dfx
+RUN git submodule init
+RUN git submodule update
+RUN cmake -DCMAKE_BUILD_TYPE=debug .
+RUN make -j2
+RUN make install
+RUN task --version
+
+# Setup tests
+WORKDIR /root/code/test/
+RUN make
+
+CMD ["bash", "-c", "./run_all ; cat all.log | grep 'not ok' ; ./problems"]
