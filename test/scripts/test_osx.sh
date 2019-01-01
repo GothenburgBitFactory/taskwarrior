@@ -1,4 +1,4 @@
-set +x
+set -x
 
 brew install gnutls
 brew install cmake
