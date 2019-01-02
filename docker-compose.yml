@@ -1,5 +1,13 @@
 version: '3'
 services:
+  test-centos7:
+    build:
+        context: .
+        dockerfile: test/docker/centos7
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
   test-fedora28:
     build:
         context: .
