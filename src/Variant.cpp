@@ -1278,7 +1278,18 @@ Variant& Variant::operator-= (const Variant& other)
     break;
 
   case type_string:
-    throw std::string (STRING_VARIANT_SUB_STRING);
+    switch (right._type)
+    {
+    case type_string:
+      cast (type_string);   _string   += '-' + right._string;   break;
+    case type_boolean:
+    case type_integer:
+    case type_real:
+    case type_date:
+    case type_duration:
+      throw std::string (STRING_VARIANT_SUB_STRING);
+      break;
+    }
     break;
 
   case type_date:
