@@ -1,7 +1,7 @@
 FROM debian:stable
 
 RUN apt-get update
-RUN apt-get install -y build-essential cmake git uuid-dev libgnutls28-dev
+RUN apt-get install -y build-essential cmake git uuid-dev libgnutls28-dev libfaketime
 RUN apt-get install -y python
 
 # Setup language environment

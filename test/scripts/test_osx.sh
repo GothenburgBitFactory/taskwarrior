@@ -2,6 +2,7 @@ set -x
 
 brew install gnutls
 brew install cmake
+brew install libfaketime
 git clean -dfx
 git submodule init
 git submodule update

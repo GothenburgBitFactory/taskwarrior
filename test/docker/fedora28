@@ -1,7 +1,7 @@
 FROM fedora:28
 
 RUN dnf update -y
-RUN dnf install python git gcc gcc-c++ cmake make gnutls-devel libuuid-devel -y
+RUN dnf install python git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime -y
 
 # Setup language environment
 ENV LC_ALL en_US.UTF-8

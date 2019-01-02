@@ -7,7 +7,7 @@ FROM gentoo/stage3-x86:latest
 # copy the entire portage volume in
 COPY --from=portage /usr/portage /usr/portage
 
-RUN emerge -qv sys-libs/readline:0 net-libs/gnutls:0= sys-apps/util-linux dev-util/cmake sys-devel/make dev-vcs/git
+RUN emerge -qv sys-libs/readline:0 net-libs/gnutls:0= sys-apps/util-linux dev-util/cmake sys-devel/make dev-vcs/git sys-libs/libfaketime
 
 # Setup language environment
 ENV LC_ALL en_US.UTF-8
