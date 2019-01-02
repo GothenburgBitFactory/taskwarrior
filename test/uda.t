@@ -174,7 +174,7 @@ class TestUdaDuration(TestBaseUda):
 
         # Ensure 'extra' is stored in original form.
         code, out, err = self.t("1 export")
-        self.assertRaisesRegexp(out, '"extra":"P1D"')
+        self.assertRegexpMatches(out, '"extra":"P1D"')
 
     def test_uda_bad_duration_task(self):
         """Add tasks with an invalid UDA duration"""
