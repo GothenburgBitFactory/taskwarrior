@@ -124,7 +124,7 @@ def _queue_output(arguments, pidq, outputq):
     This function is meant to be executed in a thread as it may block
     """
     kwargs = arguments["process"]
-    input = arguments["input"]
+    input_data = arguments["input"].encode("utf-8") if arguments["input"] else None
 
     try:
         proc = Popen(**kwargs)
@@ -146,7 +146,7 @@ def _queue_output(arguments, pidq, outputq):
     pidq.put(proc.pid)
 
     # Send input and wait for finish
-    out, err = proc.communicate(input)
+    out, err = proc.communicate(input_data)
 
     if sys.version_info > (3,):
         out, err = out.decode('utf-8'), err.decode('utf-8')
