@@ -260,7 +260,7 @@ class TestBug555(TestCase):
 
         Reported in bug 555
         """
-        code, out, err = self.t("log description project:p")
+        code, out, err = self.t("rc.verbose:new-uuid log description project:p")
 
         self.assertNotIn("Segmentation fault", out)
         self.assertNotIn("Segmentation fault", err)
