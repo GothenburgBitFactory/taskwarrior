@@ -62,7 +62,7 @@ class TestWait(TestCase):
         self.assertIn("visible", out)
         self.assertIn("hidden", out)
 
-        self.assertIn("Un-waiting task 'hidden'", err)
+        self.assertIn("Un-waiting task 2 'hidden'", err)
 
 
 class TestBug434(TestCase):
