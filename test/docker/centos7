@@ -1,0 +1,30 @@
+FROM centos:7
+
+RUN yum update -y
+RUN yum install python git gcc gcc-c++ make gnutls-devel libuuid-devel libfaketime -y
+RUN yum install epel-release centos-release-scl -y
+RUN yum install which cmake3 devtoolset-7-gcc* -y
+RUN source scl_source enable devtoolset-7; gcc --version; cmake3 --version
+RUN ln -s /usr/bin/cmake3 /usr/bin/cmake
+
+# Setup language environment
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Setup taskwarrior
+ADD . /root/code/
+WORKDIR /root/code/
+RUN git clean -dfx
+RUN git submodule init
+RUN git submodule update
+RUN source scl_source enable devtoolset-7; cmake -DCMAKE_BUILD_TYPE=debug .
+RUN source scl_source enable devtoolset-7; make -j2
+RUN source scl_source enable devtoolset-7; make install
+RUN task --version
+
+# Setup tests
+WORKDIR /root/code/test/
+RUN source scl_source enable devtoolset-7; make
+
+CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]
