@@ -85,7 +85,7 @@ class TestVirtualTags(TestCase):
         cls.t("add deleted")
         cls.t("1 delete", input="y\n")
         cls.t("add minimal")
-        cls.t("add maximal +tag pro:PRO pri:H due:yesterday")
+        cls.t("add maximal +tag pro:PRO pri:H due:today")
         cls.t("3 start")
         cls.t("3 annotate note")
         cls.t("add blocked depends:2")
