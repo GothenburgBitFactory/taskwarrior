@@ -464,7 +464,7 @@ def mkstemp(data):
             pass
 
     f = tempfile.NamedTemporaryFile(delete=False)
-    f.write(data)
+    f.write(data.encode('utf-8') if not isinstance(data, bytes) else data)
     f.close()
 
     # Ensure removal at end of python session
