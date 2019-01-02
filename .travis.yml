@@ -1,0 +1,49 @@
+sudo: required
+language: generic
+matrix:
+  include:
+    - name: "Gentoo (latest)"
+      os: linux
+      env: CONTAINER=gentoo
+      services: docker
+    - name: "Fedora 28"
+      os: linux
+      env: CONTAINER=fedora28
+      services: docker
+    - name: "Fedora 29"
+      os: linux
+      env: CONTAINER=fedora28
+      services: docker
+    - name: "Debian Stable"
+      os: linux
+      env: CONTAINER=debianstable
+      services: docker
+    - name: "Debian Testing"
+      os: linux
+      env: CONTAINER=debiantesting
+      services: docker
+    - name: "Ubuntu 16.04"
+      os: linux
+      env: CONTAINER=ubuntu1604
+      services: docker
+    - name: "Ubuntu 18.04"
+      os: linux
+      env: CONTAINER=ubuntu1804
+      services: docker
+    - name: "OpenSUSE 15.0"
+      os: linux
+      env: CONTAINER=opensuse1500
+      services: docker
+    - name: "Archlinux 2018.01.01"
+      os: linux
+      env: CONTAINER=arch180101
+      services: docker
+    - name: "Mac OS X 10.13"
+      os: osx
+      env: CONTAINER=osx
+install:
+  # Build the docker container
+  - pushd $TRAVIS_BUILD_DIR
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER ; fi
+script:
+  - if [[ $CONTAINER != "osx" ]]; then docker-compose run test-$CONTAINER; else bash test/scripts/test_osx.sh ; fi

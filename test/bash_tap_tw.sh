@@ -9,7 +9,7 @@
 # appended to or changed as needed.
 #
 # Subject to the MIT License. See LICENSE file or http://opensource.org/licenses/MIT
-# Copyright (c) 2015-2018 Wilhelm Schürmann
+# Copyright (c) 2015-2019 Wilhelm Schürmann
 
 function setup_taskrc {
     # Configuration

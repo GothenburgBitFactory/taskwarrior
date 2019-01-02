@@ -1,0 +1,74 @@
+version: '3'
+services:
+  test-fedora28:
+    build:
+        context: .
+        dockerfile: test/docker/fedora28
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-fedora29:
+    build:
+        context: .
+        dockerfile: test/docker/fedora29
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-ubuntu1604:
+    build:
+        context: .
+        dockerfile: test/docker/ubuntu1604
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-ubuntu1804:
+    build:
+        context: .
+        dockerfile: test/docker/ubuntu1804
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-debianstable:
+    build:
+        context: .
+        dockerfile: test/docker/debianstable
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-debiantesting:
+    build:
+        context: .
+        dockerfile: test/docker/debiantesting
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-gentoo:
+    build:
+        context: .
+        dockerfile: test/docker/gentoo
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-opensuse1500:
+    build:
+        context: .
+        dockerfile: test/docker/opensuse1500
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-arch180101:
+    build:
+        context: .
+        dockerfile: test/docker/arch180101
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true

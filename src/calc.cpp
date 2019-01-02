@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2018, Göteborg Bit Factory.
+// Copyright 2013 - 2019, Göteborg Bit Factory.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -93,7 +93,7 @@ int main (int argc, char** argv)
                   << format ("calc {1} built for ", VERSION)
                   << osName ()
                   << '\n'
-                  << "Copyright (C) 2006 - 2018 P. Beckingham, F. Hernandez."
+                  << "Copyright (C) 2006 - 2019 P. Beckingham, F. Hernandez."
                   << '\n'
                   << '\n'
                   << "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit."

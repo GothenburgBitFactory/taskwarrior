@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2018, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ class TestDiagnostics(TestCase):
         self.t.activate_hooks()
         code, out, err = self.t.diag()
         self.tap(out)
-        self.assertRegexpMatches(out, "Compliance:\s+C\+\+11")
+        self.assertRegexpMatches(out, "Compliance:\s+C\+\+14")
         self.assertRegexpMatches(out, "libgnutls:\s+\d+\.\d+\.\d+")
         self.assertIn("edlin", out)
         self.assertIn("strict", out)

@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2018, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -85,7 +85,7 @@ class TestVirtualTags(TestCase):
         cls.t("add deleted")
         cls.t("1 delete", input="y\n")
         cls.t("add minimal")
-        cls.t("add maximal +tag pro:PRO pri:H due:yesterday")
+        cls.t("add maximal +tag pro:PRO pri:H due:today")
         cls.t("3 start")
         cls.t("3 annotate note")
         cls.t("add blocked depends:2")

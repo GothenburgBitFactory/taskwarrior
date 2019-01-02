@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2018, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ class TestTaskEdit(TestCase):
         self.t = Task()
 
         # Workaround to always assume changes were introduced via "task edit"
-        self.editor = mkstemp_exec("echo '' >> $1\n")
+        self.editor = mkstemp_exec(b"echo '' >> $1\n")
 
         self.t.env["VISUAL"] = self.editor
 
