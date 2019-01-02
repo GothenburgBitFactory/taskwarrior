@@ -381,6 +381,7 @@ class TestBug1455(TestCase):
     def setUp(self):
         self.t = Task()
 
+    @unittest.expectedFailure
     def test_project_hierarchy_filter(self):
         """1455: Test project:school)
 
