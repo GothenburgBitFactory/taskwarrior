@@ -94,7 +94,7 @@ class TestVerbosity(TestCase):
         """Verbosity blank"""
 
         def count_blank_lines(x):
-            return len(filter(operator.not_, x.splitlines()))
+            return x.splitlines().count('')
 
         code, out, err = self.t("rc.verbose:nothing ls")
         self.assertEqual(count_blank_lines(out), 0)

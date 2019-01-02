@@ -60,11 +60,11 @@ class ContextManagementTest(TestCase):
         self.assertIn("Context 'work' defined.", out)
 
         # Assert the config contains context definition
-        self.assertIn('context.work=project:Work\n', self.t.taskrc_content)
+        context_line = 'context.work=project:Work\n'
+        self.assertIn(context_line, self.t.taskrc_content)
 
         # Assert that it contains the definition only once
-        is_context_line = lambda x: x == 'context.work=project:Work\n'
-        self.assertEqual(len(filter(is_context_line, self.t.taskrc_content)), 1)
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
     def test_context_redefine_same_definition(self):
         """Test re-defining the context with the same definition."""
@@ -73,11 +73,11 @@ class ContextManagementTest(TestCase):
         self.assertIn("Context 'work' defined.", out)
 
         # Assert the config contains context definition
-        self.assertIn('context.work=project:Work\n', self.t.taskrc_content)
+        context_line = 'context.work=project:Work\n'
+        self.assertIn(context_line, self.t.taskrc_content)
 
         # Assert that it contains the definition only once
-        is_context_line = lambda x: x == 'context.work=project:Work\n'
-        self.assertEqual(len(filter(is_context_line, self.t.taskrc_content)), 1)
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
     def test_context_redefine_different_definition(self):
         """Test re-defining the context with different definition."""
@@ -89,11 +89,11 @@ class ContextManagementTest(TestCase):
         self.assertNotIn('context.work=project:Work\n', self.t.taskrc_content)
 
         # Assert the config contains context definition
-        self.assertIn('context.work=+work\n', self.t.taskrc_content)
+        context_line = 'context.work=+work\n'
+        self.assertIn(context_line, self.t.taskrc_content)
 
         # Assert that it contains the definition only once
-        is_context_line = lambda x: x == 'context.work=+work\n'
-        self.assertEqual(len(filter(is_context_line, self.t.taskrc_content)), 1)
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
     def test_context_delete(self):
         """Test simple context deletion."""
@@ -138,8 +138,8 @@ class ContextManagementTest(TestCase):
 
         # Assert that output contains work and home context definitions exactly
         # once
-        self.assertEqual(len(filter(contains_work, out.splitlines())), 1)
-        self.assertEqual(len(filter(contains_home, out.splitlines())), 1)
+        self.assertEqual(len(list(filter(contains_work, out.splitlines()))), 1)
+        self.assertEqual(len(list(filter(contains_home, out.splitlines()))), 1)
 
     def test_context_initially_empty(self):
         """Test that no context is set initially."""
@@ -168,33 +168,30 @@ class ContextManagementTest(TestCase):
         code, out, err = self.t('context home')
         self.assertIn("Context 'home' set.", out)
 
-        contains_home = lambda line: line == "context=home\n"
-        self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
+        context_line = "context=home\n"
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
     def test_context_switching(self):
         """Test changing the context."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
-        contains_home = lambda line: line == "context=home\n"
-        contains_work = lambda line: line == "context=work\n"
-
         # Switch to home context
         code, out, err = self.t('context home')
         self.assertIn("Context 'home' set.", out)
-        self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
+        self.assertEqual(self.t.taskrc_content.count("context=home\n"), 1)
 
         # Switch to work context
         code, out, err = self.t('context work')
         self.assertIn("Context 'work' set.", out)
         self.assertNotIn("context=home\n", self.t.taskrc_content)
-        self.assertEqual(len(filter(contains_work, self.t.taskrc_content)), 1)
+        self.assertEqual(self.t.taskrc_content.count("context=work\n"), 1)
 
         # Switch back to home context
         code, out, err = self.t('context home')
         self.assertIn("Context 'home' set.", out)
         self.assertNotIn("context=work\n", self.t.taskrc_content)
-        self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
+        self.assertEqual(self.t.taskrc_content.count("context=home\n"), 1)
 
     def test_context_unsetting(self):
         """Test removing the context."""
