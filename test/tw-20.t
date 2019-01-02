@@ -44,7 +44,7 @@ class TestBug20(TestCase):
         self.t = Task()
 
         # Workaround to always assume changes were introduced via "task edit"
-        self.editor = mkstemp_exec("echo '' >> $1\n")
+        self.editor = mkstemp_exec(b"echo '' >> $1\n")
 
         self.t.env["VISUAL"] = self.editor
 
