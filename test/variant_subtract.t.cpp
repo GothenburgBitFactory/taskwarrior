@@ -139,9 +139,10 @@ int main (int, char**)
   try {Variant v32 = v3 - v2; t.fail ("foo - 3.14 --> error");}
   catch (...)                {t.pass ("foo - 3.14 --> error");}
 
-  // string - string   -> ERROR
-  try {Variant v33 = v3 - v3; t.fail ("foo - foo --> error");}
-  catch (...)                {t.pass ("foo - foo --> error");}
+  // string - string   -> concatenated string
+  Variant v33 = v3 - v3;
+  t.is (v33.type (), Variant::type_string, "foo - foo --> string");
+  t.is (v33.get_string (), "foo-foo",      "foo - foo --> foo-foo");
 
   // string - date     -> ERROR
   try {Variant v34 = v3 - v4; t.fail ("foo - 1234567890 --> error");}
