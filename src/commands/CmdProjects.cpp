@@ -34,6 +34,7 @@
 #include <format.h>
 #include <util.h>
 #include <main.h>
+#include <list>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdProjects::CmdProjects ()
@@ -109,50 +110,42 @@ int CmdProjects::execute (std::string& output)
     view.add ("Tasks", false);
     setHeaderUnderline (view);
 
-    std::vector <std::string> processed;
-    int project_number_correction = 0;
+    // create sorted list of table entries
+    std::list <std::pair<std::string, int>> sorted_view;
     for (auto& project : unique)
     {
-      // store project name
-      std::string project_name = project.first;
-      // catch project names including '-'
-      if (project_name.find ('-') != std::string::npos)
-      {
-        // replace '-' with '=' which has a higher ASCII code
-        // and will therefore be processed later
-        std::string new_project = project_name;
-        std::replace(new_project.begin (), new_project.end (), '-', '=');
-        unique[new_project] = project.second;
-        // account for the "additional project"
-        project_number_correction++;
-        continue;
-      }
-      // catch project names including '='
-      // (assuming the user did not create any such projects himself)
-      if (project_name.find ('=') != std::string::npos)
-      {
-        // revert '=' into '-' for correct displaying
-        std::replace(project_name.begin (), project_name.end (), '=', '-');
-      }
-      const std::vector <std::string> parents = extractParents (project_name);
-      for (auto& parent : parents)
-      {
-        if (std::find (processed.begin (), processed.end (), parent) == processed.end ())
+      const std::vector <std::string> parents = extractParents (project.first);
+      if (parents.size ()) {
+        // if parents exist: store iterator position of last parent
+        std::list<std::pair<std::string, int>>::iterator parent_pos;
+        for (auto& parent : parents)
         {
-          int row = view.addRow ();
-          view.set (row, 0, indentProject (parent));
-          processed.push_back (parent);
+          parent_pos = std::find_if (sorted_view.begin (), sorted_view.end (),
+              [&parent](const std::pair<std::string, int>& element) { return element.first == parent; }
+          );
+          // if parent does not exist yet: insert into sorted view
+          if (parent_pos == sorted_view.end()) {
+            sorted_view.insert (parent_pos, std::make_pair(parent, 1));
+          }
         }
+        // insert new element below latest parent
+        sorted_view.insert (++parent_pos, project);
+      } else {
+        // if has no parents: simply push to end of list
+        sorted_view.push_back (project);
       }
-      int row = view.addRow ();
-      view.set (row, 0, (project_name == ""
-                          ? "(none)"
-                          : indentProject (project_name, "  ", '.')));
-      view.set (row, 1, project.second);
-      processed.push_back (project_name);
     }
 
-    int number_projects = unique.size () - project_number_correction;
+    // construct view from sorted list
+    for (auto& item: sorted_view) {
+      int row = view.addRow ();
+      view.set (row, 0, (item.first == ""
+                          ? "(none)"
+                          : indentProject (item.first, "  ", '.')));
+      view.set (row, 1, item.second);
+    }
+
+    int number_projects = unique.size ();
     if (no_project)
       --number_projects;
 
