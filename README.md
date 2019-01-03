@@ -1,6 +1,6 @@
 # Taskwarrior
 
-[![Travis build status](https://travis-ci.org/tbabej/taskwarrior.svg?branch=2.6.0)](https://travis-ci.org/tbabej/taskwarrior)
+[![Travis build status](https://travis-ci.org/GothenburgBitFactory/taskwarrior.svg?branch=2.6.0)](https://travis-ci.org/GothenburgBitFactory/taskwarrior)
 
 Thank you for taking a look at Taskwarrior!
 
