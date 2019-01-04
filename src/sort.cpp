@@ -27,12 +27,15 @@
 #include <cmake.h>
 #include <algorithm>
 #include <vector>
+#include <list>
+#include <map>
 #include <string>
 #include <stdlib.h>
 #include <Context.h>
 #include <Duration.h>
 #include <Task.h>
 #include <shared.h>
+#include <util.h>
 #include <format.h>
 
 static std::vector <Task>* global_data = nullptr;
@@ -58,6 +61,49 @@ void sort_tasks (
 
   Context::getContext ().time_sort_us += timer.total_us ();
 }
+
+void sort_projects (
+    std::list <std::pair <std::string, int>>& sorted,
+    std::map <std::string, int>& allProjects)
+{
+  for (auto& project : allProjects)
+  {
+    const std::vector <std::string> parents = extractParents (project.first);
+    if (parents.size ())
+    {
+      // if parents exist: store iterator position of last parent
+      std::list <std::pair <std::string, int>>::iterator parent_pos;
+      for (auto& parent : parents)
+      {
+        parent_pos = std::find_if (sorted.begin (), sorted.end (),
+            [&parent](const std::pair <std::string, int>& item) { return item.first == parent; }
+        );
+        // if parent does not exist yet: insert into sorted view
+        if (parent_pos == sorted.end ()) {
+          sorted.push_back (std::make_pair (parent, 1));
+        }
+      }
+      // insert new element below latest parent
+      sorted.insert ((parent_pos == sorted.end ()) ? parent_pos : ++parent_pos, project);
+    } else {
+      // if has no parents: simply push to end of list
+      sorted.push_back (project);
+    }
+  }
+}
+
+void sort_projects (
+    std::list <std::pair <std::string, int>>& sorted,
+    std::map <std::string, bool>& allProjects)
+{
+  std::map <std::string, int> allProjectsInt;
+  for (auto& p : allProjects)
+  {
+    allProjectsInt[p.first] = (int) p.second;
+  }
+  sort_projects (sorted, allProjectsInt);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Re-implementation, using direct Task access instead of data copies that

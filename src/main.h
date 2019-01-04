@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 #include <sys/types.h>
 #include <Context.h>
@@ -81,6 +82,8 @@ std::string onExpiration (Task&);
 
 // sort.cpp
 void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);
+void sort_projects (std::list <std::pair <std::string, int>>& sorted, std::map <std::string, int>& allProjects);
+void sort_projects (std::list <std::pair <std::string, int>>& sorted, std::map <std::string, bool>& allProjects);
 
 // legacy.cpp
 void legacyColumnMap (std::string&);
