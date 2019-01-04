@@ -36,6 +36,7 @@
 #include <format.h>
 #include <util.h>
 #include <main.h>
+#include <list>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdSummary::CmdSummary ()
@@ -146,54 +147,54 @@ int CmdSummary::execute (std::string& output)
     bg_color  = Color (Context::getContext ().config.get ("color.summary.background"));
   }
 
-  int barWidth = 30;
-  std::vector <std::string> processed;
+  // sort projects into sorted list
+  std::list<std::string> sortedProjects;
   for (auto& i : allProjects)
   {
-    // store project name
-    std::string project_name = i.first;
-    // catch project names including '-'
-    if (project_name.find ('-') != std::string::npos)
+    if (showAllProjects || countPending[i.first] > 0)
     {
-      // replace '-' with '=' which has a higher ASCII code
-      // and will therefore be processed later
-      std::string new_project = project_name;
-      std::replace(new_project.begin (), new_project.end (), '-', '=');
-      allProjects[new_project] = i.second;
-      continue;
-    }
-    // catch project names including '='
-    // (assuming the user did not create any such projects himself)
-    if (project_name.find ('=') != std::string::npos)
-    {
-      // revert '=' into '-' for correct displaying
-      std::replace(project_name.begin (), project_name.end (), '=', '-');
-    }
-    if (showAllProjects || countPending[project_name] > 0)
-    {
-      const std::vector <std::string> parents = extractParents (project_name);
-      for (auto& parent : parents)
+      const std::vector <std::string> parents = extractParents (i.first);
+      if (parents.size ())
       {
-        if (std::find (processed.begin (), processed.end (), parent)
-           == processed.end ())
+        // if parents exist: store iterator position of last parent
+        std::list<std::string>::iterator parent_pos;
+        for (auto& parent : parents)
         {
-          int row = view.addRow ();
-          view.set (row, 0, indentProject (parent));
-          processed.push_back (parent);
+          parent_pos = std::find (sortedProjects.begin (), sortedProjects.end (), parent);
+          // if parent does not exist yet: insert into sorted view
+          if (parent_pos == sortedProjects.end ())
+          {
+            sortedProjects.push_back (parent);
+          }
         }
+        // insert new element below latest parent
+        if (parent_pos == sortedProjects.end ()) {
+          sortedProjects.push_back (i.first);
+        } else {
+          sortedProjects.insert (++parent_pos, i.first);
+        }
+      } else {
+        // if has no parents: simply push to end of list
+        sortedProjects.push_back (i.first);
       }
+    }
+  }
 
+  int barWidth = 30;
+  // construct view from sorted list
+  for (auto& i : sortedProjects)
+  {
       int row = view.addRow ();
-      view.set (row, 0, (project_name == ""
+      view.set (row, 0, (i == ""
                           ? "(none)"
-                          : indentProject (project_name, "  ", '.')));
+                          : indentProject (i, "  ", '.')));
 
-      view.set (row, 1, countPending[project_name]);
-      if (counter[project_name])
-        view.set (row, 2, Duration ((int) (sumEntry[project_name] / (double)counter[project_name])).formatVague ());
+      view.set (row, 1, countPending[i]);
+      if (counter[i])
+        view.set (row, 2, Duration ((int) (sumEntry[i] / (double)counter[i])).formatVague ());
 
-      int c = countCompleted[project_name];
-      int p = countPending[project_name];
+      int c = countCompleted[i];
+      int p = countPending[i];
       int completedBar = 0;
       if (c + p)
         completedBar = (c * barWidth) / (c + p);
@@ -216,8 +217,6 @@ int CmdSummary::execute (std::string& output)
       if (c + p)
         snprintf (percent, 12, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
-      processed.push_back (project_name);
-    }
   }
 
   std::stringstream out;
