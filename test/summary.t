@@ -74,9 +74,9 @@ class TestBug1904(TestCase):
 
     def validate_order(self, out):
         order = (
+                "a-b",
                 "a",
                 "  b",
-                "a-b",
         )
 
         lines = out.splitlines(True)
