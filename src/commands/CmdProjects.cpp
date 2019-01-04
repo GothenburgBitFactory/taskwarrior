@@ -112,29 +112,7 @@ int CmdProjects::execute (std::string& output)
 
     // create sorted list of table entries
     std::list <std::pair<std::string, int>> sorted_view;
-    for (auto& project : unique)
-    {
-      const std::vector <std::string> parents = extractParents (project.first);
-      if (parents.size ()) {
-        // if parents exist: store iterator position of last parent
-        std::list<std::pair<std::string, int>>::iterator parent_pos;
-        for (auto& parent : parents)
-        {
-          parent_pos = std::find_if (sorted_view.begin (), sorted_view.end (),
-              [&parent](const std::pair<std::string, int>& element) { return element.first == parent; }
-          );
-          // if parent does not exist yet: insert into sorted view
-          if (parent_pos == sorted_view.end()) {
-            sorted_view.insert (parent_pos, std::make_pair(parent, 1));
-          }
-        }
-        // insert new element below latest parent
-        sorted_view.insert (++parent_pos, project);
-      } else {
-        // if has no parents: simply push to end of list
-        sorted_view.push_back (project);
-      }
-    }
+    sort_projects (sorted_view, unique);
 
     // construct view from sorted list
     for (auto& item: sorted_view) {

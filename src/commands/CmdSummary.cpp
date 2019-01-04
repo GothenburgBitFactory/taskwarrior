@@ -148,53 +148,24 @@ int CmdSummary::execute (std::string& output)
   }
 
   // sort projects into sorted list
-  std::list<std::string> sortedProjects;
-  for (auto& i : allProjects)
-  {
-    if (showAllProjects || countPending[i.first] > 0)
-    {
-      const std::vector <std::string> parents = extractParents (i.first);
-      if (parents.size ())
-      {
-        // if parents exist: store iterator position of last parent
-        std::list<std::string>::iterator parent_pos;
-        for (auto& parent : parents)
-        {
-          parent_pos = std::find (sortedProjects.begin (), sortedProjects.end (), parent);
-          // if parent does not exist yet: insert into sorted view
-          if (parent_pos == sortedProjects.end ())
-          {
-            sortedProjects.push_back (parent);
-          }
-        }
-        // insert new element below latest parent
-        if (parent_pos == sortedProjects.end ()) {
-          sortedProjects.push_back (i.first);
-        } else {
-          sortedProjects.insert (++parent_pos, i.first);
-        }
-      } else {
-        // if has no parents: simply push to end of list
-        sortedProjects.push_back (i.first);
-      }
-    }
-  }
+  std::list<std::pair<std::string, int>> sortedProjects;
+  sort_projects (sortedProjects, allProjects);
 
   int barWidth = 30;
   // construct view from sorted list
   for (auto& i : sortedProjects)
   {
       int row = view.addRow ();
-      view.set (row, 0, (i == ""
+      view.set (row, 0, (i.first == ""
                           ? "(none)"
-                          : indentProject (i, "  ", '.')));
+                          : indentProject (i.first, "  ", '.')));
 
-      view.set (row, 1, countPending[i]);
-      if (counter[i])
-        view.set (row, 2, Duration ((int) (sumEntry[i] / (double)counter[i])).formatVague ());
+      view.set (row, 1, countPending[i.first]);
+      if (counter[i.first])
+        view.set (row, 2, Duration ((int) (sumEntry[i.first] / (double)counter[i.first])).formatVague ());
 
-      int c = countCompleted[i];
-      int p = countPending[i];
+      int c = countCompleted[i.first];
+      int p = countPending[i.first];
       int completedBar = 0;
       if (c + p)
         completedBar = (c * barWidth) / (c + p);
