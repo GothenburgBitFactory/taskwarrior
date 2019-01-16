@@ -214,7 +214,7 @@ CmdUUIDs::CmdUUIDs ()
 {
   _keyword               = "uuids";
   _usage                 = "task <filter> uuids";
-  _description           = "Shows the UUIDs of matching tasks, as a comma-separated list";
+  _description           = "Shows the UUIDs of matching tasks, as a space-separated list";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
