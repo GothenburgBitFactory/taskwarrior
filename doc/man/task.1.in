@@ -93,7 +93,10 @@ write commands, miscellaneous commands and script helper commands.  Read
 commands do not allow modification of tasks.  Write commands can alter almost
 any aspect of a task.  Script helper commands are provided to help you write
 add-on scripts, for example, shell completion (only minimal output is
-generated, as with verbose=nothing).
+generated, as with verbose=nothing). Those commands which are explicitly affected
+by the
+.I context
+are denoted as such.
 
 .SH READ SUBCOMMANDS
 
@@ -130,16 +133,16 @@ Shows all tasks matching the filter, that block other tasks.
 
 .TP
 .B task <filter> burndown.daily
-Shows a graphical burndown chart, by day.
+Shows a graphical burndown chart, by day. Is affected by the context.
 
 .TP
 .B task <filter> burndown.weekly
 Shows a graphical burndown chart, by week.  Note that 'burndown' is an alias to
-the 'burndown.weekly' report.
+the 'burndown.weekly' report. Is affected by the context.
 
 .TP
 .B task <filter> burndown.monthly
-Shows a graphical burndown chart, by month.
+Shows a graphical burndown chart, by month. Is affected by the context.
 
 .TP
 .B task calendar [due|<month> <year>|<year>] [y]
@@ -171,7 +174,7 @@ Shows all tasks matching the filter that are completed.
 
 .TP
 .B task <filter> count
-Displays only a count of tasks matching the filter.
+Displays only a count of tasks matching the filter. Is affected by the context.
 
 .TP
 .B task <filter> export
@@ -214,20 +217,20 @@ Shows the long usage text.
 
 .TP
 .B task <filter> history.annual
-Shows a report of task history by year.
+Shows a report of task history by year. Is affected by the context.
 
 .TP
 .B task <filter> history.monthly
 Shows a report of task history by month.  Note that 'history' is
-an alias to 'history.monthly'.
+an alias to 'history.monthly'. Is affected by the context.
 
 .TP
 .B task <filter> history.weekly
-Shows a report of task history by week.
+Shows a report of task history by week. Is affected by the context.
 
 .TP
 .B task <filter> history.daily
-Shows a report of task history by day.
+Shows a report of task history by day. Is affected by the context.
 
 .TP
 .B task <filter> ids
@@ -309,7 +312,7 @@ Shows all incomplete tasks matching the filter that are beyond their due date.
 .TP
 .B task <filter> projects
 Lists all project names that are currently used by pending tasks, and the
-number of tasks for each.
+number of tasks for each. Is affected by the context.
 
 .TP
 .B task <filter> recurring
@@ -340,28 +343,28 @@ Appends description text to an existing task.
 
 .TP
 .B task <filter> delete <mods>
-Deletes the specified task from task list.
+Deletes the specified task from task list. Is affected by the context.
 
 .TP
 .B task <filter> denotate <mods>
 Deletes an annotation for the specified task. If the provided description
 matches an annotation exactly, the corresponding annotation is deleted. If the
 provided description matches annotations partly, the first partly matched
-annotation is deleted.
+annotation is deleted. Is affected by the context.
 
 .TP
 .B task <filter> done <mods>
-Marks the specified task as done.
+Marks the specified task as done. Is affected by the context.
 
 .TP
 .B task <filter> duplicate <mods>
-Duplicates the specified task and allows modifications.
+Duplicates the specified task and allows modifications. Is affected by the context.
 
 .TP
 .B task <filter> edit
 Launches a text editor to let you modify all aspects of a task directly.
 In general, this is not the recommended method of modifying tasks, but is
-provided for exceptional circumstances.  Use carefully.
+provided for exceptional circumstances.  Use carefully. Is affected by the context.
 
 .TP
 .B task import [<file> ...]
@@ -389,25 +392,26 @@ Modifies the existing task with provided information.
 
 .TP
 .B task <filter> prepend <mods>
-Prepends description text to an existing task.
+Prepends description text to an existing task. Is affected by the context.
 
 .TP
 .B task <filter> purge
 Permanently removes the specified tasks from the data files. Only
 tasks that are alredy deleted can be purged. This command has a
 local-only effect and changes introduced by it are not synced.
+Is affected by the context.
 
 Warning: causes permanent, non-revertible loss of data.
 
 .TP
 .B task <filter> start <mods>
-Marks the specified tasks as started.
+Marks the specified tasks as started. Is affected by the context.
 
 .TP
 .B task <filter> stop <mods>
 Removes the
 .I start
-time from the specified task.
+time from the specified task. Is affected by the context.
 
 .SH MISCELLANEOUS SUBCOMMANDS
 
@@ -523,11 +527,11 @@ displayed.
 
 .TP
 .B task <filter> stats
-Shows statistics of the tasks defined by the filter.
+Shows statistics of the tasks defined by the filter. Is affected by the context.
 
 .TP
 .B task <filter> summary
-Shows a report of aggregated task status by project.
+Shows a report of aggregated task status by project. Is affected by the context.
 
 .TP
 .B task sync [init]
@@ -553,7 +557,7 @@ This is a workaround to avoid a recurrence bug that duplicates recurring tasks.
 Show a list of all tags used. Any special tags used are highlighted. Note that
 virtual tags are not listed - they don't really exist, and are just a convenient
 notation for other task metadata. It is an error to attempt to add or remove a
-virtual tag.
+virtual tag. Is affected by the context.
 
 .TP
 .B task timesheet [<weeks>]
@@ -1147,7 +1151,27 @@ Every two years.
 .SH CONTEXT
 Context is a user-defined filter, which is automatically applied to all commands
 that filter the task list. In particular, any report command will have its
-result affected by the current active context.
+result affected by the current active context. Here is a list of the commands
+that are affected:
+.IP
+    burndown
+    count
+    delete
+    denotate
+    done
+    duplicate
+    edit
+    history
+    prepend
+    projects
+    purge
+    start
+    stats
+    stop
+    summary
+    tags
+
+All other commands are NOT affected by the context.
 
     $ task list
     ID Age Project  Description        Urg
