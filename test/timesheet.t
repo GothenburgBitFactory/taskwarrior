@@ -78,7 +78,7 @@ class TestTimesheet(TestCase):
             "Started.+PS2.+Completed.+C2.+"
             "Started.+PS1.+Completed.+C1.+"
             "Started.+PS0.+Completed.+C0", re.DOTALL)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_one_week(self):
         """One week of started and completed"""
@@ -86,7 +86,7 @@ class TestTimesheet(TestCase):
         code, out, err = self.t("timesheet (+PENDING and start.after:now-1wk) or (+COMPLETED and end.after:now-1wk)")
 
         expected = re.compile("Started.+PS0.+Completed.+C0", re.DOTALL)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
         self.assertNotIn("PS1", out)
         self.assertNotIn("PS2", out)
         self.assertNotIn("C1", out)

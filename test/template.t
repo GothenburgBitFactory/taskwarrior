@@ -51,8 +51,8 @@ from basetest import Taskd, ServerTestCase
 #     self.assertIsInstance(a, b)
 #     self.assertNotIsInstance(a, b)
 #     self.assertRaises(e)
-#     self.assertRegexpMatches(t, r)
-#     self.assertNotRegexpMatches(t, r)
+#     self.assertRegex(t, r)
+#     self.assertNotRegex(t, r)
 #     self.tap("")
 
 class TestBugNumber(TestCase):
@@ -74,7 +74,7 @@ class TestBugNumber(TestCase):
         code, out, err = self.t("version")
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
-        self.assertRegexpMatches(out.decode("utf8"), expected)
+        self.assertRegex(out.decode("utf8"), expected)
 
         # TAP diagnostics on the bas
         self.tap("Yay TAP diagnostics")

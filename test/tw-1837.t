@@ -47,8 +47,8 @@ from basetest import Task, TestCase
 #     self.assertIsInstance(a, b)
 #     self.assertNotIsInstance(a, b)
 #     self.assertRaises(e)
-#     self.assertRegexpMatches(t, r)
-#     self.assertNotRegexpMatches(t, r)
+#     self.assertRegex(t, r)
+#     self.assertNotRegex(t, r)
 #     self.tap("")
 
 class TestBug1837(TestCase):

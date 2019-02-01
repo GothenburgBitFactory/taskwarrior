@@ -69,20 +69,20 @@ class TestCountdown(TestCase):
         self.t.config("report.up.sort",           "due+")
 
         code, out, err = self.t("up")
-        self.assertRegexpMatches(out, " one\n.+ two\n")
-        self.assertRegexpMatches(out, " two\n.+ three\n")
-        self.assertRegexpMatches(out, " three\n.+ four\n")
-        self.assertRegexpMatches(out, " four\n.+ five\n")
-        self.assertRegexpMatches(out, " five\n.+ six\n")
-        self.assertRegexpMatches(out, " six\n.+ seven\n")
-        self.assertRegexpMatches(out, " seven\n.+ eight\n")
-        self.assertRegexpMatches(out, " eight\n.+ nine\n")
-        self.assertRegexpMatches(out, " nine\n.+ ten\n")
-        self.assertRegexpMatches(out, " ten\n.+ eleven\n")
-        self.assertRegexpMatches(out, " eleven\n.+ twelve\n")
-        self.assertRegexpMatches(out, " twelve\n.+ thirteen\n")
-        self.assertRegexpMatches(out, " thirteen\n.+ fourteen\n")
-        self.assertRegexpMatches(out, " fourteen\n.+ fifteen\n")
+        self.assertRegex(out, " one\n.+ two\n")
+        self.assertRegex(out, " two\n.+ three\n")
+        self.assertRegex(out, " three\n.+ four\n")
+        self.assertRegex(out, " four\n.+ five\n")
+        self.assertRegex(out, " five\n.+ six\n")
+        self.assertRegex(out, " six\n.+ seven\n")
+        self.assertRegex(out, " seven\n.+ eight\n")
+        self.assertRegex(out, " eight\n.+ nine\n")
+        self.assertRegex(out, " nine\n.+ ten\n")
+        self.assertRegex(out, " ten\n.+ eleven\n")
+        self.assertRegex(out, " eleven\n.+ twelve\n")
+        self.assertRegex(out, " twelve\n.+ thirteen\n")
+        self.assertRegex(out, " thirteen\n.+ fourteen\n")
+        self.assertRegex(out, " fourteen\n.+ fifteen\n")
 
     def test_countdown_down(self):
         """Verify countdown sorting: descending"""
@@ -93,20 +93,20 @@ class TestCountdown(TestCase):
         self.t.config("report.down.sort",         "due-")
 
         code, out, err = self.t("down")
-        self.assertRegexpMatches(out, " fifteen\n.+ fourteen\n")
-        self.assertRegexpMatches(out, " fourteen\n.+ thirteen\n")
-        self.assertRegexpMatches(out, " thirteen\n.+ twelve\n")
-        self.assertRegexpMatches(out, " twelve\n.+ eleven\n")
-        self.assertRegexpMatches(out, " eleven\n.+ ten\n")
-        self.assertRegexpMatches(out, " ten\n.+ nine\n")
-        self.assertRegexpMatches(out, " nine\n.+ eight\n")
-        self.assertRegexpMatches(out, " eight\n.+ seven\n")
-        self.assertRegexpMatches(out, " seven\n.+ six\n")
-        self.assertRegexpMatches(out, " six\n.+ five\n")
-        self.assertRegexpMatches(out, " five\n.+ four\n")
-        self.assertRegexpMatches(out, " four\n.+ three\n")
-        self.assertRegexpMatches(out, " three\n.+ two\n")
-        self.assertRegexpMatches(out, " two\n.+ one\n")
+        self.assertRegex(out, " fifteen\n.+ fourteen\n")
+        self.assertRegex(out, " fourteen\n.+ thirteen\n")
+        self.assertRegex(out, " thirteen\n.+ twelve\n")
+        self.assertRegex(out, " twelve\n.+ eleven\n")
+        self.assertRegex(out, " eleven\n.+ ten\n")
+        self.assertRegex(out, " ten\n.+ nine\n")
+        self.assertRegex(out, " nine\n.+ eight\n")
+        self.assertRegex(out, " eight\n.+ seven\n")
+        self.assertRegex(out, " seven\n.+ six\n")
+        self.assertRegex(out, " six\n.+ five\n")
+        self.assertRegex(out, " five\n.+ four\n")
+        self.assertRegex(out, " four\n.+ three\n")
+        self.assertRegex(out, " three\n.+ two\n")
+        self.assertRegex(out, " two\n.+ one\n")
 
 
 class TestFormatDepends(TestCase):
@@ -118,12 +118,12 @@ class TestFormatDepends(TestCase):
     def test_depends_default(self):
         self.t.config("report.formatdep.columns", "description,depends")
         code, out, err = self.t("formatdep")
-        self.assertRegexpMatches(out, "one\s+1")
+        self.assertRegex(out, "one\s+1")
 
     def test_depends_count(self):
         self.t.config("report.formatdep.columns", "description,depends.count")
         code, out, err = self.t("formatdep")
-        self.assertRegexpMatches(out, "one\s+\[1\]")
+        self.assertRegex(out, "one\s+\[1\]")
 
 
 class TestBug101(TestCase):

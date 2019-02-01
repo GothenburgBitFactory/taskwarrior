@@ -77,7 +77,7 @@ class TestExportCommand(TestCase):
         if expected_value is not None:
             if regexp:
                 # Match to pattern if checking with regexp
-                self.assertRegexpMatches(value, expected_value)
+                self.assertRegex(value, expected_value)
             else:
                 # Equality match if checking with string
                 self.assertEqual(value, expected_value)

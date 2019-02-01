@@ -58,7 +58,7 @@ class TestCalendarCommandLine(TestCase):
     def test_basic_command_color(self):
         """Verify 'calendar rc._forcecolor:on' does not fail"""
         code, out, err = self.t("calendar rc._forcecolor:on")
-        self.assertRegexpMatches(out, "Su.+Mo.+Tu.+We.+Th.+Fr.+Sa")
+        self.assertRegex(out, "Su.+Mo.+Tu.+We.+Th.+Fr.+Sa")
 
     def test_basic_command_details(self):
         """Verify 'calendar rc.calendar.details:full rc.calendar.details.report:list' does not fail"""

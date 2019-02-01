@@ -51,7 +51,7 @@ class TestSpecialTags(TestCase):
     def test_nocolor(self):
         self.t("add should have no red +nocolor priority:H")
         code, out, err = self.t("ls")
-        self.assertRegexpMatches(out, r"\s1\s+nocolor\s+should have no red")
+        self.assertRegex(out, r"\s1\s+nocolor\s+should have no red")
 
     def test_nonag(self):
         self.t("add should be red +nonag")

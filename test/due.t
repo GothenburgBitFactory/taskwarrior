@@ -64,8 +64,8 @@ class TestDue(TestCase):
     def test_due(self):
         """due tasks displayed correctly"""
         code, out, err = self.t("list")
-        self.assertRegexpMatches(out, "\033\[31m.+{0}.+\033\[0m".format(self.just))
-        self.assertRegexpMatches(out, "\s+{0}\s+".format(self.almost))
+        self.assertRegex(out, "\033\[31m.+{0}.+\033\[0m".format(self.just))
+        self.assertRegex(out, "\s+{0}\s+".format(self.almost))
 
 
 class TestBug418(TestCase):

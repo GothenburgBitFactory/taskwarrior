@@ -56,12 +56,12 @@ class TestUDAOrphans(TestCase):
 
         # 'info' should show orphans.
         code, out, err = self.t("1 info")
-        self.assertRegexpMatches(out, "\[extra\s+foo\]")
+        self.assertRegex(out, "\[extra\s+foo\]")
 
         # 'modify' should not change the orphan
         self.t("1 modify /one/two/")
         code, out, err = self.t("1 info")
-        self.assertRegexpMatches(out, "\[extra\s+foo\]")
+        self.assertRegex(out, "\[extra\s+foo\]")
 
         # 'export' should include orphans.
         code, out, err = self.t("1 export")

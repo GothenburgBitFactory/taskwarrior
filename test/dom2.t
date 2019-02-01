@@ -159,12 +159,12 @@ class TestDOM(TestCase):
     def test_dom_annotation_entry(self):
         """ DOM 3.annotations.1.entry """
         code, out, err = self.t("_get 3.annotations.1.entry")
-        self.assertRegexpMatches(out, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
 
     def test_dom_annotation_entry_second(self):
         """ DOM 3.annotations.1.entry """
         code, out, err = self.t("_get 3.annotations.1.entry.second")
-        self.assertRegexpMatches(out, r"\d{1,2}")
+        self.assertRegex(out, r"\d{1,2}")
 
     def test_dom_annotation_description(self):
         """ DOM 3.annotations.1.description """
@@ -175,7 +175,7 @@ class TestDOM(TestCase):
         """ DOM system.version """
         code, out, err = self.t("_get system.version")
         self.assertEqual(code, 0)
-        self.assertRegexpMatches(out, r"\d\.\d+\.\d+")
+        self.assertRegex(out, r"\d\.\d+\.\d+")
 
     def test_dom_system_os(self):
         """ DOM system.os """
@@ -200,19 +200,19 @@ class TestDOM(TestCase):
         """ DOM tw.width """
         code, out, err = self.t("_get tw.width")
         self.assertEqual(code, 0)
-        self.assertRegexpMatches(out, r"\d+")
+        self.assertRegex(out, r"\d+")
 
     def test_dom_tw_height(self):
         """ DOM tw.height """
         code, out, err = self.t("_get tw.height")
         self.assertEqual(code, 0)
-        self.assertRegexpMatches(out, r"\d+")
+        self.assertRegex(out, r"\d+")
 
     def test_dom_tw_version(self):
         """ DOM tw.version """
         code, out, err = self.t("_get tw.version")
         self.assertEqual(code, 0)
-        self.assertRegexpMatches(out, r"\d\.\d+\.\d+")
+        self.assertRegex(out, r"\d\.\d+\.\d+")
 
     def test_dom_context_program(self):
         """ DOM context.program """
@@ -230,13 +230,13 @@ class TestDOM(TestCase):
         """ DOM context.width """
         code, out, err = self.t("_get context.width")
         self.assertEqual(code, 0)
-        self.assertRegexpMatches(out, r"\d+")
+        self.assertRegex(out, r"\d+")
 
     def test_dom_context_height(self):
         """ DOM context.height """
         code, out, err = self.t("_get context.height")
         self.assertEqual(code, 0)
-        self.assertRegexpMatches(out, r"\d+")
+        self.assertRegex(out, r"\d+")
 
     def test_dom_rc_name(self):
         """ DOM rc.dateformat """

@@ -65,7 +65,7 @@ class TestDuplication(TestCase):
     def test_duplication_showing_uuid(self):
         """Verify duplicate can show uuid"""
         code, out, err = self.t("1 duplicate rc.verbose:new-uuid")
-        self.assertRegexpMatches(out, "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+        self.assertRegex(out, "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
 
 
 class TestDuplication2(TestCase):

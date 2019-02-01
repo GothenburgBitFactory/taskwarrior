@@ -48,13 +48,13 @@ class TestStatisticsCommand(TestCase):
         self.t("log three")
 
         code, out, err = self.t("stats")
-        self.assertRegexpMatches(out, "Pending\s+1\n")
-        self.assertRegexpMatches(out, "Completed\s+1\n")
-        self.assertRegexpMatches(out, "Deleted\s+1\n")
-        self.assertRegexpMatches(out, "Total\s+3\n")
+        self.assertRegex(out, "Pending\s+1\n")
+        self.assertRegex(out, "Completed\s+1\n")
+        self.assertRegex(out, "Deleted\s+1\n")
+        self.assertRegex(out, "Total\s+3\n")
 
         code, out, err = self.t("stats rc._forcecolor:on")
-        self.assertRegexpMatches(out, "Pending\s+1\n")
+        self.assertRegex(out, "Pending\s+1\n")
 
 
 if __name__ == "__main__":

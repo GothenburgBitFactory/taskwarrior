@@ -48,8 +48,8 @@ class TestDiagnostics(TestCase):
         self.t.activate_hooks()
         code, out, err = self.t.diag()
         self.tap(out)
-        self.assertRegexpMatches(out, "Compliance:\s+C\+\+14")
-        self.assertRegexpMatches(out, "libgnutls:\s+\d+\.\d+\.\d+")
+        self.assertRegex(out, "Compliance:\s+C\+\+14")
+        self.assertRegex(out, "libgnutls:\s+\d+\.\d+\.\d+")
         self.assertIn("edlin", out)
         self.assertIn("strict", out)
 

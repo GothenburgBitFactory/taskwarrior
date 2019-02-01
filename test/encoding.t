@@ -71,9 +71,9 @@ class TestUtf8(TestCase):
         code, out, err = self.t("ls")
 
         expected = re.compile("\S\s{4}abc", re.MULTILINE)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
         expected = re.compile("\S\s{5}def", re.MULTILINE)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
 
 if __name__ == "__main__":

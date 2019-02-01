@@ -172,7 +172,7 @@ class TestBug1031(TestCase):
         code, out, err = self.t("1 info")
 
         expected = "Description\s+to"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_alias_to_to(self):
         """1031: alias working as expected: 'from -- to' -> 'to to'"""
@@ -180,7 +180,7 @@ class TestBug1031(TestCase):
         code, out, err = self.t("1 info")
 
         expected = "Description\s+to to"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_alias_to_from(self):
         """1031: alias working as expected: 'to -- from' -> 'to from'"""
@@ -188,7 +188,7 @@ class TestBug1031(TestCase):
         code, out, err = self.t("1 info")
 
         expected = "Description\s+to from"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
 
 class Test1445(TestCase):

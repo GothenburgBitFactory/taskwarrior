@@ -58,7 +58,7 @@ class TestSequences(TestCase):
         """Test sequences in start/stop"""
         self.t("1,2 start")
         code, out, err = self.t("_get 1.start 2.start")
-        self.assertRegexpMatches(out, "\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\n")
+        self.assertRegex(out, "\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\n")
 
         self.t("1,2 stop")
         code, out, err = self.t("_get 1.start 2.start")

@@ -46,10 +46,10 @@ class TestOverride(TestCase):
     def test_override(self):
         """Verify override is displayed in 'show' command"""
         code, out, err = self.t("show regex")
-        self.assertRegexpMatches(out, r"regex +0")
+        self.assertRegex(out, r"regex +0")
 
         code, out, err = self.t("rc.regex:1 show regex")
-        self.assertRegexpMatches(out, r"regex +1")
+        self.assertRegex(out, r"regex +1")
 
 
 class TestRCSegfault(TestCase):

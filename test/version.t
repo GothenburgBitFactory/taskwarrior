@@ -55,7 +55,7 @@ class TestVersion(TestCase):
         code, out, err = self.t("version")
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def slurp(self, file="../CMakeLists.txt"):
         number = "\.".join(["[0-9]+"] * 3)
@@ -108,7 +108,7 @@ class TestVersion(TestCase):
     def test_version_option(self):
         """Verify that  'task --version' returns something valid"""
         code, out, err = self.t("--version")
-        self.assertRegexpMatches(out, r'^\d\.\d+\.\d+(\.\w+)?$')
+        self.assertRegex(out, r'^\d\.\d+\.\d+(\.\w+)?$')
 
 
 if __name__ == "__main__":
