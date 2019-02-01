@@ -539,10 +539,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);
@@ -586,10 +589,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);
@@ -633,10 +639,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);
@@ -680,10 +689,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);
