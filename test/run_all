@@ -12,15 +12,9 @@ from multiprocessing import cpu_count
 from threading import Thread
 from subprocess import call, Popen, PIPE
 
-if sys.version_info > (3,):
-    import codecs
+import codecs
 
-try:
-    # python 2
-    from Queue import Queue, Empty
-except ImportError:
-    # python 3
-    from queue import Queue, Empty
+from queue import Queue, Empty
 
 # Look for taskd in $PATH instead of task/src/
 os.environ["TASKD_USE_PATH"] = "1"

@@ -14,10 +14,7 @@ from .utils import (find_unused_port, release_port, port_used, run_cmd_wait,
                     taskd_binary_location)
 from .exceptions import CommandError
 
-try:
-    from subprocess import DEVNULL
-except ImportError:
-    DEVNULL = open(os.devnull, 'w')
+from subprocess import DEVNULL
 
 
 class Taskd(object):
