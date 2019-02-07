@@ -69,6 +69,8 @@
           Thanks to Dan Callahan
 - TW-1903 grammar error -- There are 1 local changes.
           Thanks to Eric Hymowitz
+- TW-1904/#2093 Fix issue #1917 [TW-1904] wrong order under projects command #2093
+          Thanks to Beka, mrossinek.
 - TW-1906/#1919 sync sub-command is missing from task(1) manual page
           Thanks to rjc
 - TW-1910 unreachable statement
