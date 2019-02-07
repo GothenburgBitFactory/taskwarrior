@@ -99,9 +99,8 @@ void sort_projects (
 {
   std::map <std::string, int> allProjectsInt;
   for (auto& p : allProjects)
-  {
     allProjectsInt[p.first] = (int) p.second;
-  }
+  
   sort_projects (sorted, allProjectsInt);
 }
 
