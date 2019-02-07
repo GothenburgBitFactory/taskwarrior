@@ -115,7 +115,8 @@ int CmdProjects::execute (std::string& output)
     sort_projects (sorted_view, unique);
 
     // construct view from sorted list
-    for (auto& item: sorted_view) {
+    for (auto& item: sorted_view)
+    {
       int row = view.addRow ();
       view.set (row, 0, (item.first == ""
                           ? "(none)"
