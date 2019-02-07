@@ -1159,6 +1159,17 @@ urgency.blocked.coefficient to 0.0 in order for this setting to
 be the most useful.
 .RE
 
+.B urgency.accumulate=off
+.RS
+Not actually a coefficient. When enabled, and if urgency.inherit is also
+enabled, blocking tasks inherit all of the urgency values of all of the tasks
+they block (calculated recursively), in addition to their own existing urgency
+value. I.e. the resulting urgency value is the sum of: the urgency the task
+would have if urgency inheritence were disabled, plus the urgency values of all
+the tasks blocked by the current task, and the tasks blocked by those tasks,
+etc.
+.RE
+
 .SS DEFAULTS
 
 .TP

@@ -1845,8 +1845,12 @@ float Task::urgency_inherit () const
   float v = FLT_MIN;
   for (auto& task : blocked)
   {
-    // Find highest urgency in all blocked tasks.
-    v = std::max (v, task.urgency ());
+    if (context.config.getBoolean ("urgency.accumulate"))
+      // Find sum of urgency of current task + all blocked tasks.
+      v = v + task.urgency ();
+    else
+      // Find highest urgency in all blocked tasks.
+      v = std::max (v, task.urgency ());
   }
 
   return v;
