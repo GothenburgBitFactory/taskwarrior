@@ -49,7 +49,6 @@ void sort_tasks (
   const std::string& keys)
 {
   Timer timer;
-
   global_data = &data;
 
   // Split the key defs.
@@ -76,16 +75,18 @@ void sort_projects (
       for (auto& parent : parents)
       {
         parent_pos = std::find_if (sorted.begin (), sorted.end (),
-            [&parent](const std::pair <std::string, int>& item) { return item.first == parent; }
-        );
+            [&parent](const std::pair <std::string, int>& item) { return item.first == parent; });
+        
         // if parent does not exist yet: insert into sorted view
-        if (parent_pos == sorted.end ()) {
+        if (parent_pos == sorted.end ())
           sorted.push_back (std::make_pair (parent, 1));
-        }
       }
+      
       // insert new element below latest parent
       sorted.insert ((parent_pos == sorted.end ()) ? parent_pos : ++parent_pos, project);
-    } else {
+    }
+    else
+    {
       // if has no parents: simply push to end of list
       sorted.push_back (project);
     }
