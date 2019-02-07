@@ -73,11 +73,9 @@ class TestBug1904(TestCase):
         self.t("add pro:a.b test2")
 
     def validate_order(self, out):
-        order = (
-                "a-b",
-                "a",
-                "  b",
-        )
+        order = ("a-b",
+                 "a",
+                 "  b")
 
         lines = out.splitlines(True)
         # position where project names start on the lines list
@@ -95,9 +93,7 @@ class TestBug1904(TestCase):
     def test_project_eval(self):
         """1904: verify correct order under summary command"""
         self.add_tasks()
-
         code, out, err = self.t("summary")
-
         self.validate_order(out)
 
 
