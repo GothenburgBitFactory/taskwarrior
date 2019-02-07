@@ -109,6 +109,8 @@
            Thanks to Simon Désaulniers
 - TW #2053 Do not set CMP0037 on CMake 3.11.0 and above
            Thanks to Janik Rabe
+- #2077    Change taskrc override priority, respect verbose override, refactor.
+           Thanks to taiyu-len
 - #2108    CmdHistory: repeat unit if a larger unit changes
            Thanks to Janik Rabe
 - Added 'juhannus' as a synonym for 'midsommarafton'
