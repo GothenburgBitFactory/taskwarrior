@@ -85,7 +85,7 @@ int CmdDuplicate::execute (std::string&)
       dup.remove ("recur");
       dup.remove ("until");
       dup.remove ("imask");
-      std::cout << format ("Note: task {1} was a recurring task.  The duplicated task is not.", task.identifier ())
+      std::cout << format ("Note: task ID \"{1}\" was a recurring task.  The duplicated task is not.", task.identifier ())
           << '\n';
     }
 
@@ -93,7 +93,7 @@ int CmdDuplicate::execute (std::string&)
     else if (dup.getStatus () == Task::recurring)
     {
       dup.remove ("mask");
-      std::cout << format ("Note: task {1} was a parent recurring task.  The duplicated task is too.", task.identifier ())
+      std::cout << format ("Note: task ID \"{1}\" was a parent recurring task.  The duplicated task is too.", task.identifier ())
           << '\n';
     }
 
@@ -102,24 +102,24 @@ int CmdDuplicate::execute (std::string&)
 
     dup.modify (Task::modAnnotate);
 
-    if (permission (format ("Duplicate task {1} '{2}'?",
+    if (permission (format ("Duplicate task ID \"{1}\" '{2}'?",
                             task.identifier (true),
                             task.get ("description")),
                     filtered.size ()))
     {
       Context::getContext ().tdb2.add (dup);
       ++count;
-      feedback_affected ("Duplicated task {1} '{2}'.", task);
+      feedback_affected ("Duplicated task ID \"{1}\" '{2}'.", task);
 
       auto status = dup.getStatus ();
       if (Context::getContext ().verbose ("new-id") &&
           (status == Task::pending ||
            status == Task::waiting))
-        std::cout << format ("Created task {1}.\n", dup.id);
+        std::cout << format ("Created task ID \"{1}\".\n", dup.id);
 
       else if (Context::getContext ().verbose ("new-uuid") &&
                status != Task::recurring)
-        std::cout << format ("Created task {1}.\n", dup.get ("uuid"));
+        std::cout << format ("Created task UID \"{1}\".\n", dup.get ("uuid"));
 
       if (Context::getContext ().verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task);

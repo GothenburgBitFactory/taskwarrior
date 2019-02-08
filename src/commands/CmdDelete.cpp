@@ -33,7 +33,7 @@
 #include <format.h>
 #include <main.h>
 
-#define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
+#define STRING_CMD_DELETE_TASK_R     "Deleting recurring task ID \"{1}\" '{2}'."
 #define STRING_CMD_DELETE_CONFIRM_R  "This is a recurring task.  Do you want to delete all pending recurrences of this same task?"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ int CmdDelete::execute (std::string&)
     {
       // Delete the specified task.
       std::string question;
-      question = format ("Delete task {1} '{2}'?",
+      question = format ("Delete task ID \"{1}\" '{2}'?",
                          task.identifier (true),
                          task.get ("description"));
 
@@ -94,7 +94,7 @@ int CmdDelete::execute (std::string&)
         updateRecurrenceMask (task);
         ++count;
         Context::getContext ().tdb2.modify (task);
-        feedback_affected ("Deleting task {1} '{2}'.", task);
+        feedback_affected ("Deleting task ID \"{1}\" '{2}'.", task);
         feedback_unblocked (task);
         dependencyChainOnComplete (task);
         if (Context::getContext ().verbose ("project"))
@@ -167,7 +167,7 @@ int CmdDelete::execute (std::string&)
     }
     else
     {
-      std::cout << format ("Task {1} '{2}' is not deletable.",
+      std::cout << format ("Task ID \"{1}\" '{2}' is not deletable.",
                            task.identifier (true),
                            task.get ("description"))
           << '\n';

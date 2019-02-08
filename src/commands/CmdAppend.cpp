@@ -75,7 +75,7 @@ int CmdAppend::execute (std::string&)
     Task before (task);
 
     // Append to the specified task.
-    auto question = format ("Append to task {1} '{2}'?",
+    auto question = format ("Append to task ID \"{1}\" '{2}'?",
                             task.identifier (true),
                             task.get ("description"));
 
@@ -85,7 +85,7 @@ int CmdAppend::execute (std::string&)
     {
       Context::getContext ().tdb2.modify (task);
       ++count;
-      feedback_affected ("Appending to task {1} '{2}'.", task);
+      feedback_affected ("Appending to task ID \"{1}}\" '{2}'.", task);
       if (Context::getContext ().verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
@@ -102,7 +102,7 @@ int CmdAppend::execute (std::string&)
             sibling.modify (Task::modAppend, true);
             Context::getContext ().tdb2.modify (sibling);
             ++count;
-            feedback_affected ("Appending to recurring task {1} '{2}'.", sibling);
+            feedback_affected ("Appending to recurring task ID \"{1}\" '{2}'.", sibling);
           }
 
           // Append to the parent

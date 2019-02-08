@@ -76,7 +76,7 @@ int CmdStart::execute (std::string&)
       Task before (task);
 
       // Start the specified task.
-      std::string question = format ("Start task {1} '{2}'?",
+      std::string question = format ("Start task ID \"{1}\" '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
       task.modify (Task::modAnnotate);
@@ -97,7 +97,7 @@ int CmdStart::execute (std::string&)
         updateRecurrenceMask (task);
         Context::getContext ().tdb2.modify (task);
         ++count;
-        feedback_affected ("Starting task {1} '{2}'.", task);
+        feedback_affected ("Starting task ID \"{1}\" '{2}'.", task);
         if (!nagged)
           nagged = nag (task);
         dependencyChainOnStart (task);
@@ -114,7 +114,7 @@ int CmdStart::execute (std::string&)
     }
     else
     {
-      std::cout << format ("Task {1} '{2}' already started.",
+      std::cout << format ("Task ID \"{1}\" '{2}' already started.",
                            task.id,
                            task.get ("description"))
                 << '\n';

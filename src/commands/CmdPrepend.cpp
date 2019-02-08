@@ -75,7 +75,7 @@ int CmdPrepend::execute (std::string&)
     Task before (task);
 
     // Prepend to the specified task.
-    std::string question = format ("Prepend to task {1} '{2}'?",
+    std::string question = format ("Prepend to task ID \"{1}\" '{2}'?",
                                    task.identifier (true),
                                    task.get ("description"));
 
@@ -85,7 +85,7 @@ int CmdPrepend::execute (std::string&)
     {
       Context::getContext ().tdb2.modify (task);
       ++count;
-      feedback_affected ("Prepending to task {1} '{2}'.", task);
+      feedback_affected ("Prepending to task ID \"{1}\" '{2}'.", task);
       if (Context::getContext ().verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
@@ -102,7 +102,7 @@ int CmdPrepend::execute (std::string&)
             sibling.modify (Task::modPrepend, true);
             Context::getContext ().tdb2.modify (sibling);
             ++count;
-            feedback_affected ("Prepending to recurring task {1} '{2}'.", sibling);
+            feedback_affected ("Prepending to recurring task ID \"{1}\" '{2}'.", sibling);
           }
 
           // Prepend to the parent

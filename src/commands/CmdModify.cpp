@@ -33,7 +33,7 @@
 #include <format.h>
 #include <shared.h>
 
-#define STRING_CMD_MODIFY_TASK_R     "Modifying recurring task {1} '{2}'."
+#define STRING_CMD_MODIFY_TASK_R     "Modifying recurring task ID \"{1}\" '{2}'."
 #define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ int CmdModify::execute (std::string&)
       // Abort if change introduces inconsistencies.
       checkConsistency(before, task);
 
-      auto question = format ("Modify task {1} '{2}'?",
+      auto question = format ("Modify task ID \"{1}\" '{2}'?",
                               task.identifier (true),
                               task.get ("description"));
 
@@ -139,7 +139,7 @@ int CmdModify::modifyAndUpdate (
   auto count = 1;
 
   updateRecurrenceMask (after);
-  feedback_affected ("Modifying task {1} '{2}'.", after);
+  feedback_affected ("Modifying task ID \"{1}\" '{2}'.", after);
   feedback_unblocked (after);
   Context::getContext ().tdb2.modify (after);
   if (Context::getContext ().verbose ("project") && projectChanges)

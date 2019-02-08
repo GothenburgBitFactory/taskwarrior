@@ -101,7 +101,7 @@ void CmdPurge::handleChildren (Task& task, int& count)
     {
       if (child.getStatus () != Task::deleted)
         // In case any child task is not deleted, bail out
-        throw format ("Task '{1}' is a recurrence template. Its child task {2} must be deleted before it can be purged.",
+        throw format ("Task '{1}' is a recurrence template. Its child task ID \"{2}\" must be deleted before it can be purged.",
                       task.get ("description"),
                       child.identifier (true));
       else
@@ -157,7 +157,7 @@ int CmdPurge::execute (std::string&)
     if (task.getStatus () == Task::deleted)
     {
       std::string question;
-      question = format ("Permanently remove task {1} '{2}'?",
+      question = format ("Permanently remove task ID \"{1}\" '{2}'?",
                          task.identifier (true),
                          task.get ("description"));
 

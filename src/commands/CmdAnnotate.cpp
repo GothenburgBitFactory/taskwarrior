@@ -75,7 +75,7 @@ int CmdAnnotate::execute (std::string&)
     Task before (task);
 
     // Annotate the specified task.
-    std::string question = format ("Annotate task {1} '{2}'?",
+    std::string question = format ("Annotate task ID \"{1}\" '{2}'?",
                                    task.identifier (true),
                                    task.get ("description"));
 
@@ -85,7 +85,7 @@ int CmdAnnotate::execute (std::string&)
     {
       Context::getContext ().tdb2.modify (task);
       ++count;
-      feedback_affected ("Annotating task {1} '{2}'.", task);
+      feedback_affected ("Annotating task ID \"{1}\" '{2}'.", task);
       if (Context::getContext ().verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
@@ -102,7 +102,7 @@ int CmdAnnotate::execute (std::string&)
             sibling.modify (Task::modAnnotate, true);
             Context::getContext ().tdb2.modify (sibling);
             ++count;
-            feedback_affected ("Annotating recurring task {1} '{2}'.", sibling);
+            feedback_affected ("Annotating recurring task ID \"{1}\" '{2}'.", sibling);
           }
 
           // Annotate the parent

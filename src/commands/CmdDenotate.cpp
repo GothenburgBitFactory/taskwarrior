@@ -127,7 +127,7 @@ int CmdDenotate::execute (std::string&)
 
     if (before.data != task.data)
     {
-      auto question = format ("Denotate task {1} '{2}'?",
+      auto question = format ("Denotate task ID \"{1}\" '{2}'?",
                               task.identifier (true),
                               task.get ("description"));
 

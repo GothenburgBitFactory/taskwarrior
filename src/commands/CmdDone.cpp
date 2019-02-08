@@ -77,7 +77,7 @@ int CmdDone::execute (std::string&)
         task.getStatus () == Task::waiting)
     {
       // Complete the specified task.
-      std::string question = format ("Complete task {1} '{2}'?",
+      std::string question = format ("Complete task ID \"{1}\" '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
 
@@ -99,7 +99,7 @@ int CmdDone::execute (std::string&)
         updateRecurrenceMask (task);
         Context::getContext ().tdb2.modify (task);
         ++count;
-        feedback_affected ("Completed task {1} '{2}'.", task);
+        feedback_affected ("Completed task ID \"{1}\" '{2}'.", task);
         feedback_unblocked (task);
         if (!nagged)
           nagged = nag (task);
@@ -117,7 +117,7 @@ int CmdDone::execute (std::string&)
     }
     else
     {
-      std::cout << format ("Task {1} '{2}' is neither pending nor waiting.",
+      std::cout << format ("Task ID \"{1}\" '{2}' is neither pending nor waiting.",
                            task.identifier (true),
                            task.get ("description"))
                 << '\n';
