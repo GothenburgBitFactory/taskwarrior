@@ -112,9 +112,7 @@ int CmdDuplicate::execute (std::string&)
       feedback_affected ("Duplicated task ID \"{1}\" '{2}'.", task);
 
       auto status = dup.getStatus ();
-      if (Context::getContext ().verbose ("new-id") &&
-          (status == Task::pending ||
-           status == Task::waiting))
+      if ((status == Task::pending || status == Task::waiting))
         std::cout << format ("Created task ID \"{1}\".\n", dup.id);
 
       else if (Context::getContext ().verbose ("new-uuid") &&
