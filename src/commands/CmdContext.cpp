@@ -73,7 +73,7 @@ int CmdContext::execute (std::string& output)
   else
   {
     listContexts (out);
-    out << "Use 'task context none' to unset the current context.";
+    out << "Use 'task context none' to unset the current context.\n";
   }
 
   output = out.str ();
