@@ -255,8 +255,8 @@ prompt. This is only referenced when 'limit:page' is used.
 
 .TP
 .B verbose=1|0|nothing|list...
-When set to "1", helpful explanatory comments are added to all output from
-Taskwarrior. Setting this to "0" (the default) means that you would see regular
+When set to "1" (the default), helpful explanatory comments are added to all
+output from Taskwarrior. Setting this to "0" means that you would see regular
 output.
 
 The special value "nothing" can be used to eliminate all optional output, which
