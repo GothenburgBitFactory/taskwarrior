@@ -82,29 +82,6 @@ class TestVersion(TestCase):
         _, hash, _ = run_cmd_wait(git_cmd)
         return hash.rstrip("\n")
 
-    def test_under_version(self):
-        """_version and diagnostics output expected version and syntax"""
-        code, out, err = self.t("_version")
-
-        # version = "x.x.x (git-hash)" or simply "x.x.x"
-        # corresponding to "compiled from git" or "compiled from tarball"
-        version = out.split()
-
-        if 2 >= len(version) > 0:
-            git = version[1]
-            git_expected = "({0})".format(self.slurp_git())
-            self.assertEqual(git_expected, git)
-        else:
-            raise ValueError("Unexpected output from _version '{0}'".format(
-                out))
-
-        ver = version[0]
-        ver_expected = self.slurp()
-        self.assertEqual(ver_expected, ver)
-
-        code, out, err = self.t.diag()
-        self.assertIn(ver_expected, out)
-
     def test_version_option(self):
         """Verify that  'task --version' returns something valid"""
         code, out, err = self.t("--version")
