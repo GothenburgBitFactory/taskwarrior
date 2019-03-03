@@ -186,7 +186,7 @@ end
 
 function __fish.task.list.command
   # ignore special commands
-  __fish.task.list._command $argv | command grep -Ev '^_'
+  __fish.task.list._command $argv | grep -Ev '^_'
 end
 
 function __fish.task.list.command_mods
