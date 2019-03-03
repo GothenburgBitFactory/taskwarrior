@@ -151,7 +151,7 @@
  * 2.5.1 Current release, locked.
 
  **'2.6.0' branch**:
-  * Current development branch no plans yet.
+  * Current development branch.
 
 ---
 2018-05-13 Updated for 2.5.2
