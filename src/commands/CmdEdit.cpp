@@ -298,7 +298,12 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
       std::string type = Context::getContext ().config.get ("uda." + uda + ".type");
       if (type == "string" || type == "numeric")
-        before << "  UDA " << uda << ": " << padding << task.get (uda) << '\n';
+      {
+        auto value = task.get (uda);
+        if (type == "string")
+          value = json::encode (value);
+        before << "  UDA " << uda << ": " << padding << value << '\n';
+      }
       else if (type == "date")
         before << "  UDA " << uda << ": " << padding << formatDate (task, uda, dateformat) << '\n';
       else if (type == "duration")
@@ -662,6 +667,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     if (type != "")
     {
       auto value = findValue (after, "\n  UDA " + col.first + ":");
+      if (type == "string")
+        value = json::decode (value);
       if ((task.get (col.first) != value) && (type != "date" ||
            (task.get (col.first) != Datetime (value, dateformat).toEpochString ())) &&
            (type != "duration" ||
