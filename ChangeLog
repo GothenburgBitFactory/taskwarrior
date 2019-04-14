@@ -113,29 +113,31 @@
            Thanks to taiyu-len
 - #2108    CmdHistory: repeat unit if a larger unit changes
            Thanks to Janik Rabe
+- #2132    JSON encode/decode string UDAs
+           Thanks to Chad Phillips
 - Added 'juhannus' as a synonym for 'midsommarafton'
-          Thanks to Lynoure Braakman
+           Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
   virtual tag.
 - Removed deprecated 'alias._query' setting.
 - Fixed ambiguity in the esp-ESP localization
-          Thanks to Fidel Mato
+           Thanks to Fidel Mato
 - Deprecated the 'new-uuid' verbosity option, since its functionality can be
   removed by merging with 'new-id'.
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
 - Added 'QUARTER' virtual tag.
 - Fixed unquoted glob in bash completion script
-          Thanks to Ran Benita
+           Thanks to Ran Benita
 - Deprecated use of alternate Boolean configuration settings. Use values "0" for
   off, and "1" for on. Avoid used of "on", "off", "true", "t", "false", "f",
   "yes", "y", "no", "n".
 - Fixed test harness for Python 3.x.
-          Thanks to jrabbit
+           Thanks to jrabbit
 - Improved certificate validation diagnostics
-          Thanks to Jelle van der Waa
+           Thanks to Jelle van der Waa
 - Improved portability for SunOS-like OSes.
-          Thanks to Antonio Huete Jimenez
+           Thanks to Antonio Huete Jimenez
 - Updated the 'timesheet' command with a more compact report that accepts a
   filter, and has a default filter showing the last four weeks of completed and
   started tasks.
