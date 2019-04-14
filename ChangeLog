@@ -143,6 +143,8 @@
 - The message telling you to sync now indicates how many local changes will be
   synced.
 - Removed compile-time language settings and I18N.
+- Workaround for alias grep=rg in fish
+          Thanks to Lionel Miller.
 
 ------ current release ---------------------------
 
