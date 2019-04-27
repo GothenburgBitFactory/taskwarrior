@@ -1,8 +1,10 @@
 cmake_minimum_required (VERSION 3.0)
 
-# See this CMake issue before complaining about the following.
-# https://cmake.org/Bug/view.php?id=16062
-if(POLICY CMP0037)
+# This is a work-around for the following CMake issue:
+# https://gitlab.kitware.com/cmake/cmake/issues/16062
+# The issue has been fixed in CMake 3.11.0; the policy is set
+# to OLD for compatibility with older versions of CMake only.
+if(POLICY CMP0037 AND ${CMAKE_VERSION} VERSION_LESS "3.11.0")
   cmake_policy(SET CMP0037 OLD)
 endif()
 
