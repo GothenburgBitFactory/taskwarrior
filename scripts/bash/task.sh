@@ -65,7 +65,7 @@ _task_offer_priorities() {
 }
 
 _task_offer_projects() {
-    COMPREPLY=( $(compgen -W "$($taskcommand _projects)" -- ${cur/*:/}) )
+    COMPREPLY=( $(compgen -W "$($taskcommand _unique project)" -- ${cur/*:/}) )
 }
 
 _task_offer_contexts() {
