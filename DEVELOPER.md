@@ -20,7 +20,7 @@
 ```
 ## Running Test Suite:
 ```
-    $ cd tests
+    $ cd test
     $ make VERBOSE=1                     # Shows details
     $ ./run_all                          # Runs all tests silently > all.log
     $ ./problems                         # Enumerate test failures in all.log
