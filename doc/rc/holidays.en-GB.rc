@@ -2,8 +2,9 @@
 # International Holiday Data provided by Holidata.net
 # http://holidata.net/en-GB/2015.json
 # http://holidata.net/en-GB/2016.json
+# https://www.gov.uk/bank-holidays
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -59,3 +60,67 @@ holiday.en-GB15.name=Christmas Day
 holiday.en-GB15.date=20161225
 holiday.en-GB16.name=Boxing Day
 holiday.en-GB16.date=20161226
+holiday.en-GB17.name=New Year's Day
+holiday.en-GB17.date=20170102
+holiday.en-GB18.name=Good Friday
+holiday.en-GB18.date=20170414
+holiday.en-GB19.name=Easter Monday
+holiday.en-GB19.date=20170417
+holiday.en-GB20.name=Early May Bank Holiday
+holiday.en-GB20.date=20170501
+holiday.en-GB21.name=Spring Bank Holiday
+holiday.en-GB21.date=20170529
+holiday.en-GB22.name=August Bank Holiday
+holiday.en-GB22.date=20170828
+holiday.en-GB23.name=Christmas Day
+holiday.en-GB23.date=20171225
+holiday.en-GB24.name=Boxing Day
+holiday.en-GB24.date=20171226
+holiday.en-GB25.name=New Year's Day
+holiday.en-GB25.date=20180101
+holiday.en-GB26.name=Good Friday
+holiday.en-GB26.date=20180330
+holiday.en-GB27.name=Easter Monday
+holiday.en-GB27.date=20180402
+holiday.en-GB28.name=Early May Bank Holiday
+holiday.en-GB28.date=20180507
+holiday.en-GB29.name=Spring Bank Holiday
+holiday.en-GB29.date=20180528
+holiday.en-GB30.name=August Bank Holiday
+holiday.en-GB30.date=20180827
+holiday.en-GB31.name=Christmas Day
+holiday.en-GB31.date=20181225
+holiday.en-GB32.name=Boxing Day
+holiday.en-GB32.date=20181226
+holiday.en-GB33.name=New Year's Day
+holiday.en-GB33.date=20190101
+holiday.en-GB34.name=Good Friday
+holiday.en-GB34.date=20190419
+holiday.en-GB35.name=Easter Monday
+holiday.en-GB35.date=20190422
+holiday.en-GB36.name=Early May Bank Holiday
+holiday.en-GB36.date=20190506
+holiday.en-GB37.name=Spring Bank Holiday
+holiday.en-GB37.date=20190527
+holiday.en-GB38.name=August Bank Holiday
+holiday.en-GB38.date=20190826
+holiday.en-GB39.name=Christmas Day
+holiday.en-GB39.date=20191225
+holiday.en-GB40.name=Boxing Day
+holiday.en-GB40.date=20191226
+holiday.en-GB41.name=New Year's Day
+holiday.en-GB41.date=20200101
+holiday.en-GB42.name=Good Friday
+holiday.en-GB42.date=20200410
+holiday.en-GB43.name=Easter Monday
+holiday.en-GB43.date=20200413
+holiday.en-GB44.name=Early May Bank Holiday
+holiday.en-GB44.date=20200504
+holiday.en-GB45.name=Spring Bank Holiday
+holiday.en-GB45.date=20200525
+holiday.en-GB46.name=August Bank Holiday
+holiday.en-GB46.date=20200831
+holiday.en-GB47.name=Christmas Day
+holiday.en-GB47.date=20201225
+holiday.en-GB48.name=Boxing Day (substitute day)
+holiday.en-GB48.date=20201228
