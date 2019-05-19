@@ -23,12 +23,15 @@
 #
 # https://www.opensource.org/licenses/mit-license.php
 #
+
+# TODO: environment leakage! + these should be used dynamically and not only when this file is loaded
 typeset -g _task_cmds _task_projects _task_tags _task_config _task_modifiers
 _task_projects=($(task _projects))
 _task_tags=($(task _tags))
 _task_zshids=( ${(f)"$(task _zshids)"} )
 _task_config=($(task _config))
 _task_columns=($(task _columns))
+# TODO: The 2 following can be static but not leak to environment as well
 _task_modifiers=(
   'before' \
   'after' \
@@ -56,6 +59,7 @@ _task_conjunctions=(
   '>=' \
   '>'
 )
+# TODO: as before
 _task_cmds=($(task _commands; task _aliases))
 _task_zshcmds=( ${(f)"$(task _zshcommands)"} sentinel:sentinel:sentinel )
 
@@ -167,6 +171,7 @@ _regex_words values 'task frequencies' \
   'y:years'
 _task_frequencies=("$reply[@]")
 
+# TODO: environment leakage! + values not calculated dynamically
 task_freqs=(
   \( "$_task_freqs[@]" \|
      \( /$'[0-9][0-9]#'/- \( "$_task_frequencies[@]" \) \)
@@ -174,6 +179,7 @@ task_freqs=(
 )
 
 # attributes
+# TODO: This should include UDAs as well
 local -a task_attributes
 _regex_words -t ':' default 'task attributes' \
   'des*cription:Task description text' \
@@ -256,6 +262,7 @@ _task_subcommands() {
 ## first level completion => task sub-command completion
 (( $+functions[_task_default] )) ||
 _task_default() {
+  # TODO: Fix indentation
     local cmd ret=1
 
   integer i=1
