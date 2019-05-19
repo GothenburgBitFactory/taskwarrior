@@ -142,7 +142,6 @@ _task_filter() {
     'des*cription:Task description text'
     'status:Status of task:$task_statuses'
     'pro*ject:Project name:$task_projects'
-    'pri*ority:priority:$task_priorities'
     'du*e:Due date:$task_dates'
     're*cur:Recurrence frequency:$task_freqs'
     'un*til:Expiration date:$task_dates'
