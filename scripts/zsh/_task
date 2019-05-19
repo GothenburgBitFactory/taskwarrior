@@ -22,207 +22,205 @@
 # SOFTWARE.
 #
 # https://www.opensource.org/licenses/mit-license.php
-#
-
-# TODO: environment leakage! + these should be used dynamically and not only when this file is loaded
-typeset -g _task_cmds _task_projects _task_tags _task_config _task_modifiers
-_task_projects=($(task _projects))
-_task_tags=($(task _tags))
-_task_zshids=( ${(f)"$(task _zshids)"} )
-_task_config=($(task _config))
-_task_columns=($(task _columns))
-# TODO: The 2 following can be static but not leak to environment as well
-_task_modifiers=(
-  'before' \
-  'after' \
-  'none' \
-  'any' \
-  'is' \
-  'isnt' \
-  'has' \
-  'hasnt' \
-  'startswith' \
-  'endswith' \
-  'word' \
-  'noword'
-)
-_task_conjunctions=(
-  'and' \
-  'or' \
-  'xor' \
-  '\)' \
-  '\(' \
-  '<' \
-  '<=' \
-  '=' \
-  '!=' \
-  '>=' \
-  '>'
-)
-# TODO: as before
-_task_cmds=($(task _commands; task _aliases))
-_task_zshcmds=( ${(f)"$(task _zshcommands)"} sentinel:sentinel:sentinel )
-
-_task_aliases=($(task _aliases))
-
-local -a reply args word
-word=$'[^\0]#\0'
-
-# priorities
-local -a task_priorities
-_regex_words values 'task priorities' \
-  'H:High' \
-  'M:Middle' \
-  'L:Low'
-task_priorities=("$reply[@]")
-
-# projects
-local -a task_projects
-task_projects=(
-  /"$word"/
-  ":values:task projects:compadd -a _task_projects"
-)
-
-local -a _task_dates
-_regex_words values 'task dates' \
-  'tod*ay:Today' \
-  'yes*terday:Yesterday' \
-  'tom*orrow:Tomorrow' \
-  'sow:Start of week' \
-  'soww:Start of work week' \
-  'socw:Start of calendar week' \
-  'som:Start of month' \
-  'soq:Start of quarter' \
-  'soy:Start of year' \
-  'eow:End of week' \
-  'eoww:End of work week' \
-  'eocw:End of calendar week' \
-  'eom:End of month' \
-  'eoq:End of quarter' \
-  'eoy:End of year' \
-  'mon:Monday' \
-  'tue:Tuesday'\
-  'wed:Wednesday' \
-  'thu:Thursday' \
-  'fri:Friday' \
-  'sat:Saturday' \
-  'sun:Sunday' \
-  'good*friday:Good Friday' \
-  'easter:Easter' \
-  'eastermonday:Easter Monday' \
-  'ascension:Ascension' \
-  'pentecost:Pentecost' \
-  'midsommar:Midsommar' \
-  'midsommarafton:Midsommarafton' \
-  'later:Later' \
-  'someday:Some Day'
-_task_dates=("$reply[@]")
-
-local -a _task_reldates
-_regex_words values 'task reldates' \
-  'hrs:n hours' \
-  'day:n days' \
-  '1st:first' \
-  '2nd:second' \
-  '3rd:third' \
-  'th:4th, 5th, etc.' \
-  'wks:weeks'
-_task_reldates=("$reply[@]")
-
-task_dates=(
-  \( "$_task_dates[@]" \|
-    \( /$'[0-9][0-9]#'/- \( "$_task_reldates[@]" \) \)
-  \)
-)
-
-local -a task_zshids
-if (( $#_task_zshids )); then
-  _regex_words values 'task IDs' $_task_zshids
-  task_zshids=("$reply[@]")
-fi
-
-_regex_words values 'task frequencies' \
-  'daily:Every day' \
-  'day:Every day' \
-  'weekdays:Every day skipping weekend days' \
-  'weekly:Every week' \
-  'biweekly:Every two weeks' \
-  'fortnight:Every two weeks' \
-  'monthly:Every month' \
-  'quarterly:Every three months' \
-  'semiannual:Every six months' \
-  'annual:Every year' \
-  'yearly:Every year' \
-  'biannual:Every two years' \
-  'biyearly:Every two years'
-_task_freqs=("$reply[@]")
-
-local -a _task_frequencies
-_regex_words values 'task frequencies' \
-  'd:days' \
-  'w:weeks' \
-  'q:quarters' \
-  'y:years'
-_task_frequencies=("$reply[@]")
-
-# TODO: environment leakage! + values not calculated dynamically
-task_freqs=(
-  \( "$_task_freqs[@]" \|
-     \( /$'[0-9][0-9]#'/- \( "$_task_frequencies[@]" \) \)
-  \)
-)
-
-# attributes
-# TODO: This should include UDAs as well
-local -a task_attributes
-_regex_words -t ':' default 'task attributes' \
-  'des*cription:Task description text' \
-  'status:Status of task - pending, completed, deleted, waiting' \
-  'pro*ject:Project name:$task_projects' \
-  'pri*ority:priority:$task_priorities' \
-  'du*e:Due date:$task_dates' \
-  're*cur:Recurrence frequency:$task_freqs' \
-  'un*til:Expiration date:$task_dates' \
-  'li*mit:Desired number of rows in report' \
-  'wa*it:Date until task becomes pending:$task_dates' \
-  'ent*ry:Date task was created:$task_dates' \
-  'end:Date task was completed/deleted:$task_dates' \
-  'st*art:Date task was started:$task_dates' \
-  'sc*heduled:Date task is scheduled to start:$task_dates' \
-  'dep*ends:Other tasks that this task depends upon:$task_zshids'
-task_attributes=("$reply[@]")
-
-args=(
-  \( "$task_attributes[@]" \|
-  \( /'(project|description|status|entry|end|start|scheduled|depends|due|wait|recur|priority|until|limit).'/- \( /$'[^:]#:'/ ":default:modifiers:compadd -S ':' -a _task_modifiers" \) \) \|
-  \( /'(rc).'/- \( /$'[^:]#:'/ ":arguments:config:compadd -S ':' -a _task_config" \) \) \|
-  \( /'(+|-)'/- \( /"$word"/ ":values:remove tag:compadd -a _task_tags" \) \) \|
-  \( /"$word"/ \)
-  \) \#
-)
-_regex_arguments _task_attributes "${args[@]}"
-
-## task commands
 
 # filter completion
 (( $+functions[_task_filter] )) ||
 _task_filter() {
+
+  local -a reply
+  local word=$'[^\0]#\0'
+
+  # projects
+  local _task_projects=($(task _projects))
+  local task_projects=(
+    /"$word"/
+    ":values:task projects:compadd -a _task_projects"
+  )
+
+  _regex_words values 'task dates' \
+    'tod*ay:Today' \
+    'yes*terday:Yesterday' \
+    'tom*orrow:Tomorrow' \
+    'sow:Start of week' \
+    'soww:Start of work week' \
+    'socw:Start of calendar week' \
+    'som:Start of month' \
+    'soq:Start of quarter' \
+    'soy:Start of year' \
+    'eow:End of week' \
+    'eoww:End of work week' \
+    'eocw:End of calendar week' \
+    'eom:End of month' \
+    'eoq:End of quarter' \
+    'eoy:End of year' \
+    'mon:Monday' \
+    'tue:Tuesday'\
+    'wed:Wednesday' \
+    'thu:Thursday' \
+    'fri:Friday' \
+    'sat:Saturday' \
+    'sun:Sunday' \
+    'good*friday:Good Friday' \
+    'easter:Easter' \
+    'eastermonday:Easter Monday' \
+    'ascension:Ascension' \
+    'pentecost:Pentecost' \
+    'midsommar:Midsommar' \
+    'midsommarafton:Midsommarafton' \
+    'later:Later' \
+    'someday:Some Day'
+  local _task_dates=("$reply[@]")
+
+  _regex_words values 'task reldates' \
+    'hrs:n hours' \
+    'day:n days' \
+    '1st:first' \
+    '2nd:second' \
+    '3rd:third' \
+    'th:4th, 5th, etc.' \
+    'wks:weeks'
+  local _task_reldates=("$reply[@]")
+
+  local task_dates=(
+    \( "$_task_dates[@]" \|
+      \( /$'[0-9][0-9]#'/- \( "$_task_reldates[@]" \) \)
+    \)
+  )
+
+  # This data is a little bit differnt, it may contain any kind of character so
+  # we parse it manually and quote using '${(q)_desc}' the descriptions
+  local -a _task_zshids
+  local _id desc
+  task _zshids | while IFS=':' read _id desc; do
+    _task_zshids+=("$_id:${(qq)desc}")
+  done
+  _regex_words values 'task IDs' $_task_zshids
+  local task_zshids=("$reply[@]")
+
+  _regex_words values 'task frequencies' \
+    'daily:Every day' \
+    'day:Every day' \
+    'weekdays:Every day skipping weekend days' \
+    'weekly:Every week' \
+    'biweekly:Every two weeks' \
+    'fortnight:Every two weeks' \
+    'monthly:Every month' \
+    'quarterly:Every three months' \
+    'semiannual:Every six months' \
+    'annual:Every year' \
+    'yearly:Every year' \
+    'biannual:Every two years' \
+    'biyearly:Every two years'
+  local _task_freqs=("$reply[@]")
+
+  _regex_words values 'task frequencies' \
+    'd:days' \
+    'w:weeks' \
+    'q:quarters' \
+    'y:years'
+  local _task_frequencies=("$reply[@]")
+
+  local task_freqs=(
+    \( "$_task_freqs[@]" \|
+       \( /$'[0-9][0-9]#'/- \( "$_task_frequencies[@]" \) \)
+    \)
+  )
+
+  # task statuses
+  local _task_statuses=(
+    pending
+    completed
+    deleted
+    waiting
+  )
+  _regex_words statuses 'task statuses' \
+    "${_task_statuses}"
+  local task_statuses=("${reply[@]}")
+
+  # attributes
+  local _task_all_attributes=(
+    'des*cription:Task description text'
+    'status:Status of task:$task_statuses'
+    'pro*ject:Project name:$task_projects'
+    'pri*ority:priority:$task_priorities'
+    'du*e:Due date:$task_dates'
+    're*cur:Recurrence frequency:$task_freqs'
+    'un*til:Expiration date:$task_dates'
+    'li*mit:Desired number of rows in report'
+    'wa*it:Date until task becomes pending:$task_dates'
+    'ent*ry:Date task was created:$task_dates'
+    'end:Date task was completed/deleted:$task_dates'
+    'st*art:Date task was started:$task_dates'
+    'sc*heduled:Date task is scheduled to start:$task_dates'
+    'depends:Other tasks that this task depends upon:$task_zshids'
+  )
+  ## add UDAs as attributes
+  local uda_name uda_label uda_values
+  local -a udas_spec
+  task _udas | while read uda_name; do
+    uda_label="$(task _get rc.uda."$uda_name".label)"
+    # TODO: we could have got the values of every uda and try to complete that
+    # but that can become extremly slow with a lot of udas
+    #uda_values=(${(@s:,:)"$(task _get rc.uda."$uda_name".values)"})
+    udas_spec+=("${uda_name}:${(q)uda_label}")
+  done
+  _task_all_attributes=("${_task_all_attributes[@]}" "${udas_spec[@]}")
+  _regex_words -t ':' default 'task attributes' "${_task_all_attributes[@]}"
+  local task_attributes=("$reply[@]")
+
+  local _task_tags=($(task _tags))
+  local _task_config=($(task _config))
+  local _task_modifiers=(
+    'before'
+    'after'
+    'none'
+    'any'
+    'is'
+    'isnt'
+    'has'
+    'hasnt'
+    'startswith'
+    'endswith'
+    'word'
+    'noword'
+  )
+  local _task_conjunctions=(
+    'and'
+    'or'
+    'xor'
+    '\)'
+    '\('
+    '<'
+    '<='
+    '='
+    '!='
+    '>='
+    '>'
+  )
+  _regex_arguments _task_attributes \
+    \( "${task_attributes[@]}" \| \
+    \( /'(project|description|status|entry|end|start|scheduled|depends|due|wait|recur|priority|until|limit).'/- \( /$'[^:]#:'/ ":default:modifiers:compadd -S ':' -a _task_modifiers" \) \) \| \
+    \( /'(rc).'/- \( /$'[^:]#:'/ ":arguments:config:compadd -S ':' -a _task_config" \) \) \| \
+    \( /'(+|-)'/- \( /"$word"/ ":values:remove tag:compadd -a _task_tags" \) \) \| \
+    \( /"$word"/ \) \
+    \) \#
+
   _task_attributes "$@"
 
   # TODO complete conjunctions only if the previous word is a filter expression, i.e. attribute, ID, any non-command
   _describe -t default 'task conjunctions' _task_conjunctions
 }
 
-# execute completion
-(( $+functions[_task_execute] )) ||
-_task_execute() {
-  _files
-}
-
 # id-only completion
-(( $+functions[_task_id] )) ||
-_task_id() {
-  _describe -t values 'task IDs' _task_zshids
+(( $+functions[_task_ids] )) ||
+_task_ids() {
+  local _ids=( ${(f)"$(task _zshids)"} )
+  _describe 'task ids' _ids
+}
+(( $+functions[_task_aliases] )) ||
+_task_aliases() {
+  local _aliases=( ${(f)"$(task _aliases)"} )
+  _describe 'task aliases' _aliases
 }
 
 # subcommand-only function
@@ -233,6 +231,7 @@ _task_subcommands() {
   local cmd category desc
   local lastcategory=''
   # The list is sorted by category, in the right order.
+  local _task_zshcmds=( ${(f)"$(task _zshcommands)"} sentinel:sentinel:sentinel )
   for _zshcmd in "$_task_zshcmds[@]"; do
     # Parse out the three fields
     cmd=${_zshcmd%%:*}
@@ -253,30 +252,38 @@ _task_subcommands() {
   done
 }
 
+## contexts
+(( $+functions[_task_context] )) ||
+_task_context() {
+  local _contexts=(${(f)"$(task _context)"})
+  _describe 'task contexts' _contexts
+}
+
 ## first level completion => task sub-command completion
 (( $+functions[_task_default] )) ||
 _task_default() {
   local cmd ret=1
 
   integer i=1
+  local _task_cmds=($(task _commands; task _aliases))
   while (( i < $#words ))
   do
     cmd="${_task_cmds[(r)$words[$i]]}"
     if (( $#cmd )); then
-      _call_function ret _task_${cmd} ||
-        _call_function ret _task_filter ||
-          _message "No command remaining."
+      if (( $+functions[_task_${cmd}] )); then
+        _task_${cmd}
+        return ret
+      fi
+      _call_function ret _task_filter ||
+        _message "No command remaining."
       return ret
     fi
     (( i++ ))
   done
 
-  # update IDs
-  _task_zshids=( ${(f)"$(task _zshids)"} )
-
   _task_subcommands
-  _describe -t tasks 'task IDs' _task_zshids
-  _describe -t aliases 'task aliases' _task_aliases
+  # _task_ids
+  _task_aliases
   _call_function ret _task_filter
 
   return ret
