@@ -348,6 +348,8 @@ int CmdCalendar::execute (std::string& output)
       args.push_back ("rc:" + Context::getContext ().rc_file._data);
       args.push_back ("rc.due:0");
       args.push_back ("rc.verbose:label,affected,blank");
+      if (Context::getContext ().color ())
+          args.push_back ("rc._forcecolor:on");
       args.push_back ("due.after:" + after);
       args.push_back ("due.before:" + before);
       args.push_back ("-nocal");
