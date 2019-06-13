@@ -90,7 +90,7 @@ blank lines.
 
 Almost every value has a default setting, and an empty .taskrc file is one
 that makes use of every default. The contents of the .taskrc file therefore
-represent overrides of the default values. To remove a default value completely
+represent overrides of the default values. To re.inmove a default value completely
 there must be an entry like this:
 
 .RS
@@ -440,7 +440,7 @@ The character or string to show in the tag.indicator column. Defaults to +.
 
 .TP
 .B dependency.indicator=D
-The character or string to show in the depends.indicator column. Defaults to +.
+The character or string to show in the depends.indicator column. Defaults to D.
 
 .TP
 .B uda.<name>.indicator=U
@@ -515,7 +515,7 @@ Controls the GnuTLS diagnostic level. For 'sync' debugging. Level 0 means no
 diagnostics. Level 9 is the highest. Level 2 is a good setting for debugging.
 
 .TP
-.B obfuscate=1
+.B obfuscate=0
 When set to '1', will replace all report text with 'xxx'.
 This is useful for sharing report output in bug reports.
 Default value is '0'.
@@ -703,7 +703,7 @@ The offset value to apply to the first month in the calendar report. The default
 value is "-1".
 
 .TP
-.B calendar.holidays=full
+.B calendar.holidays=none
 If set to full running "task calendar" will display holidays in the calendar by
 color-coding the corresponding days. A detailed list with the dates and names
 of the holidays is also shown. If set to sparse only the days are color-coded
