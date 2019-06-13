@@ -90,7 +90,7 @@ blank lines.
 
 Almost every value has a default setting, and an empty .taskrc file is one
 that makes use of every default. The contents of the .taskrc file therefore
-represent overrides of the default values. To re.inmove a default value completely
+represent overrides of the default values. To remove a default value completely
 there must be an entry like this:
 
 .RS
