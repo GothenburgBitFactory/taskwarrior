@@ -662,6 +662,8 @@ field that is set. Otherwise, they are set to the corresponding values of
 .B date.iso=1
 Enables ISO-8601 date support.  The default value is "1".
 
+.SS CALENDAR
+
 .TP
 .B weekstart=Sunday
 Determines the day a week starts. Valid values are Sunday or Monday only. The
@@ -713,6 +715,12 @@ turned off by setting the variable to none. The default value is "none".
 .TP
 .B calendar.legend=1
 Determines whether the calendar legend is displayed. The default value is "1".
+
+.TP
+.B monthsperline=N
+Determines how many months the "task calendar" command renders across the
+screen. Defaults to however many will fit. If more months than will fit are
+specified, Taskwarrior will only show as many that will fit.
 
 .SS JOURNAL ENTRIES
 
@@ -784,12 +792,6 @@ be included like this:
 include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .RE
 .RE
-
-.TP
-.B monthsperline=3
-Determines how many months the "task calendar" command renders across the
-screen. Defaults to however many will fit. If more months than will fit are
-specified, Taskwarrior will only show as many that will fit.
 
 .SS DEPENDENCIES
 
