@@ -170,10 +170,14 @@ std::string taskInfoDifferences (
     }
     else if (name == "start")
     {
-      out << format ("{1} deleted (duration: {2}).",
-                     Lexer::ucFirst (name),
-                     Duration (current_timestamp - last_timestamp).format ())
-          << "\n";
+      if (last_timestamp > 0)
+        out << format ("{1} deleted (duration: {2}).",
+                       Lexer::ucFirst (name),
+                       Duration (current_timestamp - last_timestamp).format ())
+            << "\n";
+      else
+        out << format ("{1} deleted.", Lexer::ucFirst (name))
+            << "\n";
     }
     else
     {

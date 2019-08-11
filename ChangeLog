@@ -111,6 +111,8 @@
            Thanks to Chad Phillips
 - #2176    How to get the full list of tags ?
            Thanks to Adrien Lemaire
+- #2091    duration of task is set to a wrong and extremely big value
+           Thanks to Wray Zheng
 - Added 'juhannus' as a synonym for 'midsommarafton'
            Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
