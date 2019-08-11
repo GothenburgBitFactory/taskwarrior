@@ -109,6 +109,8 @@
            Thanks to Janik Rabe
 - #2132    JSON encode/decode string UDAs
            Thanks to Chad Phillips
+- #2176    How to get the full list of tags ?
+           Thanks to Adrien Lemaire
 - Added 'juhannus' as a synonym for 'midsommarafton'
            Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'

@@ -1255,6 +1255,7 @@ bool Task::hasTag (const std::string& tag) const
   // Note: This list must match that in ::feedback_reserved_tags.
   if (isupper (tag[0]))
   {
+    // NOTE: This list should be kept synchronized with the list in CmdTags.cpp for the _tags command.
     if (tag == "BLOCKED")   return is_blocked;
     if (tag == "UNBLOCKED") return !is_blocked;
     if (tag == "BLOCKING")  return is_blocking;

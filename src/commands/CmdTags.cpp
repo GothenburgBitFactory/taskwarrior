@@ -189,11 +189,15 @@ int CmdCompletionTags::execute (std::string& output)
   unique["DELETED"]   = 0;
   unique["DUE"]       = 0;
   unique["DUETODAY"]  = 0;
+  unique["LATEST"]    = 0;
   unique["MONTH"]     = 0;
   unique["ORPHAN"]    = 0;
   unique["OVERDUE"]   = 0;
   unique["PARENT"]    = 0;
   unique["PENDING"]   = 0;
+  unique["PRIORITY"]  = 0;
+  unique["PROJECT"]   = 0;
+  unique["QUARTER"]   = 0;
   unique["READY"]     = 0;
   unique["SCHEDULED"] = 0;
   unique["TAGGED"]    = 0;
@@ -206,7 +210,8 @@ int CmdCompletionTags::execute (std::string& output)
   unique["WEEK"]      = 0;
   unique["YEAR"]      = 0;
   unique["YESTERDAY"] = 0;
-  // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
+
+  // If you update the above list, update src/commands/CmdInfo.cpp and src/Task.cpp as well.
 
   std::stringstream out;
   for (auto& it : unique)
