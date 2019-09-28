@@ -47,7 +47,7 @@ public:
   Variant (const bool);
   Variant (const int);
   Variant (const double);
-  Variant (const std::string&);
+  Variant (std::string );
   Variant (const char*);
   Variant (const time_t, const enum type);
 
