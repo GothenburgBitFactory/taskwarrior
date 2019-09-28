@@ -75,7 +75,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
   //   - path < substitution < pattern
   //   - set < number
   //   - word last
-  if (isString       (token, type, "'\"") ||
+  return isString       (token, type, "'\"") ||
       isDate         (token, type)        ||
       isDuration     (token, type)        ||
       isURL          (token, type)        ||
@@ -92,10 +92,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
       isPattern      (token, type)        ||
       isOperator     (token, type)        ||
       isIdentifier   (token, type)        ||
-      isWord         (token, type))
-    return true;
-
-  return false;
+      isWord         (token, type);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -266,10 +263,7 @@ void Lexer::dequote (std::string& input, const std::string& quotes)
 // escapes, to get them past the shell.
 bool Lexer::wasQuoted (const std::string& input)
 {
-  if (input.find_first_of (" \t()<>&~") != std::string::npos)
-    return true;
-
-  return false;
+  return input.find_first_of (" \t()<>&~") != std::string::npos;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1571,7 +1565,7 @@ bool Lexer::readWord (
     prev = c;
   }
 
-  return word.length () > 0 ? true : false;
+  return word.length () > 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

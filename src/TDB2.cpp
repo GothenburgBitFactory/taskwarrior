@@ -1438,7 +1438,7 @@ int TDB2::id (const std::string& uuid)
 bool TDB2::verifyUniqueUUID (const std::string& uuid)
 {
   pending.get_tasks ();
-  return pending.id (uuid) != 0 ? false : true;
+  return pending.id (uuid) == 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
