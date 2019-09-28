@@ -577,12 +577,12 @@ std::string TF2::dump ()
   // Hygiene.
   std::string hygiene = _dirty ? red.colorize ("O") : green.colorize ("-");
 
-  std::string tasks          = green.colorize  (rightJustifyZero ((int) _tasks.size (),          4));
-  std::string tasks_added    = red.colorize    (rightJustifyZero ((int) _added_tasks.size (),    3));
-  std::string tasks_modified = yellow.colorize (rightJustifyZero ((int) _modified_tasks.size (), 3));
-  std::string tasks_purged   = red.colorize    (rightJustifyZero ((int) _purged_tasks.size (),   3));
-  std::string lines          = green.colorize  (rightJustifyZero ((int) _lines.size (),          4));
-  std::string lines_added    = red.colorize    (rightJustifyZero ((int) _added_lines.size (),    3));
+  std::string tasks          = green.colorize  (rightJustifyZero (static_cast<int>(_tasks.size ()),          4));
+  std::string tasks_added    = red.colorize    (rightJustifyZero (static_cast<int>(_added_tasks.size ()),    3));
+  std::string tasks_modified = yellow.colorize (rightJustifyZero (static_cast<int>(_modified_tasks.size ()), 3));
+  std::string tasks_purged   = red.colorize    (rightJustifyZero (static_cast<int>(_purged_tasks.size ()),   3));
+  std::string lines          = green.colorize  (rightJustifyZero (static_cast<int>(_lines.size ()),          4));
+  std::string lines_added    = red.colorize    (rightJustifyZero (static_cast<int>(_added_lines.size ()),    3));
 
   char buffer[256];  // Composed string is actually 246 bytes.  Yikes.
   snprintf (buffer, 256, "%14s %s %s T%s+%s~%s-%s L%s+%s",

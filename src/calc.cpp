@@ -123,7 +123,7 @@ int main (int argc, char** argv)
       std::cout << i << '\n';
 
     // Show the result in string form.
-    std::cout << (std::string) result
+    std::cout << std::string(result)
               << '\n';
   }
 

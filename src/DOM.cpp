@@ -387,7 +387,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
         {
           // annotation_1234567890
           // 0          ^11
-          value = Variant ((time_t) strtol (i.first.substr (11).c_str (), NULL, 10), Variant::type_date);
+          value = Variant (static_cast<time_t>(strtol (i.first.substr (11).c_str (), NULL, 10)), Variant::type_date);
           return true;
         }
         else if (elements[2] == "description")
@@ -646,7 +646,7 @@ std::string DOM::Node::dumpNode (
   out << "\033[31m" << node->_name << "\033[0m";
 
   if (node->_provider)
-    out << " 0x" << std::hex << (long long) (void*) node->_provider;
+    out << " 0x" << std::hex << (long long) reinterpret_cast<void*>(node->_provider);
 
   out << '\n';
 

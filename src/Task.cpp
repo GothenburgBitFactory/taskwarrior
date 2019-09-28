@@ -181,7 +181,7 @@ std::string Task::identifier (bool shortened /* = false */) const
 void Task::setAsNow (const std::string& att)
 {
   char now[16];
-  snprintf (now, 16, "%u", (unsigned int) time (nullptr));
+  snprintf (now, 16, "%u", static_cast<unsigned int>(time (nullptr)));
   set (att, now);
 
   recalc_urgency = true;
@@ -261,7 +261,7 @@ time_t Task::get_date (const std::string& name) const
 {
   auto i = data.find (name);
   if (i != data.end ())
-    return (time_t) strtoul (i->second.c_str (), nullptr, 10);
+    return static_cast<time_t>(strtoul (i->second.c_str (), nullptr, 10));
 
   return 0;
 }
@@ -1065,7 +1065,7 @@ void Task::addAnnotation (const std::string& description)
 
   do
   {
-    key = "annotation_" + format ((int) now);
+    key = "annotation_" + format (static_cast<int>(now));
     ++now;
   }
   while (has (key));
@@ -1234,7 +1234,7 @@ std::vector <Task> Task::getDependencyTasks () const
 int Task::getTagCount () const
 {
   auto tags = split (get ("tags"), ',');
-  return (int) tags.size ();
+  return static_cast<int>(tags.size ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
