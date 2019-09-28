@@ -533,7 +533,7 @@ std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>
   Variant v;
 
   // Hooks API version.
-  args.push_back ("api:2");
+  args.emplace_back("api:2");
 
   // Command line Taskwarrior was called with.
   getDOM ("context.args", v);

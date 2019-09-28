@@ -242,7 +242,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   std::vector <std::vector <std::string>> headers;
   for (unsigned int c = 0; c < _columns.size (); ++c)
   {
-    headers.push_back (std::vector <std::string> ());
+    headers.emplace_back();
     _columns[c]->renderHeader (headers[c], widths[c], _sort[c] ? _sort_header : _header);
 
     if (headers[c].size () > max_lines)
@@ -312,7 +312,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     for (unsigned int c = 0; c < _columns.size (); ++c)
     {
-      cells.push_back (std::vector <std::string> ());
+      cells.emplace_back();
       _columns[c]->render (cells[c], data[sequence[s]], widths[c], row_color);
 
       if (cells[c].size () > max_lines)
