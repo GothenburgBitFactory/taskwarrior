@@ -1006,7 +1006,7 @@ bool Context::verbose (const std::string& token)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> Context::getColumns () const
+std::vector <std::string> Context::getColumns () const
 {
   std::vector <std::string> output;
   for (auto& col : columns)

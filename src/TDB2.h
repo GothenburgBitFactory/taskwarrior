@@ -72,7 +72,7 @@ public:
   void has_ids ();
   void auto_dep_scan ();
   void clear ();
-  const std::string dump ();
+  std::string dump ();
 
   void dependency_scan ();
 
@@ -121,12 +121,12 @@ public:
   int  latest_id ();
 
   // Generalized task accessors.
-  const std::vector <Task> all_tasks ();
+  std::vector <Task> all_tasks ();
   bool get (int, Task&);
   bool get (const std::string&, Task&);
   bool has (const std::string&);
-  const std::vector <Task> siblings (Task&);
-  const std::vector <Task> children (Task&);
+  std::vector <Task> siblings (Task&);
+  std::vector <Task> children (Task&);
 
   // ID <--> UUID mapping.
   std::string uuid (int);

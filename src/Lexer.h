@@ -60,7 +60,7 @@ public:
   static std::string typeToString (Lexer::Type);
 
   // Static helpers.
-  static const std::string typeName          (const Lexer::Type&);
+  static std::string typeName          (const Lexer::Type&);
   static bool isIdentifierStart              (int);
   static bool isIdentifierNext               (int);
   static bool isSingleCharOperator           (int);

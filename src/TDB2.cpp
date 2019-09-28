@@ -555,7 +555,7 @@ void TF2::dependency_scan ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string TF2::dump ()
+std::string TF2::dump ()
 {
   Color red    ("rgb500 on rgb100");
   Color yellow ("rgb550 on rgb220");
@@ -1307,7 +1307,7 @@ int TDB2::latest_id ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <Task> TDB2::all_tasks ()
+std::vector <Task> TDB2::all_tasks ()
 {
   std::vector <Task> all (pending._tasks.size () +
                           pending._added_tasks.size () +
@@ -1350,7 +1350,7 @@ bool TDB2::has (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <Task> TDB2::siblings (Task& task)
+std::vector <Task> TDB2::siblings (Task& task)
 {
   std::vector <Task> results;
   if (task.has ("parent"))
@@ -1385,7 +1385,7 @@ const std::vector <Task> TDB2::siblings (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <Task> TDB2::children (Task& task)
+std::vector <Task> TDB2::children (Task& task)
 {
   std::vector <Task> results;
   std::string parent = task.get ("uuid");
