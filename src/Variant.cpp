@@ -89,7 +89,7 @@
 #define STRING_VARIANT_MOD_ZERO      "Cannot modulo zero"
 #define STRING_VARIANT_SQRT_NEG      "Cannot take the square root of a negative number."
 
-std::string Variant::dateFormat = "";
+std::string Variant::dateFormat;
 bool Variant::searchCaseSensitive = true;
 bool Variant::searchUsingRegex = true;
 

@@ -36,7 +36,7 @@
 static const std::string uuid_pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 static const unsigned int uuid_min_length = 8;
 
-std::string Lexer::dateFormat = "";
+std::string Lexer::dateFormat;
 std::string::size_type Lexer::minimumMatchLength = 3;
 std::map <std::string, std::string> Lexer::attributes;
 
