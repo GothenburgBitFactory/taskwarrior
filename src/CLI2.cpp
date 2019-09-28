@@ -330,7 +330,7 @@ void CLI2::add (const std::vector <std::string>& arguments)
   for (const auto& arg : arguments)
     replacement.emplace_back(arg, Lexer::Type::word);
 
-  for (unsigned int i = 1; i < _original_args.size (); ++i)
+  for (std::size_t i = 1; i < _original_args.size (); ++i)
     replacement.push_back (_original_args[i]);
 
   _original_args = replacement;
@@ -385,7 +385,7 @@ void CLI2::lexArguments ()
   // Note: Starts iterating at index 1, because ::handleArg0 has already
   //       processed it.
   bool terminated = false;
-  for (unsigned int i = 1; i < _original_args.size (); ++i)
+  for (std::size_t i = 1; i < _original_args.size (); ++i)
   {
     bool quoted = Lexer::wasQuoted (_original_args[i].attribute ("raw"));
 
@@ -1026,7 +1026,7 @@ void CLI2::parenthesizeOriginalFilter ()
   // Locate the first and last ORIGINAL FILTER args.
   unsigned int firstOriginalFilter = 0;
   unsigned int lastOriginalFilter = 0;
-  for (unsigned int i = 1; i < _args.size (); ++i)
+  for (std::size_t i = 1; i < _args.size (); ++i)
   {
     if (_args[i].hasTag ("FILTER") &&
         _args[i].hasTag ("ORIGINAL"))
@@ -1043,7 +1043,7 @@ void CLI2::parenthesizeOriginalFilter ()
       lastOriginalFilter)
   {
     std::vector <A2> reconstructed;
-    for (unsigned int i = 0; i < _args.size (); ++i)
+    for (std::size_t i = 0; i < _args.size (); ++i)
     {
       if (i == firstOriginalFilter)
       {
@@ -2038,10 +2038,10 @@ void CLI2::defaultCommand ()
           reconstructed.push_back (cmd);
         }
 
-        for (unsigned int i = 1; i < _original_args.size (); ++i)
+        for (std::size_t i = 1; i < _original_args.size (); ++i)
           reconstructedOriginals.push_back (_original_args[i]);
 
-        for (unsigned int i = 1; i < _args.size (); ++i)
+        for (std::size_t i = 1; i < _args.size (); ++i)
           reconstructed.push_back (_args[i]);
 
         _original_args = reconstructedOriginals;
