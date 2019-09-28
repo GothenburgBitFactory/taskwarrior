@@ -104,7 +104,7 @@ bool TF2::get (int id, Task& task)
   // pending.data file, the task in question cannot appear earlier than line
   // (id - 1) in the file.  It can, however, appear significantly later because
   // it is not known how recent a GC operation was run.
-  for (unsigned int i = id - 1; i < _tasks.size (); ++i)
+  for (std::size_t i = id - 1; i < _tasks.size (); ++i)
   {
     if (_tasks[i].id == id)
     {
