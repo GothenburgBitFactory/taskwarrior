@@ -1420,7 +1420,7 @@ bool Lexer::readWord (
 
   std::string::size_type eos = text.length ();
   int quote = text[cursor++];
-  word = quote;
+  word = std::to_string(quote);
 
   int c;
   while ((c = text[cursor]))
