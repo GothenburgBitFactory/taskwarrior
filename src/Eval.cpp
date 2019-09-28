@@ -122,7 +122,7 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    tokens.emplace_back(token, type);
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
@@ -149,7 +149,7 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    tokens.emplace_back(token, type);
 
   if (_debug)
     Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));

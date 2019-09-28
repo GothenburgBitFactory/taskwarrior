@@ -64,7 +64,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
-      precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
+      precompiled.emplace_back(a.getToken (), a._lextype);
 
   if (!precompiled.empty())
   {
@@ -107,7 +107,7 @@ void Filter::subset (std::vector <Task>& output)
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
-      precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
+      precompiled.emplace_back(a.getToken (), a._lextype);
 
   // Shortcut indicates that only pending.data needs to be loaded.
   bool shortcut = false;

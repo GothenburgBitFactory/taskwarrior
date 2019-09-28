@@ -79,7 +79,7 @@ void sort_projects (
         
         // if parent does not exist yet: insert into sorted view
         if (parent_pos == sorted.end ())
-          sorted.push_back (std::make_pair (parent, 1));
+          sorted.emplace_back (parent, 1);
       }
       
       // insert new element below latest parent
@@ -88,7 +88,7 @@ void sort_projects (
     else
     {
       // if has no parents: simply push to end of list
-      sorted.push_back (project);
+      sorted.emplace_back(project);
     }
   }
 }
