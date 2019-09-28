@@ -427,7 +427,7 @@ void CLI2::lexArguments ()
       {
         Lexer::dequote (word);
         A2 unknown (word, Lexer::Type::word);
-        if (lex.wasQuoted (_original_args[i].attribute ("raw")))
+        if (Lexer::wasQuoted (_original_args[i].attribute ("raw")))
           unknown.tag ("QUOTED");
 
         if (_original_args[i].hasTag ("ORIGINAL"))
@@ -442,7 +442,7 @@ void CLI2::lexArguments ()
         A2 unknown (_original_args[i].attribute ("raw"), Lexer::Type::word);
         unknown.tag ("UNKNOWN");
 
-        if (lex.wasQuoted (_original_args[i].attribute ("raw")))
+        if (Lexer::wasQuoted (_original_args[i].attribute ("raw")))
           unknown.tag ("QUOTED");
 
         if (_original_args[i].hasTag ("ORIGINAL"))
