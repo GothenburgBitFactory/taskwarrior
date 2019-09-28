@@ -279,7 +279,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     out += extra;
 
     // Trim right.
-    out.erase (out.find_last_not_of (" ") + 1);
+    out.erase (out.find_last_not_of (' ') + 1);
     out += "\n";
 
     // Stop if the line limit is exceeded.
@@ -365,7 +365,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       out += (odd ? extra_odd : extra_even);
 
       // Trim right.
-      out.erase (out.find_last_not_of (" ") + 1);
+      out.erase (out.find_last_not_of (' ') + 1);
       out += "\n";
 
       // Stop if the line limit is exceeded.
