@@ -237,7 +237,7 @@ void Eval::evaluatePostfixStack (
       Variant result = ! right;
       values.push_back (result);
       if (_debug)
-        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
+        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, std::string(right), std::string(result)));
     }
     else if (token.second == Lexer::Type::op &&
              token.first == "_neg_")
@@ -253,7 +253,7 @@ void Eval::evaluatePostfixStack (
       values.push_back (result);
 
       if (_debug)
-        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
+        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, std::string(right), std::string(result)));
     }
     else if (token.second == Lexer::Type::op &&
              token.first == "_pos_")
@@ -306,7 +306,7 @@ void Eval::evaluatePostfixStack (
       values.push_back (result);
 
       if (_debug)
-        Context::getContext ().debug (format ("Eval ↓'{1}' {2} ↓'{3}' → ↑'{4}'", (std::string) left, token.first, (std::string) right, (std::string) result));
+        Context::getContext ().debug (format ("Eval ↓'{1}' {2} ↓'{3}' → ↑'{4}'", std::string(left), token.first, std::string(right), std::string(result)));
     }
 
     // Literals and identifiers.
@@ -320,13 +320,13 @@ void Eval::evaluatePostfixStack (
         {
           v.cast (Variant::type_integer);
           if (_debug)
-            Context::getContext ().debug (format ("Eval literal number ↑'{1}'", (std::string) v));
+            Context::getContext ().debug (format ("Eval literal number ↑'{1}'", std::string(v)));
         }
         else
         {
           v.cast (Variant::type_real);
           if (_debug)
-            Context::getContext ().debug (format ("Eval literal decimal ↑'{1}'", (std::string) v));
+            Context::getContext ().debug (format ("Eval literal decimal ↑'{1}'", std::string(v)));
         }
         break;
 
@@ -343,7 +343,7 @@ void Eval::evaluatePostfixStack (
             if (_source (token.first, v))
             {
               if (_debug)
-                Context::getContext ().debug (format ("Eval identifier source '{1}' → ↑'{2}'", token.first, (std::string) v));
+                Context::getContext ().debug (format ("Eval identifier source '{1}' → ↑'{2}'", token.first, std::string(v)));
               found = true;
               break;
             }
@@ -362,20 +362,20 @@ void Eval::evaluatePostfixStack (
       case Lexer::Type::date:
         v.cast (Variant::type_date);
         if (_debug)
-          Context::getContext ().debug (format ("Eval literal date ↑'{1}'", (std::string) v));
+          Context::getContext ().debug (format ("Eval literal date ↑'{1}'", std::string(v)));
         break;
 
       case Lexer::Type::duration:
         v.cast (Variant::type_duration);
         if (_debug)
-          Context::getContext ().debug (format ("Eval literal duration ↑'{1}'", (std::string) v));
+          Context::getContext ().debug (format ("Eval literal duration ↑'{1}'", std::string(v)));
         break;
 
       // Nothing to do.
       case Lexer::Type::string:
       default:
         if (_debug)
-          Context::getContext ().debug (format ("Eval literal string ↑'{1}'", (std::string) v));
+          Context::getContext ().debug (format ("Eval literal string ↑'{1}'", std::string(v)));
         break;
       }
 

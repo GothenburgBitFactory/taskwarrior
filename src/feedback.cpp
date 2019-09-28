@@ -248,7 +248,7 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
         col->type () == "date" &&
         !value.empty())
     {
-      Datetime d ((time_t)strtol (value.c_str (), nullptr, 10));
+      Datetime d (static_cast<time_t>(strtol (value.c_str (), nullptr, 10)));
       if (format.empty())
         return d.toString (Context::getContext ().config.get ("dateformat"));
 

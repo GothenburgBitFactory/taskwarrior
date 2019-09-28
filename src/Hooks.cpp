@@ -471,7 +471,7 @@ void Hooks::assertNTasks (
 {
   if (input.size () != n)
   {
-    Context::getContext ().error (format (STRING_HOOK_ERROR_BAD_NUM, n, (int) input.size (), Path (script).name ()));
+    Context::getContext ().error (format (STRING_HOOK_ERROR_BAD_NUM, n, static_cast<int>(input.size ()), Path (script).name ()));
     throw 0;
   }
 }
