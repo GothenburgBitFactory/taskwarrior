@@ -271,7 +271,7 @@ void CLI2::applyOverrides (int argc, const char** argv)
       return s.find_first_of (":=", 3);
     return std::string::npos;
   };
-  auto override_settings = [&] (std::string raw)
+  auto override_settings = [&] (const std::string& raw)
   {
     auto sep = get_sep (raw);
     if (sep == std::string::npos)
@@ -280,7 +280,7 @@ void CLI2::applyOverrides (int argc, const char** argv)
     std::string value = raw.substr (sep + 1);
     context.config.set (name, value);
   };
-  auto display_overrides = [&] (std::string raw)
+  auto display_overrides = [&] (const std::string& raw)
   {
     if (is_override (raw))
       context.footnote (format ("Configuration override {1}", raw));
