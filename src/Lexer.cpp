@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <Lexer.h>
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
 #include <Datetime.h>
 #include <Duration.h>
 #include <unicode.h>

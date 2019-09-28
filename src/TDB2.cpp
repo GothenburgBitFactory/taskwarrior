@@ -31,8 +31,8 @@
 #include <algorithm>
 #include <list>
 #include <set>
-#include <stdlib.h>
-#include <signal.h>
+#include <cstdlib>
+#include <csignal>
 #include <Context.h>
 #include <Color.h>
 #include <Datetime.h>

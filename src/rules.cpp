@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <Context.h>
 #include <Datetime.h>
 #include <shared.h>
