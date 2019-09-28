@@ -159,7 +159,7 @@ void uuid_unparse_lower (uuid_t uu, char *out)
 }
 #endif
 
-const std::string uuid ()
+std::string uuid ()
 {
   uuid_t id;
   uuid_generate (id);
@@ -198,7 +198,7 @@ const std::string uuid ()
 //  - delimiter is the character used to split up projects into subprojects.
 //    - defaults to the period, '.'
 //
-const std::string indentProject (
+std::string indentProject (
   const std::string& project,
   const std::string& whitespace /* = "  " */,
   char delimiter /* = '.' */)
@@ -226,7 +226,7 @@ const std::string indentProject (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> extractParents (
+std::vector <std::string> extractParents (
   const std::string& project,
   const char& delimiter /* = '.' */)
 {

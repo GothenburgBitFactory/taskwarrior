@@ -90,7 +90,7 @@ void A2::attribute (const std::string& name, const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
-const std::string A2::attribute (const std::string& name) const
+std::string A2::attribute (const std::string& name) const
 {
   // Prevent autovivification.
   auto i = _attributes.find (name);
@@ -101,7 +101,7 @@ const std::string A2::attribute (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string A2::getToken () const
+std::string A2::getToken () const
 {
   auto i = _attributes.find ("canonical");
   if (i == _attributes.end ())
@@ -175,7 +175,7 @@ void A2::decompose ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string A2::dump () const
+std::string A2::dump () const
 {
   auto output = Lexer::typeToString (_lextype);
 
@@ -638,7 +638,7 @@ void CLI2::prepareFilter ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Return all the MISCELLANEOUS args.
-const std::vector <std::string> CLI2::getWords ()
+std::vector <std::string> CLI2::getWords ()
 {
   std::vector <std::string> words;
   for (const auto& a : _args)
@@ -710,7 +710,7 @@ std::string CLI2::getCommand (bool canonical) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string CLI2::dump (const std::string& title) const
+std::string CLI2::dump (const std::string& title) const
 {
   std::stringstream out;
 

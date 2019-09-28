@@ -45,14 +45,14 @@ int confirm4 (const std::string&);
 #ifndef HAVE_UUID_UNPARSE_LOWER
 void uuid_unparse_lower (uuid_t uu, char *out);
 #endif
-const std::string uuid ();
+std::string uuid ();
 
-const std::string indentProject (
+std::string indentProject (
   const std::string&,
   const std::string& whitespace = "  ",
   char delimiter = '.');
 
-const std::vector <std::string> extractParents (
+std::vector <std::string> extractParents (
   const std::string&,
   const char& delimiter = '.');
 

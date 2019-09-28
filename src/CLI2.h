@@ -43,9 +43,9 @@ public:
   void tag (const std::string&);
   void unTag (const std::string&);
   void attribute (const std::string&, const std::string&);
-  const std::string attribute (const std::string&) const;
-  const std::string getToken () const;
-  const std::string dump () const;
+  std::string attribute (const std::string&) const;
+  std::string getToken () const;
+  std::string dump () const;
   void decompose ();
 
 public:
@@ -75,11 +75,11 @@ public:
   void addFilter (const std::string& arg);
   void addContextFilter ();
   void prepareFilter ();
-  const std::vector <std::string> getWords ();
+  std::vector <std::string> getWords ();
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
   std::string getCommand (bool canonical = true) const;
-  const std::string dump (const std::string& title = "CLI2 Parser") const;
+  std::string dump (const std::string& title = "CLI2 Parser") const;
 
 private:
   void handleArg0 ();
