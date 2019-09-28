@@ -200,7 +200,7 @@ bool Task::has (const std::string& name) const
 std::vector <std::string> Task::all ()
 {
   std::vector <std::string> all;
-  for (auto i : data)
+  for (const auto& i : data)
     all.push_back (i.first);
 
   return all;
@@ -836,7 +836,7 @@ std::string Task::composeF4 () const
   std::string ff4 = "[";
 
   bool first = true;
-  for (auto it : data)
+  for (const auto& it : data)
   {
     // Orphans have no type, treat as string.
     std::string type = Task::attributes[it.first];
@@ -931,7 +931,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       out << "\"tags\":[";
 
       int count = 0;
-      for (auto i : tags)
+      for (const auto& i : tags)
       {
         if (count++)
           out << ',';
@@ -970,7 +970,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       out << "\"depends\":[";
 
       int count = 0;
-      for (auto i : deps)
+      for (const auto& i : deps)
       {
         if (count++)
           out << ',';
