@@ -162,7 +162,7 @@ void A2::decompose ()
 
       if (name == "rc")
       {
-        if (mod != "")
+        if (!mod.empty())
           tag ("CONFIG");
         else
           tag ("RC");
@@ -258,7 +258,7 @@ bool CLI2::getDataLocation (int argc, const char** argv, Path& data)
   if (value == nullptr)
   {
     std::string location = Context::getContext ().config.get ("data.location");
-    if (location != "")
+    if (!location.empty())
       data = location;
     return false;
   }
@@ -573,7 +573,7 @@ void CLI2::addContextFilter ()
 
   // Detect if any context is set, and bail out if not
   std::string contextName = Context::getContext ().config.get ("context");
-  if (contextName == "")
+  if (contextName.empty())
   {
     Context::getContext ().debug ("No context.");
     return;
@@ -595,7 +595,7 @@ void CLI2::addContextFilter ()
   Context::getContext ().debug ("Applying context: " + contextName);
   std::string contextFilter = Context::getContext ().config.get ("context." + contextName);
 
-  if (contextFilter == "")
+  if (contextFilter.empty())
     Context::getContext ().debug ("Context '" + contextName + "' not defined.");
   else
   {
@@ -635,14 +635,14 @@ void CLI2::prepareFilter ()
     {
       if (a.hasTag ("FILTER"))
       {
-        if (combined != "")
+        if (!combined.empty())
           combined += ' ';
 
         combined += a.attribute ("raw");
       }
     }
 
-    if (combined.size ())
+    if (!combined.empty())
       Context::getContext ().footnote (std::string ("Filter: ") + combined);
   }
 }
@@ -704,7 +704,7 @@ bool CLI2::canonicalize (
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getBinary () const
 {
-  if (_args.size ())
+  if (!_args.empty())
     return _args[0].attribute ("raw");
 
   return "";
@@ -743,14 +743,14 @@ const std::string CLI2::dump (const std::string& title) const
 
   out << '\n';
 
-  if (_args.size ())
+  if (!_args.empty())
   {
     out << "  _args\n";
     for (const auto& a : _args)
       out << "    " << a.dump () << '\n';
   }
 
-  if (_id_ranges.size ())
+  if (!_id_ranges.empty())
   {
     out << "  _id_ranges\n    ";
     for (const auto& range : _id_ranges)
@@ -764,7 +764,7 @@ const std::string CLI2::dump (const std::string& title) const
     out << '\n';
   }
 
-  if (_uuid_list.size ())
+  if (!_uuid_list.empty())
   {
     out << "  _uuid_list\n    ";
     for (const auto& uuid : _uuid_list)
@@ -1229,7 +1229,7 @@ void CLI2::desugarFilterAttributes ()
 
       // An unquoted string, while equivalent to an empty string, doesn't cause
       // an operand shortage in eval.
-      if (value == "")
+      if (value.empty())
         value = "''";
 
       // Some values are expressions, which need to be lexed. The best way to
@@ -1278,7 +1278,7 @@ void CLI2::desugarFilterAttributes ()
         rhs.tag ("FILTER");
 
         // Special case for '<name>:<value>'.
-        if (mod == "")
+        if (mod.empty())
         {
           op.attribute ("raw", "=");
           rhs.attribute ("raw", value);
@@ -1515,7 +1515,7 @@ void CLI2::findIDs ()
     // listed as a MODIFICATION.
     std::string command = getCommand ();
 
-    if (! _id_ranges.size () &&
+    if (_id_ranges.empty() &&
         filterCount == 0     &&
         command != "add"     &&
         command != "log")
@@ -1606,7 +1606,7 @@ void CLI2::findUUIDs ()
       }
     }
 
-    if (! _uuid_list.size ())
+    if (_uuid_list.empty())
     {
       for (auto& a : _args)
       {
@@ -1655,8 +1655,8 @@ void CLI2::insertIDExpr ()
 {
   // Skip completely if no ID/UUID was found. This is because below, '(' and ')'
   // are inserted regardless of list size.
-  if (! _id_ranges.size () &&
-      ! _uuid_list.size ())
+  if (_id_ranges.empty() &&
+      _uuid_list.empty())
     return;
 
   // Find the *first* occurence of lexer type set/number/uuid, and replace it
@@ -1759,8 +1759,8 @@ void CLI2::insertIDExpr ()
         }
 
         // Combine the ID and UUID sections with 'or'.
-        if (_id_ranges.size () &&
-            _uuid_list.size ())
+        if (!_id_ranges.empty() &&
+            !_uuid_list.empty())
           reconstructed.push_back (opOr);
 
         // Add all UUID list items.
@@ -2033,7 +2033,7 @@ void CLI2::defaultCommand ()
     {
       // Apply overrides, if any.
       std::string defaultCommand = Context::getContext ().config.get ("default.command");
-      if (defaultCommand != "")
+      if (!defaultCommand.empty())
       {
         // Modify _args, _original_args to be:
         //   <args0> [<def0> ...] <args1> [...]

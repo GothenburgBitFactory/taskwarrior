@@ -55,7 +55,7 @@ void sort_tasks (
   global_keys = split (keys, ',');
 
   // Only sort if necessary.
-  if (order.size ())
+  if (!order.empty())
     std::stable_sort (order.begin (), order.end (), sort_compare);
 
   Context::getContext ().time_sort_us += timer.total_us ();
@@ -68,7 +68,7 @@ void sort_projects (
   for (auto& project : allProjects)
   {
     const std::vector <std::string> parents = extractParents (project.first);
-    if (parents.size ())
+    if (!parents.empty())
     {
       // if parents exist: store iterator position of last parent
       std::list <std::pair <std::string, int>>::iterator parent_pos;
@@ -184,10 +184,10 @@ static bool sort_compare (int left, int right)
       auto left_string  = (*global_data)[left].get_ref  (field);
       auto right_string = (*global_data)[right].get_ref (field);
 
-      if (left_string != "" && right_string == "")
+      if (!left_string.empty() && right_string.empty())
         return true;
 
-      if (left_string == "" && right_string != "")
+      if (left_string.empty() && !right_string.empty())
         return false;
 
       if (left_string == right_string)
@@ -207,10 +207,10 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      if (left_string == "" && right_string != "")
+      if (left_string.empty() && !right_string.empty())
         return ascending;
 
-      if (left_string != "" && right_string == "")
+      if (!left_string.empty() && right_string.empty())
         return !ascending;
 
       // Sort on the first dependency.
@@ -274,9 +274,9 @@ static bool sort_compare (int left, int right)
         else
         {
           // Empty values are unconditionally last, if no custom order was specified.
-          if (left_string == "")
+          if (left_string.empty())
             return false;
-          else if (right_string == "")
+          else if (right_string.empty())
             return true;
 
           return ascending ? (left_string < right_string)
@@ -289,10 +289,10 @@ static bool sort_compare (int left, int right)
         auto left_string  = (*global_data)[left].get_ref  (field);
         auto right_string = (*global_data)[right].get_ref (field);
 
-        if (left_string != "" && right_string == "")
+        if (!left_string.empty() && right_string.empty())
           return true;
 
-        if (left_string == "" && right_string != "")
+        if (left_string.empty() && !right_string.empty())
           return false;
 
         if (left_string == right_string)

@@ -327,7 +327,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     // Listing breaks are simply blank lines inserted when a column value
     // changes.
     if (s > 0 &&
-        _breaks.size () > 0)
+        !_breaks.empty())
     {
       for (auto& b : _breaks)
       {

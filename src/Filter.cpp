@@ -66,7 +66,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     if (a.hasTag ("FILTER"))
       precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
 
-  if (precompiled.size ())
+  if (!precompiled.empty())
   {
     Eval eval;
     eval.addSource (domSource);
@@ -112,7 +112,7 @@ void Filter::subset (std::vector <Task>& output)
   // Shortcut indicates that only pending.data needs to be loaded.
   bool shortcut = false;
 
-  if (precompiled.size ())
+  if (!precompiled.empty())
   {
     Timer timer_pending;
     auto pending = Context::getContext ().tdb2.pending.get_tasks ();
