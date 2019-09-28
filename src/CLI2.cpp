@@ -49,21 +49,10 @@ A2::A2 (const std::string& raw, Lexer::Type lextype)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A2::A2 (const A2& other)
-: _lextype (other._lextype)
-, _tags (other._tags)
-, _attributes (other._attributes)
-{
-}
+A2::A2 (const A2& other) = default;
 
 ////////////////////////////////////////////////////////////////////////////////
-A2& A2::operator= (const A2& other)
-{
-  _lextype    = other._lextype;
-  _tags       = other._tags;
-  _attributes = other._attributes;
-  return *this;
-}
+A2& A2::operator= (const A2& other) = default;
 
 ////////////////////////////////////////////////////////////////////////////////
 bool A2::hasTag (const std::string& tag) const
