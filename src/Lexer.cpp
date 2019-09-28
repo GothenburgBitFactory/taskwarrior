@@ -892,7 +892,7 @@ bool Lexer::isPath (std::string& token, Lexer::Type& type)
   std::size_t marker = _cursor;
   int slashCount = 0;
 
-  while (1)
+  while (true)
   {
     if (_text[marker] == '/')
     {
