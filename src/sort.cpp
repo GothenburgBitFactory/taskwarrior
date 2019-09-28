@@ -30,7 +30,7 @@
 #include <list>
 #include <map>
 #include <string>
-#include <stdlib.h>
+#include <cstdlib>
 #include <Context.h>
 #include <Duration.h>
 #include <Task.h>

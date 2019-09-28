@@ -28,7 +28,7 @@
 #include <DOM.h>
 #include <sstream>
 #include <map>
-#include <stdlib.h>
+#include <cstdlib>
 #include <Variant.h>
 #include <Lexer.h>
 #include <Context.h>

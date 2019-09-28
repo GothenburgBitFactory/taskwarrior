@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <Eval.h>
 #include <map>
-#include <time.h>
+#include <ctime>
 #include <Context.h>
 #include <Task.h>
 #include <Color.h>

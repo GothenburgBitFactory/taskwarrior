@@ -28,9 +28,9 @@
 #include <sstream>
 #include <algorithm>
 #include <utility>
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
 #include <Variant.h>
 #include <Datetime.h>
 #include <Duration.h>

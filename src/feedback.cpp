@@ -30,8 +30,8 @@
 #include <sstream>
 #include <vector>
 #include <string>
-#include <stdlib.h>
-#include <inttypes.h>
+#include <cstdlib>
+#include <cinttypes>
 #include <Context.h>
 #include <Datetime.h>
 #include <Duration.h>
