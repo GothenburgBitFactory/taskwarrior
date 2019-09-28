@@ -91,9 +91,9 @@ bool dependencyIsCircular (const Task& task)
 
       // This is a basic depth first search that always terminates given the
       // fact that we do not visit any task twice
-      for (unsigned int i = 0; i < deps_current.size (); i++)
+      for (const auto & i : deps_current)
       {
-        if (Context::getContext ().tdb2.get (deps_current[i], current))
+        if (Context::getContext ().tdb2.get (i, current))
         {
           auto current_uuid = current.get ("uuid");
 

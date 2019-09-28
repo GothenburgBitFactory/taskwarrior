@@ -534,8 +534,8 @@ int Context::initialize (int argc, const char** argv)
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-      cli2.entity ("modifier", modifierNames[i]);
+    for (auto & modifierName : modifierNames)
+      cli2.entity ("modifier", modifierName);
 
     for (auto& op : Eval::getOperators ())
       cli2.entity ("operator", op);
