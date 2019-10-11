@@ -54,7 +54,8 @@ void wrapText (
 {
   std::string line;
   unsigned int offset = 0;
-  while (extractLine (line, text, width, hyphenate, offset))
+  const int dw = width < 12 ? 12 : width;
+  while (extractLine (line, text, dw, hyphenate, offset))
     lines.push_back (line);
 }
 

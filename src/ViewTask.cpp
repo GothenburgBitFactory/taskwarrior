@@ -208,7 +208,6 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   // Not enough for minimum.
   else if (overage < 0)
   {
-    context.error (format (STRING_VIEW_TOO_SMALL, sum_minimal + all_extra, _width));
     widths = minimal;
   }
 
@@ -313,10 +312,11 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       row_color.blend (rule_color);
     }
 
+    const int off = overage < 0 ? overage : 0;
     for (unsigned int c = 0; c < _columns.size (); ++c)
     {
       cells.push_back (std::vector <std::string> ());
-      _columns[c]->render (cells[c], data[sequence[s]], widths[c], row_color);
+      _columns[c]->render (cells[c], data[sequence[s]], widths[c]+off, row_color);
 
       if (cells[c].size () > max_lines)
         max_lines = cells[c].size ();
