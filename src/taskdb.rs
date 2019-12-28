@@ -32,6 +32,7 @@ struct DB {
 }
 
 impl DB {
+    /// Create a new, empty database
     fn new() -> DB {
         DB {
             tasks: HashMap::new(),
@@ -40,6 +41,8 @@ impl DB {
         }
     }
 
+    /// Apply an operation to the DB.  Aside from synchronization operations, this
+    /// is the only way to modify the DB.
     fn apply(&mut self, op: Operation) -> Result<(), Error> {
         match op {
             Operation::Create { uuid } => {
@@ -71,6 +74,13 @@ impl DB {
         self.operations.push(op);
         Ok(())
     }
+
+    /// Get a read-only reference to the underlying set of tasks.
+    ///
+    /// This API is temporary, but provides query access to the DB.
+    fn tasks(&self) -> &HashMap<Uuid, HashMap<String, Value>> {
+        &self.tasks
+    }
 }
 
 #[cfg(test)]
@@ -87,7 +97,7 @@ mod tests {
 
         let mut exp = HashMap::new();
         exp.insert(uuid, HashMap::new());
-        assert_eq!(db.tasks, exp);
+        assert_eq!(db.tasks(), &exp);
         assert_eq!(db.operations, vec![op]);
     }
 
@@ -120,7 +130,7 @@ mod tests {
         let mut task = HashMap::new();
         task.insert(String::from("title"), Value::from("\"my task\""));
         exp.insert(uuid, task);
-        assert_eq!(db.tasks, exp);
+        assert_eq!(db.tasks(), &exp);
         assert_eq!(db.operations, vec![op1, op2]);
     }
 
@@ -138,5 +148,4 @@ mod tests {
             Err(Error::DBError(format!("Task {} does not exist", uuid)))
         );
     }
-
 }
