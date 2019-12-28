@@ -29,6 +29,8 @@ Each operation has one of the forms
  * `Update(uuid, property, value, timestamp)`
 
 The former form creates a new task.
+It is invalid to create a task that already exists.
+
 The latter form updates the given property of the given task.
 It is invalid to update a task that does not exist.
 The timestamp on updates serves as additional metadata and is used to resolve conflicts.
