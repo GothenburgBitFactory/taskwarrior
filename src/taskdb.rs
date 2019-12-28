@@ -1,24 +1,12 @@
 use crate::errors::Error;
-use chrono::{DateTime, Utc};
+use crate::operation::Operation;
 use serde_json::Value;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use uuid::Uuid;
 
-#[derive(PartialEq, Clone, Debug)]
-enum Operation {
-    Create {
-        uuid: Uuid,
-    },
-    Update {
-        uuid: Uuid,
-        property: String,
-        value: Value,
-        timestamp: DateTime<Utc>,
-    },
-}
-
-struct DB {
+#[derive(PartialEq, Debug)]
+pub struct DB {
     // The current state, with all pending operations applied
     tasks: HashMap<Uuid, HashMap<String, Value>>,
 
@@ -33,7 +21,7 @@ struct DB {
 
 impl DB {
     /// Create a new, empty database
-    fn new() -> DB {
+    pub fn new() -> DB {
         DB {
             tasks: HashMap::new(),
             base_version: 0,
@@ -43,7 +31,7 @@ impl DB {
 
     /// Apply an operation to the DB.  Aside from synchronization operations, this
     /// is the only way to modify the DB.
-    fn apply(&mut self, op: Operation) -> Result<(), Error> {
+    pub fn apply(&mut self, op: Operation) -> Result<(), Error> {
         match op {
             Operation::Create { uuid } => {
                 match self.tasks.entry(uuid) {
@@ -78,7 +66,7 @@ impl DB {
     /// Get a read-only reference to the underlying set of tasks.
     ///
     /// This API is temporary, but provides query access to the DB.
-    fn tasks(&self) -> &HashMap<Uuid, HashMap<String, Value>> {
+    pub fn tasks(&self) -> &HashMap<Uuid, HashMap<String, Value>> {
         &self.tasks
     }
 }
@@ -86,6 +74,7 @@ impl DB {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::Utc;
     use uuid::Uuid;
 
     #[test]

@@ -2,4 +2,5 @@
 #![allow(dead_code)]
 
 mod errors;
+mod operation;
 mod taskdb;
