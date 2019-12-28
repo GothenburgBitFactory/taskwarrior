@@ -72,6 +72,13 @@ Clients encrypt and sign these blobs using a symmetric key known only to the cli
 This secures the data at-rest on the server.
 Note that privacy is not complete, as the server still has some information about users, including source and frequency of synchronization transactions and size of those transactions.
 
+## Backups
+
+In this design, the server is little more than an authenticated storage for encrypted blobs provided by the client.
+To allow for failure or data loss on the server, clients are expected to cache these blobs locally for a short time (a week), along with a server-provided HMAC signature.
+When data loss is detected -- such as when a client expects the server to have a version N or higher, and the server only has N-1, the client can send those blobs to the server.
+The server can validate the HMAC and, if successful, add the blobs to its datastore.
+
 ## Expiration
 
 TBD
