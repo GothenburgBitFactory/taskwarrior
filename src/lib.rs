@@ -4,3 +4,6 @@
 mod errors;
 mod operation;
 mod taskdb;
+
+pub use operation::Operation;
+pub use taskdb::DB;

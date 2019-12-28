@@ -72,6 +72,7 @@ impl Operation {
                     (None, Some(operation2))
                 } else if timestamp1 > timestamp2 {
                     // prefer the later modification
+                    //(Some(operation1), None)
                     (Some(operation1), None)
                 } else {
                     // arbitrarily resolve in favor of the first operation
@@ -89,6 +90,10 @@ impl Operation {
 mod test {
     use super::*;
     use crate::taskdb::DB;
+    use chrono::{Duration, Utc};
+
+    // note that `tests/operation_transform_invariant.rs` tests the transform function quite
+    // thoroughly, so this testing is light.
 
     fn test_transform(
         o1: Operation,
@@ -102,14 +107,14 @@ mod test {
         // check that the two operation sequences have the same effect, enforcing the invariant of
         // the transform function.
         let mut db1 = DB::new();
-        db1.apply(o1).unwrap();
+        db1.apply(o1);
         if let Some(o) = o2p {
-            db1.apply(o).unwrap();
+            db1.apply(o);
         }
         let mut db2 = DB::new();
-        db2.apply(o2).unwrap();
+        db2.apply(o2);
         if let Some(o) = o1p {
-            db2.apply(o).unwrap();
+            db2.apply(o);
         }
         assert_eq!(db1.tasks(), db2.tasks());
     }
@@ -120,10 +125,100 @@ mod test {
         let uuid2 = Uuid::new_v4();
 
         test_transform(
-            Operation::Create { uuid: uuid1 },
-            Operation::Create { uuid: uuid2 },
-            Some(Operation::Create { uuid: uuid1 }),
-            Some(Operation::Create { uuid: uuid2 }),
+            Create { uuid: uuid1 },
+            Create { uuid: uuid2 },
+            Some(Create { uuid: uuid1 }),
+            Some(Create { uuid: uuid2 }),
+        );
+    }
+
+    #[test]
+    fn test_related_updates_different_props() {
+        let uuid = Uuid::new_v4();
+        let timestamp = Utc::now();
+
+        test_transform(
+            Update {
+                uuid,
+                property: "abc".into(),
+                value: true.into(),
+                timestamp,
+            },
+            Update {
+                uuid,
+                property: "def".into(),
+                value: false.into(),
+                timestamp,
+            },
+            Some(Update {
+                uuid,
+                property: "abc".into(),
+                value: true.into(),
+                timestamp,
+            }),
+            Some(Update {
+                uuid,
+                property: "def".into(),
+                value: false.into(),
+                timestamp,
+            }),
+        );
+    }
+
+    #[test]
+    fn test_related_updates_same_prop() {
+        let uuid = Uuid::new_v4();
+        let timestamp1 = Utc::now();
+        let timestamp2 = timestamp1 + Duration::seconds(10);
+
+        test_transform(
+            Update {
+                uuid,
+                property: "abc".into(),
+                value: true.into(),
+                timestamp: timestamp1,
+            },
+            Update {
+                uuid,
+                property: "abc".into(),
+                value: false.into(),
+                timestamp: timestamp2,
+            },
+            None,
+            Some(Update {
+                uuid,
+                property: "abc".into(),
+                value: false.into(),
+                timestamp: timestamp2,
+            }),
+        );
+    }
+
+    #[test]
+    fn test_related_updates_same_prop_same_time() {
+        let uuid = Uuid::new_v4();
+        let timestamp = Utc::now();
+
+        test_transform(
+            Update {
+                uuid,
+                property: "abc".into(),
+                value: true.into(),
+                timestamp,
+            },
+            Update {
+                uuid,
+                property: "abc".into(),
+                value: false.into(),
+                timestamp,
+            },
+            Some(Update {
+                uuid,
+                property: "abc".into(),
+                value: true.into(),
+                timestamp,
+            }),
+            None,
         );
     }
 }
