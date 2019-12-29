@@ -1,0 +1,18 @@
+* assign types to properties
+  - modifications to types don't commute the same way
+  - optimize this to simplify the transform function
+  - types:
+    - dependencies: set of uuids
+    - annotations: set of annotations (incl timestamps for uniqueness)
+    - tags: set of tags
+  - idea: Update takes a dotted path for property; store everything as a map
+    e.g., {uuid: true}, {timestamp: annotation}, {tag: true}; keep the
+    set-to-null-to-delete to remove
+* add HTTP API
+* implement snapshot requests
+* implement backups
+* implement client-side encryption
+* design expiration
+  - need to be sure that create / delete operations don't get reversed
+* cli tools
+* prop testing for DB modifications
