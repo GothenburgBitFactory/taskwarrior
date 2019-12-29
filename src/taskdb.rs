@@ -1,3 +1,4 @@
+use crate::errors::Error;
 use crate::operation::Operation;
 use crate::server::{Server, VersionAdd};
 use serde::{Deserialize, Serialize};
@@ -41,15 +42,30 @@ impl DB {
     /// Apply an operation to the DB.  Aside from synchronization operations, this
     /// is the only way to modify the DB.  In cases where an operation does not
     /// make sense, this function will ignore the operation.
-    pub fn apply(&mut self, op: Operation) {
+    pub fn apply(&mut self, op: Operation) -> Result<(), Error> {
+        if let err @ Err(_) = self.apply_op(&op) {
+            return err;
+        }
+        self.operations.push(op);
+        Ok(())
+    }
+
+    fn apply_op(&mut self, op: &Operation) -> Result<(), Error> {
         match op {
-            Operation::Create { uuid } => {
+            &Operation::Create { uuid } => {
                 // insert if the task does not already exist
                 if let ent @ Entry::Vacant(_) = self.tasks.entry(uuid) {
                     ent.or_insert(HashMap::new());
+                } else {
+                    return Err(Error::DBError(format!("Task {} already exists", uuid)));
                 }
             }
-            Operation::Update {
+            &Operation::Delete { ref uuid } => {
+                if let None = self.tasks.remove(uuid) {
+                    return Err(Error::DBError(format!("Task {} does not exist", uuid)));
+                }
+            }
+            &Operation::Update {
                 ref uuid,
                 ref property,
                 ref value,
@@ -57,18 +73,17 @@ impl DB {
             } => {
                 // update if this task exists, otherwise ignore
                 if let Some(task) = self.tasks.get_mut(uuid) {
-                    DB::apply_update(task, property, value);
+                    match value {
+                        Some(ref val) => task.insert(property.to_string(), val.clone()),
+                        None => task.remove(property),
+                    };
+                } else {
+                    return Err(Error::DBError(format!("Task {} does not exist", uuid)));
                 }
             }
-        };
-        self.operations.push(op);
-    }
+        }
 
-    fn apply_update(task: &mut TaskMap, property: &str, value: &Option<String>) {
-        match value {
-            Some(ref val) => task.insert(property.to_string(), val.clone()),
-            None => task.remove(property),
-        };
+        Ok(())
     }
 
     /// Get a read-only reference to the underlying set of tasks.
@@ -152,7 +167,9 @@ impl DB {
                 }
             }
             if let Some(o) = svr_op {
-                self.apply(o);
+                if let Err(e) = self.apply_op(&o) {
+                    println!("Invalid operation when syncing: {} (ignored)", e);
+                }
             }
             self.operations = new_local_ops;
         }
@@ -171,7 +188,7 @@ mod tests {
         let mut db = DB::new();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
-        db.apply(op.clone());
+        db.apply(op.clone()).unwrap();
 
         let mut exp = HashMap::new();
         exp.insert(uuid, HashMap::new());
@@ -184,13 +201,16 @@ mod tests {
         let mut db = DB::new();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
-        db.apply(op.clone());
-        db.apply(op.clone());
+        db.apply(op.clone()).unwrap();
+        assert_eq!(
+            db.apply(op.clone()).err().unwrap(),
+            Error::DBError(format!("Task {} already exists", uuid))
+        );
 
         let mut exp = HashMap::new();
         exp.insert(uuid, HashMap::new());
         assert_eq!(db.tasks(), &exp);
-        assert_eq!(db.operations, vec![op.clone(), op]);
+        assert_eq!(db.operations, vec![op]);
     }
 
     #[test]
@@ -198,14 +218,14 @@ mod tests {
         let mut db = DB::new();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
-        db.apply(op1.clone());
+        db.apply(op1.clone()).unwrap();
         let op2 = Operation::Update {
             uuid,
             property: String::from("title"),
             value: Some("my task".into()),
             timestamp: Utc::now(),
         };
-        db.apply(op2.clone());
+        db.apply(op2.clone()).unwrap();
 
         let mut exp = HashMap::new();
         let mut task = HashMap::new();
@@ -220,7 +240,7 @@ mod tests {
         let mut db = DB::new();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
-        db.apply(op1.clone());
+        db.apply(op1.clone()).unwrap();
 
         let op2 = Operation::Update {
             uuid,
@@ -228,7 +248,7 @@ mod tests {
             value: Some("my task".into()),
             timestamp: Utc::now(),
         };
-        db.apply(op2.clone());
+        db.apply(op2.clone()).unwrap();
 
         let op3 = Operation::Update {
             uuid,
@@ -236,7 +256,7 @@ mod tests {
             value: Some("H".into()),
             timestamp: Utc::now(),
         };
-        db.apply(op3.clone());
+        db.apply(op3.clone()).unwrap();
 
         let op4 = Operation::Update {
             uuid,
@@ -244,7 +264,7 @@ mod tests {
             value: None,
             timestamp: Utc::now(),
         };
-        db.apply(op4.clone());
+        db.apply(op4.clone()).unwrap();
 
         let mut exp = HashMap::new();
         let mut task = HashMap::new();
@@ -264,9 +284,41 @@ mod tests {
             value: Some("my task".into()),
             timestamp: Utc::now(),
         };
-        db.apply(op.clone());
+        assert_eq!(
+            db.apply(op).err().unwrap(),
+            Error::DBError(format!("Task {} does not exist", uuid))
+        );
 
         assert_eq!(db.tasks(), &HashMap::new());
-        assert_eq!(db.operations, vec![op]);
+        assert_eq!(db.operations, vec![]);
+    }
+
+    #[test]
+    fn test_apply_create_delete() {
+        let mut db = DB::new();
+        let uuid = Uuid::new_v4();
+        let op1 = Operation::Create { uuid };
+        db.apply(op1.clone()).unwrap();
+
+        let op2 = Operation::Delete { uuid };
+        db.apply(op2.clone()).unwrap();
+
+        assert_eq!(db.tasks(), &HashMap::new());
+        assert_eq!(db.operations, vec![op1, op2]);
+    }
+
+    #[test]
+    fn test_apply_delete_not_present() {
+        let mut db = DB::new();
+        let uuid = Uuid::new_v4();
+
+        let op1 = Operation::Delete { uuid };
+        assert_eq!(
+            db.apply(op1).err().unwrap(),
+            Error::DBError(format!("Task {} does not exist", uuid))
+        );
+
+        assert_eq!(db.tasks(), &HashMap::new());
+        assert_eq!(db.operations, vec![]);
     }
 }

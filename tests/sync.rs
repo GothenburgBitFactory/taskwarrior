@@ -14,22 +14,24 @@ fn test_sync() {
 
     // make some changes in parallel to db1 and db2..
     let uuid1 = Uuid::new_v4();
-    db1.apply(Operation::Create { uuid: uuid1 });
+    db1.apply(Operation::Create { uuid: uuid1 }).unwrap();
     db1.apply(Operation::Update {
         uuid: uuid1,
         property: "title".into(),
         value: Some("my first task".into()),
         timestamp: Utc::now(),
-    });
+    })
+    .unwrap();
 
     let uuid2 = Uuid::new_v4();
-    db2.apply(Operation::Create { uuid: uuid2 });
+    db2.apply(Operation::Create { uuid: uuid2 }).unwrap();
     db2.apply(Operation::Update {
         uuid: uuid2,
         property: "title".into(),
         value: Some("my second task".into()),
         timestamp: Utc::now(),
-    });
+    })
+    .unwrap();
 
     // and synchronize those around
     db1.sync("me", &mut server);
@@ -43,13 +45,15 @@ fn test_sync() {
         property: "priority".into(),
         value: Some("H".into()),
         timestamp: Utc::now(),
-    });
+    })
+    .unwrap();
     db2.apply(Operation::Update {
         uuid: uuid2,
         property: "project".into(),
         value: Some("personal".into()),
         timestamp: Utc::now(),
-    });
+    })
+    .unwrap();
 
     // and synchronize those around
     db1.sync("me", &mut server);

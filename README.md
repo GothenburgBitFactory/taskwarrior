@@ -25,12 +25,16 @@ See below for details on how tasks can "expire" from the task database.
 Every change to the task database is captured as an operation.
 Each operation has one of the forms 
  * `Create(uuid)`
+ * `Delete(uuid)`
  * `Update(uuid, property, value, timestamp)`
 
-The former form creates a new task.
+The Create form creates a new task.
 It is invalid to create a task that already exists.
 
-The latter form updates the given property of the given task, where property and value are both strings.
+Similarly, the Delete form deletes an existing task.
+It is invalid to delete a task that does not exist.
+
+The Update form updates the given property of the given task, where property and value are both strings.
 Value can also be `None` to indicate deletion of a property.
 It is invalid to update a task that does not exist.
 The timestamp on updates serves as additional metadata and is used to resolve conflicts.

@@ -5,10 +5,15 @@ use uuid::Uuid;
 /// An Operation defines a single change to the task database
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub enum Operation {
-    /// Create a new task; if the task already exists in the DB.
+    /// Create a new task.
     ///
     /// On application, if the task already exists, the operation does nothing.
     Create { uuid: Uuid },
+
+    /// Delete an existing task.
+    ///
+    /// On application, if the task does not exist, the operation does nothing.
+    Delete { uuid: Uuid },
 
     /// Update an existing task, setting the given property to the given value.  If the value is
     /// None, then the corresponding property is deleted.
@@ -52,9 +57,36 @@ impl Operation {
         operation2: Operation,
     ) -> (Option<Operation>, Option<Operation>) {
         match (&operation1, &operation2) {
-            // Two creations of the same uuid reach the same state, so there's no need for any
-            // further operations to bring the state together.
+            // Two creations or deletions of the same uuid reach the same state, so there's no need
+            // for any further operations to bring the state together.
             (&Create { uuid: uuid1 }, &Create { uuid: uuid2 }) if uuid1 == uuid2 => (None, None),
+            (&Delete { uuid: uuid1 }, &Delete { uuid: uuid2 }) if uuid1 == uuid2 => (None, None),
+
+            // Given a create and a delete of the same task, one of the operations is invalid: the
+            // create implies the task does not exist, but the delete implies it exists.  Somewhat
+            // arbitrarily, we prefer the Create
+            (&Create { uuid: uuid1 }, &Delete { uuid: uuid2 }) if uuid1 == uuid2 => {
+                (Some(operation1), None)
+            }
+            (&Delete { uuid: uuid1 }, &Create { uuid: uuid2 }) if uuid1 == uuid2 => {
+                (None, Some(operation2))
+            }
+
+            // And again from an Update and a Create, prefer the Update
+            (&Update { uuid: uuid1, .. }, &Create { uuid: uuid2 }) if uuid1 == uuid2 => {
+                (Some(operation1), None)
+            }
+            (&Create { uuid: uuid1 }, &Update { uuid: uuid2, .. }) if uuid1 == uuid2 => {
+                (None, Some(operation2))
+            }
+
+            // Given a delete and an update, prefer the delete
+            (&Update { uuid: uuid1, .. }, &Delete { uuid: uuid2 }) if uuid1 == uuid2 => {
+                (None, Some(operation2))
+            }
+            (&Delete { uuid: uuid1 }, &Update { uuid: uuid2, .. }) if uuid1 == uuid2 => {
+                (Some(operation1), None)
+            }
 
             // Two updates to the same property of the same task might conflict.
             (
@@ -103,6 +135,7 @@ mod test {
     // thoroughly, so this testing is light.
 
     fn test_transform(
+        setup: Option<Operation>,
         o1: Operation,
         o2: Operation,
         exp1p: Option<Operation>,
@@ -114,15 +147,23 @@ mod test {
         // check that the two operation sequences have the same effect, enforcing the invariant of
         // the transform function.
         let mut db1 = DB::new();
-        db1.apply(o1);
+        if let Some(ref o) = setup {
+            db1.apply(o.clone()).unwrap();
+        }
+        db1.apply(o1).unwrap();
         if let Some(o) = o2p {
-            db1.apply(o);
+            db1.apply(o).unwrap();
         }
+
         let mut db2 = DB::new();
-        db2.apply(o2);
-        if let Some(o) = o1p {
-            db2.apply(o);
+        if let Some(ref o) = setup {
+            db2.apply(o.clone()).unwrap();
         }
+        db2.apply(o2).unwrap();
+        if let Some(o) = o1p {
+            db2.apply(o).unwrap();
+        }
+
         assert_eq!(db1.tasks(), db2.tasks());
     }
 
@@ -132,6 +173,7 @@ mod test {
         let uuid2 = Uuid::new_v4();
 
         test_transform(
+            None,
             Create { uuid: uuid1 },
             Create { uuid: uuid2 },
             Some(Create { uuid: uuid1 }),
@@ -145,6 +187,7 @@ mod test {
         let timestamp = Utc::now();
 
         test_transform(
+            Some(Create { uuid }),
             Update {
                 uuid,
                 property: "abc".into(),
@@ -179,6 +222,7 @@ mod test {
         let timestamp2 = timestamp1 + Duration::seconds(10);
 
         test_transform(
+            Some(Create { uuid }),
             Update {
                 uuid,
                 property: "abc".into(),
@@ -207,6 +251,7 @@ mod test {
         let timestamp = Utc::now();
 
         test_transform(
+            Some(Create { uuid }),
             Update {
                 uuid,
                 property: "abc".into(),
