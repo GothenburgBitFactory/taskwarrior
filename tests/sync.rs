@@ -18,7 +18,7 @@ fn test_sync() {
     db1.apply(Operation::Update {
         uuid: uuid1,
         property: "title".into(),
-        value: "my first task".into(),
+        value: Some("my first task".into()),
         timestamp: Utc::now(),
     });
 
@@ -27,7 +27,7 @@ fn test_sync() {
     db2.apply(Operation::Update {
         uuid: uuid2,
         property: "title".into(),
-        value: "my second task".into(),
+        value: Some("my second task".into()),
         timestamp: Utc::now(),
     });
 
@@ -41,13 +41,13 @@ fn test_sync() {
     db1.apply(Operation::Update {
         uuid: uuid2,
         property: "priority".into(),
-        value: "H".into(),
+        value: Some("H".into()),
         timestamp: Utc::now(),
     });
     db2.apply(Operation::Update {
         uuid: uuid2,
         property: "project".into(),
-        value: "personal".into(),
+        value: Some("personal".into()),
         timestamp: Utc::now(),
     });
 

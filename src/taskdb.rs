@@ -1,16 +1,17 @@
 use crate::operation::Operation;
 use crate::server::{Server, VersionAdd};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::str;
 use uuid::Uuid;
 
+type TaskMap = HashMap<String, String>;
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct DB {
     // The current state, with all pending operations applied
-    tasks: HashMap<Uuid, HashMap<String, Value>>,
+    tasks: HashMap<Uuid, TaskMap>,
 
     // The version at which `operations` begins
     base_version: u64,
@@ -56,17 +57,24 @@ impl DB {
             } => {
                 // update if this task exists, otherwise ignore
                 if let Some(task) = self.tasks.get_mut(uuid) {
-                    task.insert(property.clone(), value.clone());
+                    DB::apply_update(task, property, value);
                 }
             }
         };
         self.operations.push(op);
     }
 
+    fn apply_update(task: &mut TaskMap, property: &str, value: &Option<String>) {
+        match value {
+            Some(ref val) => task.insert(property.to_string(), val.clone()),
+            None => task.remove(property),
+        };
+    }
+
     /// Get a read-only reference to the underlying set of tasks.
     ///
     /// This API is temporary, but provides query access to the DB.
-    pub fn tasks(&self) -> &HashMap<Uuid, HashMap<String, Value>> {
+    pub fn tasks(&self) -> &HashMap<Uuid, TaskMap> {
         &self.tasks
     }
 
@@ -194,17 +202,56 @@ mod tests {
         let op2 = Operation::Update {
             uuid,
             property: String::from("title"),
-            value: Value::from("\"my task\""),
+            value: Some("my task".into()),
             timestamp: Utc::now(),
         };
         db.apply(op2.clone());
 
         let mut exp = HashMap::new();
         let mut task = HashMap::new();
-        task.insert(String::from("title"), Value::from("\"my task\""));
+        task.insert(String::from("title"), String::from("my task"));
         exp.insert(uuid, task);
         assert_eq!(db.tasks(), &exp);
         assert_eq!(db.operations, vec![op1, op2]);
+    }
+
+    #[test]
+    fn test_apply_create_update_delete_prop() {
+        let mut db = DB::new();
+        let uuid = Uuid::new_v4();
+        let op1 = Operation::Create { uuid };
+        db.apply(op1.clone());
+
+        let op2 = Operation::Update {
+            uuid,
+            property: String::from("title"),
+            value: Some("my task".into()),
+            timestamp: Utc::now(),
+        };
+        db.apply(op2.clone());
+
+        let op3 = Operation::Update {
+            uuid,
+            property: String::from("priority"),
+            value: Some("H".into()),
+            timestamp: Utc::now(),
+        };
+        db.apply(op3.clone());
+
+        let op4 = Operation::Update {
+            uuid,
+            property: String::from("title"),
+            value: None,
+            timestamp: Utc::now(),
+        };
+        db.apply(op4.clone());
+
+        let mut exp = HashMap::new();
+        let mut task = HashMap::new();
+        task.insert(String::from("priority"), String::from("H"));
+        exp.insert(uuid, task);
+        assert_eq!(db.tasks(), &exp);
+        assert_eq!(db.operations, vec![op1, op2, op3, op4]);
     }
 
     #[test]
@@ -214,7 +261,7 @@ mod tests {
         let op = Operation::Update {
             uuid,
             property: String::from("title"),
-            value: Value::from("\"my task\""),
+            value: Some("my task".into()),
             timestamp: Utc::now(),
         };
         db.apply(op.clone());

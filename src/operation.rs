@@ -1,17 +1,23 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use uuid::Uuid;
 
+/// An Operation defines a single change to the task database
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub enum Operation {
-    Create {
-        uuid: Uuid,
-    },
+    /// Create a new task; if the task already exists in the DB.
+    ///
+    /// On application, if the task already exists, the operation does nothing.
+    Create { uuid: Uuid },
+
+    /// Update an existing task, setting the given property to the given value.  If the value is
+    /// None, then the corresponding property is deleted.
+    ///
+    /// If the given task does not exist, the operation does nothing.  
     Update {
         uuid: Uuid,
         property: String,
-        value: Value,
+        value: Option<String>,
         timestamp: DateTime<Utc>,
     },
 }
@@ -142,25 +148,25 @@ mod test {
             Update {
                 uuid,
                 property: "abc".into(),
-                value: true.into(),
+                value: Some("true".into()),
                 timestamp,
             },
             Update {
                 uuid,
                 property: "def".into(),
-                value: false.into(),
+                value: Some("false".into()),
                 timestamp,
             },
             Some(Update {
                 uuid,
                 property: "abc".into(),
-                value: true.into(),
+                value: Some("true".into()),
                 timestamp,
             }),
             Some(Update {
                 uuid,
                 property: "def".into(),
-                value: false.into(),
+                value: Some("false".into()),
                 timestamp,
             }),
         );
@@ -176,20 +182,20 @@ mod test {
             Update {
                 uuid,
                 property: "abc".into(),
-                value: true.into(),
+                value: Some("true".into()),
                 timestamp: timestamp1,
             },
             Update {
                 uuid,
                 property: "abc".into(),
-                value: false.into(),
+                value: Some("false".into()),
                 timestamp: timestamp2,
             },
             None,
             Some(Update {
                 uuid,
                 property: "abc".into(),
-                value: false.into(),
+                value: Some("false".into()),
                 timestamp: timestamp2,
             }),
         );
@@ -204,19 +210,19 @@ mod test {
             Update {
                 uuid,
                 property: "abc".into(),
-                value: true.into(),
+                value: Some("true".into()),
                 timestamp,
             },
             Update {
                 uuid,
                 property: "abc".into(),
-                value: false.into(),
+                value: Some("false".into()),
                 timestamp,
             },
             Some(Update {
                 uuid,
                 property: "abc".into(),
-                value: true.into(),
+                value: Some("true".into()),
                 timestamp,
             }),
             None,

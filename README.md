@@ -15,8 +15,7 @@ The data model is only seen from the clients' perspective.
 ## Task Database
 
 The task database is composed of an un-ordered collection of tasks, each keyed by a UUID.
-Each task has an arbitrary-sized set of key/value properties, with JSON values.
-A property with a `null` value is considered equivalent to that property not being set on the task.
+Each task has an arbitrary-sized set of key/value properties, with string values.
 
 Tasks are only created, never deleted.
 See below for details on how tasks can "expire" from the task database.
@@ -31,7 +30,8 @@ Each operation has one of the forms
 The former form creates a new task.
 It is invalid to create a task that already exists.
 
-The latter form updates the given property of the given task.
+The latter form updates the given property of the given task, where property and value are both strings.
+Value can also be `None` to indicate deletion of a property.
 It is invalid to update a task that does not exist.
 The timestamp on updates serves as additional metadata and is used to resolve conflicts.
 

@@ -20,7 +20,7 @@ fn operation_strategy() -> impl Strategy<Value = Operation> {
             Operation::Update {
                 uuid,
                 property,
-                value: true.into(),
+                value: Some("true".into()),
                 timestamp: Utc::now(),
             }
         }),
