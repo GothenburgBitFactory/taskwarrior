@@ -8,8 +8,9 @@ edition = "2018"
 
 [dependencies]
 uuid = { version = "0.8.1", features = ["serde", "v4"] }
+serde = "1.0.104"
 serde_json = "1.0"
-chrono = "0.4.10"
+chrono = { version = "0.4.10", features = ["serde"] }
 failure = {version = "0.1.5", features = ["derive"] }
 
 [dev-dependencies]

@@ -1,7 +1,10 @@
 use crate::operation::Operation;
+use crate::server::{Server, VersionAdd};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
+use std::str;
 use uuid::Uuid;
 
 #[derive(PartialEq, Debug, Clone)]
@@ -15,6 +18,12 @@ pub struct DB {
     // Operations applied since `base_version`, in order.
     //
     // INVARIANT: Given a snapshot at `base_version`, applying these operations produces `tasks`.
+    operations: Vec<Operation>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Version {
+    version: u64,
     operations: Vec<Operation>,
 }
 
@@ -59,6 +68,62 @@ impl DB {
     /// This API is temporary, but provides query access to the DB.
     pub fn tasks(&self) -> &HashMap<Uuid, HashMap<String, Value>> {
         &self.tasks
+    }
+
+    /// Sync to the given server, pulling remote changes and pushing local changes.
+    pub fn sync(&mut self, username: &str, server: &mut Server) {
+        loop {
+            // first pull changes and "rebase" on top of them
+            let new_versions = server.get_versions(username, self.base_version);
+            for version_blob in new_versions {
+                let version_str = str::from_utf8(&version_blob).unwrap();
+                let version: Version = serde_json::from_str(version_str).unwrap();
+                assert_eq!(version.version, self.base_version + 1);
+                println!("applying version {:?} from server", version.version);
+
+                self.apply_version(version);
+            }
+
+            if self.operations.len() == 0 {
+                break;
+            }
+
+            // now make a version of our local changes and push those
+            let new_version = Version {
+                version: self.base_version + 1,
+                operations: self.operations.clone(),
+            };
+            let new_version_str = serde_json::to_string(&new_version).unwrap();
+            println!("sending version {:?} to server", new_version.version);
+            if let VersionAdd::Ok =
+                server.add_version(username, new_version.version, new_version_str.into())
+            {
+                break;
+            }
+        }
+    }
+
+    fn apply_version(&mut self, mut version: Version) {
+        for server_op in version.operations.drain(..) {
+            let mut new_local_ops = Vec::with_capacity(self.operations.len());
+            let mut svr_op = Some(server_op);
+            for local_op in self.operations.drain(..) {
+                if let Some(o) = svr_op {
+                    let (new_server_op, new_local_op) = Operation::transform(o, local_op);
+                    svr_op = new_server_op;
+                    if let Some(o) = new_local_op {
+                        new_local_ops.push(o);
+                    }
+                } else {
+                    new_local_ops.push(local_op);
+                }
+            }
+            if let Some(o) = svr_op {
+                self.apply(o);
+            }
+            self.operations = new_local_ops;
+        }
+        self.base_version = version.version;
     }
 }
 

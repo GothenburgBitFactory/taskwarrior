@@ -3,7 +3,9 @@
 
 mod errors;
 mod operation;
+mod server;
 mod taskdb;
 
 pub use operation::Operation;
+pub use server::Server;
 pub use taskdb::DB;
