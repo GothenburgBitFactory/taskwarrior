@@ -104,6 +104,31 @@ impl DB {
     }
 
     fn apply_version(&mut self, mut version: Version) {
+        // The situation here is that the server has already applied all server operations, and we
+        // have already applied all local operations, so states have diverged by several
+        // operations.  We need to figure out what operations to apply locally and on the server in
+        // order to return to the same state.
+        //
+        // Operational transforms provide this on an operation-by-operation basis.  To break this
+        // down, we treat each server operation individually, in order.  For each such operation,
+        // we start in this state:
+        //
+        //
+        //      base state-*
+        //                / \-server op
+        //               *   *
+        //     local    / \ /
+        //     ops     *   *
+        //            / \ / new
+        //           *   * local
+        //   local  / \ / ops
+        //   state-*   *
+        //      new-\ /
+        // server op *-new local state
+        //
+        // This is slightly complicated by the fact that the transform function can return None,
+        // indicating no operation is required.  If this happens for a local op, we can just omit
+        // it.  If it happens for server op, then we must copy the remaining local ops.
         for server_op in version.operations.drain(..) {
             let mut new_local_ops = Vec::with_capacity(self.operations.len());
             let mut svr_op = Some(server_op);
