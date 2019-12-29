@@ -61,3 +61,56 @@ fn test_sync() {
     db1.sync("me", &mut server);
     assert_eq!(db1.tasks(), db2.tasks());
 }
+
+#[test]
+fn test_sync_create_delete() {
+    let mut server = Server::new();
+
+    let mut db1 = DB::new();
+    db1.sync("me", &mut server);
+
+    let mut db2 = DB::new();
+    db2.sync("me", &mut server);
+
+    // create and update a task..
+    let uuid = Uuid::new_v4();
+    db1.apply(Operation::Create { uuid }).unwrap();
+    db1.apply(Operation::Update {
+        uuid: uuid,
+        property: "title".into(),
+        value: Some("my first task".into()),
+        timestamp: Utc::now(),
+    })
+    .unwrap();
+
+    // and synchronize those around
+    db1.sync("me", &mut server);
+    db2.sync("me", &mut server);
+    db1.sync("me", &mut server);
+    assert_eq!(db1.tasks(), db2.tasks());
+
+    // delete and re-create the task on db1
+    db1.apply(Operation::Delete { uuid }).unwrap();
+    db1.apply(Operation::Create { uuid }).unwrap();
+    db1.apply(Operation::Update {
+        uuid: uuid,
+        property: "title".into(),
+        value: Some("my second task".into()),
+        timestamp: Utc::now(),
+    })
+    .unwrap();
+
+    // and on db2, update a property of the task
+    db2.apply(Operation::Update {
+        uuid: uuid,
+        property: "project".into(),
+        value: Some("personal".into()),
+        timestamp: Utc::now(),
+    })
+    .unwrap();
+
+    db1.sync("me", &mut server);
+    db2.sync("me", &mut server);
+    db1.sync("me", &mut server);
+    assert_eq!(db1.tasks(), db2.tasks());
+}

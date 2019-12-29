@@ -12,4 +12,4 @@
   - need to be sure that create / delete operations don't get reversed
 * cli tools
 * prop testing for DB modifications
-  - 'strict' mode to fail on application of any nonsense operations
+  - generate a non-failing sequence of operations with syncs interspersed
