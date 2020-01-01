@@ -1,10 +1,11 @@
-* assign types to properties
+* assign types to properties in Replica
   - db / operation model is just k/v, but formatted names can be used for
     structure:
     - dependencies: `dependency.<uuid> = ""`
     - annotations: `annotation.<epoch time> = "annotation"`
     - tags: `tags.<tag> = ""`
 * add HTTP API
+* add pending-task indexing to Replica
 * abstract server, storage, etc. into traits
 * implement snapshot requests
 * implement backups

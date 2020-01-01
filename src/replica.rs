@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use uuid::Uuid;
 
 /// A replica represents an instance of a user's task data.
-struct Replica {
+pub struct Replica {
     taskdb: Box<DB>,
 }
 
@@ -44,6 +44,11 @@ impl Replica {
             value: value.map(|v| v.into()),
             timestamp: Utc::now(),
         })
+    }
+
+    /// Get all tasks as an iterator of (&Uuid, &HashMap)
+    pub fn all_tasks(&self) -> impl Iterator<Item = (&Uuid, &HashMap<String, String>)> {
+        self.taskdb.tasks().iter()
     }
 
     /// Get an existing task by its UUID

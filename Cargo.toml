@@ -12,6 +12,7 @@ serde = "1.0.104"
 serde_json = "1.0"
 chrono = { version = "0.4.10", features = ["serde"] }
 failure = {version = "0.1.5", features = ["derive"] }
+clap = "~2.33.0"
 
 [dev-dependencies]
 proptest = "0.9.4"

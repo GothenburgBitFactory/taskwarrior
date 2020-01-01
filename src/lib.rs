@@ -8,5 +8,6 @@ mod server;
 mod taskdb;
 
 pub use operation::Operation;
+pub use replica::Replica;
 pub use server::Server;
 pub use taskdb::DB;
