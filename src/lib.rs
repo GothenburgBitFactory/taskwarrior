@@ -3,6 +3,7 @@
 
 mod errors;
 mod operation;
+mod replica;
 mod server;
 mod taskdb;
 

@@ -39,9 +39,9 @@ impl DB {
         }
     }
 
-    /// Apply an operation to the DB.  Aside from synchronization operations, this
-    /// is the only way to modify the DB.  In cases where an operation does not
-    /// make sense, this function will ignore the operation.
+    /// Apply an operation to the DB.  Aside from synchronization operations, this is the only way
+    /// to modify the DB.  In cases where an operation does not make sense, this function will do
+    /// nothing and return an error (but leave the DB in a consistent state).
     pub fn apply(&mut self, op: Operation) -> Result<(), Error> {
         if let err @ Err(_) = self.apply_op(&op) {
             return err;
