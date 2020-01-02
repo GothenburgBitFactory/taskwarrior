@@ -1,5 +1,5 @@
 use chrono::Utc;
-use ot::{Operation, Server, DB};
+use rask::{Operation, Server, DB};
 use uuid::Uuid;
 
 #[test]

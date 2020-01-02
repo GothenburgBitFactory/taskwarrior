@@ -1,6 +1,7 @@
 use crate::errors::Error;
 use crate::operation::Operation;
 use crate::server::{Server, VersionAdd};
+use failure::Fallible;
 use serde::{Deserialize, Serialize};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
@@ -42,7 +43,7 @@ impl DB {
     /// Apply an operation to the DB.  Aside from synchronization operations, this is the only way
     /// to modify the DB.  In cases where an operation does not make sense, this function will do
     /// nothing and return an error (but leave the DB in a consistent state).
-    pub fn apply(&mut self, op: Operation) -> Result<(), Error> {
+    pub fn apply(&mut self, op: Operation) -> Fallible<()> {
         if let err @ Err(_) = self.apply_op(&op) {
             return err;
         }
@@ -50,19 +51,19 @@ impl DB {
         Ok(())
     }
 
-    fn apply_op(&mut self, op: &Operation) -> Result<(), Error> {
+    fn apply_op(&mut self, op: &Operation) -> Fallible<()> {
         match op {
             &Operation::Create { uuid } => {
                 // insert if the task does not already exist
                 if let ent @ Entry::Vacant(_) = self.tasks.entry(uuid) {
                     ent.or_insert(HashMap::new());
                 } else {
-                    return Err(Error::DBError(format!("Task {} already exists", uuid)));
+                    return Err(Error::DBError(format!("Task {} already exists", uuid)).into());
                 }
             }
             &Operation::Delete { ref uuid } => {
                 if let None = self.tasks.remove(uuid) {
-                    return Err(Error::DBError(format!("Task {} does not exist", uuid)));
+                    return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
                 }
             }
             &Operation::Update {
@@ -78,7 +79,7 @@ impl DB {
                         None => task.remove(property),
                     };
                 } else {
-                    return Err(Error::DBError(format!("Task {} does not exist", uuid)));
+                    return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
                 }
             }
         }
@@ -203,8 +204,8 @@ mod tests {
         let op = Operation::Create { uuid };
         db.apply(op.clone()).unwrap();
         assert_eq!(
-            db.apply(op.clone()).err().unwrap(),
-            Error::DBError(format!("Task {} already exists", uuid))
+            db.apply(op.clone()).err().unwrap().to_string(),
+            format!("Task Database Error: Task {} already exists", uuid)
         );
 
         let mut exp = HashMap::new();
@@ -285,8 +286,8 @@ mod tests {
             timestamp: Utc::now(),
         };
         assert_eq!(
-            db.apply(op).err().unwrap(),
-            Error::DBError(format!("Task {} does not exist", uuid))
+            db.apply(op).err().unwrap().to_string(),
+            format!("Task Database Error: Task {} does not exist", uuid)
         );
 
         assert_eq!(db.tasks(), &HashMap::new());
@@ -314,8 +315,8 @@ mod tests {
 
         let op1 = Operation::Delete { uuid };
         assert_eq!(
-            db.apply(op1).err().unwrap(),
-            Error::DBError(format!("Task {} does not exist", uuid))
+            db.apply(op1).err().unwrap().to_string(),
+            format!("Task Database Error: Task {} does not exist", uuid)
         );
 
         assert_eq!(db.tasks(), &HashMap::new());

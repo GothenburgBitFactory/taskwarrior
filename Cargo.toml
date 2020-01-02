@@ -1,10 +1,8 @@
 [package]
-name = "ot"
+name = "rask"
 version = "0.1.0"
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 uuid = { version = "0.8.1", features = ["serde", "v4"] }

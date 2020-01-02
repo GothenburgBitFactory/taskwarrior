@@ -1,6 +1,6 @@
 extern crate clap;
 use clap::{App, Arg, SubCommand};
-use ot::{Replica, DB};
+use rask::{Replica, DB};
 use uuid::Uuid;
 
 fn main() {

@@ -1,7 +1,7 @@
-use crate::errors::Error;
 use crate::operation::Operation;
 use crate::taskdb::DB;
 use chrono::Utc;
+use failure::Fallible;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -16,12 +16,12 @@ impl Replica {
     }
 
     /// Create a new task.  The task must not already exist.
-    pub fn create_task(&mut self, uuid: Uuid) -> Result<(), Error> {
+    pub fn create_task(&mut self, uuid: Uuid) -> Fallible<()> {
         self.taskdb.apply(Operation::Create { uuid })
     }
 
     /// Delete a task.  The task must exist.
-    pub fn delete_task(&mut self, uuid: Uuid) -> Result<(), Error> {
+    pub fn delete_task(&mut self, uuid: Uuid) -> Fallible<()> {
         self.taskdb.apply(Operation::Delete { uuid })
     }
 
@@ -33,7 +33,7 @@ impl Replica {
         uuid: Uuid,
         property: S1,
         value: Option<S2>,
-    ) -> Result<(), Error>
+    ) -> Fallible<()>
     where
         S1: Into<String>,
         S2: Into<String>,

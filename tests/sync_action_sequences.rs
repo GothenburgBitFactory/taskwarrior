@@ -1,6 +1,6 @@
 use chrono::Utc;
-use ot::{Operation, Server, DB};
 use proptest::prelude::*;
+use rask::{Operation, Server, DB};
 use uuid::Uuid;
 
 #[derive(Debug)]
