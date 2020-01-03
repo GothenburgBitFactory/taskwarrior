@@ -6,7 +6,7 @@ use std::io::BufReader;
 fn test_parse() {
     let filename = "tests/data/tdb2-test.data";
     let file = File::open(filename).unwrap();
-    let tasks = rask::parse(filename, BufReader::new(file)).unwrap();
+    let tasks = taskwarrior_rust::parse(filename, BufReader::new(file)).unwrap();
     assert_eq!(
         tasks[0].description,
         "https://phabricator.services.example.com/D7364 [taskgraph] Download debian packages"

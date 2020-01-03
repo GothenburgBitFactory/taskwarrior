@@ -1,6 +1,6 @@
 use chrono::Utc;
 use proptest::prelude::*;
-use rask::{Operation, DB};
+use taskwarrior_rust::{Operation, DB};
 use uuid::Uuid;
 
 fn uuid_strategy() -> impl Strategy<Value = Uuid> {

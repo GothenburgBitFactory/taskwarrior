@@ -1,5 +1,5 @@
 [package]
-name = "rask"
+name = "taskwarrior-rust"
 version = "0.1.0"
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
 edition = "2018"

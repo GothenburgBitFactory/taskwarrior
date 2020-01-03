@@ -1,6 +1,6 @@
 use chrono::Utc;
 use proptest::prelude::*;
-use rask::{Operation, Server, DB};
+use taskwarrior_rust::{Operation, Server, DB};
 use uuid::Uuid;
 
 #[derive(Debug)]

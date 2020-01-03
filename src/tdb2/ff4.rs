@@ -89,7 +89,8 @@ fn decode(value: String) -> String {
 
 /// Parse an "FF4" formatted task line.  From Task::parse in Taskwarrior's src/Task.cpp.
 ///
-/// While Taskwarrior supports additional formats, this is the only format supported by rask.
+/// While Taskwarrior supports additional formats, this is the only format supported by
+/// taskwarrior_rust.
 pub(super) fn parse_ff4(line: &str) -> Fallible<Task> {
     let mut pig = Pig::new(line.as_bytes());
     let mut builder = TaskBuilder::new();
