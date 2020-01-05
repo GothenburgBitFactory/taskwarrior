@@ -164,7 +164,7 @@ mod test {
             db2.apply(o).unwrap();
         }
 
-        assert_eq!(db1.tasks(), db2.tasks());
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
     }
 
     #[test]

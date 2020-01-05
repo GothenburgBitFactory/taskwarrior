@@ -10,6 +10,7 @@ mod replica;
 mod server;
 mod task;
 mod taskdb;
+mod taskstorage;
 mod tdb2;
 
 pub use operation::Operation;

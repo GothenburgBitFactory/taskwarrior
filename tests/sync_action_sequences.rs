@@ -59,11 +59,11 @@ proptest! {
             }
         }
 
-        println!("{:?}", dbs[0].tasks());
-        println!("{:?}", dbs[1].tasks());
-        println!("{:?}", dbs[2].tasks());
+        println!("{:?}", dbs[0]);
+        println!("{:?}", dbs[1]);
+        println!("{:?}", dbs[2]);
 
-        assert_eq!(dbs[0].tasks(), dbs[1].tasks());
-        assert_eq!(dbs[1].tasks(), dbs[2].tasks());
+        assert_eq!(dbs[0].sorted_tasks(), dbs[0].sorted_tasks());
+        assert_eq!(dbs[1].sorted_tasks(), dbs[2].sorted_tasks());
     }
 }

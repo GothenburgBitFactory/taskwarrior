@@ -73,6 +73,6 @@ proptest! {
         if let Some(o) = o1p {
             db2.apply(o).map_err(|e| TestCaseError::Fail(format!("Applying to db2: {}", e).into()))?;
         }
-        assert_eq!(db1.tasks(), db2.tasks());
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
     }
 }

@@ -1,8 +1,8 @@
 use crate::operation::Operation;
 use crate::taskdb::DB;
+use crate::taskstorage::TaskMap;
 use chrono::Utc;
 use failure::Fallible;
-use std::collections::HashMap;
 use uuid::Uuid;
 
 /// A replica represents an instance of a user's task data.
@@ -47,13 +47,18 @@ impl Replica {
     }
 
     /// Get all tasks as an iterator of (&Uuid, &HashMap)
-    pub fn all_tasks(&self) -> impl Iterator<Item = (&Uuid, &HashMap<String, String>)> {
-        self.taskdb.tasks().iter()
+    pub fn all_tasks<'a>(&'a self) -> impl Iterator<Item = (Uuid, TaskMap)> + 'a {
+        self.taskdb.all_tasks()
+    }
+
+    /// Get the UUIDs of all tasks
+    pub fn all_task_uuids<'a>(&'a self) -> impl Iterator<Item = Uuid> + 'a {
+        self.taskdb.all_task_uuids()
     }
 
     /// Get an existing task by its UUID
-    pub fn get_task(&self, uuid: &Uuid) -> Option<&HashMap<String, String>> {
-        self.taskdb.tasks().get(&uuid)
+    pub fn get_task(&self, uuid: &Uuid) -> Option<TaskMap> {
+        self.taskdb.get_task(&uuid)
     }
 }
 
@@ -69,7 +74,7 @@ mod tests {
         let uuid = Uuid::new_v4();
 
         rep.create_task(uuid.clone()).unwrap();
-        assert_eq!(rep.get_task(&uuid), Some(&HashMap::new()));
+        assert_eq!(rep.get_task(&uuid), Some(TaskMap::new()));
     }
 
     #[test]
@@ -90,9 +95,9 @@ mod tests {
         rep.create_task(uuid.clone()).unwrap();
         rep.update_task(uuid.clone(), "title", Some("snarsblat"))
             .unwrap();
-        let mut task = HashMap::new();
+        let mut task = TaskMap::new();
         task.insert("title".into(), "snarsblat".into());
-        assert_eq!(rep.get_task(&uuid), Some(&task));
+        assert_eq!(rep.get_task(&uuid), Some(task));
     }
 
     #[test]

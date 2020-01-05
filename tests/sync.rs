@@ -37,7 +37,7 @@ fn test_sync() {
     db1.sync("me", &mut server);
     db2.sync("me", &mut server);
     db1.sync("me", &mut server);
-    assert_eq!(db1.tasks(), db2.tasks());
+    assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
     // now make updates to the same task on both sides
     db1.apply(Operation::Update {
@@ -59,7 +59,7 @@ fn test_sync() {
     db1.sync("me", &mut server);
     db2.sync("me", &mut server);
     db1.sync("me", &mut server);
-    assert_eq!(db1.tasks(), db2.tasks());
+    assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 }
 
 #[test]
@@ -87,7 +87,7 @@ fn test_sync_create_delete() {
     db1.sync("me", &mut server);
     db2.sync("me", &mut server);
     db1.sync("me", &mut server);
-    assert_eq!(db1.tasks(), db2.tasks());
+    assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
     // delete and re-create the task on db1
     db1.apply(Operation::Delete { uuid }).unwrap();
@@ -112,5 +112,5 @@ fn test_sync_create_delete() {
     db1.sync("me", &mut server);
     db2.sync("me", &mut server);
     db1.sync("me", &mut server);
-    assert_eq!(db1.tasks(), db2.tasks());
+    assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 }
