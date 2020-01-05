@@ -6,7 +6,7 @@
     - tags: `tags.<tag> = ""`
 * add HTTP API
 * add pending-task indexing to Replica
-* abstract server, storage, etc. into traits
+* abstract server into trait
 * implement snapshot requests
 * implement backups
 * implement client-side encryption

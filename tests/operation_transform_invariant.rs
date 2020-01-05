@@ -1,7 +1,11 @@
 use chrono::Utc;
 use proptest::prelude::*;
-use taskwarrior_rust::{Operation, DB};
+use taskwarrior_rust::{taskstorage, Operation, DB};
 use uuid::Uuid;
+
+fn newdb() -> DB {
+    DB::new(Box::new(taskstorage::InMemoryStorage::new()))
+}
 
 fn uuid_strategy() -> impl Strategy<Value = Uuid> {
     prop_oneof![
@@ -37,26 +41,29 @@ proptest! {
     fn transform_invariant_holds(o1 in operation_strategy(), o2 in operation_strategy()) {
         let (o1p, o2p) = Operation::transform(o1.clone(), o2.clone());
 
-        let mut db1 = DB::new();
+        let mut db1 = newdb();
+        let mut db2 = newdb();
 
         // Ensure that any expected tasks already exist
         if let Operation::Update{ ref uuid, .. } = o1 {
             let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
+            let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
         }
 
         if let Operation::Update{ ref uuid, .. } = o2 {
             let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
+            let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
         }
 
         if let Operation::Delete{ ref uuid } = o1 {
             let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
+            let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
         }
 
         if let Operation::Delete{ ref uuid } = o2 {
             let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
+            let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
         }
-
-        let mut db2 = db1.clone();
 
         // if applying the initial operations fail, that indicates the operation was invalid
         // in the base state, so consider the case successful.

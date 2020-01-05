@@ -1,16 +1,16 @@
 use crate::errors::Error;
 use crate::operation::Operation;
 use crate::server::{Server, VersionAdd};
-use crate::taskstorage::{InMemoryStorage, TaskMap};
+use crate::taskstorage::{TaskMap, TaskStorage};
 use failure::Fallible;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::str;
 use uuid::Uuid;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct DB {
-    storage: InMemoryStorage,
+    storage: Box<dyn TaskStorage>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -20,11 +20,14 @@ struct Version {
 }
 
 impl DB {
-    /// Create a new, empty database
-    pub fn new() -> DB {
-        DB {
-            storage: InMemoryStorage::new(),
-        }
+    /// Create a new DB with the given backend storage
+    pub fn new(storage: Box<dyn TaskStorage>) -> DB {
+        DB { storage }
+    }
+
+    #[cfg(test)]
+    pub fn new_inmemory() -> DB {
+        DB::new(Box::new(crate::taskstorage::InMemoryStorage::new()))
     }
 
     /// Apply an operation to the DB.  Aside from synchronization operations, this is the only way
@@ -212,7 +215,7 @@ mod tests {
 
     #[test]
     fn test_apply_create() {
-        let mut db = DB::new();
+        let mut db = DB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
         db.apply(op.clone()).unwrap();
@@ -223,7 +226,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_exists() {
-        let mut db = DB::new();
+        let mut db = DB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
         db.apply(op.clone()).unwrap();
@@ -238,7 +241,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_update() {
-        let mut db = DB::new();
+        let mut db = DB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -259,7 +262,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_update_delete_prop() {
-        let mut db = DB::new();
+        let mut db = DB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -301,7 +304,7 @@ mod tests {
 
     #[test]
     fn test_apply_update_does_not_exist() {
-        let mut db = DB::new();
+        let mut db = DB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Update {
             uuid,
@@ -320,7 +323,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_delete() {
-        let mut db = DB::new();
+        let mut db = DB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -334,7 +337,7 @@ mod tests {
 
     #[test]
     fn test_apply_delete_not_present() {
-        let mut db = DB::new();
+        let mut db = DB::new_inmemory();
         let uuid = Uuid::new_v4();
 
         let op1 = Operation::Delete { uuid };

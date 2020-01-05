@@ -1,7 +1,11 @@
 use chrono::Utc;
 use proptest::prelude::*;
-use taskwarrior_rust::{Operation, Server, DB};
+use taskwarrior_rust::{taskstorage, Operation, Server, DB};
 use uuid::Uuid;
+
+fn newdb() -> DB {
+    DB::new(Box::new(taskstorage::InMemoryStorage::new()))
+}
 
 #[derive(Debug)]
 enum Action {
@@ -43,7 +47,7 @@ proptest! {
     // another.  So, the generated sequences focus on a single task UUID.
     fn transform_sequences_of_operations(action_sequence in action_sequence_strategy()) {
         let mut server = Server::new();
-        let mut dbs = [DB::new(), DB::new(), DB::new()];
+        let mut dbs = [newdb(), newdb(), newdb()];
 
         for (action, db) in action_sequence {
             println!("{:?} on db {}", action, db);

@@ -1,15 +1,19 @@
 use chrono::Utc;
-use taskwarrior_rust::{Operation, Server, DB};
+use taskwarrior_rust::{taskstorage, Operation, Server, DB};
 use uuid::Uuid;
+
+fn newdb() -> DB {
+    DB::new(Box::new(taskstorage::InMemoryStorage::new()))
+}
 
 #[test]
 fn test_sync() {
     let mut server = Server::new();
 
-    let mut db1 = DB::new();
+    let mut db1 = newdb();
     db1.sync("me", &mut server);
 
-    let mut db2 = DB::new();
+    let mut db2 = newdb();
     db2.sync("me", &mut server);
 
     // make some changes in parallel to db1 and db2..
@@ -66,10 +70,10 @@ fn test_sync() {
 fn test_sync_create_delete() {
     let mut server = Server::new();
 
-    let mut db1 = DB::new();
+    let mut db1 = newdb();
     db1.sync("me", &mut server);
 
-    let mut db2 = DB::new();
+    let mut db2 = newdb();
     db2.sync("me", &mut server);
 
     // create and update a task..

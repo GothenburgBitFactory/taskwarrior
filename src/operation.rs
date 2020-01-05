@@ -146,7 +146,7 @@ mod test {
 
         // check that the two operation sequences have the same effect, enforcing the invariant of
         // the transform function.
-        let mut db1 = DB::new();
+        let mut db1 = DB::new_inmemory();
         if let Some(ref o) = setup {
             db1.apply(o.clone()).unwrap();
         }
@@ -155,7 +155,7 @@ mod test {
             db1.apply(o).unwrap();
         }
 
-        let mut db2 = DB::new();
+        let mut db2 = DB::new_inmemory();
         if let Some(ref o) = setup {
             db2.apply(o.clone()).unwrap();
         }

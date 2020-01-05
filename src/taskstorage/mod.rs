@@ -1,100 +1,50 @@
-use crate::operation::Operation;
-use std::collections::hash_map::Entry;
+use crate::Operation;
 use std::collections::HashMap;
+use std::fmt;
 use uuid::Uuid;
 
+mod inmemory;
+
+pub use inmemory::InMemoryStorage;
+
+/// An in-memory representation of a task as a simple hashmap
 pub type TaskMap = HashMap<String, String>;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct InMemoryStorage {
-    // The current state, with all pending operations applied
-    tasks: HashMap<Uuid, TaskMap>,
-
-    // The version at which `operations` begins
-    base_version: u64,
-
-    // Operations applied since `base_version`, in order.
-    //
-    // INVARIANT: Given a snapshot at `base_version`, applying these operations produces `tasks`.
-    operations: Vec<Operation>,
-}
-
-impl InMemoryStorage {
-    pub fn new() -> InMemoryStorage {
-        InMemoryStorage {
-            tasks: HashMap::new(),
-            base_version: 0,
-            operations: vec![],
-        }
-    }
-
+/// A trait for objects able to act as backing storage for a TaskDB.  This API is optimized to be
+/// easy to implement, with all of the semantic meaning of the data located in the TaskDB
+/// implementation, which is the sole consumer of this trait.
+pub trait TaskStorage: fmt::Debug {
     /// Get an (immutable) task, if it is in the storage
-    pub fn get_task(&self, uuid: &Uuid) -> Option<TaskMap> {
-        match self.tasks.get(uuid) {
-            None => None,
-            Some(t) => Some(t.clone()),
-        }
-    }
+    fn get_task(&self, uuid: &Uuid) -> Option<TaskMap>;
 
     /// Create a task, only if it does not already exist.  Returns true if
     /// the task was created (did not already exist).
-    pub fn create_task(&mut self, uuid: Uuid, task: TaskMap) -> bool {
-        if let ent @ Entry::Vacant(_) = self.tasks.entry(uuid) {
-            ent.or_insert(task);
-            true
-        } else {
-            false
-        }
-    }
+    fn create_task(&mut self, uuid: Uuid, task: TaskMap) -> bool;
 
     /// Set a task, overwriting any existing task.
-    pub fn set_task(&mut self, uuid: Uuid, task: TaskMap) {
-        self.tasks.insert(uuid, task);
-    }
+    fn set_task(&mut self, uuid: Uuid, task: TaskMap);
 
     /// Delete a task, if it exists.  Returns true if the task was deleted (already existed)
-    pub fn delete_task(&mut self, uuid: &Uuid) -> bool {
-        if let Some(_) = self.tasks.remove(uuid) {
-            true
-        } else {
-            false
-        }
-    }
+    fn delete_task(&mut self, uuid: &Uuid) -> bool;
 
-    pub fn get_task_uuids<'a>(&'a self) -> impl Iterator<Item = Uuid> + 'a {
-        self.tasks.keys().map(|u| u.clone())
-    }
+    /// Get the uuids of all tasks in the storage, in undefined order.
+    fn get_task_uuids<'a>(&'a self) -> Box<dyn Iterator<Item = Uuid> + 'a>;
 
     /// Add an operation to the list of operations in the storage.  Note that this merely *stores*
     /// the operation; it is up to the TaskDB to apply it.
-    pub fn add_operation(&mut self, op: Operation) {
-        self.operations.push(op);
-    }
+    fn add_operation(&mut self, op: Operation);
 
     /// Get the current base_version for this storage -- the last version synced from the server.
-    pub fn base_version(&self) -> u64 {
-        return self.base_version;
-    }
+    fn base_version(&self) -> u64;
 
     /// Get the current set of outstanding operations (operations that have not been sync'd to the
     /// server yet)
-    pub fn operations(&self) -> impl Iterator<Item = &Operation> {
-        self.operations.iter()
-    }
+    fn operations<'a>(&'a self) -> Box<dyn Iterator<Item = &Operation> + 'a>;
 
     /// Apply the next version from the server.  This replaces the existing base_version and
     /// operations.  It's up to the caller (TaskDB) to ensure this is done consistently.
-    pub(crate) fn update_version(&mut self, version: u64, new_operations: Vec<Operation>) {
-        // ensure that we are applying the versions in order..
-        assert_eq!(version, self.base_version + 1);
-        self.base_version = version;
-        self.operations = new_operations;
-    }
+    fn update_version(&mut self, version: u64, new_operations: Vec<Operation>);
 
     /// Record the outstanding operations as synced to the server in the given version.
-    pub(crate) fn local_operations_synced(&mut self, version: u64) {
-        assert_eq!(version, self.base_version + 1);
-        self.base_version = version;
-        self.operations = vec![];
-    }
+    fn local_operations_synced(&mut self, version: u64);
 }

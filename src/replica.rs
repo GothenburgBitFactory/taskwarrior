@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn create() {
-        let mut rep = Replica::new(DB::new().into());
+        let mut rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
 
         rep.create_task(uuid.clone()).unwrap();
@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     fn delete() {
-        let mut rep = Replica::new(DB::new().into());
+        let mut rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
 
         rep.create_task(uuid.clone()).unwrap();
@@ -89,7 +89,7 @@ mod tests {
 
     #[test]
     fn update() {
-        let mut rep = Replica::new(DB::new().into());
+        let mut rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
 
         rep.create_task(uuid.clone()).unwrap();
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn get_does_not_exist() {
-        let rep = Replica::new(DB::new().into());
+        let rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
         assert_eq!(rep.get_task(&uuid), None);
     }

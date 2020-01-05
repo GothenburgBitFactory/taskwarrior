@@ -1,6 +1,6 @@
 extern crate clap;
 use clap::{App, Arg, SubCommand};
-use taskwarrior_rust::{Replica, DB};
+use taskwarrior_rust::{taskstorage, Replica, DB};
 use uuid::Uuid;
 
 fn main() {
@@ -16,7 +16,7 @@ fn main() {
         .subcommand(SubCommand::with_name("list").about("lists tasks"))
         .get_matches();
 
-    let mut replica = Replica::new(DB::new().into());
+    let mut replica = Replica::new(DB::new(Box::new(taskstorage::InMemoryStorage::new())).into());
 
     match matches.subcommand() {
         ("add", Some(matches)) => {
