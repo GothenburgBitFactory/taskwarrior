@@ -47,17 +47,17 @@ impl Replica {
     }
 
     /// Get all tasks as an iterator of (&Uuid, &HashMap)
-    pub fn all_tasks<'a>(&'a self) -> Fallible<impl Iterator<Item = (Uuid, TaskMap)> + 'a> {
+    pub fn all_tasks<'a>(&'a mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
         self.taskdb.all_tasks()
     }
 
     /// Get the UUIDs of all tasks
-    pub fn all_task_uuids<'a>(&'a self) -> Fallible<impl Iterator<Item = Uuid> + 'a> {
+    pub fn all_task_uuids<'a>(&'a mut self) -> Fallible<Vec<Uuid>> {
         self.taskdb.all_task_uuids()
     }
 
     /// Get an existing task by its UUID
-    pub fn get_task(&self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
+    pub fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
         self.taskdb.get_task(&uuid)
     }
 }
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn get_does_not_exist() {
-        let rep = Replica::new(DB::new_inmemory().into());
+        let mut rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
         assert_eq!(rep.get_task(&uuid).unwrap(), None);
     }

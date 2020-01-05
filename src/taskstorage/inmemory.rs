@@ -1,106 +1,145 @@
 use crate::operation::Operation;
-use crate::taskstorage::{TaskMap, TaskStorage};
+use crate::taskstorage::{TaskMap, TaskStorage, TaskStorageTxn};
 use failure::Fallible;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use uuid::Uuid;
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct InMemoryStorage {
-    // The current state, with all pending operations applied
+struct Data {
     tasks: HashMap<Uuid, TaskMap>,
-
-    // The version at which `operations` begins
     base_version: u64,
-
-    // Operations applied since `base_version`, in order.
-    //
-    // INVARIANT: Given a snapshot at `base_version`, applying these operations produces `tasks`.
     operations: Vec<Operation>,
 }
 
-impl InMemoryStorage {
-    pub fn new() -> InMemoryStorage {
-        InMemoryStorage {
-            tasks: HashMap::new(),
-            base_version: 0,
-            operations: vec![],
+struct Txn<'t> {
+    storage: &'t mut InMemoryStorage,
+    new_data: Option<Data>,
+}
+
+impl<'t> Txn<'t> {
+    fn mut_data_ref(&mut self) -> &mut Data {
+        if self.new_data.is_none() {
+            self.new_data = Some(self.storage.data.clone());
+        }
+        if let Some(ref mut data) = self.new_data {
+            data
+        } else {
+            unreachable!();
+        }
+    }
+
+    fn data_ref(&mut self) -> &Data {
+        if let Some(ref data) = self.new_data {
+            data
+        } else {
+            &self.storage.data
         }
     }
 }
 
-impl TaskStorage for InMemoryStorage {
-    /// Get an (immutable) task, if it is in the storage
-    fn get_task(&self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
-        match self.tasks.get(uuid) {
+impl<'t> TaskStorageTxn for Txn<'t> {
+    fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
+        match self.data_ref().tasks.get(uuid) {
             None => Ok(None),
             Some(t) => Ok(Some(t.clone())),
         }
     }
 
-    /// Create a task, only if it does not already exist.  Returns true if
-    /// the task was created (did not already exist).
-    fn create_task(&mut self, uuid: Uuid, task: TaskMap) -> Fallible<bool> {
-        if let ent @ Entry::Vacant(_) = self.tasks.entry(uuid) {
-            ent.or_insert(task);
+    fn create_task(&mut self, uuid: Uuid) -> Fallible<bool> {
+        if let ent @ Entry::Vacant(_) = self.mut_data_ref().tasks.entry(uuid) {
+            ent.or_insert(TaskMap::new());
             Ok(true)
         } else {
             Ok(false)
         }
     }
 
-    /// Set a task, overwriting any existing task.
     fn set_task(&mut self, uuid: Uuid, task: TaskMap) -> Fallible<()> {
-        self.tasks.insert(uuid, task);
+        self.mut_data_ref().tasks.insert(uuid, task);
         Ok(())
     }
 
-    /// Delete a task, if it exists.  Returns true if the task was deleted (already existed)
     fn delete_task(&mut self, uuid: &Uuid) -> Fallible<bool> {
-        if let Some(_) = self.tasks.remove(uuid) {
+        if let Some(_) = self.mut_data_ref().tasks.remove(uuid) {
             Ok(true)
         } else {
             Ok(false)
         }
     }
 
-    fn get_task_uuids<'a>(&'a self) -> Fallible<Box<dyn Iterator<Item = Uuid> + 'a>> {
-        Ok(Box::new(self.tasks.keys().map(|u| u.clone())))
+    fn all_tasks<'a>(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
+        Ok(self
+            .data_ref()
+            .tasks
+            .iter()
+            .map(|(u, t)| (u.clone(), t.clone()))
+            .collect())
     }
 
-    /// Add an operation to the list of operations in the storage.  Note that this merely *stores*
-    /// the operation; it is up to the TaskDB to apply it.
+    fn all_task_uuids<'a>(&mut self) -> Fallible<Vec<Uuid>> {
+        Ok(self.data_ref().tasks.keys().map(|u| u.clone()).collect())
+    }
+
     fn add_operation(&mut self, op: Operation) -> Fallible<()> {
-        self.operations.push(op);
+        self.mut_data_ref().operations.push(op);
         Ok(())
     }
 
-    /// Get the current base_version for this storage -- the last version synced from the server.
-    fn base_version(&self) -> Fallible<u64> {
-        Ok(self.base_version)
+    fn base_version(&mut self) -> Fallible<u64> {
+        Ok(self.data_ref().base_version)
     }
 
-    /// Get the current set of outstanding operations (operations that have not been sync'd to the
-    /// server yet)
-    fn operations<'a>(&'a self) -> Fallible<Box<dyn Iterator<Item = &'a Operation> + 'a>> {
-        Ok(Box::new(self.operations.iter()))
+    fn operations(&mut self) -> Fallible<Vec<Operation>> {
+        Ok(self.data_ref().operations.clone())
     }
 
-    /// Apply the next version from the server.  This replaces the existing base_version and
-    /// operations.  It's up to the caller (TaskDB) to ensure this is done consistently.
     fn update_version(&mut self, version: u64, new_operations: Vec<Operation>) -> Fallible<()> {
         // ensure that we are applying the versions in order..
-        assert_eq!(version, self.base_version + 1);
-        self.base_version = version;
-        self.operations = new_operations;
+        assert_eq!(version, self.data_ref().base_version + 1);
+        self.mut_data_ref().base_version = version;
+        self.mut_data_ref().operations = new_operations;
         Ok(())
     }
 
-    /// Record the outstanding operations as synced to the server in the given version.
     fn local_operations_synced(&mut self, version: u64) -> Fallible<()> {
-        assert_eq!(version, self.base_version + 1);
-        self.base_version = version;
-        self.operations = vec![];
+        assert_eq!(version, self.data_ref().base_version + 1);
+        self.mut_data_ref().base_version = version;
+        self.mut_data_ref().operations = vec![];
         Ok(())
+    }
+
+    fn commit(&mut self) -> Fallible<()> {
+        // copy the new_data back into storage to commit the transaction
+        if let Some(data) = self.new_data.take() {
+            self.storage.data = data;
+        }
+        Ok(())
+    }
+}
+
+#[derive(PartialEq, Debug, Clone)]
+pub struct InMemoryStorage {
+    data: Data,
+}
+
+impl InMemoryStorage {
+    pub fn new() -> InMemoryStorage {
+        InMemoryStorage {
+            data: Data {
+                tasks: HashMap::new(),
+                base_version: 0,
+                operations: vec![],
+            },
+        }
+    }
+}
+
+impl TaskStorage for InMemoryStorage {
+    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn TaskStorageTxn + 'a>> {
+        Ok(Box::new(Txn {
+            storage: self,
+            new_data: None,
+        }))
     }
 }

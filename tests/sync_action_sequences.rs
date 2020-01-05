@@ -63,10 +63,6 @@ proptest! {
             }
         }
 
-        println!("{:?}", dbs[0]);
-        println!("{:?}", dbs[1]);
-        println!("{:?}", dbs[2]);
-
         assert_eq!(dbs[0].sorted_tasks(), dbs[0].sorted_tasks());
         assert_eq!(dbs[1].sorted_tasks(), dbs[2].sorted_tasks());
     }
