@@ -34,10 +34,11 @@ impl DB {
     /// to modify the DB.  In cases where an operation does not make sense, this function will do
     /// nothing and return an error (but leave the DB in a consistent state).
     pub fn apply(&mut self, op: Operation) -> Fallible<()> {
+        // TODO: differentiate error types here?
         if let err @ Err(_) = self.apply_op(&op) {
             return err;
         }
-        self.storage.add_operation(op);
+        self.storage.add_operation(op)?;
         Ok(())
     }
 
@@ -45,12 +46,12 @@ impl DB {
         match op {
             &Operation::Create { uuid } => {
                 // insert if the task does not already exist
-                if !self.storage.create_task(uuid, HashMap::new()) {
+                if !self.storage.create_task(uuid, HashMap::new())? {
                     return Err(Error::DBError(format!("Task {} already exists", uuid)).into());
                 }
             }
             &Operation::Delete { ref uuid } => {
-                if !self.storage.delete_task(uuid) {
+                if !self.storage.delete_task(uuid)? {
                     return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
                 }
             }
@@ -61,13 +62,13 @@ impl DB {
                 timestamp: _,
             } => {
                 // update if this task exists, otherwise ignore
-                if let Some(task) = self.storage.get_task(uuid) {
+                if let Some(task) = self.storage.get_task(uuid)? {
                     let mut task = task.clone();
                     match value {
                         Some(ref val) => task.insert(property.to_string(), val.clone()),
                         None => task.remove(property),
                     };
-                    self.storage.set_task(uuid.clone(), task);
+                    self.storage.set_task(uuid.clone(), task)?;
                 } else {
                     return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
                 }
@@ -78,38 +79,41 @@ impl DB {
     }
 
     /// Get all tasks.  This is not a terribly efficient operation.
-    pub fn all_tasks<'a>(&'a self) -> impl Iterator<Item = (Uuid, TaskMap)> + 'a {
-        self.all_task_uuids()
-            .map(move |u| (u, self.get_task(&u).unwrap()))
+    pub fn all_tasks<'a>(&'a self) -> Fallible<impl Iterator<Item = (Uuid, TaskMap)> + 'a> {
+        Ok(self
+            .all_task_uuids()?
+            // TODO: don't unwrap result (just option)
+            .map(move |u| (u, self.get_task(&u).unwrap().unwrap())))
     }
 
     /// Get the UUIDs of all tasks
-    pub fn all_task_uuids<'a>(&'a self) -> impl Iterator<Item = Uuid> + 'a {
+    pub fn all_task_uuids<'a>(&'a self) -> Fallible<impl Iterator<Item = Uuid> + 'a> {
         self.storage.get_task_uuids()
     }
 
     /// Get a single task, by uuid.
-    pub fn get_task(&self, uuid: &Uuid) -> Option<TaskMap> {
+    pub fn get_task(&self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
         self.storage.get_task(uuid)
     }
 
     /// Sync to the given server, pulling remote changes and pushing local changes.
-    pub fn sync(&mut self, username: &str, server: &mut Server) {
+    pub fn sync(&mut self, username: &str, server: &mut Server) -> Fallible<()> {
         // retry synchronizing until the server accepts our version (this allows for races between
         // replicas trying to sync to the same server)
         loop {
             // first pull changes and "rebase" on top of them
-            let new_versions = server.get_versions(username, self.storage.base_version());
+            let new_versions = server.get_versions(username, self.storage.base_version()?);
             for version_blob in new_versions {
                 let version_str = str::from_utf8(&version_blob).unwrap();
                 let version: Version = serde_json::from_str(version_str).unwrap();
-                assert_eq!(version.version, self.storage.base_version() + 1);
+                assert_eq!(version.version, self.storage.base_version()? + 1);
                 println!("applying version {:?} from server", version.version);
 
-                self.apply_version(version);
+                self.apply_version(version)?;
             }
 
-            let operations: Vec<Operation> = self.storage.operations().map(|o| o.clone()).collect();
+            let operations: Vec<Operation> =
+                self.storage.operations()?.map(|o| o.clone()).collect();
             if operations.len() == 0 {
                 // nothing to sync back to the server..
                 break;
@@ -117,7 +121,7 @@ impl DB {
 
             // now make a version of our local changes and push those
             let new_version = Version {
-                version: self.storage.base_version() + 1,
+                version: self.storage.base_version()? + 1,
                 operations: operations,
             };
             let new_version_str = serde_json::to_string(&new_version).unwrap();
@@ -125,13 +129,15 @@ impl DB {
             if let VersionAdd::Ok =
                 server.add_version(username, new_version.version, new_version_str.into())
             {
-                self.storage.local_operations_synced(new_version.version);
+                self.storage.local_operations_synced(new_version.version)?;
                 break;
             }
         }
+
+        Ok(())
     }
 
-    fn apply_version(&mut self, mut version: Version) {
+    fn apply_version(&mut self, mut version: Version) -> Fallible<()> {
         // The situation here is that the server has already applied all server operations, and we
         // have already applied all local operations, so states have diverged by several
         // operations.  We need to figure out what operations to apply locally and on the server in
@@ -158,7 +164,7 @@ impl DB {
         // indicating no operation is required.  If this happens for a local op, we can just omit
         // it.  If it happens for server op, then we must copy the remaining local ops.
         let mut local_operations: Vec<Operation> =
-            self.storage.operations().map(|o| o.clone()).collect();
+            self.storage.operations()?.map(|o| o.clone()).collect();
         for server_op in version.operations.drain(..) {
             let mut new_local_ops = Vec::with_capacity(local_operations.len());
             let mut svr_op = Some(server_op);
@@ -181,7 +187,8 @@ impl DB {
             local_operations = new_local_ops;
         }
         self.storage
-            .update_version(version.version, local_operations);
+            .update_version(version.version, local_operations)?;
+        Ok(())
     }
 
     // functions for supporting tests
@@ -189,6 +196,7 @@ impl DB {
     pub fn sorted_tasks(&self) -> Vec<(Uuid, Vec<(String, String)>)> {
         let mut res: Vec<(Uuid, Vec<(String, String)>)> = self
             .all_tasks()
+            .unwrap()
             .map(|(u, t)| {
                 let mut t = t
                     .iter()
@@ -203,7 +211,11 @@ impl DB {
     }
 
     pub fn operations(&self) -> Vec<Operation> {
-        self.storage.operations().map(|o| o.clone()).collect()
+        self.storage
+            .operations()
+            .unwrap()
+            .map(|o| o.clone())
+            .collect()
     }
 }
 

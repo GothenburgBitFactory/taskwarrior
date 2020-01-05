@@ -59,7 +59,7 @@ proptest! {
                         println!("  {:?} (ignored)", e);
                     }
                 },
-                Action::Sync => db.sync("me", &mut server),
+                Action::Sync => db.sync("me", &mut server).unwrap(),
             }
         }
 

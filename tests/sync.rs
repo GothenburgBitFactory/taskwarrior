@@ -11,10 +11,10 @@ fn test_sync() {
     let mut server = Server::new();
 
     let mut db1 = newdb();
-    db1.sync("me", &mut server);
+    db1.sync("me", &mut server).unwrap();
 
     let mut db2 = newdb();
-    db2.sync("me", &mut server);
+    db2.sync("me", &mut server).unwrap();
 
     // make some changes in parallel to db1 and db2..
     let uuid1 = Uuid::new_v4();
@@ -38,9 +38,9 @@ fn test_sync() {
     .unwrap();
 
     // and synchronize those around
-    db1.sync("me", &mut server);
-    db2.sync("me", &mut server);
-    db1.sync("me", &mut server);
+    db1.sync("me", &mut server).unwrap();
+    db2.sync("me", &mut server).unwrap();
+    db1.sync("me", &mut server).unwrap();
     assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
     // now make updates to the same task on both sides
@@ -60,9 +60,9 @@ fn test_sync() {
     .unwrap();
 
     // and synchronize those around
-    db1.sync("me", &mut server);
-    db2.sync("me", &mut server);
-    db1.sync("me", &mut server);
+    db1.sync("me", &mut server).unwrap();
+    db2.sync("me", &mut server).unwrap();
+    db1.sync("me", &mut server).unwrap();
     assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 }
 
@@ -71,10 +71,10 @@ fn test_sync_create_delete() {
     let mut server = Server::new();
 
     let mut db1 = newdb();
-    db1.sync("me", &mut server);
+    db1.sync("me", &mut server).unwrap();
 
     let mut db2 = newdb();
-    db2.sync("me", &mut server);
+    db2.sync("me", &mut server).unwrap();
 
     // create and update a task..
     let uuid = Uuid::new_v4();
@@ -88,9 +88,9 @@ fn test_sync_create_delete() {
     .unwrap();
 
     // and synchronize those around
-    db1.sync("me", &mut server);
-    db2.sync("me", &mut server);
-    db1.sync("me", &mut server);
+    db1.sync("me", &mut server).unwrap();
+    db2.sync("me", &mut server).unwrap();
+    db1.sync("me", &mut server).unwrap();
     assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
     // delete and re-create the task on db1
@@ -113,8 +113,8 @@ fn test_sync_create_delete() {
     })
     .unwrap();
 
-    db1.sync("me", &mut server);
-    db2.sync("me", &mut server);
-    db1.sync("me", &mut server);
+    db1.sync("me", &mut server).unwrap();
+    db2.sync("me", &mut server).unwrap();
+    db1.sync("me", &mut server).unwrap();
     assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 }

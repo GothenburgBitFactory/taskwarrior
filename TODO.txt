@@ -13,3 +13,4 @@
 * design expiration
   - need to be sure that create / delete operations don't get reversed
 * cli tools
+* move test-only tools somewhere else (helpers in tests/?)

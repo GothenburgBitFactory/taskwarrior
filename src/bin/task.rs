@@ -27,7 +27,7 @@ fn main() {
                 .unwrap();
         }
         ("list", _) => {
-            for task in replica.all_tasks() {
+            for task in replica.all_tasks().unwrap() {
                 println!("{:?}", task);
             }
         }

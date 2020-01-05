@@ -47,17 +47,17 @@ impl Replica {
     }
 
     /// Get all tasks as an iterator of (&Uuid, &HashMap)
-    pub fn all_tasks<'a>(&'a self) -> impl Iterator<Item = (Uuid, TaskMap)> + 'a {
+    pub fn all_tasks<'a>(&'a self) -> Fallible<impl Iterator<Item = (Uuid, TaskMap)> + 'a> {
         self.taskdb.all_tasks()
     }
 
     /// Get the UUIDs of all tasks
-    pub fn all_task_uuids<'a>(&'a self) -> impl Iterator<Item = Uuid> + 'a {
+    pub fn all_task_uuids<'a>(&'a self) -> Fallible<impl Iterator<Item = Uuid> + 'a> {
         self.taskdb.all_task_uuids()
     }
 
     /// Get an existing task by its UUID
-    pub fn get_task(&self, uuid: &Uuid) -> Option<TaskMap> {
+    pub fn get_task(&self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
         self.taskdb.get_task(&uuid)
     }
 }
@@ -74,7 +74,7 @@ mod tests {
         let uuid = Uuid::new_v4();
 
         rep.create_task(uuid.clone()).unwrap();
-        assert_eq!(rep.get_task(&uuid), Some(TaskMap::new()));
+        assert_eq!(rep.get_task(&uuid).unwrap(), Some(TaskMap::new()));
     }
 
     #[test]
@@ -84,7 +84,7 @@ mod tests {
 
         rep.create_task(uuid.clone()).unwrap();
         rep.delete_task(uuid.clone()).unwrap();
-        assert_eq!(rep.get_task(&uuid), None);
+        assert_eq!(rep.get_task(&uuid).unwrap(), None);
     }
 
     #[test]
@@ -97,13 +97,13 @@ mod tests {
             .unwrap();
         let mut task = TaskMap::new();
         task.insert("title".into(), "snarsblat".into());
-        assert_eq!(rep.get_task(&uuid), Some(task));
+        assert_eq!(rep.get_task(&uuid).unwrap(), Some(task));
     }
 
     #[test]
     fn get_does_not_exist() {
         let rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
-        assert_eq!(rep.get_task(&uuid), None);
+        assert_eq!(rep.get_task(&uuid).unwrap(), None);
     }
 }
