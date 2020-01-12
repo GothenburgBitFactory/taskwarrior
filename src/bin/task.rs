@@ -1,5 +1,6 @@
 extern crate clap;
 use clap::{App, Arg, SubCommand};
+use std::path::Path;
 use taskwarrior_rust::{taskstorage, Replica, DB};
 use uuid::Uuid;
 
@@ -16,7 +17,12 @@ fn main() {
         .subcommand(SubCommand::with_name("list").about("lists tasks"))
         .get_matches();
 
-    let mut replica = Replica::new(DB::new(Box::new(taskstorage::InMemoryStorage::new())).into());
+    let mut replica = Replica::new(
+        DB::new(Box::new(
+            taskstorage::KVStorage::new(Path::new("/tmp/tasks")).unwrap(),
+        ))
+        .into(),
+    );
 
     match matches.subcommand() {
         ("add", Some(matches)) => {

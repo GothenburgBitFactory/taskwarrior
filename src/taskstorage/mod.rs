@@ -6,6 +6,7 @@ use uuid::Uuid;
 mod inmemory;
 mod kv;
 
+pub use self::kv::KVStorage;
 pub use inmemory::InMemoryStorage;
 
 /// An in-memory representation of a task as a simple hashmap
