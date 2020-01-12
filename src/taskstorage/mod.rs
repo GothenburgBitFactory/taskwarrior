@@ -46,24 +46,22 @@ pub trait TaskStorageTxn {
     /// Get the uuids of all tasks in the storage, in undefined order.
     fn all_task_uuids<'a>(&mut self) -> Fallible<Vec<Uuid>>;
 
-    /// Add an operation to the list of operations in the storage.  Note that this merely *stores*
-    /// the operation; it is up to the DB to apply it.
-    fn add_operation(&mut self, op: Operation) -> Fallible<()>;
-
     /// Get the current base_version for this storage -- the last version synced from the server.
     fn base_version(&mut self) -> Fallible<u64>;
+
+    /// Set the current base_version for this storage.
+    fn set_base_version(&mut self, version: u64) -> Fallible<()>;
 
     /// Get the current set of outstanding operations (operations that have not been sync'd to the
     /// server yet)
     fn operations<'a>(&mut self) -> Fallible<Vec<Operation>>;
 
-    /// Apply the next version from the server.  This replaces the existing base_version and
-    /// operations.  It's up to the caller (DB) to ensure this is done consistently.
-    fn update_version(&mut self, version: u64, new_operations: Vec<Operation>) -> Fallible<()>;
+    /// Add an operation to the end of the list of operations in the storage.  Note that this
+    /// merely *stores* the operation; it is up to the DB to apply it.
+    fn add_operation(&mut self, op: Operation) -> Fallible<()>;
 
-    /// Record the outstanding operations as synced to the server in the given version: set
-    /// the base_version to the given value, and empty the operations list.
-    fn local_operations_synced(&mut self, version: u64) -> Fallible<()>;
+    /// Replace the current list of operations with a new list.
+    fn set_operations(&mut self, ops: Vec<Operation>) -> Fallible<()>;
 
     /// Commit any changes made in the transaction.  It is an error to call this more than
     /// once.

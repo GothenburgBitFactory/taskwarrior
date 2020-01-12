@@ -130,7 +130,8 @@ impl DB {
             if let VersionAdd::Ok =
                 server.add_version(username, new_version.version, new_version_str.into())
             {
-                txn.local_operations_synced(new_version.version)?;
+                txn.set_base_version(new_version.version)?;
+                txn.set_operations(vec![])?;
                 break;
             }
         }
@@ -187,7 +188,8 @@ impl DB {
             }
             local_operations = new_local_ops;
         }
-        txn.update_version(version.version, local_operations)?;
+        txn.set_base_version(version.version)?;
+        txn.set_operations(local_operations)?;
         Ok(())
     }
 

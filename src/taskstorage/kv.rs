@@ -184,6 +184,46 @@ impl<'t> TaskStorageTxn for Txn<'t> {
             .collect())
     }
 
+    fn base_version(&mut self) -> Fallible<u64> {
+        let bucket = self.numbers_bucket();
+        let base_version = match self.kvtxn().get(bucket, BASE_VERSION.into()) {
+            Ok(buf) => buf,
+            Err(Error::NotFound) => return Ok(0),
+            Err(e) => return Err(e.into()),
+        }
+        .inner()?
+        .to_serde();
+        Ok(base_version)
+    }
+
+    fn set_base_version(&mut self, version: u64) -> Fallible<()> {
+        let numbers_bucket = self.numbers_bucket();
+        let kvtxn = self.kvtxn();
+
+        kvtxn.set(
+            numbers_bucket,
+            BASE_VERSION.into(),
+            Msgpack::to_value_buf(version)?,
+        )?;
+        Ok(())
+    }
+
+    fn operations(&mut self) -> Fallible<Vec<Operation>> {
+        let bucket = self.operations_bucket();
+        let kvtxn = self.kvtxn();
+        let curs = kvtxn.read_cursor(bucket)?;
+        let all_ops: Result<Vec<(u64, Operation)>, Error> = kvtxn
+            .read_cursor(bucket)?
+            .iter()
+            .map(|(i, v)| Ok((i.into(), v.inner()?.to_serde())))
+            .collect();
+        let mut all_ops = all_ops?;
+        // sort by key..
+        all_ops.sort_by(|a, b| a.0.cmp(&b.0));
+        // and return the values..
+        Ok(all_ops.iter().map(|(_, v)| v.clone()).collect())
+    }
+
     fn add_operation(&mut self, op: Operation) -> Fallible<()> {
         let numbers_bucket = self.numbers_bucket();
         let operations_bucket = self.operations_bucket();
@@ -208,35 +248,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn base_version(&mut self) -> Fallible<u64> {
-        let bucket = self.numbers_bucket();
-        let base_version = match self.kvtxn().get(bucket, BASE_VERSION.into()) {
-            Ok(buf) => buf,
-            Err(Error::NotFound) => return Ok(0),
-            Err(e) => return Err(e.into()),
-        }
-        .inner()?
-        .to_serde();
-        Ok(base_version)
-    }
-
-    fn operations(&mut self) -> Fallible<Vec<Operation>> {
-        let bucket = self.operations_bucket();
-        let kvtxn = self.kvtxn();
-        let curs = kvtxn.read_cursor(bucket)?;
-        let all_ops: Result<Vec<(u64, Operation)>, Error> = kvtxn
-            .read_cursor(bucket)?
-            .iter()
-            .map(|(i, v)| Ok((i.into(), v.inner()?.to_serde())))
-            .collect();
-        let mut all_ops = all_ops?;
-        // sort by key..
-        all_ops.sort_by(|a, b| a.0.cmp(&b.0));
-        // and return the values..
-        Ok(all_ops.iter().map(|(_, v)| v.clone()).collect())
-    }
-
-    fn update_version(&mut self, version: u64, new_operations: Vec<Operation>) -> Fallible<()> {
+    fn set_operations(&mut self, ops: Vec<Operation>) -> Fallible<()> {
         let numbers_bucket = self.numbers_bucket();
         let operations_bucket = self.operations_bucket();
         let kvtxn = self.kvtxn();
@@ -244,43 +256,15 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         kvtxn.clear_db(operations_bucket)?;
 
         let mut i = 0u64;
-        for op in new_operations {
+        for op in ops {
             kvtxn.set(operations_bucket, i.into(), Msgpack::to_value_buf(op)?)?;
             i += 1;
         }
 
         kvtxn.set(
             numbers_bucket,
-            BASE_VERSION.into(),
-            Msgpack::to_value_buf(version)?,
-        )?;
-
-        kvtxn.set(
-            numbers_bucket,
             NEXT_OPERATION.into(),
             Msgpack::to_value_buf(i)?,
-        )?;
-
-        Ok(())
-    }
-
-    fn local_operations_synced(&mut self, version: u64) -> Fallible<()> {
-        let numbers_bucket = self.numbers_bucket();
-        let operations_bucket = self.operations_bucket();
-        let kvtxn = self.kvtxn();
-
-        kvtxn.clear_db(operations_bucket)?;
-
-        kvtxn.set(
-            numbers_bucket,
-            BASE_VERSION.into(),
-            Msgpack::to_value_buf(version)?,
-        )?;
-
-        kvtxn.set(
-            numbers_bucket,
-            NEXT_OPERATION.into(),
-            Msgpack::to_value_buf(0)?,
         )?;
 
         Ok(())
@@ -483,11 +467,28 @@ mod test {
     }
 
     #[test]
+    fn test_base_version_setting() -> Fallible<()> {
+        let tmp_dir = TempDir::new("test")?;
+        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        {
+            let mut txn = storage.txn()?;
+            txn.set_base_version(3)?;
+            txn.commit()?;
+        }
+        {
+            let mut txn = storage.txn()?;
+            assert_eq!(txn.base_version()?, 3);
+        }
+        Ok(())
+    }
+
+    #[test]
     fn test_operations() -> Fallible<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
+        let uuid3 = Uuid::new_v4();
 
         // create some operations
         {
@@ -510,26 +511,21 @@ mod test {
             );
         }
 
-        // report them sync'd to the server
+        // set them to a different bunch
         {
             let mut txn = storage.txn()?;
-            txn.local_operations_synced(1)?;
+            txn.set_operations(vec![
+                Operation::Delete { uuid: uuid2 },
+                Operation::Delete { uuid: uuid1 },
+            ])?;
             txn.commit()?;
-        }
-
-        // check that the operations are gone and the base version is incremented
-        {
-            let mut txn = storage.txn()?;
-            let ops = txn.operations()?;
-            assert_eq!(ops, vec![]);
-            assert_eq!(txn.base_version()?, 1);
         }
 
         // create some more operations (to test adding operations after clearing)
         {
             let mut txn = storage.txn()?;
-            txn.add_operation(Operation::Delete { uuid: uuid2 })?;
-            txn.add_operation(Operation::Delete { uuid: uuid1 })?;
+            txn.add_operation(Operation::Create { uuid: uuid3 })?;
+            txn.add_operation(Operation::Delete { uuid: uuid3 })?;
             txn.commit()?;
         }
 
@@ -542,77 +538,8 @@ mod test {
                 vec![
                     Operation::Delete { uuid: uuid2 },
                     Operation::Delete { uuid: uuid1 },
-                ]
-            );
-        }
-        Ok(())
-    }
-
-    #[test]
-    fn test_update_version() -> Fallible<()> {
-        let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
-        let uuid1 = Uuid::new_v4();
-        let uuid2 = Uuid::new_v4();
-        let uuid3 = Uuid::new_v4();
-        let uuid4 = Uuid::new_v4();
-
-        // create some operations
-        {
-            let mut txn = storage.txn()?;
-            txn.add_operation(Operation::Create { uuid: uuid1 })?;
-            txn.add_operation(Operation::Create { uuid: uuid2 })?;
-            txn.add_operation(Operation::Create { uuid: uuid3 })?;
-            txn.add_operation(Operation::Delete { uuid: uuid2 })?;
-            txn.commit()?;
-        }
-
-        // update version from the server..
-        {
-            let mut txn = storage.txn()?;
-            txn.update_version(
-                1,
-                vec![
-                    Operation::Create { uuid: uuid2 },
-                    Operation::Delete { uuid: uuid2 },
-                ],
-            )?;
-            txn.commit()?;
-        }
-
-        // check that the operations are updated and the base version is incremented
-        {
-            let mut txn = storage.txn()?;
-            let ops = txn.operations()?;
-            assert_eq!(
-                ops,
-                vec![
-                    Operation::Create { uuid: uuid2 },
-                    Operation::Delete { uuid: uuid2 },
-                ]
-            );
-            assert_eq!(txn.base_version()?, 1);
-        }
-
-        // create some more operations (to test adding operations after updating)
-        {
-            let mut txn = storage.txn()?;
-            txn.add_operation(Operation::Create { uuid: uuid4 })?;
-            txn.add_operation(Operation::Delete { uuid: uuid4 })?;
-            txn.commit()?;
-        }
-
-        // read them back
-        {
-            let mut txn = storage.txn()?;
-            let ops = txn.operations()?;
-            assert_eq!(
-                ops,
-                vec![
-                    Operation::Create { uuid: uuid2 },
-                    Operation::Delete { uuid: uuid2 },
-                    Operation::Create { uuid: uuid4 },
-                    Operation::Delete { uuid: uuid4 },
+                    Operation::Create { uuid: uuid3 },
+                    Operation::Delete { uuid: uuid3 },
                 ]
             );
         }

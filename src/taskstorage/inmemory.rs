@@ -81,31 +81,26 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(self.data_ref().tasks.keys().map(|u| u.clone()).collect())
     }
 
-    fn add_operation(&mut self, op: Operation) -> Fallible<()> {
-        self.mut_data_ref().operations.push(op);
-        Ok(())
-    }
-
     fn base_version(&mut self) -> Fallible<u64> {
         Ok(self.data_ref().base_version)
+    }
+
+    fn set_base_version(&mut self, version: u64) -> Fallible<()> {
+        self.mut_data_ref().base_version = version;
+        Ok(())
     }
 
     fn operations(&mut self) -> Fallible<Vec<Operation>> {
         Ok(self.data_ref().operations.clone())
     }
 
-    fn update_version(&mut self, version: u64, new_operations: Vec<Operation>) -> Fallible<()> {
-        // ensure that we are applying the versions in order..
-        assert_eq!(version, self.data_ref().base_version + 1);
-        self.mut_data_ref().base_version = version;
-        self.mut_data_ref().operations = new_operations;
+    fn add_operation(&mut self, op: Operation) -> Fallible<()> {
+        self.mut_data_ref().operations.push(op);
         Ok(())
     }
 
-    fn local_operations_synced(&mut self, version: u64) -> Fallible<()> {
-        assert_eq!(version, self.data_ref().base_version + 1);
-        self.mut_data_ref().base_version = version;
-        self.mut_data_ref().operations = vec![];
+    fn set_operations(&mut self, ops: Vec<Operation>) -> Fallible<()> {
+        self.mut_data_ref().operations = ops;
         Ok(())
     }
 
