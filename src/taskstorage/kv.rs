@@ -70,7 +70,8 @@ impl<'t> KVStorage<'t> {
         // this bucket contains various u64s, indexed by constants above
         let numbers_bucket = store.int_bucket::<ValueBuf<Msgpack<u64>>>(Some("numbers"))?;
 
-        // this bucket contains operations, numbered consecutively
+        // this bucket contains operations, numbered consecutively; the NEXT_OPERATION number gives
+        // the index of the next operation to insert
         let operations_bucket =
             store.int_bucket::<ValueBuf<Msgpack<Operation>>>(Some("operations"))?;
 
