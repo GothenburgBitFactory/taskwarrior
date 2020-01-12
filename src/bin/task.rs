@@ -1,7 +1,7 @@
 extern crate clap;
 use clap::{App, Arg, SubCommand};
 use std::path::Path;
-use taskwarrior_rust::{taskstorage, Replica, DB};
+use taskwarrior_rust::{taskstorage, Replica, Status, DB};
 use uuid::Uuid;
 
 fn main() {
@@ -10,9 +10,11 @@ fn main() {
         .author("Dustin J. Mitchell <dustin@v.igoro.us>")
         .about("Replacement for TaskWarrior")
         .subcommand(
-            SubCommand::with_name("add")
-                .about("adds a task")
-                .arg(Arg::with_name("title").help("task title").required(true)),
+            SubCommand::with_name("add").about("adds a task").arg(
+                Arg::with_name("descrpition")
+                    .help("task descrpition")
+                    .required(true),
+            ),
         )
         .subcommand(SubCommand::with_name("list").about("lists tasks"))
         .get_matches();
@@ -27,9 +29,12 @@ fn main() {
     match matches.subcommand() {
         ("add", Some(matches)) => {
             let uuid = Uuid::new_v4();
-            replica.create_task(uuid).unwrap();
             replica
-                .update_task(uuid, "title", Some(matches.value_of("title").unwrap()))
+                .new_task(
+                    uuid,
+                    Status::Pending,
+                    matches.value_of("descrpition").unwrap().into(),
+                )
                 .unwrap();
         }
         ("list", _) => {

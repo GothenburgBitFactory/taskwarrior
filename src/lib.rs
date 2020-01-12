@@ -17,6 +17,8 @@ mod tdb2;
 pub use operation::Operation;
 pub use replica::Replica;
 pub use server::Server;
+pub use task::Priority;
+pub use task::Status;
 pub use task::Task;
 pub use taskdb::DB;
 

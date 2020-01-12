@@ -1,14 +1,13 @@
 use crate::task::{Annotation, Priority, Status, Task, Timestamp};
 use chrono::prelude::*;
-use failure::Fallible;
 use std::collections::HashMap;
+use std::convert::TryFrom;
 use std::str;
 use uuid::Uuid;
 
 #[derive(Default)]
 pub struct TaskBuilder {
     status: Option<Status>,
-    uuid: Option<Uuid>,
     entry: Option<Timestamp>,
     description: Option<String>,
     start: Option<Timestamp>,
@@ -51,29 +50,6 @@ where
     value.parse()
 }
 
-/// Parse a status into a Status enum value
-fn parse_status(value: &str) -> Fallible<Status> {
-    match value {
-        "pending" => Ok(Status::Pending),
-        "completed" => Ok(Status::Completed),
-        "deleted" => Ok(Status::Deleted),
-        "recurring" => Ok(Status::Recurring),
-        "waiting" => Ok(Status::Waiting),
-        _ => Err(format_err!("invalid status {}", value)),
-    }
-}
-
-/// Parse "L", "M", "H" into the Priority enum
-
-fn parse_priority(value: &str) -> Fallible<Priority> {
-    match value {
-        "L" => Ok(Priority::L),
-        "M" => Ok(Priority::M),
-        "H" => Ok(Priority::H),
-        _ => Err(format_err!("invalid priority {}", value)),
-    }
-}
-
 /// Parse a UNIX timestamp into a UTC DateTime
 fn parse_timestamp(value: &str) -> Result<Timestamp, <i64 as str::FromStr>::Err> {
     Ok(Utc.timestamp(parse_int::<i64>(value)?, 0))
@@ -94,6 +70,7 @@ impl TaskBuilder {
         Default::default()
     }
 
+    // TODO: fallible
     pub fn set(mut self, name: &str, value: String) -> Self {
         const ANNOTATION_PREFIX: &str = "annotation_";
         if name.starts_with(ANNOTATION_PREFIX) {
@@ -106,8 +83,7 @@ impl TaskBuilder {
             return self;
         }
         match name {
-            "status" => self.status = Some(parse_status(&value).unwrap()),
-            "uuid" => self.uuid = Some(Uuid::parse_str(&value).unwrap()),
+            "status" => self.status = Some(Status::try_from(value.as_ref()).unwrap()),
             "entry" => self.entry = Some(parse_timestamp(&value).unwrap()),
             "description" => self.description = Some(value),
             "start" => self.start = Some(parse_timestamp(&value).unwrap()),
@@ -120,9 +96,9 @@ impl TaskBuilder {
             "recur" => self.recur = Some(value),
             "mask" => self.mask = Some(value),
             "imask" => self.imask = Some(parse_int::<u64>(&value).unwrap()),
-            "parent" => self.uuid = Some(Uuid::parse_str(&value).unwrap()),
+            "parent" => self.parent = Some(Uuid::parse_str(&value).unwrap()),
             "project" => self.project = Some(value),
-            "priority" => self.priority = Some(parse_priority(&value).unwrap()),
+            "priority" => self.priority = Some(Priority::try_from(value.as_ref()).unwrap()),
             "depends" => self.depends = parse_depends(&value).unwrap(),
             "tags" => self.tags = parse_tags(&value),
             _ => {
@@ -135,7 +111,6 @@ impl TaskBuilder {
     pub fn finish(self) -> Task {
         Task {
             status: self.status.unwrap(),
-            uuid: self.uuid.unwrap(),
             description: self.description.unwrap(),
             entry: self.entry.unwrap(),
             start: self.start,

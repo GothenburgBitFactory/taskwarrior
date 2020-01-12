@@ -1,6 +1,7 @@
-use std::collections::HashMap;
-use uuid::Uuid;
 use chrono::prelude::*;
+use std::collections::HashMap;
+use std::convert::TryFrom;
+use uuid::Uuid;
 
 pub type Timestamp = DateTime<Utc>;
 
@@ -11,6 +12,28 @@ pub enum Priority {
     H,
 }
 
+impl TryFrom<&str> for Priority {
+    type Error = failure::Error;
+
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        match s {
+            "L" => Ok(Priority::L),
+            "M" => Ok(Priority::M),
+            "H" => Ok(Priority::H),
+            _ => Err(format_err!("invalid status {}", s)),
+        }
+    }
+}
+
+impl AsRef<str> for Priority {
+    fn as_ref(&self) -> &str {
+        match self {
+            Priority::L => "L",
+            Priority::M => "M",
+            Priority::H => "H",
+        }
+    }
+}
 #[derive(Debug, PartialEq)]
 pub enum Status {
     Pending,
@@ -18,6 +41,33 @@ pub enum Status {
     Deleted,
     Recurring,
     Waiting,
+}
+
+impl TryFrom<&str> for Status {
+    type Error = failure::Error;
+
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        match s {
+            "pending" => Ok(Status::Pending),
+            "completed" => Ok(Status::Completed),
+            "deleted" => Ok(Status::Deleted),
+            "recurring" => Ok(Status::Recurring),
+            "waiting" => Ok(Status::Waiting),
+            _ => Err(format_err!("invalid status {}", s)),
+        }
+    }
+}
+
+impl AsRef<str> for Status {
+    fn as_ref(&self) -> &str {
+        match self {
+            Status::Pending => "pending",
+            Status::Completed => "completed",
+            Status::Deleted => "deleted",
+            Status::Recurring => "recurring",
+            Status::Waiting => "waiting",
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -28,11 +78,11 @@ pub struct Annotation {
 
 /// A task, the fundamental business object of this tool.
 ///
-/// This structure is based on https://taskwarrior.org/docs/design/task.html
-#[derive(Debug)]
+/// This structure is based on https://taskwarrior.org/docs/design/task.html with the
+/// exception that the uuid property is omitted.
+#[derive(Debug, PartialEq)]
 pub struct Task {
     pub status: Status,
-    pub uuid: Uuid,
     pub entry: Timestamp,
     pub description: String,
     pub start: Option<Timestamp>,

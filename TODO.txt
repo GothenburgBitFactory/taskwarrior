@@ -7,6 +7,7 @@
 * add HTTP API
 * add pending-task indexing to Replica
 * abstract server into trait
+* fix TODO items in replica.rs
 * implement snapshot requests
 * implement backups
 * implement client-side encryption
