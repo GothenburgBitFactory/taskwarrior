@@ -17,6 +17,8 @@ fn main() {
             ),
         )
         .subcommand(SubCommand::with_name("list").about("lists tasks"))
+        .subcommand(SubCommand::with_name("pending").about("lists pending tasks"))
+        .subcommand(SubCommand::with_name("gc").about("run garbage collection"))
         .get_matches();
 
     let mut replica = Replica::new(
@@ -38,9 +40,20 @@ fn main() {
                 .unwrap();
         }
         ("list", _) => {
-            for task in replica.all_tasks().unwrap() {
-                println!("{:?}", task);
+            for (uuid, task) in replica.all_tasks().unwrap() {
+                println!("{} - {:?}", uuid, task);
             }
+        }
+        ("pending", _) => {
+            let working_set = replica.working_set().unwrap();
+            for i in 1..working_set.len() {
+                if let Some((ref uuid, ref task)) = working_set[i] {
+                    println!("{}: {} - {:?}", i, uuid, task);
+                }
+            }
+        }
+        ("gc", _) => {
+            replica.gc().unwrap();
         }
         ("", None) => {
             unreachable!();

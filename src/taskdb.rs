@@ -4,6 +4,7 @@ use crate::server::{Server, VersionAdd};
 use crate::taskstorage::{TaskMap, TaskStorage, TaskStorageTxn};
 use failure::Fallible;
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
 use std::str;
 use uuid::Uuid;
 
@@ -64,6 +65,7 @@ impl DB {
                 // update if this task exists, otherwise ignore
                 if let Some(task) = txn.get_task(uuid)? {
                     let mut task = task.clone();
+                    // TODO: update working_set if this is changing state to or from pending
                     match value {
                         Some(ref val) => task.insert(property.to_string(), val.clone()),
                         None => task.remove(property),
@@ -90,10 +92,59 @@ impl DB {
         txn.all_task_uuids()
     }
 
+    /// Get the working set
+    pub fn working_set<'a>(&'a mut self) -> Fallible<Vec<Option<Uuid>>> {
+        let mut txn = self.storage.txn()?;
+        txn.get_working_set()
+    }
+
     /// Get a single task, by uuid.
     pub fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
         let mut txn = self.storage.txn()?;
         txn.get_task(uuid)
+    }
+
+    /// Rebuild the working set.  This renumbers the pending tasks to eliminate gaps, and also
+    /// finds any tasks whose statuses changed without being noticed.
+    pub fn rebuild_working_set(&mut self) -> Fallible<()> {
+        // TODO: this logic belongs in Replica
+        // TODO: it's every status but Completed and Deleted, I think?
+        let mut txn = self.storage.txn()?;
+
+        let mut new_ws = vec![];
+        let mut seen = HashSet::new();
+        let pending = String::from("pending");
+
+        // The goal here is for existing working-set items to be "compressed' down to index
+        // 1, so we begin by scanning the current working set and inserting any still-pending
+        // tasks into the new list
+        for elt in txn.get_working_set()? {
+            if let Some(uuid) = elt {
+                if let Some(task) = txn.get_task(&uuid)? {
+                    if task.get("status") == Some(&pending) {
+                        new_ws.push(uuid.clone());
+                        seen.insert(uuid);
+                    }
+                }
+            }
+        }
+
+        // Now go hunting for tasks that are pending and are not already in this list
+        for (uuid, task) in txn.all_tasks()? {
+            if !seen.contains(&uuid) {
+                if task.get("status") == Some(&pending) {
+                    new_ws.push(uuid.clone());
+                }
+            }
+        }
+
+        txn.clear_working_set()?;
+        for uuid in new_ws.drain(0..new_ws.len()) {
+            txn.add_to_working_set(uuid)?;
+        }
+
+        txn.commit()?;
+        Ok(())
     }
 
     /// Sync to the given server, pulling remote changes and pushing local changes.
@@ -365,5 +416,68 @@ mod tests {
 
         assert_eq!(db.sorted_tasks(), vec![]);
         assert_eq!(db.operations(), vec![]);
+    }
+
+    #[test]
+    fn rebuild_working_set() -> Fallible<()> {
+        let mut db = DB::new_inmemory();
+        let uuids = vec![
+            Uuid::new_v4(), // 0: pending, not already in working set
+            Uuid::new_v4(), // 1: pending, already in working set
+            Uuid::new_v4(), // 2: not pending, not already in working set
+            Uuid::new_v4(), // 3: not pending, already in working set
+            Uuid::new_v4(), // 4: pending, already in working set
+        ];
+
+        // add everything to the DB
+        for uuid in &uuids {
+            db.apply(Operation::Create { uuid: uuid.clone() })?;
+        }
+        for i in &[0usize, 1, 4] {
+            db.apply(Operation::Update {
+                uuid: uuids[*i].clone(),
+                property: String::from("status"),
+                value: Some("pending".into()),
+                timestamp: Utc::now(),
+            })?;
+        }
+
+        // set the existing working_set as we want it
+        {
+            let mut txn = db.storage.txn()?;
+            txn.clear_working_set()?;
+
+            for i in &[1usize, 3, 4] {
+                txn.add_to_working_set(uuids[*i])?;
+            }
+
+            txn.commit()?;
+        }
+
+        assert_eq!(
+            db.working_set()?,
+            vec![
+                None,
+                Some(uuids[1].clone()),
+                Some(uuids[3].clone()),
+                Some(uuids[4].clone())
+            ]
+        );
+
+        db.rebuild_working_set()?;
+
+        // uuids[1] and uuids[4] are already in the working set, so are compressed
+        // to the top, and then uuids[0] is added.
+        assert_eq!(
+            db.working_set()?,
+            vec![
+                None,
+                Some(uuids[1].clone()),
+                Some(uuids[4].clone()),
+                Some(uuids[0].clone())
+            ]
+        );
+
+        Ok(())
     }
 }

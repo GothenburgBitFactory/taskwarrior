@@ -48,6 +48,23 @@ impl Replica {
         self.taskdb.all_task_uuids()
     }
 
+    /// Get the "working set" for this replica -- the set of pending tasks, as indexed by small
+    /// integers
+    pub fn working_set(&mut self) -> Fallible<Vec<Option<(Uuid, Task)>>> {
+        let working_set = self.taskdb.working_set()?;
+        let mut res = Vec::with_capacity(working_set.len());
+        for i in 0..working_set.len() {
+            res.push(match working_set[i] {
+                Some(u) => match self.taskdb.get_task(&u)? {
+                    Some(task) => Some((u, (&task).into())),
+                    None => None,
+                },
+                None => None,
+            })
+        }
+        Ok(res)
+    }
+
     /// Get an existing task by its UUID
     pub fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<Task>> {
         Ok(self.taskdb.get_task(&uuid)?.map(|t| (&t).into()))
@@ -84,6 +101,13 @@ impl Replica {
             .taskdb
             .get_task(&uuid)?
             .map(move |_| TaskMut::new(self, uuid.clone())))
+    }
+
+    /// Perform "garbage collection" on this replica.  In particular, this renumbers the working
+    /// set.
+    pub fn gc(&mut self) -> Fallible<()> {
+        self.taskdb.rebuild_working_set()?;
+        Ok(())
     }
 }
 
