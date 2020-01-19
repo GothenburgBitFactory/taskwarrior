@@ -51,10 +51,12 @@ pub struct KVStorage<'t> {
     tasks_bucket: Bucket<'t, Key, ValueBuf<Msgpack<TaskMap>>>,
     numbers_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<u64>>>,
     operations_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<Operation>>>,
+    working_set_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<Uuid>>>,
 }
 
 const BASE_VERSION: u64 = 1;
 const NEXT_OPERATION: u64 = 2;
+const NEXT_WORKING_SET_INDEX: u64 = 3;
 
 impl<'t> KVStorage<'t> {
     pub fn new(directory: &Path) -> Fallible<KVStorage> {
@@ -62,6 +64,7 @@ impl<'t> KVStorage<'t> {
         config.bucket("tasks", None);
         config.bucket("numbers", None);
         config.bucket("operations", None);
+        config.bucket("working_set", None);
         let store = Store::new(config)?;
 
         // tasks are stored indexed by uuid
@@ -75,11 +78,17 @@ impl<'t> KVStorage<'t> {
         let operations_bucket =
             store.int_bucket::<ValueBuf<Msgpack<Operation>>>(Some("operations"))?;
 
+        // this bucket contains operations, numbered consecutively; the NEXT_WORKING_SET_INDEX
+        // number gives the index of the next operation to insert
+        let working_set_bucket =
+            store.int_bucket::<ValueBuf<Msgpack<Uuid>>>(Some("working_set"))?;
+
         Ok(KVStorage {
             store,
             tasks_bucket,
             numbers_bucket,
             operations_bucket,
+            working_set_bucket,
         })
     }
 }
@@ -117,6 +126,9 @@ impl<'t> Txn<'t> {
     }
     fn operations_bucket(&self) -> &'t Bucket<'t, Integer, ValueBuf<Msgpack<Operation>>> {
         &self.storage.operations_bucket
+    }
+    fn working_set_bucket(&self) -> &'t Bucket<'t, Integer, ValueBuf<Msgpack<Uuid>>> {
+        &self.storage.working_set_bucket
     }
 }
 
@@ -266,6 +278,90 @@ impl<'t> TaskStorageTxn for Txn<'t> {
             numbers_bucket,
             NEXT_OPERATION.into(),
             Msgpack::to_value_buf(i)?,
+        )?;
+
+        Ok(())
+    }
+
+    fn get_working_set(&mut self) -> Fallible<Vec<Option<Uuid>>> {
+        let working_set_bucket = self.working_set_bucket();
+        let numbers_bucket = self.numbers_bucket();
+        let kvtxn = self.kvtxn();
+
+        let next_index = match kvtxn.get(numbers_bucket, NEXT_WORKING_SET_INDEX.into()) {
+            Ok(buf) => buf.inner()?.to_serde(),
+            Err(Error::NotFound) => 1,
+            Err(e) => return Err(e.into()),
+        };
+
+        let mut res = Vec::with_capacity(next_index as usize);
+        for _ in 0..next_index {
+            res.push(None)
+        }
+
+        let curs = kvtxn.read_cursor(working_set_bucket)?;
+        for (i, u) in kvtxn.read_cursor(working_set_bucket)?.iter() {
+            let i: u64 = i.into();
+            res[i as usize] = Some(u.inner()?.to_serde());
+        }
+        Ok(res)
+    }
+
+    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<u64> {
+        let working_set_bucket = self.working_set_bucket();
+        let numbers_bucket = self.numbers_bucket();
+        let kvtxn = self.kvtxn();
+
+        let next_index = match kvtxn.get(numbers_bucket, NEXT_WORKING_SET_INDEX.into()) {
+            Ok(buf) => buf.inner()?.to_serde(),
+            Err(Error::NotFound) => 1,
+            Err(e) => return Err(e.into()),
+        };
+
+        kvtxn.set(
+            working_set_bucket,
+            next_index.into(),
+            Msgpack::to_value_buf(uuid)?,
+        )?;
+        kvtxn.set(
+            numbers_bucket,
+            NEXT_WORKING_SET_INDEX.into(),
+            Msgpack::to_value_buf(next_index + 1)?,
+        )?;
+        Ok(next_index)
+    }
+
+    fn remove_from_working_set(&mut self, index: u64) -> Fallible<()> {
+        let working_set_bucket = self.working_set_bucket();
+        let numbers_bucket = self.numbers_bucket();
+        let kvtxn = self.kvtxn();
+
+        let next_index = match kvtxn.get(numbers_bucket, NEXT_WORKING_SET_INDEX.into()) {
+            Ok(buf) => buf.inner()?.to_serde(),
+            Err(Error::NotFound) => 1,
+            Err(e) => return Err(e.into()),
+        };
+        if index == 0 || index >= next_index {
+            return Err(format_err!("No task found with index {}", index));
+        }
+
+        match kvtxn.del(working_set_bucket, index.into()) {
+            Err(Error::NotFound) => Err(format_err!("No task found with index {}", index)),
+            Err(e) => Err(e.into()),
+            Ok(_) => Ok(()),
+        }
+    }
+
+    fn clear_working_set(&mut self) -> Fallible<()> {
+        let working_set_bucket = self.working_set_bucket();
+        let numbers_bucket = self.numbers_bucket();
+        let kvtxn = self.kvtxn();
+
+        kvtxn.clear_db(working_set_bucket)?;
+        kvtxn.set(
+            numbers_bucket,
+            NEXT_WORKING_SET_INDEX.into(),
+            Msgpack::to_value_buf(1)?,
         )?;
 
         Ok(())
@@ -544,6 +640,127 @@ mod test {
                 ]
             );
         }
+        Ok(())
+    }
+
+    #[test]
+    fn get_working_set_empty() -> Fallible<()> {
+        let tmp_dir = TempDir::new("test")?;
+        let mut storage = KVStorage::new(&tmp_dir.path())?;
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn add_to_working_set() -> Fallible<()> {
+        let tmp_dir = TempDir::new("test")?;
+        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, Some(uuid1), Some(uuid2)]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn add_and_remove_from_working_set_holes() -> Fallible<()> {
+        let tmp_dir = TempDir::new("test")?;
+        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            txn.remove_from_working_set(1)?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, None, Some(uuid2), Some(uuid1)]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn remove_working_set_doesnt_exist() -> Fallible<()> {
+        let tmp_dir = TempDir::new("test")?;
+        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let res = txn.remove_from_working_set(0);
+            assert!(res.is_err());
+            let res = txn.remove_from_working_set(2);
+            assert!(res.is_err());
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn clear_working_set() -> Fallible<()> {
+        let tmp_dir = TempDir::new("test")?;
+        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            txn.clear_working_set()?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, Some(uuid2), Some(uuid1)]);
+        }
+
         Ok(())
     }
 }

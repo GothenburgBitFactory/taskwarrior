@@ -64,6 +64,20 @@ pub trait TaskStorageTxn {
     /// Replace the current list of operations with a new list.
     fn set_operations(&mut self, ops: Vec<Operation>) -> Fallible<()>;
 
+    /// Get the entire working set, with each task UUID at its appropriate (1-based) index.
+    /// Element 0 is always None.
+    fn get_working_set(&mut self) -> Fallible<Vec<Option<Uuid>>>;
+
+    /// Add a task to the working set and return its (one-based) index.  This index will be one greater
+    /// than the highest used index.
+    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<u64>;
+
+    /// Remove a task from the working set.  Other tasks' indexes are not affected.
+    fn remove_from_working_set(&mut self, index: u64) -> Fallible<()>;
+
+    /// Clear all tasks from the working set in preparation for a garbage-collection operation.
+    fn clear_working_set(&mut self) -> Fallible<()>;
+
     /// Commit any changes made in the transaction.  It is an error to call this more than
     /// once.
     fn commit(&mut self) -> Fallible<()>;
@@ -78,6 +92,8 @@ pub trait TaskStorageTxn {
 ///  - tasks: a set of tasks indexed by uuid
 ///  - base_version: the number of the last version sync'd from the server
 ///  - operations: all operations performed since base_version
+///  - working_set: a mapping from integer -> uuid, used to keep stable small-integer indexes
+///    into the tasks.  The replica maintains this list.  It is not covered by operations.
 ///
 ///  The `operations` are already reflected in `tasks`, so the following invariant holds:
 ///  > Applying `operations` to the set of tasks at `base_version` gives a set of tasks identical

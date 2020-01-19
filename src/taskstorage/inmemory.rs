@@ -10,6 +10,7 @@ struct Data {
     tasks: HashMap<Uuid, TaskMap>,
     base_version: u64,
     operations: Vec<Operation>,
+    working_set: Vec<Option<Uuid>>,
 }
 
 struct Txn<'t> {
@@ -104,6 +105,31 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(())
     }
 
+    fn get_working_set(&mut self) -> Fallible<Vec<Option<Uuid>>> {
+        Ok(self.data_ref().working_set.clone())
+    }
+
+    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<u64> {
+        let working_set = &mut self.mut_data_ref().working_set;
+        working_set.push(Some(uuid));
+        Ok(working_set.len() as u64)
+    }
+
+    fn remove_from_working_set(&mut self, index: u64) -> Fallible<()> {
+        let index = index as usize;
+        let working_set = &mut self.mut_data_ref().working_set;
+        if index >= working_set.len() || working_set[index].is_none() {
+            return Err(format_err!("No task found with index {}", index));
+        }
+        working_set[index] = None;
+        Ok(())
+    }
+
+    fn clear_working_set(&mut self) -> Fallible<()> {
+        self.mut_data_ref().working_set = vec![None];
+        Ok(())
+    }
+
     fn commit(&mut self) -> Fallible<()> {
         // copy the new_data back into storage to commit the transaction
         if let Some(data) = self.new_data.take() {
@@ -125,6 +151,7 @@ impl InMemoryStorage {
                 tasks: HashMap::new(),
                 base_version: 0,
                 operations: vec![],
+                working_set: vec![None],
             },
         }
     }
@@ -136,5 +163,129 @@ impl TaskStorage for InMemoryStorage {
             storage: self,
             new_data: None,
         }))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    // (note: this module is heavily used in tests so most of its functionality is well-tested
+    // elsewhere and not tested here)
+
+    #[test]
+    fn get_working_set_empty() -> Fallible<()> {
+        let mut storage = InMemoryStorage::new();
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn add_to_working_set() -> Fallible<()> {
+        let mut storage = InMemoryStorage::new();
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, Some(uuid1), Some(uuid2)]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn add_and_remove_from_working_set_holes() -> Fallible<()> {
+        let mut storage = InMemoryStorage::new();
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            txn.remove_from_working_set(1)?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, None, Some(uuid2), Some(uuid1)]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn remove_working_set_doesnt_exist() -> Fallible<()> {
+        let mut storage = InMemoryStorage::new();
+        let uuid1 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let res = txn.remove_from_working_set(0);
+            assert!(res.is_err());
+            let res = txn.remove_from_working_set(2);
+            assert!(res.is_err());
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn clear_working_set() -> Fallible<()> {
+        let mut storage = InMemoryStorage::new();
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            txn.clear_working_set()?;
+            txn.add_to_working_set(uuid2.clone())?;
+            txn.add_to_working_set(uuid1.clone())?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, Some(uuid2), Some(uuid1)]);
+        }
+
+        Ok(())
     }
 }
