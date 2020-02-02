@@ -3,7 +3,7 @@
 
 use failure::Fallible;
 
-pub struct Pig<'a> {
+pub(crate) struct Pig<'a> {
     input: &'a [u8],
     cursor: usize,
 }

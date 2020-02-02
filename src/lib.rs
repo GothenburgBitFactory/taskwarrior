@@ -5,6 +5,7 @@
 #[macro_use]
 extern crate failure;
 
+mod cli;
 mod errors;
 mod operation;
 mod replica;
@@ -13,6 +14,7 @@ mod task;
 mod taskdb;
 pub mod taskstorage;
 mod tdb2;
+mod util;
 
 pub use operation::Operation;
 pub use replica::Replica;

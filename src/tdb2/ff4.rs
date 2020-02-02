@@ -1,7 +1,7 @@
 use std::str;
 
-use super::pig::Pig;
 use crate::task::{Task, TaskBuilder};
+use crate::util::pig::Pig;
 use failure::Fallible;
 
 /// Rust implementation of part of utf8_codepoint from Taskwarrior's src/utf8.cpp

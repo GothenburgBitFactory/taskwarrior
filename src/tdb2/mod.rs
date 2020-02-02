@@ -2,7 +2,6 @@
 //! support for the data structure as a  compatibility layer.
 
 mod ff4;
-mod pig;
 
 use self::ff4::parse_ff4;
 use crate::task::Task;
