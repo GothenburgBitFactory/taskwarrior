@@ -11,8 +11,8 @@ fn main() {
         .about("Replacement for TaskWarrior")
         .subcommand(
             SubCommand::with_name("add").about("adds a task").arg(
-                Arg::with_name("descrpition")
-                    .help("task descrpition")
+                Arg::with_name("description")
+                    .help("task description")
                     .required(true),
             ),
         )
@@ -35,7 +35,7 @@ fn main() {
                 .new_task(
                     uuid,
                     Status::Pending,
-                    matches.value_of("descrpition").unwrap().into(),
+                    matches.value_of("description").unwrap().into(),
                 )
                 .unwrap();
         }

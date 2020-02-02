@@ -1,8 +1,11 @@
+//! A re-implementation of TaskWarrior's Lexer.
+//!
+//! This is tested to pass that module's tests, and includes some additional tests that were also
+//! verified against that module.
+
 use crate::util::datetime::DateTime;
 use crate::util::duration::Duration;
 use std::convert::TryFrom;
-
-// based on src/Lexer.{h,cpp} in the Taskwarrior code
 
 const UUID_PATTERN: &[u8] = b"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 const UUID_MIN_LENGTH: usize = 8;
@@ -12,7 +15,7 @@ const DATE_SUBELEMENTS: &[&str] = &[
 ];
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-enum Type {
+pub(crate) enum Type {
     Uuid,
     Number,
     Hex,
@@ -33,7 +36,7 @@ enum Type {
     Duration,
 }
 
-struct Lexer {
+pub(crate) struct Lexer {
     text: String,
     cursor: usize,
     eos: usize,
@@ -151,11 +154,6 @@ fn is_hard_boundary(left: char, right: char) -> bool {
     right == '\0' || left == '(' || left == ')' || right == '(' || right == ')'
 }
 
-/// Returns true if the given string must have been shell-quoted
-fn was_quoted(s: &str) -> bool {
-    s.contains(&[' ', '\t', '(', ')', '<', '>', '&', '~'][..])
-}
-
 fn is_unicode_hex_digit(c: char) -> bool {
     match c {
         '0'..='9' | 'a'..='f' | 'A'..='F' => true,
@@ -184,7 +182,7 @@ fn hex_to_char(hex: &str) -> Option<char> {
 
 /// Strips matching quote symbols from the beginning and end of the given string
 /// (removing all quotes if given a single quote `'`)
-fn dequote<'a, 'b>(s: &'a str, quotes: &'b str) -> &'a str {
+pub(crate) fn dequote<'a, 'b>(s: &'a str, quotes: &'b str) -> &'a str {
     // note that this returns a new ref to the same string, rather
     // than modifying its argument as the C++ version does.
     if let Some(first_char) = s.chars().next() {
@@ -202,7 +200,7 @@ fn dequote<'a, 'b>(s: &'a str, quotes: &'b str) -> &'a str {
     s
 }
 
-fn read_word_quoted(text: &str, quotes: &str, cursor: usize) -> Option<(String, usize)> {
+pub(crate) fn read_word_quoted(text: &str, quotes: &str, cursor: usize) -> Option<(String, usize)> {
     let mut pos = cursor;
     let mut res = String::new();
     let mut skipchars = 0;
@@ -281,7 +279,7 @@ fn read_word_quoted(text: &str, quotes: &str, cursor: usize) -> Option<(String, 
     None
 }
 
-fn read_word_unquoted(text: &str, cursor: usize) -> Option<(String, usize)> {
+pub(crate) fn read_word_unquoted(text: &str, cursor: usize) -> Option<(String, usize)> {
     let mut pos = cursor;
     let mut res = String::new();
     let mut prev = None;
@@ -365,12 +363,118 @@ fn common_length(s1: &str, s2: &str) -> usize {
         .len()
 }
 
+/// Returns true if the given string must have been shell-quoted
+pub(crate) fn was_quoted(s: &str) -> bool {
+    s.contains(&[' ', '\t', '(', ')', '<', '>', '&', '~'][..])
+}
+
 #[derive(Debug, PartialEq)]
-pub struct DecomposedPair {
-    name: String,
-    modifier: String,
-    separator: String,
-    value: String,
+pub(crate) struct DecomposedPair {
+    pub(crate) name: String,
+    pub(crate) modifier: String,
+    pub(crate) separator: String,
+    pub(crate) value: String,
+}
+
+/// Parse ("decompose") a pair into its constituent parts.  This assumes the text is a valid pair
+/// string.
+pub(crate) fn decompose_pair(text: &str) -> Option<DecomposedPair> {
+    let npos = usize::max_value();
+    let dot = text.find(".").unwrap_or(npos);
+    let sep_defer = text.find("::").unwrap_or(npos);
+    let sep_eval = text.find(":=").unwrap_or(npos);
+    let sep_colon = text.find(":").unwrap_or(npos);
+    let sep_equal = text.find("=").unwrap_or(npos);
+
+    let (sep, sep_end) = if sep_defer != npos
+        && sep_defer <= sep_eval
+        && sep_defer <= sep_colon
+        && sep_defer <= sep_equal
+    {
+        (sep_defer, sep_defer + 2)
+    } else if sep_eval != npos
+        && sep_eval <= sep_defer
+        && sep_eval <= sep_colon
+        && sep_eval <= sep_equal
+    {
+        (sep_eval, sep_eval + 2)
+    } else if sep_colon != npos
+        && sep_colon <= sep_defer
+        && sep_colon <= sep_eval
+        && sep_colon <= sep_equal
+    {
+        (sep_colon, sep_colon + 1)
+    } else if sep_equal != npos
+        && sep_equal <= sep_defer
+        && sep_equal <= sep_eval
+        && sep_equal <= sep_colon
+    {
+        (sep_equal, sep_equal + 1)
+    } else {
+        return None;
+    };
+
+    let (name, modifier) = if dot != npos && dot < sep {
+        (
+            text.get(0..dot).unwrap().into(),
+            text.get(dot + 1..sep).unwrap().into(),
+        )
+    } else {
+        (text.get(0..sep).unwrap().into(), "".into())
+    };
+
+    let separator = text.get(sep..sep_end).unwrap().into();
+    let value = text.get(sep_end..).unwrap().into();
+
+    Some(DecomposedPair {
+        name,
+        modifier,
+        separator,
+        value,
+    })
+}
+
+#[derive(Debug, PartialEq)]
+pub(crate) struct DecomposedSubstitution {
+    pub(crate) from: String,
+    pub(crate) to: String,
+    pub(crate) flags: String,
+}
+
+/// Parse ("decompose") a substitution into its constituent parts.  This assumes
+/// the text is a valid substitution string.
+pub(crate) fn decompose_substitution(text: &str) -> Option<DecomposedSubstitution> {
+    let mut cursor = 0;
+    if let Some((from, from_curs)) = read_word_quoted(text, "/", cursor) {
+        cursor = from_curs - 1;
+        if let Some((to, to_curs)) = read_word_quoted(text, "/", cursor) {
+            cursor = to_curs;
+            let from = dequote(&from, "/").into();
+            let to = dequote(&to, "/").into();
+            let flags = text[cursor..].into();
+            return Some(DecomposedSubstitution { from, to, flags });
+        }
+    }
+    None
+}
+
+#[derive(Debug, PartialEq)]
+pub(crate) struct DecomposedPattern {
+    pub(crate) pattern: String,
+    pub(crate) flags: String,
+}
+
+/// Parse ("decompose") a pattern into its constituent parts.  This assumes the text is a valid
+/// pattern string.
+pub(crate) fn decompose_pattern(text: &str) -> Option<DecomposedPattern> {
+    let mut cursor = 0;
+    if let Some((pattern, pattern_curs)) = read_word_quoted(text, "/", cursor) {
+        cursor = pattern_curs;
+        let pattern = dequote(&pattern, "/").into();
+        let flags = text[cursor..].into();
+        return Some(DecomposedPattern { pattern, flags });
+    }
+    None
 }
 
 impl Lexer {
@@ -475,65 +579,8 @@ impl Lexer {
         None
     }
 
-    pub fn decompose_pair(text: &str) -> Option<DecomposedPair> {
-        let npos = usize::max_value();
-        // npos
-        let dot = text.find(".").unwrap_or(npos);
-        // npos
-        let sep_defer = text.find("::").unwrap_or(npos);
-        // npos
-        let sep_eval = text.find(":=").unwrap_or(npos);
-        // 4
-        let sep_colon = text.find(":").unwrap_or(npos);
-        // npos
-        let sep_equal = text.find("=").unwrap_or(npos);
-
-        let (sep, sep_end) = if sep_defer != npos
-            && sep_defer <= sep_eval
-            && sep_defer <= sep_colon
-            && sep_defer <= sep_equal
-        {
-            (sep_defer, sep_defer + 2)
-        } else if sep_eval != npos
-            && sep_eval <= sep_defer
-            && sep_eval <= sep_colon
-            && sep_eval <= sep_equal
-        {
-            (sep_eval, sep_eval + 2)
-        } else if sep_colon != npos
-            && sep_colon <= sep_defer
-            && sep_colon <= sep_eval
-            && sep_colon <= sep_equal
-        {
-            (sep_colon, sep_colon + 1)
-        } else if sep_equal != npos
-            && sep_equal <= sep_defer
-            && sep_equal <= sep_eval
-            && sep_equal <= sep_colon
-        {
-            (sep_equal, sep_equal + 1)
-        } else {
-            return None;
-        };
-
-        let (name, modifier) = if dot != npos && dot < sep {
-            (
-                text.get(0..dot).unwrap().into(),
-                text.get(dot + 1..sep).unwrap().into(),
-            )
-        } else {
-            (text.get(0..sep).unwrap().into(), "".into())
-        };
-
-        let separator = text.get(sep..sep_end).unwrap().into();
-        let value = text.get(sep_end..).unwrap().into();
-
-        Some(DecomposedPair {
-            name,
-            modifier,
-            separator,
-            value,
-        })
+    pub fn is_eos(&self) -> bool {
+        self.cursor == self.eos
     }
 
     // recognizers for the `token` method
@@ -1195,7 +1242,7 @@ impl Lexer {
     }
 }
 
-struct LexerIterator(Lexer);
+pub(crate) struct LexerIterator(Lexer);
 
 impl Iterator for LexerIterator {
     type Item = (String, Type);
@@ -1319,6 +1366,7 @@ mod test {
     fn test_token_empty() {
         let mut l = Lexer::new("");
         assert_eq!(l.token(), NONE);
+        assert!(l.is_eos());
     }
 
     #[test]
@@ -1326,6 +1374,7 @@ mod test {
         let mut l = Lexer::new(
             " one 'two \\'three\\''+456-(1.3*2 - 0x12) 1.2e-3.4    foo.bar and '\\u20ac'",
         );
+        assert!(!l.is_eos());
         assert_eq!(l.token(), Some((String::from("one"), Type::Identifier)));
         assert_eq!(
             l.token(),
@@ -1346,6 +1395,7 @@ mod test {
         assert_eq!(l.token(), Some((String::from("and"), Type::Op)));
         assert_eq!(l.token(), Some((String::from("'€'"), Type::String)));
         assert_eq!(l.token(), None);
+        assert!(l.is_eos());
     }
 
     #[test]
@@ -2193,7 +2243,7 @@ mod test {
                         value
                     );
                     assert_eq!(
-                        Lexer::decompose_pair(&input),
+                        decompose_pair(&input),
                         Some(DecomposedPair {
                             name: name.into(),
                             modifier: String::from(*modifier),
@@ -2204,6 +2254,52 @@ mod test {
                 }
             }
         }
+    }
+
+    #[test]
+    fn decompose_substitution_no_flags() {
+        assert_eq!(
+            decompose_substitution("/a/b/"),
+            Some(DecomposedSubstitution {
+                from: "a".into(),
+                to: "b".into(),
+                flags: "".into(),
+            })
+        );
+    }
+
+    #[test]
+    fn decompose_substitution_flags() {
+        assert_eq!(
+            decompose_substitution("/a/b/g"),
+            Some(DecomposedSubstitution {
+                from: "a".into(),
+                to: "b".into(),
+                flags: "g".into(),
+            })
+        );
+    }
+
+    #[test]
+    fn decompose_pattern_no_flags() {
+        assert_eq!(
+            decompose_pattern("/foober/"),
+            Some(DecomposedPattern {
+                pattern: "foober".into(),
+                flags: "".into(),
+            })
+        );
+    }
+
+    #[test]
+    fn decompose_pattern_flags() {
+        assert_eq!(
+            decompose_pattern("/foober/g"),
+            Some(DecomposedPattern {
+                pattern: "foober".into(),
+                flags: "g".into(),
+            })
+        );
     }
 
     #[test]
