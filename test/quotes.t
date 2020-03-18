@@ -108,10 +108,8 @@ class TestBug1436(TestCase):
         #   Python turns \\ --> \, therefore \\\\\\\\ --> \\\\
         #   Some process launch thing does the same, therefore \\\\ --> \\
         #   Taskwarrior sees \\, which means \
-        code, out, err = self.t("add Use this backslash \\\\\\\\")
-        self.assertIn("Created task 1", out)
-
-        code, out, err = self.t("list")
+        self.t("add Use this backslash \\\\\\\\")
+        code, out, err = self.t("_get 1.description")
         self.assertIn("Use this backslash \\", out)
 
     def test_backslashes(self):
