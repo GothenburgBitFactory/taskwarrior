@@ -685,7 +685,7 @@ void Context::createDefaultConfig ()
   if (rc_file._data != "" && ! rc_file.exists ())
   {
     if (config.getBoolean ("confirmation") &&
-        !confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
+        !confirm (format (STRING_CONTEXT_CREATE_RC, rc_file.parent().data(), rc_file._data)))
       throw std::string (STRING_CONTEXT_NEED_RC);
 
     config.createDefaultRC (rc_file, data_dir._original);

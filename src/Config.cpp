@@ -482,7 +482,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
 void Config::createDefaultRC (const std::string& rc, const std::string& data)
 {
   // Override data.location in the defaults.
-  auto loc = _defaults.find ("data.location=~/.task");
+  auto loc = _defaults.find ("data.location=~/.local/share/task");
   //                                      loc+0^          +14^   +21^
 
   ISO8601d now;
