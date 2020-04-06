@@ -67,8 +67,8 @@ static const char* modifierNames[] =
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
-: rc_file ("~/.taskrc")
-, data_dir ("~/.task")
+: rc_file ("~/.config/taskrc")
+, data_dir ("~/.local/share/task")
 , config ()
 , tdb2 ()
 , determine_color_use (true)
