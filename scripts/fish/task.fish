@@ -88,7 +88,7 @@ end
 
 function __fish.task.current.command
   # find command in commandline by list intersection
-  begin; commandline -pco; and __fish.task.list._command all | cut -d '	' -f 1; end | sort | uniq -d | xargs
+  begin; commandline -pco; and echo $__fish_task_static_commands; end | sort | uniq -d | xargs
 end
 
 function __fish.task.before_command
@@ -104,6 +104,10 @@ end
 
 function __fish.task.need_to_complete.attr_value
   __fish.task.need_to_complete.attr_name
+  or return 1
+  # only start completion when there's a colon in attr_name
+  set -l cmd (commandline -ct)
+  string match -q "*:*" "$cmd[-1]"
 end
 
 function __fish.task.need_to_complete.command
@@ -121,6 +125,14 @@ end
 
 function __fish.task.need_to_complete.filter
   __fish.task.before_command
+end
+
+function __fish.task.need_to_complete.tag
+  __fish.task.need_to_complete.attr_name
+  or return 1
+  set -l cmd (commandline -ct)
+  # only start complete when supplied + or -
+  string match -qr -- "^[+-][^+-]*" "$cmd[-1]"
 end
 
 function __fish.task.need_to_complete.id
@@ -143,9 +155,16 @@ function __fish.task.token_clean
 end
 
 function __fish.task.list.attr_name
-  task _columns | sed 's/$/:	attribute/g'
-  # BUG: doesn't support file completion
-  echo rc
+  # # BUG: doesn't support file completion
+  for attr in (task _columns)
+    if set -l idx (contains -i -- $attr $__fish_task_static_attr_desc_keys)
+      # use builtin friendly description
+      echo -e "$attr:\tattribute:$__fish_task_static_attr_desc_vals[$idx]"
+    else
+      echo -e "$attr:\tattribute"
+    end
+  end
+  echo -e "rc\tConfiguration for taskwarrior"
 end
 
 function __fish.task.list.attr_value
@@ -158,7 +177,6 @@ function __fish.task.list.attr_value
       end
     end
   end
-    __fish.task.list.tag
 end
 
 function __fish.task.list.attr_value_by_name
@@ -168,7 +186,11 @@ function __fish.task.list.attr_value_by_name
       __fish.task.list.rc
     case 'depends' 'limit' 'priority' 'status'
       __fish.task.combos_simple $attr (__fish.task.list $attr)
-    # case 'description' 'due' 'entry' 'end' 'start' 'project' 'recur' 'until' 'wait'
+    case 'recur'
+      __fish.task.combos_simple $attr (__fish.task.list.date_freq)
+    case 'due' 'until' 'wait' 'entry' 'end' 'start' 'scheduled'
+      __fish.task.combos_simple $attr (__fish.task.list.dates)
+    # case 'description' 'project'
     case '*'
       if [ "$task_complete_attribute_modifiers" = 'yes' ]; and echo (commandline -ct) | grep -q '\.'
         __fish.task.combos_with_mods $attr (__fish.task.list $attr)
@@ -179,20 +201,16 @@ function __fish.task.list.attr_value_by_name
 end
 
 function __fish.task.list._command
-  # Removed args until TW-1404 is fixed.
-  #__fish.task.zsh commands $argv
-  __fish.task.zsh commands
+  echo -e $__fish_task_static_commands_with_desc
 end
 
 function __fish.task.list.command
   # ignore special commands
-  __fish.task.list._command $argv | command grep -Ev '^_'
+  __fish.task.list._command $argv | grep -Ev '^_'
 end
 
 function __fish.task.list.command_mods
-  for command in 'add' 'annotate' 'append' 'delete' 'done' 'duplicate' 'log' 'modify' 'prepend' 'start' 'stop'
-    echo $command
-  end
+  echo -e $__fish_task_static_command_mods
 end
 
 function __fish.task.list.config
@@ -204,29 +222,55 @@ function __fish.task.list.depends
 end
 
 function __fish.task.list.description
-  __fish.task.zsh ids $argv | cut -d '	' -f 2-
+  __fish.task.zsh ids $argv | awk -F"\t" '{print $2 "\tid=" $1}'
 end
 
 function __fish.task.list.id
   set show_type $argv[1]
   if test -z $show_type
     task _ids
-  else if [  $show_type = 'with_description' ]
+  else if [ $show_type = 'with_description' ]
     __fish.task.zsh ids
+  end
+end
+
+function __fish.task.list.date_freq
+  set -l cmd (commandline -ct)
+  if set -l user_input_numeric (echo $cmd[-1] | grep -o '[0-9]\+')
+    # show numeric freq like 2d, 4m, etc.
+    echo -e (string replace --all -r "^|\n" "\n$user_input_numeric" $__fish_task_static_freq_numeric | string collect)
+  else
+    echo -e $__fish_task_static_freq
+  end
+end
+
+function __fish.task.list.dates
+  set -l cmd (commandline -ct)
+  if set -l user_input_numeric (echo $cmd[-1] | grep -o '[0-9]\+')
+    # show numeric date like 2hrs, 4th, etc.
+    echo -e (string replace --all -r "^|\n" "\n$user_input_numeric" $__fish_task_static_reldates | string collect)
+    # special cases for 1st, 2nd and 3rd, and 4-0th
+    set -l suffix 'th' '4th, 5th, etc.'
+    if string match -q "*1" $user_input_numeric
+      set suffix 'st' 'first'
+    else if string match -q "*2" $user_input_numeric
+      set suffix 'nd' 'second'
+    else if string match -q "*3" $user_input_numeric
+      set suffix 'rd' 'third'
+    end                  
+    echo -e $user_input_numeric"$suffix[1]\t$suffix[2]"
+  else
+    echo -e $__fish_task_static_dates
   end
 end
 
 # Attribure modifiers (DEPRECATED since 2.4.0)
 function __fish.task.list.mod
-  for mod in 'before' 'after' 'over' 'under' 'none' 'is' 'isnt' 'has' 'hasnt' 'startswith' 'endswith' 'word' 'noword'
-    echo $mod
-  end
+  echo -e $__fish_task_static_mod
 end
 
 function __fish.task.list.priority
-  for priority in 'H' 'M' 'L'
-    echo $priority
-  end
+  echo -e $__fish_task_static_priority
 end
 
 function __fish.task.list.project
@@ -234,23 +278,17 @@ function __fish.task.list.project
 end
 
 function __fish.task.list.rc
-  for value in (task _config)
-    echo rc.$value:
-  end
+  task _config
 end
 
 function __fish.task.list.status
-  echo pending
-  echo completed
-  echo deleted
-  echo waiting
+  echo -e $__fish_task_static_status
 end
 
 function __fish.task.list.tag
-  for tag in (task _tags)
-    echo +$tag
-    echo -$tag
-  end
+  set -l tags (task _tags)
+  printf -- '+%s\n' $tags
+  printf -- '-%s\n' $tags
 end
 
 function __fish.task.list.task
@@ -302,19 +340,110 @@ function __fish.task.complete
   set what $argv
   set list_command "__fish.task.list $what"
   set check_function "__fish.task.need_to_complete $what"
-  complete -c task -u -f -n $check_function -a "(eval $list_command)"
+  complete -c task -u -k -f -n $check_function -a "(eval $list_command)"
 end
 
-__fish.task.complete command all
-__fish.task.complete command filter
+# static variables that won't changes even when taskw's data is modified
+set __fish_task_static_commands_with_desc (__fish.task.zsh commands | sort | string collect)
+set __fish_task_static_commands (echo -e $__fish_task_static_commands_with_desc | cut -d '	' -f 1 | string collect)
+set __fish_task_static_command_mods (printf -- '%s\n' 'add' 'annotate' 'append' 'delete' 'done' 'duplicate' 'log' 'modify' 'prepend' 'start' 'stop' | string collect)
+set __fish_task_static_mod (printf -- '%s\n' 'before' 'after' 'over' 'under' 'none' 'is' 'isnt' 'has' 'hasnt' 'startswith' 'endswith' 'word' 'noword' | string collect)
+set __fish_task_static_status (printf -- '%s\tstatus\n' 'pending' 'completed' 'deleted' 'waiting' | string collect)
+set __fish_task_static_priority (printf -- '%s\n' 'H\tHigh' 'M\tMiddle' 'L\tLow' | string collect)
+
+set __fish_task_static_freq 'daily:Every day' \
+                            'day:Every day' \
+                            'weekdays:Every day skipping weekend days' \
+                            'weekly:Every week' \
+                            'biweekly:Every two weeks' \
+                            'fortnight:Every two weeks' \
+                            'monthly:Every month' \
+                            'quarterly:Every three months' \
+                            'semiannual:Every six months' \
+                            'annual:Every year' \
+                            'yearly:Every year' \
+                            'biannual:Every two years' \
+                            'biyearly:Every two years'
+set __fish_task_static_freq (printf -- '%s\n' $__fish_task_static_freq | sed 's/:/\t/' | string collect)
+set __fish_task_static_freq_numeric 'd:days' \
+                                    'w:weeks' \
+                                    'q:quarters' \
+                                    'y:years'
+set __fish_task_static_freq_numeric (printf -- '%s\n' $__fish_task_static_freq_numeric | sed 's/:/\t/' | string collect)
+set __fish_task_static_freq_numeric 'd:days' \
+                                    'w:weeks' \
+                                    'q:quarters' \
+                                    'y:years'
+set __fish_task_static_freq_numeric (printf -- '%s\n' $__fish_task_static_freq_numeric | sed 's/:/\t/' | string collect)
+set __fish_task_static_dates 'today:Today' \
+                             'yesterday:Yesterday' \
+                             'tomorrow:Tomorrow' \
+                             'sow:Start of week' \
+                             'soww:Start of work week' \
+                             'socw:Start of calendar week' \
+                             'som:Start of month' \
+                             'soq:Start of quarter' \
+                             'soy:Start of year' \
+                             'eow:End of week' \
+                             'eoww:End of work week' \
+                             'eocw:End of calendar week' \
+                             'eom:End of month' \
+                             'eoq:End of quarter' \
+                             'eoy:End of year' \
+                             'mon:Monday' \
+                             'tue:Tuesday'\
+                             'wed:Wednesday' \
+                             'thu:Thursday' \
+                             'fri:Friday' \
+                             'sat:Saturday' \
+                             'sun:Sunday' \
+                             'goodfriday:Good Friday' \
+                             'easter:Easter' \
+                             'eastermonday:Easter Monday' \
+                             'ascension:Ascension' \
+                             'pentecost:Pentecost' \
+                             'midsommar:Midsommar' \
+                             'midsommarafton:Midsommarafton' \
+                             'later:Later' \
+                             'someday:Some Day'
+set __fish_task_static_dates (printf -- '%s\n' $__fish_task_static_dates | sed 's/:/\t/' | string collect)
+set __fish_task_static_reldates 'hrs:n hours' \
+                                'day:n days' \
+                                # '1st:first' \
+                                # '2nd:second' \
+                                # '3rd:third' \
+                                # 'th:4th, 5th, etc.' \
+                                'wks:weeks'
+set __fish_task_static_reldates (printf -- '%s\n' $__fish_task_static_reldates | sed 's/:/\t/' | string collect)
+# the followings are actually not used for autocomplete, but to retrieve friendly description that aren't present in internal command
+set  __fish_task_static_attr_desc_keys 'description' 'status' 'project' \
+                                          'priority' 'due' 'recur' \
+                                          'until' 'limit' 'wait' \
+                                          'entry' 'end' 'start' \
+                                          'scheduled' 'dependson'
+set  __fish_task_static_attr_desc_vals 'Task description text' 'Status of task - pending, completed, deleted, waiting' \
+                                          'Project name' 'Task priority' 'Due date' 'Recurrence frequency' 'Expiration date' \
+                                          'Desired number of rows in report' 'Date until task becomes pending' \
+                                          'Date task was created' 'Date task was completed/deleted' 'Date task was started' \
+                                          'Date task is scheduled to start' 'Other tasks that this task depends upon'
+
+# fish's auto-completion when multiple `complete` have supplied with '-k' flag, the last will be displayed first
+__fish.task.complete config
 __fish.task.complete attr_value
 __fish.task.complete attr_name
-__fish.task.complete config
+__fish.task.complete tag
+# __fish.task.complete command all
+# __fish.task.complete command filter
+# The following are static so we will expand it when initialised. Display underscore (internal) commands last
+set -l __fish_task_static_commands_underscore (echo -e $__fish_task_static_commands_with_desc | grep '^[_]' | string collect | string escape)
+set -l __fish_task_static_commands_normal (echo -e $__fish_task_static_commands_with_desc | grep '^[^_]' | string collect | string escape)
+complete -c task -u -k -f -n "__fish.task.before_command" -a "$__fish_task_static_commands_underscore"
+complete -c task -u -k -f -n "__fish.task.before_command" -a "$__fish_task_static_commands_normal"
 
 if [ "$task_complete_task" = 'yes' ]
-  __fish.task.complete task
+    __fish.task.complete task
 end
 
 if [ "$task_complete_id" = 'yes' ]
-  __fish.task.complete id with_description
+    __fish.task.complete id with_description
 end
