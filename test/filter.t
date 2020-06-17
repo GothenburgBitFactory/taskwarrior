@@ -874,14 +874,14 @@ class Test1452(TestCase):
         self.task_uuid = self.t.export_one()['uuid']
 
     def test_get_task_by_uuid_with_prefix(self):
-        """1452: Tries to filter task simply by it's uuid, using uuid: prefix."""
+        """1452: Tries to filter task simply by its uuid, using uuid: prefix."""
         output = self.t.export_one('uuid:%s' % self.task_uuid)
 
         # Sanity check it is the correct one
         self.assertEqual(output['uuid'], self.task_uuid)
 
     def test_get_task_by_uuid_without_prefix(self):
-        """1452: Tries to filter task simply by it's uuid, without using uuid: prefix."""
+        """1452: Tries to filter task simply by its uuid, without using uuid: prefix."""
         output = self.t.export_one(self.task_uuid)
 
         # Sanity check it is the correct one

@@ -626,7 +626,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         // if there is no corresponding id, then a new unique date is created).
         Datetime when (value.substr (0, gap), dateformat);
 
-        // If the map already contains a annotation for a given timestamp
+        // If the map already contains an annotation for a given timestamp
         // we need to increment until we find an unused key
         int timestamp = (int) when.toEpoch ();
 
