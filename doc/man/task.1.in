@@ -397,7 +397,7 @@ Prepends description text to an existing task. Is affected by the context.
 .TP
 .B task <filter> purge
 Permanently removes the specified tasks from the data files. Only
-tasks that are alredy deleted can be purged. This command has a
+tasks that are already deleted can be purged. This command has a
 local-only effect and changes introduced by it are not synced.
 Is affected by the context.
 
