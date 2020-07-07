@@ -421,6 +421,7 @@ int main (int, char**)
 
     // UUID
     { "ffffffff-ffff-ffff-ffff-ffffffffffff",         { { "ffffffff-ffff-ffff-ffff-ffffffffffff",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "0000000d-0000-0000-0000-000000000000",         { { "0000000d-0000-0000-0000-000000000000",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000-0000-0000000",              { { "00000000-0000-0000-0000-0000000",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000-0000",                      { { "00000000-0000-0000-0000",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000",                           { { "00000000-0000-0000",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },
