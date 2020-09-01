@@ -36,7 +36,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 from basetest.utils import BIN_PREFIX
 
-TASKSH = os.path.abspath(os.path.join(BIN_PREFIX, "..", "scripts/bash/task.sh"))
+TASKSH = os.path.abspath(
+    os.path.join(BIN_PREFIX, "..", "scripts/bash/task.sh"))
 
 
 @contextmanager
@@ -84,6 +85,9 @@ class TestBashCompletionBase(TestCase):
         # Used also in tasksh script
         self.t.config("alias.samplealias", "long")
         self.t.config("abbreviation.minimum", "5")
+        self.t.config("verbose",
+                      "blank,header,footnote,label,new-id,affected,edit,"
+                      "special,project,sync,unwait,recur")
 
         self.t.tasksh_script = os.path.join(self.t.datadir, "task.sh")
 
