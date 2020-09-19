@@ -122,8 +122,7 @@
 - Removed deprecated 'alias._query' setting.
 - Fixed ambiguity in the esp-ESP localization
            Thanks to Fidel Mato
-- Deprecated the 'new-uuid' verbosity option, since its functionality can be
-  removed by merging with 'new-id'.
+- Changed behaviour of the 'new-uuid' verbosity option.
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
 - Added 'QUARTER' virtual tag.

@@ -10,6 +10,9 @@ New Features in Taskwarrior 2.6.0
     and started tasks.
   - The message telling you to sync now indicates how many local changes will be
     synced.
+  - The logic behind new-uuid verbosity option changed. New-uuid now overrides
+    new-id if set and will cause Taskwarrior to display UUIDs instead of IDs
+    for new tasks (machine friendly).
 
 New Commands in Taskwarrior 2.6.0
 
@@ -27,8 +30,6 @@ Newly Deprecated Features in Taskwarrior 2.6.0
 
   - The 'DUETODAY' virtual tag is a synonym for the 'TODAY' virtual tag, and is
     not needed.
-  - The 'new-uuid' verbosity option is to be removed, as it is redundant, its
-    functionality will be merged with 'new-id' option.
   - The use of alternate Boolean configuration settings is deprecated. Use values
     "0" for off, and "1" for on.  Avoid used of "on", "off", "true", "t",
     "false", "f", "yes", "y", "no", "n".

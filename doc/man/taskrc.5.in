@@ -270,9 +270,8 @@ control specific occasions when output is generated. This list may contain:
     header     Messages that appear before report output (this includes .taskrc/.task overrides and the "[task next]" message)
     footnote   Messages that appear after report output (mostly status messages and change descriptions)
     label      Column labels on tabular reports
-    new-id     Provides feedback of any new task IDs
-    new-uuid   Provides feedback of any new task UUIDs. Deprecated, to be
-               merged with new-id.
+    new-id     Provides feedback on any new task with IDs (and UUIDs for new tasks with ID 0, such as new completed tasks).
+    new-uuid   Provides feedback on any new task with UUIDs. Overrides new-id. Useful for automation.
     affected   Reports 'N tasks affected' and similar
     edit       Used the verbose template for the 'edit' command
     special    Feedback when applying special tags
