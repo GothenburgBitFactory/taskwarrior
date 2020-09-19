@@ -291,7 +291,7 @@ and the "nothing" setting is equivalent to none of the tokens being specified.
 Here are the shortcut equivalents:
 
     verbose=on
-    verbose=blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,filter,unwait,override,recur
+    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait,override,recur
 
     verbose=0
     verbose=blank,label,new-id,edit
