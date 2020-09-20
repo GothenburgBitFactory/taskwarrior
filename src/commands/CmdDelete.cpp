@@ -137,9 +137,10 @@ int CmdDelete::execute (std::string&)
         else
         {
           std::vector <Task> children = Context::getContext ().tdb2.children (task);
-          if (children.size () &&
-              (Context::getContext ().config.getBoolean ("recurrence.confirmation") ||
-               confirm (STRING_CMD_DELETE_CONFIRM_R)))
+          if (children.size() &&
+                  ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
+                    && confirm (STRING_CMD_DELETE_CONFIRM_R)) ||
+                   Context::getContext ().config.getBoolean ("recurrence.confirmation")))
           {
             for (auto& child : children)
             {
