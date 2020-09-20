@@ -200,8 +200,9 @@ int CmdModify::modifyRecurrenceParent (
 
   auto children = Context::getContext ().tdb2.children (task);
   if (children.size () &&
-      (! Context::getContext ().config.getBoolean ("recurrence.confirmation") ||
-        confirm (STRING_CMD_MODIFY_RECUR)))
+          ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
+            && confirm (STRING_CMD_MODIFY_RECUR)) ||
+           Context::getContext ().config.getBoolean ("recurrence.confirmation")))
   {
     for (auto& child : children)
     {
