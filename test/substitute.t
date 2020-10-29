@@ -84,6 +84,14 @@ class TestSubstitutions(TestCase):
         code, out, err = self.t("_get 1.description")
         self.assertEqual("aaa BbB\n", out)
 
+    def test_substitution_long_with_short(self):
+        """Verify substitution of a sequence with a shorter sequence."""
+        self.t("add aaaaBaaaa")
+        self.t("1 modify /aaaa/c/g")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("cBc\n", out)
+
+
 class TestBug441(TestCase):
     def setUp(self):
         self.t = Task()
