@@ -1393,7 +1393,7 @@ void Task::substitute (
       int skew = 0;
       for (unsigned int i = 0; i < start.size () && !done; ++i)
       {
-        description.replace (start[i + skew], end[i] - start[i], to);
+        description.replace (start[i] + skew, end[i] - start[i], to);
         skew += to.length () - (end[i] - start[i]);
         ++changes;
 
