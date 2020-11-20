@@ -1,15 +1,15 @@
-message ("-- Configuring C++14")
+message ("-- Configuring C++17")
 message ("-- System: ${CMAKE_SYSTEM_NAME}")
 
 include (CheckCXXCompilerFlag)
 
-CHECK_CXX_COMPILER_FLAG("-std=c++14"   _HAS_CXX14)
+CHECK_CXX_COMPILER_FLAG("-std=c++17"   _HAS_CXX17)
 
-if (_HAS_CXX14)
-  set (_CXX14_FLAGS "-std=c++14")
-else (_HAS_CXX14)
- message (FATAL_ERROR "C++14 support missing. Try upgrading your C++ compiler. If you have a good reason for using an outdated compiler, please let us know at support@gothenburgbitfactory.org.")
-endif (_HAS_CXX14)
+if (_HAS_CXX17)
+  set (_CXX14_FLAGS "-std=c++17")
+else (_HAS_CXX17)
+ message (FATAL_ERROR "C++17 support missing. Try upgrading your C++ compiler. If you have a good reason for using an outdated compiler, please let us know at support@gothenburgbitfactory.org.")
+endif (_HAS_CXX17)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (LINUX true)
