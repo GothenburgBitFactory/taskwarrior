@@ -5,7 +5,6 @@
 #[macro_use]
 extern crate failure;
 
-mod cli;
 mod errors;
 mod operation;
 mod replica;
@@ -13,7 +12,6 @@ mod server;
 mod task;
 mod taskdb;
 pub mod taskstorage;
-mod tdb2;
 mod util;
 
 pub use operation::Operation;
@@ -23,11 +21,3 @@ pub use task::Priority;
 pub use task::Status;
 pub use task::Task;
 pub use taskdb::DB;
-
-use failure::Fallible;
-use std::io::BufRead;
-
-// TODO: remove (artifact of merging projects)
-pub fn parse(filename: &str, reader: impl BufRead) -> Fallible<Vec<Task>> {
-    Ok(tdb2::parse(filename, reader)?)
-}
