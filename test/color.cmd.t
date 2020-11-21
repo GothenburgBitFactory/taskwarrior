@@ -63,17 +63,17 @@ class TestColorCommand(TestCase):
     def test_colors_sample(self):
         """ Verify 'task colors red' shows a sample"""
         code, out, err = self.t("colors rc._forcecolor:on red")
-        self.assertRegexpMatches(out, "Your sample:\n\n  .\[31mtask color red.\[0m")
+        self.assertRegex(out, "Your sample:\n\n  .\[31mtask color red.\[0m")
 
     def test_colors_legend(self):
         """ Verify 'task colors legend' shows theme colors"""
         code, out, err = self.t("colors rc._forcecolor:on legend")
-        self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[38;5;4mcolor4\s+.\[0m")
+        self.assertRegex(out, "color.debug\s+.\[0m\s.\[38;5;4mcolor4\s+.\[0m")
 
     def test_colors_legend_override(self):
         """Verify 'task colors legend' obeys rc overrides"""
         code, out, err = self.t("colors rc._forcecolor:on rc.color.debug:red legend")
-        self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[31mred\s+.\[0m")
+        self.assertRegex(out, "color.debug\s+.\[0m\s.\[31mred\s+.\[0m")
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

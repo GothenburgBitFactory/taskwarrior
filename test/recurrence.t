@@ -58,12 +58,12 @@ class TestRecurrenceSorting(TestCase):
     def test_sort_ascending(self):
         """Verify sorting by 'recur+' is correct"""
         code, out, err = self.t("asc rc.verbose:nothing")
-        self.assertRegexpMatches(out, "4\s+P1D\s+one\s+6\s+P3D\s+three\s+5\s+P7D\s+two")
+        self.assertRegex(out, "4\s+P1D\s+one\s+6\s+P3D\s+three\s+5\s+P7D\s+two")
 
     def test_sort_descending(self):
         """Verify sorting by 'recur-' is correct"""
         code, out, err = self.t("desc rc.verbose:nothing")
-        self.assertRegexpMatches(out, "5\s+P7D\s+two\s+6\s+P3D\s+three\s+4\s+P1D\s+one")
+        self.assertRegex(out, "5\s+P7D\s+two\s+6\s+P3D\s+three\s+4\s+P1D\s+one")
 
 
 class TestRecurrenceDisabled(TestCase):
@@ -177,9 +177,9 @@ class TestRecurrenceTasks(TestCase):
         #   3 complex
         #   4 complex
         code, out, err = self.t("minimal rc.verbose:nothing")
-        self.assertRegexpMatches(out, "1\s+simple")
-        self.assertRegexpMatches(out, "3\s+complex")
-        self.assertRegexpMatches(out, "4\s+complex")
+        self.assertRegex(out, "1\s+simple")
+        self.assertRegex(out, "3\s+complex")
+        self.assertRegex(out, "4\s+complex")
 
         # Modify a child task and do not propagate the change.
         self.t("3 modify complex2", input="n\n")
@@ -316,7 +316,7 @@ class TestBug955(TestCase):
 
         self.t("add foo due:now recur:1day")
         code, out, err = self.t("ls")
-        self.assertRegexpMatches(out, re.compile("^2 tasks", re.MULTILINE))
+        self.assertRegex(out, re.compile("^2 tasks", re.MULTILINE))
 
     def test_no_prompt_for_parent_on_child_delete_confirmation_off(self):
         """955: Deleting a child of a recurring task prompts for parent deletion (confirmation:off)
@@ -332,7 +332,7 @@ class TestBug955(TestCase):
 
         # 1 task remains.
         code, out, err = self.t("ls")
-        self.assertRegexpMatches(out, re.compile("^1 task", re.MULTILINE))
+        self.assertRegex(out, re.compile("^1 task", re.MULTILINE))
 
         code, out, err = self.t("2 delete", input="y\ny\n")
         self.assertIn("Deleting task 2", out)
@@ -357,7 +357,7 @@ class TestBug955(TestCase):
 
         # 2 tasks intact.
         code, out, err = self.t("ls")
-        self.assertRegexpMatches(out, re.compile("^2 tasks", re.MULTILINE))
+        self.assertRegex(out, re.compile("^2 tasks", re.MULTILINE))
 
         code, out, err = self.t("2 delete", input="y\ny\n")
         self.assertIn("Deleted 2 tasks", out)

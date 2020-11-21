@@ -51,7 +51,7 @@ class TestCalc(TestCase):
         self.assertIn("Eval literal number ↑'3600'", out)
         self.assertIn("Eval literal number ↑'60'", out)
         self.assertIn("Eval literal number ↑'56'", out)
-        self.assertRegexpMatches(out, re.compile("^45296$", re.MULTILINE))
+        self.assertRegex(out, re.compile("^45296$", re.MULTILINE))
         self.assertNotIn("Error", out)
         self.assertNotIn("Error", err)
 
@@ -63,7 +63,7 @@ class TestCalc(TestCase):
         self.assertIn("Eval literal number ↑'3600'", out)
         self.assertIn("Eval literal number ↑'60'", out)
         self.assertIn("Eval literal number ↑'56'", out)
-        self.assertRegexpMatches(out, re.compile("^45296$", re.MULTILINE))
+        self.assertRegex(out, re.compile("^45296$", re.MULTILINE))
         self.assertNotIn("Error", out)
         self.assertNotIn("Error", err)
 
@@ -74,7 +74,7 @@ class TestCalc(TestCase):
         self.assertIn("Eval literal number ↑'2'", out)
         self.assertIn("Eval _neg_ ↓'3' → ↑'-3'", out)
         self.assertIn("Eval literal number ↑'2'", out)
-        self.assertRegexpMatches(out, re.compile("^5$", re.MULTILINE))
+        self.assertRegex(out, re.compile("^5$", re.MULTILINE))
         self.assertNotIn("Error", out)
         self.assertNotIn("Error", err)
 
@@ -90,7 +90,7 @@ class TestCalc(TestCase):
         """version"""
         code, out, err = run_cmd_wait_nofail((CALC, "--version"))
 
-        self.assertRegexpMatches(out, "calc \d\.\d+\.\d+")
+        self.assertRegex(out, "calc \d\.\d+\.\d+")
         self.assertIn("Copyright", out)
         self.assertGreaterEqual(code, 1)
 
@@ -103,7 +103,7 @@ class TestCalc(TestCase):
         self.assertNotIn("Error: Unexpected stack size: 2", out)
         self.assertNotIn("Error: Unexpected stack size: 2", err)
         self.assertIn("Eval literal duration ↑'PT15M'", out)
-        self.assertRegexpMatches(out, re.compile("^PT15M$", re.MULTILINE))
+        self.assertRegex(out, re.compile("^PT15M$", re.MULTILINE))
 
 
 class TestBug1254(TestCase):

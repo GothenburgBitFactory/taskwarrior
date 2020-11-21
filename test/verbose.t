@@ -50,20 +50,20 @@ class TestVerbosity(TestCase):
     def test_verbosity_new_id(self):
         """Verbosity new-id"""
         code, out, err = self.t("rc.verbose:new-id add Sample1")
-        self.assertRegexpMatches(out, r"Created task \d")
+        self.assertRegex(out, r"Created task \d")
 
         code, out, err = self.t("rc.verbose:nothing add Sample2")
-        self.assertNotRegexpMatches(out, r"Created task \d")
+        self.assertNotRegex(out, r"Created task \d")
 
     def test_verbosity_new_uuid(self):
         """Verbosity new-uuid"""
         code, out, err = self.t(("rc.verbose:new-uuid", "add", "Sample1"))
-        self.assertRegexpMatches(out, r"Created task [0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+        self.assertRegex(out, r"Created task [0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
 
     def test_verbosity_label(self):
         """Verbosity label"""
         code, out, err = self.t("rc.verbose:label ls")
-        self.assertRegexpMatches(
+        self.assertRegex(
             out,
             "ID.+A.+D.+Project.+Tags.+R.+Wait.+S.+Due.+Until.+Description"
         )
@@ -73,15 +73,15 @@ class TestVerbosity(TestCase):
         code, out, err = self.t("rc.verbose:affected ls")
 
         expected = re.compile(r"^\d+ tasks?$", re.MULTILINE)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_verbosity_off(self):
         """Verbosity off"""
         code, out, err = self.t("rc.verbose:nothing ls")
 
         expected = re.compile(r"^\d+ tasks?$", re.MULTILINE)
-        self.assertNotRegexpMatches(out, expected)
-        self.assertNotRegexpMatches(out, "ID.+Project.+Pri.+Description")
+        self.assertNotRegex(out, expected)
+        self.assertNotRegex(out, "ID.+Project.+Pri.+Description")
 
     def test_verbosity_special(self):
         """Verbosity special"""
