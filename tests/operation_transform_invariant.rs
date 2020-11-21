@@ -1,6 +1,6 @@
 use chrono::Utc;
 use proptest::prelude::*;
-use taskwarrior_rust::{taskstorage, Operation, DB};
+use taskchampion::{taskstorage, Operation, DB};
 use uuid::Uuid;
 
 fn newdb() -> DB {
