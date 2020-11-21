@@ -1,7 +1,7 @@
 extern crate clap;
 use clap::{App, Arg, SubCommand};
 use std::path::Path;
-use taskwarrior_rust::{taskstorage, Replica, Status, DB};
+use taskchampion::{taskstorage, Replica, Status, DB};
 use uuid::Uuid;
 
 fn main() {
