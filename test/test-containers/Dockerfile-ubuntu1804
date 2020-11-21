@@ -1,0 +1,13 @@
+FROM ubuntu:18.04
+
+RUN apt-get update && apt-get install --yes software-properties-common
+RUN add-apt-repository --yes ppa:git-core/ppa && \
+    apt-get update && \
+    apt-get install --yes build-essential cmake git uuid-dev libgnutls28-dev libfaketime && \
+    apt-get install --yes python
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+CMD ["/bin/bash"]

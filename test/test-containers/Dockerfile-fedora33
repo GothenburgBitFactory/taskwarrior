@@ -1,0 +1,10 @@
+FROM fedora:33
+
+RUN dnf update --assumeyes
+RUN dnf install --assumeyes python git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+CMD ["/bin/bash"]
