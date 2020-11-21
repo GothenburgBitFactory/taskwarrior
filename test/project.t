@@ -251,6 +251,22 @@ class TestBug299(TestCase):
         self.assertRegex(out, "three.*baz")
 
 
+class TestBug555(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_log_with_project_segfault(self):
+        """555: log with a project causes a segfault
+
+        Reported in bug 555
+        """
+        code, out, err = self.t("rc.verbose:new-uuid log description project:p")
+
+        self.assertNotIn("Segmentation fault", out)
+        self.assertNotIn("Segmentation fault", err)
+        self.assertIn("Logged task", out)
+
+
 class TestBug605(TestCase):
     def setUp(self):
         self.t = Task()
