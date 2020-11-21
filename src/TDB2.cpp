@@ -839,7 +839,7 @@ void TDB2::revert ()
     //   - erase from completed
     //   - if in backlog, erase, else cannot undo
 
-    Task old = Task ();
+    Task old;
     if (prior != "")
       old = Task (prior);
     Context::getContext ().hooks.onModify (Task (current), old);
