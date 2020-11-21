@@ -68,7 +68,7 @@ class TestFeature559(TestCase):
         code, out, err = self.t.runError("rc.data.location=locationdoesnotexist list")
         self.assertNotIn("footask", out)
         self.assertNotIn("Error", out)
-        self.assertRegexpMatches(err, re.compile("Error:.+does not exist", re.DOTALL))
+        self.assertRegex(err, re.compile("Error:.+does not exist", re.DOTALL))
 
 
 if __name__ == "__main__":

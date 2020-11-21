@@ -56,7 +56,7 @@ class MetaTestSorting(MetaTest):
 
             for expected in expectations:
                 regex = re.compile(expected, re.DOTALL)
-                self.assertRegexpMatches(out, regex)
+                self.assertRegex(out, regex)
 
         # Title of test in report
         test.__doc__ = "{0} sort:{1}".format(classname, _filter)
@@ -261,7 +261,7 @@ class TestSortNone(TestCase):
         code, out, err = self.t("_get 1.uuid 2.uuid 3.uuid")
         uuid1, uuid2, uuid3 = out.strip().split(' ')
         code, out, err = self.t("%s %s %s list rc.report.list.sort:none rc.report.list.columns:id,description rc.report.list.labels:id,desc" % (uuid2, uuid3, uuid1))
-        self.assertRegexpMatches(out, ' 2 two\n 3 three\n 1 one')
+        self.assertRegex(out, ' 2 two\n 3 three\n 1 one')
 
 
 if __name__ == "__main__":

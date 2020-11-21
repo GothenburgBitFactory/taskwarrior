@@ -79,19 +79,19 @@ class TestImport(TestCase):
 
     def assertData1(self):
         code, out, err = self.t("list")
-        self.assertRegexpMatches(out, "1.+A.+zero")
-        self.assertRegexpMatches(out, "2.+B.+one")
+        self.assertRegex(out, "1.+A.+zero")
+        self.assertRegex(out, "2.+B.+one")
         self.assertNotIn("two", out)
 
         code, out, err = self.t("completed")
         self.assertNotIn("zero", out)
         self.assertNotIn("one", out)
         # complete has completion date as 1st column
-        self.assertRegexpMatches(out, "2/13/2009.+two")
+        self.assertRegex(out, "2/13/2009.+two")
 
     def assertData2(self):
         code, out, err = self.t("list")
-        self.assertRegexpMatches(out, "3.+three")
+        self.assertRegex(out, "3.+three")
 
     def assertData3(self):
         code, out, err = self.t("list")

@@ -55,17 +55,17 @@ class TestHistoryDaily(TestCase):
     def test_history_daily(self):
         """Verify 'history.daily' correctly categorizes data"""
         code, out, err = self.t("history.daily")
-        self.assertRegexpMatches(out, "7\s+1\s+0\s+6")
-        self.assertRegexpMatches(out, "2\s+3\s+3\s+-4")
-        self.assertRegexpMatches(out, "4\s+2\s+1\s+1")
+        self.assertRegex(out, "7\s+1\s+0\s+6")
+        self.assertRegex(out, "2\s+3\s+3\s+-4")
+        self.assertRegex(out, "4\s+2\s+1\s+1")
 
         code, out, err = self.t("ghistory.daily rc._forcecolor:on")
-        self.assertRegexpMatches(out, "\s7.+\s1.+")
-        self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
+        self.assertRegex(out, "\s7.+\s1.+")
+        self.assertRegex(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.daily")
-        self.assertRegexpMatches(out, "2015\s+January\s+2\s+\++X+\s")
-        self.assertRegexpMatches(out, "\s+February\s+2\s+\++X+\-+")
+        self.assertRegex(out, "2015\s+January\s+2\s+\++X+\s")
+        self.assertRegex(out, "\s+February\s+2\s+\++X+\-+")
 
 class TestHistoryWeekly(TestCase):
     def setUp(self):
@@ -88,17 +88,17 @@ class TestHistoryWeekly(TestCase):
     def test_history_weekly(self):
         """Verify 'history.weekly' correctly categorizes data"""
         code, out, err = self.t("history.weekly")
-        self.assertRegexpMatches(out, "7\s+1\s+0\s+6")
-        self.assertRegexpMatches(out, "2\s+3\s+3\s+-4")
-        self.assertRegexpMatches(out, "4\s+2\s+1\s+1")
+        self.assertRegex(out, "7\s+1\s+0\s+6")
+        self.assertRegex(out, "2\s+3\s+3\s+-4")
+        self.assertRegex(out, "4\s+2\s+1\s+1")
 
         code, out, err = self.t("ghistory.weekly rc._forcecolor:on")
-        self.assertRegexpMatches(out, "\s7.+\s1.+")
-        self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
+        self.assertRegex(out, "\s7.+\s1.+")
+        self.assertRegex(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.weekly")
-        self.assertRegexpMatches(out, "2014\s+December\s+28\s+\++X+\s")
-        self.assertRegexpMatches(out, "2015\s+February\s+1\s+\++X+\-+")
+        self.assertRegex(out, "2014\s+December\s+28\s+\++X+\s")
+        self.assertRegex(out, "2015\s+February\s+1\s+\++X+\-+")
 
 
 class TestHistoryMonthly(TestCase):
@@ -122,17 +122,17 @@ class TestHistoryMonthly(TestCase):
     def test_history_monthly(self):
         """Verify 'history.monthly' correctly categorizes data"""
         code, out, err = self.t("history.monthly")
-        self.assertRegexpMatches(out, "7\s+1\s+0\s+6")
-        self.assertRegexpMatches(out, "2\s+3\s+3\s+-4")
-        self.assertRegexpMatches(out, "4\s+2\s+1\s+1")
+        self.assertRegex(out, "7\s+1\s+0\s+6")
+        self.assertRegex(out, "2\s+3\s+3\s+-4")
+        self.assertRegex(out, "4\s+2\s+1\s+1")
 
         code, out, err = self.t("ghistory.monthly rc._forcecolor:on")
-        self.assertRegexpMatches(out, "\s7.+\s1.+")
-        self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
+        self.assertRegex(out, "\s7.+\s1.+")
+        self.assertRegex(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.monthly")
-        self.assertRegexpMatches(out, "2015\s+January\s+\++X+\s")
-        self.assertRegexpMatches(out, "\s+February\s+\++X+\-+")
+        self.assertRegex(out, "2015\s+January\s+\++X+\s")
+        self.assertRegex(out, "\s+February\s+\++X+\-+")
 
 
 class TestHistoryAnnual(TestCase):
@@ -160,17 +160,17 @@ class TestHistoryAnnual(TestCase):
     def test_history_annual(self):
         """Verify 'history.annual' correctly categorizes data"""
         code, out, err = self.t("history.annual")
-        self.assertRegexpMatches(out, "7\s+1\s+0\s+6")
-        self.assertRegexpMatches(out, "2\s+3\s+3\s+-4")
-        self.assertRegexpMatches(out, "4\s+2\s+1\s+1")
+        self.assertRegex(out, "7\s+1\s+0\s+6")
+        self.assertRegex(out, "2\s+3\s+3\s+-4")
+        self.assertRegex(out, "4\s+2\s+1\s+1")
 
         code, out, err = self.t("ghistory.annual rc._forcecolor:on")
-        self.assertRegexpMatches(out, "\s7.+\s1.+")
-        self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
+        self.assertRegex(out, "\s7.+\s1.+")
+        self.assertRegex(out, "\s2.+\s3.+\s3.+")
 
         code, out, err = self.t("ghistory.annual")
-        self.assertRegexpMatches(out, "2014\s+\++X+\s")
-        self.assertRegexpMatches(out, "2015\s+\++X+\-+")
+        self.assertRegex(out, "2014\s+\++X+\s")
+        self.assertRegex(out, "2015\s+\++X+\-+")
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

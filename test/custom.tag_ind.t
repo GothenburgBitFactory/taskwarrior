@@ -51,13 +51,13 @@ class TestCustomTagIndicator(TestCase):
     def test_default_indicator(self):
         """Verify default tag indicator (+) is shown"""
         code, out, err = self.t("foo")
-        self.assertRegexpMatches(out, "ID.+T")
-        self.assertRegexpMatches(out, "1\s+\+")
+        self.assertRegex(out, "ID.+T")
+        self.assertRegex(out, "1\s+\+")
 
     def test_custom_indicator(self):
         """Verify custom tag indicator (TAG) is shown"""
         code, out, err = self.t("rc.tag.indicator:TAG foo")
-        self.assertRegexpMatches(out, "1\s+TAG")
+        self.assertRegex(out, "1\s+TAG")
 
 
 if __name__ == "__main__":

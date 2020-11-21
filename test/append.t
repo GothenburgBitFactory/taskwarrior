@@ -51,7 +51,7 @@ class TestAppend(TestCase):
         code, out, err = self.t("info 1")
 
         expected = "Description\s+foo\sbar\n"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_append_error_on_empty(self):
         """Should cause an error when nothing is appended"""
@@ -82,10 +82,10 @@ class TestBug440(TestCase):
         code2, out2, err2 = self.t("2 ls")
 
         self.assertNotIn("Foo", out1)
-        self.assertRegexpMatches(out1, "\w+ Appendtext")
+        self.assertRegex(out1, "\w+ Appendtext")
 
         self.assertNotIn("Foo", out2)
-        self.assertRegexpMatches(out2, "\w+ Appendtext")
+        self.assertRegex(out2, "\w+ Appendtext")
 
 
 if __name__ == "__main__":
