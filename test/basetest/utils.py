@@ -160,7 +160,7 @@ def _retrieve_output(thread, timeout, queue, thread_error):
     """
     # Try to join the thread on failure abort
     thread.join(timeout)
-    if thread.isAlive():
+    if thread.is_alive():
         # Join should have killed the thread. This is unexpected
         raise TimeoutWaitingFor(thread_error + ". Unexpected error")
 
