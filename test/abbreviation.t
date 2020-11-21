@@ -109,7 +109,7 @@ class TestBug1006(TestCase):
 
         expected = "Description +des\n"
         errormsg = "Attribute not completed in description"
-        self.assertRegexpMatches(out, expected, msg=errormsg)
+        self.assertRegex(out, expected, msg=errormsg)
 
         notexpected = "description"
         self.assertNotIn(notexpected, out, msg=errormsg)

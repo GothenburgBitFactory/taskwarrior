@@ -48,7 +48,7 @@ class TestCustomReports(TestCase):
     def test_custom_report_help(self):
         """Verify custom report description is shown in help"""
         code, out, err = self.t("help")
-        self.assertRegexpMatches(out, "task <filter> foo\s+DESC\n")
+        self.assertRegex(out, "task <filter> foo\s+DESC\n")
 
     def test_custom_filter(self):
         """Verify custome report filtr is applied"""

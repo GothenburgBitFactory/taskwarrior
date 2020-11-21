@@ -87,17 +87,17 @@ class TestAnnotate(TestCase):
 
         self.assertTasksExist(out)
 
-        self.assertRegexpMatches(out, "one\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo1",
+        self.assertRegex(out, "one\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo1",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "foo1\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo2",
+        self.assertRegex(out, "foo1\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo2",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "foo2\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo3",
+        self.assertRegex(out, "foo2\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo3",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "two\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar1",
+        self.assertRegex(out, "two\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar1",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "bar1\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar2",
+        self.assertRegex(out, "bar1\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar2",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "three\n.+\d{1,2}/\d{1,2}/\d{4}\s+baz1",
+        self.assertRegex(out, "three\n.+\d{1,2}/\d{1,2}/\d{4}\s+baz1",
                                  msg='full - first  annotation task 1')
 
     def test_annotate_dateformat(self):
@@ -114,17 +114,17 @@ class TestAnnotate(TestCase):
 
         self.assertTasksExist(out)
 
-        self.assertRegexpMatches(out, "one\n.+\d{1,6}\s+\d{1,6}\s+foo1",
+        self.assertRegex(out, "one\n.+\d{1,6}\s+\d{1,6}\s+foo1",
                                  msg="dateformat - first  annotation task 1")
-        self.assertRegexpMatches(out, "foo1\n.+\d{1,6}\s+\d{1,6}\s+foo2",
+        self.assertRegex(out, "foo1\n.+\d{1,6}\s+\d{1,6}\s+foo2",
                                  msg="dateformat - second  annotation task 1")
-        self.assertRegexpMatches(out, "foo2\n.+\d{1,6}\s+\d{1,6}\s+foo3",
+        self.assertRegex(out, "foo2\n.+\d{1,6}\s+\d{1,6}\s+foo3",
                                  msg="dateformat - third  annotation task 1")
-        self.assertRegexpMatches(out, "two\n.+\d{1,6}\s+\d{1,6}\s+bar1",
+        self.assertRegex(out, "two\n.+\d{1,6}\s+\d{1,6}\s+bar1",
                                  msg="dateformat - first  annotation task 2")
-        self.assertRegexpMatches(out, "bar1\n.+\d{1,6}\s+\d{1,6}\s+bar2",
+        self.assertRegex(out, "bar1\n.+\d{1,6}\s+\d{1,6}\s+bar2",
                                  msg="dateformat - second  annotation task 2")
-        self.assertRegexpMatches(out, "three\n.+\d{1,6}\s+\d{1,6}\s+baz1",
+        self.assertRegex(out, "three\n.+\d{1,6}\s+\d{1,6}\s+baz1",
                                  msg="dateformat - first  annotation task 3")
 
 class TestAnnotationPropagation(TestCase):

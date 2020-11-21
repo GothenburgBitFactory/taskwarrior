@@ -54,7 +54,7 @@ class TestDescriptionFormats(TestCase):
         """Verify formatting of 'description.combined' column"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,description.combined")
         self.assertIn("one long description to exceed a certain string size", out)
-        self.assertRegexpMatches(out, r"\d{4}-\d{2}-\d{2} annotation")
+        self.assertRegex(out, r"\d{4}-\d{2}-\d{2} annotation")
         self.assertNotIn("[1]", out)
 
     def test_description_desc(self):
@@ -66,7 +66,7 @@ class TestDescriptionFormats(TestCase):
     def test_description_oneline(self):
         """Verify formatting of 'description.oneline' column"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,description.oneline")
-        self.assertRegexpMatches(out, r"one long description to exceed a certain string size \d{4}-\d{2}-\d{2}")
+        self.assertRegex(out, r"one long description to exceed a certain string size \d{4}-\d{2}-\d{2}")
         self.assertIn("annotation", out)
         self.assertNotIn("[1]", out)
 
@@ -243,14 +243,14 @@ class TestRecurringAttributeFormats(TestCase):
     def test_recurrence_formats_short(self):
         """Verify formatting of assorted short recurrence columns"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status,due,recur.indicator,mask,imask,parent.short")
-        self.assertRegexpMatches(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+R\s+-")
-        self.assertRegexpMatches(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+R\s+0\s+[0-9a-fA-F]{8}")
+        self.assertRegex(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+R\s+-")
+        self.assertRegex(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+R\s+0\s+[0-9a-fA-F]{8}")
 
     def test_recurrence_formats_long(self):
         """Verify formatting of assorted long recurrence columns"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status,due,recur.duration,mask,imask,parent.long")
-        self.assertRegexpMatches(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+P30D\s+-")
-        self.assertRegexpMatches(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+P30D\s+0\s+[0-9a-fA-F-]{36}")
+        self.assertRegex(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+P30D\s+-")
+        self.assertRegex(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+P30D\s+0\s+[0-9a-fA-F-]{36}")
 
     def test_recurrence_format_unrecognized(self):
         """Verify *.donkey formatting fails"""
@@ -279,23 +279,23 @@ class TestProjectFormats(TestCase):
     def test_project_format_full(self):
         """Verify project.full formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,project.full,description")
-        self.assertRegexpMatches(out, r'1\s+TOP\s+one')
-        self.assertRegexpMatches(out, r'2\s+TOP.MIDDLE\s+two')
-        self.assertRegexpMatches(out, r'3\s+TOP.MIDDLE.BOTTOM\s+three')
+        self.assertRegex(out, r'1\s+TOP\s+one')
+        self.assertRegex(out, r'2\s+TOP.MIDDLE\s+two')
+        self.assertRegex(out, r'3\s+TOP.MIDDLE.BOTTOM\s+three')
 
     def test_project_format_parent(self):
         """Verify project.parent formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,project.parent,description")
-        self.assertRegexpMatches(out, r'1\s+TOP\s+one')
-        self.assertRegexpMatches(out, r'2\s+TOP\s+two')
-        self.assertRegexpMatches(out, r'3\s+TOP\s+three')
+        self.assertRegex(out, r'1\s+TOP\s+one')
+        self.assertRegex(out, r'2\s+TOP\s+two')
+        self.assertRegex(out, r'3\s+TOP\s+three')
 
     def test_project_format_indented(self):
         """Verify project.indented formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,project.indented,description")
-        self.assertRegexpMatches(out, r'1\s+TOP\s+one')
-        self.assertRegexpMatches(out, r'2\s+MIDDLE\s+two')
-        self.assertRegexpMatches(out, r'3\s+BOTTOM\s+three')
+        self.assertRegex(out, r'1\s+TOP\s+one')
+        self.assertRegex(out, r'2\s+MIDDLE\s+two')
+        self.assertRegex(out, r'3\s+BOTTOM\s+three')
 
     def test_project_format_unrecognized(self):
         """Verify project.donkey formatting fails"""
@@ -316,17 +316,17 @@ class TestTagsFormats(TestCase):
     def test_tags_format_list(self):
         """Verify tags.list formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,tags.list")
-        self.assertRegexpMatches(out, r'1\s+tag1\stag2$')
+        self.assertRegex(out, r'1\s+tag1\stag2$')
 
     def test_tags_format_indicator(self):
         """Verify tags.indicator formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,tags.indicator")
-        self.assertRegexpMatches(out, r'1\s+\+$')
+        self.assertRegex(out, r'1\s+\+$')
 
     def test_tags_format_count(self):
         """Verify tags.count formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,tags.count")
-        self.assertRegexpMatches(out, r'1\s+\[2\]$')
+        self.assertRegex(out, r'1\s+\[2\]$')
 
     def test_tags_format_unrecognized(self):
         """Verify tags.donkey formatting fails"""
@@ -348,50 +348,50 @@ class TestDateFormats(TestCase):
     def test_date_format_formatted(self):
         """Verify due.formatted formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.formatted")
-        self.assertRegexpMatches(out, r'1\s+\d{4}-\d{2}-\d{2}')
-        self.assertRegexpMatches(out, r'2\s+\d{4}-\d{2}-\d{2}')
+        self.assertRegex(out, r'1\s+\d{4}-\d{2}-\d{2}')
+        self.assertRegex(out, r'2\s+\d{4}-\d{2}-\d{2}')
 
     def test_date_format_julian(self):
         """Verify due.julian formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.julian")
-        self.assertRegexpMatches(out, r'1\s+\d+\.\d+')
-        self.assertRegexpMatches(out, r'2\s+\d+\.\d+')
+        self.assertRegex(out, r'1\s+\d+\.\d+')
+        self.assertRegex(out, r'2\s+\d+\.\d+')
 
     def test_date_format_epoch(self):
         """Verify due.epoch formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.epoch")
-        self.assertRegexpMatches(out, r'1\s+\d{10}')
-        self.assertRegexpMatches(out, r'2\s+\d{10}')
+        self.assertRegex(out, r'1\s+\d{10}')
+        self.assertRegex(out, r'2\s+\d{10}')
 
     def test_date_format_iso(self):
         """Verify due.iso formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.iso")
-        self.assertRegexpMatches(out, r'1\s+\d{8}T\d{6}Z')
-        self.assertRegexpMatches(out, r'2\s+\d{8}T\d{6}Z')
+        self.assertRegex(out, r'1\s+\d{8}T\d{6}Z')
+        self.assertRegex(out, r'2\s+\d{8}T\d{6}Z')
 
     def test_date_format_age(self):
         """Verify due.age formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.age")
-        self.assertRegexpMatches(out, r'1\s+[0-9.]+d')
-        self.assertRegexpMatches(out, r'2\s+-[0-9.]+[hmin]+')
+        self.assertRegex(out, r'1\s+[0-9.]+d')
+        self.assertRegex(out, r'2\s+-[0-9.]+[hmin]+')
 
     def test_date_format_remaining(self):
         """Verify due.remaining formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.remaining")
-        self.assertRegexpMatches(out, r'1')
-        self.assertRegexpMatches(out, r'2\s+\d+\S+')
+        self.assertRegex(out, r'1')
+        self.assertRegex(out, r'2\s+\d+\S+')
 
     def test_date_format_relative(self):
         """Verify due.relative formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.relative")
-        self.assertRegexpMatches(out, r'1\s+-[0-9.]+d')
-        self.assertRegexpMatches(out, r'2\s+[0-9.]+[hmin]+')
+        self.assertRegex(out, r'1\s+-[0-9.]+d')
+        self.assertRegex(out, r'2\s+[0-9.]+[hmin]+')
 
     def test_date_format_countdown(self):
         """Verify due.countdown formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.countdown")
-        self.assertRegexpMatches(out, r'1\s+\d+\S+')
-        self.assertRegexpMatches(out, r'2\s+')
+        self.assertRegex(out, r'1\s+\d+\S+')
+        self.assertRegex(out, r'2\s+')
 
     def test_date_format_unrecognized(self):
         """Verify due.donkey formatting fails"""
@@ -430,12 +430,12 @@ class TestUDAFormats(TestCase):
     def test_uda_format_formatted(self):
         """Verify priority.default formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,priority.default")
-        self.assertRegexpMatches(out, r'1\s+H')
+        self.assertRegex(out, r'1\s+H')
 
     def test_uda_format_indicator(self):
         """Verify priority.indicator formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,priority.indicator")
-        self.assertRegexpMatches(out, r'1\s+P')
+        self.assertRegex(out, r'1\s+P')
 
     def test_uda_format_unrecognized(self):
         """Verify priority.donkey formatting fails"""

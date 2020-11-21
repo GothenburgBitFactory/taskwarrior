@@ -53,39 +53,39 @@ class TestProjects(TestCase):
         code, out, err = self.t("project:B projects")
 
         expected = "1 project \(1 task\)"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_project_progress(self):
         """project status/progress is shown and is up-to-date"""
 
         code, out, err = self.t("add one pro:foo")
-        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+        self.assertRegex(err, self.STATUS.format("foo", "0%",
                                                          "1 task"))
 
         code, out, err = self.t("add two pro:foo")
-        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+        self.assertRegex(err, self.STATUS.format("foo", "0%",
                                                          "2 of 2 tasks"))
 
         code, out, err = self.t("add three pro:foo")
-        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+        self.assertRegex(err, self.STATUS.format("foo", "0%",
                                                          "3 of 3 tasks"))
 
         code, out, err = self.t("add four pro:foo")
-        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+        self.assertRegex(err, self.STATUS.format("foo", "0%",
                                                          "4 of 4 tasks"))
 
         code, out, err = self.t("1 done")
-        self.assertRegexpMatches(err, self.STATUS.format("foo", "25%",
+        self.assertRegex(err, self.STATUS.format("foo", "25%",
                                                          "3 of 4 tasks"))
 
         code, out, err = self.t("2 delete", input="y\n")
-        self.assertRegexpMatches(err, self.STATUS.format("foo", "33%",
+        self.assertRegex(err, self.STATUS.format("foo", "33%",
                                                          "2 of 3 tasks"))
 
         code, out, err = self.t("3 modify pro:bar")
-        self.assertRegexpMatches(err, self.STATUS.format("foo", "50%",
+        self.assertRegex(err, self.STATUS.format("foo", "50%",
                                                          "1 of 2 tasks"))
-        self.assertRegexpMatches(err, self.STATUS.format("bar", "0%",
+        self.assertRegex(err, self.STATUS.format("bar", "0%",
                                                          "1 task"))
 
     def test_project_spaces(self):
@@ -93,7 +93,7 @@ class TestProjects(TestCase):
 
         self.t("add hello pro:bob")
         code, out, err = self.t('1 mod pro:"foo bar"')
-        self.assertRegexpMatches(err, self.STATUS.format("foo bar", "0%",
+        self.assertRegex(err, self.STATUS.format("foo bar", "0%",
                                                          "1 task"))
 
     def add_tasks(self):
@@ -184,25 +184,25 @@ class TestSubprojects(TestCase):
     def test_project_exact1(self):
         """Verify single character exact"""
         code, out, err = self.t("list project:b")
-        self.assertRegexpMatches(out, r"\bb\s")
+        self.assertRegex(out, r"\bb\s")
 
     def test_project_top1(self):
         """Verify single character parent"""
         code, out, err = self.t("list project:a")
-        self.assertRegexpMatches(out, r"\babc\s")
-        self.assertRegexpMatches(out, r"\bab\s")
-        self.assertRegexpMatches(out, r"\ba\s")
+        self.assertRegex(out, r"\babc\s")
+        self.assertRegex(out, r"\bab\s")
+        self.assertRegex(out, r"\ba\s")
 
     def test_project_top2(self):
         """Verify double character parent"""
         code, out, err = self.t("list project:ab")
-        self.assertRegexpMatches(out, r"\babc\s")
-        self.assertRegexpMatches(out, r"\bab\s")
+        self.assertRegex(out, r"\babc\s")
+        self.assertRegex(out, r"\bab\s")
 
     def test_project_exact3(self):
         """Verify triple character exact"""
         code, out, err = self.t("list project:abc")
-        self.assertRegexpMatches(out, r"\babc\s")
+        self.assertRegex(out, r"\babc\s")
 
     def test_project_mismatch4(self):
         """Verify quad character mismatch"""
@@ -227,13 +227,13 @@ class TestBug299(TestCase):
         """
         code, out, err = self.t("list project.isnt:one pro.isnt:two")
 
-        self.assertNotRegexpMatches(out, "one.*foo")
-        self.assertRegexpMatches(out, "ones.*faz")
-        self.assertRegexpMatches(out, "phone.*boo")
-        self.assertRegexpMatches(out, "bones.*too")
+        self.assertNotRegex(out, "one.*foo")
+        self.assertRegex(out, "ones.*faz")
+        self.assertRegex(out, "phone.*boo")
+        self.assertRegex(out, "bones.*too")
 
-        self.assertNotRegexpMatches(out, "two.*bar")
-        self.assertRegexpMatches(out, "three.*baz")
+        self.assertNotRegex(out, "two.*bar")
+        self.assertRegex(out, "three.*baz")
 
     def test_project_exclusion_hasnt(self):
         """299: check project exclusion using project.hasnt:<name>
@@ -242,13 +242,13 @@ class TestBug299(TestCase):
         """
         code, out, err = self.t("list project.hasnt:one pro.hasnt:two")
 
-        self.assertNotRegexpMatches(out, "one.*foo")
-        self.assertNotRegexpMatches(out, "ones.*faz")
-        self.assertNotRegexpMatches(out, "phone.*boo")
-        self.assertNotRegexpMatches(out, "bones.*too")
+        self.assertNotRegex(out, "one.*foo")
+        self.assertNotRegex(out, "ones.*faz")
+        self.assertNotRegex(out, "phone.*boo")
+        self.assertNotRegex(out, "bones.*too")
 
-        self.assertNotRegexpMatches(out, "two.*bar")
-        self.assertRegexpMatches(out, "three.*baz")
+        self.assertNotRegex(out, "two.*bar")
+        self.assertRegex(out, "three.*baz")
 
 
 class TestBug555(TestCase):
@@ -403,16 +403,16 @@ class TestBug899(TestCase):
     def test_log_project(self):
         """899: Verify task log behaves correctly when logging into a project"""
         code, out, err = self.t("add one pro:A")
-        self.assertRegexpMatches(err, " 0% complete \(1 task ")
+        self.assertRegex(err, " 0% complete \(1 task ")
 
         code, out, err = self.t("add two pro:A")
-        self.assertRegexpMatches(err, " 0% complete \(2 of 2 ")
+        self.assertRegex(err, " 0% complete \(2 of 2 ")
 
         code, out, err = self.t("1 done")
-        self.assertRegexpMatches(err, " 50% complete \(1 of 2 ")
+        self.assertRegex(err, " 50% complete \(1 of 2 ")
 
         code, out, err = self.t("log three pro:A")
-        self.assertRegexpMatches(err, " 66% complete \(1 of 3 ")
+        self.assertRegex(err, " 66% complete \(1 of 3 ")
 
 
 class TestBug1267(TestCase):

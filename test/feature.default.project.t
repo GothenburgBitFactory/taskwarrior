@@ -56,16 +56,16 @@ class TestDefaultProject(TestCase):
         self.assertIn("foobar", out)
 
         expected = "Project\s+garden"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
         self.t("1 modify project:")
         code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
-        self.assertNotRegexpMatches(out, expected)
+        self.assertNotRegex(out, expected)
 
         notexpected = "Project\s+" + self.default_project
-        self.assertNotRegexpMatches(out, notexpected)
+        self.assertNotRegex(out, notexpected)
 
     def test_without_project(self):
         """default.project applied when no project is specified"""
@@ -77,7 +77,7 @@ class TestDefaultProject(TestCase):
         self.assertIn("foobar", out)
 
         expected = "Project\s+" + self.default_project
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_default_project_inline_override(self):
         """no project applied when default.project is overridden"""
@@ -125,7 +125,7 @@ class TestDefaultProject(TestCase):
         code, out, err = self.t("1 info")
 
         expected = "Description\s+foobar\n[0-9-: ]+ Hello"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
         self.assertNotIn("Project", out)
 
     def test_time_default_project(self):
@@ -158,7 +158,7 @@ class TestDefaultProject(TestCase):
         code, out, err = self.t("1 info")
 
         self.assertIn(DESC, out)
-        self.assertRegexpMatches(out, "Status\s+Recurring")  # is a parent task
+        self.assertRegex(out, "Status\s+Recurring")  # is a parent task
         self.assertIn(self.default_project, out)
 
         self.t.faketime("+1d")

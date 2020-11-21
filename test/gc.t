@@ -50,7 +50,7 @@ class TestGC(TestCase):
         self.t.config("gc", "0")
         self.t("1 done")
         code, out, err = self.t("gctest")
-        self.assertRegexpMatches(out, "1\s+one", "should still have ID")
+        self.assertRegex(out, "1\s+one", "should still have ID")
 
     def test_gc_off_mod(self):
         """mod by ID after done with gc off"""
@@ -59,7 +59,7 @@ class TestGC(TestCase):
         self.t("gctest")
         self.t("2 mod +TWO")
         code, out, err = self.t("gctest")
-        self.assertRegexpMatches(out, "2\s+two\s+TWO", "modified 'two'")
+        self.assertRegex(out, "2\s+two\s+TWO", "modified 'two'")
 
     def test_gc_on_id(self):
         """IDs reshuffle after report when GC on"""
@@ -67,8 +67,8 @@ class TestGC(TestCase):
         self.t("1 done")
         self.t("2 mod +TWO")
         code, out, err = self.t("gctest")
-        self.assertRegexpMatches(out, "1\s+two\s+TWO")
-        self.assertRegexpMatches(out, "2\s+three")
+        self.assertRegex(out, "1\s+two\s+TWO")
+        self.assertRegex(out, "2\s+three")
 
 
 if __name__ == "__main__":

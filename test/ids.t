@@ -50,42 +50,42 @@ class TestIDs(TestCase):
     def test_ids_count_A(self):
         """ids +A"""
         code, out, err = self.t("ids +A")
-        self.assertRegexpMatches(out, "^1-3 5$")
+        self.assertRegex(out, "^1-3 5$")
 
     def test_ids_count_B(self):
         """ids +B"""
         code, out, err = self.t("ids +B")
-        self.assertRegexpMatches(out, "^1 3 5$")
+        self.assertRegex(out, "^1 3 5$")
 
     def test_ids_count_A_B(self):
         """ids +A -B"""
         code, out, err = self.t("ids +A -B")
-        self.assertRegexpMatches(out, "^2$")
+        self.assertRegex(out, "^2$")
 
     def test_get_ids_count_A(self):
         """_ids +A"""
         code, out, err = self.t("_ids +A")
-        self.assertRegexpMatches(out, "^1\n2\n3\n5$")
+        self.assertRegex(out, "^1\n2\n3\n5$")
 
     def test_get_zshids_count_A(self):
         """_zshids +A"""
         code, out, err = self.t("_zshids +A")
-        self.assertRegexpMatches(out, "^1:one\n2:two\n3:three\n5:five$")
+        self.assertRegex(out, "^1:one\n2:two\n3:three\n5:five$")
 
     def test_uuids_count_A(self):
         """uuids +A"""
         code, out, err = self.t("uuids +A")
-        self.assertRegexpMatches(out, "{0} {0} {0} {0}".format(UUID_REGEXP))
+        self.assertRegex(out, "{0} {0} {0} {0}".format(UUID_REGEXP))
 
     def test_get_uuids_count_A(self):
         """_uuids +A"""
         code, out, err = self.t("_uuids +A")
-        self.assertRegexpMatches(out, "{0}\n{0}\n{0}\n{0}".format(UUID_REGEXP))
+        self.assertRegex(out, "{0}\n{0}\n{0}\n{0}".format(UUID_REGEXP))
 
     def test_get_zshuuids_count_A(self):
         """_zshuuids +A"""
         code, out, err = self.t("_zshuuids +A")
-        self.assertRegexpMatches(
+        self.assertRegex(
             out, "{0}:one\n{0}:two\n{0}:three\n{0}:five".format(UUID_REGEXP))
 
     def test_ids_ranges(self):
