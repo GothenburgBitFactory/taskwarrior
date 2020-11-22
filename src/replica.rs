@@ -1,9 +1,11 @@
+use crate::errors::Error;
 use crate::operation::Operation;
 use crate::task::{Priority, Status, Task, TaskBuilder};
 use crate::taskdb::DB;
 use crate::taskstorage::TaskMap;
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use failure::Fallible;
+use itertools::join;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -77,7 +79,12 @@ impl Replica {
         status: Status,
         description: String,
     ) -> Fallible<TaskMut> {
-        // TODO: check that it doesn't exist
+        // check that it doesn't exist; this is a convenience check, as the task
+        // may already exist when this Create operation is finally sync'd with
+        // operations from other replicas
+        if self.taskdb.get_task(&uuid)?.is_some() {
+            return Err(Error::DBError(format!("Task {} already exists", uuid)).into());
+        }
         self.taskdb
             .apply(Operation::Create { uuid: uuid.clone() })?;
         self.update_task(uuid.clone(), "status", Some(String::from(status.as_ref())))?;
@@ -90,7 +97,11 @@ impl Replica {
 
     /// Delete a task.  The task must exist.
     pub fn delete_task(&mut self, uuid: Uuid) -> Fallible<()> {
-        // TODO: must verify task does exist
+        // check that it already exists; this is a convenience check, as the task may already exist
+        // when this Create operation is finally sync'd with operations from other replicas
+        if self.taskdb.get_task(&uuid)?.is_none() {
+            return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
+        }
         self.taskdb.apply(Operation::Delete { uuid })
     }
 
@@ -121,6 +132,8 @@ impl From<&TaskMap> for Task {
     }
 }
 
+// TODO: move this struct to crate::task, with a trait for update_task, since it is the reverse
+// of TaskBuilder::set
 /// TaskMut allows changes to a task.  It is intended for short-term use, such as changing a few
 /// properties, and should not be held for long periods of wall-clock time.
 pub struct TaskMut<'a> {
@@ -150,47 +163,108 @@ impl<'a> TaskMut<'a> {
         Ok(())
     }
 
-    /// Set the task's status
-    pub fn status(&mut self, status: Status) -> Fallible<()> {
+    fn set_string(&mut self, property: &str, value: Option<String>) -> Fallible<()> {
+        self.lastmod()?;
+        self.replica.update_task(self.uuid.clone(), property, value)
+    }
+
+    fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> Fallible<()> {
         self.lastmod()?;
         self.replica.update_task(
             self.uuid.clone(),
-            "status",
-            Some(String::from(status.as_ref())),
+            property,
+            value.map(|v| format!("{}", v.timestamp())),
         )
     }
 
-    // TODO: description
-    // TODO: start
-    // TODO: end
-    // TODO: due
-    // TODO: until
-    // TODO: wait
-    // TODO: scheduled
-    // TODO: recur
-    // TODO: mask
-    // TODO: imask
-    // TODO: parent
+    /// Set the task's status
+    pub fn status(&mut self, status: Status) -> Fallible<()> {
+        self.set_string("status", Some(String::from(status.as_ref())))
+    }
+
+    /// Set the task's description
+    pub fn description(&mut self, description: String) -> Fallible<()> {
+        self.set_string("description", Some(description))
+    }
+
+    /// Set the task's start time
+    pub fn start(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
+        self.set_timestamp("start", time)
+    }
+
+    /// Set the task's end time
+    pub fn end(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
+        self.set_timestamp("end", time)
+    }
+
+    /// Set the task's due time
+    pub fn due(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
+        self.set_timestamp("due", time)
+    }
+
+    /// Set the task's until time
+    pub fn until(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
+        self.set_timestamp("until", time)
+    }
+
+    /// Set the task's wait time
+    pub fn wait(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
+        self.set_timestamp("wait", time)
+    }
+
+    /// Set the task's scheduled time
+    pub fn scheduled(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
+        self.set_timestamp("scheduled", time)
+    }
+
+    /// Set the task's recur value
+    pub fn recur(&mut self, recur: Option<String>) -> Fallible<()> {
+        self.set_string("recur", recur)
+    }
+
+    /// Set the task's mask value
+    pub fn mask(&mut self, mask: Option<String>) -> Fallible<()> {
+        self.set_string("mask", mask)
+    }
+
+    /// Set the task's imask value
+    pub fn imask(&mut self, imask: Option<u64>) -> Fallible<()> {
+        self.set_string("imask", imask.map(|v| format!("{}", v)))
+    }
+
+    /// Set the task's parent task
+    pub fn parent(&mut self, parent: Option<Uuid>) -> Fallible<()> {
+        self.set_string("parent", parent.map(|v| format!("{}", v)))
+    }
 
     /// Set the task's project
-    pub fn project(&mut self, project: String) -> Fallible<()> {
-        self.lastmod()?;
-        self.replica
-            .update_task(self.uuid.clone(), "project", Some(project))
+    pub fn project(&mut self, project: Option<String>) -> Fallible<()> {
+        self.set_string("project", project)
     }
 
     /// Set the task's priority
-    pub fn priority(&mut self, priority: Priority) -> Fallible<()> {
-        self.lastmod()?;
-        self.replica.update_task(
-            self.uuid.clone(),
-            "priority",
-            Some(String::from(priority.as_ref())),
+    pub fn priority(&mut self, priority: Option<Priority>) -> Fallible<()> {
+        self.set_string("priority", priority.map(|v| String::from(v.as_ref())))
+    }
+
+    /// Set the task's depends; note that this completely replaces the list of tasks on which this
+    /// one depends.
+    pub fn depends(&mut self, depends: Vec<Uuid>) -> Fallible<()> {
+        self.set_string(
+            "depends",
+            if depends.len() > 0 {
+                Some(join(depends.iter(), ","))
+            } else {
+                None
+            },
         )
     }
 
-    // TODO: depends
-    // TODO: tags
+    /// Set the task's tags; note that this completely replaces the list of tags
+    pub fn tags(&mut self, tags: Vec<Uuid>) -> Fallible<()> {
+        self.set_string("tags", Some(join(tags.iter(), ",")))
+    }
+
     // TODO: annotations
     // TODO: udas
 }
@@ -209,7 +283,7 @@ mod tests {
         let mut tm = rep
             .new_task(uuid.clone(), Status::Pending, "a task".into())
             .unwrap();
-        tm.priority(Priority::L).unwrap();
+        tm.priority(Some(Priority::L)).unwrap();
 
         let t = rep.get_task(&uuid).unwrap().unwrap();
         assert_eq!(t.description, String::from("a task"));
@@ -237,12 +311,18 @@ mod tests {
         rep.new_task(uuid.clone(), Status::Pending, "another task".into())
             .unwrap();
 
-        let mut tm = rep.get_task_mut(&uuid).unwrap().unwrap();
-        tm.priority(Priority::L).unwrap();
-        tm.project("work".into()).unwrap();
-
         let t = rep.get_task(&uuid).unwrap().unwrap();
         assert_eq!(t.description, String::from("another task"));
+
+        let mut tm = rep.get_task_mut(&uuid).unwrap().unwrap();
+        tm.status(Status::Completed).unwrap();
+        tm.description("another task, updated".into()).unwrap();
+        tm.priority(Some(Priority::L)).unwrap();
+        tm.project(Some("work".into())).unwrap();
+
+        let t = rep.get_task(&uuid).unwrap().unwrap();
+        assert_eq!(t.status, Status::Completed);
+        assert_eq!(t.description, String::from("another task, updated"));
         assert_eq!(t.project, Some("work".into()));
     }
 
