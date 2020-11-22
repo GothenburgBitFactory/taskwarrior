@@ -44,3 +44,30 @@ tasks:
           description: Run tests for taskchampion
           owner: dustin@v.igoro.us
           source: ${repo_url}
+    - $if: run
+      then:
+        provisionerId: 'proj-misc'
+        workerType: 'ci'
+        deadline: {$fromNow: '1 hour'}
+        expires: {$fromNow: '1 day'}
+        payload:
+          maxRunTime: 3600
+          image: rust:latest
+          command:
+            - /bin/bash
+            - '-c'
+            - >-
+              git clone ${repo_url} repo &&
+              cd repo && 
+              git config advice.detachedHead false &&
+              git checkout ${ref} &&
+              cd docs &&
+              curl -L --compressed https://github.com/rust-lang/mdBook/releases/download/v0.4.4/mdbook-v0.4.4-x86_64-unknown-linux-gnu.tar.gz | gunzip -c | tar -xf - &&
+              chmod +x mdbook &&
+              ./mdbook test &&
+              ./mdbook build
+        metadata:
+          name: taskchampion-book
+          description: Verify that the docs build with mdbook
+          owner: dustin@v.igoro.us
+          source: ${repo_url}
