@@ -1,29 +1,46 @@
-version: 0
+version: 1
+reporting: checks-v1
+policy:
+  pullRequests: public
 tasks:
-  - provisionerId: '{{ taskcluster.docker.provisionerId }}'
-    workerType: '{{ taskcluster.docker.workerType }}'
-    extra:
-      github:
-        events:
-          - pull_request.opened
-          - pull_request.reopened
-          - pull_request.synchronize
-          - push
-    payload:
-      maxRunTime: 3600
-      image: 'rust:latest'
-      command:
-        - /bin/bash
-        - '-c'
-        - >-
-          git clone {{event.head.repo.url}} repo &&
-          cd repo &&
-          git config advice.detachedHead false &&
-          git checkout {{event.head.sha}} &&
-          cargo test
-    metadata:
-      name: Test
-      description: 'Run tests'
-      owner: '{{ event.head.user.email }}'
-      source: '{{ event.head.repo.url }}'
-allowPullRequests: collaborators
+  $if: 'tasks_for in ["github-push", "github-pull-request"]'
+  then:
+    $let:
+      run:
+        $if: 'tasks_for == "github-push"'
+        then: true
+        else: {$eval: 'event.action in ["opened", "reopened", "synchronize"]'}
+      repo_url:
+        $if: 'tasks_for == "github-push"'
+        then: ${event.repository.clone_url}
+        else: ${event.pull_request.head.repo.clone_url}
+      ref:
+        $if: 'tasks_for == "github-push"'
+        then: ${event.after}
+        else: ${event.pull_request.head.sha}
+    in:
+    - $if: run
+      then:
+        provisionerId: 'proj-misc'
+        workerType: 'ci'
+        deadline: {$fromNow: '1 hour'}
+        expires: {$fromNow: '1 day'}
+        payload:
+          maxRunTime: 3600
+          image: rust:latest
+          command:
+            - /bin/bash
+            - '-c'
+            - >-
+              rustup component add rustfmt &&
+              git clone ${repo_url} repo &&
+              cd repo &&
+              git config advice.detachedHead false &&
+              git checkout ${ref} &&
+              cargo test &&
+              cargo fmt -- --check
+        metadata:
+          name: taskchampion-tests
+          description: Run tests for taskchampion
+          owner: dustin@v.igoro.us
+          source: ${repo_url}
