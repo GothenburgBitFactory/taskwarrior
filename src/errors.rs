@@ -5,6 +5,6 @@ pub enum Error {
     #[fail(display = "Task Database Error: {}", _0)]
     DBError(String),
 
-    #[fail(display = "TDB2 Error: {}", _0)]
-    TDB2Error(String),
+    #[fail(display = "Replica Error: {}", _0)]
+    ReplicaError(String),
 }

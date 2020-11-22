@@ -4,20 +4,7 @@ Goals:
  * Reliable concurrency - clients do not diverge
  * Storage O(n) with n number of tasks
 
-# Data Model
-
-A client manages a single offline instance of a single user's task list.
-The data model is only seen from the clients' perspective.
-
-## Task Database
-
-The task database is composed of an un-ordered collection of tasks, each keyed by a UUID.
-Each task has an arbitrary-sized set of key/value properties, with string values.
-
-Tasks are only created, never deleted.
-See below for details on how tasks can "expire" from the task database.
-
-## Operations
+# Operations
 
 Every change to the task database is captured as an operation.
 Each operation has one of the forms 

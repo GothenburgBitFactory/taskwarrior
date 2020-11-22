@@ -131,8 +131,6 @@ impl TaskBuilder {
             annotations: self.annotations,
             udas: self.udas,
         }
-
-        // TODO: check validity per https://taskwarrior.org/docs/design/task.html
     }
 }
 
