@@ -8,6 +8,14 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
+  test-centos8:
+    build:
+        context: .
+        dockerfile: test/docker/centos8
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
   test-fedora28:
     build:
         context: .
@@ -20,6 +28,22 @@ services:
     build:
         context: .
         dockerfile: test/docker/fedora29
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-fedora32:
+    build:
+        context: .
+        dockerfile: test/docker/fedora32
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-fedora33:
+    build:
+        context: .
+        dockerfile: test/docker/fedora33
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
@@ -40,7 +64,15 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-debianstable:
+  test-ubuntu2004:
+    build:
+        context: .
+        dockerfile: test/docker/ubuntu2004
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+   test-debianstable:
     build:
         context: .
         dockerfile: test/docker/debianstable
