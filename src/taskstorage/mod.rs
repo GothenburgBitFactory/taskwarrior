@@ -86,20 +86,6 @@ pub trait TaskStorageTxn {
 /// A trait for objects able to act as backing storage for a DB.  This API is optimized to be
 /// easy to implement, with all of the semantic meaning of the data located in the DB
 /// implementation, which is the sole consumer of this trait.
-///
-/// Conceptually, task storage contains the following:
-///
-///  - tasks: a set of tasks indexed by uuid
-///  - base_version: the number of the last version sync'd from the server
-///  - operations: all operations performed since base_version
-///  - working_set: a mapping from integer -> uuid, used to keep stable small-integer indexes
-///    into the tasks.  The replica maintains this list.  It is not covered by operations.
-///
-///  The `operations` are already reflected in `tasks`, so the following invariant holds:
-///  > Applying `operations` to the set of tasks at `base_version` gives a set of tasks identical
-///  > to `tasks`.
-///
-///  It is up to the caller (DB) to maintain this invariant.
 pub trait TaskStorage {
     /// Begin a transaction
     fn txn<'a>(&'a mut self) -> Fallible<Box<dyn TaskStorageTxn + 'a>>;
