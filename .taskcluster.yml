@@ -32,6 +32,7 @@ tasks:
             - /bin/bash
             - '-c'
             - >-
+              rustup component add rustfmt &&
               git clone ${repo_url} repo &&
               cd repo &&
               git config advice.detachedHead false &&
