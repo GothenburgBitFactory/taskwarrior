@@ -10,7 +10,11 @@ matrix:
       os: linux
       env: CONTAINER=centos7
       services: docker
-    - name: "Fedora 28"
+    - name: "Centos 8"
+      os: linux
+      env: CONTAINER=centos8
+      services: docker
+     - name: "Fedora 28"
       os: linux
       env: CONTAINER=fedora28
       services: docker
@@ -18,7 +22,15 @@ matrix:
       os: linux
       env: CONTAINER=fedora28
       services: docker
-    - name: "Debian Stable"
+     - name: "Fedora 32"
+      os: linux
+      env: CONTAINER=fedora32
+      services: docker
+    - name: "Fedora 33"
+      os: linux
+      env: CONTAINER=fedora33
+      services: docker
+     - name: "Debian Stable"
       os: linux
       env: CONTAINER=debianstable
       services: docker
@@ -34,7 +46,11 @@ matrix:
       os: linux
       env: CONTAINER=ubuntu1804
       services: docker
-    - name: "OpenSUSE 15.0"
+    - name: "Ubuntu 20.04"
+      os: linux
+      env: CONTAINER=ubuntu2004
+      services: docker
+     - name: "OpenSUSE 15.0"
       os: linux
       env: CONTAINER=opensuse1500
       services: docker
