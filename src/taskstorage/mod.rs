@@ -70,7 +70,7 @@ pub trait TaskStorageTxn {
 
     /// Add a task to the working set and return its (one-based) index.  This index will be one greater
     /// than the highest used index.
-    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<u64>;
+    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64>;
 
     /// Remove a task from the working set.  Other tasks' indexes are not affected.
     fn remove_from_working_set(&mut self, index: u64) -> Fallible<()>;

@@ -104,24 +104,27 @@ impl DB {
         txn.get_task(uuid)
     }
 
-    /// Rebuild the working set.  This renumbers the pending tasks to eliminate gaps, and also
-    /// finds any tasks whose statuses changed without being noticed.
-    pub fn rebuild_working_set(&mut self) -> Fallible<()> {
-        // TODO: this logic belongs in Replica
-        // TODO: it's every status but Completed and Deleted, I think?
+    /// Rebuild the working set using a function to identify tasks that should be in the set.  This
+    /// renumbers the existing working-set tasks to eliminate gaps, and also adds any tasks that
+    /// are not already in the working set but should be.  The rebuild occurs in a single
+    /// trasnsaction against the storage backend.
+    pub fn rebuild_working_set<F>(&mut self, in_working_set: F) -> Fallible<()>
+    where
+        F: Fn(&TaskMap) -> bool,
+    {
         let mut txn = self.storage.txn()?;
 
         let mut new_ws = vec![];
         let mut seen = HashSet::new();
-        let pending = String::from("pending");
 
-        // The goal here is for existing working-set items to be "compressed' down to index
-        // 1, so we begin by scanning the current working set and inserting any still-pending
-        // tasks into the new list
+        // The goal here is for existing working-set items to be "compressed' down to index 1, so
+        // we begin by scanning the current working set and inserting any tasks that should still
+        // be in the set into new_ws, implicitly dropping any tasks that are no longer in the
+        // working set.
         for elt in txn.get_working_set()? {
             if let Some(uuid) = elt {
                 if let Some(task) = txn.get_task(&uuid)? {
-                    if task.get("status") == Some(&pending) {
+                    if in_working_set(&task) {
                         new_ws.push(uuid.clone());
                         seen.insert(uuid);
                     }
@@ -129,22 +132,41 @@ impl DB {
             }
         }
 
-        // Now go hunting for tasks that are pending and are not already in this list
+        // Now go hunting for tasks that should be in this list but are not, adding them at the
+        // end of the list.
         for (uuid, task) in txn.all_tasks()? {
             if !seen.contains(&uuid) {
-                if task.get("status") == Some(&pending) {
+                if in_working_set(&task) {
                     new_ws.push(uuid.clone());
                 }
             }
         }
 
+        // clear and re-write the entire working set, in order
         txn.clear_working_set()?;
         for uuid in new_ws.drain(0..new_ws.len()) {
-            txn.add_to_working_set(uuid)?;
+            txn.add_to_working_set(&uuid)?;
         }
 
         txn.commit()?;
         Ok(())
+    }
+
+    /// Add the given uuid to the working set and return its index; if it is already in the working
+    /// set, its index is returned.  This does *not* renumber any existing tasks.
+    pub fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
+        let mut txn = self.storage.txn()?;
+        // search for an existing entry for this task..
+        for (i, elt) in txn.get_working_set()?.iter().enumerate() {
+            if *elt == Some(*uuid) {
+                // (note that this drops the transaction with no changes made)
+                return Ok(i as u64);
+            }
+        }
+        // and if not found, add one
+        let i = txn.add_to_working_set(uuid)?;
+        txn.commit()?;
+        Ok(i)
     }
 
     /// Sync to the given server, pulling remote changes and pushing local changes.
@@ -448,7 +470,7 @@ mod tests {
             txn.clear_working_set()?;
 
             for i in &[1usize, 3, 4] {
-                txn.add_to_working_set(uuids[*i])?;
+                txn.add_to_working_set(&uuids[*i])?;
             }
 
             txn.commit()?;
@@ -464,7 +486,13 @@ mod tests {
             ]
         );
 
-        db.rebuild_working_set()?;
+        db.rebuild_working_set(|t| {
+            if let Some(status) = t.get("status") {
+                status == "pending"
+            } else {
+                false
+            }
+        })?;
 
         // uuids[1] and uuids[4] are already in the working set, so are compressed
         // to the top, and then uuids[0] is added.
