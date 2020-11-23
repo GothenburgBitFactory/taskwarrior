@@ -1,6 +1,6 @@
 use crate::operation::Operation;
 use crate::taskstorage::{TaskMap, TaskStorage, TaskStorageTxn};
-use failure::Fallible;
+use failure::{format_err, Fallible};
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
 use std::convert::TryInto;

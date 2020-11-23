@@ -1,7 +1,7 @@
 use crate::replica::Replica;
 use crate::taskstorage::TaskMap;
 use chrono::prelude::*;
-use failure::Fallible;
+use failure::{format_err, Fallible};
 use std::convert::TryFrom;
 use uuid::Uuid;
 

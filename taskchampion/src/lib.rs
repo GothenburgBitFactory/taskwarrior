@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate failure;
-
 mod errors;
 mod operation;
 mod replica;

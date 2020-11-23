@@ -1,6 +1,6 @@
 use crate::operation::Operation;
 use crate::taskstorage::{TaskMap, TaskStorage, TaskStorageTxn};
-use failure::Fallible;
+use failure::{format_err, Fallible};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use uuid::Uuid;
