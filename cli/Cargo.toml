@@ -1,0 +1,10 @@
+[package]
+name = "taskchampion-cli"
+version = "0.1.0"
+authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
+edition = "2018"
+
+[dependencies]
+clap = "~2.33.0"
+uuid = { version = "0.8.1", features = ["serde", "v4"] }
+taskchampion = { path = "../taskchampion" }

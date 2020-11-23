@@ -1,6 +1,9 @@
 use chrono::Utc;
-use taskchampion::{taskstorage, Operation, Server, DB};
+use taskchampion::{taskstorage, Operation, DB};
 use uuid::Uuid;
+
+mod shared;
+use shared::TestServer;
 
 fn newdb() -> DB {
     DB::new(Box::new(taskstorage::InMemoryStorage::new()))
@@ -8,7 +11,7 @@ fn newdb() -> DB {
 
 #[test]
 fn test_sync() {
-    let mut server = Server::new();
+    let mut server = TestServer::new();
 
     let mut db1 = newdb();
     db1.sync("me", &mut server).unwrap();
@@ -68,7 +71,7 @@ fn test_sync() {
 
 #[test]
 fn test_sync_create_delete() {
-    let mut server = Server::new();
+    let mut server = TestServer::new();
 
     let mut db1 = newdb();
     db1.sync("me", &mut server).unwrap();

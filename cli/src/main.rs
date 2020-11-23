@@ -1,4 +1,3 @@
-extern crate clap;
 use clap::{App, Arg, SubCommand};
 use std::path::Path;
 use taskchampion::{taskstorage, Replica, Status, DB};

@@ -1,7 +1,10 @@
 use chrono::Utc;
 use proptest::prelude::*;
-use taskchampion::{taskstorage, Operation, Server, DB};
+use taskchampion::{taskstorage, Operation, DB};
 use uuid::Uuid;
+
+mod shared;
+use shared::TestServer;
 
 fn newdb() -> DB {
     DB::new(Box::new(taskstorage::InMemoryStorage::new()))
@@ -46,7 +49,7 @@ proptest! {
     // and delete operations that results in a task existing in one DB but not existing in
     // another.  So, the generated sequences focus on a single task UUID.
     fn transform_sequences_of_operations(action_sequence in action_sequence_strategy()) {
-        let mut server = Server::new();
+        let mut server = TestServer::new();
         let mut dbs = [newdb(), newdb(), newdb()];
 
         for (action, db) in action_sequence {

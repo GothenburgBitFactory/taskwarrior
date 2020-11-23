@@ -170,7 +170,7 @@ impl DB {
     }
 
     /// Sync to the given server, pulling remote changes and pushing local changes.
-    pub fn sync(&mut self, username: &str, server: &mut Server) -> Fallible<()> {
+    pub fn sync(&mut self, username: &str, server: &mut dyn Server) -> Fallible<()> {
         let mut txn = self.storage.txn()?;
 
         // retry synchronizing until the server accepts our version (this allows for races between
