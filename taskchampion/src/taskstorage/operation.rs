@@ -128,7 +128,7 @@ impl Operation {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::taskdb::DB;
+    use crate::taskdb::TaskDB;
     use crate::taskstorage::InMemoryStorage;
     use chrono::{Duration, Utc};
     use proptest::prelude::*;
@@ -148,7 +148,7 @@ mod test {
 
         // check that the two operation sequences have the same effect, enforcing the invariant of
         // the transform function.
-        let mut db1 = DB::new_inmemory();
+        let mut db1 = TaskDB::new_inmemory();
         if let Some(ref o) = setup {
             db1.apply(o.clone()).unwrap();
         }
@@ -157,7 +157,7 @@ mod test {
             db1.apply(o).unwrap();
         }
 
-        let mut db2 = DB::new_inmemory();
+        let mut db2 = TaskDB::new_inmemory();
         if let Some(ref o) = setup {
             db2.apply(o.clone()).unwrap();
         }
@@ -310,8 +310,8 @@ mod test {
         fn transform_invariant_holds(o1 in operation_strategy(), o2 in operation_strategy()) {
             let (o1p, o2p) = Operation::transform(o1.clone(), o2.clone());
 
-            let mut db1 = DB::new(Box::new(InMemoryStorage::new()));
-            let mut db2 = DB::new(Box::new(InMemoryStorage::new()));
+            let mut db1 = TaskDB::new(Box::new(InMemoryStorage::new()));
+            let mut db2 = TaskDB::new(Box::new(InMemoryStorage::new()));
 
             // Ensure that any expected tasks already exist
             if let Operation::Update{ ref uuid, .. } = o1 {

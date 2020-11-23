@@ -68,7 +68,7 @@ pub trait TaskStorageTxn {
     fn operations<'a>(&mut self) -> Fallible<Vec<Operation>>;
 
     /// Add an operation to the end of the list of operations in the storage.  Note that this
-    /// merely *stores* the operation; it is up to the DB to apply it.
+    /// merely *stores* the operation; it is up to the TaskDB to apply it.
     fn add_operation(&mut self, op: Operation) -> Fallible<()>;
 
     /// Replace the current list of operations with a new list.

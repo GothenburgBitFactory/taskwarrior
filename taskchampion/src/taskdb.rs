@@ -7,7 +7,7 @@ use std::collections::HashSet;
 use std::str;
 use uuid::Uuid;
 
-pub struct DB {
+pub struct TaskDB {
     storage: Box<dyn TaskStorage>,
 }
 
@@ -17,24 +17,24 @@ struct Version {
     operations: Vec<Operation>,
 }
 
-impl DB {
-    /// Create a new DB with the given backend storage
-    pub fn new(storage: Box<dyn TaskStorage>) -> DB {
-        DB { storage }
+impl TaskDB {
+    /// Create a new TaskDB with the given backend storage
+    pub fn new(storage: Box<dyn TaskStorage>) -> TaskDB {
+        TaskDB { storage }
     }
 
     #[cfg(test)]
-    pub fn new_inmemory() -> DB {
-        DB::new(Box::new(crate::taskstorage::InMemoryStorage::new()))
+    pub fn new_inmemory() -> TaskDB {
+        TaskDB::new(Box::new(crate::taskstorage::InMemoryStorage::new()))
     }
 
-    /// Apply an operation to the DB.  Aside from synchronization operations, this is the only way
-    /// to modify the DB.  In cases where an operation does not make sense, this function will do
-    /// nothing and return an error (but leave the DB in a consistent state).
+    /// Apply an operation to the TaskDB.  Aside from synchronization operations, this is the only way
+    /// to modify the TaskDB.  In cases where an operation does not make sense, this function will do
+    /// nothing and return an error (but leave the TaskDB in a consistent state).
     pub fn apply(&mut self, op: Operation) -> Fallible<()> {
         // TODO: differentiate error types here?
         let mut txn = self.storage.txn()?;
-        if let err @ Err(_) = DB::apply_op(txn.as_mut(), &op) {
+        if let err @ Err(_) = TaskDB::apply_op(txn.as_mut(), &op) {
             return err;
         }
         txn.add_operation(op)?;
@@ -183,7 +183,7 @@ impl DB {
                 assert_eq!(version.version, txn.base_version()? + 1);
                 println!("applying version {:?} from server", version.version);
 
-                DB::apply_version(txn.as_mut(), version)?;
+                TaskDB::apply_version(txn.as_mut(), version)?;
             }
 
             let operations: Vec<Operation> = txn.operations()?.iter().map(|o| o.clone()).collect();
@@ -254,7 +254,7 @@ impl DB {
                 }
             }
             if let Some(o) = svr_op {
-                if let Err(e) = DB::apply_op(txn, &o) {
+                if let Err(e) = TaskDB::apply_op(txn, &o) {
                     println!("Invalid operation when syncing: {} (ignored)", e);
                 }
             }
@@ -309,7 +309,7 @@ mod tests {
 
     #[test]
     fn test_apply_create() {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
         db.apply(op.clone()).unwrap();
@@ -320,7 +320,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_exists() {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
         db.apply(op.clone()).unwrap();
@@ -335,7 +335,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_update() {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -356,7 +356,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_update_delete_prop() {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -398,7 +398,7 @@ mod tests {
 
     #[test]
     fn test_apply_update_does_not_exist() {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Update {
             uuid,
@@ -417,7 +417,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_delete() {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -431,7 +431,7 @@ mod tests {
 
     #[test]
     fn test_apply_delete_not_present() {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuid = Uuid::new_v4();
 
         let op1 = Operation::Delete { uuid };
@@ -446,7 +446,7 @@ mod tests {
 
     #[test]
     fn rebuild_working_set() -> Fallible<()> {
-        let mut db = DB::new_inmemory();
+        let mut db = TaskDB::new_inmemory();
         let uuids = vec![
             Uuid::new_v4(), // 0: pending, not already in working set
             Uuid::new_v4(), // 1: pending, already in working set
@@ -455,7 +455,7 @@ mod tests {
             Uuid::new_v4(), // 4: pending, already in working set
         ];
 
-        // add everything to the DB
+        // add everything to the TaskDB
         for uuid in &uuids {
             db.apply(Operation::Create { uuid: uuid.clone() })?;
         }
@@ -513,8 +513,8 @@ mod tests {
         Ok(())
     }
 
-    fn newdb() -> DB {
-        DB::new(Box::new(InMemoryStorage::new()))
+    fn newdb() -> TaskDB {
+        TaskDB::new(Box::new(InMemoryStorage::new()))
     }
 
     #[test]
@@ -666,7 +666,7 @@ mod tests {
         #[test]
         // check that various sequences of operations on mulitple db's do not get the db's into an
         // incompatible state.  The main concern here is that there might be a sequence of create
-        // and delete operations that results in a task existing in one DB but not existing in
+        // and delete operations that results in a task existing in one TaskDB but not existing in
         // another.  So, the generated sequences focus on a single task UUID.
         fn transform_sequences_of_operations(action_sequence in action_sequence_strategy()) {
             let mut server = TestServer::new();

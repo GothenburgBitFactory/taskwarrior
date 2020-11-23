@@ -1,7 +1,7 @@
 use crate::errors::Error;
 use crate::server::Server;
 use crate::task::{Status, Task};
-use crate::taskdb::DB;
+use crate::taskdb::TaskDB;
 use crate::taskstorage::{Operation, TaskMap, TaskStorage};
 use chrono::Utc;
 use failure::Fallible;
@@ -11,13 +11,13 @@ use uuid::Uuid;
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
 pub struct Replica {
-    taskdb: DB,
+    taskdb: TaskDB,
 }
 
 impl Replica {
     pub fn new(storage: Box<dyn TaskStorage>) -> Replica {
         return Replica {
-            taskdb: DB::new(storage),
+            taskdb: TaskDB::new(storage),
         };
     }
 
