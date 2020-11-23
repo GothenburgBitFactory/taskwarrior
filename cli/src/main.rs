@@ -4,10 +4,10 @@ use taskchampion::{taskstorage, Replica, Status};
 use uuid::Uuid;
 
 fn main() {
-    let matches = App::new("Rask")
+    let matches = App::new("TaskChampion")
         .version("0.1")
         .author("Dustin J. Mitchell <dustin@v.igoro.us>")
-        .about("Replacement for TaskWarrior")
+        .about("Personal task-tracking")
         .subcommand(
             SubCommand::with_name("add").about("adds a task").arg(
                 Arg::with_name("description")
