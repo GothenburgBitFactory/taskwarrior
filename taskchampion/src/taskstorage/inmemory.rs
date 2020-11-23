@@ -1,6 +1,5 @@
-use crate::operation::Operation;
-use crate::taskstorage::{TaskMap, TaskStorage, TaskStorageTxn};
-use failure::Fallible;
+use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
+use failure::{format_err, Fallible};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -139,6 +138,8 @@ impl<'t> TaskStorageTxn for Txn<'t> {
     }
 }
 
+/// InMemoryStorage is a simple in-memory task storage implementation.  It is not useful for
+/// production data, but is useful for testing purposes.
 #[derive(PartialEq, Debug, Clone)]
 pub struct InMemoryStorage {
     data: Data,

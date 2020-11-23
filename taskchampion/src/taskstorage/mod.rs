@@ -1,13 +1,15 @@
-use crate::Operation;
 use failure::Fallible;
 use std::collections::HashMap;
 use uuid::Uuid;
 
 mod inmemory;
 mod kv;
+mod operation;
 
 pub use self::kv::KVStorage;
 pub use inmemory::InMemoryStorage;
+
+pub use operation::Operation;
 
 /// An in-memory representation of a task as a simple hashmap
 pub type TaskMap = HashMap<String, String>;
@@ -22,10 +24,18 @@ fn taskmap_with(mut properties: Vec<(String, String)>) -> TaskMap {
 }
 
 /// A TaskStorage transaction, in which storage operations are performed.
-/// Serializable consistency is maintained, and implementations do not optimize
-/// for concurrent access so some may simply apply a mutex to limit access to
-/// one transaction at a time.  Transactions are aborted if they are dropped.
-/// It's safe to drop transactions that did not modify any data.
+///
+/// # Concurrency
+///
+/// Serializable consistency must be maintained.  Concurrent access is unusual
+/// and some implementations may simply apply a mutex to limit access to
+/// one transaction at a time.
+///
+/// # Commiting and Aborting
+///
+/// A transaction is not visible to other readers until it is committed with
+/// [`crate::taskstorage::TaskStorageTxn::commit`].  Transactions are aborted if they are dropped.
+/// It is safe and performant to drop transactions that did not modify any data without committing.
 pub trait TaskStorageTxn {
     /// Get an (immutable) task, if it is in the storage
     fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<TaskMap>>;
@@ -58,7 +68,7 @@ pub trait TaskStorageTxn {
     fn operations<'a>(&mut self) -> Fallible<Vec<Operation>>;
 
     /// Add an operation to the end of the list of operations in the storage.  Note that this
-    /// merely *stores* the operation; it is up to the DB to apply it.
+    /// merely *stores* the operation; it is up to the TaskDB to apply it.
     fn add_operation(&mut self, op: Operation) -> Fallible<()>;
 
     /// Replace the current list of operations with a new list.
@@ -83,9 +93,8 @@ pub trait TaskStorageTxn {
     fn commit(&mut self) -> Fallible<()>;
 }
 
-/// A trait for objects able to act as backing storage for a DB.  This API is optimized to be
-/// easy to implement, with all of the semantic meaning of the data located in the DB
-/// implementation, which is the sole consumer of this trait.
+/// A trait for objects able to act as task storage.  Most of the interesting behavior is in the
+/// [`crate::taskstorage::TaskStorageTxn`] trait.
 pub trait TaskStorage {
     /// Begin a transaction
     fn txn<'a>(&'a mut self) -> Fallible<Box<dyn TaskStorageTxn + 'a>>;
