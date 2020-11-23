@@ -2,7 +2,9 @@
 
 - [Installation](./installation.md)
 - [Usage](./usage.md)
-- [Internal Details](./internals.md)
-  - [Data Model](./data-model.md)
 ---
-- [Development Notes](./development-notes.md)
+- [Data Model](./data-model.md)
+  - [Replica Storage](./storage.md)
+  - [Task Database](./taskdb.md)
+- [Synchronization](./sync.md)
+  - [Planned Functionality](./plans.md)

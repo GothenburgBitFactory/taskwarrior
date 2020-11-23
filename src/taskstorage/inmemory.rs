@@ -109,9 +109,9 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(self.data_ref().working_set.clone())
     }
 
-    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<u64> {
+    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
         let working_set = &mut self.mut_data_ref().working_set;
-        working_set.push(Some(uuid));
+        working_set.push(Some(uuid.clone()));
         Ok(working_set.len() as u64)
     }
 
@@ -194,8 +194,8 @@ mod test {
 
         {
             let mut txn = storage.txn()?;
-            txn.add_to_working_set(uuid1.clone())?;
-            txn.add_to_working_set(uuid2.clone())?;
+            txn.add_to_working_set(&uuid1)?;
+            txn.add_to_working_set(&uuid2)?;
             txn.commit()?;
         }
 
@@ -216,15 +216,15 @@ mod test {
 
         {
             let mut txn = storage.txn()?;
-            txn.add_to_working_set(uuid1.clone())?;
-            txn.add_to_working_set(uuid2.clone())?;
+            txn.add_to_working_set(&uuid1)?;
+            txn.add_to_working_set(&uuid2)?;
             txn.commit()?;
         }
 
         {
             let mut txn = storage.txn()?;
             txn.remove_from_working_set(1)?;
-            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(&uuid1)?;
             txn.commit()?;
         }
 
@@ -244,7 +244,7 @@ mod test {
 
         {
             let mut txn = storage.txn()?;
-            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(&uuid1)?;
             txn.commit()?;
         }
 
@@ -267,16 +267,16 @@ mod test {
 
         {
             let mut txn = storage.txn()?;
-            txn.add_to_working_set(uuid1.clone())?;
-            txn.add_to_working_set(uuid2.clone())?;
+            txn.add_to_working_set(&uuid1)?;
+            txn.add_to_working_set(&uuid2)?;
             txn.commit()?;
         }
 
         {
             let mut txn = storage.txn()?;
             txn.clear_working_set()?;
-            txn.add_to_working_set(uuid2.clone())?;
-            txn.add_to_working_set(uuid1.clone())?;
+            txn.add_to_working_set(&uuid2)?;
+            txn.add_to_working_set(&uuid1)?;
             txn.commit()?;
         }
 

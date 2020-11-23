@@ -35,6 +35,21 @@ impl Replica {
         })
     }
 
+    /// Return true if this status string is such that the task should be included in
+    /// the working set.
+    fn is_working_set_status(status: Option<&String>) -> bool {
+        if let Some(status) = status {
+            status == "pending"
+        } else {
+            false
+        }
+    }
+
+    /// Add the given uuid to the working set, returning its index.
+    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
+        self.taskdb.add_to_working_set(uuid)
+    }
+
     /// Get all tasks represented as a map keyed by UUID
     pub fn all_tasks<'a>(&'a mut self) -> Fallible<HashMap<Uuid, Task>> {
         Ok(self
@@ -70,6 +85,17 @@ impl Replica {
     /// Get an existing task by its UUID
     pub fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<Task>> {
         Ok(self.taskdb.get_task(&uuid)?.map(|t| (&t).into()))
+    }
+
+    /// Get an existing task by its working set index
+    pub fn get_working_set_task(&mut self, i: u64) -> Fallible<Option<Task>> {
+        let working_set = self.taskdb.working_set()?;
+        if (i as usize) < working_set.len() {
+            if let Some(uuid) = working_set[i as usize] {
+                return Ok(self.taskdb.get_task(&uuid)?.map(|t| (&t).into()));
+            }
+        }
+        return Ok(None);
     }
 
     /// Create a new task.  The task must not already exist.
@@ -115,9 +141,10 @@ impl Replica {
     }
 
     /// Perform "garbage collection" on this replica.  In particular, this renumbers the working
-    /// set.
+    /// set to contain only pending tasks.
     pub fn gc(&mut self) -> Fallible<()> {
-        self.taskdb.rebuild_working_set()?;
+        self.taskdb
+            .rebuild_working_set(|t| Replica::is_working_set_status(t.get("status")))?;
         Ok(())
     }
 }
@@ -177,9 +204,14 @@ impl<'a> TaskMut<'a> {
         )
     }
 
-    /// Set the task's status
+    /// Set the task's status.  This also adds the task to the working set if the
+    /// new status puts it in that set.
     pub fn status(&mut self, status: Status) -> Fallible<()> {
-        self.set_string("status", Some(String::from(status.as_ref())))
+        let status = String::from(status.as_ref());
+        if Replica::is_working_set_status(Some(&status)) {
+            self.replica.add_to_working_set(&self.uuid)?;
+        }
+        self.set_string("status", Some(status))
     }
 
     /// Set the task's description
@@ -324,6 +356,22 @@ mod tests {
         assert_eq!(t.status, Status::Completed);
         assert_eq!(t.description, String::from("another task, updated"));
         assert_eq!(t.project, Some("work".into()));
+    }
+
+    #[test]
+    fn set_pending_adds_to_working_set() {
+        let mut rep = Replica::new(DB::new_inmemory().into());
+        let uuid = Uuid::new_v4();
+
+        rep.new_task(uuid.clone(), Status::Pending, "to-be-pending".into())
+            .unwrap();
+
+        let mut tm = rep.get_task_mut(&uuid).unwrap().unwrap();
+        tm.status(Status::Pending).unwrap();
+
+        let t = rep.get_working_set_task(1).unwrap().unwrap();
+        assert_eq!(t.status, Status::Pending);
+        assert_eq!(t.description, String::from("to-be-pending"));
     }
 
     #[test]
