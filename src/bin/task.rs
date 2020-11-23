@@ -47,8 +47,8 @@ fn main() {
         ("pending", _) => {
             let working_set = replica.working_set().unwrap();
             for i in 1..working_set.len() {
-                if let Some((ref uuid, ref task)) = working_set[i] {
-                    println!("{}: {} - {:?}", i, uuid, task);
+                if let Some(ref task) = working_set[i] {
+                    println!("{}: {} - {:?}", i, task.get_uuid(), task);
                 }
             }
         }
