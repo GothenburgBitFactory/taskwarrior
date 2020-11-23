@@ -1,7 +1,7 @@
+use crate::server::{Blob, Server, VersionAdd};
 use std::collections::HashMap;
-use taskchampion::server::{Blob, Server, VersionAdd};
 
-pub struct TestServer {
+pub(crate) struct TestServer {
     users: HashMap<String, User>,
 }
 

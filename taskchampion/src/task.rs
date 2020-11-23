@@ -1,34 +1,37 @@
 use crate::replica::Replica;
 use crate::taskstorage::TaskMap;
 use chrono::prelude::*;
-use failure::{format_err, Fallible};
-use std::convert::TryFrom;
+use failure::Fallible;
 use uuid::Uuid;
 
 pub type Timestamp = DateTime<Utc>;
 
+/// The priority of a task
 #[derive(Debug, PartialEq)]
 pub enum Priority {
+    /// Low
     L,
+    /// Medium
     M,
+    /// High
     H,
 }
 
-impl TryFrom<&str> for Priority {
-    type Error = failure::Error;
-
-    fn try_from(s: &str) -> Result<Self, Self::Error> {
+#[allow(dead_code)]
+impl Priority {
+    /// Get a Priority from the 1-character value in a TaskMap,
+    /// defaulting to M
+    pub(crate) fn from_taskmap(s: &str) -> Priority {
         match s {
-            "L" => Ok(Priority::L),
-            "M" => Ok(Priority::M),
-            "H" => Ok(Priority::H),
-            _ => Err(format_err!("invalid status {}", s)),
+            "L" => Priority::L,
+            "M" => Priority::M,
+            "H" => Priority::H,
+            _ => Priority::M,
         }
     }
-}
 
-impl AsRef<str> for Priority {
-    fn as_ref(&self) -> &str {
+    /// Get the 1-character value for this priority to use in the TaskMap.
+    pub(crate) fn to_taskmap(&self) -> &str {
         match self {
             Priority::L => "L",
             Priority::M => "M",
@@ -36,6 +39,8 @@ impl AsRef<str> for Priority {
         }
     }
 }
+
+/// The status of a task.  The default status in "Pending".
 #[derive(Debug, PartialEq)]
 pub enum Status {
     Pending,
@@ -86,8 +91,8 @@ pub struct Task {
     taskmap: TaskMap,
 }
 
-/// A mutable task, with setter methods.  Calling a setter will update the Replica, as well as the
-/// included Task.
+/// A mutable task, with setter methods.  Most methods are simple setters and not further
+/// described.  Calling a setter will update the Replica, as well as the included Task.
 pub struct TaskMut<'r> {
     task: Task,
     replica: &'r mut Replica,
@@ -145,7 +150,8 @@ impl Task {
 }
 
 impl<'r> TaskMut<'r> {
-    /// Get the immutable task
+    /// Get the immutable version of this object.  Note that TaskMut [`std::ops::Deref`]s to
+    /// [`crate::task::Task`], so all of that struct's getter methods can be used on TaskMut.
     pub fn into_immut(self) -> Task {
         self.task
     }
@@ -160,12 +166,10 @@ impl<'r> TaskMut<'r> {
         self.set_string("status", Some(String::from(status.to_taskmap())))
     }
 
-    /// Set the task's description
     pub fn set_description(&mut self, description: String) -> Fallible<()> {
         self.set_string("description", Some(description))
     }
 
-    /// Set the task's description
     pub fn set_modified(&mut self, modified: DateTime<Utc>) -> Fallible<()> {
         self.set_timestamp("modified", Some(modified))
     }
@@ -211,5 +215,30 @@ impl<'r> std::ops::Deref for TaskMut<'r> {
 
     fn deref(&self) -> &Self::Target {
         &self.task
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_priority() {
+        assert_eq!(Priority::L.to_taskmap(), "L");
+        assert_eq!(Priority::M.to_taskmap(), "M");
+        assert_eq!(Priority::H.to_taskmap(), "H");
+        assert_eq!(Priority::from_taskmap("L"), Priority::L);
+        assert_eq!(Priority::from_taskmap("M"), Priority::M);
+        assert_eq!(Priority::from_taskmap("H"), Priority::H);
+    }
+
+    #[test]
+    fn test_status() {
+        assert_eq!(Status::Pending.to_taskmap(), "P");
+        assert_eq!(Status::Completed.to_taskmap(), "C");
+        assert_eq!(Status::Deleted.to_taskmap(), "D");
+        assert_eq!(Status::from_taskmap("P"), Status::Pending);
+        assert_eq!(Status::from_taskmap("C"), Status::Completed);
+        assert_eq!(Status::from_taskmap("D"), Status::Deleted);
     }
 }

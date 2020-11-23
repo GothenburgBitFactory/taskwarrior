@@ -1,6 +1,6 @@
 use clap::{App, Arg, SubCommand};
 use std::path::Path;
-use taskchampion::{taskstorage, Replica, Status, DB};
+use taskchampion::{taskstorage, Replica, Status};
 use uuid::Uuid;
 
 fn main() {
@@ -20,12 +20,9 @@ fn main() {
         .subcommand(SubCommand::with_name("gc").about("run garbage collection"))
         .get_matches();
 
-    let mut replica = Replica::new(
-        DB::new(Box::new(
-            taskstorage::KVStorage::new(Path::new("/tmp/tasks")).unwrap(),
-        ))
-        .into(),
-    );
+    let mut replica = Replica::new(Box::new(
+        taskstorage::KVStorage::new(Path::new("/tmp/tasks")).unwrap(),
+    ));
 
     match matches.subcommand() {
         ("add", Some(matches)) => {

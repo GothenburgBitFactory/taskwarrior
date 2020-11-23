@@ -1,7 +1,6 @@
 use crate::errors::Error;
-use crate::operation::Operation;
 use crate::server::{Server, VersionAdd};
-use crate::taskstorage::{TaskMap, TaskStorage, TaskStorageTxn};
+use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
 use failure::Fallible;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
@@ -268,7 +267,8 @@ impl DB {
 
     // functions for supporting tests
 
-    pub fn sorted_tasks(&mut self) -> Vec<(Uuid, Vec<(String, String)>)> {
+    #[cfg(test)]
+    pub(crate) fn sorted_tasks(&mut self) -> Vec<(Uuid, Vec<(String, String)>)> {
         let mut res: Vec<(Uuid, Vec<(String, String)>)> = self
             .all_tasks()
             .unwrap()
@@ -286,7 +286,8 @@ impl DB {
         res
     }
 
-    pub fn operations(&mut self) -> Vec<Operation> {
+    #[cfg(test)]
+    pub(crate) fn operations(&mut self) -> Vec<Operation> {
         let mut txn = self.storage.txn().unwrap();
         txn.operations()
             .unwrap()
@@ -299,7 +300,10 @@ impl DB {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::taskstorage::InMemoryStorage;
+    use crate::testing::testserver::TestServer;
     use chrono::Utc;
+    use proptest::prelude::*;
     use std::collections::HashMap;
     use uuid::Uuid;
 
@@ -507,5 +511,183 @@ mod tests {
         );
 
         Ok(())
+    }
+
+    fn newdb() -> DB {
+        DB::new(Box::new(InMemoryStorage::new()))
+    }
+
+    #[test]
+    fn test_sync() {
+        let mut server = TestServer::new();
+
+        let mut db1 = newdb();
+        db1.sync("me", &mut server).unwrap();
+
+        let mut db2 = newdb();
+        db2.sync("me", &mut server).unwrap();
+
+        // make some changes in parallel to db1 and db2..
+        let uuid1 = Uuid::new_v4();
+        db1.apply(Operation::Create { uuid: uuid1 }).unwrap();
+        db1.apply(Operation::Update {
+            uuid: uuid1,
+            property: "title".into(),
+            value: Some("my first task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        let uuid2 = Uuid::new_v4();
+        db2.apply(Operation::Create { uuid: uuid2 }).unwrap();
+        db2.apply(Operation::Update {
+            uuid: uuid2,
+            property: "title".into(),
+            value: Some("my second task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and synchronize those around
+        db1.sync("me", &mut server).unwrap();
+        db2.sync("me", &mut server).unwrap();
+        db1.sync("me", &mut server).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+
+        // now make updates to the same task on both sides
+        db1.apply(Operation::Update {
+            uuid: uuid2,
+            property: "priority".into(),
+            value: Some("H".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+        db2.apply(Operation::Update {
+            uuid: uuid2,
+            property: "project".into(),
+            value: Some("personal".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and synchronize those around
+        db1.sync("me", &mut server).unwrap();
+        db2.sync("me", &mut server).unwrap();
+        db1.sync("me", &mut server).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+    }
+
+    #[test]
+    fn test_sync_create_delete() {
+        let mut server = TestServer::new();
+
+        let mut db1 = newdb();
+        db1.sync("me", &mut server).unwrap();
+
+        let mut db2 = newdb();
+        db2.sync("me", &mut server).unwrap();
+
+        // create and update a task..
+        let uuid = Uuid::new_v4();
+        db1.apply(Operation::Create { uuid }).unwrap();
+        db1.apply(Operation::Update {
+            uuid: uuid,
+            property: "title".into(),
+            value: Some("my first task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and synchronize those around
+        db1.sync("me", &mut server).unwrap();
+        db2.sync("me", &mut server).unwrap();
+        db1.sync("me", &mut server).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+
+        // delete and re-create the task on db1
+        db1.apply(Operation::Delete { uuid }).unwrap();
+        db1.apply(Operation::Create { uuid }).unwrap();
+        db1.apply(Operation::Update {
+            uuid: uuid,
+            property: "title".into(),
+            value: Some("my second task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and on db2, update a property of the task
+        db2.apply(Operation::Update {
+            uuid: uuid,
+            property: "project".into(),
+            value: Some("personal".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        db1.sync("me", &mut server).unwrap();
+        db2.sync("me", &mut server).unwrap();
+        db1.sync("me", &mut server).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+    }
+
+    #[derive(Debug)]
+    enum Action {
+        Op(Operation),
+        Sync,
+    }
+
+    fn action_sequence_strategy() -> impl Strategy<Value = Vec<(Action, u8)>> {
+        // Create, Update, Delete, or Sync on client 1, 2, .., followed by a round of syncs
+        "([CUDS][123])*S1S2S3S1S2".prop_map(|seq| {
+            let uuid = Uuid::parse_str("83a2f9ef-f455-4195-b92e-a54c161eebfc").unwrap();
+            seq.as_bytes()
+                .chunks(2)
+                .map(|action_on| {
+                    let action = match action_on[0] {
+                        b'C' => Action::Op(Operation::Create { uuid }),
+                        b'U' => Action::Op(Operation::Update {
+                            uuid,
+                            property: "title".into(),
+                            value: Some("foo".into()),
+                            timestamp: Utc::now(),
+                        }),
+                        b'D' => Action::Op(Operation::Delete { uuid }),
+                        b'S' => Action::Sync,
+                        _ => unreachable!(),
+                    };
+                    let acton = action_on[1] - b'1';
+                    (action, acton)
+                })
+                .collect::<Vec<(Action, u8)>>()
+        })
+    }
+
+    proptest! {
+        #[test]
+        // check that various sequences of operations on mulitple db's do not get the db's into an
+        // incompatible state.  The main concern here is that there might be a sequence of create
+        // and delete operations that results in a task existing in one DB but not existing in
+        // another.  So, the generated sequences focus on a single task UUID.
+        fn transform_sequences_of_operations(action_sequence in action_sequence_strategy()) {
+            let mut server = TestServer::new();
+            let mut dbs = [newdb(), newdb(), newdb()];
+
+            for (action, db) in action_sequence {
+                println!("{:?} on db {}", action, db);
+
+                let db = &mut dbs[db as usize];
+                match action {
+                    Action::Op(op) => {
+                        if let Err(e) = db.apply(op) {
+                            println!("  {:?} (ignored)", e);
+                        }
+                    },
+                    Action::Sync => db.sync("me", &mut server).unwrap(),
+                }
+            }
+
+            assert_eq!(dbs[0].sorted_tasks(), dbs[0].sorted_tasks());
+            assert_eq!(dbs[1].sorted_tasks(), dbs[2].sorted_tasks());
+        }
     }
 }

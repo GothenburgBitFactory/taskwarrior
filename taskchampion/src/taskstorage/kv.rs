@@ -1,5 +1,4 @@
-use crate::operation::Operation;
-use crate::taskstorage::{TaskMap, TaskStorage, TaskStorageTxn};
+use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
 use failure::{format_err, Fallible};
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};

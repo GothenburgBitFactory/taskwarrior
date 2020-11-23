@@ -1,21 +1,29 @@
 use crate::errors::Error;
-use crate::operation::Operation;
+use crate::server::Server;
 use crate::task::{Status, Task};
 use crate::taskdb::DB;
-use crate::taskstorage::TaskMap;
+use crate::taskstorage::{Operation, TaskMap, TaskStorage};
 use chrono::Utc;
 use failure::Fallible;
 use std::collections::HashMap;
 use uuid::Uuid;
 
-/// A replica represents an instance of a user's task data.
+/// A replica represents an instance of a user's task data, providing an easy interface
+/// for querying and modifying that data.
 pub struct Replica {
-    taskdb: Box<DB>,
+    taskdb: DB,
 }
 
 impl Replica {
-    pub fn new(taskdb: Box<DB>) -> Replica {
-        return Replica { taskdb };
+    pub fn new(storage: Box<dyn TaskStorage>) -> Replica {
+        return Replica {
+            taskdb: DB::new(storage),
+        };
+    }
+
+    #[cfg(test)]
+    pub fn new_inmemory() -> Replica {
+        Replica::new(Box::new(crate::taskstorage::InMemoryStorage::new()))
     }
 
     /// Update an existing task.  If the value is Some, the property is added or updated.  If the
@@ -45,7 +53,7 @@ impl Replica {
     }
 
     /// Get all tasks represented as a map keyed by UUID
-    pub fn all_tasks<'a>(&'a mut self) -> Fallible<HashMap<Uuid, Task>> {
+    pub fn all_tasks(&mut self) -> Fallible<HashMap<Uuid, Task>> {
         let mut res = HashMap::new();
         for (uuid, tm) in self.taskdb.all_tasks()?.drain(..) {
             res.insert(uuid.clone(), Task::new(uuid.clone(), tm));
@@ -54,7 +62,7 @@ impl Replica {
     }
 
     /// Get the UUIDs of all tasks
-    pub fn all_task_uuids<'a>(&'a mut self) -> Fallible<Vec<Uuid>> {
+    pub fn all_task_uuids(&mut self) -> Fallible<Vec<Uuid>> {
         self.taskdb.all_task_uuids()
     }
 
@@ -124,6 +132,11 @@ impl Replica {
         self.taskdb.apply(Operation::Delete { uuid })
     }
 
+    /// Synchronize this replica against the given server.
+    pub fn sync(&mut self, username: &str, server: &mut dyn Server) -> Fallible<()> {
+        self.taskdb.sync(username, server)
+    }
+
     /// Perform "garbage collection" on this replica.  In particular, this renumbers the working
     /// set to contain only pending tasks.
     pub fn gc(&mut self) -> Fallible<()> {
@@ -138,12 +151,11 @@ impl Replica {
 mod tests {
     use super::*;
     use crate::task::Status;
-    use crate::taskdb::DB;
     use uuid::Uuid;
 
     #[test]
     fn new_task() {
-        let mut rep = Replica::new(DB::new_inmemory().into());
+        let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
         let t = rep
@@ -156,7 +168,7 @@ mod tests {
 
     #[test]
     fn modify_task() {
-        let mut rep = Replica::new(DB::new_inmemory().into());
+        let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
         let t = rep
@@ -183,7 +195,7 @@ mod tests {
 
     #[test]
     fn delete_task() {
-        let mut rep = Replica::new(DB::new_inmemory().into());
+        let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
         rep.new_task(uuid.clone(), Status::Pending, "a task".into())
@@ -195,7 +207,7 @@ mod tests {
 
     #[test]
     fn get_and_modify() {
-        let mut rep = Replica::new(DB::new_inmemory().into());
+        let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
         rep.new_task(uuid.clone(), Status::Pending, "another task".into())
@@ -215,7 +227,7 @@ mod tests {
 
     #[test]
     fn new_pending_adds_to_working_set() {
-        let mut rep = Replica::new(DB::new_inmemory().into());
+        let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
         rep.new_task(uuid.clone(), Status::Pending, "to-be-pending".into())
@@ -233,7 +245,7 @@ mod tests {
 
     #[test]
     fn get_does_not_exist() {
-        let mut rep = Replica::new(DB::new_inmemory().into());
+        let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
         assert_eq!(rep.get_task(&uuid).unwrap(), None);
     }
