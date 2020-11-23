@@ -1,11 +1,10 @@
 use crate::errors::Error;
 use crate::operation::Operation;
-use crate::task::{Priority, Status, Task, TaskBuilder};
+use crate::task::{Status, Task};
 use crate::taskdb::DB;
 use crate::taskstorage::TaskMap;
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use failure::Fallible;
-use itertools::join;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -22,7 +21,12 @@ impl Replica {
     /// Update an existing task.  If the value is Some, the property is added or updated.  If the
     /// value is None, the property is deleted.  It is not an error to delete a nonexistent
     /// property.
-    fn update_task<S1, S2>(&mut self, uuid: Uuid, property: S1, value: Option<S2>) -> Fallible<()>
+    pub(crate) fn update_task<S1, S2>(
+        &mut self,
+        uuid: Uuid,
+        property: S1,
+        value: Option<S2>,
+    ) -> Fallible<()>
     where
         S1: Into<String>,
         S2: Into<String>,
@@ -35,29 +39,18 @@ impl Replica {
         })
     }
 
-    /// Return true if this status string is such that the task should be included in
-    /// the working set.
-    fn is_working_set_status(status: Option<&String>) -> bool {
-        if let Some(status) = status {
-            status == "pending"
-        } else {
-            false
-        }
-    }
-
     /// Add the given uuid to the working set, returning its index.
-    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
+    pub(crate) fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
         self.taskdb.add_to_working_set(uuid)
     }
 
     /// Get all tasks represented as a map keyed by UUID
     pub fn all_tasks<'a>(&'a mut self) -> Fallible<HashMap<Uuid, Task>> {
-        Ok(self
-            .taskdb
-            .all_tasks()?
-            .iter()
-            .map(|(k, v)| (k.clone(), v.into()))
-            .collect())
+        let mut res = HashMap::new();
+        for (uuid, tm) in self.taskdb.all_tasks()?.drain(..) {
+            res.insert(uuid.clone(), Task::new(uuid.clone(), tm));
+        }
+        Ok(res)
     }
 
     /// Get the UUIDs of all tasks
@@ -67,13 +60,13 @@ impl Replica {
 
     /// Get the "working set" for this replica -- the set of pending tasks, as indexed by small
     /// integers
-    pub fn working_set(&mut self) -> Fallible<Vec<Option<(Uuid, Task)>>> {
+    pub fn working_set(&mut self) -> Fallible<Vec<Option<Task>>> {
         let working_set = self.taskdb.working_set()?;
         let mut res = Vec::with_capacity(working_set.len());
         for i in 0..working_set.len() {
             res.push(match working_set[i] {
                 Some(u) => match self.taskdb.get_task(&u)? {
-                    Some(task) => Some((u, (&task).into())),
+                    Some(tm) => Some(Task::new(u, tm)),
                     None => None,
                 },
                 None => None,
@@ -84,7 +77,10 @@ impl Replica {
 
     /// Get an existing task by its UUID
     pub fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<Task>> {
-        Ok(self.taskdb.get_task(&uuid)?.map(|t| (&t).into()))
+        Ok(self
+            .taskdb
+            .get_task(uuid)?
+            .map(move |tm| Task::new(uuid.clone(), tm)))
     }
 
     /// Get an existing task by its working set index
@@ -92,19 +88,17 @@ impl Replica {
         let working_set = self.taskdb.working_set()?;
         if (i as usize) < working_set.len() {
             if let Some(uuid) = working_set[i as usize] {
-                return Ok(self.taskdb.get_task(&uuid)?.map(|t| (&t).into()));
+                return Ok(self
+                    .taskdb
+                    .get_task(&uuid)?
+                    .map(move |tm| Task::new(uuid, tm)));
             }
         }
         return Ok(None);
     }
 
     /// Create a new task.  The task must not already exist.
-    pub fn new_task(
-        &mut self,
-        uuid: Uuid,
-        status: Status,
-        description: String,
-    ) -> Fallible<TaskMut> {
+    pub fn new_task(&mut self, uuid: Uuid, status: Status, description: String) -> Fallible<Task> {
         // check that it doesn't exist; this is a convenience check, as the task
         // may already exist when this Create operation is finally sync'd with
         // operations from other replicas
@@ -113,15 +107,14 @@ impl Replica {
         }
         self.taskdb
             .apply(Operation::Create { uuid: uuid.clone() })?;
-        self.update_task(uuid.clone(), "status", Some(String::from(status.as_ref())))?;
-        self.update_task(uuid.clone(), "description", Some(description))?;
-        let now = format!("{}", Utc::now().timestamp());
-        self.update_task(uuid.clone(), "entry", Some(now.clone()))?;
-        self.update_task(uuid.clone(), "modified", Some(now))?;
-        Ok(TaskMut::new(self, uuid))
+        let mut task = Task::new(uuid, TaskMap::new()).into_mut(self);
+        task.set_description(description)?;
+        task.set_status(status)?;
+        Ok(task.into_immut())
     }
 
-    /// Delete a task.  The task must exist.
+    /// Delete a task.  The task must exist.  Note that this is different from setting status to
+    /// Deleted; this is the final purge of the task.
     pub fn delete_task(&mut self, uuid: Uuid) -> Fallible<()> {
         // check that it already exists; this is a convenience check, as the task may already exist
         // when this Create operation is finally sync'd with operations from other replicas
@@ -131,196 +124,61 @@ impl Replica {
         self.taskdb.apply(Operation::Delete { uuid })
     }
 
-    /// Get an existing task by its UUID, suitable for modification
-    pub fn get_task_mut<'a>(&'a mut self, uuid: &Uuid) -> Fallible<Option<TaskMut<'a>>> {
-        // the call to get_task is to ensure the task exists locally
-        Ok(self
-            .taskdb
-            .get_task(&uuid)?
-            .map(move |_| TaskMut::new(self, uuid.clone())))
-    }
-
     /// Perform "garbage collection" on this replica.  In particular, this renumbers the working
     /// set to contain only pending tasks.
     pub fn gc(&mut self) -> Fallible<()> {
+        let pending = String::from(Status::Pending.to_taskmap());
         self.taskdb
-            .rebuild_working_set(|t| Replica::is_working_set_status(t.get("status")))?;
+            .rebuild_working_set(|t| t.get("status") == Some(&pending))?;
         Ok(())
     }
-}
-
-impl From<&TaskMap> for Task {
-    fn from(taskmap: &TaskMap) -> Task {
-        let mut bldr = TaskBuilder::new();
-        for (k, v) in taskmap.iter() {
-            bldr = bldr.set(k, v.into());
-        }
-        bldr.finish()
-    }
-}
-
-// TODO: move this struct to crate::task, with a trait for update_task, since it is the reverse
-// of TaskBuilder::set
-/// TaskMut allows changes to a task.  It is intended for short-term use, such as changing a few
-/// properties, and should not be held for long periods of wall-clock time.
-pub struct TaskMut<'a> {
-    replica: &'a mut Replica,
-    uuid: Uuid,
-    // if true, then this TaskMut has already updated the `modified` property and need not do so
-    // again.
-    updated_modified: bool,
-}
-
-impl<'a> TaskMut<'a> {
-    fn new(replica: &'a mut Replica, uuid: Uuid) -> TaskMut {
-        TaskMut {
-            replica,
-            uuid,
-            updated_modified: false,
-        }
-    }
-
-    fn lastmod(&mut self) -> Fallible<()> {
-        if !self.updated_modified {
-            let now = format!("{}", Utc::now().timestamp());
-            self.replica
-                .update_task(self.uuid.clone(), "modified", Some(now))?;
-            self.updated_modified = true;
-        }
-        Ok(())
-    }
-
-    fn set_string(&mut self, property: &str, value: Option<String>) -> Fallible<()> {
-        self.lastmod()?;
-        self.replica.update_task(self.uuid.clone(), property, value)
-    }
-
-    fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> Fallible<()> {
-        self.lastmod()?;
-        self.replica.update_task(
-            self.uuid.clone(),
-            property,
-            value.map(|v| format!("{}", v.timestamp())),
-        )
-    }
-
-    /// Set the task's status.  This also adds the task to the working set if the
-    /// new status puts it in that set.
-    pub fn status(&mut self, status: Status) -> Fallible<()> {
-        let status = String::from(status.as_ref());
-        if Replica::is_working_set_status(Some(&status)) {
-            self.replica.add_to_working_set(&self.uuid)?;
-        }
-        self.set_string("status", Some(status))
-    }
-
-    /// Set the task's description
-    pub fn description(&mut self, description: String) -> Fallible<()> {
-        self.set_string("description", Some(description))
-    }
-
-    /// Set the task's start time
-    pub fn start(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
-        self.set_timestamp("start", time)
-    }
-
-    /// Set the task's end time
-    pub fn end(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
-        self.set_timestamp("end", time)
-    }
-
-    /// Set the task's due time
-    pub fn due(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
-        self.set_timestamp("due", time)
-    }
-
-    /// Set the task's until time
-    pub fn until(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
-        self.set_timestamp("until", time)
-    }
-
-    /// Set the task's wait time
-    pub fn wait(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
-        self.set_timestamp("wait", time)
-    }
-
-    /// Set the task's scheduled time
-    pub fn scheduled(&mut self, time: Option<DateTime<Utc>>) -> Fallible<()> {
-        self.set_timestamp("scheduled", time)
-    }
-
-    /// Set the task's recur value
-    pub fn recur(&mut self, recur: Option<String>) -> Fallible<()> {
-        self.set_string("recur", recur)
-    }
-
-    /// Set the task's mask value
-    pub fn mask(&mut self, mask: Option<String>) -> Fallible<()> {
-        self.set_string("mask", mask)
-    }
-
-    /// Set the task's imask value
-    pub fn imask(&mut self, imask: Option<u64>) -> Fallible<()> {
-        self.set_string("imask", imask.map(|v| format!("{}", v)))
-    }
-
-    /// Set the task's parent task
-    pub fn parent(&mut self, parent: Option<Uuid>) -> Fallible<()> {
-        self.set_string("parent", parent.map(|v| format!("{}", v)))
-    }
-
-    /// Set the task's project
-    pub fn project(&mut self, project: Option<String>) -> Fallible<()> {
-        self.set_string("project", project)
-    }
-
-    /// Set the task's priority
-    pub fn priority(&mut self, priority: Option<Priority>) -> Fallible<()> {
-        self.set_string("priority", priority.map(|v| String::from(v.as_ref())))
-    }
-
-    /// Set the task's depends; note that this completely replaces the list of tasks on which this
-    /// one depends.
-    pub fn depends(&mut self, depends: Vec<Uuid>) -> Fallible<()> {
-        self.set_string(
-            "depends",
-            if depends.len() > 0 {
-                Some(join(depends.iter(), ","))
-            } else {
-                None
-            },
-        )
-    }
-
-    /// Set the task's tags; note that this completely replaces the list of tags
-    pub fn tags(&mut self, tags: Vec<Uuid>) -> Fallible<()> {
-        self.set_string("tags", Some(join(tags.iter(), ",")))
-    }
-
-    // TODO: annotations
-    // TODO: udas
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::task::Status;
     use crate::taskdb::DB;
     use uuid::Uuid;
 
     #[test]
-    fn new_task_and_modify() {
+    fn new_task() {
         let mut rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
 
-        let mut tm = rep
+        let t = rep
             .new_task(uuid.clone(), Status::Pending, "a task".into())
             .unwrap();
-        tm.priority(Some(Priority::L)).unwrap();
+        assert_eq!(t.get_description(), String::from("a task"));
+        assert_eq!(t.get_status(), Status::Pending);
+        assert!(t.get_modified().is_some());
+    }
 
+    #[test]
+    fn modify_task() {
+        let mut rep = Replica::new(DB::new_inmemory().into());
+        let uuid = Uuid::new_v4();
+
+        let t = rep
+            .new_task(uuid.clone(), Status::Pending, "a task".into())
+            .unwrap();
+
+        let mut t = t.into_mut(&mut rep);
+        t.set_description(String::from("past tense")).unwrap();
+        t.set_status(Status::Completed).unwrap();
+        // check that values have changed on the TaskMut
+        assert_eq!(t.get_description(), "past tense");
+        assert_eq!(t.get_status(), Status::Completed);
+
+        // check that values have changed after into_immut
+        let t = t.into_immut();
+        assert_eq!(t.get_description(), "past tense");
+        assert_eq!(t.get_status(), Status::Completed);
+
+        // check tha values have changed in storage, too
         let t = rep.get_task(&uuid).unwrap().unwrap();
-        assert_eq!(t.description, String::from("a task"));
-        assert_eq!(t.status, Status::Pending);
-        assert_eq!(t.priority, Some(Priority::L));
+        assert_eq!(t.get_description(), "past tense");
+        assert_eq!(t.get_status(), Status::Completed);
     }
 
     #[test]
@@ -344,34 +202,33 @@ mod tests {
             .unwrap();
 
         let t = rep.get_task(&uuid).unwrap().unwrap();
-        assert_eq!(t.description, String::from("another task"));
+        assert_eq!(t.get_description(), String::from("another task"));
 
-        let mut tm = rep.get_task_mut(&uuid).unwrap().unwrap();
-        tm.status(Status::Completed).unwrap();
-        tm.description("another task, updated".into()).unwrap();
-        tm.priority(Some(Priority::L)).unwrap();
-        tm.project(Some("work".into())).unwrap();
+        let mut t = t.into_mut(&mut rep);
+        t.set_status(Status::Deleted).unwrap();
+        t.set_description("gone".into()).unwrap();
 
         let t = rep.get_task(&uuid).unwrap().unwrap();
-        assert_eq!(t.status, Status::Completed);
-        assert_eq!(t.description, String::from("another task, updated"));
-        assert_eq!(t.project, Some("work".into()));
+        assert_eq!(t.get_status(), Status::Deleted);
+        assert_eq!(t.get_description(), "gone");
     }
 
     #[test]
-    fn set_pending_adds_to_working_set() {
+    fn new_pending_adds_to_working_set() {
         let mut rep = Replica::new(DB::new_inmemory().into());
         let uuid = Uuid::new_v4();
 
         rep.new_task(uuid.clone(), Status::Pending, "to-be-pending".into())
             .unwrap();
 
-        let mut tm = rep.get_task_mut(&uuid).unwrap().unwrap();
-        tm.status(Status::Pending).unwrap();
-
         let t = rep.get_working_set_task(1).unwrap().unwrap();
-        assert_eq!(t.status, Status::Pending);
-        assert_eq!(t.description, String::from("to-be-pending"));
+        assert_eq!(t.get_status(), Status::Pending);
+        assert_eq!(t.get_description(), "to-be-pending");
+
+        let ws = rep.working_set().unwrap();
+        assert_eq!(ws.len(), 2);
+        assert!(ws[0].is_none());
+        assert_eq!(ws[1].as_ref().unwrap().get_uuid(), &uuid);
     }
 
     #[test]
