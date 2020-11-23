@@ -177,7 +177,6 @@ impl<'t> TaskStorageTxn for Txn<'t> {
     fn all_tasks(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
-        let curs = kvtxn.read_cursor(bucket)?;
         let all_tasks: Result<Vec<(Uuid, TaskMap)>, Error> = kvtxn
             .read_cursor(bucket)?
             .iter()
@@ -189,7 +188,6 @@ impl<'t> TaskStorageTxn for Txn<'t> {
     fn all_task_uuids(&mut self) -> Fallible<Vec<Uuid>> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
-        let curs = kvtxn.read_cursor(bucket)?;
         Ok(kvtxn
             .read_cursor(bucket)?
             .iter()
@@ -224,7 +222,6 @@ impl<'t> TaskStorageTxn for Txn<'t> {
     fn operations(&mut self) -> Fallible<Vec<Operation>> {
         let bucket = self.operations_bucket();
         let kvtxn = self.kvtxn();
-        let curs = kvtxn.read_cursor(bucket)?;
         let all_ops: Result<Vec<(u64, Operation)>, Error> = kvtxn
             .read_cursor(bucket)?
             .iter()
@@ -299,7 +296,6 @@ impl<'t> TaskStorageTxn for Txn<'t> {
             res.push(None)
         }
 
-        let curs = kvtxn.read_cursor(working_set_bucket)?;
         for (i, u) in kvtxn.read_cursor(working_set_bucket)?.iter() {
             let i: u64 = i.into();
             res[i as usize] = Some(u.inner()?.to_serde());

@@ -1,7 +1,3 @@
-// TODO: remove this eventually when there's an API
-#![allow(dead_code)]
-#![allow(unused_variables)]
-
 #[macro_use]
 extern crate failure;
 
