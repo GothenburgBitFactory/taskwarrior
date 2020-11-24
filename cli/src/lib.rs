@@ -3,6 +3,8 @@ use failure::Fallible;
 use std::ffi::OsString;
 
 mod cmd;
+mod table;
+
 use cmd::ArgMatchResult;
 pub use cmd::CommandInvocation;
 
