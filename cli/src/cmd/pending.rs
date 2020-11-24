@@ -29,8 +29,8 @@ subcommand_invocation! {
         let mut t = Table::new();
         t.set_format(table::format());
         t.set_titles(row![b->"id", b->"description"]);
-        for i in 1..working_set.len() {
-            if let Some(ref task) = working_set[i] {
+        for (i, item) in working_set.iter().enumerate() {
+            if let Some(ref task) = item {
                 t.add_row(row![i, task.get_description()]);
             }
         }

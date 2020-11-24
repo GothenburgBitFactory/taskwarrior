@@ -37,11 +37,36 @@ tasks:
               cd repo &&
               git config advice.detachedHead false &&
               git checkout ${ref} &&
-              cargo test &&
-              cargo fmt -- --check
+              cargo test
         metadata:
           name: taskchampion-tests
           description: Run tests for taskchampion
+          owner: dustin@v.igoro.us
+          source: ${repo_url}
+    - $if: run
+      then:
+        provisionerId: 'proj-misc'
+        workerType: 'ci'
+        deadline: {$fromNow: '1 hour'}
+        expires: {$fromNow: '1 day'}
+        payload:
+          maxRunTime: 3600
+          image: rust:latest
+          command:
+            - /bin/bash
+            - '-c'
+            - >-
+              rustup component add rustfmt &&
+              git clone ${repo_url} repo &&
+              cd repo &&
+              git config advice.detachedHead false &&
+              git checkout ${ref} &&
+              rustup component add clippy-preview &&
+              cargo clippy &&
+              cargo fmt -- --check
+        metadata:
+          name: taskchampion-clippy
+          description: Run clippy and rustfmt for taskchampion
           owner: dustin@v.igoro.us
           source: ${repo_url}
     - $if: run

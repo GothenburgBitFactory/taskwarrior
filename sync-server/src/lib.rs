@@ -1,3 +1,5 @@
+#![allow(clippy::new_without_default)]
+
 use std::collections::HashMap;
 
 type Blob = Vec<u8>;
@@ -32,10 +34,7 @@ impl User {
         if last_version == since_version as usize {
             return vec![];
         }
-        self.versions[since_version as usize..last_version]
-            .iter()
-            .map(|r| r.clone())
-            .collect::<Vec<Blob>>()
+        self.versions[since_version as usize..last_version].to_vec()
     }
 
     fn add_version(&mut self, version: u64, blob: Blob) -> VersionAdd {
@@ -72,7 +71,7 @@ impl Server {
         self.users
             .get(username)
             .map(|user| user.get_versions(since_version))
-            .unwrap_or_else(|| vec![])
+            .unwrap_or_default()
     }
 
     /// Add a new version.  If the given version number is incorrect, this responds with the

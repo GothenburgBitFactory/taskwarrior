@@ -1,3 +1,5 @@
+#![allow(clippy::new_without_default)]
+
 use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
 use failure::{format_err, Fallible};
 use std::collections::hash_map::Entry;
@@ -48,7 +50,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
 
     fn create_task(&mut self, uuid: Uuid) -> Fallible<bool> {
         if let ent @ Entry::Vacant(_) = self.mut_data_ref().tasks.entry(uuid) {
-            ent.or_insert(TaskMap::new());
+            ent.or_insert_with(TaskMap::new);
             Ok(true)
         } else {
             Ok(false)
@@ -61,11 +63,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
     }
 
     fn delete_task(&mut self, uuid: &Uuid) -> Fallible<bool> {
-        if let Some(_) = self.mut_data_ref().tasks.remove(uuid) {
-            Ok(true)
-        } else {
-            Ok(false)
-        }
+        Ok(self.mut_data_ref().tasks.remove(uuid).is_some())
     }
 
     fn all_tasks<'a>(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
@@ -73,12 +71,12 @@ impl<'t> TaskStorageTxn for Txn<'t> {
             .data_ref()
             .tasks
             .iter()
-            .map(|(u, t)| (u.clone(), t.clone()))
+            .map(|(u, t)| (*u, t.clone()))
             .collect())
     }
 
     fn all_task_uuids<'a>(&mut self) -> Fallible<Vec<Uuid>> {
-        Ok(self.data_ref().tasks.keys().map(|u| u.clone()).collect())
+        Ok(self.data_ref().tasks.keys().copied().collect())
     }
 
     fn base_version(&mut self) -> Fallible<u64> {
@@ -110,7 +108,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
 
     fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
         let working_set = &mut self.mut_data_ref().working_set;
-        working_set.push(Some(uuid.clone()));
+        working_set.push(Some(*uuid));
         Ok(working_set.len())
     }
 

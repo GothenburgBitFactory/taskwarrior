@@ -123,7 +123,7 @@ impl Task {
     pub fn into_mut(self, replica: &mut Replica) -> TaskMut {
         TaskMut {
             task: self,
-            replica: replica,
+            replica,
             updated_modified: false,
         }
     }
@@ -170,7 +170,7 @@ impl<'r> TaskMut<'r> {
     /// new status puts it in that set.
     pub fn set_status(&mut self, status: Status) -> Fallible<()> {
         if status == Status::Pending {
-            let uuid = self.uuid.clone();
+            let uuid = self.uuid;
             self.replica.add_to_working_set(&uuid)?;
         }
         self.set_string("status", Some(String::from(status.to_taskmap())))
@@ -190,7 +190,7 @@ impl<'r> TaskMut<'r> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
             self.replica
-                .update_task(self.task.uuid.clone(), "modified", Some(now.clone()))?;
+                .update_task(self.task.uuid, "modified", Some(now.clone()))?;
             self.task.taskmap.insert(String::from("modified"), now);
             self.updated_modified = true;
         }
@@ -200,7 +200,7 @@ impl<'r> TaskMut<'r> {
     fn set_string(&mut self, property: &str, value: Option<String>) -> Fallible<()> {
         self.lastmod()?;
         self.replica
-            .update_task(self.task.uuid.clone(), property, value.as_ref())?;
+            .update_task(self.task.uuid, property, value.as_ref())?;
 
         if let Some(v) = value {
             self.task.taskmap.insert(property.to_string(), v);
@@ -213,7 +213,7 @@ impl<'r> TaskMut<'r> {
     fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> Fallible<()> {
         self.lastmod()?;
         self.replica.update_task(
-            self.task.uuid.clone(),
+            self.task.uuid,
             property,
             value.map(|v| format!("{}", v.timestamp())),
         )
