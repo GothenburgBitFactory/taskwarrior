@@ -30,11 +30,16 @@ define_subcommand! {
 
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
-        let task = shared::get_task(&mut command.get_replica(), &self.task)?;
+        let mut replica = command.get_replica();
+        let task = shared::get_task(&mut replica, &self.task)?;
+        let uuid = task.get_uuid();
 
         let mut t = Table::new();
         t.set_format(table::format());
-        t.add_row(row![b->"Uuid", task.get_uuid()]);
+        t.add_row(row![b->"Uuid", uuid]);
+        if let Some(i) = replica.get_working_set_index(uuid)? {
+            t.add_row(row![b->"Id", i]);
+        }
         t.add_row(row![b->"Description", task.get_description()]);
         t.add_row(row![b->"Status", task.get_status()]);
         t.printstd();

@@ -105,6 +105,19 @@ impl Replica {
         return Ok(None);
     }
 
+    /// Get the working set index for the given task uuid
+    pub fn get_working_set_index(&mut self, uuid: &Uuid) -> Fallible<Option<usize>> {
+        let working_set = self.taskdb.working_set()?;
+        for (i, u) in working_set.iter().enumerate() {
+            if let Some(ref u) = u {
+                if u == uuid {
+                    return Ok(Some(i));
+                }
+            }
+        }
+        Ok(None)
+    }
+
     /// Create a new task.  The task must not already exist.
     pub fn new_task(&mut self, uuid: Uuid, status: Status, description: String) -> Fallible<Task> {
         // check that it doesn't exist; this is a convenience check, as the task
@@ -223,6 +236,10 @@ mod tests {
         let t = rep.get_task(&uuid).unwrap().unwrap();
         assert_eq!(t.get_status(), Status::Deleted);
         assert_eq!(t.get_description(), "gone");
+
+        rep.gc().unwrap();
+
+        assert!(rep.get_working_set_index(t.get_uuid()).unwrap().is_none());
     }
 
     #[test]
@@ -241,6 +258,8 @@ mod tests {
         assert_eq!(ws.len(), 2);
         assert!(ws[0].is_none());
         assert_eq!(ws[1].as_ref().unwrap().get_uuid(), &uuid);
+
+        assert_eq!(rep.get_working_set_index(t.get_uuid()).unwrap().unwrap(), 1);
     }
 
     #[test]
