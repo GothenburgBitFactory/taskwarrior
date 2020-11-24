@@ -172,7 +172,7 @@ impl TaskDB {
         // replicas trying to sync to the same server)
         loop {
             // first pull changes and "rebase" on top of them
-            let new_versions = server.get_versions(username, txn.base_version()?);
+            let new_versions = server.get_versions(username, txn.base_version()?)?;
             for version_blob in new_versions {
                 let version_str = str::from_utf8(&version_blob).unwrap();
                 let version: Version = serde_json::from_str(version_str).unwrap();
@@ -196,7 +196,7 @@ impl TaskDB {
             let new_version_str = serde_json::to_string(&new_version).unwrap();
             println!("sending version {:?} to server", new_version.version);
             if let VersionAdd::Ok =
-                server.add_version(username, new_version.version, new_version_str.into())
+                server.add_version(username, new_version.version, new_version_str.into())?
             {
                 txn.set_base_version(new_version.version)?;
                 txn.set_operations(vec![])?;

@@ -1,4 +1,5 @@
 use crate::server::{Blob, Server, VersionAdd};
+use failure::Fallible;
 use std::collections::HashMap;
 
 pub(crate) struct TestServer {
@@ -27,21 +28,22 @@ impl TestServer {
 
 impl Server for TestServer {
     /// Get a vector of all versions after `since_version`
-    fn get_versions(&self, username: &str, since_version: u64) -> Vec<Blob> {
-        self.users
-            .get(username)
-            .map(|user| user.get_versions(since_version))
-            .unwrap_or_else(|| vec![])
+    fn get_versions(&self, username: &str, since_version: u64) -> Fallible<Vec<Blob>> {
+        if let Some(user) = self.users.get(username) {
+            user.get_versions(since_version)
+        } else {
+            Ok(vec![])
+        }
     }
 
     /// Add a new version.  If the given version number is incorrect, this responds with the
     /// appropriate version and expects the caller to try again.
-    fn add_version(&mut self, username: &str, version: u64, blob: Blob) -> VersionAdd {
+    fn add_version(&mut self, username: &str, version: u64, blob: Blob) -> Fallible<VersionAdd> {
         self.get_user_mut(username).add_version(version, blob)
     }
 
-    fn add_snapshot(&mut self, username: &str, version: u64, blob: Blob) {
-        self.get_user_mut(username).add_snapshot(version, blob);
+    fn add_snapshot(&mut self, username: &str, version: u64, blob: Blob) -> Fallible<()> {
+        self.get_user_mut(username).add_snapshot(version, blob)
     }
 }
 
@@ -53,29 +55,30 @@ impl User {
         }
     }
 
-    fn get_versions(&self, since_version: u64) -> Vec<Blob> {
+    fn get_versions(&self, since_version: u64) -> Fallible<Vec<Blob>> {
         let last_version = self.versions.len();
         if last_version == since_version as usize {
-            return vec![];
+            return Ok(vec![]);
         }
-        self.versions[since_version as usize..last_version]
+        Ok(self.versions[since_version as usize..last_version]
             .iter()
             .map(|r| r.clone())
-            .collect::<Vec<Blob>>()
+            .collect::<Vec<Blob>>())
     }
 
-    fn add_version(&mut self, version: u64, blob: Blob) -> VersionAdd {
+    fn add_version(&mut self, version: u64, blob: Blob) -> Fallible<VersionAdd> {
         // of by one here: client wants to send version 1 first
         let expected_version = self.versions.len() as u64 + 1;
         if version != expected_version {
-            return VersionAdd::ExpectedVersion(expected_version);
+            return Ok(VersionAdd::ExpectedVersion(expected_version));
         }
         self.versions.push(blob);
 
-        VersionAdd::Ok
+        Ok(VersionAdd::Ok)
     }
 
-    fn add_snapshot(&mut self, version: u64, blob: Blob) {
+    fn add_snapshot(&mut self, version: u64, blob: Blob) -> Fallible<()> {
         self.snapshots.insert(version, blob);
+        Ok(())
     }
 }
