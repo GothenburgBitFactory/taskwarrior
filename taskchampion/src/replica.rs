@@ -48,7 +48,7 @@ impl Replica {
     }
 
     /// Add the given uuid to the working set, returning its index.
-    pub(crate) fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
+    pub(crate) fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
         self.taskdb.add_to_working_set(uuid)
     }
 
@@ -92,7 +92,7 @@ impl Replica {
     }
 
     /// Get an existing task by its working set index
-    pub fn get_working_set_task(&mut self, i: u64) -> Fallible<Option<Task>> {
+    pub fn get_working_set_task(&mut self, i: usize) -> Fallible<Option<Task>> {
         let working_set = self.taskdb.working_set()?;
         if (i as usize) < working_set.len() {
             if let Some(uuid) = working_set[i as usize] {
