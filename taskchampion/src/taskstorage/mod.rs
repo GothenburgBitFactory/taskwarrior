@@ -82,10 +82,8 @@ pub trait TaskStorageTxn {
     /// than the highest used index.
     fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize>;
 
-    /// Remove a task from the working set.  Other tasks' indexes are not affected.
-    fn remove_from_working_set(&mut self, index: usize) -> Fallible<()>;
-
     /// Clear all tasks from the working set in preparation for a garbage-collection operation.
+    /// Note that this is the only way items are removed from the set.
     fn clear_working_set(&mut self) -> Fallible<()>;
 
     /// Commit any changes made in the transaction.  It is an error to call this more than

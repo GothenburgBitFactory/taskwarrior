@@ -1,5 +1,5 @@
 use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
-use failure::{format_err, Fallible};
+use failure::Fallible;
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
 use std::convert::TryInto;
@@ -325,28 +325,6 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(next_index as usize)
     }
 
-    fn remove_from_working_set(&mut self, index: usize) -> Fallible<()> {
-        let index = index as u64;
-        let working_set_bucket = self.working_set_bucket();
-        let numbers_bucket = self.numbers_bucket();
-        let kvtxn = self.kvtxn();
-
-        let next_index = match kvtxn.get(numbers_bucket, NEXT_WORKING_SET_INDEX.into()) {
-            Ok(buf) => buf.inner()?.to_serde(),
-            Err(Error::NotFound) => 1,
-            Err(e) => return Err(e.into()),
-        };
-        if index == 0 || index >= next_index {
-            return Err(format_err!("No task found with index {}", index));
-        }
-
-        match kvtxn.del(working_set_bucket, index.into()) {
-            Err(Error::NotFound) => Err(format_err!("No task found with index {}", index)),
-            Err(e) => Err(e.into()),
-            Ok(_) => Ok(()),
-        }
-    }
-
     fn clear_working_set(&mut self) -> Fallible<()> {
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
@@ -667,59 +645,6 @@ mod test {
             let mut txn = storage.txn()?;
             let ws = txn.get_working_set()?;
             assert_eq!(ws, vec![None, Some(uuid1), Some(uuid2)]);
-        }
-
-        Ok(())
-    }
-
-    #[test]
-    fn add_and_remove_from_working_set_holes() -> Fallible<()> {
-        let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
-        let uuid1 = Uuid::new_v4();
-        let uuid2 = Uuid::new_v4();
-
-        {
-            let mut txn = storage.txn()?;
-            txn.add_to_working_set(&uuid1)?;
-            txn.add_to_working_set(&uuid2)?;
-            txn.commit()?;
-        }
-
-        {
-            let mut txn = storage.txn()?;
-            txn.remove_from_working_set(1)?;
-            txn.add_to_working_set(&uuid1)?;
-            txn.commit()?;
-        }
-
-        {
-            let mut txn = storage.txn()?;
-            let ws = txn.get_working_set()?;
-            assert_eq!(ws, vec![None, None, Some(uuid2), Some(uuid1)]);
-        }
-
-        Ok(())
-    }
-
-    #[test]
-    fn remove_working_set_doesnt_exist() -> Fallible<()> {
-        let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
-        let uuid1 = Uuid::new_v4();
-
-        {
-            let mut txn = storage.txn()?;
-            txn.add_to_working_set(&uuid1)?;
-            txn.commit()?;
-        }
-
-        {
-            let mut txn = storage.txn()?;
-            let res = txn.remove_from_working_set(0);
-            assert!(res.is_err());
-            let res = txn.remove_from_working_set(2);
-            assert!(res.is_err());
         }
 
         Ok(())
