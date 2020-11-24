@@ -1,5 +1,7 @@
+use crate::table;
 use clap::{App, ArgMatches, SubCommand as ClapSubCommand};
 use failure::Fallible;
+use prettytable::{cell, row, Table};
 
 use crate::cmd::{ArgMatchResult, CommandInvocation};
 
@@ -24,11 +26,15 @@ define_subcommand! {
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
         let working_set = command.get_replica().working_set().unwrap();
+        let mut t = Table::new();
+        t.set_format(table::format());
+        t.set_titles(row![b->"id", b->"description"]);
         for i in 1..working_set.len() {
             if let Some(ref task) = working_set[i] {
-                println!("{}: {} - {:?}", i, task.get_uuid(), task);
+                t.add_row(row![i, task.get_description()]);
             }
         }
+        t.printstd();
         Ok(())
     }
 }

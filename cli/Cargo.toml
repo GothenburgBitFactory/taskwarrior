@@ -9,6 +9,7 @@ clap = "~2.33.0"
 uuid = { version = "0.8.1", features = ["serde", "v4"] }
 taskchampion = { path = "../taskchampion" }
 failure = "0.1.8"
+prettytable-rs = "0.8.0"
 
 [dev-dependencies]
 assert_cmd = "1.0.1"
