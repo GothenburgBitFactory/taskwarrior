@@ -34,5 +34,8 @@ pub use task::Priority;
 pub use task::Status;
 pub use task::{Task, TaskMut};
 
+/// Re-exported type from the `uuid` crate, for ease of compatibility for consumers of this crate.
+pub use uuid::Uuid;
+
 #[cfg(test)]
 pub(crate) mod testing;

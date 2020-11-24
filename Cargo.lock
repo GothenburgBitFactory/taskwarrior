@@ -912,7 +912,6 @@ dependencies = [
  "predicates",
  "prettytable-rs",
  "taskchampion",
- "uuid",
 ]
 
 [[package]]
