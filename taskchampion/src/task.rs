@@ -68,6 +68,16 @@ impl Status {
             Status::Deleted => "D",
         }
     }
+
+    /// Get the full-name value for this status to use in the TaskMap.
+    pub fn to_string(&self) -> &str {
+        // TODO: should be impl Display
+        match self {
+            Status::Pending => "Pending",
+            Status::Completed => "Completed",
+            Status::Deleted => "Deleted",
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]

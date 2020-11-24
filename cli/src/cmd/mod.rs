@@ -5,15 +5,23 @@ use taskchampion::{taskstorage, Replica};
 
 #[macro_use]
 mod macros;
+mod shared;
 
 mod add;
 mod gc;
+mod info;
 mod list;
 mod pending;
 
 /// Get a list of all subcommands in this crate
 pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
-    vec![add::cmd(), gc::cmd(), list::cmd(), pending::cmd()]
+    vec![
+        add::cmd(),
+        gc::cmd(),
+        list::cmd(),
+        pending::cmd(),
+        info::cmd(),
+    ]
 }
 
 /// The result of a [`crate::cmd::SubCommand::arg_match`] call
