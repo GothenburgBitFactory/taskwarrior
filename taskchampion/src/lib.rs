@@ -22,6 +22,7 @@ See the [TaskChampion Book](https://github.com/djmitche/taskchampion/blob/main/d
 for more information about the design and usage of the tool.
 
  */
+
 mod errors;
 mod replica;
 pub mod server;

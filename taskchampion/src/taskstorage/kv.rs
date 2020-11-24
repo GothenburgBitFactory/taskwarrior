@@ -13,21 +13,20 @@ struct Key(uuid::Bytes);
 
 impl From<&[u8]> for Key {
     fn from(bytes: &[u8]) -> Key {
-        let key = Key(bytes.try_into().unwrap());
-        key
+        Key(bytes.try_into().unwrap())
     }
 }
 
 impl From<&Uuid> for Key {
     fn from(uuid: &Uuid) -> Key {
-        let key = Key(uuid.as_bytes().clone());
+        let key = Key(*uuid.as_bytes());
         key
     }
 }
 
 impl From<Uuid> for Key {
     fn from(uuid: Uuid) -> Key {
-        let key = Key(uuid.as_bytes().clone());
+        let key = Key(*uuid.as_bytes());
         key
     }
 }
@@ -108,7 +107,7 @@ struct Txn<'t> {
 
 impl<'t> Txn<'t> {
     // get the underlying kv Txn
-    fn kvtxn<'a>(&mut self) -> &mut kv::Txn<'t> {
+    fn kvtxn(&mut self) -> &mut kv::Txn<'t> {
         if let Some(ref mut txn) = self.txn {
             txn
         } else {
@@ -316,7 +315,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         kvtxn.set(
             working_set_bucket,
             next_index.into(),
-            Msgpack::to_value_buf(uuid.clone())?,
+            Msgpack::to_value_buf(*uuid)?,
         )?;
         kvtxn.set(
             numbers_bucket,
@@ -387,7 +386,7 @@ mod test {
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            assert!(txn.create_task(uuid.clone())?);
+            assert!(txn.create_task(uuid)?);
             txn.commit()?;
         }
         {
@@ -405,12 +404,12 @@ mod test {
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            assert!(txn.create_task(uuid.clone())?);
+            assert!(txn.create_task(uuid)?);
             txn.commit()?;
         }
         {
             let mut txn = storage.txn()?;
-            assert!(!txn.create_task(uuid.clone())?);
+            assert!(!txn.create_task(uuid)?);
             txn.commit()?;
         }
         Ok(())
@@ -436,10 +435,7 @@ mod test {
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            txn.set_task(
-                uuid.clone(),
-                taskmap_with(vec![("k".to_string(), "v".to_string())]),
-            )?;
+            txn.set_task(uuid, taskmap_with(vec![("k".to_string(), "v".to_string())]))?;
             txn.commit()?;
         }
         {
@@ -472,7 +468,7 @@ mod test {
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            assert!(txn.create_task(uuid.clone())?);
+            assert!(txn.create_task(uuid)?);
             txn.commit()?;
         }
         {

@@ -109,12 +109,9 @@ impl Operation {
                 } else if timestamp1 < timestamp2 {
                     // prefer the later modification
                     (None, Some(operation2))
-                } else if timestamp1 > timestamp2 {
-                    // prefer the later modification
-                    //(Some(operation1), None)
-                    (Some(operation1), None)
                 } else {
-                    // arbitrarily resolve in favor of the first operation
+                    // prefer the later modification or, if the modifications are the same,
+                    // just choose one of them
                     (Some(operation1), None)
                 }
             }

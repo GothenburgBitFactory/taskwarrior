@@ -52,10 +52,10 @@ pub trait TaskStorageTxn {
     fn delete_task(&mut self, uuid: &Uuid) -> Fallible<bool>;
 
     /// Get the uuids and bodies of all tasks in the storage, in undefined order.
-    fn all_tasks<'a>(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>>;
+    fn all_tasks(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>>;
 
     /// Get the uuids of all tasks in the storage, in undefined order.
-    fn all_task_uuids<'a>(&mut self) -> Fallible<Vec<Uuid>>;
+    fn all_task_uuids(&mut self) -> Fallible<Vec<Uuid>>;
 
     /// Get the current base_version for this storage -- the last version synced from the server.
     fn base_version(&mut self) -> Fallible<u64>;
@@ -65,7 +65,7 @@ pub trait TaskStorageTxn {
 
     /// Get the current set of outstanding operations (operations that have not been sync'd to the
     /// server yet)
-    fn operations<'a>(&mut self) -> Fallible<Vec<Operation>>;
+    fn operations(&mut self) -> Fallible<Vec<Operation>>;
 
     /// Add an operation to the end of the list of operations in the storage.  Note that this
     /// merely *stores* the operation; it is up to the TaskDB to apply it.

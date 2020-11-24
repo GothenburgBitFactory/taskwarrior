@@ -44,32 +44,30 @@ impl TaskDB {
 
     fn apply_op(txn: &mut dyn TaskStorageTxn, op: &Operation) -> Fallible<()> {
         match op {
-            &Operation::Create { uuid } => {
+            Operation::Create { uuid } => {
                 // insert if the task does not already exist
-                if !txn.create_task(uuid)? {
+                if !txn.create_task(*uuid)? {
                     return Err(Error::DBError(format!("Task {} already exists", uuid)).into());
                 }
             }
-            &Operation::Delete { ref uuid } => {
+            Operation::Delete { ref uuid } => {
                 if !txn.delete_task(uuid)? {
                     return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
                 }
             }
-            &Operation::Update {
+            Operation::Update {
                 ref uuid,
                 ref property,
                 ref value,
                 timestamp: _,
             } => {
                 // update if this task exists, otherwise ignore
-                if let Some(task) = txn.get_task(uuid)? {
-                    let mut task = task.clone();
-                    // TODO: update working_set if this is changing state to or from pending
+                if let Some(mut task) = txn.get_task(uuid)? {
                     match value {
                         Some(ref val) => task.insert(property.to_string(), val.clone()),
                         None => task.remove(property),
                     };
-                    txn.set_task(uuid.clone(), task)?;
+                    txn.set_task(*uuid, task)?;
                 } else {
                     return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
                 }
@@ -80,19 +78,19 @@ impl TaskDB {
     }
 
     /// Get all tasks.
-    pub fn all_tasks<'a>(&'a mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
+    pub fn all_tasks(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
         let mut txn = self.storage.txn()?;
         txn.all_tasks()
     }
 
     /// Get the UUIDs of all tasks
-    pub fn all_task_uuids<'a>(&'a mut self) -> Fallible<Vec<Uuid>> {
+    pub fn all_task_uuids(&mut self) -> Fallible<Vec<Uuid>> {
         let mut txn = self.storage.txn()?;
         txn.all_task_uuids()
     }
 
     /// Get the working set
-    pub fn working_set<'a>(&'a mut self) -> Fallible<Vec<Option<Uuid>>> {
+    pub fn working_set(&mut self) -> Fallible<Vec<Option<Uuid>>> {
         let mut txn = self.storage.txn()?;
         txn.get_working_set()
     }
@@ -124,7 +122,7 @@ impl TaskDB {
             if let Some(uuid) = elt {
                 if let Some(task) = txn.get_task(&uuid)? {
                     if in_working_set(&task) {
-                        new_ws.push(uuid.clone());
+                        new_ws.push(uuid);
                         seen.insert(uuid);
                     }
                 }
@@ -134,10 +132,8 @@ impl TaskDB {
         // Now go hunting for tasks that should be in this list but are not, adding them at the
         // end of the list.
         for (uuid, task) in txn.all_tasks()? {
-            if !seen.contains(&uuid) {
-                if in_working_set(&task) {
-                    new_ws.push(uuid.clone());
-                }
+            if !seen.contains(&uuid) && in_working_set(&task) {
+                new_ws.push(uuid);
             }
         }
 
@@ -186,8 +182,8 @@ impl TaskDB {
                 TaskDB::apply_version(txn.as_mut(), version)?;
             }
 
-            let operations: Vec<Operation> = txn.operations()?.iter().map(|o| o.clone()).collect();
-            if operations.len() == 0 {
+            let operations: Vec<Operation> = txn.operations()?.to_vec();
+            if operations.is_empty() {
                 // nothing to sync back to the server..
                 break;
             }
@@ -195,7 +191,7 @@ impl TaskDB {
             // now make a version of our local changes and push those
             let new_version = Version {
                 version: txn.base_version()? + 1,
-                operations: operations,
+                operations,
             };
             let new_version_str = serde_json::to_string(&new_version).unwrap();
             println!("sending version {:?} to server", new_version.version);
@@ -457,7 +453,7 @@ mod tests {
 
         // add everything to the TaskDB
         for uuid in &uuids {
-            db.apply(Operation::Create { uuid: uuid.clone() })?;
+            db.apply(Operation::Create { uuid: *uuid })?;
         }
         for i in &[0usize, 1, 4] {
             db.apply(Operation::Update {

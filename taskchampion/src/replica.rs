@@ -16,9 +16,9 @@ pub struct Replica {
 
 impl Replica {
     pub fn new(storage: Box<dyn TaskStorage>) -> Replica {
-        return Replica {
+        Replica {
             taskdb: TaskDB::new(storage),
-        };
+        }
     }
 
     #[cfg(test)]
@@ -56,7 +56,7 @@ impl Replica {
     pub fn all_tasks(&mut self) -> Fallible<HashMap<Uuid, Task>> {
         let mut res = HashMap::new();
         for (uuid, tm) in self.taskdb.all_tasks()?.drain(..) {
-            res.insert(uuid.clone(), Task::new(uuid.clone(), tm));
+            res.insert(uuid, Task::new(uuid, tm));
         }
         Ok(res)
     }
@@ -71,10 +71,10 @@ impl Replica {
     pub fn working_set(&mut self) -> Fallible<Vec<Option<Task>>> {
         let working_set = self.taskdb.working_set()?;
         let mut res = Vec::with_capacity(working_set.len());
-        for i in 0..working_set.len() {
-            res.push(match working_set[i] {
+        for item in working_set.iter() {
+            res.push(match item {
                 Some(u) => match self.taskdb.get_task(&u)? {
-                    Some(tm) => Some(Task::new(u, tm)),
+                    Some(tm) => Some(Task::new(*u, tm)),
                     None => None,
                 },
                 None => None,
@@ -88,7 +88,7 @@ impl Replica {
         Ok(self
             .taskdb
             .get_task(uuid)?
-            .map(move |tm| Task::new(uuid.clone(), tm)))
+            .map(move |tm| Task::new(*uuid, tm)))
     }
 
     /// Get an existing task by its working set index
@@ -102,7 +102,7 @@ impl Replica {
                     .map(move |tm| Task::new(uuid, tm)));
             }
         }
-        return Ok(None);
+        Ok(None)
     }
 
     /// Get the working set index for the given task uuid
@@ -126,8 +126,7 @@ impl Replica {
         if self.taskdb.get_task(&uuid)?.is_some() {
             return Err(Error::DBError(format!("Task {} already exists", uuid)).into());
         }
-        self.taskdb
-            .apply(Operation::Create { uuid: uuid.clone() })?;
+        self.taskdb.apply(Operation::Create { uuid })?;
         let mut task = Task::new(uuid, TaskMap::new()).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
@@ -172,7 +171,7 @@ mod tests {
         let uuid = Uuid::new_v4();
 
         let t = rep
-            .new_task(uuid.clone(), Status::Pending, "a task".into())
+            .new_task(uuid, Status::Pending, "a task".into())
             .unwrap();
         assert_eq!(t.get_description(), String::from("a task"));
         assert_eq!(t.get_status(), Status::Pending);
@@ -185,7 +184,7 @@ mod tests {
         let uuid = Uuid::new_v4();
 
         let t = rep
-            .new_task(uuid.clone(), Status::Pending, "a task".into())
+            .new_task(uuid, Status::Pending, "a task".into())
             .unwrap();
 
         let mut t = t.into_mut(&mut rep);
@@ -211,10 +210,10 @@ mod tests {
         let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
-        rep.new_task(uuid.clone(), Status::Pending, "a task".into())
+        rep.new_task(uuid, Status::Pending, "a task".into())
             .unwrap();
 
-        rep.delete_task(uuid.clone()).unwrap();
+        rep.delete_task(uuid).unwrap();
         assert_eq!(rep.get_task(&uuid).unwrap(), None);
     }
 
@@ -223,7 +222,7 @@ mod tests {
         let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
-        rep.new_task(uuid.clone(), Status::Pending, "another task".into())
+        rep.new_task(uuid, Status::Pending, "another task".into())
             .unwrap();
 
         let t = rep.get_task(&uuid).unwrap().unwrap();
@@ -247,7 +246,7 @@ mod tests {
         let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
 
-        rep.new_task(uuid.clone(), Status::Pending, "to-be-pending".into())
+        rep.new_task(uuid, Status::Pending, "to-be-pending".into())
             .unwrap();
 
         let t = rep.get_working_set_task(1).unwrap().unwrap();
