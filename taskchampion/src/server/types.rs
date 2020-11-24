@@ -1,9 +1,12 @@
+/// A Blob is a hunk of encoded data that is sent to the server.  The server does not interpret
+/// this data at all.
 pub type Blob = Vec<u8>;
 
+/// VersionAdd is the response type from [`crate:server::Server::add_version`].
 pub enum VersionAdd {
-    // OK, version added
+    /// OK, version added
     Ok,
-    // Rejected, must be based on the the given version
+    /// Rejected, must be based on the the given version
     ExpectedVersion(u64),
 }
 
@@ -18,3 +21,4 @@ pub trait Server {
 
     fn add_snapshot(&mut self, username: &str, version: u64, blob: Blob);
 }
+

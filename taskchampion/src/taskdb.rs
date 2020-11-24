@@ -296,8 +296,8 @@ impl TaskDB {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::server::test::TestServer;
     use crate::taskstorage::InMemoryStorage;
-    use crate::testing::testserver::TestServer;
     use chrono::Utc;
     use proptest::prelude::*;
     use std::collections::HashMap;
