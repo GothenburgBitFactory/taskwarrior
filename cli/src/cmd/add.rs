@@ -1,7 +1,6 @@
 use clap::{App, Arg, ArgMatches, SubCommand as ClapSubCommand};
 use failure::{format_err, Fallible};
-use taskchampion::Status;
-use uuid::Uuid;
+use taskchampion::{Status, Uuid};
 
 use crate::cmd::{ArgMatchResult, CommandInvocation};
 

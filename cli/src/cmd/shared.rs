@@ -1,7 +1,6 @@
 use clap::Arg;
 use failure::{format_err, Fallible};
-use taskchampion::{Replica, Task};
-use uuid::Uuid;
+use taskchampion::{Replica, Task, Uuid};
 
 pub(super) fn task_arg<'a>() -> Arg<'a, 'a> {
     Arg::with_name("task")
