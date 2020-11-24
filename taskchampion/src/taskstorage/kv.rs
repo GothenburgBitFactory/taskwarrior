@@ -302,7 +302,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(res)
     }
 
-    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
+    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
         let kvtxn = self.kvtxn();
@@ -323,10 +323,11 @@ impl<'t> TaskStorageTxn for Txn<'t> {
             NEXT_WORKING_SET_INDEX.into(),
             Msgpack::to_value_buf(next_index + 1)?,
         )?;
-        Ok(next_index)
+        Ok(next_index as usize)
     }
 
-    fn remove_from_working_set(&mut self, index: u64) -> Fallible<()> {
+    fn remove_from_working_set(&mut self, index: usize) -> Fallible<()> {
+        let index = index as u64;
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
         let kvtxn = self.kvtxn();

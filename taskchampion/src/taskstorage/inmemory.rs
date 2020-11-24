@@ -108,14 +108,13 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(self.data_ref().working_set.clone())
     }
 
-    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
+    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
         let working_set = &mut self.mut_data_ref().working_set;
         working_set.push(Some(uuid.clone()));
-        Ok(working_set.len() as u64)
+        Ok(working_set.len())
     }
 
-    fn remove_from_working_set(&mut self, index: u64) -> Fallible<()> {
-        let index = index as usize;
+    fn remove_from_working_set(&mut self, index: usize) -> Fallible<()> {
         let working_set = &mut self.mut_data_ref().working_set;
         if index >= working_set.len() || working_set[index].is_none() {
             return Err(format_err!("No task found with index {}", index));

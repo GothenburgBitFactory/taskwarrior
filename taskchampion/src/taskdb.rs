@@ -153,13 +153,13 @@ impl TaskDB {
 
     /// Add the given uuid to the working set and return its index; if it is already in the working
     /// set, its index is returned.  This does *not* renumber any existing tasks.
-    pub fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<u64> {
+    pub fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
         let mut txn = self.storage.txn()?;
         // search for an existing entry for this task..
         for (i, elt) in txn.get_working_set()?.iter().enumerate() {
             if *elt == Some(*uuid) {
                 // (note that this drops the transaction with no changes made)
-                return Ok(i as u64);
+                return Ok(i);
             }
         }
         // and if not found, add one

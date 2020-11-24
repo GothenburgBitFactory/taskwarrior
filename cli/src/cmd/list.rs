@@ -23,11 +23,16 @@ define_subcommand! {
 
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
+        let mut replica = command.get_replica();
         let mut t = Table::new();
         t.set_format(table::format());
-        t.set_titles(row![b->"uuid", b->"description"]);
-        for (uuid, task) in command.get_replica().all_tasks().unwrap() {
-            t.add_row(row![uuid, task.get_description()]);
+        t.set_titles(row![b->"id", b->"description"]);
+        for (uuid, task) in replica.all_tasks().unwrap() {
+            let mut id = uuid.to_string();
+            if let Some(i) = replica.get_working_set_index(&uuid)? {
+                id = i.to_string();
+            }
+            t.add_row(row![id, task.get_description()]);
         }
         t.printstd();
         Ok(())
