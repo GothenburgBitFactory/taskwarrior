@@ -127,6 +127,7 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "PENDING"   ||
       tag == "PRIORITY"  ||
       tag == "PROJECT"   ||
+      tag == "QUARTER"   ||
       tag == "READY"     ||
       tag == "SCHEDULED" ||
       tag == "TAGGED"    ||
