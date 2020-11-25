@@ -1,26 +1,46 @@
 use failure::Fallible;
+use uuid::Uuid;
 
-/// A Blob is a hunk of encoded data that is sent to the server.  The server does not interpret
-/// this data at all.
-pub type Blob = Vec<u8>;
+/// Versions are referred to with sha2 hashes.
+pub type VersionId = Uuid;
+
+/// The distinguished value for "no version"
+pub const NO_VERSION_ID: VersionId = Uuid::nil();
+
+/// A segment in the history of this task database, in the form of a sequence of operations.  This
+/// data is pre-encoded, and from the protocol level appears as a sequence of bytes.
+pub type HistorySegment = Vec<u8>;
 
 /// VersionAdd is the response type from [`crate:server::Server::add_version`].
-pub enum VersionAdd {
-    /// OK, version added
-    Ok,
-    /// Rejected, must be based on the the given version
-    ExpectedVersion(u64),
+pub enum AddVersionResult {
+    /// OK, version added with the given ID
+    Ok(VersionId),
+    /// Rejected; expected a version with the given parent version
+    ExpectedParentVersion(VersionId),
+}
+
+/// A version as downloaded from the server
+pub enum GetVersionResult {
+    /// No such version exists
+    NoSuchVersion,
+
+    /// The requested version
+    Version {
+        version_id: VersionId,
+        parent_version_id: VersionId,
+        history_segment: HistorySegment,
+    },
 }
 
 /// A value implementing this trait can act as a server against which a replica can sync.
 pub trait Server {
-    /// Get a vector of all versions after `since_version`
-    fn get_versions(&self, username: &str, since_version: u64) -> Fallible<Vec<Blob>>;
+    /// Add a new version.
+    fn add_version(
+        &mut self,
+        parent_version_id: VersionId,
+        history_segment: HistorySegment,
+    ) -> Fallible<AddVersionResult>;
 
-    /// Add a new version.  If the given version number is incorrect, this responds with the
-    /// appropriate version and expects the caller to try again.
-    fn add_version(&mut self, username: &str, version: u64, blob: Blob) -> Fallible<VersionAdd>;
-
-    /// TODO: undefined yet
-    fn add_snapshot(&mut self, username: &str, version: u64, blob: Blob) -> Fallible<()>;
+    /// Get the version with the given parent VersionId
+    fn get_child_version(&self, parent_version_id: VersionId) -> Fallible<GetVersionResult>;
 }

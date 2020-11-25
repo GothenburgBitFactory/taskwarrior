@@ -1,6 +1,8 @@
 #![allow(clippy::new_without_default)]
 
-use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
+use crate::taskstorage::{
+    Operation, TaskMap, TaskStorage, TaskStorageTxn, VersionId, DEFAULT_BASE_VERSION,
+};
 use failure::Fallible;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
@@ -9,7 +11,7 @@ use uuid::Uuid;
 #[derive(PartialEq, Debug, Clone)]
 struct Data {
     tasks: HashMap<Uuid, TaskMap>,
-    base_version: u64,
+    base_version: VersionId,
     operations: Vec<Operation>,
     working_set: Vec<Option<Uuid>>,
 }
@@ -79,11 +81,11 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(self.data_ref().tasks.keys().copied().collect())
     }
 
-    fn base_version(&mut self) -> Fallible<u64> {
-        Ok(self.data_ref().base_version)
+    fn base_version(&mut self) -> Fallible<VersionId> {
+        Ok(self.data_ref().base_version.clone())
     }
 
-    fn set_base_version(&mut self, version: u64) -> Fallible<()> {
+    fn set_base_version(&mut self, version: VersionId) -> Fallible<()> {
         self.mut_data_ref().base_version = version;
         Ok(())
     }
@@ -138,7 +140,7 @@ impl InMemoryStorage {
         InMemoryStorage {
             data: Data {
                 tasks: HashMap::new(),
-                base_version: 0,
+                base_version: DEFAULT_BASE_VERSION.into(),
                 operations: vec![],
                 working_set: vec![None],
             },

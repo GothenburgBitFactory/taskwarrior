@@ -1,4 +1,6 @@
-use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
+use crate::taskstorage::{
+    Operation, TaskMap, TaskStorage, TaskStorageTxn, VersionId, DEFAULT_BASE_VERSION,
+};
 use failure::Fallible;
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
@@ -48,6 +50,7 @@ pub struct KVStorage<'t> {
     store: Store,
     tasks_bucket: Bucket<'t, Key, ValueBuf<Msgpack<TaskMap>>>,
     numbers_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<u64>>>,
+    uuids_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<Uuid>>>,
     operations_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<Operation>>>,
     working_set_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<Uuid>>>,
 }
@@ -61,6 +64,7 @@ impl<'t> KVStorage<'t> {
         let mut config = Config::default(directory);
         config.bucket("tasks", None);
         config.bucket("numbers", None);
+        config.bucket("uuids", None);
         config.bucket("operations", None);
         config.bucket("working_set", None);
         let store = Store::new(config)?;
@@ -70,6 +74,9 @@ impl<'t> KVStorage<'t> {
 
         // this bucket contains various u64s, indexed by constants above
         let numbers_bucket = store.int_bucket::<ValueBuf<Msgpack<u64>>>(Some("numbers"))?;
+
+        // this bucket contains various Uuids, indexed by constants above
+        let uuids_bucket = store.int_bucket::<ValueBuf<Msgpack<Uuid>>>(Some("uuids"))?;
 
         // this bucket contains operations, numbered consecutively; the NEXT_OPERATION number gives
         // the index of the next operation to insert
@@ -85,6 +92,7 @@ impl<'t> KVStorage<'t> {
             store,
             tasks_bucket,
             numbers_bucket,
+            uuids_bucket,
             operations_bucket,
             working_set_bucket,
         })
@@ -121,6 +129,9 @@ impl<'t> Txn<'t> {
     }
     fn numbers_bucket(&self) -> &'t Bucket<'t, Integer, ValueBuf<Msgpack<u64>>> {
         &self.storage.numbers_bucket
+    }
+    fn uuids_bucket(&self) -> &'t Bucket<'t, Integer, ValueBuf<Msgpack<Uuid>>> {
+        &self.storage.uuids_bucket
     }
     fn operations_bucket(&self) -> &'t Bucket<'t, Integer, ValueBuf<Msgpack<Operation>>> {
         &self.storage.operations_bucket
@@ -193,26 +204,26 @@ impl<'t> TaskStorageTxn for Txn<'t> {
             .collect())
     }
 
-    fn base_version(&mut self) -> Fallible<u64> {
-        let bucket = self.numbers_bucket();
+    fn base_version(&mut self) -> Fallible<VersionId> {
+        let bucket = self.uuids_bucket();
         let base_version = match self.kvtxn().get(bucket, BASE_VERSION.into()) {
             Ok(buf) => buf,
-            Err(Error::NotFound) => return Ok(0),
+            Err(Error::NotFound) => return Ok(DEFAULT_BASE_VERSION.into()),
             Err(e) => return Err(e.into()),
         }
         .inner()?
         .to_serde();
-        Ok(base_version)
+        Ok(base_version as VersionId)
     }
 
-    fn set_base_version(&mut self, version: u64) -> Fallible<()> {
-        let numbers_bucket = self.numbers_bucket();
+    fn set_base_version(&mut self, version: VersionId) -> Fallible<()> {
+        let uuids_bucket = self.uuids_bucket();
         let kvtxn = self.kvtxn();
 
         kvtxn.set(
-            numbers_bucket,
+            uuids_bucket,
             BASE_VERSION.into(),
-            Msgpack::to_value_buf(version)?,
+            Msgpack::to_value_buf(version as Uuid)?,
         )?;
         Ok(())
     }
@@ -528,7 +539,7 @@ mod test {
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         {
             let mut txn = storage.txn()?;
-            assert_eq!(txn.base_version()?, 0);
+            assert_eq!(txn.base_version()?, DEFAULT_BASE_VERSION);
         }
         Ok(())
     }
@@ -537,14 +548,15 @@ mod test {
     fn test_base_version_setting() -> Fallible<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let u = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            txn.set_base_version(3)?;
+            txn.set_base_version(u)?;
             txn.commit()?;
         }
         {
             let mut txn = storage.txn()?;
-            assert_eq!(txn.base_version()?, 3);
+            assert_eq!(txn.base_version()?, u);
         }
         Ok(())
     }

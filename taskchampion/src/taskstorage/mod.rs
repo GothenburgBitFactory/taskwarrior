@@ -23,6 +23,12 @@ fn taskmap_with(mut properties: Vec<(String, String)>) -> TaskMap {
     rv
 }
 
+/// The type of VersionIds
+pub use crate::server::VersionId;
+
+/// The default for base_version.
+pub(crate) const DEFAULT_BASE_VERSION: Uuid = crate::server::NO_VERSION_ID;
+
 /// A TaskStorage transaction, in which storage operations are performed.
 ///
 /// # Concurrency
@@ -58,10 +64,10 @@ pub trait TaskStorageTxn {
     fn all_task_uuids(&mut self) -> Fallible<Vec<Uuid>>;
 
     /// Get the current base_version for this storage -- the last version synced from the server.
-    fn base_version(&mut self) -> Fallible<u64>;
+    fn base_version(&mut self) -> Fallible<VersionId>;
 
     /// Set the current base_version for this storage.
-    fn set_base_version(&mut self, version: u64) -> Fallible<()>;
+    fn set_base_version(&mut self, version: VersionId) -> Fallible<()>;
 
     /// Get the current set of outstanding operations (operations that have not been sync'd to the
     /// server yet)
