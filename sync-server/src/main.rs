@@ -1,6 +1,6 @@
 use actix_web::{App, HttpServer};
 use api::ServerState;
-use server::{NullSyncServer, SyncServer};
+use server::{InMemorySyncServer, SyncServer};
 
 mod api;
 mod server;
@@ -9,7 +9,7 @@ mod server;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let server_box: Box<dyn SyncServer> = Box::new(NullSyncServer::new());
+    let server_box: Box<dyn SyncServer> = Box::new(InMemorySyncServer::new());
     let server_state = ServerState::new(server_box);
 
     HttpServer::new(move || {
