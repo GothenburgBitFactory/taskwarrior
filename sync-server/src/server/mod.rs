@@ -1,7 +1,24 @@
-use crate::types::{AddVersionResult, ClientId, GetVersionResult, HistorySegment, VersionId};
 use failure::Fallible;
 use taskchampion::Uuid;
 
+pub(crate) type HistorySegment = Vec<u8>;
+pub(crate) type ClientId = Uuid;
+pub(crate) type VersionId = Uuid;
+
+/// Response to get_child_version
+pub(crate) struct GetVersionResult {
+    pub(crate) version_id: Uuid,
+    pub(crate) parent_version_id: Uuid,
+    pub(crate) history_segment: HistorySegment,
+}
+
+/// Response to add_version
+pub(crate) enum AddVersionResult {
+    /// OK, version added with the given ID
+    Ok(VersionId),
+    /// Rejected; expected a version with the given parent version
+    ExpectedParentVersion(VersionId),
+}
 pub(crate) trait SyncServer: Sync + Send {
     fn get_child_version(
         &self,

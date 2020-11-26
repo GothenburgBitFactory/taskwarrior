@@ -4,7 +4,6 @@ use server::{NullSyncServer, SyncServer};
 
 mod api;
 mod server;
-mod types;
 
 // TODO: use hawk to sign requests
 

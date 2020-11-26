@@ -1,7 +1,7 @@
 use crate::api::{
     ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
 };
-use crate::types::{AddVersionResult, ClientId, VersionId};
+use crate::server::{AddVersionResult, ClientId, VersionId};
 use actix_web::{
     error, http::StatusCode, post, web, HttpMessage, HttpRequest, HttpResponse, Result,
 };

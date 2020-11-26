@@ -1,7 +1,7 @@
 use crate::api::{
     ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
 };
-use crate::types::{ClientId, VersionId};
+use crate::server::{ClientId, VersionId};
 use actix_web::{error, get, http::StatusCode, web, HttpResponse, Result};
 
 /// Get a child version.
