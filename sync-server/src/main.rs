@@ -1,5 +1,6 @@
 use actix_web::{App, HttpServer};
-use std::sync::Arc;
+use api::ServerState;
+use server::{NullSyncServer, SyncServer};
 
 mod api;
 mod server;
@@ -9,7 +10,8 @@ mod types;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let server_state = Arc::new(Box::new(server::NullSyncServer::new()));
+    let server_box: Box<dyn SyncServer> = Box::new(NullSyncServer::new());
+    let server_state = ServerState::new(server_box);
 
     HttpServer::new(move || {
         App::new()

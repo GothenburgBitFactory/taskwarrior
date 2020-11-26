@@ -2,7 +2,7 @@ use crate::types::{AddVersionResult, ClientId, GetVersionResult, HistorySegment,
 use failure::Fallible;
 use taskchampion::Uuid;
 
-pub(crate) trait SyncServer {
+pub(crate) trait SyncServer: Sync + Send {
     fn get_child_version(
         &self,
         client_id: ClientId,
@@ -13,7 +13,7 @@ pub(crate) trait SyncServer {
         &self,
         client_id: ClientId,
         parent_version_id: VersionId,
-        history_segment: &HistorySegment,
+        history_segment: HistorySegment,
     ) -> Fallible<AddVersionResult>;
 }
 
@@ -45,8 +45,9 @@ impl SyncServer for NullSyncServer {
         &self,
         _client_id: ClientId,
         _parent_version_id: VersionId,
-        _history_segment: &HistorySegment,
+        _history_segment: HistorySegment,
     ) -> Fallible<AddVersionResult> {
-        Ok(AddVersionResult::Ok(Uuid::new_v4()))
+        //Ok(AddVersionResult::Ok(Uuid::new_v4()))
+        Ok(AddVersionResult::ExpectedParentVersion(Uuid::new_v4()))
     }
 }
