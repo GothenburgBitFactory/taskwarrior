@@ -1,11 +1,10 @@
-use crate::server::SyncServer;
+use crate::api::ServerState;
 use crate::types::{ClientId, VersionId};
 use actix_web::{error, get, http::StatusCode, web, HttpResponse, Result};
-use std::sync::Arc;
 
 #[get("/client/{client_id}/get-child-version/{parent_version_id}")]
 pub(crate) async fn service(
-    data: web::Data<Arc<SyncServer>>,
+    data: web::Data<ServerState>,
     web::Path((client_id, parent_version_id)): web::Path<(ClientId, VersionId)>,
 ) -> Result<HttpResponse> {
     let result = data

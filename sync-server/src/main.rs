@@ -1,5 +1,4 @@
 use actix_web::{App, HttpServer};
-use server::SyncServer;
 use std::sync::Arc;
 
 mod api;
@@ -10,11 +9,11 @@ mod types;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let sync_server = Arc::new(SyncServer::new());
+    let server_state = Arc::new(Box::new(server::NullSyncServer::new()));
 
     HttpServer::new(move || {
         App::new()
-            .data(sync_server.clone())
+            .data(server_state.clone())
             .service(api::get_child_version::service)
             .service(api::add_version::service)
     })
