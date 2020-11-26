@@ -43,6 +43,10 @@ pub(crate) async fn service(
         body.extend_from_slice(&chunk);
     }
 
+    if body.is_empty() {
+        return Err(error::ErrorBadRequest("Empty body"));
+    }
+
     let result = data
         .add_version(client_id, parent_version_id, body.to_vec())
         .map_err(|e| error::InternalError::new(e, StatusCode::INTERNAL_SERVER_ERROR))?;
@@ -54,4 +58,123 @@ pub(crate) async fn service(
             .header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string())
             .body(""),
     })
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::api::ServerState;
+    use crate::app_scope;
+    use crate::server::SyncServer;
+    use crate::test::TestServer;
+    use actix_web::{test, App};
+    use taskchampion::Uuid;
+
+    #[actix_rt::test]
+    async fn test_success() {
+        let client_id = Uuid::new_v4();
+        let version_id = Uuid::new_v4();
+        let parent_version_id = Uuid::new_v4();
+        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
+            expected_client_id: client_id,
+            av_expected_parent_version_id: parent_version_id,
+            av_expected_history_segment: b"abcd".to_vec(),
+            av_result: Some(AddVersionResult::Ok(version_id)),
+            ..Default::default()
+        });
+        let server_state = ServerState::new(server_box);
+        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+
+        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let req = test::TestRequest::post()
+            .uri(&uri)
+            .header(
+                "Content-Type",
+                "application/vnd.taskchampion.history-segment",
+            )
+            .set_payload(b"abcd".to_vec())
+            .to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::OK);
+        assert_eq!(
+            resp.headers().get("X-Version-Id").unwrap(),
+            &version_id.to_string()
+        );
+        assert_eq!(resp.headers().get("X-Parent-Version-Id"), None);
+    }
+
+    #[actix_rt::test]
+    async fn test_conflict() {
+        let client_id = Uuid::new_v4();
+        let version_id = Uuid::new_v4();
+        let parent_version_id = Uuid::new_v4();
+        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
+            expected_client_id: client_id,
+            av_expected_parent_version_id: parent_version_id,
+            av_expected_history_segment: b"abcd".to_vec(),
+            av_result: Some(AddVersionResult::ExpectedParentVersion(version_id)),
+            ..Default::default()
+        });
+        let server_state = ServerState::new(server_box);
+        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+
+        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let req = test::TestRequest::post()
+            .uri(&uri)
+            .header(
+                "Content-Type",
+                "application/vnd.taskchampion.history-segment",
+            )
+            .set_payload(b"abcd".to_vec())
+            .to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::CONFLICT);
+        assert_eq!(resp.headers().get("X-Version-Id"), None);
+        assert_eq!(
+            resp.headers().get("X-Parent-Version-Id").unwrap(),
+            &version_id.to_string()
+        );
+    }
+
+    #[actix_rt::test]
+    async fn test_bad_content_type() {
+        let client_id = Uuid::new_v4();
+        let parent_version_id = Uuid::new_v4();
+        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
+            ..Default::default()
+        });
+        let server_state = ServerState::new(server_box);
+        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+
+        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let req = test::TestRequest::post()
+            .uri(&uri)
+            .header("Content-Type", "not/correct")
+            .set_payload(b"abcd".to_vec())
+            .to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+    }
+
+    #[actix_rt::test]
+    async fn test_empty_body() {
+        let client_id = Uuid::new_v4();
+        let parent_version_id = Uuid::new_v4();
+        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
+            ..Default::default()
+        });
+        let server_state = ServerState::new(server_box);
+        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+
+        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let req = test::TestRequest::post()
+            .uri(&uri)
+            .header(
+                "Content-Type",
+                "application/vnd.taskchampion.history-segment",
+            )
+            .to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+    }
 }

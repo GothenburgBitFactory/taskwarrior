@@ -33,3 +33,81 @@ pub(crate) async fn service(
         Err(error::ErrorNotFound("no such version"))
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::api::ServerState;
+    use crate::app_scope;
+    use crate::server::{GetVersionResult, SyncServer};
+    use crate::test::TestServer;
+    use actix_web::{test, App};
+    use taskchampion::Uuid;
+
+    #[actix_rt::test]
+    async fn test_success() {
+        let client_id = Uuid::new_v4();
+        let version_id = Uuid::new_v4();
+        let parent_version_id = Uuid::new_v4();
+        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
+            expected_client_id: client_id,
+            gcv_expected_parent_version_id: parent_version_id,
+            gcv_result: Some(GetVersionResult {
+                version_id: version_id,
+                parent_version_id: parent_version_id,
+                history_segment: b"abcd".to_vec(),
+            }),
+            ..Default::default()
+        });
+        let server_state = ServerState::new(server_box);
+        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+
+        let uri = format!(
+            "/client/{}/get-child-version/{}",
+            client_id, parent_version_id
+        );
+        let req = test::TestRequest::get().uri(&uri).to_request();
+        let mut resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::OK);
+        assert_eq!(
+            resp.headers().get("X-Version-Id").unwrap(),
+            &version_id.to_string()
+        );
+        assert_eq!(
+            resp.headers().get("X-Parent-Version-Id").unwrap(),
+            &parent_version_id.to_string()
+        );
+        assert_eq!(
+            resp.headers().get("Content-Type").unwrap(),
+            &"application/vnd.taskchampion.history-segment".to_string()
+        );
+
+        use futures::StreamExt;
+        let (bytes, _) = resp.take_body().into_future().await;
+        assert_eq!(bytes.unwrap().unwrap().as_ref(), b"abcd");
+    }
+
+    #[actix_rt::test]
+    async fn test_not_found() {
+        let client_id = Uuid::new_v4();
+        let parent_version_id = Uuid::new_v4();
+        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
+            expected_client_id: client_id,
+            gcv_expected_parent_version_id: parent_version_id,
+            gcv_result: None,
+            ..Default::default()
+        });
+        let server_state = ServerState::new(server_box);
+        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+
+        let uri = format!(
+            "/client/{}/get-child-version/{}",
+            client_id, parent_version_id
+        );
+        let req = test::TestRequest::get().uri(&uri).to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+        assert_eq!(resp.headers().get("X-Version-Id"), None);
+        assert_eq!(resp.headers().get("X-Parent-Version-Id"), None);
+    }
+}
