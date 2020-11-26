@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
@@ -126,7 +126,7 @@ class TestRunner(object):
         with open(test, 'rb') as fh:
             header = fh.read(100).split(b"\n")
             if len(header) >= 2 and \
-                ((b"/usr/bin/env python" in header[0]) or \
+                ((b"/usr/bin/env python3" in header[0]) or \
                 (header[1][-14:] == b"bash_tap_tw.sh")):
                 return True
             else:
