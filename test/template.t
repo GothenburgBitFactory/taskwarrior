@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -134,7 +134,7 @@ class TestHooksBugNumber(TestCase):
         """Testing a custom made hook"""
         hookname = "on-modify-example-raw"
 
-        content = """#!/usr/bin/env python
+        content = """#!/usr/bin/env python3
 import sys
 import json
 
