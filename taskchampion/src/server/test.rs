@@ -64,7 +64,7 @@ impl Server for TestServer {
     }
 
     /// Get a vector of all versions after `since_version`
-    fn get_child_version(&self, parent_version_id: VersionId) -> Fallible<GetVersionResult> {
+    fn get_child_version(&mut self, parent_version_id: VersionId) -> Fallible<GetVersionResult> {
         if let Some(version) = self.versions.get(&parent_version_id) {
             Ok(GetVersionResult::Version {
                 version_id: version.version_id,

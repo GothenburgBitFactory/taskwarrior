@@ -51,7 +51,9 @@ impl CommandInvocation {
         ))
     }
 
-    pub(super) fn get_server(&self) -> impl server::Server {
-        server::LocalServer::new()
+    pub(super) fn get_server(&self) -> Fallible<impl server::Server> {
+        Ok(server::LocalServer::new(Path::new(
+            "/tmp/task-sync-server",
+        ))?)
     }
 }

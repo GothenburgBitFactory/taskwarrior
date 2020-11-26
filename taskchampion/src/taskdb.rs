@@ -1,7 +1,7 @@
 use crate::errors::Error;
 use crate::server::{AddVersionResult, GetVersionResult, Server};
 use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
-use failure::Fallible;
+use failure::{format_err, Fallible};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::str;
@@ -168,7 +168,9 @@ impl TaskDB {
         let mut txn = self.storage.txn()?;
 
         // retry synchronizing until the server accepts our version (this allows for races between
-        // replicas trying to sync to the same server)
+        // replicas trying to sync to the same server).  If the server insists on the same base
+        // version twice, then we have diverged.
+        let mut requested_parent_version_id = None;
         loop {
             let mut base_version_id = txn.base_version()?;
 
@@ -189,6 +191,7 @@ impl TaskDB {
                     txn.set_base_version(version_id)?;
                     base_version_id = version_id;
                 } else {
+                    println!("no child versions of {:?}", base_version_id);
                     // at the moment, no more child versions, so we can try adding our own
                     break;
                 }
@@ -196,6 +199,7 @@ impl TaskDB {
 
             let operations: Vec<Operation> = txn.operations()?.to_vec();
             if operations.is_empty() {
+                println!("no changes to push to server");
                 // nothing to sync back to the server..
                 break;
             }
@@ -216,7 +220,14 @@ impl TaskDB {
                         "new version rejected; must be based on {:?}",
                         parent_version_id
                     );
-                    // ..continue the outer loop
+                    if let Some(requested) = requested_parent_version_id {
+                        if parent_version_id == requested {
+                            return Err(format_err!(
+                                "Server's task history has diverged from this replica"
+                            ));
+                        }
+                    }
+                    requested_parent_version_id = Some(parent_version_id);
                 }
             }
         }

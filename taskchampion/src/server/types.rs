@@ -12,6 +12,7 @@ pub const NO_VERSION_ID: VersionId = Uuid::nil();
 pub type HistorySegment = Vec<u8>;
 
 /// VersionAdd is the response type from [`crate:server::Server::add_version`].
+#[derive(Debug, PartialEq)]
 pub enum AddVersionResult {
     /// OK, version added with the given ID
     Ok(VersionId),
@@ -20,6 +21,7 @@ pub enum AddVersionResult {
 }
 
 /// A version as downloaded from the server
+#[derive(Debug, PartialEq)]
 pub enum GetVersionResult {
     /// No such version exists
     NoSuchVersion,
@@ -42,5 +44,5 @@ pub trait Server {
     ) -> Fallible<AddVersionResult>;
 
     /// Get the version with the given parent VersionId
-    fn get_child_version(&self, parent_version_id: VersionId) -> Fallible<GetVersionResult>;
+    fn get_child_version(&mut self, parent_version_id: VersionId) -> Fallible<GetVersionResult>;
 }

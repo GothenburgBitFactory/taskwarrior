@@ -1,49 +1,12 @@
 use crate::taskstorage::{
     Operation, TaskMap, TaskStorage, TaskStorageTxn, VersionId, DEFAULT_BASE_VERSION,
 };
+use crate::utils::Key;
 use failure::Fallible;
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
-use std::convert::TryInto;
 use std::path::Path;
 use uuid::Uuid;
-
-/// A representation of a UUID as a key.  This is just a newtype wrapping the 128-bit packed form
-/// of a UUID.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-struct Key(uuid::Bytes);
-
-impl From<&[u8]> for Key {
-    fn from(bytes: &[u8]) -> Key {
-        Key(bytes.try_into().unwrap())
-    }
-}
-
-impl From<&Uuid> for Key {
-    fn from(uuid: &Uuid) -> Key {
-        let key = Key(*uuid.as_bytes());
-        key
-    }
-}
-
-impl From<Uuid> for Key {
-    fn from(uuid: Uuid) -> Key {
-        let key = Key(*uuid.as_bytes());
-        key
-    }
-}
-
-impl From<Key> for Uuid {
-    fn from(key: Key) -> Uuid {
-        Uuid::from_bytes(key.0)
-    }
-}
-
-impl AsRef<[u8]> for Key {
-    fn as_ref(&self) -> &[u8] {
-        &self.0[..]
-    }
-}
 
 /// KVStorage is an on-disk storage backend which uses LMDB via the `kv` crate.
 pub struct KVStorage<'t> {

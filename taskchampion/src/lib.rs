@@ -29,6 +29,7 @@ pub mod server;
 mod task;
 mod taskdb;
 pub mod taskstorage;
+mod utils;
 
 pub use replica::Replica;
 pub use task::Priority;
