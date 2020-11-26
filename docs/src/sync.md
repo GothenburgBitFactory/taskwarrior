@@ -36,24 +36,32 @@ This process is analogous (vaguely) to rebasing a sequence of Git commits.
 
 ### Versions
 
-Occasionally, database states are named with an integer, called a version.
-The system as a whole (all replicas) constructs a monotonic sequence of versions and the operations that separate each version from the next.
-No gaps are allowed in the version numbering.
-Version 0 is implicitly the empty database.
+Occasionally, database states are given a name (that takes the form of a UUID).
+The system as a whole (all replicas) constructs a branch-free sequence of versions and the operations that separate each version from the next.
+The version with the nil UUID is implicitly the empty database.
 
-The server stores the operations to change a state from a version N to a version N+1, and provides that information as needed to replicas.
+The server stores the operations to change a state from a "parent" version to a "child" version, and provides that information as needed to replicas.
 Replicas use this information to update their local task databases, and to generate new versions to send to the server.
 
-Replicas generate a new version to transmit changes made locally to the server.
+Replicas generate a new version to transmit local changes to the server.
 The changes are represented as a sequence of operations with the state resulting from the final operation corresponding to the version.
-In order to keep the gap-free monotonic numbering, the server will only accept a proposed version from a replica if its number is one greater that the latest version on the server.
+In order to keep the versions in a single sequence, the server will only accept a proposed version from a replica if its parent version matches the latest version on the server.
 
-In the non-conflict case (such as with a single replica), then, a replica's synchronization process involves gathering up the operations it has accumulated since its last synchronization; bundling those operations into version N+1; and sending that version to the server.
+In the non-conflict case (such as with a single replica), then, a replica's synchronization process involves gathering up the operations it has accumulated since its last synchronization; bundling those operations into a version; and sending that version to the server.
+
+### Replica Invariant
+
+The replica's [storage](./storage.md) contains the current state in `tasks`, the as-yet un-synchronized operations in `operations`, and the last version at which synchronization occurred in `base_version`.
+
+The replica's un-synchronized operations are already reflected in its local `tasks`, so the following invariant holds:
+
+> Applying `operations` to the set of tasks at `base_version` gives a set of tasks identical
+> to `tasks`.
 
 ### Transformation
 
 When the latest version on the server contains operations that are not present in the replica, then the states have diverged.
-For example (with lower-case letters designating operations):
+For example:
 
 ```text
   o  -- version N
@@ -66,6 +74,8 @@ For example (with lower-case letters designating operations):
  z|
   o -- version N+1
 ```
+
+(diagram notation: `o` designates a state, lower-case letters designate operations, and versions are presented as if they were numbered sequentially)
 
 In this situation, the replica must "rebase" the local operations onto the latest version from the server and try again.
 This process is performed using operational transformation (OT).
@@ -96,25 +106,23 @@ Careful selection of the operations and the transformation function ensure this.
 
 See the comments in the source code for the details of how this transformation process is implemented.
 
-## Replica Implementation
+## Synchronization Process
 
-The replica's [storage](./storage.md) contains the current state in `tasks`, the as-yet un-synchronized operations in `operations`, and the last version at which synchronization occurred in `base_version`.
-
-To perform a synchronization, the replica first requests any versions greater than `base_version` from the server, and rebases any local operations on top of those new versions, updating `base_version`.
+To perform a synchronization, the replica first requests the child version of `base_version` from the server (`get_child_version`).
+It applies that version to its local `tasks`, rebases its local `operations` as described above, and updates `base_version`.
+The replica repeats this process until the server indicates no additional child versions exist.
 If there are no un-synchronized local operations, the process is complete.
-Otherwise, the replica creates a new version containing those local operations and uploads that to the server.
-In most cases, this will succeed, but if another replica has created a new version in the interim, then the new version will conflict with that other replica's new version.
+
+Otherwise, the replica creates a new version containing its local operations, giving its `base_version` as the parent version, and transmits that to the server (`add_version`).
+In most cases, this will succeed, but if another replica has created a new version in the interim, then the new version will conflict with that other replica's new version and the server will respond with the new expected parent version.
 In this case, the process repeats.
+If the server indicates a conflict twice with the same expected base version, that is an indication that the replica has diverged (something serious has gone wrong).
 
-The replica's un-synchronized operations are already reflected in `tasks`, so the following invariant holds:
+## Servers
 
-> Applying `operations` to the set of tasks at `base_version` gives a set of tasks identical
-> to `tasks`.
+A replica depends on periodic synchronization for performant operation.
+Without synchronization, its list of pending operations would grow indefinitely, and tasks could never be expired.
+So all replicas, even "singleton" replicas which do not replicate task data with any other replica, must synchronize periodically.
 
-## Server Implementation
-
-The server implementation is simple.
-It supports fetching versions keyed by number, and adding a new version.
-In adding a new version, the version number must be one greater than the greatest existing version.
-
-Critically, the server operates on nothing more than numbered, opaque blobs of data.
+TaskChampion provides a `LocalServer` for this purpose.
+It implements the `get_child_version` and `add_version` operations as described, storing data on-disk locally, all within the `task` binary.

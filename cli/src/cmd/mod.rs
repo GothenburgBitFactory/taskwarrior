@@ -1,7 +1,5 @@
 use clap::{App, ArgMatches};
 use failure::{Error, Fallible};
-use std::path::Path;
-use taskchampion::{taskstorage, Replica};
 
 #[macro_use]
 mod macros;
@@ -12,6 +10,7 @@ mod gc;
 mod info;
 mod list;
 mod pending;
+mod sync;
 
 /// Get a list of all subcommands in this crate
 pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
@@ -21,6 +20,7 @@ pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
         list::cmd(),
         pending::cmd(),
         info::cmd(),
+        sync::cmd(),
     ]
 }
 
@@ -54,24 +54,4 @@ pub(crate) trait SubCommandInvocation: std::fmt::Debug {
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
-/// A command invocation contains all of the necessary regarding a single invocation of the CLI.
-#[derive(Debug)]
-pub struct CommandInvocation {
-    pub(crate) subcommand: Box<dyn SubCommandInvocation>,
-}
-
-impl CommandInvocation {
-    pub(crate) fn new(subcommand: Box<dyn SubCommandInvocation>) -> Self {
-        Self { subcommand }
-    }
-
-    pub fn run(self) -> Fallible<()> {
-        self.subcommand.run(&self)
-    }
-
-    fn get_replica(&self) -> Replica {
-        Replica::new(Box::new(
-            taskstorage::KVStorage::new(Path::new("/tmp/tasks")).unwrap(),
-        ))
-    }
-}
+pub use shared::CommandInvocation;

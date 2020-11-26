@@ -145,8 +145,8 @@ impl Replica {
     }
 
     /// Synchronize this replica against the given server.
-    pub fn sync(&mut self, username: &str, server: &mut dyn Server) -> Fallible<()> {
-        self.taskdb.sync(username, server)
+    pub fn sync(&mut self, server: &mut dyn Server) -> Fallible<()> {
+        self.taskdb.sync(server)
     }
 
     /// Perform "garbage collection" on this replica.  In particular, this renumbers the working

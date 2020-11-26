@@ -12,6 +12,7 @@ chrono = { version = "0.4.10", features = ["serde"] }
 failure = {version = "0.1.5", features = ["derive"] }
 kv = {version = "0.10.0", features = ["msgpack-value"]}
 lmdb-rkv = {version = "0.12.3"}
+ring = { version = "0.16.17", features = ["std"] }
 
 [dev-dependencies]
 proptest = "0.9.4"
