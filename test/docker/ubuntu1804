@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 RUN apt-get update
 RUN apt-get install -y build-essential cmake git uuid-dev libgnutls28-dev libfaketime
-RUN apt-get install -y python
+RUN apt-get install -y python3
 
 # Setup language environment
 ENV LC_ALL en_US.UTF-8
