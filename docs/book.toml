@@ -4,3 +4,6 @@ language = "en"
 multilingual = false
 src = "src"
 title = "TaskChampion"
+
+[output.html]
+default-theme = "ayu"
