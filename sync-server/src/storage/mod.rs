@@ -4,12 +4,12 @@ use taskchampion::Uuid;
 mod inmemory;
 pub(crate) use inmemory::InMemoryStorage;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub(crate) struct Client {
     pub(crate) latest_version_id: Uuid,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub(crate) struct Version {
     pub(crate) version_id: Uuid,
     pub(crate) parent_version_id: Uuid,

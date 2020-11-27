@@ -2,12 +2,9 @@ use crate::api::{
     failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER,
     VERSION_ID_HEADER,
 };
-use crate::server::{AddVersionResult, ClientId, HistorySegment, VersionId, NO_VERSION_ID};
-use crate::storage::{Client, StorageTxn};
+use crate::server::{add_version, AddVersionResult, ClientId, VersionId};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
-use failure::Fallible;
 use futures::StreamExt;
-use taskchampion::Uuid;
 
 /// Max history segment size: 100MB
 const MAX_SIZE: usize = 100 * 1024 * 1024;
@@ -69,31 +66,6 @@ pub(crate) async fn service(
             .header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string())
             .body(""),
     })
-}
-
-fn add_version<'a>(
-    mut txn: Box<dyn StorageTxn + 'a>,
-    client_id: ClientId,
-    client: Client,
-    parent_version_id: VersionId,
-    history_segment: HistorySegment,
-) -> Fallible<AddVersionResult> {
-    // check if this version is acceptable, under the protection of the transaction
-    if client.latest_version_id != NO_VERSION_ID && parent_version_id != client.latest_version_id {
-        return Ok(AddVersionResult::ExpectedParentVersion(
-            client.latest_version_id,
-        ));
-    }
-
-    // invent a version ID
-    let version_id = Uuid::new_v4();
-
-    // update the DB
-    txn.add_version(client_id, version_id, parent_version_id, history_segment)?;
-    txn.set_client_latest_version_id(client_id, version_id)?;
-    txn.commit()?;
-
-    Ok(AddVersionResult::Ok(version_id))
 }
 
 #[cfg(test)]

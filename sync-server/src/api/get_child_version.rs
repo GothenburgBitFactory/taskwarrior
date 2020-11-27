@@ -2,10 +2,8 @@ use crate::api::{
     failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER,
     VERSION_ID_HEADER,
 };
-use crate::server::{ClientId, GetVersionResult, VersionId};
-use crate::storage::StorageTxn;
+use crate::server::{get_child_version, ClientId, VersionId};
 use actix_web::{error, get, web, HttpResponse, Result};
-use failure::Fallible;
 
 /// Get a child version.
 ///
@@ -39,20 +37,6 @@ pub(crate) async fn service(
     } else {
         Err(error::ErrorNotFound("no such version"))
     }
-}
-
-fn get_child_version<'a>(
-    mut txn: Box<dyn StorageTxn + 'a>,
-    client_id: ClientId,
-    parent_version_id: VersionId,
-) -> Fallible<Option<GetVersionResult>> {
-    Ok(txn
-        .get_version_by_parent(client_id, parent_version_id)?
-        .map(|version| GetVersionResult {
-            version_id: version.version_id,
-            parent_version_id: version.parent_version_id,
-            history_segment: version.history_segment,
-        }))
 }
 
 #[cfg(test)]
