@@ -82,7 +82,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
     }
 
     fn base_version(&mut self) -> Fallible<VersionId> {
-        Ok(self.data_ref().base_version.clone())
+        Ok(self.data_ref().base_version)
     }
 
     fn set_base_version(&mut self, version: VersionId) -> Fallible<()> {
@@ -140,7 +140,7 @@ impl InMemoryStorage {
         InMemoryStorage {
             data: Data {
                 tasks: HashMap::new(),
-                base_version: DEFAULT_BASE_VERSION.into(),
+                base_version: DEFAULT_BASE_VERSION,
                 operations: vec![],
                 working_set: vec![None],
             },

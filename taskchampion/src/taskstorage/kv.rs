@@ -171,7 +171,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         let bucket = self.uuids_bucket();
         let base_version = match self.kvtxn().get(bucket, BASE_VERSION.into()) {
             Ok(buf) => buf,
-            Err(Error::NotFound) => return Ok(DEFAULT_BASE_VERSION.into()),
+            Err(Error::NotFound) => return Ok(DEFAULT_BASE_VERSION),
             Err(e) => return Err(e.into()),
         }
         .inner()?

@@ -138,7 +138,7 @@ impl<'t> Server for LocalServer<'t> {
             Ok(GetVersionResult::Version {
                 version_id: version.version_id,
                 parent_version_id: version.parent_version_id,
-                history_segment: version.history_segment.clone(),
+                history_segment: version.history_segment,
             })
         } else {
             Ok(GetVersionResult::NoSuchVersion)
