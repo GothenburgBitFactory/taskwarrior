@@ -1,8 +1,11 @@
 use crate::api::{
-    ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
+    failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER,
+    VERSION_ID_HEADER,
 };
-use crate::server::{ClientId, VersionId};
-use actix_web::{error, get, http::StatusCode, web, HttpResponse, Result};
+use crate::server::{ClientId, GetVersionResult, VersionId};
+use crate::storage::StorageTxn;
+use actix_web::{error, get, web, HttpResponse, Result};
+use failure::Fallible;
 
 /// Get a child version.
 ///
@@ -14,12 +17,16 @@ use actix_web::{error, get, http::StatusCode, web, HttpResponse, Result};
 /// Returns other 4xx or 5xx responses on other errors.
 #[get("/client/{client_id}/get-child-version/{parent_version_id}")]
 pub(crate) async fn service(
-    data: web::Data<ServerState>,
+    server_state: web::Data<ServerState>,
     web::Path((client_id, parent_version_id)): web::Path<(ClientId, VersionId)>,
 ) -> Result<HttpResponse> {
-    let result = data
-        .get_child_version(client_id, parent_version_id)
-        .map_err(|e| error::InternalError::new(e, StatusCode::INTERNAL_SERVER_ERROR))?;
+    let mut txn = server_state.txn().map_err(failure_to_ise)?;
+
+    txn.get_client(client_id)
+        .map_err(failure_to_ise)?
+        .ok_or_else(|| error::ErrorNotFound("no such client"))?;
+
+    let result = get_child_version(txn, client_id, parent_version_id).map_err(failure_to_ise)?;
     if let Some(result) = result {
         Ok(HttpResponse::Ok()
             .content_type(HISTORY_SEGMENT_CONTENT_TYPE)
@@ -34,14 +41,26 @@ pub(crate) async fn service(
     }
 }
 
+fn get_child_version<'a>(
+    mut txn: Box<dyn StorageTxn + 'a>,
+    client_id: ClientId,
+    parent_version_id: VersionId,
+) -> Fallible<Option<GetVersionResult>> {
+    Ok(txn
+        .get_version_by_parent(client_id, parent_version_id)?
+        .map(|version| GetVersionResult {
+            version_id: version.version_id,
+            parent_version_id: version.parent_version_id,
+            history_segment: version.history_segment,
+        }))
+}
+
 #[cfg(test)]
 mod test {
-    use super::*;
     use crate::api::ServerState;
     use crate::app_scope;
-    use crate::server::{GetVersionResult, SyncServer};
-    use crate::test::TestServer;
-    use actix_web::{test, App};
+    use crate::storage::{InMemoryStorage, Storage};
+    use actix_web::{http::StatusCode, test, App};
     use taskchampion::Uuid;
 
     #[actix_rt::test]
@@ -49,16 +68,17 @@ mod test {
         let client_id = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
-            expected_client_id: client_id,
-            gcv_expected_parent_version_id: parent_version_id,
-            gcv_result: Some(GetVersionResult {
-                version_id: version_id,
-                parent_version_id: parent_version_id,
-                history_segment: b"abcd".to_vec(),
-            }),
-            ..Default::default()
-        });
+        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+
+        // set up the storage contents..
+        {
+            let mut txn = server_box.txn().unwrap();
+            txn.set_client_latest_version_id(client_id, Uuid::new_v4())
+                .unwrap();
+            txn.add_version(client_id, version_id, parent_version_id, b"abcd".to_vec())
+                .unwrap();
+        }
+
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
@@ -88,15 +108,36 @@ mod test {
     }
 
     #[actix_rt::test]
-    async fn test_not_found() {
+    async fn test_client_not_found() {
         let client_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn SyncServer> = Box::new(TestServer {
-            expected_client_id: client_id,
-            gcv_expected_parent_version_id: parent_version_id,
-            gcv_result: None,
-            ..Default::default()
-        });
+        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let server_state = ServerState::new(server_box);
+        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+
+        let uri = format!(
+            "/client/{}/get-child-version/{}",
+            client_id, parent_version_id
+        );
+        let req = test::TestRequest::get().uri(&uri).to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+        assert_eq!(resp.headers().get("X-Version-Id"), None);
+        assert_eq!(resp.headers().get("X-Parent-Version-Id"), None);
+    }
+
+    #[actix_rt::test]
+    async fn test_version_not_found() {
+        let client_id = Uuid::new_v4();
+        let parent_version_id = Uuid::new_v4();
+        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+
+        // create the client, but not the version
+        {
+            let mut txn = server_box.txn().unwrap();
+            txn.set_client_latest_version_id(client_id, Uuid::new_v4())
+                .unwrap();
+        }
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 

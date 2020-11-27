@@ -1,5 +1,5 @@
-use crate::server::SyncServer;
-use actix_web::{web, Scope};
+use crate::storage::Storage;
+use actix_web::{error, http::StatusCode, web, Scope};
 use std::sync::Arc;
 
 mod add_version;
@@ -15,11 +15,16 @@ pub(crate) const VERSION_ID_HEADER: &str = "X-Version-Id";
 /// The header names for parent version ID
 pub(crate) const PARENT_VERSION_ID_HEADER: &str = "X-Parent-Version-Id";
 
-/// The type containing a reference to the SyncServer object in the Actix state.
-pub(crate) type ServerState = Arc<Box<dyn SyncServer>>;
+/// The type containing a reference to the Storage object in the Actix state.
+pub(crate) type ServerState = Arc<Box<dyn Storage>>;
 
 pub(crate) fn api_scope() -> Scope {
     web::scope("")
         .service(get_child_version::service)
         .service(add_version::service)
+}
+
+/// Convert a failure::Error to an Actix ISE
+fn failure_to_ise(err: failure::Error) -> impl actix_web::ResponseError {
+    error::InternalError::new(err, StatusCode::INTERNAL_SERVER_ERROR)
 }
