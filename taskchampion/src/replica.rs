@@ -119,13 +119,8 @@ impl Replica {
     }
 
     /// Create a new task.  The task must not already exist.
-    pub fn new_task(&mut self, uuid: Uuid, status: Status, description: String) -> Fallible<Task> {
-        // check that it doesn't exist; this is a convenience check, as the task
-        // may already exist when this Create operation is finally sync'd with
-        // operations from other replicas
-        if self.taskdb.get_task(&uuid)?.is_some() {
-            return Err(Error::DBError(format!("Task {} already exists", uuid)).into());
-        }
+    pub fn new_task(&mut self, status: Status, description: String) -> Fallible<Task> {
+        let uuid = Uuid::new_v4();
         self.taskdb.apply(Operation::Create { uuid })?;
         let mut task = Task::new(uuid, TaskMap::new()).into_mut(self);
         task.set_description(description)?;
@@ -135,13 +130,13 @@ impl Replica {
 
     /// Delete a task.  The task must exist.  Note that this is different from setting status to
     /// Deleted; this is the final purge of the task.
-    pub fn delete_task(&mut self, uuid: Uuid) -> Fallible<()> {
+    pub fn delete_task(&mut self, uuid: &Uuid) -> Fallible<()> {
         // check that it already exists; this is a convenience check, as the task may already exist
         // when this Create operation is finally sync'd with operations from other replicas
         if self.taskdb.get_task(&uuid)?.is_none() {
             return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
         }
-        self.taskdb.apply(Operation::Delete { uuid })
+        self.taskdb.apply(Operation::Delete { uuid: *uuid })
     }
 
     /// Synchronize this replica against the given server.
@@ -168,11 +163,8 @@ mod tests {
     #[test]
     fn new_task() {
         let mut rep = Replica::new_inmemory();
-        let uuid = Uuid::new_v4();
 
-        let t = rep
-            .new_task(uuid, Status::Pending, "a task".into())
-            .unwrap();
+        let t = rep.new_task(Status::Pending, "a task".into()).unwrap();
         assert_eq!(t.get_description(), String::from("a task"));
         assert_eq!(t.get_status(), Status::Pending);
         assert!(t.get_modified().is_some());
@@ -181,11 +173,8 @@ mod tests {
     #[test]
     fn modify_task() {
         let mut rep = Replica::new_inmemory();
-        let uuid = Uuid::new_v4();
 
-        let t = rep
-            .new_task(uuid, Status::Pending, "a task".into())
-            .unwrap();
+        let t = rep.new_task(Status::Pending, "a task".into()).unwrap();
 
         let mut t = t.into_mut(&mut rep);
         t.set_description(String::from("past tense")).unwrap();
@@ -200,7 +189,7 @@ mod tests {
         assert_eq!(t.get_status(), Status::Completed);
 
         // check tha values have changed in storage, too
-        let t = rep.get_task(&uuid).unwrap().unwrap();
+        let t = rep.get_task(&t.get_uuid()).unwrap().unwrap();
         assert_eq!(t.get_description(), "past tense");
         assert_eq!(t.get_status(), Status::Completed);
     }
@@ -208,10 +197,9 @@ mod tests {
     #[test]
     fn delete_task() {
         let mut rep = Replica::new_inmemory();
-        let uuid = Uuid::new_v4();
 
-        rep.new_task(uuid, Status::Pending, "a task".into())
-            .unwrap();
+        let t = rep.new_task(Status::Pending, "a task".into()).unwrap();
+        let uuid = t.get_uuid();
 
         rep.delete_task(uuid).unwrap();
         assert_eq!(rep.get_task(&uuid).unwrap(), None);
@@ -220,10 +208,11 @@ mod tests {
     #[test]
     fn get_and_modify() {
         let mut rep = Replica::new_inmemory();
-        let uuid = Uuid::new_v4();
 
-        rep.new_task(uuid, Status::Pending, "another task".into())
+        let t = rep
+            .new_task(Status::Pending, "another task".into())
             .unwrap();
+        let uuid = t.get_uuid();
 
         let t = rep.get_task(&uuid).unwrap().unwrap();
         assert_eq!(t.get_description(), String::from("another task"));
@@ -244,10 +233,11 @@ mod tests {
     #[test]
     fn new_pending_adds_to_working_set() {
         let mut rep = Replica::new_inmemory();
-        let uuid = Uuid::new_v4();
 
-        rep.new_task(uuid, Status::Pending, "to-be-pending".into())
+        let t = rep
+            .new_task(Status::Pending, "to-be-pending".into())
             .unwrap();
+        let uuid = t.get_uuid();
 
         let t = rep.get_working_set_task(1).unwrap().unwrap();
         assert_eq!(t.get_status(), Status::Pending);
@@ -256,7 +246,7 @@ mod tests {
         let ws = rep.working_set().unwrap();
         assert_eq!(ws.len(), 2);
         assert!(ws[0].is_none());
-        assert_eq!(ws[1].as_ref().unwrap().get_uuid(), &uuid);
+        assert_eq!(ws[1].as_ref().unwrap().get_uuid(), uuid);
 
         assert_eq!(rep.get_working_set_index(t.get_uuid()).unwrap().unwrap(), 1);
     }

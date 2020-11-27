@@ -1,6 +1,6 @@
 use clap::{App, Arg, ArgMatches, SubCommand as ClapSubCommand};
 use failure::{format_err, Fallible};
-use taskchampion::{Status, Uuid};
+use taskchampion::Status;
 
 use crate::cmd::{ArgMatchResult, CommandInvocation};
 
@@ -37,11 +37,11 @@ define_subcommand! {
 
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
-        let uuid = Uuid::new_v4();
-        command
+        let t = command
             .get_replica()
-            .new_task(uuid, Status::Pending, self.description.clone())
+            .new_task(Status::Pending, self.description.clone())
             .unwrap();
+        println!("added task {}", t.get_uuid());
         Ok(())
     }
 }
