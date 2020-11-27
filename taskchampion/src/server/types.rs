@@ -11,7 +11,7 @@ pub const NO_VERSION_ID: VersionId = Uuid::nil();
 /// data is pre-encoded, and from the protocol level appears as a sequence of bytes.
 pub type HistorySegment = Vec<u8>;
 
-/// VersionAdd is the response type from [`crate:server::Server::add_version`].
+/// VersionAdd is the response type from [`crate::server::Server::add_version`].
 #[derive(Debug, PartialEq)]
 pub enum AddVersionResult {
     /// OK, version added with the given ID

@@ -6,7 +6,7 @@ mod cmd;
 mod table;
 
 use cmd::ArgMatchResult;
-pub use cmd::CommandInvocation;
+pub(crate) use cmd::CommandInvocation;
 
 /// Parse the given command line and return an as-yet un-executed CommandInvocation.
 pub fn parse_command_line<I, T>(iter: I) -> Fallible<CommandInvocation>
