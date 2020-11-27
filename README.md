@@ -24,5 +24,5 @@ There are three crates here:
 
 ## See Also
 
- * [Documentation](docs/src/SUMMARY.md) (will be published as an mdbook eventually)
+ * [Documentation](https://djmitche.github.io/taskchampion/) (NOTE: temporary url)
  * [Progress on the first version](https://github.com/djmitche/taskwarrior-rust/projects/1)
