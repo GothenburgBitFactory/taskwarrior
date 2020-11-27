@@ -135,6 +135,7 @@ int CmdPurge::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
+  bool matched_deleted = false;
 
   Filter filter;
   std::vector <Task> filtered;
@@ -156,6 +157,9 @@ int CmdPurge::execute (std::string&)
     // mark tasks as deleted before purging.
     if (task.getStatus () == Task::deleted)
     {
+      // Mark that at least one deleted task matched the filter
+      matched_deleted = true;
+
       std::string question;
       question = format ("Permanently remove task {1} '{2}'?",
                          task.identifier (true),
@@ -165,6 +169,9 @@ int CmdPurge::execute (std::string&)
         purgeTask (task, count);
     }
   }
+
+  if (filtered.size () > 0 and ! matched_deleted)
+    Context::getContext ().footnote ("No deleted tasks specified. Maybe you forgot to delete tasks first?");
 
   feedback_affected (count == 1 ? "Purged {1} task." : "Purged {1} tasks.", count);
   return rc;
