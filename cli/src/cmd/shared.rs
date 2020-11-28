@@ -1,6 +1,7 @@
 use clap::Arg;
 use failure::{format_err, Fallible};
-use std::path::Path;
+use std::env;
+use std::ffi::OsString;
 use taskchampion::{server, taskstorage, Replica, Task, Uuid};
 
 pub(super) fn task_arg<'a>() -> Arg<'a, 'a> {
@@ -46,14 +47,18 @@ impl CommandInvocation {
     // -- utilities for command invocations
 
     pub(super) fn get_replica(&self) -> Replica {
-        Replica::new(Box::new(
-            taskstorage::KVStorage::new(Path::new("/tmp/tasks")).unwrap(),
-        ))
+        // temporarily use $TASK_DB to locate the taskdb
+        let taskdb_dir = env::var_os("TASK_DB").unwrap_or_else(|| OsString::from("/tmp/tasks"));
+        Replica::new(Box::new(taskstorage::KVStorage::new(taskdb_dir).unwrap()))
     }
 
     pub(super) fn get_server(&self) -> Fallible<impl server::Server> {
+        // temporarily use $SYNC_SERVER_ORIGIN for the sync server
+        let sync_server_origin = env::var_os("SYNC_SERVER_ORIGIN")
+            .map(|osstr| osstr.into_string().unwrap())
+            .unwrap_or_else(|| String::from("http://localhost:8080"));
         Ok(server::RemoteServer::new(
-            "http://localhost:8080".into(),
+            sync_server_origin,
             Uuid::parse_str("d5b55cbd-9a82-4860-9a39-41b67893b22f").unwrap(),
         ))
     }
