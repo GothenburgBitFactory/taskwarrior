@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -51,8 +51,8 @@ from basetest import Taskd, ServerTestCase
 #     self.assertIsInstance(a, b)
 #     self.assertNotIsInstance(a, b)
 #     self.assertRaises(e)
-#     self.assertRegexpMatches(t, r)
-#     self.assertNotRegexpMatches(t, r)
+#     self.assertRegex(t, r)
+#     self.assertNotRegex(t, r)
 #     self.tap("")
 
 class TestBugNumber(TestCase):
@@ -74,7 +74,7 @@ class TestBugNumber(TestCase):
         code, out, err = self.t("version")
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
-        self.assertRegexpMatches(out.decode("utf8"), expected)
+        self.assertRegex(out.decode("utf8"), expected)
 
         # TAP diagnostics on the bas
         self.tap("Yay TAP diagnostics")

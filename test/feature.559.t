@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ class TestFeature559(TestCase):
         code, out, err = self.t.runError("rc.data.location=locationdoesnotexist list")
         self.assertNotIn("footask", out)
         self.assertNotIn("Error", out)
-        self.assertRegexpMatches(err, re.compile("Error:.+does not exist", re.DOTALL))
+        self.assertRegex(err, re.compile("Error:.+does not exist", re.DOTALL))
 
 
 if __name__ == "__main__":

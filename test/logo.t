@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ class TestLogoCommand(TestCase):
     def test_logo_command(self):
         """Check that there are colors. For coverage"""
         code, out, err = self.t("logo rc._forcecolor:on")
-        self.assertRegexpMatches(out, ".\[48;5;\d+m  .\[0m")
+        self.assertRegex(out, ".\[48;5;\d+m  .\[0m")
 
     def test_logo_command_no_color(self):
         """Check that it only works with color. For coverage"""

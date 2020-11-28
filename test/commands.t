@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -42,16 +42,16 @@ class TestCommands(TestCase):
     def test_command_dna(self):
         """Verify 'add', 'modify', 'list' dna"""
         code, out, err = self.t("commands")
-        self.assertRegexpMatches(out, "add\s+operation\s+RW\s+Mods\s+Adds a new task")
-        self.assertRegexpMatches(out, "list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of")
-        self.assertRegexpMatches(out, "modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
+        self.assertRegex(out, "add\s+operation\s+RW\s+Mods\s+Adds a new task")
+        self.assertRegex(out, "list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of")
+        self.assertRegex(out, "modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
 
     def test_command_dna_color(self):
         """Verify 'add', 'modify', 'list' dna"""
         code, out, err = self.t("commands rc._forcecolor:on")
-        self.assertRegexpMatches(out, "add\s+operation\s+RW\s+Mods\s+Adds a new task")
-        self.assertRegexpMatches(out, "list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of")
-        self.assertRegexpMatches(out, "modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
+        self.assertRegex(out, "add\s+operation\s+RW\s+Mods\s+Adds a new task")
+        self.assertRegex(out, "list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of")
+        self.assertRegex(out, "modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,7 @@ class TestSpecialTags(TestCase):
     def test_nocolor(self):
         self.t("add should have no red +nocolor priority:H")
         code, out, err = self.t("ls")
-        self.assertRegexpMatches(out, r"\s1\s+nocolor\s+should have no red")
+        self.assertRegex(out, r"\s1\s+nocolor\s+should have no red")
 
     def test_nonag(self):
         self.t("add should be red +nonag")

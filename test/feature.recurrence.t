@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -62,8 +62,8 @@ class TestRecurrenceProblems(TestCase):
         self.t("add foo due:today recur:yearly until:eom")
         code, out, err = self.t("info 1")
 
-        self.assertNotRegexpMatches(out, "Until\s+\d{10}")
-        self.assertRegexpMatches(out, "Until\s+\d+\/\d+\/\d{4}")
+        self.assertNotRegex(out, "Until\s+\d{10}")
+        self.assertRegex(out, "Until\s+\d+\/\d+\/\d{4}")
 
 
 if __name__ == "__main__":

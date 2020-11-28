@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -47,8 +47,8 @@ from basetest import Task, TestCase
 #     self.assertIsInstance(a, b)
 #     self.assertNotIsInstance(a, b)
 #     self.assertRaises(e)
-#     self.assertRegexpMatches(t, r)
-#     self.assertNotRegexpMatches(t, r)
+#     self.assertRegex(t, r)
+#     self.assertNotRegex(t, r)
 #     self.tap("")
 
 class TestBug1837(TestCase):

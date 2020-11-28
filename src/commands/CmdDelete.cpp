@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -137,9 +137,10 @@ int CmdDelete::execute (std::string&)
         else
         {
           std::vector <Task> children = Context::getContext ().tdb2.children (task);
-          if (children.size () &&
-              (Context::getContext ().config.getBoolean ("recurrence.confirmation") ||
-               confirm (STRING_CMD_DELETE_CONFIRM_R)))
+          if (children.size() &&
+                  ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
+                    && confirm (STRING_CMD_DELETE_CONFIRM_R)) ||
+                   Context::getContext ().config.getBoolean ("recurrence.confirmation")))
           {
             for (auto& child : children)
             {

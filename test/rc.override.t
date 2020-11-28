@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -46,10 +46,10 @@ class TestOverride(TestCase):
     def test_override(self):
         """Verify override is displayed in 'show' command"""
         code, out, err = self.t("show regex")
-        self.assertRegexpMatches(out, r"regex +0")
+        self.assertRegex(out, r"regex +0")
 
         code, out, err = self.t("rc.regex:1 show regex")
-        self.assertRegexpMatches(out, r"regex +1")
+        self.assertRegex(out, r"regex +1")
 
 
 class TestRCSegfault(TestCase):

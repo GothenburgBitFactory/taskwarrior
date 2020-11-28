@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2019, Göteborg Bit Factory.
+// Copyright 2013 - 2020, Göteborg Bit Factory.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -421,6 +421,7 @@ int main (int, char**)
 
     // UUID
     { "ffffffff-ffff-ffff-ffff-ffffffffffff",         { { "ffffffff-ffff-ffff-ffff-ffffffffffff",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "0000000d-0000-0000-0000-000000000000",         { { "0000000d-0000-0000-0000-000000000000",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000-0000-0000000",              { { "00000000-0000-0000-0000-0000000",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000-0000",                      { { "00000000-0000-0000-0000",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000",                           { { "00000000-0000-0000",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -71,9 +71,9 @@ class TestUtf8(TestCase):
         code, out, err = self.t("ls")
 
         expected = re.compile("\S\s{4}abc", re.MULTILINE)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
         expected = re.compile("\S\s{5}def", re.MULTILINE)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
 
 if __name__ == "__main__":

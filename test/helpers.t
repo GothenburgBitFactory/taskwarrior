@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -120,13 +120,13 @@ class TestBug956(TestCase):
     def test_uuids_header(self):
         """956: Verify 'uuids' does not print a header"""
         code, out, err = self.t("rc.verbose:nothing uuids")
-        self.assertRegexpMatches(out, "[0-9a-f-]*\n")
+        self.assertRegex(out, "[0-9a-f-]*\n")
         self.assertNotIn("TASKRC", out)
 
     def test_uuids_helper_header(self):
         """956: Verify '_uuids' does not print a header"""
         code, out, err = self.t("rc.verbose:nothing _uuids")
-        self.assertRegexpMatches(out, "[0-9a-f-]*\n")
+        self.assertRegex(out, "[0-9a-f-]*\n")
         self.assertNotIn("TASKRC", out)
 
 

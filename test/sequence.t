@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ class TestSequences(TestCase):
         """Test sequences in start/stop"""
         self.t("1,2 start")
         code, out, err = self.t("_get 1.start 2.start")
-        self.assertRegexpMatches(out, "\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\n")
+        self.assertRegex(out, "\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\n")
 
         self.t("1,2 stop")
         code, out, err = self.t("_get 1.start 2.start")

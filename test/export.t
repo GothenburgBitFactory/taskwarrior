@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -77,7 +77,7 @@ class TestExportCommand(TestCase):
         if expected_value is not None:
             if regexp:
                 # Match to pattern if checking with regexp
-                self.assertRegexpMatches(value, expected_value)
+                self.assertRegex(value, expected_value)
             else:
                 # Equality match if checking with string
                 self.assertEqual(value, expected_value)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -78,15 +78,15 @@ class TestUndoStyle(TestCase):
         """Test that 'rc.undo.style:side' generates the right output"""
         self.t.config("undo.style", "side")
         code, out, err = self.t("undo", input="n\n")
-        self.assertNotRegexpMatches(out, "-tags:\s*\n\+tags:\s+tag")
-        self.assertRegexpMatches(out, "tags\s+tag\s*")
+        self.assertNotRegex(out, "-tags:\s*\n\+tags:\s+tag")
+        self.assertRegex(out, "tags\s+tag\s*")
 
     def test_undo_diff_style(self):
         """Test that 'rc.undo.style:diff' generates the right output"""
         self.t.config("undo.style", "diff")
         code, out, err = self.t("undo", input="n\n")
-        self.assertRegexpMatches(out, "-tags:\s*\n\+tags:\s+tag")
-        self.assertNotRegexpMatches(out, "tags\s+tag\s*")
+        self.assertRegex(out, "-tags:\s*\n\+tags:\s+tag")
+        self.assertNotRegex(out, "tags\s+tag\s*")
 
 
 class TestBug634(TestCase):

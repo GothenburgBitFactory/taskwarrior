@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ class TestDateISOAndEpoch(TestCase):
         # Partial date, because _get returns local time, and that would make
         # the test sensitive to TZ.
         code, out, err = self.t("_get 1.due")
-        self.assertRegexpMatches(out, "^2015-07-0.T..:..:..$")
+        self.assertRegex(out, "^2015-07-0.T..:..:..$")
 
     def test_epoch(self):
         """Verify adding epoch dates works regardless of rc.dateformat"""
@@ -56,7 +56,7 @@ class TestDateISOAndEpoch(TestCase):
         # Partial date, because _get returns local time, and that would make
         # the test sensitive to TZ.
         code, out, err = self.t("_get 1.due")
-        self.assertRegexpMatches(out, "^2009-02-1.T..:..:..$")
+        self.assertRegex(out, "^2009-02-1.T..:..:..$")
 
 
 if __name__ == "__main__":

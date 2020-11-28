@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ class TestCustomReports(TestCase):
     def test_custom_report_help(self):
         """Verify custom report description is shown in help"""
         code, out, err = self.t("help")
-        self.assertRegexpMatches(out, "task <filter> foo\s+DESC\n")
+        self.assertRegex(out, "task <filter> foo\s+DESC\n")
 
     def test_custom_filter(self):
         """Verify custome report filtr is applied"""

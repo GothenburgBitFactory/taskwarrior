@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2019, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ class TestHooksOnLaunch(TestCase):
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("diagnostics")
-        self.assertRegexpMatches(out, r"on-launch-good-env\s+\(executable\)")
+        self.assertRegex(out, r"on-launch-good-env\s+\(executable\)")
 
     def test_onlaunch_builtin_env_debug(self):
         """Verify that 'debug.hooks' shows hook details"""
