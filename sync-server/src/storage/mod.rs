@@ -1,5 +1,5 @@
 use failure::Fallible;
-use taskchampion::Uuid;
+use uuid::Uuid;
 
 mod inmemory;
 pub(crate) use inmemory::InMemoryStorage;

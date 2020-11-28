@@ -45,7 +45,7 @@ mod test {
     use crate::app_scope;
     use crate::storage::{InMemoryStorage, Storage};
     use actix_web::{http::StatusCode, test, App};
-    use taskchampion::Uuid;
+    use uuid::Uuid;
 
     #[actix_rt::test]
     async fn test_success() {

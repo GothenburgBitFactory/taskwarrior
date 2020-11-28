@@ -2048,7 +2048,7 @@ dependencies = [
  "actix-web",
  "failure",
  "futures",
- "taskchampion",
+ "uuid",
 ]
 
 [[package]]
