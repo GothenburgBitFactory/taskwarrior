@@ -23,7 +23,7 @@ const NEXT_OPERATION: u64 = 2;
 const NEXT_WORKING_SET_INDEX: u64 = 3;
 
 impl<'t> KVStorage<'t> {
-    pub fn new(directory: &Path) -> Fallible<KVStorage> {
+    pub fn new<P: AsRef<Path>>(directory: P) -> Fallible<KVStorage<'t>> {
         let mut config = Config::default(directory);
         config.bucket("tasks", None);
         config.bucket("numbers", None);
