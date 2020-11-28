@@ -3,6 +3,7 @@ use failure::Fallible;
 use std::ffi::OsString;
 
 mod cmd;
+pub(crate) mod settings;
 mod table;
 
 use cmd::ArgMatchResult;
