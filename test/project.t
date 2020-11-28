@@ -464,7 +464,7 @@ class TestBug1617(TestCase):
         self.t("add one")
         self.t("add two project:'three four'")
 
-        code, out, err = self.t("project:'three four' list")
+        code, out, err = self.t(r"project:\'three\ four\' list")
         self.assertIn("two", out)
         self.assertNotIn("one", out)
 
