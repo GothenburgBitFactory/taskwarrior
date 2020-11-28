@@ -1,8 +1,9 @@
+use crate::config::ReplicaConfig;
 use crate::errors::Error;
 use crate::server::Server;
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDB;
-use crate::taskstorage::{Operation, TaskMap, TaskStorage};
+use crate::taskstorage::{KVStorage, Operation, TaskMap, TaskStorage};
 use chrono::Utc;
 use failure::Fallible;
 use std::collections::HashMap;
@@ -19,6 +20,11 @@ impl Replica {
         Replica {
             taskdb: TaskDB::new(storage),
         }
+    }
+
+    pub fn from_config(config: ReplicaConfig) -> Fallible<Replica> {
+        let storage = Box::new(KVStorage::new(config.taskdb_dir)?);
+        Ok(Replica::new(storage))
     }
 
     #[cfg(test)]
@@ -140,7 +146,7 @@ impl Replica {
     }
 
     /// Synchronize this replica against the given server.
-    pub fn sync(&mut self, server: &mut dyn Server) -> Fallible<()> {
+    pub fn sync(&mut self, server: &mut Box<dyn Server>) -> Fallible<()> {
         self.taskdb.sync(server)
     }
 

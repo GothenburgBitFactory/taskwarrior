@@ -2,7 +2,7 @@ use clap::Arg;
 use failure::{format_err, Fallible};
 use std::env;
 use std::ffi::OsString;
-use taskchampion::{server, taskstorage, Replica, Task, Uuid};
+use taskchampion::{server, Replica, ReplicaConfig, ServerConfig, Task, Uuid};
 
 pub(super) fn task_arg<'a>() -> Arg<'a, 'a> {
     Arg::with_name("task")
@@ -46,20 +46,29 @@ impl CommandInvocation {
 
     // -- utilities for command invocations
 
-    pub(super) fn get_replica(&self) -> Replica {
+    pub(super) fn get_replica(&self) -> Fallible<Replica> {
         // temporarily use $TASK_DB to locate the taskdb
         let taskdb_dir = env::var_os("TASK_DB").unwrap_or_else(|| OsString::from("/tmp/tasks"));
-        Replica::new(Box::new(taskstorage::KVStorage::new(taskdb_dir).unwrap()))
+        let replica_config = ReplicaConfig {
+            taskdb_dir: taskdb_dir.into(),
+        };
+        Ok(Replica::from_config(replica_config)?)
     }
 
-    pub(super) fn get_server(&self) -> Fallible<impl server::Server> {
+    pub(super) fn get_server(&self) -> Fallible<Box<dyn server::Server>> {
         // temporarily use $SYNC_SERVER_ORIGIN for the sync server
-        let sync_server_origin = env::var_os("SYNC_SERVER_ORIGIN")
+        let origin = env::var_os("SYNC_SERVER_ORIGIN")
             .map(|osstr| osstr.into_string().unwrap())
             .unwrap_or_else(|| String::from("http://localhost:8080"));
-        Ok(server::RemoteServer::new(
-            sync_server_origin,
-            Uuid::parse_str("d5b55cbd-9a82-4860-9a39-41b67893b22f").unwrap(),
-        ))
+        let client_id = env::var_os("SYNC_SERVER_CLIENT_ID")
+            .ok_or_else(|| format_err!("SYNC_SERVER_CLIENT_ID not set"))?;
+        let client_id = client_id
+            .into_string()
+            .map_err(|_| format_err!("SYNC_SERVER_CLIENT_ID is not a valid UUID"))?;
+        let client_id = Uuid::parse_str(&client_id)?;
+        Ok(server::from_config(ServerConfig::Remote {
+            origin,
+            client_id,
+        })?)
     }
 }

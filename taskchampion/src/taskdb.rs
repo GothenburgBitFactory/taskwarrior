@@ -164,7 +164,7 @@ impl TaskDB {
     }
 
     /// Sync to the given server, pulling remote changes and pushing local changes.
-    pub fn sync(&mut self, server: &mut dyn Server) -> Fallible<()> {
+    pub fn sync(&mut self, server: &mut Box<dyn Server>) -> Fallible<()> {
         let mut txn = self.storage.txn()?;
 
         // retry synchronizing until the server accepts our version (this allows for races between
@@ -542,7 +542,7 @@ mod tests {
 
     #[test]
     fn test_sync() {
-        let mut server = TestServer::new();
+        let mut server: Box<dyn Server> = Box::new(TestServer::new());
 
         let mut db1 = newdb();
         db1.sync(&mut server).unwrap();
@@ -602,7 +602,7 @@ mod tests {
 
     #[test]
     fn test_sync_create_delete() {
-        let mut server = TestServer::new();
+        let mut server: Box<dyn Server> = Box::new(TestServer::new());
 
         let mut db1 = newdb();
         db1.sync(&mut server).unwrap();
@@ -692,7 +692,7 @@ mod tests {
         // and delete operations that results in a task existing in one TaskDB but not existing in
         // another.  So, the generated sequences focus on a single task UUID.
         fn transform_sequences_of_operations(action_sequence in action_sequence_strategy()) {
-            let mut server = TestServer::new();
+        let mut server: Box<dyn Server> = Box::new(TestServer::new());
             let mut dbs = [newdb(), newdb(), newdb()];
 
             for (action, db) in action_sequence {

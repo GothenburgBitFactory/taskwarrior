@@ -23,6 +23,7 @@ for more information about the design and usage of the tool.
 
  */
 
+mod config;
 mod errors;
 mod replica;
 pub mod server;
@@ -31,6 +32,7 @@ mod taskdb;
 pub mod taskstorage;
 mod utils;
 
+pub use config::{ReplicaConfig, ServerConfig};
 pub use replica::Replica;
 pub use task::Priority;
 pub use task::Status;

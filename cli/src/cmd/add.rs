@@ -38,7 +38,7 @@ define_subcommand! {
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
         let t = command
-            .get_replica()
+            .get_replica()?
             .new_task(Status::Pending, self.description.clone())
             .unwrap();
         println!("added task {}", t.get_uuid());

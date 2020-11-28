@@ -20,7 +20,7 @@ define_subcommand! {
 
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
-        command.get_replica().gc()?;
+        command.get_replica()?.gc()?;
         println!("garbage collected.");
         Ok(())
     }
