@@ -1,5 +1,5 @@
 use super::{Client, Storage, StorageTxn, Uuid, Version};
-use failure::Fallible;
+use failure::{format_err, Fallible};
 use std::collections::HashMap;
 use std::sync::{Mutex, MutexGuard};
 
@@ -38,19 +38,26 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         Ok(self.0.clients.get(&client_id).cloned())
     }
 
+    fn new_client(&mut self, client_id: Uuid, latest_version_id: Uuid) -> Fallible<()> {
+        if let Some(_) = self.0.clients.get(&client_id) {
+            return Err(format_err!("Client {} already exists", client_id));
+        }
+        self.0
+            .clients
+            .insert(client_id, Client { latest_version_id });
+        Ok(())
+    }
+
     fn set_client_latest_version_id(
         &mut self,
         client_id: Uuid,
         latest_version_id: Uuid,
     ) -> Fallible<()> {
         if let Some(client) = self.0.clients.get_mut(&client_id) {
-            client.latest_version_id = latest_version_id;
+            Ok(client.latest_version_id = latest_version_id)
         } else {
-            self.0
-                .clients
-                .insert(client_id, Client { latest_version_id });
+            Err(format_err!("Client {} does not exist", client_id))
         }
-        Ok(())
     }
 
     fn get_version_by_parent(

@@ -149,13 +149,14 @@ mod test {
         let client_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let history_segment = b"abcd".to_vec();
-        let client = Client {
-            latest_version_id: if latest_version_id_nil {
-                Uuid::nil()
-            } else {
-                parent_version_id
-            },
+        let latest_version_id = if latest_version_id_nil {
+            Uuid::nil()
+        } else {
+            parent_version_id
         };
+
+        txn.new_client(client_id, latest_version_id)?;
+        let client = txn.get_client(client_id)?.unwrap();
 
         let result = add_version(
             txn,

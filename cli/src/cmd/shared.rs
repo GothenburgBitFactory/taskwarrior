@@ -52,8 +52,9 @@ impl CommandInvocation {
     }
 
     pub(super) fn get_server(&self) -> Fallible<impl server::Server> {
-        Ok(server::LocalServer::new(Path::new(
-            "/tmp/task-sync-server",
-        ))?)
+        Ok(server::RemoteServer::new(
+            "http://localhost:8080".into(),
+            Uuid::parse_str("d5b55cbd-9a82-4860-9a39-41b67893b22f").unwrap(),
+        ))
     }
 }
