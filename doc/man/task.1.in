@@ -75,6 +75,10 @@ UUID numbers or ID ranges):
   task 1 2-5 19                                 modify pri:H
   task 4-7 ebeeab00-ccf8-464b-8b58-f7f2d606edfb info
 
+Note that it may be necessary to properly escape special characters as well as
+quotes in order to avoid their special meanings in the shell. See also the
+section 'SPECIFYING DESCRIPTIONS' for more information.
+
 .SH MODIFICATIONS
 
 The <mods> consist of zero or more changes to apply to the selected tasks, such

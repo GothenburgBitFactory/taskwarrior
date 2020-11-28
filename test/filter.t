@@ -670,7 +670,7 @@ class TestBug1600(TestCase):
         self.assertIn("foobar1", out)
         self.assertIn("foobar2", out)
 
-        code, out, err = self.t("all description.contains:'foobar\\+'")
+        code, out, err = self.t(r"all description.contains:\'foobar\\+\'")
         self.assertIn("foobar+", out)
         self.assertNotIn("foobar1", out)
         self.assertNotIn("foobar2", out)
