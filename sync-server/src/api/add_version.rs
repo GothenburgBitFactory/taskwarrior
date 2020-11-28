@@ -2,7 +2,7 @@ use crate::api::{
     failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER,
     VERSION_ID_HEADER,
 };
-use crate::server::{add_version, AddVersionResult, ClientId, VersionId};
+use crate::server::{add_version, AddVersionResult, ClientId, VersionId, NO_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
 
@@ -51,10 +51,15 @@ pub(crate) async fn service(
     // in transit.
     let mut txn = server_state.txn().map_err(failure_to_ise)?;
 
-    let client = txn
-        .get_client(client_id)
-        .map_err(failure_to_ise)?
-        .ok_or_else(|| error::ErrorNotFound("no such client"))?;
+    // get, or create, the client
+    let client = match txn.get_client(client_id).map_err(failure_to_ise)? {
+        Some(client) => client,
+        None => {
+            txn.new_client(client_id, NO_VERSION_ID)
+                .map_err(failure_to_ise)?;
+            txn.get_client(client_id).map_err(failure_to_ise)?.unwrap()
+        }
+    };
 
     let result = add_version(txn, client_id, client, parent_version_id, body.to_vec())
         .map_err(failure_to_ise)?;
@@ -86,8 +91,7 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = server_box.txn().unwrap();
-            txn.set_client_latest_version_id(client_id, Uuid::nil())
-                .unwrap();
+            txn.new_client(client_id, Uuid::nil()).unwrap();
         }
 
         let server_state = ServerState::new(server_box);
@@ -123,8 +127,7 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = server_box.txn().unwrap();
-            txn.set_client_latest_version_id(client_id, version_id)
-                .unwrap();
+            txn.new_client(client_id, version_id).unwrap();
         }
 
         let server_state = ServerState::new(server_box);

@@ -57,8 +57,7 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = server_box.txn().unwrap();
-            txn.set_client_latest_version_id(client_id, Uuid::new_v4())
-                .unwrap();
+            txn.new_client(client_id, Uuid::new_v4()).unwrap();
             txn.add_version(client_id, version_id, parent_version_id, b"abcd".to_vec())
                 .unwrap();
         }
@@ -119,8 +118,7 @@ mod test {
         // create the client, but not the version
         {
             let mut txn = server_box.txn().unwrap();
-            txn.set_client_latest_version_id(client_id, Uuid::new_v4())
-                .unwrap();
+            txn.new_client(client_id, Uuid::new_v4()).unwrap();
         }
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
