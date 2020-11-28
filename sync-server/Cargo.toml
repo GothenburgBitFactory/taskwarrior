@@ -7,10 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-uuid = { version = "0.8.1", features = ["serde", "v4"] }
-actix-web = "3.3.0"
-failure = "0.1.8"
-futures = "0.3.8"
+uuid = { version = "^0.8.1", features = ["serde", "v4"] }
+actix-web = "^3.3.0"
+failure = "^0.1.8"
+futures = "^0.3.8"
 
 [dev-dependencies]
-actix-rt = "1.1.1"
+actix-rt = "^1.1.1"
