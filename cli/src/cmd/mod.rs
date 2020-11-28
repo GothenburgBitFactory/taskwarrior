@@ -9,6 +9,7 @@ mod add;
 mod gc;
 mod info;
 mod list;
+mod modify;
 mod pending;
 mod sync;
 
@@ -17,9 +18,10 @@ pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
     vec![
         add::cmd(),
         gc::cmd(),
-        list::cmd(),
-        pending::cmd(),
         info::cmd(),
+        list::cmd(),
+        modify::cmd(),
+        pending::cmd(),
         sync::cmd(),
     ]
 }
