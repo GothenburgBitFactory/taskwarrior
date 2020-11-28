@@ -2,7 +2,7 @@
 //! invariants, and so on.
 use crate::storage::{Client, StorageTxn};
 use failure::Fallible;
-use taskchampion::Uuid;
+use uuid::Uuid;
 
 /// The distinguished value for "no version"
 pub const NO_VERSION_ID: VersionId = Uuid::nil();
