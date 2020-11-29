@@ -2217,8 +2217,12 @@ version = "0.1.0"
 dependencies = [
  "actix-rt",
  "actix-web",
+ "clap",
  "failure",
  "futures",
+ "kv",
+ "serde",
+ "tempdir",
  "uuid",
 ]
 

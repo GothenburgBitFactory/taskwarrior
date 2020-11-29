@@ -30,5 +30,5 @@ The following configuration parameters are available:
 ## `taskchampion-sync-server`
 
 Run `taskchampion-sync-server` to start the sync server.
-It serves on port 8080 on all interfaces, using an in-memory database (meaning that all data is lost when the process exits).
-Requests for previously-unknown clients automatically create the client.
+Use `--port` to specify the port it should listen on, and `--data-dir` to specify the directory which it should store its data.
+It only serves HTTP; the expectation is that a frontend proxy will be used for HTTPS support.
