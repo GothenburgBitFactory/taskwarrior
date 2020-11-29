@@ -28,7 +28,7 @@ define_subcommand! {
 
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
-        let mut replica = command.get_replica();
+        let mut replica = command.get_replica()?;
         let task = shared::get_task(&mut replica, &self.task)?;
         task.into_mut(&mut replica).start()?;
         Ok(())
