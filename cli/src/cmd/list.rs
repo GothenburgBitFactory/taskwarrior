@@ -26,13 +26,17 @@ subcommand_invocation! {
         let mut replica = command.get_replica();
         let mut t = Table::new();
         t.set_format(table::format());
-        t.set_titles(row![b->"id", b->"description"]);
+        t.set_titles(row![b->"id", b->"act", b->"description"]);
         for (uuid, task) in replica.all_tasks().unwrap() {
             let mut id = uuid.to_string();
             if let Some(i) = replica.get_working_set_index(&uuid)? {
                 id = i.to_string();
             }
-            t.add_row(row![id, task.get_description()]);
+            let active = match task.is_active() {
+                true => "*",
+                false => "",
+            };
+            t.add_row(row![id, active, task.get_description()]);
         }
         t.printstd();
         Ok(())

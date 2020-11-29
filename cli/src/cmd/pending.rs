@@ -28,10 +28,14 @@ subcommand_invocation! {
         let working_set = command.get_replica().working_set().unwrap();
         let mut t = Table::new();
         t.set_format(table::format());
-        t.set_titles(row![b->"id", b->"description"]);
+        t.set_titles(row![b->"id", b->"act", b->"description"]);
         for (i, item) in working_set.iter().enumerate() {
             if let Some(ref task) = item {
-                t.add_row(row![i, task.get_description()]);
+                let active = match task.is_active() {
+                    true => "*",
+                    false => "",
+                };
+                t.add_row(row![i, active, task.get_description()]);
             }
         }
         t.printstd();

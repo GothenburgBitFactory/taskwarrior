@@ -6,22 +6,28 @@ mod macros;
 mod shared;
 
 mod add;
+mod debug;
 mod gc;
 mod info;
 mod list;
 mod modify;
 mod pending;
+mod start;
+mod stop;
 mod sync;
 
 /// Get a list of all subcommands in this crate
 pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
     vec![
         add::cmd(),
+        debug::cmd(),
         gc::cmd(),
         info::cmd(),
         list::cmd(),
         modify::cmd(),
         pending::cmd(),
+        start::cmd(),
+        stop::cmd(),
         sync::cmd(),
     ]
 }
