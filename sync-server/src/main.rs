@@ -1,6 +1,8 @@
-use crate::storage::{InMemoryStorage, Storage};
+use crate::storage::{KVStorage, Storage};
 use actix_web::{get, web, App, HttpServer, Responder, Scope};
 use api::{api_scope, ServerState};
+use clap::Arg;
+use failure::Fallible;
 
 mod api;
 mod server;
@@ -24,14 +26,44 @@ pub(crate) fn app_scope(server_state: ServerState) -> Scope {
 }
 
 #[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+async fn main() -> Fallible<()> {
+    let matches = clap::App::new("taskchampion-sync-server")
+        .version("0.1.0")
+        .about("Server for TaskChampion")
+        .arg(
+            Arg::with_name("port")
+                .short("p")
+                .long("port")
+                .value_name("PORT")
+                .help("Port on which to serve")
+                .default_value("8080")
+                .takes_value(true)
+                .required(true),
+        )
+        .arg(
+            Arg::with_name("data-dir")
+                .short("d")
+                .long("data-dir")
+                .value_name("DIR")
+                .help("Directory in which to store data")
+                .default_value("/var/lib/taskchampion-sync-server")
+                .takes_value(true)
+                .required(true),
+        )
+        .get_matches();
+
+    let data_dir = matches.value_of("data-dir").unwrap();
+    let port = matches.value_of("port").unwrap();
+
+    let server_box: Box<dyn Storage> = Box::new(KVStorage::new(data_dir)?);
     let server_state = ServerState::new(server_box);
 
+    println!("Serving on port {}", port);
     HttpServer::new(move || App::new().service(app_scope(server_state.clone())))
-        .bind("127.0.0.1:8080")?
+        .bind(format!("0.0.0.0:{}", port))?
         .run()
-        .await
+        .await?;
+    Ok(())
 }
 
 #[cfg(test)]

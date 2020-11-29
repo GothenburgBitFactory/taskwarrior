@@ -1,15 +1,21 @@
 use failure::Fallible;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+#[cfg(test)]
 mod inmemory;
+#[cfg(test)]
 pub(crate) use inmemory::InMemoryStorage;
 
-#[derive(Clone, PartialEq, Debug)]
+mod kv;
+pub(crate) use self::kv::KVStorage;
+
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct Client {
     pub(crate) latest_version_id: Uuid,
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct Version {
     pub(crate) version_id: Uuid,
     pub(crate) parent_version_id: Uuid,
