@@ -135,8 +135,10 @@ impl Replica {
     }
 
     /// Delete a task.  The task must exist.  Note that this is different from setting status to
-    /// Deleted; this is the final purge of the task.
-    pub fn delete_task(&mut self, uuid: &Uuid) -> Fallible<()> {
+    /// Deleted; this is the final purge of the task.  This is not a public method as deletion
+    /// should only occur through expiration.
+    #[allow(dead_code)]
+    fn delete_task(&mut self, uuid: &Uuid) -> Fallible<()> {
         // check that it already exists; this is a convenience check, as the task may already exist
         // when this Create operation is finally sync'd with operations from other replicas
         if self.taskdb.get_task(&uuid)?.is_none() {
