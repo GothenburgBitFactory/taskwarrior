@@ -18,12 +18,14 @@ pub(crate) fn read_settings() -> Fallible<Config> {
 
     // load either from the path in TASKCHAMPION_CONFIG, or from CONFIG_DIR/taskchampion
     if let Some(config_file) = env::var_os("TASKCHAMPION_CONFIG") {
+        log::debug!("Loading configuration from {:?}", config_file);
         let config_file: PathBuf = config_file.into();
         let config_file: File<FileSourceFile> = config_file.into();
         settings.merge(config_file.required(true))?;
         env::remove_var("TASKCHAMPION_CONFIG");
     } else if let Some(mut dir) = dirs::config_dir() {
         dir.push("taskchampion");
+        log::debug!("Loading configuration from {:?} (optional)", dir);
         let config_file: File<FileSourceFile> = dir.into();
         settings.merge(config_file.required(false))?;
     }

@@ -66,9 +66,9 @@ impl CommandInvocation {
 
     pub(super) fn get_replica(&self) -> Fallible<Replica> {
         let settings = self.get_settings()?;
-        let replica_config = ReplicaConfig {
-            taskdb_dir: settings.get_str("data_dir")?.into(),
-        };
+        let taskdb_dir = settings.get_str("data_dir")?.into();
+        log::debug!("Replica data_dir: {:?}", taskdb_dir);
+        let replica_config = ReplicaConfig { taskdb_dir };
         Ok(Replica::from_config(replica_config)?)
     }
 
@@ -76,8 +76,11 @@ impl CommandInvocation {
         let settings = self.get_settings()?;
         let client_id = settings.get_str("server_client_id")?;
         let client_id = Uuid::parse_str(&client_id)?;
+        let origin = settings.get_str("server_origin")?;
+        log::debug!("Using sync-server with origin {}", origin);
+        log::debug!("Sync client ID: {}", client_id);
         Ok(server::from_config(ServerConfig::Remote {
-            origin: settings.get_str("server_origin")?,
+            origin,
             client_id,
         })?)
     }

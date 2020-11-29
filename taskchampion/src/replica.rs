@@ -6,6 +6,7 @@ use crate::taskdb::TaskDB;
 use crate::taskstorage::{KVStorage, Operation, TaskMap, TaskStorage};
 use chrono::Utc;
 use failure::Fallible;
+use log::trace;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -128,6 +129,7 @@ impl Replica {
     pub fn new_task(&mut self, status: Status, description: String) -> Fallible<Task> {
         let uuid = Uuid::new_v4();
         self.taskdb.apply(Operation::Create { uuid })?;
+        trace!("task {} created", uuid);
         let mut task = Task::new(uuid, TaskMap::new()).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
@@ -144,7 +146,9 @@ impl Replica {
         if self.taskdb.get_task(&uuid)?.is_none() {
             return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
         }
-        self.taskdb.apply(Operation::Delete { uuid: *uuid })
+        self.taskdb.apply(Operation::Delete { uuid: *uuid })?;
+        trace!("task {} deleted", uuid);
+        Ok(())
     }
 
     /// Synchronize this replica against the given server.

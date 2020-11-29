@@ -49,8 +49,15 @@ pub(crate) fn add_version<'a>(
     parent_version_id: VersionId,
     history_segment: HistorySegment,
 ) -> Fallible<AddVersionResult> {
+    log::debug!(
+        "add_version(client_id: {}, parent_version_id: {})",
+        client_id,
+        parent_version_id,
+    );
+
     // check if this version is acceptable, under the protection of the transaction
     if client.latest_version_id != NO_VERSION_ID && parent_version_id != client.latest_version_id {
+        log::debug!("add_version request rejected: mismatched latest_version_id");
         return Ok(AddVersionResult::ExpectedParentVersion(
             client.latest_version_id,
         ));
@@ -58,6 +65,10 @@ pub(crate) fn add_version<'a>(
 
     // invent a version ID
     let version_id = Uuid::new_v4();
+    log::debug!(
+        "add_version request accepted: new version_id: {}",
+        version_id
+    );
 
     // update the DB
     txn.add_version(client_id, version_id, parent_version_id, history_segment)?;
