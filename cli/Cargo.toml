@@ -9,7 +9,7 @@ clap = "^2.33.0"
 taskchampion = { path = "../taskchampion" }
 failure = "^0.1.8"
 prettytable-rs = "^0.8.0"
-config = "^0.10.1"
+config = { version="^0.10.1", default-features=false, features=["yaml"] }
 dirs = "^3.0.1"
 
 [dev-dependencies]

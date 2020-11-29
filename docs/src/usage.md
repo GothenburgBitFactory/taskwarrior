@@ -11,7 +11,7 @@ Note that the `task` interface does not match that of TaskWarrior.
 
 The `task` command will work out-of-the-box with no configuration file, using default values.
 
-Configuration is read from `taskchampion.yaml` (or `taskchampion.toml` or `taskchmapion.json` if you prefer) in your config directory.
+Configuration is read from `taskchampion.yaml` in your config directory.
 On Linux systems, that directory is `~/.config`.
 On OS X, it's `~/Library/Preferences`.
 On Windows, it's `AppData/Roaming` in your home directory.
