@@ -32,3 +32,11 @@ The following configuration parameters are available:
 Run `taskchampion-sync-server` to start the sync server.
 Use `--port` to specify the port it should listen on, and `--data-dir` to specify the directory which it should store its data.
 It only serves HTTP; the expectation is that a frontend proxy will be used for HTTPS support.
+
+## Debugging
+
+Both `task` and `taskchampio-sync-server` use [env-logger](https://docs.rs/env_logger) and can be configured to log at various levels with the `RUST_LOG` environment variable.
+For example:
+```shell
+$ RUST_LOG=taskchampion=trace task add foo
+```

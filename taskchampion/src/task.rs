@@ -2,6 +2,7 @@ use crate::replica::Replica;
 use crate::taskstorage::TaskMap;
 use chrono::prelude::*;
 use failure::Fallible;
+use log::trace;
 use uuid::Uuid;
 
 pub type Timestamp = DateTime<Utc>;
@@ -230,6 +231,7 @@ impl<'r> TaskMut<'r> {
             let now = format!("{}", Utc::now().timestamp());
             self.replica
                 .update_task(self.task.uuid, "modified", Some(now.clone()))?;
+            trace!("task {}: set property modified={:?}", self.task.uuid, now);
             self.task.taskmap.insert(String::from("modified"), now);
             self.updated_modified = true;
         }
@@ -242,8 +244,10 @@ impl<'r> TaskMut<'r> {
             .update_task(self.task.uuid, property, value.as_ref())?;
 
         if let Some(v) = value {
+            trace!("task {}: set property {}={:?}", self.task.uuid, property, v);
             self.task.taskmap.insert(property.to_string(), v);
         } else {
+            trace!("task {}: remove property {}", self.task.uuid, property);
             self.task.taskmap.remove(property);
         }
         Ok(())

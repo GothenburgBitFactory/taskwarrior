@@ -14,6 +14,8 @@ futures = "^0.3.8"
 serde = "^1.0.104"
 kv = {version = "^0.10.0", features = ["msgpack-value"]}
 clap = "^2.33.0"
+log = "^0.4.11"
+env_logger = "^0.8.2"
 
 [dev-dependencies]
 actix-rt = "^1.1.1"

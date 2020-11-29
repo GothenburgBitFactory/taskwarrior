@@ -11,6 +11,8 @@ failure = "^0.1.8"
 prettytable-rs = "^0.8.0"
 config = { version="^0.10.1", default-features=false, features=["yaml"] }
 dirs = "^3.0.1"
+log = "^0.4.11"
+env_logger = "^0.8.2"
 
 [dev-dependencies]
 assert_cmd = "^1.0.1"

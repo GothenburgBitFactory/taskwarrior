@@ -17,6 +17,7 @@ fn bail<E: std::fmt::Display>(err: E, output: Output, code: i32) -> ! {
 }
 
 fn main() {
+    env_logger::init();
     let command = match parse_command_line(std::env::args_os()) {
         Ok(command) => command,
         Err(err) => {

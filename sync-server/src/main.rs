@@ -27,6 +27,7 @@ pub(crate) fn app_scope(server_state: ServerState) -> Scope {
 
 #[actix_web::main]
 async fn main() -> Fallible<()> {
+    env_logger::init();
     let matches = clap::App::new("taskchampion-sync-server")
         .version("0.1.0")
         .about("Server for TaskChampion")
@@ -58,7 +59,7 @@ async fn main() -> Fallible<()> {
     let server_box: Box<dyn Storage> = Box::new(KVStorage::new(data_dir)?);
     let server_state = ServerState::new(server_box);
 
-    println!("Serving on port {}", port);
+    log::warn!("Serving on port {}", port);
     HttpServer::new(move || App::new().service(app_scope(server_state.clone())))
         .bind(format!("0.0.0.0:{}", port))?
         .run()

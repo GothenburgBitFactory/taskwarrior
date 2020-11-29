@@ -13,6 +13,7 @@ failure = {version = "^0.1.5", features = ["derive"] }
 kv = {version = "^0.10.0", features = ["msgpack-value"]}
 lmdb-rkv = {version = "^0.12.3"}
 ureq = "^1.5.2"
+log = "^0.4.11"
 
 [dev-dependencies]
 proptest = "^0.9.4"
