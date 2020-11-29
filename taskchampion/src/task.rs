@@ -118,6 +118,10 @@ impl Task {
         &self.uuid
     }
 
+    pub fn get_taskmap(&self) -> &TaskMap {
+        &self.taskmap
+    }
+
     /// Prepare to mutate this task, requiring a mutable Replica
     /// in order to update the data it contains.
     pub fn into_mut(self, replica: &mut Replica) -> TaskMut {
@@ -140,6 +144,16 @@ impl Task {
             .get("description")
             .map(|s| s.as_ref())
             .unwrap_or("")
+    }
+
+    /// Determine whether this task is active -- that is, that it has been started
+    /// and not stopped.
+    pub fn is_active(&self) -> bool {
+        self.taskmap
+            .iter()
+            .filter(|(k, v)| k.starts_with("start.") && v.is_empty())
+            .next()
+            .is_some()
     }
 
     pub fn get_modified(&self) -> Option<DateTime<Utc>> {
@@ -184,6 +198,33 @@ impl<'r> TaskMut<'r> {
         self.set_timestamp("modified", Some(modified))
     }
 
+    /// Start the task by creating "start.<timestamp": "", if the task is not already
+    /// active.
+    pub fn start(&mut self) -> Fallible<()> {
+        if self.is_active() {
+            return Ok(());
+        }
+        let k = format!("start.{}", Utc::now().timestamp());
+        self.set_string(k.as_ref(), Some(String::from("")))
+    }
+
+    /// Stop the task by adding the current timestamp to all un-resolved "start.<timestamp>" keys.
+    pub fn stop(&mut self) -> Fallible<()> {
+        let keys = self
+            .taskmap
+            .iter()
+            .filter(|(k, v)| k.starts_with("start.") && v.is_empty())
+            .map(|(k, _)| k)
+            .cloned()
+            .collect::<Vec<_>>();
+        let now = Utc::now();
+        for key in keys {
+            println!("{}", key);
+            self.set_timestamp(&key, Some(now))?;
+        }
+        Ok(())
+    }
+
     // -- utility functions
 
     fn lastmod(&mut self) -> Fallible<()> {
@@ -212,11 +253,26 @@ impl<'r> TaskMut<'r> {
 
     fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> Fallible<()> {
         self.lastmod()?;
-        self.replica.update_task(
-            self.task.uuid,
-            property,
-            value.map(|v| format!("{}", v.timestamp())),
-        )
+        if let Some(value) = value {
+            let ts = format!("{}", value.timestamp());
+            self.replica
+                .update_task(self.task.uuid, property, Some(ts.clone()))?;
+            self.task.taskmap.insert(property.to_string(), ts);
+        } else {
+            self.replica
+                .update_task::<_, &str>(self.task.uuid, property, None)?;
+            self.task.taskmap.remove(property);
+        }
+        Ok(())
+    }
+
+    /// Used by tests to ensure that updates are properly written
+    #[cfg(test)]
+    fn reload(&mut self) -> Fallible<()> {
+        let uuid = self.uuid;
+        let task = self.replica.get_task(&uuid)?.unwrap();
+        self.task.taskmap = task.taskmap;
+        Ok(())
     }
 }
 
@@ -231,6 +287,132 @@ impl<'r> std::ops::Deref for TaskMut<'r> {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    fn with_mut_task<F: FnOnce(TaskMut)>(f: F) {
+        let mut replica = Replica::new_inmemory();
+        let task = replica.new_task(Status::Pending, "test".into()).unwrap();
+        let task = task.into_mut(&mut replica);
+        f(task)
+    }
+
+    #[test]
+    fn test_is_active_never_started() {
+        let task = Task::new(Uuid::new_v4(), TaskMap::new());
+        assert!(!task.is_active());
+    }
+
+    #[test]
+    fn test_is_active() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("start.1234"), String::from(""))]
+                .drain(..)
+                .collect(),
+        );
+
+        assert!(task.is_active());
+    }
+
+    #[test]
+    fn test_is_active_stopped() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("start.1234"), String::from("1235"))]
+                .drain(..)
+                .collect(),
+        );
+
+        assert!(!task.is_active());
+    }
+
+    fn count_taskmap(task: &TaskMut, f: fn(&(&String, &String)) -> bool) -> usize {
+        task.taskmap.iter().filter(f).count()
+    }
+
+    #[test]
+    fn test_start() {
+        with_mut_task(|mut task| {
+            task.start().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                1
+            );
+            task.reload().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                1
+            );
+
+            // second start doesn't change anything..
+            task.start().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                1
+            );
+            task.reload().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                1
+            );
+        });
+    }
+
+    #[test]
+    fn test_stop() {
+        with_mut_task(|mut task| {
+            task.start().unwrap();
+            task.stop().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                0
+            );
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
+                1
+            );
+            task.reload().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                0
+            );
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
+                1
+            );
+        });
+    }
+
+    #[test]
+    fn test_stop_multiple() {
+        with_mut_task(|mut task| {
+            // simulate a task that has (through the synchronization process) been started twice
+            task.task
+                .taskmap
+                .insert(String::from("start.1234"), String::from(""));
+            task.task
+                .taskmap
+                .insert(String::from("start.5678"), String::from(""));
+
+            task.stop().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                0
+            );
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
+                2
+            );
+            task.reload().unwrap();
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
+                0
+            );
+            assert_eq!(
+                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
+                2
+            );
+        });
+    }
 
     #[test]
     fn test_priority() {

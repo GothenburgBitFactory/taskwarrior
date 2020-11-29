@@ -30,6 +30,7 @@ The following keys, and key formats, are defined:
 * `status` - one of `P` for a pending task (the default), `C` for completed or `D` for deleted
 * `description` - the one-line summary of the task
 * `modified` - the time of the last modification of this task
+* `start.<timestamp>` - either an empty string (representing work on the task to the task that has not been stopped) or a timestamp (representing the time that work stopped)
 
 The following are not yet implemented:
 
