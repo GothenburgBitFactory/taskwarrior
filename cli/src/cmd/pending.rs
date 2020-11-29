@@ -25,7 +25,7 @@ define_subcommand! {
 
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
-        let working_set = command.get_replica().working_set().unwrap();
+        let working_set = command.get_replica()?.working_set().unwrap();
         let mut t = Table::new();
         t.set_format(table::format());
         t.set_titles(row![b->"id", b->"description"]);

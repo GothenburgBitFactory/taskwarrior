@@ -1,8 +1,9 @@
+use crate::settings;
 use clap::Arg;
+use config::{Config, ConfigError};
 use failure::{format_err, Fallible};
-use std::env;
-use std::ffi::OsString;
-use taskchampion::{server, taskstorage, Replica, Task, Uuid};
+use std::cell::{Ref, RefCell};
+use taskchampion::{server, Replica, ReplicaConfig, ServerConfig, Task, Uuid};
 
 pub(super) fn task_arg<'a>() -> Arg<'a, 'a> {
     Arg::with_name("task")
@@ -33,11 +34,15 @@ pub(super) fn get_task<S: AsRef<str>>(replica: &mut Replica, task_arg: S) -> Fal
 #[derive(Debug)]
 pub struct CommandInvocation {
     pub(crate) subcommand: Box<dyn super::SubCommandInvocation>,
+    settings: RefCell<Config>,
 }
 
 impl CommandInvocation {
     pub(crate) fn new(subcommand: Box<dyn super::SubCommandInvocation>) -> Self {
-        Self { subcommand }
+        Self {
+            subcommand,
+            settings: RefCell::new(Config::default()),
+        }
     }
 
     pub fn run(self) -> Fallible<()> {
@@ -46,20 +51,34 @@ impl CommandInvocation {
 
     // -- utilities for command invocations
 
-    pub(super) fn get_replica(&self) -> Replica {
-        // temporarily use $TASK_DB to locate the taskdb
-        let taskdb_dir = env::var_os("TASK_DB").unwrap_or_else(|| OsString::from("/tmp/tasks"));
-        Replica::new(Box::new(taskstorage::KVStorage::new(taskdb_dir).unwrap()))
+    pub(super) fn get_settings(&self) -> Fallible<Ref<Config>> {
+        {
+            // use the special `_loaded" config value to detect whether we have
+            // loaded the configuration yet
+            let mut settings = self.settings.borrow_mut();
+            if let Err(ConfigError::NotFound(_)) = settings.get_bool("_loaded") {
+                settings.merge(settings::read_settings()?)?;
+                settings.set("_loaded", true)?;
+            }
+        }
+        Ok(self.settings.borrow())
     }
 
-    pub(super) fn get_server(&self) -> Fallible<impl server::Server> {
-        // temporarily use $SYNC_SERVER_ORIGIN for the sync server
-        let sync_server_origin = env::var_os("SYNC_SERVER_ORIGIN")
-            .map(|osstr| osstr.into_string().unwrap())
-            .unwrap_or_else(|| String::from("http://localhost:8080"));
-        Ok(server::RemoteServer::new(
-            sync_server_origin,
-            Uuid::parse_str("d5b55cbd-9a82-4860-9a39-41b67893b22f").unwrap(),
-        ))
+    pub(super) fn get_replica(&self) -> Fallible<Replica> {
+        let settings = self.get_settings()?;
+        let replica_config = ReplicaConfig {
+            taskdb_dir: settings.get_str("data_dir")?.into(),
+        };
+        Ok(Replica::from_config(replica_config)?)
+    }
+
+    pub(super) fn get_server(&self) -> Fallible<Box<dyn server::Server>> {
+        let settings = self.get_settings()?;
+        let client_id = settings.get_str("server_client_id")?;
+        let client_id = Uuid::parse_str(&client_id)?;
+        Ok(server::from_config(ServerConfig::Remote {
+            origin: settings.get_str("server_origin")?,
+            client_id,
+        })?)
     }
 }

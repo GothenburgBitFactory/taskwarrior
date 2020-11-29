@@ -21,7 +21,7 @@ define_subcommand! {
 
 subcommand_invocation! {
     fn run(&self, command: &CommandInvocation) -> Fallible<()> {
-        let mut replica = command.get_replica();
+        let mut replica = command.get_replica()?;
         let mut server = command.get_server()?;
         replica.sync(&mut server)?;
         Ok(())

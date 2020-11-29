@@ -25,7 +25,7 @@ pub struct LocalServer<'t> {
 
 impl<'t> LocalServer<'t> {
     /// A test server has no notion of clients, signatures, encryption, etc.
-    pub fn new(directory: &Path) -> Fallible<LocalServer> {
+    pub fn new<P: AsRef<Path>>(directory: P) -> Fallible<LocalServer<'t>> {
         let mut config = Config::default(directory);
         config.bucket("versions", None);
         config.bucket("numbers", None);

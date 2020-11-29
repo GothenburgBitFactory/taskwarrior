@@ -1,3 +1,6 @@
+use crate::ServerConfig;
+use failure::Fallible;
+
 #[cfg(test)]
 pub(crate) mod test;
 
@@ -8,3 +11,12 @@ mod types;
 pub use local::LocalServer;
 pub use remote::RemoteServer;
 pub use types::*;
+
+pub fn from_config(config: ServerConfig) -> Fallible<Box<dyn Server>> {
+    Ok(match config {
+        ServerConfig::Local { server_dir } => Box::new(LocalServer::new(server_dir)?),
+        ServerConfig::Remote { origin, client_id } => {
+            Box::new(RemoteServer::new(origin, client_id))
+        }
+    })
+}
