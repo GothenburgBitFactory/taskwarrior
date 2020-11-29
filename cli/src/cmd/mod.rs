@@ -7,6 +7,7 @@ mod shared;
 
 mod add;
 mod debug;
+mod done;
 mod gc;
 mod info;
 mod list;
@@ -21,6 +22,7 @@ pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
     vec![
         add::cmd(),
         debug::cmd(),
+        done::cmd(),
         gc::cmd(),
         info::cmd(),
         list::cmd(),

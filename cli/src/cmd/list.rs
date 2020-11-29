@@ -2,6 +2,7 @@ use crate::table;
 use clap::{App, ArgMatches, SubCommand as ClapSubCommand};
 use failure::Fallible;
 use prettytable::{cell, row, Table};
+use taskchampion::Status;
 
 use crate::cmd::{ArgMatchResult, CommandInvocation};
 
@@ -28,6 +29,9 @@ subcommand_invocation! {
         t.set_format(table::format());
         t.set_titles(row![b->"id", b->"act", b->"description"]);
         for (uuid, task) in replica.all_tasks().unwrap() {
+            if task.get_status() != Status::Pending {
+                continue;
+            }
             let mut id = uuid.to_string();
             if let Some(i) = replica.get_working_set_index(&uuid)? {
                 id = i.to_string();
