@@ -151,9 +151,7 @@ impl Task {
     pub fn is_active(&self) -> bool {
         self.taskmap
             .iter()
-            .filter(|(k, v)| k.starts_with("start.") && v.is_empty())
-            .next()
-            .is_some()
+            .any(|(k, v)| k.starts_with("start.") && v.is_empty())
     }
 
     pub fn get_modified(&self) -> Option<DateTime<Utc>> {

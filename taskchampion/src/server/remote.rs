@@ -1,7 +1,6 @@
 use crate::server::{AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId};
 use failure::{format_err, Fallible};
 use std::io::Read;
-use ureq;
 use uuid::Uuid;
 
 pub struct RemoteServer {

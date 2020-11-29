@@ -39,7 +39,7 @@ impl<'a> StorageTxn for InnerTxn<'a> {
     }
 
     fn new_client(&mut self, client_id: Uuid, latest_version_id: Uuid) -> Fallible<()> {
-        if let Some(_) = self.0.clients.get(&client_id) {
+        if self.0.clients.get(&client_id).is_some() {
             return Err(format_err!("Client {} already exists", client_id));
         }
         self.0
@@ -54,7 +54,8 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         latest_version_id: Uuid,
     ) -> Fallible<()> {
         if let Some(client) = self.0.clients.get_mut(&client_id) {
-            Ok(client.latest_version_id = latest_version_id)
+            client.latest_version_id = latest_version_id;
+            Ok(())
         } else {
             Err(format_err!("Client {} does not exist", client_id))
         }
