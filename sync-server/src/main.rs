@@ -12,8 +12,7 @@ mod storage;
 
 #[get("/")]
 async fn index() -> impl Responder {
-    // TODO: add version here
-    "TaskChampion sync server"
+    format!("TaskChampion sync server v{}", env!("CARGO_PKG_VERSION"))
 }
 
 /// Return a scope defining the URL rules for this server, with access to
@@ -29,7 +28,7 @@ pub(crate) fn app_scope(server_state: ServerState) -> Scope {
 async fn main() -> Fallible<()> {
     env_logger::init();
     let matches = clap::App::new("taskchampion-sync-server")
-        .version("0.1.0")
+        .version(env!("CARGO_PKG_VERSION"))
         .about("Server for TaskChampion")
         .arg(
             Arg::with_name("port")
