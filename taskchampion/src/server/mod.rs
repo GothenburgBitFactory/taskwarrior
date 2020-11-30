@@ -12,6 +12,7 @@ pub use local::LocalServer;
 pub use remote::RemoteServer;
 pub use types::*;
 
+/// Create a new server based on the given configuration.
 pub fn from_config(config: ServerConfig) -> Fallible<Box<dyn Server>> {
     Ok(match config {
         ServerConfig::Local { server_dir } => Box::new(LocalServer::new(server_dir)?),

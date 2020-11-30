@@ -12,6 +12,18 @@ use uuid::Uuid;
 
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
+///
+/// ## Tasks
+///
+/// Tasks are uniquely identified by UUIDs.
+/// Most task modifications are performed via the [`crate::Task`] and [`crate::TaskMut`] types.
+///
+/// ## Working Set
+///
+/// A replica maintains a "working set" of tasks that are of current concern to the user,
+/// specifically pending tasks.  These are indexed with small, easy-to-type integers.  Newly
+/// pending tasks are automatically added to the working set, and the working set is "renumbered"
+/// during the garbage-collection process.
 pub struct Replica {
     taskdb: TaskDB,
 }
@@ -23,6 +35,8 @@ impl Replica {
         }
     }
 
+    /// Construct a new replica from a configuration object.  This is the common way
+    /// to create a new object.
     pub fn from_config(config: ReplicaConfig) -> Fallible<Replica> {
         let storage = Box::new(KVStorage::new(config.taskdb_dir)?);
         Ok(Replica::new(storage))

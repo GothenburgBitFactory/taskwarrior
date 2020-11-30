@@ -18,7 +18,7 @@ The [`server`](crate::server) module defines the interface a server must meet.
 
 # See Also
 
-See the [TaskChampion Book](https://github.com/djmitche/taskchampion/blob/main/docs/src/SUMMARY.md)
+See the [TaskChampion Book](http://djmitche.github.com/taskchampion)
 for more information about the design and usage of the tool.
 
  */
