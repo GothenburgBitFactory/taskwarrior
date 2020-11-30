@@ -1,4 +1,3 @@
-#![allow(dead_code, unused_variables)] // temporary
 use super::{Client, Storage, StorageTxn, Uuid, Version};
 use failure::Fallible;
 use kv::msgpack::Msgpack;
