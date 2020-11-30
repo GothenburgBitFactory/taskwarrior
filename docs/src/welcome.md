@@ -1,6 +1,6 @@
 # TaskChampion
 
-TaskChampion is a person task-tracking tool.
+TaskChampion is a personal task-tracking tool.
 It works from the command line, with simple commands like `task add "fix the kitchen sink"`.
 It can synchronize tasks on multiple devices, and does so in an "offline" mode so you can update your tasks even when you can't reach the server.
 If you've heard of [TaskWarrior](https://taskwarrior.org/), this tool is very similar, but actively maintained and with a more reliable synchronization system.
