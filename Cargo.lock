@@ -2202,7 +2202,7 @@ dependencies = [
 
 [[package]]
 name = "taskchampion"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "failure",
@@ -2219,7 +2219,7 @@ dependencies = [
 
 [[package]]
 name = "taskchampion-cli"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "assert_cmd",
  "clap",
@@ -2235,7 +2235,7 @@ dependencies = [
 
 [[package]]
 name = "taskchampion-sync-server"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "actix-rt",
  "actix-web",
