@@ -18,7 +18,7 @@ where
     let subcommands = cmd::subcommands();
 
     let mut app = App::new("TaskChampion")
-        .version("0.1")
+        .version(env!("CARGO_PKG_VERSION"))
         .about("Personal task-tracking")
         .setting(AppSettings::ColoredHelp);
 

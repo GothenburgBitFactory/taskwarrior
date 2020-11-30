@@ -2,6 +2,12 @@
 name = "taskchampion"
 version = "0.1.0"
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
+description = "Personal task-tracking"
+homepage = "https://djmitche.github.io/taskchampion/"
+documentation = "https://docs.rs/crate/taskchampion"
+repository = "https://github.com/djmitche/taskchampion"
+readme = "../README.md"
+license = "MIT"
 edition = "2018"
 
 [dependencies]
