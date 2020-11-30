@@ -4,8 +4,9 @@
 1. Run `cargo test`
 1. Run `cargo clean && cargo clippy`
 1. Run `mdbook test docs`
-1. Update `version` in `*/Cargo.toml`.  All versions should match.  Commit the change with comment `vX.Y.Z`.
+1. Update `version` in `*/Cargo.toml`.  All versions should match.
 1. Run `cargo build --release`
+1. Commit the changes (Cargo.lock will change too) with comment `vX.Y.Z`.
 1. Run `git tag vX.Y.Z`
 1. Run `git push upstream`
 1. Run `git push --tags upstream`
