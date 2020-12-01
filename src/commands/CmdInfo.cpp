@@ -333,13 +333,17 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("COMPLETED")) virtualTags += "COMPLETED ";
       if (task.hasTag ("DELETED"))   virtualTags += "DELETED ";
       if (task.hasTag ("DUE"))       virtualTags += "DUE ";
-      if (task.hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";
+      if (task.hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";      // 2016-03-29: Deprecated in 2.6.0
       if (task.hasTag ("INSTANCE"))  virtualTags += "INSTANCE ";
+      if (task.hasTag ("LATEST"))    virtualTags += "LATEST ";
       if (task.hasTag ("MONTH"))     virtualTags += "MONTH ";
       if (task.hasTag ("ORPHAN"))    virtualTags += "ORPHAN ";
       if (task.hasTag ("OVERDUE"))   virtualTags += "OVERDUE ";
       if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";         // 2017-01-07: Deprecated in 2.6.0
       if (task.hasTag ("PENDING"))   virtualTags += "PENDING ";
+      if (task.hasTag ("PRIORITY"))  virtualTags += "PRIORITY ";
+      if (task.hasTag ("PROJECT"))   virtualTags += "PROJECT";
+      if (task.hasTag ("QUARTER"))   virtualTags += "QUARTER";
       if (task.hasTag ("READY"))     virtualTags += "READY ";
       if (task.hasTag ("SCHEDULED")) virtualTags += "SCHEDULED ";
       if (task.hasTag ("TAGGED"))    virtualTags += "TAGGED ";
@@ -353,9 +357,6 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("WEEK"))      virtualTags += "WEEK ";
       if (task.hasTag ("YEAR"))      virtualTags += "YEAR ";
       if (task.hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
-      if (task.hasTag ("LATEST"))    virtualTags += "LATEST ";
-      if (task.hasTag ("PROJECT"))   virtualTags += "PROJECT ";
-      if (task.hasTag ("PRIORITY"))  virtualTags += "PRIORITY ";
       // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
