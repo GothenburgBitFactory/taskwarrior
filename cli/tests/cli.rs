@@ -2,8 +2,8 @@ use assert_cmd::prelude::*;
 use predicates::prelude::*;
 use std::process::Command;
 
-// This tests that the task binary is running and parsing arguments.  The details of subcommands
-// are handled with unit tests.
+// NOTE: This tests that the task binary is running and parsing arguments.  The details of
+// subcommands are handled with unit tests.
 
 #[test]
 fn help() -> Result<(), Box<dyn std::error::Error>> {
@@ -36,7 +36,7 @@ fn invalid_option() -> Result<(), Box<dyn std::error::Error>> {
     cmd.arg("--no-such-option");
     cmd.assert()
         .failure()
-        .stderr(predicate::str::contains("USAGE"));
+        .stderr(predicate::str::contains("command line not recognized"));
 
     Ok(())
 }

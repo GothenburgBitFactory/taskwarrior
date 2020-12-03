@@ -42,7 +42,7 @@ impl Priority {
 }
 
 /// The status of a task.  The default status in "Pending".
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Status {
     Pending,
     Completed,
