@@ -1,0 +1,10 @@
+version: '3'
+services:
+  tw-build-and-test:
+    image: ghcr.io/8-bit-fox/tw-arch:base
+    container_name: tw-build-and-test
+    entrypoint: /src/entrypoint.sh
+    working_dir: /src
+    volumes:
+    - ./:/src
+
