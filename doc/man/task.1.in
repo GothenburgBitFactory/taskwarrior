@@ -1315,6 +1315,10 @@ Specifies an alternate configuration file with highest priority.
 The environment variable specifies an alternate configuration file to use.
 
 .TP
+.B XDG_CONFIG_HOME=<path-to-alternate-config-home> task ..
+The environment variable specifies an alternate configuration file to use.
+
+.TP
 .B task rc.<name>:<value> ...
 .B task rc.<name>=<value> ...
 Specifies individual configuration file overrides.
@@ -1340,7 +1344,10 @@ this man page.
 .TP
 ~/.taskrc
 User configuration file - see also taskrc(5).  Note that this can be
-overridden on the command line or by the TASKRC environment variable.
+overridden on the command line or by the TASKRC environment variable. Also, if
+.I ~/.taskrc
+doesn't exist and XDG_CONFIG_HOME environment variable is defined, taskwarrior
+will check if $XDG_CONFIG_HOME/task/taskrc exists and attempt to read it
 
 .TP
 ~/.task

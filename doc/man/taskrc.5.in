@@ -9,6 +9,8 @@ taskrc \- Configuration details for the task(1) command
 .B task rc:<directory-path>/.taskrc ...
 .br
 .B TASKRC=<directory-path>/.taskrc task ...
+.br
+.B XDG_CONFIG_HOME=<directory-path>/task/taskrc task ...
 
 .SH DESCRIPTION
 .B Taskwarrior
@@ -32,6 +34,12 @@ or using the TASKRC environment variable:
 
 .RS
 $ TASKRC=/tmp/.taskrc task ...
+.RE
+
+Additionally, if no ~/.taskrc exists, taskwarrior will check if the XDG_CONFIG_HOME environment variable is defined:
+
+.RS
+$ XDG_CONFIG_HOME=~/.config task ...
 .RE
 
 Individual options can be overridden by using the
@@ -154,7 +162,7 @@ define a set of US holidays, and set up a 16-color theme to use, to color the
 reports and calendar.
 
 .SH ENVIRONMENT VARIABLES
-These environment variables override defaults and command line arguments.
+These environment variables override defaults, but not command-line arguments.
 
 .TP
 .B TASKDATA=~/.task
@@ -163,6 +171,17 @@ This overrides the default path for the Taskwarrior data files.
 .TP
 .B TASKRC=~/.taskrc
 This overrides the default RC file.
+.RE
+
+This environment variable will be checked if
+.I ~/.taskrc
+doesn't exist
+
+.TP
+.B XDG_CONFIG_HOME=~/.config
+If set, taskwarrior will look for a
+.I $XDG_CONFIG_HOME/task/taskrc
+file
 
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
