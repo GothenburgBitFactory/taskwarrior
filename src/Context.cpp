@@ -455,7 +455,8 @@ int Context::initialize (int argc, const char** argv)
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    bool taskrc_overridden = CLI2::getOverride (argc, argv, home_dir, rc_file);
+    bool taskrc_overridden = false;
+
     if (! taskrc_overridden)
     {
       char *override = getenv ("TASKRC");
@@ -465,6 +466,9 @@ int Context::initialize (int argc, const char** argv)
         taskrc_overridden = true;
       }
     }
+
+    taskrc_overridden =
+        CLI2::getOverride (argc, argv, rc_file) || taskrc_overridden;
 
     // Artificial scope for timing purposes.
     {
@@ -490,7 +494,8 @@ int Context::initialize (int argc, const char** argv)
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    bool taskdata_overridden = CLI2::getDataLocation (argc, argv, data_dir);
+    bool taskdata_overridden = false;
+
     if (! taskdata_overridden)
     {
       char *override = getenv("TASKDATA");
@@ -501,6 +506,10 @@ int Context::initialize (int argc, const char** argv)
         taskdata_overridden = true;
       }
     }
+
+    taskdata_overridden =
+        CLI2::getDataLocation (argc, argv, data_dir) || taskdata_overridden;
+
     if (taskdata_overridden && verbose ("override"))
       header (format ("TASKDATA override: {1}", data_dir._data));
 
