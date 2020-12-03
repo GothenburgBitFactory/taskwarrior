@@ -440,6 +440,7 @@ int Context::initialize (int argc, const char** argv)
 {
   timer_total.start ();
   int rc = 0;
+  home_dir = getenv ("HOME");
 
   try
   {
