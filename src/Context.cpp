@@ -448,6 +448,8 @@ int Context::initialize (int argc, const char** argv)
     //
     // [1] Load the correct config file.
     //     - Default to ~/.taskrc (ctor).
+    //     - If no ~/.taskrc, use $XDG_CONFIG_HOME/task/taskrc if exists, or
+    //       ~/.config/task/taskrc if $XDG_DATA_HOME is unset
     //     - Allow $TASKRC override.
     //     - Allow command line override rc:<file>
     //     - Load resultant file.
@@ -457,14 +459,26 @@ int Context::initialize (int argc, const char** argv)
 
     bool taskrc_overridden = false;
 
-    if (! taskrc_overridden)
+    // XDG_CONFIG_HOME doesn't count as an override (no warning header)
+    if (! rc_file.exists ())
     {
-      char *override = getenv ("TASKRC");
-      if (override)
-      {
+        const char* xdg_config_home = getenv ("XDG_CONFIG_HOME");
+        if (! xdg_config_home)
+            xdg_config_home = format ("{1}/.config", home_dir).c_str();
+
+        // https://github.com/GothenburgBitFactory/libshared/issues/32
+        std::string rcfile_path = format ("{1}/task/taskrc", xdg_config_home);
+
+        File maybe_rc_file = File (rcfile_path);
+        if ( maybe_rc_file.exists ())
+            rc_file = maybe_rc_file;
+    }
+
+    char *override = getenv ("TASKRC");
+    if (override)
+    {
         rc_file = File (override);
         taskrc_overridden = true;
-      }
     }
 
     taskrc_overridden =
@@ -496,15 +510,12 @@ int Context::initialize (int argc, const char** argv)
 
     bool taskdata_overridden = false;
 
-    if (! taskdata_overridden)
+    override = getenv ("TASKDATA");
+    if (override)
     {
-      char *override = getenv("TASKDATA");
-      if (override)
-      {
-        data_dir = Directory (override);
-        config.set ("data.location", data_dir._data);
-        taskdata_overridden = true;
-      }
+      data_dir = Directory (override);
+      config.set ("data.location", data_dir._data);
+      taskdata_overridden = true;
     }
 
     taskdata_overridden =
@@ -1135,7 +1146,11 @@ void Context::createDefaultConfig ()
              << "]\n"
              << configurationDefaults.substr (0, loc + 14)
              << data_dir._original
-             << "\n\n# Color theme (uncomment one to use)\n"
+             << "\n\n# To use the default location of the XDG directories,\n"
+             << "# move this configuration file from ~/.taskrc to ~/.config/task/taskrc and uncomment below\n"
+             << "\n#data.location=~/.local/share/task\n"
+             << "#hooks.location=~/.config/task/hooks\n"
+             << "\n# Color theme (uncomment one to use)\n"
              << "#include " << TASK_RCDIR << "/light-16.theme\n"
              << "#include " << TASK_RCDIR << "/light-256.theme\n"
              << "#include " << TASK_RCDIR << "/dark-16.theme\n"
