@@ -60,7 +60,7 @@ class CLI2
 public:
   static int minimumMatchLength;
 
-  static bool getOverride (int, const char**, std::string&, File&);
+  static bool getOverride (int, const char**, File&);
   static bool getDataLocation (int, const char**, Path&);
   static void applyOverrides (int, const char**);
 

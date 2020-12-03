@@ -236,16 +236,12 @@ const char* getValue (int argc, const char** argv, std::string arg)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static method.
-bool CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc)
+bool CLI2::getOverride (int argc, const char** argv, File& rc)
 {
   const char* value = getValue (argc, argv, "rc");
   if (value == nullptr)
     return false;
   rc = File (value);
-  if (rc._data.rfind ("/") != std::string::npos)
-    home = rc.parent ();
-  else
-    home = ".";
   return true;
 }
 
