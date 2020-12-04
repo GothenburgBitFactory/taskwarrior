@@ -154,6 +154,12 @@ foreach (doc_FILE ${doc_FILES})
   install (FILES ${doc_FILE}  DESTINATION ${TASK_DOCDIR})
 endforeach (doc_FILE)
 
+add_custom_command(OUTPUT run-review
+    COMMAND docker build -f scripts/review-dockerfile --build-arg PR=$(PR) -t taskwarrior-review:$(PR) .
+    COMMAND docker run --rm --hostname pr-$(PR) -it taskwarrior-review:$(PR) bash || :
+)
+add_custom_target(review DEPENDS run-review)
+
 # ---
 
 set (CPACK_SOURCE_GENERATOR "TGZ")
