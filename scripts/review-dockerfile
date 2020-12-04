@@ -1,0 +1,36 @@
+# Dockerfile for containers to perform PR review in
+# Use with make as follows: make PR=1234 review
+
+FROM centos:8
+
+RUN dnf update -y
+RUN yum install epel-release -y
+RUN dnf install python38 git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime sudo man -y
+
+RUN useradd warrior
+RUN echo warrior ALL=NOPASSWD:ALL > /etc/sudoers.d/warrior
+
+USER warrior
+WORKDIR /home/warrior/
+
+# Setup taskwarrior
+# The purpose is to speed up subsequent re-installs due to Docker layer caching
+RUN git clone https://github.com/GothenburgBitFactory/taskwarrior.git
+WORKDIR /home/warrior/taskwarrior/
+RUN git submodule init
+RUN git submodule update
+RUN cmake -DCMAKE_BUILD_TYPE=debug .
+RUN make -j8
+RUN sudo make install
+
+# Install from the PR's branch
+ARG PR
+ADD https://github.com/GothenburgBitFactory/taskwarrior/pull/${PR}.patch .
+RUN git fetch origin refs/pull/${PR}/head:pr-${PR}
+RUN git checkout pr-${PR}
+RUN cmake -DCMAKE_BUILD_TYPE=debug .
+RUN make -j8
+RUN sudo make install
+
+WORKDIR /home/warrior
+RUN task rc.confirmation=0 _ids || :  # Generate default taskrc
