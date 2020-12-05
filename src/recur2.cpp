@@ -291,7 +291,7 @@ static std::vector <Datetime> generateAllDueDates (const Task& templateTask)
   int recurrence_counter = 0;
   Datetime now;
 
-  while (true)
+  while (1)
   {
     Datetime nextDue = generateNextDueDate (due, recur, lastN);
 
