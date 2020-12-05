@@ -1492,9 +1492,11 @@ void CLI2::findIDs ()
         }
 
         std::string raw = a.attribute ("raw");
-        previousFilterArgWasAnOperator = a._lextype == Lexer::Type::op &&
+        previousFilterArgWasAnOperator = (a._lextype == Lexer::Type::op &&
                                     raw != "("                    &&
-                                    raw != ")";
+                                    raw != ")")
+                                 ? true
+                                 : false;
       }
     }
 
@@ -1720,7 +1722,10 @@ void CLI2::insertIDExpr ()
             bool ascending = true;
             int low  = strtol (r->first.c_str (),  nullptr, 10);
             int high = strtol (r->second.c_str (), nullptr, 10);
-            ascending = low <= high;
+            if (low <= high)
+              ascending = true;
+            else
+              ascending = false;
 
             reconstructed.push_back (openParen);
             reconstructed.push_back (argID);

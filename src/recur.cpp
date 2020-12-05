@@ -174,8 +174,11 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
       // parent mask contains all + or X, then there never will be another task
       // to generate, and this parent task may be safely reaped.
       auto mask = parent.get ("mask");
-      return !(mask.length () == allDue.size () &&
-          mask.find ('-') == std::string::npos);
+      if (mask.length () == allDue.size () &&
+          mask.find ('-') == std::string::npos)
+        return false;
+
+      return true;
     }
 
     if (i > now)
