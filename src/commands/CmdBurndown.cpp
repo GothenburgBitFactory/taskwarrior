@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -34,13 +34,11 @@
 #include <math.h>
 #include <Context.h>
 #include <Filter.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <main.h>
-#include <i18n.h>
-#include <text.h>
-#include <util.h>
-
-extern Context context;
+#include <shared.h>
+#include <format.h>
 
 // Helper macro.
 #define LOC(y,x) (((y) * (_width + 1)) + (x))
@@ -49,34 +47,21 @@ extern Context context;
 class Bar
 {
 public:
-  Bar ();
+  Bar () = default;
   Bar (const Bar&);
   Bar& operator= (const Bar&);
-  ~Bar ();
+  ~Bar () = default;
 
 public:
-  int _offset;                   // from left of chart
-  std::string _major_label;      // x-axis label, major (year/-/month)
-  std::string _minor_label;      // x-axis label, minor (month/week/day)
-  int _pending;                  // Number of pending tasks in period
-  int _started;                  // Number of started tasks in period
-  int _done;                     // Number of done tasks in period
-  int _added;                    // Number added in period
-  int _removed;                  // Number removed in period
+  int _offset              {0};    // from left of chart
+  std::string _major_label {""};   // x-axis label, major (year/-/month)
+  std::string _minor_label {""};   // x-axis label, minor (month/week/day)
+  int _pending             {0};    // Number of pending tasks in period
+  int _started             {0};    // Number of started tasks in period
+  int _done                {0};    // Number of done tasks in period
+  int _added               {0};    // Number added in period
+  int _removed             {0};    // Number removed in period
 };
-
-////////////////////////////////////////////////////////////////////////////////
-Bar::Bar ()
-: _offset (0)
-, _major_label ("")
-, _minor_label ("")
-, _pending (0)
-, _started (0)
-, _done (0)
-, _added (0)
-, _removed (0)
-{
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 Bar::Bar (const Bar& other)
@@ -100,11 +85,6 @@ Bar& Bar::operator= (const Bar& other)
   }
 
   return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Bar::~Bar ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -153,10 +133,10 @@ public:
 private:
   void generateBars ();
   void optimizeGrid ();
-  ISO8601d quantize (const ISO8601d&, char);
+  Datetime quantize (const Datetime&, char);
 
-  ISO8601d increment (const ISO8601d&, char);
-  ISO8601d decrement (const ISO8601d&, char);
+  Datetime increment (const Datetime&, char);
+  Datetime decrement (const Datetime&, char);
   void maxima ();
   void yLabels (std::vector <int>&);
   void calculateRates ();
@@ -164,27 +144,25 @@ private:
   unsigned burndown_size (unsigned);
 
 public:
-  int _width;                     // Terminal width
-  int _height;                    // Terminal height
-  int _graph_width;               // Width of plot area
-  int _graph_height;              // Height of plot area
-  int _max_value;                 // Largest combined bar value
-  int _max_label;                 // Longest y-axis label
-  std::vector <int> _labels;      // Y-axis labels
-  int _estimated_bars;            // Estimated bar count
-  int _actual_bars;               // Calculated bar count
-  std::map <time_t, Bar> _bars;   // Epoch-indexed set of bars
-  ISO8601d _earliest;             // Date of earliest estimated bar
-  int _carryover_done;            // Number of 'done' tasks prior to chart range
-  char _period;                   // D, W, M
-  std::string _title;             // Additional description
-  std::string _grid;              // String representing grid of characters
-
-  time_t _peak_epoch;             // Quantized (D) date of highest pending peak
-  int _peak_count;                // Corresponding peak pending count
-  int _current_count;             // Current pending count
-  float _net_fix_rate;            // Calculated fix rate
-  std::string _completion;        // Estimated completion date
+  int _width                    {};        // Terminal width
+  int _height                   {};        // Terminal height
+  int _graph_width              {};        // Width of plot area
+  int _graph_height             {};        // Height of plot area
+  int _max_value                {0};      // Largest combined bar value
+  int _max_label                {1};      // Longest y-axis label
+  std::vector <int> _labels     {};        // Y-axis labels
+  int _estimated_bars           {};        // Estimated bar count
+  int _actual_bars              {0};      // Calculated bar count
+  std::map <time_t, Bar> _bars  {};        // Epoch-indexed set of bars
+  Datetime _earliest            {};        // Date of earliest estimated bar
+  int _carryover_done           {0};      // Number of 'done' tasks prior to chart range
+  char _period                  {};        // D, W, M
+  std::string _grid             {};        // String representing grid of characters
+  time_t _peak_epoch            {};        // Quantized (D) date of highest pending peak
+  int _peak_count               {0};      // Corresponding peak pending count
+  int _current_count            {0};      // Current pending count
+  float _net_fix_rate           {0.0};    // Calculated fix rate
+  std::string _completion       {};       // Estimated completion date
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -192,10 +170,10 @@ Chart::Chart (char type)
 {
   // How much space is there to render in?  This chart will occupy the
   // maximum space, and the width drives various other parameters.
-  _width = context.getWidth ();
-  _height = context.getHeight () - 1;  // Allow for new line with prompt.
-  _max_value = 0;
-  _max_label = 1;
+  _width = Context::getContext ().getWidth ();
+  _height = Context::getContext ().getHeight ()
+          - Context::getContext ().config.getInteger ("reserved.lines")
+          - 1;  // Allow for new line with prompt.
   _graph_height = _height - 7;
   _graph_width = _width - _max_label - 14;
 
@@ -203,18 +181,7 @@ Chart::Chart (char type)
   // potentially enormous data set.
   _estimated_bars = (_width - 1 - 14) / 3;
 
-  _actual_bars = 0;
   _period = type;
-  _carryover_done = 0;
-
-  // Rates are calculated last.
-  _net_fix_rate = 0.0;
-
-  // Set the title.
-  std::vector <std::string> words = context.cli2.getWords ();
-  std::string filter;
-  join (filter, " ", words);
-  _title = "(" + filter + ")";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -231,11 +198,11 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
-    ISO8601d entry = ISO8601d (task.get_date ("entry"));
+    Datetime entry (task.get_date ("entry"));
 
-    ISO8601d end;
+    Datetime end;
     if (task.has ("end"))
-      end = ISO8601d (task.get_date ("end"));
+      end = Datetime (task.get_date ("end"));
 
     while (entry < end)
     {
@@ -250,7 +217,6 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
   }
 
   // Find the peak, peak date and current.
-  _peak_count = 0;
   for (auto& count : pending)
   {
     if (count.second > _peak_count)
@@ -269,13 +235,13 @@ void Chart::scan (std::vector <Task>& tasks)
   generateBars ();
 
   // Not quantized, so that "while (xxx < now)" is inclusive.
-  ISO8601d now;
+  Datetime now;
 
   time_t epoch;
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
-    ISO8601d from = quantize (ISO8601d (task.get_date ("entry")), _period);
+    Datetime from = quantize (Datetime (task.get_date ("entry")), _period);
     epoch = from.toEpoch ();
 
     if (_bars.find (epoch) != _bars.end ())
@@ -289,7 +255,7 @@ void Chart::scan (std::vector <Task>& tasks)
     {
       if (task.has ("start"))
       {
-        ISO8601d start = quantize (ISO8601d (task.get_date ("start")), _period);
+        Datetime start = quantize (Datetime (task.get_date ("start")), _period);
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -323,7 +289,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::completed)
     {
       // Truncate history so it starts at 'earliest' for completed tasks.
-      ISO8601d end = quantize (ISO8601d (task.get_date ("end")), _period);
+      Datetime end = quantize (Datetime (task.get_date ("end")), _period);
       epoch = end.toEpoch ();
 
       if (_bars.find (epoch) != _bars.end ())
@@ -359,7 +325,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::deleted)
     {
       // Skip old deleted tasks.
-      ISO8601d end = quantize (ISO8601d (task.get_date ("end")), _period);
+      Datetime end = quantize (Datetime (task.get_date ("end")), _period);
       epoch = end.toEpoch ();
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
@@ -405,56 +371,34 @@ std::string Chart::render ()
   if (_graph_height < 5 ||     // a 4-line graph is essentially unreadable.
       _graph_width < 2)        // A single-bar graph is useless.
   {
-    return std::string (STRING_CMD_BURN_TOO_SMALL) + "\n";
+    return std::string ("Terminal window too small to draw a graph.\n");
   }
 
   else if (_graph_height > 1000 || // each line is a string allloc
            _graph_width  > 1000)
   {
-    return std::string (STRING_CMD_BURN_TOO_LARGE) + "\n";
+    return std::string ("Terminal window too large to draw a graph.\n");
   }
 
   if (_max_value == 0)
-    context.footnote (STRING_FEEDBACK_NO_MATCH);
+    Context::getContext ().footnote ("No matches.");
 
   // Create a grid, folded into a string.
   _grid = "";
   for (int i = 0; i < _height; ++i)
-    _grid += std::string (_width, ' ') + "\n";
+    _grid += std::string (_width, ' ') + '\n';
 
   // Title.
-  std::string full_title;
-  switch (_period)
-  {
-  case 'D': full_title = STRING_CMD_BURN_DAILY;   break;
-  case 'W': full_title = STRING_CMD_BURN_WEEKLY;  break;
-  case 'M': full_title = STRING_CMD_BURN_MONTHLY; break;
-  }
-
-  full_title += std::string (" ") + STRING_CMD_BURN_TITLE;
-
-  if (_title.length ())
-  {
-    if (full_title.length () + 1 + _title.length () < (unsigned) _width)
-    {
-      full_title += " " + _title;
-      _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
-    }
-    else
-    {
-      _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
-      _grid.replace (LOC (1, (_width - _title.length ()) / 2), _title.length (), _title);
-    }
-  }
-  else
-  {
-    _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
-  }
+  std::string title = _period == 'D' ? "Daily"
+                    : _period == 'W' ? "Weekly"
+                    :                  "Monthly";
+  title += std::string (" Burndown");
+  _grid.replace (LOC (0, (_width - title.length ()) / 2), title.length (), title);
 
   // Legend.
-  _grid.replace (LOC (_graph_height / 2 - 1, _width - 10), 10, "DD " + leftJustify (STRING_CMD_BURN_DONE,    7));
-  _grid.replace (LOC (_graph_height / 2,     _width - 10), 10, "SS " + leftJustify (STRING_CMD_BURN_STARTED, 7));
-  _grid.replace (LOC (_graph_height / 2 + 1, _width - 10), 10, "PP " + leftJustify (STRING_CMD_BURN_PENDING, 7));
+  _grid.replace (LOC (_graph_height / 2 - 1, _width - 10), 10, "DD " + leftJustify ("Done",    7));
+  _grid.replace (LOC (_graph_height / 2,     _width - 10), 10, "SS " + leftJustify ("Started", 7));
+  _grid.replace (LOC (_graph_height / 2 + 1, _width - 10), 10, "PP " + leftJustify ("Pending", 7));
 
   // Determine y-axis labelling.
   std::vector <int> _labels;
@@ -467,9 +411,9 @@ std::string Chart::render ()
 
   // Draw y-axis labels.
   char label [12];
-  sprintf (label, "%*d", _max_label, _labels[2]);
+  snprintf (label, 12, "%*d", _max_label, _labels[2]);
   _grid.replace (LOC (1,                       _max_label - strlen (label)), strlen (label), label);
-  sprintf (label, "%*d", _max_label, _labels[1]);
+  snprintf (label, 12, "%*d", _max_label, _labels[1]);
   _grid.replace (LOC (1 + (_graph_height / 2), _max_label - strlen (label)), strlen (label), label);
   _grid.replace (LOC (_graph_height + 1,       _max_label - 1),              1,              "0");
 
@@ -494,7 +438,7 @@ std::string Chart::render ()
       _grid.replace (LOC (_height - 5, _max_label + 3 + ((_actual_bars - bar._offset - 1) * 3)), bar._minor_label.length (), bar._minor_label);
 
       if (_major_label != bar._major_label)
-        _grid.replace (LOC (_height - 4, _max_label + 2 + ((_actual_bars - bar._offset - 1) * 3)), bar._major_label.length (), " " + bar._major_label);
+        _grid.replace (LOC (_height - 4, _max_label + 2 + ((_actual_bars - bar._offset - 1) * 3)), bar._major_label.length (), ' ' + bar._major_label);
 
       _major_label = bar._major_label;
     }
@@ -527,7 +471,7 @@ std::string Chart::render ()
   calculateRates ();
   char rate[12];
   if (_net_fix_rate != 0.0)
-    sprintf (rate, "%.1f/d", _net_fix_rate);
+    snprintf (rate, 12, "%.1f/d", _net_fix_rate);
   else
     strcpy (rate, "-");
 
@@ -539,12 +483,12 @@ std::string Chart::render ()
 
   optimizeGrid ();
 
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
     // Colorize the grid.
-    Color color_pending (context.config.get ("color.burndown.pending"));
-    Color color_done    (context.config.get ("color.burndown.done"));
-    Color color_started (context.config.get ("color.burndown.started"));
+    Color color_pending (Context::getContext ().config.get ("color.burndown.pending"));
+    Color color_done    (Context::getContext ().config.get ("color.burndown.done"));
+    Color color_started (Context::getContext ().config.get ("color.burndown.started"));
 
     // Replace DD, SS, PP with colored strings.
     std::string::size_type i;
@@ -590,7 +534,7 @@ void Chart::optimizeGrid ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::quantize (const ISO8601d& input, char period)
+Datetime Chart::quantize (const Datetime& input, char period)
 {
   if (period == 'D') return input.startOfDay ();
   if (period == 'W') return input.startOfWeek ();
@@ -600,7 +544,7 @@ ISO8601d Chart::quantize (const ISO8601d& input, char period)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::increment (const ISO8601d& input, char period)
+Datetime Chart::increment (const Datetime& input, char period)
 {
   // Move to the next period.
   int d = input.day ();
@@ -612,7 +556,7 @@ ISO8601d Chart::increment (const ISO8601d& input, char period)
   switch (period)
   {
   case 'D':
-    if (++d > ISO8601d::daysInMonth (m, y))
+    if (++d > Datetime::daysInMonth (y, m))
     {
       d = 1;
 
@@ -626,7 +570,7 @@ ISO8601d Chart::increment (const ISO8601d& input, char period)
 
   case 'W':
     d += 7;
-    days = ISO8601d::daysInMonth (m, y);
+    days = Datetime::daysInMonth (y, m);
     if (d > days)
     {
       d -= days;
@@ -649,11 +593,11 @@ ISO8601d Chart::increment (const ISO8601d& input, char period)
     break;
   }
 
-  return ISO8601d (m, d, y, 0, 0, 0);
+  return Datetime (y, m, d, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::decrement (const ISO8601d& input, char period)
+Datetime Chart::decrement (const Datetime& input, char period)
 {
   // Move to the previous period.
   int d = input.day ();
@@ -671,7 +615,7 @@ ISO8601d Chart::decrement (const ISO8601d& input, char period)
         --y;
       }
 
-      d = ISO8601d::daysInMonth (m, y);
+      d = Datetime::daysInMonth (y, m);
     }
     break;
 
@@ -685,7 +629,7 @@ ISO8601d Chart::decrement (const ISO8601d& input, char period)
         y--;
       }
 
-      d += ISO8601d::daysInMonth (m, y);
+      d += Datetime::daysInMonth (y, m);
     }
     break;
 
@@ -699,7 +643,7 @@ ISO8601d Chart::decrement (const ISO8601d& input, char period)
     break;
   }
 
-  return ISO8601d (m, d, y, 0, 0, 0);
+  return Datetime (y, m, d, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -709,12 +653,12 @@ void Chart::generateBars ()
   Bar bar;
 
   // Determine the last bar date.
-  ISO8601d cursor;
+  Datetime cursor;
   switch (_period)
   {
-  case 'D': cursor = ISO8601d ().startOfDay ();   break;
-  case 'W': cursor = ISO8601d ().startOfWeek ();  break;
-  case 'M': cursor = ISO8601d ().startOfMonth (); break;
+  case 'D': cursor = Datetime ().startOfDay ();   break;
+  case 'W': cursor = Datetime ().startOfWeek ();  break;
+  case 'M': cursor = Datetime ().startOfMonth (); break;
   }
 
   // Iterate and determine all the other bar dates.
@@ -726,27 +670,27 @@ void Chart::generateBars ()
     {
     case 'D': // month/day
       {
-        std::string month = ISO8601d::monthName (cursor.month ());
+        std::string month = Datetime::monthName (cursor.month ());
         bar._major_label = month.substr (0, 3);
 
-        sprintf (str, "%02d", cursor.day ());
+        snprintf (str, 12, "%02d", cursor.day ());
         bar._minor_label = str;
       }
       break;
 
     case 'W': // year/week
-      sprintf (str, "%d", cursor.year ());
+      snprintf (str, 12, "%d", cursor.year ());
       bar._major_label = str;
 
-      sprintf (str, "%02d", cursor.weekOfYear (0));
+      snprintf (str, 12, "%02d", cursor.week ());
       bar._minor_label = str;
       break;
 
     case 'M': // year/month
-      sprintf (str, "%d", cursor.year ());
+      snprintf (str, 12, "%d", cursor.year ());
       bar._major_label = str;
 
-      sprintf (str, "%02d", cursor.month ());
+      snprintf (str, 12, "%02d", cursor.month ());
       bar._minor_label = str;
       break;
     }
@@ -814,11 +758,11 @@ void Chart::calculateRates ()
   peak_message << "Chart::calculateRates Maximum of "
                << _peak_count
                << " pending tasks on "
-               << (ISO8601d (_peak_epoch).toISO ())
+               << (Datetime (_peak_epoch).toISO ())
                << ", with currently "
                << _current_count
                << " pending tasks";
-  context.debug (peak_message.str ());
+  Context::getContext ().debug (peak_message.str ());
 
   // If there are no current pending tasks, then it is meaningless to find
   // rates or estimated completion date.
@@ -826,8 +770,8 @@ void Chart::calculateRates ()
     return;
 
   // If there is a net fix rate, and the peak was at least three days ago.
-  ISO8601d now;
-  ISO8601d peak (_peak_epoch);
+  Datetime now;
+  Datetime peak (_peak_epoch);
   if (_peak_count > _current_count &&
       (now - peak) > 3 * 86400)
   {
@@ -839,20 +783,20 @@ void Chart::calculateRates ()
     rate_message << "Chart::calculateRates Net reduction is "
                  << (_peak_count - _current_count)
                  << " tasks in "
-                 << ISO8601p (now.toEpoch () - _peak_epoch).format ()
+                 << Duration (now.toEpoch () - _peak_epoch).formatISO ()
                  << " = "
                  << _net_fix_rate
                  << " tasks/d";
-    context.debug (rate_message.str ());
+    Context::getContext ().debug (rate_message.str ());
 
-    ISO8601p delta (static_cast <time_t> (_current_count / fix_rate));
-    ISO8601d end = now + delta;
+    Duration delta (static_cast <time_t> (_current_count / fix_rate));
+    Datetime end = now + delta.toTime_t ();
 
     // Prefer dateformat.report over dateformat.
-    std::string format = context.config.get ("dateformat.report");
+    std::string format = Context::getContext ().config.get ("dateformat.report");
     if (format == "")
     {
-      format = context.config.get ("dateformat");
+      format = Context::getContext ().config.get ("dateformat");
       if (format == "")
         format = "Y-M-D";
     }
@@ -860,7 +804,7 @@ void Chart::calculateRates ()
     _completion = end.toString (format)
                + " ("
                + delta.formatVague ()
-               + ")";
+               + ')';
 
     std::stringstream completion_message;
     completion_message << "Chart::calculateRates ("
@@ -871,11 +815,11 @@ void Chart::calculateRates ()
                        << delta.format ()
                        << " --> "
                        << end.toISO ();
-    context.debug (completion_message.str ());
+    Context::getContext ().debug (completion_message.str ());
   }
   else
   {
-    _completion = STRING_CMD_BURN_NO_CONVERGE;
+    _completion = "No convergence";
   }
 }
 
@@ -902,7 +846,7 @@ unsigned Chart::burndown_size (unsigned ntasks)
 
   // Choose the number from here rounded up to the nearest 10% of the next
   // highest power of 10 or half of power of 10.
-  const unsigned count = (unsigned) log10 (std::numeric_limits<unsigned>::max ());
+  const unsigned count = (unsigned) log10 (static_cast<double>(std::numeric_limits<unsigned>::max ()));
   unsigned half = 500;
   unsigned full = 1000;
 
@@ -928,7 +872,7 @@ CmdBurndownMonthly::CmdBurndownMonthly ()
 {
   _keyword               = "burndown.monthly";
   _usage                 = "task <filter> burndown.monthly";
-  _description           = STRING_CMD_BURN_USAGE_M;
+  _description           = "Shows a graphical burndown chart, by month";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -963,7 +907,7 @@ CmdBurndownWeekly::CmdBurndownWeekly ()
 {
   _keyword               = "burndown.weekly";
   _usage                 = "task <filter> burndown.weekly";
-  _description           = STRING_CMD_BURN_USAGE_W;
+  _description           = "Shows a graphical burndown chart, by week";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -998,7 +942,7 @@ CmdBurndownDaily::CmdBurndownDaily ()
 {
   _keyword               = "burndown.daily";
   _usage                 = "task <filter> burndown.daily";
-  _description           = STRING_CMD_BURN_USAGE_D;
+  _description           = "Shows a graphical burndown chart, by day";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;

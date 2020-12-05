@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -44,19 +44,19 @@ class TestUpgrade(TestCase):
         self.t("add one")
 
         code, out, err = self.t("1 info")
-        self.assertRegexpMatches(out, "Status\s+Pending")
+        self.assertRegex(out, "Status\s+Pending")
 
         self.t("1 modify due:tomorrow recur:weekly")
         self.t("list")
 
         code, out, err = self.t("1 info")
-        self.assertRegexpMatches(out, "Status\s+Recurring")
-        self.assertRegexpMatches(out, "Recurrence\s+weekly")
+        self.assertRegex(out, "Status\s+Recurring")
+        self.assertRegex(out, "Recurrence\s+weekly")
 
         # Also check for the presence of a children task with pending state
         code, out, err = self.t("2 info")
-        self.assertRegexpMatches(out, "Status\s+Pending")
-        self.assertRegexpMatches(out, "Recurrence\s+weekly")
+        self.assertRegex(out, "Status\s+Pending")
+        self.assertRegex(out, "Recurrence\s+weekly")
 
 
 if __name__ == "__main__":

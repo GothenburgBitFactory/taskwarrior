@@ -1,47 +1,90 @@
-# Disclaimer during ongoing development
+# Taskwarrior
 
-We want to discourage you from using the development version of Taskwarrior.
-
-The development branch is a work in progress and may not pass all quality tests,
-therefore it may harm your data. We do not guarantee proper or even adequate
-functionality, performance or timely fixes.
-
-We welcome bug reports from beta- and release-level software, but generally not
-development versions. If you are undaunted by this, please:
-
-- Make proper backups.
-- Expect broken and missing functionality.
-- Be aware that using the development branch involves risks.
-
----
+[![Travis build status](https://travis-ci.org/GothenburgBitFactory/taskwarrior.svg?branch=2.5.2)](https://travis-ci.org/GothenburgBitFactory/taskwarrior)
 
 Thank you for taking a look at Taskwarrior!
 
 Taskwarrior is a GTD, todo list, task management, command line utility with a
 multitude of features. It is a portable, well supported and very active Open
-Source project. Taskwarrior has binary distributions, online documentation,
-demonstration movies, and you'll find all the details at:
+Source project.
 
-    http://taskwarrior.org
+## Documentation
+
+There is extensive online documentation.
+You'll find all the details at [taskwarrior.org/docs](https://taskwarrior.org/docs)
 
 At the site you'll find online documentation, downloads, news and more.
 
-Your contributions are especially welcome. Whether it comes in the form of
-code patches, ideas, discussion, bug reports, encouragement or criticism, your
-input is needed.
+## Support
 
-For support options, take a look at:
+For support options, take a look at [taskwarrior.org/support](https://taskwarrior.org/support)
 
-    http://taskwarrior.org/support
+Please use pull requests, or alternately send your code patches to
+[support@gothenburgbitfactory.org](mailto:support@gothenburgbitfactory.org)
 
-Please send your code patches to:
+## Branching Model
 
-    support@taskwarrior.org
+We use the following branching model:
 
-Consider joining bug.tasktools.org, answers.tasktools.org and participating in
-the future of Taskwarrior.
+* `master` is the stable branch. Building from here is the same as building
+  from the latest tarball, or installing a binary package. No development is
+  done on the `master` branch.
 
----
+* `2.6.0` is the current development branch. All work is done here, and upon
+  release it will be merged to `master`. This development branch is not stable,
+  may not even build or pass tests, and should be treated accordingly.
+  Make backups.
 
-Taskwarrior is released under the MIT license. For details check the LICENSE
-file.
+## Installing
+
+There are many binary packages available, but to install from source requires:
+
+* git
+* cmake
+* make
+* C++ compiler, currently gcc 5.0+ or clang 3.4+ for full C++14 support
+
+Download the tarball, and expand it:
+
+    $ curl -O https://taskwarrior.org/download/task-2.6.0.tar.gz
+    $ tar xzf task-2.6.0.tar.gz
+    $ cd task-2.6.0
+
+Or clone this repository:
+
+    $ git clone --recursive -b 2.6.0 https://github.com/GothenburgBitFactory/taskwarrior.git
+    $ cd taskwarrior
+
+In case of errors with libshared - URL pointing to git.tasktools.org in either .git/config or .gitmodules:
+
+    $ sed -i 's/git.tasktools.org\/TM/github.com\/GothenburgBitFactory/' .git/config
+    $ git submodule update
+
+or
+
+    $ sed -i 's/git.tasktools.org\/TM/github.com\/GothenburgBitFactory/' .gitmodules
+    $ git submodule init
+    $ git submodule update
+
+Then build:
+
+    $ cmake -DCMAKE_BUILD_TYPE=release .
+    ...
+    $ make
+    ...
+    [$ make test]
+    ...
+    $ sudo make install
+
+## Contributing
+
+Your contributions are especially welcome.
+Whether it comes in the form of code patches, ideas, discussion, bug reports, encouragement or criticism, your input is needed.
+
+Visit [Github](https://github.com/GothenburgBitFactory/taskwarrior) and participate in the future of Taskwarrior.
+
+## License
+
+Taskwarrior is released under the MIT license.
+For details check the [LICENSE](LICENSE) file.
+

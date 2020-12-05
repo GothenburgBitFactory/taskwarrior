@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -70,32 +70,27 @@ class TestTimesheet(TestCase):
         cls.t("log C1 entry:{0} end:{1}".format(fourteen, seven))
         cls.t("log C2 entry:{0} end:{0}".format(fourteen))
 
-    def test_one_week(self):
-        """One week of started and completed"""
-        code, out, err = self.t("timesheet")
-
-        expected = re.compile("Completed.+C0.+Started.+PS0", re.DOTALL)
-        self.assertRegexpMatches(out, expected)
-
-    def test_two_weeks(self):
-        """Two weeks of started and completed"""
-        code, out, err = self.t("timesheet 2")
-
-        expected = re.compile(
-            "Completed.+C0.+Started.+PS0.+"
-            "Completed.+C1.+Started.+PS1", re.DOTALL)
-        self.assertRegexpMatches(out, expected)
-
     def test_three_weeks(self):
         """Three weeks of started and completed"""
-        code, out, err = self.t("timesheet 3")
+        code, out, err = self.t("timesheet")
 
         expected = re.compile(
-            "Completed.+C0.+Started.+PS0.+"
-            "Completed.+C1.+Started.+PS1.+"
-            "Completed.+C2.+Started.+PS2", re.DOTALL)
-        self.assertRegexpMatches(out, expected)
+            "Started.+PS2.+Completed.+C2.+"
+            "Started.+PS1.+Completed.+C1.+"
+            "Started.+PS0.+Completed.+C0", re.DOTALL)
+        self.assertRegex(out, expected)
 
+    def test_one_week(self):
+        """One week of started and completed"""
+        # This is the default filter, reduced from 4 weeks to 1.
+        code, out, err = self.t("timesheet (+PENDING and start.after:now-1wk) or (+COMPLETED and end.after:now-1wk)")
+
+        expected = re.compile("Started.+PS0.+Completed.+C0", re.DOTALL)
+        self.assertRegex(out, expected)
+        self.assertNotIn("PS1", out)
+        self.assertNotIn("PS2", out)
+        self.assertNotIn("C1", out)
+        self.assertNotIn("C2", out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

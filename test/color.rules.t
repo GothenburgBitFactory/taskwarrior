@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -144,7 +144,7 @@ class TestColorRules(TestCase):
 
     def test_color_footnote(self):
         """Footnote color."""
-        code, out, err = self.t('rc.verbose=footnote /control/')
+        code, out, err = self.t('rc.verbose=on /control/')
         self.assertIn('\x1b[31mConfiguration override', err)
 
     def test_color_debug(self):
@@ -229,11 +229,10 @@ class TestColorRulesMerging(TestCase):
         self.t.config('color.tagged','on white')
         self.t.config('rule.color.precedence', 'due,tagged')
 
-        self.t('add due:today +home hometask')  # Task that matches both color rules
+        self.t('add due:tomorrow +home hometask')  # Task that matches both color rules
 
     @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping color merge test for Cygwin')
     @unittest.skipIf('FreeBSD' in platform.system(), 'Skipping color merge test for FREEBSD')
-    @unittest.expectedFailure
     def test_colors_merge(self):
         """Tests whether colors merge"""
         code, out, err = self.t('1 info')
@@ -241,8 +240,6 @@ class TestColorRulesMerging(TestCase):
 
     @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping color merge test for Cygwin')
     @unittest.skipIf('FreeBSD' in platform.system(), 'Skipping color merge test for FREEBSD')
-    @unittest.expectedFailure
-    @unittest.expectedFailure
     def test_colors_merge_off(self):
         """No color merge behaviour with rule.color.merge=no"""
         self.t.config('rule.color.merge', 'no')

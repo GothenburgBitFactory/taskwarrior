@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,26 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <CmdLog.h>
 #include <Context.h>
-#include <text.h>
-#include <i18n.h>
-#include <util.h>
+#include <format.h>
 #include <main.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdLog::CmdLog ()
 {
   _keyword               = "log";
   _usage                 = "task          log <mods>";
-  _description           = STRING_CMD_LOG_USAGE;
+  _description           = "Adds a new task that is already completed";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -60,19 +56,19 @@ int CmdLog::execute (std::string& output)
 
   // Cannot log recurring tasks.
   if (task.has ("recur"))
-    throw std::string (STRING_CMD_LOG_NO_RECUR);
+    throw std::string ("You cannot log recurring tasks.");
 
   // Cannot log waiting tasks.
   if (task.has ("wait"))
-    throw std::string (STRING_CMD_LOG_NO_WAITING);
+    throw std::string ("You cannot log waiting tasks.");
 
-  context.tdb2.add (task);
+  Context::getContext ().tdb2.add (task);
 
-  if (context.verbose ("project"))
-    context.footnote (onProjectChange (task));
+  if (Context::getContext ().verbose ("project"))
+    Context::getContext ().footnote (onProjectChange (task));
 
-  if (context.verbose ("new-uuid"))
-    output = format (STRING_CMD_LOG_LOGGED, task.get ("uuid")) + "\n";
+  if (Context::getContext ().verbose ("new-uuid"))
+    output = format ("Logged task {1}.\n", task.get ("uuid"));
 
   return 0;
 }

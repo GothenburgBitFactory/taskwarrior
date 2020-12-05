@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,16 +33,25 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <Lexer.h>
 #include <main.h>
-#include <text.h>
-#include <util.h>
-#include <i18n.h>
-
-extern Context context;
+#include <shared.h>
+#include <format.h>
 
 static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
+
+////////////////////////////////////////////////////////////////////////////////
+// Converts a vector of tasks to a human-readable string that represents the tasks.
+std::string taskIdentifiers (const std::vector <Task>& tasks)
+{
+  std::vector <std::string> identifiers;
+  for (auto task: tasks)
+    identifiers.push_back (task.identifier (true));
+
+  return join (", ", identifiers);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string taskDifferences (const Task& before, const Task& after)
@@ -65,25 +74,22 @@ std::string taskDifferences (const Task& before, const Task& after)
   std::stringstream out;
   for (auto& name : beforeOnly)
     out << "  - "
-        << format (STRING_FEEDBACK_DELETED, Lexer::ucFirst (name))
+        << format ("{1} will be deleted.", Lexer::ucFirst (name))
         << "\n";
 
   for (auto& name : afterOnly)
   {
     if (name == "depends")
     {
-      std::vector <int> deps_after;
-      after.getDependencies (deps_after);
-      std::string to;
-      join (to, ", ", deps_after);
+      auto deps_after = after.getDependencyTasks ();
 
       out << "  - "
-          << format (STRING_FEEDBACK_DEP_SET, to)
+          << format ("Dependencies will be set to '{1}'.", taskIdentifiers (deps_after))
           << "\n";
     }
     else
       out << "  - "
-          << format (STRING_FEEDBACK_ATT_SET,
+          << format ("{1} will be set to '{2}'.",
                      Lexer::ucFirst (name),
                      renderAttribute (name, after.get (name)))
           << "\n";
@@ -100,23 +106,19 @@ std::string taskDifferences (const Task& before, const Task& after)
     {
       if (name == "depends")
       {
-        std::vector <int> deps_before;
-        before.getDependencies (deps_before);
-        std::string from;
-        join (from, ", ", deps_before);
+        auto deps_before = before.getDependencyTasks ();
+        std::string from = taskIdentifiers (deps_before);
 
-        std::vector <int> deps_after;
-        after.getDependencies (deps_after);
-        std::string to;
-        join (to, ", ", deps_after);
+        auto deps_after = after.getDependencyTasks ();
+        std::string to = taskIdentifiers (deps_after);
 
         out << "  - "
-            << format (STRING_FEEDBACK_DEP_MOD, from, to)
+            << format ("Dependencies will be changed from '{1}' to '{2}'.", from, to)
             << "\n";
       }
       else
         out << "  - "
-            << format (STRING_FEEDBACK_ATT_MOD,
+            << format ("{1} will be changed from '{2}' to '{3}'.",
                        Lexer::ucFirst (name),
                        renderAttribute (name, before.get (name)),
                        renderAttribute (name, after.get (name)))
@@ -126,9 +128,7 @@ std::string taskDifferences (const Task& before, const Task& after)
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << "  - "
-        << STRING_FEEDBACK_NOP
-        << "\n";
+    out << "  - No changes will be made.\n";
 
   return out.str ();
 }
@@ -161,29 +161,27 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-        std::vector <int> deps_before;
-        before.getDependencies (deps_before);
-        std::string from;
-        join (from, ", ", deps_before);
-
-        out << format (STRING_FEEDBACK_DEP_DEL, from)
+        out << format ("Dependencies '{1}' deleted.", taskIdentifiers (before.getDependencyTasks ()))
             << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
     {
-      out << format (STRING_FEEDBACK_ANN_DEL, before.get (name))
-          << "\n";
+      out << format ("Annotation '{1}' deleted.\n", before.get (name));
     }
     else if (name == "start")
     {
-      out << format (STRING_FEEDBACK_ATT_DEL_DUR, Lexer::ucFirst (name),
-                     ISO8601p (current_timestamp - last_timestamp).format ())
-          << "\n";
+      if (last_timestamp > 0)
+        out << format ("{1} deleted (duration: {2}).",
+                       Lexer::ucFirst (name),
+                       Duration (current_timestamp - last_timestamp).format ())
+            << "\n";
+      else
+        out << format ("{1} deleted.", Lexer::ucFirst (name))
+            << "\n";
     }
     else
     {
-      out << format (STRING_FEEDBACK_ATT_DEL, Lexer::ucFirst (name))
-          << "\n";
+      out << format ("{1} deleted.\n", Lexer::ucFirst (name));
     }
   }
 
@@ -191,25 +189,19 @@ std::string taskInfoDifferences (
   {
     if (name == "depends")
     {
-      std::vector <int> deps_after;
-      after.getDependencies (deps_after);
-      std::string to;
-      join (to, ", ", deps_after);
-
-      out << format (STRING_FEEDBACK_DEP_WAS_SET, to)
+      out << format ("Dependencies set to '{1}'.", taskIdentifiers (after.getDependencyTasks ()))
           << "\n";
     }
     else if (name.substr (0, 11) == "annotation_")
     {
-      out << format (STRING_FEEDBACK_ANN_ADD, after.get (name))
-          << "\n";
+      out << format ("Annotation of '{1}' added.\n", after.get (name));
     }
     else
     {
       if (name == "start")
           last_timestamp = current_timestamp;
 
-      out << format (STRING_FEEDBACK_ATT_WAS_SET,
+      out << format ("{1} set to '{2}'.",
                      Lexer::ucFirst (name),
                      renderAttribute (name, after.get (name), dateformat))
           << "\n";
@@ -225,26 +217,17 @@ std::string taskInfoDifferences (
     {
       if (name == "depends")
       {
-        std::vector <int> deps_before;
-        before.getDependencies (deps_before);
-        std::string from;
-        join (from, ", ", deps_before);
+        auto from = taskIdentifiers (before.getDependencyTasks ());
+        auto to   = taskIdentifiers (after.getDependencyTasks ());
 
-        std::vector <int> deps_after;
-        after.getDependencies (deps_after);
-        std::string to;
-        join (to, ", ", deps_after);
-
-        out << format (STRING_FEEDBACK_DEP_WAS_MOD, from, to)
-            << "\n";
+        out << format ("Dependencies changed from '{1}' to '{2}'.\n", from, to);
       }
       else if (name.substr (0, 11) == "annotation_")
       {
-        out << format (STRING_FEEDBACK_ANN_WAS_MOD, after.get (name))
-            << "\n";
+        out << format ("Annotation changed to '{1}'.\n", after.get (name));
       }
       else
-        out << format (STRING_FEEDBACK_ATT_WAS_MOD,
+        out << format ("{1} changed from '{2}' to '{3}'.",
                        Lexer::ucFirst (name),
                        renderAttribute (name, before.get (name), dateformat),
                        renderAttribute (name, after.get (name), dateformat))
@@ -253,8 +236,7 @@ std::string taskInfoDifferences (
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << STRING_FEEDBACK_WAS_NOP
-        << "\n";
+    out << "No changes made.\n";
 
   return out.str ();
 }
@@ -262,16 +244,16 @@ std::string taskInfoDifferences (
 ////////////////////////////////////////////////////////////////////////////////
 std::string renderAttribute (const std::string& name, const std::string& value, const std::string& format /* = "" */)
 {
-  if (context.columns.find (name) != context.columns.end ())
+  if (Context::getContext ().columns.find (name) != Context::getContext ().columns.end ())
   {
-    Column* col = context.columns[name];
+    Column* col = Context::getContext ().columns[name];
     if (col                    &&
         col->type () == "date" &&
         value != "")
     {
-      ISO8601d d ((time_t)strtol (value.c_str (), NULL, 10));
+      Datetime d ((time_t)strtol (value.c_str (), nullptr, 10));
       if (format == "")
-        return d.toString (context.config.get ("dateformat"));
+        return d.toString (Context::getContext ().config.get ("dateformat"));
 
       return d.toString (format);
     }
@@ -285,7 +267,7 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
 //    <string>
 void feedback_affected (const std::string& effect)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
     std::cout << effect << "\n";
 }
 
@@ -297,7 +279,7 @@ void feedback_affected (const std::string& effect)
 //    {1}    Quantity
 void feedback_affected (const std::string& effect, int quantity)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
     std::cout << format (effect, quantity)
               << "\n";
 }
@@ -311,7 +293,7 @@ void feedback_affected (const std::string& effect, int quantity)
 //    {2}    Description
 void feedback_affected (const std::string& effect, const Task& task)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
   {
     std::cout << format (effect,
                          task.identifier (true),
@@ -343,6 +325,7 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "PENDING"   ||
       tag == "PRIORITY"  ||
       tag == "PROJECT"   ||
+      tag == "QUARTER"   ||
       tag == "READY"     ||
       tag == "SCHEDULED" ||
       tag == "TAGGED"    ||
@@ -356,7 +339,7 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "YEAR"      ||
       tag == "YESTERDAY")
   {
-    throw format (STRING_FEEDBACK_TAG_VIRTUAL, tag);
+    throw format ("Virtual tags (including '{1}') are reserved and may not be added or removed.", tag);
   }
 }
 
@@ -364,14 +347,14 @@ void feedback_reserved_tags (const std::string& tag)
 // Implements feedback when adding special tags to a task.
 void feedback_special_tags (const Task& task, const std::string& tag)
 {
-  if (context.verbose ("special"))
+  if (Context::getContext ().verbose ("special"))
   {
     std::string msg;
     std::string explanation;
-         if (tag == "nocolor") msg = STRING_FEEDBACK_TAG_NOCOLOR;
-    else if (tag == "nonag")   msg = STRING_FEEDBACK_TAG_NONAG;
-    else if (tag == "nocal")   msg = STRING_FEEDBACK_TAG_NOCAL;
-    else if (tag == "next")    msg = STRING_FEEDBACK_TAG_NEXT;
+         if (tag == "nocolor") msg = "The 'nocolor' special tag will disable color rules for this task.";
+    else if (tag == "nonag")   msg = "The 'nonag' special tag will prevent nagging when this task is modified.";
+    else if (tag == "nocal")   msg = "The 'nocal' special tag will keep this task off the 'calendar' report.";
+    else if (tag == "next")    msg = "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report.";
 
     if (msg.length ())
     {
@@ -390,28 +373,26 @@ void feedback_special_tags (const Task& task, const std::string& tag)
 //    Unblocked <id> '<description>'
 void feedback_unblocked (const Task& task)
 {
-  if (context.verbose ("affected"))
+  if (Context::getContext ().verbose ("affected"))
   {
     // Get a list of tasks that depended on this task.
-    std::vector <Task> blocked;
-    dependencyGetBlocked (task, blocked);
+    auto blocked = dependencyGetBlocked (task);
 
     // Scan all the tasks that were blocked by this task
     for (auto& i : blocked)
     {
-      std::vector <Task> blocking;
-      dependencyGetBlocking (i, blocking);
+      auto blocking = dependencyGetBlocking (i);
       if (blocking.size () == 0)
       {
         if (i.id)
-          std::cout << format (STRING_FEEDBACK_UNBLOCKED,
+          std::cout << format ("Unblocked {1} '{2}'.",
                                i.id,
                                i.get ("description"))
                     << "\n";
         else
         {
           std::string uuid = i.get ("uuid");
-          std::cout << format (STRING_FEEDBACK_UNBLOCKED,
+          std::cout << format ("Unblocked {1} '{2}'.",
                                i.get ("uuid"),
                                i.get ("description"))
                     << "\n";
@@ -424,18 +405,18 @@ void feedback_unblocked (const Task& task)
 ///////////////////////////////////////////////////////////////////////////////
 void feedback_backlog ()
 {
-  if (context.config.get ("taskd.server") != "" &&
-      context.verbose ("sync"))
+  if (Context::getContext ().config.get ("taskd.server") != "" &&
+      Context::getContext ().verbose ("sync"))
   {
-    std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
+    int count = 0;
+    std::vector <std::string> lines = Context::getContext ().tdb2.backlog.get_lines ();
     for (auto& line : lines)
-    {
       if ((line)[0] == '{')
-      {
-        context.footnote (STRING_FEEDBACK_BACKLOG);
-        break;
-      }
-    }
+        ++count;
+
+    if (count)
+      Context::getContext ().footnote (format (count > 1 ?  "There are {1} local changes.  Sync required."
+                                                         : "There is {1} local change.  Sync required.", count));
   }
 }
 
@@ -448,13 +429,13 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
   if (project != "")
   {
     if (scope)
-      msg << format (STRING_HELPER_PROJECT_CHANGE, project)
+      msg << format ("The project '{1}' has changed.", project)
           << "  ";
 
     // Count pending and done tasks, for this project.
     int count_pending = 0;
     int count_done = 0;
-    std::vector <Task> all = context.tdb2.all_tasks ();
+    std::vector <Task> all = Context::getContext ().tdb2.all_tasks ();
     countTasks (all, project, count_pending, count_done);
 
     // count_done  count_pending  percentage
@@ -471,13 +452,13 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     else
       percentage = (count_done * 100 / (count_done + count_pending));
 
-    msg << format (STRING_HELPER_PROJECT_COMPL, project, percentage)
-        << " ";
+    msg << format ("Project '{1}' is {2}% complete", project, percentage)
+        << ' ';
 
     if (count_pending == 1 && count_done == 0)
-      msg << format (STRING_HELPER_PROJECT_REM1, count_pending);
+      msg << format ("({1} task remaining).", count_pending);
     else
-      msg << format (STRING_HELPER_PROJECT_REM, count_pending, count_pending + count_done);
+      msg << format ("({1} of {2} tasks remaining).", count_pending, count_pending + count_done);
   }
 
   return msg.str ();
@@ -503,8 +484,8 @@ std::string onExpiration (Task& task)
 {
   std::stringstream msg;
 
-  if (context.verbose ("affected"))
-    msg << format (STRING_FEEDBACK_EXPIRED,
+  if (Context::getContext ().verbose ("affected"))
+    msg << format ("Task {1} '{2}' expired and was deleted.",
                    task.identifier (true),
                    task.get ("description"));
 

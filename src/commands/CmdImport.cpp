@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,22 +28,17 @@
 #include <CmdImport.h>
 #include <CmdModify.h>
 #include <iostream>
-#include <sstream>
 #include <Context.h>
-#include <Filter.h>
-#include <text.h>
+#include <format.h>
+#include <shared.h>
 #include <util.h>
-#include <i18n.h>
-#include <main.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdImport::CmdImport ()
 {
   _keyword               = "import";
   _usage                 = "task          import [<file> ...]";
-  _description           = STRING_CMD_IMPORT_USAGE;
+  _description           = "Imports JSON files";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -57,19 +52,20 @@ CmdImport::CmdImport ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdImport::execute (std::string&)
 {
-  int rc = 0;
-  int count = 0;
+  auto rc = 0;
+  auto count = 0;
 
   // Get filenames from command line arguments.
-  std::vector <std::string> words = context.cli2.getWords ();
-  if (! words.size () || (words.size () == 1 && words[0] == "-"))
+  auto words = Context::getContext ().cli2.getWords ();
+  if (! words.size () ||
+      (words.size () == 1 && words[0] == "-"))
   {
-    std::cout << format (STRING_CMD_IMPORT_FILE, "STDIN") << "\n";
+    std::cout << format ("Importing '{1}'\n", "STDIN");
 
     std::string json;
     std::string line;
     while (std::getline (std::cin, line))
-      json += line + "\n";
+      json += line + '\n';
 
     if (nontrivial (json))
       count = import (json);
@@ -81,9 +77,9 @@ int CmdImport::execute (std::string&)
     {
       File incoming (word);
       if (! incoming.exists ())
-        throw format (STRING_CMD_IMPORT_MISSING, word);
+        throw format ("File '{1}' not found.", word);
 
-      std::cout << format (STRING_CMD_IMPORT_FILE, word) << "\n";
+      std::cout << format ("Importing '{1}'\n", word);
 
       // Load the file.
       std::string json;
@@ -93,14 +89,14 @@ int CmdImport::execute (std::string&)
     }
   }
 
-  context.footnote (format (STRING_CMD_IMPORT_SUMMARY, count));
+  Context::getContext ().footnote (format ("Imported {1} tasks.", count));
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int CmdImport::import (const std::string& input)
 {
-  int count = 0;
+  auto count = 0;
   try
   {
     json::value* root = json::parse (input);
@@ -146,10 +142,7 @@ int CmdImport::import (const std::string& input)
   //   { ... }
   catch (std::string& e)
   {
-    std::vector <std::string> lines;
-    split (lines, input, '\n');
-
-    for (auto& line : lines)
+    for (auto& line : split (input, '\n'))
     {
       if (line.length ())
       {
@@ -173,16 +166,16 @@ void CmdImport::importSingleTask (json::object* obj)
   // Parse the whole thing, validate the data.
   Task task (obj);
 
-  bool hasGeneratedEntry = not task.has ("entry");
-  bool hasExplicitEnd = task.has ("end");
+  auto hasGeneratedEntry = not task.has ("entry");
+  auto hasExplicitEnd = task.has ("end");
 
   task.validate ();
 
-  bool hasGeneratedEnd = not hasExplicitEnd and task.has ("end");
+  auto hasGeneratedEnd = not hasExplicitEnd and task.has ("end");
 
   // Check whether the imported task is new or a modified existing task.
   Task before;
-  if (context.tdb2.get (task.get ("uuid"), before))
+  if (Context::getContext ().tdb2.get (task.get ("uuid"), before))
   {
     // We need to neglect updates from attributes with dynamic defaults
     // unless they have been explicitly specified on import.
@@ -219,14 +212,14 @@ void CmdImport::importSingleTask (json::object* obj)
   }
   else
   {
-    context.tdb2.add (task);
+    Context::getContext ().tdb2.add (task);
     std::cout << " add  ";
   }
 
   std::cout << task.get ("uuid")
-            << " "
+            << ' '
             << task.get ("description")
-            << "\n";
+            << '\n';
 }
 
 ////////////////////////////////////////////////////////////////////////////////

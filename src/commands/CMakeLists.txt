@@ -1,8 +1,9 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.0)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
+                     ${CMAKE_SOURCE_DIR}/src/libshared/src
                      ${TASK_INCLUDE_DIRS})
 
 set (commands_SRCS Command.cpp        Command.h
@@ -40,6 +41,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdModify.cpp      CmdModify.h
                    CmdPrepend.cpp     CmdPrepend.h
                    CmdProjects.cpp    CmdProjects.h
+                   CmdPurge.cpp       CmdPurge.h
                    CmdReports.cpp     CmdReports.h
                    CmdShow.cpp        CmdShow.h
                    CmdStart.cpp       CmdStart.h

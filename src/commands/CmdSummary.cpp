@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,21 +31,18 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
-#include <ViewText.h>
-#include <ISO8601.h>
-#include <text.h>
+#include <Table.h>
+#include <Duration.h>
+#include <format.h>
 #include <util.h>
-#include <i18n.h>
 #include <main.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdSummary::CmdSummary ()
 {
   _keyword               = "summary";
   _usage                 = "task <filter> summary";
-  _description           = STRING_CMD_SUMMARY_USAGE;
+  _description           = "Shows a report of task status by project";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -63,7 +60,7 @@ CmdSummary::CmdSummary ()
 int CmdSummary::execute (std::string& output)
 {
   int rc = 0;
-  bool showAllProjects = context.config.getBoolean ("summary.all.projects");
+  bool showAllProjects = Context::getContext ().config.getBoolean ("summary.all.projects");
 
   // Apply filter.
   handleRecurrence ();
@@ -82,7 +79,7 @@ int CmdSummary::execute (std::string& output)
   std::map <std::string, int> countCompleted;
   std::map <std::string, double> sumEntry;
   std::map <std::string, int> counter;
-  time_t now = time (NULL);
+  time_t now = time (nullptr);
 
   // Initialize counters.
   for (auto& project : allProjects)
@@ -110,7 +107,7 @@ int CmdSummary::execute (std::string& output)
       {
         ++countPending[parent];
 
-        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
+        time_t entry = strtol (task.get ("entry").c_str (), nullptr, 10);
         if (entry)
           sumEntry[parent] = sumEntry[parent] + (double) (now - entry);
       }
@@ -122,8 +119,8 @@ int CmdSummary::execute (std::string& output)
       {
         ++countCompleted[parent];
 
-        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
-        time_t end   = strtol (task.get ("end").c_str (), NULL, 10);
+        time_t entry = strtol (task.get ("entry").c_str (), nullptr, 10);
+        time_t end   = strtol (task.get ("end").c_str (), nullptr, 10);
         if (entry && end)
           sumEntry[parent] = sumEntry[parent] + (double) (end - entry);
       }
@@ -131,23 +128,21 @@ int CmdSummary::execute (std::string& output)
   }
 
   // Create a table for output.
-  ViewText view;
-  view.width (context.getWidth ());
-  view.add (Column::factory ("string",            STRING_CMD_SUMMARY_PROJECT));
-  view.add (Column::factory ("string.right",      STRING_CMD_SUMMARY_REMAINING));
-  view.add (Column::factory ("string.right",      STRING_CMD_SUMMARY_AVG_AGE));
-  view.add (Column::factory ("string.right",      STRING_CMD_SUMMARY_COMPLETE));
-  view.add (Column::factory ("string.left_fixed", "0%                        100%"));
+  Table view;
+  view.width (Context::getContext ().getWidth ());
+  view.add ("Project");
+  view.add ("Remaining", false);
+  view.add ("Avg age",   false);
+  view.add ("Complete",  false);
+  view.add ("0%                        100%", true, false);
+  setHeaderUnderline (view);
 
   Color bar_color;
   Color bg_color;
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
-    bar_color = Color (context.config.get ("color.summary.bar"));
-    bg_color  = Color (context.config.get ("color.summary.background"));
-
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
+    bar_color = Color (Context::getContext ().config.get ("color.summary.bar"));
+    bg_color  = Color (Context::getContext ().config.get ("color.summary.background"));
   }
 
   int barWidth = 30;
@@ -170,12 +165,12 @@ int CmdSummary::execute (std::string& output)
 
       int row = view.addRow ();
       view.set (row, 0, (i.first == ""
-                          ? STRING_CMD_SUMMARY_NONE
+                          ? "(none)"
                           : indentProject (i.first, "  ", '.')));
 
       view.set (row, 1, countPending[i.first]);
       if (counter[i.first])
-        view.set (row, 2, ISO8601p ((int) (sumEntry[i.first] / (double)counter[i.first])).formatVague ());
+        view.set (row, 2, Duration ((int) (sumEntry[i.first] / (double)counter[i.first])).formatVague ());
 
       int c = countCompleted[i.first];
       int p = countPending[i.first];
@@ -185,7 +180,7 @@ int CmdSummary::execute (std::string& output)
 
       std::string bar;
       std::string subbar;
-      if (context.color ())
+      if (Context::getContext ().color ())
       {
         bar += bar_color.colorize (std::string (           completedBar, ' '));
         bar += bg_color.colorize  (std::string (barWidth - completedBar, ' '));
@@ -199,7 +194,7 @@ int CmdSummary::execute (std::string& output)
 
       char percent[12] = "0%";
       if (c + p)
-        sprintf (percent, "%d%%", 100 * c / (c + p));
+        snprintf (percent, 12, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
       processed.push_back (i.first);
     }
@@ -212,11 +207,11 @@ int CmdSummary::execute (std::string& output)
         << view.render ()
         << optionalBlankLine ();
 
-    out << format (STRING_CMD_PROJECTS_SUMMARY2, view.rows ()) << "\n";
+    out << format ("{1} projects\n", view.rows ());
   }
   else
   {
-    out << STRING_CMD_PROJECTS_NO << "\n";
+    out << "No projects.\n";
     rc = 1;
   }
 

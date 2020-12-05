@@ -12,6 +12,9 @@ from multiprocessing import cpu_count
 from threading import Thread
 from subprocess import call, Popen, PIPE
 
+if sys.version_info > (3,):
+    import codecs
+
 try:
     # python 2
     from Queue import Queue, Empty
@@ -60,7 +63,10 @@ def run_test(testqueue, outqueue, threadname):
 class TestRunner(object):
     def __init__(self):
         self.threads = []
-        self.tap = open(cmd_args.tapfile, 'w')
+        if sys.version_info > (3,):
+            self.tap = open(cmd_args.tapfile, 'w', errors='ignore')
+        else:
+            self.tap = open(cmd_args.tapfile, 'w')
 
         self._parallelq = Queue()
         self._serialq = Queue()
@@ -197,6 +203,9 @@ def parse_args():
 
 
 def main():
+    if sys.version_info > (3,):
+        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+
     runner = TestRunner()
     runner.start()
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,19 +31,19 @@
 #include <math.h>
 #include <Context.h>
 #include <Filter.h>
-#include <ISO8601.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <main.h>
-#include <text.h>
-#include <i18n.h>
-
-extern Context context;
+#include <shared.h>
+#include <format.h>
+#include <util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdInfo::CmdInfo ()
 {
   _keyword               = "information";
   _usage                 = "task <filter> information";
-  _description           = STRING_CMD_INFO_USAGE;
+  _description           = "Shows all data and metadata";
   _read_only             = true;
 
   // This is inaccurate, but it does prevent a GC.  While this doesn't make a
@@ -63,7 +63,7 @@ CmdInfo::CmdInfo ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdInfo::execute (std::string& output)
 {
-  int rc = 0;
+  auto rc = 0;
 
   // Apply filter.
   Filter filter;
@@ -72,23 +72,23 @@ int CmdInfo::execute (std::string& output)
 
   if (! filtered.size ())
   {
-    context.footnote (STRING_FEEDBACK_NO_MATCH);
+    Context::getContext ().footnote ("No matches.");
     rc = 1;
   }
 
   // Get the undo data.
   std::vector <std::string> undo;
-  if (context.config.getBoolean ("journal.info"))
-    undo = context.tdb2.undo.get_lines ();
+  if (Context::getContext ().config.getBoolean ("journal.info"))
+    undo = Context::getContext ().tdb2.undo.get_lines ();
 
   // Determine the output date format, which uses a hierarchy of definitions.
   //   rc.dateformat.info
   //   rc.dateformat
-  std::string dateformat = context.config.get ("dateformat.info");
+  auto dateformat = Context::getContext ().config.get ("dateformat.info");
   if (dateformat == "")
-    dateformat = context.config.get ("dateformat");
+    dateformat = Context::getContext ().config.get ("dateformat");
 
-  std::string dateformatanno = context.config.get ("dateformat.annotation");
+  auto dateformatanno = Context::getContext ().config.get ("dateformat.annotation");
   if (dateformatanno == "")
     dateformatanno = dateformat;
 
@@ -96,27 +96,21 @@ int CmdInfo::execute (std::string& output)
   std::stringstream out;
   for (auto& task : filtered)
   {
-    ViewText view;
-    view.width (context.getWidth ());
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_NAME));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUE));
+    Table view;
+    view.width (Context::getContext ().getWidth ());
+    if (Context::getContext ().config.getBoolean ("obfuscate"))
+      view.obfuscate ();
+    if (Context::getContext ().color ())
+      view.forceColor ();
+    view.add ("Name");
+    view.add ("Value");
+    setHeaderUnderline (view);
 
-    // If an alternating row color is specified, notify the table.
-    if (context.color ())
-    {
-      Color alternate (context.config.get ("color.alternate"));
-      view.colorOdd (alternate);
-      view.intraColorOdd (alternate);
-
-      Color label (context.config.get ("color.label"));
-      view.colorHeader (label);
-    }
-
-    ISO8601d now;
+    Datetime now;
 
     // id
-    int row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_ID);
+    auto row = view.addRow ();
+    view.set (row, 0, "ID");
     view.set (row, 1, (task.id ? format (task.id) : "-"));
 
     std::string status = Lexer::ucFirst (Task::statusToText (task.getStatus ()));
@@ -124,63 +118,59 @@ int CmdInfo::execute (std::string& output)
     // description
     Color c;
     autoColorize (task, c);
-    std::string description = task.get ("description");
-    int indent = context.config.getInteger ("indent.annotation");
+    auto description = task.get ("description");
+    auto indent = Context::getContext ().config.getInteger ("indent.annotation");
 
-    std::map <std::string, std::string> annotations;
-    task.getAnnotations (annotations);
-    for (auto& anno : annotations)
-      description += "\n"
+    for (auto& anno : task.getAnnotations ())
+      description += '\n'
                    + std::string (indent, ' ')
-                   + ISO8601d (anno.first.substr (11)).toString (dateformatanno)
-                   + " "
+                   + Datetime (anno.first.substr (11)).toString (dateformatanno)
+                   + ' '
                    + anno.second;
 
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_DESC);
+    view.set (row, 0, "Description");
     view.set (row, 1, description, c);
 
     // status
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_STATUS);
+    view.set (row, 0, "Status");
     view.set (row, 1, status);
 
     // project
     if (task.has ("project"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_PROJECT);
+      view.set (row, 0, "Project");
       view.set (row, 1, task.get ("project"));
     }
 
     // dependencies: blocked
     {
-      std::vector <Task> blocked;
-      dependencyGetBlocking (task, blocked);
+      auto blocked = dependencyGetBlocking (task);
       if (blocked.size ())
       {
         std::stringstream message;
         for (auto& block : blocked)
-          message << block.id << " " << block.get ("description") << "\n";
+          message << block.id << ' ' << block.get ("description") << '\n';
 
         row = view.addRow ();
-        view.set (row, 0, STRING_CMD_INFO_BLOCKED);
+        view.set (row, 0, "This task blocked by");
         view.set (row, 1, message.str ());
       }
     }
 
     // dependencies: blocking
     {
-      std::vector <Task> blocking;
-      dependencyGetBlocked (task, blocking);
+      auto blocking = dependencyGetBlocked (task);
       if (blocking.size ())
       {
         std::stringstream message;
         for (auto& block : blocking)
-          message << block.id << " " << block.get ("description") << "\n";
+          message << block.id << ' ' << block.get ("description") << '\n';
 
         row = view.addRow ();
-        view.set (row, 0, STRING_CMD_INFO_BLOCKING);
+        view.set (row, 0, "This task is blocking");
         view.set (row, 1, message.str ());
       }
     }
@@ -189,7 +179,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("recur"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_RECUR_L);
+      view.set (row, 0, "Recurrence");
       view.set (row, 1, task.get ("recur"));
     }
 
@@ -197,7 +187,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("parent"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_PARENT);
+      view.set (row, 0, "Parent task");
       view.set (row, 1, task.get ("parent"));
     }
 
@@ -205,7 +195,7 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("mask"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_MASK);
+      view.set (row, 0, "Mask");
       view.set (row, 1, task.get ("mask"));
     }
 
@@ -213,95 +203,93 @@ int CmdInfo::execute (std::string& output)
     if (task.has ("imask"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_MASK_IDX);
+      view.set (row, 0, "Mask Index");
       view.set (row, 1, task.get ("imask"));
     }
 
     // entry
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
-    ISO8601d dt (task.get_date ("entry"));
+    view.set (row, 0, "Entered");
+    Datetime dt (task.get_date ("entry"));
     std::string entry = dt.toString (dateformat);
 
     std::string age;
-    std::string created = task.get ("entry");
+    auto created = task.get ("entry");
     if (created.length ())
     {
-      ISO8601d dt (strtol (created.c_str (), NULL, 10));
-      age = ISO8601p (now - dt).formatVague ();
+      Datetime dt (strtol (created.c_str (), nullptr, 10));
+      age = Duration (now - dt).formatVague ();
     }
 
-    view.set (row, 1, entry + " (" + age + ")");
+    view.set (row, 1, entry + " (" + age + ')');
 
     // wait
     if (task.has ("wait"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_WAITING);
-      view.set (row, 1, ISO8601d (task.get_date ("wait")).toString (dateformat));
+      view.set (row, 0, "Waiting until");
+      view.set (row, 1, Datetime (task.get_date ("wait")).toString (dateformat));
     }
 
     // scheduled
     if (task.has ("scheduled"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_SCHED);
-      view.set (row, 1, ISO8601d (task.get_date ("scheduled")).toString (dateformat));
+      view.set (row, 0, "Scheduled");
+      view.set (row, 1, Datetime (task.get_date ("scheduled")).toString (dateformat));
     }
 
     // start
     if (task.has ("start"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_START);
-      view.set (row, 1, ISO8601d (task.get_date ("start")).toString (dateformat));
+      view.set (row, 0, "Start");
+      view.set (row, 1, Datetime (task.get_date ("start")).toString (dateformat));
     }
 
     // due (colored)
     if (task.has ("due"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_DUE);
-      view.set (row, 1, ISO8601d (task.get_date ("due")).toString (dateformat));
+      view.set (row, 0, "Due");
+      view.set (row, 1, Datetime (task.get_date ("due")).toString (dateformat));
     }
 
     // end
     if (task.has ("end"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_END);
-      view.set (row, 1, ISO8601d (task.get_date ("end")).toString (dateformat));
+      view.set (row, 0, "End");
+      view.set (row, 1, Datetime (task.get_date ("end")).toString (dateformat));
     }
 
     // until
     if (task.has ("until"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_UNTIL);
-      view.set (row, 1, ISO8601d (task.get_date ("until")).toString (dateformat));
+      view.set (row, 0, "Until");
+      view.set (row, 1, Datetime (task.get_date ("until")).toString (dateformat));
     }
 
     // modified
     if (task.has ("modified"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_MODIFIED);
+      view.set (row, 0, "Last modified");
 
-      ISO8601d mod (task.get_date ("modified"));
-      std::string age = ISO8601p (now - mod).formatVague ();
-      view.set (row, 1, mod.toString (dateformat) + " (" + age + ")");
+      Datetime mod (task.get_date ("modified"));
+      std::string age = Duration (now - mod).formatVague ();
+      view.set (row, 1, mod.toString (dateformat) + " (" + age + ')');
     }
 
     // tags ...
-    std::vector <std::string> tags;
-    task.getTags (tags);
+    auto tags = task.getTags ();
     if (tags.size ())
     {
-      std::string allTags;
-      join (allTags, " ", tags);
+      auto allTags = join (" ", tags);
 
       row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_TAGS);
+      view.set (row, 0, "Tags");
       view.set (row, 1, allTags);
     }
 
@@ -319,11 +307,15 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("DELETED"))   virtualTags += "DELETED ";
       if (task.hasTag ("DUE"))       virtualTags += "DUE ";
       if (task.hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";
+      if (task.hasTag ("LATEST"))    virtualTags += "LATEST ";
       if (task.hasTag ("MONTH"))     virtualTags += "MONTH ";
       if (task.hasTag ("ORPHAN"))    virtualTags += "ORPHAN ";
       if (task.hasTag ("OVERDUE"))   virtualTags += "OVERDUE ";
       if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";
       if (task.hasTag ("PENDING"))   virtualTags += "PENDING ";
+      if (task.hasTag ("PRIORITY"))  virtualTags += "PRIORITY ";
+      if (task.hasTag ("PROJECT"))   virtualTags += "PROJECT ";
+      if (task.hasTag ("QUARTER"))   virtualTags += "QUARTER ";
       if (task.hasTag ("READY"))     virtualTags += "READY ";
       if (task.hasTag ("SCHEDULED")) virtualTags += "SCHEDULED ";
       if (task.hasTag ("TAGGED"))    virtualTags += "TAGGED ";
@@ -336,51 +328,48 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("WEEK"))      virtualTags += "WEEK ";
       if (task.hasTag ("YEAR"))      virtualTags += "YEAR ";
       if (task.hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
-      if (task.hasTag ("LATEST"))    virtualTags += "LATEST ";
-      if (task.hasTag ("PROJECT"))   virtualTags += "PROJECT ";
-      if (task.hasTag ("PRIORITY"))  virtualTags += "PRIORITY ";
       // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_VIRTUAL_TAGS);
+      view.set (row, 0, "Virtual tags");
       view.set (row, 1, virtualTags);
     }
 
     // uuid
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_UUID);
-    std::string uuid = task.get ("uuid");
+    view.set (row, 0, "UUID");
+    auto uuid = task.get ("uuid");
     view.set (row, 1, uuid);
 
     // Task::urgency
     row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
+    view.set (row, 0, "Urgency");
     view.set (row, 1, format (task.urgency (), 4, 4));
 
     // Show any UDAs
-    std::vector <std::string> all = task.all ();
+    auto all = task.all ();
     std::string type;
     for (auto& att: all)
     {
-      if (context.columns.find (att) != context.columns.end ())
+      if (Context::getContext ().columns.find (att) != Context::getContext ().columns.end ())
       {
-        Column* col = context.columns[att];
+        Column* col = Context::getContext ().columns[att];
         if (col->is_uda ())
         {
-          std::string value = task.get (att);
+          auto value = task.get (att);
           if (value != "")
           {
             row = view.addRow ();
             view.set (row, 0, col->label ());
 
             if (type == "date")
-              value = ISO8601d (value).toString (dateformat);
+              value = Datetime (value).toString (dateformat);
             else if (type == "duration")
             {
-              ISO8601p iso;
+              Duration iso;
               std::string::size_type cursor = 0;
               if (iso.parse (value, cursor))
-                value = (std::string) Variant ((time_t) iso, Variant::type_duration);
+                value = (std::string) Variant (iso.toTime_t (), Variant::type_duration);
               else
                 value = "PT0S";
             }
@@ -396,35 +385,38 @@ int CmdInfo::execute (std::string& output)
     for (auto& att : all)
     {
       if (att.substr (0, 11) != "annotation_" &&
-          context.columns.find (att) == context.columns.end ())
+          Context::getContext ().columns.find (att) == Context::getContext ().columns.end ())
       {
          row = view.addRow ();
-         view.set (row, 0, "[" + att);
-         view.set (row, 1, task.get (att) + "]");
+         view.set (row, 0, '[' + att);
+         view.set (row, 1, task.get (att) + ']');
       }
     }
 
     // Create a second table, containing urgency details, if necessary.
-    ViewText urgencyDetails;
+    Table urgencyDetails;
     if (task.urgency () != 0.0)
     {
-      if (context.color ())
+      setHeaderUnderline (urgencyDetails);
+      if (Context::getContext ().color ())
       {
-        Color alternate (context.config.get ("color.alternate"));
+        Color alternate (Context::getContext ().config.get ("color.alternate"));
         urgencyDetails.colorOdd (alternate);
         urgencyDetails.intraColorOdd (alternate);
-
-        Color label (context.config.get ("color.label"));
-        urgencyDetails.colorHeader (label);
       }
 
-      urgencyDetails.width (context.getWidth ());
-      urgencyDetails.add (Column::factory ("string", "")); // Attribute
-      urgencyDetails.add (Column::factory ("string", "")); // Value
-      urgencyDetails.add (Column::factory ("string", "")); // *
-      urgencyDetails.add (Column::factory ("string", "")); // Coefficient
-      urgencyDetails.add (Column::factory ("string", "")); // =
-      urgencyDetails.add (Column::factory ("string", "")); // Result
+      if (Context::getContext ().config.getBoolean ("obfuscate"))
+        urgencyDetails.obfuscate ();
+      if (Context::getContext ().config.getBoolean ("color"))
+        view.forceColor ();
+
+      urgencyDetails.width (Context::getContext ().getWidth ());
+      urgencyDetails.add (""); // Attribute
+      urgencyDetails.add (""); // Value
+      urgencyDetails.add (""); // *
+      urgencyDetails.add (""); // Coefficient
+      urgencyDetails.add (""); // =
+      urgencyDetails.add (""); // Result
 
       urgencyTerm (urgencyDetails, "project",     task.urgency_project (),     Task::urgencyProjectCoefficient);
       urgencyTerm (urgencyDetails, "active",      task.urgency_active (),      Task::urgencyActiveCoefficient);
@@ -447,7 +439,7 @@ int CmdInfo::execute (std::string& output)
           if (var.first.substr (13, 8) == "project." &&
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
-            std::string project = var.first.substr (21, end - 21);
+            auto project = var.first.substr (21, end - 21);
             if (task.get ("project").find (project) == 0)
               urgencyTerm (urgencyDetails, "PROJECT " + project, 1.0, var.second);
           }
@@ -456,7 +448,7 @@ int CmdInfo::execute (std::string& output)
           if (var.first.substr (13, 4) == "tag." &&
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
-            std::string name = var.first.substr (17, end - 17);
+            auto name = var.first.substr (17, end - 17);
             if (task.hasTag (name))
               urgencyTerm (urgencyDetails, "TAG " + name, 1.0, var.second);
           }
@@ -465,7 +457,7 @@ int CmdInfo::execute (std::string& output)
           if (var.first.substr (13, 8) == "keyword." &&
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
-            std::string keyword = var.first.substr (21, end - 21);
+            auto keyword = var.first.substr (21, end - 21);
             if (task.get ("description").find (keyword) != std::string::npos)
               urgencyTerm (urgencyDetails, "KEYWORD " + keyword, 1.0, var.second);
           }
@@ -479,7 +471,7 @@ int CmdInfo::execute (std::string& output)
           auto end = var.first.find (".coefficient");
           if (end != std::string::npos)
           {
-            const std::string uda = var.first.substr (12, end - 12);
+            auto uda = var.first.substr (12, end - 12);
             auto dot = uda.find (".");
             if (dot == std::string::npos)
             {
@@ -504,24 +496,19 @@ int CmdInfo::execute (std::string& output)
     }
 
     // Create a third table, containing undo log change details.
-    ViewText journal;
+    Table journal;
+    setHeaderUnderline (journal);
 
-    // If an alternating row color is specified, notify the table.
-    if (context.color ())
-    {
-      Color alternate (context.config.get ("color.alternate"));
-      journal.colorOdd (alternate);
-      journal.intraColorOdd (alternate);
+    if (Context::getContext ().config.getBoolean ("obfuscate"))
+      journal.obfuscate ();
+    if (Context::getContext ().config.getBoolean ("color"))
+      journal.forceColor ();
 
-      Color label (context.config.get ("color.label"));
-      journal.colorHeader (label);
-    }
+    journal.width (Context::getContext ().getWidth ());
+    journal.add ("Date");
+    journal.add ("Modification");
 
-    journal.width (context.getWidth ());
-    journal.add (Column::factory ("string", STRING_COLUMN_LABEL_DATE));
-    journal.add (Column::factory ("string", STRING_CMD_INFO_MODIFICATION));
-
-    if (context.config.getBoolean ("journal.info") &&
+    if (Context::getContext ().config.getBoolean ("journal.info") &&
         undo.size () > 3)
     {
       // Scan the undo data for entries matching this task, without making
@@ -545,12 +532,12 @@ int CmdInfo::execute (std::string& output)
           {
             int row = journal.addRow ();
 
-            ISO8601d timestamp (strtol (undo[when].substr (5).c_str (), NULL, 10));
+            Datetime timestamp (strtol (undo[when].substr (5).c_str (), nullptr, 10));
             journal.set (row, 0, timestamp.toString (dateformat));
 
             Task before (undo[previous].substr (4));
             Task after (undo[current].substr (4));
-            journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, timestamp.toEpoch()));
+            journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
           }
         }
       }
@@ -558,15 +545,15 @@ int CmdInfo::execute (std::string& output)
 
     out << optionalBlankLine ()
         << view.render ()
-        << "\n";
+        << '\n';
 
     if (urgencyDetails.rows () > 0)
       out << urgencyDetails.render ()
-          << "\n";
+          << '\n';
 
     if (journal.rows () > 0)
       out << journal.render ()
-          << "\n";
+          << '\n';
   }
 
   output = out.str ();
@@ -575,15 +562,15 @@ int CmdInfo::execute (std::string& output)
 
 ////////////////////////////////////////////////////////////////////////////////
 void CmdInfo::urgencyTerm (
-  ViewText& view,
+  Table& view,
   const std::string& label,
   float measure,
   float coefficient) const
 {
-  float value = measure * coefficient;
+  auto value = measure * coefficient;
   if (value != 0.0)
   {
-    int row = view.addRow ();
+    auto row = view.addRow ();
     view.set (row, 0, "    " + label);
     view.set (row, 1, rightJustify (format (measure, 5, 3), 6));
     view.set (row, 2, "*");

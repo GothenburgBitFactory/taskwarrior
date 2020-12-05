@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,19 +29,21 @@
 #include <iostream>
 #include <Context.h>
 #include <Filter.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
-#include <i18n.h>
 #include <main.h>
 
-extern Context context;
+#define STRING_CMD_DENO_NO           "Task not denotated."
+#define STRING_CMD_DENO_1            "Denotated {1} task."
+#define STRING_CMD_DENO_N            "Denotated {1} tasks."
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdDenotate::CmdDenotate ()
 {
   _keyword               = "denotate";
   _usage                 = "task <filter> denotate <pattern>";
-  _description           = STRING_CMD_DENO_USAGE;
+  _description           = "Deletes an annotation";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -55,9 +57,9 @@ CmdDenotate::CmdDenotate ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdDenotate::execute (std::string&)
 {
-  int rc = 0;
-  int count = 0;
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+  auto rc = 0;
+  auto count = 0;
+  auto sensitive = Context::getContext ().config.getBoolean ("search.case.sensitive");
 
   // Apply filter.
   Filter filter;
@@ -65,13 +67,13 @@ int CmdDenotate::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
   // Extract all the ORIGINAL MODIFICATION args as simple text patterns.
   std::string pattern = "";
-  for (auto& a : context.cli2._args)
+  for (auto& a : Context::getContext ().cli2._args)
   {
     if (a.hasTag ("MISCELLANEOUS"))
     {
@@ -89,14 +91,13 @@ int CmdDenotate::execute (std::string&)
   {
     Task before (task);
 
-    std::map <std::string, std::string> annotations;
-    task.getAnnotations (annotations);
+    auto annotations = task.getAnnotations ();
 
     if (annotations.size () == 0)
-      throw std::string (STRING_CMD_DENO_NONE);
+      throw std::string ("The specified task has no annotations that can be deleted.");
 
     std::string anno;
-    bool match = false;
+    auto match = false;
     for (auto i = annotations.begin (); i != annotations.end (); ++i)
     {
       if (i->second == pattern)
@@ -126,21 +127,21 @@ int CmdDenotate::execute (std::string&)
 
     if (before.data != task.data)
     {
-      std::string question = format (STRING_CMD_DENO_CONFIRM,
-                                     task.identifier (true),
-                                     task.get ("description"));
+      auto question = format ("Denotate task {1} '{2}'?",
+                              task.identifier (true),
+                              task.get ("description"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         ++count;
-        context.tdb2.modify (task);
-        feedback_affected (format (STRING_CMD_DENO_FOUND, anno));
-        if (context.verbose ("project"))
+        Context::getContext ().tdb2.modify (task);
+        feedback_affected (format ("Found annotation '{1}' and deleted it.", anno));
+        if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task, false);
       }
       else
       {
-        std::cout << STRING_CMD_DENO_NO << "\n";
+        std::cout << STRING_CMD_DENO_NO << '\n';
         rc = 1;
         if (_permission_quit)
           break;
@@ -148,15 +149,15 @@ int CmdDenotate::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_DENO_NOMATCH, pattern) << "\n";
+      std::cout << format ("Did not find any matching annotation to be deleted for '{1}'.\n", pattern);
       rc = 1;
     }
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_DENO_1 : STRING_CMD_DENO_N, count);
   return rc;

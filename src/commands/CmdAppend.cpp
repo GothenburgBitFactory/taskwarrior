@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,19 +29,16 @@
 #include <iostream>
 #include <Context.h>
 #include <Filter.h>
-#include <util.h>
-#include <text.h>
-#include <i18n.h>
+#include <shared.h>
+#include <format.h>
 #include <main.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdAppend::CmdAppend ()
 {
   _keyword               = "append";
   _usage                 = "task <filter> append <mods>";
-  _description           = STRING_CMD_APPEND_USAGE;
+  _description           = "Appends text to an existing task description";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -64,7 +61,7 @@ int CmdAppend::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -78,47 +75,47 @@ int CmdAppend::execute (std::string&)
     Task before (task);
 
     // Append to the specified task.
-    std::string question = format (STRING_CMD_APPEND_CONFIRM,
-                                   task.identifier (true),
-                                   task.get ("description"));
+    auto question = format ("Append to task {1} '{2}'?",
+                            task.identifier (true),
+                            task.get ("description"));
 
     task.modify (Task::modAppend, true);
 
     if (permission (taskDifferences (before, task) + question, filtered.size ()))
     {
-      context.tdb2.modify (task);
+      Context::getContext ().tdb2.modify (task);
       ++count;
-      feedback_affected (STRING_CMD_APPEND_TASK, task);
-      if (context.verbose ("project"))
+      feedback_affected ("Appending to task {1} '{2}'.", task);
+      if (Context::getContext ().verbose ("project"))
         projectChanges[task.get ("project")] = onProjectChange (task, false);
 
       // Append to siblings.
       if (task.has ("parent"))
       {
-        if ((context.config.get ("recurrence.confirmation") == "prompt"
-             && confirm (STRING_CMD_APPEND_CONFIRM_R)) ||
-            context.config.getBoolean ("recurrence.confirmation"))
+        if ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
+             && confirm ("This is a recurring task.  Do you want to append to all pending recurrences of this same task?")) ||
+            Context::getContext ().config.getBoolean ("recurrence.confirmation"))
         {
-          std::vector <Task> siblings = context.tdb2.siblings (task);
+          std::vector <Task> siblings = Context::getContext ().tdb2.siblings (task);
           for (auto& sibling : siblings)
           {
             sibling.modify (Task::modAppend, true);
-            context.tdb2.modify (sibling);
+            Context::getContext ().tdb2.modify (sibling);
             ++count;
-            feedback_affected (STRING_CMD_APPEND_TASK_R, sibling);
+            feedback_affected ("Appending to recurring task {1} '{2}'.", sibling);
           }
 
           // Append to the parent
           Task parent;
-          context.tdb2.get (task.get ("parent"), parent);
+          Context::getContext ().tdb2.get (task.get ("parent"), parent);
           parent.modify (Task::modAppend, true);
-          context.tdb2.modify (parent);
+          Context::getContext ().tdb2.modify (parent);
         }
       }
     }
     else
     {
-      std::cout << STRING_CMD_APPEND_NO << "\n";
+      std::cout << "Task not appended.\n";
       rc = 1;
       if (_permission_quit)
         break;
@@ -126,11 +123,11 @@ int CmdAppend::execute (std::string&)
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_APPEND_1 : STRING_CMD_APPEND_N, count);
+  feedback_affected (count == 1 ? "Appended {1} task." : "Appended {1} tasks.", count);
   return rc;
 }
 

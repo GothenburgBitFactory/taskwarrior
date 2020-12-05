@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,11 +28,11 @@
 #define INCLUDED_TDB2
 
 #include <map>
+#include <unordered_set>
 #include <unordered_map>
 #include <vector>
 #include <string>
 #include <stdio.h>
-#include <ViewText.h>
 #include <FS.h>
 #include <Task.h>
 
@@ -54,6 +54,7 @@ public:
 
   void add_task (Task&);
   bool modify_task (const Task&);
+  bool purge_task (const Task&);
   void add_line (const std::string&);
   void clear_tasks ();
   void clear_lines ();
@@ -90,6 +91,7 @@ public:
 
   std::vector <Task> _added_tasks;
   std::vector <Task> _modified_tasks;
+  std::unordered_set <std::string> _purged_tasks;
   std::vector <std::string> _lines;
   std::vector <std::string> _added_lines;
   File _file;
@@ -110,6 +112,7 @@ public:
   void set_location (const std::string&);
   void add (Task&, bool add_to_backlog = true);
   void modify (Task&, bool add_to_backlog = true);
+  void purge (Task&);
   void commit ();
   void get_changes (std::vector <Task>&);
   void revert ();

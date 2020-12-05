@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -35,13 +35,14 @@
 #include <signal.h>
 #include <Context.h>
 #include <Color.h>
-#include <ISO8601.h>
-#include <i18n.h>
-#include <text.h>
-#include <util.h>
+#include <Datetime.h>
+#include <Table.h>
+#include <shared.h>
+#include <format.h>
 #include <main.h>
+#include <util.h>
 
-extern Context context;
+#define STRING_TDB2_REVERTED         "Modified task reverted."
 
 bool TDB2::debug_mode = false;
 
@@ -60,8 +61,7 @@ TF2::TF2 ()
 TF2::~TF2 ()
 {
   if (_dirty && TDB2::debug_mode)
-    std::cout << format (STRING_TDB2_DIRTY_EXIT, std::string (_file))
-              << "\n";
+    std::cout << format ("Exiting with unwritten changes to {1}\n", std::string (_file));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ void TF2::add_task (Task& task)
   _added_tasks.push_back (task);     // For commit/synch
 
   // For faster lookup
-  if (context.cli2.getCommand () == "import")
+  if (Context::getContext ().cli2.getCommand () == "import")
     _tasks_map.insert (std::pair<std::string, Task> (task.get("uuid"), task));
 
   Task::status status = task.getStatus ();
@@ -178,7 +178,7 @@ void TF2::add_task (Task& task)
        status == Task::recurring ||
        status == Task::waiting))
   {
-    task.id = context.tdb2.next_id ();
+    task.id = Context::getContext ().tdb2.next_id ();
   }
 
   _I2U[task.id] = task.get ("uuid");
@@ -192,7 +192,7 @@ bool TF2::modify_task (const Task& task)
 {
   std::string uuid = task.get ("uuid");
 
-  if (context.cli2.getCommand () == "import")
+  if (Context::getContext ().cli2.getCommand () == "import")
   {
     // Update map used for faster lookup
     auto i = _tasks_map.find (uuid);
@@ -216,6 +216,21 @@ bool TF2::modify_task (const Task& task)
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool TF2::purge_task (const Task& task)
+{
+  // Bail out if task is not found in this file
+  std::string uuid = task.get ("uuid");
+  if (!has (uuid))
+    return false;
+
+  // Mark the task to be purged
+  _purged_tasks.insert (uuid);
+  _dirty = true;
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,12 +263,12 @@ void TF2::commit ()
   if (_dirty)
   {
     // Special case: added but no modified means just append to the file.
-    if (!_modified_tasks.size () &&
+    if (!_modified_tasks.size () && !_purged_tasks.size () &&
         (_added_tasks.size () || _added_lines.size ()))
     {
       if (_file.open ())
       {
-        if (context.config.getBoolean ("locking"))
+        if (Context::getContext ().config.getBoolean ("locking"))
           _file.lock ();
 
         // Write out all the added tasks.
@@ -275,7 +290,7 @@ void TF2::commit ()
     {
       if (_file.open ())
       {
-        if (context.config.getBoolean ("locking"))
+        if (Context::getContext ().config.getBoolean ("locking"))
           _file.lock ();
 
         // Truncate the file and rewrite.
@@ -284,7 +299,9 @@ void TF2::commit ()
         // Only write out _tasks, because any deltas have already been applied.
         _file.append (std::string(""));  // Seek to end of file
         for (auto& task : _tasks)
-          _file.write_raw (task.composeF4 () + "\n");
+          // Skip over the tasks that are marked to be purged
+          if (_purged_tasks.find (task.get ("uuid")) == _purged_tasks.end ())
+            _file.write_raw (task.composeF4 () + '\n');
 
         // Write out all the added lines.
         _file.append (_added_lines);
@@ -308,9 +325,9 @@ Task TF2::load_task (const std::string& line)
   {
     Task::status status = task.getStatus ();
     // Completed / deleted tasks in pending.data get an ID if GC is off.
-    if (! context.run_gc ||
+    if (! Context::getContext ().run_gc ||
         (status != Task::completed && status != Task::deleted))
-      task.id = context.tdb2.next_id ();
+      task.id = Context::getContext ().tdb2.next_id ();
   }
 
   // Maintain mapping for ease of link/dependency resolution.
@@ -330,41 +347,41 @@ Task TF2::load_task (const std::string& line)
 // or needs to be 'woken'.
 void TF2::load_gc (Task& task)
 {
-  ISO8601d now;
+  Datetime now;
 
   std::string status = task.get ("status");
   if (status == "pending" ||
       status == "recurring")
   {
-    context.tdb2.pending._tasks.push_back (task);
+    Context::getContext ().tdb2.pending._tasks.push_back (task);
   }
   else if (status == "waiting")
   {
-    ISO8601d wait (task.get_date ("wait"));
+    Datetime wait (task.get_date ("wait"));
     if (wait < now)
     {
       task.set ("status", "pending");
       task.remove ("wait");
       // Unwaiting pending tasks is the only case not caught by the size()
       // checks in TDB2::gc(), so we need to signal it here.
-      context.tdb2.pending._dirty = true;
+      Context::getContext ().tdb2.pending._dirty = true;
 
-      if (context.verbose ("unwait"))
-        context.footnote (format (STRING_TDB2_UNWAIT, task.get ("description")));
+      if (Context::getContext ().verbose ("unwait"))
+        Context::getContext ().footnote (format ("Un-waiting task {1} '{2}'", task.id, task.get ("description")));
     }
 
-    context.tdb2.pending._tasks.push_back (task);
+    Context::getContext ().tdb2.pending._tasks.push_back (task);
   }
   else
   {
-    context.tdb2.completed._tasks.push_back (task);
+    Context::getContext ().tdb2.completed._tasks.push_back (task);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_tasks (bool from_gc /* = false */)
 {
-  context.timer_load.start ();
+  Timer timer;
 
   if (! _loaded_lines)
   {
@@ -392,7 +409,7 @@ void TF2::load_tasks (bool from_gc /* = false */)
       else
         _tasks.push_back (task);
 
-      if (context.cli2.getCommand () == "import")  // For faster lookup only
+      if (Context::getContext ().cli2.getCommand () == "import")  // For faster lookup only
         _tasks_map.insert (std::pair<std::string, Task> (task.get("uuid"), task));
     }
 
@@ -405,10 +422,10 @@ void TF2::load_tasks (bool from_gc /* = false */)
 
   catch (const std::string& e)
   {
-    throw e + format (STRING_TDB2_PARSE_ERROR, _file._data, line_number);
+    throw e + format (" in {1} at line {2}", _file._data, line_number);
   }
 
-  context.timer_load.stop ();
+  Context::getContext ().time_load_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -416,7 +433,7 @@ void TF2::load_lines ()
 {
   if (_file.open ())
   {
-    if (context.config.getBoolean ("locking"))
+    if (Context::getContext ().config.getBoolean ("locking"))
       _file.lock ();
 
     _file.read (_lines);
@@ -492,6 +509,7 @@ void TF2::clear ()
   _tasks.clear ();
   _added_tasks.clear ();
   _modified_tasks.clear ();
+  _purged_tasks.clear ();
   _lines.clear ();
   _added_lines.clear ();
   _I2U.clear ();
@@ -509,10 +527,7 @@ void TF2::dependency_scan ()
   {
     if (left.has ("depends"))
     {
-      std::vector <std::string> deps;
-      left.getDependencies (deps);
-
-      for (auto& dep : deps)
+      for (auto& dep : left.getDependencyUUIDs ())
       {
         for (auto& right : _tasks)
         {
@@ -553,8 +568,8 @@ const std::string TF2::dump ()
     label = rightJustify (_file._data.substr (slash + 1), 14);
 
   // File mode.
-  std::string mode = std::string (_file.readable () ? "r" : "-") +
-                     std::string (_file.writable () ? "w" : "-");
+  std::string mode = std::string (_file.exists () && _file.readable () ? "r" : "-") +
+                     std::string (_file.exists () && _file.writable () ? "w" : "-");
        if (mode == "r-") mode = red.colorize (mode);
   else if (mode == "rw") mode = green.colorize (mode);
   else                   mode = yellow.colorize (mode);
@@ -565,17 +580,19 @@ const std::string TF2::dump ()
   std::string tasks          = green.colorize  (rightJustifyZero ((int) _tasks.size (),          4));
   std::string tasks_added    = red.colorize    (rightJustifyZero ((int) _added_tasks.size (),    3));
   std::string tasks_modified = yellow.colorize (rightJustifyZero ((int) _modified_tasks.size (), 3));
+  std::string tasks_purged   = red.colorize    (rightJustifyZero ((int) _purged_tasks.size (),   3));
   std::string lines          = green.colorize  (rightJustifyZero ((int) _lines.size (),          4));
   std::string lines_added    = red.colorize    (rightJustifyZero ((int) _added_lines.size (),    3));
 
   char buffer[256];  // Composed string is actually 246 bytes.  Yikes.
-  snprintf (buffer, 256, "%14s %s %s T%s+%s~%s L%s+%s",
+  snprintf (buffer, 256, "%14s %s %s T%s+%s~%s-%s L%s+%s",
             label.c_str (),
             mode.c_str (),
             hygiene.c_str (),
             tasks.c_str (),
             tasks_added.c_str (),
             tasks_modified.c_str (),
+            tasks_purged.c_str (),
             lines.c_str (),
             lines_added.c_str ());
 
@@ -621,12 +638,12 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   // If the tasks are loaded, then verify that this uuid is not already in
   // the file.
   if (!verifyUniqueUUID (uuid))
-    throw format (STRING_TDB2_UUID_NOT_UNIQUE, uuid);
+    throw format ("Cannot add task because the uuid '{1}' is not unique.", uuid);
 
   // Only locally-added tasks trigger hooks.  This means that tasks introduced
   // via 'sync' do not trigger hooks.
   if (add_to_backlog)
-    context.hooks.onAdd (task);
+    Context::getContext ().hooks.onAdd (task);
 
   update (task, add_to_backlog, true);
 }
@@ -643,10 +660,17 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
   {
     Task original;
     get (uuid, original);
-    context.hooks.onModify (original, task);
+    Context::getContext ().hooks.onModify (original, task);
   }
 
   update (task, add_to_backlog);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::purge (Task& task)
+{
+  // Delete the task from completed.data
+  completed.purge_task (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -681,9 +705,9 @@ void TDB2::update (
     // old <task>
     // new <task>
     // ---
-    undo.add_line ("time " + ISO8601d ().toEpochString () + "\n");
-    undo.add_line ("old " + original.composeF4 () + "\n");
-    undo.add_line ("new " + task.composeF4 () + "\n");
+    undo.add_line ("time " + Datetime ().toEpochString () + '\n');
+    undo.add_line ("old " + original.composeF4 () + '\n');
+    undo.add_line ("new " + task.composeF4 () + '\n');
     undo.add_line ("---\n");
   }
   else
@@ -700,19 +724,21 @@ void TDB2::update (
     //   time <time>
     //   new <task>
     //   ---
-    undo.add_line ("time " + ISO8601d ().toEpochString () + "\n");
-    undo.add_line ("new " + task.composeF4 () + "\n");
+    undo.add_line ("time " + Datetime ().toEpochString () + '\n');
+    undo.add_line ("new " + task.composeF4 () + '\n');
     undo.add_line ("---\n");
   }
 
   // Add task to backlog.
   if (add_to_backlog)
-    backlog.add_line (task.composeJSON () + "\n");
+    backlog.add_line (task.composeJSON () + '\n');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::commit ()
 {
+  Timer timer;
+
   // Ignore harmful signals.
   signal (SIGHUP,    SIG_IGN);
   signal (SIGINT,    SIG_IGN);
@@ -722,10 +748,7 @@ void TDB2::commit ()
   signal (SIGUSR2,   SIG_IGN);
 
   dump ();
-  context.timer_commit.start ();
-
   gather_changes ();
-
   pending.commit ();
   completed.commit ();
   undo.commit ();
@@ -739,7 +762,7 @@ void TDB2::commit ()
   signal (SIGUSR1,   SIG_DFL);
   signal (SIGUSR2,   SIG_DFL);
 
-  context.timer_commit.stop ();
+  Context::getContext ().time_commit_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -778,8 +801,8 @@ void TDB2::revert ()
 
   // Display diff and confirm.
   show_diff (current, prior, when);
-  if (! context.config.getBoolean ("confirmation") ||
-      confirm (STRING_TDB2_UNDO_CONFIRM))
+  if (! Context::getContext ().config.getBoolean ("confirmation") ||
+      confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
   {
     // There are six kinds of change possible.  Determine which one, and act
     // accordingly.
@@ -834,7 +857,7 @@ void TDB2::revert ()
     File::write (backlog._file._data, b);
   }
   else
-    std::cout << STRING_CMD_CONFIG_NO_CHANGE << "\n";
+    std::cout << "No changes made.\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -846,7 +869,7 @@ void TDB2::revert_undo (
   std::string& prior)
 {
   if (u.size () < 3)
-    throw std::string (STRING_TDB2_NO_UNDO);
+    throw std::string ("There are no recorded transactions to undo.");
 
   // pop last tx
   u.pop_back (); // separator.
@@ -873,7 +896,7 @@ void TDB2::revert_undo (
   if (uuidAtt != std::string::npos)
     uuid = current.substr (uuidAtt + 6, 36); // "uuid:"<uuid>" --> <uuid>
   else
-    throw std::string (STRING_TDB2_MISSING_UUID);
+    throw std::string ("Cannot locate UUID in task to undo.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -882,25 +905,25 @@ void TDB2::revert_pending (
   const std::string& uuid,
   const std::string& prior)
 {
-  std::string uuid_att = "uuid:\"" + uuid + "\"";
+  std::string uuid_att = "uuid:\"" + uuid + '"';
 
   // is 'current' in pending?
   for (auto task = p.begin (); task != p.end (); ++task)
   {
     if (task->find (uuid_att) != std::string::npos)
     {
-      context.debug ("TDB::revert - task found in pending.data");
+      Context::getContext ().debug ("TDB::revert - task found in pending.data");
 
       // Either revert if there was a prior state, or remove the task.
       if (prior != "")
       {
         *task = prior;
-        std::cout << STRING_TDB2_REVERTED << "\n";
+        std::cout << STRING_TDB2_REVERTED << '\n';
       }
       else
       {
         p.erase (task);
-        std::cout << STRING_TDB2_REMOVED << "\n";
+        std::cout << "Task removed.\n";
       }
 
       break;
@@ -915,14 +938,14 @@ void TDB2::revert_completed (
   const std::string& uuid,
   const std::string& prior)
 {
-  std::string uuid_att = "uuid:\"" + uuid + "\"";
+  std::string uuid_att = "uuid:\"" + uuid + '"';
 
   // is 'current' in completed?
   for (auto task = c.begin (); task != c.end (); ++task)
   {
     if (task->find (uuid_att) != std::string::npos)
     {
-      context.debug ("TDB::revert_completed - task found in completed.data");
+      Context::getContext ().debug ("TDB::revert_completed - task found in completed.data");
 
       // Either revert if there was a prior state, or remove the task.
       if (prior != "")
@@ -934,24 +957,24 @@ void TDB2::revert_completed (
         {
           c.erase (task);
           p.push_back (prior);
-          std::cout << STRING_TDB2_REVERTED << "\n";
-          context.debug ("TDB::revert_completed - task belongs in pending.data");
+          std::cout << STRING_TDB2_REVERTED << '\n';
+          Context::getContext ().debug ("TDB::revert_completed - task belongs in pending.data");
         }
         else
         {
-          std::cout << STRING_TDB2_REVERTED << "\n";
-          context.debug ("TDB::revert_completed - task belongs in completed.data");
+          std::cout << STRING_TDB2_REVERTED << '\n';
+          Context::getContext ().debug ("TDB::revert_completed - task belongs in completed.data");
         }
       }
       else
       {
         c.erase (task);
 
-        std::cout << STRING_TDB2_REVERTED << "\n";
-        context.debug ("TDB::revert_completed - task removed");
+        std::cout << STRING_TDB2_REVERTED << '\n';
+        Context::getContext ().debug ("TDB::revert_completed - task removed");
       }
 
-      std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";
+      std::cout << "Undo complete.\n";
       break;
     }
   }
@@ -964,14 +987,14 @@ void TDB2::revert_backlog (
   const std::string& current,
   const std::string& prior)
 {
-  std::string uuid_att = "\"uuid\":\"" + uuid + "\"";
+  std::string uuid_att = "\"uuid\":\"" + uuid + '"';
 
   bool found = false;
   for (auto task = b.rbegin (); task != b.rend (); ++task)
   {
     if (task->find (uuid_att) != std::string::npos)
     {
-      context.debug ("TDB::revert_backlog - task found in backlog.data");
+      Context::getContext ().debug ("TDB::revert_backlog - task found in backlog.data");
       found = true;
 
       // If this is a new task (no prior), then just remove it from the backlog.
@@ -994,7 +1017,7 @@ void TDB2::revert_backlog (
   }
 
   if (!found)
-    throw std::string (STRING_TDB2_UNDO_SYNCED);
+    throw std::string ("Cannot undo change because the task was already synced.  Modify the task instead.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1003,29 +1026,27 @@ void TDB2::show_diff (
   const std::string& prior,
   const std::string& when)
 {
-  ISO8601d lastChange (strtol (when.c_str (), NULL, 10));
+  Datetime lastChange (strtol (when.c_str (), nullptr, 10));
 
   // Set the colors.
-  Color color_red   (context.color () ? context.config.get ("color.undo.before") : "");
-  Color color_green (context.color () ? context.config.get ("color.undo.after") : "");
+  Color color_red   (Context::getContext ().color () ? Context::getContext ().config.get ("color.undo.before") : "");
+  Color color_green (Context::getContext ().color () ? Context::getContext ().config.get ("color.undo.after") : "");
 
-  if (context.config.get ("undo.style") == "side")
+  if (Context::getContext ().config.get ("undo.style") == "side")
   {
-    std::cout << "\n"
-              << format (STRING_TDB2_LAST_MOD, lastChange.toString ())
-              << "\n";
+    std::cout << '\n'
+              << format ("The last modification was made {1}", lastChange.toString ())
+              << '\n';
 
     // Attributes are all there is, so figure the different attribute names
     // between before and after.
-    ViewText view;
-    view.width (context.getWidth ());
+    Table view;
+    view.width (Context::getContext ().getWidth ());
     view.intraPadding (2);
-    view.add (Column::factory ("string", ""));
-    view.add (Column::factory ("string", STRING_TDB2_UNDO_PRIOR));
-    view.add (Column::factory ("string", STRING_TDB2_UNDO_CURRENT));
-
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
+    view.add ("");
+    view.add ("Prior Values");
+    view.add ("Current Values");
+    setHeaderUnderline (view);
 
     Task after (current);
 
@@ -1087,9 +1108,9 @@ void TDB2::show_diff (
       }
     }
 
-    std::cout << "\n"
+    std::cout << '\n'
               << view.render ()
-              << "\n";
+              << '\n';
   }
 
   // This style looks like this:
@@ -1105,7 +1126,7 @@ void TDB2::show_diff (
   // - name:
   // + name: new           // att added
   //
-  else if (context.config.get ("undo.style") == "diff")
+  else if (Context::getContext ().config.get ("undo.style") == "diff")
   {
     // Create reference tasks.
     Task before;
@@ -1115,26 +1136,26 @@ void TDB2::show_diff (
     Task after (current);
 
     // Generate table header.
-    ViewText view;
-    view.width (context.getWidth ());
+    Table view;
+    view.width (Context::getContext ().getWidth ());
     view.intraPadding (2);
-    view.add (Column::factory ("string", ""));
-    view.add (Column::factory ("string", ""));
+    view.add ("");
+    view.add ("");
 
     int row = view.addRow ();
-    view.set (row, 0, STRING_TDB2_DIFF_PREV, color_red);
-    view.set (row, 1, STRING_TDB2_DIFF_PREV_DESC, color_red);
+    view.set (row, 0, "--- previous state", color_red);
+    view.set (row, 1, "Undo will restore this state", color_red);
 
     row = view.addRow ();
-    view.set (row, 0, STRING_TDB2_DIFF_CURR, color_green);  // Note trailing space.
-    view.set (row, 1, format (STRING_TDB2_DIFF_CURR_DESC,
-                              lastChange.toString (context.config.get ("dateformat"))),
+    view.set (row, 0, "+++ current state ", color_green);
+    view.set (row, 1, format ("Change made {1}",
+                              lastChange.toString (Context::getContext ().config.get ("dateformat"))),
                       color_green);
 
     view.addRow ();
 
     // Add rows to table showing diffs.
-    std::vector <std::string> all = context.getColumns ();
+    std::vector <std::string> all = Context::getContext ().getColumns ();
 
     // Now factor in the annotation attributes.
     for (auto& it : before.data)
@@ -1176,21 +1197,21 @@ void TDB2::show_diff (
         else if (before_att != "" && after_att == "")
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + a + ":", color_red);
+          view.set (row, 0, '-' + a + ':', color_red);
           view.set (row, 1, before_att, color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + a + ":", color_green);
+          view.set (row, 0, '+' + a + ':', color_green);
         }
 
         // Attribute added.
         else if (before_att == "" && after_att != "")
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + a + ":", color_red);
+          view.set (row, 0, '-' + a + ':', color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + a + ":", color_green);
+          view.set (row, 0, '+' + a + ':', color_green);
           view.set (row, 1, after_att, color_green);
         }
 
@@ -1198,19 +1219,19 @@ void TDB2::show_diff (
         else
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + a + ":", color_red);
+          view.set (row, 0, '-' + a + ':', color_red);
           view.set (row, 1, before_att, color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + a + ":", color_green);
+          view.set (row, 0, '+' + a + ':', color_green);
           view.set (row, 1, after_att, color_green);
         }
       }
     }
 
-    std::cout << "\n"
+    std::cout << '\n'
               << view.render ()
-              << "\n";
+              << '\n';
   }
 }
 
@@ -1226,11 +1247,10 @@ void TDB2::show_diff (
 // - waiting task in pending that needs to be un-waited
 void TDB2::gc ()
 {
-  context.timer_gc.start ();
-  unsigned long load_start = context.timer_load.total ();
+  Timer timer;
 
   // Allowed as an override, but not recommended.
-  if (context.config.getBoolean ("gc"))
+  if (Context::getContext ().config.getBoolean ("gc"))
   {
     // Load pending, check whether completed changes size
     auto size_before = completed._tasks.size ();
@@ -1264,10 +1284,7 @@ void TDB2::gc ()
       completed.dependency_scan ();
   }
 
-  // Stop and remove accumulated load time from the GC time, because they
-  // overlap.
-  context.timer_gc.stop ();
-  context.timer_gc.subtract (context.timer_load.total () - load_start);
+  Context::getContext ().time_gc_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1381,7 +1398,7 @@ const std::vector <Task> TDB2::children (Task& task)
       if (i.getStatus () != Task::completed &&
           i.getStatus () != Task::deleted)
       {
-        // If task has the same parent, it is a sibling.
+        // If task has the given task as a parent, it is a child task.
         if (i.get ("parent") == parent)
           results.push_back (i);
       }
@@ -1444,13 +1461,13 @@ void TDB2::clear ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::dump ()
 {
-  if (context.config.getBoolean ("debug"))
+  if (Context::getContext ().config.getBoolean ("debug"))
   {
-    context.debug (pending.dump ());
-    context.debug (completed.dump ());
-    context.debug (undo.dump ());
-    context.debug (backlog.dump ());
-    context.debug (" ");
+    Context::getContext ().debug (pending.dump ());
+    Context::getContext ().debug (completed.dump ());
+    Context::getContext ().debug (undo.dump ());
+    Context::getContext ().debug (backlog.dump ());
+    Context::getContext ().debug (" ");
   }
 }
 

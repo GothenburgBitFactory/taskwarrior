@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,14 +30,12 @@
 #include <string>
 #include <stdlib.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Duration.h>
 #include <Task.h>
-#include <text.h>
-#include <i18n.h>
+#include <shared.h>
+#include <format.h>
 
-extern Context context;
-
-static std::vector <Task>* global_data = NULL;
+static std::vector <Task>* global_data = nullptr;
 static std::vector <std::string> global_keys;
 static bool sort_compare (int, int);
 
@@ -47,19 +45,18 @@ void sort_tasks (
   std::vector <int>& order,
   const std::string& keys)
 {
-  context.timer_sort.start ();
+  Timer timer;
 
   global_data = &data;
 
   // Split the key defs.
-  global_keys.clear ();
-  split (global_keys, keys, ',');
+  global_keys = split (keys, ',');
 
   // Only sort if necessary.
   if (order.size ())
     std::stable_sort (order.begin (), order.end (), sort_compare);
 
-  context.timer_sort.stop ();
+  Context::getContext ().time_sort_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +77,7 @@ static bool sort_compare (int left, int right)
 
   for (auto& k : global_keys)
   {
-    context.decomposeSortField (k, field, ascending, breakIndicator);
+    Context::getContext ().decomposeSortField (k, field, ascending, breakIndicator);
 
     // Urgency.
     if (field == "urgency")
@@ -118,8 +115,8 @@ static bool sort_compare (int left, int right)
              field == "imask"       ||
              field == "mask")
     {
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -138,8 +135,8 @@ static bool sort_compare (int left, int right)
              field == "modified" ||
              field == "scheduled")
     {
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string != "" && right_string == "")
         return true;
@@ -158,8 +155,8 @@ static bool sort_compare (int left, int right)
     else if (field == "depends")
     {
       // Raw data is a comma-separated list of uuids
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -171,8 +168,8 @@ static bool sort_compare (int left, int right)
         return !ascending;
 
       // Sort on the first dependency.
-      left_number  = context.tdb2.id (left_string.substr (0, 36));
-      right_number = context.tdb2.id (right_string.substr (0, 36));
+      left_number  = Context::getContext ().tdb2.id (left_string.substr (0, 36));
+      right_number = Context::getContext ().tdb2.id (right_string.substr (0, 36));
 
       if (left_number == right_number)
         continue;
@@ -184,26 +181,26 @@ static bool sort_compare (int left, int right)
     // Duration.
     else if (field == "recur")
     {
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
+      auto left_string  = (*global_data)[left].get_ref  (field);
+      auto right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
 
-      ISO8601p left_duration (left_string);
-      ISO8601p right_duration (right_string);
+      Duration left_duration (left_string);
+      Duration right_duration (right_string);
       return ascending ? (left_duration < right_duration)
                        : (left_duration > right_duration);
     }
 
     // UDAs.
-    else if ((column = context.columns[field]) != NULL)
+    else if ((column = Context::getContext ().columns[field]) != nullptr)
     {
       std::string type = column->type ();
       if (type == "numeric")
       {
-        const float left_real  = strtof (((*global_data)[left].get_ref  (field)).c_str (), NULL);
-        const float right_real = strtof (((*global_data)[right].get_ref (field)).c_str (), NULL);
+        auto left_real  = strtof (((*global_data)[left].get_ref  (field)).c_str (), nullptr);
+        auto right_real = strtof (((*global_data)[right].get_ref (field)).c_str (), nullptr);
 
         if (left_real == right_real)
           continue;
@@ -213,8 +210,8 @@ static bool sort_compare (int left, int right)
       }
       else if (type == "string")
       {
-        const std::string left_string = (*global_data)[left].get_ref (field);
-        const std::string right_string = (*global_data)[right].get_ref (field);
+        auto left_string = (*global_data)[left].get_ref (field);
+        auto right_string = (*global_data)[right].get_ref (field);
 
         if (left_string == right_string)
           continue;
@@ -243,8 +240,8 @@ static bool sort_compare (int left, int right)
 
       else if (type == "date")
       {
-        const std::string& left_string  = (*global_data)[left].get_ref  (field);
-        const std::string& right_string = (*global_data)[right].get_ref (field);
+        auto left_string  = (*global_data)[left].get_ref  (field);
+        auto right_string = (*global_data)[right].get_ref (field);
 
         if (left_string != "" && right_string == "")
           return true;
@@ -260,20 +257,20 @@ static bool sort_compare (int left, int right)
       }
       else if (type == "duration")
       {
-        const std::string& left_string  = (*global_data)[left].get_ref  (field);
-        const std::string& right_string = (*global_data)[right].get_ref (field);
+        auto left_string  = (*global_data)[left].get_ref  (field);
+        auto right_string = (*global_data)[right].get_ref (field);
 
         if (left_string == right_string)
           continue;
 
-        ISO8601p left_duration (left_string);
-        ISO8601p right_duration (right_string);
+        Duration left_duration (left_string);
+        Duration right_duration (right_string);
         return ascending ? (left_duration < right_duration)
                          : (left_duration > right_duration);
       }
     }
     else
-      throw format (STRING_INVALID_SORT_COL, field);
+      throw format ("The '{1}' column is not a valid sort field.", field);
   }
 
   return false;

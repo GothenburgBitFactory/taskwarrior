@@ -3,33 +3,6 @@
 .SH NAME
 task-color \- A color tutorial for the Taskwarrior command line todo manager.
 
-.SH SETUP
-The first thing you need is a terminal program that supports color.  All
-terminal programs support color, but only a few support lots of colors.  First
-tell your terminal program to use color by specifying the TERM environment
-variable like this:
-
-    TERM=xterm-color
-
-In this example, xterm-color is used - a common value, and one that doesn't
-require that you use xterm.  This works for most setups.  This setting belongs
-in your shell profile (~/.bash_profile, ~/.bashrc, ~/.cshrc etc, depending on
-which shell you use).  If this is a new setting, you will need to either run
-that profile script, or close and reopen the terminal window (which does the
-same thing).
-
-Now tell Taskwarrior that you want to use color.  This is the default for
-Taskwarrior, so the following step may be unnecessary.
-
-    $ task config color on
-
-This command will make sure there is an entry in your ~/.taskrc file that looks
-like:
-
-    color=on
-
-Now Taskwarrior is ready.
-
 .SH AUTOMATIC MONOCHROME
 It should be mentioned that Taskwarrior is aware of whether its output is going
 to a terminal, or to a file or through a pipe.  When Taskwarrior output goes to
@@ -249,11 +222,10 @@ variable 'rule.precedence.color', which by default contains:
     deleted,completed,active,keyword.,tag.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,uda.
 
 These are just the color rules with the 'color.' prefix removed.  The
-rule 'color.due.today' is the highest precedence, and 'color.deleted' is the lowest.
+rule 'color.deleted' has the highest precedence, and 'color.uda.' the lowest.
 
 The keyword rule shown here as 'keyword.' corresponds to a wildcard pattern,
-meaning 'color.keyword.*', or in other words all the keyword rules.  Similarly
-for the 'color.tag.*' and 'color.project.*' rules.
+meaning 'color.keyword.*', or in other words all the keyword rules.
 
 There is also 'color.project.none', 'color.tag.none' and 'color.pri.none' to
 specifically represent missing data.
@@ -313,34 +285,34 @@ You can also see how the theme will color the various tasks with the command:
     $ task color legend
 
 Better yet, create your own, and share it.  We will gladly host the theme file
-on <http://taskwarrior.org>.
+on <https://taskwarrior.org>.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2016 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2020 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
-http://www.opensource.org/licenses/mit-license.php for more information.
+https://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
 .BR taskrc(5),
 .BR task-sync(5)
 
-For more information regarding Taskwarrior, the following may be referenced:
+For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at
-<https://git.tasktools.org/scm/tm/task.git>
+<https://github.com/GothenburgBitFactory/taskwarrior>
 
 .TP
-You can contact the project by writing an email to
-<support@taskwarrior.org>
+You can contact the project by emailing
+<support@GothenburgBitFactory.org>
 
 .SH REPORTING BUGS
 .TP
 Bugs in Taskwarrior may be reported to the issue-tracker at
-<http://taskwarrior.org>
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>

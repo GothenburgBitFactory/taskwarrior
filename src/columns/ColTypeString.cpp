@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,17 +30,22 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
-#include <Dates.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 
-extern Context context;
+#define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
+
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeString::ColumnTypeString ()
 {
   _type = "string";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeString::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +62,6 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    e.addSource (namedDates);
     contextTask = task;
 
     Variant v;
@@ -66,7 +70,7 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
     if (validate (strValue))
     {
       task.set (_name, strValue);
-      context.debug (label + _name + " <-- '" + strValue + "' <-- '" + value + "'");
+      Context::getContext ().debug (label + _name + " <-- '" + strValue + "' <-- '" + value + '\'');
     }
     else
       throw format (STRING_INVALID_MOD, _name, value);
@@ -76,7 +80,7 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
     if (validate (value))
     {
       task.set (_name, value);
-      context.debug (label + _name + " <-- '" + value + "'");
+      Context::getContext ().debug (label + _name + " <-- '" + value + '\'');
     }
     else
       throw format (STRING_INVALID_MOD, _name, value);

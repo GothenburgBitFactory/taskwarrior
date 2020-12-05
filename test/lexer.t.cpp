@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2016, Göteborg Bit Factory.
+// Copyright 2013 - 2020, Göteborg Bit Factory.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,18 +30,23 @@
 #include <string.h>
 #include <test.h>
 #include <Lexer.h>
-#include <Context.h>
-
-Context context;
+#include <Datetime.h>
+#include <Duration.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
 #ifdef PRODUCT_TASKWARRIOR
-  UnitTest t (1280);
+  UnitTest t (1253);
 #else
-  UnitTest t (1262);
+  UnitTest t (1235);
 #endif
+
+  // Use same Datetime/Duraiton configuration as Context∴:staticInitialization.
+  Datetime::isoEnabled               = true;
+  Datetime::standaloneDateEnabled    = false;
+  Datetime::standaloneTimeEnabled    = false;
+  Duration::standaloneSecondsEnabled = false;
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -52,35 +57,6 @@ int main (int, char**)
   Lexer::attributes["due"]         = "date";
   Lexer::attributes["tags"]        = "string";
   Lexer::attributes["description"] = "string";
-
-  // White space detection.
-  t.notok (Lexer::isWhitespace (0x0041), "U+0041 (A) ! isWhitespace");
-  t.ok (Lexer::isWhitespace (0x0020), "U+0020 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x0009), "U+0009 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x000A), "U+000A isWhitespace");
-  t.ok (Lexer::isWhitespace (0x000B), "U+000B isWhitespace");
-  t.ok (Lexer::isWhitespace (0x000C), "U+000C isWhitespace");
-  t.ok (Lexer::isWhitespace (0x000D), "U+000D isWhitespace");
-  t.ok (Lexer::isWhitespace (0x0085), "U+0085 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x00A0), "U+00A0 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x1680), "U+1680 isWhitespace"); // 10
-  t.ok (Lexer::isWhitespace (0x180E), "U+180E isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2000), "U+2000 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2001), "U+2001 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2002), "U+2002 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2003), "U+2003 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2004), "U+2004 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2005), "U+2005 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2006), "U+2006 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2007), "U+2007 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2008), "U+2008 isWhitespace"); // 20
-  t.ok (Lexer::isWhitespace (0x2009), "U+2009 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x200A), "U+200A isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2028), "U+2028 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x2029), "U+2029 isWhitespace");
-  t.ok (Lexer::isWhitespace (0x202F), "U+202F isWhitespace");
-  t.ok (Lexer::isWhitespace (0x205F), "U+205F isWhitespace");
-  t.ok (Lexer::isWhitespace (0x3000), "U+3000 isWhitespace");
 
   // static bool Lexer::isBoundary (int, int);
   t.ok    (Lexer::isBoundary (' ', 'a'), "' ' --> 'a' = isBoundary");
@@ -174,21 +150,21 @@ int main (int, char**)
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),     7,                         "7 tokens");
-  t.is (tokens[0].first,         "1",                       "tokens[0] == '1'");
-  t.is ((int) tokens[0].second,  (int) Lexer::Type::number, "tokens[0] == Type::number");
-  t.is (tokens[1].first,         "12",                      "tokens[1] == '12'");
-  t.is ((int) tokens[1].second,  (int) Lexer::Type::number, "tokens[1] == Type::date");
-  t.is (tokens[2].first,         "123",                     "tokens[2] == '123'");
-  t.is ((int) tokens[2].second,  (int) Lexer::Type::number, "tokens[2] == Type::number"); // 70
-  t.is (tokens[3].first,         "1234",                    "tokens[3] == '1234'");
-  t.is ((int) tokens[3].second,  (int) Lexer::Type::number, "tokens[3] == Type::date");
-  t.is (tokens[4].first,         "12345",                   "tokens[4] == '12345'");
-  t.is ((int) tokens[4].second,  (int) Lexer::Type::number, "tokens[4] == Type::number");
-  t.is (tokens[5].first,         "123456",                  "tokens[5] == '123456'");
-  t.is ((int) tokens[5].second,  (int) Lexer::Type::number, "tokens[5] == Type::date");
-  t.is (tokens[6].first,         "1234567",                 "tokens[6] == '1234567'");
-  t.is ((int) tokens[6].second,  (int) Lexer::Type::number, "tokens[6] == Type::number");
+  t.is ((int)tokens.size (),     7,                           "7 tokens");
+  t.is (tokens[0].first,         "1",                         "tokens[0] == '1'");
+  t.is ((int) tokens[0].second,  (int) Lexer::Type::number,   "tokens[0] == Type::number");
+  t.is (tokens[1].first,         "12",                        "tokens[1] == '12'");
+  t.is ((int) tokens[1].second,  (int) Lexer::Type::number,   "tokens[1] == Type::number");
+  t.is (tokens[2].first,         "123",                       "tokens[2] == '123'");
+  t.is ((int) tokens[2].second,  (int) Lexer::Type::number,   "tokens[2] == Type::number"); // 70
+  t.is (tokens[3].first,         "1234",                      "tokens[3] == '1234'");
+  t.is ((int) tokens[3].second,  (int) Lexer::Type::number,   "tokens[3] == Type::number");
+  t.is (tokens[4].first,         "12345",                     "tokens[4] == '12345'");
+  t.is ((int) tokens[4].second,  (int) Lexer::Type::number,   "tokens[4] == Type::number");
+  t.is (tokens[5].first,         "123456",                    "tokens[5] == '123456'");
+  t.is ((int) tokens[5].second,  (int) Lexer::Type::number,   "tokens[5] == Type::number");
+  t.is (tokens[6].first,         "1234567",                   "tokens[6] == '1234567'");
+  t.is ((int) tokens[6].second,  (int) Lexer::Type::number,   "tokens[6] == Type::number");
 
   // void split (std::vector<std::string>&, const std::string&);
   std::string unsplit = " ( A or B ) ";
@@ -371,8 +347,8 @@ int main (int, char**)
     { "rc.foo",                                       { { "rc.foo",                                       Lexer::Type::dom          }, NO, NO, NO, NO }, },
 
     // URL
-    { "http://tasktools.org",                         { { "http://tasktools.org",                         Lexer::Type::url          }, NO, NO, NO, NO }, },
-    { "https://bug.tasktools.org",                    { { "https://bug.tasktools.org",                    Lexer::Type::url          }, NO, NO, NO, NO }, },
+    { "http://example.com",                         { { "http://example.com",                         Lexer::Type::url          }, NO, NO, NO, NO }, },
+    { "https://foo.example.com",                    { { "https://foo.example.com",                    Lexer::Type::url          }, NO, NO, NO, NO }, },
 
     // String
     { "'one two'",                                    { { "'one two'",                                    Lexer::Type::string       }, NO, NO, NO, NO }, },

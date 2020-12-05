@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,34 +20,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <ColRecur.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Duration.h>
 #include <Eval.h>
 #include <Variant.h>
 #include <Lexer.h>
 #include <Filter.h>
-#include <Dates.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <utf8.h>
-#include <i18n.h>
 
-extern Context context;
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::ColumnRecur ()
 {
-  _name     = "recur";
-  _style    = "duration";
-  _label    = STRING_COLUMN_LABEL_RECUR;
-  _styles   = {"duration", "indicator"};
-  _examples = {"weekly", context.config.get ("recurrence.indicator")};
+  _name       = "recur";
+  _style      = "duration";
+  _label      = "Recur";
+  _modifiable = true;
+  _styles     = {"duration", "indicator"};
+  _examples   = {"weekly", Context::getContext ().config.get ("recurrence.indicator")};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,10 +54,10 @@ ColumnRecur::ColumnRecur ()
 // Note that you can not determine which gets called first.
 void ColumnRecur::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
-  if (_style == "indicator" && _label == STRING_COLUMN_LABEL_RECUR)
-    _label = _label.substr (0, context.config.get ("recurrence.indicator").length ());
+  if (_style == "indicator" && _label == "Recur")
+    _label = _label.substr (0, Context::getContext ().config.get ("recurrence.indicator").length ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,23 +65,17 @@ void ColumnRecur::setStyle (const std::string& value)
 void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "default" ||
         _style == "duration")
     {
-      minimum = maximum = ISO8601p (task.get ("recur")).format ().length ();
+      minimum = maximum = Duration (task.get (_name)).formatISO ().length ();
     }
     else if (_style == "indicator")
     {
-      if (task.has ("recur"))
-        minimum = maximum = utf8_width (context.config.get ("recurrence.indicator"));
-      else
-        minimum = maximum = 0;
+      minimum = maximum = utf8_width (Context::getContext ().config.get ("recurrence.indicator"));
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -97,10 +90,10 @@ void ColumnRecur::render (
   {
     if (_style == "default" ||
         _style == "duration")
-      renderStringRight (lines, width, color, ISO8601p (task.get ("recur")).format ());
+      renderStringRight (lines, width, color, Duration (task.get (_name)).formatISO ());
 
     else if (_style == "indicator")
-      renderStringRight (lines, width, color, context.config.get ("recurrence.indicator"));
+      renderStringRight (lines, width, color, Context::getContext ().config.get ("recurrence.indicator"));
   }
 }
 
@@ -115,7 +108,6 @@ void ColumnRecur::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    e.addSource (namedDates);
     contextTask = task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
@@ -129,11 +121,11 @@ void ColumnRecur::modify (Task& task, const std::string& value)
   {
     // Store the raw value, for 'recur'.
     std::string label = "  [1;37;43mMODIFICATION[0m ";
-    context.debug (label + _name + " <-- '" + value + "'");
+    Context::getContext ().debug (label + _name + " <-- '" + value + '\'');
     task.set (_name, value);
   }
   else
-    throw format (STRING_TASK_INVALID_DUR, value);
+    throw format ("The duration value '{1}' is not supported.", value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

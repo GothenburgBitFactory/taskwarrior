@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,16 +29,13 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdExport::CmdExport ()
 {
   _keyword               = "export";
   _usage                 = "task <filter> export";
-  _description           = STRING_CMD_EXPORT_USAGE;
+  _description           = "Exports tasks in JSON format";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -63,16 +60,16 @@ int CmdExport::execute (std::string& output)
   filter.subset (filtered);
 
   // Export == render.
-  context.timer_render.start ();
+  Timer timer;
 
   // Obey 'limit:N'.
   int rows = 0;
   int lines = 0;
-  context.getLimits (rows, lines);
+  Context::getContext ().getLimits (rows, lines);
   int limit = (rows > lines ? rows : lines);
 
   // Is output contained within a JSON array?
-  bool json_array = context.config.getBoolean ("json.array");
+  bool json_array = Context::getContext ().config.getBoolean ("json.array");
 
   // Compose output.
   if (json_array)
@@ -84,8 +81,8 @@ int CmdExport::execute (std::string& output)
     if (counter)
     {
       if (json_array)
-        output += ",";
-      output += "\n";
+        output += ',';
+      output += '\n';
     }
 
     output += task.composeJSON (true);
@@ -96,12 +93,12 @@ int CmdExport::execute (std::string& output)
   }
 
   if (filtered.size ())
-    output += "\n";
+    output += '\n';
 
   if (json_array)
     output += "]\n";
 
-  context.timer_render.stop ();
+  Context::getContext ().time_render_us += timer.total_us ();
   return rc;
 }
 

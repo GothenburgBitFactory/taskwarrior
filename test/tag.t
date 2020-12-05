@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -85,12 +85,14 @@ class TestVirtualTags(TestCase):
         cls.t("add deleted")
         cls.t("1 delete", input="y\n")
         cls.t("add minimal")
-        cls.t("add maximal +tag pro:PRO pri:H due:yesterday")
+        cls.t("add maximal +tag pro:PRO pri:H due:today")
         cls.t("3 start")
         cls.t("3 annotate note")
         cls.t("add blocked depends:2")
         cls.t("add due_eom due:eom")
         cls.t("add due_eow due:eow")
+        cls.t("add is_recurring due:eonm recur:weekly")
+        cls.t("add is_scheduled scheduled:eonm")
 
     def setUp(self):
         """Executed before each test in the class"""
@@ -359,6 +361,39 @@ class TestVirtualTags(TestCase):
         self.assertIn("nonag", out)
         self.assertIn("tag", out)
 
+    def test_virtual_tag_READY(self):
+        """Verify 'READY' appears when expected"""
+        code, out, err = self.t("+READY all")
+        self.assertNotIn("is_scheduled", out)
+
+        code, out, err = self.t("-READY all")
+        self.assertIn("is_scheduled", out)
+
+    def test_virtual_tag_SCHEDULED(self):
+        """Verify 'SCHEDULED' appears when expected"""
+        code, out, err = self.t("+SCHEDULED all")
+        self.assertIn("is_scheduled", out)
+
+        code, out, err = self.t("-SCHEDULED all")
+        self.assertNotIn("is_scheduled", out)
+
+    def test_virtual_tag_UNTIL(self):
+        """Verify 'UNTIL' appears when expected"""
+        self.t("add has_until until:eonm")
+        code, out, err = self.t("+UNTIL all")
+        self.assertIn("has_until", out)
+
+        code, out, err = self.t("-UNTIL all")
+        self.assertNotIn("has_until", out)
+
+    def test_virtual_tag_WAITING(self):
+        """Verify 'WAITING' appears when expected"""
+        self.t("add is_waiting wait:eonm")
+        code, out, err = self.t("+WAITING all")
+        self.assertIn("is_waiting", out)
+
+        code, out, err = self.t("-WAITING all")
+        self.assertNotIn("is_waiting", out)
 
 class TestVirtualTagUDA(TestCase):
     def setUp(self):

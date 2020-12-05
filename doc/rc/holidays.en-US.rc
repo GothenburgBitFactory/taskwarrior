@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/en-US/2015.json
-# http://holidata.net/en-US/2016.json
+# https://holidata.net/en-US/2020.json
+# https://holidata.net/en-US/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,51 +23,55 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
 holiday.en-US1.name=New Year's Day
-holiday.en-US1.date=20150101
+holiday.en-US1.date=20200101
 holiday.en-US2.name=Birthday of Martin Luther King, Jr.
-holiday.en-US2.date=20150119
+holiday.en-US2.date=20200120
 holiday.en-US3.name=Washington's Birthday
-holiday.en-US3.date=20150216
+holiday.en-US3.date=20200217
 holiday.en-US4.name=Patriots' Day
-holiday.en-US4.date=20150420
+holiday.en-US4.date=20200420
 holiday.en-US5.name=Memorial Day
-holiday.en-US5.date=20150525
+holiday.en-US5.date=20200525
 holiday.en-US6.name=Independence Day
-holiday.en-US6.date=20150704
+holiday.en-US6.date=20200704
 holiday.en-US7.name=Labor Day
-holiday.en-US7.date=20150907
+holiday.en-US7.date=20200907
 holiday.en-US8.name=Columbus Day
-holiday.en-US8.date=20151012
+holiday.en-US8.date=20201012
 holiday.en-US9.name=Veterans Day
-holiday.en-US9.date=20151111
+holiday.en-US9.date=20201111
 holiday.en-US10.name=Thanksgiving Day
-holiday.en-US10.date=20151126
-holiday.en-US11.name=Christmas Day
-holiday.en-US11.date=20151225
-holiday.en-US12.name=New Year's Day
-holiday.en-US12.date=20160101
-holiday.en-US13.name=Birthday of Martin Luther King, Jr.
-holiday.en-US13.date=20160118
-holiday.en-US14.name=Washington's Birthday
-holiday.en-US14.date=20160215
-holiday.en-US15.name=Patriots' Day
-holiday.en-US15.date=20160418
-holiday.en-US16.name=Memorial Day
-holiday.en-US16.date=20160530
-holiday.en-US17.name=Independence Day
-holiday.en-US17.date=20160704
-holiday.en-US18.name=Labor Day
-holiday.en-US18.date=20160905
-holiday.en-US19.name=Columbus Day
-holiday.en-US19.date=20161010
-holiday.en-US20.name=Veterans Day
-holiday.en-US20.date=20161111
-holiday.en-US21.name=Thanksgiving Day
-holiday.en-US21.date=20161124
-holiday.en-US22.name=Christmas Day
-holiday.en-US22.date=20161225
+holiday.en-US10.date=20201126
+holiday.en-US11.name=Day after Thanksgiving
+holiday.en-US11.date=20201127
+holiday.en-US12.name=Christmas Eve
+holiday.en-US12.date=20201224
+holiday.en-US13.name=Christmas Day
+holiday.en-US13.date=20201225
+holiday.en-US14.name=New Year's Day
+holiday.en-US14.date=20210101
+holiday.en-US15.name=Birthday of Martin Luther King, Jr.
+holiday.en-US15.date=20210118
+holiday.en-US16.name=Washington's Birthday
+holiday.en-US16.date=20210215
+holiday.en-US17.name=Patriots' Day
+holiday.en-US17.date=20210419
+holiday.en-US18.name=Memorial Day
+holiday.en-US18.date=20210531
+holiday.en-US19.name=Independence Day
+holiday.en-US19.date=20210704
+holiday.en-US20.name=Labor Day
+holiday.en-US20.date=20210906
+holiday.en-US21.name=Columbus Day
+holiday.en-US21.date=20211011
+holiday.en-US22.name=Veterans Day
+holiday.en-US22.date=20211111
+holiday.en-US23.name=Thanksgiving Day
+holiday.en-US23.date=20211125
+holiday.en-US24.name=Christmas Day
+holiday.en-US24.date=20211225

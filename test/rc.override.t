@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -40,16 +40,16 @@ class TestOverride(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t.config("regex",   "off")
+        self.t.config("regex",   "0")
         self.t.config("verbose", "nothing")
 
     def test_override(self):
         """Verify override is displayed in 'show' command"""
         code, out, err = self.t("show regex")
-        self.assertRegexpMatches(out, r"regex +off")
+        self.assertRegex(out, r"regex +0")
 
-        code, out, err = self.t("rc.regex:on show regex")
-        self.assertRegexpMatches(out, r"regex +on")
+        code, out, err = self.t("rc.regex:1 show regex")
+        self.assertRegex(out, r"regex +1")
 
 
 class TestRCSegfault(TestCase):

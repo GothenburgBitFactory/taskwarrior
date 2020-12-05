@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,18 +30,18 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <text.h>
-#include <util.h>
-#include <i18n.h>
+#include <format.h>
+#include <shared.h>
 
-extern Context context;
+#define STRING_CMD_MODIFY_TASK_R     "Modifying recurring task {1} '{2}'."
+#define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdModify::CmdModify ()
 {
   _keyword               = "modify";
   _usage                 = "task <filter> modify <mods>";
-  _description           = STRING_CMD_MODIFY_USAGE1;
+  _description           = "Modifies the existing task with provided arguments.";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -55,7 +55,7 @@ CmdModify::CmdModify ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdModify::execute (std::string&)
 {
-  int rc = 0;
+  auto rc = 0;
 
   // Apply filter.
   Filter filter;
@@ -63,14 +63,14 @@ int CmdModify::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  int count = 0;
+  auto count = 0;
   for (auto& task : filtered)
   {
     Task before (task);
@@ -81,10 +81,9 @@ int CmdModify::execute (std::string&)
       // Abort if change introduces inconsistencies.
       checkConsistency(before, task);
 
-      std::string question;
-      question = format (STRING_CMD_MODIFY_CONFIRM,
-                         task.identifier (true),
-                         task.get ("description"));
+      auto question = format ("Modify task {1} '{2}'?",
+                              task.identifier (true),
+                              task.get ("description"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
@@ -92,7 +91,7 @@ int CmdModify::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_MODIFY_NO << "\n";
+        std::cout << "Task not modified.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -101,33 +100,34 @@ int CmdModify::execute (std::string&)
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_MODIFY_1 : STRING_CMD_MODIFY_N, count);
+  feedback_affected (count == 1 ?  "Modified {1} task." : "Modified {1} tasks.", count);
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Why is this not in Task::validate?
 void CmdModify::checkConsistency (Task &before, Task &after)
 {
   // Perform some logical consistency checks.
   if (after.has ("recur")  &&
-      !after.has ("due")   &&
-      !before.has ("due"))
-    throw std::string (STRING_CMD_MODIFY_NO_DUE);
+      ! after.has ("due")   &&
+      ! before.has ("due"))
+    throw std::string ("You cannot specify a recurring task without a due date.");
 
   if (before.has ("recur") &&
       before.has ("due")   &&
-      (!after.has ("due")  ||
+      (! after.has ("due")  ||
         after.get ("due") == ""))
-    throw std::string (STRING_CMD_MODIFY_REM_DUE);
+    throw std::string ("You cannot remove the due date from a recurring task.");
 
   if (before.has ("recur")  &&
-      (!after.has ("recur") ||
+      (! after.has ("recur") ||
         after.get ("recur") == ""))
-    throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
+    throw std::string ("You cannot remove the recurrence from a recurring task.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,13 +136,13 @@ int CmdModify::modifyAndUpdate (
   std::map <std::string, std::string> *projectChanges /* = NULL */)
 {
   // This task.
-  int count = 1;
+  auto count = 1;
 
   updateRecurrenceMask (after);
-  feedback_affected (STRING_CMD_MODIFY_TASK, after);
+  feedback_affected ("Modifying task {1} '{2}'.", after);
   feedback_unblocked (after);
-  context.tdb2.modify (after);
-  if (context.verbose ("project") && projectChanges)
+  Context::getContext ().tdb2.modify (after);
+  if (Context::getContext ().verbose ("project") && projectChanges)
     (*projectChanges)[after.get ("project")] = onProjectChange (before, after);
 
   // Task has siblings - modify them.
@@ -161,13 +161,13 @@ int CmdModify::modifyRecurrenceSiblings (
   Task &task,
   std::map <std::string, std::string> *projectChanges /* = NULL */)
 {
-  int count = 0;
+  auto count = 0;
 
-  if ((context.config.get ("recurrence.confirmation") == "prompt"
+  if ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
         && confirm (STRING_CMD_MODIFY_RECUR)) ||
-      context.config.getBoolean ("recurrence.confirmation"))
+      Context::getContext ().config.getBoolean ("recurrence.confirmation"))
   {
-    std::vector <Task> siblings = context.tdb2.siblings (task);
+    std::vector <Task> siblings = Context::getContext ().tdb2.siblings (task);
     for (auto& sibling : siblings)
     {
       Task alternate (sibling);
@@ -176,16 +176,16 @@ int CmdModify::modifyRecurrenceSiblings (
       ++count;
       feedback_affected (STRING_CMD_MODIFY_TASK_R, sibling);
       feedback_unblocked (sibling);
-      context.tdb2.modify (sibling);
-      if (context.verbose ("project") && projectChanges)
+      Context::getContext ().tdb2.modify (sibling);
+      if (Context::getContext ().verbose ("project") && projectChanges)
         (*projectChanges)[sibling.get ("project")] = onProjectChange (alternate, sibling);
     }
 
     // Modify the parent
     Task parent;
-    context.tdb2.get (task.get ("parent"), parent);
+    Context::getContext ().tdb2.get (task.get ("parent"), parent);
     parent.modify (Task::modReplace);
-    context.tdb2.modify (parent);
+    Context::getContext ().tdb2.modify (parent);
   }
 
   return count;
@@ -196,11 +196,11 @@ int CmdModify::modifyRecurrenceParent (
   Task &task,
   std::map <std::string, std::string> *projectChanges /* = NULL */)
 {
-  int count = 0;
+  auto count = 0;
 
-  std::vector <Task> children = context.tdb2.children (task);
+  auto children = Context::getContext ().tdb2.children (task);
   if (children.size () &&
-      (! context.config.getBoolean ("recurrence.confirmation") ||
+      (! Context::getContext ().config.getBoolean ("recurrence.confirmation") ||
         confirm (STRING_CMD_MODIFY_RECUR)))
   {
     for (auto& child : children)
@@ -208,8 +208,8 @@ int CmdModify::modifyRecurrenceParent (
       Task alternate (child);
       child.modify (Task::modReplace);
       updateRecurrenceMask (child);
-      context.tdb2.modify (child);
-      if (context.verbose ("project") && projectChanges)
+      Context::getContext ().tdb2.modify (child);
+      if (Context::getContext ().verbose ("project") && projectChanges)
         (*projectChanges)[child.get ("project")] = onProjectChange (alternate, child);
       ++count;
       feedback_affected (STRING_CMD_MODIFY_TASK_R, child);

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <stdlib.h>
 #include <Context.h>
-#include <ISO8601.h>
-#include <text.h>
-#include <util.h>
+#include <Datetime.h>
+#include <shared.h>
 #include <main.h>
-
-extern Context context;
 
 static std::map <std::string, Color> gsColor;
 static std::vector <std::string> gsPrecedence;
-static ISO8601d now;
+static Datetime now;
 
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules ()
 {
   // If color is not enable/supported, short circuit.
-  if (! context.color ())
+  if (! Context::getContext ().color ())
     return;
 
   try
@@ -53,7 +50,7 @@ void initializeColorRules ()
     // Load all the configuration values, filter to only the ones that begin with
     // "color.", then store name/value in gsColor, and name in rules.
     std::vector <std::string> rules;
-    for (auto& v : context.config)
+    for (const auto& v : Context::getContext ().config)
     {
       if (! v.first.compare (0, 6, "color.", 6))
       {
@@ -67,10 +64,9 @@ void initializeColorRules ()
     // Load the rule.precedence.color list, split it, then autocomplete against
     // the 'rules' vector loaded above.
     std::vector <std::string> results;
-    std::vector <std::string> precedence;
-    split (precedence, context.config.get ("rule.precedence.color"), ',');
+    auto precedence = split (Context::getContext ().config.get ("rule.precedence.color"), ',');
 
-    for (auto& p : precedence)
+    for (const auto& p : precedence)
     {
       // Add the leading "color." string.
       std::string rule = "color." + p;
@@ -83,19 +79,18 @@ void initializeColorRules ()
 
   catch (const std::string& e)
   {
-    context.error (e);
+    Context::getContext ().error (e);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void applyColor (const Color& base, Color& c, bool merge)
 {
-    if (merge)
-      c.blend (base);
-    else
-      c = base;
+  if (merge)
+    c.blend (base);
+  else
+    c = base;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeBlocked (Task& task, const Color& base, Color& c, bool merge)
@@ -130,7 +125,7 @@ static void colorizeActive (Task& task, const Color& base, Color& c, bool merge)
 static void colorizeScheduled (Task& task, const Color& base, Color& c, bool merge)
 {
   if (task.has ("scheduled") &&
-      ISO8601d (task.get_date ("scheduled")) <= now)
+      Datetime (task.get_date ("scheduled")) <= now)
     applyColor (base, c, merge);
 }
 
@@ -152,10 +147,10 @@ static void colorizeTag (Task& task, const std::string& rule, const Color& base,
 static void colorizeProject (Task& task, const std::string& rule, const Color& base, Color& c, bool merge)
 {
   // Observe the case sensitivity setting.
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+  bool sensitive = Context::getContext ().config.getBoolean ("search.case.sensitive");
 
-  std::string project = task.get ("project");
-  std::string rule_trunc = rule.substr (14);
+  auto project = task.get ("project");
+  auto rule_trunc = rule.substr (14);
 
   // Match project names leftmost.
   if (rule_trunc.length () <= project.length ())
@@ -166,7 +161,7 @@ static void colorizeProject (Task& task, const std::string& rule, const Color& b
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeProjectNone (Task& task, const Color& base, Color& c, bool merge)
 {
-  if (task.get ("project") == "")
+  if(!task.has ("project"))
     applyColor (base, c, merge);
 }
 
@@ -181,7 +176,7 @@ static void colorizeTagNone (Task& task, const Color& base, Color& c, bool merge
 static void colorizeKeyword (Task& task, const std::string& rule, const Color& base, Color& c, bool merge)
 {
   // Observe the case sensitivity setting.
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+  auto sensitive = Context::getContext ().config.getBoolean ("search.case.sensitive");
 
   // The easiest thing to check is the description, because it is just one
   // attribute.
@@ -192,10 +187,10 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
   // first match.
   else
   {
-    for (auto& it : task.data)
+    for (const auto& att : task.data)
     {
-      if (! it.first.compare (0, 11, "annotation_", 11) &&
-          find (it.second, rule.substr (14), sensitive) != std::string::npos)
+      if (! att.first.compare (0, 11, "annotation_", 11) &&
+          find (att.second, rule.substr (14), sensitive) != std::string::npos)
       {
         applyColor (base, c, merge);
         return;
@@ -208,7 +203,7 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
 static void colorizeUDA (Task& task, const std::string& rule, const Color& base, Color& c, bool merge)
 {
   // Is the rule color.uda.name.value or color.uda.name?
-  size_t pos = rule.find (".", 10);
+  auto pos = rule.find ('.', 10);
   if (pos == std::string::npos)
   {
     if (task.has (rule.substr (10)))
@@ -216,8 +211,8 @@ static void colorizeUDA (Task& task, const std::string& rule, const Color& base,
   }
   else
   {
-    const std::string uda = rule.substr (10, pos - 10);
-    const std::string val = rule.substr (pos + 1);
+    auto uda = rule.substr (10, pos - 10);
+    auto val = rule.substr (pos + 1);
     if ((val == "none" && ! task.has (uda)) ||
         task.get (uda) == val)
       applyColor (base, c, merge);
@@ -229,7 +224,7 @@ static void colorizeDue (Task& task, const Color& base, Color& c, bool merge)
 {
   if (task.has ("due"))
   {
-    Task::status status = task.getStatus ();
+    auto status = task.getStatus ();
     if (status != Task::completed &&
         status != Task::deleted   &&
         task.getDateState ("due") == Task::dateAfterToday)
@@ -242,8 +237,8 @@ static void colorizeDueToday (Task& task, const Color& base, Color& c, bool merg
 {
   if (task.has ("due"))
   {
-    Task::status status = task.getStatus ();
-    Task::dateState dateState = task.getDateState ("due");
+    auto status = task.getStatus ();
+    auto dateState = task.getDateState ("due");
     if (status != Task::completed &&
         status != Task::deleted   &&
         (dateState == Task::dateLaterToday || dateState == Task::dateEarlierToday))
@@ -256,7 +251,7 @@ static void colorizeOverdue (Task& task, const Color& base, Color& c, bool merge
 {
   if (task.has ("due"))
   {
-    Task::status status = task.getStatus ();
+    auto status = task.getStatus ();
     if (status != Task::completed &&
         status != Task::deleted   &&
         task.getDateState ("due") == Task::dateBeforeToday)
@@ -289,14 +284,14 @@ static void colorizeDeleted (Task& task, const Color& base, Color& c, bool merge
 void autoColorize (Task& task, Color& c)
 {
   // The special tag 'nocolor' overrides all auto and specific colorization.
-  if (! context.color () ||
+  if (! Context::getContext ().color () ||
       task.hasTag ("nocolor"))
   {
     c = Color ();
     return;
   }
 
-  bool merge = context.config.getBoolean ("rule.color.merge");
+  auto merge = Context::getContext ().config.getBoolean ("rule.color.merge");
 
   // Note: c already contains colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is King, hence the

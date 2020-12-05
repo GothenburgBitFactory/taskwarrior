@@ -1,3 +1,159 @@
+2.5.2 () -
+
+- TD-64   sync conflict deleted all annotations of the task
+          Thanks to Markus Beppler, Konstantin Vorobyev
+- TI-91   Timewarrior does not compile on DragonFly
+          Thanks to Michael Neumann
+- TW #1 URL formating
+           Thanks to buhtz
+- TW #2 Update to markdown and rename DEVELOPER to DEVELOPER.md
+           Thanks to Lynoure Braakman
+- TW-54/#115 Reduce output for timesheet
+          Thanks to Aikido guy
+- TW-61   Extract only tasks with annotations
+          Thanks to Aikido Guy
+- TW-213  Align countdown column on boundary between number and text.
+          Thanks to Eric Fluger
+- TW-1572 Alternative approach to urgency inheritance
+          Thanks to Jens Erat, Wim Schuermann
+- TW-1667 hooks: upon failure indicate which hook failed
+          Thanks to Daniel Shahaf
+- TW-1785 Purge command to remove deleted tasks
+          Thanks to Paul Beckingham
+- TW-1772 Implementation of circular dependency detection is inefficient
+          Thanks to Michael Meier
+- TW-1778 Unicode strings are truncated in task description
+          Thanks to Andrew, bjonnh, OKOMPer, Vladimir
+- TW-1788 Closing a reopened task does not update the end time
+          Thanks to Ralph Bean
+- TW-1791 taskrc(5) manpage: spurious "pri." in rule.precedence.color
+          Thanks to Sebastien Badia
+- TW-1792 The info command uses '0' to reference dependencies on non-
+          pending tasks.
+- TW-1795 Calendar underline on Day padding
+          Thanks to Renato Alves
+- TW-1805 project:ide is not allowed
+          Thanks to Slaven ʙanovic
+- TW-1807 dateformat lacks a flag to display day of week
+          Thanks to Ellington Santos
+- TW-1813 Range filter doesn't work
+          Thanks to george js
+- TW-1820 Install with -DLANGUAGE=2 flag not work.
+          Thanks to E. Manuel Cerr'on Angeles
+- TW-1823 Incorrect unicode text wrapping / justifying.
+          Thanks to Sergey Trofimov
+- TW-1827 Extract annotations from a task
+          Thanks to Ryan
+- TW-1855 "Well-known" CA certificates not properly auto-loaded
+          Thanks to Flavio Poletti
+- TW-1857 Change Task::get call to the more efficient Task::has
+          Thanks to Zachary Manning
+- TW‐1858 Change signature for dependencyGetBlocked
+- TW-1859 Change signature of Task::getTags
+- TW-1860 Change signature of Task::getAnnotations
+- TW-1861 Truncated description when adding annotation
+          Thanks to eezewaek
+- TW-1869 segmentation fault (on unusual installation)
+          Thanks to Eric Hymowitz
+- TW-1873 Specify different path to extensions/hooks directory
+          Thanks to Eli
+- TW-1877 task done, task edit, task is now pending
+          Thanks to Eric Hymowitz
+- TW-1878 uuids subcommand produces a space-delimited list, not comma-delimited
+          Thanks to Scott Kostyshak
+- TW-1881 Missing last character(s) in Description field
+          Thanks to Hubert Toullec
+- TW-1881 default.scheduled seems not to work
+          Thanks to Onion
+- TW-1885 Task Sync does not send TLS SNI headers
+          Thanks to Dan Callahan
+- TW-1903 grammar error -- There are 1 local changes.
+          Thanks to Eric Hymowitz
+- TW-1906/#1919 sync sub-command is missing from task(1) manual page
+          Thanks to rjc
+- TW-1910 unreachable statement
+          Thanks to Martin Strunz
+- TW-1917/#1930 "above" does a string comparison, even when the value is numeric
+          Thanks to Dirk Deimeke
+- TW-1930 Typo in help
+          Thanks to Kai HTML
+- TW-1935 Separate verbosity category for rc overrides
+          Thanks to Paul J. Fenwick
+- TW-1936 Tweak tests to have fuller TAP compliance
+          Thanks to Paul J. Fenwick
+- TW-1938 Adjust behaviour of new-uuid and new-id verbosity levels
+          Thanks to Paul J. Fenwick
+- TW-1947 "urgency.over" filter seems to not work correct
+          Thanks to Marc Richter
+- TW #1964 task burndown shows extra brackets #1964
+           Thanks to php-coder
+- TW #1966 Tests: Don't hardcode errno constants #1966
+           Thanks to Jakub Wilk
+- TW #1973 Don't nag when no tasks are READY
+           Thanks to Martin F. Krafft
+- TW #1986 [Nit] Update DEVELOPER.md after migration to Github
+           Thanks to Kirill Bobyrev
+- TW #1922 Can't find export scripts
+           Thanks to tom-doerr
+- TW #2020 reserved.lines is not affecting the burndown height
+           Thanks to ad₋si
+- TW #2047 Exiting the task editor with an error code doesn't remove the lock file
+           Thanks to coaxial
+- TW #2051 doc/man: ready tasks sorted with started tasks 1st
+           Thanks to Simon Désaulniers
+- TW #2053 Do not set CMP0037 on CMake 3.11.0 and above
+           Thanks to Janik Rabe
+- #2077    Change taskrc override priority, respect verbose override, refactor.
+           Thanks to taiyu-len
+- #2108    CmdHistory: repeat unit if a larger unit changes
+           Thanks to Janik Rabe
+- #2132    JSON encode/decode string UDAs
+           Thanks to Chad Phillips
+- #2176    How to get the full list of tags ?
+           Thanks to Adrien Lemaire
+- #2091    duration of task is set to a wrong and extremely big value
+           Thanks to Wray Zheng
+- Added 'juhannus' as a synonym for 'midsommarafton'
+           Thanks to Lynoure Braakman
+- Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
+  virtual tag.
+- Removed deprecated 'alias._query' setting.
+- Fixed ambiguity in the esp-ESP localization
+           Thanks to Fidel Mato
+- Deprecated the 'new-uuid' verbosity option, since its functionality can be
+  removed by merging with 'new-id'.
+- Correct a false-positive warning when a due date is removed and a wait is
+  added.
+- Added 'QUARTER' virtual tag.
+- Fixed unquoted glob in bash completion script
+           Thanks to Ran Benita
+- Deprecated use of alternate Boolean configuration settings. Use values "0" for
+  off, and "1" for on. Avoid used of "on", "off", "true", "t", "false", "f",
+  "yes", "y", "no", "n".
+- Fixed test harness for Python 3.x.
+           Thanks to jrabbit
+- Improved certificate validation diagnostics
+           Thanks to Jelle van der Waa
+- Improved portability for SunOS-like OSes.
+           Thanks to Antonio Huete Jimenez
+- Updated the 'timesheet' command with a more compact report that accepts a
+  filter, and has a default filter showing the last four weeks of completed and
+  started tasks.
+- Added 'history.weekly', 'history.daily', 'ghistory.weekly', 'ghistory.daily'
+  report variations, with code refactoring.
+          Thanks to Lukas Barth
+- New DOM references: annotations.count, tw.syncneeded, tw.program, tw.args,
+  tw.width, tw.height, tw.version.
+- The message telling you to sync now indicates how many local changes will be
+  synced.
+- Removed compile-time language settings and I18N.
+- Workaround for alias grep=rg in fish
+          Thanks to Lionel Miller.
+- Do not set CMP0037 on CMake 3.11.0 and above
+          Thanks to Janik Rabe
+
+------ current release ---------------------------
+
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
 - TD-104  Unrecognized taskwarrior file format
@@ -108,7 +264,7 @@
 - The 'run_all' script was not correctly using exit code 0 when all tests pass
           (thanks to Gordon Ball).
 
------- current release ---------------------------
+------ old releases ------------------------------
 
 2.5.0 (2015-10-21) dd5968a61b1fab258b38879cfdbb7d67f1bcd550
 
@@ -168,7 +324,7 @@
 - TW-1488 You have more urgent tasks (thanks to Stefan Betz, Denis Kasak).
 - TW-1496 Translation manuals are outdated/miss information (thanks to Jens
           Erat).
-- TW-1499 Invalid due date produces jump to beggining of the unix epoch (thanks
+- TW-1499 Invalid due date produces jump to beginning of the unix epoch (thanks
           to Tomas Babej).
 - TW-1511 Project titles not properly parsed if they contain hyphens (thanks to
           Leon Feng, Blake Sweeney, Dylan Mikus).
@@ -222,7 +378,7 @@
           John Reeder).
 - TW-1630 "Due" parsing behavior seems inconsistent (thanks to Jim B).
 - TW-1632 Japanese translation for Taskwarrior(150713) (thanks to ribbon).
-- TW-1634 due.not:<date> excludes only tasks scheduled at mitnight (thanks to
+- TW-1634 due.not:<date> excludes only tasks scheduled at midnight (thanks to
           Tomas Babej).
 - TW-1635 Running "task anystringatall" does not filter anything (thanks to
           Tomas Babej).
@@ -322,8 +478,6 @@
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
 - When GC is turned off, disable the query shortcuts, which no longer apply.
-
------- old releases ------------------------------
 
 2.4.4 (2015-05-10) df49aaba126484b668c41d3ff9301f8d8ec49987
 
@@ -435,7 +589,7 @@
           Babej).
 - TW-1505 completely ignore mis-named hook scripts (thanks to Tomas Babej,
           David Patrick).
-- TW-1509 Hooks modifications performed on sync not sycning back (thanks to
+- TW-1509 Hooks modifications performed on sync not syncing back (thanks to
           Tomas Babej).
 - TW-1510 Task can save empty value in the data backlog (thanks to Tomas Babej).
 - TW-1517 Hook performance should be measured individually for each hook (thanks
@@ -543,7 +697,7 @@
          "Description ( Information)".
 - TW-248 Substitute text doesn't work with forward slash (thanks to Jostein
          Berntsen).
-- TW-249 Report filters don't allow parantheses (thanks to Philipp Woelfel).
+- TW-249 Report filters don't allow parentheses (thanks to Philipp Woelfel).
 - TW-250 Opening parenthesis in description gets padded in task 2.0.0 bet 2
          (thanks to Michelle Crane).
 - TW-251 extra spaces added after ( and / (thanks to Andy Spiegl).
@@ -818,7 +972,7 @@ Bugs
   .taskrc file (thanks to Haitham Gad).
 - #1247 Tests now create a local dir, rather than use the insecure /tmp dir
   (thanks to Jakub Wilk).
-- #1248 Merge tests no longer connect to takwarrior.org (thank to Jakub Wilk).
+- #1248 Merge tests no longer connect to taskwarrior.org (thank to Jakub Wilk).
 - #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
   Wilk).
 - #1263 The 'waiting' report properly lists only pending tasks with a wait date
@@ -884,7 +1038,7 @@ Features
 - Stop consider new tasks after quitting a bulk change.
 - Removed deprecated 'fg:' and 'bg:' attributes.
 - The 'diagnostics' command now reports libuuid details.
-- New characters for parsing and formating dates ('n', 's' and 'v').
+- New characters for parsing and formatting dates ('n', 's' and 'v').
 - Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, OVERDUE, TODAY,
   ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
 - New 'modified' attribute, which contains the most recent modification date,
@@ -1350,7 +1504,7 @@ Bugs
   Michelle Crane).
 - Fixed bug #823, so that recurring task change propagations are now always
   confirmed (thanks to Miguel de Val Borro).
-- Fixed bug #824, which caused probles when completing recurring tasks (thanks
+- Fixed bug #824, which caused problems when completing recurring tasks (thanks
   to Matt Kraai).
 - Fixed bug #831, which prevented some date fields from being properly parsed.
 - Fixed bug #835, which prevented hierarchical projects from being recognized.
@@ -1429,7 +1583,7 @@ Bugs
   (thanks to Michal Vyskocil).
 - Fixed problem where update-holidays.pl did not properly handle UTF8 JSON
   data.
-- Fixed problem where update-holidays.pl did not use the YYYYMMDD date foramt.
+- Fixed problem where update-holidays.pl did not use the YYYYMMDD date format.
 - Fixed problem where urgency was not properly calculated for waiting tasks.
 - Fixed problem where 'project' was not supported as a verbosity token (thanks
   to Adam Gibbins).
@@ -1943,7 +2097,7 @@ Bugs
 - Supports 'rc.name:value' for a command line override to .taskrc data
   (thanks to Federico Hernandez).
 - Removed obsolete DEVELOPERS file.  The online support forums at
-  http://taskwarrior.org will provide better information.
+  https://taskwarrior.org will provide better information.
 - Fixed bug that kept some deleted tasks showing up on the calendar report
   (thanks to Federico Hernandez).
 - Now asks the user to confirm large changes if configuration variable

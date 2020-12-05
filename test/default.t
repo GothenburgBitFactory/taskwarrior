@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -52,7 +52,7 @@ class TestCMD(TestCase):
     def test_info_command(self):
         """info command"""
         code, out, err = self.t('1')
-        self.assertRegexpMatches(out, 'Description\s+one')
+        self.assertRegex(out, 'Description\s+one')
 
 
 class TestDefaults(TestCase):
@@ -64,6 +64,7 @@ class TestDefaults(TestCase):
         cls.t.config("default.project",      "PROJECT")
         cls.t.config("uda.priority.default", "M")
         cls.t.config("default.due",          "eom")
+        cls.t.config("default.scheduled",    "eom")
 
     def test_all_defaults(self):
         """Verify all defaults are employed"""
@@ -73,6 +74,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"PROJECT"', out)
         self.assertIn('"priority":"M"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_all_specified(self):
         self.t("add project:specific priority:L due:eoy all specified")
@@ -81,6 +83,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"specific"', out)
         self.assertIn('"priority":"L"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_project_specified(self):
         self.t("add project:specific project specified")
@@ -89,6 +92,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"specific"', out)
         self.assertIn('"priority":"M"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_priority_specified(self):
         self.t("add priority:L priority specified")
@@ -97,6 +101,7 @@ class TestDefaults(TestCase):
         self.assertIn('"project":"PROJECT"', out)
         self.assertIn('"priority":"L"', out)
         self.assertIn('"due":"', out)
+        self.assertIn('"scheduled":"', out)
 
     def test_default_command(self):
         self.t("add foo")

@@ -5,8 +5,8 @@ task-sync \- A discussion and tutorial for the various task(1) data
 synchronization capabilities.
 
 .SH INTRODUCTION
-Taskwarrior has several sync options, external and internal.  If you wish to
-sync your data, choose one method only; mixing methods is only going to lead to
+Taskwarrior has several sync options, both external and built in.  If you wish
+to sync your data, choose one method only; mixing methods is going to lead to
 problems.  Each of the methods discussed have their own strengths.
 
 .SH ALTERNATIVES
@@ -14,14 +14,15 @@ There are three alternatives for syncing data, which are:
 
 1) Version control systems, such as git, hg, svn
 .br
-2) File hosting systems, such as DropBox
+2) File sharing systems, such as DropBox, Google Drive
 .br
 3) Using the Taskserver and the 'sync' command
 
 
 .SH OPTION 1: VERSION CONTROL SYSTEMS
 There are several good, distributed VCS systems (git, hg, ...) and centralized
-VCS systems (svn ...), and they function in a similar fashion for our purposes.
+VCS systems (svn, cvs ...), and they all function in a similar fashion for our
+purposes.
 
 Setup is straightforward.  You place your .task directory under revision
 control.  You then need to perform a regular commit/push/pull/update to make
@@ -44,8 +45,8 @@ Weaknesses:
   - You need to provide the mechanism for making sure copies are up to date
 
 
-.SH OPTION 2: FILE HOSTING SERVICES
-There are many file hosting services, such as DropBox, Amazon S3, Google Drive,
+.SH OPTION 2: FILE SHARING SERVICES
+There are many file sharing services, such as DropBox, Amazon S3, Google Drive,
 SkyDrive and more.  This technique involves storing your .task directory in a
 shared directory under the control of the file hosting services.
 
@@ -62,8 +63,6 @@ configuration variable like this:
 
 Strengths:
 .br
-  - Always secure
-.br
   - Good client support
 .br
   - Easy setup
@@ -76,7 +75,7 @@ Weaknesses:
 
 
 .SH OPTION 3: TASKSERVER
-The Taskserver was designed for this purpose to be secure, fast and conflict
+The Taskserver was designed for this purpose to be secure, fast and conflict-
 free, allowing data interchange between assorted Taskwarrior clients, and
 tolerant of network connectivity problems.
 
@@ -86,7 +85,7 @@ done on demand.
 
 Setup is a matter of creating an account on a Taskserver (see your Taskserver
 provider or operate your own - see
-http://taskwarrior.org/docs/server_setup.html)
+https://taskwarrior.org/docs/taskserver/setup.html)
 
 Once you have an account, you'll receive a certificate, key, and credentials.
 You'll need to put the certificate and key somewhere like this:
@@ -107,16 +106,10 @@ certificate, which means you will need one of the following additional entries:
     $ task config taskd.ca          ~/.task/ca.cert.pem
 
 The CA (Certificate Authority) will be used to verify the server certificate.
-Alternatively, you can override the cert verification process using:
-
-    $ task config taskd.trust       'allow all'
-
-This is an insecure option that should be used with caution, because it directs
-Taskwarrior to trust any certificate.
 
 After setup, you run a one-time sync initialization, like this:
 
-    $ task sync initialize
+    $ task sync init
 
 This will make sure your client and the server are properly in sync to begin
 with.  From this point on, you never run the 'initialize' command again, just
@@ -130,9 +123,20 @@ nothing happens.  If you do not have connectivity, your task changes accumulate
 so that when you next run 'sync' with proper connectivity, the changes are
 properly handled, in the right order.
 
+If you run multiple clients that sync to the same server, you will need to run
+this command on your primary client (the one you use most often):
+
+    $ task config recurrence on
+
+And on the other clients, run:
+
+    $ task config recurrence off
+
+This protects you against the effects of a sync/duplication bug.
+
 Strengths:
 .br
-  - Always secure
+  - Secure communication
 .br
   - Minimal bandwidth
 .br
@@ -143,31 +147,31 @@ Weaknesses:
   - You need to manage your own server, or gain access to a hosted server.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2016 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2020 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
-http://www.opensource.org/licenses/mit-license.php for more information.
+https://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
 .BR taskrc(5),
 .BR task-color(5),
 
-For more information regarding task, the following may be referenced:
+For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at
-<https://git.tasktools.org/scm/tm/task.git>
+<https://github.com/GothenburgBitFactory/taskwarrior>
 
 .TP
-You can contact the project by writing an email to
-<support@taskwarrior.org>
+You can contact the project by emailing
+<support@GothenburgBitFactory.org>
 
 .SH REPORTING BUGS
 .TP
-Bugs in task may be reported to the issue-tracker at
-<http://taskwarrior.org>
+Bugs in Taskwarrior may be reported to the issue-tracker at
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>

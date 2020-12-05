@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,17 +30,20 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
-#include <Dates.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 
-extern Context context;
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeNumeric::ColumnTypeNumeric ()
 {
   _type = "numeric";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeNumeric::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +55,6 @@ void ColumnTypeNumeric::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    e.addSource (namedDates);
     contextTask = task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
@@ -63,12 +65,12 @@ void ColumnTypeNumeric::modify (Task& task, const std::string& value)
   }
 
   std::string label = "  [1;37;43mMODIFICATION[0m ";
-  context.debug (label + _name + " <-- '" + evaluatedValue.get_string () + "' <-- '" + value + "'");
+  Context::getContext ().debug (label + _name + " <-- '" + evaluatedValue.get_string () + "' <-- '" + value + '\'');
 
   // If the result is not readily convertible to a numeric value, then this is
   // an error.
   if (evaluatedValue.type () == Variant::type_string)
-    throw format (STRING_UDA_NUMERIC, evaluatedValue.get_string ());
+    throw format ("The value '{1}' is not a valid numeric value.", evaluatedValue.get_string ());
 
   task.set (_name, evaluatedValue);
 }

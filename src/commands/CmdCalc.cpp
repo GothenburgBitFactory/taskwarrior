@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,18 +28,13 @@
 #include <CmdCalc.h>
 #include <Filter.h>
 #include <Eval.h>
-#include <Dates.h>
-#include <main.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCalc::CmdCalc ()
 {
   _keyword               = "calc";
   _usage                 = "task          calc <expression>";
-  _description           = STRING_CMD_CALC_USAGE;
+  _description           = "Calculator";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -54,22 +49,19 @@ CmdCalc::CmdCalc ()
 int CmdCalc::execute (std::string& output)
 {
   // Configurable infix/postfix
-  bool infix = true;
-  if (context.config.get ("expressions") == "infix")
-    infix = true;
-  else if (context.config.get ("expressions") == "postfix")
+  bool infix {true};
+  if (Context::getContext ().config.get ("expressions") == "postfix")
     infix = false;
 
   // Create an evaluator with DOM access.
   Eval e;
   e.addSource (domSource);
-  e.addSource (namedDates);
-  e.debug (context.config.getBoolean ("debug"));
+  e.debug (Context::getContext ().config.getBoolean ("debug"));
 
   // Compile all the args into one expression.
   std::string expression;
-  for (auto& word : context.cli2.getWords ())
-    expression += word + " ";
+  for (const auto& word : Context::getContext ().cli2.getWords ())
+    expression += word + ' ';
 
   // Evaluate according to preference.
   Variant result;
@@ -78,7 +70,7 @@ int CmdCalc::execute (std::string& output)
   else
     e.evaluatePostfixExpression (expression, result);
 
-  output = (std::string) result + "\n";
+  output = (std::string) result + '\n';
   return 0;
 }
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,55 +28,54 @@
 #include <ColDescription.h>
 #include <stdlib.h>
 #include <Context.h>
-#include <ISO8601.h>
-#include <text.h>
+#include <Datetime.h>
+#include <shared.h>
+#include <format.h>
 #include <utf8.h>
 #include <util.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDescription::ColumnDescription ()
 {
-  _name  = "description";
-  _style = "combined";
-  _label = STRING_COLUMN_LABEL_DESC;
+  _name       = "description";
+  _style      = "combined";
+  _label      = "Description";
+  _modifiable = true;
 
-  _styles = {"combined",
-             "desc",
-             "oneline",
-             "truncated",
-             "count",
-             "truncated_count"};
+  _styles     = {"combined",
+                 "desc",
+                 "oneline",
+                 "truncated",
+                 "count",
+                 "truncated_count"};
 
-  _dateformat = context.config.get ("dateformat.annotation");
+  _dateformat = Context::getContext ().config.get ("dateformat.annotation");
   if (_dateformat == "")
-    _dateformat = context.config.get ("dateformat");
+    _dateformat = Context::getContext ().config.get ("dateformat");
 
-  std::string t  = ISO8601d ().toString (_dateformat);
-  std::string d  = STRING_COLUMN_EXAMPLES_DESC;
-  std::string a1 = STRING_COLUMN_EXAMPLES_ANNO1;
-  std::string a2 = STRING_COLUMN_EXAMPLES_ANNO2;
-  std::string a3 = STRING_COLUMN_EXAMPLES_ANNO3;
-  std::string a4 = STRING_COLUMN_EXAMPLES_ANNO4;
+  std::string t  = Datetime ().toString (_dateformat);
+  std::string d  = "Move your clothes down on to the lower peg";
+  std::string a1 = "Immediately before your lunch";
+  std::string a2 = "If you are playing in the match this afternoon";
+  std::string a3 = "Before you write your letter home";
+  std::string a4 = "If you're not getting your hair cut";
 
-  _examples = {d + "\n  " + t + " " + a1
-                 + "\n  " + t + " " + a2
-                 + "\n  " + t + " " + a3
-                 + "\n  " + t + " " + a4,
+  _examples = {d + "\n  " + t + ' ' + a1
+                 + "\n  " + t + ' ' + a2
+                 + "\n  " + t + ' ' + a3
+                 + "\n  " + t + ' ' + a4,
                d,
-               d + " " + t + " " + a1
-                 + " " + t + " " + a2
-                 + " " + t + " " + a3
-                 + " " + t + " " + a4,
+               d + ' ' + t + ' ' + a1
+                 + ' ' + t + ' ' + a2
+                 + ' ' + t + ' ' + a3
+                 + ' ' + t + ' ' + a4,
                d.substr (0, 20) + "...",
                d + " [4]",
                d.substr (0, 20) + "... [4]"};
 
-  _hyphenate = context.config.getBoolean ("hyphenate");
+  _hyphenate = Context::getContext ().config.getBoolean ("hyphenate");
 
-  _indent = context.config.getInteger ("indent.annotation");
+  _indent = Context::getContext ().config.getInteger ("indent.annotation");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,13 +95,11 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      unsigned int min_anno = _indent + ISO8601d::length (_dateformat);
+      unsigned int min_anno = _indent + Datetime::length (_dateformat);
       if (min_anno > minimum)
         minimum = min_anno;
 
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (auto& i : annos)
+      for (auto& i : task.getAnnotations ())
       {
         unsigned int len = min_anno + 1 + utf8_width (i.second);
         if (len > maximum)
@@ -126,10 +123,8 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      auto min_anno = ISO8601d::length (_dateformat);
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (auto& i : annos)
+      auto min_anno = Datetime::length (_dateformat);
+      for (auto& i : task.getAnnotations ())
         maximum += min_anno + 1 + utf8_width (i.second);
     }
   }
@@ -155,9 +150,6 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
     minimum = 4;
     maximum = utf8_width (description) + 1 + 1 + format (task.annotation_count).length () + 1;
   }
-
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -177,12 +169,10 @@ void ColumnDescription::render (
   {
     if (task.annotation_count)
     {
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (const auto& i : annos)
+      for (const auto& i : task.getAnnotations ())
       {
-        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
-        description += "\n" + std::string (_indent, ' ') + dt.toString (_dateformat) + " " + i.second;
+        Datetime dt (strtol (i.first.substr (11).c_str (), nullptr, 10));
+        description += '\n' + std::string (_indent, ' ') + dt.toString (_dateformat) + ' ' + i.second;
       }
     }
 
@@ -208,12 +198,10 @@ void ColumnDescription::render (
   {
     if (task.annotation_count)
     {
-      std::map <std::string, std::string> annos;
-      task.getAnnotations (annos);
-      for (const auto& i : annos)
+      for (const auto& i : task.getAnnotations ())
       {
-        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
-        description += " " + dt.toString (_dateformat) + " " + i.second;
+        Datetime dt (strtol (i.first.substr (11).c_str (), nullptr, 10));
+        description += ' ' + dt.toString (_dateformat) + ' ' + i.second;
       }
     }
 
@@ -238,7 +226,7 @@ void ColumnDescription::render (
   else if (_style == "count")
   {
     if (task.annotation_count)
-      description += " [" + format (task.annotation_count) + "]";
+      description += " [" + format (task.annotation_count) + ']';
 
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
@@ -256,7 +244,7 @@ void ColumnDescription::render (
     int len_annos = 0;
     if (task.annotation_count)
     {
-      annos_count = " [" + format (task.annotation_count) + "]";
+      annos_count = " [" + format (task.annotation_count) + ']';
       len_annos = utf8_width (annos_count);
       len += len_annos;
     }

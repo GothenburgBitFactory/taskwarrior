@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/is-IS/2015.json
-# http://holidata.net/is-IS/2016.json
+# https://holidata.net/is-IS/2020.json
+# https://holidata.net/is-IS/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,67 +23,71 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
 holiday.is-IS1.name=Nýársdagur
-holiday.is-IS1.date=20150101
+holiday.is-IS1.date=20200101
 holiday.is-IS2.name=Skírdagur
-holiday.is-IS2.date=20150402
-holiday.is-IS3.name=Föstudaginn langi
-holiday.is-IS3.date=20150403
+holiday.is-IS2.date=20200409
+holiday.is-IS3.name=Föstudagurinn langi
+holiday.is-IS3.date=20200410
 holiday.is-IS4.name=Páskadagur
-holiday.is-IS4.date=20150405
-holiday.is-IS5.name=Annar í páskum
-holiday.is-IS5.date=20150406
+holiday.is-IS4.date=20200412
+holiday.is-IS5.name=Annar dagur páska
+holiday.is-IS5.date=20200413
 holiday.is-IS6.name=Sumardagurinn fyrsti
-holiday.is-IS6.date=20150423
+holiday.is-IS6.date=20200423
 holiday.is-IS7.name=Verkalýðsdagurinn
-holiday.is-IS7.date=20150501
+holiday.is-IS7.date=20200501
 holiday.is-IS8.name=Uppstigningardagur
-holiday.is-IS8.date=20150514
-holiday.is-IS9.name=Annar í hvítasunnu
-holiday.is-IS9.date=20150525
-holiday.is-IS10.name=Lýðveldisdagurinn
-holiday.is-IS10.date=20150617
-holiday.is-IS11.name=Frídagur verslunarmanna
-holiday.is-IS11.date=20150803
-holiday.is-IS12.name=Jól
-holiday.is-IS12.date=20151224
-holiday.is-IS13.name=Jól
-holiday.is-IS13.date=20151225
-holiday.is-IS14.name=Jól
-holiday.is-IS14.date=20151226
-holiday.is-IS15.name=Gamlárskvöld
-holiday.is-IS15.date=20151231
-holiday.is-IS16.name=Nýársdagur
-holiday.is-IS16.date=20160101
-holiday.is-IS17.name=Skírdagur
-holiday.is-IS17.date=20160324
-holiday.is-IS18.name=Föstudaginn langi
-holiday.is-IS18.date=20160325
-holiday.is-IS19.name=Páskadagur
-holiday.is-IS19.date=20160327
-holiday.is-IS20.name=Annar í páskum
-holiday.is-IS20.date=20160328
-holiday.is-IS21.name=Sumardagurinn fyrsti
-holiday.is-IS21.date=20160421
-holiday.is-IS22.name=Verkalýðsdagurinn
-holiday.is-IS22.date=20160501
-holiday.is-IS23.name=Uppstigningardagur
-holiday.is-IS23.date=20160505
-holiday.is-IS24.name=Annar í hvítasunnu
-holiday.is-IS24.date=20160516
-holiday.is-IS25.name=Lýðveldisdagurinn
-holiday.is-IS25.date=20160617
-holiday.is-IS26.name=Frídagur verslunarmanna
-holiday.is-IS26.date=20160801
-holiday.is-IS27.name=Jól
-holiday.is-IS27.date=20161224
-holiday.is-IS28.name=Jól
-holiday.is-IS28.date=20161225
-holiday.is-IS29.name=Jól
-holiday.is-IS29.date=20161226
-holiday.is-IS30.name=Gamlárskvöld
-holiday.is-IS30.date=20161231
+holiday.is-IS8.date=20200521
+holiday.is-IS9.name=Hvítasunnudagur
+holiday.is-IS9.date=20200531
+holiday.is-IS10.name=Annar dagur hvítasunnu
+holiday.is-IS10.date=20200601
+holiday.is-IS11.name=Þjóðhátíðardagurinn
+holiday.is-IS11.date=20200617
+holiday.is-IS12.name=Frídagur verslunarmanna
+holiday.is-IS12.date=20200803
+holiday.is-IS13.name=Aðfangadagur jóla
+holiday.is-IS13.date=20201224
+holiday.is-IS14.name=Jóladagur
+holiday.is-IS14.date=20201225
+holiday.is-IS15.name=Annar dagur jóla
+holiday.is-IS15.date=20201226
+holiday.is-IS16.name=Gamlársdagur
+holiday.is-IS16.date=20201231
+holiday.is-IS17.name=Nýársdagur
+holiday.is-IS17.date=20210101
+holiday.is-IS18.name=Skírdagur
+holiday.is-IS18.date=20210401
+holiday.is-IS19.name=Föstudagurinn langi
+holiday.is-IS19.date=20210402
+holiday.is-IS20.name=Páskadagur
+holiday.is-IS20.date=20210404
+holiday.is-IS21.name=Annar dagur páska
+holiday.is-IS21.date=20210405
+holiday.is-IS22.name=Sumardagurinn fyrsti
+holiday.is-IS22.date=20210422
+holiday.is-IS23.name=Verkalýðsdagurinn
+holiday.is-IS23.date=20210501
+holiday.is-IS24.name=Uppstigningardagur
+holiday.is-IS24.date=20210513
+holiday.is-IS25.name=Hvítasunnudagur
+holiday.is-IS25.date=20210523
+holiday.is-IS26.name=Annar dagur hvítasunnu
+holiday.is-IS26.date=20210524
+holiday.is-IS27.name=Þjóðhátíðardagurinn
+holiday.is-IS27.date=20210617
+holiday.is-IS28.name=Frídagur verslunarmanna
+holiday.is-IS28.date=20210802
+holiday.is-IS29.name=Aðfangadagur jóla
+holiday.is-IS29.date=20211224
+holiday.is-IS30.name=Jóladagur
+holiday.is-IS30.date=20211225
+holiday.is-IS31.name=Annar dagur jóla
+holiday.is-IS31.date=20211226
+holiday.is-IS32.name=Gamlársdagur
+holiday.is-IS32.date=20211231

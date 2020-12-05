@@ -33,7 +33,7 @@
 # set -g task_complete_attribute_modifiers yes
 #
 #
-# Copyright 2014 - 2016, Roman Inflianskas <infroma@gmail.com>
+# Copyright 2014 - 2020, Roman Inflianskas <infroma@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 
 # NOTE: remember that sed on OS X is different in some aspects. E.g. it does
 #       not understand \t for tabs.
@@ -186,7 +186,7 @@ end
 
 function __fish.task.list.command
   # ignore special commands
-  __fish.task.list._command $argv | grep -Ev '^_'
+  __fish.task.list._command $argv | command grep -Ev '^_'
 end
 
 function __fish.task.list.command_mods

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import atexit
+import errno
 import json
 import os
 import shlex
@@ -72,7 +73,7 @@ class Task(object):
     def activate_hooks(self):
         """Enable self.hooks functionality and activate hooks on config
         """
-        self.config("hooks", "on")
+        self.config("hooks", "1")
         self.hooks = Hooks(self.datadir)
 
     def reset_env(self):
@@ -114,18 +115,17 @@ class Task(object):
         """
         if taskd_user is None:
             if default:
-                user, group, org, userkey = self.taskd.default_user
+                user, org, userkey = self.taskd.default_user
             else:
-                user, group, org, userkey = self.taskd.create_user()
+                user, org, userkey = self.taskd.create_user()
         else:
-            user, group, org, userkey = taskd_user
+            user, org, userkey = taskd_user
 
         credentials = "/".join((org, user, userkey))
         self.config("taskd.credentials", credentials)
 
         self.credentials = {
             "user": user,
-            "group": group,
             "org": org,
             "userkey": userkey,
         }
@@ -275,7 +275,7 @@ class Task(object):
         try:
             shutil.rmtree(self.datadir)
         except OSError as e:
-            if e.errno == 2:
+            if e.errno == errno.ENOENT:
                 # Directory no longer exists
                 pass
             else:

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,17 +30,20 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
-#include <Dates.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 
-extern Context context;
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeDuration::ColumnTypeDuration ()
 {
   _type = "duration";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeDuration::validate (const std::string& input) const
+{
+  return input.length () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +55,6 @@ void ColumnTypeDuration::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    e.addSource (namedDates);
     contextTask = task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
@@ -68,11 +70,11 @@ void ColumnTypeDuration::modify (Task& task, const std::string& value)
   if (evaluatedValue.type () == Variant::type_duration)
   {
     // Store the raw value, for 'recur'.
-    context.debug (label + _name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + "'");
+    Context::getContext ().debug (label + _name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + '\'');
     task.set (_name, evaluatedValue);
   }
   else
-    throw format (STRING_TASK_INVALID_DUR, value);
+    throw format ("The duration value '{1}' is not supported.", value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

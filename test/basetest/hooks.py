@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division
+import errno
 import os
 from sys import stderr
 import shutil
@@ -144,7 +145,7 @@ class Hooks(object):
             shutil.rmtree(self.hookdir)
         except OSError as e:
             # If the hookdir folder doesn't exist, no harm done and keep going
-            if e.errno != 2:
+            if e.errno != errno.ENOENT:
                 raise
 
         os.mkdir(self.hookdir)
@@ -258,7 +259,7 @@ class Hook(object):
         try:
             os.remove(file)
         except OSError as e:
-            if e.errno == 2:
+            if e.errno == errno.ENOENT:
                 raise HookError("Hook with name {0} was not found on "
                                 "hooks/ folder".format(file))
             else:

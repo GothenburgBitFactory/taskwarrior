@@ -151,12 +151,12 @@ the specified month and year.  If the 'due' argument is provided, will show
 the starting month of the earliest due task.
 
 .TP
-.B task colors [sample | legend]
+.B task colors [<sample> | legend]
 Displays all possible colors, a named sample, or a legend containing all
 currently defined colors.
 
 .TP
-.B task columns [substring]
+.B task columns [<substring>]
 Displays all supported columns and formatting styles.  Useful when creating
 custom reports.  If a substring is provided, only matching column names are
 shown.
@@ -177,8 +177,8 @@ Displays only a count of tasks matching the filter.
 .B task <filter> export
 Exports all tasks in the JSON format.  Redirect the output to a file, if you
 wish to save it, or pipe it to another command or script to convert it to
-another format. The standard task release comes with a few example scripts,
-such as:
+another format. You'll find these example scripts online at
+<https://taskwarrior.org/tools/>:
 
   export-csv.pl
   export-sql.py
@@ -201,6 +201,14 @@ Shows a graphical report of task status by month.  Note that 'ghistory' is
 an alias to 'ghistory.monthly'.
 
 .TP
+.B task <filter> ghistory.weekly
+Shows a graphical report of task status by week.
+
+.TP
+.B task <filter> ghistory.daily
+Shows a graphical report of task status by day.
+
+.TP
 .B task help
 Shows the long usage text.
 
@@ -212,6 +220,14 @@ Shows a report of task history by year.
 .B task <filter> history.monthly
 Shows a report of task history by month.  Note that 'history' is
 an alias to 'history.monthly'.
+
+.TP
+.B task <filter> history.weekly
+Shows a report of task history by week.
+
+.TP
+.B task <filter> history.daily
+Shows a report of task history by day.
 
 .TP
 .B task <filter> ids
@@ -231,9 +247,8 @@ This command is mainly of use to external scripts.
 .TP
 .B task <filter> uuids
 Applies the filter on all tasks (even deleted and completed tasks)
-then extracts only the task UUIDs and presents them as
-a comma-separated list.  This is useful as input to a task command, to achieve
-this:
+then extracts only the task UUIDs and presents them as a space-separated list.
+This is useful as input to a task command, to achieve this:
 
   task $(task project:Home status:completed uuids) modify status:pending
 
@@ -279,9 +294,9 @@ value.
 
 .TP
 .B task <filter> ready
-Shows a page of the most urgent ready tasks, sorted by urgency.  A ready task is
-one that is either unscheduled, or has a scheduled date that is past and has no
-wait date.
+Shows a page of the most urgent ready tasks, sorted by urgency with started
+tasks first. A ready task is one that is either unscheduled, or has a scheduled
+date that is past and has no wait date.
 
 .TP
 .B task <filter> oldest
@@ -377,6 +392,14 @@ Modifies the existing task with provided information.
 Prepends description text to an existing task.
 
 .TP
+.B task <filter> purge
+Permanently removes the specified tasks from the data files. Only
+tasks that are alredy deleted can be purged. This command has a
+local-only effect and changes introduced by it are not synced.
+
+Warning: causes permanent, non-revertible loss of data.
+
+.TP
 .B task <filter> start <mods>
 Marks the specified tasks as started.
 
@@ -408,7 +431,7 @@ Examples:
     2015-03-31T23:59:59
 
 .TP
-.B task config [name [value | '']]
+.B task config [<name> [<value> | '']]
 Add, modify and remove settings directly in the Taskwarrior configuration.
 This command either modifies the 'name' setting with a new value of 'value',
 or adds a new entry that is equivalent to 'name=value':
@@ -493,7 +516,7 @@ Lists all supported reports.  This includes the built-in reports, and any custom
 reports you have defined.
 
 .TP
-.B task show [all | substring]
+.B task show [all | <substring>]
 Shows all the current settings.  If a
 substring is specified just the settings containing that substring will be
 displayed.
@@ -507,6 +530,25 @@ Shows statistics of the tasks defined by the filter.
 Shows a report of aggregated task status by project.
 
 .TP
+.B task sync [init]
+The sync command synchronizes data with the Taskserver, if configured.
+
+The init subcommand should only ever be run once, and only on one client, because
+it sends all data to the Taskserver. This allows all the subsequent sync commands
+to only send small deltas.
+
+Note: If you use multiple sync clients, make sure this setting (which is the default)
+is on your primary client:
+
+  recurrence=on
+
+and on all other clients (this is not the default):
+
+  recurrence=off
+
+This is a workaround to avoid a recurrence bug that duplicates recurring tasks.
+
+.TP
 .B task <filter> tags
 Show a list of all tags used. Any special tags used are highlighted. Note that
 virtual tags are not listed - they don't really exist, and are just a convenient
@@ -514,7 +556,7 @@ notation for other task metadata. It is an error to attempt to add or remove a
 virtual tag.
 
 .TP
-.B task timesheet [weeks]
+.B task timesheet [<weeks>]
 Shows a weekly report of tasks completed and started.
 
 .TP
@@ -610,10 +652,16 @@ Accesses and displays the DOM reference(s).  Used to extract individual values
 from tasks, or the system.  Supported DOM references are:
 
   rc.<name>
-  context.program
-  context.args
-  context.width
-  context.height
+  tw.syncneeded
+  tw.program
+  tw.args
+  tw.width
+  tw.height
+  tw.version
+  context.program    (Deprecated in 2.6.0)
+  context.args       (Deprecated in 2.6.0)
+  context.width      (Deprecated in 2.6.0)
+  context.height     (Deprecated in 2.6.0)
   system.version
   system.os
   <id>.<attribute>
@@ -633,7 +681,7 @@ extracted by DOM references.
 
 For a full list of supported attribute-specific DOM references, consult
 the online documentation at:
-<http://taskwarrior.org/docs/dom.html>
+<https://taskwarrior.org/docs/dom.html>
 
 .SH ATTRIBUTES AND METADATA
 
@@ -674,7 +722,6 @@ are:
     COMPLETED    Matches if the task has completed status
     DELETED      Matches if the task has deleted status
     DUE          Matches if the task is due
-    DUETODAY     Matches if the task is due today
     LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
     ORPHAN       Matches if the task has any orphaned UDA values
@@ -683,6 +730,7 @@ are:
     PENDING      Matches if the task has pending status
     PRIORITY     Matches if the task has a priority
     PROJECT      Matches if the task has a project
+    QUARTER      Matches if the task is due this quarter
     READY        Matches if the task is actionable
     SCHEDULED    Matches if the task is scheduled
     TAGGED       Matches if the task has tags
@@ -778,6 +826,13 @@ Attribute modifiers improve filters.  Supported modifiers are:
 .B  word
 .br
 .B  noword
+.RE
+
+They can be applied to all regular attributes (see above) and the following
+calculated attributes:
+
+.RS
+\fBurgency\fR (or short \fBurg\fR)
 .RE
 
 For example:
@@ -1040,6 +1095,8 @@ task ... due:pentecost
 task ... due:midsommar
 .br
 task ... due:midsommarafton
+.br
+task ... due:juhannus
 .RE
 
 .SS FREQUENCIES
@@ -1243,7 +1300,7 @@ the 'data.location' configuration setting of the task data directory.
 For examples please see the online documentation starting at
 
 .RS
-<http://taskwarrior.org/docs>
+<https://taskwarrior.org/docs>
 .RE
 
 Note that the online documentation can be more detailed and more current than
@@ -1275,10 +1332,10 @@ The file that contains the completed ("done") tasks.
 The file that contains information needed by the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2016 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2020 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
-http://www.opensource.org/licenses/mit-license.php for more information.
+https://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR taskrc(5),
@@ -1289,18 +1346,17 @@ For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
-<http://taskwarrior.org>
+<https://taskwarrior.org>
 
 .TP
 The official code repository at
-<https://git.tasktools.org/scm/tm/task.git>
+<https://github.com/GothenburgBitFactory/taskwarrior>
 
 .TP
 You can contact the project by emailing
-<support@taskwarrior.org>
+<support@GothenburgBitFactory.org>
 
 .SH REPORTING BUGS
 .TP
 Bugs in Taskwarrior may be reported to the issue-tracker at
-<https://bug.tasktools.org/>
-
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>

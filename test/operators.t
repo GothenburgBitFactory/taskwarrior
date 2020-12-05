@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -269,6 +269,16 @@ class TestOperatorsQuantity(TestCase):
         self.assertNotIn("four", out)
         self.assertNotIn("five", out)
 
+    def test_urgency_over(self):
+        """operator urgency.over:10.0"""
+        code, out, err = self.t("ls urgency.over:10.0")
+
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertNotIn("three", out)
+        self.assertNotIn("four", out)
+        self.assertNotIn("five", out)
+
     # < operator #
 
     def test_due_before(self):
@@ -324,6 +334,16 @@ class TestOperatorsQuantity(TestCase):
     def test_urgency_smaller(self):
         """operator urgency < 10.0"""
         code, out, err = self.t("ls urgency < 10.0")
+
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertIn("three", out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
+
+    def test_urgency_under(self):
+        """operator urgency.under:10.0"""
+        code, out, err = self.t("ls urgency.under:10.0")
 
         self.assertNotIn("one", out)
         self.assertNotIn("two", out)

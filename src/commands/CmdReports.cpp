@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,27 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <CmdReports.h>
 #include <sstream>
-#include <algorithm>
 #include <Context.h>
-#include <ViewText.h>
-#include <text.h>
-#include <i18n.h>
-
-extern Context context;
+#include <Table.h>
+#include <format.h>
+#include <util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdReports::CmdReports ()
 {
   _keyword               = "reports";
   _usage                 = "task          reports";
-  _description           = STRING_CMD_REPORTS_USAGE;
+  _description           = "Lists all supported reports";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -57,7 +54,7 @@ int CmdReports::execute (std::string& output)
   std::vector <std::string> reports;
 
   // Add custom reports.
-  for (auto& i : context.config)
+  for (auto& i : Context::getContext ().config)
   {
     if (i.first.substr (0, 7) == "report.")
     {
@@ -85,33 +82,23 @@ int CmdReports::execute (std::string& output)
 
   // Compose the output.
   std::stringstream out;
-  ViewText view;
-  view.width (context.getWidth ());
-  view.add (Column::factory ("string", STRING_CMD_REPORTS_REPORT));
-  view.add (Column::factory ("string", STRING_CMD_REPORTS_DESC));
-
-  if (context.color ())
-  {
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
-
-    Color alternate (context.config.get ("color.alternate"));
-    view.colorOdd (alternate);
-    view.intraColorOdd (alternate);
-  }
+  Table view;
+  view.width (Context::getContext ().getWidth ());
+  view.add ("Report");
+  view.add ("Description");
+  setHeaderUnderline (view);
 
   for (auto& report : reports)
   {
     int row = view.addRow ();
     view.set (row, 0, report);
-    view.set (row, 1, context.commands[report]->description ());
+    view.set (row, 1, Context::getContext ().commands[report]->description ());
   }
 
   out << optionalBlankLine ()
       << view.render ()
       << optionalBlankLine ()
-      << format (STRING_CMD_REPORTS_SUMMARY, reports.size ())
-      << "\n";
+      << format ("{1} reports\n", reports.size ());
 
   output = out.str ();
   return 0;

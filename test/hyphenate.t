@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -40,7 +40,7 @@ class TestHyphenation(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
         self.t.config("defaultwidth", "20")
-        self.t.config("detection",    "off")
+        self.t.config("detection",    "0")
         self.t.config("verbose",      "nothing")
 
     def test_hyphenation_on_space(self):
@@ -63,7 +63,7 @@ class TestBug804(TestCase):
 
     def test_hyphenation(self):
         """Verify hyphenation is controllable"""
-        self.t.config("print.empty.columns",     "yes")
+        self.t.config("print.empty.columns",     "1")
         self.t.config("report.unittest.labels",  "ID,Project,Pri,Description")
         self.t.config("report.unittest.columns", "id,project,priority,description")
         self.t.config("report.unittest.filter",  "status:pending")

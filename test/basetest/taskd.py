@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division, print_function
+import errno
 import os
 import tempfile
 import shutil
@@ -108,11 +109,10 @@ class Taskd(object):
         self.env = os.environ.copy()
 
         # Make sure TASKDDATA points to the temporary folder
-        self.env["TASKDATA"] = self.datadir
+        self.env["TASKDDATA"] = self.datadir
 
-    def create_user(self, user=None, group=None, org=None):
-        """Create a user/group in the server and return the user
-        credentials to use in a taskw client.
+    def create_user(self, user=None, org=None):
+        """Create a user in the server and return the user credentials to use in a taskw client.
         """
         if user is None:
             # Create a unique user ID
@@ -122,20 +122,16 @@ class Taskd(object):
             # Increment the user_id
             self.usercount += 1
 
-        if group is None:
-            group = "default_group"
-
         if org is None:
             org = "default_org"
 
         self._add_entity("org", org, ignore_exists=True)
-        self._add_entity("group", org, group, ignore_exists=True)
         userkey = self._add_entity("user", org, user)
 
-        return user, group, org, userkey
+        return user, org, userkey
 
     def _add_entity(self, keyword, org, value=None, ignore_exists=False):
-        """Add an organization, group or user to the current server
+        """Add an organization or user to the current server
 
         If a user creation is requested, the user unique ID is returned
         """
@@ -315,7 +311,7 @@ class Taskd(object):
         try:
             shutil.rmtree(self.datadir)
         except OSError as e:
-            if e.errno == 2:
+            if e.errno == errno.ENOENT:
                 # Directory no longer exists
                 pass
             else:

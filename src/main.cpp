@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,15 +28,15 @@
 #include <iostream>
 #include <new>
 #include <cstring>
-#include <i18n.h>
 #include <Context.h>
-
-Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, const char** argv)
 {
-  int status = 0;
+  int status {0};
+
+  Context globalContext;
+  Context::setContext (&globalContext);
 
   // Lightweight version checking that doesn't require initialization or any I/O.
   if (argc == 2 && !strcmp (argv[1], "--version"))
@@ -47,9 +47,9 @@ int main (int argc, const char** argv)
   {
     try
     {
-      status = context.initialize (argc, argv);
+      status = Context::getContext ().initialize (argc, argv);
       if (status == 0)
-        status = context.run ();
+        status = Context::getContext ().run ();
     }
 
     catch (const std::string& error)
@@ -66,7 +66,7 @@ int main (int argc, const char** argv)
 
     catch (...)
     {
-      std::cerr << STRING_UNKNOWN_ERROR << "\n";
+      std::cerr << "Unknown error. Please report.\n";
       status = -2;
     }
   }

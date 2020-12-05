@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/da-DK/2015.json
-# http://holidata.net/da-DK/2016.json
+# https://holidata.net/da-DK/2020.json
+# https://holidata.net/da-DK/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,51 +23,55 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
 holiday.da-DK1.name=Nytårsdag
-holiday.da-DK1.date=20150101
+holiday.da-DK1.date=20200101
 holiday.da-DK2.name=Skærtorsdag
-holiday.da-DK2.date=20150402
+holiday.da-DK2.date=20200409
 holiday.da-DK3.name=Langfredag
-holiday.da-DK3.date=20150403
+holiday.da-DK3.date=20200410
 holiday.da-DK4.name=Påskedag
-holiday.da-DK4.date=20150405
+holiday.da-DK4.date=20200412
 holiday.da-DK5.name=Anden påskedag
-holiday.da-DK5.date=20150406
-holiday.da-DK6.name=Kristi himmelfartsdag
-holiday.da-DK6.date=20150514
-holiday.da-DK7.name=Pinsedag
-holiday.da-DK7.date=20150524
-holiday.da-DK8.name=Anden pinsedag
-holiday.da-DK8.date=20150525
-holiday.da-DK9.name=Grundlovsdag
-holiday.da-DK9.date=20150605
-holiday.da-DK10.name=Juledag
-holiday.da-DK10.date=20151225
-holiday.da-DK11.name=Anden juledag
-holiday.da-DK11.date=20151226
-holiday.da-DK12.name=Nytårsdag
-holiday.da-DK12.date=20160101
-holiday.da-DK13.name=Skærtorsdag
-holiday.da-DK13.date=20160324
-holiday.da-DK14.name=Langfredag
-holiday.da-DK14.date=20160325
-holiday.da-DK15.name=Påskedag
-holiday.da-DK15.date=20160327
-holiday.da-DK16.name=Anden påskedag
-holiday.da-DK16.date=20160328
-holiday.da-DK17.name=Kristi himmelfartsdag
-holiday.da-DK17.date=20160505
-holiday.da-DK18.name=Pinsedag
-holiday.da-DK18.date=20160515
-holiday.da-DK19.name=Anden pinsedag
-holiday.da-DK19.date=20160516
-holiday.da-DK20.name=Grundlovsdag
-holiday.da-DK20.date=20160605
-holiday.da-DK21.name=Juledag
-holiday.da-DK21.date=20161225
-holiday.da-DK22.name=Anden juledag
-holiday.da-DK22.date=20161226
+holiday.da-DK5.date=20200413
+holiday.da-DK6.name=Store bededag
+holiday.da-DK6.date=20200508
+holiday.da-DK7.name=Kristi himmelfartsdag
+holiday.da-DK7.date=20200521
+holiday.da-DK8.name=Pinsedag
+holiday.da-DK8.date=20200531
+holiday.da-DK9.name=Anden pinsedag
+holiday.da-DK9.date=20200601
+holiday.da-DK10.name=Grundlovsdag
+holiday.da-DK10.date=20200605
+holiday.da-DK11.name=Juledag
+holiday.da-DK11.date=20201225
+holiday.da-DK12.name=Anden juledag
+holiday.da-DK12.date=20201226
+holiday.da-DK13.name=Nytårsdag
+holiday.da-DK13.date=20210101
+holiday.da-DK14.name=Skærtorsdag
+holiday.da-DK14.date=20210401
+holiday.da-DK15.name=Langfredag
+holiday.da-DK15.date=20210402
+holiday.da-DK16.name=Påskedag
+holiday.da-DK16.date=20210404
+holiday.da-DK17.name=Anden påskedag
+holiday.da-DK17.date=20210405
+holiday.da-DK18.name=Store bededag
+holiday.da-DK18.date=20210430
+holiday.da-DK19.name=Kristi himmelfartsdag
+holiday.da-DK19.date=20210513
+holiday.da-DK20.name=Pinsedag
+holiday.da-DK20.date=20210523
+holiday.da-DK21.name=Anden pinsedag
+holiday.da-DK21.date=20210524
+holiday.da-DK22.name=Grundlovsdag
+holiday.da-DK22.date=20210605
+holiday.da-DK23.name=Juledag
+holiday.da-DK23.date=20211225
+holiday.da-DK24.name=Anden juledag
+holiday.da-DK24.date=20211226

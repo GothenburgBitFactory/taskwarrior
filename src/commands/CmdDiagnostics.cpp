@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,9 +33,8 @@
 #include <time.h>
 #include <RX.h>
 #include <Context.h>
-#include <i18n.h>
-#include <text.h>
-#include <util.h>
+#include <shared.h>
+#include <format.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
@@ -44,15 +43,12 @@
 #include <gnutls/gnutls.h>
 #endif
 
-
-extern Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdDiagnostics::CmdDiagnostics ()
 {
   _keyword               = "diagnostics";
   _usage                 = "task          diagnostics";
-  _description           = STRING_CMD_DIAG_USAGE;
+  _description           = "Platform, build and environment details";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -71,49 +67,25 @@ CmdDiagnostics::CmdDiagnostics ()
 int CmdDiagnostics::execute (std::string& output)
 {
   Color bold;
-  if (context.color ())
+  if (Context::getContext ().color ())
     bold = Color ("bold");
 
   std::stringstream out;
-  out << "\n"
+  out << '\n'
       << bold.colorize (PACKAGE_STRING)
-      << "\n";
+      << '\n';
 
-  out << "   " << STRING_CMD_DIAG_PLATFORM << ": "
-      <<
-#if defined (DARWIN)
-         "Darwin"
-#elif defined (SOLARIS)
-         "Solaris"
-#elif defined (CYGWIN)
-         "Cygwin"
-#elif defined (HAIKU)
-         "Haiku"
-#elif defined (OPENBSD)
-         "OpenBSD"
-#elif defined (FREEBSD)
-         "FreeBSD"
-#elif defined (NETBSD)
-         "NetBSD"
-#elif defined (LINUX)
-         "Linux"
-#elif defined (KFREEBSD)
-         "GNU/kFreeBSD"
-#elif defined (GNUHURD)
-         "GNU/Hurd"
-#else
-         STRING_CMD_DIAG_UNKNOWN
-#endif
+  out << "   Platform: " << osName ()
       << "\n\n";
 
   // Compiler.
-  out << bold.colorize (STRING_CMD_DIAG_COMPILER)
-      << "\n"
+  out << bold.colorize ("Compiler")
+      << '\n'
 #ifdef __VERSION__
-      << "    " << STRING_CMD_DIAG_VERSION << ": "
-      << __VERSION__ << "\n"
+      << "    Version: "
+      << __VERSION__ << '\n'
 #endif
-      << "       " << STRING_CMD_DIAG_CAPS << ":"
+      << "       Caps:"
 #ifdef __STDC__
       << " +stdc"
 #endif
@@ -140,33 +112,22 @@ int CmdDiagnostics::execute (std::string& output)
       << " +l"      << 8 * sizeof (long)
       << " +vp"     << 8 * sizeof (void*)
       << " +time_t" << 8 * sizeof (time_t)
-      << "\n";
+      << '\n';
 
   // Compiler compliance level.
-  std::string compliance = "non-compliant";
-#ifdef __cplusplus
-  int level = __cplusplus;
-  if (level == 199711)
-    compliance = "C++98/03";
-  else if (level == 201103)
-    compliance = "C++11";
-  else
-    compliance = format (level);
-#endif
-  out << " " << STRING_CMD_DIAG_COMPLIANCE
-      << ": "
-      << compliance
+  out << " Compliance: "
+      << cppCompliance ()
       << "\n\n";
 
-  out << bold.colorize (STRING_CMD_DIAG_FEATURES)
-      << "\n"
+  out << bold.colorize ("Build Features")
+      << '\n'
 
   // Build date.
-      << "      " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << " " << __TIME__ << "\n"
+      << "      Built: " << __DATE__ << ' ' << __TIME__ << '\n'
 #ifdef HAVE_COMMIT
-      << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
+      << "     Commit: " << COMMIT << '\n'
 #endif
-      << "      CMake: " << CMAKE_VERSION << "\n";
+      << "      CMake: " << CMAKE_VERSION << '\n';
 
   out << "    libuuid: "
 #ifdef HAVE_UUID_UNPARSE_LOWER
@@ -174,7 +135,7 @@ int CmdDiagnostics::execute (std::string& output)
 #else
       << "libuuid, no uuid_unparse_lower"
 #endif
-      << "\n";
+      << '\n';
 
   out << "  libgnutls: "
 #ifdef HAVE_LIBGNUTLS
@@ -186,138 +147,173 @@ int CmdDiagnostics::execute (std::string& output)
 #else
       << "n/a"
 #endif
-      << "\n";
+      << '\n';
 
   out << " Build type: "
 #ifdef CMAKE_BUILD_TYPE
       << CMAKE_BUILD_TYPE
 #else
-      << "-"
+      << '-'
 #endif
       << "\n\n";
 
   // Config: .taskrc found, readable, writable
-  out << bold.colorize (STRING_CMD_DIAG_CONFIG)
-      << "\n"
-      << "       File: " << context.config._original_file._data << " "
-      << (context.config._original_file.exists ()
-           ? STRING_CMD_DIAG_FOUND
-           : STRING_CMD_DIAG_MISSING)
-      << ", " << context.config._original_file.size () << " " << "bytes"
+  File rcFile (Context::getContext ().config.file ());
+  out << bold.colorize ("Configuration")
+      << '\n'
+      << "       File: " << rcFile._data << ' '
+      << (rcFile.exists ()
+           ? "(found)"
+           : "(missing)")
+      << ", " << rcFile.size () << ' ' << "bytes"
       << ", mode "
       << std::setbase (8)
-      << context.config._original_file.mode ()
-      << "\n";
+      << rcFile.mode ()
+      << '\n';
 
   // Config: data.location found, readable, writable
-  File location (context.config.get ("data.location"));
-  out << "       Data: " << location._data << " "
+  File location (Context::getContext ().config.get ("data.location"));
+  out << "       Data: " << location._data << ' '
       << (location.exists ()
-           ? STRING_CMD_DIAG_FOUND
-           : STRING_CMD_DIAG_MISSING)
+           ? "(found)"
+           : "(missing)")
       << ", " << (location.is_directory () ? "dir" : "?")
       << ", mode "
       << std::setbase (8)
       << location.mode ()
-      << "\n";
+      << '\n';
 
   char* env = getenv ("TASKRC");
   if (env)
     out << "     TASKRC: "
         << env
-        << "\n";
+        << '\n';
 
   env = getenv ("TASKDATA");
   if (env)
     out << "   TASKDATA: "
         << env
-        << "\n";
+        << '\n';
 
   out << "    Locking: "
-      << (context.config.getBoolean ("locking")
-           ? STRING_CMD_DIAG_ENABLED
-           : STRING_CMD_DIAG_DISABLED)
-      << "\n";
+      << (Context::getContext ().config.getBoolean ("locking")
+           ? "Enabled"
+           : "Disabled")
+      << '\n';
 
   out << "         GC: "
-      << (context.config.getBoolean ("gc")
-           ? STRING_CMD_DIAG_ENABLED
-           : STRING_CMD_DIAG_DISABLED)
-      << "\n";
+      << (Context::getContext ().config.getBoolean ("gc")
+           ? "Enabled"
+           : "Disabled")
+      << '\n';
 
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
-  if (context.config.get ("editor") != "")
-    out << "  rc.editor: " << context.config.get ("editor") << "\n";
-  else if ((peditor = getenv ("VISUAL")) != NULL)
-    out << "    $VISUAL: " << peditor << "\n";
-  else if ((peditor = getenv ("EDITOR")) != NULL)
-    out << "    $EDITOR: " << peditor << "\n";
+  if (Context::getContext ().config.get ("editor") != "")
+    out << "  rc.editor: " << Context::getContext ().config.get ("editor") << '\n';
+  else if ((peditor = getenv ("VISUAL")) != nullptr)
+    out << "    $VISUAL: " << peditor << '\n';
+  else if ((peditor = getenv ("EDITOR")) != nullptr)
+    out << "    $EDITOR: " << peditor << '\n';
 
   out << "     Server: "
-      << context.config.get ("taskd.server")
-      << "\n";
+      << Context::getContext ().config.get ("taskd.server")
+      << '\n';
 
-  if (context.config.get ("taskd.ca") != "")
-    out << "         CA: "
-        << context.config.get ("taskd.ca")
-        << (File (context.config.get ("taskd.ca")).readable ()
-             ? ", readable, " : ", not readable, ")
-        << File (context.config.get ("taskd.ca")).size ()
-        << " bytes\n";
+  auto ca_pem = Context::getContext ().config.get ("taskd.ca");
+  out << "         CA: ";
+  if (ca_pem != "")
+  {
+    File file_ca (ca_pem);
+    if (file_ca.exists ())
+      out << ca_pem
+          << (file_ca.readable () ? ", readable, " : ", not readable, ")
+          << file_ca.size ()
+          << " bytes\n";
+    else
+      out << "not found\n";
+  }
+  else
+    out << "-\n";
 
-  std::string trust_value = context.config.get ("taskd.trust");
+  auto cert_pem = Context::getContext ().config.get ("taskd.certificate");
+  out << "Certificate: ";
+  if (cert_pem != "")
+  {
+    File file_cert (cert_pem);
+    if (file_cert.exists ())
+      out << cert_pem
+          << (file_cert.readable () ? ", readable, " : ", not readable, ")
+          << file_cert.size ()
+          << " bytes\n";
+    else
+      out << "not found\n";
+  }
+  else
+    out << "-\n";
+
+  auto key_pem = Context::getContext ().config.get ("taskd.key");
+  out << "        Key: ";
+  if (key_pem != "")
+  {
+    File file_key (key_pem);
+    if (file_key.exists ())
+      out << key_pem
+          << (file_key.readable () ? ", readable, " : ", not readable, ")
+          << file_key.size ()
+          << " bytes\n";
+    else
+      out << "not found\n";
+  }
+  else
+    out << "-\n";
+
+  auto trust_value = Context::getContext ().config.get ("taskd.trust");
   if (trust_value == "strict" ||
       trust_value == "ignore hostname" ||
       trust_value == "allow all")
-    out << "      Trust: " << trust_value << "\n";
+    out << "      Trust: " << trust_value << '\n';
   else
     out << "      Trust: Bad value - see 'man taskrc'\n";
 
-  out << "Certificate: "
-      << context.config.get ("taskd.certificate")
-      << (File (context.config.get ("taskd.certificate")).readable ()
-           ? ", readable, " : ", not readable, ")
-      << File (context.config.get ("taskd.certificate")).size ()
-      << " bytes\n";
-
-  out << "        Key: "
-      << context.config.get ("taskd.key")
-      << (File (context.config.get ("taskd.key")).readable ()
-           ? ", readable, " : ", not readable, ")
-      << File (context.config.get ("taskd.key")).size ()
-      << " bytes\n";
-
   out << "    Ciphers: "
-      << context.config.get ("taskd.ciphers")
-      << "\n";
+      << Context::getContext ().config.get ("taskd.ciphers")
+      << '\n';
 
   // Get credentials, but mask out the key.
-  std::string credentials = context.config.get ("taskd.credentials");
+  auto credentials = Context::getContext ().config.get ("taskd.credentials");
   auto last_slash = credentials.rfind ('/');
   if (last_slash != std::string::npos)
     credentials = credentials.substr (0, last_slash)
-                + "/"
+                + '/'
                 + std::string (credentials.length () - last_slash - 1, '*');
 
   out << "      Creds: "
       << credentials
       << "\n\n";
 
-  // Disaply hook status.
-  Path hookLocation (context.config.get ("data.location"));
-  hookLocation += "hooks";
+  // Display hook status.
+  Path hookLocation;
+  if (Context::getContext ().config.has ("hooks.location"))
+  {
+    hookLocation = Path (Context::getContext ().config.get ("hooks.location"));
+  }
+  else
+  {
+    hookLocation = Path (Context::getContext ().config.get ("data.location"));
+    hookLocation += "hooks";
+  }
 
-  out << bold.colorize (STRING_CMD_DIAG_HOOKS)
-      << "\n"
+  out << bold.colorize ("Hooks")
+      << '\n'
       << "     System: "
-      << (context.config.getBoolean ("hooks") ? STRING_CMD_DIAG_HOOK_ENABLE : STRING_CMD_DIAG_HOOK_DISABLE)
-      << "\n"
+      << (Context::getContext ().config.getBoolean ("hooks") ? "Enabled" : "Disabled")
+      << '\n'
       << "   Location: "
       << static_cast <std::string> (hookLocation)
-      << "\n";
+      << '\n';
 
-  auto hooks = context.hooks.list ();
+  auto hooks = Context::getContext ().hooks.list ();
   if (hooks.size ())
   {
     unsigned int longest = 0;
@@ -333,7 +329,7 @@ int CmdDiagnostics::execute (std::string& output)
       Path p (hook);
       if (! p.is_directory ())
       {
-        std::string name = p.name ();
+        auto name = p.name ();
 
         if (p.executable () &&
             (name.substr (0, 6) == "on-add"    ||
@@ -345,15 +341,15 @@ int CmdDiagnostics::execute (std::string& output)
 
           out.width (longest);
           out << std::left << name
-              << format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC)
-              << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
-              << "\n";
+              << " (executable)"
+              << (p.is_link () ? " (symlink)" : "")
+              << '\n';
         }
       }
     }
 
     if (! count)
-      out << "\n";
+      out << '\n';
 
     out << "   Inactive: ";
     count = 0;
@@ -362,7 +358,7 @@ int CmdDiagnostics::execute (std::string& output)
       Path p (hook);
       if (! p.is_directory ())
       {
-        std::string name = p.name ();
+        auto name = p.name ();
 
         if (! p.executable () ||
             (name.substr (0, 6) != "on-add"    &&
@@ -374,41 +370,38 @@ int CmdDiagnostics::execute (std::string& output)
 
           out.width (longest);
           out << std::left << name
-              << (p.executable () ? format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC) : format (" ({1})", STRING_CMD_DIAG_HOOK_NO_EXEC))
-              << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
+              << (p.executable () ? " (executable)" : " (not executable)")
+              << (p.is_link () ? " (symlink)" : "")
               << ((name.substr (0, 6) == "on-add" ||
                    name.substr (0, 9) == "on-modify" ||
                    name.substr (0, 9) == "on-launch" ||
-                   name.substr (0, 7) == "on-exit") ? "" : format (" ({1})", STRING_CMD_DIAG_HOOK_NAME))
-              << "\n";
+                   name.substr (0, 7) == "on-exit") ? "" : "unrecognized hook name")
+              << '\n';
         }
       }
     }
 
     if (! count)
-      out << "\n";
+      out << '\n';
   }
   else
-    out << format ("             ({1})\n", STRING_CMD_DIAG_NONE);
+    out << "             (-none-)\n";
 
-  out << "\n";
+  out << '\n';
 
   // Verify UUIDs are all unique.
-  out << bold.colorize (STRING_CMD_DIAG_TESTS)
-      << "\n";
+  out << bold.colorize ("Tests")
+      << '\n';
 
-  // Determine terminal details.
-  const char* term = getenv ("TERM");
-  out << "      $TERM: "
-      << (term ? term : STRING_CMD_DIAG_NONE)
-      << " ("
-      << context.getWidth ()
-      << "x"
-      << context.getHeight ()
-      << ")\n";
+  // Report terminal dimensions.
+  out << "   Terminal: "
+      << Context::getContext ().getWidth ()
+      << 'x'
+      << Context::getContext ().getHeight ()
+      << '\n';
 
   // Scan tasks for duplicate UUIDs.
-  std::vector <Task> all = context.tdb2.all_tasks ();
+  auto all = Context::getContext ().tdb2.all_tasks ();
   std::map <std::string, int> seen;
   std::vector <std::string> dups;
   std::string uuid;
@@ -422,62 +415,56 @@ int CmdDiagnostics::execute (std::string& output)
   }
 
   out << "       Dups: "
-      << format (STRING_CMD_DIAG_UUID_SCAN, all.size ())
-      << "\n";
+      << format ("Scanned {1} tasks for duplicate UUIDs:", all.size ())
+      << '\n';
 
   if (dups.size ())
   {
     for (auto& d : dups)
-      out << "             " << format (STRING_CMD_DIAG_UUID_DUP, d) << "\n";
+      out << "             " << format ("Found duplicate {1}", d) << '\n';
   }
   else
   {
-    out << "             " << STRING_CMD_DIAG_UUID_NO_DUP
-        << "\n";
+    out << "             No duplicates found\n";
   }
-
 
   // Check all the UUID references
 
   bool noBrokenRefs = true;
   out << " Broken ref: "
-      << format (STRING_CMD_DIAG_REF_SCAN, all.size ())
-      << "\n";
+      << format ("Scanned {1} tasks for broken references:", all.size ())
+      << '\n';
 
   for (auto& task : all)
   {
     // Check dependencies
-    std::vector <std::string> dependencies;
-    task.getDependencies(dependencies);
-
-    for (auto& uuid : dependencies)
+    for (auto& uuid : task.getDependencyUUIDs ())
     {
-      if (! context.tdb2.has (uuid))
+      if (! Context::getContext ().tdb2.has (uuid))
       {
         out << "             "
-            << format (STRING_CMD_DIAG_MISS_DEP, task.get ("uuid"), uuid)
-            << "\n";
+            << format ("Task {1} depends on nonexistent task: {2}", task.get ("uuid"), uuid)
+            << '\n';
         noBrokenRefs = false;
       }
     }
 
     // Check recurrence parent
-    std::string parentUUID = task.get ("parent");
+    auto parentUUID = task.get ("parent");
 
-    if (parentUUID != "" && ! context.tdb2.has (parentUUID))
+    if (parentUUID != "" && ! Context::getContext ().tdb2.has (parentUUID))
     {
       out << "             "
-          << format (STRING_CMD_DIAG_MISS_PAR, task.get ("uuid"), parentUUID)
-          << "\n";
+          << format ("Task {1} has nonexistent recurrence template {2}", task.get ("uuid"), parentUUID)
+          << '\n';
       noBrokenRefs = false;
     }
   }
 
   if (noBrokenRefs)
-    out << "             " << STRING_CMD_DIAG_REF_OK
-        << "\n";
+    out << "             No broken references found\n";
 
-  out << "\n";
+  out << '\n';
   output = out.str ();
   return 0;
 }

@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -81,23 +81,23 @@ class TestAnnotate(TestCase):
         self.t.config("report.rrr.columns",     "id,description")
         self.t.config("report.rrr.sort",        "id+")
         self.t.config("dateformat",             "m/d/Y")
-        self.t.config("color",                  "off")
+        self.t.config("color",                  "0")
 
         code, out, err = self.t("rrr")
 
         self.assertTasksExist(out)
 
-        self.assertRegexpMatches(out, "one\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo1",
+        self.assertRegex(out, "one\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo1",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "foo1\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo2",
+        self.assertRegex(out, "foo1\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo2",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "foo2\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo3",
+        self.assertRegex(out, "foo2\n.+\d{1,2}/\d{1,2}/\d{4}\s+foo3",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "two\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar1",
+        self.assertRegex(out, "two\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar1",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "bar1\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar2",
+        self.assertRegex(out, "bar1\n.+\d{1,2}/\d{1,2}/\d{4}\s+bar2",
                                  msg='full - first  annotation task 1')
-        self.assertRegexpMatches(out, "three\n.+\d{1,2}/\d{1,2}/\d{4}\s+baz1",
+        self.assertRegex(out, "three\n.+\d{1,2}/\d{1,2}/\d{4}\s+baz1",
                                  msg='full - first  annotation task 1')
 
     def test_annotate_dateformat(self):
@@ -114,17 +114,17 @@ class TestAnnotate(TestCase):
 
         self.assertTasksExist(out)
 
-        self.assertRegexpMatches(out, "one\n.+\d{1,6}\s+\d{1,6}\s+foo1",
+        self.assertRegex(out, "one\n.+\d{1,6}\s+\d{1,6}\s+foo1",
                                  msg="dateformat - first  annotation task 1")
-        self.assertRegexpMatches(out, "foo1\n.+\d{1,6}\s+\d{1,6}\s+foo2",
+        self.assertRegex(out, "foo1\n.+\d{1,6}\s+\d{1,6}\s+foo2",
                                  msg="dateformat - second  annotation task 1")
-        self.assertRegexpMatches(out, "foo2\n.+\d{1,6}\s+\d{1,6}\s+foo3",
+        self.assertRegex(out, "foo2\n.+\d{1,6}\s+\d{1,6}\s+foo3",
                                  msg="dateformat - third  annotation task 1")
-        self.assertRegexpMatches(out, "two\n.+\d{1,6}\s+\d{1,6}\s+bar1",
+        self.assertRegex(out, "two\n.+\d{1,6}\s+\d{1,6}\s+bar1",
                                  msg="dateformat - first  annotation task 2")
-        self.assertRegexpMatches(out, "bar1\n.+\d{1,6}\s+\d{1,6}\s+bar2",
+        self.assertRegex(out, "bar1\n.+\d{1,6}\s+\d{1,6}\s+bar2",
                                  msg="dateformat - second  annotation task 2")
-        self.assertRegexpMatches(out, "three\n.+\d{1,6}\s+\d{1,6}\s+baz1",
+        self.assertRegex(out, "three\n.+\d{1,6}\s+\d{1,6}\s+baz1",
                                  msg="dateformat - first  annotation task 3")
 
 class TestAnnotationPropagation(TestCase):
@@ -154,7 +154,7 @@ class TestAnnotation(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t.config("confirmation", "yes")
+        self.t.config("confirmation", "1")
 
     def test_blank_annotation(self):
         """Verify blank annotations are prevented"""

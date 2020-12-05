@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,9 +28,9 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-#include <text.h>
+#include <shared.h>
+#include <format.h>
 #include <util.h>
-#include <i18n.h>
 #include <Command.h>
 #include <main.h>
 
@@ -70,6 +70,7 @@
 #include <CmdModify.h>
 #include <CmdPrepend.h>
 #include <CmdProjects.h>
+#include <CmdPurge.h>
 #include <CmdReports.h>
 #include <CmdShow.h>
 #include <CmdStart.h>
@@ -88,8 +89,6 @@
 #include <Context.h>
 #include <ColProject.h>
 #include <ColDue.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 void Command::factory (std::map <std::string, Command*>& all)
@@ -132,9 +131,13 @@ void Command::factory (std::map <std::string, Command*>& all)
 #endif
   c = new CmdExport ();             all[c->keyword ()] = c;
   c = new CmdGet ();                all[c->keyword ()] = c;
+  c = new CmdGHistoryDaily ();      all[c->keyword ()] = c;
+  c = new CmdGHistoryWeekly ();     all[c->keyword ()] = c;
   c = new CmdGHistoryMonthly ();    all[c->keyword ()] = c;
   c = new CmdGHistoryAnnual ();     all[c->keyword ()] = c;
   c = new CmdHelp ();               all[c->keyword ()] = c;
+  c = new CmdHistoryDaily ();       all[c->keyword ()] = c;
+  c = new CmdHistoryWeekly ();      all[c->keyword ()] = c;
   c = new CmdHistoryMonthly ();     all[c->keyword ()] = c;
   c = new CmdHistoryAnnual ();      all[c->keyword ()] = c;
   c = new CmdIDs ();                all[c->keyword ()] = c;
@@ -145,6 +148,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdModify ();             all[c->keyword ()] = c;
   c = new CmdPrepend ();            all[c->keyword ()] = c;
   c = new CmdProjects ();           all[c->keyword ()] = c;
+  c = new CmdPurge ();              all[c->keyword ()] = c;
   c = new CmdReports ();            all[c->keyword ()] = c;
   c = new CmdShow ();               all[c->keyword ()] = c;
   c = new CmdShowRaw ();            all[c->keyword ()] = c;
@@ -168,7 +172,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 
   // Instantiate a command object for each custom report.
   std::vector <std::string> reports;
-  for (auto &i : context.config)
+  for (auto &i : Context::getContext ().config)
   {
     if (i.first.substr (0, 7) == "report.")
     {
@@ -183,12 +187,12 @@ void Command::factory (std::map <std::string, Command*>& all)
   {
     // Make sure a custom report does not clash with a built-in command.
     if (all.find (report) != all.end ())
-      throw format (STRING_CMD_CONFLICT, report);
+      throw format ("Custom report '{1}' conflicts with built-in task command.", report);
 
     c = new CmdCustom (
               report,
               "task <filter> " + report,
-              context.config.get ("report." + report + ".description"));
+              Context::getContext ().config.get ("report." + report + ".description"));
 
     all[c->keyword ()] = c;
   }
@@ -328,8 +332,8 @@ bool Command::permission (
 
   // What remains are write commands that have not yet selected 'all' or 'quit'.
   // Describe the task.
-  bool         confirmation = context.config.getBoolean ("confirmation");
-  unsigned int bulk         = context.config.getInteger ("bulk");
+  bool         confirmation = Context::getContext ().config.getBoolean ("confirmation");
+  unsigned int bulk         = Context::getContext ().config.getInteger ("bulk");
 
   // Quantity 1 modifications have optional confirmation, and only (y/n).
   if (quantity == 1)
@@ -347,8 +351,8 @@ bool Command::permission (
   if ((bulk == 0 || quantity < bulk) && (!_needs_confirm || !confirmation))
     return true;
 
-  if (context.verbose ("blank") && !_first_iteration)
-    std::cout << "\n";
+  if (Context::getContext ().verbose ("blank") && !_first_iteration)
+    std::cout << '\n';
   int answer = confirm4 (question);
   _first_iteration = false;
   switch (answer)

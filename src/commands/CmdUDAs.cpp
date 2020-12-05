@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,30 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <CmdUDAs.h>
+#include <Table.h>
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
 #include <Filter.h>
-#include <ViewText.h>
 #include <main.h>
-#include <text.h>
+#include <format.h>
+#include <shared.h>
 #include <util.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdUDAs::CmdUDAs ()
 {
   _keyword               = "udas";
   _usage                 = "task          udas";
-  _description           = STRING_CMD_UDAS_USAGE;
+  _description           = "Shows all the defined UDA details";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -61,7 +59,7 @@ int CmdUDAs::execute (std::string& output)
   std::stringstream out;
 
   std::vector <std::string> udas;
-  for (auto& name : context.config)
+  for (auto& name : Context::getContext ().config)
   {
     if (name.first.substr (0, 4) == "uda." &&
         name.first.find (".type") != std::string::npos)
@@ -83,27 +81,22 @@ int CmdUDAs::execute (std::string& output)
 
     // Render a list of UDA name, type, label, allowed values,
     // possible default value, and finally the usage count.
-    ViewText view;
-    view.width (context.getWidth ());
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDA));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_LABEL));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUES));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_DEFAULT));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
-
-    if (context.color ())
-    {
-      Color label (context.config.get ("color.label"));
-      view.colorHeader (label);
-    }
+    Table table;
+    table.width (Context::getContext ().getWidth ());
+    table.add ("Name");
+    table.add ("Type");
+    table.add ("Label");
+    table.add ("Allowed Values");
+    table.add ("Default");
+    table.add ("Usage Count");
+    setHeaderUnderline (table);
 
     for (auto& uda : udas)
     {
-      std::string type   = context.config.get ("uda." + uda + ".type");
-      std::string label  = context.config.get ("uda." + uda + ".label");
-      std::string values = context.config.get ("uda." + uda + ".values");
-      std::string defval = context.config.get ("uda." + uda + ".default");
+      std::string type   = Context::getContext ().config.get ("uda." + uda + ".type");
+      std::string label  = Context::getContext ().config.get ("uda." + uda + ".label");
+      std::string values = Context::getContext ().config.get ("uda." + uda + ".values");
+      std::string defval = Context::getContext ().config.get ("uda." + uda + ".default");
       if (label == "")
         label = uda;
 
@@ -113,26 +106,26 @@ int CmdUDAs::execute (std::string& output)
         if (i.has (uda))
           ++count;
 
-      int row = view.addRow ();
-      view.set (row, 0, uda);
-      view.set (row, 1, type);
-      view.set (row, 2, label);
-      view.set (row, 3, values);
-      view.set (row, 4, defval);
-      view.set (row, 5, count);
+      int row = table.addRow ();
+      table.set (row, 0, uda);
+      table.set (row, 1, type);
+      table.set (row, 2, label);
+      table.set (row, 3, values);
+      table.set (row, 4, defval);
+      table.set (row, 5, count);
     }
 
     out << optionalBlankLine ()
-        << view.render ()
+        << table.render ()
         << optionalBlankLine ()
         << (udas.size () == 1
-              ? format (STRING_CMD_UDAS_SUMMARY,  udas.size ())
-              : format (STRING_CMD_UDAS_SUMMARY2, udas.size ()))
-        << "\n";
+              ? format ("{1} UDA defined", udas.size ())
+              : format ("{1} UDAs defined", udas.size ()))
+        << '\n';
   }
   else
   {
-    out << STRING_CMD_UDAS_NO << "\n";
+    out << "No UDAs defined.\n";
     rc = 1;
   }
 
@@ -142,38 +135,33 @@ int CmdUDAs::execute (std::string& output)
   {
     for (auto& att : i.data)
       if (att.first.substr (0, 11) != "annotation_" &&
-          context.columns.find (att.first) == context.columns.end ())
+          Context::getContext ().columns.find (att.first) == Context::getContext ().columns.end ())
         orphans[att.first]++;
   }
 
   if (orphans.size ())
   {
     // Display the orphans and their counts.
-    ViewText orphanView;
-    orphanView.width (context.getWidth ());
-    orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_ORPHAN));
-    orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
-
-    if (context.color ())
-    {
-      Color label (context.config.get ("color.label"));
-      orphanView.colorHeader (label);
-    }
+    Table orphanTable;
+    orphanTable.width (Context::getContext ().getWidth ());
+    orphanTable.add ("Orphan UDA");
+    orphanTable.add ("Usage Count");
+    setHeaderUnderline (orphanTable);
 
     for (auto& o : orphans)
     {
-      int row = orphanView.addRow ();
-      orphanView.set (row, 0, o.first);
-      orphanView.set (row, 1, o.second);
+      int row = orphanTable.addRow ();
+      orphanTable.set (row, 0, o.first);
+      orphanTable.set (row, 1, o.second);
     }
 
     out << optionalBlankLine ()
-        << orphanView.render ()
+        << orphanTable.render ()
         << optionalBlankLine ()
         << (udas.size () == 1
-              ? format (STRING_CMD_UDAS_ORPHAN,  orphans.size ())
-              : format (STRING_CMD_UDAS_ORPHANS, orphans.size ()))
-        << "\n";
+              ? format ("{1} Orphan UDA", orphans.size ())
+              : format ("{1} Orphan UDAs", orphans.size ()))
+        << '\n';
   }
 
   output = out.str ();
@@ -185,7 +173,7 @@ CmdCompletionUDAs::CmdCompletionUDAs ()
 {
   _keyword               = "_udas";
   _usage                 = "task          _udas";
-  _description           = STRING_CMD_UDAS_COMPL_USAGE;
+  _description           = "Shows the defined UDAs for completion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -200,7 +188,7 @@ CmdCompletionUDAs::CmdCompletionUDAs ()
 int CmdCompletionUDAs::execute (std::string& output)
 {
   std::vector <std::string> udas;
-  for (auto& name : context.config)
+  for (auto& name : Context::getContext ().config)
   {
     if (name.first.substr (0, 4) == "uda." &&
         name.first.find (".type") != std::string::npos)
@@ -214,8 +202,7 @@ int CmdCompletionUDAs::execute (std::string& output)
   if (udas.size ())
   {
     std::sort (udas.begin (), udas.end ());
-    join (output, "\n", udas);
-    output += "\n";
+    output = join ("\n", udas) + '\n';
   }
 
   return 0;

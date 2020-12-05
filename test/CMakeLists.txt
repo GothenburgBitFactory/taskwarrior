@@ -1,23 +1,22 @@
-cmake_minimum_required (VERSION 2.8)
-if(POLICY CMP0037)
+cmake_minimum_required (VERSION 3.0)
+
+# This is a work-around for the following CMake issue:
+# https://gitlab.kitware.com/cmake/cmake/issues/16062
+# The issue has been fixed in CMake 3.11.0; the policy is set
+# to OLD for compatibility with older versions of CMake only.
+if(POLICY CMP0037 AND ${CMAKE_VERSION} VERSION_LESS "3.11.0")
   cmake_policy(SET CMP0037 OLD)
 endif()
+
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
+                     ${CMAKE_SOURCE_DIR}/src/libshared/src
                      ${CMAKE_SOURCE_DIR}/test
                      ${TASK_INCLUDE_DIRS})
 
-set (test_SRCS autocomplete.t col.t color.t config.t fs.t i18n.t json.t list.t
-               msg.t nibbler.t rx.t t.t tdb2.t text.t utf8.t util.t view.t
-               json_test lexer.t iso8601d.t iso8601p.t eval.t dates.t
-               variant_add.t variant_and.t variant_cast.t variant_divide.t
-               variant_equal.t variant_exp.t variant_gt.t variant_gte.t
-               variant_inequal.t variant_lt.t variant_lte.t variant_match.t
-               variant_math.t variant_modulo.t variant_multiply.t
-               variant_nomatch.t variant_not.t variant_or.t variant_partial.t
-               variant_subtract.t variant_xor.t)
+set (test_SRCS col.t dom.t eval.t lexer.t t.t tdb2.t util.t variant_add.t variant_and.t variant_cast.t variant_divide.t variant_equal.t variant_exp.t variant_gt.t variant_gte.t variant_inequal.t variant_lt.t variant_lte.t variant_match.t variant_math.t variant_modulo.t variant_multiply.t variant_nomatch.t variant_not.t variant_or.t variant_partial.t variant_subtract.t variant_xor.t view.t)
 
 add_custom_target (test ./run_all --verbose
                         DEPENDS ${test_SRCS} task_executable
@@ -28,7 +27,7 @@ add_custom_target (build_tests DEPENDS ${test_SRCS}
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
-  target_link_libraries (${src_FILE} task commands task columns ${TASK_LIBRARIES})
+  target_link_libraries (${src_FILE} task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
 endforeach (src_FILE)
 
 configure_file(run_all run_all COPYONLY)

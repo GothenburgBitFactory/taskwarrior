@@ -1,0 +1,26 @@
+FROM fedora:28
+
+RUN dnf update -y
+RUN dnf install python git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime -y
+
+# Setup language environment
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Setup taskwarrior
+ADD . /root/code/
+WORKDIR /root/code/
+RUN git clean -dfx
+RUN git submodule init
+RUN git submodule update
+RUN cmake -DCMAKE_BUILD_TYPE=debug .
+RUN make -j2
+RUN make install
+RUN task --version
+
+# Setup tests
+WORKDIR /root/code/test/
+RUN make
+
+CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]

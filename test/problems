@@ -54,6 +54,15 @@ if __name__ == "__main__":
 
     file = re.compile("^# (?:./)?(\S+\.t)(?:\.exe)?$")
     timestamp = re.compile("^# (\d+(?:\.\d+)?) ==>.*$")
+
+    expected_fail = re.compile(r"^not ok.*?#\s*TODO", re.I)
+    unexpected_pass = re.compile(r"^ok .*?#\s*TODO", re.I)
+    skip = re.compile(r"^ok .*?#\s*skip", re.I)
+    ok = re.compile(r"^ok ", re.I)
+    not_ok = re.compile(r"^not ok", re.I)
+    comment = re.compile(r"^#")
+    plan = re.compile(r"^1..\d+\s*(?:#.*)?$")
+
     start = None
     stop = None
 
@@ -68,30 +77,36 @@ if __name__ == "__main__":
             if match:
                 filename = match.group(1)
 
-            if line.startswith("ok "):
-                passed[filename] += 1
-
-            if line.startswith("not "):
-                errors[filename] += 1
-
-            if line.startswith("skip "):
-                skipped[filename] += 1
-
-            if line.startswith("# EXPECTED_FAILURE:"):
+            elif expected_fail.match(line):
                 expected[filename] += 1
 
-            if line.startswith("# UNEXPECTED_SUCCESS:"):
+            elif unexpected_pass.match(line):
                 unexpected[filename] += 1
+
+            elif skip.match(line):
+                skipped[filename] += 1
+
+            # It's important these come last, since they're subpatterns of the above
+
+            elif ok.match(line):
+                passed[filename] += 1
+
+            elif not_ok.match(line):
+                errors[filename] += 1
+
+            elif comment.match(line):
+                pass
+
+            elif plan.match(line):
+                pass
+
+            else:
+                # Uncomment if you want to see malformed things we caught as well...
+                # print(color("Malformed TAP (" + filename + "): " + line, "red"))
+                pass
 
         # Last line contains the ending timestamp
         stop = float(timestamp.match(line).group(1))
-
-    # Remove expected failures from the skipped tests category
-    for filename, value in expected.items():
-        if skipped[filename] == value:
-            del skipped[filename]
-        else:
-            skipped[filename] -= value
 
     v = "{0:>5d}"
     passed_str = "Passed:" + pad(24)

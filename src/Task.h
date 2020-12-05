@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -39,6 +39,7 @@ class Task
 public:
   static std::string defaultProject;
   static std::string defaultDue;
+  static std::string defaultScheduled;
   static bool searchCaseSensitive;
   static bool regex;
   static std::map <std::string, std::string> attributes;  // name -> type
@@ -107,6 +108,7 @@ public:
   bool is_duetomorrow () const;
   bool is_dueweek () const;
   bool is_duemonth () const;
+  bool is_duequarter () const;
   bool is_dueyear () const;
   bool is_overdue () const;
   bool is_udaPresent () const;
@@ -124,11 +126,12 @@ public:
   bool hasTag (const std::string&) const;
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);
-  void getTags (std::vector<std::string>&) const;
+  std::vector <std::string> getTags () const;
   void removeTag (const std::string&);
 
+  int getAnnotationCount () const;
   bool hasAnnotations () const;
-  void getAnnotations (std::map <std::string, std::string>&) const;
+  std::map <std::string, std::string> getAnnotations () const;
   void setAnnotations (const std::map <std::string, std::string>&);
   void addAnnotation (const std::string&);
   void removeAnnotations ();
@@ -140,10 +143,11 @@ public:
 #ifdef PRODUCT_TASKWARRIOR
   void removeDependency (int);
   void removeDependency (const std::string&);
-  void getDependencies (std::vector <int>&) const;
-  void getDependencies (std::vector <std::string>&) const;
+  std::vector <int>         getDependencyIDs () const;
+  std::vector <std::string> getDependencyUUIDs () const;
+  std::vector <Task>        getDependencyTasks () const;
 
-  void getUDAOrphans (std::vector <std::string>&) const;
+  std::vector <std::string> getUDAOrphanUUIDs () const;
 
   void substitute (const std::string&, const std::string&, const std::string&);
 #endif
@@ -168,17 +172,17 @@ private:
   const std::string decode (const std::string&) const;
 
 public:
-  float urgency_project () const;
-  float urgency_active () const;
-  float urgency_scheduled () const;
-  float urgency_waiting () const;
-  float urgency_blocked () const;
-  float urgency_inherit () const;
+  float urgency_project     () const;
+  float urgency_active      () const;
+  float urgency_scheduled   () const;
+  float urgency_waiting     () const;
+  float urgency_blocked     () const;
+  float urgency_inherit     () const;
   float urgency_annotations () const;
-  float urgency_tags () const;
-  float urgency_due () const;
-  float urgency_blocking () const;
-  float urgency_age () const;
+  float urgency_tags        () const;
+  float urgency_due         () const;
+  float urgency_blocking    () const;
+  float urgency_age         () const;
 };
 
 #endif

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,18 +30,15 @@
 #include <Context.h>
 #include <Filter.h>
 #include <util.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 #include <main.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdDone::CmdDone ()
 {
   _keyword               = "done";
   _usage                 = "task <filter> done <mods>";
-  _description           = STRING_CMD_DONE_USAGE;
+  _description           = "Marks the specified task as completed";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -55,8 +52,8 @@ CmdDone::CmdDone ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdDone::execute (std::string&)
 {
-  int rc = 0;
-  int count = 0;
+  auto rc = 0;
+  auto count = 0;
 
   // Apply filter.
   Filter filter;
@@ -64,14 +61,14 @@ int CmdDone::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  bool nagged = false;
+  auto nagged = false;
   for (auto& task : filtered)
   {
     Task before (task);
@@ -80,7 +77,7 @@ int CmdDone::execute (std::string&)
         task.getStatus () == Task::waiting)
     {
       // Complete the specified task.
-      std::string question = format (STRING_CMD_DONE_CONFIRM,
+      std::string question = format ("Complete task {1} '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
 
@@ -93,26 +90,26 @@ int CmdDone::execute (std::string&)
       if (task.has ("start"))
       {
         task.remove ("start");
-        if (context.config.getBoolean ("journal.time"))
-          task.addAnnotation (context.config.get ("journal.time.stop.annotation"));
+        if (Context::getContext ().config.getBoolean ("journal.time"))
+          task.addAnnotation (Context::getContext ().config.get ("journal.time.stop.annotation"));
       }
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
-        context.tdb2.modify (task);
+        Context::getContext ().tdb2.modify (task);
         ++count;
-        feedback_affected (STRING_CMD_DONE_TASK, task);
+        feedback_affected ("Completed task {1} '{2}'.", task);
         feedback_unblocked (task);
         if (!nagged)
           nagged = nag (task);
         dependencyChainOnComplete (task);
-        if (context.verbose ("project"))
+        if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task);
       }
       else
       {
-        std::cout << STRING_CMD_DONE_NO << "\n";
+        std::cout << "Task not completed.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -120,20 +117,20 @@ int CmdDone::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_DONE_NOTPEND,
+      std::cout << format ("Task {1} '{2}' is neither pending nor waiting.",
                            task.identifier (true),
                            task.get ("description"))
-                << "\n";
+                << '\n';
       rc = 1;
     }
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_DONE_1 : STRING_CMD_DONE_N, count);
+  feedback_affected (count == 1 ? "Completed {1} task." : "Completed {1} tasks.", count);
   return rc;
 }
 

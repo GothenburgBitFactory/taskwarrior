@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,18 +30,15 @@
 #include <algorithm>
 #include <Context.h>
 #include <JSON.h>
-#include <i18n.h>
-#include <text.h>
-#include <util.h>
-
-extern Context context;
+#include <shared.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdConfig::CmdConfig ()
 {
   _keyword               = "config";
   _usage                 = "task          config [name [value | '']]";
-  _description           = STRING_CMD_CONFIG_USAGE;
+  _description           = "Change settings in the task configuration";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -53,20 +50,23 @@ CmdConfig::CmdConfig ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdConfig::setConfigVariable (std::string name, std::string value, bool confirmation /* = false */)
+bool CmdConfig::setConfigVariable (
+  const std::string& name,
+  const std::string& value,
+  bool confirmation /* = false */)
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
-  File::read (context.config._original_file, contents);
+  File::read (Context::getContext ().config.file (), contents);
 
-  bool found = false;
-  bool change = false;
+  auto found = false;
+  auto change = false;
 
   for (auto& line : contents)
   {
     // If there is a comment on the line, it must follow the pattern.
-    auto comment = line.find ("#");
-    auto pos     = line.find (name + "=");
+    auto comment = line.find ('#');
+    auto pos     = line.find (name + '=');
 
     if (pos != std::string::npos &&
         (comment == std::string::npos ||
@@ -74,12 +74,12 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
     {
       found = true;
       if (!confirmation ||
-          confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
+          confirm (format ("Are you sure you want to change the value of '{1}' from '{2}' to '{3}'?", name, Context::getContext ().config.get (name), value)))
       {
+        line = name + '=' + json::encode (value);
+
         if (comment != std::string::npos)
-          line = name + "=" + json::encode (value) + " " + line.substr (comment);
-        else
-          line = name + "=" + json::encode (value);
+          line += ' ' + line.substr (comment);
 
         change = true;
       }
@@ -87,37 +87,37 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
   }
 
   // Not found, so append instead.
-  if (!found &&
-      (!confirmation ||
-       confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value))))
+  if (! found &&
+      (! confirmation ||
+       confirm (format ("Are you sure you want to add '{1}' with a value of '{2}'?", name, value))))
   {
-    contents.push_back (name + "=" + json::encode (value));
+    contents.push_back (name + '=' + json::encode (value));
     change = true;
   }
 
   if (change)
-    File::write (context.config._original_file, contents);
+    File::write (Context::getContext ().config.file (), contents);
 
   return change;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = false */)
+int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /* = false */)
 {
   // Read .taskrc (or equivalent)
   std::vector <std::string> contents;
-  File::read (context.config._original_file, contents);
+  File::read (Context::getContext ().config.file (), contents);
 
-  bool found = false;
-  bool change = false;
+  auto found = false;
+  auto change = false;
 
   for (auto line = contents.begin (); line != contents.end (); )
   {
-    bool lineDeleted = false;
+    auto lineDeleted = false;
 
     // If there is a comment on the line, it must follow the pattern.
-    auto comment = line->find ("#");
-    auto pos     = line->find (name + "=");
+    auto comment = line->find ('#');
+    auto pos     = line->find (name + '=');
 
     if (pos != std::string::npos &&
         (comment == std::string::npos ||
@@ -127,7 +127,7 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
 
       // Remove name
       if (!confirmation ||
-          confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
+          confirm (format ("Are you sure you want to remove '{1}'?", name)))
       {
         // vector::erase method returns a valid iterator to the next object
         line = contents.erase (line);
@@ -141,11 +141,11 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
   }
 
   if (change)
-    File::write (context.config._original_file, contents);
+    File::write (Context::getContext ().config.file (), contents);
 
-  if ( change && found )
+  if (change && found)
     return 0;
-  else if ( found )
+  else if (found)
     return 1;
   else
     return 2;
@@ -154,11 +154,11 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
 ////////////////////////////////////////////////////////////////////////////////
 int CmdConfig::execute (std::string& output)
 {
-  int rc = 0;
+  auto rc = 0;
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
-  std::vector <std::string> words = context.cli2.getWords ();
+  std::vector <std::string> words = Context::getContext ().cli2.getWords ();
 
   // Support:
   //   task config name value    # set name to value
@@ -166,10 +166,10 @@ int CmdConfig::execute (std::string& output)
   //   task config name          # remove name
   if (words.size ())
   {
-    bool confirmation = context.config.getBoolean ("confirmation");
-    bool found = false;
+    auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
+    auto found = false;
 
-    std::string name = words[0];
+    auto name = words[0];
     std::string value = "";
 
     // Join the remaining words into config variable's value
@@ -178,7 +178,7 @@ int CmdConfig::execute (std::string& output)
       for (unsigned int i = 1; i < words.size (); ++i)
       {
         if (i > 1)
-          value += " ";
+          value += ' ';
 
         value += words[i];
       }
@@ -186,7 +186,7 @@ int CmdConfig::execute (std::string& output)
 
     if (name != "")
     {
-      bool change = false;
+      auto change = false;
 
       // task config name value
       // task config name ""
@@ -205,27 +205,26 @@ int CmdConfig::execute (std::string& output)
         else if (rc == 1)
           found = true;
 
-        if (!found)
-          throw format (STRING_CMD_CONFIG_NO_ENTRY, name);
+        if (! found)
+          throw format ("No entry named '{1}' found.", name);
       }
 
       // Show feedback depending on whether .taskrc has been rewritten
       if (change)
       {
-        out << format (STRING_CMD_CONFIG_FILE_MOD,
-                       context.config._original_file._data)
-            << "\n";
+        out << format ("Config file {1} modified.", Context::getContext ().config.file ())
+            << '\n';
       }
       else
-        out << STRING_CMD_CONFIG_NO_CHANGE << "\n";
+        out << "No changes made.\n";
     }
     else
-      throw std::string (STRING_CMD_CONFIG_NO_NAME);
+      throw std::string ("Specify the name of a config variable to modify.");
 
     output = out.str ();
   }
   else
-    throw std::string (STRING_CMD_CONFIG_NO_NAME);
+    throw std::string ("Specify the name of a config variable to modify.");
 
   return rc;
 }
@@ -235,7 +234,7 @@ CmdCompletionConfig::CmdCompletionConfig ()
 {
   _keyword               = "_config";
   _usage                 = "task          _config";
-  _description           = STRING_CMD_HCONFIG_USAGE;
+  _description           = "Lists all supported configuration variables, for completion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -249,12 +248,11 @@ CmdCompletionConfig::CmdCompletionConfig ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionConfig::execute (std::string& output)
 {
-  std::vector <std::string> configs;
-  context.config.all (configs);
+  auto configs = Context::getContext ().config.all ();
   std::sort (configs.begin (), configs.end ());
 
-  for (auto& config : configs)
-    output += config + "\n";
+  for (const auto& config : configs)
+    output += config + '\n';
 
   return 0;
 }

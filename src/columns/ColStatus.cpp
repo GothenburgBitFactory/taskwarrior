@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,14 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <ColStatus.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 #include <utf8.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,10 +34,10 @@ ColumnStatus::ColumnStatus ()
 {
   _name     = "status";
   _style    = "long";
-  _label    = STRING_COLUMN_LABEL_STATUS;
+  _label    = "Status";
   _styles   = {"long", "short"};
-  _examples = {STRING_COLUMN_LABEL_STAT_PE,
-               STRING_COLUMN_LABEL_STAT_P};
+  _examples = {"Pending",
+               "P"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,10 +45,10 @@ ColumnStatus::ColumnStatus ()
 // Note that you can not determine which gets called first.
 void ColumnStatus::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
-  if (_style == "short" && _label == STRING_COLUMN_LABEL_STATUS)
-    _label = STRING_COLUMN_LABEL_STAT;
+  if (_style == "short" && _label == "Status")
+    _label = "St";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,20 +61,18 @@ void ColumnStatus::measure (Task& task, unsigned int& minimum, unsigned int& max
       _style == "long")
   {
     if (status == Task::pending)
-      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_PE);
+      minimum = maximum = utf8_width ("Pending");
     else if (status == Task::deleted)
-      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_DE);
+      minimum = maximum = utf8_width ("Deleted");
     else if (status == Task::waiting)
-      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_WA);
+      minimum = maximum = utf8_width ("Waiting");
     else if (status == Task::completed)
-      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_CO);
+      minimum = maximum = utf8_width ("Completed");
     else if (status == Task::recurring)
-      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_RE);
+      minimum = maximum = utf8_width ("Recurring");
   }
   else if (_style == "short")
     minimum = maximum = 1;
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,20 +88,20 @@ void ColumnStatus::render (
   if (_style == "default" ||
       _style == "long")
   {
-         if (status == Task::pending)   value = STRING_COLUMN_LABEL_STAT_PE;
-    else if (status == Task::completed) value = STRING_COLUMN_LABEL_STAT_CO;
-    else if (status == Task::deleted)   value = STRING_COLUMN_LABEL_STAT_DE;
-    else if (status == Task::waiting)   value = STRING_COLUMN_LABEL_STAT_WA;
-    else if (status == Task::recurring) value = STRING_COLUMN_LABEL_STAT_RE;
+         if (status == Task::pending)   value = "Pending";
+    else if (status == Task::completed) value = "Completed";
+    else if (status == Task::deleted)   value = "Deleted";
+    else if (status == Task::waiting)   value = "Waiting";
+    else if (status == Task::recurring) value = "Recurring";
   }
 
   else if (_style == "short")
   {
-         if (status == Task::pending)   value = STRING_COLUMN_LABEL_STAT_P;
-    else if (status == Task::completed) value = STRING_COLUMN_LABEL_STAT_C;
-    else if (status == Task::deleted)   value = STRING_COLUMN_LABEL_STAT_D;
-    else if (status == Task::waiting)   value = STRING_COLUMN_LABEL_STAT_W;
-    else if (status == Task::recurring) value = STRING_COLUMN_LABEL_STAT_R;
+         if (status == Task::pending)   value = "P";
+    else if (status == Task::completed) value = "C";
+    else if (status == Task::deleted)   value = "D";
+    else if (status == Task::waiting)   value = "W";
+    else if (status == Task::recurring) value = "R";
   }
 
   renderStringLeft (lines, width, color, value);

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,16 +28,13 @@
 #include <CmdAliases.h>
 #include <Context.h>
 #include <Command.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCompletionAliases::CmdCompletionAliases ()
 {
   _keyword               = "_aliases";
   _usage                 = "task          _aliases";
-  _description           = STRING_CMD_ALIASES_USAGE;
+  _description           = "Generates a list of all aliases, for autocompletion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -51,9 +48,9 @@ CmdCompletionAliases::CmdCompletionAliases ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionAliases::execute (std::string& output)
 {
-  for (auto& alias : context.config)
+  for (const auto& alias : Context::getContext ().config)
     if (alias.first.substr (0, 6) == "alias.")
-      output += alias.first.substr (6) + "\n";
+      output += alias.first.substr (6) + '\n';
 
   return 0;
 }

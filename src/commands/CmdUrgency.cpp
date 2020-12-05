@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -32,17 +32,14 @@
 #include <Filter.h>
 #include <Lexer.h>
 #include <main.h>
-#include <text.h>
-#include <i18n.h>
-
-extern Context context;
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdUrgency::CmdUrgency ()
 {
   _keyword               = "_urgency";
   _usage                 = "task <filter> _urgency";
-  _description           = STRING_CMD_URGENCY_USAGE;
+  _description           = "Displays the urgency measure of a task";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -63,7 +60,7 @@ int CmdUrgency::execute (std::string& output)
 
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -71,10 +68,10 @@ int CmdUrgency::execute (std::string& output)
   std::stringstream out;
   for (auto& task : filtered)
   {
-    out << format (STRING_CMD_URGENCY_RESULT,
+    out << format ("task {1} urgency {2}",
                    task.identifier (),
                    Lexer::trim (format (task.urgency (), 6, 3)))
-        << "\n";
+        << '\n';
   }
 
   output = out.str ();

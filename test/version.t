@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -55,7 +55,7 @@ class TestVersion(TestCase):
         code, out, err = self.t("version")
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def slurp(self, file="../CMakeLists.txt"):
         number = "\.".join(["[0-9]+"] * 3)
@@ -82,37 +82,10 @@ class TestVersion(TestCase):
         _, hash, _ = run_cmd_wait(git_cmd)
         return hash.rstrip("\n")
 
-    def test_under_version(self):
-        """_version outputs expected version and syntax"""
-        code, out, err = self.t("_version")
-
-        # version = "x.x.x (git-hash)" or simply "x.x.x"
-        # corresponding to "compiled from git" or "compiled from tarball"
-        version = out.split()
-
-        if 2 >= len(version) > 0:
-            git = version[1]
-            git_expected = "({0})".format(self.slurp_git())
-            self.assertEqual(git_expected, git)
-        else:
-            raise ValueError("Unexpected output from _version '{0}'".format(
-                out))
-
-        ver = version[0]
-        ver_expected = self.slurp()
-        self.assertEqual(ver_expected, ver)
-
-    def test_task_git_version(self):
-        """Task binary matches the current git commit"""
-        expected = "Commit: {0}".format(self.slurp_git())
-
-        code, out, err = self.t.diag()
-        self.assertIn(expected, out)
-
     def test_version_option(self):
-        """Verify that  'task --version' returnes something valid"""
+        """Verify that  'task --version' returns something valid"""
         code, out, err = self.t("--version")
-        self.assertRegexpMatches(out, r'^\d\.\d+\.\d+(\.\w+)?$')
+        self.assertRegex(out, r'^\d\.\d+\.\d+(\.\w+)?$')
 
 
 if __name__ == "__main__":

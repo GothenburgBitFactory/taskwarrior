@@ -1,8 +1,9 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.0)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
+                     ${CMAKE_SOURCE_DIR}/src/libshared/src
                      ${TASK_INCLUDE_DIRS})
 
 set (columns_SRCS Column.cpp Column.h
@@ -21,7 +22,6 @@ set (columns_SRCS Column.cpp Column.h
                   ColScheduled.cpp ColScheduled.h
                   ColStart.cpp ColStart.h
                   ColStatus.cpp ColStatus.h
-                  ColString.cpp ColString.h
                   ColTags.cpp ColTags.h
                   ColTypeDate.cpp ColTypeDate.h
                   ColTypeDuration.cpp ColTypeDuration.h

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,20 +30,16 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
-#include <ViewText.h>
+#include <Table.h>
 #include <Command.h>
-#include <ColString.h>
-#include <text.h>
-#include <i18n.h>
-
-extern Context context;
+#include <util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCommands::CmdCommands ()
 {
   _keyword               = "commands";
   _usage                 = "task          commands";
-  _description           = STRING_CMD_COMMANDS_USAGE;
+  _description           = "Generates a list of all commands, with behavior details";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -57,36 +53,26 @@ CmdCommands::CmdCommands ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCommands::execute (std::string& output)
 {
-  ViewText view;
-  view.width (context.getWidth ());
-  view.add (Column::factory ("string",       STRING_COLUMN_LABEL_COMMAND));
-  view.add (Column::factory ("string",       STRING_COLUMN_LABEL_CATEGORY));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_RO));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_SHOWS_ID));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_GC));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_CONTEXT));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_FILTER));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MODS));
-  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MISC));
-  view.add (Column::factory ("string.left",  STRING_COLUMN_LABEL_DESC));
+  Table view;
+  view.width (Context::getContext ().getWidth ());
+  view.add ("Command");
+  view.add ("Category");
+  view.add ("R/W",     false);
+  view.add ("ID",      false);
+  view.add ("GC",      false);
+  view.add ("Context", false);
+  view.add ("Filter",  false);
+  view.add ("Mods",    false);
+  view.add ("Misc",    false);
+  view.add ("Description");
+  view.leftMargin (Context::getContext ().config.getInteger ("indent.report"));
+  view.extraPadding (Context::getContext ().config.getInteger ("row.padding"));
+  view.intraPadding (Context::getContext ().config.getInteger ("column.padding"));
+  setHeaderUnderline (view);
 
-  if (context.color ())
+  for (auto& command : Context::getContext ().commands)
   {
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
-
-    Color alternate (context.config.get ("color.alternate"));
-    view.colorOdd (alternate);
-    view.intraColorOdd (alternate);
-  }
-
-  view.leftMargin (context.config.getInteger ("indent.report"));
-  view.extraPadding (context.config.getInteger ("row.padding"));
-  view.intraPadding (context.config.getInteger ("column.padding"));
-
-  for (auto& command : context.commands)
-  {
-    int row = view.addRow ();
+    auto row = view.addRow ();
     view.set (row, 0, command.first);
     view.set (row, 1, Command::categoryNames.at (command.second->category ()));
 
@@ -119,7 +105,7 @@ int CmdCommands::execute (std::string& output)
   output = optionalBlankLine ()
          + view.render ()
          + optionalBlankLine ()
-         + "\n";
+         + '\n';
 
   return 0;
 }
@@ -129,7 +115,7 @@ CmdCompletionCommands::CmdCompletionCommands ()
 {
   _keyword               = "_commands";
   _usage                 = "task          _commands";
-  _description           = STRING_CMD_HCOMMANDS_USAGE;
+  _description           = "Generates a list of all commands, for autocompletion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -145,16 +131,15 @@ int CmdCompletionCommands::execute (std::string& output)
 {
   // Get a list of all commands.
   std::vector <std::string> commands;
-
-  for (auto& command : context.commands)
+  for (const auto& command : Context::getContext ().commands)
     commands.push_back (command.first);
 
   // Sort alphabetically.
   std::sort (commands.begin (), commands.end ());
 
   std::stringstream out;
-  for (auto& c : commands)
-    out << c << "\n";
+  for (const auto& c : commands)
+    out << c << '\n';
 
   output = out.str ();
   return 0;
@@ -165,7 +150,7 @@ CmdZshCommands::CmdZshCommands ()
 {
   _keyword               = "_zshcommands";
   _usage                 = "task          _zshcommands";
-  _description           = STRING_CMD_ZSHCOMMANDS_USAGE;
+  _description           = "Generates a list of all commands, for zsh autocompletion purposes";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -180,6 +165,7 @@ CmdZshCommands::CmdZshCommands ()
 struct ZshCommand
 {
   bool operator< (const struct ZshCommand&) const;
+
   Command::Category _category;
   std::string _command;
   std::string _description;
@@ -211,7 +197,7 @@ int CmdZshCommands::execute (std::string& output)
   // denominator alternative: a custom struct type.
 
   std::vector <ZshCommand> commands;
-  for (auto& command : context.commands)
+  for (auto& command : Context::getContext ().commands)
   {
     ZshCommand zshCommand {command.second->category (),
                            command.first,
@@ -223,10 +209,10 @@ int CmdZshCommands::execute (std::string& output)
 
   // Emit the commands in order.
   std::stringstream out;
-  for (auto& zc : commands)
-    out << zc._command << ":"
-        << Command::categoryNames.at (zc._category) << ":"
-        << zc._description << "\n";
+  for (const auto& zc : commands)
+    out << zc._command << ':'
+        << Command::categoryNames.at (zc._category) << ':'
+        << zc._description << '\n';
 
   output = out.str ();
   return 0;

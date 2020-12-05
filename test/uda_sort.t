@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -147,7 +147,7 @@ class TestBug1319(TestCase):
         self.t("add four when:morning")
 
         code, out, err = self.t("rc.verbose:nothing foo")
-        self.assertRegexpMatches(out, "4\s+morning\s+four\s+3\s+noon\s+three\s+2\s+evening\s+two\s+1\s+night\s+one")
+        self.assertRegex(out, "4\s+morning\s+four\s+3\s+noon\s+three\s+2\s+evening\s+two\s+1\s+night\s+one")
 
 
 if __name__ == "__main__":

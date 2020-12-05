@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -33,8 +33,6 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest import Taskd, ServerTestCase
-
 
 class TestSpecialTags(TestCase):
     @classmethod
@@ -47,13 +45,13 @@ class TestSpecialTags(TestCase):
         cls.t.config("color.pri.H",       "")
         cls.t.config("color.completed",   "")
         cls.t.config("nag",               "NAG")
-        cls.t.config("color",             "on")
+        cls.t.config("color",             "1")
         cls.t.config("_forcecolor",       "1")
 
     def test_nocolor(self):
         self.t("add should have no red +nocolor priority:H")
         code, out, err = self.t("ls")
-        self.assertRegexpMatches(out, r"\s1\s+nocolor\s+should have no red")
+        self.assertRegex(out, r"\s1\s+nocolor\s+should have no red")
 
     def test_nonag(self):
         self.t("add should be red +nonag")

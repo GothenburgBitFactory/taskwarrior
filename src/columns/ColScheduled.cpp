@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <ColScheduled.h>
-#include <stdlib.h>
-#include <text.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnScheduled::ColumnScheduled ()
 {
-  _name     = "scheduled";
-  _label    = STRING_COLUMN_LABEL_SCHED;
+  _name  = "scheduled";
+  _label = "Scheduled";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,10 +39,10 @@ ColumnScheduled::ColumnScheduled ()
 // Note that you can not determine which gets called first.
 void ColumnScheduled::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
-  if (_style == "countdown" && _label == STRING_COLUMN_LABEL_DUE)
-    _label = STRING_COLUMN_LABEL_COUNT;
+  if (_style == "countdown" && _label == "Scheduled")
+    _label = "Count";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

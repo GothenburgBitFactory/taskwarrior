@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,22 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <ColParent.h>
-#include <math.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnParent::ColumnParent ()
 {
   _name       = "parent";
   _style      = "long";
-  _label      = STRING_COLUMN_LABEL_PARENT;
+  _label      = "Parent task";
   _modifiable = false;
   _styles     = {"long", "short"};
   _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
@@ -46,13 +44,10 @@ ColumnParent::ColumnParent ()
 void ColumnParent::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
          if (_style == "default" || _style == "long") minimum = maximum = 36;
     else if (_style == "short")                       minimum = maximum = 8;
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 

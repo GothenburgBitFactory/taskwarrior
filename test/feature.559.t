@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -40,7 +40,7 @@ class TestFeature559(TestCase):
     def setUp(self):
         self.t = Task()
 
-        self.t.config("exit.on.missing.db", "yes")
+        self.t.config("exit.on.missing.db", "1")
 
         # NOTE the framework uses TASKDATA and TASKRC to tell taskwarrior where
         # data is stored. Since these env variables take precedence over
@@ -68,7 +68,7 @@ class TestFeature559(TestCase):
         code, out, err = self.t.runError("rc.data.location=locationdoesnotexist list")
         self.assertNotIn("footask", out)
         self.assertNotIn("Error", out)
-        self.assertRegexpMatches(err, re.compile("Error:.+does not exist", re.DOTALL))
+        self.assertRegex(err, re.compile("Error:.+does not exist", re.DOTALL))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,21 +29,19 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
-#include <ViewText.h>
+#include <Table.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
-#include <text.h>
-#include <i18n.h>
-
-extern Context context;
+#include <shared.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdVersion::CmdVersion ()
 {
   _keyword               = "version";
   _usage                 = "task          version";
-  _description           = STRING_CMD_VERSION_USAGE;
+  _description           = "Shows the Taskwarrior version number";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -60,68 +58,33 @@ int CmdVersion::execute (std::string& output)
   std::stringstream out;
 
   // Create a table for the disclaimer.
-  int width = context.getWidth ();
-  ViewText disclaimer;
+  int width = Context::getContext ().getWidth ();
+  Table disclaimer;
   disclaimer.width (width);
-  disclaimer.add (Column::factory ("string", ""));
-  disclaimer.set (disclaimer.addRow (), 0, STRING_CMD_VERSION_MIT);
+  disclaimer.add ("");
+  disclaimer.set (disclaimer.addRow (), 0, "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit.");
 
   // Create a table for the URL.
-  ViewText link;
+  Table link;
   link.width (width);
-  link.add (Column::factory ("string", ""));
-  link.set (link.addRow (), 0, STRING_CMD_VERSION_DOCS);
+  link.add ("");
+  link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org");
 
   Color bold;
-  if (context.color ())
+  if (Context::getContext ().color ())
     bold = Color ("bold");
 
-  out << "\n"
-      << format (STRING_CMD_VERSION_BUILT, bold.colorize (PACKAGE), bold.colorize (VERSION))
-
-#if defined (DARWIN)
-      << "darwin"
-#elif defined (SOLARIS)
-      << "solaris"
-#elif defined (CYGWIN)
-      << "cygwin"
-#elif defined (HAIKU)
-      << "haiku"
-#elif defined (OPENBSD)
-      << "openbsd"
-#elif defined (FREEBSD)
-      << "freebsd"
-#elif defined (NETBSD)
-      << "netbsd"
-#elif defined (LINUX)
-      << "linux"
-#elif defined (KFREEBSD)
-      << "gnu-kfreebsd"
-#elif defined (GNUHURD)
-      << "gnu-hurd"
-#else
-      << STRING_CMD_VERSION_UNKNOWN
-#endif
-
-#if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
-      << " "
-      << STRING_LOCALIZATION_DESC
-#endif
-
-      << "\n"
-      << STRING_CMD_VERSION_COPY
-      << "\n"
-      << "\n"
+  out << '\n'
+      << format ("{1} {2} built for ", bold.colorize (PACKAGE), bold.colorize (VERSION))
+      << osName ()
+      << '\n'
+      << "Copyright (C) 2006 - 2020 P. Beckingham, F. Hernandez."
+      << '\n'
+      << '\n'
       << disclaimer.render ()
-      << "\n"
+      << '\n'
       << link.render ()
-      << "\n";
-
-#if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
-  out << STRING_LOCALIZATION_AUTHOR
-      << "\n"
-      << "\n";
-#endif
+      << '\n';
 
   output = out.str ();
   return 0;
@@ -132,7 +95,7 @@ CmdCompletionVersion::CmdCompletionVersion ()
 {
   _keyword               = "_version";
   _usage                 = "task          _version";
-  _description           = STRING_CMD_VERSION_USAGE2;
+  _description           = "Shows only the Taskwarrior version number";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -154,7 +117,7 @@ int CmdCompletionVersion::execute (std::string& output)
 #else
   output = VERSION;
 #endif
-  output += "\n";
+  output += '\n';
   return 0;
 }
 

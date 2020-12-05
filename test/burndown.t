@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -59,7 +59,7 @@ class TestBurndownCommand(TestCase):
     def test_burndown_daily(self):
         """Ensure burndown.daily generates a chart"""
         code, out, err = self.t("burndown.daily")
-        self.assertIn("Daily Burndown ()", out)
+        self.assertIn("Daily Burndown", out)
         self.assertIn(".", out)
         self.assertIn("+", out)
         self.assertIn("X", out)
@@ -67,13 +67,13 @@ class TestBurndownCommand(TestCase):
     def test_burndown_daily_color(self):
         """Ensure burndown.daily with color, generates a chart"""
         code, out, err = self.t("burndown.daily rc._forcecolor:on")
-        self.assertIn("Daily Burndown ()", out)
+        self.assertIn("Daily Burndown", out)
         self.assertNotIn("X", out)
 
     def test_burndown_weekly(self):
         """Ensure burndown.weekly generates a chart"""
         code, out, err = self.t("burndown.weekly")
-        self.assertIn("Weekly Burndown ()", out)
+        self.assertIn("Weekly Burndown", out)
         self.assertIn(".", out)
         self.assertIn("+", out)
         self.assertIn("X", out)
@@ -81,7 +81,7 @@ class TestBurndownCommand(TestCase):
     def test_burndown_monthly(self):
         """Ensure burndown.monthly generates a chart"""
         code, out, err = self.t("burndown.monthly")
-        self.assertIn("Monthly Burndown ()", out)
+        self.assertIn("Monthly Burndown", out)
         self.assertIn(".", out)
         self.assertIn("+", out)
         self.assertIn("X", out)

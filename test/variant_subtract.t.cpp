@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2016, Göteborg Bit Factory.
+// Copyright 2013 - 2020, Göteborg Bit Factory.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,10 +28,6 @@
 #include <iostream>
 #include <test.h>
 #include <Variant.h>
-#include <Context.h>
-
-Context context;
-
 
 #define EPSILON 0.001
 
@@ -143,9 +139,10 @@ int main (int, char**)
   try {Variant v32 = v3 - v2; t.fail ("foo - 3.14 --> error");}
   catch (...)                {t.pass ("foo - 3.14 --> error");}
 
-  // string - string   -> ERROR
-  try {Variant v33 = v3 - v3; t.fail ("foo - foo --> error");}
-  catch (...)                {t.pass ("foo - foo --> error");}
+  // string - string   -> concatenated string
+  Variant v33 = v3 - v3;
+  t.is (v33.type (), Variant::type_string, "foo - foo --> string");
+  t.is (v33.get_string (), "foo-foo",      "foo - foo --> foo-foo");
 
   // string - date     -> ERROR
   try {Variant v34 = v3 - v4; t.fail ("foo - 1234567890 --> error");}

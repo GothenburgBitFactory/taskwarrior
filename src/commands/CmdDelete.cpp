@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,19 +29,19 @@
 #include <iostream>
 #include <Context.h>
 #include <Filter.h>
-#include <util.h>
-#include <text.h>
-#include <i18n.h>
+#include <shared.h>
+#include <format.h>
 #include <main.h>
 
-extern Context context;
+#define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
+#define STRING_CMD_DELETE_CONFIRM_R  "This is a recurring task.  Do you want to delete all pending recurrences of this same task?"
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdDelete::CmdDelete ()
 {
   _keyword               = "delete";
   _usage                 = "task <filter> delete <mods>";
-  _description           = STRING_CMD_DELETE_USAGE;
+  _description           = "Deletes the specified task";
   _read_only             = false;
   _displays_id           = false;
   _needs_confirm         = true;
@@ -56,8 +56,8 @@ CmdDelete::CmdDelete ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdDelete::execute (std::string&)
 {
-  int rc = 0;
-  int count = 0;
+  auto rc = 0;
+  auto count = 0;
 
   // Apply filter.
   Filter filter;
@@ -65,7 +65,7 @@ int CmdDelete::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -80,7 +80,7 @@ int CmdDelete::execute (std::string&)
     {
       // Delete the specified task.
       std::string question;
-      question = format (STRING_CMD_DELETE_CONFIRM,
+      question = format ("Delete task {1} '{2}'?",
                          task.identifier (true),
                          task.get ("description"));
 
@@ -93,21 +93,21 @@ int CmdDelete::execute (std::string&)
       {
         updateRecurrenceMask (task);
         ++count;
-        context.tdb2.modify (task);
-        feedback_affected (STRING_CMD_DELETE_TASK, task);
+        Context::getContext ().tdb2.modify (task);
+        feedback_affected ("Deleting task {1} '{2}'.", task);
         feedback_unblocked (task);
         dependencyChainOnComplete (task);
-        if (context.verbose ("project"))
+        if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task);
 
         // Delete siblings.
         if (task.has ("parent"))
         {
-          if ((context.config.get ("recurrence.confirmation") == "prompt"
+          if ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
                && confirm (STRING_CMD_DELETE_CONFIRM_R)) ||
-              context.config.getBoolean ("recurrence.confirmation"))
+              Context::getContext ().config.getBoolean ("recurrence.confirmation"))
           {
-            std::vector <Task> siblings = context.tdb2.siblings (task);
+            std::vector <Task> siblings = Context::getContext ().tdb2.siblings (task);
             for (auto& sibling : siblings)
             {
               sibling.modify (Task::modAnnotate);
@@ -116,7 +116,7 @@ int CmdDelete::execute (std::string&)
                 sibling.setAsNow ("end");
 
               updateRecurrenceMask (sibling);
-              context.tdb2.modify (sibling);
+              Context::getContext ().tdb2.modify (sibling);
               feedback_affected (STRING_CMD_DELETE_TASK_R, sibling);
               feedback_unblocked (sibling);
               ++count;
@@ -124,21 +124,21 @@ int CmdDelete::execute (std::string&)
 
             // Delete the parent
             Task parent;
-            context.tdb2.get (task.get ("parent"), parent);
+            Context::getContext ().tdb2.get (task.get ("parent"), parent);
             parent.setStatus (Task::deleted);
             if (! parent.has ("end"))
               parent.setAsNow ("end");
 
-            context.tdb2.modify (parent);
+            Context::getContext ().tdb2.modify (parent);
           }
         }
 
         // Task potentially has child tasks - optionally delete them.
         else
         {
-          std::vector <Task> children = context.tdb2.children (task);
+          std::vector <Task> children = Context::getContext ().tdb2.children (task);
           if (children.size () &&
-              (context.config.getBoolean ("recurrence.confirmation") ||
+              (Context::getContext ().config.getBoolean ("recurrence.confirmation") ||
                confirm (STRING_CMD_DELETE_CONFIRM_R)))
           {
             for (auto& child : children)
@@ -149,7 +149,7 @@ int CmdDelete::execute (std::string&)
                 child.setAsNow ("end");
 
               updateRecurrenceMask (child);
-              context.tdb2.modify (child);
+              Context::getContext ().tdb2.modify (child);
               feedback_affected (STRING_CMD_DELETE_TASK_R, child);
               feedback_unblocked (child);
               ++count;
@@ -159,7 +159,7 @@ int CmdDelete::execute (std::string&)
       }
       else
       {
-        std::cout << STRING_CMD_DELETE_NO << "\n";
+        std::cout << "Task not deleted.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -167,20 +167,21 @@ int CmdDelete::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_DELETE_NOT_DEL,
+      std::cout << format ("Task {1} '{2}' is not deletable.",
                            task.identifier (true),
                            task.get ("description"))
-          << "\n";
+          << '\n';
       rc = 1;
     }
   }
 
   // Now list the project changes.
-  for (auto& change : projectChanges)
+  for (const auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_DELETE_1 : STRING_CMD_DELETE_N, count);
+  feedback_affected (count == 1 ? "Deleted {1} task." : "Deleted {1} tasks.", count);
+
   return rc;
 }
 

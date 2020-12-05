@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -172,7 +172,7 @@ class TestBug1031(TestCase):
         code, out, err = self.t("1 info")
 
         expected = "Description\s+to"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_alias_to_to(self):
         """1031: alias working as expected: 'from -- to' -> 'to to'"""
@@ -180,7 +180,7 @@ class TestBug1031(TestCase):
         code, out, err = self.t("1 info")
 
         expected = "Description\s+to to"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_alias_to_from(self):
         """1031: alias working as expected: 'to -- from' -> 'to from'"""
@@ -188,7 +188,7 @@ class TestBug1031(TestCase):
         code, out, err = self.t("1 info")
 
         expected = "Description\s+to from"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
 
 class Test1445(TestCase):

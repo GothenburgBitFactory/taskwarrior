@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -43,7 +43,7 @@ class TestSubstitutions(TestCase):
 
     def test_substitution(self):
         """Verify substitution for task description"""
-        self.t.config("regex", "off")
+        self.t.config("regex", "0")
 
         self.t("add foo foo foo")
         self.t("1 modify /foo/FOO/")
@@ -78,7 +78,7 @@ class TestSubstitutions(TestCase):
 
     def test_substitution_regex(self):
         """Verify regex substitution for task description"""
-        self.t.config("regex", "on")
+        self.t.config("regex", "1")
         self.t("add aaa bbb")
         self.t("1 modify /b{3}/BbB/")
         code, out, err = self.t("_get 1.description")

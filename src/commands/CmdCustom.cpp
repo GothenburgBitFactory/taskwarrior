@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -35,11 +35,10 @@
 #include <Filter.h>
 #include <Lexer.h>
 #include <ViewTask.h>
-#include <i18n.h>
-#include <text.h>
+#include <format.h>
+#include <shared.h>
+#include <util.h>
 #include <main.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCustom::CmdCustom (
@@ -63,33 +62,30 @@ CmdCustom::CmdCustom (
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCustom::execute (std::string& output)
 {
-  int rc = 0;
+  auto rc = 0;
 
   // Load report configuration.
-  std::string reportColumns = context.config.get ("report." + _keyword + ".columns");
-  std::string reportLabels  = context.config.get ("report." + _keyword + ".labels");
-  std::string reportSort    = context.config.get ("report." + _keyword + ".sort");
-  std::string reportFilter  = context.config.get ("report." + _keyword + ".filter");
+  auto reportColumns = Context::getContext ().config.get ("report." + _keyword + ".columns");
+  auto reportLabels  = Context::getContext ().config.get ("report." + _keyword + ".labels");
+  auto reportSort    = Context::getContext ().config.get ("report." + _keyword + ".sort");
+  auto reportFilter  = Context::getContext ().config.get ("report." + _keyword + ".filter");
 
-  std::vector <std::string> columns;
-  split (columns, reportColumns, ',');
+  auto columns = split (reportColumns, ',');
   validateReportColumns (columns);
 
-  std::vector <std::string> labels;
-  split (labels, reportLabels, ',');
+  auto labels = split (reportLabels, ',');
 
   if (columns.size () != labels.size () && labels.size () != 0)
-    throw format (STRING_CMD_CUSTOM_MISMATCH, _keyword);
+    throw format ("There are different numbers of columns and labels for report '{1}'.", _keyword);
 
-  std::vector <std::string> sortOrder;
-  split (sortOrder, reportSort, ',');
+  auto sortOrder = split (reportSort, ',');
   if (sortOrder.size () != 0 &&
       sortOrder[0] != "none")
     validateSortColumns (sortOrder);
 
   // Add the report filter to any existing filter.
   if (reportFilter != "")
-    context.cli2.addFilter (reportFilter);
+    Context::getContext ().cli2.addFilter (reportFilter);
 
   // Apply filter.
   handleRecurrence ();
@@ -102,10 +98,10 @@ int CmdCustom::execute (std::string& output)
       sortOrder[0] == "none")
   {
     // Assemble a sequence vector that represents the tasks listed in
-    // context.cli2._uuid_ranges, in the order in which they appear. This
+    // Context::getContext ().cli2._uuid_ranges, in the order in which they appear. This
     // equates to no sorting, just a specified order.
     sortOrder.clear ();
-    for (auto& i : context.cli2._uuid_list)
+    for (auto& i : Context::getContext ().cli2._uuid_list)
       for (unsigned int t = 0; t < filtered.size (); ++t)
         if (filtered[t].get ("uuid") == i)
           sequence.push_back (t);
@@ -124,21 +120,21 @@ int CmdCustom::execute (std::string& output)
 
   // Configure the view.
   ViewTask view;
-  view.width (context.getWidth ());
-  view.leftMargin (context.config.getInteger ("indent.report"));
-  view.extraPadding (context.config.getInteger ("row.padding"));
-  view.intraPadding (context.config.getInteger ("column.padding"));
+  view.width (Context::getContext ().getWidth ());
+  view.leftMargin (Context::getContext ().config.getInteger ("indent.report"));
+  view.extraPadding (Context::getContext ().config.getInteger ("row.padding"));
+  view.intraPadding (Context::getContext ().config.getInteger ("column.padding"));
 
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
-    Color label (context.config.get ("color.label"));
+    Color label (Context::getContext ().config.get ("color.label"));
     view.colorHeader (label);
 
-    Color label_sort (context.config.get ("color.label.sort"));
+    Color label_sort (Context::getContext ().config.get ("color.label.sort"));
     view.colorSortHeader (label_sort);
 
     // If an alternating row color is specified, notify the table.
-    Color alternate (context.config.get ("color.alternate"));
+    Color alternate (Context::getContext ().config.get ("color.alternate"));
     if (alternate.nontrivial ())
     {
       view.colorOdd (alternate);
@@ -150,12 +146,12 @@ int CmdCustom::execute (std::string& output)
   std::vector <std::string> sortColumns;
 
   // Add the break columns, if any.
-  for (auto& so : sortOrder)
+  for (const auto& so : sortOrder)
   {
     std::string name;
     bool ascending;
     bool breakIndicator;
-    context.decomposeSortField (so, name, ascending, breakIndicator);
+    Context::getContext ().decomposeSortField (so, name, ascending, breakIndicator);
 
     if (breakIndicator)
       view.addBreak (name);
@@ -179,26 +175,26 @@ int CmdCustom::execute (std::string& output)
 
   // How many lines taken up by table header?
   int table_header = 0;
-  if (context.verbose ("label"))
+  if (Context::getContext ().verbose ("label"))
   {
-    if (context.color () && context.config.getBoolean ("fontunderline"))
+    if (Context::getContext ().color () && Context::getContext ().config.getBoolean ("fontunderline"))
       table_header = 1;  // Underlining doesn't use extra line.
     else
       table_header = 2;  // Dashes use an extra line.
   }
 
   // Report output can be limited by rows or lines.
-  int maxrows = 0;
-  int maxlines = 0;
-  context.getLimits (maxrows, maxlines);
+  auto maxrows = 0;
+  auto maxlines = 0;
+  Context::getContext ().getLimits (maxrows, maxlines);
 
   // Adjust for fluff in the output.
   if (maxlines)
     maxlines -= table_header
-              + (context.verbose ("blank") ? 1 : 0)
-              + (context.verbose ("footnote") ? context.footnotes.size () : 0)
-              + (context.verbose ("affected") ? 1 : 0)
-              + context.config.getInteger ("reserved.lines");  // For prompt, etc.
+              + (Context::getContext ().verbose ("blank") ? 1 : 0)
+              + (Context::getContext ().verbose ("footnote") ? Context::getContext ().footnotes.size () : 0)
+              + (Context::getContext ().verbose ("affected") ? 1 : 0)
+              + Context::getContext ().config.getInteger ("reserved.lines");  // For prompt, etc.
 
   // Render.
   std::stringstream out;
@@ -212,25 +208,25 @@ int CmdCustom::execute (std::string& output)
         << optionalBlankLine ();
 
     // Print the number of rendered tasks
-    if (context.verbose ("affected"))
+    if (Context::getContext ().verbose ("affected"))
     {
       out << (filtered.size () == 1
-                ? STRING_CMD_CUSTOM_COUNT
-                : format (STRING_CMD_CUSTOM_COUNTN, filtered.size ()));
+                ?  "1 task"
+                : format ("{1} tasks", filtered.size ()));
 
       if (maxrows && maxrows < (int)filtered.size ())
-        out << ", " << format (STRING_CMD_CUSTOM_SHOWN, maxrows);
+        out << ", " << format ("{1} shown", maxrows);
 
       if (maxlines && maxlines < (int)filtered.size ())
         out << ", "
-            << format (STRING_CMD_CUSTOM_TRUNCATED, maxlines - table_header);
+            << format ("truncated to {1} lines", maxlines - table_header);
 
-      out << "\n";
+      out << '\n';
     }
   }
   else
   {
-    context.footnote (STRING_FEEDBACK_NO_MATCH);
+    Context::getContext ().footnote ("No matches.");
     rc = 1;
   }
 

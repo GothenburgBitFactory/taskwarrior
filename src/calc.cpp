@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2016, Göteborg Bit Factory.
+// Copyright 2013 - 2020, Göteborg Bit Factory.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,12 +30,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Eval.h>
-#include <Dates.h>
 #include <Context.h>
-#include <text.h>
-#include <i18n.h>
-
-Context context;
+#include <Task.h>
+#include <Datetime.h>
+#include <Duration.h>
+#include <shared.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants.
@@ -56,63 +56,49 @@ int main (int argc, char** argv)
 
   try
   {
-    bool infix     = true;
+    Context globalContext;
+    Context::setContext (&globalContext);
+
+    // Same operating parameters as Context::staticInitialization.
+    Datetime::standaloneDateEnabled    = false;
+    Datetime::standaloneTimeEnabled    = false;
+    Duration::standaloneSecondsEnabled = false;
+
+    bool infix {true};
 
     // Add a source for constants.
     Eval e;
-    e.addSource (namedDates);
     e.addSource (get);
 
     // Combine all the arguments into one expression string.
     std::string expression;
     for (int i = 1; i < argc; i++)
+    {
       if (!strcmp (argv[i], "-h") || ! strcmp (argv[i], "--help"))
       {
-        std::cout << "\n"
+        std::cout << '\n'
                   << "Usage: " << argv[0] << " [options] '<expression>'\n"
-                  << "\n"
+                  << '\n'
                   << "Options:\n"
                   << "  -h|--help         Display this usage\n"
                   << "  -d|--debug        Debug mode\n"
                   << "  -i|--infix        Infix expression (default)\n"
                   << "  -p|--postfix      Postfix expression\n"
-                  << "\n";
+                  << '\n';
         exit (1);
       }
       else if (!strcmp (argv[i], "-v") || !strcmp (argv[i], "--version"))
       {
-        std::cout << "\n"
-                  << format (STRING_CMD_VERSION_BUILT, "calc", VERSION)
-#if defined (DARWIN)
-                  << "darwin"
-#elif defined (SOLARIS)
-                  << "solaris"
-#elif defined (CYGWIN)
-                  << "cygwin"
-#elif defined (HAIKU)
-                  << "haiku"
-#elif defined (OPENBSD)
-                  << "openbsd"
-#elif defined (FREEBSD)
-                  << "freebsd"
-#elif defined (NETBSD)
-                  << "netbsd"
-#elif defined (LINUX)
-                  << "linux"
-#elif defined (KFREEBSD)
-                  << "gnu-kfreebsd"
-#elif defined (GNUHURD)
-                  << "gnu-hurd"
-#else
-                  << STRING_CMD_VERSION_UNKNOWN
-#endif
-                  << "\n"
-                  << STRING_CMD_VERSION_COPY
-                  << "\n"
-                  << "\n"
-                  << STRING_CMD_VERSION_MIT
-                  << "\n"
-                  << "\n";
+        std::cout << '\n'
+                  << format ("calc {1} built for ", VERSION)
+                  << osName ()
+                  << '\n'
+                  << "Copyright (C) 2006 - 2020 P. Beckingham, F. Hernandez."
+                  << '\n'
+                  << '\n'
+                  << "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit."
+                  << '\n'
+                  << '\n';
 
         exit (1);
       }
@@ -123,7 +109,8 @@ int main (int argc, char** argv)
       else if (!strcmp (argv[i], "-p") || !strcmp (argv[i], "--postfix"))
         infix = false;
       else
-        expression += std::string (argv[i]) + " ";
+        expression += std::string (argv[i]) + ' ';
+    }
 
     Variant result;
     if (infix)
@@ -132,17 +119,17 @@ int main (int argc, char** argv)
       e.evaluatePostfixExpression (expression, result);
 
     // Show any debug output.
-    for (auto& i : context.debugMessages)
-      std::cout << i << "\n";
+    for (const auto& i : Context::getContext ().debugMessages)
+      std::cout << i << '\n';
 
     // Show the result in string form.
     std::cout << (std::string) result
-              << "\n";
+              << '\n';
   }
 
   catch (const std::string& error)
   {
-    std::cerr << error << "\n";
+    std::cerr << error << '\n';
     status = -1;
   }
 

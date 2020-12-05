@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -69,7 +69,7 @@ class TestStart(TestCase):
 
     def test_journal_time(self):
         """Verify journal.time tracks state"""
-        self.t.config("journal.time", "on")
+        self.t.config("journal.time", "1")
 
         self.t("add one")
         self.t("1 start")
@@ -82,7 +82,7 @@ class TestStart(TestCase):
 
     def test_journal_annotations(self):
         """Verify journal start/stop annotations are used"""
-        self.t.config("journal.time",                  "on")
+        self.t.config("journal.time",                  "1")
         self.t.config("journal.time.start.annotation", "Nu kör vi")
         self.t.config("journal.time.stop.annotation",  "Nu stannar vi")
 
@@ -94,6 +94,19 @@ class TestStart(TestCase):
         self.t("1 stop")
         code, out, err = self.t("long")
         self.assertIn("Nu stannar vi", out)
+
+    def test_start_remove_end(self):
+        """Verify that starting a task removes end timestamp"""
+        self.t("add one")
+        uuid = self.t('_get 1.uuid')[1].strip()
+
+        self.t("1 done")
+        task = self.t.export()[0]
+        self.assertIn("end", task)
+
+        self.t(uuid + " start")
+        task = self.t.export()[0]
+        self.assertNotIn("end", task)
 
 
 class TestActiveTaskHandling(TestCase):

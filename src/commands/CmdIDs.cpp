@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,10 +31,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <text.h>
-#include <i18n.h>
-
-extern Context context;
+#include <shared.h>
 
 std::string zshColonReplacement = ",";
 
@@ -43,7 +40,7 @@ CmdIDs::CmdIDs ()
 {
   _keyword               = "ids";
   _usage                 = "task <filter> ids";
-  _description           = STRING_CMD_IDS_USAGE_RANGE;
+  _description           = "Shows the IDs of matching tasks, as a range";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -70,9 +67,9 @@ int CmdIDs::execute (std::string& output)
       ids.push_back (task.id);
 
   std::sort (ids.begin (), ids.end ());
-  output = compressIds (ids) + "\n";
+  output = compressIds (ids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -92,18 +89,18 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
 {
   std::stringstream result;
 
-  int range_start = 0;
-  int range_end = 0;
+  auto range_start = 0;
+  auto range_end = 0;
 
   for (unsigned int i = 0; i < ids.size (); ++i)
   {
     if (i + 1 == ids.size ())
     {
       if (result.str ().length ())
-        result << " ";
+        result << ' ';
 
       if (range_start < range_end)
-        result << ids[range_start] << "-" << ids[range_end];
+        result << ids[range_start] << '-' << ids[range_end];
       else
         result << ids[range_start];
     }
@@ -116,10 +113,10 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
       else
       {
         if (result.str ().length ())
-          result << " ";
+          result << ' ';
 
         if (range_start < range_end)
-          result << ids[range_start] << "-" << ids[range_end];
+          result << ids[range_start] << '-' << ids[range_end];
         else
           result << ids[range_start];
 
@@ -136,7 +133,7 @@ CmdCompletionIds::CmdCompletionIds ()
 {
   _keyword               = "_ids";
   _usage                 = "task <filter> _ids";
-  _description           = STRING_CMD_IDS_USAGE_LIST;
+  _description           = "Shows the IDs of matching tasks, in the form of a list";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -163,10 +160,9 @@ int CmdCompletionIds::execute (std::string& output)
       ids.push_back (task.id);
 
   std::sort (ids.begin (), ids.end ());
-  join (output, "\n", ids);
-  output += "\n";
+  output = join ("\n", ids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -175,7 +171,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
 {
   _keyword               = "_zshids";
   _usage                 = "task <filter> _zshids";
-  _description           = STRING_CMD_IDS_USAGE_ZSH;
+  _description           = "Shows the IDs and descriptions of matching tasks";
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
@@ -200,13 +196,13 @@ int CmdZshCompletionIds::execute (std::string& output)
     if (task.getStatus () != Task::deleted &&
         task.getStatus () != Task::completed)
       out << task.id
-          << ":"
+          << ':'
           << str_replace(task.get ("description"), ":", zshColonReplacement)
-          << "\n";
+          << '\n';
 
   output = out.str ();
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -215,7 +211,7 @@ CmdUUIDs::CmdUUIDs ()
 {
   _keyword               = "uuids";
   _usage                 = "task <filter> uuids";
-  _description           = STRING_CMD_UUIDS_USAGE_RANGE;
+  _description           = "Shows the UUIDs of matching tasks, as a comma-separated list";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -240,10 +236,9 @@ int CmdUUIDs::execute (std::string& output)
     uuids.push_back (task.get ("uuid"));
 
   std::sort (uuids.begin (), uuids.end ());
-  join (output, " ", uuids);
-  output += "\n";
+  output = join (" ", uuids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -252,7 +247,7 @@ CmdCompletionUuids::CmdCompletionUuids ()
 {
   _keyword               = "_uuids";
   _usage                 = "task <filter> _uuids";
-  _description           = STRING_CMD_UUIDS_USAGE_LIST;
+  _description           = "Shows the UUIDs of matching tasks, as a list";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -277,10 +272,9 @@ int CmdCompletionUuids::execute (std::string& output)
     uuids.push_back (task.get ("uuid"));
 
   std::sort (uuids.begin (), uuids.end ());
-  join (output, "\n", uuids);
-  output += "\n";
+  output = join ("\n", uuids) + '\n';
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 
@@ -289,7 +283,7 @@ CmdZshCompletionUuids::CmdZshCompletionUuids ()
 {
   _keyword               = "_zshuuids";
   _usage                 = "task <filter> _zshuuids";
-  _description           = STRING_CMD_UUIDS_USAGE_ZSH;
+  _description           = "Shows the UUIDs and descriptions of matching tasks";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -312,13 +306,13 @@ int CmdZshCompletionUuids::execute (std::string& output)
   std::stringstream out;
   for (auto& task : filtered)
     out << task.get ("uuid")
-        << ":"
+        << ':'
         << str_replace (task.get ("description"), ":", zshColonReplacement)
-        << "\n";
+        << '\n';
 
   output = out.str ();
 
-  context.headers.clear ();
+  Context::getContext ().headers.clear ();
   return 0;
 }
 

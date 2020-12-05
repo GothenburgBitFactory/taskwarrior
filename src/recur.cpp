@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -37,17 +37,14 @@
 #include <stdlib.h>
 #include <pwd.h>
 #include <time.h>
-
 #include <Context.h>
 #include <Lexer.h>
-#include <ISO8601.h>
-#include <text.h>
+#include <Datetime.h>
+#include <Duration.h>
+#include <format.h>
+#include <unicode.h>
 #include <util.h>
-#include <i18n.h>
 #include <main.h>
-
-// Global context for use by all.
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Scans all tasks, and for any recurring tasks, determines whether any new
@@ -56,11 +53,11 @@ void handleRecurrence ()
 {
   // Recurrence can be disabled.
   // Note: This is currently a workaround for TD-44, TW-1520.
-  if (! context.config.getBoolean ("recurrence"))
+  if (! Context::getContext ().config.getBoolean ("recurrence"))
     return;
 
-  auto tasks = context.tdb2.pending.get_tasks ();
-  ISO8601d now;
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  Datetime now;
 
   // Look at all tasks and find any recurring ones.
   for (auto& t : tasks)
@@ -69,21 +66,21 @@ void handleRecurrence ()
     {
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
-      std::vector <ISO8601d> due;
+      std::vector <Datetime> due;
       if (!generateDueDates (t, due))
       {
         // Determine the end date.
         t.setStatus (Task::deleted);
-        context.tdb2.modify (t);
-        context.footnote (onExpiration (t));
+        Context::getContext ().tdb2.modify (t);
+        Context::getContext ().footnote (onExpiration (t));
         continue;
       }
 
       // Get the mask from the parent task.
-      std::string mask = t.get ("mask");
+      auto mask = t.get ("mask");
 
       // Iterate over the due dates, and check each against the mask.
-      bool changed = false;
+      auto changed = false;
       unsigned int i = 0;
       for (auto& d : due)
       {
@@ -93,22 +90,18 @@ void handleRecurrence ()
 
           Task rec (t);                          // Clone the parent.
           rec.setStatus (Task::pending);         // Change the status.
-          rec.id = context.tdb2.next_id ();      // New ID.
+          rec.id = Context::getContext ().tdb2.next_id ();      // New ID.
           rec.set ("uuid", uuid ());             // New UUID.
           rec.set ("parent", t.get ("uuid"));    // Remember mom.
           rec.setAsNow ("entry");                // New entry date.
-
-          char dueDate[16];
-          sprintf (dueDate, "%u", (unsigned int) d.toEpoch ());
-          rec.set ("due", dueDate);              // Store generated due date.
+          rec.set ("due", format (d.toEpoch ()));
 
           if (t.has ("wait"))
           {
-            ISO8601d old_wait (t.get_date ("wait"));
-            ISO8601d old_due (t.get_date ("due"));
-            ISO8601d due (d);
-            sprintf (dueDate, "%u", (unsigned int) (due + (old_wait - old_due)).toEpoch ());
-            rec.set ("wait", dueDate);
+            Datetime old_wait (t.get_date ("wait"));
+            Datetime old_due (t.get_date ("due"));
+            Datetime due (d);
+            rec.set ("wait", format ((due + (old_wait - old_due)).toEpoch ()));
             rec.setStatus (Task::waiting);
             mask += 'W';
           }
@@ -118,14 +111,11 @@ void handleRecurrence ()
             rec.setStatus (Task::pending);
           }
 
-          char indexMask[12];
-          sprintf (indexMask, "%u", (unsigned int) i);
-          rec.set ("imask", indexMask);          // Store index into mask.
-
+          rec.set ("imask", i);
           rec.remove ("mask");                   // Remove the mask of the parent.
 
           // Add the new task to the DB.
-          context.tdb2.add (rec);
+          Context::getContext ().tdb2.add (rec);
         }
 
         ++i;
@@ -135,10 +125,10 @@ void handleRecurrence ()
       if (changed)
       {
         t.set ("mask", mask);
-        context.tdb2.modify (t);
+        Context::getContext ().tdb2.modify (t);
 
-        if (context.verbose ("recur"))
-          context.footnote (format (STRING_RECUR_CREATE, t.get ("description")));
+        if (Context::getContext ().verbose ("recur"))
+          Context::getContext ().footnote (format ("Creating recurring task instance '{1}'", t.get ("description")));
       }
     }
 
@@ -146,11 +136,11 @@ void handleRecurrence ()
     else
     {
       if (t.has ("until") &&
-          ISO8601d (t.get_date ("until")) < now)
+          Datetime (t.get_date ("until")) < now)
       {
         t.setStatus (Task::deleted);
-        context.tdb2.modify(t);
-        context.footnote (onExpiration (t));
+        Context::getContext ().tdb2.modify(t);
+        Context::getContext ().footnote (onExpiration (t));
       }
     }
   }
@@ -161,27 +151,27 @@ void handleRecurrence ()
 // period (recur).  Then generate a set of corresponding dates.
 //
 // Returns false if the parent recurring task is depleted.
-bool generateDueDates (Task& parent, std::vector <ISO8601d>& allDue)
+bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
 {
   // Determine due date, recur period and until date.
-  ISO8601d due (parent.get_date ("due"));
+  Datetime due (parent.get_date ("due"));
   if (due._date == 0)
     return false;
 
   std::string recur = parent.get ("recur");
 
   bool specificEnd = false;
-  ISO8601d until;
+  Datetime until;
   if (parent.get ("until") != "")
   {
-    until = ISO8601d (parent.get ("until"));
+    until = Datetime (parent.get ("until"));
     specificEnd = true;
   }
 
-  int recurrence_limit = context.config.getInteger ("recurrence.limit");
+  auto recurrence_limit = Context::getContext ().config.getInteger ("recurrence.limit");
   int recurrence_counter = 0;
-  ISO8601d now;
-  for (ISO8601d i = due; ; i = getNextRecurrence (i, recur))
+  Datetime now;
+  for (Datetime i = due; ; i = getNextRecurrence (i, recur))
   {
     allDue.push_back (i);
 
@@ -190,7 +180,7 @@ bool generateDueDates (Task& parent, std::vector <ISO8601d>& allDue)
       // If i > until, it means there are no more tasks to generate, and if the
       // parent mask contains all + or X, then there never will be another task
       // to generate, and this parent task may be safely reaped.
-      std::string mask = parent.get ("mask");
+      auto mask = parent.get ("mask");
       if (mask.length () == allDue.size () &&
           mask.find ('-') == std::string::npos)
         return false;
@@ -209,14 +199,14 @@ bool generateDueDates (Task& parent, std::vector <ISO8601d>& allDue)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
+Datetime getNextRecurrence (Datetime& current, std::string& period)
 {
-  int m = current.month ();
-  int d = current.day ();
-  int y = current.year ();
-  int ho = current.hour ();
-  int mi = current.minute ();
-  int se = current.second ();
+  auto m = current.month ();
+  auto d = current.day ();
+  auto y = current.year ();
+  auto ho = current.hour ();
+  auto mi = current.minute ();
+  auto se = current.second ();
 
   // Some periods are difficult, because they can be vague.
   if (period == "monthly" ||
@@ -228,15 +218,15 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "weekdays")
   {
-    int dow = current.dayOfWeek ();
+    auto dow = current.dayOfWeek ();
     int days;
 
          if (dow == 5) days = 3;
@@ -246,10 +236,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     return current + (days * 86400);
   }
 
-  else if (Lexer::isDigit (period[0]) &&
+  else if (unicodeLatinDigit (period[0]) &&
            period[period.length () - 1] == 'm')
   {
-    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
     m += increment;
     while (m > 12)
@@ -258,17 +248,17 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period[0] == 'P'                                            &&
            Lexer::isAllDigits (period.substr (1, period.length () - 2)) &&
            period[period.length () - 1] == 'M')
   {
-    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
     m += increment;
     while (m > 12)
@@ -277,10 +267,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y);
+    return Datetime (y, m, d);
   }
 
   else if (period == "quarterly" ||
@@ -293,15 +283,15 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
-  else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
+  else if (unicodeLatinDigit (period[0]) && period[period.length () - 1] == 'q')
   {
-    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
     m += 3 * increment;
     while (m > 12)
@@ -310,10 +300,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "semiannual" ||
@@ -326,10 +316,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "bimonthly" ||
@@ -342,10 +332,10 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
        ++y;
     }
 
-    while (! ISO8601d::valid (m, d, y))
+    while (! Datetime::valid (y, m, d))
       --d;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "biannual" ||
@@ -354,7 +344,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
   {
     y += 2;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   else if (period == "annual" ||
@@ -368,18 +358,16 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     if (m == 2 && d == 29)
       d = 28;
 
-    return ISO8601d (m, d, y, ho, mi, se);
+    return Datetime (y, m, d, ho, mi, se);
   }
 
   // Add the period to current, and we're done.
-  int secs = 0;
   std::string::size_type idx = 0;
-  ISO8601p p;
+  Duration p;
   if (! p.parse (period, idx))
-    throw std::string (format (STRING_TASK_VALID_RECUR, period));
+    throw std::string (format ("The recurrence value '{1}' is not valid.", period));
 
-  secs = (time_t) p;
-  return current + secs;
+  return current + p.toTime_t ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -387,14 +375,14 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
 // update it's mask.
 void updateRecurrenceMask (Task& task)
 {
-  std::string uuid = task.get ("parent");
+  auto uuid = task.get ("parent");
   Task parent;
 
   if (uuid != "" &&
-      context.tdb2.get (uuid, parent))
+      Context::getContext ().tdb2.get (uuid, parent))
   {
-    unsigned int index = strtol (task.get ("imask").c_str (), NULL, 10);
-    std::string mask = parent.get ("mask");
+    unsigned int index = strtol (task.get ("imask").c_str (), nullptr, 10);
+    auto mask = parent.get ("mask");
     if (mask.length () > index)
     {
       mask[index] = (task.getStatus () == Task::pending)   ? '-'
@@ -417,41 +405,8 @@ void updateRecurrenceMask (Task& task)
     }
 
     parent.set ("mask", mask);
-    context.tdb2.modify (parent);
+    Context::getContext ().tdb2.modify (parent);
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Returns a Boolean indicator as to whether a nag message was generated, so
-// that commands can control the number of nag messages displayed (ie one is
-// enough).
-//
-// Otherwise generates a nag message, if one is defined, if there are tasks of
-// higher urgency.
-bool nag (Task& task)
-{
-  // Special tag overrides nagging.
-  if (task.hasTag ("nonag"))
-    return false;
-
-  std::string nagMessage = context.config.get ("nag");
-  if (nagMessage != "")
-  {
-    // Scan all pending, non-recurring tasks.
-    auto pending = context.tdb2.pending.get_tasks ();
-    for (auto& t : pending)
-    {
-      if ((t.getStatus () == Task::pending ||
-           t.getStatus () == Task::waiting) &&
-          t.urgency () > task.urgency ())
-      {
-        context.footnote (nagMessage);
-        return true;
-      }
-    }
-  }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/nb-NO/2015.json
-# http://holidata.net/nb-NO/2016.json
+# https://holidata.net/nb-NO/2020.json
+# https://holidata.net/nb-NO/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,75 +23,75 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
 holiday.nb-NO1.name=Nyttårsdag
-holiday.nb-NO1.date=20150101
+holiday.nb-NO1.date=20200101
 holiday.nb-NO2.name=Fastelavn
-holiday.nb-NO2.date=20150215
+holiday.nb-NO2.date=20200223
 holiday.nb-NO3.name=Palmesøndag
-holiday.nb-NO3.date=20150329
+holiday.nb-NO3.date=20200405
 holiday.nb-NO4.name=Skjærtorsdag
-holiday.nb-NO4.date=20150402
+holiday.nb-NO4.date=20200409
 holiday.nb-NO5.name=Langfredag
-holiday.nb-NO5.date=20150403
+holiday.nb-NO5.date=20200410
 holiday.nb-NO6.name=Påskedag
-holiday.nb-NO6.date=20150405
+holiday.nb-NO6.date=20200412
 holiday.nb-NO7.name=Påskedag
-holiday.nb-NO7.date=20150406
+holiday.nb-NO7.date=20200413
 holiday.nb-NO8.name=Offentlig Høytidsdag
-holiday.nb-NO8.date=20150501
+holiday.nb-NO8.date=20200501
 holiday.nb-NO9.name=Frigjøringsdag 1945
-holiday.nb-NO9.date=20150508
+holiday.nb-NO9.date=20200508
 holiday.nb-NO10.name=Grunnlovsdag
-holiday.nb-NO10.date=20150517
+holiday.nb-NO10.date=20200517
 holiday.nb-NO11.name=Kristi Himmelfartsdag
-holiday.nb-NO11.date=20150514
+holiday.nb-NO11.date=20200521
 holiday.nb-NO12.name=Pinsedag
-holiday.nb-NO12.date=20150524
+holiday.nb-NO12.date=20200531
 holiday.nb-NO13.name=Pinsedag
-holiday.nb-NO13.date=20150525
+holiday.nb-NO13.date=20200601
 holiday.nb-NO14.name=Julaften
-holiday.nb-NO14.date=20151224
+holiday.nb-NO14.date=20201224
 holiday.nb-NO15.name=Juledag
-holiday.nb-NO15.date=20151225
+holiday.nb-NO15.date=20201225
 holiday.nb-NO16.name=Juledag
-holiday.nb-NO16.date=20151226
+holiday.nb-NO16.date=20201226
 holiday.nb-NO17.name=Nyttårsaften
-holiday.nb-NO17.date=20151231
+holiday.nb-NO17.date=20201231
 holiday.nb-NO18.name=Nyttårsdag
-holiday.nb-NO18.date=20160101
+holiday.nb-NO18.date=20210101
 holiday.nb-NO19.name=Fastelavn
-holiday.nb-NO19.date=20160207
+holiday.nb-NO19.date=20210214
 holiday.nb-NO20.name=Palmesøndag
-holiday.nb-NO20.date=20160320
+holiday.nb-NO20.date=20210328
 holiday.nb-NO21.name=Skjærtorsdag
-holiday.nb-NO21.date=20160324
+holiday.nb-NO21.date=20210401
 holiday.nb-NO22.name=Langfredag
-holiday.nb-NO22.date=20160325
+holiday.nb-NO22.date=20210402
 holiday.nb-NO23.name=Påskedag
-holiday.nb-NO23.date=20160327
+holiday.nb-NO23.date=20210404
 holiday.nb-NO24.name=Påskedag
-holiday.nb-NO24.date=20160328
+holiday.nb-NO24.date=20210405
 holiday.nb-NO25.name=Offentlig Høytidsdag
-holiday.nb-NO25.date=20160501
+holiday.nb-NO25.date=20210501
 holiday.nb-NO26.name=Frigjøringsdag 1945
-holiday.nb-NO26.date=20160508
-holiday.nb-NO27.name=Grunnlovsdag
-holiday.nb-NO27.date=20160517
-holiday.nb-NO28.name=Kristi Himmelfartsdag
-holiday.nb-NO28.date=20160505
+holiday.nb-NO26.date=20210508
+holiday.nb-NO27.name=Kristi Himmelfartsdag
+holiday.nb-NO27.date=20210513
+holiday.nb-NO28.name=Grunnlovsdag
+holiday.nb-NO28.date=20210517
 holiday.nb-NO29.name=Pinsedag
-holiday.nb-NO29.date=20160515
+holiday.nb-NO29.date=20210523
 holiday.nb-NO30.name=Pinsedag
-holiday.nb-NO30.date=20160516
+holiday.nb-NO30.date=20210524
 holiday.nb-NO31.name=Julaften
-holiday.nb-NO31.date=20161224
+holiday.nb-NO31.date=20211224
 holiday.nb-NO32.name=Juledag
-holiday.nb-NO32.date=20161225
+holiday.nb-NO32.date=20211225
 holiday.nb-NO33.name=Juledag
-holiday.nb-NO33.date=20161226
+holiday.nb-NO33.date=20211226
 holiday.nb-NO34.name=Nyttårsaften
-holiday.nb-NO34.date=20161231
+holiday.nb-NO34.date=20211231

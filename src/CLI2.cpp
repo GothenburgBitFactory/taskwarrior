@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -32,11 +32,8 @@
 #include <Context.h>
 #include <Lexer.h>
 #include <Color.h>
-#include <text.h>
-#include <util.h>
-#include <i18n.h>
-
-extern Context context;
+#include <shared.h>
+#include <format.h>
 
 // Overridden by rc.abbreviation.minimum.
 int CLI2::minimumMatchLength = 3;
@@ -213,7 +210,7 @@ const std::string A2::dump () const
     else                             tags += "\033[32m"                + tag + "\033[0m ";
   }
 
-  return output + " " + atts + tags;
+  return output + ' ' + atts + tags;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +233,7 @@ void CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc
       if (last_slash != std::string::npos)
         home = rc.parent ();
 
-      context.header (format (STRING_PARSER_ALTERNATE_RC, rc._data));
+      Context::getContext ().header (format ("Using alternate .taskrc file {1}", rc._data));
 
       // Keep looping, because if there are multiple rc:file arguments, the last
       // one should dominate.
@@ -249,7 +246,7 @@ void CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc
 // Static method.
 void CLI2::getDataLocation (int argc, const char** argv, Path& data)
 {
-  std::string location = context.config.get ("data.location");
+  std::string location = Context::getContext ().config.get ("data.location");
   if (location != "")
     data = location;
 
@@ -263,7 +260,7 @@ void CLI2::getDataLocation (int argc, const char** argv, Path& data)
         raw.substr (0, 16) == "rc.data.location")
     {
       data = Directory (raw.substr (17));
-      context.header (format (STRING_PARSER_ALTERNATE_DATA, (std::string) data));
+      Context::getContext ().header (format ("Using alternate data.location {1}", (std::string) data));
 
       // Keep looping, because if there are multiple rc:file arguments, the last
       // one should dominate.
@@ -277,22 +274,31 @@ void CLI2::applyOverrides (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
   {
+
+    // Don't process any arguments after a '--'
     std::string raw = argv[i];
     if (raw == "--")
       break;
 
+    // Overrides always start with 'rc.'
     if (raw.length () > 3 &&
         raw.substr (0, 3) == "rc.")
     {
+
+      // Our separator can either be '=' or ':', so try and find both.
       auto sep = raw.find ('=', 3);
       if (sep == std::string::npos)
         sep = raw.find (':', 3);
+
+      // Process our override if well-formed
       if (sep != std::string::npos)
       {
         std::string name  = raw.substr (3, sep - 3);
         std::string value = raw.substr (sep + 1);
-        context.config.set (name, value);
-        context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
+        Context::getContext ().config.set (name, value);
+
+        if (Context::getContext ().verbose("override"))
+          Context::getContext ().footnote (format ("Configuration override rc.{1}:{2}", name, value));
       }
     }
   }
@@ -376,9 +382,7 @@ void CLI2::handleArg0 ()
     A2 cal ("calendar", Lexer::Type::word);
     _args.push_back (cal);
   }
-  else if (basename == "task" ||
-           basename == "tw" ||
-           basename == "t")
+  else
   {
     _args.push_back (a);
   }
@@ -399,6 +403,7 @@ void CLI2::lexArguments ()
   {
     bool quoted = Lexer::wasQuoted (_original_args[i].attribute ("raw"));
 
+    // Process single-token arguments.
     std::string lexeme;
     Lexer::Type type;
     Lexer lex (_original_args[i].attribute ("raw"));
@@ -422,11 +427,13 @@ void CLI2::lexArguments ()
 
       _args.push_back (a);
     }
+
+    // Process muktiple-token arguments.
     else
     {
       std::string quote = "'";
       std::string escaped = _original_args[i].attribute ("raw");
-      str_replace (escaped, quote, "\\'");
+      escaped = str_replace (escaped, quote, "\\'");
 
       std::string::size_type cursor = 0;
       std::string word;
@@ -460,8 +467,8 @@ void CLI2::lexArguments ()
     }
   }
 
-  if (context.config.getInteger ("debug.parser") >= 2)
-    context.debug (dump ("CLI2::analyze lexArguments"));
+  if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+    Context::getContext ().debug (dump ("CLI2::analyze lexArguments"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -491,7 +498,7 @@ void CLI2::demotion ()
     else if (a._lextype == Lexer::Type::pair &&
         canonicalize (canonical, "pseudo", a.attribute ("name")))
     {
-      context.config.set (canonical, a.attribute ("value"));
+      Context::getContext ().config.set (canonical, a.attribute ("value"));
       changes = true;
 
       // Equivalent to erasing 'a'.
@@ -502,16 +509,16 @@ void CLI2::demotion ()
   }
 
   if (changes &&
-      context.config.getInteger ("debug.parser") >= 2)
-    context.debug (dump ("CLI2::analyze demotion"));
+      Context::getContext ().config.getInteger ("debug.parser") >= 2)
+    Context::getContext ().debug (dump ("CLI2::analyze demotion"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Intended to be called after ::add() to perform the final analysis.
 void CLI2::analyze ()
 {
-  if (context.config.getInteger ("debug.parser") >= 2)
-    context.debug (dump ("CLI2::analyze"));
+  if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+    Context::getContext ().debug (dump ("CLI2::analyze"));
 
   // Process _original_args.
   _args.clear ();
@@ -524,7 +531,7 @@ void CLI2::analyze ()
   {
     defaultCommand ();
     if (! findCommand ())
-      throw std::string (STRING_TRIVIAL_INPUT);
+      throw std::string ("You must specify a command or a task to modify.");
   }
 
   demotion ();
@@ -568,10 +575,10 @@ void CLI2::addContextFilter ()
     return;
 
   // Detect if any context is set, and bail out if not
-  std::string contextName = context.config.get ("context");
+  std::string contextName = Context::getContext ().config.get ("context");
   if (contextName == "")
   {
-    context.debug ("No context.");
+    Context::getContext ().debug ("No context.");
     return;
   }
 
@@ -582,23 +589,23 @@ void CLI2::addContextFilter ()
         a._lextype == Lexer::Type::number ||
         a._lextype == Lexer::Type::set)
     {
-      context.debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
+      Context::getContext ().debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
       return;
     }
   }
 
   // Apply context
-  context.debug ("Applying context: " + contextName);
-  std::string contextFilter = context.config.get ("context." + contextName);
+  Context::getContext ().debug ("Applying context: " + contextName);
+  std::string contextFilter = Context::getContext ().config.get ("context." + contextName);
 
   if (contextFilter == "")
-    context.debug ("Context '" + contextName + "' not defined.");
+    Context::getContext ().debug ("Context '" + contextName + "' not defined.");
   else
   {
     _context_filter_added = true;
     addFilter (contextFilter);
-    if (context.verbose ("context"))
-      context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
+    if (Context::getContext ().verbose ("context"))
+      Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
   }
 }
 
@@ -624,7 +631,7 @@ void CLI2::prepareFilter ()
   desugarFilterPatterns ();
   insertJunctions ();                 // Deliberately after all desugar calls.
 
-  if (context.verbose ("filter"))
+  if (Context::getContext ().verbose ("filter"))
   {
     std::string combined;
     for (const auto& a : _args)
@@ -632,14 +639,14 @@ void CLI2::prepareFilter ()
       if (a.hasTag ("FILTER"))
       {
         if (combined != "")
-          combined += " ";
+          combined += ' ';
 
         combined += a.attribute ("raw");
       }
     }
 
     if (combined.size ())
-      context.footnote (std::string (STRING_COLUMN_LABEL_FILTER) + ": " + combined);
+      Context::getContext ().footnote (std::string ("Filter: ") + combined);
   }
 }
 
@@ -652,13 +659,13 @@ const std::vector <std::string> CLI2::getWords ()
     if (a.hasTag ("MISCELLANEOUS"))
       words.push_back (a.attribute ("raw"));
 
-  if (context.config.getInteger ("debug.parser") >= 2)
+  if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
   {
     Color colorOrigArgs ("gray10 on gray4");
     std::string message = " ";
     for (const auto& word : words)
-      message += colorOrigArgs.colorize (word) + " ";
-    context.debug ("CLI2::getWords" + message);
+      message += colorOrigArgs.colorize (word) + ' ';
+    Context::getContext ().debug ("CLI2::getWords" + message);
   }
 
   return words;
@@ -737,13 +744,13 @@ const std::string CLI2::dump (const std::string& title) const
       out << colorFilter.colorize (i->attribute ("raw"));
   }
 
-  out << "\n";
+  out << '\n';
 
   if (_args.size ())
   {
     out << "  _args\n";
     for (const auto& a : _args)
-      out << "    " << a.dump () << "\n";
+      out << "    " << a.dump () << '\n';
   }
 
   if (_id_ranges.size ())
@@ -752,21 +759,21 @@ const std::string CLI2::dump (const std::string& title) const
     for (const auto& range : _id_ranges)
     {
       if (range.first != range.second)
-        out << colorArgs.colorize (range.first + "-" + range.second) << " ";
+        out << colorArgs.colorize (range.first + "-" + range.second) << ' ';
       else
-        out << colorArgs.colorize (range.first) << " ";
+        out << colorArgs.colorize (range.first) << ' ';
     }
 
-    out << "\n";
+    out << '\n';
   }
 
   if (_uuid_list.size ())
   {
     out << "  _uuid_list\n    ";
     for (const auto& uuid : _uuid_list)
-      out << colorArgs.colorize (uuid) << " ";
+      out << colorArgs.colorize (uuid) << ' ';
 
-    out << "\n";
+    out << '\n';
   }
 
   return out.str ();
@@ -845,11 +852,11 @@ void CLI2::aliasExpansion ()
   while (action && counter++ < safetyValveDefault);
 
   if (counter >= safetyValveDefault)
-    context.debug (format (STRING_PARSER_ALIAS_NEST, safetyValveDefault));
+    Context::getContext ().debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
 
   if (changes &&
-      context.config.getInteger ("debug.parser") >= 2)
-    context.debug (dump ("CLI2::analyze aliasExpansion"));
+      Context::getContext ().config.getInteger ("debug.parser") >= 2)
+    Context::getContext ().debug (dump ("CLI2::analyze aliasExpansion"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -883,8 +890,8 @@ void CLI2::canonicalizeNames ()
   }
 
   if (changes &&
-      context.config.getInteger ("debug.parser") >= 2)
-    context.debug (dump ("CLI2::analyze canonicalizeNames"));
+      Context::getContext ().config.getInteger ("debug.parser") >= 2)
+    Context::getContext ().debug (dump ("CLI2::analyze canonicalizeNames"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -893,7 +900,7 @@ void CLI2::categorizeArgs ()
 {
   // Context is only applied for commands that request it.
   std::string command = getCommand ();
-  Command* cmd = context.commands[command];
+  Command* cmd = Context::getContext ().commands[command];
   if (cmd && cmd->uses_context ())
     addContextFilter ();
 
@@ -935,7 +942,7 @@ void CLI2::categorizeArgs ()
              ! cmd->accepts_miscellaneous ())
     {
       // No commands were expected --> error.
-      throw format (STRING_PARSER_UNEXPECTED_ARG, command, a.attribute ("raw"));
+      throw format ("The '{1}' command does not allow '{2}'.", command, a.attribute ("raw"));
     }
     else if (cmd                             &&
              ! cmd->accepts_filter ()        &&
@@ -959,7 +966,7 @@ void CLI2::categorizeArgs ()
                cmd->accepts_miscellaneous ())
     {
       // Error: internally inconsistent.
-      throw std::string (STRING_UNKNOWN_ERROR);
+      throw std::string ("Unknown error. Please report.");
     }
     else if (cmd                             &&
                cmd->accepts_filter ()        &&
@@ -999,13 +1006,13 @@ void CLI2::categorizeArgs ()
                cmd->accepts_miscellaneous ())
     {
       // Error: internally inconsistent.
-      throw std::string (STRING_UNKNOWN_ERROR);
+      throw std::string ("Unknown error. Please report.");
     }
   }
 
   if (changes &&
-      context.config.getInteger ("debug.parser") >= 2)
-    context.debug (dump ("CLI2::analyze categorizeArgs"));
+      Context::getContext ().config.getInteger ("debug.parser") >= 2)
+    Context::getContext ().debug (dump ("CLI2::analyze categorizeArgs"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1073,8 +1080,8 @@ void CLI2::parenthesizeOriginalFilter ()
 
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::analyze parenthesizeOriginalFilter"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::analyze parenthesizeOriginalFilter"));
   }
 }
 
@@ -1105,7 +1112,7 @@ bool CLI2::findCommand ()
     a.tag ("CMD");
 
     // Apply command DNA as tags.
-    Command* command = context.commands[canonical];
+    Command* command = Context::getContext ().commands[canonical];
     if (command->read_only ())             a.tag ("READONLY");
     if (command->displays_id ())           a.tag ("SHOWSID");
     if (command->needs_gc ())              a.tag ("RUNSGC");
@@ -1114,8 +1121,8 @@ bool CLI2::findCommand ()
     if (command->accepts_modifications ()) a.tag ("ALLOWSMODIFICATIONS");
     if (command->accepts_miscellaneous ()) a.tag ("ALLOWSMISC");
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::analyze findCommand"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::analyze findCommand"));
 
     // Stop and indicate command found.
     return true;
@@ -1176,8 +1183,8 @@ void CLI2::desugarFilterTags ()
   {
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter desugarFilterTags"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter desugarFilterTags"));
   }
 }
 
@@ -1202,8 +1209,8 @@ void CLI2::findStrayModifications ()
   }
 
   if (changes)
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter findStrayModifications"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter findStrayModifications"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1240,12 +1247,12 @@ void CLI2::desugarFilterAttributes ()
       //    )
       // Use this sequence in place of a single value.
       std::vector <A2> values = lexExpression (value);
-      if (context.config.getInteger ("debug.parser") >= 2)
+      if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
       {
-        context.debug ("CLI2::lexExpression " + name + ":" + value);
+        Context::getContext ().debug ("CLI2::lexExpression " + name + ':' + value);
         for (auto& v : values)
-          context.debug ("  " + v.dump ());
-        context.debug (" ");
+          Context::getContext ().debug ("  " + v.dump ());
+        Context::getContext ().debug (" ");
       }
 
       bool found = false;
@@ -1258,7 +1265,7 @@ void CLI2::desugarFilterAttributes ()
         //   date     --> yes
         //   duration --> yes
         bool evalSupported = true;
-        Column* col = context.columns[canonical];
+        Column* col = Context::getContext ().columns[canonical];
         if (col && col->type () == "string")
           evalSupported = false;
 
@@ -1270,7 +1277,7 @@ void CLI2::desugarFilterAttributes ()
         A2 op ("", Lexer::Type::op);
         op.tag ("FILTER");
 
-        A2 rhs ("", Lexer::Type::string);
+        A2 rhs ("", values[0]._lextype);
         rhs.tag ("FILTER");
 
         // Special case for '<name>:<value>'.
@@ -1357,22 +1364,27 @@ void CLI2::desugarFilterAttributes ()
 #endif
         }
         else
-          throw format (STRING_PARSER_UNKNOWN_ATTMOD, mod);
+          throw format ("Error: unrecognized attribute modifier '{1}'.", mod);
 
         reconstructed.push_back (lhs);
         reconstructed.push_back (op);
 
         // Do not modify this construct without full understanding.
-        if (values.size () == 1 || ! evalSupported)
+        // Getting this wrong breaks a whole lot of filtering tests.
+        if (values.size () > 1 || evalSupported)
         {
-          if (Lexer::isDOM (rhs.attribute ("raw")))
-            rhs._lextype = Lexer::Type::dom;
-
+          for (auto& v : values)
+            reconstructed.push_back (v);
+        }
+        else if (Lexer::isDOM (rhs.attribute ("raw")))
+        {
+          rhs._lextype = Lexer::Type::dom;
           reconstructed.push_back (rhs);
         }
         else
-          for (auto& v : values)
-            reconstructed.push_back (v);
+        {
+          reconstructed.push_back (rhs);
+        }
 
         found = true;
       }
@@ -1399,8 +1411,8 @@ void CLI2::desugarFilterAttributes ()
   {
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter desugarFilterAttributes"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter desugarFilterAttributes"));
   }
 }
 
@@ -1438,8 +1450,8 @@ void CLI2::desugarFilterPatterns ()
   {
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter desugarFilterPatterns"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter desugarFilterPatterns"));
   }
 }
 
@@ -1456,7 +1468,7 @@ void CLI2::findIDs ()
 {
   bool changes = false;
 
-  if (context.config.getBoolean ("sugar"))
+  if (Context::getContext ().config.getBoolean ("sugar"))
   {
     bool previousFilterArgWasAnOperator = false;
     int filterCount = 0;
@@ -1480,8 +1492,7 @@ void CLI2::findIDs ()
         else if (a._lextype == Lexer::Type::set)
         {
           // Split the ID list into elements.
-          std::vector <std::string> elements;
-          split (elements, a.attribute ("raw"), ',');
+          auto elements = split (a.attribute ("raw"), ',');
 
           for (auto& element : elements)
           {
@@ -1536,8 +1547,7 @@ void CLI2::findIDs ()
             a.tag ("FILTER");
 
             // Split the ID list into elements.
-            std::vector <std::string> elements;
-            split (elements, raw, ',');
+            auto elements = split (raw, ',');
 
             for (const auto& element : elements)
             {
@@ -1578,8 +1588,8 @@ void CLI2::findIDs ()
   }
 
   if (changes)
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter findIDs"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter findIDs"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1587,7 +1597,7 @@ void CLI2::findUUIDs ()
 {
   bool changes = false;
 
-  if (context.config.getBoolean ("sugar"))
+  if (Context::getContext ().config.getBoolean ("sugar"))
   {
     for (const auto& a : _args)
     {
@@ -1639,8 +1649,8 @@ void CLI2::findUUIDs ()
   }
 
   if (changes)
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter findUUIDs"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter findUUIDs"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1724,8 +1734,8 @@ void CLI2::insertIDExpr ()
           else
           {
             bool ascending = true;
-            int low  = strtol (r->first.c_str (),  NULL, 10);
-            int high = strtol (r->second.c_str (), NULL, 10);
+            int low  = strtol (r->first.c_str (),  nullptr, 10);
+            int high = strtol (r->second.c_str (), nullptr, 10);
             if (low <= high)
               ascending = true;
             else
@@ -1786,8 +1796,8 @@ void CLI2::insertIDExpr ()
   {
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter insertIDExpr"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter insertIDExpr"));
   }
 }
 
@@ -1823,8 +1833,8 @@ void CLI2::lexFilterArgs ()
   {
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter lexFilterArgs"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter lexFilterArgs"));
   }
 }
 
@@ -1930,8 +1940,8 @@ void CLI2::desugarFilterPlainArgs ()
   {
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter desugarFilterPlainArgs"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter desugarFilterPlainArgs"));
   }
 }
 
@@ -1984,8 +1994,8 @@ void CLI2::insertJunctions ()
   {
     _args = reconstructed;
 
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::prepareFilter insertJunctions"));
+    if (Context::getContext ().config.getInteger ("debug.parser") >= 2)
+      Context::getContext ().debug (dump ("CLI2::prepareFilter insertJunctions"));
   }
 }
 
@@ -2025,7 +2035,7 @@ void CLI2::defaultCommand ()
     if (! found_sequence)
     {
       // Apply overrides, if any.
-      std::string defaultCommand = context.config.get ("default.command");
+      std::string defaultCommand = Context::getContext ().config.get ("default.command");
       if (defaultCommand != "")
       {
         // Modify _args, _original_args to be:
@@ -2068,8 +2078,8 @@ void CLI2::defaultCommand ()
   }
 
   if (changes &&
-      context.config.getInteger ("debug.parser") >= 2)
-    context.debug (dump ("CLI2::analyze defaultCommand"));
+      Context::getContext ().config.getInteger ("debug.parser") >= 2)
+    Context::getContext ().debug (dump ("CLI2::analyze defaultCommand"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2113,3 +2123,5 @@ std::vector <A2> CLI2::lexExpression (const std::string& expression)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+// vim: ts=2:sw=2

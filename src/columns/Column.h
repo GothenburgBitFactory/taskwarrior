@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -57,12 +57,12 @@ public:
   virtual void setLabel  (const std::string& value) { _label = value;  }
   virtual void setReport (const std::string& value) { _report = value; }
 
-  virtual bool validate (const std::string&) const;
   virtual void measure (const std::string&, unsigned int&, unsigned int&)           {};
   virtual void measure (Task&, unsigned int&, unsigned int&)                        {};
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
   virtual void render (std::vector <std::string>&, const std::string&, int, Color&) {};
   virtual void render (std::vector <std::string>&, Task&, int, Color&)              {};
+  virtual bool validate (const std::string&) const                                  {return false;};
   virtual void modify (Task&, const std::string&)                                   {};
 
 protected:

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,27 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <ColStart.h>
 #include <Context.h>
-#include <text.h>
 #include <utf8.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::ColumnStart ()
 {
   _name  = "start";
-  _label = STRING_COLUMN_LABEL_STARTED;
+  _label = "Started";
 
   _styles.push_back ("active");
-  _examples.push_back (context.config.get ("active.indicator"));
+  _examples.push_back (Context::getContext ().config.get ("active.indicator"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -48,10 +44,10 @@ ColumnStart::ColumnStart ()
 // Note that you can not determine which gets called first.
 void ColumnStart::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
-  if (_style == "active" && _label == STRING_COLUMN_LABEL_STARTED)
-    _label = STRING_COLUMN_LABEL_ACTIVE;
+  if (_style == "active" && _label == "Started")
+    _label = "A";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,18 +55,14 @@ void ColumnStart::setStyle (const std::string& value)
 void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "active")
-    {
-      if (task.has ("start"))
-        minimum = maximum = utf8_width (context.config.get ("active.indicator"));
-      else
-        minimum = maximum = 0;
-    }
+      minimum = maximum = utf8_width (Context::getContext ().config.get ("active.indicator"));
     else
       ColumnTypeDate::measure (task, minimum, maximum);
+
+    // TODO Throw on bad format.
   }
 }
 
@@ -86,7 +78,7 @@ void ColumnStart::render (
     if (_style == "active")
     {
       if (! task.has ("end"))
-        renderStringRight (lines, width, color, context.config.get ("active.indicator"));
+        renderStringRight (lines, width, color, Context::getContext ().config.get ("active.indicator"));
     }
     else
       ColumnTypeDate::render (lines, task, width, color);

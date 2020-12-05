@@ -1,6 +1,6 @@
 " Vim syntax file
 "
-" Copyright (c) 2014 - 2016 Taskwarrior Team
+" Copyright (c) 2014 - 2020 Taskwarrior Team
 " Copyright (c) 2009 - 2014 John Florian
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,7 +21,7 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
 "
-" http://www.opensource.org/licenses/mit-license.php
+" https://www.opensource.org/licenses/mit-license.php
 "
 
 if version < 600
@@ -102,6 +102,7 @@ syn match taskrcGoodKey '^\s*\Vdefault.command='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.due='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.priority='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.project='he=e-1
+syn match taskrcGoodKey '^\s*\Vdefault.scheduled='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefaultheight='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefaultwidth='he=e-1
 syn match taskrcGoodKey '^\s*\Vdependency.confirmation='he=e-1

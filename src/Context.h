@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,7 +29,7 @@
 
 #include <Command.h>
 #include <Column.h>
-#include <Config.h>
+#include <Configuration.h>
 #include <Task.h>
 #include <TDB2.h>
 #include <Hooks.h>
@@ -41,11 +41,14 @@
 class Context
 {
 public:
-  Context ();                          // Default constructor
+  Context () = default;                // Default constructor
   ~Context ();                         // Destructor
 
   Context (const Context&);
   Context& operator= (const Context&);
+
+  static Context& getContext ();
+  static void setContext (Context*);
 
   int initialize (int, const char**);  // all startup
   int run ();
@@ -66,6 +69,7 @@ public:
   void error (const std::string&);     // Error message sink - non-maskable
 
   void decomposeSortField (const std::string&, std::string&, bool&, bool&);
+  void debugTiming (const std::string&, const Timer&);
 
 private:
   void staticInitialization ();
@@ -75,43 +79,40 @@ private:
   void loadAliases ();
   void propagateDebug ();
 
+  static Context* context;
+
 public:
-  CLI2                                cli2;
-  std::string                         home_dir;
-  File                                rc_file;
-  Path                                data_dir;
-  Config                              config;
+  CLI2                                cli2                {};
+  std::string                         home_dir            {};
+  File                                rc_file             {"~/.taskrc"};
+  Path                                data_dir            {"~/.task"};
+  Configuration                       config              {};
+  TDB2                                tdb2                {};
+  Hooks                               hooks               {};
+  bool                                determine_color_use {true};
+  bool                                use_color           {true};
+  bool                                run_gc              {true};
+  bool                                verbosity_legacy    {false};
+  std::set <std::string>              verbosity           {};
+  std::vector <std::string>           headers             {};
+  std::vector <std::string>           footnotes           {};
+  std::vector <std::string>           errors              {};
+  std::vector <std::string>           debugMessages       {};
+  std::map <std::string, Command*>    commands            {};
+  std::map <std::string, Column*>     columns             {};
+  int                                 terminal_width      {0};
+  int                                 terminal_height     {0};
 
-  TDB2                                tdb2;
-  Hooks                               hooks;
-
-  bool                                determine_color_use;
-  bool                                use_color;
-
-  bool                                run_gc;
-
-  bool                                verbosity_legacy;
-  std::set <std::string>              verbosity;
-  std::vector <std::string>           headers;
-  std::vector <std::string>           footnotes;
-  std::vector <std::string>           errors;
-  std::vector <std::string>           debugMessages;
-
-  std::map <std::string, Command*>    commands;
-  std::map <std::string, Column*>     columns;
-
-  int                                 terminal_width;
-  int                                 terminal_height;
-
-  Timer                               timer_total;
-  Timer                               timer_init;
-  Timer                               timer_load;
-  Timer                               timer_gc;
-  Timer                               timer_filter;
-  Timer                               timer_commit;
-  Timer                               timer_sort;
-  Timer                               timer_render;
-  Timer                               timer_hooks;
+  Timer                               timer_total         {};
+  long                                time_total_us       {0};
+  long                                time_init_us        {0};
+  long                                time_load_us        {0};
+  long                                time_gc_us          {0};
+  long                                time_filter_us      {0};
+  long                                time_commit_us      {0};
+  long                                time_sort_us        {0};
+  long                                time_render_us      {0};
+  long                                time_hooks_us       {0};
 };
 
 #endif

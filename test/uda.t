@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -103,8 +103,8 @@ class TestUdaDate(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+[\d\/]+\s+with")
-        self.assertRegexpMatches(out, "2\s+without")
+        self.assertRegex(out, "1\s+[\d\/]+\s+with")
+        self.assertRegex(out, "2\s+without")
 
     def test_uda_bad_date_task(self):
         """Add tasks with an invalid UDA date"""
@@ -134,7 +134,7 @@ class TestUdaDefault(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+strong\s+one")
+        self.assertRegex(out, "1\s+strong\s+one")
 
     def test_uda_default_task(self):
         """Add tasks with default UDA"""
@@ -143,7 +143,7 @@ class TestUdaDefault(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+weak\s+two")
+        self.assertRegex(out, "1\s+weak\s+two")
 
     def test_uda_without_default_task(self):
         """Add tasks without default UDA"""
@@ -152,7 +152,7 @@ class TestUdaDefault(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+weak\s+10\s+three")
+        self.assertRegex(out, "1\s+weak\s+10\s+three")
 
 
 class TestUdaDuration(TestBaseUda):
@@ -174,7 +174,7 @@ class TestUdaDuration(TestBaseUda):
 
         # Ensure 'extra' is stored in original form.
         code, out, err = self.t("1 export")
-        self.assertRaisesRegexp(out, '"extra":"P1D"')
+        self.assertRegex(out, '"extra":"P1D"')
 
     def test_uda_bad_duration_task(self):
         """Add tasks with an invalid UDA duration"""
@@ -200,8 +200,8 @@ class TestUdaNumeric(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+\d+\s+with")
-        self.assertRegexpMatches(out, "2\s+without")
+        self.assertRegex(out, "1\s+\d+\s+with")
+        self.assertRegex(out, "2\s+without")
 
     def test_uda_bad_numeric_task(self):
         """Add tasks with an invalid UDA numeric"""
@@ -225,8 +225,8 @@ class TestUdaString(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+one two\s+with")
-        self.assertRegexpMatches(out, "2\s+without")
+        self.assertRegex(out, "1\s+one two\s+with")
+        self.assertRegex(out, "2\s+without")
 
 
 class TestUdaValue(TestBaseUda):
@@ -245,8 +245,8 @@ class TestUdaValue(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+weak\s+one")
-        self.assertRegexpMatches(out, "2\s+strong\s+two")
+        self.assertRegex(out, "1\s+weak\s+one")
+        self.assertRegex(out, "2\s+strong\s+two")
 
     def test_uda_invalid_value_task(self):
         """Add tasks with invalid UDA value"""
@@ -259,8 +259,8 @@ class TestUdaValue(TestBaseUda):
                       "'toxic'", err)
 
         code, out, err = self.t("uda")
-        self.assertRegexpMatches(out, "1\s+strong\s+one")
-        self.assertNotRegexpMatches(out, "1\s+toxic\s+two")
+        self.assertRegex(out, "1\s+strong\s+one")
+        self.assertNotRegex(out, "1\s+toxic\s+two")
 
 
 class TestBug1063(TestCase):
@@ -287,11 +287,11 @@ class TestBug1063(TestCase):
 
         code, out, err = self.t("bar")
         expected = re.compile("4.+3.+2.+1", re.DOTALL)  # dot matches \n too
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
         code, out, err = self.t("bar rc.report.bar.sort=foo+")
         expected = re.compile("1.+2.+3.+4", re.DOTALL)  # dot matches \n too
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
 
 class TestBug21(TestCase):

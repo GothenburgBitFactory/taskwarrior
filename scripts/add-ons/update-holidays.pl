@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 ################################################################################
 ##
-## Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+## Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ## SOFTWARE.
 ##
-## http://www.opensource.org/licenses/mit-license.php
+## https://www.opensource.org/licenses/mit-license.php
 ##
 ################################################################################
 
@@ -130,8 +130,8 @@ my $current = (localtime (time))[5] + 1900;
 my $next    = $current + 1;
 
 # Construct the holidata.net URL.
-my $url_current = "http://holidata.net/${locale}/${current}.json";
-my $url_next    = "http://holidata.net/${locale}/${next}.json";
+my $url_current = "https://holidata.net/${locale}/${current}.json";
+my $url_next    = "https://holidata.net/${locale}/${next}.json";
 
 # Fetch data for the current year.
 my $data_current = get ($url_current);
@@ -189,7 +189,7 @@ if (open my $fh, '>:utf8', $file)
         "# ${url_current}\n",
         "# ${url_next}\n",
         "#\n",
-        "# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.\n",
+        "# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.\n",
         "#\n",
         "# Permission is hereby granted, free of charge, to any person obtaining a copy\n",
         "# of this software and associated documentation files (the \"Software\"), to deal\n",
@@ -209,7 +209,7 @@ if (open my $fh, '>:utf8', $file)
         "# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n",
         "# SOFTWARE.\n",
         "#\n",
-        "# http://www.opensource.org/licenses/mit-license.php\n",
+        "# https://www.opensource.org/licenses/mit-license.php\n",
         "#\n",
         "###############################################################################\n",
         "\n",

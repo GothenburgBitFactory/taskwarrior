@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,13 +31,11 @@
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
-#include <Dates.h>
-#include <text.h>
-#include <i18n.h>
+#include <shared.h>
+#include <format.h>
 #include <utf8.h>
 #include <main.h>
 
-extern Context context;
 extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,10 +43,10 @@ ColumnTags::ColumnTags ()
 {
   _name      = "tags";
   _style     = "list";
-  _label     = STRING_COLUMN_LABEL_TAGS;
+  _label     = "Tags";
   _styles    = {"list", "indicator", "count"};
-  _examples  = {STRING_COLUMN_EXAMPLES_TAGS,
-                context.config.get ("tag.indicator"),
+  _examples  = {"home @chore next",
+                Context::getContext ().config.get ("tag.indicator"),
                 "[2]"};
   _hyphenate = false;
 }
@@ -58,15 +56,15 @@ ColumnTags::ColumnTags ()
 // Note that you can not determine which gets called first.
 void ColumnTags::setStyle (const std::string& value)
 {
-  _style = value;
+  Column::setStyle (value);
 
   if (_style == "indicator" &&
-      _label == STRING_COLUMN_LABEL_TAGS)
-    _label = _label.substr (0, context.config.get ("tag.indicator").length ());
+      _label == "Tags")
+    _label = _label.substr (0, Context::getContext ().config.get ("tag.indicator").length ());
 
   else if (_style == "count" &&
-            _label == STRING_COLUMN_LABEL_TAGS)
-    _label = STRING_COLUMN_LABEL_TAG;
+            _label == "Tags")
+    _label = "Tag";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,15 +72,11 @@ void ColumnTags::setStyle (const std::string& value)
 void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-
   if (task.has (_name))
   {
     if (_style == "indicator")
     {
-      if (task.has ("tags"))
-        minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
-      else
-        minimum = maximum = 0;
+      minimum = maximum = utf8_width (Context::getContext ().config.get ("tag.indicator"));
     }
     else if (_style == "count")
     {
@@ -96,8 +90,7 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       // Find the widest tag.
       if (tags.find (',') != std::string::npos)
       {
-        std::vector <std::string> all;
-        split (all, tags, ',');
+        auto all = split (tags, ',');
         for (const auto& tag : all)
         {
           auto length = utf8_width (tag);
@@ -112,8 +105,6 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       else
         minimum = maximum = utf8_width (tags);
     }
-    else
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -132,10 +123,9 @@ void ColumnTags::render (
     {
       if (tags.find (',') != std::string::npos)
       {
-        std::vector <std::string> all;
-        split (all, tags, ',');
+        auto all = split (tags, ',');
         std::sort (all.begin (), all.end ());
-        join (tags, " ", all);
+        tags = join (" ", all);
 
         all.clear ();
         wrapText (all, tags, width, _hyphenate);
@@ -148,13 +138,12 @@ void ColumnTags::render (
     }
     else if (_style == "indicator")
     {
-      renderStringRight (lines, width, color, context.config.get ("tag.indicator"));
+      renderStringRight (lines, width, color, Context::getContext ().config.get ("tag.indicator"));
     }
     else if (_style == "count")
     {
-      std::vector <std::string> all;
-      split (all, tags, ',');
-      renderStringRight (lines, width, color, "[" + format (static_cast <int> (all.size ())) + "]");
+      auto all = split (tags, ',');
+      renderStringRight (lines, width, color, '[' + format (static_cast <int> (all.size ())) + ']');
     }
   }
 }
@@ -165,12 +154,9 @@ void ColumnTags::modify (Task& task, const std::string& value)
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   // TW-1701
-  task.set ("tags", "");
+  task.set (_name, "");
 
-  std::vector <std::string> tags;
-  split (tags, value, ',');
-
-  for (auto& tag : tags)
+  for (auto& tag : split (value, ','))
   {
     // If it's a DOM ref, eval it first.
     Lexer lexer (tag);
@@ -181,18 +167,17 @@ void ColumnTags::modify (Task& task, const std::string& value)
     {
       Eval e;
       e.addSource (domSource);
-      e.addSource (namedDates);
       contextTask = task;
 
       Variant v;
       e.evaluateInfixExpression (value, v);
       task.addTag ((std::string) v);
-      context.debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + "'");
+      Context::getContext ().debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + '\'');
     }
     else
     {
       task.addTag (tag);
-      context.debug (label + "tags <-- '" + tag + "'");
+      Context::getContext ().debug (label + "tags <-- '" + tag + '\'');
     }
 
     feedback_special_tags (task, tag);

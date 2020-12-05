@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,21 +29,24 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 #include <main.h>
 #include <Context.h>
 #include <FS.h>
-#include <ViewText.h>
+#include <Table.h>
+#include <util.h>
 
-extern Context context;
+#define STRING_CMD_SHOW_DIFFER_COLOR "These are highlighted in {1} above."
+#define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
+
+extern std::string configurationDefaults;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdShow::CmdShow ()
 {
   _keyword               = "show";
   _usage                 = "task          show [all | substring]";
-  _description           = STRING_CMD_SHOW;
+  _description           = "Shows all configuration variables or subset";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -62,11 +65,11 @@ int CmdShow::execute (std::string& output)
 
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  std::vector <std::string> words = context.cli2.getWords ();
+  std::vector <std::string> words = Context::getContext ().cli2.getWords ();
   if (words.size () > 1)
-    throw std::string (STRING_CMD_SHOW_ARGS);
+    throw std::string ("You can only specify 'all' or a search string.");
 
-  int width = context.getWidth ();
+  int width = Context::getContext ().getWidth ();
 
   // Complain about configuration variables that are not recognized.
   // These are the regular configuration variables.
@@ -144,8 +147,10 @@ int CmdShow::execute (std::string& output)
     " default.command"
     " default.due"
     " default.project"
+    " default.scheduled"
     " defaultheight"
     " defaultwidth"
+    " default.timesheet.filter"
     " dependency.confirmation"
     " dependency.indicator"
     " dependency.reminder"
@@ -218,11 +223,11 @@ int CmdShow::execute (std::string& output)
   recognized += "_forcecolor ";
 
   std::vector <std::string> unrecognized;
-  for (auto& i : context.config)
+  for (auto& i : Context::getContext ().config)
   {
     // Disallow partial matches by tacking a leading and trailing space on each
     // variable name.
-    std::string pattern = " " + i.first + " ";
+    std::string pattern = ' ' + i.first + ' ';
     if (recognized.find (pattern) == std::string::npos)
     {
       // These are special configuration variables, because their name is
@@ -250,28 +255,26 @@ int CmdShow::execute (std::string& output)
 
   // Find all the values that match the defaults, for highlighting.
   std::vector <std::string> default_values;
-  Config default_config;
-  default_config.setDefaults ();
+  Configuration default_config;
+  default_config.parse (configurationDefaults);
 
-  for (auto& i : context.config)
+  for (auto& i : Context::getContext ().config)
     if (i.second != default_config.get (i.first))
       default_values.push_back (i.first);
 
   // Create output view.
-  ViewText view;
+  Table view;
   view.width (width);
-  view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VAR));
-  view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VALUE));
+  view.add ("Config Variable");
+  view.add ("Value");
+  setHeaderUnderline (view);
 
   Color error;
   Color warning;
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
-    error   = Color (context.config.get ("color.error"));
-    warning = Color (context.config.get ("color.warning"));
-
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
+    error   = Color (Context::getContext ().config.get ("color.error"));
+    warning = Color (Context::getContext ().config.get ("color.warning"));
   }
 
   bool issue_error = false;
@@ -287,7 +290,7 @@ int CmdShow::execute (std::string& output)
     section = "";
 
   std::string::size_type loc;
-  for (auto& i : context.config)
+  for (auto& i : Context::getContext ().config)
   {
     loc = i.first.find (section, 0);
     if (loc != std::string::npos)
@@ -314,22 +317,22 @@ int CmdShow::execute (std::string& output)
           default_config[i.first] != "")
       {
         row = view.addRow ();
-        view.set (row, 0, std::string ("  ") + STRING_CMD_SHOW_CONF_DEFAULT, color);
+        view.set (row, 0, std::string ("  ") + "Default value", color);
         view.set (row, 1, default_config[i.first], color);
       }
     }
   }
 
-  out << "\n"
+  out << '\n'
       << view.render ()
-      << (view.rows () == 0 ? STRING_CMD_SHOW_NONE : "")
+      << (view.rows () == 0 ? "No matching configuration variables." : "")
       << (view.rows () == 0 ? "\n\n" : "\n");
 
   if (issue_warning)
   {
-    out << STRING_CMD_SHOW_DIFFER << "\n";
+    out << "Some of your .taskrc variables differ from the default values.\n";
 
-    if (context.color () && warning.nontrivial ())
+    if (Context::getContext ().color () && warning.nontrivial ())
       out << "  "
           << format (STRING_CMD_SHOW_DIFFER_COLOR, warning.colorize ("color"))
           << "\n\n";
@@ -338,13 +341,13 @@ int CmdShow::execute (std::string& output)
   // Display the unrecognized variables.
   if (issue_error)
   {
-    out << STRING_CMD_SHOW_UNREC << "\n";
+    out << "Your .taskrc file contains these unrecognized variables:\n";
 
     for (auto& i : unrecognized)
-      out << "  " << i << "\n";
+      out << "  " << i << '\n';
 
-    if (context.color () && error.nontrivial ())
-      out << "\n" << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
+    if (Context::getContext ().color () && error.nontrivial ())
+      out << '\n' << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
 
     out << "\n\n";
   }
@@ -356,38 +359,38 @@ int CmdShow::execute (std::string& output)
   // TODO Check for referenced but missing string files.
 
   // Check for bad values in rc.calendar.details.
-  std::string calendardetails = context.config.get ("calendar.details");
+  std::string calendardetails = Context::getContext ().config.get ("calendar.details");
   if (calendardetails != "full"   &&
       calendardetails != "sparse" &&
       calendardetails != "none")
     out << format (STRING_CMD_SHOW_CONFIG_ERROR, "calendar.details", calendardetails)
-        << "\n";
+        << '\n';
 
   // Check for bad values in rc.calendar.holidays.
-  std::string calendarholidays = context.config.get ("calendar.holidays");
+  std::string calendarholidays = Context::getContext ().config.get ("calendar.holidays");
   if (calendarholidays != "full"   &&
       calendarholidays != "sparse" &&
       calendarholidays != "none")
     out << format (STRING_CMD_SHOW_CONFIG_ERROR, "calendar.holidays", calendarholidays)
-        << "\n";
+        << '\n';
 
   // Verify installation.  This is mentioned in the documentation as the way
   // to ensure everything is properly installed.
 
-  if (context.config.size () == 0)
+  if (Context::getContext ().config.size () == 0)
   {
-    out << STRING_CMD_SHOW_EMPTY << "\n";
+    out << "Configuration error: .taskrc contains no entries.\n";
     rc = 1;
   }
   else
   {
-    Directory location (context.config.get ("data.location"));
+    Directory location (Context::getContext ().config.get ("data.location"));
 
     if (location._data == "")
-      out << STRING_CMD_SHOW_NO_LOCATION << "\n";
+      out << "Configuration error: data.location not specified in .taskrc file.\n";
 
     if (! location.exists ())
-      out << STRING_CMD_SHOW_LOC_EXIST << "\n";
+      out << "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable.\n";
   }
 
   output = out.str ();
@@ -399,7 +402,7 @@ CmdShowRaw::CmdShowRaw ()
 {
   _keyword     = "_show";
   _usage       = "task          _show";
-  _description = STRING_CMD_SHOWRAW;
+  _description = "Shows all configuration settings in a machine-readable format";
   _read_only   = true;
   _displays_id = false;
   _category    = Command::Category::internal;
@@ -408,17 +411,14 @@ CmdShowRaw::CmdShowRaw ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdShowRaw::execute (std::string& output)
 {
-  // Get all the settings.
-  std::vector <std::string> all;
-  context.config.all (all);
-
-  // Sort alphabetically by name.
+  // Get all the settings and sort alphabetically by name.
+  auto all = Context::getContext ().config.all ();
   std::sort (all.begin (), all.end ());
 
   // Display them all.
   std::stringstream out;
   for (auto& i : all)
-    out << i << '=' << context.config.get (i) << "\n";
+    out << i << '=' << Context::getContext ().config.get (i) << '\n';
 
   output = out.str ();
   return 0;

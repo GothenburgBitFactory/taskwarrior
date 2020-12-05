@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,15 +28,12 @@
 #include <Filter.h>
 #include <algorithm>
 #include <Context.h>
+#include <Timer.h>
 #include <DOM.h>
 #include <Eval.h>
 #include <Variant.h>
-#include <Dates.h>
-#include <i18n.h>
-#include <text.h>
-#include <util.h>
-
-extern Context context;
+#include <format.h>
+#include <shared.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Const iterator that can be derefenced into a Task by domSource.
@@ -59,13 +56,13 @@ bool domSource (const std::string& identifier, Variant& value)
 // Take an input set of tasks and filter into a subset.
 void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
-  context.timer_filter.start ();
+  Timer timer;
   _startCount = (int) input.size ();
 
-  context.cli2.prepareFilter ();
+  Context::getContext ().cli2.prepareFilter ();
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
-  for (auto& a : context.cli2._args)
+  for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
       precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
 
@@ -73,11 +70,10 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   {
     Eval eval;
     eval.addSource (domSource);
-    eval.addSource (namedDates);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 3 ? true : false);
+    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
     eval.compileExpression (precompiled);
 
     for (auto& task : input)
@@ -97,20 +93,19 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     output = input;
 
   _endCount = (int) output.size ();
-  context.debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
-  context.timer_filter.stop ();
+  Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
+  Context::getContext ().time_filter_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
 void Filter::subset (std::vector <Task>& output)
 {
-  context.timer_filter.start ();
-
-  context.cli2.prepareFilter ();
+  Timer timer;
+  Context::getContext ().cli2.prepareFilter ();
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
-  for (auto& a : context.cli2._args)
+  for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
       precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
 
@@ -119,18 +114,17 @@ void Filter::subset (std::vector <Task>& output)
 
   if (precompiled.size ())
   {
-    context.timer_filter.stop ();
-    auto pending = context.tdb2.pending.get_tasks ();
-    context.timer_filter.start ();
+    Timer timer_pending;
+    auto pending = Context::getContext ().tdb2.pending.get_tasks ();
+    Context::getContext ().time_filter_us -= timer_pending.total_us ();
     _startCount = (int) pending.size ();
 
     Eval eval;
     eval.addSource (domSource);
-    eval.addSource (namedDates);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 3 ? true : false);
+    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
     eval.compileExpression (precompiled);
 
     output.clear ();
@@ -148,9 +142,9 @@ void Filter::subset (std::vector <Task>& output)
     shortcut = pendingOnly ();
     if (! shortcut)
     {
-      context.timer_filter.stop ();
-      auto completed = context.tdb2.completed.get_tasks ();
-      context.timer_filter.start ();
+      Timer timer_completed;
+      auto completed = Context::getContext ().tdb2.completed.get_tasks ();
+      Context::getContext ().time_filter_us -= timer_completed.total_us ();
       _startCount += (int) completed.size ();
 
       for (auto& task : completed)
@@ -170,26 +164,25 @@ void Filter::subset (std::vector <Task>& output)
   else
   {
     safety ();
-    context.timer_filter.stop ();
 
-    for (auto& task : context.tdb2.pending.get_tasks ())
+    Timer pending_completed;
+    for (auto& task : Context::getContext ().tdb2.pending.get_tasks ())
       output.push_back (task);
 
-    for (auto& task : context.tdb2.completed.get_tasks ())
+    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
       output.push_back (task);
-
-    context.timer_filter.start ();
+    Context::getContext ().time_filter_us -= pending_completed.total_us ();
   }
 
   _endCount = (int) output.size ();
-  context.debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
-  context.timer_filter.stop ();
+  Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
+  Context::getContext ().time_filter_us += timer.total_us ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Filter::hasFilter () const
 {
-  for (const auto& a : context.cli2._args)
+  for (const auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
       return true;
 
@@ -203,7 +196,7 @@ bool Filter::hasFilter () const
 bool Filter::pendingOnly () const
 {
   // When GC is off, there are no shortcuts.
-  if (! context.config.getBoolean ("gc"))
+  if (! Context::getContext ().config.getBoolean ("gc"))
     return false;
 
   // To skip loading completed.data, there should be:
@@ -216,13 +209,13 @@ bool Filter::pendingOnly () const
   int countPending   = 0;
   int countWaiting   = 0;
   int countRecurring = 0;
-  int countId        = (int) context.cli2._id_ranges.size ();
-  int countUUID      = (int) context.cli2._uuid_list.size ();
+  int countId        = (int) Context::getContext ().cli2._id_ranges.size ();
+  int countUUID      = (int) Context::getContext ().cli2._uuid_list.size ();
   int countOr        = 0;
   int countXor       = 0;
   int countNot       = 0;
 
-  for (const auto& a : context.cli2._args)
+  for (const auto& a : Context::getContext ().cli2._args)
   {
     if (a.hasTag ("FILTER"))
     {
@@ -268,7 +261,7 @@ void Filter::safety () const
   {
     bool readonly = true;
     bool filter = false;
-    for (const auto& a : context.cli2._args)
+    for (const auto& a : Context::getContext ().cli2._args)
     {
       if (a.hasTag ("CMD") &&
           ! a.hasTag ("READONLY"))
@@ -281,16 +274,16 @@ void Filter::safety () const
     if (! readonly &&
         ! filter)
     {
-      if (! context.config.getBoolean ("allow.empty.filter"))
-         throw std::string (STRING_TASK_SAFETY_ALLOW);
+      if (! Context::getContext ().config.getBoolean ("allow.empty.filter"))
+         throw std::string ("You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken.");
 
       // If user is willing to be asked, this can be avoided.
-      if (context.config.getBoolean ("confirmation") &&
-          confirm (STRING_TASK_SAFETY_VALVE))
+      if (Context::getContext ().config.getBoolean ("confirmation") &&
+          confirm ("This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"))
         return;
 
       // Sound the alarm.
-      throw std::string (STRING_TASK_SAFETY_FAIL);
+      throw std::string ("Command prevented from running.");
     }
   }
 }

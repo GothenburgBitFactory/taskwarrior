@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,23 +29,21 @@
 #include <sstream>
 #include <iomanip>
 #include <stdlib.h>
-#include <ViewText.h>
-#include <ISO8601.h>
+#include <Table.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <text.h>
+#include <format.h>
 #include <util.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdStats::CmdStats ()
 {
   _keyword               = "stats";
   _usage                 = "task <filter> stats";
-  _description           = STRING_CMD_STATS_USAGE;
+  _description           = "Shows task database statistics";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -62,23 +60,23 @@ int CmdStats::execute (std::string& output)
   int rc = 0;
   std::stringstream out;
 
-  std::string dateformat = context.config.get ("dateformat");
+  std::string dateformat = Context::getContext ().config.get ("dateformat");
 
   // Go get the file sizes.
-  size_t dataSize = context.tdb2.pending._file.size ()
-                  + context.tdb2.completed._file.size ()
-                  + context.tdb2.undo._file.size ()
-                  + context.tdb2.backlog._file.size ();
+  size_t dataSize = Context::getContext ().tdb2.pending._file.size ()
+                  + Context::getContext ().tdb2.completed._file.size ()
+                  + Context::getContext ().tdb2.undo._file.size ()
+                  + Context::getContext ().tdb2.backlog._file.size ();
 
   // Count the undo transactions.
-  std::vector <std::string> undoTxns = context.tdb2.undo.get_lines ();
+  std::vector <std::string> undoTxns = Context::getContext ().tdb2.undo.get_lines ();
   int undoCount = 0;
   for (auto& tx : undoTxns)
     if (tx == "---")
       ++undoCount;
 
   // Count the backlog transactions.
-  std::vector <std::string> backlogTxns = context.tdb2.backlog.get_lines ();
+  std::vector <std::string> backlogTxns = Context::getContext ().tdb2.backlog.get_lines ();
   int backlogCount = 0;
   for (auto& tx : backlogTxns)
     if (tx[0] == '{')
@@ -86,12 +84,12 @@ int CmdStats::execute (std::string& output)
 
   // Get all the tasks.
   Filter filter;
-  std::vector <Task> all = context.tdb2.all_tasks ();
+  std::vector <Task> all = Context::getContext ().tdb2.all_tasks ();
   std::vector <Task> filtered;
   filter.subset (all, filtered);
 
-  ISO8601d now;
-  time_t earliest   = time (NULL);
+  Datetime now;
+  time_t earliest   = time (nullptr);
   time_t latest     = 1;
   int totalT        = 0;
   int deletedT      = 0;
@@ -125,13 +123,13 @@ int CmdStats::execute (std::string& output)
     if (task.is_blocked)  ++blockedT;
     if (task.is_blocking) ++blockingT;
 
-    time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
+    time_t entry = strtol (task.get ("entry").c_str (), nullptr, 10);
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
     if (status == Task::completed)
     {
-      time_t end = strtol (task.get ("end").c_str (), NULL, 10);
+      time_t end = strtol (task.get ("end").c_str (), nullptr, 10);
       daysPending += (end - entry) / 86400.0;
     }
 
@@ -139,13 +137,9 @@ int CmdStats::execute (std::string& output)
       daysPending += (now.toEpoch () - entry) / 86400.0;
 
     descLength += task.get ("description").length ();
+    annotationsT += task.getAnnotations ().size ();
 
-    std::map <std::string, std::string> annotations;
-    task.getAnnotations (annotations);
-    annotationsT += annotations.size ();
-
-    std::vector <std::string> tags;
-    task.getTags (tags);
+    auto tags = task.getTags ();
     if (tags.size ())
       ++taggedT;
 
@@ -158,140 +152,135 @@ int CmdStats::execute (std::string& output)
   }
 
   // Create a table for output.
-  ViewText view;
-  view.width (context.getWidth ());
+  Table view;
+  view.width (Context::getContext ().getWidth ());
   view.intraPadding (2);
-  view.add (Column::factory ("string", STRING_CMD_STATS_CATEGORY));
-  view.add (Column::factory ("string", STRING_CMD_STATS_DATA));
-
-  if (context.color ())
-  {
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
-  }
+  view.add ("Category");
+  view.add ("Data");
+  setHeaderUnderline (view);
 
   int row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_PE);
+  view.set (row, 0, "Pending");
   view.set (row, 1, pendingT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_WA);
+  view.set (row, 0, "Waiting");
   view.set (row, 1, waitingT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_RE);
+  view.set (row, 0, "Recurring");
   view.set (row, 1, recurringT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_CO);
+  view.set (row, 0, "Completed");
   view.set (row, 1, completedT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_COLUMN_LABEL_STAT_DE);
+  view.set (row, 0, "Deleted");
   view.set (row, 1, deletedT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_TOTAL);
+  view.set (row, 0, "Total");
   view.set (row, 1, totalT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_ANNOTATIONS);
+  view.set (row, 0, "Annotations");
   view.set (row, 1, annotationsT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_UNIQUE_TAGS);
+  view.set (row, 0, "Unique tags");
   view.set (row, 1, (int)allTags.size ());
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_PROJECTS);
+  view.set (row, 0, "Projects");
   view.set (row, 1, (int)allProjects.size ());
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_BLOCKED);
+  view.set (row, 0, "Blocked tasks");
   view.set (row, 1, blockedT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_BLOCKING);
+  view.set (row, 0, "Blocking tasks");
   view.set (row, 1, blockingT);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_DATA_SIZE);
+  view.set (row, 0, "Data size");
   view.set (row, 1, formatBytes (dataSize));
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_UNDO_TXNS);
+  view.set (row, 0, "Undo transactions");
   view.set (row, 1, undoCount);
 
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_BACKLOG);
+  view.set (row, 0, "Sync backlog transactions");
   view.set (row, 1, backlogCount);
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_TAGGED);
+    view.set (row, 0, "Tasks tagged");
 
     std::stringstream value;
-    value << std::setprecision (3) << (100.0 * taggedT / totalT) << "%";
+    value << std::setprecision (3) << (100.0 * taggedT / totalT) << '%';
     view.set (row, 1, value.str ());
   }
 
   if (filtered.size ())
   {
-    ISO8601d e (earliest);
+    Datetime e (earliest);
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_OLDEST);
+    view.set (row, 0, "Oldest task");
     view.set (row, 1, e.toString (dateformat));
 
-    ISO8601d l (latest);
+    Datetime l (latest);
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_NEWEST);
+    view.set (row, 0, "Newest task");
     view.set (row, 1, l.toString (dateformat));
 
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_USED_FOR);
-    view.set (row, 1, ISO8601p (latest - earliest).formatVague ());
+    view.set (row, 0, "Task used for");
+    view.set (row, 1, Duration (latest - earliest).formatVague ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_ADD_EVERY);
-    view.set (row, 1, ISO8601p (((latest - earliest) / totalT)).formatVague ());
+    view.set (row, 0, "Task added every");
+    view.set (row, 1, Duration (((latest - earliest) / totalT)).formatVague ());
   }
 
   if (completedT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_COMP_EVERY);
-    view.set (row, 1, ISO8601p ((latest - earliest) / completedT).formatVague ());
+    view.set (row, 0, "Task completed every");
+    view.set (row, 1, Duration ((latest - earliest) / completedT).formatVague ());
   }
 
   if (deletedT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_DEL_EVERY);
-    view.set (row, 1, ISO8601p ((latest - earliest) / deletedT).formatVague ());
+    view.set (row, 0, "Task deleted every");
+    view.set (row, 1, Duration ((latest - earliest) / deletedT).formatVague ());
   }
 
   if (pendingT || completedT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_AVG_PEND);
-    view.set (row, 1, ISO8601p ((int) ((daysPending / (pendingT + completedT)) * 86400)).formatVague ());
+    view.set (row, 0, "Average time pending");
+    view.set (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).formatVague ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, STRING_CMD_STATS_DESC_LEN);
-    view.set (row, 1, format (STRING_CMD_STATS_CHARS, (int) (descLength / totalT)));
+    view.set (row, 0, "Average desc length");
+    view.set (row, 1, format ("{1} characters", (int) (descLength / totalT)));
   }
 
   // If an alternating row color is specified, notify the table.
-  if (context.color ())
+  if (Context::getContext ().color ())
   {
-    Color alternate (context.config.get ("color.alternate"));
+    Color alternate (Context::getContext ().config.get ("color.alternate"));
     if (alternate.nontrivial ())
     {
       view.colorOdd (alternate);

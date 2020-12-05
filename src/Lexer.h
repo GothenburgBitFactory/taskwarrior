@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2013 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -61,10 +61,6 @@ public:
 
   // Static helpers.
   static const std::string typeName          (const Lexer::Type&);
-  static bool isWhitespace                   (int);
-  static bool isAlpha                        (int);
-  static bool isDigit                        (int);
-  static bool isHexDigit                     (int);
   static bool isIdentifierStart              (int);
   static bool isIdentifierNext               (int);
   static bool isSingleCharOperator           (int);

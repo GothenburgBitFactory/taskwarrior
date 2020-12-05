@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,22 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <ColMask.h>
-#include <math.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnMask::ColumnMask ()
 {
   _name       = "mask";
   _style      = "default";
-  _label      = STRING_COLUMN_LABEL_MASK;
+  _label      = "Mask";
   _modifiable = false;
   _styles     = {"default"};
   _examples   = {"++++---"};
@@ -47,12 +45,7 @@ void ColumnMask::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 {
   minimum = maximum = 0;
   if (task.has (_name))
-  {
-    minimum = maximum = task.get ("mask").length ();
-
-    if (_style != "default")
-      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
-  }
+    minimum = maximum = task.get (_name).length ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +56,7 @@ void ColumnMask::render (
   Color& color)
 {
   if (task.has (_name))
-    renderStringLeft (lines, width, color, task.get ("mask"));
+    renderStringLeft (lines, width, color, task.get (_name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

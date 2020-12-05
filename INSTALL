@@ -8,15 +8,15 @@ source.
 Dependencies
 ------------
 
-You will need the CMake build system installed in order to build Taskwarrior
-from source. More information on cmake can be obtained at http://cmake.org
+You will need the CMake 3.0+ build system installed in order to build Taskwarrior
+from source. More information on CMake can be obtained at https://cmake.org
 
 You will also need:
   - make
 
-You will need a C++ compiler that supports full C++11, which includes:
-  - gcc 4.7   (released 2012-03-23)
-  - clang 3.3 (released 2013-01-07)
+You will need a C++ compiler that supports full C++14, which includes:
+  - gcc 5.0   (released 2013-12-23)
+  - clang 3.4 (released 2014-01-02)
 
 You will need the following libraries:
   - libuuid (not needed for OSX)
@@ -103,26 +103,6 @@ In order to build Taskwarrior without "sync" support, call cmake with the
 and proceed as described in "Basic Installation".
 
 
-Localizations
--------------
-
-To make use of a translation, specify a language number, as found in cmake.h:
-
-  $ cmake -DLANGUAGE=2 .
-
-Currently the defined languages are:
-
-  eng_USA 1
-  esp_ESP 2
-  deu_DEU 3
-  fra_FRA 4
-  ita_ITA 5
-  por_PRT 6
-  epo_RUS 7
-  pol_POL 8
-  jpn-JPN 9
-
-
 Uninstallation
 --------------
 
@@ -161,7 +141,7 @@ Darwin, 32bit
     cmake -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 .
 
   See:
-    http://taskwarrior.org/issues/817
+    https://taskwarrior.org/issues/817
     http://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
     http://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
     http://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
@@ -176,8 +156,16 @@ OpenBSD
 
   and build normally.
 
-  See: https://bug.tasktools.org/browse/TW-1579
+  See: https://github.com/GothenburgBitFactory/taskwarrior/issues/1605
 
+WASM
+  Using the Emscripten compiler, you can achieve it like this:
+
+    cmake -DCMAKE_CXX_COMPILER=emcc -DENABLE_SYNC=OFF -DCMAKE_BUILD_TYPE=release -DENABLE_WASM=ON \
+          -DCMAKE_EXE_LINKER_FLAGS="-m32 -s NO_DYNAMIC_EXECUTION=1 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s INVOKE_RUN=0" \
+          -DCMAKE_CXX_FLAGS_RELEASE="-O2 -m32"
+
+  This will produce an optimized WASM with a main() that is callable multiple times.
 
 Troubleshooting
 ---------------
@@ -192,8 +180,7 @@ CMake with no reported problems, and the build will fail later.  This is
 almost always because CMake is mistaken about some assumption.
 
 If a build does not succeed, please send the contents of the 'CMakeCache.txt'
-and 'CMakeFiles/CMakeOutput.log' files to support@taskwarrior.org, or post a
-message in the support forums at taskwarrior.org along with the information.
+and 'CMakeFiles/CMakeOutput.log' files to support@gothenburgbitfactory.org.
 
 If CMake runs but Taskwarrior does not build, please send the contents of the
 above files as well as a transcript from the build, which is not written to a

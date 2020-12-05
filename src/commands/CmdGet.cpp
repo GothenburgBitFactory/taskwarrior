@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,17 +30,15 @@
 #include <Context.h>
 #include <DOM.h>
 #include <main.h>
-#include <text.h>
-#include <i18n.h>
-
-extern Context context;
+#include <shared.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdGet::CmdGet ()
 {
   _keyword               = "_get";
   _usage                 = "task          _get <DOM> [<DOM> ...]";
-  _description           = STRING_CMD_GET_USAGE;
+  _description           = "DOM Accessor";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -60,7 +58,7 @@ CmdGet::CmdGet ()
 int CmdGet::execute (std::string& output)
 {
   std::vector <std::string> results;
-  for (auto& arg : context.cli2._args)
+  for (auto& arg : Context::getContext ().cli2._args)
   {
     switch (arg._lextype)
     {
@@ -80,7 +78,7 @@ int CmdGet::execute (std::string& output)
     case Lexer::Type::identifier:
       if (! arg.hasTag ("BINARY") &&
           ! arg.hasTag ("CMD"))
-        throw format (STRING_CMD_GET_BAD_REF, arg.attribute ("raw"));
+        throw format ("'{1}' is not a DOM reference.", arg.attribute ("raw"));
 
     default:
       break;
@@ -88,10 +86,10 @@ int CmdGet::execute (std::string& output)
   }
 
   if (results.size () == 0)
-    throw std::string (STRING_CMD_GET_NO_DOM);
+    throw std::string ("No DOM reference specified.");
 
-  join (output, " ", results);
-  output += "\n";
+  output = join (" ", results);
+  output += '\n';
   return 0;
 }
 

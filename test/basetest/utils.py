@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
+import errno
 import os
 import sys
 import socket
@@ -123,7 +124,7 @@ def _queue_output(arguments, pidq, outputq):
     This function is meant to be executed in a thread as it may block
     """
     kwargs = arguments["process"]
-    input = arguments["input"]
+    input_data = arguments["input"].encode("utf-8") if arguments["input"] else None
 
     try:
         proc = Popen(**kwargs)
@@ -145,7 +146,7 @@ def _queue_output(arguments, pidq, outputq):
     pidq.put(proc.pid)
 
     # Send input and wait for finish
-    out, err = proc.communicate(input)
+    out, err = proc.communicate(input_data)
 
     if sys.version_info > (3,):
         out, err = out.decode('utf-8'), err.decode('utf-8')
@@ -159,7 +160,7 @@ def _retrieve_output(thread, timeout, queue, thread_error):
     """
     # Try to join the thread on failure abort
     thread.join(timeout)
-    if thread.isAlive():
+    if thread.is_alive():
         # Join should have killed the thread. This is unexpected
         raise TimeoutWaitingFor(thread_error + ". Unexpected error")
 
@@ -212,8 +213,8 @@ def _get_output(arguments, timeout=None):
         try:
             os.kill(pid, signal.SIGABRT)
         except OSError as e:
-            # 3 means the process finished/died between last check and now
-            if e.errno != 3:
+            # ESRCH means the process finished/died between last check and now
+            if e.errno != errno.ESRCH:
                 raise
 
         # Wait for process to finish (should die/exit after signal)
@@ -248,7 +249,6 @@ def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
             "stdin": stdin,
             "stdout": stdout,
             "stderr": stderr,
-            "bufsize": 1,
             "close_fds": ON_POSIX,
             "env": env,
         },
@@ -463,7 +463,7 @@ def mkstemp(data):
             pass
 
     f = tempfile.NamedTemporaryFile(delete=False)
-    f.write(data)
+    f.write(data.encode('utf-8') if not isinstance(data, bytes) else data)
     f.close()
 
     # Ensure removal at end of python session

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,15 +28,14 @@
 #include <CmdCount.h>
 #include <Filter.h>
 #include <main.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCount::CmdCount ()
 {
   _keyword               = "count";
   _usage                 = "task <filter> count";
-  _description           = STRING_CMD_COUNT_USAGE;
+  _description           = "Counts matching tasks";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -58,11 +57,11 @@ int CmdCount::execute (std::string& output)
 
   // Find number of matching tasks.  Skip recurring parent tasks.
   int count = 0;
-  for (auto& task : filtered)
+  for (const auto& task : filtered)
     if (task.getStatus () != Task::recurring)
       ++count;
 
-  output = format (count) + "\n";
+  output = format (count) + '\n';
   return 0;
 }
 

@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -47,28 +47,28 @@ class TestGC(TestCase):
 
     def test_gc_off_id(self):
         """ID retained when GC off"""
-        self.t.config("gc", "off")
+        self.t.config("gc", "0")
         self.t("1 done")
         code, out, err = self.t("gctest")
-        self.assertRegexpMatches(out, "1\s+one", "should still have ID")
+        self.assertRegex(out, "1\s+one", "should still have ID")
 
     def test_gc_off_mod(self):
         """mod by ID after done with gc off"""
-        self.t.config("gc", "off")
+        self.t.config("gc", "0")
         self.t("1 done")
         self.t("gctest")
         self.t("2 mod +TWO")
         code, out, err = self.t("gctest")
-        self.assertRegexpMatches(out, "2\s+two\s+TWO", "modified 'two'")
+        self.assertRegex(out, "2\s+two\s+TWO", "modified 'two'")
 
     def test_gc_on_id(self):
         """IDs reshuffle after report when GC on"""
-        self.t.config("gc", "on")
+        self.t.config("gc", "1")
         self.t("1 done")
         self.t("2 mod +TWO")
         code, out, err = self.t("gctest")
-        self.assertRegexpMatches(out, "1\s+two\s+TWO")
-        self.assertRegexpMatches(out, "2\s+three")
+        self.assertRegex(out, "1\s+two\s+TWO")
+        self.assertRegex(out, "2\s+three")
 
 
 if __name__ == "__main__":

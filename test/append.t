@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -51,7 +51,7 @@ class TestAppend(TestCase):
         code, out, err = self.t("info 1")
 
         expected = "Description\s+foo\sbar\n"
-        self.assertRegexpMatches(out, expected)
+        self.assertRegex(out, expected)
 
     def test_append_error_on_empty(self):
         """Should cause an error when nothing is appended"""
@@ -82,10 +82,10 @@ class TestBug440(TestCase):
         code2, out2, err2 = self.t("2 ls")
 
         self.assertNotIn("Foo", out1)
-        self.assertRegexpMatches(out1, "\w+ Appendtext")
+        self.assertRegex(out1, "\w+ Appendtext")
 
         self.assertNotIn("Foo", out2)
-        self.assertRegexpMatches(out2, "\w+ Appendtext")
+        self.assertRegex(out2, "\w+ Appendtext")
 
 
 if __name__ == "__main__":

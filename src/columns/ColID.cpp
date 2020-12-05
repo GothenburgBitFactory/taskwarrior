@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,22 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
 #include <ColID.h>
 #include <math.h>
-#include <text.h>
-#include <i18n.h>
+#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnID::ColumnID ()
 {
   _name       = "id";
   _style      = "number";
-  _label      = STRING_COLUMN_LABEL_ID;
+  _label      = "ID";
   _modifiable = false;
   _styles     = {"number"};
   _examples   = {"123"};
@@ -55,10 +54,6 @@ void ColumnID::measure (Task& task, unsigned int& minimum, unsigned int& maximum
   else                       length = 1 + (int) log10 ((double) task.id); // Slow
 
   minimum = maximum = length;
-
-  if (_style != "default" &&
-      _style != "number")
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +63,7 @@ void ColumnID::render (
   int width,
   Color& color)
 {
+   // Completed and deleted tasks have no ID.
   if (task.id)
     renderInteger (lines, width, color, task.id);
   else

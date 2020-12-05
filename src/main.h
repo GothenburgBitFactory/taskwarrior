@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,14 +33,16 @@
 #include <map>
 #include <sys/types.h>
 #include <Context.h>
-#include <ISO8601.h>
+#include <Datetime.h>
 #include <Color.h>
 
 // recur.cpp
 void handleRecurrence ();
-ISO8601d getNextRecurrence (ISO8601d&, std::string&);
-bool generateDueDates (Task&, std::vector <ISO8601d>&);
+Datetime getNextRecurrence (Datetime&, std::string&);
+bool generateDueDates (Task&, std::vector <Datetime>&);
 void updateRecurrenceMask (Task&);
+
+// nag.cpp
 bool nag (Task&);
 
 // rules.cpp
@@ -52,8 +54,8 @@ std::string colorizeError (const std::string&);
 std::string colorizeDebug (const std::string&);
 
 // dependency.cpp
-void dependencyGetBlocked (const Task&, std::vector <Task>&);
-void dependencyGetBlocking (const Task&, std::vector <Task>&);
+std::vector <Task> dependencyGetBlocked (const Task&);
+std::vector <Task> dependencyGetBlocking (const Task&);
 bool dependencyIsCircular (const Task&);
 void dependencyChainOnComplete (Task&);
 void dependencyChainOnStart (Task&);
@@ -82,22 +84,6 @@ void legacySortColumnMap (std::string&);
 std::string legacyCheckForDeprecatedVariables ();
 std::string legacyCheckForDeprecatedColumns ();
 void legacyAttributeMap (std::string&);
-
-// list template
-///////////////////////////////////////////////////////////////////////////////
-template <class T> void listDiff (
-  const T& left, const T& right, T& leftOnly, T& rightOnly)
-{
-  leftOnly.clear ();
-  for (auto& l : left)
-    if (std::find (right.begin (), right.end (), l) == right.end ())
-      leftOnly.push_back (l);
-
-  rightOnly.clear ();
-  for (auto& r : right)
-    if (std::find (left.begin (), left.end (), r) == left.end ())
-      rightOnly.push_back (r);
-}
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

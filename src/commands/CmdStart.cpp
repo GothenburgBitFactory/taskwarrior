@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,18 +30,15 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
-#include <text.h>
+#include <format.h>
 #include <util.h>
-#include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdStart::CmdStart ()
 {
   _keyword               = "start";
   _usage                 = "task <filter> start <mods>";
-  _description           = STRING_CMD_START_USAGE;
+  _description           = "Marks specified task as started";
   _read_only             = false;
   _displays_id           = false;
   _needs_gc              = false;
@@ -64,7 +61,7 @@ int CmdStart::execute (std::string&)
   filter.subset (filtered);
   if (filtered.size () == 0)
   {
-    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
+    Context::getContext ().footnote ("No tasks specified.");
     return 1;
   }
 
@@ -79,7 +76,7 @@ int CmdStart::execute (std::string&)
       Task before (task);
 
       // Start the specified task.
-      std::string question = format (STRING_CMD_START_CONFIRM,
+      std::string question = format ("Start task {1} '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
       task.modify (Task::modAnnotate);
@@ -92,24 +89,24 @@ int CmdStart::execute (std::string&)
         task.setStatus (Task::pending);
       }
 
-      if (context.config.getBoolean ("journal.time"))
-        task.addAnnotation (context.config.get ("journal.time.start.annotation"));
+      if (Context::getContext ().config.getBoolean ("journal.time"))
+        task.addAnnotation (Context::getContext ().config.get ("journal.time.start.annotation"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
-        context.tdb2.modify (task);
+        Context::getContext ().tdb2.modify (task);
         ++count;
-        feedback_affected (STRING_CMD_START_TASK, task);
+        feedback_affected ("Starting task {1} '{2}'.", task);
         if (!nagged)
           nagged = nag (task);
         dependencyChainOnStart (task);
-        if (context.verbose ("project"))
+        if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task, false);
       }
       else
       {
-        std::cout << STRING_CMD_START_NO << "\n";
+        std::cout << "Task not started.\n";
         rc = 1;
         if (_permission_quit)
           break;
@@ -117,10 +114,10 @@ int CmdStart::execute (std::string&)
     }
     else
     {
-      std::cout << format (STRING_CMD_START_ALREADY,
+      std::cout << format ("Task {1} '{2}' already started.",
                            task.id,
                            task.get ("description"))
-                << "\n";
+                << '\n';
       rc = 1;
     }
   }
@@ -128,9 +125,9 @@ int CmdStart::execute (std::string&)
   // Now list the project changes.
   for (auto& change : projectChanges)
     if (change.first != "")
-      context.footnote (change.second);
+      Context::getContext ().footnote (change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_START_1 : STRING_CMD_START_N, count);
+  feedback_affected (count == 1 ? "Started {1} task." : "Started {1} tasks.", count);
   return rc;
 }
 

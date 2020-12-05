@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -40,7 +40,7 @@ class BaseTestEnpassant(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
         # No journal log which may contain the words we are looking for
-        self.t.config("journal.info", "off")
+        self.t.config("journal.info", "0")
 
 
 class TestEnpassantMultiple(BaseTestEnpassant):
@@ -54,19 +54,19 @@ class TestEnpassantMultiple(BaseTestEnpassant):
     def validate_info(self, id, desc):
         code, out, err = self.t((id, "info"))
 
-        self.assertRegexpMatches(
+        self.assertRegex(
             out, "Status +Completed",
             msg="enpassant {0} status change".format(id),
         )
-        self.assertRegexpMatches(
+        self.assertRegex(
             out, "Priority +H",
             msg="enpassant {0} priority change".format(id),
         )
-        self.assertRegexpMatches(
+        self.assertRegex(
             out, "Tags +tag",
             msg="enpassant {0} tag change".format(id),
         )
-        self.assertRegexpMatches(
+        self.assertRegex(
             out, "Description +{0}".format(desc),
             msg="enpassant {0} description change".format(id),
         )
@@ -84,7 +84,7 @@ class TestEnpassant(BaseTestEnpassant):
     def setUp(self):
         super(TestEnpassant, self).setUp()
 
-        self.t.config("confirmation", "off")
+        self.t.config("confirmation", "0")
 
         self.t("add one")
         self.t("add two")
@@ -95,27 +95,27 @@ class TestEnpassant(BaseTestEnpassant):
     def perform_action(self, action):
         self.t(("1", action, "oneanno"))
         code, out, err = self.t("1 info")
-        self.assertRegexpMatches(out, "Description +one\n[0-9: -]+ oneanno",
+        self.assertRegex(out, "Description +one\n[0-9: -]+ oneanno",
                                  msg="{0} enpassant annotation".format(action))
 
         self.t(("2", action, "/two/TWO/"))
         code, out, err = self.t("2 info")
-        self.assertRegexpMatches(out, "Description +TWO",
+        self.assertRegex(out, "Description +TWO",
                                  msg="{0} enpassant modify".format(action))
 
         self.t(("3", action, "+threetag"))
         code, out, err = self.t("3 info")
-        self.assertRegexpMatches(out, "Tags +threetag",
+        self.assertRegex(out, "Tags +threetag",
                                  msg="{0} enpassant tag".format(action))
 
         self.t(("4", action, "pri:H"))
         code, out, err = self.t("4 info")
-        self.assertRegexpMatches(out, "Priority +H",
+        self.assertRegex(out, "Priority +H",
                                  msg="{0} enpassant priority".format(action))
 
         self.t(("5", action, "pro:PROJ"))
         code, out, err = self.t("5 info")
-        self.assertRegexpMatches(out, "Project +PROJ",
+        self.assertRegex(out, "Project +PROJ",
                                  msg="{0} enpassant project".format(action))
 
     def test_done(self):

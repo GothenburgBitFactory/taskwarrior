@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,34 +29,45 @@
 
 #include <string>
 #include <Command.h>
+#include <Table.h>
+#include <Datetime.h>
 
-class CmdHistoryMonthly : public Command
+template<class HistoryStrategy>
+class CmdHistoryBase : public Command
 {
 public:
-  CmdHistoryMonthly ();
+  CmdHistoryBase ();
   int execute (std::string&);
+
+private:
+  std::map <time_t, int> groups;          // Represents any timeinterval with data
+  std::map <time_t, int> addedGroup;      // Additions by timeinterval
+  std::map <time_t, int> completedGroup;  // Completions by timeinterval
+  std::map <time_t, int> deletedGroup;    // Deletions by timeinterval
+  int rc;
+
+  void outputTabular (std::string&);
+  void outputGraphical (std::string&);
 };
 
-class CmdHistoryAnnual : public Command
-{
-public:
-  CmdHistoryAnnual ();
-  int execute (std::string&);
-};
+// Forward-declare strategies implemented in CmdHistory.cpp
+class DailyHistoryStrategy;
+class DailyGHistoryStrategy;
+class WeeklyHistoryStrategy;
+class WeeklyGHistoryStrategy;
+class MonthlyHistoryStrategy;
+class MonthlyGHistoryStrategy;
+class AnnualHistoryStrategy;
+class AnnualGHistoryStrategy;
 
-class CmdGHistoryMonthly : public Command
-{
-public:
-  CmdGHistoryMonthly ();
-  int execute (std::string&);
-};
-
-class CmdGHistoryAnnual : public Command
-{
-public:
-  CmdGHistoryAnnual ();
-  int execute (std::string&);
-};
+// typedef the templates to nice names to be used outside this class
+typedef CmdHistoryBase<DailyHistoryStrategy>    CmdHistoryDaily;
+typedef CmdHistoryBase<DailyGHistoryStrategy>   CmdGHistoryDaily;
+typedef CmdHistoryBase<WeeklyHistoryStrategy>   CmdHistoryWeekly;
+typedef CmdHistoryBase<WeeklyGHistoryStrategy>  CmdGHistoryWeekly;
+typedef CmdHistoryBase<MonthlyHistoryStrategy>  CmdHistoryMonthly;
+typedef CmdHistoryBase<MonthlyGHistoryStrategy> CmdGHistoryMonthly;
+typedef CmdHistoryBase<AnnualHistoryStrategy>   CmdHistoryAnnual;
+typedef CmdHistoryBase<AnnualGHistoryStrategy>  CmdGHistoryAnnual;
 
 #endif
-////////////////////////////////////////////////////////////////////////////////

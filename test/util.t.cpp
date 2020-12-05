@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-// http://www.opensource.org/licenses/mit-license.php
+// https://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,36 +31,16 @@
 #include <util.h>
 #include <test.h>
 
-Context context;
-
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (22);
+  UnitTest t (19);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
   unsetenv ("TASKRC");
 
-  // TODO bool confirm (const std::string&);
   // TODO int confirm4 (const std::string&);
-
-  // std::string formatBytes (size_t);
-  t.is (formatBytes (0), "0 B", "0 -> 0 B");
-
-  t.is (formatBytes (994),  "994 B", "994 -> 994 B");
-  t.is (formatBytes (995),  "1.0 KiB", "995 -> 1.0 KiB");
-  t.is (formatBytes (999),  "1.0 KiB", "999 -> 1.0 KiB");
-  t.is (formatBytes (1000), "1.0 KiB", "1000 -> 1.0 KiB");
-  t.is (formatBytes (1001), "1.0 KiB", "1001 -> 1.0 KiB");
-
-  t.is (formatBytes (999999),  "1.0 MiB", "999999 -> 1.0 MiB");
-  t.is (formatBytes (1000000), "1.0 MiB", "1000000 -> 1.0 MiB");
-  t.is (formatBytes (1000001), "1.0 MiB", "1000001 -> 1.0 MiB");
-
-  t.is (formatBytes (999999999),  "1.0 GiB", "999999999 -> 1.0 GiB");
-  t.is (formatBytes (1000000000), "1.0 GiB", "1000000000 -> 1.0 GiB");
-  t.is (formatBytes (1000000001), "1.0 GiB", "1000000001 -> 1.0 GiB");
 
   // TODO const std::string uuid ();
 
@@ -92,6 +72,17 @@ int main (int, char**)
   t.is (indentProject ("one"),           "one",               "indentProject 'one' -> 'one'");
   t.is (indentProject ("one.two"),       "  two",         "indentProject 'one.two' -> '  two'");
   t.is (indentProject ("one.two.three"), "    three", "indentProject 'one.two.three' -> '    three'");
+
+  // bool nontrivial (const std::string&);
+  t.notok (nontrivial (""),                       "nontrivial '' -> false");
+  t.notok (nontrivial ("   "),                    "nontrivial '   ' -> false");
+  t.notok (nontrivial ("\t\t"),                   "nontrivial '\\t\\t' -> false");
+  t.notok (nontrivial (" \t \t"),                 "nontrivial ' \\t \\t' -> false");
+  t.ok    (nontrivial ("a"),                      "nontrivial 'a' -> true");
+  t.ok    (nontrivial ("   a"),                   "nontrivial '   a' -> true");
+  t.ok    (nontrivial ("a   "),                   "nontrivial 'a   ' -> true");
+  t.ok    (nontrivial ("  \t\ta"),                "nontrivial '  \\t\\ta' -> true");
+  t.ok    (nontrivial ("a\t\t  "),                "nontrivial 'a\\t\\t  ' -> true");
 
   return 0;
 }

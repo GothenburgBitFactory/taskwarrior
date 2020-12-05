@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
 
@@ -58,7 +58,7 @@ class TestCalendarCommandLine(TestCase):
     def test_basic_command_color(self):
         """Verify 'calendar rc._forcecolor:on' does not fail"""
         code, out, err = self.t("calendar rc._forcecolor:on")
-        self.assertRegexpMatches(out, "Su.+Mo.+Tu.+We.+Th.+Fr.+Sa")
+        self.assertRegex(out, "Su.+Mo.+Tu.+We.+Th.+Fr.+Sa")
 
     def test_basic_command_details(self):
         """Verify 'calendar rc.calendar.details:full rc.calendar.details.report:list' does not fail"""
