@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/fi-FI/2015.json
-# http://holidata.net/fi-FI/2016.json
+# https://holidata.net/fi-FI/2020.json
+# https://holidata.net/fi-FI/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,62 +28,54 @@
 ###############################################################################
 
 holiday.fi-FI1.name=Uudenvuodenpäivä
-holiday.fi-FI1.date=20150101
+holiday.fi-FI1.date=20200101
 holiday.fi-FI2.name=Loppiainen
-holiday.fi-FI2.date=20150106
+holiday.fi-FI2.date=20200106
 holiday.fi-FI3.name=Pitkäperjantai
-holiday.fi-FI3.date=20150403
+holiday.fi-FI3.date=20200410
 holiday.fi-FI4.name=Pääsiäispäivä
-holiday.fi-FI4.date=20150405
+holiday.fi-FI4.date=20200412
 holiday.fi-FI5.name=2. pääsiäispäivä
-holiday.fi-FI5.date=20150406
+holiday.fi-FI5.date=20200413
 holiday.fi-FI6.name=Vappu
-holiday.fi-FI6.date=20150501
+holiday.fi-FI6.date=20200501
 holiday.fi-FI7.name=Helatorstai
-holiday.fi-FI7.date=20150514
+holiday.fi-FI7.date=20200521
 holiday.fi-FI8.name=Helluntaipäivä
-holiday.fi-FI8.date=20150524
-holiday.fi-FI9.name=Juhannusaatto
-holiday.fi-FI9.date=20150619
-holiday.fi-FI10.name=Juhannuspäivä
-holiday.fi-FI10.date=20150620
-holiday.fi-FI11.name=Pyhäinpäivä
-holiday.fi-FI11.date=20151031
-holiday.fi-FI12.name=Itsenäisyyspäivä
-holiday.fi-FI12.date=20151206
-holiday.fi-FI13.name=Jouluaatto
-holiday.fi-FI13.date=20151224
-holiday.fi-FI14.name=Joulupäivä
-holiday.fi-FI14.date=20151225
-holiday.fi-FI15.name=2. joulupäivä
-holiday.fi-FI15.date=20151226
-holiday.fi-FI16.name=Uudenvuodenpäivä
-holiday.fi-FI16.date=20160101
-holiday.fi-FI17.name=Loppiainen
-holiday.fi-FI17.date=20160106
-holiday.fi-FI18.name=Pitkäperjantai
-holiday.fi-FI18.date=20160325
-holiday.fi-FI19.name=Pääsiäispäivä
-holiday.fi-FI19.date=20160327
-holiday.fi-FI20.name=2. pääsiäispäivä
-holiday.fi-FI20.date=20160328
-holiday.fi-FI21.name=Vappu
-holiday.fi-FI21.date=20160501
-holiday.fi-FI22.name=Helatorstai
-holiday.fi-FI22.date=20160505
-holiday.fi-FI23.name=Helluntaipäivä
-holiday.fi-FI23.date=20160515
-holiday.fi-FI24.name=Juhannusaatto
-holiday.fi-FI24.date=20160624
-holiday.fi-FI25.name=Juhannuspäivä
-holiday.fi-FI25.date=20160625
-holiday.fi-FI26.name=Pyhäinpäivä
-holiday.fi-FI26.date=20161105
-holiday.fi-FI27.name=Itsenäisyyspäivä
-holiday.fi-FI27.date=20161206
-holiday.fi-FI28.name=Jouluaatto
-holiday.fi-FI28.date=20161224
-holiday.fi-FI29.name=Joulupäivä
-holiday.fi-FI29.date=20161225
-holiday.fi-FI30.name=2. joulupäivä
-holiday.fi-FI30.date=20161226
+holiday.fi-FI8.date=20200531
+holiday.fi-FI9.name=Juhannuspäivä
+holiday.fi-FI9.date=20200620
+holiday.fi-FI10.name=Pyhäinpäivä
+holiday.fi-FI10.date=20201031
+holiday.fi-FI11.name=Itsenäisyyspäivä
+holiday.fi-FI11.date=20201206
+holiday.fi-FI12.name=Joulupäivä
+holiday.fi-FI12.date=20201225
+holiday.fi-FI13.name=Tapaninpäivä
+holiday.fi-FI13.date=20201226
+holiday.fi-FI14.name=Uudenvuodenpäivä
+holiday.fi-FI14.date=20210101
+holiday.fi-FI15.name=Loppiainen
+holiday.fi-FI15.date=20210106
+holiday.fi-FI16.name=Pitkäperjantai
+holiday.fi-FI16.date=20210402
+holiday.fi-FI17.name=Pääsiäispäivä
+holiday.fi-FI17.date=20210404
+holiday.fi-FI18.name=2. pääsiäispäivä
+holiday.fi-FI18.date=20210405
+holiday.fi-FI19.name=Vappu
+holiday.fi-FI19.date=20210501
+holiday.fi-FI20.name=Helatorstai
+holiday.fi-FI20.date=20210513
+holiday.fi-FI21.name=Helluntaipäivä
+holiday.fi-FI21.date=20210523
+holiday.fi-FI22.name=Juhannuspäivä
+holiday.fi-FI22.date=20210626
+holiday.fi-FI23.name=Pyhäinpäivä
+holiday.fi-FI23.date=20211106
+holiday.fi-FI24.name=Itsenäisyyspäivä
+holiday.fi-FI24.date=20211206
+holiday.fi-FI25.name=Joulupäivä
+holiday.fi-FI25.date=20211225
+holiday.fi-FI26.name=Tapaninpäivä
+holiday.fi-FI26.date=20211226

@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/de-BE/2015.json
-# http://holidata.net/de-BE/2016.json
+# https://holidata.net/de-BE/2020.json
+# https://holidata.net/de-BE/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,50 +28,50 @@
 ###############################################################################
 
 holiday.de-BE1.name=Neujahr
-holiday.de-BE1.date=20150101
+holiday.de-BE1.date=20200101
 holiday.de-BE2.name=Ostern
-holiday.de-BE2.date=20150405
+holiday.de-BE2.date=20200412
 holiday.de-BE3.name=Ostermontag
-holiday.de-BE3.date=20150406
+holiday.de-BE3.date=20200413
 holiday.de-BE4.name=Tag der Arbeit
-holiday.de-BE4.date=20150501
+holiday.de-BE4.date=20200501
 holiday.de-BE5.name=Christi Himmelfahrt
-holiday.de-BE5.date=20150514
+holiday.de-BE5.date=20200521
 holiday.de-BE6.name=Pfingsten
-holiday.de-BE6.date=20150524
+holiday.de-BE6.date=20200531
 holiday.de-BE7.name=Pfingstmontag
-holiday.de-BE7.date=20150525
+holiday.de-BE7.date=20200601
 holiday.de-BE8.name=Nationalfeiertag
-holiday.de-BE8.date=20150721
+holiday.de-BE8.date=20200721
 holiday.de-BE9.name=Mariä Himmelfahrt
-holiday.de-BE9.date=20150815
+holiday.de-BE9.date=20200815
 holiday.de-BE10.name=Allerheiligen
-holiday.de-BE10.date=20151101
+holiday.de-BE10.date=20201101
 holiday.de-BE11.name=Waffenstillstand
-holiday.de-BE11.date=20151111
+holiday.de-BE11.date=20201111
 holiday.de-BE12.name=Weihnacht
-holiday.de-BE12.date=20151225
+holiday.de-BE12.date=20201225
 holiday.de-BE13.name=Neujahr
-holiday.de-BE13.date=20160101
+holiday.de-BE13.date=20210101
 holiday.de-BE14.name=Ostern
-holiday.de-BE14.date=20160527
+holiday.de-BE14.date=20210404
 holiday.de-BE15.name=Ostermontag
-holiday.de-BE15.date=20160528
+holiday.de-BE15.date=20210405
 holiday.de-BE16.name=Tag der Arbeit
-holiday.de-BE16.date=20160501
+holiday.de-BE16.date=20210501
 holiday.de-BE17.name=Christi Himmelfahrt
-holiday.de-BE17.date=20160505
+holiday.de-BE17.date=20210513
 holiday.de-BE18.name=Pfingsten
-holiday.de-BE18.date=20160515
+holiday.de-BE18.date=20210523
 holiday.de-BE19.name=Pfingstmontag
-holiday.de-BE19.date=20160516
+holiday.de-BE19.date=20210524
 holiday.de-BE20.name=Nationalfeiertag
-holiday.de-BE20.date=20160721
+holiday.de-BE20.date=20210721
 holiday.de-BE21.name=Mariä Himmelfahrt
-holiday.de-BE21.date=20160815
+holiday.de-BE21.date=20210815
 holiday.de-BE22.name=Allerheiligen
-holiday.de-BE22.date=20161101
+holiday.de-BE22.date=20211101
 holiday.de-BE23.name=Waffenstillstand
-holiday.de-BE23.date=20161111
+holiday.de-BE23.date=20211111
 holiday.de-BE24.name=Weihnacht
-holiday.de-BE24.date=20161225
+holiday.de-BE24.date=20211225
