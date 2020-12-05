@@ -279,7 +279,7 @@ static std::vector <Datetime> generateAllDueDates (const Task& templateTask)
 
   bool end_in_sight = false;
   Datetime until;
-  if (!templateTask.get ("until").empty())
+  if (templateTask.get ("until") != "")
   {
     until = Datetime (templateTask.get ("until"));
     end_in_sight = true;
@@ -296,7 +296,7 @@ static std::vector <Datetime> generateAllDueDates (const Task& templateTask)
     Datetime nextDue = generateNextDueDate (due, recur, lastN);
 
     // TODO Safety.
-    if (!dueDates.empty() && dueDates.back () == nextDue)
+    if (dueDates.size () && dueDates.back () == nextDue)
       break;
 
     // If nextDue > until, it means there are no more tasks to generate, so

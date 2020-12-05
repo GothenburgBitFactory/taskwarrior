@@ -155,7 +155,7 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
 
   bool specificEnd = false;
   Datetime until;
-  if (!parent.get ("until").empty())
+  if (parent.get ("until") != "")
   {
     until = Datetime (parent.get ("until"));
     specificEnd = true;
@@ -371,7 +371,7 @@ void updateRecurrenceMask (Task& task)
   auto uuid = task.get ("parent");
   Task parent;
 
-  if (!uuid.empty() &&
+  if (uuid != "" &&
       Context::getContext ().tdb2.get (uuid, parent))
   {
     unsigned int index = strtol (task.get ("imask").c_str (), nullptr, 10);
