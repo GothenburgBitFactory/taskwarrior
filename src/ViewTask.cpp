@@ -302,7 +302,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     autoColorize (data[sequence[s]], rule_color);
 
     // Alternate rows based on |s % 2|
-    bool odd = (s % 2) != 0;
+    bool odd = (s % 2) ? true : false;
     Color row_color;
     if (Context::getContext ().color ())
     {

@@ -190,7 +190,10 @@ void Task::setAsNow (const std::string& att)
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::has (const std::string& name) const
 {
-  return data.find (name) != data.end ();
+  if (data.find (name) != data.end ())
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1046,7 +1049,7 @@ int Task::getAnnotationCount () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::hasAnnotations () const
 {
-  return annotation_count != 0;
+  return annotation_count ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1293,7 +1296,10 @@ bool Task::hasTag (const std::string& tag) const
   // Concrete tags.
   auto tags = split (get ("tags"), ',');
 
-  return std::find (tags.begin (), tags.end (), tag) != tags.end ();
+  if (std::find (tags.begin (), tags.end (), tag) != tags.end ())
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1362,7 +1368,7 @@ void Task::substitute (
   const std::string& to,
   const std::string& flags)
 {
-  bool global = (flags.find ('g') != std::string::npos);
+  bool global = (flags.find ('g') != std::string::npos ? true : false);
 
   // Get the data to modify.
   std::string description = get ("description");
