@@ -47,7 +47,7 @@ static void countTasks (const std::vector <Task>&, const std::string&, int&, int
 std::string taskIdentifiers (const std::vector <Task>& tasks)
 {
   std::vector <std::string> identifiers;
-  for (const auto& task: tasks)
+  for (auto task: tasks)
     identifiers.push_back (task.identifier (true));
 
   return join (", ", identifiers);
