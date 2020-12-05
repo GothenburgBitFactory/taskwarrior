@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/pt-PT/2015.json
-# http://holidata.net/pt-PT/2016.json
+# https://holidata.net/pt-PT/2020.json
+# https://holidata.net/pt-PT/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,58 +28,58 @@
 ###############################################################################
 
 holiday.pt-PT1.name=Ano Novo
-holiday.pt-PT1.date=20150101
+holiday.pt-PT1.date=20200101
 holiday.pt-PT2.name=Carnaval
-holiday.pt-PT2.date=20150217
+holiday.pt-PT2.date=20200225
 holiday.pt-PT3.name=Sexta-feira Santa
-holiday.pt-PT3.date=20150403
+holiday.pt-PT3.date=20200410
 holiday.pt-PT4.name=Páscoa
-holiday.pt-PT4.date=20150405
+holiday.pt-PT4.date=20200412
 holiday.pt-PT5.name=Dia da Liberdade
-holiday.pt-PT5.date=20150425
+holiday.pt-PT5.date=20200425
 holiday.pt-PT6.name=Dia do Trabalhador
-holiday.pt-PT6.date=20150501
-holiday.pt-PT7.name=Corpo de Deus
-holiday.pt-PT7.date=20150604
-holiday.pt-PT8.name=Dia de Portugal
-holiday.pt-PT8.date=20150610
+holiday.pt-PT6.date=20200501
+holiday.pt-PT7.name=Dia de Portugal
+holiday.pt-PT7.date=20200610
+holiday.pt-PT8.name=Corpo de Deus
+holiday.pt-PT8.date=20200611
 holiday.pt-PT9.name=Assunção de Nossa Senhora
-holiday.pt-PT9.date=20150815
+holiday.pt-PT9.date=20200815
 holiday.pt-PT10.name=Implantação da República
-holiday.pt-PT10.date=20151005
-holiday.pt-PT11.name=Todos os Santos
-holiday.pt-PT11.date=20151101
+holiday.pt-PT10.date=20201005
+holiday.pt-PT11.name=Dia de Todos os Santos
+holiday.pt-PT11.date=20201101
 holiday.pt-PT12.name=Restauração da Independência
-holiday.pt-PT12.date=20151201
+holiday.pt-PT12.date=20201201
 holiday.pt-PT13.name=Imaculada Conceição
-holiday.pt-PT13.date=20151208
+holiday.pt-PT13.date=20201208
 holiday.pt-PT14.name=Natal
-holiday.pt-PT14.date=20151225
+holiday.pt-PT14.date=20201225
 holiday.pt-PT15.name=Ano Novo
-holiday.pt-PT15.date=20160101
+holiday.pt-PT15.date=20210101
 holiday.pt-PT16.name=Carnaval
-holiday.pt-PT16.date=20160209
+holiday.pt-PT16.date=20210216
 holiday.pt-PT17.name=Sexta-feira Santa
-holiday.pt-PT17.date=20160325
+holiday.pt-PT17.date=20210402
 holiday.pt-PT18.name=Páscoa
-holiday.pt-PT18.date=20160327
+holiday.pt-PT18.date=20210404
 holiday.pt-PT19.name=Dia da Liberdade
-holiday.pt-PT19.date=20160425
+holiday.pt-PT19.date=20210425
 holiday.pt-PT20.name=Dia do Trabalhador
-holiday.pt-PT20.date=20160501
+holiday.pt-PT20.date=20210501
 holiday.pt-PT21.name=Corpo de Deus
-holiday.pt-PT21.date=20160526
+holiday.pt-PT21.date=20210603
 holiday.pt-PT22.name=Dia de Portugal
-holiday.pt-PT22.date=20160610
+holiday.pt-PT22.date=20210610
 holiday.pt-PT23.name=Assunção de Nossa Senhora
-holiday.pt-PT23.date=20160815
+holiday.pt-PT23.date=20210815
 holiday.pt-PT24.name=Implantação da República
-holiday.pt-PT24.date=20161005
-holiday.pt-PT25.name=Todos os Santos
-holiday.pt-PT25.date=20161101
+holiday.pt-PT24.date=20211005
+holiday.pt-PT25.name=Dia de Todos os Santos
+holiday.pt-PT25.date=20211101
 holiday.pt-PT26.name=Restauração da Independência
-holiday.pt-PT26.date=20161201
+holiday.pt-PT26.date=20211201
 holiday.pt-PT27.name=Imaculada Conceição
-holiday.pt-PT27.date=20161208
+holiday.pt-PT27.date=20211208
 holiday.pt-PT28.name=Natal
-holiday.pt-PT28.date=20161225
+holiday.pt-PT28.date=20211225

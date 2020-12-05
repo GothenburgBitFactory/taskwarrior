@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/pl-PL/2015.json
-# http://holidata.net/pl-PL/2016.json
+# https://holidata.net/pl-PL/2020.json
+# https://holidata.net/pl-PL/2021.json
 #
-# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,58 +28,54 @@
 ###############################################################################
 
 holiday.pl-PL1.name=Nowy Rok
-holiday.pl-PL1.date=20150101
+holiday.pl-PL1.date=20200101
 holiday.pl-PL2.name=Trzech Króli
-holiday.pl-PL2.date=20150106
+holiday.pl-PL2.date=20200106
 holiday.pl-PL3.name=Wielkanoc
-holiday.pl-PL3.date=20150405
+holiday.pl-PL3.date=20200412
 holiday.pl-PL4.name=Poniedziałek Wielkanocny
-holiday.pl-PL4.date=20150406
+holiday.pl-PL4.date=20200413
 holiday.pl-PL5.name=Święto Pracy
-holiday.pl-PL5.date=20150501
+holiday.pl-PL5.date=20200501
 holiday.pl-PL6.name=Święto Konstytucji Trzeciego Maja
-holiday.pl-PL6.date=20150503
+holiday.pl-PL6.date=20200503
 holiday.pl-PL7.name=Zielone Świątki
-holiday.pl-PL7.date=20150524
+holiday.pl-PL7.date=20200531
 holiday.pl-PL8.name=Boże Ciało
-holiday.pl-PL8.date=20150604
-holiday.pl-PL9.name=Święto Wojska Polskiego
-holiday.pl-PL9.date=20150815
-holiday.pl-PL10.name=Wniebowzięcia NMP
-holiday.pl-PL10.date=20150815
-holiday.pl-PL11.name=Wszystkich Świętych
-holiday.pl-PL11.date=20151101
-holiday.pl-PL12.name=Dzień Niepodległości
-holiday.pl-PL12.date=20151111
-holiday.pl-PL13.name=Boże Narodzenie (pierwszy dzień)
-holiday.pl-PL13.date=20151225
-holiday.pl-PL14.name=Boże Narodzenie (drugi dzień)
-holiday.pl-PL14.date=20151226
-holiday.pl-PL15.name=Nowy Rok
-holiday.pl-PL15.date=20160101
-holiday.pl-PL16.name=Trzech Króli
-holiday.pl-PL16.date=20160106
-holiday.pl-PL17.name=Wielkanoc
-holiday.pl-PL17.date=20160327
-holiday.pl-PL18.name=Poniedziałek Wielkanocny
-holiday.pl-PL18.date=20160328
-holiday.pl-PL19.name=Święto Pracy
-holiday.pl-PL19.date=20160501
-holiday.pl-PL20.name=Święto Konstytucji Trzeciego Maja
-holiday.pl-PL20.date=20160503
-holiday.pl-PL21.name=Zielone Świątki
-holiday.pl-PL21.date=20160515
-holiday.pl-PL22.name=Boże Ciało
-holiday.pl-PL22.date=20160526
-holiday.pl-PL23.name=Święto Wojska Polskiego
-holiday.pl-PL23.date=20160815
-holiday.pl-PL24.name=Wniebowzięcia NMP
-holiday.pl-PL24.date=20160815
-holiday.pl-PL25.name=Wszystkich Świętych
-holiday.pl-PL25.date=20161101
-holiday.pl-PL26.name=Dzień Niepodległości
-holiday.pl-PL26.date=20161111
-holiday.pl-PL27.name=Boże Narodzenie (pierwszy dzień)
-holiday.pl-PL27.date=20161225
-holiday.pl-PL28.name=Boże Narodzenie (drugi dzień)
-holiday.pl-PL28.date=20161226
+holiday.pl-PL8.date=20200611
+holiday.pl-PL9.name=Wniebowzięcie Najświętszej Maryi Panny
+holiday.pl-PL9.date=20200815
+holiday.pl-PL10.name=Wszystkich Świętych
+holiday.pl-PL10.date=20201101
+holiday.pl-PL11.name=Narodowe Święto Niepodległości
+holiday.pl-PL11.date=20201111
+holiday.pl-PL12.name=Boże Narodzenie (pierwszy dzień)
+holiday.pl-PL12.date=20201225
+holiday.pl-PL13.name=Boże Narodzenie (drugi dzień)
+holiday.pl-PL13.date=20201226
+holiday.pl-PL14.name=Nowy Rok
+holiday.pl-PL14.date=20210101
+holiday.pl-PL15.name=Trzech Króli
+holiday.pl-PL15.date=20210106
+holiday.pl-PL16.name=Wielkanoc
+holiday.pl-PL16.date=20210404
+holiday.pl-PL17.name=Poniedziałek Wielkanocny
+holiday.pl-PL17.date=20210405
+holiday.pl-PL18.name=Święto Pracy
+holiday.pl-PL18.date=20210501
+holiday.pl-PL19.name=Święto Konstytucji Trzeciego Maja
+holiday.pl-PL19.date=20210503
+holiday.pl-PL20.name=Zielone Świątki
+holiday.pl-PL20.date=20210523
+holiday.pl-PL21.name=Boże Ciało
+holiday.pl-PL21.date=20210603
+holiday.pl-PL22.name=Wniebowzięcie Najświętszej Maryi Panny
+holiday.pl-PL22.date=20210815
+holiday.pl-PL23.name=Wszystkich Świętych
+holiday.pl-PL23.date=20211101
+holiday.pl-PL24.name=Narodowe Święto Niepodległości
+holiday.pl-PL24.date=20211111
+holiday.pl-PL25.name=Boże Narodzenie (pierwszy dzień)
+holiday.pl-PL25.date=20211225
+holiday.pl-PL26.name=Boże Narodzenie (drugi dzień)
+holiday.pl-PL26.date=20211226
