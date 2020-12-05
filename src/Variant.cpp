@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <sstream>
 #include <algorithm>
-#include <utility>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -128,9 +127,9 @@ Variant::Variant (const double value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Variant::Variant (std::string  value)
+Variant::Variant (const std::string& value)
 : _type (Variant::type_string)
-, _string (std::move(value))
+, _string (value)
 {
 }
 
