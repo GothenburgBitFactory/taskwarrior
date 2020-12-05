@@ -108,7 +108,8 @@ Variant::Variant (const Variant& other)
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const bool value)
-: _bool (value)
+: _type (Variant::type_boolean)
+, _bool (value)
 {
 }
 
