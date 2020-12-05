@@ -355,7 +355,7 @@ std::string Lexer::commify (const std::string& data)
   int end          = -1;
 
   int i;
-  for (int i = 0; i < static_cast<int>(data.length ()); ++i)
+  for (int i = 0; i < (int) data.length (); ++i)
   {
     if (unicodeLatinDigit (data[i]))
       end = i;
@@ -369,7 +369,7 @@ std::string Lexer::commify (const std::string& data)
   {
     // In reverse order, transfer all digits up to, and including the decimal
     // point.
-    for (i = static_cast<int>(data.length ()) - 1; i >= decimalPoint; --i)
+    for (i = (int) data.length () - 1; i >= decimalPoint; --i)
       result += data[i];
 
     int consecutiveDigits = 0;
@@ -393,7 +393,7 @@ std::string Lexer::commify (const std::string& data)
   {
     // In reverse order, transfer all digits up to, but not including the last
     // digit.
-    for (i = static_cast<int>(data.length ()) - 1; i > end; --i)
+    for (i = (int) data.length () - 1; i > end; --i)
       result += data[i];
 
     int consecutiveDigits = 0;
@@ -416,7 +416,7 @@ std::string Lexer::commify (const std::string& data)
 
   // reverse result into data.
   std::string done;
-  for (int i = static_cast<int>(result.length ()) - 1; i >= 0; --i)
+  for (int i = (int) result.length () - 1; i >= 0; --i)
     done += result[i];
 
   return done;
@@ -1463,20 +1463,20 @@ bool Lexer::readWord (
 
       switch (c)
       {
-      case '"':  word += static_cast<char>(0x22); ++cursor; break;
-      case '\'': word += static_cast<char>(0x27); ++cursor; break;
-      case '\\': word += static_cast<char>(0x5C); ++cursor; break;
-      case 'b':  word += static_cast<char>(0x08); ++cursor; break;
-      case 'f':  word += static_cast<char>(0x0C); ++cursor; break;
-      case 'n':  word += static_cast<char>(0x0A); ++cursor; break;
-      case 'r':  word += static_cast<char>(0x0D); ++cursor; break;
-      case 't':  word += static_cast<char>(0x09); ++cursor; break;
-      case 'v':  word += static_cast<char>(0x0B); ++cursor; break;
+      case '"':  word += (char) 0x22; ++cursor; break;
+      case '\'': word += (char) 0x27; ++cursor; break;
+      case '\\': word += (char) 0x5C; ++cursor; break;
+      case 'b':  word += (char) 0x08; ++cursor; break;
+      case 'f':  word += (char) 0x0C; ++cursor; break;
+      case 'n':  word += (char) 0x0A; ++cursor; break;
+      case 'r':  word += (char) 0x0D; ++cursor; break;
+      case 't':  word += (char) 0x09; ++cursor; break;
+      case 'v':  word += (char) 0x0B; ++cursor; break;
 
       // This pass-through default case means that anything can be escaped
       // harmlessly. In particular 'quote' is included, if it not one of the
       // above characters.
-      default:   word += static_cast<char>(c);    ++cursor; break;
+      default:   word += (char) c;    ++cursor; break;
       }
     }
 
@@ -1547,20 +1547,20 @@ bool Lexer::readWord (
 
       switch (c)
       {
-      case '"':  word += static_cast<char>(0x22); ++cursor; break;
-      case '\'': word += static_cast<char>(0x27); ++cursor; break;
-      case '\\': word += static_cast<char>(0x5C); ++cursor; break;
-      case 'b':  word += static_cast<char>(0x08); ++cursor; break;
-      case 'f':  word += static_cast<char>(0x0C); ++cursor; break;
-      case 'n':  word += static_cast<char>(0x0A); ++cursor; break;
-      case 'r':  word += static_cast<char>(0x0D); ++cursor; break;
-      case 't':  word += static_cast<char>(0x09); ++cursor; break;
-      case 'v':  word += static_cast<char>(0x0B); ++cursor; break;
+      case '"':  word += (char) 0x22; ++cursor; break;
+      case '\'': word += (char) 0x27; ++cursor; break;
+      case '\\': word += (char) 0x5C; ++cursor; break;
+      case 'b':  word += (char) 0x08; ++cursor; break;
+      case 'f':  word += (char) 0x0C; ++cursor; break;
+      case 'n':  word += (char) 0x0A; ++cursor; break;
+      case 'r':  word += (char) 0x0D; ++cursor; break;
+      case 't':  word += (char) 0x09; ++cursor; break;
+      case 'v':  word += (char) 0x0B; ++cursor; break;
 
       // This pass-through default case means that anything can be escaped
       // harmlessly. In particular 'quote' is included, if it not one of the
       // above characters.
-      default:   word += static_cast<char>(c);    ++cursor; break;
+      default:   word += (char) c;    ++cursor; break;
       }
     }
 

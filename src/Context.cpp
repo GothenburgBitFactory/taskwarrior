@@ -1035,7 +1035,7 @@ void Context::getLimits (int& rows, int& lines)
     }
     else
     {
-      rows = static_cast<int>(strtol (limit.c_str (), nullptr, 10));
+      rows = (int) strtol (limit.c_str (), nullptr, 10);
       lines = 0;
     }
   }

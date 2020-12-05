@@ -301,7 +301,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
       gnutls_datum_t out;
       gnutls_certificate_verification_status_print (status, type, &out, 0);  // 3.1.4
 
-      std::string error {reinterpret_cast<const char*>(out.data)};
+      std::string error {(const char*) out.data};
       gnutls_free (out.data); // All
 
       throw format ("Handshake failed. {1}", error); // All
@@ -484,8 +484,8 @@ void TLSClient::send (const std::string& data)
     if (status == -1)
       break;
 
-    total     += static_cast<unsigned int>(status);
-    remaining -= static_cast<unsigned int>(status);
+    total     += (unsigned int) status;
+    remaining -= (unsigned int) status;
   }
 
   if (_debug)
@@ -564,7 +564,7 @@ void TLSClient::recv (std::string& data)
     if (_limit && total > _limit)
       break;
   }
-  while (received > 0 && total < static_cast<int>(expected));
+  while (received > 0 && total < (int) expected);
 
   if (_debug)
     std::cout << "c: INFO Receiving 'XXXX"
