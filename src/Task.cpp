@@ -167,7 +167,7 @@ std::string Task::statusToText (Task::status s)
 ////////////////////////////////////////////////////////////////////////////////
 // Returns a proper handle to the task. Tasks should not be referenced by UUIDs
 // as long as they have non-zero ID.
-std::string Task::identifier (bool shortened /* = false */) const
+const std::string Task::identifier (bool shortened /* = false */) const
 {
   if (id != 0)
     return format (id);
@@ -207,7 +207,7 @@ std::vector <std::string> Task::all ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Task::get (const std::string& name) const
+const std::string Task::get (const std::string& name) const
 {
   auto i = data.find (name);
   if (i != data.end ())
@@ -1695,7 +1695,7 @@ void Task::validate_before (const std::string& left, const std::string& right)
 // Encode values prior to serialization.
 //   [  -> &open;
 //   ]  -> &close;
-std::string Task::encode (const std::string& value) const
+const std::string Task::encode (const std::string& value) const
 {
   auto modified = str_replace (value,    "[", "&open;");
   return          str_replace (modified, "]", "&close;");
@@ -1705,7 +1705,7 @@ std::string Task::encode (const std::string& value) const
 // Decode values after parse.
 //   [  <- &open;
 //   ]  <- &close;
-std::string Task::decode (const std::string& value) const
+const std::string Task::decode (const std::string& value) const
 {
   if (value.find ('&') == std::string::npos)
     return value;

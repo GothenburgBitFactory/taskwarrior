@@ -114,7 +114,7 @@ std::vector <std::string> Lexer::split (const std::string& text)
 
 ////////////////////////////////////////////////////////////////////////////////
 // No L10N - these are for internal purposes.
-std::string Lexer::typeName (const Lexer::Type& type)
+const std::string Lexer::typeName (const Lexer::Type& type)
 {
   switch (type)
   {
