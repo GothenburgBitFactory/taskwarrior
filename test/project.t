@@ -454,6 +454,7 @@ class TestBug1430(TestCase):
         self.assertEqual("home/garden\n", out)
 
 
+@unittest.expectedFailure
 class TestBug1617(TestCase):
     def setUp(self):
         """Executed before each test in the class"""

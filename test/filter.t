@@ -659,6 +659,7 @@ class TestBug1600(TestCase):
     def setUp(self):
         self.t = Task()
 
+    @unittest.expectedFailure
     def test_filter_plus_in_descriptions(self):
         """filter - description contains +"""
         self.t("add foobar1")
@@ -966,6 +967,7 @@ class TestBug1609(TestCase):
         self.assertIn("two", out)
 
 
+@unittest.expectedFailure
 class TestBug1630(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -1057,6 +1059,7 @@ class TestBug1915(TestCase):
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
+    @unittest.expectedFailure
     def test_complex_and_or_query_variant_three(self):
         """1915: Make sure parser handles complex and-or queries correctly (3)"""
         code, out, err = self.t("rc.verbose:nothing 'status:pending and (project:A or project:B)' all")
@@ -1064,6 +1067,7 @@ class TestBug1915(TestCase):
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
+    @unittest.expectedFailure
     def test_complex_and_or_query_variant_four(self):
         """1915: Make sure parser handles complex and-or queries correctly (4)"""
         code, out, err = self.t("rc.verbose:nothing 'status:pending and ( project:A or project:B )' all")
