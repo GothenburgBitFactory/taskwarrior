@@ -31,7 +31,7 @@
 #ifdef FREEBSD
 #define _WITH_GETLINE
 #endif
-#include <cstdio>
+#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -39,16 +39,16 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
-#include <cstdint>
+#include <stdint.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <cstdlib>
-#include <cstring>
-#include <csignal>
+#include <stdlib.h>
+#include <string.h>
+#include <signal.h>
 #include <pwd.h>
-#include <csignal>
+#include <signal.h>
 #include <sys/select.h>
 #include <Lexer.h>
 #include <unicode.h>

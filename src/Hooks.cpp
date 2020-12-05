@@ -32,7 +32,7 @@
 #ifdef FREEBSD
 #define _WITH_GETLINE
 #endif
-#include <cstdio>
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/types.h>

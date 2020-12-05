@@ -27,12 +27,12 @@
 #include <cmake.h>
 #include <Task.h>
 #include <sstream>
-#include <cstdlib>
-#include <cassert>
+#include <stdlib.h>
+#include <assert.h>
 #include <string>
 #ifdef PRODUCT_TASKWARRIOR
-#include <cmath>
-#include <cctype>
+#include <math.h>
+#include <ctype.h>
 #endif
 #include <cfloat>
 #include <algorithm>

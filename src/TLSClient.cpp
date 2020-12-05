@@ -31,13 +31,17 @@
 #include <TLSClient.h>
 #include <iostream>
 #include <unistd.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstdint>
-#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <cerrno>
+#if (defined OPENBSD || defined SOLARIS || defined NETBSD)
+#include <errno.h>
+#else
+#include <sys/errno.h>
+#endif
 #include <sys/types.h>
 #include <netdb.h>
 #include <gnutls/x509.h>

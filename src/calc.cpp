@@ -27,8 +27,8 @@
 #include <cmake.h>
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 #include <Eval.h>
 #include <Context.h>
 #include <Task.h>
