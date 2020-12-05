@@ -432,13 +432,13 @@ void Hooks::assertValidJSON (
         throw 0;
       }
 
-      if ((dynamic_cast<json::object*>(root))->_data.find ("description") == (dynamic_cast<json::object*>(root))->_data.end ())
+      if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
       {
         Context::getContext ().error (format (STRING_HOOK_ERROR_NODESC, Path (script).name ()));
         throw 0;
       }
 
-      if ((dynamic_cast<json::object*>(root))->_data.find ("uuid") == (dynamic_cast<json::object*>(root))->_data.end ())
+      if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
       {
         Context::getContext ().error (format (STRING_HOOK_ERROR_NOUUID, Path (script).name ()));
         throw 0;
@@ -486,7 +486,7 @@ void Hooks::assertSameTask (
 
   for (auto& i : input)
   {
-    auto* root_obj = dynamic_cast<json::object*>(json::parse (i));
+    auto* root_obj = (json::object*)json::parse (i);
 
     // If there is no UUID at all.
     auto u = root_obj->_data.find ("uuid");
@@ -497,7 +497,7 @@ void Hooks::assertSameTask (
       throw 0;
     }
 
-    auto* up = dynamic_cast<json::string*>( u->second);
+    auto* up = (json::string*) u->second;
     auto text = up->dump ();
     Lexer::dequote (text);
     std::string json_uuid = json::decode (text);

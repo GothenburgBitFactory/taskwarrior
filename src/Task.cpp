@@ -637,7 +637,7 @@ void Task::parseJSON (const std::string& line)
   json::value* root = json::parse (line);
   if (root &&
       root->type () == json::j_object)
-    parseJSON (dynamic_cast<json::object*>( root));
+    parseJSON ((json::object*) root);
 
   delete root;
 }
@@ -681,10 +681,10 @@ void Task::parseJSON (const json::object* root_obj)
       // Tags are an array of JSON strings.
       else if (i.first == "tags" && i.second->type() == json::j_array)
       {
-        auto* tags = dynamic_cast<json::array*>(i.second);
+        auto* tags = (json::array*)i.second;
         for (auto& t : tags->_data)
         {
-          auto* tag = dynamic_cast<json::string*>(t);
+          auto* tag = (json::string*)t;
           addTag (tag->_data);
         }
       }
@@ -695,7 +695,7 @@ void Task::parseJSON (const json::object* root_obj)
       //            removed in a later release.
       else if (i.first == "tags" && i.second->type() == json::j_string)
       {
-        auto* tag = dynamic_cast<json::string*>(i.second);
+        auto* tag = (json::string*)i.second;
         addTag (tag->_data);
       }
 
@@ -704,10 +704,10 @@ void Task::parseJSON (const json::object* root_obj)
       //             See other 2016-02-21 comments for details.
       else if (i.first == "depends" && i.second->type() == json::j_array)
       {
-        auto* deps = dynamic_cast<json::array*>(i.second);
+        auto* deps = (json::array*)i.second;
         for (auto& t : deps->_data)
         {
-          auto* dep = dynamic_cast<json::string*>(t);
+          auto* dep = (json::string*)t;
           addDependency (dep->_data);
         }
       }
@@ -716,7 +716,7 @@ void Task::parseJSON (const json::object* root_obj)
       // 2016-02-21: Deprecated - see other 2016-02-21 comments for details.
       else if (i.first == "depends" && i.second->type() == json::j_string)
       {
-        auto* deps = dynamic_cast<json::string*>(i.second);
+        auto* deps = (json::string*)i.second;
         auto uuids = split (deps->_data, ',');
 
         for (const auto& uuid : uuids)
@@ -749,12 +749,12 @@ void Task::parseJSON (const json::object* root_obj)
       {
         std::map <std::string, std::string> annos;
 
-        auto* atts = dynamic_cast<json::array*>(i.second);
+        auto* atts = (json::array*)i.second;
         for (auto& annotations : atts->_data)
         {
-          auto* annotation = dynamic_cast<json::object*>(annotations);
-          json::string* when = dynamic_cast<json::string*>(annotation->_data["entry"]);
-          json::string* what = dynamic_cast<json::string*>(annotation->_data["description"]);
+          auto* annotation = (json::object*)annotations;
+          json::string* when = (json::string*)annotation->_data["entry"];
+          json::string* what = (json::string*)annotation->_data["description"];
 
           if (! when)
             throw format ("Annotation is missing an entry date: {1}", root_obj-> dump ());
