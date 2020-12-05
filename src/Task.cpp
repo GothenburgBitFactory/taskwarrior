@@ -684,10 +684,10 @@ void Task::parseJSON (const json::object* root_obj)
       // Tags are an array of JSON strings.
       else if (i.first == "tags" && i.second->type() == json::j_array)
       {
-        auto* tags = (json::array*)i.second;
+        json::array* tags = (json::array*)i.second;
         for (auto& t : tags->_data)
         {
-          auto* tag = (json::string*)t;
+          json::string* tag = (json::string*)t;
           addTag (tag->_data);
         }
       }
@@ -698,7 +698,7 @@ void Task::parseJSON (const json::object* root_obj)
       //            removed in a later release.
       else if (i.first == "tags" && i.second->type() == json::j_string)
       {
-        auto* tag = (json::string*)i.second;
+        json::string* tag = (json::string*)i.second;
         addTag (tag->_data);
       }
 
@@ -707,10 +707,10 @@ void Task::parseJSON (const json::object* root_obj)
       //             See other 2016-02-21 comments for details.
       else if (i.first == "depends" && i.second->type() == json::j_array)
       {
-        auto* deps = (json::array*)i.second;
+        json::array* deps = (json::array*)i.second;
         for (auto& t : deps->_data)
         {
-          auto* dep = (json::string*)t;
+          json::string* dep = (json::string*)t;
           addDependency (dep->_data);
         }
       }
@@ -719,7 +719,7 @@ void Task::parseJSON (const json::object* root_obj)
       // 2016-02-21: Deprecated - see other 2016-02-21 comments for details.
       else if (i.first == "depends" && i.second->type() == json::j_string)
       {
-        auto* deps = (json::string*)i.second;
+        json::string* deps = (json::string*)i.second;
         auto uuids = split (deps->_data, ',');
 
         for (const auto& uuid : uuids)
@@ -752,10 +752,10 @@ void Task::parseJSON (const json::object* root_obj)
       {
         std::map <std::string, std::string> annos;
 
-        auto* atts = (json::array*)i.second;
+        json::array* atts = (json::array*)i.second;
         for (auto& annotations : atts->_data)
         {
-          auto* annotation = (json::object*)annotations;
+          json::object* annotation = (json::object*)annotations;
           json::string* when = (json::string*)annotation->_data["entry"];
           json::string* what = (json::string*)annotation->_data["description"];
 

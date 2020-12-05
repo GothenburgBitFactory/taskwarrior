@@ -485,7 +485,7 @@ void Hooks::assertSameTask (
 
   for (auto& i : input)
   {
-    auto* root_obj = (json::object*)json::parse (i);
+    json::object* root_obj = (json::object*)json::parse (i);
 
     // If there is no UUID at all.
     auto u = root_obj->_data.find ("uuid");
@@ -496,7 +496,7 @@ void Hooks::assertSameTask (
       throw 0;
     }
 
-    auto* up = (json::string*) u->second;
+    json::string* up = (json::string*) u->second;
     auto text = up->dump ();
     Lexer::dequote (text);
     std::string json_uuid = json::decode (text);
