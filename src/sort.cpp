@@ -242,7 +242,7 @@ static bool sort_compare (int left, int right)
     // UDAs.
     else if ((column = Context::getContext ().columns[field]) != nullptr)
     {
-      const std::string& type = column->type ();
+      std::string type = column->type ();
       if (type == "numeric")
       {
         auto left_real  = strtof (((*global_data)[left].get_ref  (field)).c_str (), nullptr);
