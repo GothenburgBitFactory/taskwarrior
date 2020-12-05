@@ -28,7 +28,7 @@
 #include <CLI2.h>
 #include <sstream>
 #include <algorithm>
-#include <cstdlib>
+#include <stdlib.h>
 #include <Context.h>
 #include <Lexer.h>
 #include <Color.h>

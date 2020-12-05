@@ -31,9 +31,9 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <FS.h>
 #include <Eval.h>
@@ -48,7 +48,7 @@
 #include <commit.h>
 #endif
 
-#include <cstdio>
+#include <stdio.h>
 #include <sys/ioctl.h>
 
 #ifdef SOLARIS
