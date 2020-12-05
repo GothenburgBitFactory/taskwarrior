@@ -123,7 +123,7 @@ bool TF2::get (const std::string& uuid, Task& task)
   if (! _loaded_tasks)
     load_tasks ();
 
-  if (!_tasks_map.empty() && uuid.size () == 36)
+  if (_tasks_map.size () > 0 && uuid.size () == 36)
   {
     // Fast lookup, same result as below. Only used during "task import".
     auto i = _tasks_map.find (uuid);
@@ -263,8 +263,8 @@ void TF2::commit ()
   if (_dirty)
   {
     // Special case: added but no modified means just append to the file.
-    if (_modified_tasks.empty() && _purged_tasks.empty() &&
-        (!_added_tasks.empty() || !_added_lines.empty()))
+    if (!_modified_tasks.size () && !_purged_tasks.size () &&
+        (_added_tasks.size () || _added_lines.size ()))
     {
       if (_file.open ())
       {
@@ -920,7 +920,7 @@ void TDB2::revert_pending (
       Context::getContext ().debug ("TDB::revert - task found in pending.data");
 
       // Either revert if there was a prior state, or remove the task.
-      if (!prior.empty())
+      if (prior != "")
       {
         *task = prior;
         std::cout << STRING_TDB2_REVERTED << '\n';
@@ -953,7 +953,7 @@ void TDB2::revert_completed (
       Context::getContext ().debug ("TDB::revert_completed - task found in completed.data");
 
       // Either revert if there was a prior state, or remove the task.
-      if (!prior.empty())
+      if (prior != "")
       {
         *task = prior;
         if (task->find ("status:\"pending\"")   != std::string::npos ||
@@ -1003,7 +1003,7 @@ void TDB2::revert_backlog (
       found = true;
 
       // If this is a new task (no prior), then just remove it from the backlog.
-      if (!current.empty() && prior.empty())
+      if (current != "" && prior == "")
       {
         // Yes, this is what is needed, when you want to erase using a reverse
         // iterator.
@@ -1055,7 +1055,7 @@ void TDB2::show_diff (
 
     Task after (current);
 
-    if (!prior.empty())
+    if (prior != "")
     {
       Task before (prior);
 
@@ -1084,7 +1084,7 @@ void TDB2::show_diff (
         std::string priorValue   = before.get (att.first);
         std::string currentValue = after.get  (att.first);
 
-        if (!currentValue.empty())
+        if (currentValue != "")
         {
           row = view.addRow ();
           view.set (row, 0, att.first);
@@ -1135,7 +1135,7 @@ void TDB2::show_diff (
   {
     // Create reference tasks.
     Task before;
-    if (!prior.empty())
+    if (prior != "")
       before.parse (prior);
 
     Task after (current);
@@ -1199,7 +1199,7 @@ void TDB2::show_diff (
         }
 
         // Attribute deleted.
-        else if (!before_att.empty() && after_att.empty())
+        else if (before_att != "" && after_att == "")
         {
           row = view.addRow ();
           view.set (row, 0, '-' + a + ':', color_red);
@@ -1210,7 +1210,7 @@ void TDB2::show_diff (
         }
 
         // Attribute added.
-        else if (before_att.empty() && !after_att.empty())
+        else if (before_att == "" && after_att != "")
         {
           row = view.addRow ();
           view.set (row, 0, '-' + a + ':', color_red);
@@ -1417,7 +1417,7 @@ const std::vector <Task> TDB2::children (Task& task)
 std::string TDB2::uuid (int id)
 {
   std::string result = pending.uuid (id);
-  if (result.empty())
+  if (result == "")
     result = completed.uuid (id);
 
   return result;
