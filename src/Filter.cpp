@@ -57,7 +57,7 @@ bool domSource (const std::string& identifier, Variant& value)
 void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
   Timer timer;
-  _startCount = static_cast<int>(input.size ());
+  _startCount = (int) input.size ();
 
   Context::getContext ().cli2.prepareFilter ();
 
@@ -92,7 +92,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   else
     output = input;
 
-  _endCount = static_cast<int>(output.size ());
+  _endCount = (int) output.size ();
   Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
   Context::getContext ().time_filter_us += timer.total_us ();
 }
@@ -117,7 +117,7 @@ void Filter::subset (std::vector <Task>& output)
     Timer timer_pending;
     auto pending = Context::getContext ().tdb2.pending.get_tasks ();
     Context::getContext ().time_filter_us -= timer_pending.total_us ();
-    _startCount = static_cast<int>(pending.size ());
+    _startCount = (int) pending.size ();
 
     Eval eval;
     eval.addSource (domSource);
@@ -145,7 +145,7 @@ void Filter::subset (std::vector <Task>& output)
       Timer timer_completed;
       auto completed = Context::getContext ().tdb2.completed.get_tasks ();
       Context::getContext ().time_filter_us -= timer_completed.total_us ();
-      _startCount += static_cast<int>(completed.size ());
+      _startCount += (int) completed.size ();
 
       for (auto& task : completed)
       {
@@ -174,7 +174,7 @@ void Filter::subset (std::vector <Task>& output)
     Context::getContext ().time_filter_us -= pending_completed.total_us ();
   }
 
-  _endCount = static_cast<int>(output.size ());
+  _endCount = (int) output.size ();
   Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
   Context::getContext ().time_filter_us += timer.total_us ();
 }
@@ -209,8 +209,8 @@ bool Filter::pendingOnly () const
   int countPending   = 0;
   int countWaiting   = 0;
   int countRecurring = 0;
-  int countId        = static_cast<int>(Context::getContext ().cli2._id_ranges.size ());
-  int countUUID      = static_cast<int>(Context::getContext ().cli2._uuid_list.size ());
+  int countId        = (int) Context::getContext ().cli2._id_ranges.size ();
+  int countUUID      = (int) Context::getContext ().cli2._uuid_list.size ();
   int countOr        = 0;
   int countXor       = 0;
   int countNot       = 0;
