@@ -166,7 +166,19 @@ const std::string& Variant::source () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Variant& Variant::operator= (const Variant& other) = default;
+Variant& Variant::operator= (const Variant& other)
+{
+  _type     = other._type;
+  _bool     = other._bool;
+  _integer  = other._integer;
+  _real     = other._real;
+  _string   = other._string;
+  _date     = other._date;
+  _duration = other._duration;
+  _source   = other._source;
+
+  return *this;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Variant::operator&& (const Variant& other) const
