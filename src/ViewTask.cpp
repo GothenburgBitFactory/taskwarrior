@@ -119,13 +119,13 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   std::vector <int> minimal;
   std::vector <int> ideal;
 
-  for (std::size_t i = 0; i < _columns.size (); ++i)
+  for (unsigned int i = 0; i < _columns.size (); ++i)
   {
     // Headers factor in to width calculations.
     unsigned int global_min = 0;
     unsigned int global_ideal = global_min;
 
-    for (std::size_t s = 0; s < sequence.size (); ++s)
+    for (unsigned int s = 0; s < sequence.size (); ++s)
     {
       if (static_cast<int>(s) >= _truncate_lines && _truncate_lines != 0)
         break;
@@ -240,7 +240,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   // Compose column headers.
   unsigned int max_lines = 0;
   std::vector <std::vector <std::string>> headers;
-  for (std::size_t c = 0; c < _columns.size (); ++c)
+  for (unsigned int c = 0; c < _columns.size (); ++c)
   {
     headers.emplace_back();
     _columns[c]->renderHeader (headers[c], widths[c], _sort[c] ? _sort_header : _header);
@@ -265,7 +265,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   {
     out += left_margin + extra;
 
-    for (std::size_t c = 0; c < _columns.size (); ++c)
+    for (unsigned int c = 0; c < _columns.size (); ++c)
     {
       if (c)
         out += intra;
@@ -293,7 +293,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   // Compose, render columns, in sequence.
   _rows = 0;
   std::vector <std::vector <std::string>> cells;
-  for (std::size_t s = 0; s < sequence.size (); ++s)
+  for (unsigned int s = 0; s < sequence.size (); ++s)
   {
     max_lines = 0;
 
@@ -310,7 +310,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       row_color.blend (rule_color);
     }
 
-    for (std::size_t c = 0; c < _columns.size (); ++c)
+    for (unsigned int c = 0; c < _columns.size (); ++c)
     {
       cells.emplace_back();
       _columns[c]->render (cells[c], data[sequence[s]], widths[c], row_color);
@@ -346,7 +346,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     {
       out += left_margin + (odd ? extra_odd : extra_even);
 
-      for (std::size_t c = 0; c < _columns.size (); ++c)
+      for (unsigned int c = 0; c < _columns.size (); ++c)
       {
         if (c)
         {
