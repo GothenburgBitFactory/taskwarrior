@@ -7,7 +7,7 @@ include (CheckStructHasMember)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "2.5.2")
+set (PROJECT_VERSION "2.5.3")
 include (CXXSniffer)
 
 OPTION (ENABLE_WASM "Enable 'wasm' support" OFF)
