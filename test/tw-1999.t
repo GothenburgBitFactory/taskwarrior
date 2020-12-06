@@ -51,7 +51,7 @@ class TestBug1999(TestCase):
         self.t(("stop", "1"))
 
         code, out, err = self.t(("info", "1"))
-        self.assertIn("duration: 0:10:00", out)
+        self.assertRegex(out, "duration: 0:10:0[0-5]")
 
 
 class TestBug1999Server(ServerTestCase):
@@ -77,7 +77,7 @@ class TestBug1999Server(ServerTestCase):
         self.t1("sync")
 
         code, out, err = self.t1(("info", "1"))
-        self.assertIn("duration: 0:10:00", out)
+        self.assertRegex(out, "duration: 0:10:0[0-5]")
 
         self.t2("sync")
 
