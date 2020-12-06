@@ -659,7 +659,6 @@ class TestBug1600(TestCase):
     def setUp(self):
         self.t = Task()
 
-    @unittest.expectedFailure
     def test_filter_plus_in_descriptions(self):
         """filter - description contains +"""
         self.t("add foobar1")

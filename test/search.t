@@ -244,7 +244,6 @@ class Test1469(TestCase):
         self.assertNotIn('foo', out)
 
 
-@unittest.expectedFailure
 class TestBug1479(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
