@@ -28,6 +28,7 @@
 
 import sys
 import os
+import platform
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -43,6 +44,10 @@ class TestDiagnostics(TestCase):
         self.t.config("taskd.trust",       "strict")
         self.t.config("taskd.credentials", "us/me/xxx")
 
+    @unittest.skipIf(
+        getattr(platform, 'dist', None) == None or 'xenial' == platform.dist()[-1],
+        'Skipping diagnostics test on Ubuntu 16.04, as it lacks full C++17 support'
+    )
     def test_diagnostics(self):
         """Task diag output, so we can monitor platforms"""
         self.t.activate_hooks()
