@@ -310,11 +310,10 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       row_color.blend (rule_color);
     }
 
-    const int off = overage < 0 ? overage : 0;
     for (unsigned int c = 0; c < _columns.size (); ++c)
     {
       cells.push_back (std::vector <std::string> ());
-      _columns[c]->render (cells[c], data[sequence[s]], widths[c]+off, row_color);
+      _columns[c]->render (cells[c], data[sequence[s]], widths[c], row_color);
 
       if (cells[c].size () > max_lines)
         max_lines = cells[c].size ();
