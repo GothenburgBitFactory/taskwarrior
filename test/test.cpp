@@ -110,11 +110,13 @@ void UnitTest::planMore (int extra)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::ok (bool expression, const std::string& name)
+void UnitTest::ok (bool expression, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
 
-  if (expression)
+  bool success = expression;
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -132,16 +134,19 @@ void UnitTest::ok (bool expression, const std::string& name)
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << '\n';
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::notok (bool expression, const std::string& name)
+void UnitTest::notok (bool expression, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
 
-  if (!expression)
+  bool success = not expression;
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -159,15 +164,18 @@ void UnitTest::notok (bool expression, const std::string& name)
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << '\n';
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::is (bool actual, bool expected, const std::string& name)
+void UnitTest::is (bool actual, bool expected, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
-  if (actual == expected)
+  bool success = (actual == expected);
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -185,6 +193,7 @@ void UnitTest::is (bool actual, bool expected, const std::string& name)
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: "
               << expected
               << "\n#      got: "
@@ -194,10 +203,12 @@ void UnitTest::is (bool actual, bool expected, const std::string& name)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::is (size_t actual, size_t expected, const std::string& name)
+void UnitTest::is (size_t actual, size_t expected, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
-  if (actual == expected)
+  bool success = (actual == expected);
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -215,6 +226,7 @@ void UnitTest::is (size_t actual, size_t expected, const std::string& name)
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: "
               << expected
               << "\n#      got: "
@@ -224,10 +236,12 @@ void UnitTest::is (size_t actual, size_t expected, const std::string& name)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::is (int actual, int expected, const std::string& name)
+void UnitTest::is (int actual, int expected, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
-  if (actual == expected)
+  bool success = (actual == expected);
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -245,6 +259,7 @@ void UnitTest::is (int actual, int expected, const std::string& name)
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: "
               << expected
               << "\n#      got: "
@@ -254,10 +269,12 @@ void UnitTest::is (int actual, int expected, const std::string& name)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::is (double actual, double expected, const std::string& name)
+void UnitTest::is (double actual, double expected, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
-  if (actual == expected)
+  bool success = (actual == expected);
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -275,6 +292,7 @@ void UnitTest::is (double actual, double expected, const std::string& name)
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: "
               << expected
               << "\n#      got: "
@@ -284,10 +302,12 @@ void UnitTest::is (double actual, double expected, const std::string& name)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::is (double actual, double expected, double tolerance, const std::string& name)
+void UnitTest::is (double actual, double expected, double tolerance, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
-  if (fabs (actual - expected) <= tolerance)
+  bool success = (fabs (actual - expected) <= tolerance);
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -305,6 +325,7 @@ void UnitTest::is (double actual, double expected, double tolerance, const std::
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: "
               << expected
               << "\n#      got: "
@@ -314,10 +335,12 @@ void UnitTest::is (double actual, double expected, double tolerance, const std::
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::is (unsigned char actual, unsigned char expected, const std::string& name)
+void UnitTest::is (unsigned char actual, unsigned char expected, const std::string& name, bool expfail /* = false */)
 {
   ++_counter;
-  if (actual == expected)
+  bool success = (actual == expected);
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -335,6 +358,7 @@ void UnitTest::is (unsigned char actual, unsigned char expected, const std::stri
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: "
               << expected
               << "\n#      got: "
@@ -347,10 +371,13 @@ void UnitTest::is (unsigned char actual, unsigned char expected, const std::stri
 void UnitTest::is (
   const std::string& actual,
   const std::string& expected,
-  const std::string& name)
+  const std::string& name,
+  bool expfail /* = false */)
 {
   ++_counter;
-  if (actual == expected)
+  bool success = (actual == expected);
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -368,6 +395,7 @@ void UnitTest::is (
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: '"
               << expected
               << "'"
@@ -381,10 +409,13 @@ void UnitTest::is (
 void UnitTest::is (
   const char* actual,
   const char* expected,
-  const std::string& name)
+  const std::string& name,
+  bool expfail /* = false */)
 {
   ++_counter;
-  if (! strcmp (actual, expected))
+  bool success = (! strcmp (actual, expected));
+
+  if (success and ! expfail)
   {
     ++_passed;
     std::cout << green ("ok")
@@ -402,6 +433,7 @@ void UnitTest::is (
               << _counter
               << " - "
               << name
+              << (expfail ? (success ? " # FIXED" : " # TODO") : "")
               << "\n# expected: '"
               << expected
               << "'"
