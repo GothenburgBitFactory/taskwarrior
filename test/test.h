@@ -38,16 +38,16 @@ public:
 
   void plan (int);
   void planMore (int);
-  void ok (bool, const std::string&);
-  void notok (bool, const std::string&);
-  void is (bool, bool, const std::string&);
-  void is (size_t, size_t, const std::string&);
-  void is (int, int, const std::string&);
-  void is (double, double, const std::string&);
-  void is (double, double, double, const std::string&);
-  void is (unsigned char, unsigned char, const std::string&);
-  void is (const std::string&, const std::string&, const std::string&);
-  void is (const char*, const char*, const std::string&);
+  void ok (bool, const std::string&, bool expfail = false);
+  void notok (bool, const std::string&, bool expfail = false);
+  void is (bool, bool, const std::string&, bool expfail = false);
+  void is (size_t, size_t, const std::string&, bool expfail = false);
+  void is (int, int, const std::string&, bool expfail = false);
+  void is (double, double, const std::string&, bool expfail = false);
+  void is (double, double, double, const std::string&, bool expfail = false);
+  void is (unsigned char, unsigned char, const std::string&, bool expfail = false);
+  void is (const std::string&, const std::string&, const std::string&, bool expfail = false);
+  void is (const char*, const char*, const std::string&, bool expfail = false);
   void diag (const std::string&);
   void pass (const std::string&);
   void fail (const std::string&);
