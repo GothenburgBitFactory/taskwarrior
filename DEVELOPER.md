@@ -148,7 +148,7 @@
 # Current Code Base Condition
 
 **'master' branch**:
- * 2.5.1 Current release, locked.
+ * 2.5.2 Current release, locked.
 
  **'2.6.0' branch**:
   * Current development branch no plans yet.
