@@ -42,7 +42,7 @@ There are many binary packages available, but to install from source requires:
 * git
 * cmake
 * make
-* C++ compiler, currently gcc 5.0+ or clang 3.4+ for full C++14 support
+* C++ compiler, currently gcc 7.1+ or clang 5.0+ for full C++17 support
 
 Download the tarball, and expand it:
 
