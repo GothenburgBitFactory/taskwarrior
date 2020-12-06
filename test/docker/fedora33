@@ -1,7 +1,7 @@
-FROM fedora:28
+FROM fedora:33
 
 RUN dnf update -y
-RUN dnf install python3 git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime -y
+RUN dnf install python3 git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime glibc-langpack-en -y
 
 # Setup language environment
 ENV LC_ALL en_US.UTF-8
