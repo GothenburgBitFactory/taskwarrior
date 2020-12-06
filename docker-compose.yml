@@ -24,18 +24,18 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-ubuntu1604:
-    build:
-        context: .
-        dockerfile: test/docker/ubuntu1604
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
   test-ubuntu1804:
     build:
         context: .
         dockerfile: test/docker/ubuntu1804
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-ubuntu2004:
+    build:
+        context: .
+        dockerfile: test/docker/ubuntu2004
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
