@@ -8,6 +8,14 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
+  test-centos8:
+    build:
+        context: .
+        dockerfile: test/docker/centos8
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
   test-fedora31:
     build:
         context: .
