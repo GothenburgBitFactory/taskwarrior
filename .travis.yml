@@ -46,9 +46,9 @@ matrix:
       os: linux
       env: CONTAINER=opensuse1500
       services: docker
-    - name: "Archlinux 2018.01.01"
+    - name: "Archlinux Base (Rolling)"
       os: linux
-      env: CONTAINER=arch180101
+      env: CONTAINER=arch
       services: docker
     - name: "Mac OS X 10.13"
       os: osx
