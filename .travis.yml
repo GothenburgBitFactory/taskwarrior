@@ -6,6 +6,10 @@ matrix:
       os: linux
       env: CONTAINER=centos7
       services: docker
+    - name: "Centos 8"
+      os: linux
+      env: CONTAINER=centos8
+      services: docker
     - name: "Fedora 31"
       os: linux
       env: CONTAINER=fedora31
