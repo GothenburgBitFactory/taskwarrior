@@ -162,6 +162,10 @@ class TAPTestResult(unittest.result.TestResult):
                 self.stream.writeln("{0} {1} - {2}: {3} # TODO".format(
                     color("not ok", "yellow"), self.testsRun, filename, desc)
                 )
+            elif status == "UNEXPECTED_SUCCESS":
+                self.stream.writeln("{0} {1} - {2}: {3} # FIXED".format(
+                    color("not ok", "yellow"), self.testsRun, filename, desc)
+                )
             else:
                 self.stream.writeln("{0} {1} - {2}: {3}".format(
                     color("not ok", "red"), self.testsRun, filename, desc)
