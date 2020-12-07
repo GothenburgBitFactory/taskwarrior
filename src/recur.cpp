@@ -234,6 +234,9 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
   {
     int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
+    if (increment <= 0)
+      throw format ("Recurrence period '{1}' is equivalent to {2} and hence invalid.", period, increment);
+
     m += increment;
     while (m > 12)
     {
@@ -252,6 +255,9 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
            period[period.length () - 1] == 'M')
   {
     int increment = strtol (period.substr (1, period.length () - 2).c_str (), nullptr, 10);
+
+    if (increment <= 0)
+      throw format ("Recurrence period '{1}' is equivalent to {2} and hence invalid.", period, increment);
 
     m += increment;
     while (m > 12)
@@ -285,6 +291,9 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
   else if (unicodeLatinDigit (period[0]) && period[period.length () - 1] == 'q')
   {
     int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
+
+    if (increment <= 0)
+      throw format ("Recurrence period '{1}' is equivalent to {2} and hence invalid.", period, increment);
 
     m += 3 * increment;
     while (m > 12)
