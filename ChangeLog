@@ -1,5 +1,16 @@
 2.6.0 () -
 
+- TW #2004 "shell" should not be expand to "exec tasksh"
+           Thanks to Arvedui
+- TW #2007 Compute number of current tasks correctly
+           Thanks to Janik Rabe
+- TW #2093 wrong order under projects command
+           Thanks to Beka, mrossinek.
+
+------ current release ---------------------------
+
+2.5.2 (2020-12-05) - b0c17d11639dc6e783befd89c8508f2abb9b4287
+
 - TD-64   sync conflict deleted all annotations of the task
           Thanks to Markus Beppler, Konstantin Vorobyev
 - TI-91   Timewarrior does not compile on DragonFly
@@ -69,8 +80,6 @@
           Thanks to Dan Callahan
 - TW-1903 grammar error -- There are 1 local changes.
           Thanks to Eric Hymowitz
-- TW-1904/#2093 Fix issue #1917 [TW-1904] wrong order under projects command #2093
-          Thanks to Beka, mrossinek.
 - TW-1906/#1919 sync sub-command is missing from task(1) manual page
           Thanks to rjc
 - TW-1910 unreachable statement
@@ -97,10 +106,6 @@
            Thanks to Kirill Bobyrev
 - TW #1922 Can't find export scripts
            Thanks to tom-doerr
-- TW #2004 "shell" should not be expand to "exec tasksh"
-           Thanks to Arvedui
-- TW #2007 Compute number of current tasks correctly
-           Thanks to Janik Rabe
 - TW #2020 reserved.lines is not affecting the burndown height
            Thanks to ad₋si
 - TW #2047 Exiting the task editor with an error code doesn't remove the lock file
@@ -115,6 +120,10 @@
            Thanks to Janik Rabe
 - #2132    JSON encode/decode string UDAs
            Thanks to Chad Phillips
+- #2176    How to get the full list of tags ?
+           Thanks to Adrien Lemaire
+- #2091    duration of task is set to a wrong and extremely big value
+           Thanks to Wray Zheng
 - Added 'juhannus' as a synonym for 'midsommarafton'
            Thanks to Lynoure Braakman
 - Deprecated the 'DUETODAY' virtual tag, which is a synonym for the 'TODAY'
@@ -122,7 +131,8 @@
 - Removed deprecated 'alias._query' setting.
 - Fixed ambiguity in the esp-ESP localization
            Thanks to Fidel Mato
-- Changed behaviour of the 'new-uuid' verbosity option.
+- Deprecated the 'new-uuid' verbosity option, since its functionality can be
+  removed by merging with 'new-id'.
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
 - Added 'QUARTER' virtual tag.
@@ -150,8 +160,10 @@
 - Removed compile-time language settings and I18N.
 - Workaround for alias grep=rg in fish
           Thanks to Lionel Miller.
+- Do not set CMP0037 on CMake 3.11.0 and above
+          Thanks to Janik Rabe
 
------- current release ---------------------------
+------ old releases ------------------------------
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
@@ -262,8 +274,6 @@
           (thanks to Gordon Ball).
 - The 'run_all' script was not correctly using exit code 0 when all tests pass
           (thanks to Gordon Ball).
-
------- old releases ------------------------------
 
 2.5.0 (2015-10-21) dd5968a61b1fab258b38879cfdbb7d67f1bcd550
 

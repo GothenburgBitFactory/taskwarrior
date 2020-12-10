@@ -1,47 +1,25 @@
 
 New Features in Taskwarrior 2.6.0
 
-  - The 'QUARTER' virtual tag was added.
-  - Improved compatibility with SmartOS, OmniOS and OpenIndiana.
-  - New DOM references: annotations.count, tw.syncneeded, tw.program, tw.args,
-    tw.width, tw.height, tw.version.
-  - Renovated 'timesheet' command with a more compact report that accepts a
-    filter, and has a default filter showing the last four weeks of completed
-    and started tasks.
-  - The message telling you to sync now indicates how many local changes will be
-    synced.
   - The logic behind new-uuid verbosity option changed. New-uuid now overrides
     new-id if set and will cause Taskwarrior to display UUIDs instead of IDs
     for new tasks (machine friendly).
 
 New Commands in Taskwarrior 2.6.0
 
-  - The 'purge' command was added, which completely removes old tasks.
-  - Added new 'history.weekly', 'history.daily', 'ghistory.weekly',
-    'ghistory.daily' reports.
+  -
 
 New Configuration Options in Taskwarrior 2.6.0
 
-  - The 'default.scheduled' date/duration works just like 'default.due'.
-  - The 'report.timesheet.filter' setting controls the tasks shown by the
-    'timesheet' command.
+  -
 
 Newly Deprecated Features in Taskwarrior 2.6.0
 
-  - The 'DUETODAY' virtual tag is a synonym for the 'TODAY' virtual tag, and is
-    not needed.
-  - The use of alternate Boolean configuration settings is deprecated. Use values
-    "0" for off, and "1" for on.  Avoid used of "on", "off", "true", "t",
-    "false", "f", "yes", "y", "no", "n".
   - The 'PARENT' and 'CHILD' virtual tags are replaced by 'TEMPLATE' and 'INSTANCE'.
-  - The 'context.program', 'context.args', 'context.width' and 'context.height'
-    DOM references are deprecated, replaced by similarly-named 'tw.xxx'
-    references.
 
 Removed Features in 2.6.0
 
-  - Removed 'alias._query' default configuration.
-  - Translations are no longer supported.
+  -
 
 Known Issues
 
