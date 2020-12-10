@@ -462,23 +462,23 @@ int Context::initialize (int argc, const char** argv)
     // XDG_CONFIG_HOME doesn't count as an override (no warning header)
     if (! rc_file.exists ())
     {
-        const char* xdg_config_home = getenv ("XDG_CONFIG_HOME");
-        if (! xdg_config_home)
-            xdg_config_home = format ("{1}/.config", home_dir).c_str();
+      const char* xdg_config_home = getenv ("XDG_CONFIG_HOME");
+      if (! xdg_config_home)
+        xdg_config_home = format ("{1}/.config", home_dir).c_str();
 
-        // https://github.com/GothenburgBitFactory/libshared/issues/32
-        std::string rcfile_path = format ("{1}/task/taskrc", xdg_config_home);
+      // https://github.com/GothenburgBitFactory/libshared/issues/32
+      std::string rcfile_path = format ("{1}/task/taskrc", xdg_config_home);
 
-        File maybe_rc_file = File (rcfile_path);
-        if ( maybe_rc_file.exists ())
-            rc_file = maybe_rc_file;
+      File maybe_rc_file = File (rcfile_path);
+      if ( maybe_rc_file.exists ())
+        rc_file = maybe_rc_file;
     }
 
     char *override = getenv ("TASKRC");
     if (override)
     {
-        rc_file = File (override);
-        taskrc_overridden = true;
+      rc_file = File (override);
+      taskrc_overridden = true;
     }
 
     taskrc_overridden =
