@@ -53,6 +53,11 @@ class TestDiagnostics(TestCase):
         self.assertIn("edlin", out)
         self.assertIn("strict", out)
 
+    def test_64bit_time_t(self):
+        """Test that time_t has size of 64 bits"""
+        code, out, err = self.t.diag()
+        self.assertIn("+time_t64", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
