@@ -462,9 +462,14 @@ int Context::initialize (int argc, const char** argv)
     // XDG_CONFIG_HOME doesn't count as an override (no warning header)
     if (! rc_file.exists ())
     {
-      const char* xdg_config_home = getenv ("XDG_CONFIG_HOME");
-      if (! xdg_config_home)
-        xdg_config_home = format ("{1}/.config", home_dir).c_str();
+      // Use XDG_CONFIG_HOME if defined, otherwise default to ~/.config
+      std::string xdg_config_home;
+      const char* env_xdg_config_home = getenv ("XDG_CONFIG_HOME");
+
+      if (env_xdg_config_home)
+        xdg_config_home = format ("{1}/.config", env_xdg_config_home);
+      else
+        xdg_config_home = format ("{1}/.config", home_dir);
 
       // https://github.com/GothenburgBitFactory/libshared/issues/32
       std::string rcfile_path = format ("{1}/task/taskrc", xdg_config_home);
