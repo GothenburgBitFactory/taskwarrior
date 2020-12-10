@@ -6,6 +6,8 @@
            Thanks to Janik Rabe
 - TW #2093 wrong order under projects command
            Thanks to Beka, mrossinek.
+- TW #2290 Support moving the config file to XDG_CONFIG_HOME
+           Thanks to Julien Rabinow.
 
 ------ current release ---------------------------
 

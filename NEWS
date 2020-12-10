@@ -1,9 +1,12 @@
-
 New Features in Taskwarrior 2.6.0
 
   - The logic behind new-uuid verbosity option changed. New-uuid now overrides
     new-id if set and will cause Taskwarrior to display UUIDs instead of IDs
     for new tasks (machine friendly).
+  - If ~/.taskrc is not found, Taskwarrior will look for its configuration in
+    $XDG_CONFIG_HOME/task/taskrc (defaulting to ~/.config/task/taskrc). This
+    allows users to setup their Taskwarrior to follow XDG standard without
+    using config overrides.
 
 New Commands in Taskwarrior 2.6.0
 
