@@ -471,6 +471,10 @@ int Context::initialize (int argc, const char** argv)
       else
         xdg_config_home = format ("{1}/.config", home_dir);
 
+      // Ensure the path does not end with '/'
+      if (xdg_config_home.back () == '/')
+        xdg_config_home.pop_back();
+
       // https://github.com/GothenburgBitFactory/libshared/issues/32
       std::string rcfile_path = format ("{1}/task/taskrc", xdg_config_home);
 
