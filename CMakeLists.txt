@@ -168,7 +168,7 @@ set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSo
                                 "_CPack_Packages" "cmake_install" "install_manifest" "Makefile$"
                                 "test" "package-config" "misc/*" "src/task$" "src/calc$" "performance"
                                 "src/libtask.a" "src/columns/libcolumns.a" "src/commands/libcommands.a"
-                                "task-.*.tar.gz" "commit.h" "commit.h.in" "cmake.h" "cmake.h.in" "\\\\.gitmodules"
+                                "swp$" "src/lex$" "task-.*.tar.gz" "commit.h" "cmake.h" "\\\\.gitmodules"
                                 "src/libshared/\\\\.git" ".github/" "\\\\.travis.yml" ".*\\\\.gitignore$"
-                                "\\\\.git/" "swp$" "src/lex$")
+                                "src/liblibshared.a" "docker-compose.yml" "\\\\.git/")
 include (CPack)
