@@ -467,7 +467,7 @@ int Context::initialize (int argc, const char** argv)
       const char* env_xdg_config_home = getenv ("XDG_CONFIG_HOME");
 
       if (env_xdg_config_home)
-        xdg_config_home = format ("{1}/.config", env_xdg_config_home);
+        xdg_config_home = format ("{1}", env_xdg_config_home);
       else
         xdg_config_home = format ("{1}/.config", home_dir);
 
