@@ -116,6 +116,7 @@ static void colorizeTagged (Task& task, const Color& base, Color& c, bool merge)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeActive (Task& task, const Color& base, Color& c, bool merge)
 {
+  // TODO: Not consistent with the implementation of the +ACTIVE virtual tag
   if (task.has ("start") &&
       !task.has ("end"))
     applyColor (base, c, merge);
@@ -124,6 +125,7 @@ static void colorizeActive (Task& task, const Color& base, Color& c, bool merge)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeScheduled (Task& task, const Color& base, Color& c, bool merge)
 {
+  // TODO: Not consistent with the implementation of the +SCHEDULED virtual tag
   if (task.has ("scheduled") &&
       Datetime (task.get_date ("scheduled")) <= now)
     applyColor (base, c, merge);
