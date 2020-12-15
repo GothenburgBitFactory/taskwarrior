@@ -585,7 +585,6 @@ std::string CmdCalendar::renderMonths (
                 case Task::dateEarlierToday:
                 case Task::dateLaterToday:
                   cellColor.blend (color_duetoday);
-                  cellColor.blend (color_duetoday);
                   break;
 
                 case Task::dateBeforeToday:
