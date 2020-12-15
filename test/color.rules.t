@@ -81,16 +81,17 @@ class TestColorRules(TestCase):
         cls.t('3 modify depends:4')
         cls.t('add tomorrow  due:tomorrow')               # 5
         cls.t('add yesterday due:yesterday')              # 6
-        cls.t('add someday   due:yesterday')              # 7
-        cls.t('add project_x project:x')                  # 8
-        cls.t('add pri_h     priority:H')                 # 9
-        cls.t('add pri_m     priority:M')                 # 10
-        cls.t('add pri_l     priority:L')                 # 11
-        cls.t('add keyword')                              # 12
-        cls.t('add tag_x     +x')                         # 13
-        cls.t('add uda_xxx_1 xxx:1')                      # 14
-        cls.t('add uda_xxx_4 xxx:4')                      # 15
-        cls.t('add recurring due:tomorrow recur:1week')   # 16 # Keep this last
+        cls.t('add anhourago due:now-1h')                 # 7
+        cls.t('add someday   due:yesterday')              # 8
+        cls.t('add project_x project:x')                  # 9
+        cls.t('add pri_h     priority:H')                 # 10
+        cls.t('add pri_m     priority:M')                 # 11
+        cls.t('add pri_l     priority:L')                 # 12
+        cls.t('add keyword')                              # 13
+        cls.t('add tag_x     +x')                         # 14
+        cls.t('add uda_xxx_1 xxx:1')                      # 15
+        cls.t('add uda_xxx_4 xxx:4')                      # 16
+        cls.t('add recurring due:tomorrow recur:1week')   # 17 Keep this last
 
     def test_control(self):
         """No color on control task."""
@@ -120,6 +121,11 @@ class TestColorRules(TestCase):
     def test_due_yesterday(self):
         """Overdue color rule."""
         code, out, err = self.t('/yesterday/ info')
+        self.assertIn('\x1b[34m', out)
+
+    def test_due_anhourago(self):
+        """Overdue color rule from an hour ago."""
+        code, out, err = self.t('/anhourago/ info')
         self.assertIn('\x1b[34m', out)
 
     def test_due_tomorrow(self):
