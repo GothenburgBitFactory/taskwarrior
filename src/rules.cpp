@@ -252,9 +252,10 @@ static void colorizeOverdue (Task& task, const Color& base, Color& c, bool merge
   if (task.has ("due"))
   {
     auto status = task.getStatus ();
+    auto dateState = task.getDateState ("due");
     if (status != Task::completed &&
         status != Task::deleted   &&
-        task.getDateState ("due") == Task::dateBeforeToday)
+        (dateState == Task::dateBeforeToday || dateState == Task::dateEarlierToday))
       applyColor (base, c, merge);
   }
 }
