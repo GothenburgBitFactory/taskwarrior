@@ -278,7 +278,7 @@ void Task::set (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::set (const std::string& name, int value)
+void Task::set (const std::string& name, long long int value)
 {
   data[name] = format (value);
 
