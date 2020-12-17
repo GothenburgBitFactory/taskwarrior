@@ -6,6 +6,7 @@ mod macros;
 mod shared;
 
 mod add;
+mod append;
 mod debug;
 mod delete;
 mod done;
@@ -14,6 +15,7 @@ mod info;
 mod list;
 mod modify;
 mod pending;
+mod prepend;
 mod start;
 mod stop;
 mod sync;
@@ -22,6 +24,7 @@ mod sync;
 pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
     vec![
         add::cmd(),
+        append::cmd(),
         debug::cmd(),
         delete::cmd(),
         done::cmd(),
@@ -30,6 +33,7 @@ pub(crate) fn subcommands() -> Vec<Box<dyn SubCommand>> {
         list::cmd(),
         modify::cmd(),
         pending::cmd(),
+        prepend::cmd(),
         start::cmd(),
         stop::cmd(),
         sync::cmd(),
