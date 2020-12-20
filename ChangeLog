@@ -8,8 +8,9 @@
            Thanks to Beka, mrossinek.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
            Thanks to Julien Rabinow.
--          Width determination of Unicode characters now works for up to
+- TW #2333 Width determination of Unicode characters now works for up to
            Unicode 11 (from Unicode 5). Emojis are correctly displayed.
+           Thanks to Adam Monsen.
 
 ------ current release ---------------------------
 
