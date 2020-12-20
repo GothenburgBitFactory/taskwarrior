@@ -44,7 +44,7 @@ add_library (libshared libshared/src/Color.cpp         libshared/src/Color.h
                        libshared/src/shared.cpp        libshared/src/shared.h
                        libshared/src/unicode.cpp       libshared/src/unicode.h
                        libshared/src/utf8.cpp          libshared/src/utf8.h
-                       libshared/src/wcwidth6.cpp)
+                                                       libshared/src/wcwidth.h)
 
 add_executable (task_executable main.cpp)
 add_executable (calc_executable calc.cpp)
