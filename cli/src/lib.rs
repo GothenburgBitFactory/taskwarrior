@@ -39,6 +39,7 @@ mod argparse;
 mod invocation;
 mod settings;
 mod table;
+mod usage;
 
 /// The main entry point for the command-line interface.  This builds an Invocation
 /// from the particulars of the operating-system interface, and then executes it.

@@ -1,14 +1,10 @@
+use crate::usage::Usage;
 use failure::Fallible;
+use std::io;
 
 pub(crate) fn execute(command_name: String, summary: bool) -> Fallible<()> {
-    println!(
-        "TaskChampion {}: Personal task-tracking",
-        env!("CARGO_PKG_VERSION")
-    );
-    if !summary {
-        println!();
-        println!("USAGE: {} [args]\n(help output TODO)", command_name); // TODO
-    }
+    let usage = Usage::new();
+    usage.write_help(io::stdout(), command_name, summary)?;
     Ok(())
 }
 

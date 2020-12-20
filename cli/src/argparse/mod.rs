@@ -24,4 +24,10 @@ pub(crate) use modification::{DescriptionMod, Modification};
 pub(crate) use report::Report;
 pub(crate) use subcommand::Subcommand;
 
+use crate::usage::Usage;
+
 type ArgList<'a> = &'a [&'a str];
+
+pub(crate) fn get_usage(usage: &mut Usage) {
+    Subcommand::get_usage(usage);
+}
