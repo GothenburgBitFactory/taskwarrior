@@ -1,8 +1,10 @@
 use crate::replica::Replica;
 use crate::taskstorage::TaskMap;
 use chrono::prelude::*;
-use failure::Fallible;
+use failure::{format_err, Fallible};
 use log::trace;
+use std::convert::{TryFrom, TryInto};
+use std::fmt;
 use uuid::Uuid;
 
 pub type Timestamp = DateTime<Utc>;
@@ -81,6 +83,56 @@ impl Status {
     }
 }
 
+/// A Tag is a newtype around a String that limits its values to valid tags.
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Default)]
+pub struct Tag(String);
+
+impl Tag {
+    fn from_str(value: &str) -> Result<Tag, failure::Error> {
+        if let Some(c) = value.chars().next() {
+            if !c.is_ascii_alphabetic() {
+                return Err(format_err!("first character of a tag must be alphabetic"));
+            }
+        } else {
+            return Err(format_err!("tags must have at least one character"));
+        }
+        if !value.chars().skip(1).all(|c| c.is_ascii_alphanumeric()) {
+            return Err(format_err!(
+                "characters of a tag after the first must be alphanumeric"
+            ));
+        }
+        Ok(Self(String::from(value)))
+    }
+}
+
+impl TryFrom<&str> for Tag {
+    type Error = failure::Error;
+
+    fn try_from(value: &str) -> Result<Tag, Self::Error> {
+        Self::from_str(value)
+    }
+}
+
+impl TryFrom<&String> for Tag {
+    type Error = failure::Error;
+
+    fn try_from(value: &String) -> Result<Tag, Self::Error> {
+        Self::from_str(&value[..])
+    }
+}
+
+impl fmt::Display for Tag {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl AsRef<str> for Tag {
+    fn as_ref(&self) -> &str {
+        self.0.as_ref()
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub struct Annotation {
     pub entry: Timestamp,
@@ -155,13 +207,31 @@ impl Task {
             .any(|(k, v)| k.starts_with("start.") && v.is_empty())
     }
 
+    /// Check if this task has the given tag
+    pub fn has_tag(&self, tag: &Tag) -> bool {
+        self.taskmap.contains_key(&format!("tag.{}", tag))
+    }
+
+    /// Iterate over the task's tags
+    pub fn get_tags(&self) -> impl Iterator<Item = Tag> + '_ {
+        self.taskmap.iter().filter_map(|(k, _)| {
+            if k.starts_with("tag.") {
+                if let Ok(tag) = (&k[4..]).try_into() {
+                    return Some(tag);
+                }
+                // note that invalid "tag.*" are ignored
+            }
+            None
+        })
+    }
+
     pub fn get_modified(&self) -> Option<DateTime<Utc>> {
         self.get_timestamp("modified")
     }
 
     // -- utility functions
 
-    pub fn get_timestamp(&self, property: &str) -> Option<DateTime<Utc>> {
+    fn get_timestamp(&self, property: &str) -> Option<DateTime<Utc>> {
         if let Some(ts) = self.taskmap.get(property) {
             if let Ok(ts) = ts.parse() {
                 return Some(Utc.timestamp(ts, 0));
@@ -204,7 +274,7 @@ impl<'r> TaskMut<'r> {
             return Ok(());
         }
         let k = format!("start.{}", Utc::now().timestamp());
-        self.set_string(k.as_ref(), Some(String::from("")))
+        self.set_string(k, Some(String::from("")))
     }
 
     /// Stop the task by adding the current timestamp to all un-resolved "start.<timestamp>" keys.
@@ -224,6 +294,16 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
+    /// Add a tag to this task.  Does nothing if the tag is already present.
+    pub fn add_tag(&mut self, tag: &Tag) -> Fallible<()> {
+        self.set_string(format!("tag.{}", tag), Some("".to_owned()))
+    }
+
+    /// Remove a tag from this task.  Does nothing if the tag is not present.
+    pub fn remove_tag(&mut self, tag: &Tag) -> Fallible<()> {
+        self.set_string(format!("tag.{}", tag), None)
+    }
+
     // -- utility functions
 
     fn lastmod(&mut self) -> Fallible<()> {
@@ -238,17 +318,18 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
-    fn set_string(&mut self, property: &str, value: Option<String>) -> Fallible<()> {
+    fn set_string<S: Into<String>>(&mut self, property: S, value: Option<String>) -> Fallible<()> {
+        let property = property.into();
         self.lastmod()?;
         self.replica
-            .update_task(self.task.uuid, property, value.as_ref())?;
+            .update_task(self.task.uuid, &property, value.as_ref())?;
 
         if let Some(v) = value {
             trace!("task {}: set property {}={:?}", self.task.uuid, property, v);
             self.task.taskmap.insert(property.to_string(), v);
         } else {
             trace!("task {}: remove property {}", self.task.uuid, property);
-            self.task.taskmap.remove(property);
+            self.task.taskmap.remove(&property);
         }
         Ok(())
     }
@@ -298,6 +379,30 @@ mod test {
     }
 
     #[test]
+    fn test_tag_from_str() {
+        let tag: Tag = "abc".try_into().unwrap();
+        assert_eq!(tag, Tag("abc".to_owned()));
+
+        let tag: Result<Tag, _> = "".try_into();
+        assert_eq!(
+            tag.unwrap_err().to_string(),
+            "tags must have at least one character"
+        );
+
+        let tag: Result<Tag, _> = "999".try_into();
+        assert_eq!(
+            tag.unwrap_err().to_string(),
+            "first character of a tag must be alphabetic"
+        );
+
+        let tag: Result<Tag, _> = "abc!!".try_into();
+        assert_eq!(
+            tag.unwrap_err().to_string(),
+            "characters of a tag after the first must be alphanumeric"
+        );
+    }
+
+    #[test]
     fn test_is_active_never_started() {
         let task = Task::new(Uuid::new_v4(), TaskMap::new());
         assert!(!task.is_active());
@@ -325,6 +430,55 @@ mod test {
         );
 
         assert!(!task.is_active());
+    }
+
+    #[test]
+    fn test_has_tag() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("tag.abc"), String::from(""))]
+                .drain(..)
+                .collect(),
+        );
+
+        assert!(task.has_tag(&"abc".try_into().unwrap()));
+        assert!(!task.has_tag(&"def".try_into().unwrap()));
+    }
+
+    #[test]
+    fn test_get_tags() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![
+                (String::from("tag.abc"), String::from("")),
+                (String::from("tag.def"), String::from("")),
+            ]
+            .drain(..)
+            .collect(),
+        );
+
+        let mut tags: Vec<_> = task.get_tags().collect();
+        tags.sort();
+        assert_eq!(tags, vec![Tag("abc".to_owned()), Tag("def".to_owned())]);
+    }
+
+    #[test]
+    fn test_get_tags_invalid_tags() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![
+                (String::from("tag.ok"), String::from("")),
+                (String::from("tag."), String::from("")),
+                (String::from("tag.123"), String::from("")),
+                (String::from("tag.a!!"), String::from("")),
+            ]
+            .drain(..)
+            .collect(),
+        );
+
+        // only "ok" is OK
+        let tags: Vec<_> = task.get_tags().collect();
+        assert_eq!(tags, vec![Tag("ok".to_owned())]);
     }
 
     fn count_taskmap(task: &TaskMut, f: fn(&(&String, &String)) -> bool) -> usize {
@@ -413,6 +567,34 @@ mod test {
                 count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
                 2
             );
+        });
+    }
+
+    #[test]
+    fn test_add_tags() {
+        with_mut_task(|mut task| {
+            task.add_tag(&Tag("abc".to_owned())).unwrap();
+            assert!(task.taskmap.contains_key("tag.abc"));
+            task.reload().unwrap();
+            assert!(task.taskmap.contains_key("tag.abc"));
+            // redundant add has no effect..
+            task.add_tag(&Tag("abc".to_owned())).unwrap();
+            assert!(task.taskmap.contains_key("tag.abc"));
+        });
+    }
+
+    #[test]
+    fn test_remove_tags() {
+        with_mut_task(|mut task| {
+            task.add_tag(&Tag("abc".to_owned())).unwrap();
+            task.reload().unwrap();
+            assert!(task.taskmap.contains_key("tag.abc"));
+
+            task.remove_tag(&Tag("abc".to_owned())).unwrap();
+            assert!(!task.taskmap.contains_key("tag.abc"));
+            // redundant remove has no effect..
+            task.remove_tag(&Tag("abc".to_owned())).unwrap();
+            assert!(!task.taskmap.contains_key("tag.abc"));
         });
     }
 

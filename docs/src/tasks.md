@@ -31,9 +31,9 @@ The following keys, and key formats, are defined:
 * `description` - the one-line summary of the task
 * `modified` - the time of the last modification of this task
 * `start.<timestamp>` - either an empty string (representing work on the task to the task that has not been stopped) or a timestamp (representing the time that work stopped)
+* `tag.<tag>` - indicates this task has tag `<tag>` (value is an empty string)
 
 The following are not yet implemented:
 
 * `dep.<uuid>` - indicates this task depends on `<uuid>` (value is an empty string)
-* `tag.<tag>` - indicates this task has tag `<tag>` (value is an empty string)
 * `annotation.<timestamp>` - value is an annotation created at the given time
