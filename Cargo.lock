@@ -2264,6 +2264,7 @@ name = "taskchampion-cli"
 version = "0.2.0"
 dependencies = [
  "assert_cmd",
+ "atty",
  "config",
  "dirs 3.0.1",
  "env_logger",

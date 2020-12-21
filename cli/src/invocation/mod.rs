@@ -18,7 +18,7 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
 
-    let mut w = StandardStream::stdout(ColorChoice::Auto);
+    let mut w = get_writer()?;
 
     // This function examines the command and breaks out the necessary bits to call one of the
     // `execute` functions in a submodule of `cmd`.
@@ -109,4 +109,13 @@ fn get_server(settings: &Config) -> Fallible<Box<dyn server::Server>> {
         origin,
         client_id,
     })?)
+}
+
+/// Get a WriteColor implementation based on whether the output is a tty.
+fn get_writer() -> Fallible<StandardStream> {
+    Ok(StandardStream::stdout(if atty::is(atty::Stream::Stdout) {
+        ColorChoice::Auto
+    } else {
+        ColorChoice::Never
+    }))
 }
