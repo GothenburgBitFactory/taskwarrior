@@ -1,9 +1,14 @@
 use crate::argparse::{DescriptionMod, Modification};
 use failure::Fallible;
 use taskchampion::TaskMut;
+use termcolor::WriteColor;
 
 /// Apply the given modification
-pub(super) fn apply_modification(task: &mut TaskMut, modification: &Modification) -> Fallible<()> {
+pub(super) fn apply_modification<W: WriteColor>(
+    w: &mut W,
+    task: &mut TaskMut,
+    modification: &Modification,
+) -> Fallible<()> {
     match modification.description {
         DescriptionMod::Set(ref description) => task.set_description(description.clone())?,
         DescriptionMod::Prepend(ref description) => {
@@ -27,7 +32,7 @@ pub(super) fn apply_modification(task: &mut TaskMut, modification: &Modification
         task.stop()?;
     }
 
-    println!("modified task {}", task.get_uuid());
+    write!(w, "modified task {}\n", task.get_uuid())?;
 
     Ok(())
 }

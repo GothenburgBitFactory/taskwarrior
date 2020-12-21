@@ -4,6 +4,7 @@ use crate::argparse::{Command, Subcommand};
 use config::Config;
 use failure::Fallible;
 use taskchampion::{server, Replica, ReplicaConfig, ServerConfig, Uuid};
+use termcolor::{ColorChoice, StandardStream};
 
 mod cmd;
 mod filter;
@@ -17,6 +18,8 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
 
+    let mut w = StandardStream::stdout(ColorChoice::Auto);
+
     // This function examines the command and breaks out the necessary bits to call one of the
     // `execute` functions in a submodule of `cmd`.
 
@@ -26,11 +29,11 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
         Command {
             subcommand: Subcommand::Help { summary },
             command_name,
-        } => return cmd::help::execute(command_name, summary),
+        } => return cmd::help::execute(&mut w, command_name, summary),
         Command {
             subcommand: Subcommand::Version,
             ..
-        } => return cmd::version::execute(),
+        } => return cmd::version::execute(&mut w),
         _ => {}
     };
 
@@ -39,7 +42,7 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
         Command {
             subcommand: Subcommand::Add { modification },
             ..
-        } => return cmd::add::execute(&mut replica, modification),
+        } => return cmd::add::execute(&mut w, &mut replica, modification),
 
         Command {
             subcommand:
@@ -48,29 +51,29 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
                     modification,
                 },
             ..
-        } => return cmd::modify::execute(&mut replica, filter, modification),
+        } => return cmd::modify::execute(&mut w, &mut replica, filter, modification),
 
         Command {
             subcommand: Subcommand::List { report },
             ..
-        } => return cmd::list::execute(&mut replica, report),
+        } => return cmd::list::execute(&mut w, &mut replica, report),
 
         Command {
             subcommand: Subcommand::Info { filter, debug },
             ..
-        } => return cmd::info::execute(&mut replica, filter, debug),
+        } => return cmd::info::execute(&mut w, &mut replica, filter, debug),
 
         Command {
             subcommand: Subcommand::Gc,
             ..
-        } => return cmd::gc::execute(&mut replica),
+        } => return cmd::gc::execute(&mut w, &mut replica),
 
         Command {
             subcommand: Subcommand::Sync,
             ..
         } => {
             let mut server = get_server(&settings)?;
-            return cmd::sync::execute(&mut replica, &mut server);
+            return cmd::sync::execute(&mut w, &mut replica, &mut server);
         }
 
         // handled in the first match, but here to ensure this match is exhaustive

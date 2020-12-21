@@ -4,8 +4,14 @@ use crate::table;
 use failure::Fallible;
 use prettytable::{cell, row, Table};
 use taskchampion::Replica;
+use termcolor::WriteColor;
 
-pub(crate) fn execute(replica: &mut Replica, filter: Filter, debug: bool) -> Fallible<()> {
+pub(crate) fn execute<W: WriteColor>(
+    w: &mut W,
+    replica: &mut Replica,
+    filter: Filter,
+    debug: bool,
+) -> Fallible<()> {
     for task in filtered_tasks(replica, &filter)? {
         let uuid = task.get_uuid();
 
@@ -25,7 +31,7 @@ pub(crate) fn execute(replica: &mut Replica, filter: Filter, debug: bool) -> Fal
             t.add_row(row![b->"Status", task.get_status()]);
             t.add_row(row![b->"Active", task.is_active()]);
         }
-        t.printstd();
+        t.print(w)?;
     }
 
     Ok(())
@@ -34,16 +40,22 @@ pub(crate) fn execute(replica: &mut Replica, filter: Filter, debug: bool) -> Fal
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::invocation::cmd::test::test_replica;
+    use crate::invocation::cmd::test::*;
+    use taskchampion::Status;
 
     #[test]
     fn test_info() {
+        let mut w = test_writer();
         let mut replica = test_replica();
+        replica
+            .new_task(Status::Pending, "my task".to_owned())
+            .unwrap();
+
         let filter = Filter {
             ..Default::default()
         };
         let debug = false;
-        execute(&mut replica, filter, debug).unwrap();
-        // output is to stdout, so this is as much as we can check
+        execute(&mut w, &mut replica, filter, debug).unwrap();
+        assert!(w.into_string().contains("my task"));
     }
 }

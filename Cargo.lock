@@ -2274,6 +2274,7 @@ dependencies = [
  "prettytable-rs",
  "taskchampion",
  "tempdir",
+ "termcolor",
  "textwrap 0.12.1",
 ]
 

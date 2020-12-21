@@ -12,6 +12,7 @@ log = "^0.4.11"
 nom = "*"
 prettytable-rs = "^0.8.0"
 textwrap = "0.12.1"
+termcolor = "1.1.2"
 
 [dependencies.config]
 default-features = false
