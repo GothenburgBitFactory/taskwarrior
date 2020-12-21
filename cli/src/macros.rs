@@ -10,3 +10,17 @@ macro_rules! argv {
         &[$($x),*][..]
     );
 }
+
+/// Create a hashset, similar to vec!
+#[cfg(test)]
+macro_rules! set(
+    { $($key:expr),+ } => {
+        {
+            let mut s = ::std::collections::HashSet::new();
+            $(
+                s.insert($key);
+            )+
+            s
+        }
+     };
+);
