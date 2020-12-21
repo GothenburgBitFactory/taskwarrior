@@ -1,3 +1,4 @@
 [submodule "src/libshared"]
 	path = src/libshared
-	url = https://github.com/GothenburgBitFactory/libshared.git
+	url = https://github.com/tasksoldier/libshared.git
+	branch = year2038dueproblem
