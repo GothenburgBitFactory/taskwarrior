@@ -1,19 +1,29 @@
 [package]
-name = "taskchampion-cli"
-version = "0.2.0"
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
 edition = "2018"
+name = "taskchampion-cli"
+version = "0.2.0"
 
 [dependencies]
-clap = "^2.33.0"
-taskchampion = { path = "../taskchampion" }
-failure = "^0.1.8"
-prettytable-rs = "^0.8.0"
-config = { version="^0.10.1", default-features=false, features=["yaml"] }
 dirs = "^3.0.1"
-log = "^0.4.11"
 env_logger = "^0.8.2"
+failure = "^0.1.8"
+log = "^0.4.11"
+nom = "*"
+prettytable-rs = "^0.8.0"
+textwrap = "0.12.1"
+termcolor = "1.1.2"
+atty = "0.2.14"
+
+[dependencies.config]
+default-features = false
+features = ["yaml"]
+version = "^0.10.1"
+
+[dependencies.taskchampion]
+path = "../taskchampion"
 
 [dev-dependencies]
 assert_cmd = "^1.0.1"
 predicates = "^1.0.5"
+tempdir = "^0.3.7"

@@ -2,13 +2,11 @@ use failure::Fallible;
 use std::collections::HashMap;
 use uuid::Uuid;
 
-#[cfg(test)]
 mod inmemory;
 mod kv;
 mod operation;
 
 pub use self::kv::KVStorage;
-#[cfg(test)]
 pub use inmemory::InMemoryStorage;
 
 pub use operation::Operation;
