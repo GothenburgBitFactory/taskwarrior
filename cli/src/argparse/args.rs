@@ -58,7 +58,6 @@ pub(super) fn id_list(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 /// Recognizes a tag prefixed with `+` and returns the tag value
-#[allow(dead_code)] // tags not implemented yet
 pub(super) fn plus_tag(input: &str) -> IResult<&str, &str> {
     fn to_tag(input: (char, &str)) -> Result<&str, ()> {
         Ok(input.1)
@@ -70,7 +69,6 @@ pub(super) fn plus_tag(input: &str) -> IResult<&str, &str> {
 }
 
 /// Recognizes a tag prefixed with `-` and returns the tag value
-#[allow(dead_code)] // tags not implemented yet
 pub(super) fn minus_tag(input: &str) -> IResult<&str, &str> {
     fn to_tag(input: (char, &str)) -> Result<&str, ()> {
         Ok(input.1)
@@ -79,18 +77,6 @@ pub(super) fn minus_tag(input: &str) -> IResult<&str, &str> {
         all_consuming(tuple((char('-'), recognize(pair(alpha1, alphanumeric0))))),
         to_tag,
     )(input)
-}
-
-/// Recognizes a tag prefixed with either `-` or `+`, returning true for + and false for -
-#[allow(dead_code)] // tags not implemented yet
-pub(super) fn tag(input: &str) -> IResult<&str, (bool, &str)> {
-    fn to_plus(input: &str) -> Result<(bool, &str), ()> {
-        Ok((true, input))
-    }
-    fn to_minus(input: &str) -> Result<(bool, &str), ()> {
-        Ok((false, input))
-    }
-    alt((map_res(plus_tag, to_plus), map_res(minus_tag, to_minus)))(input)
 }
 
 /// Consume a single argument from an argument list that matches the given string parser (one
@@ -131,14 +117,10 @@ mod test {
     #[test]
     fn test_arg_matching() {
         assert_eq!(
-            arg_matching(tag)(argv!["+foo", "bar"]).unwrap(),
-            (argv!["bar"], (true, "foo"))
+            arg_matching(plus_tag)(argv!["+foo", "bar"]).unwrap(),
+            (argv!["bar"], "foo")
         );
-        assert_eq!(
-            arg_matching(tag)(argv!["-foo", "bar"]).unwrap(),
-            (argv!["bar"], (false, "foo"))
-        );
-        assert!(arg_matching(tag)(argv!["foo", "bar"]).is_err());
+        assert!(arg_matching(plus_tag)(argv!["foo", "bar"]).is_err());
     }
 
     #[test]
@@ -159,16 +141,6 @@ mod test {
         assert!(minus_tag("-abc123  ").is_err());
         assert!(minus_tag("  -abc123").is_err());
         assert!(minus_tag("-1abc").is_err());
-    }
-
-    #[test]
-    fn test_tag() {
-        assert_eq!(tag("-abc").unwrap().1, (false, "abc"));
-        assert_eq!(tag("+abc123").unwrap().1, (true, "abc123"));
-        assert!(tag("+abc123 --").is_err());
-        assert!(tag("-abc123  ").is_err());
-        assert!(tag("  -abc123").is_err());
-        assert!(tag("-1abc").is_err());
     }
 
     #[test]

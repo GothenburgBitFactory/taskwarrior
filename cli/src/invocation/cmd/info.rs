@@ -30,6 +30,11 @@ pub(crate) fn execute<W: WriteColor>(
             t.add_row(row![b->"Description", task.get_description()]);
             t.add_row(row![b->"Status", task.get_status()]);
             t.add_row(row![b->"Active", task.is_active()]);
+            let mut tags: Vec<_> = task.get_tags().map(|t| format!("+{}", t)).collect();
+            if !tags.is_empty() {
+                tags.sort();
+                t.add_row(row![b->"Tags", tags.join(" ")]);
+            }
         }
         t.print(w)?;
     }

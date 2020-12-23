@@ -1,6 +1,7 @@
-use super::args::{any, arg_matching};
+use super::args::{any, arg_matching, minus_tag, plus_tag};
 use super::ArgList;
-use nom::{combinator::*, multi::fold_many0, IResult};
+use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
+use std::collections::HashSet;
 use taskchampion::Status;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -34,13 +35,21 @@ pub struct Modification {
     /// Set the status
     pub status: Option<Status>,
 
-    /// Set the "active" status, that is, start (true) or stop (false) the task.
+    /// Set the "active" state, that is, start (true) or stop (false) the task.
     pub active: Option<bool>,
+
+    /// Add tags
+    pub add_tags: HashSet<String>,
+
+    /// Remove tags
+    pub remove_tags: HashSet<String>,
 }
 
 /// A single argument that is part of a modification, used internally to this module
 enum ModArg<'a> {
     Description(&'a str),
+    PlusTag(&'a str),
+    MinusTag(&'a str),
 }
 
 impl Modification {
@@ -55,11 +64,22 @@ impl Modification {
                         acc.description = DescriptionMod::Set(description.to_string());
                     }
                 }
+                ModArg::PlusTag(tag) => {
+                    acc.add_tags.insert(tag.to_owned());
+                }
+                ModArg::MinusTag(tag) => {
+                    acc.remove_tags.insert(tag.to_owned());
+                }
             }
             acc
         }
         fold_many0(
-            Self::description,
+            alt((
+                Self::plus_tag,
+                Self::minus_tag,
+                // this must come last
+                Self::description,
+            )),
             Modification {
                 ..Default::default()
             },
@@ -72,6 +92,20 @@ impl Modification {
             Ok(ModArg::Description(input))
         }
         map_res(arg_matching(any), to_modarg)(input)
+    }
+
+    fn plus_tag(input: ArgList) -> IResult<ArgList, ModArg> {
+        fn to_modarg(input: &str) -> Result<ModArg, ()> {
+            Ok(ModArg::PlusTag(input))
+        }
+        map_res(arg_matching(plus_tag), to_modarg)(input)
+    }
+
+    fn minus_tag(input: ArgList) -> IResult<ArgList, ModArg> {
+        fn to_modarg(input: &str) -> Result<ModArg, ()> {
+            Ok(ModArg::MinusTag(input))
+        }
+        map_res(arg_matching(minus_tag), to_modarg)(input)
     }
 }
 
@@ -105,6 +139,19 @@ mod test {
     }
 
     #[test]
+    fn test_add_tags() {
+        let (input, modification) = Modification::parse(argv!["+abc", "+def"]).unwrap();
+        assert_eq!(input.len(), 0);
+        assert_eq!(
+            modification,
+            Modification {
+                add_tags: set!["abc".to_owned(), "def".to_owned()],
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
     fn test_multi_arg_description() {
         let (input, modification) = Modification::parse(argv!["new", "desc", "fun"]).unwrap();
         assert_eq!(input.len(), 0);
@@ -112,6 +159,22 @@ mod test {
             modification,
             Modification {
                 description: DescriptionMod::Set("new desc fun".to_owned()),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn test_multi_arg_description_and_tags() {
+        let (input, modification) =
+            Modification::parse(argv!["new", "+next", "desc", "-daytime", "fun"]).unwrap();
+        assert_eq!(input.len(), 0);
+        assert_eq!(
+            modification,
+            Modification {
+                description: DescriptionMod::Set("new desc fun".to_owned()),
+                add_tags: set!["next".to_owned()],
+                remove_tags: set!["daytime".to_owned()],
                 ..Default::default()
             }
         );
