@@ -18,8 +18,9 @@ mod modification;
 mod report;
 mod subcommand;
 
+pub(crate) use args::TaskId;
 pub(crate) use command::Command;
-pub(crate) use filter::Filter;
+pub(crate) use filter::{Filter, Universe};
 pub(crate) use modification::{DescriptionMod, Modification};
 pub(crate) use report::Report;
 pub(crate) use subcommand::Subcommand;

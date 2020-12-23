@@ -15,7 +15,7 @@ pub(crate) fn execute<W: WriteColor>(
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::invocation::cmd::test::*;
+    use crate::invocation::test::*;
 
     #[test]
     fn test_summary() {

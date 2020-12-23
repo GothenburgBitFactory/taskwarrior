@@ -387,6 +387,7 @@ impl Sync {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::argparse::Universe;
 
     const EMPTY: Vec<&str> = vec![];
 
@@ -462,7 +463,8 @@ mod test {
     fn test_modify_description_multi() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 description: DescriptionMod::Set("foo bar".to_owned()),
@@ -479,7 +481,8 @@ mod test {
     fn test_append() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 description: DescriptionMod::Append("foo bar".to_owned()),
@@ -496,7 +499,8 @@ mod test {
     fn test_prepend() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 description: DescriptionMod::Prepend("foo bar".to_owned()),
@@ -513,7 +517,8 @@ mod test {
     fn test_done() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 status: Some(Status::Completed),
@@ -530,7 +535,8 @@ mod test {
     fn test_done_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 description: DescriptionMod::Set("now-finished".to_owned()),
@@ -548,7 +554,8 @@ mod test {
     fn test_start() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 active: Some(true),
@@ -565,7 +572,8 @@ mod test {
     fn test_start_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 active: Some(true),
@@ -583,7 +591,8 @@ mod test {
     fn test_stop() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 active: Some(false),
@@ -600,7 +609,8 @@ mod test {
     fn test_stop_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                id_list: Some(vec!["123".to_owned()]),
+                universe: Universe::for_ids(vec![123]),
+                ..Default::default()
             },
             modification: Modification {
                 description: DescriptionMod::Set("mod".to_owned()),
@@ -632,7 +642,8 @@ mod test {
         let subcommand = Subcommand::List {
             report: Report {
                 filter: Filter {
-                    id_list: Some(vec!["12".to_owned(), "13".to_owned()]),
+                    universe: Universe::for_ids(vec![12, 13]),
+                    ..Default::default()
                 },
             },
         };
@@ -647,7 +658,8 @@ mod test {
         let subcommand = Subcommand::Info {
             debug: false,
             filter: Filter {
-                id_list: Some(vec!["12".to_owned(), "13".to_owned()]),
+                universe: Universe::for_ids(vec![12, 13]),
+                ..Default::default()
             },
         };
         assert_eq!(
@@ -661,7 +673,8 @@ mod test {
         let subcommand = Subcommand::Info {
             debug: true,
             filter: Filter {
-                id_list: Some(vec!["12".to_owned()]),
+                universe: Universe::for_ids(vec![12]),
+                ..Default::default()
             },
         };
         assert_eq!(

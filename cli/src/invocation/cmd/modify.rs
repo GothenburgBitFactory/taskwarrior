@@ -23,8 +23,8 @@ pub(crate) fn execute<W: WriteColor>(
 mod test {
     use super::*;
     use crate::argparse::DescriptionMod;
-    use crate::invocation::cmd::test::test_replica;
-    use crate::invocation::cmd::test::*;
+    use crate::invocation::test::test_replica;
+    use crate::invocation::test::*;
     use taskchampion::Status;
 
     #[test]
