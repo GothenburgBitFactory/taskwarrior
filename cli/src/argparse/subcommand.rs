@@ -243,7 +243,7 @@ impl Modify {
         });
         u.subcommands.push(usage::Subcommand {
             name: "stop".to_owned(),
-            syntax: "[filter] start [modification]".to_owned(),
+            syntax: "[filter] stop [modification]".to_owned(),
             summary: "Stop tasks".to_owned(),
             description: dedent(
                 "
@@ -252,7 +252,7 @@ impl Modify {
         });
         u.subcommands.push(usage::Subcommand {
             name: "done".to_owned(),
-            syntax: "[filter] start [modification]".to_owned(),
+            syntax: "[filter] done [modification]".to_owned(),
             summary: "Mark tasks as completed".to_owned(),
             description: dedent(
                 "

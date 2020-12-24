@@ -20,7 +20,7 @@ mod subcommand;
 
 pub(crate) use args::TaskId;
 pub(crate) use command::Command;
-pub(crate) use filter::{Filter, Universe};
+pub(crate) use filter::{Condition, Filter, Universe};
 pub(crate) use modification::{DescriptionMod, Modification};
 pub(crate) use report::Report;
 pub(crate) use subcommand::Subcommand;
@@ -31,4 +31,6 @@ type ArgList<'a> = &'a [&'a str];
 
 pub(crate) fn get_usage(usage: &mut Usage) {
     Subcommand::get_usage(usage);
+    Filter::get_usage(usage);
+    Modification::get_usage(usage);
 }

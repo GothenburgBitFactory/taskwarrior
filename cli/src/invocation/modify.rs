@@ -34,14 +34,12 @@ pub(super) fn apply_modification<W: WriteColor>(
     }
 
     for tag in modification.add_tags.iter() {
-        // note that the parser should have already ensured that this tag was valid
-        let tag = tag.try_into()?;
+        let tag = tag.try_into()?; // see #111
         task.add_tag(&tag)?;
     }
 
     for tag in modification.remove_tags.iter() {
-        // note that the parser should have already ensured that this tag was valid
-        let tag = tag.try_into()?;
+        let tag = tag.try_into()?; // see #111
         task.remove_tag(&tag)?;
     }
 

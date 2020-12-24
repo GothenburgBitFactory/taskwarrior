@@ -1,6 +1,8 @@
-use super::args::{arg_matching, id_list, TaskId};
+use super::args::{arg_matching, id_list, minus_tag, plus_tag, TaskId};
 use super::ArgList;
-use nom::{combinator::*, multi::fold_many0, IResult};
+use crate::usage;
+use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
+use textwrap::dedent;
 
 /// A filter represents a selection of a particular set of tasks.
 ///
@@ -9,8 +11,12 @@ use nom::{combinator::*, multi::fold_many0, IResult};
 /// pending tasks, or all tasks.
 #[derive(Debug, PartialEq, Default, Clone)]
 pub(crate) struct Filter {
-    /// A list of numeric IDs or prefixes of UUIDs
+    /// The universe of tasks from which this filter can select
     pub(crate) universe: Universe,
+
+    /// A set of filter conditions, all of which must match a task in order for that task to be
+    /// selected.
+    pub(crate) conditions: Vec<Condition>,
 }
 
 /// The universe of tasks over which a filter should be applied.
@@ -39,15 +45,26 @@ impl Default for Universe {
     }
 }
 
+/// A condition which tasks must match to be accepted by the filter.
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) enum Condition {
+    /// Task has the given tag
+    HasTag(String),
+
+    /// Task does not have the given tag
+    NoTag(String),
+}
+
 /// Internal struct representing a parsed filter argument
 enum FilterArg {
     IdList(Vec<TaskId>),
+    Condition(Condition),
 }
 
 impl Filter {
     pub(super) fn parse(input: ArgList) -> IResult<ArgList, Filter> {
         fold_many0(
-            Self::id_list,
+            alt((Self::id_list, Self::plus_tag, Self::minus_tag)),
             Filter {
                 ..Default::default()
             },
@@ -68,6 +85,9 @@ impl Filter {
                     acc.universe = Universe::IdList(id_list);
                 }
             }
+            FilterArg::Condition(cond) => {
+                acc.conditions.push(cond);
+            }
         }
         acc
     }
@@ -77,6 +97,50 @@ impl Filter {
             Ok(FilterArg::IdList(input))
         }
         map_res(arg_matching(id_list), to_filterarg)(input)
+    }
+
+    fn plus_tag(input: ArgList) -> IResult<ArgList, FilterArg> {
+        fn to_filterarg(input: &str) -> Result<FilterArg, ()> {
+            Ok(FilterArg::Condition(Condition::HasTag(input.to_owned())))
+        }
+        map_res(arg_matching(plus_tag), to_filterarg)(input)
+    }
+
+    fn minus_tag(input: ArgList) -> IResult<ArgList, FilterArg> {
+        fn to_filterarg(input: &str) -> Result<FilterArg, ()> {
+            Ok(FilterArg::Condition(Condition::NoTag(input.to_owned())))
+        }
+        map_res(arg_matching(minus_tag), to_filterarg)(input)
+    }
+
+    pub(super) fn get_usage(u: &mut usage::Usage) {
+        u.filters.push(usage::Filter {
+            syntax: "TASKID[,TASKID,..]".to_owned(),
+            summary: "Specific tasks".to_owned(),
+            description: dedent(
+                "
+                Select only specific tasks.  Multiple tasks can be specified either separated by
+                commas or as separate arguments.  Each task may be specfied by its working-set
+                index (a small number) or by its UUID.  Prefixes of UUIDs broken at hyphens are
+                also supported, such as `b5664ef8-423d` or `b5664ef8`.",
+            ),
+        });
+        u.filters.push(usage::Filter {
+            syntax: "+TAG".to_owned(),
+            summary: "Tagged tasks".to_owned(),
+            description: dedent(
+                "
+                Select tasks with the given tag.",
+            ),
+        });
+        u.filters.push(usage::Filter {
+            syntax: "-TAG".to_owned(),
+            summary: "Un-tagged tasks".to_owned(),
+            description: dedent(
+                "
+                Select tasks that do not have the given tag.",
+            ),
+        });
     }
 }
 
@@ -155,6 +219,23 @@ mod test {
                     TaskId::WorkingSetId(1),
                     TaskId::PartialUuid("abcd1234".to_owned()),
                 ]),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn test_tags() {
+        let (input, filter) = Filter::parse(argv!["1", "+yes", "-no"]).unwrap();
+        assert_eq!(input.len(), 0);
+        assert_eq!(
+            filter,
+            Filter {
+                universe: Universe::IdList(vec![TaskId::WorkingSetId(1),]),
+                conditions: vec![
+                    Condition::HasTag("yes".into()),
+                    Condition::NoTag("no".into()),
+                ],
                 ..Default::default()
             }
         );
