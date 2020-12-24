@@ -8,7 +8,7 @@ pub(crate) fn execute<W: WriteColor>(
     summary: bool,
 ) -> Fallible<()> {
     let usage = Usage::new();
-    usage.write_help(w, command_name, summary)?;
+    usage.write_help(w, command_name.as_ref(), summary)?;
     Ok(())
 }
 

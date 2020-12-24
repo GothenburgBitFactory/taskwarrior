@@ -3,7 +3,6 @@ use super::{ArgList, DescriptionMod, Filter, Modification, Report};
 use crate::usage;
 use nom::{branch::alt, combinator::*, sequence::*, IResult};
 use taskchampion::Status;
-use textwrap::dedent;
 
 // IMPLEMENTATION NOTE:
 //
@@ -97,10 +96,10 @@ impl Version {
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "version".to_owned(),
-            syntax: "version".to_owned(),
-            summary: "Show the TaskChampion version".to_owned(),
-            description: "Show the version of the TaskChampion binary".to_owned(),
+            name: "version",
+            syntax: "version",
+            summary: "Show the TaskChampion version",
+            description: "Show the version of the TaskChampion binary",
         });
     }
 }
@@ -144,14 +143,12 @@ impl Add {
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "add".to_owned(),
-            syntax: "add [modification]".to_owned(),
-            summary: "Add a new task".to_owned(),
-            description: dedent(
-                "
+            name: "add",
+            syntax: "add [modification]",
+            summary: "Add a new task",
+            description: "
                 Add a new, pending task to the list of tasks.  The modification must include a
                 description.",
-            ),
         });
     }
 }
@@ -205,60 +202,49 @@ impl Modify {
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "modify".to_owned(),
-            syntax: "[filter] modify [modification]".to_owned(),
-            summary: "Modify tasks".to_owned(),
-            description: dedent(
-                "
+            name: "modify",
+            syntax: "[filter] modify [modification]",
+            summary: "Modify tasks",
+            description: "
                 Modify all tasks matching the filter.",
-            ),
         });
         u.subcommands.push(usage::Subcommand {
-            name: "prepend".to_owned(),
-            syntax: "[filter] prepend [modification]".to_owned(),
-            summary: "Prepend task description".to_owned(),
-            description: dedent(
-                "
+            name: "prepend",
+            syntax: "[filter] prepend [modification]",
+            summary: "Prepend task description",
+            description: "
                 Modify all tasks matching the filter by inserting the given description before each
                 task's description.",
-            ),
         });
         u.subcommands.push(usage::Subcommand {
-            name: "append".to_owned(),
-            syntax: "[filter] append [modification]".to_owned(),
-            summary: "Append task description".to_owned(),
-            description: dedent(
-                "
+            name: "append",
+            syntax: "[filter] append [modification]",
+            summary: "Append task description",
+            description: "
                 Modify all tasks matching the filter by adding the given description to the end
                 of each task's description.",
-            ),
         });
         u.subcommands.push(usage::Subcommand {
-            name: "start".to_owned(),
-            syntax: "[filter] start [modification]".to_owned(),
-            summary: "Start tasks".to_owned(),
-            description: dedent(
-                "
-                Start all tasks matching the filter, additionally applying any given modifications."),
+            name: "start",
+            syntax: "[filter] start [modification]",
+            summary: "Start tasks",
+            description: "
+                Start all tasks matching the filter, additionally applying any given modifications."
         });
         u.subcommands.push(usage::Subcommand {
-            name: "stop".to_owned(),
-            syntax: "[filter] stop [modification]".to_owned(),
-            summary: "Stop tasks".to_owned(),
-            description: dedent(
-                "
+            name: "stop",
+            syntax: "[filter] stop [modification]",
+            summary: "Stop tasks",
+            description: "
                 Stop all tasks matching the filter, additionally applying any given modifications.",
-            ),
         });
         u.subcommands.push(usage::Subcommand {
-            name: "done".to_owned(),
-            syntax: "[filter] done [modification]".to_owned(),
-            summary: "Mark tasks as completed".to_owned(),
-            description: dedent(
-                "
+            name: "done",
+            syntax: "[filter] done [modification]",
+            summary: "Mark tasks as completed",
+            description: "
                 Mark all tasks matching the filter as completed, additionally applying any given
                 modifications.",
-            ),
         });
     }
 }
@@ -278,13 +264,11 @@ impl List {
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "list".to_owned(),
-            syntax: "[filter] list".to_owned(),
-            summary: "List tasks".to_owned(),
-            description: dedent(
-                "
+            name: "list",
+            syntax: "[filter] list",
+            summary: "List tasks",
+            description: "
                 Show a list of the tasks matching the filter",
-            ),
         });
     }
 }
@@ -314,22 +298,16 @@ impl Info {
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "info".to_owned(),
-            syntax: "[filter] info".to_owned(),
-            summary: "Show tasks".to_owned(),
-            description: dedent(
-                "
-                Show information about all tasks matching the fiter.",
-            ),
+            name: "info",
+            syntax: "[filter] info",
+            summary: "Show tasks",
+            description: " Show information about all tasks matching the fiter.",
         });
         u.subcommands.push(usage::Subcommand {
-            name: "debug".to_owned(),
-            syntax: "[filter] debug".to_owned(),
-            summary: "Show task debug details".to_owned(),
-            description: dedent(
-                "
-                Show all key/value properties of the tasks matching the fiter.",
-            ),
+            name: "debug",
+            syntax: "[filter] debug",
+            summary: "Show task debug details",
+            description: " Show all key/value properties of the tasks matching the fiter.",
         });
     }
 }
@@ -346,14 +324,12 @@ impl Gc {
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "gc".to_owned(),
-            syntax: "gc".to_owned(),
-            summary: "Perform 'garbage collection'".to_owned(),
-            description: dedent(
-                "
+            name: "gc",
+            syntax: "gc",
+            summary: "Perform 'garbage collection'",
+            description: "
                 Perform 'garbage collection'.  This refreshes the list of pending tasks
                 and their short id's.",
-            ),
         });
     }
 }
@@ -370,16 +346,14 @@ impl Sync {
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "sync".to_owned(),
-            syntax: "sync".to_owned(),
-            summary: "Synchronize this replica".to_owned(),
-            description: dedent(
-                "
+            name: "sync",
+            syntax: "sync",
+            summary: "Synchronize this replica",
+            description: "
                 Synchronize this replica locally or against a remote server, as configured.
 
                 Synchronization is a critical part of maintaining the task database, and should
                 be done regularly, even if only locally.  It is typically run in a crontask.",
-            ),
         })
     }
 }

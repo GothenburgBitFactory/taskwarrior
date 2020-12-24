@@ -3,7 +3,6 @@
 
 use crate::argparse;
 use std::io::{Result, Write};
-use textwrap::indent;
 
 /// A top-level structure containing usage/help information for the entire CLI.
 #[derive(Debug, Default)]
@@ -32,7 +31,7 @@ impl Usage {
     pub(crate) fn write_help<W: Write>(
         &self,
         mut w: W,
-        command_name: String,
+        command_name: &str,
         summary: bool,
     ) -> Result<()> {
         write!(
@@ -45,15 +44,31 @@ impl Usage {
         for subcommand in self.subcommands.iter() {
             subcommand.write_help(&mut w, summary)?;
         }
-        write!(w, "Filter Expressions:\n\n")?;
-        write!(w, "Where [filter] appears above, zero or more of the following arguments can be used to limit\n")?;
-        write!(w, "the tasks concerned.\n\n")?;
+        writeln!(w, "Filter Expressions:\n")?;
+        writeln!(
+            w,
+            "{}",
+            indented(
+                "
+                Where [filter] appears above, zero or more of the following arguments can be used
+                to limit the tasks addressed by the subcommand.",
+                ""
+            )
+        )?;
         for filter in self.filters.iter() {
             filter.write_help(&mut w, summary)?;
         }
-        write!(w, "Modifications:\n\n")?;
-        write!(w, "Where [modification] appears above, zero or more of the following arguments can be used\n")?;
-        write!(w, "to modify the selected tasks.\n\n")?;
+        writeln!(w, "Modifications:\n")?;
+        writeln!(
+            w,
+            "{}",
+            indented(
+                "
+                Where [modification] appears above, zero or more of the following arguments can be
+                used to modify the selected tasks.",
+                ""
+            )
+        )?;
         for modification in self.modifications.iter() {
             modification.write_help(&mut w, summary)?;
         }
@@ -64,21 +79,32 @@ impl Usage {
     }
 }
 
+/// wrap an indented string
+fn indented(string: &str, indent: &str) -> String {
+    let termwidth = textwrap::termwidth();
+    let words: Vec<&str> = string.split_whitespace().collect();
+    let string = words.join(" ");
+    textwrap::indent(
+        textwrap::fill(string.trim(), termwidth - indent.len()).as_ref(),
+        indent,
+    )
+}
+
 /// Usage documentation for a subcommand
 #[derive(Debug, Default)]
 pub(crate) struct Subcommand {
     /// Name of the subcommand
-    pub(crate) name: String,
+    pub(crate) name: &'static str,
 
     /// Syntax summary, without command_name
-    pub(crate) syntax: String,
+    pub(crate) syntax: &'static str,
 
     /// One-line description of the subcommand.  Use an initial capital and no trailing period.
-    pub(crate) summary: String,
+    pub(crate) summary: &'static str,
 
     /// Multi-line description of the subcommand.  It's OK for this to duplicate summary, as the
     /// two are not displayed together.
-    pub(crate) description: String,
+    pub(crate) description: &'static str,
 }
 
 impl Subcommand {
@@ -86,11 +112,11 @@ impl Subcommand {
         if summary {
             writeln!(w, "  task {} - {}", self.name, self.summary)?;
         } else {
-            write!(
+            writeln!(
                 w,
-                "  task {}\n{}\n",
+                "  task {}\n{}",
                 self.syntax,
-                indent(self.description.trim(), "    ")
+                indented(self.description, "    ")
             )?;
         }
         Ok(())
@@ -101,26 +127,26 @@ impl Subcommand {
 #[derive(Debug, Default)]
 pub(crate) struct Filter {
     /// Syntax summary
-    pub(crate) syntax: String,
+    pub(crate) syntax: &'static str,
 
     /// One-line description of the filter.  Use all-caps words for placeholders.
-    pub(crate) summary: String,
+    pub(crate) summary: &'static str,
 
     /// Multi-line description of the filter.  It's OK for this to duplicate summary, as the
     /// two are not displayed together.
-    pub(crate) description: String,
+    pub(crate) description: &'static str,
 }
 
 impl Filter {
     fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
         if summary {
-            write!(w, "  {} - {}\n", self.syntax, self.summary)?;
+            writeln!(w, "  {} - {}", self.syntax, self.summary)?;
         } else {
             write!(
                 w,
                 "  {}\n{}\n",
                 self.syntax,
-                indent(self.description.trim(), "    ")
+                indented(self.description, "    ")
             )?;
         }
         Ok(())
@@ -131,26 +157,26 @@ impl Filter {
 #[derive(Debug, Default)]
 pub(crate) struct Modification {
     /// Syntax summary
-    pub(crate) syntax: String,
+    pub(crate) syntax: &'static str,
 
     /// One-line description of the modification.  Use all-caps words for placeholders.
-    pub(crate) summary: String,
+    pub(crate) summary: &'static str,
 
     /// Multi-line description of the modification.  It's OK for this to duplicate summary, as the
     /// two are not displayed together.
-    pub(crate) description: String,
+    pub(crate) description: &'static str,
 }
 
 impl Modification {
     fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
         if summary {
-            write!(w, "  {} - {}\n", self.syntax, self.summary)?;
+            writeln!(w, "  {} - {}", self.syntax, self.summary)?;
         } else {
-            write!(
+            writeln!(
                 w,
-                "  {}\n{}\n",
+                "  {}\n{}",
                 self.syntax,
-                indent(self.description.trim(), "    ")
+                indented(self.description, "    ")
             )?;
         }
         Ok(())

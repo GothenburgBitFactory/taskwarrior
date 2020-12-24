@@ -4,7 +4,6 @@ use crate::usage;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
 use std::collections::HashSet;
 use taskchampion::Status;
-use textwrap::dedent;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum DescriptionMod {
@@ -112,29 +111,23 @@ impl Modification {
 
     pub(super) fn get_usage(u: &mut usage::Usage) {
         u.modifications.push(usage::Modification {
-            syntax: "DESCRIPTION".to_owned(),
-            summary: "Set description".to_owned(),
-            description: dedent(
-                "
+            syntax: "DESCRIPTION",
+            summary: "Set description",
+            description: "
                 Set the task description.  Multiple arguments are combined into a single
                 space-separated description.",
-            ),
         });
         u.modifications.push(usage::Modification {
-            syntax: "+TAG".to_owned(),
-            summary: "Tag task".to_owned(),
-            description: dedent(
-                "
+            syntax: "+TAG",
+            summary: "Tag task",
+            description: "
                 Add the given tag to the task.",
-            ),
         });
         u.modifications.push(usage::Modification {
-            syntax: "-TAG".to_owned(),
-            summary: "Un-tag task".to_owned(),
-            description: dedent(
-                "
+            syntax: "-TAG",
+            summary: "Un-tag task",
+            description: "
                 Remove the given tag from the task.",
-            ),
         });
     }
 }
