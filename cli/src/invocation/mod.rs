@@ -10,6 +10,9 @@ mod cmd;
 mod filter;
 mod modify;
 
+#[cfg(test)]
+mod test;
+
 use filter::filtered_tasks;
 use modify::apply_modification;
 

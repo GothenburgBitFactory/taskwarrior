@@ -10,6 +10,20 @@ use nom::{
     sequence::*,
     Err, IResult,
 };
+use taskchampion::Uuid;
+
+/// A task identifier, as given in a filter command-line expression
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) enum TaskId {
+    /// A small integer identifying a working-set task
+    WorkingSetId(usize),
+
+    /// A full Uuid specifically identifying a task
+    Uuid(Uuid),
+
+    /// A prefix of a Uuid
+    PartialUuid(String),
+}
 
 /// Recognizes any argument
 pub(super) fn any(input: &str) -> IResult<&str, &str> {
@@ -21,38 +35,60 @@ pub(super) fn literal(literal: &'static str) -> impl Fn(&str) -> IResult<&str, &
     move |input: &str| all_consuming(nomtag(literal))(input)
 }
 
-/// Recognizes a comma-separated list of ID's (integers or UUID prefixes)
-pub(super) fn id_list(input: &str) -> IResult<&str, Vec<&str>> {
+/// Recognizes a comma-separated list of TaskIds
+pub(super) fn id_list(input: &str) -> IResult<&str, Vec<TaskId>> {
     fn hex_n(n: usize) -> impl Fn(&str) -> IResult<&str, &str> {
         move |input: &str| recognize(many_m_n(n, n, one_of(&b"0123456789abcdefABCDEF"[..])))(input)
+    }
+    fn uuid(input: &str) -> Result<TaskId, ()> {
+        Ok(TaskId::Uuid(Uuid::parse_str(input).map_err(|_| ())?))
+    }
+    fn partial_uuid(input: &str) -> Result<TaskId, ()> {
+        Ok(TaskId::PartialUuid(input.to_owned()))
+    }
+    fn working_set_id(input: &str) -> Result<TaskId, ()> {
+        Ok(TaskId::WorkingSetId(input.parse().map_err(|_| ())?))
     }
     all_consuming(separated_list1(
         char(','),
         alt((
-            recognize(tuple((
-                hex_n(8),
-                char('-'),
-                hex_n(4),
-                char('-'),
-                hex_n(4),
-                char('-'),
-                hex_n(4),
-                char('-'),
-                hex_n(12),
-            ))),
-            recognize(tuple((
-                hex_n(8),
-                char('-'),
-                hex_n(4),
-                char('-'),
-                hex_n(4),
-                char('-'),
-                hex_n(4),
-            ))),
-            recognize(tuple((hex_n(8), char('-'), hex_n(4), char('-'), hex_n(4)))),
-            recognize(tuple((hex_n(8), char('-'), hex_n(4)))),
-            hex_n(8),
-            digit1,
+            map_res(
+                recognize(tuple((
+                    hex_n(8),
+                    char('-'),
+                    hex_n(4),
+                    char('-'),
+                    hex_n(4),
+                    char('-'),
+                    hex_n(4),
+                    char('-'),
+                    hex_n(12),
+                ))),
+                uuid,
+            ),
+            map_res(
+                recognize(tuple((
+                    hex_n(8),
+                    char('-'),
+                    hex_n(4),
+                    char('-'),
+                    hex_n(4),
+                    char('-'),
+                    hex_n(4),
+                ))),
+                partial_uuid,
+            ),
+            map_res(
+                recognize(tuple((hex_n(8), char('-'), hex_n(4), char('-'), hex_n(4)))),
+                partial_uuid,
+            ),
+            map_res(
+                recognize(tuple((hex_n(8), char('-'), hex_n(4)))),
+                partial_uuid,
+            ),
+            map_res(hex_n(8), partial_uuid),
+            // note that an 8-decimal-digit value will be treated as a UUID
+            map_res(digit1, working_set_id),
         )),
     ))(input)
 }
@@ -154,29 +190,40 @@ mod test {
 
     #[test]
     fn test_id_list_single() {
-        assert_eq!(id_list("123").unwrap().1, vec!["123".to_owned()]);
+        assert_eq!(id_list("123").unwrap().1, vec![TaskId::WorkingSetId(123)]);
     }
 
     #[test]
     fn test_id_list_uuids() {
-        assert_eq!(id_list("12341234").unwrap().1, vec!["12341234".to_owned()]);
-        assert_eq!(id_list("1234abcd").unwrap().1, vec!["1234abcd".to_owned()]);
-        assert_eq!(id_list("abcd1234").unwrap().1, vec!["abcd1234".to_owned()]);
+        assert_eq!(
+            id_list("12341234").unwrap().1,
+            vec![TaskId::PartialUuid("12341234".to_owned())]
+        );
+        assert_eq!(
+            id_list("1234abcd").unwrap().1,
+            vec![TaskId::PartialUuid("1234abcd".to_owned())]
+        );
+        assert_eq!(
+            id_list("abcd1234").unwrap().1,
+            vec![TaskId::PartialUuid("abcd1234".to_owned())]
+        );
         assert_eq!(
             id_list("abcd1234-1234").unwrap().1,
-            vec!["abcd1234-1234".to_owned()]
+            vec![TaskId::PartialUuid("abcd1234-1234".to_owned())]
         );
         assert_eq!(
             id_list("abcd1234-1234-2345").unwrap().1,
-            vec!["abcd1234-1234-2345".to_owned()]
+            vec![TaskId::PartialUuid("abcd1234-1234-2345".to_owned())]
         );
         assert_eq!(
             id_list("abcd1234-1234-2345-3456").unwrap().1,
-            vec!["abcd1234-1234-2345-3456".to_owned()]
+            vec![TaskId::PartialUuid("abcd1234-1234-2345-3456".to_owned())]
         );
         assert_eq!(
             id_list("abcd1234-1234-2345-3456-0123456789ab").unwrap().1,
-            vec!["abcd1234-1234-2345-3456-0123456789ab".to_owned()]
+            vec![TaskId::Uuid(
+                Uuid::parse_str("abcd1234-1234-2345-3456-0123456789ab").unwrap()
+            )]
         );
     }
 
@@ -194,11 +241,11 @@ mod test {
     #[test]
     fn test_id_list_uuids_mixed() {
         assert_eq!(id_list("abcd1234,abcd1234-1234,abcd1234-1234-2345,abcd1234-1234-2345-3456,abcd1234-1234-2345-3456-0123456789ab").unwrap().1,
-        vec!["abcd1234".to_owned(),
-            "abcd1234-1234".to_owned(),
-            "abcd1234-1234-2345".to_owned(),
-            "abcd1234-1234-2345-3456".to_owned(),
-            "abcd1234-1234-2345-3456-0123456789ab".to_owned(),
+        vec![TaskId::PartialUuid("abcd1234".to_owned()),
+            TaskId::PartialUuid("abcd1234-1234".to_owned()),
+            TaskId::PartialUuid("abcd1234-1234-2345".to_owned()),
+            TaskId::PartialUuid("abcd1234-1234-2345-3456".to_owned()),
+            TaskId::Uuid(Uuid::parse_str("abcd1234-1234-2345-3456-0123456789ab").unwrap()),
         ]);
     }
 }

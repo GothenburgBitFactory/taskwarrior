@@ -12,7 +12,7 @@ pub(crate) fn execute<W: WriteColor>(w: &mut W) -> Fallible<()> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::invocation::cmd::test::*;
+    use crate::invocation::test::*;
 
     #[test]
     fn test_version() {

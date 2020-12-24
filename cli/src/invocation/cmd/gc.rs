@@ -11,7 +11,7 @@ pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Fallib
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::invocation::cmd::test::*;
+    use crate::invocation::test::*;
 
     #[test]
     fn test_gc() {
