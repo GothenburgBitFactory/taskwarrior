@@ -31,4 +31,6 @@ type ArgList<'a> = &'a [&'a str];
 
 pub(crate) fn get_usage(usage: &mut Usage) {
     Subcommand::get_usage(usage);
+    Filter::get_usage(usage);
+    Modification::get_usage(usage);
 }

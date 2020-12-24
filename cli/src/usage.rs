@@ -9,6 +9,8 @@ use textwrap::indent;
 #[derive(Debug, Default)]
 pub(crate) struct Usage {
     pub(crate) subcommands: Vec<Subcommand>,
+    pub(crate) filters: Vec<Filter>,
+    pub(crate) modifications: Vec<Modification>,
 }
 
 impl Usage {
@@ -43,6 +45,18 @@ impl Usage {
         for subcommand in self.subcommands.iter() {
             subcommand.write_help(&mut w, summary)?;
         }
+        write!(w, "Filter Expressions:\n\n")?;
+        write!(w, "Where [filter] appears above, zero or more of the following arguments can be used to limit\n")?;
+        write!(w, "the tasks concerned.\n\n")?;
+        for filter in self.filters.iter() {
+            filter.write_help(&mut w, summary)?;
+        }
+        write!(w, "Modifications:\n\n")?;
+        write!(w, "Where [modification] appears above, zero or more of the following arguments can be used\n")?;
+        write!(w, "to modify the selected tasks.\n\n")?;
+        for modification in self.modifications.iter() {
+            modification.write_help(&mut w, summary)?;
+        }
         if !summary {
             write!(w, "\nSee `task help` for more detail\n")?;
         }
@@ -50,6 +64,7 @@ impl Usage {
     }
 }
 
+/// Usage documentation for a subcommand
 #[derive(Debug, Default)]
 pub(crate) struct Subcommand {
     /// Name of the subcommand
@@ -74,6 +89,66 @@ impl Subcommand {
             write!(
                 w,
                 "  task {}\n{}\n",
+                self.syntax,
+                indent(self.description.trim(), "    ")
+            )?;
+        }
+        Ok(())
+    }
+}
+
+/// Usage documentation for a filter argument
+#[derive(Debug, Default)]
+pub(crate) struct Filter {
+    /// Syntax summary
+    pub(crate) syntax: String,
+
+    /// One-line description of the filter.  Use all-caps words for placeholders.
+    pub(crate) summary: String,
+
+    /// Multi-line description of the filter.  It's OK for this to duplicate summary, as the
+    /// two are not displayed together.
+    pub(crate) description: String,
+}
+
+impl Filter {
+    fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
+        if summary {
+            write!(w, "  {} - {}\n", self.syntax, self.summary)?;
+        } else {
+            write!(
+                w,
+                "  {}\n{}\n",
+                self.syntax,
+                indent(self.description.trim(), "    ")
+            )?;
+        }
+        Ok(())
+    }
+}
+
+/// Usage documentation for a modification argument
+#[derive(Debug, Default)]
+pub(crate) struct Modification {
+    /// Syntax summary
+    pub(crate) syntax: String,
+
+    /// One-line description of the modification.  Use all-caps words for placeholders.
+    pub(crate) summary: String,
+
+    /// Multi-line description of the modification.  It's OK for this to duplicate summary, as the
+    /// two are not displayed together.
+    pub(crate) description: String,
+}
+
+impl Modification {
+    fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
+        if summary {
+            write!(w, "  {} - {}\n", self.syntax, self.summary)?;
+        } else {
+            write!(
+                w,
+                "  {}\n{}\n",
                 self.syntax,
                 indent(self.description.trim(), "    ")
             )?;
