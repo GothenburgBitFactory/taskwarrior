@@ -215,8 +215,8 @@ impl Task {
     /// Iterate over the task's tags
     pub fn get_tags(&self) -> impl Iterator<Item = Tag> + '_ {
         self.taskmap.iter().filter_map(|(k, _)| {
-            if k.starts_with("tag.") {
-                if let Ok(tag) = (&k[4..]).try_into() {
+            if let Some(tag) = k.strip_prefix("tag.") {
+                if let Ok(tag) = tag.try_into() {
                     return Some(tag);
                 }
                 // note that invalid "tag.*" are ignored
@@ -326,7 +326,7 @@ impl<'r> TaskMut<'r> {
 
         if let Some(v) = value {
             trace!("task {}: set property {}={:?}", self.task.uuid, property, v);
-            self.task.taskmap.insert(property.to_string(), v);
+            self.task.taskmap.insert(property, v);
         } else {
             trace!("task {}: remove property {}", self.task.uuid, property);
             self.task.taskmap.remove(&property);

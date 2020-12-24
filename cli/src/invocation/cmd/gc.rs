@@ -4,7 +4,7 @@ use termcolor::WriteColor;
 
 pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Fallible<()> {
     replica.gc()?;
-    write!(w, "garbage collected.\n")?;
+    writeln!(w, "garbage collected.")?;
     Ok(())
 }
 

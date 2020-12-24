@@ -43,7 +43,7 @@ pub(super) fn apply_modification<W: WriteColor>(
         task.remove_tag(&tag)?;
     }
 
-    write!(w, "modified task {}\n", task.get_uuid())?;
+    writeln!(w, "modified task {}", task.get_uuid())?;
 
     Ok(())
 }

@@ -17,6 +17,7 @@ use filter::filtered_tasks;
 use modify::apply_modification;
 
 /// Invoke the given Command in the context of the given settings
+#[allow(clippy::needless_return)]
 pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
@@ -88,7 +89,7 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
             subcommand: Subcommand::Version,
             ..
         } => unreachable!(),
-    }
+    };
 }
 
 // utilities for invoke

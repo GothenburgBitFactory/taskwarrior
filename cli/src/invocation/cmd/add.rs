@@ -13,7 +13,7 @@ pub(crate) fn execute<W: WriteColor>(
         _ => "(no description)".to_owned(),
     };
     let t = replica.new_task(Status::Pending, description).unwrap();
-    write!(w, "added task {}\n", t.get_uuid())?;
+    writeln!(w, "added task {}", t.get_uuid())?;
     Ok(())
 }
 

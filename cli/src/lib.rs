@@ -1,3 +1,4 @@
+#![deny(clippy::all)]
 /*!
 This crate implements the command-line interface to TaskChampion.
 
