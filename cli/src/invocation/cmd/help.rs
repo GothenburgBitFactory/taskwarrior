@@ -20,12 +20,12 @@ mod test {
     #[test]
     fn test_summary() {
         let mut w = test_writer();
-        execute(&mut w, "task".to_owned(), true).unwrap();
+        execute(&mut w, s!("task"), true).unwrap();
     }
 
     #[test]
     fn test_long() {
         let mut w = test_writer();
-        execute(&mut w, "task".to_owned(), false).unwrap();
+        execute(&mut w, s!("task"), false).unwrap();
     }
 }

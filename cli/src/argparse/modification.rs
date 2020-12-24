@@ -155,7 +155,7 @@ mod test {
         assert_eq!(
             modification,
             Modification {
-                description: DescriptionMod::Set("newdesc".to_owned()),
+                description: DescriptionMod::Set(s!("newdesc")),
                 ..Default::default()
             }
         );
@@ -168,7 +168,7 @@ mod test {
         assert_eq!(
             modification,
             Modification {
-                add_tags: set!["abc".to_owned(), "def".to_owned()],
+                add_tags: set![s!("abc"), s!("def")],
                 ..Default::default()
             }
         );
@@ -181,7 +181,7 @@ mod test {
         assert_eq!(
             modification,
             Modification {
-                description: DescriptionMod::Set("new desc fun".to_owned()),
+                description: DescriptionMod::Set(s!("new desc fun")),
                 ..Default::default()
             }
         );
@@ -195,9 +195,9 @@ mod test {
         assert_eq!(
             modification,
             Modification {
-                description: DescriptionMod::Set("new desc fun".to_owned()),
-                add_tags: set!["next".to_owned()],
-                remove_tags: set!["daytime".to_owned()],
+                description: DescriptionMod::Set(s!("new desc fun")),
+                add_tags: set![s!("next")],
+                remove_tags: set![s!("daytime")],
                 ..Default::default()
             }
         );

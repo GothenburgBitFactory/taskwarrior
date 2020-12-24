@@ -33,14 +33,14 @@ mod test {
         let mut replica = test_replica();
 
         let task = replica
-            .new_task(Status::Pending, "old description".to_owned())
+            .new_task(Status::Pending, s!("old description"))
             .unwrap();
 
         let filter = Filter {
             ..Default::default()
         };
         let modification = Modification {
-            description: DescriptionMod::Set("new description".to_owned()),
+            description: DescriptionMod::Set(s!("new description")),
             ..Default::default()
         };
         execute(&mut w, &mut replica, filter, modification).unwrap();

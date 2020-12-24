@@ -52,9 +52,7 @@ mod test {
     fn test_info() {
         let mut w = test_writer();
         let mut replica = test_replica();
-        replica
-            .new_task(Status::Pending, "my task".to_owned())
-            .unwrap();
+        replica.new_task(Status::Pending, s!("my task")).unwrap();
 
         let filter = Filter {
             ..Default::default()

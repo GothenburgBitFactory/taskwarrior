@@ -27,7 +27,7 @@ mod test {
         let mut w = test_writer();
         let mut replica = test_replica();
         let modification = Modification {
-            description: DescriptionMod::Set("my description".to_owned()),
+            description: DescriptionMod::Set(s!("my description")),
             ..Default::default()
         };
         execute(&mut w, &mut replica, modification).unwrap();

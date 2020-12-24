@@ -124,9 +124,9 @@ mod test {
     fn exact_ids() {
         let mut replica = test_replica();
 
-        let t1 = replica.new_task(Status::Pending, "A".to_owned()).unwrap();
-        let t2 = replica.new_task(Status::Completed, "B".to_owned()).unwrap();
-        let _t = replica.new_task(Status::Pending, "C".to_owned()).unwrap();
+        let t1 = replica.new_task(Status::Pending, s!("A")).unwrap();
+        let t2 = replica.new_task(Status::Completed, s!("B")).unwrap();
+        let _t = replica.new_task(Status::Pending, s!("C")).unwrap();
         replica.gc().unwrap();
 
         let t1uuid = *t1.get_uuid();
@@ -144,16 +144,16 @@ mod test {
             .map(|t| t.get_description().to_owned())
             .collect();
         filtered.sort();
-        assert_eq!(vec!["A".to_owned(), "B".to_owned()], filtered);
+        assert_eq!(vec![s!("A"), s!("B")], filtered);
     }
 
     #[test]
     fn partial_ids() {
         let mut replica = test_replica();
 
-        let t1 = replica.new_task(Status::Pending, "A".to_owned()).unwrap();
-        let t2 = replica.new_task(Status::Completed, "B".to_owned()).unwrap();
-        let _t = replica.new_task(Status::Pending, "C".to_owned()).unwrap();
+        let t1 = replica.new_task(Status::Pending, s!("A")).unwrap();
+        let t2 = replica.new_task(Status::Completed, s!("B")).unwrap();
+        let _t = replica.new_task(Status::Pending, s!("C")).unwrap();
         replica.gc().unwrap();
 
         let t1uuid = *t1.get_uuid();
@@ -173,16 +173,16 @@ mod test {
             .map(|t| t.get_description().to_owned())
             .collect();
         filtered.sort();
-        assert_eq!(vec!["A".to_owned(), "B".to_owned()], filtered);
+        assert_eq!(vec![s!("A"), s!("B")], filtered);
     }
 
     #[test]
     fn all_tasks() {
         let mut replica = test_replica();
 
-        replica.new_task(Status::Pending, "A".to_owned()).unwrap();
-        replica.new_task(Status::Completed, "B".to_owned()).unwrap();
-        replica.new_task(Status::Deleted, "C".to_owned()).unwrap();
+        replica.new_task(Status::Pending, s!("A")).unwrap();
+        replica.new_task(Status::Completed, s!("B")).unwrap();
+        replica.new_task(Status::Deleted, s!("C")).unwrap();
         replica.gc().unwrap();
 
         let filter = Filter {
@@ -194,10 +194,7 @@ mod test {
             .map(|t| t.get_description().to_owned())
             .collect();
         filtered.sort();
-        assert_eq!(
-            vec!["A".to_owned(), "B".to_owned(), "C".to_owned()],
-            filtered
-        );
+        assert_eq!(vec![s!("A"), s!("B"), s!("C")], filtered);
     }
 
     #[test]
@@ -207,57 +204,54 @@ mod test {
         let no: Tag = "no".try_into()?;
 
         let mut t1 = replica
-            .new_task(Status::Pending, "A".to_owned())?
+            .new_task(Status::Pending, s!("A"))?
             .into_mut(&mut replica);
         t1.add_tag(&yes)?;
         let mut t2 = replica
-            .new_task(Status::Pending, "B".to_owned())?
+            .new_task(Status::Pending, s!("B"))?
             .into_mut(&mut replica);
         t2.add_tag(&yes)?;
         t2.add_tag(&no)?;
         let mut t3 = replica
-            .new_task(Status::Pending, "C".to_owned())?
+            .new_task(Status::Pending, s!("C"))?
             .into_mut(&mut replica);
         t3.add_tag(&no)?;
-        let _t4 = replica.new_task(Status::Pending, "D".to_owned())?;
+        let _t4 = replica.new_task(Status::Pending, s!("D"))?;
 
         // look for just "yes" (A and B)
         let filter = Filter {
             universe: Universe::AllTasks,
-            conditions: vec![Condition::HasTag("yes".to_owned())],
+            conditions: vec![Condition::HasTag(s!("yes"))],
             ..Default::default()
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
             .collect();
         filtered.sort();
-        assert_eq!(vec!["A".to_owned(), "B".to_owned()], filtered);
+        assert_eq!(vec![s!("A"), s!("B")], filtered);
 
         // look for tags without "no" (A, D)
         let filter = Filter {
             universe: Universe::AllTasks,
-            conditions: vec![Condition::NoTag("no".to_owned())],
+            conditions: vec![Condition::NoTag(s!("no"))],
             ..Default::default()
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
             .collect();
         filtered.sort();
-        assert_eq!(vec!["A".to_owned(), "D".to_owned()], filtered);
+        assert_eq!(vec![s!("A"), s!("D")], filtered);
 
         // look for tags with "yes" and "no" (B)
         let filter = Filter {
             universe: Universe::AllTasks,
-            conditions: vec![
-                Condition::HasTag("yes".to_owned()),
-                Condition::HasTag("no".to_owned()),
-            ],
+            conditions: vec![Condition::HasTag(s!("yes")), Condition::HasTag(s!("no"))],
             ..Default::default()
         };
         let filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
             .collect();
-        assert_eq!(vec!["B".to_owned()], filtered);
+        assert_eq!(vec![s!("B")], filtered);
 
         Ok(())
     }
@@ -266,9 +260,9 @@ mod test {
     fn pending_tasks() {
         let mut replica = test_replica();
 
-        replica.new_task(Status::Pending, "A".to_owned()).unwrap();
-        replica.new_task(Status::Completed, "B".to_owned()).unwrap();
-        replica.new_task(Status::Deleted, "C".to_owned()).unwrap();
+        replica.new_task(Status::Pending, s!("A")).unwrap();
+        replica.new_task(Status::Completed, s!("B")).unwrap();
+        replica.new_task(Status::Deleted, s!("C")).unwrap();
         replica.gc().unwrap();
 
         let filter = Filter {
@@ -280,6 +274,6 @@ mod test {
             .map(|t| t.get_description().to_owned())
             .collect();
         filtered.sort();
-        assert_eq!(vec!["A".to_owned()], filtered);
+        assert_eq!(vec![s!("A")], filtered);
     }
 }

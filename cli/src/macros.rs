@@ -24,3 +24,9 @@ macro_rules! set(
         }
      };
 );
+
+/// Create a String from an &str; just a testing shorthand
+#[cfg(test)]
+macro_rules! s(
+    { $s:expr } => { $s.to_owned() };
+);
