@@ -1,3 +1,5 @@
+#![deny(clippy::all)]
+
 use crate::storage::{KVStorage, Storage};
 use actix_web::{get, web, App, HttpServer, Responder, Scope};
 use api::{api_scope, ServerState};

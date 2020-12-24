@@ -38,13 +38,13 @@ impl Usage {
             "TaskChampion {}: Personal task-tracking\n\n",
             env!("CARGO_PKG_VERSION")
         )?;
-        write!(w, "USAGE:\n  {} [args]\n\n", command_name)?;
-        write!(w, "TaskChampion subcommands:\n")?;
+        writeln!(w, "USAGE:\n  {} [args]\n", command_name)?;
+        writeln!(w, "TaskChampion subcommands:")?;
         for subcommand in self.subcommands.iter() {
             subcommand.write_help(&mut w, summary)?;
         }
         if !summary {
-            write!(w, "\nSee `task help` for more detail\n")?;
+            writeln!(w, "\nSee `task help` for more detail")?;
         }
         Ok(())
     }
@@ -69,7 +69,7 @@ pub(crate) struct Subcommand {
 impl Subcommand {
     fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
         if summary {
-            write!(w, "  task {} - {}\n", self.name, self.summary)?;
+            writeln!(w, "  task {} - {}", self.name, self.summary)?;
         } else {
             write!(
                 w,

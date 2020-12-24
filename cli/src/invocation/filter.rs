@@ -18,10 +18,7 @@ pub(super) fn filtered_tasks(
     let mut res = vec![];
 
     fn is_partial_uuid(taskid: &TaskId) -> bool {
-        match taskid {
-            TaskId::PartialUuid(_) => true,
-            _ => false,
-        }
+        matches!(taskid, TaskId::PartialUuid(_))
     }
 
     // We will enumerate the universe of tasks for this filter, checking
@@ -32,7 +29,7 @@ pub(super) fn filtered_tasks(
         Universe::IdList(ref ids) if ids.iter().any(is_partial_uuid) => {
             'task: for (uuid, task) in replica.all_tasks()?.drain() {
                 for id in ids {
-                    if match id {
+                    let in_universe = match id {
                         TaskId::WorkingSetId(id) => {
                             // NOTE: (#108) this results in many reads of the working set; it
                             // may be better to cache this information here or in the Replica.
@@ -40,11 +37,10 @@ pub(super) fn filtered_tasks(
                         }
                         TaskId::PartialUuid(prefix) => uuid.to_string().starts_with(prefix),
                         TaskId::Uuid(id) => id == &uuid,
-                    } {
-                        if match_task(filter, &task) {
-                            res.push(task);
-                            continue 'task;
-                        }
+                    };
+                    if in_universe && match_task(filter, &task) {
+                        res.push(task);
+                        continue 'task;
                     }
                 }
             }

@@ -4,7 +4,7 @@ use termcolor::{ColorSpec, WriteColor};
 pub(crate) fn execute<W: WriteColor>(w: &mut W) -> Fallible<()> {
     write!(w, "TaskChampion ")?;
     w.set_color(ColorSpec::new().set_bold(true))?;
-    write!(w, "{}\n", env!("CARGO_PKG_VERSION"))?;
+    writeln!(w, "{}", env!("CARGO_PKG_VERSION"))?;
     w.reset()?;
     Ok(())
 }

@@ -1,3 +1,4 @@
+#![deny(clippy::all)]
 /*!
 
 This crate implements the core of TaskChampion, the [replica](crate::Replica).

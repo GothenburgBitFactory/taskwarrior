@@ -8,7 +8,7 @@ pub(crate) fn execute<W: WriteColor>(
     server: &mut Box<dyn Server>,
 ) -> Fallible<()> {
     replica.sync(server)?;
-    write!(w, "sync complete.\n")?;
+    writeln!(w, "sync complete.")?;
     Ok(())
 }
 
