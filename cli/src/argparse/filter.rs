@@ -2,7 +2,6 @@ use super::args::{arg_matching, id_list, minus_tag, plus_tag, TaskId};
 use super::ArgList;
 use crate::usage;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
-use textwrap::dedent;
 
 /// A filter represents a selection of a particular set of tasks.
 ///
@@ -115,31 +114,25 @@ impl Filter {
 
     pub(super) fn get_usage(u: &mut usage::Usage) {
         u.filters.push(usage::Filter {
-            syntax: "TASKID[,TASKID,..]".to_owned(),
-            summary: "Specific tasks".to_owned(),
-            description: dedent(
-                "
+            syntax: "TASKID[,TASKID,..]",
+            summary: "Specific tasks",
+            description: "
                 Select only specific tasks.  Multiple tasks can be specified either separated by
                 commas or as separate arguments.  Each task may be specfied by its working-set
-                index (a small number) or by its UUID.  Prefixes of UUIDs broken at hyphens are
+                index (a small number) or by its UUID.  Partial UUIDs, broken on a hyphen, are
                 also supported, such as `b5664ef8-423d` or `b5664ef8`.",
-            ),
         });
         u.filters.push(usage::Filter {
-            syntax: "+TAG".to_owned(),
-            summary: "Tagged tasks".to_owned(),
-            description: dedent(
-                "
+            syntax: "+TAG",
+            summary: "Tagged tasks",
+            description: "
                 Select tasks with the given tag.",
-            ),
         });
         u.filters.push(usage::Filter {
-            syntax: "-TAG".to_owned(),
-            summary: "Un-tagged tasks".to_owned(),
-            description: dedent(
-                "
+            syntax: "-TAG",
+            summary: "Un-tagged tasks",
+            description: "
                 Select tasks that do not have the given tag.",
-            ),
         });
     }
 }
