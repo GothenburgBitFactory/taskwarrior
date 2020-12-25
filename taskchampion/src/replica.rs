@@ -94,7 +94,7 @@ impl Replica {
         let mut res = Vec::with_capacity(working_set.len());
         for item in working_set.iter() {
             res.push(match item {
-                Some(u) => match self.taskdb.get_task(&u)? {
+                Some(u) => match self.taskdb.get_task(u)? {
                     Some(tm) => Some(Task::new(*u, tm)),
                     None => None,
                 },
@@ -157,7 +157,7 @@ impl Replica {
     fn delete_task(&mut self, uuid: &Uuid) -> Fallible<()> {
         // check that it already exists; this is a convenience check, as the task may already exist
         // when this Create operation is finally sync'd with operations from other replicas
-        if self.taskdb.get_task(&uuid)?.is_none() {
+        if self.taskdb.get_task(uuid)?.is_none() {
             return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
         }
         self.taskdb.apply(Operation::Delete { uuid: *uuid })?;
