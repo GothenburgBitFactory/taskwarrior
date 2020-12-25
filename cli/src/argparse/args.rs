@@ -197,27 +197,27 @@ mod test {
     fn test_id_list_uuids() {
         assert_eq!(
             id_list("12341234").unwrap().1,
-            vec![TaskId::PartialUuid("12341234".to_owned())]
+            vec![TaskId::PartialUuid(s!("12341234"))]
         );
         assert_eq!(
             id_list("1234abcd").unwrap().1,
-            vec![TaskId::PartialUuid("1234abcd".to_owned())]
+            vec![TaskId::PartialUuid(s!("1234abcd"))]
         );
         assert_eq!(
             id_list("abcd1234").unwrap().1,
-            vec![TaskId::PartialUuid("abcd1234".to_owned())]
+            vec![TaskId::PartialUuid(s!("abcd1234"))]
         );
         assert_eq!(
             id_list("abcd1234-1234").unwrap().1,
-            vec![TaskId::PartialUuid("abcd1234-1234".to_owned())]
+            vec![TaskId::PartialUuid(s!("abcd1234-1234"))]
         );
         assert_eq!(
             id_list("abcd1234-1234-2345").unwrap().1,
-            vec![TaskId::PartialUuid("abcd1234-1234-2345".to_owned())]
+            vec![TaskId::PartialUuid(s!("abcd1234-1234-2345"))]
         );
         assert_eq!(
             id_list("abcd1234-1234-2345-3456").unwrap().1,
-            vec![TaskId::PartialUuid("abcd1234-1234-2345-3456".to_owned())]
+            vec![TaskId::PartialUuid(s!("abcd1234-1234-2345-3456"))]
         );
         assert_eq!(
             id_list("abcd1234-1234-2345-3456-0123456789ab").unwrap().1,
@@ -241,10 +241,10 @@ mod test {
     #[test]
     fn test_id_list_uuids_mixed() {
         assert_eq!(id_list("abcd1234,abcd1234-1234,abcd1234-1234-2345,abcd1234-1234-2345-3456,abcd1234-1234-2345-3456-0123456789ab").unwrap().1,
-        vec![TaskId::PartialUuid("abcd1234".to_owned()),
-            TaskId::PartialUuid("abcd1234-1234".to_owned()),
-            TaskId::PartialUuid("abcd1234-1234-2345".to_owned()),
-            TaskId::PartialUuid("abcd1234-1234-2345-3456".to_owned()),
+        vec![TaskId::PartialUuid(s!("abcd1234")),
+            TaskId::PartialUuid(s!("abcd1234-1234")),
+            TaskId::PartialUuid(s!("abcd1234-1234-2345")),
+            TaskId::PartialUuid(s!("abcd1234-1234-2345-3456")),
             TaskId::Uuid(Uuid::parse_str("abcd1234-1234-2345-3456-0123456789ab").unwrap()),
         ]);
     }

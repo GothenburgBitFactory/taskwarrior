@@ -210,7 +210,7 @@ mod test {
             Filter {
                 universe: Universe::IdList(vec![
                     TaskId::WorkingSetId(1),
-                    TaskId::PartialUuid("abcd1234".to_owned()),
+                    TaskId::PartialUuid(s!("abcd1234")),
                 ]),
                 ..Default::default()
             }

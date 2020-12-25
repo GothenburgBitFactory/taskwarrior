@@ -55,7 +55,7 @@ mod test {
             Command::from_argv(argv!["task", "version"]).unwrap(),
             Command {
                 subcommand: Subcommand::Version,
-                command_name: "task".to_owned(),
+                command_name: s!("task"),
             }
         );
     }

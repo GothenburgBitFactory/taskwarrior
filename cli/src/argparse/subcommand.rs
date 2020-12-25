@@ -409,7 +409,7 @@ mod test {
     fn test_add_description() {
         let subcommand = Subcommand::Add {
             modification: Modification {
-                description: DescriptionMod::Set("foo".to_owned()),
+                description: DescriptionMod::Set(s!("foo")),
                 ..Default::default()
             },
         };
@@ -423,7 +423,7 @@ mod test {
     fn test_add_description_multi() {
         let subcommand = Subcommand::Add {
             modification: Modification {
-                description: DescriptionMod::Set("foo bar".to_owned()),
+                description: DescriptionMod::Set(s!("foo bar")),
                 ..Default::default()
             },
         };
@@ -441,7 +441,7 @@ mod test {
                 ..Default::default()
             },
             modification: Modification {
-                description: DescriptionMod::Set("foo bar".to_owned()),
+                description: DescriptionMod::Set(s!("foo bar")),
                 ..Default::default()
             },
         };
@@ -459,7 +459,7 @@ mod test {
                 ..Default::default()
             },
             modification: Modification {
-                description: DescriptionMod::Append("foo bar".to_owned()),
+                description: DescriptionMod::Append(s!("foo bar")),
                 ..Default::default()
             },
         };
@@ -477,7 +477,7 @@ mod test {
                 ..Default::default()
             },
             modification: Modification {
-                description: DescriptionMod::Prepend("foo bar".to_owned()),
+                description: DescriptionMod::Prepend(s!("foo bar")),
                 ..Default::default()
             },
         };
@@ -513,7 +513,7 @@ mod test {
                 ..Default::default()
             },
             modification: Modification {
-                description: DescriptionMod::Set("now-finished".to_owned()),
+                description: DescriptionMod::Set(s!("now-finished")),
                 status: Some(Status::Completed),
                 ..Default::default()
             },
@@ -551,7 +551,7 @@ mod test {
             },
             modification: Modification {
                 active: Some(true),
-                description: DescriptionMod::Set("mod".to_owned()),
+                description: DescriptionMod::Set(s!("mod")),
                 ..Default::default()
             },
         };
@@ -587,7 +587,7 @@ mod test {
                 ..Default::default()
             },
             modification: Modification {
-                description: DescriptionMod::Set("mod".to_owned()),
+                description: DescriptionMod::Set(s!("mod")),
                 active: Some(false),
                 ..Default::default()
             },
