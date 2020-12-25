@@ -9,7 +9,7 @@ dirs = "^3.0.1"
 env_logger = "^0.8.2"
 failure = "^0.1.8"
 log = "^0.4.11"
-nom = "*"
+nom = "^6.0.1"
 prettytable-rs = "^0.8.0"
 textwrap = { version="0.12.1", features=["terminal_size"] }
 termcolor = "1.1.2"
