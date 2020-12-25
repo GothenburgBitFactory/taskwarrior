@@ -8,7 +8,7 @@ pub(crate) struct Key(uuid::Bytes);
 
 impl From<&[u8]> for Key {
     fn from(bytes: &[u8]) -> Key {
-        Key(bytes.try_into().unwrap())
+        Key(bytes.try_into().expect("expected 16 bytes"))
     }
 }
 
@@ -35,5 +35,26 @@ impl From<Key> for Uuid {
 impl AsRef<[u8]> for Key {
     fn as_ref(&self) -> &[u8] {
         &self.0[..]
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_from_bytes() {
+        let k: Key = (&[1u8, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16][..]).into();
+        let u: Uuid = k.into();
+        assert_eq!(
+            u,
+            Uuid::parse_str("01020304-0506-0708-090a-0b0c0d0e0f10").unwrap()
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_from_bytes_bad_len() {
+        let _: Key = (&[1u8, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][..]).into();
     }
 }
