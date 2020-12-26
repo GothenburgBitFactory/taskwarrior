@@ -2,7 +2,7 @@
 
 use crate::argparse::{Command, Subcommand};
 use config::Config;
-use failure::Fallible;
+use failure::{format_err, Fallible};
 use taskchampion::{server, Replica, ReplicaConfig, ServerConfig, Uuid};
 use termcolor::{ColorChoice, StandardStream};
 
@@ -113,12 +113,16 @@ fn get_server(settings: &Config) -> Fallible<Box<dyn server::Server>> {
         settings.get_str("server_origin"),
     ) {
         let client_id = Uuid::parse_str(&client_id)?;
+        let encryption_secret = settings
+            .get_str("encryption_secret")
+            .map_err(|_| format_err!("Could not read `encryption_secret` configuration"))?;
 
         log::debug!("Using sync-server with origin {}", origin);
         log::debug!("Sync client ID: {}", client_id);
         Ok(server::from_config(ServerConfig::Remote {
             origin,
             client_id,
+            encryption_secret: encryption_secret.as_bytes().to_vec(),
         })?)
     } else {
         let server_dir = settings.get_str("server_dir")?.into();
