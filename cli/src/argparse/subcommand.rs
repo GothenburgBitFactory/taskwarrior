@@ -1,5 +1,7 @@
 use super::args::*;
-use super::{ArgList, DescriptionMod, Filter, Modification, Report};
+use super::{
+    ArgList, Column, DescriptionMod, Filter, Modification, Property, Report, Sort, SortBy,
+};
 use crate::usage;
 use nom::{branch::alt, combinator::*, sequence::*, IResult};
 use taskchampion::Status;
@@ -252,12 +254,45 @@ impl Modify {
 struct List;
 
 impl List {
+    // temporary
+    fn default_report() -> Report {
+        Report {
+            columns: vec![
+                Column {
+                    label: "Id".to_owned(),
+                    property: Property::Id,
+                },
+                Column {
+                    label: "Description".to_owned(),
+                    property: Property::Description,
+                },
+                Column {
+                    label: "Active".to_owned(),
+                    property: Property::Active,
+                },
+                Column {
+                    label: "Tags".to_owned(),
+                    property: Property::Tags,
+                },
+            ],
+            sort: vec![Sort {
+                ascending: false,
+                sort_by: SortBy::Uuid,
+            }],
+            ..Default::default()
+        }
+    }
+
     fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
-        fn to_subcommand(input: (Report, &str)) -> Result<Subcommand, ()> {
-            Ok(Subcommand::List { report: input.0 })
+        fn to_subcommand(input: (Filter, &str)) -> Result<Subcommand, ()> {
+            let report = Report {
+                filter: input.0,
+                ..List::default_report()
+            };
+            Ok(Subcommand::List { report })
         }
         map_res(
-            pair(Report::parse, arg_matching(literal("list"))),
+            pair(Filter::parse, arg_matching(literal("list"))),
             to_subcommand,
         )(input)
     }
@@ -602,7 +637,7 @@ mod test {
     fn test_list() {
         let subcommand = Subcommand::List {
             report: Report {
-                ..Default::default()
+                ..List::default_report()
             },
         };
         assert_eq!(
@@ -619,6 +654,7 @@ mod test {
                     universe: Universe::for_ids(vec![12, 13]),
                     ..Default::default()
                 },
+                ..List::default_report()
             },
         };
         assert_eq!(
