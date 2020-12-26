@@ -51,6 +51,8 @@
 #define STRING_EDIT_UNTIL_MOD        "Until date modified."
 #define STRING_EDIT_WAIT_MOD         "Wait date modified."
 
+const std::string CmdEdit::ANNOTATION_EDIT_MARKER = "\n                     ";
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdEdit::CmdEdit ()
 {
@@ -171,6 +173,23 @@ std::vector <std::string> CmdEdit::findValues (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string CmdEdit::replaceString (
+  std::string text,
+  const std::string& search,
+  const std::string& replacement)
+{
+  std::string::size_type found = 0;
+
+  while ((found = text.find (search, found)) != std::string::npos)
+  {
+    text.replace (found, search.length (), replacement);
+    found += replacement.length ();
+  }
+
+  return text;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string CmdEdit::formatDate (
   Task& task,
   const std::string& attribute,
@@ -246,13 +265,14 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   if (verbose)
     before << "# Annotations look like this: <date> -- <text> and there can be any number of them.\n"
               "# The ' -- ' separator between the date and text field should not be removed.\n"
+              "# Multiline annotations need to be indented up to <date> (" << ANNOTATION_EDIT_MARKER.length () - 1 << " spaces).\n"
               "# A \"blank slot\" for adding an annotation follows for your convenience.\n";
 
   for (auto& anno : task.getAnnotations ())
   {
     Datetime dt (strtol (anno.first.substr (11).c_str (), nullptr, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
-           << " -- "                  << json::encode (anno.second) << '\n';
+           << " -- "                  << replaceString (anno.second, "\n", ANNOTATION_EDIT_MARKER) << '\n';
   }
 
   Datetime now;
@@ -610,10 +630,14 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     found += 14;  // Length of "\n  Annotation:".
 
-    auto eol = after.find ('\n', found + 1);
+    auto eol = found;
+    while ((eol = after.find ('\n', ++eol)) != std::string::npos)
+      if (after.substr (eol, ANNOTATION_EDIT_MARKER.length ()) != ANNOTATION_EDIT_MARKER)
+        break;
+
     if (eol != std::string::npos)
     {
-      auto value = Lexer::trim (after.substr (found, eol - found), "\t ");
+      auto value = Lexer::trim (replaceString (after.substr (found, eol - found), ANNOTATION_EDIT_MARKER, "\n"), "\t ");
       auto gap = value.find (" -- ");
       if (gap != std::string::npos)
       {
@@ -641,7 +665,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         while (annotations.find (name.str ()) != annotations.end ());
 
         auto text = Lexer::trim (value.substr (gap + 4), "\t ");
-        annotations.insert (std::make_pair (name.str (), json::decode (text)));
+        annotations.insert (std::make_pair (name.str (), text));
       }
     }
   }
