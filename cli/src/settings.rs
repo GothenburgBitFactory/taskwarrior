@@ -7,12 +7,21 @@ pub(crate) fn read_settings() -> Fallible<Config> {
     let mut settings = Config::default();
 
     // set up defaults
-    if let Some(mut dir) = dirs::data_local_dir() {
-        dir.push("taskchampion");
+    if let Some(dir) = dirs::data_local_dir() {
+        let mut tc_dir = dir.clone();
+        tc_dir.push("taskchampion");
         settings.set_default(
             "data_dir",
             // the config crate does not support non-string paths
-            dir.to_str().expect("data_local_dir is not utf-8"),
+            tc_dir.to_str().expect("data_local_dir is not utf-8"),
+        )?;
+
+        let mut server_dir = dir;
+        server_dir.push("taskchampion-sync-server");
+        settings.set_default(
+            "server_dir",
+            // the config crate does not support non-string paths
+            server_dir.to_str().expect("data_local_dir is not utf-8"),
         )?;
     }
 
