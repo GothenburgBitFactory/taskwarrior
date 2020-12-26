@@ -106,15 +106,25 @@ fn get_replica(settings: &Config) -> Fallible<Replica> {
 
 /// Get the server for this invocation
 fn get_server(settings: &Config) -> Fallible<Box<dyn server::Server>> {
-    let client_id = settings.get_str("server_client_id")?;
-    let client_id = Uuid::parse_str(&client_id)?;
-    let origin = settings.get_str("server_origin")?;
-    log::debug!("Using sync-server with origin {}", origin);
-    log::debug!("Sync client ID: {}", client_id);
-    Ok(server::from_config(ServerConfig::Remote {
-        origin,
-        client_id,
-    })?)
+    // if server_client_id and server_origin are both set, use
+    // the remote server
+    if let (Ok(client_id), Ok(origin)) = (
+        settings.get_str("server_client_id"),
+        settings.get_str("server_origin"),
+    ) {
+        let client_id = Uuid::parse_str(&client_id)?;
+
+        log::debug!("Using sync-server with origin {}", origin);
+        log::debug!("Sync client ID: {}", client_id);
+        Ok(server::from_config(ServerConfig::Remote {
+            origin,
+            client_id,
+        })?)
+    } else {
+        let server_dir = settings.get_str("server_dir")?.into();
+        log::debug!("Using local sync-server at `{:?}`", server_dir);
+        Ok(server::from_config(ServerConfig::Local { server_dir })?)
+    }
 }
 
 /// Get a WriteColor implementation based on whether the output is a tty.
