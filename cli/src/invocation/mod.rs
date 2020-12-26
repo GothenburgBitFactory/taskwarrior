@@ -9,12 +9,14 @@ use termcolor::{ColorChoice, StandardStream};
 mod cmd;
 mod filter;
 mod modify;
+mod report;
 
 #[cfg(test)]
 mod test;
 
 use filter::filtered_tasks;
 use modify::apply_modification;
+use report::display_report;
 
 /// Invoke the given Command in the context of the given settings
 #[allow(clippy::needless_return)]

@@ -148,7 +148,7 @@ pub struct Annotation {
 ///
 /// This struct contains only getters for various values on the task. The `into_mut` method returns
 /// a TaskMut which can be used to modify the task.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Task {
     uuid: Uuid,
     taskmap: TaskMap,

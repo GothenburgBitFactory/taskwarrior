@@ -22,7 +22,7 @@ pub(crate) use args::TaskId;
 pub(crate) use command::Command;
 pub(crate) use filter::{Condition, Filter, Universe};
 pub(crate) use modification::{DescriptionMod, Modification};
-pub(crate) use report::Report;
+pub(crate) use report::{Column, Property, Report, Sort, SortBy};
 pub(crate) use subcommand::Subcommand;
 
 use crate::usage::Usage;
