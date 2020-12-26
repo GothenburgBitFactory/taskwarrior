@@ -45,6 +45,7 @@ pub(super) fn filtered_tasks(
         // A list of IDs, but some are partial so we need to iterate over
         // all tasks and pattern-match their Uuids
         Universe::IdList(ref ids) if ids.iter().any(is_partial_uuid) => {
+            log::debug!("Scanning entire task database due to partial UUIDs in the filter");
             'task: for (uuid, task) in replica.all_tasks()?.drain() {
                 for id in ids {
                     let in_universe = match id {
@@ -66,6 +67,7 @@ pub(super) fn filtered_tasks(
 
         // A list of full IDs, which we can fetch directly
         Universe::IdList(ref ids) => {
+            log::debug!("Scanning only the tasks specified in the filter");
             // this is the only case where we might accidentally return the same task
             // several times, so we must track the seen tasks.
             let mut seen = HashSet::new();
@@ -93,6 +95,7 @@ pub(super) fn filtered_tasks(
 
         // All tasks -- iterate over the full set
         Universe::AllTasks => {
+            log::debug!("Scanning all tasks in the task database");
             for (_, task) in replica.all_tasks()?.drain() {
                 if match_task(filter, &task) {
                     res.push(task);
@@ -102,6 +105,7 @@ pub(super) fn filtered_tasks(
 
         // Pending tasks -- just scan the working set
         Universe::PendingTasks => {
+            log::debug!("Scanning only the working set (pending tasks)");
             for task in replica.working_set()?.drain(..) {
                 if let Some(task) = task {
                     if match_task(filter, &task) {
