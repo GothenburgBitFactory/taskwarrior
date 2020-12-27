@@ -1643,6 +1643,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "protobuf"
+version = "2.18.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da78e04bc0e40f36df43ecc6575e4f4b180e8156c4efd73f13d5619479b05696"
+
+[[package]]
 name = "publicsuffix"
 version = "1.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2255,6 +2261,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tempdir",
+ "tindercrypt",
  "ureq",
  "uuid",
 ]
@@ -2454,6 +2461,18 @@ dependencies = [
  "quote",
  "standback",
  "syn",
+]
+
+[[package]]
+name = "tindercrypt"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f34fd5cc8db265f27abf29e8a3cec5cc643ae9f3f9ae39f08a77dc4add375b6d"
+dependencies = [
+ "protobuf",
+ "rand 0.7.3",
+ "ring",
+ "thiserror",
 ]
 
 [[package]]

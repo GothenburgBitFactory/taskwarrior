@@ -22,5 +22,9 @@ pub enum ServerConfig {
 
         /// Client ID to identify this replica to the server
         client_id: Uuid,
+
+        /// Private encryption secret used to encrypt all data sent to the server.  This can
+        /// be any suitably un-guessable string of bytes.
+        encryption_secret: Vec<u8>,
     },
 }
