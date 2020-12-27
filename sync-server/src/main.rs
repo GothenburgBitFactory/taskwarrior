@@ -1,7 +1,7 @@
 #![deny(clippy::all)]
 
 use crate::storage::{KVStorage, Storage};
-use actix_web::{get, web, App, HttpServer, Responder, Scope};
+use actix_web::{get, middleware::Logger, web, App, HttpServer, Responder, Scope};
 use api::{api_scope, ServerState};
 use clap::Arg;
 use failure::Fallible;
@@ -61,10 +61,14 @@ async fn main() -> Fallible<()> {
     let server_state = ServerState::new(server_box);
 
     log::warn!("Serving on port {}", port);
-    HttpServer::new(move || App::new().service(app_scope(server_state.clone())))
-        .bind(format!("0.0.0.0:{}", port))?
-        .run()
-        .await?;
+    HttpServer::new(move || {
+        App::new()
+            .wrap(Logger::default())
+            .service(app_scope(server_state.clone()))
+    })
+    .bind(format!("0.0.0.0:{}", port))?
+    .run()
+    .await?;
     Ok(())
 }
 
