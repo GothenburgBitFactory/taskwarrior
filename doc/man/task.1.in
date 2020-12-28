@@ -1084,7 +1084,7 @@ task ... wait:later
 .br
 task ... wait:someday
 
-This sets the wait date to 1/18/2038.
+This sets the wait date to 12/30/9999.
 
 .TP
 Next occurring weekday
