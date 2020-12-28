@@ -4,6 +4,8 @@
            Thanks to Arvedui
 - TW #2007 Compute number of current tasks correctly
            Thanks to Janik Rabe
+- TW #2017 Support 64-bit datetime values
+           Thanks to Evgeniy Vasilev
 - TW #2093 wrong order under projects command
            Thanks to Beka, mrossinek.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
@@ -11,6 +13,8 @@
 - TW #2333 Width determination of Unicode characters now works for up to
            Unicode 11 (from Unicode 5). Emojis are correctly displayed.
            Thanks to Adam Monsen.
+- TW #2373 Year 2038 Problem
+           Thanks to Stephan Rieche.
 
 ------ current release ---------------------------
 

@@ -9,6 +9,7 @@ New Features in Taskwarrior 2.6.0
     using config overrides.
   - Newer Unicode characters, such as emojis are correctly handled and displayed.
     Taskwarrior now supports all Unicode characters up to Unicode 11.
+  - Datetime values until year 9999 are now supported.
 
 
 New Commands in Taskwarrior 2.6.0
