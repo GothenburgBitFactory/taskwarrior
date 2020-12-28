@@ -97,7 +97,7 @@ public:
   float get_float (const std::string&) const;
   time_t get_date (const std::string&) const;
   void set (const std::string&, const std::string&);
-  void set (const std::string&, int);
+  void set (const std::string&, long long);
   void remove (const std::string&);
 
 #ifdef PRODUCT_TASKWARRIOR
