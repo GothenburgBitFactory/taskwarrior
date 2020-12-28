@@ -18,8 +18,8 @@ pub fn from_config(config: ServerConfig) -> Fallible<Box<dyn Server>> {
         ServerConfig::Local { server_dir } => Box::new(LocalServer::new(server_dir)?),
         ServerConfig::Remote {
             origin,
-            client_id,
+            client_key,
             encryption_secret,
-        } => Box::new(RemoteServer::new(origin, client_id, encryption_secret)),
+        } => Box::new(RemoteServer::new(origin, client_key, encryption_secret)),
     })
 }

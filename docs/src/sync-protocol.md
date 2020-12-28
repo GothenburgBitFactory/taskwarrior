@@ -9,6 +9,8 @@ The protocol builds on the model presented in the previous chapter, and in parti
 
 From the server's perspective, replicas are indistinguishable, so this protocol uses the term "client" to refer generically to all replicas replicating a single task history.
 
+Each client is identified and authenticated with a "client key", known only to the server and to the replicas replicating the task history.
+
 ## Server
 
 For each client, the server is responsible for storing the task history, in the form of a branch-free sequence of versions.
@@ -66,7 +68,7 @@ If not found, the server returns a negative response.
 The transactions above are realized for an HTTP server at `<origin>` using the HTTP requests and responses described here.
 The `origin` *should* be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.
 
-The replica identifies itself to the server using a `clientId` in the form of a UUID.
+The replica identifies itself to the server using a `clientKey` in the form of a UUID.
 
 ### AddVersion
 

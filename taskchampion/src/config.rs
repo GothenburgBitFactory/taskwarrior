@@ -20,8 +20,8 @@ pub enum ServerConfig {
         /// Sync server "origin"; a URL with schema and hostname but no path or trailing `/`
         origin: String,
 
-        /// Client ID to identify this replica to the server
-        client_id: Uuid,
+        /// Client Key to identify and authenticate this replica to the server
+        client_key: Uuid,
 
         /// Private encryption secret used to encrypt all data sent to the server.  This can
         /// be any suitably un-guessable string of bytes.

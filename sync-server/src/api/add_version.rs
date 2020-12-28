@@ -2,7 +2,7 @@ use crate::api::{
     failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER,
     VERSION_ID_HEADER,
 };
-use crate::server::{add_version, AddVersionResult, ClientId, VersionId, NO_VERSION_ID};
+use crate::server::{add_version, AddVersionResult, ClientKey, VersionId, NO_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
 
@@ -19,11 +19,11 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 /// parent version ID in the `X-Parent-Version-Id` header.
 ///
 /// Returns other 4xx or 5xx responses on other errors.
-#[post("/client/{client_id}/add-version/{parent_version_id}")]
+#[post("/client/{client_key}/add-version/{parent_version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<ServerState>,
-    web::Path((client_id, parent_version_id)): web::Path<(ClientId, VersionId)>,
+    web::Path((client_key, parent_version_id)): web::Path<(ClientKey, VersionId)>,
     mut payload: web::Payload,
 ) -> Result<HttpResponse> {
     // check content-type
@@ -52,16 +52,16 @@ pub(crate) async fn service(
     let mut txn = server_state.txn().map_err(failure_to_ise)?;
 
     // get, or create, the client
-    let client = match txn.get_client(client_id).map_err(failure_to_ise)? {
+    let client = match txn.get_client(client_key).map_err(failure_to_ise)? {
         Some(client) => client,
         None => {
-            txn.new_client(client_id, NO_VERSION_ID)
+            txn.new_client(client_key, NO_VERSION_ID)
                 .map_err(failure_to_ise)?;
-            txn.get_client(client_id).map_err(failure_to_ise)?.unwrap()
+            txn.get_client(client_key).map_err(failure_to_ise)?.unwrap()
         }
     };
 
-    let result = add_version(txn, client_id, client, parent_version_id, body.to_vec())
+    let result = add_version(txn, client_key, client, parent_version_id, body.to_vec())
         .map_err(failure_to_ise)?;
     Ok(match result {
         AddVersionResult::Ok(version_id) => HttpResponse::Ok()
@@ -83,7 +83,7 @@ mod test {
 
     #[actix_rt::test]
     async fn test_success() {
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
@@ -91,13 +91,13 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = server_box.txn().unwrap();
-            txn.new_client(client_id, Uuid::nil()).unwrap();
+            txn.new_client(client_key, Uuid::nil()).unwrap();
         }
 
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(
@@ -119,7 +119,7 @@ mod test {
 
     #[actix_rt::test]
     async fn test_conflict() {
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
@@ -127,13 +127,13 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = server_box.txn().unwrap();
-            txn.new_client(client_id, version_id).unwrap();
+            txn.new_client(client_key, version_id).unwrap();
         }
 
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(
@@ -153,13 +153,13 @@ mod test {
 
     #[actix_rt::test]
     async fn test_bad_content_type() {
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header("Content-Type", "not/correct")
@@ -171,13 +171,13 @@ mod test {
 
     #[actix_rt::test]
     async fn test_empty_body() {
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_id, parent_version_id);
+        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(

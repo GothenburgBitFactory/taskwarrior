@@ -8,7 +8,7 @@ use uuid::Uuid;
 pub const NO_VERSION_ID: VersionId = Uuid::nil();
 
 pub(crate) type HistorySegment = Vec<u8>;
-pub(crate) type ClientId = Uuid;
+pub(crate) type ClientKey = Uuid;
 pub(crate) type VersionId = Uuid;
 
 /// Response to get_child_version
@@ -21,11 +21,11 @@ pub(crate) struct GetVersionResult {
 
 pub(crate) fn get_child_version<'a>(
     mut txn: Box<dyn StorageTxn + 'a>,
-    client_id: ClientId,
+    client_key: ClientKey,
     parent_version_id: VersionId,
 ) -> Fallible<Option<GetVersionResult>> {
     Ok(txn
-        .get_version_by_parent(client_id, parent_version_id)?
+        .get_version_by_parent(client_key, parent_version_id)?
         .map(|version| GetVersionResult {
             version_id: version.version_id,
             parent_version_id: version.parent_version_id,
@@ -44,14 +44,14 @@ pub(crate) enum AddVersionResult {
 
 pub(crate) fn add_version<'a>(
     mut txn: Box<dyn StorageTxn + 'a>,
-    client_id: ClientId,
+    client_key: ClientKey,
     client: Client,
     parent_version_id: VersionId,
     history_segment: HistorySegment,
 ) -> Fallible<AddVersionResult> {
     log::debug!(
-        "add_version(client_id: {}, parent_version_id: {})",
-        client_id,
+        "add_version(client_key: {}, parent_version_id: {})",
+        client_key,
         parent_version_id,
     );
 
@@ -71,8 +71,8 @@ pub(crate) fn add_version<'a>(
     );
 
     // update the DB
-    txn.add_version(client_id, version_id, parent_version_id, history_segment)?;
-    txn.set_client_latest_version_id(client_id, version_id)?;
+    txn.add_version(client_key, version_id, parent_version_id, history_segment)?;
+    txn.set_client_latest_version_id(client_key, version_id)?;
     txn.commit()?;
 
     Ok(AddVersionResult::Ok(version_id))
@@ -87,9 +87,9 @@ mod test {
     fn gcv_not_found() -> Fallible<()> {
         let storage = InMemoryStorage::new();
         let txn = storage.txn()?;
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        assert_eq!(get_child_version(txn, client_id, parent_version_id)?, None);
+        assert_eq!(get_child_version(txn, client_key, parent_version_id)?, None);
         Ok(())
     }
 
@@ -97,20 +97,20 @@ mod test {
     fn gcv_found() -> Fallible<()> {
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let history_segment = b"abcd".to_vec();
 
         txn.add_version(
-            client_id,
+            client_key,
             version_id,
             parent_version_id,
             history_segment.clone(),
         )?;
 
         assert_eq!(
-            get_child_version(txn, client_id, parent_version_id)?,
+            get_child_version(txn, client_key, parent_version_id)?,
             Some(GetVersionResult {
                 version_id,
                 parent_version_id,
@@ -124,7 +124,7 @@ mod test {
     fn av_conflict() -> Fallible<()> {
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let history_segment = b"abcd".to_vec();
         let existing_parent_version_id = Uuid::new_v4();
@@ -135,7 +135,7 @@ mod test {
         assert_eq!(
             add_version(
                 txn,
-                client_id,
+                client_key,
                 client,
                 parent_version_id,
                 history_segment.clone()
@@ -145,9 +145,9 @@ mod test {
 
         // verify that the storage wasn't updated
         txn = storage.txn()?;
-        assert_eq!(txn.get_client(client_id)?, None);
+        assert_eq!(txn.get_client(client_key)?, None);
         assert_eq!(
-            txn.get_version_by_parent(client_id, parent_version_id)?,
+            txn.get_version_by_parent(client_key, parent_version_id)?,
             None
         );
 
@@ -157,7 +157,7 @@ mod test {
     fn test_av_success(latest_version_id_nil: bool) -> Fallible<()> {
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_id = Uuid::new_v4();
+        let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let history_segment = b"abcd".to_vec();
         let latest_version_id = if latest_version_id_nil {
@@ -166,12 +166,12 @@ mod test {
             parent_version_id
         };
 
-        txn.new_client(client_id, latest_version_id)?;
-        let client = txn.get_client(client_id)?.unwrap();
+        txn.new_client(client_key, latest_version_id)?;
+        let client = txn.get_client(client_key)?.unwrap();
 
         let result = add_version(
             txn,
-            client_id,
+            client_key,
             client,
             parent_version_id,
             history_segment.clone(),
@@ -182,10 +182,10 @@ mod test {
 
             // verify that the storage was updated
             txn = storage.txn()?;
-            let client = txn.get_client(client_id)?.unwrap();
+            let client = txn.get_client(client_key)?.unwrap();
             assert_eq!(client.latest_version_id, new_version_id);
             let version = txn
-                .get_version_by_parent(client_id, parent_version_id)?
+                .get_version_by_parent(client_key, parent_version_id)?
                 .unwrap();
             assert_eq!(version.version_id, new_version_id);
             assert_eq!(version.parent_version_id, parent_version_id);
