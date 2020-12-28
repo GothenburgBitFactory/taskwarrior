@@ -69,10 +69,11 @@ The transactions above are realized for an HTTP server at `<origin>` using the H
 The `origin` *should* be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.
 
 The replica identifies itself to the server using a `clientKey` in the form of a UUID.
+This value is passed with every request in the `X-Client-Id` header, in its dashed-hex format.
 
 ### AddVersion
 
-The request is a `POST` to `<origin>/client/<clientId>/add-version/<parentVersionId>`.
+The request is a `POST` to `<origin>/client/add-version/<parentVersionId>`.
 The request body contains the history segment, optionally encoded using any encoding supported by actix-web.
 The content-type must be `application/vnd.taskchampion.history-segment`.
 
@@ -86,7 +87,7 @@ Other error responses (4xx or 5xx) may be returned and should be treated appropr
 
 ### GetChildVersion
 
-The request is a `GET` to `<origin>/client/<clientId>/get-child-version/<parentVersionId>`.
+The request is a `GET` to `<origin>/client/get-child-version/<parentVersionId>`.
 The response is 404 NOT FOUND if no such version exists.
 Otherwise, the response is a 200 OK.
 The version's history segment is returned in the response body, with content-type `application/vnd.taskchampion.history-segment`.

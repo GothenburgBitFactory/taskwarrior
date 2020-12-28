@@ -1,9 +1,9 @@
 use crate::api::{
-    failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER,
-    VERSION_ID_HEADER,
+    client_key_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
+    PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
 };
-use crate::server::{get_child_version, ClientKey, VersionId};
-use actix_web::{error, get, web, HttpResponse, Result};
+use crate::server::{get_child_version, VersionId};
+use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
 
 /// Get a child version.
 ///
@@ -13,12 +13,15 @@ use actix_web::{error, get, web, HttpResponse, Result};
 ///
 /// If no such child exists, returns a 404 with no content.
 /// Returns other 4xx or 5xx responses on other errors.
-#[get("/client/{client_key}/get-child-version/{parent_version_id}")]
+#[get("/client/get-child-version/{parent_version_id}")]
 pub(crate) async fn service(
+    req: HttpRequest,
     server_state: web::Data<ServerState>,
-    web::Path((client_key, parent_version_id)): web::Path<(ClientKey, VersionId)>,
+    web::Path((parent_version_id,)): web::Path<(VersionId,)>,
 ) -> Result<HttpResponse> {
     let mut txn = server_state.txn().map_err(failure_to_ise)?;
+
+    let client_key = client_key_header(&req)?;
 
     txn.get_client(client_key)
         .map_err(failure_to_ise)?
@@ -65,11 +68,11 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!(
-            "/client/{}/get-child-version/{}",
-            client_key, parent_version_id
-        );
-        let req = test::TestRequest::get().uri(&uri).to_request();
+        let uri = format!("/client/get-child-version/{}", parent_version_id);
+        let req = test::TestRequest::get()
+            .uri(&uri)
+            .header("X-Client-Key", client_key.to_string())
+            .to_request();
         let mut resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::OK);
         assert_eq!(
@@ -98,11 +101,11 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!(
-            "/client/{}/get-child-version/{}",
-            client_key, parent_version_id
-        );
-        let req = test::TestRequest::get().uri(&uri).to_request();
+        let uri = format!("/client/get-child-version/{}", parent_version_id);
+        let req = test::TestRequest::get()
+            .uri(&uri)
+            .header("X-Client-Key", client_key.to_string())
+            .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
         assert_eq!(resp.headers().get("X-Version-Id"), None);
@@ -123,11 +126,11 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!(
-            "/client/{}/get-child-version/{}",
-            client_key, parent_version_id
-        );
-        let req = test::TestRequest::get().uri(&uri).to_request();
+        let uri = format!("/client/get-child-version/{}", parent_version_id);
+        let req = test::TestRequest::get()
+            .uri(&uri)
+            .header("X-Client-Key", client_key.to_string())
+            .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
         assert_eq!(resp.headers().get("X-Version-Id"), None);

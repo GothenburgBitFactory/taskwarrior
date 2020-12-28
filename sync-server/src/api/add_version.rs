@@ -1,8 +1,8 @@
 use crate::api::{
-    failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE, PARENT_VERSION_ID_HEADER,
-    VERSION_ID_HEADER,
+    client_key_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
+    PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
 };
-use crate::server::{add_version, AddVersionResult, ClientKey, VersionId, NO_VERSION_ID};
+use crate::server::{add_version, AddVersionResult, VersionId, NO_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
 
@@ -19,17 +19,19 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 /// parent version ID in the `X-Parent-Version-Id` header.
 ///
 /// Returns other 4xx or 5xx responses on other errors.
-#[post("/client/{client_key}/add-version/{parent_version_id}")]
+#[post("/client/add-version/{parent_version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<ServerState>,
-    web::Path((client_key, parent_version_id)): web::Path<(ClientKey, VersionId)>,
+    web::Path((parent_version_id,)): web::Path<(VersionId,)>,
     mut payload: web::Payload,
 ) -> Result<HttpResponse> {
     // check content-type
     if req.content_type() != HISTORY_SEGMENT_CONTENT_TYPE {
         return Err(error::ErrorBadRequest("Bad content-type"));
     }
+
+    let client_key = client_key_header(&req)?;
 
     // read the body in its entirety
     let mut body = web::BytesMut::new();
@@ -97,13 +99,14 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
+        let uri = format!("/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
             )
+            .header("X-Client-Key", client_key.to_string())
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -133,13 +136,14 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
+        let uri = format!("/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
             )
+            .header("X-Client-Key", client_key.to_string())
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -159,10 +163,11 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
+        let uri = format!("/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header("Content-Type", "not/correct")
+            .header("X-Client-Key", client_key.to_string())
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -177,13 +182,14 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/{}/add-version/{}", client_key, parent_version_id);
+        let uri = format!("/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
             )
+            .header("X-Client-Key", client_key.to_string())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
