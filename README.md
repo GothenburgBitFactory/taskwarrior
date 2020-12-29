@@ -1,6 +1,6 @@
 # Taskwarrior
 
-[![Travis build status](https://travis-ci.org/GothenburgBitFactory/taskwarrior.svg?branch=2.6.0)](https://travis-ci.org/GothenburgBitFactory/taskwarrior)
+[![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=2.6.0)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
 
 Thank you for taking a look at Taskwarrior!
 
