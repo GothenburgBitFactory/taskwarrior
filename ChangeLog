@@ -6,6 +6,8 @@
            Thanks to Janik Rabe
 - TW #2017 Support 64-bit datetime values
            Thanks to Evgeniy Vasilev
+- TW #2060 Review timestamp is displayed as unix time, not formatted
+           Thanks to JavaZauber
 - TW #2093 wrong order under projects command
            Thanks to Beka, mrossinek.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
