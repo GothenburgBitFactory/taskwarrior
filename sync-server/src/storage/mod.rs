@@ -24,29 +24,29 @@ pub(crate) struct Version {
 
 pub(crate) trait StorageTxn {
     /// Get information about the given client
-    fn get_client(&mut self, client_id: Uuid) -> Fallible<Option<Client>>;
+    fn get_client(&mut self, client_key: Uuid) -> Fallible<Option<Client>>;
 
     /// Create a new client with the given latest_version_id
-    fn new_client(&mut self, client_id: Uuid, latest_version_id: Uuid) -> Fallible<()>;
+    fn new_client(&mut self, client_key: Uuid, latest_version_id: Uuid) -> Fallible<()>;
 
     /// Set the client's latest_version_id
     fn set_client_latest_version_id(
         &mut self,
-        client_id: Uuid,
+        client_key: Uuid,
         latest_version_id: Uuid,
     ) -> Fallible<()>;
 
     /// Get a version, indexed by parent version id
     fn get_version_by_parent(
         &mut self,
-        client_id: Uuid,
+        client_key: Uuid,
         parent_version_id: Uuid,
     ) -> Fallible<Option<Version>>;
 
     /// Add a version (that must not already exist)
     fn add_version(
         &mut self,
-        client_id: Uuid,
+        client_key: Uuid,
         version_id: Uuid,
         parent_version_id: Uuid,
         history_segment: Vec<u8>,

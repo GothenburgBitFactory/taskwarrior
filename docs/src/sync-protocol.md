@@ -9,6 +9,8 @@ The protocol builds on the model presented in the previous chapter, and in parti
 
 From the server's perspective, replicas are indistinguishable, so this protocol uses the term "client" to refer generically to all replicas replicating a single task history.
 
+Each client is identified and authenticated with a "client key", known only to the server and to the replicas replicating the task history.
+
 ## Server
 
 For each client, the server is responsible for storing the task history, in the form of a branch-free sequence of versions.
@@ -66,11 +68,12 @@ If not found, the server returns a negative response.
 The transactions above are realized for an HTTP server at `<origin>` using the HTTP requests and responses described here.
 The `origin` *should* be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.
 
-The replica identifies itself to the server using a `clientId` in the form of a UUID.
+The replica identifies itself to the server using a `clientKey` in the form of a UUID.
+This value is passed with every request in the `X-Client-Id` header, in its dashed-hex format.
 
 ### AddVersion
 
-The request is a `POST` to `<origin>/client/<clientId>/add-version/<parentVersionId>`.
+The request is a `POST` to `<origin>/client/add-version/<parentVersionId>`.
 The request body contains the history segment, optionally encoded using any encoding supported by actix-web.
 The content-type must be `application/vnd.taskchampion.history-segment`.
 
@@ -84,7 +87,7 @@ Other error responses (4xx or 5xx) may be returned and should be treated appropr
 
 ### GetChildVersion
 
-The request is a `GET` to `<origin>/client/<clientId>/get-child-version/<parentVersionId>`.
+The request is a `GET` to `<origin>/client/get-child-version/<parentVersionId>`.
 The response is 404 NOT FOUND if no such version exists.
 Otherwise, the response is a 200 OK.
 The version's history segment is returned in the response body, with content-type `application/vnd.taskchampion.history-segment`.

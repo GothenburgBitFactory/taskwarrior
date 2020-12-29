@@ -8,7 +8,7 @@ use crypto::{HistoryCiphertext, HistoryCleartext, Secret};
 
 pub struct RemoteServer {
     origin: String,
-    client_id: Uuid,
+    client_key: Uuid,
     encryption_secret: Secret,
     agent: ureq::Agent,
 }
@@ -17,13 +17,13 @@ pub struct RemoteServer {
 /// taskchampion-sync-server).
 impl RemoteServer {
     /// Construct a new RemoteServer.  The `origin` is the sync server's protocol and hostname
-    /// without a trailing slash, such as `https://tcsync.example.com`.  Pass a client_id to
+    /// without a trailing slash, such as `https://tcsync.example.com`.  Pass a client_key to
     /// identify this client to the server.  Multiple replicas synchronizing the same task history
-    /// should use the same client_id.
-    pub fn new(origin: String, client_id: Uuid, encryption_secret: Vec<u8>) -> RemoteServer {
+    /// should use the same client_key.
+    pub fn new(origin: String, client_key: Uuid, encryption_secret: Vec<u8>) -> RemoteServer {
         RemoteServer {
             origin,
-            client_id,
+            client_key,
             encryption_secret: encryption_secret.into(),
             agent: ureq::agent(),
         }
@@ -56,10 +56,7 @@ impl Server for RemoteServer {
         parent_version_id: VersionId,
         history_segment: HistorySegment,
     ) -> Fallible<AddVersionResult> {
-        let url = format!(
-            "{}/client/{}/add-version/{}",
-            self.origin, self.client_id, parent_version_id
-        );
+        let url = format!("{}/client/add-version/{}", self.origin, parent_version_id);
         let history_cleartext = HistoryCleartext {
             parent_version_id,
             history_segment,
@@ -74,6 +71,7 @@ impl Server for RemoteServer {
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
             )
+            .set("X-Client-Key", &self.client_key.to_string())
             .send_bytes(history_ciphertext.as_ref());
         if resp.ok() {
             let version_id = get_uuid_header(&resp, "X-Version-Id")?;
@@ -88,14 +86,15 @@ impl Server for RemoteServer {
 
     fn get_child_version(&mut self, parent_version_id: VersionId) -> Fallible<GetVersionResult> {
         let url = format!(
-            "{}/client/{}/get-child-version/{}",
-            self.origin, self.client_id, parent_version_id
+            "{}/client/get-child-version/{}",
+            self.origin, parent_version_id
         );
         let resp = self
             .agent
             .get(&url)
             .timeout_connect(10_000)
             .timeout_read(60_000)
+            .set("X-Client-Key", &self.client_key.to_string())
             .call();
 
         if resp.ok() {

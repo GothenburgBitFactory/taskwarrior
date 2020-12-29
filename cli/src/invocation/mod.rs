@@ -108,20 +108,20 @@ fn get_replica(settings: &Config) -> Fallible<Replica> {
 fn get_server(settings: &Config) -> Fallible<Box<dyn server::Server>> {
     // if server_client_id and server_origin are both set, use
     // the remote server
-    if let (Ok(client_id), Ok(origin)) = (
+    if let (Ok(client_key), Ok(origin)) = (
         settings.get_str("server_client_id"),
         settings.get_str("server_origin"),
     ) {
-        let client_id = Uuid::parse_str(&client_id)?;
+        let client_key = Uuid::parse_str(&client_key)?;
         let encryption_secret = settings
             .get_str("encryption_secret")
             .map_err(|_| format_err!("Could not read `encryption_secret` configuration"))?;
 
         log::debug!("Using sync-server with origin {}", origin);
-        log::debug!("Sync client ID: {}", client_id);
+        log::debug!("Sync client ID: {}", client_key);
         Ok(server::from_config(ServerConfig::Remote {
             origin,
-            client_id,
+            client_key,
             encryption_secret: encryption_secret.as_bytes().to_vec(),
         })?)
     } else {
