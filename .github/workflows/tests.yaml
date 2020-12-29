@@ -2,7 +2,6 @@ name: tests
 on: [push, pull_request]
 jobs:
   tests:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -43,8 +42,8 @@ jobs:
           - name: "Mac OS X 10.13"
             runner: macos-latest
             dockerfile: osx
-    continue-on-error: ${{ matrix.continue-on-error == true }}
     runs-on: ${{ matrix.runner }}
+    continue-on-error: ${{ matrix.continue-on-error == true }}
     steps:
       - uses: actions/checkout@v2
       - name: Build ${{ matrix.name }}
