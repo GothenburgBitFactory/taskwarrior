@@ -1,0 +1,61 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Centos 7"
+            runner: ubuntu-latest
+            dockerfile: centos7
+          - name: "Centos 8"
+            runner: ubuntu-latest
+            dockerfile: centos8
+          - name: "Fedora 31"
+            runner: ubuntu-latest
+            dockerfile: fedora31
+          - name: "Fedora 32"
+            runner: ubuntu-latest
+            dockerfile: fedora32
+          - name: "Fedora 33"
+            runner: ubuntu-latest
+            dockerfile: fedora33
+          - name: "Debian Stable"
+            runner: ubuntu-latest
+            dockerfile: debianstable
+          - name: "Debian Testing"
+            runner: ubuntu-latest
+            dockerfile: debiantesting
+          - name: "Ubuntu 18.04"
+            runner: ubuntu-latest
+            dockerfile: ubuntu1804
+          - name: "Ubuntu 20.04"
+            runner: ubuntu-latest
+            dockerfile: ubuntu2004
+          - name: "OpenSUSE 15.0"
+            runner: ubuntu-latest
+            dockerfile: opensuse1500
+          - name: "Archlinux Base (Rolling)"
+            runner: ubuntu-latest
+            dockerfile: arch
+          - name: "Mac OS X 10.13"
+            runner: macos-latest
+            dockerfile: osx
+    continue-on-error: ${{ matrix.continue-on-error == true }}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ${{ matrix.name }}
+        env:
+          DOCKER_REGISTRY: docker.pkg.github.com
+          DOCKER_CACHE_IMAGE: docker.pkg.github.com/${{ github.repository }}/taskwarrior_cache
+          GITHUB_USER: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONTAINER: ${{ matrix.dockerfile }}
+        run: if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER ; fi
+      - name: Test ${{ matrix.name }}
+        run: if [[ $CONTAINER != "osx" ]]; then docker-compose run test-$CONTAINER; else bash test/scripts/test_osx.sh ; fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
