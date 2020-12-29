@@ -1,7 +1,8 @@
-use crate::argparse::{Column, Property, Report, SortBy};
+use crate::argparse::Filter;
 use crate::invocation::filtered_tasks;
+use crate::report::{Column, Property, Report, Sort, SortBy};
 use crate::table;
-use failure::Fallible;
+use failure::{bail, Fallible};
 use prettytable::{Row, Table};
 use std::cmp::Ordering;
 use taskchampion::{Replica, Task, Uuid};
@@ -101,20 +102,64 @@ fn task_column(task: &Task, column: &Column, working_set: &WorkingSet) -> String
     }
 }
 
+fn get_report(report_name: String, filter: Filter) -> Fallible<Report> {
+    let columns = vec![
+        Column {
+            label: "Id".to_owned(),
+            property: Property::Id,
+        },
+        Column {
+            label: "Description".to_owned(),
+            property: Property::Description,
+        },
+        Column {
+            label: "Active".to_owned(),
+            property: Property::Active,
+        },
+        Column {
+            label: "Tags".to_owned(),
+            property: Property::Tags,
+        },
+    ];
+    let sort = vec![Sort {
+        ascending: false,
+        sort_by: SortBy::Uuid,
+    }];
+    use crate::argparse::Universe;
+    Ok(match report_name.as_ref() {
+        "list" => Report {
+            columns,
+            sort,
+            filter,
+        },
+        "next" => Report {
+            columns,
+            sort,
+            // TODO: merge invocation filter and report filter
+            filter: Filter {
+                universe: Universe::PendingTasks,
+                ..Default::default()
+            },
+        },
+        _ => bail!("Unknown report {:?}", report_name),
+    })
+}
+
 pub(super) fn display_report<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
-    report: &Report,
+    report_name: String,
+    filter: Filter,
 ) -> Fallible<()> {
     let mut t = Table::new();
-
+    let report = get_report(report_name, filter)?;
     let working_set = WorkingSet::new(replica)?;
 
     // Get the tasks from the filter
     let mut tasks: Vec<_> = filtered_tasks(replica, &report.filter)?.collect();
 
     // ..sort them as desired
-    sort_tasks(&mut tasks, report, &working_set);
+    sort_tasks(&mut tasks, &report, &working_set);
 
     // ..set up the column titles
     t.set_format(table::format());
@@ -138,8 +183,8 @@ pub(super) fn display_report<W: WriteColor>(
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::argparse::{Column, Property, Report, Sort, SortBy};
     use crate::invocation::test::*;
+    use crate::report::Sort;
     use std::convert::TryInto;
     use taskchampion::Status;
 
@@ -371,4 +416,3 @@ mod test {
         assert_eq!(task_column(&task, &column, &working_set), s!(""));
     }
 }
-// TODO: test task_column

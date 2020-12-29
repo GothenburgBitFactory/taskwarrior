@@ -30,6 +30,11 @@ pub(super) fn any(input: &str) -> IResult<&str, &str> {
     rest(input)
 }
 
+/// Recognizes a report name
+pub(super) fn report_name(input: &str) -> IResult<&str, &str> {
+    all_consuming(recognize(pair(alpha1, alphanumeric0)))(input)
+}
+
 /// Recognizes a literal string
 pub(super) fn literal(literal: &'static str) -> impl Fn(&str) -> IResult<&str, &str> {
     move |input: &str| all_consuming(nomtag(literal))(input)

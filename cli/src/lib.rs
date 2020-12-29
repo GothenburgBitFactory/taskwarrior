@@ -38,6 +38,7 @@ mod macros;
 
 mod argparse;
 mod invocation;
+mod report;
 mod settings;
 mod table;
 mod usage;

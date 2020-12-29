@@ -1,4 +1,6 @@
-use super::Filter;
+//! This module contains the data structures used to define reports.
+
+use crate::argparse::Filter;
 
 /// A report specifies a filter as well as a sort order and information about which
 /// task attributes to display

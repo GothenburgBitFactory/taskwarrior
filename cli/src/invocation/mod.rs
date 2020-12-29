@@ -60,9 +60,13 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
         } => return cmd::modify::execute(&mut w, &mut replica, filter, modification),
 
         Command {
-            subcommand: Subcommand::List { report },
+            subcommand:
+                Subcommand::Report {
+                    report_name,
+                    filter,
+                },
             ..
-        } => return cmd::list::execute(&mut w, &mut replica, report),
+        } => return cmd::report::execute(&mut w, &mut replica, report_name, filter),
 
         Command {
             subcommand: Subcommand::Info { filter, debug },
