@@ -103,6 +103,10 @@ class TestInfoCommand(TestCase):
         self.assertIn("U_ONE", out)
         self.assertIn("U_TWO", out)
 
+        # TW-#2060: Make sure UDA attributes are formatted
+        self.assertRegex(out, r"U_ONE\s+\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"U_TWO\s+P1D")
+
 class TestBug425(TestCase):
     def setUp(self):
         self.t = Task()
