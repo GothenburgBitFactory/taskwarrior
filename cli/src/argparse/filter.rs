@@ -1,6 +1,7 @@
 use super::args::{arg_matching, id_list, minus_tag, plus_tag, status_colon, TaskId};
 use super::ArgList;
 use crate::usage;
+use failure::{bail, Fallible};
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
 use taskchampion::Status;
 
@@ -32,15 +33,61 @@ pub(crate) enum Condition {
     IdList(Vec<TaskId>),
 }
 
+impl Condition {
+    fn parse(input: ArgList) -> IResult<ArgList, Condition> {
+        alt((
+            Self::parse_id_list,
+            Self::parse_plus_tag,
+            Self::parse_minus_tag,
+            Self::parse_status,
+        ))(input)
+    }
+
+    /// Parse a single condition string
+    pub(crate) fn parse_str(input: &str) -> Fallible<Condition> {
+        let input = &[input];
+        Ok(match Condition::parse(input) {
+            Ok((&[], cond)) => cond,
+            Ok(_) => unreachable!(), // input only has one element
+            Err(nom::Err::Incomplete(_)) => unreachable!(),
+            Err(nom::Err::Error(e)) => bail!("invalid filter condition: {:?}", e),
+            Err(nom::Err::Failure(e)) => bail!("invalid filter condition: {:?}", e),
+        })
+    }
+
+    fn parse_id_list(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: Vec<TaskId>) -> Result<Condition, ()> {
+            Ok(Condition::IdList(input))
+        }
+        map_res(arg_matching(id_list), to_condition)(input)
+    }
+
+    fn parse_plus_tag(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: &str) -> Result<Condition, ()> {
+            Ok(Condition::HasTag(input.to_owned()))
+        }
+        map_res(arg_matching(plus_tag), to_condition)(input)
+    }
+
+    fn parse_minus_tag(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: &str) -> Result<Condition, ()> {
+            Ok(Condition::NoTag(input.to_owned()))
+        }
+        map_res(arg_matching(minus_tag), to_condition)(input)
+    }
+
+    fn parse_status(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: Status) -> Result<Condition, ()> {
+            Ok(Condition::Status(input))
+        }
+        map_res(arg_matching(status_colon), to_condition)(input)
+    }
+}
+
 impl Filter {
     pub(super) fn parse(input: ArgList) -> IResult<ArgList, Filter> {
         fold_many0(
-            alt((
-                Self::parse_id_list,
-                Self::parse_plus_tag,
-                Self::parse_minus_tag,
-                Self::parse_status,
-            )),
+            Condition::parse,
             Filter {
                 ..Default::default()
             },
@@ -78,36 +125,6 @@ impl Filter {
         self.conditions.append(&mut other.conditions);
 
         self
-    }
-
-    // parsers
-
-    fn parse_id_list(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: Vec<TaskId>) -> Result<Condition, ()> {
-            Ok(Condition::IdList(input))
-        }
-        map_res(arg_matching(id_list), to_condition)(input)
-    }
-
-    fn parse_plus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: &str) -> Result<Condition, ()> {
-            Ok(Condition::HasTag(input.to_owned()))
-        }
-        map_res(arg_matching(plus_tag), to_condition)(input)
-    }
-
-    fn parse_minus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: &str) -> Result<Condition, ()> {
-            Ok(Condition::NoTag(input.to_owned()))
-        }
-        map_res(arg_matching(minus_tag), to_condition)(input)
-    }
-
-    fn parse_status(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: Status) -> Result<Condition, ()> {
-            Ok(Condition::Status(input))
-        }
-        map_res(arg_matching(status_colon), to_condition)(input)
     }
 
     // usage

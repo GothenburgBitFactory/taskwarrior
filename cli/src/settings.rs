@@ -1,9 +1,40 @@
-use config::{Config, Environment, File, FileSourceFile};
+use config::{Config, Environment, File, FileFormat, FileSourceFile, FileSourceString};
 use failure::Fallible;
 use std::env;
 use std::path::PathBuf;
 
-pub(crate) fn read_settings() -> Fallible<Config> {
+const DEFAULTS: &str = r#"
+reports:
+    list:
+        sort:
+          - sort_by: uuid
+        columns:
+          - label: Id
+            property: id
+          - label: Description
+            property: description
+          - label: Active
+            property: active
+          - label: Tags
+            property: tags
+    next:
+        filter:
+          - "status:pending"
+        sort:
+          - sort_by: uuid
+        columns:
+          - label: Id
+            property: id
+          - label: Description
+            property: description
+          - label: Active
+            property: active
+          - label: Tags
+            property: tags
+"#;
+
+/// Get the default settings for this application
+pub(crate) fn default_settings() -> Fallible<Config> {
     let mut settings = Config::default();
 
     // set up defaults
@@ -24,6 +55,15 @@ pub(crate) fn read_settings() -> Fallible<Config> {
             server_dir.to_str().expect("data_local_dir is not utf-8"),
         )?;
     }
+
+    let defaults: File<FileSourceString> = File::from_str(DEFAULTS, FileFormat::Yaml);
+    settings.merge(defaults)?;
+
+    Ok(settings)
+}
+
+pub(crate) fn read_settings() -> Fallible<Config> {
+    let mut settings = default_settings()?;
 
     // load either from the path in TASKCHAMPION_CONFIG, or from CONFIG_DIR/taskchampion
     if let Some(config_file) = env::var_os("TASKCHAMPION_CONFIG") {

@@ -1,5 +1,6 @@
 use crate::argparse::Filter;
 use crate::invocation::display_report;
+use config::Config;
 use failure::Fallible;
 use taskchampion::Replica;
 use termcolor::WriteColor;
@@ -7,10 +8,11 @@ use termcolor::WriteColor;
 pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
+    settings: &Config,
     report_name: String,
     filter: Filter,
 ) -> Fallible<()> {
-    display_report(w, replica, report_name, filter)
+    display_report(w, replica, settings, report_name, filter)
 }
 
 #[cfg(test)]
@@ -29,11 +31,13 @@ mod test {
         // The function being tested is only one line long, so this is sort of an integration test
         // for display_report.
 
+        let settings = crate::settings::default_settings().unwrap();
         let report_name = "next".to_owned();
         let filter = Filter {
             ..Default::default()
         };
-        execute(&mut w, &mut replica, report_name, filter).unwrap();
+
+        execute(&mut w, &mut replica, &settings, report_name, filter).unwrap();
         assert!(w.into_string().contains("my task"));
     }
 }

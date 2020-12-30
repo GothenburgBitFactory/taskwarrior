@@ -1,11 +1,12 @@
-use crate::argparse::{Condition, Filter};
+use crate::argparse::Filter;
 use crate::invocation::filtered_tasks;
-use crate::report::{Column, Property, Report, Sort, SortBy};
+use crate::report::{Column, Property, Report, SortBy};
 use crate::table;
-use failure::{bail, Fallible};
+use config::Config;
+use failure::{format_err, Fallible};
 use prettytable::{Row, Table};
 use std::cmp::Ordering;
-use taskchampion::{Replica, Status, Task, Uuid};
+use taskchampion::{Replica, Task, Uuid};
 use termcolor::WriteColor;
 
 // pending #123, this is a non-fallible way of looking up a task's working set index
@@ -102,60 +103,22 @@ fn task_column(task: &Task, column: &Column, working_set: &WorkingSet) -> String
     }
 }
 
-fn get_report(report_name: String, filter: Filter) -> Fallible<Report> {
-    let columns = vec![
-        Column {
-            label: "Id".to_owned(),
-            property: Property::Id,
-        },
-        Column {
-            label: "Description".to_owned(),
-            property: Property::Description,
-        },
-        Column {
-            label: "Active".to_owned(),
-            property: Property::Active,
-        },
-        Column {
-            label: "Tags".to_owned(),
-            property: Property::Tags,
-        },
-    ];
-    let sort = vec![Sort {
-        ascending: false,
-        sort_by: SortBy::Uuid,
-    }];
-    let mut report = match report_name.as_ref() {
-        "list" => Report {
-            columns,
-            sort,
-            filter: Default::default(),
-        },
-        "next" => Report {
-            columns,
-            sort,
-            filter: Filter {
-                conditions: vec![Condition::Status(Status::Pending)],
-            },
-        },
-        _ => bail!("Unknown report {:?}", report_name),
-    };
-
-    // intersect the report's filter with the user-supplied filter
-    report.filter = report.filter.intersect(filter);
-
-    Ok(report)
-}
-
 pub(super) fn display_report<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
+    settings: &Config,
     report_name: String,
     filter: Filter,
 ) -> Fallible<()> {
     let mut t = Table::new();
-    let report = get_report(report_name, filter)?;
     let working_set = WorkingSet::new(replica)?;
+
+    // Get the report from settings
+    let mut report = Report::from_config(settings.get(&format!("reports.{}", report_name))?)
+        .map_err(|e| format_err!("report.{}{}", report_name, e))?;
+
+    // include any user-supplied filter conditions
+    report.filter = report.filter.intersect(filter);
 
     // Get the tasks from the filter
     let mut tasks: Vec<_> = filtered_tasks(replica, &report.filter)?.collect();
