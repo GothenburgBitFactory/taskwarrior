@@ -10,7 +10,7 @@ use nom::{
     sequence::*,
     Err, IResult,
 };
-use taskchampion::Uuid;
+use taskchampion::{Status, Uuid};
 
 /// A task identifier, as given in a filter command-line expression
 #[derive(Debug, PartialEq, Clone)]
@@ -30,9 +30,40 @@ pub(super) fn any(input: &str) -> IResult<&str, &str> {
     rest(input)
 }
 
+/// Recognizes a report name
+pub(super) fn report_name(input: &str) -> IResult<&str, &str> {
+    all_consuming(recognize(pair(alpha1, alphanumeric0)))(input)
+}
+
 /// Recognizes a literal string
 pub(super) fn literal(literal: &'static str) -> impl Fn(&str) -> IResult<&str, &str> {
     move |input: &str| all_consuming(nomtag(literal))(input)
+}
+
+/// Recognizes a colon-prefixed pair
+pub(super) fn colon_prefixed(prefix: &'static str) -> impl Fn(&str) -> IResult<&str, &str> {
+    fn to_suffix<'a>(input: (&'a str, char, &'a str)) -> Result<&'a str, ()> {
+        Ok(input.2)
+    }
+    move |input: &str| {
+        map_res(
+            all_consuming(tuple((nomtag(prefix), char(':'), any))),
+            to_suffix,
+        )(input)
+    }
+}
+
+/// Recognizes `status:{pending,completed,deleted}`
+pub(super) fn status_colon(input: &str) -> IResult<&str, Status> {
+    fn to_status(input: &str) -> Result<Status, ()> {
+        match input {
+            "pending" => Ok(Status::Pending),
+            "completed" => Ok(Status::Completed),
+            "deleted" => Ok(Status::Deleted),
+            _ => Err(()),
+        }
+    }
+    map_res(colon_prefixed("status"), to_status)(input)
 }
 
 /// Recognizes a comma-separated list of TaskIds
@@ -157,6 +188,26 @@ mod test {
             (argv!["bar"], "foo")
         );
         assert!(arg_matching(plus_tag)(argv!["foo", "bar"]).is_err());
+    }
+
+    #[test]
+    fn test_colon_prefixed() {
+        assert_eq!(colon_prefixed("foo")("foo:abc").unwrap().1, "abc");
+        assert_eq!(colon_prefixed("foo")("foo:").unwrap().1, "");
+        assert!(colon_prefixed("foo")("foo").is_err());
+    }
+
+    #[test]
+    fn test_status_colon() {
+        assert_eq!(status_colon("status:pending").unwrap().1, Status::Pending);
+        assert_eq!(
+            status_colon("status:completed").unwrap().1,
+            Status::Completed
+        );
+        assert_eq!(status_colon("status:deleted").unwrap().1, Status::Deleted);
+        assert!(status_colon("status:foo").is_err());
+        assert!(status_colon("status:complete").is_err());
+        assert!(status_colon("status").is_err());
     }
 
     #[test]

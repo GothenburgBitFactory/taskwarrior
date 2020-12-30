@@ -1,7 +1,5 @@
 use super::args::*;
-use super::{
-    ArgList, Column, DescriptionMod, Filter, Modification, Property, Report, Sort, SortBy,
-};
+use super::{ArgList, DescriptionMod, Filter, Modification};
 use crate::usage;
 use nom::{branch::alt, combinator::*, sequence::*, IResult};
 use taskchampion::Status;
@@ -39,8 +37,12 @@ pub(crate) enum Subcommand {
     },
 
     /// Lists (reports)
-    List {
-        report: Report,
+    Report {
+        /// The name of the report to show
+        report_name: String,
+
+        /// Additional filter terms beyond those in the report
+        filter: Filter,
     },
 
     /// Per-task information (typically one task)
@@ -56,16 +58,17 @@ pub(crate) enum Subcommand {
 
 impl Subcommand {
     pub(super) fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
-        alt((
+        all_consuming(alt((
             Version::parse,
             Help::parse,
             Add::parse,
             Modify::parse,
-            List::parse,
             Info::parse,
             Gc::parse,
             Sync::parse,
-        ))(input)
+            // This must come last since it accepts arbitrary report names
+            Report::parse,
+        )))(input)
     }
 
     pub(super) fn get_usage(u: &mut usage::Usage) {
@@ -73,10 +76,10 @@ impl Subcommand {
         Help::get_usage(u);
         Add::get_usage(u);
         Modify::get_usage(u);
-        List::get_usage(u);
         Info::get_usage(u);
         Gc::get_usage(u);
         Sync::get_usage(u);
+        Report::get_usage(u);
     }
 }
 
@@ -251,59 +254,43 @@ impl Modify {
     }
 }
 
-struct List;
+struct Report;
 
-impl List {
-    // temporary
-    fn default_report() -> Report {
-        Report {
-            columns: vec![
-                Column {
-                    label: "Id".to_owned(),
-                    property: Property::Id,
-                },
-                Column {
-                    label: "Description".to_owned(),
-                    property: Property::Description,
-                },
-                Column {
-                    label: "Active".to_owned(),
-                    property: Property::Active,
-                },
-                Column {
-                    label: "Tags".to_owned(),
-                    property: Property::Tags,
-                },
-            ],
-            sort: vec![Sort {
-                ascending: false,
-                sort_by: SortBy::Uuid,
-            }],
-            ..Default::default()
-        }
-    }
-
+impl Report {
     fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
-        fn to_subcommand(input: (Filter, &str)) -> Result<Subcommand, ()> {
-            let report = Report {
-                filter: input.0,
-                ..List::default_report()
-            };
-            Ok(Subcommand::List { report })
+        fn to_subcommand(filter: Filter, report_name: &str) -> Result<Subcommand, ()> {
+            Ok(Subcommand::Report {
+                filter,
+                report_name: report_name.to_owned(),
+            })
         }
-        map_res(
-            pair(Filter::parse, arg_matching(literal("list"))),
-            to_subcommand,
-        )(input)
+        // allow the filter expression before or after the report name
+        alt((
+            map_res(pair(arg_matching(report_name), Filter::parse), |input| {
+                to_subcommand(input.1, input.0)
+            }),
+            map_res(pair(Filter::parse, arg_matching(report_name)), |input| {
+                to_subcommand(input.0, input.1)
+            }),
+            // default to a "next" report
+            map_res(Filter::parse, |input| to_subcommand(input, "next")),
+        ))(input)
     }
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "list",
-            syntax: "[filter] list",
-            summary: "List tasks",
+            name: "report",
+            syntax: "[filter] [report-name] *or* [report-name] [filter]",
+            summary: "Show a report",
             description: "
-                Show a list of the tasks matching the filter",
+                Show the named report, including only tasks matching the filter",
+        });
+        u.subcommands.push(usage::Subcommand {
+            name: "next",
+            syntax: "[filter]",
+            summary: "Show the 'next' report",
+            description: "
+                Show the report named 'next', including only tasks matching the filter",
         });
     }
 }
@@ -396,7 +383,7 @@ impl Sync {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::argparse::Universe;
+    use crate::argparse::Condition;
 
     const EMPTY: Vec<&str> = vec![];
 
@@ -472,8 +459,7 @@ mod test {
     fn test_modify_description_multi() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Set(s!("foo bar")),
@@ -490,8 +476,7 @@ mod test {
     fn test_append() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Append(s!("foo bar")),
@@ -508,8 +493,7 @@ mod test {
     fn test_prepend() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Prepend(s!("foo bar")),
@@ -526,8 +510,7 @@ mod test {
     fn test_done() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 status: Some(Status::Completed),
@@ -544,8 +527,7 @@ mod test {
     fn test_done_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Set(s!("now-finished")),
@@ -563,8 +545,7 @@ mod test {
     fn test_start() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 active: Some(true),
@@ -581,8 +562,7 @@ mod test {
     fn test_start_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 active: Some(true),
@@ -600,8 +580,7 @@ mod test {
     fn test_stop() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 active: Some(false),
@@ -618,8 +597,7 @@ mod test {
     fn test_stop_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Set(s!("mod")),
@@ -634,31 +612,78 @@ mod test {
     }
 
     #[test]
-    fn test_list() {
-        let subcommand = Subcommand::List {
-            report: Report {
-                ..List::default_report()
-            },
+    fn test_report() {
+        let subcommand = Subcommand::Report {
+            filter: Default::default(),
+            report_name: "myreport".to_owned(),
         };
         assert_eq!(
-            Subcommand::parse(argv!["list"]).unwrap(),
+            Subcommand::parse(argv!["myreport"]).unwrap(),
             (&EMPTY[..], subcommand)
         );
     }
 
     #[test]
-    fn test_list_filter() {
-        let subcommand = Subcommand::List {
-            report: Report {
-                filter: Filter {
-                    universe: Universe::for_ids(vec![12, 13]),
-                    ..Default::default()
-                },
-                ..List::default_report()
+    fn test_report_filter_before() {
+        let subcommand = Subcommand::Report {
+            filter: Filter {
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
             },
+            report_name: "foo".to_owned(),
         };
         assert_eq!(
-            Subcommand::parse(argv!["12,13", "list"]).unwrap(),
+            Subcommand::parse(argv!["12,13", "foo"]).unwrap(),
+            (&EMPTY[..], subcommand)
+        );
+    }
+
+    #[test]
+    fn test_report_filter_after() {
+        let subcommand = Subcommand::Report {
+            filter: Filter {
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
+            },
+            report_name: "foo".to_owned(),
+        };
+        assert_eq!(
+            Subcommand::parse(argv!["foo", "12,13"]).unwrap(),
+            (&EMPTY[..], subcommand)
+        );
+    }
+
+    #[test]
+    fn test_report_filter_next() {
+        let subcommand = Subcommand::Report {
+            filter: Filter {
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
+            },
+            report_name: "next".to_owned(),
+        };
+        assert_eq!(
+            Subcommand::parse(argv!["12,13"]).unwrap(),
+            (&EMPTY[..], subcommand)
+        );
+    }
+
+    #[test]
+    fn test_report_next() {
+        let subcommand = Subcommand::Report {
+            filter: Filter {
+                ..Default::default()
+            },
+            report_name: "next".to_owned(),
+        };
+        assert_eq!(
+            Subcommand::parse(argv![]).unwrap(),
             (&EMPTY[..], subcommand)
         );
     }
@@ -668,8 +693,10 @@ mod test {
         let subcommand = Subcommand::Info {
             debug: false,
             filter: Filter {
-                universe: Universe::for_ids(vec![12, 13]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
             },
         };
         assert_eq!(
@@ -683,8 +710,7 @@ mod test {
         let subcommand = Subcommand::Info {
             debug: true,
             filter: Filter {
-                universe: Universe::for_ids(vec![12]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(12)])],
             },
         };
         assert_eq!(
@@ -704,11 +730,7 @@ mod test {
 
     #[test]
     fn test_gc_extra_args() {
-        let subcommand = Subcommand::Gc;
-        assert_eq!(
-            Subcommand::parse(argv!["gc", "foo"]).unwrap(),
-            (&vec!["foo"][..], subcommand)
-        );
+        assert!(Subcommand::parse(argv!["gc", "foo"]).is_err());
     }
 
     #[test]
