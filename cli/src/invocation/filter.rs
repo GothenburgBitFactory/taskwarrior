@@ -1,10 +1,10 @@
-use crate::argparse::{Condition, Filter, TaskId, Universe};
+use crate::argparse::{Condition, Filter, TaskId};
 use failure::Fallible;
 use std::collections::HashSet;
 use std::convert::TryInto;
-use taskchampion::{Replica, Tag, Task};
+use taskchampion::{Replica, Status, Tag, Task, Uuid};
 
-fn match_task(filter: &Filter, task: &Task) -> bool {
+fn match_task(filter: &Filter, task: &Task, uuid: Uuid, working_set_id: Option<usize>) -> bool {
     for cond in &filter.conditions {
         match cond {
             Condition::HasTag(ref tag) => {
@@ -21,9 +21,83 @@ fn match_task(filter: &Filter, task: &Task) -> bool {
                     return false;
                 }
             }
+            Condition::Status(status) => {
+                if task.get_status() != *status {
+                    return false;
+                }
+            }
+            Condition::IdList(ids) => {
+                let uuid_str = uuid.to_string();
+                let mut found = false;
+                for id in ids {
+                    if match id {
+                        TaskId::WorkingSetId(i) => Some(*i) == working_set_id,
+                        TaskId::PartialUuid(partial) => uuid_str.starts_with(partial),
+                        TaskId::Uuid(i) => *i == uuid,
+                    } {
+                        found = true;
+                        break;
+                    }
+                }
+                if !found {
+                    return false;
+                }
+            }
         }
     }
     true
+}
+
+// the universe of tasks we must consider
+enum Universe {
+    /// Scan all the tasks
+    AllTasks,
+    /// Scan the working set (for pending tasks)
+    WorkingSet,
+    /// Scan an explicit set of tasks, "Absolute" meaning either full UUID or a working set
+    /// index
+    AbsoluteIdList(Vec<TaskId>),
+}
+
+/// Determine the universe for the given filter; avoiding the need to scan all tasks in most cases.
+fn universe_for_filter(filter: &Filter) -> Universe {
+    /// If there is a condition with Status::Pending, return true
+    fn has_pending_condition(filter: &Filter) -> bool {
+        filter
+            .conditions
+            .iter()
+            .any(|cond| matches!(cond, Condition::Status(Status::Pending)))
+    }
+
+    /// If there is a condition with an IdList containing no partial UUIDs,
+    /// return that.
+    fn absolute_id_list_condition(filter: &Filter) -> Option<Vec<TaskId>> {
+        filter
+            .conditions
+            .iter()
+            .find(|cond| {
+                if let Condition::IdList(ids) = cond {
+                    !ids.iter().any(|id| matches!(id, TaskId::PartialUuid(_)))
+                } else {
+                    false
+                }
+            })
+            .map(|cond| {
+                if let Condition::IdList(ids) = cond {
+                    ids.to_vec()
+                } else {
+                    unreachable!() // any condition found above must be an IdList(_)
+                }
+            })
+    }
+
+    if let Some(ids) = absolute_id_list_condition(filter) {
+        Universe::AbsoluteIdList(ids)
+    } else if has_pending_condition(filter) {
+        Universe::WorkingSet
+    } else {
+        Universe::AllTasks
+    }
 }
 
 /// Return the tasks matching the given filter.  This will return each matching
@@ -35,38 +109,14 @@ pub(super) fn filtered_tasks(
 ) -> Fallible<impl Iterator<Item = Task>> {
     let mut res = vec![];
 
-    fn is_partial_uuid(taskid: &TaskId) -> bool {
-        matches!(taskid, TaskId::PartialUuid(_))
-    }
+    log::debug!("Applying filter {:?}", filter);
 
     // We will enumerate the universe of tasks for this filter, checking
     // each resulting task with match_task
-    match filter.universe {
+    match universe_for_filter(filter) {
         // A list of IDs, but some are partial so we need to iterate over
         // all tasks and pattern-match their Uuids
-        Universe::IdList(ref ids) if ids.iter().any(is_partial_uuid) => {
-            log::debug!("Scanning entire task database due to partial UUIDs in the filter");
-            'task: for (uuid, task) in replica.all_tasks()?.drain() {
-                for id in ids {
-                    let in_universe = match id {
-                        TaskId::WorkingSetId(id) => {
-                            // NOTE: (#108) this results in many reads of the working set; it
-                            // may be better to cache this information here or in the Replica.
-                            replica.get_working_set_index(&uuid)? == Some(*id)
-                        }
-                        TaskId::PartialUuid(prefix) => uuid.to_string().starts_with(prefix),
-                        TaskId::Uuid(id) => id == &uuid,
-                    };
-                    if in_universe && match_task(filter, &task) {
-                        res.push(task);
-                        continue 'task;
-                    }
-                }
-            }
-        }
-
-        // A list of full IDs, which we can fetch directly
-        Universe::IdList(ref ids) => {
+        Universe::AbsoluteIdList(ref ids) => {
             log::debug!("Scanning only the tasks specified in the filter");
             // this is the only case where we might accidentally return the same task
             // several times, so we must track the seen tasks.
@@ -74,7 +124,7 @@ pub(super) fn filtered_tasks(
             for id in ids {
                 let task = match id {
                     TaskId::WorkingSetId(id) => replica.get_working_set_task(*id)?,
-                    TaskId::PartialUuid(_) => unreachable!(), // handled above
+                    TaskId::PartialUuid(_) => unreachable!(), // not present in absolute id list
                     TaskId::Uuid(id) => replica.get_task(id)?,
                 };
 
@@ -86,7 +136,9 @@ pub(super) fn filtered_tasks(
                     }
                     seen.insert(uuid);
 
-                    if match_task(filter, &task) {
+                    let working_set_id = replica.get_working_set_index(&uuid)?;
+
+                    if match_task(filter, &task, uuid, working_set_id) {
                         res.push(task);
                     }
                 }
@@ -96,19 +148,20 @@ pub(super) fn filtered_tasks(
         // All tasks -- iterate over the full set
         Universe::AllTasks => {
             log::debug!("Scanning all tasks in the task database");
-            for (_, task) in replica.all_tasks()?.drain() {
-                if match_task(filter, &task) {
+            for (uuid, task) in replica.all_tasks()?.drain() {
+                // Yikes, slow! https://github.com/djmitche/taskchampion/issues/108
+                let working_set_id = replica.get_working_set_index(&uuid)?;
+                if match_task(filter, &task, uuid, working_set_id) {
                     res.push(task);
                 }
             }
         }
-
-        // Pending tasks -- just scan the working set
-        Universe::PendingTasks => {
+        Universe::WorkingSet => {
             log::debug!("Scanning only the working set (pending tasks)");
-            for task in replica.working_set()?.drain(..) {
+            for (i, task) in replica.working_set()?.drain(..).enumerate() {
                 if let Some(task) = task {
-                    if match_task(filter, &task) {
+                    let uuid = *task.get_uuid();
+                    if match_task(filter, &task, uuid, Some(i)) {
                         res.push(task);
                     }
                 }
@@ -136,12 +189,11 @@ mod test {
         let t1uuid = *t1.get_uuid();
 
         let filter = Filter {
-            universe: Universe::IdList(vec![
+            conditions: vec![Condition::IdList(vec![
                 TaskId::Uuid(t1uuid),         // A
                 TaskId::WorkingSetId(1),      // A (again, dups filtered)
                 TaskId::Uuid(*t2.get_uuid()), // B
-            ]),
-            ..Default::default()
+            ])],
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)
             .unwrap()
@@ -165,12 +217,11 @@ mod test {
         let t2partial = t2uuid[..13].to_owned();
 
         let filter = Filter {
-            universe: Universe::IdList(vec![
+            conditions: vec![Condition::IdList(vec![
                 TaskId::Uuid(t1uuid),           // A
                 TaskId::WorkingSetId(1),        // A (again, dups filtered)
                 TaskId::PartialUuid(t2partial), // B
-            ]),
-            ..Default::default()
+            ])],
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)
             .unwrap()
@@ -189,10 +240,7 @@ mod test {
         replica.new_task(Status::Deleted, s!("C")).unwrap();
         replica.gc().unwrap();
 
-        let filter = Filter {
-            universe: Universe::AllTasks,
-            ..Default::default()
-        };
+        let filter = Filter { conditions: vec![] };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)
             .unwrap()
             .map(|t| t.get_description().to_owned())
@@ -224,9 +272,7 @@ mod test {
 
         // look for just "yes" (A and B)
         let filter = Filter {
-            universe: Universe::AllTasks,
             conditions: vec![Condition::HasTag(s!("yes"))],
-            ..Default::default()
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
@@ -236,9 +282,7 @@ mod test {
 
         // look for tags without "no" (A, D)
         let filter = Filter {
-            universe: Universe::AllTasks,
             conditions: vec![Condition::NoTag(s!("no"))],
-            ..Default::default()
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
@@ -248,9 +292,7 @@ mod test {
 
         // look for tags with "yes" and "no" (B)
         let filter = Filter {
-            universe: Universe::AllTasks,
             conditions: vec![Condition::HasTag(s!("yes")), Condition::HasTag(s!("no"))],
-            ..Default::default()
         };
         let filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
@@ -270,8 +312,7 @@ mod test {
         replica.gc().unwrap();
 
         let filter = Filter {
-            universe: Universe::PendingTasks,
-            ..Default::default()
+            conditions: vec![Condition::Status(Status::Pending)],
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)
             .unwrap()

@@ -383,7 +383,7 @@ impl Sync {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::argparse::Universe;
+    use crate::argparse::Condition;
 
     const EMPTY: Vec<&str> = vec![];
 
@@ -459,8 +459,7 @@ mod test {
     fn test_modify_description_multi() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Set(s!("foo bar")),
@@ -477,8 +476,7 @@ mod test {
     fn test_append() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Append(s!("foo bar")),
@@ -495,8 +493,7 @@ mod test {
     fn test_prepend() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Prepend(s!("foo bar")),
@@ -513,8 +510,7 @@ mod test {
     fn test_done() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 status: Some(Status::Completed),
@@ -531,8 +527,7 @@ mod test {
     fn test_done_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Set(s!("now-finished")),
@@ -550,8 +545,7 @@ mod test {
     fn test_start() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 active: Some(true),
@@ -568,8 +562,7 @@ mod test {
     fn test_start_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 active: Some(true),
@@ -587,8 +580,7 @@ mod test {
     fn test_stop() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 active: Some(false),
@@ -605,8 +597,7 @@ mod test {
     fn test_stop_modify() {
         let subcommand = Subcommand::Modify {
             filter: Filter {
-                universe: Universe::for_ids(vec![123]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
             },
             modification: Modification {
                 description: DescriptionMod::Set(s!("mod")),
@@ -636,8 +627,10 @@ mod test {
     fn test_report_filter_before() {
         let subcommand = Subcommand::Report {
             filter: Filter {
-                universe: Universe::for_ids(vec![12, 13]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
             },
             report_name: "foo".to_owned(),
         };
@@ -651,8 +644,10 @@ mod test {
     fn test_report_filter_after() {
         let subcommand = Subcommand::Report {
             filter: Filter {
-                universe: Universe::for_ids(vec![12, 13]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
             },
             report_name: "foo".to_owned(),
         };
@@ -666,8 +661,10 @@ mod test {
     fn test_report_filter_next() {
         let subcommand = Subcommand::Report {
             filter: Filter {
-                universe: Universe::for_ids(vec![12, 13]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
             },
             report_name: "next".to_owned(),
         };
@@ -696,8 +693,10 @@ mod test {
         let subcommand = Subcommand::Info {
             debug: false,
             filter: Filter {
-                universe: Universe::for_ids(vec![12, 13]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![
+                    TaskId::WorkingSetId(12),
+                    TaskId::WorkingSetId(13),
+                ])],
             },
         };
         assert_eq!(
@@ -711,8 +710,7 @@ mod test {
         let subcommand = Subcommand::Info {
             debug: true,
             filter: Filter {
-                universe: Universe::for_ids(vec![12]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(12)])],
             },
         };
         assert_eq!(

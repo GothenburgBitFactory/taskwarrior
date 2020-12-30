@@ -2,6 +2,7 @@ use super::args::{arg_matching, id_list, minus_tag, plus_tag, TaskId};
 use super::ArgList;
 use crate::usage;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
+use taskchampion::Status;
 
 /// A filter represents a selection of a particular set of tasks.
 ///
@@ -10,38 +11,9 @@ use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
 /// pending tasks, or all tasks.
 #[derive(Debug, PartialEq, Default, Clone)]
 pub(crate) struct Filter {
-    /// The universe of tasks from which this filter can select
-    pub(crate) universe: Universe,
-
     /// A set of filter conditions, all of which must match a task in order for that task to be
     /// selected.
     pub(crate) conditions: Vec<Condition>,
-}
-
-/// The universe of tasks over which a filter should be applied.
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) enum Universe {
-    /// Only the identified tasks.  Note that this may contain duplicates.
-    IdList(Vec<TaskId>),
-    /// All tasks in the task database
-    AllTasks,
-    /// Only pending tasks (or as an approximation, the working set)
-    #[allow(dead_code)] // currently only used in tests
-    PendingTasks,
-}
-
-impl Universe {
-    /// Testing shorthand to construct a simple universe
-    #[cfg(test)]
-    pub(super) fn for_ids(mut ids: Vec<usize>) -> Self {
-        Universe::IdList(ids.drain(..).map(|id| TaskId::WorkingSetId(id)).collect())
-    }
-}
-
-impl Default for Universe {
-    fn default() -> Self {
-        Self::AllTasks
-    }
 }
 
 /// A condition which tasks must match to be accepted by the filter.
@@ -52,10 +24,18 @@ pub(crate) enum Condition {
 
     /// Task does not have the given tag
     NoTag(String),
+
+    // TODO: add command-line syntax for this
+    /// Task has the given status
+    Status(Status),
+
+    /// Task has one of the given IDs
+    IdList(Vec<TaskId>),
 }
 
 /// Internal struct representing a parsed filter argument
 enum FilterArg {
+    // TODO: get rid of this whole enum
     IdList(Vec<TaskId>),
     Condition(Condition),
 }
@@ -67,29 +47,45 @@ impl Filter {
             Filter {
                 ..Default::default()
             },
-            Self::fold_args,
+            |acc, arg| acc.with_arg(arg),
         )(input)
     }
 
     /// fold multiple filter args into a single Filter instance
-    fn fold_args(mut acc: Filter, mod_arg: FilterArg) -> Filter {
+    fn with_arg(mut self, mod_arg: FilterArg) -> Filter {
         match mod_arg {
             FilterArg::IdList(mut id_list) => {
-                // If any IDs are specified, then the filter's universe
-                // is those IDs.  If there are already IDs, append to the
-                // list.
-                if let Universe::IdList(ref mut existing) = acc.universe {
+                // If there is already an IdList condition, concatenate this one
+                // to it.  Thus multiple IdList command-line args represent an OR
+                // operation.  This assumes that the filter is still being built
+                // from command-line arguments and thus has at most one IdList
+                // condition.
+                if let Some(Condition::IdList(existing)) = self
+                    .conditions
+                    .iter_mut()
+                    .find(|c| matches!(c, Condition::IdList(_)))
+                {
                     existing.append(&mut id_list);
                 } else {
-                    acc.universe = Universe::IdList(id_list);
+                    self.conditions.push(Condition::IdList(id_list));
                 }
             }
             FilterArg::Condition(cond) => {
-                acc.conditions.push(cond);
+                self.conditions.push(cond);
             }
         }
-        acc
+        self
     }
+
+    /// combine this filter with another filter in an AND operation
+    pub(crate) fn intersect(mut self, mut other: Filter) -> Filter {
+        // simply concatenate the conditions
+        self.conditions.append(&mut other.conditions);
+
+        self
+    }
+
+    // parsers
 
     fn id_list(input: ArgList) -> IResult<ArgList, FilterArg> {
         fn to_filterarg(input: Vec<TaskId>) -> Result<FilterArg, ()> {
@@ -111,6 +107,8 @@ impl Filter {
         }
         map_res(arg_matching(minus_tag), to_filterarg)(input)
     }
+
+    // usage
 
     pub(super) fn get_usage(u: &mut usage::Usage) {
         u.filters.push(usage::Filter {
@@ -160,8 +158,7 @@ mod test {
         assert_eq!(
             filter,
             Filter {
-                universe: Universe::IdList(vec![TaskId::WorkingSetId(1)]),
-                ..Default::default()
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(1)])],
             }
         );
     }
@@ -173,12 +170,11 @@ mod test {
         assert_eq!(
             filter,
             Filter {
-                universe: Universe::IdList(vec![
+                conditions: vec![Condition::IdList(vec![
                     TaskId::WorkingSetId(1),
                     TaskId::WorkingSetId(2),
                     TaskId::WorkingSetId(3),
-                ]),
-                ..Default::default()
+                ])],
             }
         );
     }
@@ -190,13 +186,12 @@ mod test {
         assert_eq!(
             filter,
             Filter {
-                universe: Universe::IdList(vec![
+                conditions: vec![Condition::IdList(vec![
                     TaskId::WorkingSetId(1),
                     TaskId::WorkingSetId(2),
                     TaskId::WorkingSetId(3),
                     TaskId::WorkingSetId(4),
-                ]),
-                ..Default::default()
+                ])],
             }
         );
     }
@@ -208,11 +203,10 @@ mod test {
         assert_eq!(
             filter,
             Filter {
-                universe: Universe::IdList(vec![
+                conditions: vec![Condition::IdList(vec![
                     TaskId::WorkingSetId(1),
                     TaskId::PartialUuid(s!("abcd1234")),
-                ]),
-                ..Default::default()
+                ])],
             }
         );
     }
@@ -224,12 +218,66 @@ mod test {
         assert_eq!(
             filter,
             Filter {
-                universe: Universe::IdList(vec![TaskId::WorkingSetId(1),]),
                 conditions: vec![
+                    Condition::IdList(vec![TaskId::WorkingSetId(1),]),
                     Condition::HasTag("yes".into()),
                     Condition::NoTag("no".into()),
                 ],
-                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn intersect_idlist_idlist() {
+        let left = Filter::parse(argv!["1,2", "+yes"]).unwrap().1;
+        let right = Filter::parse(argv!["2,3", "+no"]).unwrap().1;
+        let both = left.intersect(right);
+        assert_eq!(
+            both,
+            Filter {
+                conditions: vec![
+                    // from first filter
+                    Condition::IdList(vec![TaskId::WorkingSetId(1), TaskId::WorkingSetId(2),]),
+                    Condition::HasTag("yes".into()),
+                    // from second filter
+                    Condition::IdList(vec![TaskId::WorkingSetId(2), TaskId::WorkingSetId(3)]),
+                    Condition::HasTag("no".into()),
+                ],
+            }
+        );
+    }
+
+    #[test]
+    fn intersect_idlist_alltasks() {
+        let left = Filter::parse(argv!["1,2", "+yes"]).unwrap().1;
+        let right = Filter::parse(argv!["+no"]).unwrap().1;
+        let both = left.intersect(right);
+        assert_eq!(
+            both,
+            Filter {
+                conditions: vec![
+                    // from first filter
+                    Condition::IdList(vec![TaskId::WorkingSetId(1), TaskId::WorkingSetId(2),]),
+                    Condition::HasTag("yes".into()),
+                    // from second filter
+                    Condition::HasTag("no".into()),
+                ],
+            }
+        );
+    }
+
+    #[test]
+    fn intersect_alltasks_alltasks() {
+        let left = Filter::parse(argv!["+yes"]).unwrap().1;
+        let right = Filter::parse(argv!["+no"]).unwrap().1;
+        let both = left.intersect(right);
+        assert_eq!(
+            both,
+            Filter {
+                conditions: vec![
+                    Condition::HasTag("yes".into()),
+                    Condition::HasTag("no".into()),
+                ],
             }
         );
     }

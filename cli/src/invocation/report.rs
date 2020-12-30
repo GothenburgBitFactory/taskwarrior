@@ -1,11 +1,11 @@
-use crate::argparse::Filter;
+use crate::argparse::{Condition, Filter};
 use crate::invocation::filtered_tasks;
 use crate::report::{Column, Property, Report, Sort, SortBy};
 use crate::table;
 use failure::{bail, Fallible};
 use prettytable::{Row, Table};
 use std::cmp::Ordering;
-use taskchampion::{Replica, Task, Uuid};
+use taskchampion::{Replica, Status, Task, Uuid};
 use termcolor::WriteColor;
 
 // pending #123, this is a non-fallible way of looking up a task's working set index
@@ -125,24 +125,26 @@ fn get_report(report_name: String, filter: Filter) -> Fallible<Report> {
         ascending: false,
         sort_by: SortBy::Uuid,
     }];
-    use crate::argparse::Universe;
-    Ok(match report_name.as_ref() {
+    let mut report = match report_name.as_ref() {
         "list" => Report {
             columns,
             sort,
-            filter,
+            filter: Default::default(),
         },
         "next" => Report {
             columns,
             sort,
-            // TODO: merge invocation filter and report filter
             filter: Filter {
-                universe: Universe::PendingTasks,
-                ..Default::default()
+                conditions: vec![Condition::Status(Status::Pending)],
             },
         },
         _ => bail!("Unknown report {:?}", report_name),
-    })
+    };
+
+    // intersect the report's filter with the user-supplied filter
+    report.filter = report.filter.intersect(filter);
+
+    Ok(report)
 }
 
 pub(super) fn display_report<W: WriteColor>(
