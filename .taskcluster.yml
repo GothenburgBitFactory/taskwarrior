@@ -7,7 +7,7 @@ tasks:
   then:
     $let:
       run:
-        $if: 'tasks_for == "github-push"'
+        $if: 'tasks_for == "github-push" && event["ref"] == "refs/heads/main"'
         then: true
         else: {$eval: 'event.action in ["opened", "reopened", "synchronize"]'}
       repo_url:
