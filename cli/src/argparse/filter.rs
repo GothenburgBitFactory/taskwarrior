@@ -1,4 +1,4 @@
-use super::args::{arg_matching, id_list, minus_tag, plus_tag, TaskId};
+use super::args::{arg_matching, id_list, minus_tag, plus_tag, status_colon, TaskId};
 use super::ArgList;
 use crate::usage;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
@@ -25,7 +25,6 @@ pub(crate) enum Condition {
     /// Task does not have the given tag
     NoTag(String),
 
-    // TODO: add command-line syntax for this
     /// Task has the given status
     Status(Status),
 
@@ -36,7 +35,12 @@ pub(crate) enum Condition {
 impl Filter {
     pub(super) fn parse(input: ArgList) -> IResult<ArgList, Filter> {
         fold_many0(
-            alt((Self::id_list, Self::plus_tag, Self::minus_tag)),
+            alt((
+                Self::parse_id_list,
+                Self::parse_plus_tag,
+                Self::parse_minus_tag,
+                Self::parse_status,
+            )),
             Filter {
                 ..Default::default()
             },
@@ -78,25 +82,32 @@ impl Filter {
 
     // parsers
 
-    fn id_list(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_filterarg(input: Vec<TaskId>) -> Result<Condition, ()> {
+    fn parse_id_list(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: Vec<TaskId>) -> Result<Condition, ()> {
             Ok(Condition::IdList(input))
         }
-        map_res(arg_matching(id_list), to_filterarg)(input)
+        map_res(arg_matching(id_list), to_condition)(input)
     }
 
-    fn plus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_filterarg(input: &str) -> Result<Condition, ()> {
+    fn parse_plus_tag(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: &str) -> Result<Condition, ()> {
             Ok(Condition::HasTag(input.to_owned()))
         }
-        map_res(arg_matching(plus_tag), to_filterarg)(input)
+        map_res(arg_matching(plus_tag), to_condition)(input)
     }
 
-    fn minus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_filterarg(input: &str) -> Result<Condition, ()> {
+    fn parse_minus_tag(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: &str) -> Result<Condition, ()> {
             Ok(Condition::NoTag(input.to_owned()))
         }
-        map_res(arg_matching(minus_tag), to_filterarg)(input)
+        map_res(arg_matching(minus_tag), to_condition)(input)
+    }
+
+    fn parse_status(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_condition(input: Status) -> Result<Condition, ()> {
+            Ok(Condition::Status(input))
+        }
+        map_res(arg_matching(status_colon), to_condition)(input)
     }
 
     // usage
@@ -122,6 +133,12 @@ impl Filter {
             summary: "Un-tagged tasks",
             description: "
                 Select tasks that do not have the given tag.",
+        });
+        u.filters.push(usage::Filter {
+            syntax: "status:pending, status:completed, status:deleted",
+            summary: "Task status",
+            description: "
+                Select tasks with the given status.",
         });
     }
 }
@@ -213,6 +230,21 @@ mod test {
                     Condition::IdList(vec![TaskId::WorkingSetId(1),]),
                     Condition::HasTag("yes".into()),
                     Condition::NoTag("no".into()),
+                ],
+            }
+        );
+    }
+
+    #[test]
+    fn test_status() {
+        let (input, filter) = Filter::parse(argv!["status:completed", "status:pending"]).unwrap();
+        assert_eq!(input.len(), 0);
+        assert_eq!(
+            filter,
+            Filter {
+                conditions: vec![
+                    Condition::Status(Status::Completed),
+                    Condition::Status(Status::Pending),
                 ],
             }
         );
