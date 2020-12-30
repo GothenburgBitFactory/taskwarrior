@@ -33,13 +33,6 @@ pub(crate) enum Condition {
     IdList(Vec<TaskId>),
 }
 
-/// Internal struct representing a parsed filter argument
-enum FilterArg {
-    // TODO: get rid of this whole enum
-    IdList(Vec<TaskId>),
-    Condition(Condition),
-}
-
 impl Filter {
     pub(super) fn parse(input: ArgList) -> IResult<ArgList, Filter> {
         fold_many0(
@@ -52,27 +45,25 @@ impl Filter {
     }
 
     /// fold multiple filter args into a single Filter instance
-    fn with_arg(mut self, mod_arg: FilterArg) -> Filter {
-        match mod_arg {
-            FilterArg::IdList(mut id_list) => {
-                // If there is already an IdList condition, concatenate this one
-                // to it.  Thus multiple IdList command-line args represent an OR
-                // operation.  This assumes that the filter is still being built
-                // from command-line arguments and thus has at most one IdList
-                // condition.
-                if let Some(Condition::IdList(existing)) = self
-                    .conditions
-                    .iter_mut()
-                    .find(|c| matches!(c, Condition::IdList(_)))
-                {
-                    existing.append(&mut id_list);
-                } else {
-                    self.conditions.push(Condition::IdList(id_list));
-                }
+    fn with_arg(mut self, cond: Condition) -> Filter {
+        if let Condition::IdList(mut id_list) = cond {
+            // If there is already an IdList condition, concatenate this one
+            // to it.  Thus multiple IdList command-line args represent an OR
+            // operation.  This assumes that the filter is still being built
+            // from command-line arguments and thus has at most one IdList
+            // condition.
+            if let Some(Condition::IdList(existing)) = self
+                .conditions
+                .iter_mut()
+                .find(|c| matches!(c, Condition::IdList(_)))
+            {
+                existing.append(&mut id_list);
+            } else {
+                self.conditions.push(Condition::IdList(id_list));
             }
-            FilterArg::Condition(cond) => {
-                self.conditions.push(cond);
-            }
+        } else {
+            // all other command-line conditions are AND'd together
+            self.conditions.push(cond);
         }
         self
     }
@@ -87,23 +78,23 @@ impl Filter {
 
     // parsers
 
-    fn id_list(input: ArgList) -> IResult<ArgList, FilterArg> {
-        fn to_filterarg(input: Vec<TaskId>) -> Result<FilterArg, ()> {
-            Ok(FilterArg::IdList(input))
+    fn id_list(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_filterarg(input: Vec<TaskId>) -> Result<Condition, ()> {
+            Ok(Condition::IdList(input))
         }
         map_res(arg_matching(id_list), to_filterarg)(input)
     }
 
-    fn plus_tag(input: ArgList) -> IResult<ArgList, FilterArg> {
-        fn to_filterarg(input: &str) -> Result<FilterArg, ()> {
-            Ok(FilterArg::Condition(Condition::HasTag(input.to_owned())))
+    fn plus_tag(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_filterarg(input: &str) -> Result<Condition, ()> {
+            Ok(Condition::HasTag(input.to_owned()))
         }
         map_res(arg_matching(plus_tag), to_filterarg)(input)
     }
 
-    fn minus_tag(input: ArgList) -> IResult<ArgList, FilterArg> {
-        fn to_filterarg(input: &str) -> Result<FilterArg, ()> {
-            Ok(FilterArg::Condition(Condition::NoTag(input.to_owned())))
+    fn minus_tag(input: ArgList) -> IResult<ArgList, Condition> {
+        fn to_filterarg(input: &str) -> Result<Condition, ()> {
+            Ok(Condition::NoTag(input.to_owned()))
         }
         map_res(arg_matching(minus_tag), to_filterarg)(input)
     }
