@@ -67,13 +67,13 @@ class TestBug268(TestCase):
         self.assertIn("a/b or c", out)
 
 
-class TestBug879(TestCase):
+class TestBug880(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
 
     def test_backslash_at_eol(self):
-        """879: Backslash at end of description/annotation causes problems"""
+        """880: Backslash at end of description/annotation causes problems"""
         self.t("add one\\\\\\\\")
         code, out, err = self.t("_get 1.description")
         self.assertEqual("one\\\n", out)
