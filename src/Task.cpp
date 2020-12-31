@@ -269,7 +269,7 @@ time_t Task::get_date (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, const std::string& value)
 {
-  data[name] = json::decode (value);
+  data[name] = value;
 
   if (! name.compare (0, 11, "annotation_", 11))
     ++annotation_count;
