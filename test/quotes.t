@@ -74,7 +74,7 @@ class TestBug880(TestCase):
 
     def test_backslash_at_eol(self):
         """880: Backslash at end of description/annotation causes problems"""
-        self.t("add one\\\\\\\\")
+        self.t(r"add one\\")
         code, out, err = self.t("_get 1.description")
         self.assertEqual("one\\\n", out)
 
