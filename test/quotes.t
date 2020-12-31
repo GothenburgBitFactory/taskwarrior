@@ -78,7 +78,7 @@ class TestBug880(TestCase):
         code, out, err = self.t("_get 1.description")
         self.assertEqual("one\\\n", out)
 
-        self.t("1 annotate two\\\\\\\\")
+        self.t(r"1 annotate 'two\\'")
         code, out, err = self.t("long rc.verbose:nothing")
         self.assertIn("one\\\n", out)
         self.assertIn("two\\\n", out)
@@ -88,29 +88,40 @@ class TestBug1436(TestCase):
     def setUp(self):
         self.t = Task()
 
+    @unittest.expectedFailure
     def test_parser_hangs_with_slashes(self):
         """1436: Parser hangs with backslashes"""
 
-        # Yes, seven:
-        #   Python turns \\ --> \, therefore \\\\\\\o/ --> \\\\o/
-        #   Some process launch thing does the same, therefore \\\\o/ --> \\o/
-        #   Taskwarrior sees \\o/, which means \o/
-        code, out, err = self.t("add Cheer everyone up \\\\\\\o/")
+        # Two backslashes are needed due to bash conversion \\o/ --> \o/
+        # Verify with: $ echo \\o/
+        code, out, err = self.t(r"add Cheer everyone up \\o/")
         self.assertIn("Created task 1", out)
 
         code, out, err = self.t("_get 1.description")
         self.assertEqual("Cheer everyone up \\o/\n", out)
 
-    def test_parser_ending_escape_slash(self):
+        # Single quotes must be used to avoid bash eating up the slash
+        # Verify with: $ echo 'Cheer everyone up \o/'
+        code, out, err = self.t(r"add 'Cheer everyone up \o/'")
+        self.assertIn("Created task 1", out)
+
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("Cheer everyone up \\o/\n", out)
+
+    def test_parser_ending_with_two_escape_slashes(self):
         """1436: Task created but not found with ending backslash"""
 
-        # Yes, eight:
-        #   Python turns \\ --> \, therefore \\\\\\\\ --> \\\\
-        #   Some process launch thing does the same, therefore \\\\ --> \\
-        #   Taskwarrior sees \\, which means \
-        self.t("add Use this backslash \\\\\\\\")
+        # Four backslashes due to bash conversion \\\\ --> \\
+        # Verify with: $ echo \\\\
+        self.t(r"add Use this backslash \\\\")
         code, out, err = self.t("_get 1.description")
-        self.assertIn("Use this backslash \\", out)
+        self.assertIn(r"Use this backslash \\", out)
+
+        # To prevent bash consuming the backslashes, use single quotes
+        # Verify with: $ echo '\\'
+        self.t(r"add Use this backslash '\\'")
+        code, out, err = self.t("_get 1.description")
+        self.assertIn(r"Use this backslash \\", out)
 
     def test_backslashes(self):
         """1436: Prove to the reader that backslashes are eaten twice (which means
@@ -121,9 +132,23 @@ class TestBug1436(TestCase):
         """
         self.echo = Task(taskw=utils.binary_location("/bin/echo"))
 
-        code, out, err = self.echo("xxx \\\\\\\\yyy zzz")       # Shows as 'xxx \\yyy zzz'
-        code, out, err = self.echo("xxx \\\\yyy zzz")           # Shows as 'xxx \yyy zzz'
-        code, out, err = self.echo("xxx \\yyy zzz")             # Shows as 'xxx yyy zzz'
+        # One level of backshashes gets eaten by bash
+        # Verify with: $ echo xxx \\\\yyy zzz
+        code, out, err = self.echo(r"xxx \\\\yyy zzz")       # Shows as 'xxx \\yyy zzz'
+        code, out, err = self.echo(r"xxx \\yyy zzz")         # Shows as 'xxx \yyy zzz'
+        code, out, err = self.echo(r"xxx \yyy zzz")          # Shows as 'xxx yyy zzz'
+
+        # If single quotes are used, the backslashes are not eaten
+        # Verify with: $ echo xxx '\\\\yyy' zzz
+        code, out, err = self.echo(r"xxx '\\\\yyy' zzz")       # Shows as 'xxx \\\\yyy zzz'
+        code, out, err = self.echo(r"xxx '\\yyy' zzz")         # Shows as 'xxx \\yyy zzz'
+        code, out, err = self.echo(r"xxx '\yyy' zzz")          # Shows as 'xxx \yyy zzz'
+
+        # If double quotes are used, the backslashes are eaten
+        # Verify with: $ echo xxx "\\\\yyy" zzz
+        code, out, err = self.echo(r'xxx "\\\\yyy" zzz')       # Shows as 'xxx \\\\yyy zzz'
+        code, out, err = self.echo(r'xxx "\\yyy" zzz')         # Shows as 'xxx \\yyy zzz'
+        code, out, err = self.echo(r'xxx "\yyy" zzz')          # Shows as 'xxx \yyy zzz'
 
 
 if __name__ == "__main__":
