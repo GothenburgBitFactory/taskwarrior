@@ -2,7 +2,12 @@
 
 - [Welcome to TaskChampion](./welcome.md)
   - [Installation](./installation.md)
-  - [Usage](./usage.md)
+  * [Using the Task Command](./using-task-command.md)
+    * [Configuration](./config-file.md)
+    * [Reports](./reports.md)
+    * [Synchronization](./task-sync.md)
+  * [Running the Sync Server](./running-sync-server.md)
+  * [Debugging](./debugging.md)
 - [Internal Details](./internals.md)
   - [Data Model](./data-model.md)
     - [Replica Storage](./storage.md)

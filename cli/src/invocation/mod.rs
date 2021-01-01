@@ -110,10 +110,10 @@ fn get_replica(settings: &Config) -> Fallible<Replica> {
 
 /// Get the server for this invocation
 fn get_server(settings: &Config) -> Fallible<Box<dyn server::Server>> {
-    // if server_client_id and server_origin are both set, use
+    // if server_client_key and server_origin are both set, use
     // the remote server
     if let (Ok(client_key), Ok(origin)) = (
-        settings.get_str("server_client_id"),
+        settings.get_str("server_client_key"),
         settings.get_str("server_origin"),
     ) {
         let client_key = Uuid::parse_str(&client_key)?;
