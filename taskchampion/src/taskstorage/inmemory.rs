@@ -3,7 +3,7 @@
 use crate::taskstorage::{
     Operation, TaskMap, TaskStorage, TaskStorageTxn, VersionId, DEFAULT_BASE_VERSION,
 };
-use failure::Fallible;
+use failure::{bail, Fallible};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -112,6 +112,15 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         let working_set = &mut self.mut_data_ref().working_set;
         working_set.push(Some(*uuid));
         Ok(working_set.len())
+    }
+
+    fn set_working_set_item(&mut self, index: usize, uuid: Option<Uuid>) -> Fallible<()> {
+        let working_set = &mut self.mut_data_ref().working_set;
+        if index >= working_set.len() {
+            bail!("Index {} is not in the working set", index);
+        }
+        working_set[index] = uuid;
+        Ok(())
     }
 
     fn clear_working_set(&mut self) -> Fallible<()> {

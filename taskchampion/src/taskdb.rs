@@ -8,6 +8,9 @@ use std::collections::HashSet;
 use std::str;
 use uuid::Uuid;
 
+/// A TaskDB is the backend for a replica.  It manages the storage, operations, synchronization,
+/// and so on, and all the invariants that come with it.  It leaves the meaning of particular task
+/// properties to the replica and task implementations.
 pub struct TaskDB {
     storage: Box<dyn TaskStorage>,
 }
@@ -105,7 +108,7 @@ impl TaskDB {
     /// renumbers the existing working-set tasks to eliminate gaps, and also adds any tasks that
     /// are not already in the working set but should be.  The rebuild occurs in a single
     /// trasnsaction against the storage backend.
-    pub fn rebuild_working_set<F>(&mut self, in_working_set: F) -> Fallible<()>
+    pub fn rebuild_working_set<F>(&mut self, in_working_set: F, renumber: bool) -> Fallible<()>
     where
         F: Fn(&TaskMap) -> bool,
     {
@@ -122,25 +125,42 @@ impl TaskDB {
             if let Some(uuid) = elt {
                 if let Some(task) = txn.get_task(&uuid)? {
                     if in_working_set(&task) {
-                        new_ws.push(uuid);
+                        new_ws.push(Some(uuid));
                         seen.insert(uuid);
+                        continue;
                     }
+                }
+            }
+
+            // if we are not renumbering, then insert a blank working-set entry here
+            if !renumber {
+                new_ws.push(None);
+            }
+        }
+
+        // if renumbering, clear the working set and re-add
+        if renumber {
+            txn.clear_working_set()?;
+            for elt in new_ws.drain(0..new_ws.len()) {
+                if let Some(uuid) = elt {
+                    txn.add_to_working_set(&uuid)?;
+                }
+            }
+        } else {
+            // ..otherwise, just clear the None items determined above from the working set
+            for (i, elt) in new_ws.iter().enumerate() {
+                if elt.is_none() {
+                    txn.set_working_set_item(i, None)?;
                 }
             }
         }
 
         // Now go hunting for tasks that should be in this list but are not, adding them at the
-        // end of the list.
+        // end of the list, whether renumbering or not
         for (uuid, task) in txn.all_tasks()? {
             if !seen.contains(&uuid) && in_working_set(&task) {
-                new_ws.push(uuid);
+                txn.add_to_working_set(&uuid)?;
             }
-        }
-
-        // clear and re-write the entire working set, in order
-        txn.clear_working_set()?;
-        for uuid in new_ws.drain(0..new_ws.len()) {
-            txn.add_to_working_set(&uuid)?;
         }
 
         txn.commit()?;
@@ -482,15 +502,28 @@ mod tests {
     }
 
     #[test]
-    fn rebuild_working_set() -> Fallible<()> {
+    fn rebuild_working_set_renumber() -> Fallible<()> {
+        rebuild_working_set(true)
+    }
+
+    #[test]
+    fn rebuild_working_set_no_renumber() -> Fallible<()> {
+        rebuild_working_set(false)
+    }
+
+    fn rebuild_working_set(renumber: bool) -> Fallible<()> {
         let mut db = TaskDB::new_inmemory();
-        let uuids = vec![
-            Uuid::new_v4(), // 0: pending, not already in working set
-            Uuid::new_v4(), // 1: pending, already in working set
-            Uuid::new_v4(), // 2: not pending, not already in working set
-            Uuid::new_v4(), // 3: not pending, already in working set
-            Uuid::new_v4(), // 4: pending, already in working set
-        ];
+        let mut uuids = vec![];
+        uuids.push(Uuid::new_v4());
+        println!("uuids[0]: {:?} - pending, not in working set", uuids[0]);
+        uuids.push(Uuid::new_v4());
+        println!("uuids[1]: {:?} - pending, in working set", uuids[1]);
+        uuids.push(Uuid::new_v4());
+        println!("uuids[2]: {:?} - not pending, not in working set", uuids[2]);
+        uuids.push(Uuid::new_v4());
+        println!("uuids[3]: {:?} - not pending, in working set", uuids[3]);
+        uuids.push(Uuid::new_v4());
+        println!("uuids[4]: {:?} - pending, in working set", uuids[4]);
 
         // add everything to the TaskDB
         for uuid in &uuids {
@@ -527,25 +560,39 @@ mod tests {
             ]
         );
 
-        db.rebuild_working_set(|t| {
-            if let Some(status) = t.get("status") {
-                status == "pending"
-            } else {
-                false
-            }
-        })?;
+        db.rebuild_working_set(
+            |t| {
+                if let Some(status) = t.get("status") {
+                    status == "pending"
+                } else {
+                    false
+                }
+            },
+            renumber,
+        )?;
 
-        // uuids[1] and uuids[4] are already in the working set, so are compressed
-        // to the top, and then uuids[0] is added.
-        assert_eq!(
-            db.working_set()?,
+        let exp = if renumber {
+            // uuids[1] and uuids[4] are already in the working set, so are compressed
+            // to the top, and then uuids[0] is added.
             vec![
                 None,
                 Some(uuids[1].clone()),
                 Some(uuids[4].clone()),
-                Some(uuids[0].clone())
+                Some(uuids[0].clone()),
             ]
-        );
+        } else {
+            // uuids[1] and uuids[4] are already in the working set, at indexes 1 and 3,
+            // and then uuids[0] is added.
+            vec![
+                None,
+                Some(uuids[1].clone()),
+                None,
+                Some(uuids[4].clone()),
+                Some(uuids[0].clone()),
+            ]
+        };
+
+        assert_eq!(db.working_set()?, exp);
 
         Ok(())
     }

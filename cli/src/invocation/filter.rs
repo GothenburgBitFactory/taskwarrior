@@ -184,7 +184,7 @@ mod test {
         let t1 = replica.new_task(Status::Pending, s!("A")).unwrap();
         let t2 = replica.new_task(Status::Completed, s!("B")).unwrap();
         let _t = replica.new_task(Status::Pending, s!("C")).unwrap();
-        replica.rebuild_working_set().unwrap();
+        replica.rebuild_working_set(true).unwrap();
 
         let t1uuid = *t1.get_uuid();
 
@@ -210,7 +210,7 @@ mod test {
         let t1 = replica.new_task(Status::Pending, s!("A")).unwrap();
         let t2 = replica.new_task(Status::Completed, s!("B")).unwrap();
         let _t = replica.new_task(Status::Pending, s!("C")).unwrap();
-        replica.rebuild_working_set().unwrap();
+        replica.rebuild_working_set(true).unwrap();
 
         let t1uuid = *t1.get_uuid();
         let t2uuid = t2.get_uuid().to_string();
@@ -238,7 +238,7 @@ mod test {
         replica.new_task(Status::Pending, s!("A")).unwrap();
         replica.new_task(Status::Completed, s!("B")).unwrap();
         replica.new_task(Status::Deleted, s!("C")).unwrap();
-        replica.rebuild_working_set().unwrap();
+        replica.rebuild_working_set(true).unwrap();
 
         let filter = Filter { conditions: vec![] };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)
@@ -309,7 +309,7 @@ mod test {
         replica.new_task(Status::Pending, s!("A")).unwrap();
         replica.new_task(Status::Completed, s!("B")).unwrap();
         replica.new_task(Status::Deleted, s!("C")).unwrap();
-        replica.rebuild_working_set().unwrap();
+        replica.rebuild_working_set(true).unwrap();
 
         let filter = Filter {
             conditions: vec![Condition::Status(Status::Pending)],
