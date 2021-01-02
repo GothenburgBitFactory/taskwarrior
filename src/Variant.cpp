@@ -1838,7 +1838,7 @@ void Variant::cast (const enum type new_type)
     case type_string:
       {
         char temp[24];
-        snprintf (temp, 24, "%d", _integer);
+        snprintf (temp, 24, "%lld", _integer);
         _string = temp;
       }
       break;
@@ -1851,7 +1851,7 @@ void Variant::cast (const enum type new_type)
     switch (new_type)
     {
     case type_boolean:  _bool = _real == 0.0 ? false : true; break;
-    case type_integer:  _integer = (int) _real;              break;
+    case type_integer:  _integer = (long long) _real;        break;
     case type_real:                                          break;
     case type_string:
       {
@@ -1875,9 +1875,9 @@ void Variant::cast (const enum type new_type)
                _string == "0.0") ? false : true;
       break;
     case type_integer:
-      _integer = (int) strtol (_string.c_str (), nullptr, (_string.substr (0, 2) == "0x" ? 16 : 10));
+      _integer = (long long) strtol (_string.c_str (), nullptr, (_string.substr (0, 2) == "0x" ? 16 : 10));
       break;
-    case type_real:     _real = strtod (_string.c_str (), nullptr);              break;
+    case type_real:     _real = strtod (_string.c_str (), nullptr);           break;
     case type_string:                                                         break;
     case type_date:
       {
@@ -1926,7 +1926,7 @@ void Variant::cast (const enum type new_type)
     switch (new_type)
     {
     case type_boolean:  _bool = _date != 0 ? true : false;  break;
-    case type_integer:  _integer = (int) _date;             break;
+    case type_integer:  _integer = (long long) _date;       break;
     case type_real:     _real = static_cast<double>(_date); break;
     case type_string:   _string = (std::string) *this;      break;
     case type_date:                                         break;
@@ -1938,7 +1938,7 @@ void Variant::cast (const enum type new_type)
     switch (new_type)
     {
     case type_boolean:  _bool = _duration != 0 ? true : false;  break;
-    case type_integer:  _integer = (int) _duration;             break;
+    case type_integer:  _integer = (long long) _duration;       break;
     case type_real:     _real = static_cast<double>(_duration); break;
     case type_string:   _string = (std::string) *this;          break;
     case type_date:     _date = _duration;                      break;
@@ -1973,7 +1973,7 @@ bool Variant::get_bool () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Variant::get_integer () const
+long long Variant::get_integer () const
 {
   return _integer;
 }
