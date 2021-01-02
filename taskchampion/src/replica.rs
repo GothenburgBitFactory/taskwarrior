@@ -172,7 +172,7 @@ impl Replica {
 
     /// Perform "garbage collection" on this replica.  In particular, this renumbers the working
     /// set to contain only pending tasks.
-    pub fn gc(&mut self) -> Fallible<()> {
+    pub fn rebuild_working_set(&mut self) -> Fallible<()> {
         let pending = String::from(Status::Pending.to_taskmap());
         self.taskdb
             .rebuild_working_set(|t| t.get("status") == Some(&pending))?;
@@ -251,7 +251,7 @@ mod tests {
         assert_eq!(t.get_status(), Status::Deleted);
         assert_eq!(t.get_description(), "gone");
 
-        rep.gc().unwrap();
+        rep.rebuild_working_set().unwrap();
 
         assert!(rep.get_working_set_index(t.get_uuid()).unwrap().is_none());
     }
