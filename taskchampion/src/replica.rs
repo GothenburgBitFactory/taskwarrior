@@ -165,17 +165,22 @@ impl Replica {
         Ok(())
     }
 
-    /// Synchronize this replica against the given server.
+    /// Synchronize this replica against the given server.  The working set is rebuilt after
+    /// this occurs, but without renumbering, so any newly-pending tasks should appear in
+    /// the working set.
     pub fn sync(&mut self, server: &mut Box<dyn Server>) -> Fallible<()> {
-        self.taskdb.sync(server)
+        self.taskdb.sync(server)?;
+        self.rebuild_working_set(false)
     }
 
-    /// Perform "garbage collection" on this replica.  In particular, this renumbers the working
-    /// set to contain only pending tasks.
-    pub fn gc(&mut self) -> Fallible<()> {
+    /// Rebuild this replica's working set, based on whether tasks are pending or not.  If
+    /// `renumber` is true, then existing tasks may be moved to new working-set indices; in any
+    /// case, on completion all pending tasks are in the working set and all non- pending tasks are
+    /// not.
+    pub fn rebuild_working_set(&mut self, renumber: bool) -> Fallible<()> {
         let pending = String::from(Status::Pending.to_taskmap());
         self.taskdb
-            .rebuild_working_set(|t| t.get("status") == Some(&pending))?;
+            .rebuild_working_set(|t| t.get("status") == Some(&pending), renumber)?;
         Ok(())
     }
 }
@@ -251,7 +256,7 @@ mod tests {
         assert_eq!(t.get_status(), Status::Deleted);
         assert_eq!(t.get_description(), "gone");
 
-        rep.gc().unwrap();
+        rep.rebuild_working_set(true).unwrap();
 
         assert!(rep.get_working_set_index(t.get_uuid()).unwrap().is_none());
     }

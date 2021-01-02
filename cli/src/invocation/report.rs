@@ -163,7 +163,7 @@ mod test {
         t2.set_status(Status::Completed).unwrap();
         let t2 = t2.into_immut();
 
-        replica.gc().unwrap();
+        replica.rebuild_working_set(true).unwrap();
 
         [*t1.get_uuid(), *t2.get_uuid(), *t3.get_uuid()]
     }

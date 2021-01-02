@@ -2,7 +2,7 @@ use crate::taskstorage::{
     Operation, TaskMap, TaskStorage, TaskStorageTxn, VersionId, DEFAULT_BASE_VERSION,
 };
 use crate::utils::Key;
-use failure::Fallible;
+use failure::{bail, Fallible};
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
 use std::path::Path;
@@ -297,6 +297,35 @@ impl<'t> TaskStorageTxn for Txn<'t> {
             Msgpack::to_value_buf(next_index + 1)?,
         )?;
         Ok(next_index as usize)
+    }
+
+    fn set_working_set_item(&mut self, index: usize, uuid: Option<Uuid>) -> Fallible<()> {
+        let working_set_bucket = self.working_set_bucket();
+        let numbers_bucket = self.numbers_bucket();
+        let kvtxn = self.kvtxn();
+        let index = index as u64;
+
+        let next_index = match kvtxn.get(numbers_bucket, NEXT_WORKING_SET_INDEX.into()) {
+            Ok(buf) => buf.inner()?.to_serde(),
+            Err(Error::NotFound) => 1,
+            Err(e) => return Err(e.into()),
+        };
+
+        if index >= next_index {
+            bail!("Index {} is not in the working set", index);
+        }
+
+        if let Some(uuid) = uuid {
+            kvtxn.set(
+                working_set_bucket,
+                index.into(),
+                Msgpack::to_value_buf(uuid)?,
+            )?;
+        } else {
+            kvtxn.del(working_set_bucket, index.into())?;
+        }
+
+        Ok(())
     }
 
     fn clear_working_set(&mut self) -> Fallible<()> {
