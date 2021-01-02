@@ -165,9 +165,12 @@ impl Replica {
         Ok(())
     }
 
-    /// Synchronize this replica against the given server.
+    /// Synchronize this replica against the given server.  The working set is rebuilt after
+    /// this occurs, but without renumbering, so any newly-pending tasks should appear in
+    /// the working set.
     pub fn sync(&mut self, server: &mut Box<dyn Server>) -> Fallible<()> {
-        self.taskdb.sync(server)
+        self.taskdb.sync(server)?;
+        self.rebuild_working_set(false)
     }
 
     /// Rebuild this replica's working set, based on whether tasks are pending or not.  If
