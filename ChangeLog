@@ -10,6 +10,8 @@
            Thanks to JavaZauber
 - TW #2093 wrong order under projects command
            Thanks to Beka, mrossinek.
+- TW #2101 Numeric UDA values above 2,147,483,647 overflow without warning
+           Thanks to Adam Monsen.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
            Thanks to Julien Rabinow.
 - TW #2333 Width determination of Unicode characters now works for up to
