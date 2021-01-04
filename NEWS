@@ -1,23 +1,8 @@
+This is a bugfix release.
 
-New Features in Taskwarrior 2.5.3
+Important fixes in 2.5.3:
 
-  -
-
-New Commands in Taskwarrior 2.5.3
-
-  -
-
-New Configuration Options in Taskwarrior 2.5.3
-
-  -
-
-Newly Deprecated Features in Taskwarrior 2.5.3
-
-  -
-
-Removed Features in 2.5.3
-
-  -
+  - Taskwarrior no longer hangs with wrapped tasks in the report (#2375).
 
 Known Issues
 

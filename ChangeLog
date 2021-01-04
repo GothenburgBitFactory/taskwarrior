@@ -1,5 +1,8 @@
 2.5.3 () -
 
+- #2375   task hangs then dies when certain tasks are present in a report
+          Thanks to Max Rossmannek, Tomáš Janoušek and Chad Phillips.
+
 ------ current release ---------------------------
 
 2.5.2 (2020-12-05) - b0c17d11639dc6e783befd89c8508f2abb9b4287
