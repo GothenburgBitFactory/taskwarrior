@@ -8,15 +8,17 @@ Known Issues
 
   - https://github.com/GothenburgBitFactory/taskwarrior
 
-Taskwarrior has been built and tested on the following configurations:
+Taskwarrior 2.5.3 has been built and tested on the following configurations:
 
-  * macOS
-  * Fedora
-  * Ubuntu
-  * Debian
-  * Arch
-  * FreeBSD
-  * CentOS
+  * Archlinux
+  * OpenSUSE
+  * macOS 10.15
+  * Fedora (31, 32, 33)
+  * Ubuntu (18.04, 20.04)
+  * Debian (Stable, Testing)
+  * CentOS (7, 8)
+
+We expect Taskwarrior to work on other platforms as well.
 
 ---
 
@@ -24,10 +26,3 @@ While Taskwarrior has undergone testing, bugs are sure to remain.  If you
 encounter a bug, please enter a new issue at:
 
   https://github.com/GothenburgBitFactory/taskwarrior
-
-Or just send a message to:
-
-  support@GothenburgBitFactory.org
-
-Thank you.
-
