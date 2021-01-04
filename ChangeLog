@@ -22,6 +22,13 @@
 
 ------ current release ---------------------------
 
+2.5.3 (2021-01-05) - 2f47226f91f0b02f7617912175274d9eed85924f
+
+- #2375   task hangs then dies when certain tasks are present in a report
+          Thanks to Max Rossmannek, Tomáš Janoušek and Chad Phillips.
+
+------ old releases ------------------------------
+
 2.5.2 (2020-12-05) - b0c17d11639dc6e783befd89c8508f2abb9b4287
 
 - TD-64   sync conflict deleted all annotations of the task
@@ -175,8 +182,6 @@
           Thanks to Lionel Miller.
 - Do not set CMP0037 on CMake 3.11.0 and above
           Thanks to Janik Rabe
-
------- old releases ------------------------------
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
