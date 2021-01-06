@@ -173,23 +173,6 @@ std::vector <std::string> CmdEdit::findValues (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CmdEdit::replaceString (
-  std::string text,
-  const std::string& search,
-  const std::string& replacement)
-{
-  std::string::size_type found = 0;
-
-  while ((found = text.find (search, found)) != std::string::npos)
-  {
-    text.replace (found, search.length (), replacement);
-    found += replacement.length ();
-  }
-
-  return text;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string CmdEdit::formatDate (
   Task& task,
   const std::string& attribute,
@@ -272,7 +255,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   {
     Datetime dt (strtol (anno.first.substr (11).c_str (), nullptr, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
-           << " -- "                  << replaceString (anno.second, "\n", ANNOTATION_EDIT_MARKER) << '\n';
+           << " -- "                  << str_replace (anno.second, "\n", ANNOTATION_EDIT_MARKER) << '\n';
   }
 
   Datetime now;
@@ -637,7 +620,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
     if (eol != std::string::npos)
     {
-      auto value = Lexer::trim (replaceString (after.substr (found, eol - found), ANNOTATION_EDIT_MARKER, "\n"), "\t ");
+      auto value = Lexer::trim (str_replace (after.substr (found, eol - found), ANNOTATION_EDIT_MARKER, "\n"), "\t ");
       auto gap = value.find (" -- ");
       if (gap != std::string::npos)
       {
