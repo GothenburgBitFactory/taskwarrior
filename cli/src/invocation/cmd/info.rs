@@ -12,6 +12,8 @@ pub(crate) fn execute<W: WriteColor>(
     filter: Filter,
     debug: bool,
 ) -> Fallible<()> {
+    let working_set = replica.working_set()?;
+
     for task in filtered_tasks(replica, &filter)? {
         let uuid = task.get_uuid();
 
@@ -24,7 +26,7 @@ pub(crate) fn execute<W: WriteColor>(
             }
         } else {
             t.add_row(row![b->"Uuid", uuid]);
-            if let Some(i) = replica.get_working_set_index(uuid)? {
+            if let Some(i) = working_set.by_uuid(uuid) {
                 t.add_row(row![b->"Id", i]);
             }
             t.add_row(row![b->"Description", task.get_description()]);

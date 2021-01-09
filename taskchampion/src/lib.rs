@@ -32,10 +32,12 @@ mod task;
 mod taskdb;
 pub mod taskstorage;
 mod utils;
+mod workingset;
 
 pub use config::{ReplicaConfig, ServerConfig};
 pub use replica::Replica;
 pub use task::{Priority, Status, Tag, Task, TaskMut};
+pub use workingset::WorkingSet;
 
 /// Re-exported type from the `uuid` crate, for ease of compatibility for consumers of this crate.
 pub use uuid::Uuid;

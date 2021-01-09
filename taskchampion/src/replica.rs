@@ -4,6 +4,7 @@ use crate::server::Server;
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDB;
 use crate::taskstorage::{KVStorage, Operation, TaskMap, TaskStorage};
+use crate::workingset::WorkingSet;
 use chrono::Utc;
 use failure::Fallible;
 use log::trace;
@@ -87,21 +88,10 @@ impl Replica {
         self.taskdb.all_task_uuids()
     }
 
-    /// Get the "working set" for this replica -- the set of pending tasks, as indexed by small
-    /// integers
-    pub fn working_set(&mut self) -> Fallible<Vec<Option<Task>>> {
-        let working_set = self.taskdb.working_set()?;
-        let mut res = Vec::with_capacity(working_set.len());
-        for item in working_set.iter() {
-            res.push(match item {
-                Some(u) => match self.taskdb.get_task(*u)? {
-                    Some(tm) => Some(Task::new(*u, tm)),
-                    None => None,
-                },
-                None => None,
-            })
-        }
-        Ok(res)
+    /// Get the "working set" for this replica.  This is a snapshot of the current state,
+    /// and it is up to the caller to decide how long to store this value.
+    pub fn working_set(&mut self) -> Fallible<WorkingSet> {
+        Ok(WorkingSet::new(self.taskdb.working_set()?))
     }
 
     /// Get an existing task by its UUID
@@ -110,33 +100,6 @@ impl Replica {
             .taskdb
             .get_task(uuid)?
             .map(move |tm| Task::new(uuid, tm)))
-    }
-
-    /// Get an existing task by its working set index
-    pub fn get_working_set_task(&mut self, i: usize) -> Fallible<Option<Task>> {
-        let working_set = self.taskdb.working_set()?;
-        if (i as usize) < working_set.len() {
-            if let Some(uuid) = working_set[i as usize] {
-                return Ok(self
-                    .taskdb
-                    .get_task(uuid)?
-                    .map(move |tm| Task::new(uuid, tm)));
-            }
-        }
-        Ok(None)
-    }
-
-    /// Get the working set index for the given task uuid
-    pub fn get_working_set_index(&mut self, uuid: Uuid) -> Fallible<Option<usize>> {
-        let working_set = self.taskdb.working_set()?;
-        for (i, u) in working_set.iter().enumerate() {
-            if let Some(u) = u {
-                if *u == uuid {
-                    return Ok(Some(i));
-                }
-            }
-        }
-        Ok(None)
     }
 
     /// Create a new task.  The task must not already exist.
@@ -258,7 +221,8 @@ mod tests {
 
         rep.rebuild_working_set(true).unwrap();
 
-        assert!(rep.get_working_set_index(t.get_uuid()).unwrap().is_none());
+        let ws = rep.working_set().unwrap();
+        assert!(ws.by_uuid(t.get_uuid()).is_none());
     }
 
     #[test]
@@ -270,16 +234,13 @@ mod tests {
             .unwrap();
         let uuid = t.get_uuid();
 
-        let t = rep.get_working_set_task(1).unwrap().unwrap();
-        assert_eq!(t.get_status(), Status::Pending);
-        assert_eq!(t.get_description(), "to-be-pending");
+        let ws = rep.working_set().unwrap();
+        assert_eq!(ws.len(), 1); // only one non-none value
+        assert!(ws.by_index(0).is_none());
+        assert_eq!(ws.by_index(1), Some(uuid));
 
         let ws = rep.working_set().unwrap();
-        assert_eq!(ws.len(), 2);
-        assert!(ws[0].is_none());
-        assert_eq!(ws[1].as_ref().unwrap().get_uuid(), uuid);
-
-        assert_eq!(rep.get_working_set_index(t.get_uuid()).unwrap().unwrap(), 1);
+        assert_eq!(ws.by_uuid(t.get_uuid()), Some(1));
     }
 
     #[test]

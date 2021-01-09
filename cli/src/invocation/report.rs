@@ -6,34 +6,8 @@ use config::Config;
 use failure::{format_err, Fallible};
 use prettytable::{Row, Table};
 use std::cmp::Ordering;
-use taskchampion::{Replica, Task, Uuid};
+use taskchampion::{Replica, Task, WorkingSet};
 use termcolor::WriteColor;
-
-// pending #123, this is a non-fallible way of looking up a task's working set index
-struct WorkingSet(Vec<Option<Uuid>>);
-
-impl WorkingSet {
-    fn new(replica: &mut Replica) -> Fallible<Self> {
-        let working_set = replica.working_set()?;
-        Ok(Self(
-            working_set
-                .iter()
-                .map(|opt| opt.as_ref().map(|t| t.get_uuid()))
-                .collect(),
-        ))
-    }
-
-    fn index(&self, target: Uuid) -> Option<usize> {
-        for (i, uuid) in self.0.iter().enumerate() {
-            if let Some(uuid) = uuid {
-                if *uuid == target {
-                    return Some(i);
-                }
-            }
-        }
-        None
-    }
-}
 
 /// Sort tasks for the given report.
 fn sort_tasks(tasks: &mut Vec<Task>, report: &Report, working_set: &WorkingSet) {
@@ -43,8 +17,8 @@ fn sort_tasks(tasks: &mut Vec<Task>, report: &Report, working_set: &WorkingSet) 
                 SortBy::Id => {
                     let a_uuid = a.get_uuid();
                     let b_uuid = b.get_uuid();
-                    let a_id = working_set.index(a_uuid);
-                    let b_id = working_set.index(b_uuid);
+                    let a_id = working_set.by_uuid(a_uuid);
+                    let b_id = working_set.by_uuid(b_uuid);
                     println!("a_uuid {} -> a_id {:?}", a_uuid, a_id);
                     println!("b_uuid {} -> b_id {:?}", b_uuid, b_id);
                     match (a_id, b_id) {
@@ -78,7 +52,7 @@ fn task_column(task: &Task, column: &Column, working_set: &WorkingSet) -> String
         Property::Id => {
             let uuid = task.get_uuid();
             let mut id = uuid.to_string();
-            if let Some(i) = working_set.index(uuid) {
+            if let Some(i) = working_set.by_uuid(uuid) {
                 id = i.to_string();
             }
             id
@@ -111,7 +85,7 @@ pub(super) fn display_report<W: WriteColor>(
     filter: Filter,
 ) -> Fallible<()> {
     let mut t = Table::new();
-    let working_set = WorkingSet::new(replica)?;
+    let working_set = replica.working_set()?;
 
     // Get the report from settings
     let mut report = Report::from_config(settings.get(&format!("reports.{}", report_name))?)
@@ -151,7 +125,7 @@ mod test {
     use crate::invocation::test::*;
     use crate::report::Sort;
     use std::convert::TryInto;
-    use taskchampion::Status;
+    use taskchampion::{Status, Uuid};
 
     fn create_tasks(replica: &mut Replica) -> [Uuid; 3] {
         let t1 = replica.new_task(Status::Pending, s!("A")).unwrap();
@@ -172,7 +146,7 @@ mod test {
     fn sorting_by_descr() {
         let mut replica = test_replica();
         create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let working_set = replica.working_set().unwrap();
         let mut report = Report {
             sort: vec![Sort {
                 ascending: true,
@@ -199,7 +173,7 @@ mod test {
     fn sorting_by_id() {
         let mut replica = test_replica();
         create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let working_set = replica.working_set().unwrap();
         let mut report = Report {
             sort: vec![Sort {
                 ascending: true,
@@ -226,7 +200,7 @@ mod test {
     fn sorting_by_uuid() {
         let mut replica = test_replica();
         let uuids = create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let working_set = replica.working_set().unwrap();
         let report = Report {
             sort: vec![Sort {
                 ascending: true,
@@ -254,7 +228,7 @@ mod test {
             .add_tag(&("second".try_into().unwrap()))
             .unwrap();
 
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let working_set = replica.working_set().unwrap();
         let report = Report {
             sort: vec![
                 Sort {
@@ -280,9 +254,9 @@ mod test {
     fn task_column_id() {
         let mut replica = test_replica();
         let uuids = create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let working_set = replica.working_set().unwrap();
 
-        let task = replica.get_working_set_task(1).unwrap().unwrap();
+        let task = replica.get_task(uuids[0]).unwrap().unwrap();
         let column = Column {
             label: s!(""),
             property: Property::Id,
@@ -301,10 +275,10 @@ mod test {
     #[test]
     fn task_column_uuid() {
         let mut replica = test_replica();
-        create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let uuids = create_tasks(&mut replica);
+        let working_set = replica.working_set().unwrap();
 
-        let task = replica.get_working_set_task(1).unwrap().unwrap();
+        let task = replica.get_task(uuids[0]).unwrap().unwrap();
         let column = Column {
             label: s!(""),
             property: Property::Uuid,
@@ -319,7 +293,7 @@ mod test {
     fn task_column_active() {
         let mut replica = test_replica();
         let uuids = create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let working_set = replica.working_set().unwrap();
 
         // make task A active
         replica
@@ -335,19 +309,19 @@ mod test {
             property: Property::Active,
         };
 
-        let task = replica.get_working_set_task(1).unwrap().unwrap();
+        let task = replica.get_task(uuids[0]).unwrap().unwrap();
         assert_eq!(task_column(&task, &column, &working_set), s!("*"));
-        let task = replica.get_working_set_task(2).unwrap().unwrap();
+        let task = replica.get_task(uuids[2]).unwrap().unwrap();
         assert_eq!(task_column(&task, &column, &working_set), s!(""));
     }
 
     #[test]
     fn task_column_description() {
         let mut replica = test_replica();
-        create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let uuids = create_tasks(&mut replica);
+        let working_set = replica.working_set().unwrap();
 
-        let task = replica.get_working_set_task(2).unwrap().unwrap();
+        let task = replica.get_task(uuids[2]).unwrap().unwrap();
         let column = Column {
             label: s!(""),
             property: Property::Description,
@@ -359,7 +333,7 @@ mod test {
     fn task_column_tags() {
         let mut replica = test_replica();
         let uuids = create_tasks(&mut replica);
-        let working_set = WorkingSet::new(&mut replica).unwrap();
+        let working_set = replica.working_set().unwrap();
 
         // add some tags to task A
         let mut t1 = replica
@@ -375,9 +349,9 @@ mod test {
             property: Property::Tags,
         };
 
-        let task = replica.get_working_set_task(1).unwrap().unwrap();
+        let task = replica.get_task(uuids[0]).unwrap().unwrap();
         assert_eq!(task_column(&task, &column, &working_set), s!("+bar +foo"));
-        let task = replica.get_working_set_task(2).unwrap().unwrap();
+        let task = replica.get_task(uuids[2]).unwrap().unwrap();
         assert_eq!(task_column(&task, &column, &working_set), s!(""));
     }
 }
