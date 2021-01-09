@@ -54,7 +54,7 @@ impl TaskDB {
                 }
             }
             Operation::Delete { ref uuid } => {
-                if !txn.delete_task(uuid)? {
+                if !txn.delete_task(*uuid)? {
                     return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
                 }
             }
@@ -65,7 +65,7 @@ impl TaskDB {
                 timestamp: _,
             } => {
                 // update if this task exists, otherwise ignore
-                if let Some(mut task) = txn.get_task(uuid)? {
+                if let Some(mut task) = txn.get_task(*uuid)? {
                     match value {
                         Some(ref val) => task.insert(property.to_string(), val.clone()),
                         None => task.remove(property),
@@ -99,7 +99,7 @@ impl TaskDB {
     }
 
     /// Get a single task, by uuid.
-    pub fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
+    pub fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>> {
         let mut txn = self.storage.txn()?;
         txn.get_task(uuid)
     }
@@ -123,7 +123,7 @@ impl TaskDB {
         // working set.
         for elt in txn.get_working_set()? {
             if let Some(uuid) = elt {
-                if let Some(task) = txn.get_task(&uuid)? {
+                if let Some(task) = txn.get_task(uuid)? {
                     if in_working_set(&task) {
                         new_ws.push(Some(uuid));
                         seen.insert(uuid);
@@ -143,7 +143,7 @@ impl TaskDB {
             txn.clear_working_set()?;
             for elt in new_ws.drain(0..new_ws.len()) {
                 if let Some(uuid) = elt {
-                    txn.add_to_working_set(&uuid)?;
+                    txn.add_to_working_set(uuid)?;
                 }
             }
         } else {
@@ -159,7 +159,7 @@ impl TaskDB {
         // end of the list, whether renumbering or not
         for (uuid, task) in txn.all_tasks()? {
             if !seen.contains(&uuid) && in_working_set(&task) {
-                txn.add_to_working_set(&uuid)?;
+                txn.add_to_working_set(uuid)?;
             }
         }
 
@@ -169,11 +169,11 @@ impl TaskDB {
 
     /// Add the given uuid to the working set and return its index; if it is already in the working
     /// set, its index is returned.  This does *not* renumber any existing tasks.
-    pub fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
+    pub fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<usize> {
         let mut txn = self.storage.txn()?;
         // search for an existing entry for this task..
         for (i, elt) in txn.get_working_set()?.iter().enumerate() {
-            if *elt == Some(*uuid) {
+            if *elt == Some(uuid) {
                 // (note that this drops the transaction with no changes made)
                 return Ok(i);
             }
@@ -544,7 +544,7 @@ mod tests {
             txn.clear_working_set()?;
 
             for i in &[1usize, 3, 4] {
-                txn.add_to_working_set(&uuids[*i])?;
+                txn.add_to_working_set(uuids[*i])?;
             }
 
             txn.commit()?;

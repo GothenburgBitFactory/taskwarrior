@@ -125,18 +125,18 @@ pub(super) fn filtered_tasks(
                 let task = match id {
                     TaskId::WorkingSetId(id) => replica.get_working_set_task(*id)?,
                     TaskId::PartialUuid(_) => unreachable!(), // not present in absolute id list
-                    TaskId::Uuid(id) => replica.get_task(id)?,
+                    TaskId::Uuid(id) => replica.get_task(*id)?,
                 };
 
                 if let Some(task) = task {
                     // if we have already seen this task, skip ahead..
-                    let uuid = *task.get_uuid();
+                    let uuid = task.get_uuid();
                     if seen.contains(&uuid) {
                         continue;
                     }
                     seen.insert(uuid);
 
-                    let working_set_id = replica.get_working_set_index(&uuid)?;
+                    let working_set_id = replica.get_working_set_index(uuid)?;
 
                     if match_task(filter, &task, uuid, working_set_id) {
                         res.push(task);
@@ -150,7 +150,7 @@ pub(super) fn filtered_tasks(
             log::debug!("Scanning all tasks in the task database");
             for (uuid, task) in replica.all_tasks()?.drain() {
                 // Yikes, slow! https://github.com/djmitche/taskchampion/issues/108
-                let working_set_id = replica.get_working_set_index(&uuid)?;
+                let working_set_id = replica.get_working_set_index(uuid)?;
                 if match_task(filter, &task, uuid, working_set_id) {
                     res.push(task);
                 }
@@ -160,7 +160,7 @@ pub(super) fn filtered_tasks(
             log::debug!("Scanning only the working set (pending tasks)");
             for (i, task) in replica.working_set()?.drain(..).enumerate() {
                 if let Some(task) = task {
-                    let uuid = *task.get_uuid();
+                    let uuid = task.get_uuid();
                     if match_task(filter, &task, uuid, Some(i)) {
                         res.push(task);
                     }
@@ -186,13 +186,13 @@ mod test {
         let _t = replica.new_task(Status::Pending, s!("C")).unwrap();
         replica.rebuild_working_set(true).unwrap();
 
-        let t1uuid = *t1.get_uuid();
+        let t1uuid = t1.get_uuid();
 
         let filter = Filter {
             conditions: vec![Condition::IdList(vec![
-                TaskId::Uuid(t1uuid),         // A
-                TaskId::WorkingSetId(1),      // A (again, dups filtered)
-                TaskId::Uuid(*t2.get_uuid()), // B
+                TaskId::Uuid(t1uuid),        // A
+                TaskId::WorkingSetId(1),     // A (again, dups filtered)
+                TaskId::Uuid(t2.get_uuid()), // B
             ])],
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)
@@ -212,7 +212,7 @@ mod test {
         let _t = replica.new_task(Status::Pending, s!("C")).unwrap();
         replica.rebuild_working_set(true).unwrap();
 
-        let t1uuid = *t1.get_uuid();
+        let t1uuid = t1.get_uuid();
         let t2uuid = t2.get_uuid().to_string();
         let t2partial = t2uuid[..13].to_owned();
 

@@ -105,7 +105,7 @@ impl<'t> Txn<'t> {
 }
 
 impl<'t> TaskStorageTxn for Txn<'t> {
-    fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<TaskMap>> {
+    fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>> {
         let bucket = self.tasks_bucket();
         let buf = match self.kvtxn().get(bucket, uuid.into()) {
             Ok(buf) => buf,
@@ -136,7 +136,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn delete_task(&mut self, uuid: &Uuid) -> Fallible<bool> {
+    fn delete_task(&mut self, uuid: Uuid) -> Fallible<bool> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
         match kvtxn.del(bucket, uuid.into()) {
@@ -275,7 +275,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         Ok(res)
     }
 
-    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
+    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<usize> {
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
         let kvtxn = self.kvtxn();
@@ -289,7 +289,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
         kvtxn.set(
             working_set_bucket,
             next_index.into(),
-            Msgpack::to_value_buf(*uuid)?,
+            Msgpack::to_value_buf(uuid)?,
         )?;
         kvtxn.set(
             numbers_bucket,
@@ -372,7 +372,7 @@ mod test {
         }
         {
             let mut txn = storage.txn()?;
-            let task = txn.get_task(&uuid)?;
+            let task = txn.get_task(uuid)?;
             assert_eq!(task, Some(taskmap_with(vec![])));
         }
         Ok(())
@@ -403,7 +403,7 @@ mod test {
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            let task = txn.get_task(&uuid)?;
+            let task = txn.get_task(uuid)?;
             assert_eq!(task, None);
         }
         Ok(())
@@ -421,7 +421,7 @@ mod test {
         }
         {
             let mut txn = storage.txn()?;
-            let task = txn.get_task(&uuid)?;
+            let task = txn.get_task(uuid)?;
             assert_eq!(
                 task,
                 Some(taskmap_with(vec![("k".to_string(), "v".to_string())]))
@@ -437,7 +437,7 @@ mod test {
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            assert!(!txn.delete_task(&uuid)?);
+            assert!(!txn.delete_task(uuid)?);
         }
         Ok(())
     }
@@ -454,7 +454,7 @@ mod test {
         }
         {
             let mut txn = storage.txn()?;
-            assert!(txn.delete_task(&uuid)?);
+            assert!(txn.delete_task(uuid)?);
         }
         Ok(())
     }
@@ -640,8 +640,8 @@ mod test {
 
         {
             let mut txn = storage.txn()?;
-            txn.add_to_working_set(&uuid1)?;
-            txn.add_to_working_set(&uuid2)?;
+            txn.add_to_working_set(uuid1)?;
+            txn.add_to_working_set(uuid2)?;
             txn.commit()?;
         }
 
@@ -663,16 +663,16 @@ mod test {
 
         {
             let mut txn = storage.txn()?;
-            txn.add_to_working_set(&uuid1)?;
-            txn.add_to_working_set(&uuid2)?;
+            txn.add_to_working_set(uuid1)?;
+            txn.add_to_working_set(uuid2)?;
             txn.commit()?;
         }
 
         {
             let mut txn = storage.txn()?;
             txn.clear_working_set()?;
-            txn.add_to_working_set(&uuid2)?;
-            txn.add_to_working_set(&uuid1)?;
+            txn.add_to_working_set(uuid2)?;
+            txn.add_to_working_set(uuid1)?;
             txn.commit()?;
         }
 

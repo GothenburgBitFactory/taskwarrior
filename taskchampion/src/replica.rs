@@ -69,7 +69,7 @@ impl Replica {
     }
 
     /// Add the given uuid to the working set, returning its index.
-    pub(crate) fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize> {
+    pub(crate) fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<usize> {
         self.taskdb.add_to_working_set(uuid)
     }
 
@@ -94,7 +94,7 @@ impl Replica {
         let mut res = Vec::with_capacity(working_set.len());
         for item in working_set.iter() {
             res.push(match item {
-                Some(u) => match self.taskdb.get_task(u)? {
+                Some(u) => match self.taskdb.get_task(*u)? {
                     Some(tm) => Some(Task::new(*u, tm)),
                     None => None,
                 },
@@ -105,11 +105,11 @@ impl Replica {
     }
 
     /// Get an existing task by its UUID
-    pub fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<Task>> {
+    pub fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<Task>> {
         Ok(self
             .taskdb
             .get_task(uuid)?
-            .map(move |tm| Task::new(*uuid, tm)))
+            .map(move |tm| Task::new(uuid, tm)))
     }
 
     /// Get an existing task by its working set index
@@ -119,7 +119,7 @@ impl Replica {
             if let Some(uuid) = working_set[i as usize] {
                 return Ok(self
                     .taskdb
-                    .get_task(&uuid)?
+                    .get_task(uuid)?
                     .map(move |tm| Task::new(uuid, tm)));
             }
         }
@@ -127,11 +127,11 @@ impl Replica {
     }
 
     /// Get the working set index for the given task uuid
-    pub fn get_working_set_index(&mut self, uuid: &Uuid) -> Fallible<Option<usize>> {
+    pub fn get_working_set_index(&mut self, uuid: Uuid) -> Fallible<Option<usize>> {
         let working_set = self.taskdb.working_set()?;
         for (i, u) in working_set.iter().enumerate() {
-            if let Some(ref u) = u {
-                if u == uuid {
+            if let Some(u) = u {
+                if *u == uuid {
                     return Ok(Some(i));
                 }
             }
@@ -154,13 +154,13 @@ impl Replica {
     /// Deleted; this is the final purge of the task.  This is not a public method as deletion
     /// should only occur through expiration.
     #[allow(dead_code)]
-    fn delete_task(&mut self, uuid: &Uuid) -> Fallible<()> {
+    fn delete_task(&mut self, uuid: Uuid) -> Fallible<()> {
         // check that it already exists; this is a convenience check, as the task may already exist
         // when this Create operation is finally sync'd with operations from other replicas
         if self.taskdb.get_task(uuid)?.is_none() {
             return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
         }
-        self.taskdb.apply(Operation::Delete { uuid: *uuid })?;
+        self.taskdb.apply(Operation::Delete { uuid })?;
         trace!("task {} deleted", uuid);
         Ok(())
     }
@@ -220,7 +220,7 @@ mod tests {
         assert_eq!(t.get_status(), Status::Completed);
 
         // check tha values have changed in storage, too
-        let t = rep.get_task(&t.get_uuid()).unwrap().unwrap();
+        let t = rep.get_task(t.get_uuid()).unwrap().unwrap();
         assert_eq!(t.get_description(), "past tense");
         assert_eq!(t.get_status(), Status::Completed);
     }
@@ -233,7 +233,7 @@ mod tests {
         let uuid = t.get_uuid();
 
         rep.delete_task(uuid).unwrap();
-        assert_eq!(rep.get_task(&uuid).unwrap(), None);
+        assert_eq!(rep.get_task(uuid).unwrap(), None);
     }
 
     #[test]
@@ -245,14 +245,14 @@ mod tests {
             .unwrap();
         let uuid = t.get_uuid();
 
-        let t = rep.get_task(&uuid).unwrap().unwrap();
+        let t = rep.get_task(uuid).unwrap().unwrap();
         assert_eq!(t.get_description(), String::from("another task"));
 
         let mut t = t.into_mut(&mut rep);
         t.set_status(Status::Deleted).unwrap();
         t.set_description("gone".into()).unwrap();
 
-        let t = rep.get_task(&uuid).unwrap().unwrap();
+        let t = rep.get_task(uuid).unwrap().unwrap();
         assert_eq!(t.get_status(), Status::Deleted);
         assert_eq!(t.get_description(), "gone");
 
@@ -286,6 +286,6 @@ mod tests {
     fn get_does_not_exist() {
         let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
-        assert_eq!(rep.get_task(&uuid).unwrap(), None);
+        assert_eq!(rep.get_task(uuid).unwrap(), None);
     }
 }
