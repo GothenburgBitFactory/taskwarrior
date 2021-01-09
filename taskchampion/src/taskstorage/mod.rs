@@ -44,7 +44,7 @@ pub(crate) const DEFAULT_BASE_VERSION: Uuid = crate::server::NO_VERSION_ID;
 /// It is safe and performant to drop transactions that did not modify any data without committing.
 pub trait TaskStorageTxn {
     /// Get an (immutable) task, if it is in the storage
-    fn get_task(&mut self, uuid: &Uuid) -> Fallible<Option<TaskMap>>;
+    fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>>;
 
     /// Create an (empty) task, only if it does not already exist.  Returns true if
     /// the task was created (did not already exist).
@@ -55,7 +55,7 @@ pub trait TaskStorageTxn {
     fn set_task(&mut self, uuid: Uuid, task: TaskMap) -> Fallible<()>;
 
     /// Delete a task, if it exists.  Returns true if the task was deleted (already existed)
-    fn delete_task(&mut self, uuid: &Uuid) -> Fallible<bool>;
+    fn delete_task(&mut self, uuid: Uuid) -> Fallible<bool>;
 
     /// Get the uuids and bodies of all tasks in the storage, in undefined order.
     fn all_tasks(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>>;
@@ -86,7 +86,7 @@ pub trait TaskStorageTxn {
 
     /// Add a task to the working set and return its (one-based) index.  This index will be one greater
     /// than the highest used index.
-    fn add_to_working_set(&mut self, uuid: &Uuid) -> Fallible<usize>;
+    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<usize>;
 
     /// Update the working set task at the given index.  This cannot add a new item to the
     /// working set.

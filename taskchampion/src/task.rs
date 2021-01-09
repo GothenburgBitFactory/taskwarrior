@@ -167,8 +167,8 @@ impl Task {
         Task { uuid, taskmap }
     }
 
-    pub fn get_uuid(&self) -> &Uuid {
-        &self.uuid
+    pub fn get_uuid(&self) -> Uuid {
+        self.uuid
     }
 
     pub fn get_taskmap(&self) -> &TaskMap {
@@ -254,7 +254,7 @@ impl<'r> TaskMut<'r> {
     pub fn set_status(&mut self, status: Status) -> Fallible<()> {
         if status == Status::Pending {
             let uuid = self.uuid;
-            self.replica.add_to_working_set(&uuid)?;
+            self.replica.add_to_working_set(uuid)?;
         }
         self.set_string("status", Some(String::from(status.to_taskmap())))
     }
@@ -353,7 +353,7 @@ impl<'r> TaskMut<'r> {
     #[cfg(test)]
     fn reload(&mut self) -> Fallible<()> {
         let uuid = self.uuid;
-        let task = self.replica.get_task(&uuid)?.unwrap();
+        let task = self.replica.get_task(uuid)?.unwrap();
         self.task.taskmap = task.taskmap;
         Ok(())
     }

@@ -18,15 +18,15 @@ impl WorkingSet {
         Ok(Self(
             working_set
                 .iter()
-                .map(|opt| opt.as_ref().map(|t| *t.get_uuid()))
+                .map(|opt| opt.as_ref().map(|t| t.get_uuid()))
                 .collect(),
         ))
     }
 
-    fn index(&self, target: &Uuid) -> Option<usize> {
+    fn index(&self, target: Uuid) -> Option<usize> {
         for (i, uuid) in self.0.iter().enumerate() {
             if let Some(uuid) = uuid {
-                if uuid == target {
+                if *uuid == target {
                     return Some(i);
                 }
             }
@@ -51,10 +51,10 @@ fn sort_tasks(tasks: &mut Vec<Task>, report: &Report, working_set: &WorkingSet) 
                         (Some(a_id), Some(b_id)) => a_id.cmp(&b_id),
                         (Some(_), None) => Ordering::Less,
                         (None, Some(_)) => Ordering::Greater,
-                        (None, None) => a_uuid.cmp(b_uuid),
+                        (None, None) => a_uuid.cmp(&b_uuid),
                     }
                 }
-                SortBy::Uuid => a.get_uuid().cmp(b.get_uuid()),
+                SortBy::Uuid => a.get_uuid().cmp(&b.get_uuid()),
                 SortBy::Description => a.get_description().cmp(b.get_description()),
             };
             // If this sort property is equal, go on to the next..
@@ -165,7 +165,7 @@ mod test {
 
         replica.rebuild_working_set(true).unwrap();
 
-        [*t1.get_uuid(), *t2.get_uuid(), *t3.get_uuid()]
+        [t1.get_uuid(), t2.get_uuid(), t3.get_uuid()]
     }
 
     #[test]
@@ -237,7 +237,7 @@ mod test {
 
         let mut tasks: Vec<_> = replica.all_tasks().unwrap().values().cloned().collect();
         sort_tasks(&mut tasks, &report, &working_set);
-        let got_uuids: Vec<_> = tasks.iter().map(|t| *t.get_uuid()).collect();
+        let got_uuids: Vec<_> = tasks.iter().map(|t| t.get_uuid()).collect();
         let mut exp_uuids = uuids.to_vec();
         exp_uuids.sort();
         assert_eq!(got_uuids, exp_uuids);
@@ -291,7 +291,7 @@ mod test {
 
         // get the task that's not in the working set, which should show
         // a uuid for its id column
-        let task = replica.get_task(&uuids[1]).unwrap().unwrap();
+        let task = replica.get_task(uuids[1]).unwrap().unwrap();
         assert_eq!(
             task_column(&task, &column, &working_set),
             uuids[1].to_string()
@@ -323,7 +323,7 @@ mod test {
 
         // make task A active
         replica
-            .get_task(&uuids[0])
+            .get_task(uuids[0])
             .unwrap()
             .unwrap()
             .into_mut(&mut replica)
@@ -363,7 +363,7 @@ mod test {
 
         // add some tags to task A
         let mut t1 = replica
-            .get_task(&uuids[0])
+            .get_task(uuids[0])
             .unwrap()
             .unwrap()
             .into_mut(&mut replica);
