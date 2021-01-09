@@ -33,7 +33,11 @@ mod test {
         execute(&mut w, &mut replica, modification).unwrap();
 
         // check that the task appeared..
-        let task = replica.get_working_set_task(1).unwrap().unwrap();
+        let working_set = replica.working_set().unwrap();
+        let task = replica
+            .get_task(working_set.by_index(1).unwrap())
+            .unwrap()
+            .unwrap();
         assert_eq!(task.get_description(), "my description");
         assert_eq!(task.get_status(), Status::Pending);
 

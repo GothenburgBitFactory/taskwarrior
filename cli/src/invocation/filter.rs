@@ -2,9 +2,9 @@ use crate::argparse::{Condition, Filter, TaskId};
 use failure::Fallible;
 use std::collections::HashSet;
 use std::convert::TryInto;
-use taskchampion::{Replica, Status, Tag, Task, Uuid};
+use taskchampion::{Replica, Status, Tag, Task, Uuid, WorkingSet};
 
-fn match_task(filter: &Filter, task: &Task, uuid: Uuid, working_set_id: Option<usize>) -> bool {
+fn match_task(filter: &Filter, task: &Task, uuid: Uuid, working_set: &WorkingSet) -> bool {
     for cond in &filter.conditions {
         match cond {
             Condition::HasTag(ref tag) => {
@@ -29,6 +29,8 @@ fn match_task(filter: &Filter, task: &Task, uuid: Uuid, working_set_id: Option<u
             Condition::IdList(ids) => {
                 let uuid_str = uuid.to_string();
                 let mut found = false;
+                let working_set_id = working_set.by_uuid(uuid);
+
                 for id in ids {
                     if match id {
                         TaskId::WorkingSetId(i) => Some(*i) == working_set_id,
@@ -111,6 +113,8 @@ pub(super) fn filtered_tasks(
 
     log::debug!("Applying filter {:?}", filter);
 
+    let working_set = replica.working_set()?;
+
     // We will enumerate the universe of tasks for this filter, checking
     // each resulting task with match_task
     match universe_for_filter(filter) {
@@ -123,7 +127,11 @@ pub(super) fn filtered_tasks(
             let mut seen = HashSet::new();
             for id in ids {
                 let task = match id {
-                    TaskId::WorkingSetId(id) => replica.get_working_set_task(*id)?,
+                    TaskId::WorkingSetId(id) => working_set
+                        .by_index(*id)
+                        .map(|uuid| replica.get_task(uuid))
+                        .transpose()?
+                        .flatten(),
                     TaskId::PartialUuid(_) => unreachable!(), // not present in absolute id list
                     TaskId::Uuid(id) => replica.get_task(*id)?,
                 };
@@ -136,9 +144,7 @@ pub(super) fn filtered_tasks(
                     }
                     seen.insert(uuid);
 
-                    let working_set_id = replica.get_working_set_index(uuid)?;
-
-                    if match_task(filter, &task, uuid, working_set_id) {
+                    if match_task(filter, &task, uuid, &working_set) {
                         res.push(task);
                     }
                 }
@@ -149,19 +155,16 @@ pub(super) fn filtered_tasks(
         Universe::AllTasks => {
             log::debug!("Scanning all tasks in the task database");
             for (uuid, task) in replica.all_tasks()?.drain() {
-                // Yikes, slow! https://github.com/djmitche/taskchampion/issues/108
-                let working_set_id = replica.get_working_set_index(uuid)?;
-                if match_task(filter, &task, uuid, working_set_id) {
+                if match_task(filter, &task, uuid, &working_set) {
                     res.push(task);
                 }
             }
         }
         Universe::WorkingSet => {
             log::debug!("Scanning only the working set (pending tasks)");
-            for (i, task) in replica.working_set()?.drain(..).enumerate() {
-                if let Some(task) = task {
-                    let uuid = task.get_uuid();
-                    if match_task(filter, &task, uuid, Some(i)) {
+            for (_, uuid) in working_set.iter() {
+                if let Some(task) = replica.get_task(uuid)? {
+                    if match_task(filter, &task, uuid, &working_set) {
                         res.push(task);
                     }
                 }
