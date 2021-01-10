@@ -84,22 +84,35 @@ impl Status {
 }
 
 /// A Tag is a newtype around a String that limits its values to valid tags.
+///
+/// Valid tags must not contain whitespace or any of the characters in [`INVALID_TAG_CHARACTERS`].
+/// The first characters additionally cannot be a digit, and subsequent characters cannot be `:`.
+/// This definition is based on [that of
+/// TaskWarrior](https://github.com/GothenburgBitFactory/taskwarrior/blob/663c6575ceca5bd0135ae884879339dac89d3142/src/Lexer.cpp#L146-L164).
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Default)]
 pub struct Tag(String);
 
+pub const INVALID_TAG_CHARACTERS: &str = "+-*/(<>^! %=~";
+
 impl Tag {
     fn from_str(value: &str) -> Result<Tag, failure::Error> {
+        fn err(value: &str) -> Result<Tag, failure::Error> {
+            Err(format_err!("invalid tag {:?}", value))
+        }
+
         if let Some(c) = value.chars().next() {
-            if !c.is_ascii_alphabetic() {
-                return Err(format_err!("first character of a tag must be alphabetic"));
+            if c.is_whitespace() || c.is_ascii_digit() || INVALID_TAG_CHARACTERS.contains(c) {
+                return err(value);
             }
         } else {
-            return Err(format_err!("tags must have at least one character"));
+            return err(value);
         }
-        if !value.chars().skip(1).all(|c| c.is_ascii_alphanumeric()) {
-            return Err(format_err!(
-                "characters of a tag after the first must be alphanumeric"
-            ));
+        if !value
+            .chars()
+            .skip(1)
+            .all(|c| !(c.is_whitespace() || c == ':' || INVALID_TAG_CHARACTERS.contains(c)))
+        {
+            return err(value);
         }
         Ok(Self(String::from(value)))
     }
@@ -383,23 +396,23 @@ mod test {
         let tag: Tag = "abc".try_into().unwrap();
         assert_eq!(tag, Tag("abc".to_owned()));
 
+        let tag: Tag = ":abc".try_into().unwrap();
+        assert_eq!(tag, Tag(":abc".to_owned()));
+
+        let tag: Tag = "a123_456".try_into().unwrap();
+        assert_eq!(tag, Tag("a123_456".to_owned()));
+
         let tag: Result<Tag, _> = "".try_into();
-        assert_eq!(
-            tag.unwrap_err().to_string(),
-            "tags must have at least one character"
-        );
+        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"\"");
+
+        let tag: Result<Tag, _> = "a:b".try_into();
+        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"a:b\"");
 
         let tag: Result<Tag, _> = "999".try_into();
-        assert_eq!(
-            tag.unwrap_err().to_string(),
-            "first character of a tag must be alphabetic"
-        );
+        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"999\"");
 
         let tag: Result<Tag, _> = "abc!!".try_into();
-        assert_eq!(
-            tag.unwrap_err().to_string(),
-            "characters of a tag after the first must be alphanumeric"
-        );
+        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"abc!!\"");
     }
 
     #[test]
