@@ -10,7 +10,8 @@ use nom::{
     sequence::*,
     Err, IResult,
 };
-use taskchampion::{Status, Uuid};
+use std::convert::TryFrom;
+use taskchampion::{Status, Tag, Uuid};
 
 /// A task identifier, as given in a filter command-line expression
 #[derive(Debug, PartialEq, Clone)]
@@ -130,7 +131,10 @@ pub(super) fn plus_tag(input: &str) -> IResult<&str, &str> {
         Ok(input.1)
     }
     map_res(
-        all_consuming(tuple((char('+'), recognize(pair(alpha1, alphanumeric0))))),
+        all_consuming(tuple((
+            char('+'),
+            recognize(verify(rest, |s: &str| Tag::try_from(s).is_ok())),
+        ))),
         to_tag,
     )(input)
 }
@@ -141,7 +145,10 @@ pub(super) fn minus_tag(input: &str) -> IResult<&str, &str> {
         Ok(input.1)
     }
     map_res(
-        all_consuming(tuple((char('-'), recognize(pair(alpha1, alphanumeric0))))),
+        all_consuming(tuple((
+            char('-'),
+            recognize(verify(rest, |s: &str| Tag::try_from(s).is_ok())),
+        ))),
         to_tag,
     )(input)
 }

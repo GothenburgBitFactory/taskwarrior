@@ -5,6 +5,7 @@
   * [Using the Task Command](./using-task-command.md)
     * [Configuration](./config-file.md)
     * [Reports](./reports.md)
+    * [Tags](./tags.md)
     * [Synchronization](./task-sync.md)
   * [Running the Sync Server](./running-sync-server.md)
   * [Debugging](./debugging.md)
