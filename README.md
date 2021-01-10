@@ -5,6 +5,15 @@ TaskChampion is an open-source personal task-tracking application.
 Use it to keep track of what you need to do, with a quick command-line interface and flexible sorting and filtering.
 It is modeled on [TaskWarrior](https://taskwarrior.org), but not a drop-in replacement for that application.
 
+## Status
+
+TC is still under development.
+You are welcome to [help out!](https://github.com/djmitche/taskchampion/blob/main/CONTRIBUTING.md).
+Even if you just want to get some practice with Rust, your contribution is welcome.
+
+Since development of TaskChampion began, TaskWarrior developers have resumed work and made several releases.
+Assuming that continues, it is unlikely that TaskChampion will ever be recommended for day-to-day use, as that would only serve to split the TaskWarrior community.
+
 ## Goals
 
  * Feature parity with TaskWarrior (but not compatibility)
