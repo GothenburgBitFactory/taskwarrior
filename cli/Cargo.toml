@@ -2,7 +2,7 @@
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
 edition = "2018"
 name = "taskchampion-cli"
-version = "0.2.0"
+version = "0.3.0"
 
 [dependencies]
 dirs = "^3.0.1"

@@ -2250,7 +2250,7 @@ checksum = "36474e732d1affd3a6ed582781b3683df3d0563714c59c39591e8ff707cf078e"
 
 [[package]]
 name = "taskchampion"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "chrono",
  "failure",
@@ -2268,7 +2268,7 @@ dependencies = [
 
 [[package]]
 name = "taskchampion-cli"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "assert_cmd",
  "atty",
@@ -2288,7 +2288,7 @@ dependencies = [
 
 [[package]]
 name = "taskchampion-sync-server"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "actix-rt",
  "actix-web",
