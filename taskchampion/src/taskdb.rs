@@ -1,6 +1,6 @@
 use crate::errors::Error;
 use crate::server::{AddVersionResult, GetVersionResult, Server};
-use crate::taskstorage::{Operation, TaskMap, TaskStorage, TaskStorageTxn};
+use crate::storage::{Operation, Storage, StorageTxn, TaskMap};
 use failure::{format_err, Fallible};
 use log::{info, trace, warn};
 use serde::{Deserialize, Serialize};
@@ -12,7 +12,7 @@ use uuid::Uuid;
 /// and so on, and all the invariants that come with it.  It leaves the meaning of particular task
 /// properties to the replica and task implementations.
 pub struct TaskDB {
-    storage: Box<dyn TaskStorage>,
+    storage: Box<dyn Storage>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -22,13 +22,13 @@ struct Version {
 
 impl TaskDB {
     /// Create a new TaskDB with the given backend storage
-    pub fn new(storage: Box<dyn TaskStorage>) -> TaskDB {
+    pub fn new(storage: Box<dyn Storage>) -> TaskDB {
         TaskDB { storage }
     }
 
     #[cfg(test)]
     pub fn new_inmemory() -> TaskDB {
-        TaskDB::new(Box::new(crate::taskstorage::InMemoryStorage::new()))
+        TaskDB::new(Box::new(crate::storage::InMemoryStorage::new()))
     }
 
     /// Apply an operation to the TaskDB.  Aside from synchronization operations, this is the only way
@@ -45,7 +45,7 @@ impl TaskDB {
         Ok(())
     }
 
-    fn apply_op(txn: &mut dyn TaskStorageTxn, op: &Operation) -> Fallible<()> {
+    fn apply_op(txn: &mut dyn StorageTxn, op: &Operation) -> Fallible<()> {
         match op {
             Operation::Create { uuid } => {
                 // insert if the task does not already exist
@@ -261,7 +261,7 @@ impl TaskDB {
         Ok(())
     }
 
-    fn apply_version(txn: &mut dyn TaskStorageTxn, mut version: Version) -> Fallible<()> {
+    fn apply_version(txn: &mut dyn StorageTxn, mut version: Version) -> Fallible<()> {
         // The situation here is that the server has already applied all server operations, and we
         // have already applied all local operations, so states have diverged by several
         // operations.  We need to figure out what operations to apply locally and on the server in
@@ -358,7 +358,7 @@ impl TaskDB {
 mod tests {
     use super::*;
     use crate::server::test::TestServer;
-    use crate::taskstorage::InMemoryStorage;
+    use crate::storage::InMemoryStorage;
     use chrono::Utc;
     use proptest::prelude::*;
     use std::collections::HashMap;

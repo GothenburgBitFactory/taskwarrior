@@ -3,7 +3,7 @@
 use crate::argparse::{Command, Subcommand};
 use config::Config;
 use failure::{format_err, Fallible};
-use taskchampion::{server, Replica, ReplicaConfig, ServerConfig, Uuid};
+use taskchampion::{Replica, Server, ServerConfig, StorageConfig, Uuid};
 use termcolor::{ColorChoice, StandardStream};
 
 mod cmd;
@@ -104,15 +104,15 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
 fn get_replica(settings: &Config) -> Fallible<Replica> {
     let taskdb_dir = settings.get_str("data_dir")?.into();
     log::debug!("Replica data_dir: {:?}", taskdb_dir);
-    let replica_config = ReplicaConfig { taskdb_dir };
-    Ok(Replica::from_config(replica_config)?)
+    let storage_config = StorageConfig::OnDisk { taskdb_dir };
+    Ok(Replica::new(storage_config.into_storage()?))
 }
 
 /// Get the server for this invocation
-fn get_server(settings: &Config) -> Fallible<Box<dyn server::Server>> {
+fn get_server(settings: &Config) -> Fallible<Box<dyn Server>> {
     // if server_client_key and server_origin are both set, use
     // the remote server
-    if let (Ok(client_key), Ok(origin)) = (
+    let config = if let (Ok(client_key), Ok(origin)) = (
         settings.get_str("server_client_key"),
         settings.get_str("server_origin"),
     ) {
@@ -123,16 +123,17 @@ fn get_server(settings: &Config) -> Fallible<Box<dyn server::Server>> {
 
         log::debug!("Using sync-server with origin {}", origin);
         log::debug!("Sync client ID: {}", client_key);
-        Ok(server::from_config(ServerConfig::Remote {
+        ServerConfig::Remote {
             origin,
             client_key,
             encryption_secret: encryption_secret.as_bytes().to_vec(),
-        })?)
+        }
     } else {
         let server_dir = settings.get_str("server_dir")?.into();
         log::debug!("Using local sync-server at `{:?}`", server_dir);
-        Ok(server::from_config(ServerConfig::Local { server_dir })?)
-    }
+        ServerConfig::Local { server_dir }
+    };
+    Ok(config.into_server()?)
 }
 
 /// Get a WriteColor implementation based on whether the output is a tty.

@@ -1,6 +1,4 @@
-use crate::taskstorage::{
-    Operation, TaskMap, TaskStorage, TaskStorageTxn, VersionId, DEFAULT_BASE_VERSION,
-};
+use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use crate::utils::Key;
 use failure::{bail, Fallible};
 use kv::msgpack::Msgpack;
@@ -62,8 +60,8 @@ impl<'t> KVStorage<'t> {
     }
 }
 
-impl<'t> TaskStorage for KVStorage<'t> {
-    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn TaskStorageTxn + 'a>> {
+impl<'t> Storage for KVStorage<'t> {
+    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(Txn {
             storage: self,
             txn: Some(self.store.write_txn()?),
@@ -104,7 +102,7 @@ impl<'t> Txn<'t> {
     }
 }
 
-impl<'t> TaskStorageTxn for Txn<'t> {
+impl<'t> StorageTxn for Txn<'t> {
     fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>> {
         let bucket = self.tasks_bucket();
         let buf = match self.kvtxn().get(bucket, uuid.into()) {
@@ -356,7 +354,7 @@ impl<'t> TaskStorageTxn for Txn<'t> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::taskstorage::taskmap_with;
+    use crate::storage::taskmap_with;
     use failure::Fallible;
     use tempdir::TempDir;
 

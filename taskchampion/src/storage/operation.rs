@@ -125,8 +125,8 @@ impl Operation {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::storage::InMemoryStorage;
     use crate::taskdb::TaskDB;
-    use crate::taskstorage::InMemoryStorage;
     use chrono::{Duration, Utc};
     use proptest::prelude::*;
 

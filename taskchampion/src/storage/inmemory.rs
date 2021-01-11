@@ -1,8 +1,6 @@
 #![allow(clippy::new_without_default)]
 
-use crate::taskstorage::{
-    Operation, TaskMap, TaskStorage, TaskStorageTxn, VersionId, DEFAULT_BASE_VERSION,
-};
+use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use failure::{bail, Fallible};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
@@ -42,7 +40,7 @@ impl<'t> Txn<'t> {
     }
 }
 
-impl<'t> TaskStorageTxn for Txn<'t> {
+impl<'t> StorageTxn for Txn<'t> {
     fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>> {
         match self.data_ref().tasks.get(&uuid) {
             None => Ok(None),
@@ -157,8 +155,8 @@ impl InMemoryStorage {
     }
 }
 
-impl TaskStorage for InMemoryStorage {
-    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn TaskStorageTxn + 'a>> {
+impl Storage for InMemoryStorage {
+    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(Txn {
             storage: self,
             new_data: None,

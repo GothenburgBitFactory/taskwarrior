@@ -1,12 +1,23 @@
+/**
+
+This module defines the backend storage used by [`Replica`](crate::Replica).
+It defines a [trait](crate::storage::Storage) for storage implementations, and provides a default on-disk implementation as well as an in-memory implementation for testing.
+
+Typical uses of this crate do not interact directly with this module; [`StorageConfig`](crate::StorageConfig) is sufficient.
+However, users who wish to implement their own storage backends can implement the traits defined here and pass the result to [`Replica`](crate::Replica).
+
+*/
 use failure::Fallible;
 use std::collections::HashMap;
 use uuid::Uuid;
 
+mod config;
 mod inmemory;
 mod kv;
 mod operation;
 
 pub use self::kv::KVStorage;
+pub use config::StorageConfig;
 pub use inmemory::InMemoryStorage;
 
 pub use operation::Operation;
@@ -29,7 +40,7 @@ pub use crate::server::VersionId;
 /// The default for base_version.
 pub(crate) const DEFAULT_BASE_VERSION: Uuid = crate::server::NO_VERSION_ID;
 
-/// A TaskStorage transaction, in which storage operations are performed.
+/// A Storage transaction, in which storage operations are performed.
 ///
 /// # Concurrency
 ///
@@ -40,9 +51,9 @@ pub(crate) const DEFAULT_BASE_VERSION: Uuid = crate::server::NO_VERSION_ID;
 /// # Commiting and Aborting
 ///
 /// A transaction is not visible to other readers until it is committed with
-/// [`crate::taskstorage::TaskStorageTxn::commit`].  Transactions are aborted if they are dropped.
+/// [`crate::storage::StorageTxn::commit`].  Transactions are aborted if they are dropped.
 /// It is safe and performant to drop transactions that did not modify any data without committing.
-pub trait TaskStorageTxn {
+pub trait StorageTxn {
     /// Get an (immutable) task, if it is in the storage
     fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>>;
 
@@ -102,8 +113,8 @@ pub trait TaskStorageTxn {
 }
 
 /// A trait for objects able to act as task storage.  Most of the interesting behavior is in the
-/// [`crate::taskstorage::TaskStorageTxn`] trait.
-pub trait TaskStorage {
+/// [`crate::storage::StorageTxn`] trait.
+pub trait Storage {
     /// Begin a transaction
-    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn TaskStorageTxn + 'a>>;
+    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn StorageTxn + 'a>>;
 }
