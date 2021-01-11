@@ -1,5 +1,5 @@
 use std::io;
-use taskchampion::{server, storage, Replica, ServerConfig};
+use taskchampion::{storage, Replica, Server, ServerConfig};
 use tempdir::TempDir;
 
 pub(super) fn test_replica() -> Replica {
@@ -7,10 +7,11 @@ pub(super) fn test_replica() -> Replica {
     Replica::new(Box::new(storage))
 }
 
-pub(super) fn test_server(dir: &TempDir) -> Box<dyn server::Server> {
-    server::from_config(ServerConfig::Local {
+pub(super) fn test_server(dir: &TempDir) -> Box<dyn Server> {
+    ServerConfig::Local {
         server_dir: dir.path().to_path_buf(),
-    })
+    }
+    .into_server()
     .unwrap()
 }
 

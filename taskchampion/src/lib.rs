@@ -3,9 +3,13 @@
 
 This crate implements the core of TaskChampion, the [replica](crate::Replica).
 
+# Replica
+
 A TaskChampion replica is a local copy of a user's task data.  As the name suggests, several
 replicas of the same data can exist (such as on a user's laptop and on their phone) and can
 synchronize with one another.
+
+Replicas are accessed using the [`Replica`](crate::replica) type.
 
 # Task Storage
 
@@ -15,7 +19,10 @@ An implementation is provided, but users of this crate can provide their own imp
 # Server
 
 Replica synchronization takes place against a server.
+Create a server with [`ServerConfig`](crate::ServerConfig).
+
 The [`server`](crate::server) module defines the interface a server must meet.
+Users can define their own server impelementations.
 
 # See Also
 
@@ -28,14 +35,15 @@ mod config;
 mod errors;
 mod replica;
 pub mod server;
+pub mod storage;
 mod task;
 mod taskdb;
-pub mod storage;
 mod utils;
 mod workingset;
 
-pub use config::{ReplicaConfig, ServerConfig};
+pub use config::ReplicaConfig;
 pub use replica::Replica;
+pub use server::{Server, ServerConfig};
 pub use task::{Priority, Status, Tag, Task, TaskMut};
 pub use workingset::WorkingSet;
 
