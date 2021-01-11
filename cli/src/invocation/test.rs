@@ -1,9 +1,9 @@
 use std::io;
-use taskchampion::{server, taskstorage, Replica, ServerConfig};
+use taskchampion::{server, storage, Replica, ServerConfig};
 use tempdir::TempDir;
 
 pub(super) fn test_replica() -> Replica {
-    let storage = taskstorage::InMemoryStorage::new();
+    let storage = storage::InMemoryStorage::new();
     Replica::new(Box::new(storage))
 }
 

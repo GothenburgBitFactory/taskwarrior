@@ -1,5 +1,5 @@
 use crate::replica::Replica;
-use crate::taskstorage::TaskMap;
+use crate::storage::TaskMap;
 use chrono::prelude::*;
 use failure::{format_err, Fallible};
 use log::trace;

@@ -1,7 +1,7 @@
 # Replica Storage
 
 Each replica has a storage backend.
-The interface for this backend is given in `crate::taskstorage::TaskStorage` and `TaskStorageTxn`.
+The interface for this backend is given in `crate::taskstorage::Storage` and `StorageTxn`.
 
 The storage is transaction-protected, with the expectation of a serializable isolation level.
 The storage contains the following information:

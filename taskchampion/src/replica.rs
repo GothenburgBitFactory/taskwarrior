@@ -3,7 +3,7 @@ use crate::errors::Error;
 use crate::server::Server;
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDB;
-use crate::taskstorage::{KVStorage, Operation, TaskMap, TaskStorage};
+use crate::storage::{KVStorage, Operation, TaskMap, Storage};
 use crate::workingset::WorkingSet;
 use chrono::Utc;
 use failure::Fallible;
@@ -30,7 +30,7 @@ pub struct Replica {
 }
 
 impl Replica {
-    pub fn new(storage: Box<dyn TaskStorage>) -> Replica {
+    pub fn new(storage: Box<dyn Storage>) -> Replica {
         Replica {
             taskdb: TaskDB::new(storage),
         }
@@ -45,7 +45,7 @@ impl Replica {
 
     #[cfg(test)]
     pub fn new_inmemory() -> Replica {
-        Replica::new(Box::new(crate::taskstorage::InMemoryStorage::new()))
+        Replica::new(Box::new(crate::storage::InMemoryStorage::new()))
     }
 
     /// Update an existing task.  If the value is Some, the property is added or updated.  If the

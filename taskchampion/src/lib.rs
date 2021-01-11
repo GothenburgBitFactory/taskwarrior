@@ -9,7 +9,7 @@ synchronize with one another.
 
 # Task Storage
 
-The [`taskstorage`](crate::taskstorage) module supports pluggable storage for a replica's data.
+The [`storage`](crate::storage) module supports pluggable storage for a replica's data.
 An implementation is provided, but users of this crate can provide their own implementation as well.
 
 # Server
@@ -30,7 +30,7 @@ mod replica;
 pub mod server;
 mod task;
 mod taskdb;
-pub mod taskstorage;
+pub mod storage;
 mod utils;
 mod workingset;
 
