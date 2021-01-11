@@ -1,9 +1,8 @@
-use crate::config::ReplicaConfig;
 use crate::errors::Error;
 use crate::server::Server;
+use crate::storage::{Operation, Storage, TaskMap};
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDB;
-use crate::storage::{KVStorage, Operation, TaskMap, Storage};
 use crate::workingset::WorkingSet;
 use chrono::Utc;
 use failure::Fallible;
@@ -34,13 +33,6 @@ impl Replica {
         Replica {
             taskdb: TaskDB::new(storage),
         }
-    }
-
-    /// Construct a new replica from a configuration object.  This is the common way
-    /// to create a new object.
-    pub fn from_config(config: ReplicaConfig) -> Fallible<Replica> {
-        let storage = Box::new(KVStorage::new(config.taskdb_dir)?);
-        Ok(Replica::new(storage))
     }
 
     #[cfg(test)]

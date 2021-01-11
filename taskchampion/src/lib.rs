@@ -31,7 +31,6 @@ for more information about the design and usage of the tool.
 
  */
 
-mod config;
 mod errors;
 mod replica;
 pub mod server;
@@ -41,9 +40,9 @@ mod taskdb;
 mod utils;
 mod workingset;
 
-pub use config::ReplicaConfig;
 pub use replica::Replica;
 pub use server::{Server, ServerConfig};
+pub use storage::StorageConfig;
 pub use task::{Priority, Status, Tag, Task, TaskMut};
 pub use workingset::WorkingSet;
 

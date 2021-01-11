@@ -3,7 +3,7 @@
 use crate::argparse::{Command, Subcommand};
 use config::Config;
 use failure::{format_err, Fallible};
-use taskchampion::{Replica, ReplicaConfig, Server, ServerConfig, Uuid};
+use taskchampion::{Replica, Server, ServerConfig, StorageConfig, Uuid};
 use termcolor::{ColorChoice, StandardStream};
 
 mod cmd;
@@ -104,8 +104,8 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
 fn get_replica(settings: &Config) -> Fallible<Replica> {
     let taskdb_dir = settings.get_str("data_dir")?.into();
     log::debug!("Replica data_dir: {:?}", taskdb_dir);
-    let replica_config = ReplicaConfig { taskdb_dir };
-    Ok(Replica::from_config(replica_config)?)
+    let storage_config = StorageConfig::OnDisk { taskdb_dir };
+    Ok(Replica::new(storage_config.into_storage()?))
 }
 
 /// Get the server for this invocation
