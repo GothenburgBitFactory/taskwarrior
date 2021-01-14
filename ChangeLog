@@ -9,11 +9,13 @@
 - TW #2060 Review timestamp is displayed as unix time, not formatted
            Thanks to JavaZauber
 - TW #2093 wrong order under projects command
-           Thanks to Beka, mrossinek.
+           Thanks to Beka, Max Rossmannek.
 - TW #2101 Numeric UDA values above 2,147,483,647 overflow without warning
            Thanks to Adam Monsen.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
            Thanks to Julien Rabinow.
+- TW #2292 CmdEdit: Interruption should remove lock file
+           Thanks to indev12.
 - TW #2333 Width determination of Unicode characters now works for up to
            Unicode 11 (from Unicode 5). Emojis are correctly displayed.
            Thanks to Adam Monsen.
