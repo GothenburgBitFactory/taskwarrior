@@ -826,12 +826,16 @@ ARE_THESE_REALLY_HARMFUL:
     {
       std::cerr << "Error: " << problem << '\n';
 
-      // Preserve the edits.
-      before = after;
-      File::write (file.str (), before);
+      File::remove (file.str());
 
       if (confirm ("Taskwarrior couldn't handle your edits.  Would you like to try again?"))
+      {
+        // Preserve the edits.
+        before = after;
+        File::write (file.str (), before);
+
         goto ARE_THESE_REALLY_HARMFUL;
+      }
     }
     else
       changes = true;
