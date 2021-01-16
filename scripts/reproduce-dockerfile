@@ -27,5 +27,8 @@ RUN cmake -DCMAKE_BUILD_TYPE=debug .
 RUN make -j8
 RUN sudo make install
 
+# Set the PS1 variable
+ENV PS1="[\u@\H \W]\$ "
+
 WORKDIR /home/warrior
 RUN task rc.confirmation=0 _ids || :  # Generate default taskrc
