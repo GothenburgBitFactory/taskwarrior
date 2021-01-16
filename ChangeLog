@@ -21,6 +21,9 @@
            Thanks to Adam Monsen.
 - TW #2373 Year 2038 Problem
            Thanks to Stephan Rieche.
+- TW #2389 For certain terminal widths, annotations with utf-8 chars can lead
+           task to hang
+           Thanks to arooni.
 
 ------ current release ---------------------------
 
