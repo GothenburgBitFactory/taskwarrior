@@ -156,13 +156,13 @@ endforeach (doc_FILE)
 
 add_custom_command(OUTPUT run-review
     COMMAND docker build -q --build-arg PR=$(PR) -t taskwarrior-review:$(PR) - < scripts/review-dockerfile
-    COMMAND docker run --rm --hostname pr-$(PR) -it taskwarrior-review:$(PR) bash || :
+    COMMAND docker run --rm --memory 1g --hostname pr-$(PR) -it taskwarrior-review:$(PR) bash || :
 )
 add_custom_target(review DEPENDS run-review)
 
 add_custom_command(OUTPUT run-reproduce
     COMMAND docker build -q --build-arg RELEASE=$(RELEASE) -t taskwarrior-reproduce:$(RELEASE) - < scripts/reproduce-dockerfile
-    COMMAND docker run --rm --hostname tw-$(RELEASE) -it taskwarrior-reproduce:$(RELEASE) bash || :
+    COMMAND docker run --rm --memory 1g --hostname tw-$(RELEASE) -it taskwarrior-reproduce:$(RELEASE) bash || :
 )
 add_custom_target(reproduce DEPENDS run-reproduce)
 
