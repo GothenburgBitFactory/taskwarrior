@@ -158,8 +158,10 @@ int main (int, char**)
   t.is (v44.get_bool (), false,             "1234567890 > 1234567890 --> false");
 
   Variant v45 = v4 > v5;
+  // 1234567890 corresponds to Fri Feb 13 06:31:30 PM EST 2009 hence 1200
+  // (evaluated as now+1200s) be in future for any date after 2009-02-13
   t.is (v45.type (), Variant::type_boolean, "1234567890 > 1200 --> boolean");
-  t.is (v45.get_bool (), true,              "1234567890 > 1200 --> true");
+  t.is (v45.get_bool (), false,             "1234567890 > 1200 --> false");
 
   Variant v50 = v5 > v0;
   t.is (v50.type (), Variant::type_boolean, "1200 > true --> boolean");
@@ -178,8 +180,9 @@ int main (int, char**)
   t.is (v53.get_bool (), true,              "1200 > 'foo' --> true");
 
   Variant v54 = v5 > v4;
+  // Same reasoning as v45
   t.is (v54.type (), Variant::type_boolean, "1200 > 1234567890 --> boolean");
-  t.is (v54.get_bool (), false,             "1200 > 1234567890 --> false");
+  t.is (v54.get_bool (), true,              "1200 > 1234567890 --> true");
 
   Variant v55 = v5 > v5;
   t.is (v55.type (), Variant::type_boolean, "1200 > 1200 --> boolean");
