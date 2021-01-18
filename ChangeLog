@@ -1,5 +1,7 @@
 2.6.0 () -
 
+- TW #1654 "Due" parsing behaviour seems inconsistent
+           Thanks to Max Rossmannek.
 - TW #2004 "shell" should not be expand to "exec tasksh"
            Thanks to Arvedui
 - TW #2007 Compute number of current tasks correctly
@@ -24,6 +26,8 @@
 - TW #2389 For certain terminal widths, annotations with utf-8 chars can lead
            task to hang
            Thanks to arooni.
+- TW #2390 Regression: Relative dates should be implicitly anchored around 'now'
+           Thanks to Dominik Russo.
 
 ------ current release ---------------------------
 
