@@ -222,14 +222,13 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
     evaluatedValue = Variant (value);
   }
 
-  // If v is duration, add 'now' to it, else store as date.
+  // If v is duration, we need to convert it to date (and implicitly add now),
+  // else store as date.
   std::string label = "  [1;37;43mMODIFICATION[0m ";
   if (evaluatedValue.type () == Variant::type_duration)
   {
     Context::getContext ().debug (label + _name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + '\'');
-    Datetime date_now;
-    Variant now (date_now.toEpoch (), Variant::type_date);
-    evaluatedValue += now;
+    evaluatedValue.cast (Variant::type_date);
   }
   else
   {
