@@ -1930,7 +1930,9 @@ void Variant::cast (const enum type new_type)
     case type_real:     _real = static_cast<double>(_date); break;
     case type_string:   _string = (std::string) *this;      break;
     case type_date:                                         break;
-    case type_duration: _duration = _date;                  break;
+    // TODO: Not exactly correct (should duration convert into date?), but
+    // currently needed for symmetry, which is assumed by operators.
+    case type_duration: _duration = _date - time (nullptr); break;
     }
     break;
 
@@ -1941,7 +1943,7 @@ void Variant::cast (const enum type new_type)
     case type_integer:  _integer = (long long) _duration;       break;
     case type_real:     _real = static_cast<double>(_duration); break;
     case type_string:   _string = (std::string) *this;          break;
-    case type_date:     _date = _duration;                      break;
+    case type_date:     _date = time (nullptr) + _duration;     break;
     case type_duration:                                         break;
     }
     break;
