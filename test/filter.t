@@ -966,7 +966,6 @@ class TestBug1609(TestCase):
         self.assertIn("two", out)
 
 
-@unittest.expectedFailure
 class TestBug1630(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -975,7 +974,6 @@ class TestBug1630(TestCase):
         self.t("add one due:7d")
         self.t("add two due:10d")
 
-    @unittest.expectedFailure
     def test_attribute_modifier_with_duration(self):
         """1630: Verify that 'due.before:9d' is correctly interpreted"""
         code, out, err = self.t("due.before:9d list rc.verbose:nothing")
@@ -983,7 +981,6 @@ class TestBug1630(TestCase):
         self.assertIn("one", out)
         self.assertNotIn("two", out)
 
-    @unittest.expectedFailure
     def test_attribute_no_modifier_with_duration(self):
         """1630: Verify that 'due:7d' is correctly interpreted"""
         code, out, err = self.t("due:7d list rc.verbose:nothing")
