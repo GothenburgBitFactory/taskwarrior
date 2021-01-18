@@ -1295,12 +1295,12 @@ Variant& Variant::operator-= (const Variant& other)
   case type_date:
     switch (right._type)
     {
-    case type_boolean:  right.cast (type_integer); _date -= right._integer;    break;
-    case type_integer:                             _date -= right._integer;    break;
-    case type_real:                                _date -= (int) right._real; break;
+    case type_boolean:  right.cast (type_integer);      _date -= right._integer;         break;
+    case type_integer:                                  _date -= right._integer;         break;
+    case type_real:                                     _date -= (int) right._real;      break;
     case type_string:   throw std::string (STRING_VARIANT_SUB_STRING);
-    case type_date:     cast (type_duration);      _duration -= right._date;   break;
-    case type_duration:                            _date -= right._duration;   break;
+    case type_date:     _type = Variant::type_duration; _duration = _date - right._date; break;
+    case type_duration:                                 _date -= right._duration;        break;
     }
     break;
 
@@ -1408,12 +1408,12 @@ Variant& Variant::operator+= (const Variant& other)
   case type_duration:
     switch (right._type)
     {
-    case type_boolean:  right.cast (type_duration); _duration += right._duration;   break;
-    case type_integer:                              _duration += right._integer;    break;
-    case type_real:                                 _duration += (int) right._real; break;
-    case type_string:   cast (type_string);         _string += right._string;       break;
-    case type_date:     cast (type_date);           _date += right._date;           break;
-    case type_duration:                             _duration += right._duration;   break;
+    case type_boolean:  right.cast (type_duration); _duration += right._duration;      break;
+    case type_integer:                              _duration += right._integer;       break;
+    case type_real:                                 _duration += (int) right._real;    break;
+    case type_string:   cast (type_string);         _string += right._string;          break;
+    case type_date:     _type = Variant::type_date; _date += right._date + _duration;  break;
+    case type_duration:                             _duration += right._duration;      break;
     }
     break;
   }
