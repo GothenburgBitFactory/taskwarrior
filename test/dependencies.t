@@ -231,7 +231,7 @@ class TestBug697(TestCase):
         self.assertEqual("BLOCKED\n", out)
 
 
-@unittest.expectedFailure("Waiting for TW-1262")
+@unittest.expectedFailure
 class TestBug1262(TestCase):
     @classmethod
     def setUpClass(cls):
