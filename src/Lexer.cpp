@@ -687,16 +687,24 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::number
-//   \d+
+//   0
+//   [1-9]\d*
+//   Integers do not start with a leading 0, unless they are zero.
 bool Lexer::isInteger (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
+
+  bool leading_zero = (_text[marker] == '0');
 
   if (unicodeLatinDigit (_text[marker]))
   {
     ++marker;
     while (unicodeLatinDigit (_text[marker]))
       utf8_next_char (_text, marker);
+
+    // Leading zero is only allowed in the case of number 0
+    if (leading_zero and marker - _cursor > 1)
+      return false;
 
     token = _text.substr (_cursor, marker - _cursor);
     type = Lexer::Type::number;
