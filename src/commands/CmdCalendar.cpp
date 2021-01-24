@@ -175,7 +175,8 @@ int CmdCalendar::execute (std::string& output)
     Datetime oldest (2037, 12, 31);
     for (auto& task : tasks)
     {
-      if (task.getStatus () == Task::pending)
+      auto status = task.getStatus ();
+      if (status == Task::pending || status == Task::waiting)
       {
         if (task.has ("due") &&
             !task.hasTag ("nocal"))
@@ -562,8 +563,10 @@ std::string CmdCalendar::renderMonths (
           Context::getContext ().config.set ("due", 0);
           for (auto& task : all)
           {
-            if (task.getStatus () == Task::pending &&
-                !task.hasTag ("nocal")             &&
+            auto status = task.getStatus ();
+            if ((status == Task::pending ||
+                 status == Task::waiting ) &&
+                !task.hasTag ("nocal")     &&
                 task.has ("due"))
             {
               std::string due = task.get ("due");
