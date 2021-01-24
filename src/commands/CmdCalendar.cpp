@@ -187,8 +187,12 @@ int CmdCalendar::execute (std::string& output)
         }
       }
     }
-    mFrom = oldest.month();
-    yFrom = oldest.year();
+
+    // Default to current month if no due date is present
+    if (oldest != Datetime (9999, 12, 31)) {
+      mFrom = oldest.month();
+      yFrom = oldest.year();
+    }
   }
 
   if (Context::getContext ().config.getBoolean ("calendar.offset"))
