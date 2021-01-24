@@ -608,7 +608,8 @@ bool Lexer::isHexNumber (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::number
-//   \d+
+//   0
+//   [1-9]\d*
 //   [ . \d+ ]
 //   [ e|E [ +|- ] \d+ [ . \d+ ] ]
 //   not followed by non-operator.
@@ -616,9 +617,16 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
+  bool leading_zero = (_text[marker] == '0');
+
   if (unicodeLatinDigit (_text[marker]))
   {
     ++marker;
+
+    // Two (or more) digit number with a leading zero are not allowed
+    if (leading_zero && unicodeLatinDigit (_text[marker]))
+      return false;
+
     while (unicodeLatinDigit (_text[marker]))
       utf8_next_char (_text, marker);
 
