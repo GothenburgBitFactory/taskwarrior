@@ -172,7 +172,7 @@ int CmdCalendar::execute (std::string& output)
   if (getPendingDate == true)
   {
     // Find the oldest pending due date.
-    Datetime oldest (2037, 12, 31);
+    Datetime oldest (9999, 12, 31);
     for (auto& task : tasks)
     {
       auto status = task.getStatus ();
