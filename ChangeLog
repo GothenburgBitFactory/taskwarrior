@@ -28,6 +28,8 @@
            Thanks to arooni.
 - TW #2390 Regression: Relative dates should be implicitly anchored around 'now'
            Thanks to Dominik Russo.
+- TW #2392 Filtering for project-names containing hyphen and zero-leading number
+           Thanks to Nicola Chiapolini.
 
 ------ current release ---------------------------
 
