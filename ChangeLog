@@ -30,6 +30,8 @@
            Thanks to Dominik Russo.
 - TW #2392 Filtering for project-names containing hyphen and zero-leading number
            Thanks to Nicola Chiapolini.
+- TW #2393 Highlight due dates for waiting tasks in the calendar
+           Thanks to emkamau.
 
 ------ current release ---------------------------
 
