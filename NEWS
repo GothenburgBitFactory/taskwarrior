@@ -14,6 +14,8 @@ New Features in Taskwarrior 2.6.0
   - 64-bit numeric values (up to 9,223,372,036,854,775,807) are now supported.
   - Later/someday named datetime values now resolve to 9999-12-30 (instead of
     2038-01-18).
+  - Calendar now supports displaying due dates until year 9999.
+  - Calendar now displays waiting tasks with due dates on the calendar.
 
 
 New Commands in Taskwarrior 2.6.0
