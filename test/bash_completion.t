@@ -60,8 +60,10 @@ def prepare_tasksh(t):
         for line in fh:
             line = line.rstrip()
 
-            if line == "taskcommand='task rc.verbose:nothing rc.confirmation:no rc.hooks:off'":
-                line = "taskcommand='{0} rc.verbose:nothing rc.confirmation:no rc.hooks:off rc:{1}'".format(t.taskw, t.taskrc)
+            if line == "taskbin='task'":
+                line = "taskbin='{0}'".format(t.taskw)
+            if line == "taskrc=''":
+                line = "taskrc='rc:{0}'".format(t.taskrc)
 
             tasksh.append(line)
 
