@@ -329,15 +329,16 @@ void CLI2::add (const std::string& argument)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Capture a set of arguments, inserted immediately after the binary.
-void CLI2::add (const std::vector <std::string>& arguments)
+// Capture a set of arguments, inserted immediately after <offset> arguments
+// after the binary..
+void CLI2::add (const std::vector <std::string>& arguments, int offset /* = 0 */)
 {
-  std::vector <A2> replacement {_original_args[0]};
+  std::vector <A2> replacement {_original_args.begin(), _original_args.begin() + offset + 1};
 
   for (const auto& arg : arguments)
     replacement.push_back (A2 (arg, Lexer::Type::word));
 
-  for (unsigned int i = 1; i < _original_args.size (); ++i)
+  for (unsigned int i = 1 + offset; i < _original_args.size (); ++i)
     replacement.push_back (_original_args[i]);
 
   _original_args = replacement;
