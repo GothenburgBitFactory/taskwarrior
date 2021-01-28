@@ -575,15 +575,13 @@ void CLI2::addModifications (const std::string& arg)
     while (lex.token (lexeme, type))
       mods.push_back (lexeme);
 
-    // Determine at which argument index does the task command reside
+    // Determine at which argument index does the task modification command
+    // reside
     unsigned int cmdIndex = 0;
     for (; cmdIndex < _args.size(); ++cmdIndex)
     {
-      if (a._lextype == Lexer::Type::separator)
-        continue;
-
       // Command found, stop iterating.
-      if (a.hasTag ("CMD"))
+      if (_args[cmdIndex].hasTag ("CMD"))
         break;
     }
 
@@ -597,7 +595,7 @@ void CLI2::addModifications (const std::string& arg)
 // There are situations where a context filter is applied. This method
 // determines whether one applies, and if so, applies it. Disqualifiers include:
 //   - filter contains ID or UUID
-void CLI2::addContextFilter ()
+void CLI2::addContext (bool readable, bool writeable)
 {
   // Recursion block.
   if (_context_added)
@@ -623,18 +621,43 @@ void CLI2::addContextFilter ()
     }
   }
 
-  // Apply context
-  Context::getContext ().debug ("Applying context: " + contextName);
-  std::string contextFilter = Context::getContext ().config.get ("context." + contextName);
+  // Determine whether we're using readable or writeable context. Readable
+  // (filtering) takes precedence.
+  if (readable) {
+    Context::getContext ().debug ("Applying context: " + contextName);
+    std::string contextFilter = Context::getContext ().config.get ("context." + contextName + ".read");
 
-  if (contextFilter == "")
-    Context::getContext ().debug ("Context '" + contextName + "' not defined.");
-  else
-  {
-    _context_added = true;
-    addFilter (contextFilter);
-    if (Context::getContext ().verbose ("context"))
-      Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
+    if (contextFilter.empty ())
+    {
+      Context::getContext ().debug ("Specific readable context for '" + contextName + "' not defined. Falling back on generic.");
+      contextFilter = Context::getContext ().config.get ("context." + contextName);
+    }
+
+    if (! contextFilter.empty ())
+    {
+      _context_added = true;
+      addFilter (contextFilter);
+      if (Context::getContext ().verbose ("context"))
+        Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
+    }
+  }
+  else if (writeable) {
+    Context::getContext ().debug ("Applying context: " + contextName);
+    std::string contextMods = Context::getContext ().config.get ("context." + contextName + ".write");
+
+    if (contextMods.empty ())
+    {
+      Context::getContext ().debug ("Specific writeable context for '" + contextName + "' not defined. Falling back on generic.");
+      contextMods = Context::getContext ().config.get ("context." + contextName);
+    }
+
+    if (! contextMods.empty ())
+    {
+      _context_added = true;
+      addModifications (contextMods);
+      if (Context::getContext ().verbose ("context"))
+        Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
+    }
   }
 }
 
@@ -931,7 +954,7 @@ void CLI2::categorizeArgs ()
   std::string command = getCommand ();
   Command* cmd = Context::getContext ().commands[command];
   if (cmd && cmd->uses_context ())
-    addContextFilter ();
+    addContext (cmd->accepts_filter (), cmd->accepts_modifications ());
 
   bool changes = false;
   bool afterCommand = false;
