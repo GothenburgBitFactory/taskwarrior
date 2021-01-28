@@ -537,7 +537,8 @@ void CLI2::analyze ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Process raw string.
+// Process raw filter string.
+// Insert filter arguments (wrapped in parentheses) immediatelly after the binary.
 void CLI2::addFilter (const std::string& arg)
 {
   if (arg.length ())
@@ -554,6 +555,40 @@ void CLI2::addFilter (const std::string& arg)
 
     filter.push_back (")");
     add (filter);
+    analyze ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Process raw modification string.
+// Insert modification arguments immediatelly after the command (i.e. 'add')
+void CLI2::addModifications (const std::string& arg)
+{
+  if (arg.length ())
+  {
+    std::vector <std::string> mods;
+
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (arg);
+
+    while (lex.token (lexeme, type))
+      mods.push_back (lexeme);
+
+    // Determine at which argument index does the task command reside
+    unsigned int cmdIndex = 0;
+    for (; cmdIndex < _args.size(); ++cmdIndex)
+    {
+      if (a._lextype == Lexer::Type::separator)
+        continue;
+
+      // Command found, stop iterating.
+      if (a.hasTag ("CMD"))
+        break;
+    }
+
+    // Insert modifications after the command.
+    add (mods, cmdIndex);
     analyze ();
   }
 }

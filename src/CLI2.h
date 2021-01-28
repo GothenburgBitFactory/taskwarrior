@@ -73,6 +73,7 @@ public:
   void add (const std::vector <std::string>&, int offset = 0);
   void analyze ();
   void addFilter (const std::string& arg);
+  void addModifications (const std::string& arg);
   void addContextFilter ();
   void prepareFilter ();
   const std::vector <std::string> getWords ();
