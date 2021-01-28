@@ -564,7 +564,7 @@ void CLI2::addFilter (const std::string& arg)
 void CLI2::addContextFilter ()
 {
   // Recursion block.
-  if (_context_filter_added)
+  if (_context_added)
     return;
 
   // Detect if any context is set, and bail out if not
@@ -595,7 +595,7 @@ void CLI2::addContextFilter ()
     Context::getContext ().debug ("Context '" + contextName + "' not defined.");
   else
   {
-    _context_filter_added = true;
+    _context_added = true;
     addFilter (contextFilter);
     if (Context::getContext ().verbose ("context"))
       Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
@@ -610,7 +610,7 @@ void CLI2::prepareFilter ()
   // Clear and re-populate.
   _id_ranges.clear ();
   _uuid_list.clear ();
-  _context_filter_added = false;
+  _context_added = false;
 
   // Remove all the syntactic sugar for FILTERs.
   lexFilterArgs ();
