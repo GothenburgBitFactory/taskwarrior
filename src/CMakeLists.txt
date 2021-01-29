@@ -6,7 +6,7 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
                      ${TASK_INCLUDE_DIRS})
 
-add_library (task CLI2.cpp CLI2.h
+add_library (task STATIC CLI2.cpp CLI2.h
                   Context.cpp Context.h
                   DOM.cpp DOM.h
                   Eval.cpp Eval.h
@@ -28,7 +28,7 @@ add_library (task CLI2.cpp CLI2.h
                   sort.cpp
                   util.cpp util.h)
 
-add_library (libshared libshared/src/Color.cpp         libshared/src/Color.h
+add_library (libshared STATIC libshared/src/Color.cpp         libshared/src/Color.h
                        libshared/src/Configuration.cpp libshared/src/Configuration.h
                        libshared/src/Datetime.cpp      libshared/src/Datetime.h
                        libshared/src/Duration.cpp      libshared/src/Duration.h
