@@ -58,7 +58,12 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
   std::string domRef;
   Lexer::Type type;
   if (lexer.token (domRef, type) &&
-      type == Lexer::Type::dom)
+      type == Lexer::Type::dom &&
+      // Ensure 'value' contains only the DOM reference and no other tokens
+      // The lexer.token returns false for end-of-string.
+      // This works as long as all the DOM references we should support consist
+      // only of a single token.
+      lexer.token (domRef, type) == false)
   {
     Eval e;
     e.addSource (domSource);
