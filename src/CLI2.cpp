@@ -1270,7 +1270,9 @@ void CLI2::desugarFilterAttributes ()
         A2 op ("", Lexer::Type::op);
         op.tag ("FILTER");
 
-        A2 rhs ("", values[0]._lextype);
+        // Attribute types that do not support evaluation should be interpreted
+        // as strings (currently this means that string attributes are not evaluated)
+        A2 rhs ("", evalSupported ? values[0]._lextype: Lexer::Type::string);
         rhs.tag ("FILTER");
 
         // Special case for '<name>:<value>'.
@@ -1364,7 +1366,7 @@ void CLI2::desugarFilterAttributes ()
 
         // Do not modify this construct without full understanding.
         // Getting this wrong breaks a whole lot of filtering tests.
-        if (values.size () > 1 || evalSupported)
+        if (evalSupported)
         {
           for (auto& v : values)
             reconstructed.push_back (v);
