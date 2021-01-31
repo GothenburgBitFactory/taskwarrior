@@ -7,7 +7,14 @@ function bashtap_on_error {
     # A command in the parent script failed, interpret this as a test failure.
     # $bashtap_line contains the last executed line, or an error.
     echo -n "$bashtap_output"
-    echo "not ok 1 - ${bashtap_line}"
+
+    # Determine if this failure was expected
+    if [[ ! -z "$EXPFAIL" ]]
+    then
+        todo_suffix=" # TODO"
+    fi
+
+    echo "not ok 1 - ${bashtap_line}${todo_suffix}"
     bashtap_clean_tmpdir
 }
 
