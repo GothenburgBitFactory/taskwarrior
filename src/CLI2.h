@@ -99,6 +99,7 @@ private:
   void findUUIDs ();
   void insertIDExpr ();
   void lexFilterArgs ();
+  bool isEmptyParenExpression (std::vector<A2>::iterator it, bool forward = true) const;
   void desugarFilterPlainArgs ();
   void insertJunctions ();
   void defaultCommand ();
