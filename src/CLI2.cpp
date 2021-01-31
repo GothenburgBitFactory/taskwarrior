@@ -1941,6 +1941,40 @@ void CLI2::desugarFilterPlainArgs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Detects if the bracket at iterator it is a start or end of an empty paren expression
+// Examples:
+// ( status = pending ) ( )
+//                      ^
+//              it -----|         => true
+//
+// ( status = pending ) ( project = Home )
+//                      ^
+//              it -----|         => false
+bool CLI2::isEmptyParenExpression (std::vector<A2>::iterator it, bool forward /* = true */) const
+{
+  int open = 0;
+  int closed = 0;
+
+  for (auto a = it; a != (forward ? _args.end (): _args.begin()); (forward ? ++a: --a))
+  {
+    if (a->attribute("raw") == "(")
+      open++;
+    else if (a->attribute("raw") == ")")
+      closed++;
+    else
+      // Encountering a non-paren token means there is something between parenthees
+      return false;
+
+    // Getting balanced parentheses means we have an empty paren expression
+    if (open == closed && open != 0)
+      return true;
+  }
+
+  // Should not end here.
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
 // "and" operator inserted between them.
 //
@@ -1966,10 +2000,18 @@ void CLI2::insertJunctions ()
       // Insert AND between terms.
       else if (a != prev)
       {
-        if ((prev->_lextype != Lexer::Type::op && a->attribute ("raw") == "(")    ||
-            (prev->_lextype != Lexer::Type::op && a->_lextype != Lexer::Type::op) ||
-            (prev->attribute ("raw") == ")"    && a->_lextype != Lexer::Type::op) ||
-            (prev->attribute ("raw") == ")"    && a->attribute ("raw") == "("))
+        if ((prev->_lextype != Lexer::Type::op &&
+             a->attribute ("raw") == "("       &&
+             ! isEmptyParenExpression(a, true)    ) ||
+            (prev->attribute ("raw") == ")"    &&
+             a->_lextype != Lexer::Type::op    &&
+             ! isEmptyParenExpression(prev, false)) ||
+            (prev->attribute ("raw") == ")"    &&
+             a->attribute ("raw") == "("       &&
+             ! isEmptyParenExpression(a, true) &&
+             ! isEmptyParenExpression(prev, false)) ||
+            (prev->_lextype != Lexer::Type::op &&
+             a->_lextype != Lexer::Type::op))
         {
           A2 opOr ("and", Lexer::Type::op);
           opOr.tag ("FILTER");
