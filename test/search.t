@@ -258,7 +258,6 @@ class TestBug1479(TestCase):
         self.assertNotIn("P1", out)
         self.assertIn("P2", out)
 
-    @unittest.expectedFailure
     def test_description_with_spaces_alternative_syntax(self):
         """1479: Alternative syntax"""
         self.t("add project:P1 one")
