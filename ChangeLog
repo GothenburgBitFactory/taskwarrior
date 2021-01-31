@@ -2,12 +2,18 @@
 
 - TW #1654 "Due" parsing behaviour seems inconsistent
            Thanks to Max Rossmannek.
+- TW #1896 Parser cannot handle empty parentheses
+           Thanks to Tomas Babej.
+- TW #1908 Cannot create task with explicit description 'start ....'
+           Thanks to Matt Chun-Lum.
 - TW #2004 "shell" should not be expand to "exec tasksh"
            Thanks to Arvedui
 - TW #2007 Compute number of current tasks correctly
            Thanks to Janik Rabe
 - TW #2017 Support 64-bit datetime values
            Thanks to Evgeniy Vasilev
+- TW #2257 UDA string fields can't start with certain keywords
+           Thanks to Michael Russell.
 - TW #2060 Review timestamp is displayed as unix time, not formatted
            Thanks to JavaZauber
 - TW #2093 wrong order under projects command
@@ -23,6 +29,10 @@
            Thanks to Adam Monsen.
 - TW #2373 Year 2038 Problem
            Thanks to Stephan Rieche.
+- TW #2386 Filtering project:someday broken
+           Thanks to FRebbel.
+- TW #2388 Filtering for attribute values with spaces is broken
+           Thanks to angelus2014.
 - TW #2389 For certain terminal widths, annotations with utf-8 chars can lead
            task to hang
            Thanks to arooni.
