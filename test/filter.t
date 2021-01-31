@@ -1094,6 +1094,7 @@ class TestBug1915(TestCase):
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
+    @unittest.expectedFailure
     def test_complex_and_or_query_variant_eight(self):
         """1915: Make sure parser handles complex and-or queries correctly (8)"""
         code, out, err = self.t("rc.verbose:nothing status:pending and \\(project:A or project:B\\) all")
