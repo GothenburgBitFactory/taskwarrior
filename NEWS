@@ -16,6 +16,7 @@ New Features in Taskwarrior 2.6.0
     2038-01-18).
   - Calendar now supports displaying due dates until year 9999.
   - Calendar now displays waiting tasks with due dates on the calendar.
+  - A large portion of currently known parser-related issues was fixed.
 
 
 New Commands in Taskwarrior 2.6.0
