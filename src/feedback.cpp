@@ -48,7 +48,7 @@ std::string taskIdentifiers (const std::vector <Task>& tasks)
 {
   std::vector <std::string> identifiers;
   identifiers.reserve(tasks.size());
-  for (auto task: tasks)
+  for (const auto& task: tasks)
     identifiers.push_back (task.identifier (true));
 
   return join (", ", identifiers);
