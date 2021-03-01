@@ -54,7 +54,7 @@ public:
                     date, duration };
 
   Lexer (const std::string&);
-  ~Lexer ();
+  ~Lexer () = default;
   bool token (std::string&, Lexer::Type&);
   static std::vector <std::string> split (const std::string&);
   static std::string typeToString (Lexer::Type);
