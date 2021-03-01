@@ -236,6 +236,7 @@ int CmdUUIDs::execute (std::string& output)
   filter.subset (filtered);
 
   std::vector <std::string> uuids;
+  uuids.reserve(filtered.size());
   for (auto& task : filtered)
     uuids.push_back (task.get ("uuid"));
 
@@ -273,6 +274,7 @@ int CmdCompletionUuids::execute (std::string& output)
   filter.subset (filtered);
 
   std::vector <std::string> uuids;
+  uuids.reserve(filtered.size());
   for (auto& task : filtered)
     uuids.push_back (task.get ("uuid"));
 

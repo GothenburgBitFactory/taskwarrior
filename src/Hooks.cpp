@@ -196,6 +196,7 @@ void Hooks::onExit () const
 
     // Convert to a vector of strings.
     std::vector <std::string> input;
+    input.reserve(tasks.size());
     for (auto& t : tasks)
       input.push_back (t.composeJSON ());
 
