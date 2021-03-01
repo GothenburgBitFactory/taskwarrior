@@ -87,6 +87,7 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
       auto blocking = dependencyGetBlocking (task);
 
       std::vector <int> blocking_ids;
+      blocking_ids.reserve(blocking.size());
       for (auto& i : blocking)
         blocking_ids.push_back (i.id);
 
@@ -129,6 +130,7 @@ void ColumnDepends::render (
       auto blocking = dependencyGetBlocking (task);
 
       std::vector <int> blocking_ids;
+      blocking_ids.reserve(blocking.size());
       for (const auto& t : blocking)
         blocking_ids.push_back (t.id);
 
