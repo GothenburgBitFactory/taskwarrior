@@ -500,7 +500,7 @@ int CmdInfo::execute (std::string& output)
           if (end != std::string::npos)
           {
             auto uda = var.first.substr (12, end - 12);
-            auto dot = uda.find (".");
+            auto dot = uda.find ('.');
             if (dot == std::string::npos)
             {
               // urgency.uda.<name>.coefficient
