@@ -180,9 +180,9 @@ TODO Task::decode
 
   // [one:two three:four]
   good = true;
-  try {task = Task ("[one:\"two\" three:\"four\"]");}
+  try {task = Task (R"([one:"two" three:"four"])");}
   catch (const std::string& e){test.diag (e); good = false;}
-  test.ok (good, "Task::Task ('[one:\"two\" three:\"four\"]')");
+  test.ok (good, R"(Task::Task ('[one:"two" three:"four"]'))");
   test.is (task.get ("one"), "two", "one=two");
   test.is (task.get ("three"), "four", "three=four");
 
@@ -197,12 +197,12 @@ TODO Task::decode
 
   // Task::get_int
   task.set ("one", 1);
-  test.is (task.composeF4 (), "[name:\"value\" one:\"1\"]", "Task::set");
+  test.is (task.composeF4 (), R"([name:"value" one:"1"])", "Task::set");
   test.is (task.get_int ("one"), 1, "Task::get_int");
 
   // Task::get_ulong
   task.set ("two", "4294967295");
-  test.is (task.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]", "Task::set");
+  test.is (task.composeF4 (), R"([name:"value" one:"1" two:"4294967295"])", "Task::set");
   test.is ((size_t)task.get_ulong ("two"), (size_t)4294967295UL, "Task::get_ulong");
 
   // Task::remove
@@ -226,7 +226,7 @@ TODO Task::decode
   test.ok (good, "Task::Task ('{}')");
 
   good = true;
-  try {Task t5 ("{\"uuid\":\"00000000-0000-0000-000000000001\",\"description\":\"foo\",\"entry\":\"1234567890\"}");}
+  try {Task t5 (R"({"uuid":"00000000-0000-0000-000000000001","description":"foo","entry":"1234567890"})");}
   catch (const std::string& e){test.diag (e); good = false;}
   test.ok (good, "Task::Task ('{<minimal>}')");
 
@@ -235,20 +235,20 @@ TODO Task::decode
   t6.set ("entry", "20130602T224000Z");
   t6.set ("description", "DESC");
   t6.addTag ("tag1");
-  test.is (t6.composeF4 (), "[description:\"DESC\" entry:\"20130602T224000Z\" tags:\"tag1\"]", "F4 good");
-  test.is (t6.composeJSON (), "{\"description\":\"DESC\",\"entry\":\"20130602T224000Z\",\"tags\":[\"tag1\"]}", "JSON good");
+  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1"])", "F4 good");
+  test.is (t6.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1"]})", "JSON good");
 
   t6.addTag ("tag2");
-  test.is (t6.composeF4 (), "[description:\"DESC\" entry:\"20130602T224000Z\" tags:\"tag1,tag2\"]", "F4 good");
-  test.is (t6.composeJSON (), "{\"description\":\"DESC\",\"entry\":\"20130602T224000Z\",\"tags\":[\"tag1\",\"tag2\"]}", "JSON good");
+  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1,tag2"])", "F4 good");
+  test.is (t6.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})", "JSON good");
 
   good = true;
   Task t7;
-  try {t7 = Task ("{\"description\":\"DESC\",\"entry\":\"20130602T224000Z\",\"tags\":[\"tag1\",\"tag2\"]}");}
+  try {t7 = Task (R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})");}
   catch (const std::string& e){test.diag (e); good = false;}
   test.ok (good, "Task::Task ('{two tags}')");
-  test.is (t7.composeF4 (), "[description:\"DESC\" entry:\"1370212800\" tags:\"tag1,tag2\"]", "F4 good");
-  test.is (t7.composeJSON (), "{\"description\":\"DESC\",\"entry\":\"20130602T224000Z\",\"tags\":[\"tag1\",\"tag2\"]}", "JSON good");
+  test.is (t7.composeF4 (), R"([description:"DESC" entry:"1370212800" tags:"tag1,tag2"])", "F4 good");
+  test.is (t7.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})", "JSON good");
 
   return 0;
 }

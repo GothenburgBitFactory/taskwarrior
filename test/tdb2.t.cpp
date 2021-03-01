@@ -69,7 +69,7 @@ int main (int, char**)
     t.is ((int) backlog.size (),   0, "TDB2 Read empty backlog");
 
     // Add a task.
-    Task task ("[description:\"description\" name:\"value\"]");
+    Task task (R"([description:"description" name:"value"])");
     context.tdb2.add (task);
 
     pending   = context.tdb2.pending.get_tasks ();

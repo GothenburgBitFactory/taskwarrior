@@ -1010,9 +1010,9 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
           out << ',';
 
         Datetime d (i.first.substr (11));
-        out << "{\"entry\":\""
+        out << R"({"entry":")"
             << d.toISO ()
-            << "\",\"description\":\""
+            << R"(","description":")"
             << json::encode (i.second)
             << "\"}";
 
