@@ -50,11 +50,6 @@ Lexer::Lexer (const std::string& text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Lexer::~Lexer ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // When a Lexer object is constructed with a string, this method walks through
 // the stream of low-level tokens.
 bool Lexer::token (std::string& token, Lexer::Type& type)

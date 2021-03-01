@@ -53,7 +53,7 @@ public:
   };
 
   Command ();
-  virtual ~Command ();
+  virtual ~Command () = default;
 
   static void factory (std::map <std::string, Command*>&);
 

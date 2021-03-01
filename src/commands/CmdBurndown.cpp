@@ -124,7 +124,7 @@ public:
   Chart (char);
   Chart (const Chart&);              // Unimplemented
   Chart& operator= (const Chart&);   // Unimplemented
-  ~Chart ();
+  ~Chart () = default;
 
   void scan (std::vector <Task>&);
   void scanForPeak (std::vector <Task>&);
@@ -182,11 +182,6 @@ Chart::Chart (char type)
   _estimated_bars = (_width - 1 - 14) / 3;
 
   _period = type;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Chart::~Chart ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
