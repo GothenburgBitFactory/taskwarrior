@@ -992,7 +992,7 @@ void TDB2::revert_backlog (
   const std::string& current,
   const std::string& prior)
 {
-  std::string uuid_att = "\"uuid\":\"" + uuid + '"';
+  std::string uuid_att = R"("uuid":")" + uuid + '"';
 
   bool found = false;
   for (auto task = b.rbegin (); task != b.rend (); ++task)
