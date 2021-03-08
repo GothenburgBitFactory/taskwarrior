@@ -297,6 +297,7 @@ control specific occasions when output is generated. This list may contain:
     project    Feedback about project status changes
     sync       Feedback about sync
     filter     Shows the filter used in the command
+    context    Show the current context. Displayed in footnote.
     unwait     Notification when a task leaves the 'waiting' state
     override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
