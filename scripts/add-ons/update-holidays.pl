@@ -99,7 +99,7 @@ Schwyz:
                      --region Schwyz \
                      --file holidays.de-CH.rc
 
-See http://holidata.net for details of supported locales and regions.
+See https://holidata.net for details of supported locales and regions.
 
 It is recommended that you regularly update your holiday files.  Not only does
 this keep your holiday data current, but allows for corrected data to be used.

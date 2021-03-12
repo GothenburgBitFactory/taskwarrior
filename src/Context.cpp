@@ -59,7 +59,7 @@
 // This string is parsed and used as default values for configuration.
 std::string configurationDefaults =
   "# Taskwarrior program configuration file.\n"
-  "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-color',\n"
+  "# For more documentation, see https://taskwarrior.org or try 'man task', 'man task-color',\n"
   "# 'man task-sync' or 'man taskrc'\n"
   "\n"
   "# Here is an example of entries that use the default, override and blank values\n"

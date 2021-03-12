@@ -68,7 +68,7 @@ int CmdVersion::execute (std::string& output)
   Table link;
   link.width (width);
   link.add ("");
-  link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org");
+  link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at https://taskwarrior.org");
 
   Color bold;
   if (Context::getContext ().color ())

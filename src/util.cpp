@@ -130,7 +130,7 @@ int confirm4 (const std::string& question)
 // Also, uuid_unparse_lower is not needed on FreeBSD, because the string
 // representation is always lowercase anyway.
 // For the implementation details, refer to
-// http://svnweb.freebsd.org/base/head/sys/kern/kern_uuid.c
+// https://svnweb.freebsd.org/base/head/sys/kern/kern_uuid.c
 #if defined(FREEBSD) || defined(OPENBSD)
 const std::string uuid ()
 {

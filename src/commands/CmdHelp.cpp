@@ -62,7 +62,7 @@ int CmdHelp::execute (std::string& output)
            + composeUsage ()
            + '\n'
            + "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man "
-             "task-color', 'man task-sync' or at http://taskwarrior.org\n"
+             "task-color', 'man task-sync' or at https://taskwarrior.org\n"
              "\n"
              "The general form of commands is:\n"
              "  task [<filter>] <command> [<mods>]\n"

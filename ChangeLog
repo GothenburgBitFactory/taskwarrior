@@ -1350,7 +1350,7 @@ Bugs
 - All holiday files have been renamed to include a locale, rather than just a
   country code.  For example: holidays.en-US.rc.
 - Now ships with an add-on script, update-holidays.pl, which contacts
-  http://holidata.net, and brings the installed holiday files up to date.
+  https://holidata.net, and brings the installed holiday files up to date.
 - Extension system now controlled by the 'extensions' configuration variable.
 - HTML export in the form of an external scripts export-html.pl.
 - Two additional solarized theme files, solarized-dark-256.theme and

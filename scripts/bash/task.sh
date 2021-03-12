@@ -46,7 +46,7 @@
 #
 #    *) Go to the project's website at
 #
-#       http://taskwarrior.org
+#       https://taskwarrior.org
 #
 ################################################################################
 #the following variable is substituted for by ../../test/bash_completion.t

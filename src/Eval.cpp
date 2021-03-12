@@ -697,7 +697,7 @@ bool Eval::parsePrimitive (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Dijkstra Shunting Algorithm.
-// http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+// https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 //
 //   While there are tokens to be read:
 //     Read a token.
