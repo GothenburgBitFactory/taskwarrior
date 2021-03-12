@@ -1,4 +1,4 @@
-# Taskwarrior completions for the Fish shell <http://fishshell.org>
+# Taskwarrior completions for the Fish shell <https://fishshell.com>
 #
 # taskwarrior - a command line task list manager.
 #
