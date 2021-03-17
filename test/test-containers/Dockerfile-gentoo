@@ -1,0 +1,12 @@
+FROM gentoo/portage:latest as portage
+FROM gentoo/stage3:x86
+COPY --from=portage /var/db/repos/gentoo /var/db/repos/gentoo
+
+RUN emerge -qv sys-libs/readline:0 net-libs/gnutls:0= sys-apps/util-linux dev-util/cmake sys-devel/make dev-vcs/git sys-libs/libfaketime
+
+# Setup language environment
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+CMD ["/bin/bash"]

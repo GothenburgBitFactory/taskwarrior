@@ -1,0 +1,10 @@
+FROM opensuse/leap:15
+
+RUN zypper install --no-confirm python awk coreutils git gcc gcc-c++ cmake make libgnutls-devel libuuid-devel libfaketime
+
+# Setup language environment
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+CMD ["/bin/bash"]

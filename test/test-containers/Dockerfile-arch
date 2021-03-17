@@ -1,0 +1,12 @@
+FROM archlinux:base
+
+RUN pacman -Sy --noconfirm archlinux-keyring &\
+    pacman -Syyu --noconfirm &\
+    pacman -S --noconfirm gnutls util-linux bash-completion cmake python git libfaketime &\
+    pacman -S --noconfirm make gcc
+
+# Setup language environment
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+CMD ["/bin/bash"]
