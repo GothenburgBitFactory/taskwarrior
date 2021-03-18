@@ -75,7 +75,7 @@ class TestVersion(TestCase):
         expected = "task {0}".format(self.slurp())
         self.assertIn(expected, out)
         self.assertIn("MIT license", out)
-        self.assertIn("http://taskwarrior.org", out)
+        self.assertIn("https://taskwarrior.org", out)
 
     def slurp_git(self):
         git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")
