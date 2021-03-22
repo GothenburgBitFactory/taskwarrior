@@ -165,11 +165,18 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
           ! confirm (format ("The filter '{1}' matches 0 pending tasks. Do you wish to continue?", value)))
         throw std::string ("Context definition aborted.");
 
-    // Set context definition config variable
-    bool success = CmdConfig::setConfigVariable (name, value, confirmation);
+    // TODO: Validate the context as valid for writing and prompt for alternative if invald
 
-    if (!success)
-      throw format ("Context '{1}' not defined.", words[1]);
+    // Set context definition config variable
+    bool read_success = CmdConfig::setConfigVariable (name + ".read", value, confirmation);
+    bool write_success = CmdConfig::setConfigVariable (name + ".write", value, confirmation);
+
+    if (!read_success and !write_success)
+      throw format ("Context '{1}' not defined (setting read and write failed).", words[1]);
+    else if (!read_success)
+      throw format ("Context '{1}' not defined (setting read failed).", words[1]);
+    else if (!write_success)
+      throw format ("Context '{1}' not defined (setting write failed).", words[1]);
 
     out << format ("Context '{1}' defined. Use 'task context {1}' to activate.\n", words[1]);
   }
