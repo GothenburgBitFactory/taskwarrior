@@ -1,4 +1,5 @@
 #![deny(clippy::all)]
+#![allow(clippy::unnecessary_wraps)] // for Rust 1.50, https://github.com/rust-lang/rust-clippy/pull/6765
 /*!
 This crate implements the command-line interface to TaskChampion.
 
