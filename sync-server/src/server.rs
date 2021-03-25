@@ -132,13 +132,7 @@ mod test {
         };
 
         assert_eq!(
-            add_version(
-                txn,
-                client_key,
-                client,
-                parent_version_id,
-                history_segment.clone()
-            )?,
+            add_version(txn, client_key, client, parent_version_id, history_segment)?,
             AddVersionResult::ExpectedParentVersion(existing_parent_version_id)
         );
 
