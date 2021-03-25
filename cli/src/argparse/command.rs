@@ -32,10 +32,7 @@ impl Command {
     pub fn from_argv(argv: &[&str]) -> anyhow::Result<Command> {
         match Command::parse(argv) {
             Ok((&[], cmd)) => Ok(cmd),
-            Ok((trailing, _)) => bail!(
-                "command line has trailing arguments: {:?}",
-                trailing
-            ),
+            Ok((trailing, _)) => bail!("command line has trailing arguments: {:?}", trailing),
             Err(Err::Incomplete(_)) => unreachable!(),
             Err(Err::Error(e)) => bail!("command line not recognized: {:?}", e),
             Err(Err::Failure(e)) => bail!("command line not recognized: {:?}", e),

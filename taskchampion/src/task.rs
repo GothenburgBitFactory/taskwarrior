@@ -330,7 +330,11 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
-    fn set_string<S: Into<String>>(&mut self, property: S, value: Option<String>) -> anyhow::Result<()> {
+    fn set_string<S: Into<String>>(
+        &mut self,
+        property: S,
+        value: Option<String>,
+    ) -> anyhow::Result<()> {
         let property = property.into();
         self.lastmod()?;
         self.replica
@@ -346,7 +350,11 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
-    fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> anyhow::Result<()> {
+    fn set_timestamp(
+        &mut self,
+        property: &str,
+        value: Option<DateTime<Utc>>,
+    ) -> anyhow::Result<()> {
         self.lastmod()?;
         if let Some(value) = value {
             let ts = format!("{}", value.timestamp());

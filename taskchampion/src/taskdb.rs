@@ -107,7 +107,11 @@ impl TaskDB {
     /// renumbers the existing working-set tasks to eliminate gaps, and also adds any tasks that
     /// are not already in the working set but should be.  The rebuild occurs in a single
     /// trasnsaction against the storage backend.
-    pub fn rebuild_working_set<F>(&mut self, in_working_set: F, renumber: bool) -> anyhow::Result<()>
+    pub fn rebuild_working_set<F>(
+        &mut self,
+        in_working_set: F,
+        renumber: bool,
+    ) -> anyhow::Result<()>
     where
         F: Fn(&TaskMap) -> bool,
     {
@@ -246,9 +250,7 @@ impl TaskDB {
                     );
                     if let Some(requested) = requested_parent_version_id {
                         if parent_version_id == requested {
-                            anyhow::bail!(
-                                "Server's task history has diverged from this replica"
-                            );
+                            anyhow::bail!("Server's task history has diverged from this replica");
                         }
                     }
                     requested_parent_version_id = Some(parent_version_id);

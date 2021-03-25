@@ -1,7 +1,7 @@
 //! This module contains the data structures used to define reports.
 
 use crate::argparse::{Condition, Filter};
-use anyhow::{bail};
+use anyhow::bail;
 
 /// A report specifies a filter as well as a sort order and information about which
 /// task attributes to display
@@ -85,7 +85,9 @@ impl Report {
                 .map_err(|e| anyhow::anyhow!(".sort: {}", e))?
                 .drain(..)
                 .enumerate()
-                .map(|(i, v)| Sort::from_config(v).map_err(|e| anyhow::anyhow!(".sort[{}]{}", i, e)))
+                .map(|(i, v)| {
+                    Sort::from_config(v).map_err(|e| anyhow::anyhow!(".sort[{}]{}", i, e))
+                })
                 .collect::<anyhow::Result<Vec<_>>>()?
         } else {
             vec![]
@@ -98,7 +100,9 @@ impl Report {
             .map_err(|e| anyhow::anyhow!(".columns: {}", e))?
             .drain(..)
             .enumerate()
-            .map(|(i, v)| Column::from_config(v).map_err(|e| anyhow::anyhow!(".columns[{}]{}", i, e)))
+            .map(|(i, v)| {
+                Column::from_config(v).map_err(|e| anyhow::anyhow!(".columns[{}]{}", i, e))
+            })
             .collect::<anyhow::Result<Vec<_>>>()?;
 
         let conditions = if let Some(conditions) = map.remove("filter") {

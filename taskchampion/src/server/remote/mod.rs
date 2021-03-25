@@ -83,7 +83,10 @@ impl Server for RemoteServer {
         }
     }
 
-    fn get_child_version(&mut self, parent_version_id: VersionId) -> anyhow::Result<GetVersionResult> {
+    fn get_child_version(
+        &mut self,
+        parent_version_id: VersionId,
+    ) -> anyhow::Result<GetVersionResult> {
         let url = format!(
             "{}/client/get-child-version/{}",
             self.origin, parent_version_id

@@ -62,7 +62,9 @@ impl TryFrom<ureq::Response> for HistoryCiphertext {
             reader.read_to_end(&mut bytes)?;
             Ok(Self(bytes))
         } else {
-            Err(anyhow::anyhow!("Response did not have expected content-type"))
+            Err(anyhow::anyhow!(
+                "Response did not have expected content-type"
+            ))
         }
     }
 }

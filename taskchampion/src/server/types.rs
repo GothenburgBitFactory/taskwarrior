@@ -43,5 +43,8 @@ pub trait Server {
     ) -> anyhow::Result<AddVersionResult>;
 
     /// Get the version with the given parent VersionId
-    fn get_child_version(&mut self, parent_version_id: VersionId) -> anyhow::Result<GetVersionResult>;
+    fn get_child_version(
+        &mut self,
+        parent_version_id: VersionId,
+    ) -> anyhow::Result<GetVersionResult>;
 }

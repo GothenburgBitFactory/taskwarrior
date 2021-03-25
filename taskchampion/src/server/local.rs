@@ -132,7 +132,10 @@ impl<'t> Server for LocalServer<'t> {
     }
 
     /// Get a vector of all versions after `since_version`
-    fn get_child_version(&mut self, parent_version_id: VersionId) -> anyhow::Result<GetVersionResult> {
+    fn get_child_version(
+        &mut self,
+        parent_version_id: VersionId,
+    ) -> anyhow::Result<GetVersionResult> {
         if let Some(version) = self.get_version_by_parent_version_id(parent_version_id)? {
             Ok(GetVersionResult::Version {
                 version_id: version.version_id,
