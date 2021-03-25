@@ -29,7 +29,7 @@ pub(crate) struct Column {
 #[derive(Clone, Debug, PartialEq)]
 #[allow(dead_code)]
 pub(crate) enum Property {
-    /// The task's ID, either working-set index or Uuid if no in the working set
+    /// The task's ID, either working-set index or Uuid if not in the working set
     Id,
 
     /// The task's full UUID
