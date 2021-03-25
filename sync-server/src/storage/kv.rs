@@ -1,5 +1,4 @@
 use super::{Client, Storage, StorageTxn, Uuid, Version};
-use failure::Fallible;
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Serde, Store, ValueBuf};
 use std::path::Path;
@@ -29,7 +28,7 @@ pub(crate) struct KVStorage<'t> {
 }
 
 impl<'t> KVStorage<'t> {
-    pub fn new<P: AsRef<Path>>(directory: P) -> Fallible<KVStorage<'t>> {
+    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<KVStorage<'t>> {
         let mut config = Config::default(directory);
         config.bucket("clients", None);
         config.bucket("versions", None);
@@ -50,7 +49,7 @@ impl<'t> KVStorage<'t> {
 }
 
 impl<'t> Storage for KVStorage<'t> {
-    fn txn<'a>(&'a self) -> Fallible<Box<dyn StorageTxn + 'a>> {
+    fn txn<'a>(&'a self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(Txn {
             storage: self,
             txn: Some(self.store.write_txn()?),
@@ -82,7 +81,7 @@ impl<'t> Txn<'t> {
 }
 
 impl<'t> StorageTxn for Txn<'t> {
-    fn get_client(&mut self, client_key: Uuid) -> Fallible<Option<Client>> {
+    fn get_client(&mut self, client_key: Uuid) -> anyhow::Result<Option<Client>> {
         let key = client_db_key(client_key);
         let bucket = self.clients_bucket();
         let kvtxn = self.kvtxn();
@@ -97,7 +96,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(Some(client))
     }
 
-    fn new_client(&mut self, client_key: Uuid, latest_version_id: Uuid) -> Fallible<()> {
+    fn new_client(&mut self, client_key: Uuid, latest_version_id: Uuid) -> anyhow::Result<()> {
         let key = client_db_key(client_key);
         let bucket = self.clients_bucket();
         let kvtxn = self.kvtxn();
@@ -110,7 +109,7 @@ impl<'t> StorageTxn for Txn<'t> {
         &mut self,
         client_key: Uuid,
         latest_version_id: Uuid,
-    ) -> Fallible<()> {
+    ) -> anyhow::Result<()> {
         // implementation is the same as new_client..
         self.new_client(client_key, latest_version_id)
     }
@@ -119,7 +118,7 @@ impl<'t> StorageTxn for Txn<'t> {
         &mut self,
         client_key: Uuid,
         parent_version_id: Uuid,
-    ) -> Fallible<Option<Version>> {
+    ) -> anyhow::Result<Option<Version>> {
         let key = version_db_key(client_key, parent_version_id);
         let bucket = self.versions_bucket();
         let kvtxn = self.kvtxn();
@@ -139,7 +138,7 @@ impl<'t> StorageTxn for Txn<'t> {
         version_id: Uuid,
         parent_version_id: Uuid,
         history_segment: Vec<u8>,
-    ) -> Fallible<()> {
+    ) -> anyhow::Result<()> {
         let key = version_db_key(client_key, parent_version_id);
         let bucket = self.versions_bucket();
         let kvtxn = self.kvtxn();
@@ -152,7 +151,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn commit(&mut self) -> Fallible<()> {
+    fn commit(&mut self) -> anyhow::Result<()> {
         if let Some(kvtxn) = self.txn.take() {
             kvtxn.commit()?;
         } else {
@@ -165,11 +164,10 @@ impl<'t> StorageTxn for Txn<'t> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use failure::Fallible;
     use tempdir::TempDir;
 
     #[test]
-    fn test_get_client_empty() -> Fallible<()> {
+    fn test_get_client_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let storage = KVStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
@@ -179,7 +177,7 @@ mod test {
     }
 
     #[test]
-    fn test_client_storage() -> Fallible<()> {
+    fn test_client_storage() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let storage = KVStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
@@ -201,7 +199,7 @@ mod test {
     }
 
     #[test]
-    fn test_gvbp_empty() -> Fallible<()> {
+    fn test_gvbp_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let storage = KVStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
@@ -211,7 +209,7 @@ mod test {
     }
 
     #[test]
-    fn test_add_version_and_gvbp() -> Fallible<()> {
+    fn test_add_version_and_gvbp() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let storage = KVStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;

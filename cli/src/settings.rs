@@ -1,5 +1,4 @@
 use config::{Config, Environment, File, FileFormat, FileSourceFile, FileSourceString};
-use failure::Fallible;
 use std::env;
 use std::path::PathBuf;
 
@@ -34,7 +33,7 @@ reports:
 "#;
 
 /// Get the default settings for this application
-pub(crate) fn default_settings() -> Fallible<Config> {
+pub(crate) fn default_settings() -> anyhow::Result<Config> {
     let mut settings = Config::default();
 
     // set up defaults
@@ -62,7 +61,7 @@ pub(crate) fn default_settings() -> Fallible<Config> {
     Ok(settings)
 }
 
-pub(crate) fn read_settings() -> Fallible<Config> {
+pub(crate) fn read_settings() -> anyhow::Result<Config> {
     let mut settings = default_settings()?;
 
     // load either from the path in TASKCHAMPION_CONFIG, or from CONFIG_DIR/taskchampion

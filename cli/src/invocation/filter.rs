@@ -1,5 +1,4 @@
 use crate::argparse::{Condition, Filter, TaskId};
-use failure::Fallible;
 use std::collections::HashSet;
 use std::convert::TryInto;
 use taskchampion::{Replica, Status, Tag, Task, Uuid, WorkingSet};
@@ -108,7 +107,7 @@ fn universe_for_filter(filter: &Filter) -> Universe {
 pub(super) fn filtered_tasks(
     replica: &mut Replica,
     filter: &Filter,
-) -> Fallible<impl Iterator<Item = Task>> {
+) -> anyhow::Result<impl Iterator<Item = Task>> {
     let mut res = vec![];
 
     log::debug!("Applying filter {:?}", filter);
@@ -253,7 +252,7 @@ mod test {
     }
 
     #[test]
-    fn tag_filtering() -> Fallible<()> {
+    fn tag_filtering() -> anyhow::Result<()> {
         let mut replica = test_replica();
         let yes: Tag = "yes".try_into()?;
         let no: Tag = "no".try_into()?;

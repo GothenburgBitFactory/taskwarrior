@@ -7,7 +7,7 @@ version = "0.3.0"
 [dependencies]
 dirs = "^3.0.1"
 env_logger = "^0.8.2"
-failure = "^0.1.8"
+anyhow = "1.0"
 log = "^0.4.11"
 nom = "^6.0.1"
 prettytable-rs = "^0.8.0"

@@ -1,7 +1,6 @@
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
-use failure::{format_err, Fallible};
 use log::trace;
 use std::convert::{TryFrom, TryInto};
 use std::fmt;
@@ -95,9 +94,9 @@ pub struct Tag(String);
 pub const INVALID_TAG_CHARACTERS: &str = "+-*/(<>^! %=~";
 
 impl Tag {
-    fn from_str(value: &str) -> Result<Tag, failure::Error> {
-        fn err(value: &str) -> Result<Tag, failure::Error> {
-            Err(format_err!("invalid tag {:?}", value))
+    fn from_str(value: &str) -> Result<Tag, anyhow::Error> {
+        fn err(value: &str) -> Result<Tag, anyhow::Error> {
+            anyhow::bail!("invalid tag {:?}", value)
         }
 
         if let Some(c) = value.chars().next() {
@@ -119,7 +118,7 @@ impl Tag {
 }
 
 impl TryFrom<&str> for Tag {
-    type Error = failure::Error;
+    type Error = anyhow::Error;
 
     fn try_from(value: &str) -> Result<Tag, Self::Error> {
         Self::from_str(value)
@@ -127,7 +126,7 @@ impl TryFrom<&str> for Tag {
 }
 
 impl TryFrom<&String> for Tag {
-    type Error = failure::Error;
+    type Error = anyhow::Error;
 
     fn try_from(value: &String) -> Result<Tag, Self::Error> {
         Self::from_str(&value[..])
@@ -264,7 +263,7 @@ impl<'r> TaskMut<'r> {
 
     /// Set the task's status.  This also adds the task to the working set if the
     /// new status puts it in that set.
-    pub fn set_status(&mut self, status: Status) -> Fallible<()> {
+    pub fn set_status(&mut self, status: Status) -> anyhow::Result<()> {
         if status == Status::Pending {
             let uuid = self.uuid;
             self.replica.add_to_working_set(uuid)?;
@@ -272,17 +271,17 @@ impl<'r> TaskMut<'r> {
         self.set_string("status", Some(String::from(status.to_taskmap())))
     }
 
-    pub fn set_description(&mut self, description: String) -> Fallible<()> {
+    pub fn set_description(&mut self, description: String) -> anyhow::Result<()> {
         self.set_string("description", Some(description))
     }
 
-    pub fn set_modified(&mut self, modified: DateTime<Utc>) -> Fallible<()> {
+    pub fn set_modified(&mut self, modified: DateTime<Utc>) -> anyhow::Result<()> {
         self.set_timestamp("modified", Some(modified))
     }
 
     /// Start the task by creating "start.<timestamp": "", if the task is not already
     /// active.
-    pub fn start(&mut self) -> Fallible<()> {
+    pub fn start(&mut self) -> anyhow::Result<()> {
         if self.is_active() {
             return Ok(());
         }
@@ -291,7 +290,7 @@ impl<'r> TaskMut<'r> {
     }
 
     /// Stop the task by adding the current timestamp to all un-resolved "start.<timestamp>" keys.
-    pub fn stop(&mut self) -> Fallible<()> {
+    pub fn stop(&mut self) -> anyhow::Result<()> {
         let keys = self
             .taskmap
             .iter()
@@ -308,18 +307,18 @@ impl<'r> TaskMut<'r> {
     }
 
     /// Add a tag to this task.  Does nothing if the tag is already present.
-    pub fn add_tag(&mut self, tag: &Tag) -> Fallible<()> {
+    pub fn add_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
         self.set_string(format!("tag.{}", tag), Some("".to_owned()))
     }
 
     /// Remove a tag from this task.  Does nothing if the tag is not present.
-    pub fn remove_tag(&mut self, tag: &Tag) -> Fallible<()> {
+    pub fn remove_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
         self.set_string(format!("tag.{}", tag), None)
     }
 
     // -- utility functions
 
-    fn lastmod(&mut self) -> Fallible<()> {
+    fn lastmod(&mut self) -> anyhow::Result<()> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
             self.replica
@@ -331,7 +330,7 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
-    fn set_string<S: Into<String>>(&mut self, property: S, value: Option<String>) -> Fallible<()> {
+    fn set_string<S: Into<String>>(&mut self, property: S, value: Option<String>) -> anyhow::Result<()> {
         let property = property.into();
         self.lastmod()?;
         self.replica
@@ -347,7 +346,7 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
-    fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> Fallible<()> {
+    fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> anyhow::Result<()> {
         self.lastmod()?;
         if let Some(value) = value {
             let ts = format!("{}", value.timestamp());
@@ -364,7 +363,7 @@ impl<'r> TaskMut<'r> {
 
     /// Used by tests to ensure that updates are properly written
     #[cfg(test)]
-    fn reload(&mut self) -> Fallible<()> {
+    fn reload(&mut self) -> anyhow::Result<()> {
         let uuid = self.uuid;
         let task = self.replica.get_task(uuid)?.unwrap();
         self.task.taskmap = task.taskmap;

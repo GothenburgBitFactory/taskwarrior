@@ -1,5 +1,4 @@
 use super::{InMemoryStorage, KVStorage, Storage};
-use failure::Fallible;
 use std::path::PathBuf;
 
 /// The configuration required for a replica's storage.
@@ -14,7 +13,7 @@ pub enum StorageConfig {
 }
 
 impl StorageConfig {
-    pub fn into_storage(self) -> Fallible<Box<dyn Storage>> {
+    pub fn into_storage(self) -> anyhow::Result<Box<dyn Storage>> {
         Ok(match self {
             StorageConfig::OnDisk { taskdb_dir } => Box::new(KVStorage::new(taskdb_dir)?),
             StorageConfig::InMemory => Box::new(InMemoryStorage::new()),

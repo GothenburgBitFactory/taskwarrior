@@ -1,7 +1,6 @@
 use crate::argparse::Filter;
 use crate::invocation::display_report;
 use config::Config;
-use failure::Fallible;
 use taskchampion::Replica;
 use termcolor::WriteColor;
 
@@ -11,7 +10,7 @@ pub(crate) fn execute<W: WriteColor>(
     settings: &Config,
     report_name: String,
     filter: Filter,
-) -> Fallible<()> {
+) -> anyhow::Result<()> {
     display_report(w, replica, settings, report_name, filter)
 }
 

@@ -1,7 +1,6 @@
-use failure::Fail;
-
-#[derive(Debug, Fail, Eq, PartialEq, Clone)]
+use thiserror::Error;
+#[derive(Debug, Error, Eq, PartialEq, Clone)]
 pub enum Error {
-    #[fail(display = "Task Database Error: {}", _0)]
+    #[error("Task Database Error: {}", _0)]
     DBError(String),
 }

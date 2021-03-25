@@ -1,4 +1,3 @@
-use failure::Fallible;
 use taskchampion::{server::Server, Replica};
 use termcolor::WriteColor;
 
@@ -6,8 +5,8 @@ pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
     server: &mut Box<dyn Server>,
-) -> Fallible<()> {
-    replica.sync(server)?;
+) -> anyhow::Result<()> {
+    replica.sync(server).unwrap();
     writeln!(w, "sync complete.")?;
     Ok(())
 }

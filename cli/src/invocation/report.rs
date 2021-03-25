@@ -3,7 +3,6 @@ use crate::invocation::filtered_tasks;
 use crate::report::{Column, Property, Report, SortBy};
 use crate::table;
 use config::Config;
-use failure::{format_err, Fallible};
 use prettytable::{Row, Table};
 use std::cmp::Ordering;
 use taskchampion::{Replica, Task, WorkingSet};
@@ -83,13 +82,13 @@ pub(super) fn display_report<W: WriteColor>(
     settings: &Config,
     report_name: String,
     filter: Filter,
-) -> Fallible<()> {
+) -> anyhow::Result<()> {
     let mut t = Table::new();
     let working_set = replica.working_set()?;
 
     // Get the report from settings
     let mut report = Report::from_config(settings.get(&format!("reports.{}", report_name))?)
-        .map_err(|e| format_err!("report.{}{}", report_name, e))?;
+        .map_err(|e| anyhow::anyhow!("report.{}{}", report_name, e))?;
 
     // include any user-supplied filter conditions
     report.filter = report.filter.intersect(filter);

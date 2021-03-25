@@ -5,7 +5,6 @@ use crate::task::{Status, Task};
 use crate::taskdb::TaskDB;
 use crate::workingset::WorkingSet;
 use chrono::Utc;
-use failure::Fallible;
 use log::trace;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -48,7 +47,7 @@ impl Replica {
         uuid: Uuid,
         property: S1,
         value: Option<S2>,
-    ) -> Fallible<()>
+    ) -> anyhow::Result<()>
     where
         S1: Into<String>,
         S2: Into<String>,
@@ -62,12 +61,12 @@ impl Replica {
     }
 
     /// Add the given uuid to the working set, returning its index.
-    pub(crate) fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<usize> {
+    pub(crate) fn add_to_working_set(&mut self, uuid: Uuid) -> anyhow::Result<usize> {
         self.taskdb.add_to_working_set(uuid)
     }
 
     /// Get all tasks represented as a map keyed by UUID
-    pub fn all_tasks(&mut self) -> Fallible<HashMap<Uuid, Task>> {
+    pub fn all_tasks(&mut self) -> anyhow::Result<HashMap<Uuid, Task>> {
         let mut res = HashMap::new();
         for (uuid, tm) in self.taskdb.all_tasks()?.drain(..) {
             res.insert(uuid, Task::new(uuid, tm));
@@ -76,18 +75,18 @@ impl Replica {
     }
 
     /// Get the UUIDs of all tasks
-    pub fn all_task_uuids(&mut self) -> Fallible<Vec<Uuid>> {
+    pub fn all_task_uuids(&mut self) -> anyhow::Result<Vec<Uuid>> {
         self.taskdb.all_task_uuids()
     }
 
     /// Get the "working set" for this replica.  This is a snapshot of the current state,
     /// and it is up to the caller to decide how long to store this value.
-    pub fn working_set(&mut self) -> Fallible<WorkingSet> {
+    pub fn working_set(&mut self) -> anyhow::Result<WorkingSet> {
         Ok(WorkingSet::new(self.taskdb.working_set()?))
     }
 
     /// Get an existing task by its UUID
-    pub fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<Task>> {
+    pub fn get_task(&mut self, uuid: Uuid) -> anyhow::Result<Option<Task>> {
         Ok(self
             .taskdb
             .get_task(uuid)?
@@ -95,7 +94,7 @@ impl Replica {
     }
 
     /// Create a new task.  The task must not already exist.
-    pub fn new_task(&mut self, status: Status, description: String) -> Fallible<Task> {
+    pub fn new_task(&mut self, status: Status, description: String) -> anyhow::Result<Task> {
         let uuid = Uuid::new_v4();
         self.taskdb.apply(Operation::Create { uuid })?;
         trace!("task {} created", uuid);
@@ -109,7 +108,7 @@ impl Replica {
     /// Deleted; this is the final purge of the task.  This is not a public method as deletion
     /// should only occur through expiration.
     #[allow(dead_code)]
-    fn delete_task(&mut self, uuid: Uuid) -> Fallible<()> {
+    fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<()> {
         // check that it already exists; this is a convenience check, as the task may already exist
         // when this Create operation is finally sync'd with operations from other replicas
         if self.taskdb.get_task(uuid)?.is_none() {
@@ -123,7 +122,7 @@ impl Replica {
     /// Synchronize this replica against the given server.  The working set is rebuilt after
     /// this occurs, but without renumbering, so any newly-pending tasks should appear in
     /// the working set.
-    pub fn sync(&mut self, server: &mut Box<dyn Server>) -> Fallible<()> {
+    pub fn sync(&mut self, server: &mut Box<dyn Server>) -> anyhow::Result<()> {
         self.taskdb.sync(server)?;
         self.rebuild_working_set(false)
     }
@@ -132,7 +131,7 @@ impl Replica {
     /// `renumber` is true, then existing tasks may be moved to new working-set indices; in any
     /// case, on completion all pending tasks are in the working set and all non- pending tasks are
     /// not.
-    pub fn rebuild_working_set(&mut self, renumber: bool) -> Fallible<()> {
+    pub fn rebuild_working_set(&mut self, renumber: bool) -> anyhow::Result<()> {
         let pending = String::from(Status::Pending.to_taskmap());
         self.taskdb
             .rebuild_working_set(|t| t.get("status") == Some(&pending), renumber)?;

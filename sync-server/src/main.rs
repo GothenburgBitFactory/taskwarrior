@@ -4,7 +4,6 @@ use crate::storage::{KVStorage, Storage};
 use actix_web::{get, middleware::Logger, web, App, HttpServer, Responder, Scope};
 use api::{api_scope, ServerState};
 use clap::Arg;
-use failure::Fallible;
 
 mod api;
 mod server;
@@ -27,7 +26,7 @@ pub(crate) fn app_scope(server_state: ServerState) -> Scope {
 }
 
 #[actix_web::main]
-async fn main() -> Fallible<()> {
+async fn main() -> anyhow::Result<()> {
     env_logger::init();
     let matches = clap::App::new("taskchampion-sync-server")
         .version(env!("CARGO_PKG_VERSION"))

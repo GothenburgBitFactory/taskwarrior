@@ -1,5 +1,4 @@
 use crate::argparse::{DescriptionMod, Modification};
-use failure::Fallible;
 use std::convert::TryInto;
 use taskchampion::TaskMut;
 use termcolor::WriteColor;
@@ -9,7 +8,7 @@ pub(super) fn apply_modification<W: WriteColor>(
     w: &mut W,
     task: &mut TaskMut,
     modification: &Modification,
-) -> Fallible<()> {
+) -> anyhow::Result<()> {
     match modification.description {
         DescriptionMod::Set(ref description) => task.set_description(description.clone())?,
         DescriptionMod::Prepend(ref description) => {

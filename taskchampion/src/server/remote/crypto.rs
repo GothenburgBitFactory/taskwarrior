@@ -1,5 +1,4 @@
 use crate::server::HistorySegment;
-use failure::{format_err, Fallible};
 use std::convert::TryFrom;
 use std::io::Read;
 use tindercrypt::cryptors::RingCryptor;
@@ -27,7 +26,7 @@ pub(super) struct HistoryCleartext {
 
 impl HistoryCleartext {
     /// Seal the payload into its ciphertext
-    pub(super) fn seal(self, secret: &Secret) -> Fallible<HistoryCiphertext> {
+    pub(super) fn seal(self, secret: &Secret) -> anyhow::Result<HistoryCiphertext> {
         let cryptor = RingCryptor::new().with_aad(self.parent_version_id.as_bytes());
         let ciphertext = cryptor.seal_with_passphrase(secret.as_ref(), &self.history_segment)?;
         Ok(HistoryCiphertext(ciphertext))
@@ -42,7 +41,7 @@ impl HistoryCiphertext {
         self,
         secret: &Secret,
         parent_version_id: Uuid,
-    ) -> Fallible<HistoryCleartext> {
+    ) -> anyhow::Result<HistoryCleartext> {
         let cryptor = RingCryptor::new().with_aad(parent_version_id.as_bytes());
         let plaintext = cryptor.open(secret.as_ref(), &self.0)?;
 
@@ -54,16 +53,16 @@ impl HistoryCiphertext {
 }
 
 impl TryFrom<ureq::Response> for HistoryCiphertext {
-    type Error = failure::Error;
+    type Error = anyhow::Error;
 
-    fn try_from(resp: ureq::Response) -> Result<HistoryCiphertext, failure::Error> {
+    fn try_from(resp: ureq::Response) -> Result<HistoryCiphertext, anyhow::Error> {
         if let Some("application/vnd.taskchampion.history-segment") = resp.header("Content-Type") {
             let mut reader = resp.into_reader();
             let mut bytes = vec![];
             reader.read_to_end(&mut bytes)?;
             Ok(Self(bytes))
         } else {
-            Err(format_err!("Response did not have expected content-type"))
+            Err(anyhow::anyhow!("Response did not have expected content-type"))
         }
     }
 }

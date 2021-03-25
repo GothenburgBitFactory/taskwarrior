@@ -295,6 +295,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.39"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "81cddc5f91628367664cc7c69714ff08deee8a3efc54623011c772544d7b2767"
+
+[[package]]
 name = "arrayref"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -819,28 +825,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d2f06b9cac1506ece98fe3231e3cc9c4410ec3d5b1f24ae1c8946f0742cdefc"
 dependencies = [
  "version_check",
-]
-
-[[package]]
-name = "failure"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d32e9bd16cc02eae7db7ef620b392808b89f6a5e16bb3497d159c6b92a0f4f86"
-dependencies = [
- "backtrace",
- "failure_derive",
-]
-
-[[package]]
-name = "failure_derive"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa4da3c766cd7a0db8242e326e9e4e081edd567072893ed320008189715366a4"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
- "synstructure",
 ]
 
 [[package]]
@@ -2231,18 +2215,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "synstructure"
-version = "0.12.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b834f2d66f734cb897113e34aaff2f1ab4719ca946f9a7358dba8f8064148701"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
- "unicode-xid",
-]
-
-[[package]]
 name = "tap"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2252,8 +2224,8 @@ checksum = "36474e732d1affd3a6ed582781b3683df3d0563714c59c39591e8ff707cf078e"
 name = "taskchampion"
 version = "0.3.0"
 dependencies = [
+ "anyhow",
  "chrono",
- "failure",
  "kv",
  "lmdb-rkv",
  "log",
@@ -2261,6 +2233,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tempdir",
+ "thiserror",
  "tindercrypt",
  "ureq",
  "uuid",
@@ -2270,12 +2243,12 @@ dependencies = [
 name = "taskchampion-cli"
 version = "0.3.0"
 dependencies = [
+ "anyhow",
  "assert_cmd",
  "atty",
  "config",
  "dirs 3.0.1",
  "env_logger",
- "failure",
  "log",
  "nom 6.0.1",
  "predicates",
@@ -2292,9 +2265,9 @@ version = "0.3.0"
 dependencies = [
  "actix-rt",
  "actix-web",
+ "anyhow",
  "clap",
  "env_logger",
- "failure",
  "futures",
  "kv",
  "log",

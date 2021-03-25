@@ -1,7 +1,6 @@
 use crate::argparse::Filter;
 use crate::invocation::filtered_tasks;
 use crate::table;
-use failure::Fallible;
 use prettytable::{cell, row, Table};
 use taskchampion::Replica;
 use termcolor::WriteColor;
@@ -11,7 +10,7 @@ pub(crate) fn execute<W: WriteColor>(
     replica: &mut Replica,
     filter: Filter,
     debug: bool,
-) -> Fallible<()> {
+) -> anyhow::Result<()> {
     let working_set = replica.working_set()?;
 
     for task in filtered_tasks(replica, &filter)? {

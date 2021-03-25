@@ -1,4 +1,3 @@
-use failure::Fallible;
 use uuid::Uuid;
 
 /// Versions are referred to with sha2 hashes.
@@ -41,8 +40,8 @@ pub trait Server {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> Fallible<AddVersionResult>;
+    ) -> anyhow::Result<AddVersionResult>;
 
     /// Get the version with the given parent VersionId
-    fn get_child_version(&mut self, parent_version_id: VersionId) -> Fallible<GetVersionResult>;
+    fn get_child_version(&mut self, parent_version_id: VersionId) -> anyhow::Result<GetVersionResult>;
 }

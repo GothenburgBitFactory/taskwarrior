@@ -1,5 +1,4 @@
 use crate::argparse::{DescriptionMod, Modification};
-use failure::Fallible;
 use taskchampion::{Replica, Status};
 use termcolor::WriteColor;
 
@@ -7,7 +6,7 @@ pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
     modification: Modification,
-) -> Fallible<()> {
+) -> anyhow::Result<()> {
     let description = match modification.description {
         DescriptionMod::Set(ref s) => s.clone(),
         _ => "(no description)".to_owned(),

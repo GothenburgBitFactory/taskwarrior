@@ -29,7 +29,6 @@ For the public TaskChampion Rust API, see the `taskchampion` crate.
 
 */
 
-use failure::Fallible;
 use std::os::unix::ffi::OsStringExt;
 use std::string::FromUtf8Error;
 
@@ -45,7 +44,7 @@ mod usage;
 
 /// The main entry point for the command-line interface.  This builds an Invocation
 /// from the particulars of the operating-system interface, and then executes it.
-pub fn main() -> Fallible<()> {
+pub fn main() -> anyhow::Result<()> {
     env_logger::init();
 
     // parse the command line into a vector of &str, failing if

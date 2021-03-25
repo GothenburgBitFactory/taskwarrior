@@ -1,7 +1,6 @@
 //! This module implements the core logic of the server: handling transactions, upholding
 //! invariants, and so on.
 use crate::storage::{Client, StorageTxn};
-use failure::Fallible;
 use uuid::Uuid;
 
 /// The distinguished value for "no version"
@@ -23,7 +22,7 @@ pub(crate) fn get_child_version<'a>(
     mut txn: Box<dyn StorageTxn + 'a>,
     client_key: ClientKey,
     parent_version_id: VersionId,
-) -> Fallible<Option<GetVersionResult>> {
+) -> anyhow::Result<Option<GetVersionResult>> {
     Ok(txn
         .get_version_by_parent(client_key, parent_version_id)?
         .map(|version| GetVersionResult {
@@ -48,7 +47,7 @@ pub(crate) fn add_version<'a>(
     client: Client,
     parent_version_id: VersionId,
     history_segment: HistorySegment,
-) -> Fallible<AddVersionResult> {
+) -> anyhow::Result<AddVersionResult> {
     log::debug!(
         "add_version(client_key: {}, parent_version_id: {})",
         client_key,
@@ -84,7 +83,7 @@ mod test {
     use crate::storage::{InMemoryStorage, Storage};
 
     #[test]
-    fn gcv_not_found() -> Fallible<()> {
+    fn gcv_not_found() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
         let txn = storage.txn()?;
         let client_key = Uuid::new_v4();
@@ -94,7 +93,7 @@ mod test {
     }
 
     #[test]
-    fn gcv_found() -> Fallible<()> {
+    fn gcv_found() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
         let client_key = Uuid::new_v4();
@@ -121,7 +120,7 @@ mod test {
     }
 
     #[test]
-    fn av_conflict() -> Fallible<()> {
+    fn av_conflict() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
         let client_key = Uuid::new_v4();
@@ -154,7 +153,7 @@ mod test {
         Ok(())
     }
 
-    fn test_av_success(latest_version_id_nil: bool) -> Fallible<()> {
+    fn test_av_success(latest_version_id_nil: bool) -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
         let client_key = Uuid::new_v4();
@@ -198,12 +197,12 @@ mod test {
     }
 
     #[test]
-    fn av_success_with_existing_history() -> Fallible<()> {
+    fn av_success_with_existing_history() -> anyhow::Result<()> {
         test_av_success(true)
     }
 
     #[test]
-    fn av_success_nil_latest_version_id() -> Fallible<()> {
+    fn av_success_nil_latest_version_id() -> anyhow::Result<()> {
         test_av_success(false)
     }
 }
