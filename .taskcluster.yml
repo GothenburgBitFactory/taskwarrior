@@ -61,7 +61,7 @@ tasks:
               cd repo &&
               git config advice.detachedHead false &&
               git checkout ${ref} &&
-              rustup component add clippy-preview &&
+              rustup component add clippy &&
               cargo clippy &&
               cargo fmt -- --check
         metadata:
