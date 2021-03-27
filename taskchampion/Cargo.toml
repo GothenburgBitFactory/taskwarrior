@@ -20,7 +20,7 @@ thiserror = "1.0"
 kv = {version = "^0.10.0", features = ["msgpack-value"]}
 lmdb-rkv = {version = "^0.12.3"}
 ureq = "^1.5.2"
-log = "^0.4.11"
+log = "^0.4.14"
 tindercrypt = { version = "^0.2.2", default-features = false }
 
 [dev-dependencies]
