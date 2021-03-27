@@ -8,7 +8,7 @@ version = "0.3.0"
 dirs = "^3.0.1"
 env_logger = "^0.8.2"
 anyhow = "1.0"
-log = "^0.4.11"
+log = "^0.4.14"
 nom = "^6.0.1"
 prettytable-rs = "^0.8.0"
 textwrap = { version="^0.12.1", features=["terminal_size"] }
