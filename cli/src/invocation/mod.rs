@@ -23,7 +23,7 @@ pub(crate) fn invoke(command: Command, settings: Config) -> anyhow::Result<()> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
 
-    let mut w = get_writer()?;
+    let mut w = get_writer();
 
     // This function examines the command and breaks out the necessary bits to call one of the
     // `execute` functions in a submodule of `cmd`.
@@ -136,10 +136,10 @@ fn get_server(settings: &Config) -> anyhow::Result<Box<dyn Server>> {
 }
 
 /// Get a WriteColor implementation based on whether the output is a tty.
-fn get_writer() -> anyhow::Result<StandardStream> {
-    Ok(StandardStream::stdout(if atty::is(atty::Stream::Stdout) {
+fn get_writer() -> StandardStream {
+    StandardStream::stdout(if atty::is(atty::Stream::Stdout) {
         ColorChoice::Auto
     } else {
         ColorChoice::Never
-    }))
+    })
 }

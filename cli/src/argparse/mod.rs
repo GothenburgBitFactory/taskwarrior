@@ -1,3 +1,8 @@
+// Nested functions that always return Ok(..) are used as callbacks in a context where a Result is
+// expected, so the unnecessary_wraps clippy lint is not useful here.
+
+#![allow(clippy::unnecessary_wraps)]
+
 /*!
 
 This module is responsible for parsing command lines (`Arglist`, an alias for `&[&str]`) into `Command` instances.
