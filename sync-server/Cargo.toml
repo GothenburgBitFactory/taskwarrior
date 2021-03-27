@@ -15,7 +15,7 @@ serde = "^1.0.125"
 kv = {version = "^0.10.0", features = ["msgpack-value"]}
 clap = "^2.33.0"
 log = "^0.4.14"
-env_logger = "^0.8.2"
+env_logger = "^0.8.3"
 
 [dev-dependencies]
 actix-rt = "^1.1.1"
