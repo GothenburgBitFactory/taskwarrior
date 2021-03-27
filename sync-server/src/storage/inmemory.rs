@@ -1,5 +1,4 @@
 use super::{Client, Storage, StorageTxn, Uuid, Version};
-use failure::{format_err, Fallible};
 use std::collections::HashMap;
 use std::sync::{Mutex, MutexGuard};
 
@@ -28,19 +27,19 @@ struct InnerTxn<'a>(MutexGuard<'a, Inner>);
 ///
 /// NOTE: this does not implement transaction rollback.
 impl Storage for InMemoryStorage {
-    fn txn<'a>(&'a self) -> Fallible<Box<dyn StorageTxn + 'a>> {
+    fn txn<'a>(&'a self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(InnerTxn(self.0.lock().expect("poisoned lock"))))
     }
 }
 
 impl<'a> StorageTxn for InnerTxn<'a> {
-    fn get_client(&mut self, client_key: Uuid) -> Fallible<Option<Client>> {
+    fn get_client(&mut self, client_key: Uuid) -> anyhow::Result<Option<Client>> {
         Ok(self.0.clients.get(&client_key).cloned())
     }
 
-    fn new_client(&mut self, client_key: Uuid, latest_version_id: Uuid) -> Fallible<()> {
+    fn new_client(&mut self, client_key: Uuid, latest_version_id: Uuid) -> anyhow::Result<()> {
         if self.0.clients.get(&client_key).is_some() {
-            return Err(format_err!("Client {} already exists", client_key));
+            return Err(anyhow::anyhow!("Client {} already exists", client_key));
         }
         self.0
             .clients
@@ -52,12 +51,12 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         &mut self,
         client_key: Uuid,
         latest_version_id: Uuid,
-    ) -> Fallible<()> {
+    ) -> anyhow::Result<()> {
         if let Some(client) = self.0.clients.get_mut(&client_key) {
             client.latest_version_id = latest_version_id;
             Ok(())
         } else {
-            Err(format_err!("Client {} does not exist", client_key))
+            Err(anyhow::anyhow!("Client {} does not exist", client_key))
         }
     }
 
@@ -65,7 +64,7 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         &mut self,
         client_key: Uuid,
         parent_version_id: Uuid,
-    ) -> Fallible<Option<Version>> {
+    ) -> anyhow::Result<Option<Version>> {
         Ok(self
             .0
             .versions
@@ -79,7 +78,7 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         version_id: Uuid,
         parent_version_id: Uuid,
         history_segment: Vec<u8>,
-    ) -> Fallible<()> {
+    ) -> anyhow::Result<()> {
         // TODO: verify it doesn't exist (`.entry`?)
         let version = Version {
             version_id,
@@ -92,7 +91,7 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         Ok(())
     }
 
-    fn commit(&mut self) -> Fallible<()> {
+    fn commit(&mut self) -> anyhow::Result<()> {
         Ok(())
     }
 }

@@ -1,7 +1,7 @@
 use super::args::{arg_matching, id_list, minus_tag, plus_tag, status_colon, TaskId};
 use super::ArgList;
 use crate::usage;
-use failure::{bail, Fallible};
+use anyhow::bail;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
 use taskchampion::Status;
 
@@ -44,7 +44,7 @@ impl Condition {
     }
 
     /// Parse a single condition string
-    pub(crate) fn parse_str(input: &str) -> Fallible<Condition> {
+    pub(crate) fn parse_str(input: &str) -> anyhow::Result<Condition> {
         let input = &[input];
         Ok(match Condition::parse(input) {
             Ok((&[], cond)) => cond,

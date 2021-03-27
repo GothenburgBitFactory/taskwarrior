@@ -1,6 +1,5 @@
 use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use crate::utils::Key;
-use failure::{bail, Fallible};
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
 use std::path::Path;
@@ -21,7 +20,7 @@ const NEXT_OPERATION: u64 = 2;
 const NEXT_WORKING_SET_INDEX: u64 = 3;
 
 impl<'t> KVStorage<'t> {
-    pub fn new<P: AsRef<Path>>(directory: P) -> Fallible<KVStorage<'t>> {
+    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<KVStorage<'t>> {
         let mut config = Config::default(directory);
         config.bucket("tasks", None);
         config.bucket("numbers", None);
@@ -61,7 +60,7 @@ impl<'t> KVStorage<'t> {
 }
 
 impl<'t> Storage for KVStorage<'t> {
-    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn StorageTxn + 'a>> {
+    fn txn<'a>(&'a mut self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(Txn {
             storage: self,
             txn: Some(self.store.write_txn()?),
@@ -103,7 +102,7 @@ impl<'t> Txn<'t> {
 }
 
 impl<'t> StorageTxn for Txn<'t> {
-    fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>> {
+    fn get_task(&mut self, uuid: Uuid) -> anyhow::Result<Option<TaskMap>> {
         let bucket = self.tasks_bucket();
         let buf = match self.kvtxn().get(bucket, uuid.into()) {
             Ok(buf) => buf,
@@ -114,7 +113,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(Some(value))
     }
 
-    fn create_task(&mut self, uuid: Uuid) -> Fallible<bool> {
+    fn create_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
         match kvtxn.get(bucket, uuid.into()) {
@@ -127,14 +126,14 @@ impl<'t> StorageTxn for Txn<'t> {
         }
     }
 
-    fn set_task(&mut self, uuid: Uuid, task: TaskMap) -> Fallible<()> {
+    fn set_task(&mut self, uuid: Uuid, task: TaskMap) -> anyhow::Result<()> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
         kvtxn.set(bucket, uuid.into(), Msgpack::to_value_buf(task)?)?;
         Ok(())
     }
 
-    fn delete_task(&mut self, uuid: Uuid) -> Fallible<bool> {
+    fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
         match kvtxn.del(bucket, uuid.into()) {
@@ -144,7 +143,7 @@ impl<'t> StorageTxn for Txn<'t> {
         }
     }
 
-    fn all_tasks(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
+    fn all_tasks(&mut self) -> anyhow::Result<Vec<(Uuid, TaskMap)>> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
         let all_tasks: Result<Vec<(Uuid, TaskMap)>, Error> = kvtxn
@@ -155,7 +154,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(all_tasks?)
     }
 
-    fn all_task_uuids(&mut self) -> Fallible<Vec<Uuid>> {
+    fn all_task_uuids(&mut self) -> anyhow::Result<Vec<Uuid>> {
         let bucket = self.tasks_bucket();
         let kvtxn = self.kvtxn();
         Ok(kvtxn
@@ -165,7 +164,7 @@ impl<'t> StorageTxn for Txn<'t> {
             .collect())
     }
 
-    fn base_version(&mut self) -> Fallible<VersionId> {
+    fn base_version(&mut self) -> anyhow::Result<VersionId> {
         let bucket = self.uuids_bucket();
         let base_version = match self.kvtxn().get(bucket, BASE_VERSION.into()) {
             Ok(buf) => buf,
@@ -177,7 +176,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(base_version as VersionId)
     }
 
-    fn set_base_version(&mut self, version: VersionId) -> Fallible<()> {
+    fn set_base_version(&mut self, version: VersionId) -> anyhow::Result<()> {
         let uuids_bucket = self.uuids_bucket();
         let kvtxn = self.kvtxn();
 
@@ -189,7 +188,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn operations(&mut self) -> Fallible<Vec<Operation>> {
+    fn operations(&mut self) -> anyhow::Result<Vec<Operation>> {
         let bucket = self.operations_bucket();
         let kvtxn = self.kvtxn();
         let all_ops: Result<Vec<(u64, Operation)>, Error> = kvtxn
@@ -204,7 +203,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(all_ops.iter().map(|(_, v)| v.clone()).collect())
     }
 
-    fn add_operation(&mut self, op: Operation) -> Fallible<()> {
+    fn add_operation(&mut self, op: Operation) -> anyhow::Result<()> {
         let numbers_bucket = self.numbers_bucket();
         let operations_bucket = self.operations_bucket();
         let kvtxn = self.kvtxn();
@@ -228,7 +227,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn set_operations(&mut self, ops: Vec<Operation>) -> Fallible<()> {
+    fn set_operations(&mut self, ops: Vec<Operation>) -> anyhow::Result<()> {
         let numbers_bucket = self.numbers_bucket();
         let operations_bucket = self.operations_bucket();
         let kvtxn = self.kvtxn();
@@ -250,7 +249,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn get_working_set(&mut self) -> Fallible<Vec<Option<Uuid>>> {
+    fn get_working_set(&mut self) -> anyhow::Result<Vec<Option<Uuid>>> {
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
         let kvtxn = self.kvtxn();
@@ -273,7 +272,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(res)
     }
 
-    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<usize> {
+    fn add_to_working_set(&mut self, uuid: Uuid) -> anyhow::Result<usize> {
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
         let kvtxn = self.kvtxn();
@@ -297,7 +296,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(next_index as usize)
     }
 
-    fn set_working_set_item(&mut self, index: usize, uuid: Option<Uuid>) -> Fallible<()> {
+    fn set_working_set_item(&mut self, index: usize, uuid: Option<Uuid>) -> anyhow::Result<()> {
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
         let kvtxn = self.kvtxn();
@@ -310,7 +309,7 @@ impl<'t> StorageTxn for Txn<'t> {
         };
 
         if index >= next_index {
-            bail!("Index {} is not in the working set", index);
+            anyhow::bail!("Index {} is not in the working set", index);
         }
 
         if let Some(uuid) = uuid {
@@ -326,7 +325,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn clear_working_set(&mut self) -> Fallible<()> {
+    fn clear_working_set(&mut self) -> anyhow::Result<()> {
         let working_set_bucket = self.working_set_bucket();
         let numbers_bucket = self.numbers_bucket();
         let kvtxn = self.kvtxn();
@@ -341,7 +340,7 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn commit(&mut self) -> Fallible<()> {
+    fn commit(&mut self) -> anyhow::Result<()> {
         if let Some(kvtxn) = self.txn.take() {
             kvtxn.commit()?;
         } else {
@@ -355,11 +354,10 @@ impl<'t> StorageTxn for Txn<'t> {
 mod test {
     use super::*;
     use crate::storage::taskmap_with;
-    use failure::Fallible;
     use tempdir::TempDir;
 
     #[test]
-    fn test_create() -> Fallible<()> {
+    fn test_create() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
@@ -377,7 +375,7 @@ mod test {
     }
 
     #[test]
-    fn test_create_exists() -> Fallible<()> {
+    fn test_create_exists() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
@@ -395,7 +393,7 @@ mod test {
     }
 
     #[test]
-    fn test_get_missing() -> Fallible<()> {
+    fn test_get_missing() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
@@ -408,7 +406,7 @@ mod test {
     }
 
     #[test]
-    fn test_set_task() -> Fallible<()> {
+    fn test_set_task() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
@@ -429,7 +427,7 @@ mod test {
     }
 
     #[test]
-    fn test_delete_task_missing() -> Fallible<()> {
+    fn test_delete_task_missing() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
@@ -441,7 +439,7 @@ mod test {
     }
 
     #[test]
-    fn test_delete_task_exists() -> Fallible<()> {
+    fn test_delete_task_exists() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
@@ -458,7 +456,7 @@ mod test {
     }
 
     #[test]
-    fn test_all_tasks_empty() -> Fallible<()> {
+    fn test_all_tasks_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         {
@@ -470,7 +468,7 @@ mod test {
     }
 
     #[test]
-    fn test_all_tasks_and_uuids() -> Fallible<()> {
+    fn test_all_tasks_and_uuids() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
@@ -524,7 +522,7 @@ mod test {
     }
 
     #[test]
-    fn test_base_version_default() -> Fallible<()> {
+    fn test_base_version_default() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         {
@@ -535,7 +533,7 @@ mod test {
     }
 
     #[test]
-    fn test_base_version_setting() -> Fallible<()> {
+    fn test_base_version_setting() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let u = Uuid::new_v4();
@@ -552,7 +550,7 @@ mod test {
     }
 
     #[test]
-    fn test_operations() -> Fallible<()> {
+    fn test_operations() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
@@ -616,7 +614,7 @@ mod test {
     }
 
     #[test]
-    fn get_working_set_empty() -> Fallible<()> {
+    fn get_working_set_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
 
@@ -630,7 +628,7 @@ mod test {
     }
 
     #[test]
-    fn add_to_working_set() -> Fallible<()> {
+    fn add_to_working_set() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
@@ -653,7 +651,7 @@ mod test {
     }
 
     #[test]
-    fn clear_working_set() -> Fallible<()> {
+    fn clear_working_set() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut storage = KVStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();

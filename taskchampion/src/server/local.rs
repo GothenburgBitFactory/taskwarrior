@@ -2,7 +2,6 @@ use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NO_VERSION_ID,
 };
 use crate::utils::Key;
-use failure::Fallible;
 use kv::msgpack::Msgpack;
 use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
 use serde::{Deserialize, Serialize};
@@ -25,7 +24,7 @@ pub struct LocalServer<'t> {
 
 impl<'t> LocalServer<'t> {
     /// A test server has no notion of clients, signatures, encryption, etc.
-    pub fn new<P: AsRef<Path>>(directory: P) -> Fallible<LocalServer<'t>> {
+    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<LocalServer<'t>> {
         let mut config = Config::default(directory);
         config.bucket("versions", None);
         config.bucket("numbers", None);
@@ -48,7 +47,7 @@ impl<'t> LocalServer<'t> {
         })
     }
 
-    fn get_latest_version_id(&mut self) -> Fallible<VersionId> {
+    fn get_latest_version_id(&mut self) -> anyhow::Result<VersionId> {
         let txn = self.store.read_txn()?;
         let base_version = match txn.get(&self.latest_version_bucket, 0.into()) {
             Ok(buf) => buf,
@@ -60,7 +59,7 @@ impl<'t> LocalServer<'t> {
         Ok(base_version as VersionId)
     }
 
-    fn set_latest_version_id(&mut self, version_id: VersionId) -> Fallible<()> {
+    fn set_latest_version_id(&mut self, version_id: VersionId) -> anyhow::Result<()> {
         let mut txn = self.store.write_txn()?;
         txn.set(
             &self.latest_version_bucket,
@@ -74,7 +73,7 @@ impl<'t> LocalServer<'t> {
     fn get_version_by_parent_version_id(
         &mut self,
         parent_version_id: VersionId,
-    ) -> Fallible<Option<Version>> {
+    ) -> anyhow::Result<Option<Version>> {
         let txn = self.store.read_txn()?;
 
         let version = match txn.get(&self.versions_bucket, parent_version_id.into()) {
@@ -87,7 +86,7 @@ impl<'t> LocalServer<'t> {
         Ok(Some(version))
     }
 
-    fn add_version_by_parent_version_id(&mut self, version: Version) -> Fallible<()> {
+    fn add_version_by_parent_version_id(&mut self, version: Version) -> anyhow::Result<()> {
         let mut txn = self.store.write_txn()?;
         txn.set(
             &self.versions_bucket,
@@ -109,7 +108,7 @@ impl<'t> Server for LocalServer<'t> {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> Fallible<AddVersionResult> {
+    ) -> anyhow::Result<AddVersionResult> {
         // no client lookup
         // no signature validation
 
@@ -133,7 +132,10 @@ impl<'t> Server for LocalServer<'t> {
     }
 
     /// Get a vector of all versions after `since_version`
-    fn get_child_version(&mut self, parent_version_id: VersionId) -> Fallible<GetVersionResult> {
+    fn get_child_version(
+        &mut self,
+        parent_version_id: VersionId,
+    ) -> anyhow::Result<GetVersionResult> {
         if let Some(version) = self.get_version_by_parent_version_id(parent_version_id)? {
             Ok(GetVersionResult::Version {
                 version_id: version.version_id,
@@ -149,11 +151,10 @@ impl<'t> Server for LocalServer<'t> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use failure::Fallible;
     use tempdir::TempDir;
 
     #[test]
-    fn test_empty() -> Fallible<()> {
+    fn test_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let child_version = server.get_child_version(NO_VERSION_ID)?;
@@ -162,7 +163,7 @@ mod test {
     }
 
     #[test]
-    fn test_add_zero_base() -> Fallible<()> {
+    fn test_add_zero_base() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();
@@ -187,7 +188,7 @@ mod test {
     }
 
     #[test]
-    fn test_add_nonzero_base() -> Fallible<()> {
+    fn test_add_nonzero_base() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();
@@ -215,7 +216,7 @@ mod test {
     }
 
     #[test]
-    fn test_add_nonzero_base_forbidden() -> Fallible<()> {
+    fn test_add_nonzero_base_forbidden() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();

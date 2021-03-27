@@ -15,7 +15,8 @@ uuid = { version = "^0.8.1", features = ["serde", "v4"] }
 serde = "^1.0.104"
 serde_json = "^1.0"
 chrono = { version = "^0.4.10", features = ["serde"] }
-failure = {version = "^0.1.5", features = ["derive"] }
+anyhow = "1.0"
+thiserror = "1.0"
 kv = {version = "^0.10.0", features = ["msgpack-value"]}
 lmdb-rkv = {version = "^0.12.3"}
 ureq = "^1.5.2"

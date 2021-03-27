@@ -1,7 +1,7 @@
 //! This module contains the data structures used to define reports.
 
 use crate::argparse::{Condition, Filter};
-use failure::{bail, format_err, Fallible};
+use anyhow::bail;
 
 /// A report specifies a filter as well as a sort order and information about which
 /// task attributes to display
@@ -29,7 +29,7 @@ pub(crate) struct Column {
 #[derive(Clone, Debug, PartialEq)]
 #[allow(dead_code)]
 pub(crate) enum Property {
-    /// The task's ID, either working-set index or Uuid if no in the working set
+    /// The task's ID, either working-set index or Uuid if not in the working set
     Id,
 
     /// The task's full UUID
@@ -77,43 +77,47 @@ impl Report {
     /// Create a Report from a config value.  This should be the `report.<report_name>` value.
     /// The error message begins with any additional path information, e.g., `.sort[1].sort_by:
     /// ..`.
-    pub(crate) fn from_config(cfg: config::Value) -> Fallible<Report> {
-        let mut map = cfg.into_table().map_err(|e| format_err!(": {}", e))?;
+    pub(crate) fn from_config(cfg: config::Value) -> anyhow::Result<Report> {
+        let mut map = cfg.into_table().map_err(|e| anyhow::anyhow!(": {}", e))?;
         let sort = if let Some(sort_array) = map.remove("sort") {
             sort_array
                 .into_array()
-                .map_err(|e| format_err!(".sort: {}", e))?
+                .map_err(|e| anyhow::anyhow!(".sort: {}", e))?
                 .drain(..)
                 .enumerate()
-                .map(|(i, v)| Sort::from_config(v).map_err(|e| format_err!(".sort[{}]{}", i, e)))
-                .collect::<Fallible<Vec<_>>>()?
+                .map(|(i, v)| {
+                    Sort::from_config(v).map_err(|e| anyhow::anyhow!(".sort[{}]{}", i, e))
+                })
+                .collect::<anyhow::Result<Vec<_>>>()?
         } else {
             vec![]
         };
 
         let columns = map
             .remove("columns")
-            .ok_or_else(|| format_err!(": 'columns' property is required"))?
+            .ok_or_else(|| anyhow::anyhow!(": 'columns' property is required"))?
             .into_array()
-            .map_err(|e| format_err!(".columns: {}", e))?
+            .map_err(|e| anyhow::anyhow!(".columns: {}", e))?
             .drain(..)
             .enumerate()
-            .map(|(i, v)| Column::from_config(v).map_err(|e| format_err!(".columns[{}]{}", i, e)))
-            .collect::<Fallible<Vec<_>>>()?;
+            .map(|(i, v)| {
+                Column::from_config(v).map_err(|e| anyhow::anyhow!(".columns[{}]{}", i, e))
+            })
+            .collect::<anyhow::Result<Vec<_>>>()?;
 
         let conditions = if let Some(conditions) = map.remove("filter") {
             conditions
                 .into_array()
-                .map_err(|e| format_err!(".filter: {}", e))?
+                .map_err(|e| anyhow::anyhow!(".filter: {}", e))?
                 .drain(..)
                 .enumerate()
                 .map(|(i, v)| {
                     v.into_str()
                         .map_err(|e| e.into())
                         .and_then(|s| Condition::parse_str(&s))
-                        .map_err(|e| format_err!(".filter[{}]: {}", i, e))
+                        .map_err(|e| anyhow::anyhow!(".filter[{}]: {}", i, e))
                 })
-                .collect::<Fallible<Vec<_>>>()?
+                .collect::<anyhow::Result<Vec<_>>>()?
         } else {
             vec![]
         };
@@ -133,18 +137,18 @@ impl Report {
 }
 
 impl Column {
-    pub(crate) fn from_config(cfg: config::Value) -> Fallible<Column> {
-        let mut map = cfg.into_table().map_err(|e| format_err!(": {}", e))?;
+    pub(crate) fn from_config(cfg: config::Value) -> anyhow::Result<Column> {
+        let mut map = cfg.into_table().map_err(|e| anyhow::anyhow!(": {}", e))?;
         let label = map
             .remove("label")
-            .ok_or_else(|| format_err!(": 'label' property is required"))?
+            .ok_or_else(|| anyhow::anyhow!(": 'label' property is required"))?
             .into_str()
-            .map_err(|e| format_err!(".label: {}", e))?;
+            .map_err(|e| anyhow::anyhow!(".label: {}", e))?;
         let property: config::Value = map
             .remove("property")
-            .ok_or_else(|| format_err!(": 'property' property is required"))?;
+            .ok_or_else(|| anyhow::anyhow!(": 'property' property is required"))?;
         let property =
-            Property::from_config(property).map_err(|e| format_err!(".property{}", e))?;
+            Property::from_config(property).map_err(|e| anyhow::anyhow!(".property{}", e))?;
 
         if !map.is_empty() {
             bail!(": unknown properties");
@@ -155,8 +159,8 @@ impl Column {
 }
 
 impl Property {
-    pub(crate) fn from_config(cfg: config::Value) -> Fallible<Property> {
-        let s = cfg.into_str().map_err(|e| format_err!(": {}", e))?;
+    pub(crate) fn from_config(cfg: config::Value) -> anyhow::Result<Property> {
+        let s = cfg.into_str().map_err(|e| anyhow::anyhow!(": {}", e))?;
         Ok(match s.as_ref() {
             "id" => Property::Id,
             "uuid" => Property::Uuid,
@@ -169,18 +173,18 @@ impl Property {
 }
 
 impl Sort {
-    pub(crate) fn from_config(cfg: config::Value) -> Fallible<Sort> {
-        let mut map = cfg.into_table().map_err(|e| format_err!(": {}", e))?;
+    pub(crate) fn from_config(cfg: config::Value) -> anyhow::Result<Sort> {
+        let mut map = cfg.into_table().map_err(|e| anyhow::anyhow!(": {}", e))?;
         let ascending = match map.remove("ascending") {
             Some(v) => v
                 .into_bool()
-                .map_err(|e| format_err!(".ascending: {}", e))?,
+                .map_err(|e| anyhow::anyhow!(".ascending: {}", e))?,
             None => true, // default
         };
         let sort_by: config::Value = map
             .remove("sort_by")
-            .ok_or_else(|| format_err!(": 'sort_by' property is required"))?;
-        let sort_by = SortBy::from_config(sort_by).map_err(|e| format_err!(".sort_by{}", e))?;
+            .ok_or_else(|| anyhow::anyhow!(": 'sort_by' property is required"))?;
+        let sort_by = SortBy::from_config(sort_by).map_err(|e| anyhow::anyhow!(".sort_by{}", e))?;
 
         if !map.is_empty() {
             bail!(": unknown properties");
@@ -191,8 +195,8 @@ impl Sort {
 }
 
 impl SortBy {
-    pub(crate) fn from_config(cfg: config::Value) -> Fallible<SortBy> {
-        let s = cfg.into_str().map_err(|e| format_err!(": {}", e))?;
+    pub(crate) fn from_config(cfg: config::Value) -> anyhow::Result<SortBy> {
+        let s = cfg.into_str().map_err(|e| anyhow::anyhow!(": {}", e))?;
         Ok(match s.as_ref() {
             "id" => SortBy::Id,
             "uuid" => SortBy::Uuid,

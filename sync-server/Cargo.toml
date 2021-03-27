@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 uuid = { version = "^0.8.1", features = ["serde", "v4"] }
 actix-web = "^3.3.0"
-failure = "^0.1.8"
+anyhow = "1.0"
 futures = "^0.3.8"
 serde = "^1.0.104"
 kv = {version = "^0.10.0", features = ["msgpack-value"]}

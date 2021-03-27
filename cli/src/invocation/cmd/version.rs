@@ -1,7 +1,6 @@
-use failure::Fallible;
 use termcolor::{ColorSpec, WriteColor};
 
-pub(crate) fn execute<W: WriteColor>(w: &mut W) -> Fallible<()> {
+pub(crate) fn execute<W: WriteColor>(w: &mut W) -> anyhow::Result<()> {
     write!(w, "TaskChampion ")?;
     w.set_color(ColorSpec::new().set_bold(true))?;
     writeln!(w, "{}", env!("CARGO_PKG_VERSION"))?;

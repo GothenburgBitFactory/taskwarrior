@@ -1,7 +1,6 @@
 #![allow(clippy::new_without_default)]
 
 use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
-use failure::{bail, Fallible};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -41,14 +40,14 @@ impl<'t> Txn<'t> {
 }
 
 impl<'t> StorageTxn for Txn<'t> {
-    fn get_task(&mut self, uuid: Uuid) -> Fallible<Option<TaskMap>> {
+    fn get_task(&mut self, uuid: Uuid) -> anyhow::Result<Option<TaskMap>> {
         match self.data_ref().tasks.get(&uuid) {
             None => Ok(None),
             Some(t) => Ok(Some(t.clone())),
         }
     }
 
-    fn create_task(&mut self, uuid: Uuid) -> Fallible<bool> {
+    fn create_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
         if let ent @ Entry::Vacant(_) = self.mut_data_ref().tasks.entry(uuid) {
             ent.or_insert_with(TaskMap::new);
             Ok(true)
@@ -57,16 +56,16 @@ impl<'t> StorageTxn for Txn<'t> {
         }
     }
 
-    fn set_task(&mut self, uuid: Uuid, task: TaskMap) -> Fallible<()> {
+    fn set_task(&mut self, uuid: Uuid, task: TaskMap) -> anyhow::Result<()> {
         self.mut_data_ref().tasks.insert(uuid, task);
         Ok(())
     }
 
-    fn delete_task(&mut self, uuid: Uuid) -> Fallible<bool> {
+    fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
         Ok(self.mut_data_ref().tasks.remove(&uuid).is_some())
     }
 
-    fn all_tasks<'a>(&mut self) -> Fallible<Vec<(Uuid, TaskMap)>> {
+    fn all_tasks<'a>(&mut self) -> anyhow::Result<Vec<(Uuid, TaskMap)>> {
         Ok(self
             .data_ref()
             .tasks
@@ -75,58 +74,58 @@ impl<'t> StorageTxn for Txn<'t> {
             .collect())
     }
 
-    fn all_task_uuids<'a>(&mut self) -> Fallible<Vec<Uuid>> {
+    fn all_task_uuids<'a>(&mut self) -> anyhow::Result<Vec<Uuid>> {
         Ok(self.data_ref().tasks.keys().copied().collect())
     }
 
-    fn base_version(&mut self) -> Fallible<VersionId> {
+    fn base_version(&mut self) -> anyhow::Result<VersionId> {
         Ok(self.data_ref().base_version)
     }
 
-    fn set_base_version(&mut self, version: VersionId) -> Fallible<()> {
+    fn set_base_version(&mut self, version: VersionId) -> anyhow::Result<()> {
         self.mut_data_ref().base_version = version;
         Ok(())
     }
 
-    fn operations(&mut self) -> Fallible<Vec<Operation>> {
+    fn operations(&mut self) -> anyhow::Result<Vec<Operation>> {
         Ok(self.data_ref().operations.clone())
     }
 
-    fn add_operation(&mut self, op: Operation) -> Fallible<()> {
+    fn add_operation(&mut self, op: Operation) -> anyhow::Result<()> {
         self.mut_data_ref().operations.push(op);
         Ok(())
     }
 
-    fn set_operations(&mut self, ops: Vec<Operation>) -> Fallible<()> {
+    fn set_operations(&mut self, ops: Vec<Operation>) -> anyhow::Result<()> {
         self.mut_data_ref().operations = ops;
         Ok(())
     }
 
-    fn get_working_set(&mut self) -> Fallible<Vec<Option<Uuid>>> {
+    fn get_working_set(&mut self) -> anyhow::Result<Vec<Option<Uuid>>> {
         Ok(self.data_ref().working_set.clone())
     }
 
-    fn add_to_working_set(&mut self, uuid: Uuid) -> Fallible<usize> {
+    fn add_to_working_set(&mut self, uuid: Uuid) -> anyhow::Result<usize> {
         let working_set = &mut self.mut_data_ref().working_set;
         working_set.push(Some(uuid));
         Ok(working_set.len())
     }
 
-    fn set_working_set_item(&mut self, index: usize, uuid: Option<Uuid>) -> Fallible<()> {
+    fn set_working_set_item(&mut self, index: usize, uuid: Option<Uuid>) -> anyhow::Result<()> {
         let working_set = &mut self.mut_data_ref().working_set;
         if index >= working_set.len() {
-            bail!("Index {} is not in the working set", index);
+            anyhow::bail!("Index {} is not in the working set", index);
         }
         working_set[index] = uuid;
         Ok(())
     }
 
-    fn clear_working_set(&mut self) -> Fallible<()> {
+    fn clear_working_set(&mut self) -> anyhow::Result<()> {
         self.mut_data_ref().working_set = vec![None];
         Ok(())
     }
 
-    fn commit(&mut self) -> Fallible<()> {
+    fn commit(&mut self) -> anyhow::Result<()> {
         // copy the new_data back into storage to commit the transaction
         if let Some(data) = self.new_data.take() {
             self.storage.data = data;
@@ -156,7 +155,7 @@ impl InMemoryStorage {
 }
 
 impl Storage for InMemoryStorage {
-    fn txn<'a>(&'a mut self) -> Fallible<Box<dyn StorageTxn + 'a>> {
+    fn txn<'a>(&'a mut self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(Txn {
             storage: self,
             new_data: None,
@@ -172,7 +171,7 @@ mod test {
     // elsewhere and not tested here)
 
     #[test]
-    fn get_working_set_empty() -> Fallible<()> {
+    fn get_working_set_empty() -> anyhow::Result<()> {
         let mut storage = InMemoryStorage::new();
 
         {
@@ -185,7 +184,7 @@ mod test {
     }
 
     #[test]
-    fn add_to_working_set() -> Fallible<()> {
+    fn add_to_working_set() -> anyhow::Result<()> {
         let mut storage = InMemoryStorage::new();
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
@@ -207,7 +206,7 @@ mod test {
     }
 
     #[test]
-    fn clear_working_set() -> Fallible<()> {
+    fn clear_working_set() -> anyhow::Result<()> {
         let mut storage = InMemoryStorage::new();
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();

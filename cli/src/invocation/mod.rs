@@ -2,7 +2,6 @@
 
 use crate::argparse::{Command, Subcommand};
 use config::Config;
-use failure::{format_err, Fallible};
 use taskchampion::{Replica, Server, ServerConfig, StorageConfig, Uuid};
 use termcolor::{ColorChoice, StandardStream};
 
@@ -20,7 +19,7 @@ use report::display_report;
 
 /// Invoke the given Command in the context of the given settings
 #[allow(clippy::needless_return)]
-pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
+pub(crate) fn invoke(command: Command, settings: Config) -> anyhow::Result<()> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
 
@@ -101,7 +100,7 @@ pub(crate) fn invoke(command: Command, settings: Config) -> Fallible<()> {
 // utilities for invoke
 
 /// Get the replica for this invocation
-fn get_replica(settings: &Config) -> Fallible<Replica> {
+fn get_replica(settings: &Config) -> anyhow::Result<Replica> {
     let taskdb_dir = settings.get_str("data_dir")?.into();
     log::debug!("Replica data_dir: {:?}", taskdb_dir);
     let storage_config = StorageConfig::OnDisk { taskdb_dir };
@@ -109,7 +108,7 @@ fn get_replica(settings: &Config) -> Fallible<Replica> {
 }
 
 /// Get the server for this invocation
-fn get_server(settings: &Config) -> Fallible<Box<dyn Server>> {
+fn get_server(settings: &Config) -> anyhow::Result<Box<dyn Server>> {
     // if server_client_key and server_origin are both set, use
     // the remote server
     let config = if let (Ok(client_key), Ok(origin)) = (
@@ -119,7 +118,7 @@ fn get_server(settings: &Config) -> Fallible<Box<dyn Server>> {
         let client_key = Uuid::parse_str(&client_key)?;
         let encryption_secret = settings
             .get_str("encryption_secret")
-            .map_err(|_| format_err!("Could not read `encryption_secret` configuration"))?;
+            .map_err(|_| anyhow::anyhow!("Could not read `encryption_secret` configuration"))?;
 
         log::debug!("Using sync-server with origin {}", origin);
         log::debug!("Sync client ID: {}", client_key);
@@ -137,7 +136,7 @@ fn get_server(settings: &Config) -> Fallible<Box<dyn Server>> {
 }
 
 /// Get a WriteColor implementation based on whether the output is a tty.
-fn get_writer() -> Fallible<StandardStream> {
+fn get_writer() -> anyhow::Result<StandardStream> {
     Ok(StandardStream::stdout(if atty::is(atty::Stream::Stdout) {
         ColorChoice::Auto
     } else {

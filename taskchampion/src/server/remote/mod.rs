@@ -1,5 +1,4 @@
 use crate::server::{AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId};
-use failure::{format_err, Fallible};
 use std::convert::TryInto;
 use uuid::Uuid;
 
@@ -31,8 +30,8 @@ impl RemoteServer {
 }
 
 /// Convert a ureq::Response to an Error
-fn resp_to_error(resp: ureq::Response) -> failure::Error {
-    return format_err!(
+fn resp_to_error(resp: ureq::Response) -> anyhow::Error {
+    return anyhow::anyhow!(
         "error {}: {}",
         resp.status(),
         resp.into_string()
@@ -41,12 +40,12 @@ fn resp_to_error(resp: ureq::Response) -> failure::Error {
 }
 
 /// Read a UUID-bearing header or fail trying
-fn get_uuid_header(resp: &ureq::Response, name: &str) -> Fallible<Uuid> {
+fn get_uuid_header(resp: &ureq::Response, name: &str) -> anyhow::Result<Uuid> {
     let value = resp
         .header(name)
-        .ok_or_else(|| format_err!("Response does not have {} header", name))?;
+        .ok_or_else(|| anyhow::anyhow!("Response does not have {} header", name))?;
     let value = Uuid::parse_str(value)
-        .map_err(|e| format_err!("{} header is not a valid UUID: {}", name, e))?;
+        .map_err(|e| anyhow::anyhow!("{} header is not a valid UUID: {}", name, e))?;
     Ok(value)
 }
 
@@ -55,7 +54,7 @@ impl Server for RemoteServer {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> Fallible<AddVersionResult> {
+    ) -> anyhow::Result<AddVersionResult> {
         let url = format!("{}/client/add-version/{}", self.origin, parent_version_id);
         let history_cleartext = HistoryCleartext {
             parent_version_id,
@@ -84,7 +83,10 @@ impl Server for RemoteServer {
         }
     }
 
-    fn get_child_version(&mut self, parent_version_id: VersionId) -> Fallible<GetVersionResult> {
+    fn get_child_version(
+        &mut self,
+        parent_version_id: VersionId,
+    ) -> anyhow::Result<GetVersionResult> {
         let url = format!(
             "{}/client/get-child-version/{}",
             self.origin, parent_version_id

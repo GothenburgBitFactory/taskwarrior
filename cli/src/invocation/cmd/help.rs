@@ -1,12 +1,11 @@
 use crate::usage::Usage;
-use failure::Fallible;
 use termcolor::WriteColor;
 
 pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     command_name: String,
     summary: bool,
-) -> Fallible<()> {
+) -> anyhow::Result<()> {
     let usage = Usage::new();
     usage.write_help(w, command_name.as_ref(), summary)?;
     Ok(())

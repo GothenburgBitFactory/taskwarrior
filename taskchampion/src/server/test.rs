@@ -1,7 +1,6 @@
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NO_VERSION_ID,
 };
-use failure::Fallible;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -34,7 +33,7 @@ impl Server for TestServer {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> Fallible<AddVersionResult> {
+    ) -> anyhow::Result<AddVersionResult> {
         // no client lookup
         // no signature validation
 
@@ -64,7 +63,10 @@ impl Server for TestServer {
     }
 
     /// Get a vector of all versions after `since_version`
-    fn get_child_version(&mut self, parent_version_id: VersionId) -> Fallible<GetVersionResult> {
+    fn get_child_version(
+        &mut self,
+        parent_version_id: VersionId,
+    ) -> anyhow::Result<GetVersionResult> {
         if let Some(version) = self.versions.get(&parent_version_id) {
             Ok(GetVersionResult::Version {
                 version_id: version.version_id,

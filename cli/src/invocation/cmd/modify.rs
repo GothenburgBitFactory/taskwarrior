@@ -1,6 +1,5 @@
 use crate::argparse::{Filter, Modification};
 use crate::invocation::{apply_modification, filtered_tasks};
-use failure::Fallible;
 use taskchampion::Replica;
 use termcolor::WriteColor;
 
@@ -9,7 +8,7 @@ pub(crate) fn execute<W: WriteColor>(
     replica: &mut Replica,
     filter: Filter,
     modification: Modification,
-) -> Fallible<()> {
+) -> anyhow::Result<()> {
     for task in filtered_tasks(replica, &filter)? {
         let mut task = task.into_mut(replica);
 
