@@ -11,7 +11,7 @@ uuid = { version = "^0.8.1", features = ["serde", "v4"] }
 actix-web = "^3.3.0"
 failure = "^0.1.8"
 futures = "^0.3.8"
-serde = "^1.0.104"
+serde = "^1.0.125"
 kv = {version = "^0.10.0", features = ["msgpack-value"]}
 clap = "^2.33.0"
 log = "^0.4.11"
