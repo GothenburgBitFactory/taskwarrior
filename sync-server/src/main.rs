@@ -1,6 +1,6 @@
 #![deny(clippy::all)]
 
-use crate::storage::{KVStorage, Storage};
+use crate::storage::{KvStorage, Storage};
 use actix_web::{get, middleware::Logger, web, App, HttpServer, Responder, Scope};
 use api::{api_scope, ServerState};
 use clap::Arg;
@@ -56,7 +56,7 @@ async fn main() -> anyhow::Result<()> {
     let data_dir = matches.value_of("data-dir").unwrap();
     let port = matches.value_of("port").unwrap();
 
-    let server_box: Box<dyn Storage> = Box::new(KVStorage::new(data_dir)?);
+    let server_box: Box<dyn Storage> = Box::new(KvStorage::new(data_dir)?);
     let server_state = ServerState::new(server_box);
 
     log::warn!("Serving on port {}", port);

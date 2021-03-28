@@ -20,15 +20,15 @@ fn client_db_key(client_key: Uuid) -> ClientDbKey {
     *client_key.as_bytes()
 }
 
-/// KVStorage is an on-disk storage backend which uses LMDB via the `kv` crate.
-pub(crate) struct KVStorage<'t> {
+/// KvStorage is an on-disk storage backend which uses LMDB via the `kv` crate.
+pub(crate) struct KvStorage<'t> {
     store: Store,
     clients_bucket: Bucket<'t, ClientDbKey, ValueBuf<Msgpack<Client>>>,
     versions_bucket: Bucket<'t, VersionDbKey, ValueBuf<Msgpack<Version>>>,
 }
 
-impl<'t> KVStorage<'t> {
-    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<KVStorage<'t>> {
+impl<'t> KvStorage<'t> {
+    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<KvStorage<'t>> {
         let mut config = Config::default(directory);
         config.bucket("clients", None);
         config.bucket("versions", None);
@@ -40,7 +40,7 @@ impl<'t> KVStorage<'t> {
         let versions_bucket =
             store.bucket::<VersionDbKey, ValueBuf<Msgpack<Version>>>(Some("versions"))?;
 
-        Ok(KVStorage {
+        Ok(KvStorage {
             store,
             clients_bucket,
             versions_bucket,
@@ -48,7 +48,7 @@ impl<'t> KVStorage<'t> {
     }
 }
 
-impl<'t> Storage for KVStorage<'t> {
+impl<'t> Storage for KvStorage<'t> {
     fn txn<'a>(&'a self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(Txn {
             storage: self,
@@ -58,7 +58,7 @@ impl<'t> Storage for KVStorage<'t> {
 }
 
 struct Txn<'t> {
-    storage: &'t KVStorage<'t>,
+    storage: &'t KvStorage<'t>,
     txn: Option<kv::Txn<'t>>,
 }
 
@@ -169,7 +169,7 @@ mod test {
     #[test]
     fn test_get_client_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let storage = KVStorage::new(&tmp_dir.path())?;
+        let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
         let maybe_client = txn.get_client(Uuid::new_v4())?;
         assert!(maybe_client.is_none());
@@ -179,7 +179,7 @@ mod test {
     #[test]
     fn test_client_storage() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let storage = KVStorage::new(&tmp_dir.path())?;
+        let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
 
         let client_key = Uuid::new_v4();
@@ -201,7 +201,7 @@ mod test {
     #[test]
     fn test_gvbp_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let storage = KVStorage::new(&tmp_dir.path())?;
+        let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
         let maybe_version = txn.get_version_by_parent(Uuid::new_v4(), Uuid::new_v4())?;
         assert!(maybe_version.is_none());
@@ -211,7 +211,7 @@ mod test {
     #[test]
     fn test_add_version_and_gvbp() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let storage = KVStorage::new(&tmp_dir.path())?;
+        let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
 
         let client_key = Uuid::new_v4();
