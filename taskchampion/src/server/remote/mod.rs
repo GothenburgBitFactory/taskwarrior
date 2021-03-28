@@ -1,5 +1,6 @@
 use crate::server::{AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId};
 use std::convert::TryInto;
+use std::time::Duration;
 use uuid::Uuid;
 
 mod crypto;
@@ -24,19 +25,12 @@ impl RemoteServer {
             origin,
             client_key,
             encryption_secret: encryption_secret.into(),
-            agent: ureq::agent(),
+            agent: ureq::AgentBuilder::new()
+                .timeout_connect(Duration::from_secs(10))
+                .timeout_read(Duration::from_secs(60))
+                .build(),
         }
     }
-}
-
-/// Convert a ureq::Response to an Error
-fn resp_to_error(resp: ureq::Response) -> anyhow::Error {
-    return anyhow::anyhow!(
-        "error {}: {}",
-        resp.status(),
-        resp.into_string()
-            .unwrap_or_else(|e| format!("(could not read response: {})", e))
-    );
 }
 
 /// Read a UUID-bearing header or fail trying
@@ -61,25 +55,25 @@ impl Server for RemoteServer {
             history_segment,
         };
         let history_ciphertext = history_cleartext.seal(&self.encryption_secret)?;
-        let resp = self
+        match self
             .agent
             .post(&url)
-            .timeout_connect(10_000)
-            .timeout_read(60_000)
             .set(
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
             )
             .set("X-Client-Key", &self.client_key.to_string())
-            .send_bytes(history_ciphertext.as_ref());
-        if resp.ok() {
-            let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-            Ok(AddVersionResult::Ok(version_id))
-        } else if resp.status() == 409 {
-            let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
-            Ok(AddVersionResult::ExpectedParentVersion(parent_version_id))
-        } else {
-            Err(resp_to_error(resp))
+            .send_bytes(history_ciphertext.as_ref())
+        {
+            Ok(resp) => {
+                let version_id = get_uuid_header(&resp, "X-Version-Id")?;
+                Ok(AddVersionResult::Ok(version_id))
+            }
+            Err(ureq::Error::Status(status, resp)) if status == 409 => {
+                let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
+                Ok(AddVersionResult::ExpectedParentVersion(parent_version_id))
+            }
+            Err(err) => Err(err.into()),
         }
     }
 
@@ -91,30 +85,29 @@ impl Server for RemoteServer {
             "{}/client/get-child-version/{}",
             self.origin, parent_version_id
         );
-        let resp = self
+        match self
             .agent
             .get(&url)
-            .timeout_connect(10_000)
-            .timeout_read(60_000)
             .set("X-Client-Key", &self.client_key.to_string())
-            .call();
-
-        if resp.ok() {
-            let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
-            let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-            let history_ciphertext: HistoryCiphertext = resp.try_into()?;
-            let history_segment = history_ciphertext
-                .open(&self.encryption_secret, parent_version_id)?
-                .history_segment;
-            Ok(GetVersionResult::Version {
-                version_id,
-                parent_version_id,
-                history_segment,
-            })
-        } else if resp.status() == 404 {
-            Ok(GetVersionResult::NoSuchVersion)
-        } else {
-            Err(resp_to_error(resp))
+            .call()
+        {
+            Ok(resp) => {
+                let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
+                let version_id = get_uuid_header(&resp, "X-Version-Id")?;
+                let history_ciphertext: HistoryCiphertext = resp.try_into()?;
+                let history_segment = history_ciphertext
+                    .open(&self.encryption_secret, parent_version_id)?
+                    .history_segment;
+                Ok(GetVersionResult::Version {
+                    version_id,
+                    parent_version_id,
+                    history_segment,
+                })
+            }
+            Err(ureq::Error::Status(status, _)) if status == 404 => {
+                Ok(GetVersionResult::NoSuchVersion)
+            }
+            Err(err) => Err(err.into()),
         }
     }
 }
