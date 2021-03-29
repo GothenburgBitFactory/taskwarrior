@@ -132,7 +132,7 @@ fn get_server(settings: &Config) -> anyhow::Result<Box<dyn Server>> {
         log::debug!("Using local sync-server at `{:?}`", server_dir);
         ServerConfig::Local { server_dir }
     };
-    Ok(config.into_server()?)
+    config.into_server()
 }
 
 /// Get a WriteColor implementation based on whether the output is a tty.
