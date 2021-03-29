@@ -5,8 +5,8 @@ use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
 use std::path::Path;
 use uuid::Uuid;
 
-/// KVStorage is an on-disk storage backend which uses LMDB via the `kv` crate.
-pub struct KVStorage<'t> {
+/// KvStorage is an on-disk storage backend which uses LMDB via the `kv` crate.
+pub struct KvStorage<'t> {
     store: Store,
     tasks_bucket: Bucket<'t, Key, ValueBuf<Msgpack<TaskMap>>>,
     numbers_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<u64>>>,
@@ -19,8 +19,8 @@ const BASE_VERSION: u64 = 1;
 const NEXT_OPERATION: u64 = 2;
 const NEXT_WORKING_SET_INDEX: u64 = 3;
 
-impl<'t> KVStorage<'t> {
-    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<KVStorage<'t>> {
+impl<'t> KvStorage<'t> {
+    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<KvStorage<'t>> {
         let mut config = Config::default(directory);
         config.bucket("tasks", None);
         config.bucket("numbers", None);
@@ -48,7 +48,7 @@ impl<'t> KVStorage<'t> {
         let working_set_bucket =
             store.int_bucket::<ValueBuf<Msgpack<Uuid>>>(Some("working_set"))?;
 
-        Ok(KVStorage {
+        Ok(KvStorage {
             store,
             tasks_bucket,
             numbers_bucket,
@@ -59,7 +59,7 @@ impl<'t> KVStorage<'t> {
     }
 }
 
-impl<'t> Storage for KVStorage<'t> {
+impl<'t> Storage for KvStorage<'t> {
     fn txn<'a>(&'a mut self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
         Ok(Box::new(Txn {
             storage: self,
@@ -69,7 +69,7 @@ impl<'t> Storage for KVStorage<'t> {
 }
 
 struct Txn<'t> {
-    storage: &'t KVStorage<'t>,
+    storage: &'t KvStorage<'t>,
     txn: Option<kv::Txn<'t>>,
 }
 
@@ -359,7 +359,7 @@ mod test {
     #[test]
     fn test_create() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -377,7 +377,7 @@ mod test {
     #[test]
     fn test_create_exists() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -395,7 +395,7 @@ mod test {
     #[test]
     fn test_get_missing() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -408,7 +408,7 @@ mod test {
     #[test]
     fn test_set_task() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -429,7 +429,7 @@ mod test {
     #[test]
     fn test_delete_task_missing() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -441,7 +441,7 @@ mod test {
     #[test]
     fn test_delete_task_exists() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -458,7 +458,7 @@ mod test {
     #[test]
     fn test_all_tasks_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         {
             let mut txn = storage.txn()?;
             let tasks = txn.all_tasks()?;
@@ -470,7 +470,7 @@ mod test {
     #[test]
     fn test_all_tasks_and_uuids() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
         {
@@ -524,7 +524,7 @@ mod test {
     #[test]
     fn test_base_version_default() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         {
             let mut txn = storage.txn()?;
             assert_eq!(txn.base_version()?, DEFAULT_BASE_VERSION);
@@ -535,7 +535,7 @@ mod test {
     #[test]
     fn test_base_version_setting() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let u = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -552,7 +552,7 @@ mod test {
     #[test]
     fn test_operations() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
         let uuid3 = Uuid::new_v4();
@@ -616,7 +616,7 @@ mod test {
     #[test]
     fn get_working_set_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
 
         {
             let mut txn = storage.txn()?;
@@ -630,7 +630,7 @@ mod test {
     #[test]
     fn add_to_working_set() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
 
@@ -653,7 +653,7 @@ mod test {
     #[test]
     fn clear_working_set() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new("test")?;
-        let mut storage = KVStorage::new(&tmp_dir.path())?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
 

@@ -14,7 +14,7 @@ mod inmemory;
 mod kv;
 mod operation;
 
-pub use self::kv::KVStorage;
+pub use self::kv::KvStorage;
 pub use config::StorageConfig;
 pub use inmemory::InMemoryStorage;
 
@@ -83,7 +83,7 @@ pub trait StorageTxn {
     fn operations(&mut self) -> Result<Vec<Operation>>;
 
     /// Add an operation to the end of the list of operations in the storage.  Note that this
-    /// merely *stores* the operation; it is up to the TaskDB to apply it.
+    /// merely *stores* the operation; it is up to the TaskDb to apply it.
     fn add_operation(&mut self, op: Operation) -> Result<()>;
 
     /// Replace the current list of operations with a new list.

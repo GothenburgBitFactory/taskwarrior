@@ -2,7 +2,7 @@ use crate::errors::Error;
 use crate::server::Server;
 use crate::storage::{Operation, Storage, TaskMap};
 use crate::task::{Status, Task};
-use crate::taskdb::TaskDB;
+use crate::taskdb::TaskDb;
 use crate::workingset::WorkingSet;
 use chrono::Utc;
 use log::trace;
@@ -24,13 +24,13 @@ use uuid::Uuid;
 /// pending tasks are automatically added to the working set, and the working set is "renumbered"
 /// during the garbage-collection process.
 pub struct Replica {
-    taskdb: TaskDB,
+    taskdb: TaskDb,
 }
 
 impl Replica {
     pub fn new(storage: Box<dyn Storage>) -> Replica {
         Replica {
-            taskdb: TaskDB::new(storage),
+            taskdb: TaskDb::new(storage),
         }
     }
 
@@ -112,7 +112,7 @@ impl Replica {
         // check that it already exists; this is a convenience check, as the task may already exist
         // when this Create operation is finally sync'd with operations from other replicas
         if self.taskdb.get_task(uuid)?.is_none() {
-            return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
+            return Err(Error::DbError(format!("Task {} does not exist", uuid)).into());
         }
         self.taskdb.apply(Operation::Delete { uuid })?;
         trace!("task {} deleted", uuid);

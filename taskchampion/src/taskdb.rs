@@ -7,10 +7,10 @@ use std::collections::HashSet;
 use std::str;
 use uuid::Uuid;
 
-/// A TaskDB is the backend for a replica.  It manages the storage, operations, synchronization,
+/// A TaskDb is the backend for a replica.  It manages the storage, operations, synchronization,
 /// and so on, and all the invariants that come with it.  It leaves the meaning of particular task
 /// properties to the replica and task implementations.
-pub struct TaskDB {
+pub struct TaskDb {
     storage: Box<dyn Storage>,
 }
 
@@ -19,24 +19,24 @@ struct Version {
     operations: Vec<Operation>,
 }
 
-impl TaskDB {
-    /// Create a new TaskDB with the given backend storage
-    pub fn new(storage: Box<dyn Storage>) -> TaskDB {
-        TaskDB { storage }
+impl TaskDb {
+    /// Create a new TaskDb with the given backend storage
+    pub fn new(storage: Box<dyn Storage>) -> TaskDb {
+        TaskDb { storage }
     }
 
     #[cfg(test)]
-    pub fn new_inmemory() -> TaskDB {
-        TaskDB::new(Box::new(crate::storage::InMemoryStorage::new()))
+    pub fn new_inmemory() -> TaskDb {
+        TaskDb::new(Box::new(crate::storage::InMemoryStorage::new()))
     }
 
-    /// Apply an operation to the TaskDB.  Aside from synchronization operations, this is the only way
-    /// to modify the TaskDB.  In cases where an operation does not make sense, this function will do
-    /// nothing and return an error (but leave the TaskDB in a consistent state).
+    /// Apply an operation to the TaskDb.  Aside from synchronization operations, this is the only way
+    /// to modify the TaskDb.  In cases where an operation does not make sense, this function will do
+    /// nothing and return an error (but leave the TaskDb in a consistent state).
     pub fn apply(&mut self, op: Operation) -> anyhow::Result<()> {
         // TODO: differentiate error types here?
         let mut txn = self.storage.txn()?;
-        if let err @ Err(_) = TaskDB::apply_op(txn.as_mut(), &op) {
+        if let err @ Err(_) = TaskDb::apply_op(txn.as_mut(), &op) {
             return err;
         }
         txn.add_operation(op)?;
@@ -49,12 +49,12 @@ impl TaskDB {
             Operation::Create { uuid } => {
                 // insert if the task does not already exist
                 if !txn.create_task(*uuid)? {
-                    return Err(Error::DBError(format!("Task {} already exists", uuid)).into());
+                    return Err(Error::DbError(format!("Task {} already exists", uuid)).into());
                 }
             }
             Operation::Delete { ref uuid } => {
                 if !txn.delete_task(*uuid)? {
-                    return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
+                    return Err(Error::DbError(format!("Task {} does not exist", uuid)).into());
                 }
             }
             Operation::Update {
@@ -71,7 +71,7 @@ impl TaskDB {
                     };
                     txn.set_task(*uuid, task)?;
                 } else {
-                    return Err(Error::DBError(format!("Task {} does not exist", uuid)).into());
+                    return Err(Error::DbError(format!("Task {} does not exist", uuid)).into());
                 }
             }
         }
@@ -213,7 +213,7 @@ impl TaskDB {
 
                     // apply this verison and update base_version in storage
                     info!("applying version {:?} from server", version_id);
-                    TaskDB::apply_version(txn.as_mut(), version)?;
+                    TaskDb::apply_version(txn.as_mut(), version)?;
                     txn.set_base_version(version_id)?;
                     base_version_id = version_id;
                 } else {
@@ -313,7 +313,7 @@ impl TaskDB {
                 }
             }
             if let Some(o) = svr_op {
-                if let Err(e) = TaskDB::apply_op(txn, &o) {
+                if let Err(e) = TaskDb::apply_op(txn, &o) {
                     warn!("Invalid operation when syncing: {} (ignored)", e);
                 }
             }
@@ -367,7 +367,7 @@ mod tests {
 
     #[test]
     fn test_apply_create() {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
         db.apply(op.clone()).unwrap();
@@ -378,7 +378,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_exists() {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Create { uuid };
         db.apply(op.clone()).unwrap();
@@ -393,7 +393,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_update() {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -414,7 +414,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_update_delete_prop() {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -456,7 +456,7 @@ mod tests {
 
     #[test]
     fn test_apply_update_does_not_exist() {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = Operation::Update {
             uuid,
@@ -475,7 +475,7 @@ mod tests {
 
     #[test]
     fn test_apply_create_delete() {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op1 = Operation::Create { uuid };
         db.apply(op1.clone()).unwrap();
@@ -489,7 +489,7 @@ mod tests {
 
     #[test]
     fn test_apply_delete_not_present() {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
 
         let op1 = Operation::Delete { uuid };
@@ -513,7 +513,7 @@ mod tests {
     }
 
     fn rebuild_working_set(renumber: bool) -> anyhow::Result<()> {
-        let mut db = TaskDB::new_inmemory();
+        let mut db = TaskDb::new_inmemory();
         let mut uuids = vec![];
         uuids.push(Uuid::new_v4());
         println!("uuids[0]: {:?} - pending, not in working set", uuids[0]);
@@ -526,7 +526,7 @@ mod tests {
         uuids.push(Uuid::new_v4());
         println!("uuids[4]: {:?} - pending, in working set", uuids[4]);
 
-        // add everything to the TaskDB
+        // add everything to the TaskDb
         for uuid in &uuids {
             db.apply(Operation::Create { uuid: *uuid })?;
         }
@@ -598,8 +598,8 @@ mod tests {
         Ok(())
     }
 
-    fn newdb() -> TaskDB {
-        TaskDB::new(Box::new(InMemoryStorage::new()))
+    fn newdb() -> TaskDb {
+        TaskDb::new(Box::new(InMemoryStorage::new()))
     }
 
     #[test]
@@ -751,7 +751,7 @@ mod tests {
         #[test]
         // check that various sequences of operations on mulitple db's do not get the db's into an
         // incompatible state.  The main concern here is that there might be a sequence of create
-        // and delete operations that results in a task existing in one TaskDB but not existing in
+        // and delete operations that results in a task existing in one TaskDb but not existing in
         // another.  So, the generated sequences focus on a single task UUID.
         fn transform_sequences_of_operations(action_sequence in action_sequence_strategy()) {
         let mut server: Box<dyn Server> = Box::new(TestServer::new());

@@ -7,7 +7,7 @@ mod inmemory;
 pub(crate) use inmemory::InMemoryStorage;
 
 mod kv;
-pub(crate) use self::kv::KVStorage;
+pub(crate) use self::kv::KvStorage;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct Client {
