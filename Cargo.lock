@@ -1170,7 +1170,7 @@ version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cb79e59d356a5ae85b13990bbb3649a293d64df1ca6e7890822076186527a9f7"
 dependencies = [
- "lmdb-rkv",
+ "lmdb-rkv 0.12.3",
  "rmp-serde",
  "serde",
  "thiserror",
@@ -1223,7 +1223,19 @@ dependencies = [
  "bitflags",
  "byteorder",
  "libc",
- "lmdb-rkv-sys",
+ "lmdb-rkv-sys 0.9.6",
+]
+
+[[package]]
+name = "lmdb-rkv"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "447a296f7aca299cfbb50f4e4f3d49451549af655fb7215d7f8c0c3d64bad42b"
+dependencies = [
+ "bitflags",
+ "byteorder",
+ "libc",
+ "lmdb-rkv-sys 0.11.0",
 ]
 
 [[package]]
@@ -1231,6 +1243,17 @@ name = "lmdb-rkv-sys"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7982ba0460e939e26a52ee12c8075deab0ebd44ed21881f656841b70e021b7c8"
+dependencies = [
+ "cc",
+ "libc",
+ "pkg-config",
+]
+
+[[package]]
+name = "lmdb-rkv-sys"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b27470ac25167b3afdfb6af8fcd3bc1be67de50ffbdaf4073378cfded6ae24a5"
 dependencies = [
  "cc",
  "libc",
@@ -2177,7 +2200,7 @@ dependencies = [
  "anyhow",
  "chrono",
  "kv",
- "lmdb-rkv",
+ "lmdb-rkv 0.14.0",
  "log",
  "proptest",
  "serde",
