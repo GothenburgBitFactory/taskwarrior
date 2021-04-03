@@ -627,7 +627,9 @@ void CLI2::addContext (bool readable, bool writeable)
     }
   }
 
-  // Apply the context. Readable (filtering) takes precedence.
+  // Apply the context. Readable (filtering) takes precedence. Also set the
+  // block now, since addFilter calls analyze(), which calls addContext().
+  _context_added = true;
   if (readable)
     addFilter (contextString);
   else if (writeable)
@@ -639,9 +641,6 @@ void CLI2::addContext (bool readable, bool writeable)
         "Context '{1}' set. Use 'task context none' to remove.",
         Context::getContext ().config.get ("context")
     ));
-
-  // Set the block, we don't want to apply context multiple times by accident.
-  _context_added = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
