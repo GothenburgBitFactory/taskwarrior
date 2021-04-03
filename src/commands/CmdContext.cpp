@@ -244,6 +244,7 @@ void CmdContext::listContexts (std::stringstream& out)
     Table table;
     table.width (Context::getContext ().getWidth ());
     table.add ("Name");
+    table.add ("Type");
     table.add ("Definition");
     table.add ("Active");
     setHeaderUnderline (table);
@@ -258,8 +259,15 @@ void CmdContext::listContexts (std::stringstream& out)
 
       int row = table.addRow ();
       table.set (row, 0, userContext);
-      table.set (row, 1, Context::getContext ().config.get ("context." + userContext));
-      table.set (row, 2, active);
+      table.set (row, 1, "read");
+      table.set (row, 2, Context::getContext ().getTaskContext("read", userContext));
+      table.set (row, 3, active);
+
+      row = table.addRow ();
+      table.set (row, 0, "");
+      table.set (row, 1, "write");
+      table.set (row, 2, Context::getContext ().getTaskContext("write", userContext));
+      table.set (row, 3, active);
     }
 
     out << optionalBlankLine ()
