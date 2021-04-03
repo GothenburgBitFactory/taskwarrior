@@ -123,7 +123,7 @@ std::vector <std::string> CmdContext::getContexts ()
         contexts.insert (suffix);
     }
 
-  return std::vector (contexts.begin (), contexts.end ());
+  return std::vector <std::string> (contexts.begin (), contexts.end ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
