@@ -210,14 +210,21 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
     auto name = "context." + words[1];
 
     auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
-    auto rc = CmdConfig::unsetConfigVariable(name, confirmation);
+    if (confirmation && ! confirm (format ("Do you want to delete context '{1}'?", words[1])))
+      throw format ("Context '{1}' not deleted.", words[1]);
+
+    // Delete legacy format and .read / .write flavours
+    auto rc = CmdConfig::unsetConfigVariable(name, false);
+    rc     += CmdConfig::unsetConfigVariable(name + ".read", false);
+    rc     += CmdConfig::unsetConfigVariable(name + ".write", false);
 
     // If the currently set context was deleted, unset it
     if (Context::getContext ().config.get ("context") == words[1])
       CmdConfig::unsetConfigVariable("context", false);
 
-    // Output feedback
-    if (rc != 0)
+    // Output feedback, rc should be even because only 0 (found and removed)
+    // and 2 (not found) are aceptable return values from unsetConfigVariable
+    if (rc % 2 != 0)
       throw format ("Context '{1}' not deleted.", words[1]);
 
     out << format ("Context '{1}' deleted.\n", words[1]);
