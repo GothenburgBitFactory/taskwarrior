@@ -26,7 +26,7 @@ Users can define their own server impelementations.
 
 # See Also
 
-See the [TaskChampion Book](http://djmitche.github.com/taskchampion)
+See the [TaskChampion Book](http://taskchampion.github.com/taskchampion)
 for more information about the design and usage of the tool.
 
  */
