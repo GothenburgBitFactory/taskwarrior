@@ -44,6 +44,8 @@
            Thanks to Nicola Chiapolini.
 - TW #2393 Highlight due dates for waiting tasks in the calendar
            Thanks to emkamau.
+- TW #2428 The "edit" command should respect "bulk" configuration option
+           Thanks to Evan Edmond.
 
 ------ current release ---------------------------
 
