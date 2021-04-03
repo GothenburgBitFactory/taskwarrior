@@ -923,12 +923,15 @@ int Context::getHeight ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Context::getTaskContext (const std::string& kind, bool fallback /* = true */)
+std::string Context::getTaskContext (const std::string& kind, std::string name, bool fallback /* = true */)
 {
+  // Consider currently selected context, if none specified
+  if (name.empty ())
+    name = config.get ("context");
+
   // Detect if any context is set, and bail out if not
-  std::string contextName = config.get ("context");
-  if (! contextName.empty ())
-    debug (format ("Applying context '{1}'", contextName));
+  if (! name.empty ())
+    debug (format ("Applying context '{1}'", name));
   else
   {
     debug ("No context set");
@@ -936,14 +939,14 @@ std::string Context::getTaskContext (const std::string& kind, bool fallback /* =
   }
 
   // Figure out the context string for this kind (read/write)
-  std::string contextString = config.get ("context." + contextName + "." + kind);
+  std::string contextString = config.get ("context." + name + "." + kind);
   if (contextString.empty ())
   {
-    debug ("Specific " + kind + " context for '" + contextName + "' not defined. ");
+    debug ("Specific " + kind + " context for '" + name + "' not defined. ");
     if (fallback)
     {
       debug ("Falling back on generic.");
-      contextString = config.get ("context." + contextName);
+      contextString = config.get ("context." + name);
     }
   }
 
