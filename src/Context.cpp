@@ -43,6 +43,7 @@
 #include <shared.h>
 #include <format.h>
 #include <main.h>
+#include <util.h>
 
 #ifdef HAVE_COMMIT
 #include <commit.h>
@@ -462,21 +463,8 @@ int Context::initialize (int argc, const char** argv)
     // XDG_CONFIG_HOME doesn't count as an override (no warning header)
     if (! rc_file.exists ())
     {
-      // Use XDG_CONFIG_HOME if defined, otherwise default to ~/.config
-      std::string xdg_config_home;
-      const char* env_xdg_config_home = getenv ("XDG_CONFIG_HOME");
-
-      if (env_xdg_config_home)
-        xdg_config_home = format ("{1}", env_xdg_config_home);
-      else
-        xdg_config_home = format ("{1}/.config", home_dir);
-
-      // Ensure the path does not end with '/'
-      if (xdg_config_home.back () == '/')
-        xdg_config_home.pop_back();
-
       // https://github.com/GothenburgBitFactory/libshared/issues/32
-      std::string rcfile_path = format ("{1}/task/taskrc", xdg_config_home);
+      std::string rcfile_path = format ("{1}/task/taskrc", getXdgConfigHome());
 
       File maybe_rc_file = File (rcfile_path);
       if ( maybe_rc_file.exists ())
@@ -1189,14 +1177,14 @@ void Context::createDefaultConfig ()
       throw std::string ("Error: rc.data.location does not exist - exiting according to rc.exit.on.missing.db setting.");
 
     d.create ();
-
-    if (config.has ("hooks.location"))
-      d = Directory (config.get ("hooks.location"));
-    else
-      d += "hooks";
-
-    d.create ();
   }
+
+
+  if (config.has ("hooks.location"))
+    d = Directory (config.get ("hooks.location"));
+  else
+    d = Directory (getDefaultHooksLocation());
+  d.create ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

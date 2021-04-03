@@ -35,6 +35,7 @@
 #include <Context.h>
 #include <shared.h>
 #include <format.h>
+#include <util.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
@@ -300,8 +301,7 @@ int CmdDiagnostics::execute (std::string& output)
   }
   else
   {
-    hookLocation = Path (Context::getContext ().config.get ("data.location"));
-    hookLocation += "hooks";
+    hookLocation = Path (getDefaultHooksLocation());
   }
 
   out << bold.colorize ("Hooks")
