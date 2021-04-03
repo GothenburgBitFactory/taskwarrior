@@ -228,6 +228,8 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
     // and 2 (not found) are aceptable return values from unsetConfigVariable
     if (rc % 2 != 0)
       throw format ("Context '{1}' not deleted.", words[1]);
+    else if (rc == 6)
+      throw format ("Context '{1}' not found.", words[1]);
 
     out << format ("Context '{1}' deleted.\n", words[1]);
   }
