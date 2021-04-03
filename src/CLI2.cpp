@@ -602,12 +602,17 @@ void CLI2::addContext (bool readable, bool writeable)
     return;
 
   // Detect if any context is set, and bail out if not
-  std::string contextName = Context::getContext ().config.get ("context");
-  if (contextName == "")
-  {
-    Context::getContext ().debug ("No context.");
+  std::string contextString;
+  if (readable)
+    contextString = Context::getContext ().getTaskContext("read");
+  else if (writeable)
+    contextString = Context::getContext ().getTaskContext("write");
+  else
     return;
-  }
+
+  // If context is empty, bail out too
+  if (contextString.empty ())
+    return;
 
   // Detect if UUID or ID is set, and bail out
   for (auto& a : _args)
@@ -621,44 +626,21 @@ void CLI2::addContext (bool readable, bool writeable)
     }
   }
 
-  // Determine whether we're using readable or writeable context. Readable
-  // (filtering) takes precedence.
-  if (readable) {
-    Context::getContext ().debug ("Applying context: " + contextName);
-    std::string contextFilter = Context::getContext ().config.get ("context." + contextName + ".read");
+  // Apply the context. Readable (filtering) takes precedence.
+  if (readable)
+    addFilter (contextString);
+  else if (writeable)
+    addModifications (contextString);
 
-    if (contextFilter.empty ())
-    {
-      Context::getContext ().debug ("Specific readable context for '" + contextName + "' not defined. Falling back on generic.");
-      contextFilter = Context::getContext ().config.get ("context." + contextName);
-    }
+  // Inform the user about the application of context
+  if (Context::getContext ().verbose ("context"))
+    Context::getContext ().footnote (format (
+        "Context '{1}' set. Use 'task context none' to remove.",
+        Context::getContext ().config.get ("context")
+    ));
 
-    if (! contextFilter.empty ())
-    {
-      _context_added = true;
-      addFilter (contextFilter);
-      if (Context::getContext ().verbose ("context"))
-        Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
-    }
-  }
-  else if (writeable) {
-    Context::getContext ().debug ("Applying context: " + contextName);
-    std::string contextMods = Context::getContext ().config.get ("context." + contextName + ".write");
-
-    if (contextMods.empty ())
-    {
-      Context::getContext ().debug ("Specific writeable context for '" + contextName + "' not defined. Falling back on generic.");
-      contextMods = Context::getContext ().config.get ("context." + contextName);
-    }
-
-    if (! contextMods.empty ())
-    {
-      _context_added = true;
-      addModifications (contextMods);
-      if (Context::getContext ().verbose ("context"))
-        Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
-    }
-  }
+  // Set the block, we don't want to apply context multiple times by accident.
+  _context_added = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
