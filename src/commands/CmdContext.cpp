@@ -180,13 +180,15 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     bool write_success = CmdConfig::setConfigVariable (name + ".write", value, confirmation);
 
     if (!read_success and !write_success)
-      throw format ("Context '{1}' not defined (setting read and write failed).", words[1]);
+      throw format ("Context '{1}' not defined.", words[1]);
     else if (!read_success)
-      throw format ("Context '{1}' not defined (setting read failed).", words[1]);
+      out << format ("Context '{1}' defined (write only).", words[1]);
     else if (!write_success)
-      throw format ("Context '{1}' not defined (setting write failed).", words[1]);
+      out << format ("Context '{1}' defined (read only).", words[1]);
+    else
+      out << format ("Context '{1}' defined (read, write).", words[1]);
 
-    out << format ("Context '{1}' defined. Use 'task context {1}' to activate.\n", words[1]);
+    out << format (" Use 'task context {1}' to activate.\n", words[1]);
   }
   else
     throw std::string ("Both context name and its definition must be provided.");
