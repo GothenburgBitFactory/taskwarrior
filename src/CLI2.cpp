@@ -604,9 +604,10 @@ void CLI2::addContext (bool readable, bool writeable)
   // Detect if any context is set, and bail out if not
   std::string contextString;
   if (readable)
-    contextString = Context::getContext ().getTaskContext("read");
+    // Empty string is treated as "currently selected context"
+    contextString = Context::getContext ().getTaskContext("read", "");
   else if (writeable)
-    contextString = Context::getContext ().getTaskContext("write");
+    contextString = Context::getContext ().getTaskContext("write", "");
   else
     return;
 

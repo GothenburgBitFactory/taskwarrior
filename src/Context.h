@@ -57,7 +57,7 @@ public:
   int getWidth ();                     // determine terminal width
   int getHeight ();                    // determine terminal height
 
-  std::string getTaskContext (const std::string&, bool fallback=true);
+  std::string getTaskContext (const std::string&, std::string, bool fallback=true);
 
   const std::vector <std::string> getColumns () const;
   void getLimits (int&, int&);
