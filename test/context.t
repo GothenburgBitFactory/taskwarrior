@@ -47,7 +47,7 @@ class ContextManagementTest(TestCase):
         """With confirmation active, prompt if context filter matches no tasks"""
         self.t.config("confirmation", "on")
 
-        code, out, err = self.t.runError('context define work project:Work', input="y\n")
+        code, out, err = self.t.runError('context define work project:Work', input="y\nn\n")
         self.assertIn("The filter 'project:Work' matches 0 pending tasks.", out)
         self.assertNotIn("Context 'work' defined.", out)
 
@@ -56,7 +56,7 @@ class ContextManagementTest(TestCase):
 
     def test_context_define(self):
         """Test simple context definition."""
-        code, out, err = self.t('context define work project:Work', input="y\n")
+        code, out, err = self.t('context define work project:Work', input="y\nn\n")
         self.assertIn("Context 'work' defined.", out)
 
         # Assert the config contains context definition
@@ -536,7 +536,7 @@ class TestBug1734(TestCase):
         self.t = Task()
         self.t("add zero")
         self.t("add one +tag")
-        self.t("context define foo +tag", input="y\n")
+        self.t("context define foo +tag", input="y\nn\n")
 
     def test_calendar(self):
         """The 'calendar' command should not fail when a context is active"""
