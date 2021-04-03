@@ -88,6 +88,14 @@ int CmdEdit::execute (std::string&)
     return 1;
   }
 
+  unsigned int bulk = Context::getContext ().config.getInteger ("bulk");
+
+  // If we are editing more than "bulk" tasks, ask for confirmation.
+  // Bulk = 0 denotes infinite bulk.
+  if ((filtered.size () > bulk) && (bulk != 0))
+    if (! confirm (format ("Do you wish to manually edit {1} tasks?", filtered.size ())))
+      return 2;
+
   // Find number of matching tasks.
   for (auto& task : filtered)
   {
