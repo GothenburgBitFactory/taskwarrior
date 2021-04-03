@@ -32,6 +32,7 @@
 #include <Filter.h>
 #include <sstream>
 #include <algorithm>
+#include <set>
 #include <format.h>
 #include <shared.h>
 #include <util.h>
@@ -109,13 +110,20 @@ std::string CmdContext::joinWords (const std::vector <std::string>& words, unsig
 //
 std::vector <std::string> CmdContext::getContexts ()
 {
-  std::vector <std::string> contexts;
+  std::set <std::string> contexts;
 
   for (auto& name : Context::getContext ().config)
     if (name.first.substr (0, 8) == "context.")
-      contexts.push_back (name.first.substr (8));
+    {
+      std::string suffix = name.first.substr (8);
 
-  return contexts;
+      if (suffix.find (".") != std::string::npos)
+        contexts.insert (suffix.substr (0, suffix.find (".")));
+      else
+        contexts.insert (suffix);
+    }
+
+  return std::vector (contexts.begin (), contexts.end ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
