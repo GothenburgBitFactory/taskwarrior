@@ -41,7 +41,7 @@ CmdContext::CmdContext ()
 {
   _keyword               = "context";
   _usage                 = "task          context [<name> | <subcommand>]";
-  _description           = "Set and define contexts (default filters)";
+  _description           = "Set and define contexts (default filters / modifications)";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
