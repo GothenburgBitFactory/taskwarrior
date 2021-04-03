@@ -324,8 +324,12 @@ void CmdContext::showContext (std::stringstream& out)
     out << "No context is currently applied.\n";
   else
   {
-    std::string currentFilter = Context::getContext ().config.get ("context." + currentContext);
-    out << format ("Context '{1}' with filter '{2}' is currently applied.\n", currentContext, currentFilter);
+    out << format (
+      "Context '{1}' with \n\n* read filter: '{2}'\n* write filter: '{3}'\n\nis currently applied.\n",
+      currentContext,
+      Context::getContext ().getTaskContext("read", ""),
+      Context::getContext ().getTaskContext("write", "")
+    );
   }
 }
 
