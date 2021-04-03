@@ -17,6 +17,9 @@ New Features in Taskwarrior 2.6.0
   - Calendar now supports displaying due dates until year 9999.
   - Calendar now displays waiting tasks with due dates on the calendar.
   - A large portion of currently known parser-related issues was fixed.
+  - The currently selected context is now applied for "task add" and "task log"
+    commands. Section on contexts in the manpage was updated to describe this
+    functionality.
 
 
 New Commands in Taskwarrior 2.6.0
@@ -25,7 +28,10 @@ New Commands in Taskwarrior 2.6.0
 
 New Configuration Options in Taskwarrior 2.6.0
 
-  -
+  - The context definitions for reporting commmands are now stored in
+    "context.<name>.read". Context definitions for write commands are now
+    supported using "context.<name>.write" configuration variable.
+
 
 Newly Deprecated Features in Taskwarrior 2.6.0
 
