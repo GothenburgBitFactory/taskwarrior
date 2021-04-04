@@ -4,16 +4,22 @@
 
 Thank you for taking a look at Taskwarrior!
 
-Taskwarrior is a GTD, todo list, task management, command line utility with a
-multitude of features. It is a portable, well supported and very active Open
-Source project.
+Taskwarrior is a command line task list management utility with a [multitude of
+features](https://taskwarrior.org/docs/), developed as a portable open source project
+with an active and quite vast [ecosystem of tools, hooks and
+extensions](https://taskwarrior.org/tools/).
+
+Taskwarrior runs on a wide range of [Linux/Unix systems, Mac OS and
+Windows](https://taskwarrior.org/download/).
 
 ## Documentation
 
-There is extensive online documentation.
-You'll find all the details at [taskwarrior.org/docs](https://taskwarrior.org/docs)
+The [online documentation](https://taskwarrior.org/docs), downloads, news and
+more are available on our website, [taskwarrior.org](https://taskwarrior.org).
 
-At the site you'll find online documentation, downloads, news and more.
+We also recommend following [@taskwarrior on
+Twitter](https://twitter.com/taskwarrior), where we share info about new
+features, releases and various tips and tricks for new Taskwarrior users.
 
 ## Support
 
@@ -32,8 +38,7 @@ We use the following branching model:
 
 * `2.6.0` is the current development branch. All work is done here, and upon
   release it will be merged to `master`. This development branch is not stable,
-  may not even build or pass tests, and should be treated accordingly.
-  Make backups.
+  and should be treated accordingly. Make backups.
 
 ## Installing
 
@@ -87,4 +92,3 @@ Visit [Github](https://github.com/GothenburgBitFactory/taskwarrior) and particip
 
 Taskwarrior is released under the MIT license.
 For details check the [LICENSE](LICENSE) file.
-
