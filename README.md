@@ -23,9 +23,12 @@ features, releases and various tips and tricks for new Taskwarrior users.
 
 ## Support
 
-For support options, take a look at [taskwarrior.org/support](https://taskwarrior.org/support)
+Best place to ask questions is our [discussions forum on
+Github](https://github.com/GothenburgBitFactory/taskwarrior/discussions). For
+other support options, take a look at
+[taskwarrior.org/support](https://taskwarrior.org/support)
 
-Please use pull requests, or alternately send your code patches to
+For code contributions, please use pull requests, or alternately send your code patches to
 [support@gothenburgbitfactory.org](mailto:support@gothenburgbitfactory.org)
 
 ## Branching Model
