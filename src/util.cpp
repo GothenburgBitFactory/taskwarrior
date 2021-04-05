@@ -331,7 +331,19 @@ const std::string getXdgConfigHome ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string getDefaultHooksLocation()
 {
-  return format ("{1}/task/hooks", getXdgConfigHome());
+  std::string hooks_path = "";
+  File rc_file_in_home = File ("~/.taskrc");
+
+  if (Context::getContext ().rc_file == rc_file_in_home )
+  {
+    hooks_path = Context::getContext ().config.get ("data.location");
+    hooks_path += "hooks";
+  }
+  else
+  {
+    hooks_path = format ("{1}/task/hooks", getXdgConfigHome());
+  }
+  return hooks_path;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
