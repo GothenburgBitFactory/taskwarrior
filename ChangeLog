@@ -46,6 +46,9 @@
            Thanks to emkamau.
 - TW #2428 The "edit" command should respect "bulk" configuration option
            Thanks to Evan Edmond.
+- TW #2442 Bulk completions generate nagging message even if highest urgency
+           task was completed
+           Thanks to Daniel Mowitz.
 
 ------ current release ---------------------------
 
