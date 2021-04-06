@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@
 // This string is parsed and used as default values for configuration.
 std::string configurationDefaults =
   "# Taskwarrior program configuration file.\n"
-  "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-color',\n"
+  "# For more documentation, see https://taskwarrior.org or try 'man task', 'man task-color',\n"
   "# 'man task-sync' or 'man taskrc'\n"
   "\n"
   "# Here is an example of entries that use the default, override and blank values\n"
@@ -920,6 +920,38 @@ int Context::getHeight ()
   }
 
   return height;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Context::getTaskContext (const std::string& kind, std::string name, bool fallback /* = true */)
+{
+  // Consider currently selected context, if none specified
+  if (name.empty ())
+    name = config.get ("context");
+
+  // Detect if any context is set, and bail out if not
+  if (! name.empty ())
+    debug (format ("Applying context '{1}'", name));
+  else
+  {
+    debug ("No context set");
+    return "";
+  }
+
+  // Figure out the context string for this kind (read/write)
+  std::string contextString = config.get ("context." + name + "." + kind);
+  if (contextString.empty ())
+  {
+    debug ("Specific " + kind + " context for '" + name + "' not defined. ");
+    if (fallback)
+    {
+      debug ("Falling back on generic.");
+      contextString = config.get ("context." + name);
+    }
+  }
+
+  debug (format ("Detected context string: {1}", contextString.empty() ? "(empty)" : contextString));
+  return contextString;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

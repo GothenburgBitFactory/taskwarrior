@@ -155,10 +155,16 @@ foreach (doc_FILE ${doc_FILES})
 endforeach (doc_FILE)
 
 add_custom_command(OUTPUT run-review
-    COMMAND docker build -f scripts/review-dockerfile --build-arg PR=$(PR) -t taskwarrior-review:$(PR) .
-    COMMAND docker run --rm --hostname pr-$(PR) -it taskwarrior-review:$(PR) bash || :
+    COMMAND docker build -q --build-arg PR=$(PR) -t taskwarrior-review:$(PR) - < scripts/review-dockerfile
+    COMMAND docker run --rm --memory 1g --hostname pr-$(PR) -it taskwarrior-review:$(PR) bash || :
 )
 add_custom_target(review DEPENDS run-review)
+
+add_custom_command(OUTPUT run-reproduce
+    COMMAND docker build -q --build-arg RELEASE=$(RELEASE) -t taskwarrior-reproduce:$(RELEASE) - < scripts/reproduce-dockerfile
+    COMMAND docker run --rm --memory 1g --hostname tw-$(RELEASE) -it taskwarrior-reproduce:$(RELEASE) bash || :
+)
+add_custom_target(reproduce DEPENDS run-reproduce)
 
 # ---
 
@@ -169,6 +175,6 @@ set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSo
                                 "test" "package-config" "misc/*" "src/task$" "src/calc$" "performance"
                                 "src/libtask.a" "src/columns/libcolumns.a" "src/commands/libcommands.a"
                                 "swp$" "src/lex$" "task-.*.tar.gz" "commit.h" "cmake.h" "\\\\.gitmodules"
-                                "src/libshared/\\\\.git" ".github/" "\\\\.travis.yml" ".*\\\\.gitignore$"
+                                "src/libshared/\\\\.git" ".github/" ".*\\\\.gitignore$"
                                 "src/liblibshared.a" "docker-compose.yml" "\\\\.git/")
 include (CPack)

@@ -8,6 +8,7 @@ scripts will be run.
 Expected Location
   The hooks scripts all reside in one location, which is in a 'hooks'
   subdirectory, in your ~/.task (or rc.data.location override) directory.
+  You can use the command `task diagnostics` to verify hooks location.
 
 Expected Name
   A hook scripts must be named according to which event triggers the script. A

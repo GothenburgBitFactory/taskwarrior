@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ class TestVersion(TestCase):
         expected = "task {0}".format(self.slurp())
         self.assertIn(expected, out)
         self.assertIn("MIT license", out)
-        self.assertIn("http://taskwarrior.org", out)
+        self.assertIn("https://taskwarrior.org", out)
 
     def slurp_git(self):
         git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")

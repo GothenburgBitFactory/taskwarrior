@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2020, Göteborg Bit Factory.
+// Copyright 2013 - 2021, Göteborg Bit Factory.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,8 @@
 int main (int, char**)
 {
   UnitTest t (81);
+
+  time_t now = time (nullptr);
 
   try
   {
@@ -208,8 +210,10 @@ int main (int, char**)
 
     Variant v45 ((time_t) 1234567890, Variant::type_date);
     v45.cast (Variant::type_duration);
-    t.ok (v45.type () == Variant::type_duration, "cast date --> duration");
-    t.ok (v45.get_duration () == 1234567890,     "cast date --> duration");
+    t.ok (v45.type () == Variant::type_duration,        "cast date --> duration");
+    t.ok (v45.get_duration () <= 1234567890 - now,      "cast date --> duration");
+    // Assuming this unit test takes less than 10 min to execute
+    t.ok (v45.get_duration () > 1234567890 - now - 600, "cast date --> duration");
 
     // Variant::type_duration --> *
     Variant v50 ((time_t) 12345, Variant::type_duration);
@@ -235,12 +239,13 @@ int main (int, char**)
     Variant v54 ((time_t) 12345, Variant::type_duration);
     v54.cast (Variant::type_date);
     t.ok (v54.type () == Variant::type_date,    "cast duration --> date");
-    t.is (v54.get_date (), 12345,               "cast duration --> date");
+    t.ok (v54.get_date () >= 12345 + now,       "cast duration --> duration");
+    t.ok (v54.get_date () <  12345 + now + 600, "cast duration --> duration");
 
     Variant v55 ((time_t) 12345, Variant::type_duration);
     v55.cast (Variant::type_duration);
-    t.ok (v55.type () == Variant::type_duration, "cast duration --> duration");
-    t.ok (v55.get_duration () == 12345,          "cast duration --> duration");
+    t.ok (v55.type () == Variant::type_duration,    "cast duration --> duration");
+    t.is (v55.get_duration (), 12345,               "cast duration --> duration");
   }
 
   catch (const std::string& e)

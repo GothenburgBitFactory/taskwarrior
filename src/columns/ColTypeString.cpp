@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,12 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
   std::string domRef;
   Lexer::Type type;
   if (lexer.token (domRef, type) &&
-      type == Lexer::Type::dom)
+      type == Lexer::Type::dom &&
+      // Ensure 'value' contains only the DOM reference and no other tokens
+      // The lexer.token returns false for end-of-string.
+      // This works as long as all the DOM references we should support consist
+      // only of a single token.
+      lexer.token (domRef, type) == false)
   {
     Eval e;
     e.addSource (domSource);

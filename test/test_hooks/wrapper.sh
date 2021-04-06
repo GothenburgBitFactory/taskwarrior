@@ -10,7 +10,7 @@ echo "% Called at $(python3 -c 'import time; print(time.time())') with '$@'" >> 
 
 # Log what arrives via stdin to ${IN} and what comes via stdout to ${OUT}
 $ORIGINALHOOK "$@" < <(tee -a ${IN}) > >(tee -a ${OUT})
-# More on the < <() syntax at: http://tldp.org/LDP/abs/html/process-sub.html
+# More on the < <() syntax at: https://tldp.org/LDP/abs/html/process-sub.html
 
 EXITCODE=$?
 echo "! Exit code: ${EXITCODE}" >> ${OUT}

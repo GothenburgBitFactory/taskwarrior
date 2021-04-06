@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2013 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -697,7 +697,7 @@ bool Eval::parsePrimitive (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Dijkstra Shunting Algorithm.
-// http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+// https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 //
 //   While there are tokens to be read:
 //     Read a token.

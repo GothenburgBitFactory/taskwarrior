@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -116,6 +116,7 @@ static void colorizeTagged (Task& task, const Color& base, Color& c, bool merge)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeActive (Task& task, const Color& base, Color& c, bool merge)
 {
+  // TODO: Not consistent with the implementation of the +ACTIVE virtual tag
   if (task.has ("start") &&
       !task.has ("end"))
     applyColor (base, c, merge);
@@ -124,6 +125,7 @@ static void colorizeActive (Task& task, const Color& base, Color& c, bool merge)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeScheduled (Task& task, const Color& base, Color& c, bool merge)
 {
+  // TODO: Not consistent with the implementation of the +SCHEDULED virtual tag
   if (task.has ("scheduled") &&
       Datetime (task.get_date ("scheduled")) <= now)
     applyColor (base, c, merge);
@@ -222,41 +224,22 @@ static void colorizeUDA (Task& task, const std::string& rule, const Color& base,
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDue (Task& task, const Color& base, Color& c, bool merge)
 {
-  if (task.has ("due"))
-  {
-    auto status = task.getStatus ();
-    if (status != Task::completed &&
-        status != Task::deleted   &&
-        task.getDateState ("due") == Task::dateAfterToday)
-      applyColor (base, c, merge);
-  }
+  if (task.is_due ())
+    applyColor (base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDueToday (Task& task, const Color& base, Color& c, bool merge)
 {
-  if (task.has ("due"))
-  {
-    auto status = task.getStatus ();
-    auto dateState = task.getDateState ("due");
-    if (status != Task::completed &&
-        status != Task::deleted   &&
-        (dateState == Task::dateLaterToday || dateState == Task::dateEarlierToday))
-      applyColor (base, c, merge);
-  }
+  if (task.is_duetoday ())
+    applyColor (base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeOverdue (Task& task, const Color& base, Color& c, bool merge)
 {
-  if (task.has ("due"))
-  {
-    auto status = task.getStatus ();
-    if (status != Task::completed &&
-        status != Task::deleted   &&
-        task.getDateState ("due") == Task::dateBeforeToday)
-      applyColor (base, c, merge);
-  }
+  if (task.is_overdue ())
+    applyColor (base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

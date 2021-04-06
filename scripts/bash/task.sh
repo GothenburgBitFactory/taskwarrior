@@ -1,6 +1,6 @@
 ################################################################################
 #
-# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -46,18 +46,20 @@
 #
 #    *) Go to the project's website at
 #
-#       http://taskwarrior.org
+#       https://taskwarrior.org
 #
 ################################################################################
 #the following variable is substituted for by ../../test/bash_completion.t
-taskcommand='task rc.verbose:nothing rc.confirmation:no rc.hooks:off'
+taskbin='task'
+taskrc=''
+taskcommand="rc.verbose:nothing rc.confirmation:no rc.hooks:off ${taskrc}"
 
 _task_get_tags() {
-    $taskcommand _tags
+    "$taskbin" $taskcommand _tags
 }
 
 _task_get_config() {
-    $taskcommand _config
+    "$taskbin" $taskcommand _config
 }
 
 _task_offer_priorities() {
@@ -65,14 +67,14 @@ _task_offer_priorities() {
 }
 
 _task_offer_projects() {
-    COMPREPLY=( $(compgen -W "$($taskcommand _projects)" -- ${cur/*:/}) )
+    COMPREPLY=( $(compgen -W "$("$taskbin" $taskcommand _projects)" -- ${cur/*:/}) )
 }
 
 _task_offer_contexts() {
-    COMPREPLY=( $(compgen -W "$($taskcommand _context) define delete list none show" -- $cur) )
+    COMPREPLY=( $(compgen -W "$("$taskbin" $taskcommand _context) define delete list none show" -- $cur) )
 }
 
-_task_context_alias=$($taskcommand show | grep 'alias.*context' | cut -d' ' -f1 | cut -d. -f2)
+_task_context_alias=$("$taskbin" $taskcommand show | grep 'alias.*context' | cut -d' ' -f1 | cut -d. -f2)
 
 _task()
 {
@@ -92,9 +94,9 @@ _task()
 #   echo "prev='$prev'"
 #   echo "prev2='$prev2'"
 
-    abbrev_min=$($taskcommand show | grep "abbreviation.minimum" | awk {'print  $2'})
-    commands_aliases=$(echo $($taskcommand _commands; $taskcommand _aliases) | tr " " "\n"|sort|tr "\n" " ")
-    opts="$commands_aliases $($taskcommand _columns)"
+    abbrev_min=$("$taskbin" $taskcommand show | grep "abbreviation.minimum" | awk {'print  $2'})
+    commands_aliases=$(echo $("$taskbin" $taskcommand _commands; "$taskbin" $taskcommand _aliases) | tr " " "\n"|sort|tr "\n" " ")
+    opts="$commands_aliases $("$taskbin" $taskcommand _columns)"
 
     case "${prev}" in
         $_task_context_alias|cont|conte|contex|context)

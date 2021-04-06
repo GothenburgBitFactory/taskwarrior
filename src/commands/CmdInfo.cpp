@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -377,7 +377,6 @@ int CmdInfo::execute (std::string& output)
 
     // Show any UDAs
     auto all = task.all ();
-    std::string type;
     for (auto& att: all)
     {
       if (Context::getContext ().columns.find (att) != Context::getContext ().columns.end ())
@@ -391,9 +390,9 @@ int CmdInfo::execute (std::string& output)
             row = view.addRow ();
             view.set (row, 0, col->label ());
 
-            if (type == "date")
+            if (col->type () == "date")
               value = Datetime (value).toString (dateformat);
-            else if (type == "duration")
+            else if (col->type () == "duration")
             {
               Duration iso;
               std::string::size_type cursor = 0;

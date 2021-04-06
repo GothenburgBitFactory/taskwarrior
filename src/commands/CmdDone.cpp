@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ int CmdDone::execute (std::string&)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  auto nagged = false;
+  Task& lowest = filtered.front();
   for (auto& task : filtered)
   {
     Task before (task);
@@ -105,8 +105,8 @@ int CmdDone::execute (std::string&)
         ++count;
         feedback_affected ("Completed task {1} '{2}'.", task);
         feedback_unblocked (task);
-        if (!nagged)
-          nagged = nag (task);
+        if (task.urgency () < lowest.urgency ())
+          lowest = task;
         dependencyChainOnComplete (task);
         if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task);
@@ -128,7 +128,9 @@ int CmdDone::execute (std::string&)
       rc = 1;
     }
   }
-
+  
+  nag(lowest);
+  
   // Now list the project changes.
   for (const auto& change : projectChanges)
     if (change.first != "")

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -329,15 +329,16 @@ void CLI2::add (const std::string& argument)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Capture a set of arguments, inserted immediately after the binary.
-void CLI2::add (const std::vector <std::string>& arguments)
+// Capture a set of arguments, inserted immediately after <offset> arguments
+// after the binary..
+void CLI2::add (const std::vector <std::string>& arguments, int offset /* = 0 */)
 {
-  std::vector <A2> replacement {_original_args[0]};
+  std::vector <A2> replacement {_original_args.begin(), _original_args.begin() + offset + 1};
 
   for (const auto& arg : arguments)
     replacement.push_back (A2 (arg, Lexer::Type::word));
 
-  for (unsigned int i = 1; i < _original_args.size (); ++i)
+  for (unsigned int i = 1 + offset; i < _original_args.size (); ++i)
     replacement.push_back (_original_args[i]);
 
   _original_args = replacement;
@@ -536,7 +537,8 @@ void CLI2::analyze ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Process raw string.
+// Process raw filter string.
+// Insert filter arguments (wrapped in parentheses) immediatelly after the binary.
 void CLI2::addFilter (const std::string& arg)
 {
   if (arg.length ())
@@ -558,22 +560,60 @@ void CLI2::addFilter (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Process raw modification string.
+// Insert modification arguments immediatelly after the command (i.e. 'add')
+void CLI2::addModifications (const std::string& arg)
+{
+  if (arg.length ())
+  {
+    std::vector <std::string> mods;
+
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (arg);
+
+    while (lex.token (lexeme, type))
+      mods.push_back (lexeme);
+
+    // Determine at which argument index does the task modification command
+    // reside
+    unsigned int cmdIndex = 0;
+    for (; cmdIndex < _args.size(); ++cmdIndex)
+    {
+      // Command found, stop iterating.
+      if (_args[cmdIndex].hasTag ("CMD"))
+        break;
+    }
+
+    // Insert modifications after the command.
+    add (mods, cmdIndex);
+    analyze ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // There are situations where a context filter is applied. This method
 // determines whether one applies, and if so, applies it. Disqualifiers include:
 //   - filter contains ID or UUID
-void CLI2::addContextFilter ()
+void CLI2::addContext (bool readable, bool writeable)
 {
   // Recursion block.
-  if (_context_filter_added)
+  if (_context_added)
     return;
 
   // Detect if any context is set, and bail out if not
-  std::string contextName = Context::getContext ().config.get ("context");
-  if (contextName == "")
-  {
-    Context::getContext ().debug ("No context.");
+  std::string contextString;
+  if (readable)
+    // Empty string is treated as "currently selected context"
+    contextString = Context::getContext ().getTaskContext("read", "");
+  else if (writeable)
+    contextString = Context::getContext ().getTaskContext("write", "");
+  else
     return;
-  }
+
+  // If context is empty, bail out too
+  if (contextString.empty ())
+    return;
 
   // Detect if UUID or ID is set, and bail out
   for (auto& a : _args)
@@ -587,19 +627,20 @@ void CLI2::addContextFilter ()
     }
   }
 
-  // Apply context
-  Context::getContext ().debug ("Applying context: " + contextName);
-  std::string contextFilter = Context::getContext ().config.get ("context." + contextName);
+  // Apply the context. Readable (filtering) takes precedence. Also set the
+  // block now, since addFilter calls analyze(), which calls addContext().
+  _context_added = true;
+  if (readable)
+    addFilter (contextString);
+  else if (writeable)
+    addModifications (contextString);
 
-  if (contextFilter == "")
-    Context::getContext ().debug ("Context '" + contextName + "' not defined.");
-  else
-  {
-    _context_filter_added = true;
-    addFilter (contextFilter);
-    if (Context::getContext ().verbose ("context"))
-      Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
-  }
+  // Inform the user about the application of context
+  if (Context::getContext ().verbose ("context"))
+    Context::getContext ().footnote (format (
+        "Context '{1}' set. Use 'task context none' to remove.",
+        Context::getContext ().config.get ("context")
+    ));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -610,7 +651,7 @@ void CLI2::prepareFilter ()
   // Clear and re-populate.
   _id_ranges.clear ();
   _uuid_list.clear ();
-  _context_filter_added = false;
+  _context_added = false;
 
   // Remove all the syntactic sugar for FILTERs.
   lexFilterArgs ();
@@ -895,7 +936,7 @@ void CLI2::categorizeArgs ()
   std::string command = getCommand ();
   Command* cmd = Context::getContext ().commands[command];
   if (cmd && cmd->uses_context ())
-    addContextFilter ();
+    addContext (cmd->accepts_filter (), cmd->accepts_modifications ());
 
   bool changes = false;
   bool afterCommand = false;
@@ -1270,7 +1311,9 @@ void CLI2::desugarFilterAttributes ()
         A2 op ("", Lexer::Type::op);
         op.tag ("FILTER");
 
-        A2 rhs ("", values[0]._lextype);
+        // Attribute types that do not support evaluation should be interpreted
+        // as strings (currently this means that string attributes are not evaluated)
+        A2 rhs ("", evalSupported ? values[0]._lextype: Lexer::Type::string);
         rhs.tag ("FILTER");
 
         // Special case for '<name>:<value>'.
@@ -1364,7 +1407,7 @@ void CLI2::desugarFilterAttributes ()
 
         // Do not modify this construct without full understanding.
         // Getting this wrong breaks a whole lot of filtering tests.
-        if (values.size () > 1 || evalSupported)
+        if (evalSupported)
         {
           for (auto& v : values)
             reconstructed.push_back (v);
@@ -1939,6 +1982,40 @@ void CLI2::desugarFilterPlainArgs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Detects if the bracket at iterator it is a start or end of an empty paren expression
+// Examples:
+// ( status = pending ) ( )
+//                      ^
+//              it -----|         => true
+//
+// ( status = pending ) ( project = Home )
+//                      ^
+//              it -----|         => false
+bool CLI2::isEmptyParenExpression (std::vector<A2>::iterator it, bool forward /* = true */) const
+{
+  int open = 0;
+  int closed = 0;
+
+  for (auto a = it; a != (forward ? _args.end (): _args.begin()); (forward ? ++a: --a))
+  {
+    if (a->attribute("raw") == "(")
+      open++;
+    else if (a->attribute("raw") == ")")
+      closed++;
+    else
+      // Encountering a non-paren token means there is something between parenthees
+      return false;
+
+    // Getting balanced parentheses means we have an empty paren expression
+    if (open == closed && open != 0)
+      return true;
+  }
+
+  // Should not end here.
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
 // "and" operator inserted between them.
 //
@@ -1964,10 +2041,18 @@ void CLI2::insertJunctions ()
       // Insert AND between terms.
       else if (a != prev)
       {
-        if ((prev->_lextype != Lexer::Type::op && a->attribute ("raw") == "(")    ||
-            (prev->_lextype != Lexer::Type::op && a->_lextype != Lexer::Type::op) ||
-            (prev->attribute ("raw") == ")"    && a->_lextype != Lexer::Type::op) ||
-            (prev->attribute ("raw") == ")"    && a->attribute ("raw") == "("))
+        if ((prev->_lextype != Lexer::Type::op &&
+             a->attribute ("raw") == "("       &&
+             ! isEmptyParenExpression(a, true)    ) ||
+            (prev->attribute ("raw") == ")"    &&
+             a->_lextype != Lexer::Type::op    &&
+             ! isEmptyParenExpression(prev, false)) ||
+            (prev->attribute ("raw") == ")"    &&
+             a->attribute ("raw") == "("       &&
+             ! isEmptyParenExpression(a, true) &&
+             ! isEmptyParenExpression(prev, false)) ||
+            (prev->_lextype != Lexer::Type::op &&
+             a->_lextype != Lexer::Type::op))
         {
           A2 opOr ("and", Lexer::Type::op);
           opOr.tag ("FILTER");

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -258,7 +258,6 @@ class TestBug1479(TestCase):
         self.assertNotIn("P1", out)
         self.assertIn("P2", out)
 
-    @unittest.expectedFailure
     def test_description_with_spaces_alternative_syntax(self):
         """1479: Alternative syntax"""
         self.t("add project:P1 one")

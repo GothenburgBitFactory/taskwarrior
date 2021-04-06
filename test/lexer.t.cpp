@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2020, Göteborg Bit Factory.
+// Copyright 2013 - 2021, Göteborg Bit Factory.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -99,7 +99,7 @@ int main (int, char**)
   t.notok (l1.token (token, type), "'       \\t ' --> no tokens");
 
   // \u20ac = Euro symbol.
-  Lexer l2 (" one 'two \\'three\\''+456-(1.3*2 - 0x12) 1.2e-3.4    foo.bar and '\\u20ac'");
+  Lexer l2 (R"( one 'two \'three\''+456-(1.3*2 - 0x12) 1.2e-3.4    foo.bar and '\u20ac')");
 
   tokens.clear ();
   while (l2.token (token, type))
@@ -246,13 +246,13 @@ int main (int, char**)
 
   std::string text = "one 'two' three\\ four";
   cursor = 0;
-  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.ok (Lexer::readWord (text, cursor, word),              R"(readWord "one 'two' three\ four" --> true)");
   t.is (word, "one",                                        "  word '" + word + "'");
   cursor++;
-  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.ok (Lexer::readWord (text, cursor, word),              R"(readWord "one 'two' three\ four" --> true)");
   t.is (word, "'two'",                                      "  word '" + word + "'");
   cursor++;
-  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.ok (Lexer::readWord (text, cursor, word),              R"(readWord "one 'two' three\ four" --> true)");
   t.is (word, "three four",                                 "  word '" + word + "'");
 
   text = "one     ";
@@ -356,9 +356,9 @@ int main (int, char**)
     { "'one two'",                                    { { "'one two'",                                    Lexer::Type::string                  }, NO, NO, NO, NO }, },
     { "\"three\"",                                    { { "\"three\"",                                    Lexer::Type::string                  }, NO, NO, NO, NO }, },
     { "'\\''",                                        { { "'''",                                          Lexer::Type::string                  }, NO, NO, NO, NO }, },
-    { "\"\\\"\"",                                     { { "\"\"\"",                                       Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    {R"("\"")",                                       { {R"(""")",                                        Lexer::Type::string                  }, NO, NO, NO, NO }, },
     { "\"\tfoo\t\"",                                  { { "\"\tfoo\t\"",                                  Lexer::Type::string                  }, NO, NO, NO, NO }, },
-    { "\"\\u20A43\"",                                 { { "\"₤3\"",                                       Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    {R"("\u20A43")",                                  { { "\"₤3\"",                                       Lexer::Type::string                  }, NO, NO, NO, NO }, },
     { "\"U+20AC4\"",                                  { { "\"€4\"",                                       Lexer::Type::string                  }, NO, NO, NO, NO }, },
 
     // Number
@@ -574,8 +574,8 @@ int main (int, char**)
   t.is (Lexer::trimLeft ("",              " \t"), "",            "Lexer::trimLeft '' -> ''");
   t.is (Lexer::trimLeft ("xxx"),                  "xxx",         "Lexer::trimLeft 'xxx' -> 'xxx'");
   t.is (Lexer::trimLeft ("xxx",           " \t"), "xxx",         "Lexer::trimLeft 'xxx' -> 'xxx'");
-  t.is (Lexer::trimLeft ("  \t xxx \t  "),        "\t xxx \t  ", "Lexer::trimLeft '  \\t xxx \\t  ' -> '\\t xxx \\t  '");
-  t.is (Lexer::trimLeft ("  \t xxx \t  ", " \t"), "xxx \t  ",    "Lexer::trimLeft '  \\t xxx \\t  ' -> 'xxx \\t  '");
+  t.is (Lexer::trimLeft ("  \t xxx \t  "),        "\t xxx \t  ",R"(Lexer::trimLeft '  \t xxx \t  ' -> '\t xxx \t  ')");
+  t.is (Lexer::trimLeft ("  \t xxx \t  ", " \t"), "xxx \t  ",   R"(Lexer::trimLeft '  \t xxx \t  ' -> 'xxx \t  ')");
 
   // std::string Lexer::trimRight (const std::string& in, const std::string& t /*= " "*/)
   t.is (Lexer::trimRight (""),                     "",            "Lexer::trimRight '' -> ''");
@@ -583,8 +583,8 @@ int main (int, char**)
   t.is (Lexer::trimRight ("",              " \t"), "",            "Lexer::trimRight '' -> ''");
   t.is (Lexer::trimRight ("xxx"),                  "xxx",         "Lexer::trimRight 'xxx' -> 'xxx'");
   t.is (Lexer::trimRight ("xxx",           " \t"), "xxx",         "Lexer::trimRight 'xxx' -> 'xxx'");
-  t.is (Lexer::trimRight ("  \t xxx \t  "),        "  \t xxx \t", "Lexer::trimRight '  \\t xxx \\t  ' -> '  \\t xxx \\t'");
-  t.is (Lexer::trimRight ("  \t xxx \t  ", " \t"), "  \t xxx",    "Lexer::trimRight '  \\t xxx \\t  ' -> '  \\t xxx'");
+  t.is (Lexer::trimRight ("  \t xxx \t  "),        "  \t xxx \t", R"(Lexer::trimRight '  \t xxx \t  ' -> '  \t xxx \t')");
+  t.is (Lexer::trimRight ("  \t xxx \t  ", " \t"), "  \t xxx",    R"(Lexer::trimRight '  \t xxx \t  ' -> '  \t xxx')");
 
   // std::string Lexer::trim (const std::string& in, const std::string& t /*= " "*/)
   t.is (Lexer::trim (""),                     "",          "Lexer::trim '' -> ''");
@@ -592,7 +592,7 @@ int main (int, char**)
   t.is (Lexer::trim ("",              " \t"), "",          "Lexer::trim '' -> ''");
   t.is (Lexer::trim ("xxx"),                  "xxx",       "Lexer::trim 'xxx' -> 'xxx'");
   t.is (Lexer::trim ("xxx",           " \t"), "xxx",       "Lexer::trim 'xxx' -> 'xxx'");
-  t.is (Lexer::trim ("  \t xxx \t  "),        "\t xxx \t", "Lexer::trim '  \\t xxx \\t  ' -> '\\t xxx \\t'");
+  t.is (Lexer::trim ("  \t xxx \t  "),        "\t xxx \t",R"(Lexer::trim '  \t xxx \t  ' -> '\t xxx \t')");
   t.is (Lexer::trim ("  \t xxx \t  ", " \t"), "xxx",       "Lexer::trim '  \\t xxx \\t  ' -> 'xxx'");
 
   return 0;

@@ -1,15 +1,63 @@
 2.6.0 () -
 
+- TW #1654 "Due" parsing behaviour seems inconsistent
+           Thanks to Max Rossmannek.
+- TW #1896 Parser cannot handle empty parentheses
+           Thanks to Tomas Babej.
+- TW #1908 Cannot create task with explicit description 'start ....'
+           Thanks to Matt Chun-Lum.
+- TW #1955 Adding tasks in context.
+           Thanks to Jean-Francois Joly, Matt Smith.
 - TW #2004 "shell" should not be expand to "exec tasksh"
            Thanks to Arvedui
 - TW #2007 Compute number of current tasks correctly
            Thanks to Janik Rabe
+- TW #2017 Support 64-bit datetime values
+           Thanks to Evgeniy Vasilev
+- TW #2257 UDA string fields can't start with certain keywords
+           Thanks to Michael Russell.
+- TW #2060 Review timestamp is displayed as unix time, not formatted
+           Thanks to JavaZauber
 - TW #2093 wrong order under projects command
-           Thanks to Beka, mrossinek.
+           Thanks to Beka, Max Rossmannek.
+- TW #2101 Numeric UDA values above 2,147,483,647 overflow without warning
+           Thanks to Adam Monsen.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
            Thanks to Julien Rabinow.
+- TW #2292 CmdEdit: Interruption should remove lock file
+           Thanks to indev12.
+- TW #2333 Width determination of Unicode characters now works for up to
+           Unicode 11 (from Unicode 5). Emojis are correctly displayed.
+           Thanks to Adam Monsen.
+- TW #2373 Year 2038 Problem
+           Thanks to Stephan Rieche.
+- TW #2386 Filtering project:someday broken
+           Thanks to FRebbel.
+- TW #2388 Filtering for attribute values with spaces is broken
+           Thanks to angelus2014.
+- TW #2389 For certain terminal widths, annotations with utf-8 chars can lead
+           task to hang
+           Thanks to arooni.
+- TW #2390 Regression: Relative dates should be implicitly anchored around 'now'
+           Thanks to Dominik Russo.
+- TW #2392 Filtering for project-names containing hyphen and zero-leading number
+           Thanks to Nicola Chiapolini.
+- TW #2393 Highlight due dates for waiting tasks in the calendar
+           Thanks to emkamau.
+- TW #2428 The "edit" command should respect "bulk" configuration option
+           Thanks to Evan Edmond.
+- TW #2442 Bulk completions generate nagging message even if highest urgency
+           task was completed
+           Thanks to Daniel Mowitz.
 
 ------ current release ---------------------------
+
+2.5.3 (2021-01-05) - 2f47226f91f0b02f7617912175274d9eed85924f
+
+- #2375   task hangs then dies when certain tasks are present in a report
+          Thanks to Max Rossmannek, Tomáš Janoušek and Chad Phillips.
+
+------ old releases ------------------------------
 
 2.5.2 (2020-12-05) - b0c17d11639dc6e783befd89c8508f2abb9b4287
 
@@ -164,8 +212,6 @@
           Thanks to Lionel Miller.
 - Do not set CMP0037 on CMake 3.11.0 and above
           Thanks to Janik Rabe
-
------- old releases ------------------------------
 
 2.5.1 (2016-02-24) 8b4ae3b54b44dfbd00b96cdd6dceb8dfe7cc1ea0
 
@@ -1311,7 +1357,7 @@ Bugs
 - All holiday files have been renamed to include a locale, rather than just a
   country code.  For example: holidays.en-US.rc.
 - Now ships with an add-on script, update-holidays.pl, which contacts
-  http://holidata.net, and brings the installed holiday files up to date.
+  https://holidata.net, and brings the installed holiday files up to date.
 - Extension system now controlled by the 'extensions' configuration variable.
 - HTML export in the form of an external scripts export-html.pl.
 - Two additional solarized theme files, solarized-dark-256.theme and

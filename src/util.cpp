@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -130,7 +130,7 @@ int confirm4 (const std::string& question)
 // Also, uuid_unparse_lower is not needed on FreeBSD, because the string
 // representation is always lowercase anyway.
 // For the implementation details, refer to
-// http://svnweb.freebsd.org/base/head/sys/kern/kern_uuid.c
+// https://svnweb.freebsd.org/base/head/sys/kern/kern_uuid.c
 #if defined(FREEBSD) || defined(OPENBSD)
 const std::string uuid ()
 {

@@ -142,9 +142,9 @@ Darwin, 32bit
 
   See:
     https://taskwarrior.org/issues/817
-    http://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
-    http://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
-    http://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
+    https://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
+    https://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
+    https://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
 
 
 OpenBSD

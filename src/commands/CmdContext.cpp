@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@
 #include <Filter.h>
 #include <sstream>
 #include <algorithm>
+#include <set>
 #include <format.h>
 #include <shared.h>
 #include <util.h>
@@ -41,7 +42,7 @@ CmdContext::CmdContext ()
 {
   _keyword               = "context";
   _usage                 = "task          context [<name> | <subcommand>]";
-  _description           = "Set and define contexts (default filters)";
+  _description           = "Set and define contexts (default filters / modifications)";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = false;
@@ -109,13 +110,20 @@ std::string CmdContext::joinWords (const std::vector <std::string>& words, unsig
 //
 std::vector <std::string> CmdContext::getContexts ()
 {
-  std::vector <std::string> contexts;
+  std::set <std::string> contexts;
 
   for (auto& name : Context::getContext ().config)
     if (name.first.substr (0, 8) == "context.")
-      contexts.push_back (name.first.substr (8));
+    {
+      std::string suffix = name.first.substr (8);
 
-  return contexts;
+      if (suffix.find (".") != std::string::npos)
+        contexts.insert (suffix.substr (0, suffix.find (".")));
+      else
+        contexts.insert (suffix);
+    }
+
+  return std::vector <std::string> (contexts.begin (), contexts.end ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,13 +173,22 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
           ! confirm (format ("The filter '{1}' matches 0 pending tasks. Do you wish to continue?", value)))
         throw std::string ("Context definition aborted.");
 
+    // TODO: Validate the context as valid for writing and prompt for alternative if invald
+
     // Set context definition config variable
-    bool success = CmdConfig::setConfigVariable (name, value, confirmation);
+    bool read_success = CmdConfig::setConfigVariable (name + ".read", value, confirmation);
+    bool write_success = CmdConfig::setConfigVariable (name + ".write", value, confirmation);
 
-    if (!success)
+    if (!read_success and !write_success)
       throw format ("Context '{1}' not defined.", words[1]);
+    else if (!read_success)
+      out << format ("Context '{1}' defined (write only).", words[1]);
+    else if (!write_success)
+      out << format ("Context '{1}' defined (read only).", words[1]);
+    else
+      out << format ("Context '{1}' defined (read, write).", words[1]);
 
-    out << format ("Context '{1}' defined. Use 'task context {1}' to activate.\n", words[1]);
+    out << format (" Use 'task context {1}' to activate.\n", words[1]);
   }
   else
     throw std::string ("Both context name and its definition must be provided.");
@@ -195,15 +212,24 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
     auto name = "context." + words[1];
 
     auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
-    auto rc = CmdConfig::unsetConfigVariable(name, confirmation);
+    if (confirmation && ! confirm (format ("Do you want to delete context '{1}'?", words[1])))
+      throw format ("Context '{1}' not deleted.", words[1]);
+
+    // Delete legacy format and .read / .write flavours
+    auto rc = CmdConfig::unsetConfigVariable(name, false);
+    rc     += CmdConfig::unsetConfigVariable(name + ".read", false);
+    rc     += CmdConfig::unsetConfigVariable(name + ".write", false);
 
     // If the currently set context was deleted, unset it
     if (Context::getContext ().config.get ("context") == words[1])
       CmdConfig::unsetConfigVariable("context", false);
 
-    // Output feedback
-    if (rc != 0)
+    // Output feedback, rc should be even because only 0 (found and removed)
+    // and 2 (not found) are aceptable return values from unsetConfigVariable
+    if (rc % 2 != 0)
       throw format ("Context '{1}' not deleted.", words[1]);
+    else if (rc == 6)
+      throw format ("Context '{1}' not found.", words[1]);
 
     out << format ("Context '{1}' deleted.\n", words[1]);
   }
@@ -229,6 +255,7 @@ void CmdContext::listContexts (std::stringstream& out)
     Table table;
     table.width (Context::getContext ().getWidth ());
     table.add ("Name");
+    table.add ("Type");
     table.add ("Definition");
     table.add ("Active");
     setHeaderUnderline (table);
@@ -243,8 +270,15 @@ void CmdContext::listContexts (std::stringstream& out)
 
       int row = table.addRow ();
       table.set (row, 0, userContext);
-      table.set (row, 1, Context::getContext ().config.get ("context." + userContext));
-      table.set (row, 2, active);
+      table.set (row, 1, "read");
+      table.set (row, 2, Context::getContext ().getTaskContext("read", userContext));
+      table.set (row, 3, active);
+
+      row = table.addRow ();
+      table.set (row, 0, "");
+      table.set (row, 1, "write");
+      table.set (row, 2, Context::getContext ().getTaskContext("write", userContext));
+      table.set (row, 3, active);
     }
 
     out << optionalBlankLine ()
@@ -301,8 +335,12 @@ void CmdContext::showContext (std::stringstream& out)
     out << "No context is currently applied.\n";
   else
   {
-    std::string currentFilter = Context::getContext ().config.get ("context." + currentContext);
-    out << format ("Context '{1}' with filter '{2}' is currently applied.\n", currentContext, currentFilter);
+    out << format (
+      "Context '{1}' with \n\n* read filter: '{2}'\n* write filter: '{3}'\n\nis currently applied.\n",
+      currentContext,
+      Context::getContext ().getTaskContext("read", ""),
+      Context::getContext ().getTaskContext("write", "")
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ int CmdHelp::execute (std::string& output)
            + composeUsage ()
            + '\n'
            + "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man "
-             "task-color', 'man task-sync' or at http://taskwarrior.org\n"
+             "task-color', 'man task-sync' or at https://taskwarrior.org\n"
              "\n"
              "The general form of commands is:\n"
              "  task [<filter>] <command> [<mods>]\n"

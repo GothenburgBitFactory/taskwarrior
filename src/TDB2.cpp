@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -992,7 +992,7 @@ void TDB2::revert_backlog (
   const std::string& current,
   const std::string& prior)
 {
-  std::string uuid_att = "\"uuid\":\"" + uuid + '"';
+  std::string uuid_att = R"("uuid":")" + uuid + '"';
 
   bool found = false;
   for (auto task = b.rbegin (); task != b.rend (); ++task)

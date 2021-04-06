@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2013 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -608,7 +608,8 @@ bool Lexer::isHexNumber (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::number
-//   \d+
+//   0
+//   [1-9]\d*
 //   [ . \d+ ]
 //   [ e|E [ +|- ] \d+ [ . \d+ ] ]
 //   not followed by non-operator.
@@ -616,9 +617,16 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
+  bool leading_zero = (_text[marker] == '0');
+
   if (unicodeLatinDigit (_text[marker]))
   {
     ++marker;
+
+    // Two (or more) digit number with a leading zero are not allowed
+    if (leading_zero && unicodeLatinDigit (_text[marker]))
+      return false;
+
     while (unicodeLatinDigit (_text[marker]))
       utf8_next_char (_text, marker);
 
@@ -679,16 +687,24 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::number
-//   \d+
+//   0
+//   [1-9]\d*
+//   Integers do not start with a leading 0, unless they are zero.
 bool Lexer::isInteger (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
+
+  bool leading_zero = (_text[marker] == '0');
 
   if (unicodeLatinDigit (_text[marker]))
   {
     ++marker;
     while (unicodeLatinDigit (_text[marker]))
       utf8_next_char (_text, marker);
+
+    // Leading zero is only allowed in the case of number 0
+    if (leading_zero and marker - _cursor > 1)
+      return false;
 
     token = _text.substr (_cursor, marker - _cursor);
     type = Lexer::Type::number;

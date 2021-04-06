@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -381,7 +381,6 @@ class TestBug1455(TestCase):
     def setUp(self):
         self.t = Task()
 
-    @unittest.expectedFailure
     def test_project_hierarchy_filter(self):
         """1455: Test project:school)
 

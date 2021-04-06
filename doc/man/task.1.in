@@ -335,7 +335,8 @@ Shows all waiting tasks matching the filter.
 
 .TP
 .B task add <mods>
-Adds a new pending task to the task list.
+Adds a new pending task to the task list. It is affected by the currently set
+context.
 
 .TP
 .B task <filter> annotate <mods>
@@ -388,7 +389,8 @@ few example scripts, such as:
 
 .TP
 .B task log <mods>
-Adds a new task that is already completed, to the task list.
+Adds a new task that is already completed, to the task list. It is affected by
+the currently set context.
 
 .TP
 .B task <filter> modify <mods>
@@ -1084,7 +1086,7 @@ task ... wait:later
 .br
 task ... wait:someday
 
-This sets the wait date to 1/18/2038.
+This sets the wait date to 12/30/9999.
 
 .TP
 Next occurring weekday
@@ -1153,11 +1155,12 @@ Every two years.
 .RE
 
 .SH CONTEXT
-Context is a user-defined filter, which is automatically applied to all commands
-that filter the task list. In particular, any report command will have its
-result affected by the current active context. Here is a list of the commands
-that are affected:
+Context is a user-defined query, which is automatically applied to all commands
+that filter the task list and to commands that create new tasks (add, log). For
+example, any report command will have its result affected by the current
+active context.  Here is a list of the commands that are affected:
 .IP
+    add
     burndown
     count
     delete
@@ -1166,6 +1169,7 @@ that are affected:
     duplicate
     edit
     history
+    log
     prepend
     projects
     purge
@@ -1190,6 +1194,21 @@ All other commands are NOT affected by the context.
     2  1d  Home     Clean the dishes   1.14
     Context 'home' set. Use 'task context none' to remove.
 
+Task list got automatically filtered for project:Home.
+
+    $ task add Vaccuum the carpet
+    Created task 3.
+    Context 'home' set. Use 'task context none' to remove.
+
+    $ task list
+    ID Age Project  Description         Urg
+    2  1d  Home     Clean the dishes    1.14
+    3  5s  Home     Vaccuum the carpet  1.14
+    Context 'home' set. Use 'task context none' to remove.
+
+Note that the newly added task "Vaccuum the carpet" has "project:Home" set
+automatically.
+
 As seen in the example above, context is applied by specifying its name to the
 "context" command. To change the currently applied context, just pass the
 new context's name to the 'context' command.
@@ -1200,37 +1219,87 @@ To unset any context, use the 'none' subcommand.
     Context unset.
 
     $ task list
-    ID Age Project  Description        Urg
-    1  2d  Sport    Run 5 miles        1.42
-    2  1d  Home     Clean the dishes   1.14
+    ID Age Project  Description         Urg
+    1  2d  Sport    Run 5 miles         1.42
+    2  1d  Home     Clean the dishes    1.14
+    3  7s  Home     Vaccuum the carpet  1.14
 
 Context can be defined using the 'define' subcommand, specifying both the name
 of the new context, and it's assigned filter.
 
     $ task context define home project:Home
-    Are you sure you want to add 'context.home' with a value of 'project:Home'? (yes/no) yes
+    Are you sure you want to add 'context.home.read' with a value of 'project:Home'? (yes/no) yes
+    Are you sure you want to add 'context.home.write' with a value of 'project:Home'? (yes/no) yes
     Context 'home' successfully defined.
+
+Note that you were separately prompted to set the 'read' and 'write' context.
+This allows you to specify contexts that only work for reporting commands or
+only for commands that create tasks.
 
 To remove the definition, use the 'delete' subcommand.
 
     $ task context delete home
-    Are you sure you want to remove 'context.home'? (yes/no) yes
-    Context 'home' successfully undefined.
+    Are you sure you want to remove 'context.home.read'? (yes/no) yes
+    Are you sure you want to remove 'context.home.write'? (yes/no) yes
+    Context 'home' deleted.
 
 To check what is the currently active context, use the 'show' subcommand.
 
     $ task context show
-    Context 'home' with filter 'project:Home' is currently applied.
+    Context 'home' with
+
+    * read filter: '+home'
+    * write filter: '+home'
+
+    is currently applied.
 
 Contexts can store arbitrarily complex filters.
 
     $ task context define family project:Family or +paul or +nancy
-    Are you sure you want to add 'context.home' with a value of 'project:Family or +paul or +nancy'? (yes/no) yes
+    Are you sure you want to add 'context.family.read' with a value of 'project:Family or +paul or +nancy'? (yes/no) yes
+    Are you sure you want to add 'context.family.write' with a value of 'project:Family or +paul or +nancy'? (yes/no) no
     Context 'family' successfully defined.
 
 Contexts are permanent, and the currently set context name is stored in the
 "context" configuration variable. The context definition is stored in the
-"context.<name>" configuration variable.
+"context.<name>.read" configuration variable (for reporting commands) and
+"context.<name>.write" configuration variable (for task additions, i.e. task
+add/log).
+
+Note that in the example above, the user decided not to define the complex
+filter as writeable context. The reason for this decision is that the complex
+filter in the example does not directly translate to a modification. In fact,
+if such a context is used as a writeable context, the following happens:
+
+    $ task add Call Paul
+    Created task 4.
+    Context 'family' set. Use 'task context none' to remove.
+
+    $ task 4 list
+    ID Age  Project Tags       Description      Urg
+     4 9min Family  nancy paul or or Call Paul    0
+
+
+There is no clear mapping between the complex filter used and the modifications
+(should only the project be set? only the tags? both?). Additionally note the 'or'
+operators being present in the description. Taskwarrior does not try to guess
+the user intention here, and instead, the user is expected to set the
+"context.<name>.write" variable to make their intention explicit, for example:
+
+    $ task config context.family.write project:Family
+    Are you sure you want to change the value of 'context.family.write' from 'project:Family or +paul or +nancy' to 'project:Family'? (yes/no) yes
+    Config file /home/tbabej/.config/task/taskrc modified.
+
+    $ task context
+    Name   Type  Definition                        Active
+    family read  project:Family or +paul or +nancy yes
+           write project:Family                    yes
+    home   read  +home                             no
+           write +home                             no
+
+Note how read and write contexts differ for context "family", while for context
+"home" they stay the same.
+
 
 .SH COMMAND ABBREVIATION
 All Taskwarrior commands may be abbreviated as long as a unique prefix is used,
@@ -1368,7 +1437,7 @@ The file that contains the completed ("done") tasks.
 The file that contains information needed by the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2020 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2021 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 https://www.opensource.org/licenses/mit-license.php for more information.

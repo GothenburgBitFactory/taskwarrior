@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2020, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -172,10 +172,11 @@ int CmdCalendar::execute (std::string& output)
   if (getPendingDate == true)
   {
     // Find the oldest pending due date.
-    Datetime oldest (2037, 12, 31);
+    Datetime oldest (9999, 12, 31);
     for (auto& task : tasks)
     {
-      if (task.getStatus () == Task::pending)
+      auto status = task.getStatus ();
+      if (status == Task::pending || status == Task::waiting)
       {
         if (task.has ("due") &&
             !task.hasTag ("nocal"))
@@ -186,8 +187,12 @@ int CmdCalendar::execute (std::string& output)
         }
       }
     }
-    mFrom = oldest.month();
-    yFrom = oldest.year();
+
+    // Default to current month if no due date is present
+    if (oldest != Datetime (9999, 12, 31)) {
+      mFrom = oldest.month();
+      yFrom = oldest.year();
+    }
   }
 
   if (Context::getContext ().config.getBoolean ("calendar.offset"))
@@ -562,8 +567,10 @@ std::string CmdCalendar::renderMonths (
           Context::getContext ().config.set ("due", 0);
           for (auto& task : all)
           {
-            if (task.getStatus () == Task::pending &&
-                !task.hasTag ("nocal")             &&
+            auto status = task.getStatus ();
+            if ((status == Task::pending ||
+                 status == Task::waiting ) &&
+                !task.hasTag ("nocal")     &&
                 task.has ("due"))
             {
               std::string due = task.get ("due");
@@ -582,12 +589,11 @@ std::string CmdCalendar::renderMonths (
                   cellColor.blend (color_due);
                   break;
 
-                case Task::dateEarlierToday:
                 case Task::dateLaterToday:
-                  cellColor.blend (color_duetoday);
                   cellColor.blend (color_duetoday);
                   break;
 
+                case Task::dateEarlierToday:
                 case Task::dateBeforeToday:
                   cellColor.blend (color_overdue);
                   break;
