@@ -115,6 +115,16 @@ class TestFeature2322(TestCase):
         code, out, err = self.t("export")
         self.assertNotIn('"wait":', out)
 
+    def test_delete_unwait(self):
+        """2322: Deleteion should un-wait a waiting task"""
+        self.t("add bar wait:tomorrow")
+        code, out, err = self.t("export")
+        self.assertIn('"wait":', out)
+
+        self.t("1 delete", input="y\n")
+        code, out, err = self.t("export")
+        self.assertNotIn('"wait":', out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
