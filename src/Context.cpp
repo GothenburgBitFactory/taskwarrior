@@ -1029,6 +1029,7 @@ bool Context::verbose (const std::string& token)
           v != "filter"   &&  //
           v != "unwait"   &&  //
           v != "override" &&  //
+          v != "context" &&  //
           v != "recur")       //
       {
         // This list emulates rc.verbose=off in version 1.9.4.
