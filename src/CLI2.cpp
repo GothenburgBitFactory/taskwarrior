@@ -1882,7 +1882,8 @@ void CLI2::lexFilterArgs ()
 //     - task ... argX candidate argY
 //   Where:
 //     - neither argX nor argY are an operator, except (, ), and, or, xor
-//     - candidate is Lexer::Type::word
+//     - candidate is one of: Lexer::Type::word
+//                            Lexer::Type::identifier
 //
 void CLI2::desugarFilterPlainArgs ()
 {
