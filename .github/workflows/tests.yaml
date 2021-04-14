@@ -36,6 +36,9 @@ jobs:
           - name: "OpenSUSE 15.0"
             runner: ubuntu-latest
             dockerfile: opensuse1500
+          - name: "Archlinux Base (Rolling)"
+            runner: ubuntu-latest
+            dockerfile: arch
           - name: "Mac OS X 10.13"
             runner: macos-latest
             dockerfile: osx
