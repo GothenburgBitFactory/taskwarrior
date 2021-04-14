@@ -1884,6 +1884,7 @@ void CLI2::lexFilterArgs ()
 //     - neither argX nor argY are an operator, except (, ), and, or, xor
 //     - candidate is one of: Lexer::Type::word
 //                            Lexer::Type::identifier
+//                            Lexer::Type::date
 //
 void CLI2::desugarFilterPlainArgs ()
 {
@@ -1905,6 +1906,7 @@ void CLI2::desugarFilterPlainArgs ()
          ppraw == "xor")                           &&
 
         (prev->_lextype == Lexer::Type::identifier ||  // candidate
+         prev->_lextype == Lexer::Type::date       ||  // candidate
          prev->_lextype == Lexer::Type::word)      &&  // candidate
 
         prev->hasTag ("FILTER")                    &&  // candidate
