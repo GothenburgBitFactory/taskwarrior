@@ -510,9 +510,9 @@ std::string CmdCalendar::renderMonths (
     // Loop through days in month and add to table.
     for (int d = 1; d <= daysInMonth[mpl]; ++d)
     {
-      Datetime temp (years[mpl], months[mpl], d);
-      auto dow = temp.dayOfWeek ();
-      auto woy = temp.week ();
+      Datetime date (years[mpl], months[mpl], d);
+      auto dow = date.dayOfWeek ();
+      auto woy = date.week ();
 
       if (Context::getContext ().config.getBoolean ("displayweeknumber"))
         view.set (row,
@@ -548,17 +548,13 @@ std::string CmdCalendar::renderMonths (
               {
                 std::string value = hol.second;
                 Datetime holDate (value.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
-                if (holDate.day   () == d           &&
-                    holDate.month () == months[mpl] &&
-                    holDate.year  () == years[mpl])
+                if (holDate.sameDay (date))
                   cellColor.blend (color_holiday);
               }
         }
 
         // colorize today
-        if (today.day   () == d                &&
-            today.month () == months.at (mpl)  &&
-            today.year  () == years.at  (mpl))
+        if (today.sameDay (date))
           cellColor.blend (color_today);
 
         // colorize due tasks
@@ -576,9 +572,7 @@ std::string CmdCalendar::renderMonths (
               std::string due = task.get ("due");
               Datetime duedmy (strtol (due.c_str(), nullptr, 10));
 
-              if (duedmy.day   () == d           &&
-                  duedmy.month () == months[mpl] &&
-                  duedmy.year  () == years[mpl])
+              if (duedmy.sameDay (date))
               {
                 switch (task.getDateState ("due"))
                 {
