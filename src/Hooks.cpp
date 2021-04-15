@@ -79,7 +79,7 @@ void Hooks::initialize ()
     }
     else
     {
-      d = Directory (getDefaultHooksLocation());
+      d = Directory (getXdgHooksLocation());
     }
   }
 

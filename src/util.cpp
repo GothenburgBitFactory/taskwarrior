@@ -310,16 +310,16 @@ void setHeaderUnderline (Table& table)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string getXdgConfigHome ()
-{
+
+const std::string getXdgConfigHome () {
   // Use XDG_CONFIG_HOME if defined, otherwise default to ~/.config
-  std::string xdg_config_home;
   const char* env_xdg_config_home = getenv ("XDG_CONFIG_HOME");
+  std::string xdg_config_home;
 
   if (env_xdg_config_home)
     xdg_config_home = format ("{1}", env_xdg_config_home);
   else
-    xdg_config_home = format ("{1}/.config", Context::getContext ().home_dir);
+    xdg_config_home = format ("{1}/.config", getenv("HOME"));
 
   // Ensure the path does not end with '/'
   if (xdg_config_home.back () == '/')
@@ -329,7 +329,8 @@ const std::string getXdgConfigHome ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string getDefaultHooksLocation()
+
+const std::string getXdgHooksLocation()
 {
   return format ("{1}/task/hooks", getXdgConfigHome());
 }

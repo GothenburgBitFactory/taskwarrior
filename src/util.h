@@ -64,10 +64,10 @@ bool nontrivial (const std::string&);
 const char* optionalBlankLine ();
 void setHeaderUnderline (Table&);
 
-#endif
-
 const std::string getXdgConfigHome ();
 const std::string getDefaultHooksLocation();
+const std::string getXdgHooksLocation();
 
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -301,7 +301,7 @@ int CmdDiagnostics::execute (std::string& output)
   }
   else
   {
-    hookLocation = Path (getDefaultHooksLocation());
+    hookLocation = Path (getXdgHooksLocation());
   }
 
   out << bold.colorize ("Hooks")
