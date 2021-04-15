@@ -240,7 +240,7 @@ int CmdShow::execute (std::string& output)
           i.first.substr (0,  8) != "holiday."              &&
           i.first.substr (0,  7) != "report."               &&
           i.first.substr (0,  6) != "alias."                &&
-          i.first.substr (0,  5) != "hook."                 &&
+          i.first.substr (0,  6) != "hooks."                &&
           i.first.substr (0,  4) != "uda."                  &&
           i.first.substr (0,  8) != "default."              &&
           i.first.substr (0, 21) != "urgency.user.project." &&
@@ -282,7 +282,7 @@ int CmdShow::execute (std::string& output)
 
   std::string section;
 
-  // Look for the first plausible argument which could be a pattern 
+  // Look for the first plausible argument which could be a pattern
   if (words.size ())
     section = words[0];
 
