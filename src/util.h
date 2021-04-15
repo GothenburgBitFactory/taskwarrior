@@ -65,8 +65,6 @@ const char* optionalBlankLine ();
 void setHeaderUnderline (Table&);
 
 const std::string getXdgConfigHome ();
-const std::string getDefaultHooksLocation();
-const std::string getXdgHooksLocation();
 const std::string getHooksLocation();
 
 #endif
