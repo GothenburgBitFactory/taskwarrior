@@ -294,15 +294,7 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n\n";
 
   // Display hook status.
-  Path hookLocation;
-  if (Context::getContext ().config.has ("hooks.location"))
-  {
-    hookLocation = Path (Context::getContext ().config.get ("hooks.location"));
-  }
-  else
-  {
-    hookLocation = Path (getXdgHooksLocation());
-  }
+  Path hookLocation = getHooksLocation();
 
   out << bold.colorize ("Hooks")
       << '\n'

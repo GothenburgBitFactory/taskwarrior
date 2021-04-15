@@ -1179,11 +1179,7 @@ void Context::createDefaultConfig ()
     d.create ();
   }
 
-
-  if (config.has ("hooks.location"))
-    d = Directory (config.get ("hooks.location"));
-  else
-    d = Directory (getXdgHooksLocation());
+  d = Directory (getHooksLocation());
   d.create ();
 }
 
