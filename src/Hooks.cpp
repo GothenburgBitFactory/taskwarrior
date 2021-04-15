@@ -72,7 +72,15 @@ void Hooks::initialize ()
   }
   else
   {
-    d = Directory (getDefaultHooksLocation());
+    if (Context::getContext ().rc_file.exists ())
+    {
+      d = Directory (Context::getContext ().config.get ("data.location"));
+      d += "hooks";
+    }
+    else
+    {
+      d = Directory (getDefaultHooksLocation());
+    }
   }
 
   if (d.is_directory () &&
