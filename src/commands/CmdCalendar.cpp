@@ -380,11 +380,27 @@ int CmdCalendar::execute (std::string& output)
           if (it.first.substr (it.first.size () - 4) == "name")
           {
             auto holName = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
-            auto holDate = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
-            Datetime hDate (holDate.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
+            if (Context::getContext ().config.has ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date"))
+            {
+              auto holDate = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
+              Datetime hDate (holDate.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
 
-            if (date_after < hDate && hDate < date_before)
-              hm[hDate.toEpoch()].push_back (holName);
+              if (date_after < hDate && hDate < date_before)
+                hm[hDate.toEpoch()].push_back (holName);
+            }
+            if (Context::getContext ().config.has ("holiday." + it.first.substr (8, it.first.size () - 13) + ".start") &&
+                Context::getContext ().config.has ("holiday." + it.first.substr (8, it.first.size () - 13) + ".end"))
+            {
+              auto holStart = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".start");
+              auto holEnd = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".end");
+              Datetime hStart (holStart.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
+              Datetime hEnd (holEnd.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
+
+              if (date_after < hStart && hStart < date_before)
+                hm[hStart.toEpoch()].push_back ("Start of " + holName);
+              if (date_after < hEnd && hEnd < date_before)
+                hm[hEnd.toEpoch()].push_back ("End of " + holName);
+            }
           }
 
       auto format = Context::getContext ().config.get ("report." +
@@ -544,13 +560,27 @@ std::string CmdCalendar::renderMonths (
         {
           for (auto& hol : Context::getContext ().config)
             if (hol.first.substr (0, 8) == "holiday.")
-              if (hol.first.substr (hol.first.size () - 4) == "date")
+				{
+				  if (hol.first.substr (hol.first.size () - 4) == "date")
               {
-                std::string value = hol.second;
+                auto value = hol.second;
                 Datetime holDate (value.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
                 if (holDate.sameDay (date))
                   cellColor.blend (color_holiday);
               }
+
+              if (hol.first.substr (hol.first.size () - 5) == "start" &&
+                  Context::getContext ().config.has ("holiday." + hol.first.substr (8, hol.first.size () - 14) + ".end"))
+              {
+                auto start = hol.second;
+                auto end = Context::getContext ().config.get ("holiday." + hol.first.substr (8, hol.first.size () - 14) + ".end");
+                Datetime holStart (start.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
+                Datetime holEnd   (end.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
+                if (holStart <= date &&
+                    date     <= holEnd)
+                  cellColor.blend (color_holiday);
+              }
+				}
         }
 
         // colorize today
