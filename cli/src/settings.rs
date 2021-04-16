@@ -37,7 +37,7 @@ pub(crate) fn default_settings() -> anyhow::Result<Config> {
     let mut settings = Config::default();
 
     // set up defaults
-    if let Some(dir) = dirs::data_local_dir() {
+    if let Some(dir) = dirs_next::data_local_dir() {
         let mut tc_dir = dir.clone();
         tc_dir.push("taskchampion");
         settings.set_default(
@@ -71,7 +71,7 @@ pub(crate) fn read_settings() -> anyhow::Result<Config> {
         let config_file: File<FileSourceFile> = config_file.into();
         settings.merge(config_file.required(true))?;
         env::remove_var("TASKCHAMPION_CONFIG");
-    } else if let Some(mut dir) = dirs::config_dir() {
+    } else if let Some(mut dir) = dirs_next::config_dir() {
         dir.push("taskchampion");
         log::debug!("Loading configuration from {:?} (optional)", dir);
         let config_file: File<FileSourceFile> = dir.into();
