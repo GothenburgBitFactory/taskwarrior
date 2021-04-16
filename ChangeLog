@@ -49,6 +49,8 @@
 - TW #2442 Bulk completions generate nagging message even if highest urgency
            task was completed
            Thanks to Daniel Mowitz.
+- TW #2451 Command task $month doesn't behave correctly
+           Thanks to Matias Laporte.
 
 ------ current release ---------------------------
 
