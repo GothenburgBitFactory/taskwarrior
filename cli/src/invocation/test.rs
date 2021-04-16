@@ -1,6 +1,6 @@
 use std::io;
 use taskchampion::{storage, Replica, Server, ServerConfig};
-use tempdir::TempDir;
+use tempfile::TempDir;
 
 pub(super) fn test_replica() -> Replica {
     let storage = storage::InMemoryStorage::new();

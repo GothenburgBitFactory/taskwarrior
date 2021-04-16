@@ -151,11 +151,11 @@ impl<'t> Server for LocalServer<'t> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use tempdir::TempDir;
+    use tempfile::TempDir;
 
     #[test]
     fn test_empty() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let child_version = server.get_child_version(NO_VERSION_ID)?;
         assert_eq!(child_version, GetVersionResult::NoSuchVersion);
@@ -164,7 +164,7 @@ mod test {
 
     #[test]
     fn test_add_zero_base() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();
         match server.add_version(NO_VERSION_ID, history.clone())? {
@@ -189,7 +189,7 @@ mod test {
 
     #[test]
     fn test_add_nonzero_base() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();
         let parent_version_id = Uuid::new_v4() as VersionId;
@@ -217,7 +217,7 @@ mod test {
 
     #[test]
     fn test_add_nonzero_base_forbidden() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();
         let parent_version_id = Uuid::new_v4() as VersionId;

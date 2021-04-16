@@ -15,13 +15,13 @@ pub(crate) fn execute<W: WriteColor>(
 mod test {
     use super::*;
     use crate::invocation::test::*;
-    use tempdir::TempDir;
+    use tempfile::TempDir;
 
     #[test]
     fn test_add() {
         let mut w = test_writer();
         let mut replica = test_replica();
-        let server_dir = TempDir::new("test").unwrap();
+        let server_dir = TempDir::new().unwrap();
         let mut server = test_server(&server_dir);
 
         // Note that the details of the actual sync are tested thoroughly in the taskchampion crate

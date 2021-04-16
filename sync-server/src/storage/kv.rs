@@ -164,11 +164,11 @@ impl<'t> StorageTxn for Txn<'t> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use tempdir::TempDir;
+    use tempfile::TempDir;
 
     #[test]
     fn test_get_client_empty() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
         let maybe_client = txn.get_client(Uuid::new_v4())?;
@@ -178,7 +178,7 @@ mod test {
 
     #[test]
     fn test_client_storage() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
 
@@ -200,7 +200,7 @@ mod test {
 
     #[test]
     fn test_gvbp_empty() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
         let maybe_version = txn.get_version_by_parent(Uuid::new_v4(), Uuid::new_v4())?;
@@ -210,7 +210,7 @@ mod test {
 
     #[test]
     fn test_add_version_and_gvbp() -> anyhow::Result<()> {
-        let tmp_dir = TempDir::new("test")?;
+        let tmp_dir = TempDir::new()?;
         let storage = KvStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
 
