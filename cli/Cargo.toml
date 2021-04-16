@@ -5,7 +5,7 @@ name = "taskchampion-cli"
 version = "0.3.0"
 
 [dependencies]
-dirs = "^3.0.1"
+dirs-next = "^2.0.0"
 env_logger = "^0.8.3"
 anyhow = "1.0"
 log = "^0.4.14"
