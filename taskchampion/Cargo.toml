@@ -25,4 +25,4 @@ tindercrypt = { version = "^0.2.2", default-features = false }
 
 [dev-dependencies]
 proptest = "^1.0.0"
-tempdir = "^0.3.7"
+tempfile = "3"
