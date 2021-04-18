@@ -559,9 +559,10 @@ std::string CmdCalendar::renderMonths (
         if (Context::getContext ().config.get ("calendar.holidays") != "none")
         {
           for (auto& hol : Context::getContext ().config)
+          {
             if (hol.first.substr (0, 8) == "holiday.")
-				{
-				  if (hol.first.substr (hol.first.size () - 4) == "date")
+            {
+              if (hol.first.substr (hol.first.size () - 4) == "date")
               {
                 auto value = hol.second;
                 Datetime holDate (value.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
@@ -580,7 +581,8 @@ std::string CmdCalendar::renderMonths (
                     date     <= holEnd)
                   cellColor.blend (color_holiday);
               }
-				}
+            }
+          }
         }
 
         // colorize today
