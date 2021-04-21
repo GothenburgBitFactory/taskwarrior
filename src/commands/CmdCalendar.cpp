@@ -381,27 +381,26 @@ int CmdCalendar::execute (std::string& output)
         if (it.first.substr (0, 8) == "holiday.")
           if (it.first.substr (it.first.size () - 4) == "name")
           {
-            auto holName = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
-            if (config.has ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date"))
+            auto holName = it.second;
+            auto date = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
+            auto start = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".start");
+            auto end = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".end");
+            if (!date.empty ())
             {
-              auto holDate = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
-              Datetime hDate (holDate.c_str (), config.get ("dateformat.holiday"));
+              Datetime holDate (date.c_str (), config.get ("dateformat.holiday"));
 
-              if (date_after < hDate && hDate < date_before)
-                hm[hDate.toEpoch()].push_back (holName);
+              if (date_after < holDate && holDate < date_before)
+                hm[holDate.toEpoch()].push_back (holName);
             }
-            if (config.has ("holiday." + it.first.substr (8, it.first.size () - 13) + ".start") &&
-                config.has ("holiday." + it.first.substr (8, it.first.size () - 13) + ".end"))
+            if (!start.empty () && !end.empty ())
             {
-              auto holStart = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".start");
-              auto holEnd = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".end");
-              Datetime hStart (holStart.c_str (), config.get ("dateformat.holiday"));
-              Datetime hEnd (holEnd.c_str (), config.get ("dateformat.holiday"));
+              Datetime holStart (start.c_str (), config.get ("dateformat.holiday"));
+              Datetime holEnd (end.c_str (), config.get ("dateformat.holiday"));
 
-              if (date_after < hStart && hStart < date_before)
-                hm[hStart.toEpoch()].push_back ("Start of " + holName);
-              if (date_after < hEnd && hEnd < date_before)
-                hm[hEnd.toEpoch()].push_back ("End of " + holName);
+              if (date_after < holStart && holStart < date_before)
+                hm[holStart.toEpoch()].push_back ("Start of " + holName);
+              if (date_after < holEnd && holEnd < date_before)
+                hm[holEnd.toEpoch()].push_back ("End of " + holName);
             }
           }
 
