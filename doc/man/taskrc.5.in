@@ -766,7 +766,7 @@ the 'info' command. Default value is "1".
 
 .SS HOLIDAYS
 Holidays are entered either directly in the .taskrc file or via an include file
-that is specified in .taskrc. For each holiday the name and the date is
+that is specified in .taskrc. For single-day holidays the name and the date is
 required to be given:
 
 .RS
@@ -775,10 +775,20 @@ required to be given:
 holiday.towel.name=Day of the towel
 .br
 holiday.towel.date=20100525
+.RE
+.RE
+
+For multi-day holidays the name and a start and end date are required to be 
+given:
+
+.RS
+.RS
 .br
-holiday.sysadmin.name=System Administrator Appreciation Day
+holiday.sysadmin.name=System Administrator Appreciation Week
 .br
-holiday.sysadmin.date=20100730
+holiday.sysadmin.start=20100730
+.br
+holiday.sysadmin.end=20100805
 .RE
 .RE
 
