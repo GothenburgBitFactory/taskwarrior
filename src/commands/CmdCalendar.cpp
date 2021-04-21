@@ -376,6 +376,8 @@ int CmdCalendar::execute (std::string& output)
       holTable.add ("Holiday");
       setHeaderUnderline (holTable);
 
+      auto dateFormat = config.get ("dateformat.holiday");
+
       std::map <time_t, std::vector<std::string>> hm; // we need to store multiple holidays per day
       for (auto& it : config)
         if (it.first.substr (0, 8) == "holiday.")
@@ -387,15 +389,15 @@ int CmdCalendar::execute (std::string& output)
             auto end = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".end");
             if (!date.empty ())
             {
-              Datetime holDate (date.c_str (), config.get ("dateformat.holiday"));
+              Datetime holDate (date.c_str (), dateFormat);
 
               if (date_after < holDate && holDate < date_before)
                 hm[holDate.toEpoch()].push_back (holName);
             }
             if (!start.empty () && !end.empty ())
             {
-              Datetime holStart (start.c_str (), config.get ("dateformat.holiday"));
-              Datetime holEnd (end.c_str (), config.get ("dateformat.holiday"));
+              Datetime holStart (start.c_str (), dateFormat);
+              Datetime holEnd (end.c_str (), dateFormat);
 
               if (date_after < holStart && holStart < date_before)
                 hm[holStart.toEpoch()].push_back ("Start of " + holName);
@@ -562,14 +564,15 @@ std::string CmdCalendar::renderMonths (
         // colorize holidays
         if (config.get ("calendar.holidays") != "none")
         {
-          for (auto& hol : config)
+           auto dateFormat = config.get ("dateformat.holiday");
+			  for (auto& hol : config)
           {
             if (hol.first.substr (0, 8) == "holiday.")
             {
               if (hol.first.substr (hol.first.size () - 4) == "date")
               {
                 auto value = hol.second;
-                Datetime holDate (value.c_str (), config.get ("dateformat.holiday"));
+                Datetime holDate (value.c_str (), dateFormat);
                 if (holDate.sameDay (date))
                   cellColor.blend (color_holiday);
               }
@@ -579,8 +582,8 @@ std::string CmdCalendar::renderMonths (
               {
                 auto start = hol.second;
                 auto end = config.get ("holiday." + hol.first.substr (8, hol.first.size () - 14) + ".end");
-                Datetime holStart (start.c_str (), config.get ("dateformat.holiday"));
-                Datetime holEnd   (end.c_str (), config.get ("dateformat.holiday"));
+                Datetime holStart (start.c_str (), dateFormat);
+                Datetime holEnd   (end.c_str (), dateFormat);
                 if (holStart <= date &&
                     date     <= holEnd)
                   cellColor.blend (color_holiday);
