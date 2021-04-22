@@ -407,8 +407,8 @@ int CmdCalendar::execute (std::string& output)
           }
 
       auto format = config.get ("report." +
-                                        config.get ("calendar.details.report") +
-                                        ".dateformat");
+                                config.get ("calendar.details.report") +
+                                ".dateformat");
       if (format == "")
         format = config.get ("dateformat.report");
       if (format == "")
@@ -564,8 +564,8 @@ std::string CmdCalendar::renderMonths (
         // colorize holidays
         if (config.get ("calendar.holidays") != "none")
         {
-           auto dateFormat = config.get ("dateformat.holiday");
-			  for (auto& hol : config)
+          auto dateFormat = config.get ("dateformat.holiday");
+		  for (auto& hol : config)
           {
             if (hol.first.substr (0, 8) == "holiday.")
             {
@@ -584,8 +584,7 @@ std::string CmdCalendar::renderMonths (
                 auto end = config.get ("holiday." + hol.first.substr (8, hol.first.size () - 14) + ".end");
                 Datetime holStart (start.c_str (), dateFormat);
                 Datetime holEnd   (end.c_str (), dateFormat);
-                if (holStart <= date &&
-                    date     <= holEnd)
+                if (holStart <= date && date <= holEnd)
                   cellColor.blend (color_holiday);
               }
             }
