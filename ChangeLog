@@ -6,6 +6,8 @@
            Thanks to Tomas Babej.
 - TW #1908 Cannot create task with explicit description 'start ....'
            Thanks to Matt Chun-Lum.
+- TW #1911 Support holidays longer then 1 day
+           Thanks to Daniel Mowitz.
 - TW #1955 Adding tasks in context.
            Thanks to Jean-Francois Joly, Matt Smith.
 - TW #2004 "shell" should not be expand to "exec tasksh"

@@ -31,6 +31,9 @@ New Configuration Options in Taskwarrior 2.6.0
   - The context definitions for reporting commmands are now stored in
     "context.<name>.read". Context definitions for write commands are now
     supported using "context.<name>.write" configuration variable.
+  - Multi-day holidays are now supported. Use holiday.<name>.start=<date> and
+    holiday.<name>.end=<date> to specify a range-based holiday, such as a
+    vacation.
 
 
 Newly Deprecated Features in Taskwarrior 2.6.0
