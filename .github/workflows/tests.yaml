@@ -36,6 +36,9 @@ jobs:
           - name: "Ubuntu 20.04"
             runner: ubuntu-latest
             dockerfile: ubuntu2004
+          - name: "Ubuntu 21.04"
+            runner: ubuntu-latest
+            dockerfile: ubuntu2104
           - name: "OpenSUSE 15.0"
             runner: ubuntu-latest
             dockerfile: opensuse1500
