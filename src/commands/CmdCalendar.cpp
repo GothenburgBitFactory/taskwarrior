@@ -293,23 +293,31 @@ int CmdCalendar::execute (std::string& output)
   Color color_weeknumber (config.get ("color.calendar.weeknumber"));
 
   if (Context::getContext ().color () && config.getBoolean ("calendar.legend"))
+  {
     out << "Legend: "
         << color_today.colorize ("today")
         << ", "
-        << color_due.colorize ("due")
-        << ", "
-        << color_duetoday.colorize ("due-today")
-        << ", "
-        << color_overdue.colorize ("overdue")
-        << ", "
         << color_weekend.colorize ("weekend")
-        << ", "
-        << color_holiday.colorize ("holiday")
-        << ", "
-        << color_weeknumber.colorize ("weeknumber")
+        << ", ";
+
+    // If colorizing due dates, print legend
+    if (config.get ("calendar.details") != "none")
+      out << color_due.colorize ("due")
+          << ", "
+          << color_duetoday.colorize ("due-today")
+          << ", "
+          << color_overdue.colorize ("overdue")
+          << ", ";
+
+    // If colorizing holidays, print legend
+    if (config.get ("calendar.holidays") != "none")
+      out << color_holiday.colorize ("holiday") << ", ";
+
+    out << color_weeknumber.colorize ("weeknumber")
         << '.'
         << optionalBlankLine ()
         << '\n';
+  }
 
   if (config.get ("calendar.details") == "full" || config.get ("calendar.holidays") == "full")
   {
