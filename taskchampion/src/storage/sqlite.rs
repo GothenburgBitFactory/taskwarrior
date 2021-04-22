@@ -1,7 +1,7 @@
 use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use crate::utils::Key;
 use anyhow::Context;
-use rusqlite::{Connection, OptionalExtension};
+use rusqlite::{Connection, OptionalExtension, params};
 use serde::serde_if_integer128;
 use std::path::Path;
 use uuid::Uuid;
@@ -57,7 +57,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let result: Option<String> = t
             .query_row(
                 "SELECT data FROM tasks WHERE uuid = ? LIMIT 1",
-                [&uuid.to_string()],
+                [&uuid],
                 |r| r.get(0),
             )
             .optional()?;
@@ -72,7 +72,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let t = self.get_txn()?;
         let count: usize = t.query_row(
             "SELECT count(uuid) FROM tasks WHERE uuid = ?",
-            [&uuid.to_string()],
+            [&uuid],
             |x| x.get(0),
         )?;
         if count > 0 {
@@ -83,7 +83,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let data_str = serde_json::to_string(&data)?;
         t.execute(
             "INSERT INTO TASKS (uuid, data) VALUES (?, ?)",
-            [&uuid.to_string(), &data_str],
+            params![&uuid, &data_str],
         )
         .context("Create task query")?;
         Ok(true)
@@ -94,7 +94,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let data_str = serde_json::to_string(&task)?;
         t.execute(
             "INSERT OR REPLACE INTO tasks (uuid, data) VALUES (?, ?)",
-            [&uuid.to_string(), &data_str],
+            params![&uuid, &data_str],
         )
         .context("Update task query")?;
         Ok(())
@@ -103,7 +103,7 @@ impl<'t> StorageTxn for Txn<'t> {
     fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
         let t = self.get_txn()?;
         let changed = t
-            .execute("DELETE FROM tasks WHERE uuid = ?", [&uuid.to_string()])
+            .execute("DELETE FROM tasks WHERE uuid = ?", [&uuid])
             .context("Delete task query")?;
         Ok(changed > 0)
     }
@@ -113,9 +113,8 @@ impl<'t> StorageTxn for Txn<'t> {
         let mut q = t.prepare("SELECT uuid, data FROM tasks")?;
         let rows = q
             .query_map([], |r| {
-                let uuid_str: String = r.get(0)?;
+                let uuid: Uuid = r.get(0)?;
                 let data_str: String = r.get(1)?;
-                let uuid = Uuid::parse_str(&uuid_str).unwrap(); // FIXME: Remove unwrap
                 let data = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
                 Ok((uuid, data))
             })?;
