@@ -40,7 +40,7 @@ impl<'t> Txn<'t> {
     fn get_txn(&self) -> Result<&rusqlite::Transaction<'t>, SqliteError> {
         self.txn
             .as_ref()
-            .ok_or_else(|| SqliteError::TransactionAlreadyCommitted)
+            .ok_or(SqliteError::TransactionAlreadyCommitted)
     }
 }
 
