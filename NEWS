@@ -53,8 +53,8 @@ Taskwarrior 2.6.0 has been built and tested on the following configurations:
   * Archlinux
   * OpenSUSE
   * macOS 10.15
-  * Fedora (31, 32, 33)
-  * Ubuntu (18.04, 20.04)
+  * Fedora (31, 32, 33, 34)
+  * Ubuntu (18.04, 20.04, 21.04)
   * Debian (Stable, Testing)
   * CentOS (7, 8)
 
