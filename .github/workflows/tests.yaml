@@ -21,6 +21,9 @@ jobs:
           - name: "Fedora 33"
             runner: ubuntu-latest
             dockerfile: fedora33
+          - name: "Fedora 34"
+            runner: ubuntu-latest
+            dockerfile: fedora34
           - name: "Debian Stable"
             runner: ubuntu-latest
             dockerfile: debianstable
