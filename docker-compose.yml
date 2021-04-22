@@ -40,6 +40,14 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
+  test-fedora34:
+    build:
+        context: .
+        dockerfile: test/docker/fedora34
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
   test-ubuntu1804:
     build:
         context: .
