@@ -1,7 +1,7 @@
 use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use crate::utils::Key;
 use anyhow::Context;
-use rusqlite::Connection;
+use rusqlite::{Connection, OptionalExtension};
 use serde::serde_if_integer128;
 use std::path::Path;
 use uuid::Uuid;
@@ -10,6 +10,8 @@ use uuid::Uuid;
 enum SqliteError {
     #[error("SQLite transaction already committted")]
     TransactionAlreadyCommitted,
+    #[error("Invalid UUID string from database: {0}")]
+    InvalidUuidString(String),
 }
 
 /// SqliteStorage is an on-disk storage backed by SQLite3.
@@ -52,19 +54,17 @@ impl Storage for SqliteStorage {
 impl<'t> StorageTxn for Txn<'t> {
     fn get_task(&mut self, uuid: Uuid) -> anyhow::Result<Option<TaskMap>> {
         let t = self.get_txn()?;
-        let result: Result<String, rusqlite::Error> = t.query_row(
-            "SELECT data FROM tasks WHERE uuid = ? LIMIT 1",
-            [&uuid.to_string()],
-            |r| r.get(0),
-        );
+        let result: Option<String> = t
+            .query_row(
+                "SELECT data FROM tasks WHERE uuid = ? LIMIT 1",
+                [&uuid.to_string()],
+                |r| r.get(0),
+            )
+            .optional()?;
 
         match result {
-            Ok(ref r) => {
-                let tm = serde_json::from_str(&r)?;
-                Ok(Some(tm))
-            }
-            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
-            Err(e) => Err(anyhow::Error::from(e)),
+            None => Ok(None),
+            Some(r) => Ok(serde_json::from_str(&r)?),
         }
     }
 
@@ -109,7 +109,21 @@ impl<'t> StorageTxn for Txn<'t> {
     }
 
     fn all_tasks(&mut self) -> anyhow::Result<Vec<(Uuid, TaskMap)>> {
-        todo!()
+        let t = self.get_txn()?;
+        let mut q = t.prepare("SELECT uuid, data FROM tasks")?;
+        let rows = q
+            .query_map([], |r| {
+                let uuid_str: String = r.get(0)?;
+                let data_str: String = r.get(1)?;
+                let uuid = Uuid::parse_str(&uuid_str).unwrap(); // FIXME: Remove unwrap
+                let data = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
+                Ok((uuid, data))
+            })?;
+        let mut ret = vec![];
+        for r in rows {
+            ret.push(r?);
+        }
+        Ok(ret)
     }
 
     fn all_task_uuids(&mut self) -> anyhow::Result<Vec<Uuid>> {
