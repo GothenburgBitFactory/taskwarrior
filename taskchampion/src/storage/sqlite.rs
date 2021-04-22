@@ -1,7 +1,7 @@
 use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use crate::utils::Key;
 use anyhow::Context;
-use rusqlite::{Connection, OptionalExtension, params};
+use rusqlite::{params, Connection, OptionalExtension};
 use serde::serde_if_integer128;
 use std::path::Path;
 use uuid::Uuid;
@@ -111,13 +111,12 @@ impl<'t> StorageTxn for Txn<'t> {
     fn all_tasks(&mut self) -> anyhow::Result<Vec<(Uuid, TaskMap)>> {
         let t = self.get_txn()?;
         let mut q = t.prepare("SELECT uuid, data FROM tasks")?;
-        let rows = q
-            .query_map([], |r| {
-                let uuid: Uuid = r.get("uuid")?;
-                let data_str: String = r.get("data")?;
-                let data = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
-                Ok((uuid, data))
-            })?;
+        let rows = q.query_map([], |r| {
+            let uuid: Uuid = r.get("uuid")?;
+            let data_str: String = r.get("data")?;
+            let data: TaskMap = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
+            Ok((uuid, data))
+        })?;
         let mut ret = vec![];
         for r in rows {
             ret.push(r?);
