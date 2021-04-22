@@ -58,7 +58,7 @@ impl<'t> StorageTxn for Txn<'t> {
             .query_row(
                 "SELECT data FROM tasks WHERE uuid = ? LIMIT 1",
                 [&uuid],
-                |r| r.get(0),
+                |r| r.get("data"),
             )
             .optional()?;
 
@@ -113,8 +113,8 @@ impl<'t> StorageTxn for Txn<'t> {
         let mut q = t.prepare("SELECT uuid, data FROM tasks")?;
         let rows = q
             .query_map([], |r| {
-                let uuid: Uuid = r.get(0)?;
-                let data_str: String = r.get(1)?;
+                let uuid: Uuid = r.get("uuid")?;
+                let data_str: String = r.get("data")?;
                 let data = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
                 Ok((uuid, data))
             })?;
