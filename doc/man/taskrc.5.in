@@ -778,8 +778,8 @@ holiday.towel.date=20100525
 .RE
 .RE
 
-For multi-day holidays the name and a start and end date are required to be 
-given:
+For holidays that span a range of days (i.e. vacation), you can use a start date
+and an end date:
 
 .RS
 .RS
