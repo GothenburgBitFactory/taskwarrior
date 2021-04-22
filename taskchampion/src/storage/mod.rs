@@ -12,6 +12,7 @@ use uuid::Uuid;
 mod config;
 mod inmemory;
 mod kv;
+mod sqlite;
 mod operation;
 
 pub use self::kv::KvStorage;
