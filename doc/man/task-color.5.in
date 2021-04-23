@@ -236,11 +236,10 @@ include other files into the .taskrc file, different sets of color rules can
 be included.
 
 To get a good idea of what a color theme looks like, try adding this entry to
-your .taskrc file (note that your installation may use a slightly different path
-from the example):
+your .taskrc file:
 
 .RS
-include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-256.theme
+include dark-256.theme
 .RE
 
 You can use any of the standard Taskwarrior themes:

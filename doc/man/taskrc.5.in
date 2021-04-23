@@ -85,7 +85,8 @@ include <file>
 
 There may be whitespace around 'include' and <file>. The file may be an
 absolute or relative path, and the special character '~' is expanded to mean
-$HOME.
+$HOME. If relative path is specified, it will be searched in installation
+directory of configuration files, which contains themes.
 The entry must be on a single line, no continuations.
 
 .RS
@@ -152,9 +153,9 @@ ones containing just the relevant configuration data like colors, etc.
 There are two excellent uses of includes in your .taskrc, shown here:
 
 .RS
-include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
+include holidays.en-US.rc
 .br
-include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-16.theme
+include dark-16.theme
 .RE
 
 This includes two standard files that are distributed with Taskwarrior, which
@@ -818,7 +819,7 @@ be included like this:
 .RS
 .RS
 .br
-include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
+include holidays.en-US.rc
 .RE
 .RE
 
