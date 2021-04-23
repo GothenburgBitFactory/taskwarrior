@@ -195,8 +195,9 @@ void Eval::debug (bool value)
 std::vector <std::string> Eval::getOperators ()
 {
   std::vector <std::string> all;
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    all.push_back (operators[i].op);
+  all.reserve(NUM_OPERATORS);
+  for (const auto &opr : operators)
+    all.push_back (opr.op);
 
   return all;
 }
@@ -206,9 +207,9 @@ std::vector <std::string> Eval::getOperators ()
 std::vector <std::string> Eval::getBinaryOperators ()
 {
   std::vector <std::string> all;
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    if (operators[i].type == 'b')
-      all.push_back (operators[i].op);
+  for (const auto &opr : operators)
+    if (opr.type == 'b')
+      all.push_back (opr.op);
 
   return all;
 }
@@ -338,9 +339,9 @@ void Eval::evaluatePostfixStack (
       case Lexer::Type::identifier:
         {
           bool found = false;
-          for (auto source = _sources.begin (); source != _sources.end (); ++source)
+          for (const auto& source : _sources)
           {
-            if ((*source) (token.first, v))
+            if (source (token.first, v))
             {
               if (_debug)
                 Context::getContext ().debug (format ("Eval identifier source '{1}' → ↑'{2}'", token.first, (std::string) v));
@@ -669,10 +670,10 @@ bool Eval::parsePrimitive (
     else
     {
       bool found = false;
-      for (auto source = _sources.begin (); source != _sources.end (); ++source)
+      for (const auto& source : _sources)
       {
         Variant v;
-        if ((*source) (infix[i].first, v))
+        if (source (infix[i].first, v))
         {
           found = true;
           break;
@@ -810,13 +811,13 @@ bool Eval::identifyOperator (
   unsigned int& precedence,
   char& associativity) const
 {
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+  for (const auto& opr : operators)
   {
-    if (operators[i].op == op)
+    if (opr.op == op)
     {
-      type          = operators[i].type;
-      precedence    = operators[i].precedence;
-      associativity = operators[i].associativity;
+      type          = opr.type;
+      precedence    = opr.precedence;
+      associativity = opr.associativity;
       return true;
     }
   }
