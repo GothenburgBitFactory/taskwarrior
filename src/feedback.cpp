@@ -406,12 +406,8 @@ void feedback_backlog ()
   if (Context::getContext ().config.get ("taskd.server") != "" &&
       Context::getContext ().verbose ("sync"))
   {
-    int count = 0;
     std::vector <std::string> lines = Context::getContext ().tdb2.backlog.get_lines ();
-    for (auto& line : lines)
-      if ((line)[0] == '{')
-        ++count;
-
+    int count = std::count_if(lines.begin(), lines.end(), [](const auto& line){ return line.front() == '{'; });
     if (count)
       Context::getContext ().footnote (format (count > 1 ?  "There are {1} local changes.  Sync required."
                                                          : "There is {1} local change.  Sync required.", count));

@@ -70,17 +70,11 @@ int CmdStats::execute (std::string& output)
 
   // Count the undo transactions.
   std::vector <std::string> undoTxns = Context::getContext ().tdb2.undo.get_lines ();
-  int undoCount = 0;
-  for (auto& tx : undoTxns)
-    if (tx == "---")
-      ++undoCount;
+  int undoCount = std::count(undoTxns.begin(), undoTxns.end(), "---");
 
   // Count the backlog transactions.
   std::vector <std::string> backlogTxns = Context::getContext ().tdb2.backlog.get_lines ();
-  int backlogCount = 0;
-  for (auto& tx : backlogTxns)
-    if (tx[0] == '{')
-      ++backlogCount;
+  int backlogCount = std::count_if(backlogTxns.begin(), backlogTxns.end(), [](const auto& tx){ return tx.front() == '{'; });
 
   // Get all the tasks.
   Filter filter;
