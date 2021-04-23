@@ -440,6 +440,8 @@ int Context::initialize (int argc, const char** argv)
   int rc = 0;
   home_dir = getenv ("HOME");
 
+  std::vector <std::string> searchPaths { TASK_RCDIR };
+
   try
   {
     ////////////////////////////////////////////////////////////////////////////
@@ -494,8 +496,8 @@ int Context::initialize (int argc, const char** argv)
     // Artificial scope for timing purposes.
     {
       Timer timer;
-      config.parse (configurationDefaults);
-      config.load (rc_file._data);
+      config.parse (configurationDefaults, 1, searchPaths);
+      config.load (rc_file._data, 1, searchPaths);
       debugTiming (format ("Config::load ({1})", rc_file._data), timer);
     }
 
@@ -1191,20 +1193,20 @@ void Context::createDefaultConfig ()
              << "\n#data.location=~/.local/share/task\n"
              << "#hooks.location=~/.config/task/hooks\n"
              << "\n# Color theme (uncomment one to use)\n"
-             << "#include " << TASK_RCDIR << "/light-16.theme\n"
-             << "#include " << TASK_RCDIR << "/light-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-16.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-red-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-green-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-blue-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-violets-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-yellow-green.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-gray-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-gray-blue-256.theme\n"
-             << "#include " << TASK_RCDIR << "/solarized-dark-256.theme\n"
-             << "#include " << TASK_RCDIR << "/solarized-light-256.theme\n"
-             << "#include " << TASK_RCDIR << "/no-color.theme\n"
+             << "#include light-16.theme\n"
+             << "#include light-256.theme\n"
+             << "#include dark-16.theme\n"
+             << "#include dark-256.theme\n"
+             << "#include dark-red-256.theme\n"
+             << "#include dark-green-256.theme\n"
+             << "#include dark-blue-256.theme\n"
+             << "#include dark-violets-256.theme\n"
+             << "#include dark-yellow-green.theme\n"
+             << "#include dark-gray-256.theme\n"
+             << "#include dark-gray-blue-256.theme\n"
+             << "#include solarized-dark-256.theme\n"
+             << "#include solarized-light-256.theme\n"
+             << "#include no-color.theme\n"
              << '\n';
 
     // Write out the new file.
