@@ -65,7 +65,7 @@ int CmdDenotate::execute (std::string&)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  if (filtered.size () == 0)
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No tasks specified.");
     return 1;
@@ -77,7 +77,7 @@ int CmdDenotate::execute (std::string&)
   {
     if (a.hasTag ("MISCELLANEOUS"))
     {
-      if (pattern != "")
+      if (!pattern.empty())
         pattern += ' ';
 
       pattern += a.attribute ("raw");
@@ -93,7 +93,7 @@ int CmdDenotate::execute (std::string&)
 
     auto annotations = task.getAnnotations ();
 
-    if (annotations.size () == 0)
+    if (annotations.empty())
       throw std::string ("The specified task has no annotations that can be deleted.");
 
     std::string anno;
@@ -156,7 +156,7 @@ int CmdDenotate::execute (std::string&)
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
+    if (!change.first.empty())
       Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_DENO_1 : STRING_CMD_DENO_N, count);

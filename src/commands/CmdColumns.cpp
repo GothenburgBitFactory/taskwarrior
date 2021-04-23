@@ -78,7 +78,7 @@ int CmdColumns::execute (std::string& output)
 
   for (const auto& name : names)
   {
-    if (words.size () == 0 ||
+    if (words.empty() ||
         find (name, words[0], false) != std::string::npos)
     {
       auto styles   = Context::getContext ().columns[name]->styles ();

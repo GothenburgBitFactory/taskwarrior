@@ -791,10 +791,10 @@ void Chart::calculateRates ()
 
     // Prefer dateformat.report over dateformat.
     std::string format = Context::getContext ().config.get ("dateformat.report");
-    if (format == "")
+    if (format.empty())
     {
       format = Context::getContext ().config.get ("dateformat");
-      if (format == "")
+      if (format.empty())
         format = "Y-M-D";
     }
 

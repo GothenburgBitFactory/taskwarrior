@@ -417,9 +417,9 @@ int CmdCalendar::execute (std::string& output)
       auto format = config.get ("report." +
                                 config.get ("calendar.details.report") +
                                 ".dateformat");
-      if (format == "")
+      if (format.empty())
         format = config.get ("dateformat.report");
-      if (format == "")
+      if (format.empty())
         format = config.get ("dateformat");
 
       for (auto& hm_it : hm)

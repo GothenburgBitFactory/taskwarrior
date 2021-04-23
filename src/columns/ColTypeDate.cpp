@@ -81,9 +81,9 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
       //   rc.dateformat.report
       //   rc.dateformat.
       std::string format = Context::getContext ().config.get ("report." + _report + ".dateformat");
-      if (format == "")
+      if (format.empty())
         format = Context::getContext ().config.get ("dateformat.report");
-      if (format == "")
+      if (format.empty())
         format = Context::getContext ().config.get ("dateformat");
 
       minimum = maximum = Datetime::length (format);
@@ -149,10 +149,10 @@ void ColumnTypeDate::render (
       //   rc.dateformat.report
       //   rc.dateformat
       std::string format = Context::getContext ().config.get ("report." + _report + ".dateformat");
-      if (format == "")
+      if (format.empty())
       {
         format = Context::getContext ().config.get ("dateformat.report");
-        if (format == "")
+        if (format.empty())
           format = Context::getContext ().config.get ("dateformat");
       }
 
@@ -237,7 +237,7 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
   }
 
   // If a date doesn't parse (2/29/2014) then it evaluates to zero.
-  if (value != "" &&
+  if (!value.empty() &&
       evaluatedValue.get_date () == 0)
     throw format ("'{1}' is not a valid date in the '{2}' format.", value, Variant::dateFormat);
 

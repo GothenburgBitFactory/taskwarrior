@@ -70,7 +70,7 @@ int CmdInfo::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  if (! filtered.size ())
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No matches.");
     rc = 1;
@@ -85,11 +85,11 @@ int CmdInfo::execute (std::string& output)
   //   rc.dateformat.info
   //   rc.dateformat
   auto dateformat = Context::getContext ().config.get ("dateformat.info");
-  if (dateformat == "")
+  if (dateformat.empty())
     dateformat = Context::getContext ().config.get ("dateformat");
 
   auto dateformatanno = Context::getContext ().config.get ("dateformat.annotation");
-  if (dateformatanno == "")
+  if (dateformatanno.empty())
     dateformatanno = dateformat;
 
   // Render each task.
@@ -148,7 +148,7 @@ int CmdInfo::execute (std::string& output)
     // dependencies: blocked
     {
       auto blocked = dependencyGetBlocking (task);
-      if (blocked.size ())
+      if (!blocked.empty())
       {
         std::stringstream message;
         for (auto& block : blocked)
@@ -163,7 +163,7 @@ int CmdInfo::execute (std::string& output)
     // dependencies: blocking
     {
       auto blocking = dependencyGetBlocked (task);
-      if (blocking.size ())
+      if (!blocking.empty())
       {
         std::stringstream message;
         for (auto& block : blocking)
@@ -311,7 +311,7 @@ int CmdInfo::execute (std::string& output)
 
     // tags ...
     auto tags = task.getTags ();
-    if (tags.size ())
+    if (!tags.empty())
     {
       auto allTags = join (" ", tags);
 
@@ -385,7 +385,7 @@ int CmdInfo::execute (std::string& output)
         if (col->is_uda ())
         {
           auto value = task.get (att);
-          if (value != "")
+          if (!value.empty())
           {
             row = view.addRow ();
             view.set (row, 0, col->label ());

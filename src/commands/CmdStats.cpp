@@ -134,14 +134,14 @@ int CmdStats::execute (std::string& output)
     annotationsT += task.getAnnotations ().size ();
 
     auto tags = task.getTags ();
-    if (tags.size ())
+    if (!tags.empty())
       ++taggedT;
 
     for (auto& tag : tags)
       allTags[tag] = 0;
 
     std::string project = task.get ("project");
-    if (project != "")
+    if (!project.empty())
       allProjects[project] = 0;
   }
 
@@ -219,7 +219,7 @@ int CmdStats::execute (std::string& output)
     view.set (row, 1, value.str ());
   }
 
-  if (filtered.size ())
+  if (!filtered.empty())
   {
     Datetime e (earliest);
     row = view.addRow ();

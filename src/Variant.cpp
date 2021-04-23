@@ -1895,7 +1895,7 @@ void Variant::cast (const enum type new_type)
           break;
         }
 
-        if (dateFormat != "")
+        if (!dateFormat.empty())
         {
           _date = Datetime (_string, dateFormat).toEpoch ();
           break;
@@ -1958,7 +1958,7 @@ bool Variant::trivial () const
 {
   return (_type == type_integer  && _integer  == 0)   ||
          (_type == type_real     && _real     == 0.0) ||
-         (_type == type_string   && _string   == "")  ||
+         (_type == type_string   && _string.empty())  ||
          (_type == type_date     && _date     == 0)   ||
          (_type == type_duration && _duration == 0);
 }

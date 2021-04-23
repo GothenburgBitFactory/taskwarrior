@@ -57,7 +57,7 @@ int CmdImport::execute (std::string&)
 
   // Get filenames from command line arguments.
   auto words = Context::getContext ().cli2.getWords ();
-  if (! words.size () ||
+  if (words.empty() ||
       (words.size () == 1 && words[0] == "-"))
   {
     std::cout << format ("Importing '{1}'\n", "STDIN");

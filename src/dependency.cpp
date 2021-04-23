@@ -58,7 +58,7 @@ std::vector <Task> dependencyGetBlocking (const Task& task)
   auto depends = task.get ("depends");
 
   std::vector <Task> blocking;
-  if (depends != "")
+  if (!depends.empty())
     for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
       if (it.getStatus () != Task::completed &&
           it.getStatus () != Task::deleted   &&
@@ -153,7 +153,7 @@ void dependencyChainOnComplete (Task& task)
   auto blocking = dependencyGetBlocking (task);
 
   // If the task is anything but the tail end of a dependency chain.
-  if (blocking.size ())
+  if (!blocking.empty())
   {
     auto blocked = dependencyGetBlocked (task);
 
@@ -168,7 +168,7 @@ void dependencyChainOnComplete (Task& task)
     }
 
     // If there are both blocking and blocked tasks, the chain is broken.
-    if (blocked.size ())
+    if (!blocked.empty())
     {
       if (Context::getContext ().config.getBoolean ("dependency.reminder"))
       {
@@ -211,7 +211,7 @@ void dependencyChainOnStart (Task& task)
 
     // If the task is anything but the tail end of a dependency chain, nag about
     // broken chain.
-    if (blocking.size ())
+    if (!blocking.empty())
     {
       std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
                 << '\n';

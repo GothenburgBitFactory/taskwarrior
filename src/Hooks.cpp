@@ -135,7 +135,7 @@ void Hooks::onLaunch () const
   Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-launch");
-  if (matchingScripts.size ())
+  if (!matchingScripts.empty())
   {
     for (auto& script : matchingScripts)
     {
@@ -188,7 +188,7 @@ void Hooks::onExit () const
   Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-exit");
-  if (matchingScripts.size ())
+  if (!matchingScripts.empty())
   {
     // Get the set of changed tasks.
     std::vector <Task> tasks;
@@ -251,7 +251,7 @@ void Hooks::onAdd (Task& task) const
   Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-add");
-  if (matchingScripts.size ())
+  if (!matchingScripts.empty())
   {
     // Convert task to a vector of strings.
     std::vector <std::string> input;
@@ -317,7 +317,7 @@ void Hooks::onModify (const Task& before, Task& after) const
   Timer timer;
 
   std::vector <std::string> matchingScripts = scripts ("on-modify");
-  if (matchingScripts.size ())
+  if (!matchingScripts.empty())
   {
     // Convert vector of tasks to a vector of strings.
     std::vector <std::string> input;
@@ -602,7 +602,7 @@ int Hooks::callHookScript (
   {
     Context::getContext ().debug ("Hook: output");
     for (const auto& i : output)
-      if (i != "")
+      if (!i.empty())
         Context::getContext ().debug ("  " + i);
 
     Context::getContext ().debug (format ("Hook: Completed with status {1}", status));

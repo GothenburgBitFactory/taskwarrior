@@ -75,7 +75,7 @@ int CmdUDAs::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  if (udas.size ())
+  if (!udas.empty())
   {
     std::sort (udas.begin (), udas.end ());
 
@@ -97,7 +97,7 @@ int CmdUDAs::execute (std::string& output)
       std::string label  = Context::getContext ().config.get ("uda." + uda + ".label");
       std::string values = Context::getContext ().config.get ("uda." + uda + ".values");
       std::string defval = Context::getContext ().config.get ("uda." + uda + ".default");
-      if (label == "")
+      if (label.empty())
         label = uda;
 
       // Count UDA usage by UDA.
@@ -139,7 +139,7 @@ int CmdUDAs::execute (std::string& output)
         orphans[att.first]++;
   }
 
-  if (orphans.size ())
+  if (!orphans.empty())
   {
     // Display the orphans and their counts.
     Table orphanTable;
@@ -199,7 +199,7 @@ int CmdCompletionUDAs::execute (std::string& output)
     }
   }
 
-  if (udas.size ())
+  if (!udas.empty())
   {
     std::sort (udas.begin (), udas.end ());
     output = join ("\n", udas) + '\n';

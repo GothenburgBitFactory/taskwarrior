@@ -50,7 +50,7 @@ ColumnUDAString::ColumnUDAString ()
 bool ColumnUDAString::validate (const std::string& value) const
 {
   // No restrictions.
-  if (_values.size () == 0)
+  if (_values.empty())
     return true;
 
   // Look for exact match value.
@@ -73,7 +73,7 @@ void ColumnUDAString::measure (Task& task, unsigned int& minimum, unsigned int& 
     if (_style == "default")
     {
       std::string value = task.get (_name);
-      if (value != "")
+      if (!value.empty())
       {
         auto stripped = Color::strip (value);
         maximum = longestLine (stripped);
@@ -83,7 +83,7 @@ void ColumnUDAString::measure (Task& task, unsigned int& minimum, unsigned int& 
     else if (_style == "indicator")
     {
       auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-      if (indicator == "")
+      if (indicator.empty())
         indicator = "U";
 
       minimum = maximum = utf8_width (indicator);
@@ -112,7 +112,7 @@ void ColumnUDAString::render (
     else if (_style == "indicator")
     {
       auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-      if (indicator == "")
+      if (indicator.empty())
         indicator = "U";
 
       renderStringRight (lines, width, color, indicator);
@@ -135,7 +135,7 @@ ColumnUDANumeric::ColumnUDANumeric ()
 bool ColumnUDANumeric::validate (const std::string& value) const
 {
   // No restrictions.
-  if (_values.size () == 0)
+  if (_values.empty())
     return true;
 
   // Look for exact match value.
@@ -158,13 +158,13 @@ void ColumnUDANumeric::measure (Task& task, unsigned int& minimum, unsigned int&
     if (_style == "default")
     {
       auto value = task.get (_name);
-      if (value != "")
+      if (!value.empty())
         minimum = maximum = value.length ();
     }
     else if (_style == "indicator")
     {
       auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-      if (indicator == "")
+      if (indicator.empty())
         indicator = "U";
 
       minimum = maximum = utf8_width (indicator);
@@ -189,7 +189,7 @@ void ColumnUDANumeric::render (
     else if (_style == "indicator")
     {
       auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-      if (indicator == "")
+      if (indicator.empty())
         indicator = "U";
 
       renderStringRight (lines, width, color, indicator);
@@ -212,7 +212,7 @@ ColumnUDADate::ColumnUDADate ()
 bool ColumnUDADate::validate (const std::string& value) const
 {
   // No restrictions.
-  if (_values.size () == 0)
+  if (_values.empty())
     return true;
 
   // Look for exact match value.
@@ -235,7 +235,7 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
     if (_style == "default")
     {
       auto value = task.get (_name);
-      if (value != "")
+      if (!value.empty())
       {
         // Determine the output date format, which uses a hierarchy of definitions.
         //   rc.report.<report>.dateformat
@@ -243,9 +243,9 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
         //   rc.dateformat
         Datetime date ((time_t) strtol (value.c_str (), nullptr, 10));
         auto format = Context::getContext ().config.get ("report." + _report + ".dateformat");
-        if (format == "")
+        if (format.empty())
           format = Context::getContext ().config.get ("dateformat.report");
-        if (format == "")
+        if (format.empty())
           format = Context::getContext ().config.get ("dateformat");
 
         minimum = maximum = Datetime::length (format);
@@ -254,7 +254,7 @@ void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& ma
     else if (_style == "indicator")
     {
       auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-      if (indicator == "")
+      if (indicator.empty())
         indicator = "U";
 
       minimum = maximum = utf8_width (indicator);
@@ -280,10 +280,10 @@ void ColumnUDADate::render (
       //   rc.dateformat.report
       //   rc.dateformat.
       auto format = Context::getContext ().config.get ("report." + _report + ".dateformat");
-      if (format == "")
+      if (format.empty())
       {
         format = Context::getContext ().config.get ("dateformat.report");
-        if (format == "")
+        if (format.empty())
           format = Context::getContext ().config.get ("dateformat");
       }
 
@@ -292,7 +292,7 @@ void ColumnUDADate::render (
     else if (_style == "indicator")
     {
       auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-      if (indicator == "")
+      if (indicator.empty())
         indicator = "U";
 
       renderStringRight (lines, width, color, indicator);
@@ -315,7 +315,7 @@ ColumnUDADuration::ColumnUDADuration ()
 bool ColumnUDADuration::validate (const std::string& value) const
 {
   // No restrictions.
-  if (_values.size () == 0)
+  if (_values.empty())
     return true;
 
   // Look for exact match value.
@@ -338,7 +338,7 @@ void ColumnUDADuration::measure (Task& task, unsigned int& minimum, unsigned int
     if (_style == "default")
     {
       auto value = task.get (_name);
-      if (value != "")
+      if (!value.empty())
         minimum = maximum = Duration (value).formatISO ().length ();
     }
     else if (_style == "indicator")
@@ -346,7 +346,7 @@ void ColumnUDADuration::measure (Task& task, unsigned int& minimum, unsigned int
       if (task.has (_name))
       {
         auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-        if (indicator == "")
+        if (indicator.empty())
           indicator = "U";
 
         minimum = maximum = utf8_width (indicator);
@@ -374,7 +374,7 @@ void ColumnUDADuration::render (
     else if (_style == "indicator")
     {
       auto indicator = Context::getContext ().config.get ("uda." + _name + ".indicator");
-      if (indicator == "")
+      if (indicator.empty())
         indicator = "U";
 
       renderStringRight (lines, width, color, indicator);

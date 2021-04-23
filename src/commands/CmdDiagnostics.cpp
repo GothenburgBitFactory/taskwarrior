@@ -207,7 +207,7 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
-  if (Context::getContext ().config.get ("editor") != "")
+  if (!Context::getContext ().config.get ("editor").empty())
     out << "  rc.editor: " << Context::getContext ().config.get ("editor") << '\n';
   else if ((peditor = getenv ("VISUAL")) != nullptr)
     out << "    $VISUAL: " << peditor << '\n';
@@ -220,7 +220,7 @@ int CmdDiagnostics::execute (std::string& output)
 
   auto ca_pem = Context::getContext ().config.get ("taskd.ca");
   out << "         CA: ";
-  if (ca_pem != "")
+  if (!ca_pem.empty())
   {
     File file_ca (ca_pem);
     if (file_ca.exists ())
@@ -236,7 +236,7 @@ int CmdDiagnostics::execute (std::string& output)
 
   auto cert_pem = Context::getContext ().config.get ("taskd.certificate");
   out << "Certificate: ";
-  if (cert_pem != "")
+  if (!cert_pem.empty())
   {
     File file_cert (cert_pem);
     if (file_cert.exists ())
@@ -252,7 +252,7 @@ int CmdDiagnostics::execute (std::string& output)
 
   auto key_pem = Context::getContext ().config.get ("taskd.key");
   out << "        Key: ";
-  if (key_pem != "")
+  if (!key_pem.empty())
   {
     File file_key (key_pem);
     if (file_key.exists ())
@@ -312,7 +312,7 @@ int CmdDiagnostics::execute (std::string& output)
       << '\n';
 
   auto hooks = Context::getContext ().hooks.list ();
-  if (hooks.size ())
+  if (!hooks.empty())
   {
     unsigned int longest = 0;
     for (auto& hook : hooks)
@@ -416,7 +416,7 @@ int CmdDiagnostics::execute (std::string& output)
       << format ("Scanned {1} tasks for duplicate UUIDs:", all.size ())
       << '\n';
 
-  if (dups.size ())
+  if (!dups.empty())
   {
     for (auto& d : dups)
       out << "             " << format ("Found duplicate {1}", d) << '\n';
@@ -450,7 +450,7 @@ int CmdDiagnostics::execute (std::string& output)
     // Check recurrence parent
     auto parentUUID = task.get ("parent");
 
-    if (parentUUID != "" && ! Context::getContext ().tdb2.has (parentUUID))
+    if (!parentUUID.empty() && ! Context::getContext ().tdb2.has (parentUUID))
     {
       out << "             "
           << format ("Task {1} has nonexistent recurrence template {2}", task.get ("uuid"), parentUUID)

@@ -809,7 +809,7 @@ int Context::dispatch (std::string &out)
 {
   // Autocomplete args against keywords.
   std::string command = cli2.getCommand ();
-  if (command != "")
+  if (!command.empty())
   {
     updateXtermTitle ();
     updateVerbosity ();
@@ -1089,7 +1089,7 @@ void Context::getLimits (int& rows, int& lines)
 
   // This is an integer specified as a filter (limit:10).
   auto limit = config.get ("limit");
-  if (limit != "")
+  if (!limit.empty())
   {
     if (limit == "page")
     {
@@ -1169,7 +1169,7 @@ void Context::staticInitialization ()
 void Context::createDefaultConfig ()
 {
   // Do we need to create a default rc?
-  if (rc_file._data != "" && ! rc_file.exists ())
+  if (!rc_file._data.empty() && ! rc_file.exists ())
   {
     if (config.getBoolean ("confirmation") &&
         ! confirm ( format ("A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so Taskwarrior can proceed?", home_dir, rc_file._data)))
@@ -1307,7 +1307,7 @@ void Context::updateXtermTitle ()
 void Context::updateVerbosity ()
 {
   auto command = cli2.getCommand ();
-  if (command != "" &&
+  if (!command.empty() &&
       command[0] == '_')
   {
     verbosity = {"nothing"};

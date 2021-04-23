@@ -59,7 +59,7 @@ int CmdAppend::execute (std::string&)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  if (filtered.size () == 0)
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No tasks specified.");
     return 1;
@@ -124,7 +124,7 @@ int CmdAppend::execute (std::string&)
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
+    if (!change.first.empty())
       Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ? "Appended {1} task." : "Appended {1} tasks.", count);

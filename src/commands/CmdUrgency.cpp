@@ -58,7 +58,7 @@ int CmdUrgency::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  if (filtered.size () == 0)
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No tasks specified.");
     return 1;

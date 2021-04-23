@@ -164,7 +164,7 @@ int CmdConfig::execute (std::string& output)
   //   task config name value    # set name to value
   //   task config name ""       # set name to blank
   //   task config name          # remove name
-  if (words.size ())
+  if (!words.empty())
   {
     auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
     auto found = false;
@@ -184,7 +184,7 @@ int CmdConfig::execute (std::string& output)
       }
     }
 
-    if (name != "")
+    if (!name.empty())
     {
       auto change = false;
 

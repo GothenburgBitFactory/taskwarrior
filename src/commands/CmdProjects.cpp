@@ -97,11 +97,11 @@ int CmdProjects::execute (std::string& output)
     for (auto& parent : projects)
       unique[parent] += 1;
 
-    if (project == "")
+    if (project.empty())
       no_project = true;
   }
 
-  if (unique.size ())
+  if (!unique.empty())
   {
     // Render a list of project names from the map.
     Table view;
@@ -118,7 +118,7 @@ int CmdProjects::execute (std::string& output)
     for (auto& item: sorted_view)
     {
       int row = view.addRow ();
-      view.set (row, 0, (item.first == ""
+      view.set (row, 0, (item.first.empty()
                           ? "(none)"
                           : indentProject (item.first, "  ", '.')));
       view.set (row, 1, item.second);

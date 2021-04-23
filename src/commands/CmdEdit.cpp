@@ -82,7 +82,7 @@ int CmdEdit::execute (std::string&)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  if (! filtered.size ())
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No matches.");
     return 1;
@@ -294,10 +294,10 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   // UDAs
   std::vector <std::string> udas;
   for (auto& col : Context::getContext ().columns)
-    if (Context::getContext ().config.get ("uda." + col.first + ".type") != "")
+    if (!Context::getContext ().config.get ("uda." + col.first + ".type").empty())
       udas.push_back (col.first);
 
-  if (udas.size ())
+  if (!udas.empty())
   {
     before << "# User Defined Attributes\n";
     std::sort (udas.begin (), udas.end ());
@@ -325,7 +325,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   // UDA orphans
   auto orphans = task.getUDAOrphanUUIDs ();
-  if (orphans.size ())
+  if (!orphans.empty())
   {
     before << "# User Defined Attribute Orphans\n";
     std::sort (orphans.begin (), orphans.end ());
@@ -351,7 +351,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   auto value = findValue (after, "\n  Project:");
   if (task.get ("project") != value)
   {
-    if (value != "")
+    if (!value.empty())
     {
       Context::getContext ().footnote ("Project modified.");
       task.set ("project", value);
@@ -372,7 +372,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   value = findMultilineValue (after, "\n  Description:", "\n  Created:");
   if (task.get ("description") != value)
   {
-    if (value != "")
+    if (!value.empty())
     {
       Context::getContext ().footnote ("Description modified.");
       task.set ("description", value);
@@ -383,7 +383,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // entry
   value = findValue (after, "\n  Created:");
-  if (value != "")
+  if (!value.empty())
   {
     if (value != formatDate (task, "entry", dateformat))
     {
@@ -396,9 +396,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // start
   value = findValue (after, "\n  Started:");
-  if (value != "")
+  if (!value.empty())
   {
-    if (task.get ("start") != "")
+    if (!task.get ("start").empty())
     {
       if (value != formatDate (task, "start", dateformat))
       {
@@ -414,7 +414,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   }
   else
   {
-    if (task.get ("start") != "")
+    if (!task.get ("start").empty())
     {
       Context::getContext ().footnote ("Start date removed.");
       task.remove ("start");
@@ -423,9 +423,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // end
   value = findValue (after, "\n  Ended:");
-  if (value != "")
+  if (!value.empty())
   {
-    if (task.get ("end") != "")
+    if (!task.get ("end").empty())
     {
       if (value != formatDate (task, "end", dateformat))
       {
@@ -438,7 +438,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   }
   else
   {
-    if (task.get ("end") != "")
+    if (!task.get ("end").empty())
     {
       Context::getContext ().footnote ("End date removed.");
       task.setStatus (Task::pending);
@@ -448,9 +448,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // scheduled
   value = findValue (after, "\n  Scheduled:");
-  if (value != "")
+  if (!value.empty())
   {
-    if (task.get ("scheduled") != "")
+    if (!task.get ("scheduled").empty())
     {
       if (value != formatDate (task, "scheduled", dateformat))
       {
@@ -466,7 +466,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   }
   else
   {
-    if (task.get ("scheduled") != "")
+    if (!task.get ("scheduled").empty())
     {
       Context::getContext ().footnote ("Scheduled date removed.");
       task.remove ("scheduled");
@@ -475,9 +475,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // due
   value = findValue (after, "\n  Due:");
-  if (value != "")
+  if (!value.empty())
   {
-    if (task.get ("due") != "")
+    if (!task.get ("due").empty())
     {
       if (value != formatDate (task, "due", dateformat))
       {
@@ -493,10 +493,10 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   }
   else
   {
-    if (task.get ("due") != "")
+    if (!task.get ("due").empty())
     {
       if (task.getStatus () == Task::recurring ||
-          task.get ("parent") != "")
+          !task.get ("parent").empty())
       {
         Context::getContext ().footnote ("Cannot remove a due date from a recurring task.");
       }
@@ -510,9 +510,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // until
   value = findValue (after, "\n  Until:");
-  if (value != "")
+  if (!value.empty())
   {
-    if (task.get ("until") != "")
+    if (!task.get ("until").empty())
     {
       if (value != formatDate (task, "until", dateformat))
       {
@@ -528,7 +528,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   }
   else
   {
-    if (task.get ("until") != "")
+    if (!task.get ("until").empty())
     {
       Context::getContext ().footnote ("Until date removed.");
       task.remove ("until");
@@ -539,14 +539,14 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   value = findValue (after, "\n  Recur:");
   if (value != task.get ("recur"))
   {
-    if (value != "")
+    if (!value.empty())
     {
       Duration p;
       std::string::size_type idx = 0;
       if (p.parse (value, idx))
       {
         Context::getContext ().footnote ("Recurrence modified.");
-        if (task.get ("due") != "")
+        if (!task.get ("due").empty())
         {
           task.set ("recur", value);
           task.setStatus (Task::recurring);
@@ -570,9 +570,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // wait
   value = findValue (after, "\n  Wait until:");
-  if (value != "")
+  if (!value.empty())
   {
-    if (task.get ("wait") != "")
+    if (!task.get ("wait").empty())
     {
       if (value != formatDate (task, "wait", dateformat))
       {
@@ -590,7 +590,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   }
   else
   {
-    if (task.get ("wait") != "")
+    if (!task.get ("wait").empty())
     {
       Context::getContext ().footnote ("Wait date removed.");
       task.remove ("wait");
@@ -602,7 +602,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   value = findValue (after, "\n  Parent:");
   if (value != task.get ("parent"))
   {
-    if (value != "")
+    if (!value.empty())
     {
       Context::getContext ().footnote ("Parent UUID modified.");
       task.set ("parent", value);
@@ -680,7 +680,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   for (auto& col : Context::getContext ().columns)
   {
     auto type = Context::getContext ().config.get ("uda." + col.first + ".type");
-    if (type != "")
+    if (!type.empty())
     {
       auto value = findValue (after, "\n  UDA " + col.first + ":");
       if (type == "string")
@@ -690,7 +690,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
            (type != "duration" ||
            (task.get (col.first) != Duration (value).toString ())))
       {
-        if (value != "")
+        if (!value.empty())
         {
           Context::getContext ().footnote (format ("UDA {1} modified.", col.first));
 
@@ -735,7 +735,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       std::string name  = Lexer::trim (orphan.substr (0, colon),  "\t ");
       std::string value = Lexer::trim (orphan.substr (colon + 1), "\t ");
 
-      if (value != "")
+      if (!value.empty())
         task.set (name, value);
       else
         task.remove (name);
@@ -759,7 +759,7 @@ CmdEdit::editResult CmdEdit::editFile (Task& task)
   //   rc.dateformat.edit
   //   rc.dateformat
   auto dateformat = Context::getContext ().config.get ("dateformat.edit");
-  if (dateformat == "")
+  if (dateformat.empty())
     dateformat = Context::getContext ().config.get ("dateformat");
 
   // Change directory for the editor
@@ -780,10 +780,10 @@ CmdEdit::editResult CmdEdit::editFile (Task& task)
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
   auto editor = Context::getContext ().config.get ("editor");
   char* peditor = getenv ("VISUAL");
-  if (editor == "" && peditor) editor = std::string (peditor);
+  if (editor.empty() && peditor) editor = std::string (peditor);
   peditor = getenv ("EDITOR");
-  if (editor == "" && peditor) editor = std::string (peditor);
-  if (editor == "") editor = "vi";
+  if (editor.empty() && peditor) editor = std::string (peditor);
+  if (editor.empty()) editor = "vi";
 
   // Complete the command line.
   editor += ' ';

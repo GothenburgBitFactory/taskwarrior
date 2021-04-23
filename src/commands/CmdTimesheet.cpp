@@ -72,7 +72,7 @@ int CmdTimesheet::execute (std::string& output)
   if (! hasFilter)
   {
     auto defaultFilter = Context::getContext ().config.get ("report.timesheet.filter");
-    if (defaultFilter == "")
+    if (defaultFilter.empty())
       defaultFilter = "(+PENDING and start.after:now-4wks) or (+COMPLETED and end.after:now-4wks)";
     Context::getContext ().cli2.addFilter (defaultFilter);
   }

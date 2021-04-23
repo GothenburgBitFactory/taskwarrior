@@ -63,7 +63,7 @@ int CmdDelete::execute (std::string&)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  if (filtered.size () == 0)
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No tasks specified.");
     return 1;
@@ -141,7 +141,7 @@ int CmdDelete::execute (std::string&)
         else
         {
           std::vector <Task> children = Context::getContext ().tdb2.children (task);
-          if (children.size() &&
+          if (!children.empty() &&
                   ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
                     && confirm (STRING_CMD_DELETE_CONFIRM_R)) ||
                    Context::getContext ().config.getBoolean ("recurrence.confirmation")))
@@ -182,7 +182,7 @@ int CmdDelete::execute (std::string&)
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
+    if (!change.first.empty())
       Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ? "Deleted {1} task." : "Deleted {1} tasks.", count);

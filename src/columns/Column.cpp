@@ -188,7 +188,7 @@ Column* Column::uda (const std::string& name)
     auto c = new ColumnUDAString ();
     c->_name = name;
     c->_label = label;
-    if (values != "")
+    if (!values.empty())
       c->_values = split (values, ',');
     return c;
   }
@@ -197,7 +197,7 @@ Column* Column::uda (const std::string& name)
     auto c = new ColumnUDANumeric ();
     c->_name = name;
     c->_label = label;
-    if (values != "")
+    if (!values.empty())
       c->_values = split (values, ',');
     return c;
   }
@@ -206,7 +206,7 @@ Column* Column::uda (const std::string& name)
     auto c = new ColumnUDADate ();
     c->_name = name;
     c->_label = label;
-    if (values != "")
+    if (!values.empty())
       c->_values = split (values, ',');
     return c;
   }
@@ -215,11 +215,11 @@ Column* Column::uda (const std::string& name)
     auto c = new ColumnUDADuration ();
     c->_name = name;
     c->_label = label;
-    if (values != "")
+    if (!values.empty())
       c->_values = split (values, ',');
     return c;
   }
-  else if (type != "")
+  else if (!type.empty())
     throw std::string ("User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'.");
 
   return nullptr;
@@ -245,7 +245,7 @@ void Column::renderHeader (
   Color& color)
 {
   if (Context::getContext ().verbose ("label") &&
-      _label != "")
+      !_label.empty())
   {
     // Create a basic label.
     std::string header;

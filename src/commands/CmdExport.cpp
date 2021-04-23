@@ -93,7 +93,7 @@ int CmdExport::execute (std::string& output)
       break;
   }
 
-  if (filtered.size ())
+  if (!filtered.empty())
     output += '\n';
 
   if (json_array)

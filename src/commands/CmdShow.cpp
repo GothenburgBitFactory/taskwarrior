@@ -283,7 +283,7 @@ int CmdShow::execute (std::string& output)
   std::string section;
 
   // Look for the first plausible argument which could be a pattern 
-  if (words.size ())
+  if (!words.empty())
     section = words[0];
 
   if (section == "all")
@@ -314,7 +314,7 @@ int CmdShow::execute (std::string& output)
       view.set (row, 1, value, color);
 
       if (default_config[i.first] != value &&
-          default_config[i.first] != "")
+          !default_config[i.first].empty())
       {
         row = view.addRow ();
         view.set (row, 0, std::string ("  ") + "Default value", color);
@@ -377,7 +377,7 @@ int CmdShow::execute (std::string& output)
   // Verify installation.  This is mentioned in the documentation as the way
   // to ensure everything is properly installed.
 
-  if (Context::getContext ().config.size () == 0)
+  if (Context::getContext ().config.empty())
   {
     out << "Configuration error: .taskrc contains no entries.\n";
     rc = 1;
@@ -386,7 +386,7 @@ int CmdShow::execute (std::string& output)
   {
     Directory location (Context::getContext ().config.get ("data.location"));
 
-    if (location._data == "")
+    if (location._data.empty())
       out << "Configuration error: data.location not specified in .taskrc file.\n";
 
     if (! location.exists ())
