@@ -171,7 +171,7 @@ int CmdCalendar::execute (std::string& output)
 
   // Now begin the data subset and rendering.
   auto countDueDates = 0;
-  if (getPendingDate == true)
+  if (getPendingDate)
   {
     // Find the oldest pending due date.
     Datetime oldest (9999, 12, 31);

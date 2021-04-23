@@ -45,7 +45,7 @@ ColumnTypeString::ColumnTypeString ()
 ////////////////////////////////////////////////////////////////////////////////
 bool ColumnTypeString::validate (const std::string& input) const
 {
-  return input.length () ? true : false;
+  return input.length () != 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
       // The lexer.token returns false for end-of-string.
       // This works as long as all the DOM references we should support consist
       // only of a single token.
-      lexer.token (domRef, type) == false)
+      !lexer.token (domRef, type))
   {
     Eval e;
     e.addSource (domSource);

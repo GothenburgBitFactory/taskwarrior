@@ -44,7 +44,7 @@ int main (int, char**)
     Variant v00 (true);
     v00.cast (Variant::type_boolean);
     t.ok (v00.type () == Variant::type_boolean, "cast boolean --> boolean");
-    t.ok (v00.get_bool () == true,              "cast boolean --> boolean");
+    t.ok (v00.get_bool (),                      "cast boolean --> boolean");
 
     Variant v01 (true);
     v01.cast (Variant::type_integer);
@@ -54,7 +54,7 @@ int main (int, char**)
     Variant v02 (true);
     v02.cast (Variant::type_real);
     t.ok (v02.type () == Variant::type_real,    "cast boolean --> real");
-    t.is (v02.get_real (), 1.0, EPSILON,       "cast boolean --> real");
+    t.is (v02.get_real (), 1.0, EPSILON,        "cast boolean --> real");
 
     Variant v03 (true);
     v03.cast (Variant::type_string);
@@ -75,7 +75,7 @@ int main (int, char**)
     Variant v10 (42);
     v10.cast (Variant::type_boolean);
     t.ok (v10.type () == Variant::type_boolean, "cast integer --> boolean");
-    t.ok (v10.get_bool () == true,              "cast integer --> boolean");
+    t.ok (v10.get_bool (),                      "cast integer --> boolean");
 
     Variant v11 (42);
     v11.cast (Variant::type_integer);
@@ -106,7 +106,7 @@ int main (int, char**)
     Variant v20 (3.14);
     v20.cast (Variant::type_boolean);
     t.ok (v20.type () == Variant::type_boolean, "cast real --> boolean");
-    t.ok (v20.get_bool () == true,              "cast real --> boolean");
+    t.ok (v20.get_bool (),                      "cast real --> boolean");
 
     Variant v21 (3.14);
     v21.cast (Variant::type_integer);
@@ -137,7 +137,7 @@ int main (int, char**)
     Variant v30 ("foo");
     v30.cast (Variant::type_boolean);
     t.ok (v30.type () == Variant::type_boolean, "cast string --> boolean");
-    t.ok (v30.get_bool () == true,              "cast string --> boolean");
+    t.ok (v30.get_bool (),                      "cast string --> boolean");
 
     Variant v31 ("42");
     v31.cast (Variant::type_integer);
@@ -178,7 +178,7 @@ int main (int, char**)
     Variant v40 ((time_t) 1234567890, Variant::type_date);
     v40.cast (Variant::type_boolean);
     t.ok (v40.type () == Variant::type_boolean, "cast date --> boolean");
-    t.ok (v40.get_bool () == true,              "cast date --> boolean");
+    t.ok (v40.get_bool (),                      "cast date --> boolean");
 
     Variant v41 ((time_t) 1234567890, Variant::type_date);
     v41.cast (Variant::type_integer);
@@ -219,7 +219,7 @@ int main (int, char**)
     Variant v50 ((time_t) 12345, Variant::type_duration);
     v50.cast (Variant::type_boolean);
     t.ok (v50.type () == Variant::type_boolean, "cast duration --> boolean");
-    t.ok (v50.get_bool () == true,              "cast duration --> boolean");
+    t.ok (v50.get_bool (),                      "cast duration --> boolean");
 
     Variant v51 ((time_t) 12345, Variant::type_duration);
     v51.cast (Variant::type_integer);

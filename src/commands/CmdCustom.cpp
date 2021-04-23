@@ -167,9 +167,7 @@ int CmdCustom::execute (std::string& output)
     if (i < labels.size ())
       c->setLabel (labels[i]);
 
-    bool sort = std::find (sortColumns.begin (), sortColumns.end (), c->name ()) != sortColumns.end ()
-                  ? true
-                  : false;
+    bool sort = std::find (sortColumns.begin (), sortColumns.end (), c->name ()) != sortColumns.end ();
 
     view.add (c, sort);
   }
