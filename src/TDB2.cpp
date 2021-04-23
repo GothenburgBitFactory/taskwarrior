@@ -388,8 +388,7 @@ void TF2::load_tasks (bool from_gc /* = false */)
     load_lines ();
 
     // Apply previously added lines.
-    for (auto& line : _added_lines)
-      _lines.push_back (line);
+    std::copy(_added_lines.begin(), _added_lines.end(), std::back_inserter(_lines));
   }
 
   // Reduce unnecessary allocations/copies.
@@ -450,8 +449,7 @@ std::string TF2::uuid (int id)
     load_tasks ();
 
     // Apply previously added tasks.
-    for (auto& task : _added_tasks)
-      _tasks.push_back (task);
+    std::copy(_added_tasks.begin(), _added_tasks.end(), std::back_inserter(_tasks));
   }
 
   auto i = _I2U.find (id);
@@ -469,8 +467,7 @@ int TF2::id (const std::string& uuid)
     load_tasks ();
 
     // Apply previously added tasks.
-    for (auto& task : _added_tasks)
-      _tasks.push_back (task);
+    std::copy(_added_tasks.begin(), _added_tasks.end(), std::back_inserter(_tasks));
   }
 
   auto i = _U2I.find (uuid);
@@ -769,17 +766,10 @@ void TDB2::commit ()
 void TDB2::gather_changes ()
 {
   _changes.clear ();
-  for (auto& task : pending._added_tasks)
-    _changes.push_back (task);
-
-  for (auto& task : pending._modified_tasks)
-    _changes.push_back (task);
-
-  for (auto& task : completed._added_tasks)
-    _changes.push_back (task);
-
-  for (auto& task : completed._modified_tasks)
-    _changes.push_back (task);
+  std::copy(pending._added_tasks.begin(), pending._added_tasks.end(), std::back_inserter(_changes));
+  std::copy(pending._modified_tasks.begin(), pending._modified_tasks.end(), std::back_inserter(_changes));
+  std::copy(completed._added_tasks.begin(), completed._added_tasks.end(), std::back_inserter(_changes));
+  std::copy(completed._modified_tasks.begin(), completed._modified_tasks.end(), std::back_inserter(_changes));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1318,9 +1308,7 @@ const std::vector <Task> TDB2::all_tasks ()
   std::vector <Task> extra (completed._tasks.size () +
                             completed._added_tasks.size ());
   extra = completed.get_tasks ();
-
-  for (auto& task : extra)
-    all.push_back (task);
+  std::copy(extra.begin(), extra.end(), std::back_inserter(all));
 
   return all;
 }

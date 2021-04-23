@@ -72,8 +72,7 @@ void initializeColorRules ()
       std::string rule = "color." + p;
       autoComplete (rule, rules, results, 3); // Hard-coded 3.
 
-      for (auto& r : results)
-        gsPrecedence.push_back (r);
+      std::copy(results.begin(), results.end(), std::back_inserter(gsPrecedence));
     }
   }
 

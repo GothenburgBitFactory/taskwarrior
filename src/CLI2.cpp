@@ -1398,8 +1398,7 @@ void CLI2::desugarFilterAttributes ()
         // Getting this wrong breaks a whole lot of filtering tests.
         if (evalSupported)
         {
-          for (auto& v : values)
-            reconstructed.push_back (v);
+          std::copy(values.begin(), values.end(), std::back_inserter(reconstructed));
         }
         else if (Lexer::isDOM (rhs.attribute ("raw")))
         {
