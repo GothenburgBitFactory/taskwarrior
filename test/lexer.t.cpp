@@ -485,35 +485,34 @@ int main (int, char**)
                                                         { "name:value",                                   Lexer::Type::pair                    },
                                                         { ")",                                            Lexer::Type::op                      },         NO, NO }, },
   };
-  #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
-  for (unsigned int i = 0; i < NUM_TESTS; i++)
+  for (const auto& lexerTest : lexerTests)
   {
     // The isolated test puts the input string directly into the Lexer.
-    Lexer isolated (lexerTests[i].input);
+    Lexer isolated (lexerTest.input);
 
-    for (int j = 0; j < 5; j++)
+    for (const auto& result : lexerTest.results)
     {
-      if (lexerTests[i].results[j].token[0])
+      if (result.token[0])
       {
         // Isolated: "<token>"
         t.ok (isolated.token (token, type),                  "Isolated Lexer::token(...) --> true");
-        t.is (token, lexerTests[i].results[j].token,         "  token --> " + token, lexerTests[i].results[j].expfail_token);
-        t.is ((int)type, (int)lexerTests[i].results[j].type, "  type --> Lexer::Type::" + Lexer::typeToString (type), lexerTests[i].results[j].expfail_type);
+        t.is (token, result.token,                           "  token --> " + token, result.expfail_token);
+        t.is ((int)type, (int)result.type,                   "  type --> Lexer::Type::" + Lexer::typeToString (type), result.expfail_type);
       }
     }
 
     // The embedded test surrounds the input string with a space.
-    Lexer embedded (std::string (" ") + lexerTests[i].input + " ");
+    Lexer embedded (std::string (" ") + lexerTest.input + " ");
 
-    for (int j = 0; j < 5; j++)
+    for (const auto& result : lexerTest.results)
     {
-      if (lexerTests[i].results[j].token[0])
+      if (result.token[0])
       {
         // Embedded: "<token>"
         t.ok (embedded.token (token, type),                  "Embedded Lexer::token(...) --> true");
-        t.is (token, lexerTests[i].results[j].token,         "  token --> " + token, lexerTests[i].results[j].expfail_token);
-        t.is ((int)type, (int)lexerTests[i].results[j].type, "  type --> Lexer::Type::" + Lexer::typeToString (type), lexerTests[i].results[j].expfail_type);
+        t.is (token, result.token,                           "  token --> " + token, result.expfail_token);
+        t.is ((int)type, (int)result.type,                   "  type --> Lexer::Type::" + Lexer::typeToString (type), result.expfail_type);
       }
     }
   }

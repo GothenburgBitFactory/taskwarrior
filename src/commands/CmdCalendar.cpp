@@ -427,11 +427,11 @@ int CmdCalendar::execute (std::string& output)
         auto v = hm_it.second;
         Datetime hDate (hm_it.first);
         auto d = hDate.toString (format);
-        for (size_t i = 0; i < v.size(); i++)
+        for (const auto& i : v)
         {
           auto row = holTable.addRow ();
           holTable.set (row, 0, d);
-          holTable.set (row, 1, v[i]);
+          holTable.set (row, 1, i);
         }
       }
 
