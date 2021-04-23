@@ -635,7 +635,7 @@ const DOM::Node* DOM::Node::find (const std::string& reference) const
       break;
   }
 
-  if (reference.length () && cursor != this)
+  if (!reference.empty () && cursor != this)
     return cursor;
 
   return nullptr;

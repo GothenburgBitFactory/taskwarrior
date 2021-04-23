@@ -190,7 +190,7 @@ int CmdCompletionProjects::execute (std::string& output)
     unique[task.get ("project")] = 0;
 
   for (auto& project : unique)
-    if (project.first.length ())
+    if (!project.first.empty ())
       output += project.first + '\n';
 
   return 0;

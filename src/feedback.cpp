@@ -128,7 +128,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   }
 
   // Shouldn't just say nothing.
-  if (out.str ().length () == 0)
+  if (out.str ().empty ())
     out << "  - No changes will be made.\n";
 
   return out.str ();
@@ -232,7 +232,7 @@ std::string taskInfoDifferences (
     }
 
   // Shouldn't just say nothing.
-  if (out.str ().length () == 0)
+  if (out.str ().empty ())
     out << "No changes made.\n";
 
   return out.str ();
@@ -354,7 +354,7 @@ void feedback_special_tags (const Task& task, const std::string& tag)
     else if (tag == "nocal")   msg = "The 'nocal' special tag will keep this task off the 'calendar' report.";
     else if (tag == "next")    msg = "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report.";
 
-    if (msg.length ())
+    if (!msg.empty ())
     {
       std::cout << format (msg, task.identifier ())
                 << "\n";
@@ -467,7 +467,7 @@ std::string onProjectChange (Task& task1, Task& task2)
   std::string messages1 = onProjectChange (task1);
   std::string messages2 = onProjectChange (task2);
 
-  if (messages1.length () && messages2.length ())
+  if (!messages1.empty () && !messages2.empty ())
     return messages1 + '\n' + messages2;
 
   return messages1 + messages2;

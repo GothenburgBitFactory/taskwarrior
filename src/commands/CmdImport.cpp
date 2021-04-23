@@ -144,7 +144,7 @@ int CmdImport::import (const std::string& input)
   {
     for (auto& line : split (input, '\n'))
     {
-      if (line.length ())
+      if (!line.empty ())
       {
         json::value* root = json::parse (line);
         if (root)

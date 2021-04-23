@@ -601,7 +601,7 @@ int Context::initialize (int argc, const char** argv)
     std::string combined;
     for (auto& a : cli2._args)
     {
-      if (combined.length ())
+      if (!combined.empty ())
         combined += ' ';
 
       combined += a.attribute ("raw");
@@ -1351,7 +1351,7 @@ void Context::propagateDebug ()
 // No duplicates.
 void Context::header (const std::string& input)
 {
-  if (input.length () &&
+  if (!input.empty () &&
       std::find (headers.begin (), headers.end (), input) == headers.end ())
     headers.push_back (input);
 }
@@ -1360,7 +1360,7 @@ void Context::header (const std::string& input)
 // No duplicates.
 void Context::footnote (const std::string& input)
 {
-  if (input.length () &&
+  if (!input.empty () &&
       std::find (footnotes.begin (), footnotes.end (), input) == footnotes.end ())
     footnotes.push_back (input);
 }
@@ -1369,7 +1369,7 @@ void Context::footnote (const std::string& input)
 // No duplicates.
 void Context::error (const std::string& input)
 {
-  if (input.length () &&
+  if (!input.empty () &&
       std::find (errors.begin (), errors.end (), input) == errors.end ())
     errors.push_back (input);
 }
@@ -1377,7 +1377,7 @@ void Context::error (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 void Context::debug (const std::string& input)
 {
-  if (input.length ())
+  if (!input.empty ())
     debugMessages.push_back (input);
 }
 

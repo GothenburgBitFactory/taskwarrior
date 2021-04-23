@@ -475,7 +475,7 @@ std::string Chart::render ()
   _grid.replace (LOC (_height - 2, _max_label + 3), 22 + strlen (rate), std::string ("Net Fix Rate:         ") + rate);
 
   // Draw completion date.
-  if (_completion.length ())
+  if (!_completion.empty ())
     _grid.replace (LOC (_height - 1, _max_label + 3), 22 + _completion.length (), "Estimated completion: " + _completion);
 
   optimizeGrid ();

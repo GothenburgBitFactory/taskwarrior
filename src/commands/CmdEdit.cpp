@@ -187,7 +187,7 @@ std::string CmdEdit::formatDate (
   const std::string& dateformat)
 {
   auto value = task.get (attribute);
-  if (value.length ())
+  if (!value.empty ())
     value = Datetime (value).toString (dateformat);
 
   return value;
@@ -199,7 +199,7 @@ std::string CmdEdit::formatDuration (
   const std::string& attribute)
 {
   auto value = task.get (attribute);
-  if (value.length ())
+  if (!value.empty ())
     value = Duration (value).formatISO ();
 
   return value;

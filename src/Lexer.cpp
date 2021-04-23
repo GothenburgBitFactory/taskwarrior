@@ -426,7 +426,7 @@ std::string Lexer::ucFirst (const std::string& input)
 {
   std::string output = input;
 
-  if (output.length () > 0)
+  if (!output.empty ())
     output[0] = toupper (output[0]);
 
   return output;
@@ -1395,7 +1395,7 @@ std::string Lexer::typeToString (Lexer::Type type)
 ////////////////////////////////////////////////////////////////////////////////
 bool Lexer::isAllDigits (const std::string& text)
 {
-  return text.length () &&
+  return !text.empty () &&
          text.find_first_not_of ("0123456789") == std::string::npos;
 }
 
@@ -1578,7 +1578,7 @@ bool Lexer::readWord (
     prev = c;
   }
 
-  return word.length () > 0;
+  return !word.empty ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1653,7 +1653,7 @@ bool Lexer::decomposePair (
     value     = text.substr (sep_end);
 
     // An empty name is an error.
-    if (name.length ())
+    if (!name.empty ())
       return true;
   }
 
@@ -1671,7 +1671,7 @@ bool Lexer::decomposeSubstitution (
   std::string parsed_from;
   std::string::size_type cursor = 0;
   if (readWord (text, "/", cursor, parsed_from) &&
-      parsed_from.length ())
+      !parsed_from.empty ())
   {
     --cursor;
     std::string parsed_to;
@@ -1704,7 +1704,7 @@ bool Lexer::decomposePattern (
   std::string ignored;
   std::string::size_type cursor = 0;
   if (readWord (text, "/", cursor, ignored) &&
-      ignored.length ())
+      !ignored.empty ())
   {
     auto parsed_flags = text.substr (cursor);
     if (parsed_flags.find ('/') == std::string::npos)

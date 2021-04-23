@@ -315,7 +315,7 @@ void Task::setStatus (Task::status status)
 Task::dateState Task::getDateState (const std::string& name) const
 {
   std::string value = get (name);
-  if (value.length ())
+  if (!value.empty ())
   {
     Datetime reference (value);
     Datetime now;
@@ -585,7 +585,7 @@ void Task::parse (const std::string& input)
       {
         std::string line = input.substr(1, ending_bracket);
 
-        if (line.length () == 0)
+        if (line.empty ())
           throw std::string ("Empty record in input.");
 
         Pig attLine (line);
@@ -612,7 +612,7 @@ void Task::parse (const std::string& input)
 
         std::string remainder;
         attLine.getRemainder (remainder);
-        if (remainder.length ())
+        if (!remainder.empty ())
           throw std::string ("Unrecognized characters at end of line.");
       }
     }

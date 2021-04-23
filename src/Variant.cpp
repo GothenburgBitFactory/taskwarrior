@@ -1865,8 +1865,8 @@ void Variant::cast (const enum type new_type)
     switch (new_type)
     {
     case type_boolean:
-      _bool = !(_string.length () == 0 ||
-               _string == "0"         ||
+      _bool = !(_string.empty ()  ||
+               _string == "0"     ||
                _string == "0.0");
       break;
     case type_integer:

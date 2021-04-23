@@ -533,7 +533,7 @@ void CLI2::analyze ()
 // Insert filter arguments (wrapped in parentheses) immediatelly after the binary.
 void CLI2::addFilter (const std::string& arg)
 {
-  if (arg.length ())
+  if (!arg.empty ())
   {
     std::vector <std::string> filter;
     filter.push_back ("(");
@@ -556,7 +556,7 @@ void CLI2::addFilter (const std::string& arg)
 // Insert modification arguments immediatelly after the command (i.e. 'add')
 void CLI2::addModifications (const std::string& arg)
 {
-  if (arg.length ())
+  if (!arg.empty ())
   {
     std::vector <std::string> mods;
 
