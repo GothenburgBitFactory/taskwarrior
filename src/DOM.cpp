@@ -260,36 +260,56 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 
   // split name on '.'
   auto elements = split (name, '.');
+  Task loaded_task;
 
-  Task ref (task);
-  Lexer lexer (elements[0]);
-  std::string token;
-  Lexer::Type type;
-
-  // If this can be ID/UUID reference (the name contains '.'),
-  // lex it to figure out. Otherwise don't lex, as lexing can be slow.
-  if ((elements.size() > 1) and lexer.token (token, type))
+  // Use a lambda to decide whether the reference is going to be the passed
+  // "task" or whether it's going to be a newly loaded task (if id/uuid was
+  // given).
+  const Task& ref = [&]() -> const Task&
   {
-    if (type == Lexer::Type::uuid &&
-        token.length () == elements[0].length ())
-    {
-      if (token != ref.get ("uuid"))
-        Context::getContext ().tdb2.get (token, ref);
+    Lexer lexer (elements[0]);
+    std::string token;
+    Lexer::Type type;
 
-      // Eat elements[0]/UUID.
-      elements.erase (elements.begin ());
-    }
-    else if (type == Lexer::Type::number &&
-             token.find ('.') == std::string::npos)
+    // If this can be ID/UUID reference (the name contains '.'),
+    // lex it to figure out. Otherwise don't lex, as lexing can be slow.
+    if ((elements.size() > 1) and lexer.token (token, type))
     {
-      auto id = strtol (token.c_str (), nullptr, 10);
-      if (id && id != ref.id)
-        Context::getContext ().tdb2.get (id, ref);
+      bool reloaded = false;
 
-      // Eat elements[0]/ID.
-      elements.erase (elements.begin ());
+      if (type == Lexer::Type::uuid &&
+          token.length () == elements[0].length ())
+      {
+        if (token != task.get ("uuid"))
+        {
+          Context::getContext ().tdb2.get (token, loaded_task);
+          reloaded = true;
+        }
+
+        // Eat elements[0]/UUID.
+        elements.erase (elements.begin ());
+      }
+      else if (type == Lexer::Type::number &&
+               token.find ('.') == std::string::npos)
+      {
+        auto id = strtol (token.c_str (), nullptr, 10);
+        if (id && id != task.id)
+        {
+          Context::getContext ().tdb2.get (id, loaded_task);
+          reloaded = true;
+        }
+
+        // Eat elements[0]/ID.
+        elements.erase (elements.begin ());
+      }
+
+      if (reloaded)
+        return loaded_task;
     }
-  }
+
+    return task;
+
+  } ();
 
   auto size = elements.size ();
 
