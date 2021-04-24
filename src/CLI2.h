@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <Lexer.h>
 #include <FS.h>
 
@@ -77,7 +78,7 @@ public:
   void addContext (bool readable, bool writeable);
   void prepareFilter ();
   const std::vector <std::string> getWords ();
-  bool canonicalize (std::string&, const std::string&, const std::string&) const;
+  bool canonicalize (std::string&, const std::string&, const std::string&);
   std::string getBinary () const;
   std::string getCommand (bool canonical = true) const;
   const std::string dump (const std::string& title = "CLI2 Parser") const;
@@ -109,6 +110,7 @@ private:
 public:
   std::multimap <std::string, std::string>           _entities             {};
   std::map <std::string, std::string>                _aliases              {};
+  std::unordered_map <int, std::string>              _canonical_cache      {};
   std::vector <A2>                                   _original_args        {};
   std::vector <A2>                                   _args                 {};
 

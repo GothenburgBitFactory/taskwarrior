@@ -699,8 +699,19 @@ const std::vector <std::string> CLI2::getWords ()
 bool CLI2::canonicalize (
   std::string& canonicalized,
   const std::string& category,
-  const std::string& value) const
+  const std::string& value)
 {
+  // Utilize a cache mapping of (category, value) -> canonicalized value.
+  // This cache does not need to be invalidated, because entities are defined
+  // only once per initialization of the Context object.
+  int cache_key = 31 * std::hash<std::string>{} (category) + std::hash<std::string>{} (value);
+  auto cache_result = _canonical_cache.find (cache_key);
+  if (cache_result != _canonical_cache.end())
+  {
+    canonicalized = cache_result->second;
+    return true;
+  }
+
   // Extract a list of entities for category.
   std::vector <std::string> options;
   auto c = _entities.equal_range (category);
@@ -710,6 +721,7 @@ bool CLI2::canonicalize (
     if (value == e->second)
     {
       canonicalized = value;
+      _canonical_cache[cache_key] = value;
       return true;
     }
 
@@ -721,6 +733,7 @@ bool CLI2::canonicalize (
   if (autoComplete (value, options, matches, minimumMatchLength) == 1)
   {
     canonicalized = matches[0];
+    _canonical_cache[cache_key] = matches[0];
     return true;
   }
 
