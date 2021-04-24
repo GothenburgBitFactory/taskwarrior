@@ -580,13 +580,14 @@ void Task::parse (const std::string& input)
 
     if (input[0] == '[')
     {
-      Pig pig (input);
-      std::string line;
-      if (pig.skip     ('[')       &&
-          pig.getUntil (']', line) &&
-          pig.skip     (']')       &&
-          (pig.skip ('\n') || pig.eos ()))
+      // Not using Pig to parse here (which would be idiomatic), because we
+      // don't need to differentiate betwen utf-8 and normal characters.
+      // Pig's scanning the string can be expensive.
+      auto ending_bracket = input.find_last_of (']');
+      if (ending_bracket != std::string::npos)
       {
+        std::string line = input.substr(1, ending_bracket);
+
         if (line.length () == 0)
           throw std::string ("Empty record in input.");
 
