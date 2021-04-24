@@ -523,6 +523,9 @@ void CLI2::analyze ()
   // Determine arg types: FILTER, MODIFICATION, MISCELLANEOUS.
   categorizeArgs ();
   parenthesizeOriginalFilter ();
+
+  // Cache frequently looked up items
+  _command = getCommand ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -752,6 +755,10 @@ std::string CLI2::getBinary () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getCommand (bool canonical) const
 {
+  // Shortcut if analysis has been finalized
+  if (_command != "")
+    return _command;
+
   for (const auto& a : _args)
     if (a.hasTag ("CMD"))
       return a.attribute (canonical ? "canonical" : "raw");

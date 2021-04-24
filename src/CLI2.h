@@ -116,7 +116,8 @@ public:
 
   std::vector <std::pair <std::string, std::string>> _id_ranges            {};
   std::vector <std::string>                          _uuid_list            {};
-  bool                                               _context_added {false};
+  std::string                                        _command            {""};
+  bool                                               _context_added   {false};
 };
 
 #endif
