@@ -224,6 +224,8 @@ void Eval::evaluatePostfixStack (
 
   // This is stack used by the postfix evaluator.
   std::vector <Variant> values;
+  values.reserve(tokens.size());
+
   for (const auto& token : tokens)
   {
     // Unary operators.
