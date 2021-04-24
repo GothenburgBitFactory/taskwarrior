@@ -596,8 +596,8 @@ void Task::parse (const std::string& input)
         std::string value;
         while (!attLine.eos ())
         {
-          if (attLine.getUntil (':', name) &&
-              attLine.skip (':')           &&
+          if (attLine.getUntilAscii (':', name) &&
+              attLine.skip (':')                &&
               attLine.getQuoted ('"', value))
           {
 #ifdef PRODUCT_TASKWARRIOR
