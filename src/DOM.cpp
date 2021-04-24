@@ -265,7 +265,10 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   Lexer lexer (elements[0]);
   std::string token;
   Lexer::Type type;
-  if (lexer.token (token, type))
+
+  // If this can be ID/UUID reference (the name contains '.'),
+  // lex it to figure out. Otherwise don't lex, as lexing can be slow.
+  if ((elements.size() > 1) and lexer.token (token, type))
   {
     if (type == Lexer::Type::uuid &&
         token.length () == elements[0].length ())
