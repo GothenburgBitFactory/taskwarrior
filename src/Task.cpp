@@ -106,12 +106,7 @@ bool Task::operator== (const Task& other)
   if (data.size () != other.data.size ())
     return false;
 
-  for (const auto& i : data)
-    if (i.first != "uuid" &&
-        i.second != other.get (i.first))
-      return false;
-
-  return true;
+  return std::none_of(data.begin(), data.end(), [&](const auto& t){ return t.first != "uuid" && t.second != other.get (t.first); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -54,12 +54,7 @@ bool ColumnUDAString::validate (const std::string& value) const
     return true;
 
   // Look for exact match value.
-  for (auto& i : _values)
-    if (i == value)
-      return true;
-
-  // Fail if not found.
-  return false;
+  return std::find(_values.begin(), _values.end(), value) != _values.end();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,12 +134,7 @@ bool ColumnUDANumeric::validate (const std::string& value) const
     return true;
 
   // Look for exact match value.
-  for (auto& i : _values)
-    if (i == value)
-      return true;
-
-  // Fail if not found.
-  return false;
+  return std::find(_values.begin(), _values.end(), value) != _values.end();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,12 +206,7 @@ bool ColumnUDADate::validate (const std::string& value) const
     return true;
 
   // Look for exact match value.
-  for (auto& i : _values)
-    if (i == value)
-      return true;
-
-  // Fail if not found.
-  return false;
+  return std::find(_values.begin(), _values.end(), value) != _values.end();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -319,12 +304,7 @@ bool ColumnUDADuration::validate (const std::string& value) const
     return true;
 
   // Look for exact match value.
-  for (auto& i : _values)
-    if (i == value)
-      return true;
-
-  // Fail if not found.
-  return false;
+  return std::find(_values.begin(), _values.end(), value) != _values.end();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

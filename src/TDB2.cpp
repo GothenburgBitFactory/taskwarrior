@@ -155,11 +155,7 @@ bool TF2::has (const std::string& uuid)
   if (! _loaded_tasks)
     load_tasks ();
 
-  for (auto& i : _tasks)
-    if (i.get ("uuid") == uuid)
-      return true;
-
-  return false;
+  return std::any_of(_tasks.begin(), _tasks.end(), [&](const auto& t){ return t.get ("uuid") == uuid; });
 }
 
 ////////////////////////////////////////////////////////////////////////////////

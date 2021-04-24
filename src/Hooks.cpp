@@ -516,12 +516,8 @@ void Hooks::assertFeedback (
   const std::vector <std::string>& input,
   const std::string& script) const
 {
-  bool foundSomething = false;
-  for (auto& i : input)
-    if (nontrivial (i))
-      foundSomething = true;
-
-  if (! foundSomething)
+  bool foundSomething = std::any_of(input.begin(), input.end(), nontrivial);
+  if (!foundSomething)
   {
     Context::getContext ().error (format (STRING_HOOK_ERROR_NOFEEDBACK, Path (script).name ()));
     throw 0;

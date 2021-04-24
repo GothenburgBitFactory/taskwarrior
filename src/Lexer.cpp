@@ -1353,11 +1353,7 @@ bool Lexer::isOneOf (
   bool allowAbbreviations,
   bool endBoundary)
 {
-  for (auto& item : options)
-    if (isLiteral (item, allowAbbreviations, endBoundary))
-      return true;
-
-  return false;
+  return std::any_of(options.begin(), options.end(), [=](const auto& item){ return isLiteral (item, allowAbbreviations, endBoundary); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1366,11 +1362,7 @@ bool Lexer::isOneOf (
   bool allowAbbreviations,
   bool endBoundary)
 {
-  for (auto& item : options)
-    if (isLiteral (item.first, allowAbbreviations, endBoundary))
-      return true;
-
-  return false;
+  return std::any_of(options.begin(), options.end(), [=](const auto& item){ return isLiteral (item.first, allowAbbreviations, endBoundary); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
