@@ -227,8 +227,8 @@ bool Filter::pendingOnly () const
       if (a._lextype == Lexer::Type::op  && raw == "not")          ++countNot;
       if (a._lextype == Lexer::Type::dom && canonical == "status") ++countStatus;
       if (                                  raw == "pending")      ++countPending;
-      if (                                  raw == "waiting")      ++countPending;
-      if (                                  raw == "recurring")    ++countPending;
+      if (                                  raw == "waiting")      ++countWaiting;
+      if (                                  raw == "recurring")    ++countRecurring;
     }
   }
 
