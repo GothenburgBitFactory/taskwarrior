@@ -214,6 +214,7 @@ bool Filter::pendingOnly () const
   int countOr        = 0;
   int countXor       = 0;
   int countNot       = 0;
+  bool pendingTag = false;
 
   for (const auto& a : Context::getContext ().cli2._args)
   {
@@ -232,11 +233,20 @@ bool Filter::pendingOnly () const
     }
   }
 
+  for (const auto& word : Context::getContext ().cli2._original_args)
+  {
+    if (word.attribute ("raw") == "+PENDING")  pendingTag = true;
+  }
+
+
   if (countUUID)
     return false;
 
   if (countOr || countXor || countNot)
     return false;
+
+  if (pendingTag)
+    return true;
 
   if (countStatus)
   {
