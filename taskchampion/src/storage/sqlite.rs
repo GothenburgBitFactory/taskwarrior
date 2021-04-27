@@ -23,11 +23,15 @@ impl SqliteStorage {
     pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<SqliteStorage> {
         let db_file = directory.as_ref().join("taskchampion.sqlite3");
         let con = Connection::open(db_file)?;
-        con.execute(
-            "CREATE TABLE IF NOT EXISTS tasks (uuid STRING PRIMARY KEY, data STRING)",
-            [],
-        )
-        .context("Creating table")?;
+
+        let queries = vec![
+            "CREATE TABLE IF NOT EXISTS tasks (uuid STRING PRIMARY KEY, data STRING);",
+            "CREATE TABLE IF NOT EXISTS sync_meta (key STRING PRIMARY KEY, value STRING);",
+        ];
+        for q in queries {
+            con.execute(q, []).context("Creating table")?;
+        }
+
         Ok(SqliteStorage { con })
     }
 }
@@ -110,6 +114,7 @@ impl<'t> StorageTxn for Txn<'t> {
 
     fn all_tasks(&mut self) -> anyhow::Result<Vec<(Uuid, TaskMap)>> {
         let t = self.get_txn()?;
+
         let mut q = t.prepare("SELECT uuid, data FROM tasks")?;
         let rows = q.query_map([], |r| {
             let uuid: Uuid = r.get("uuid")?;
@@ -117,6 +122,7 @@ impl<'t> StorageTxn for Txn<'t> {
             let data: TaskMap = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
             Ok((uuid, data))
         })?;
+
         let mut ret = vec![];
         for r in rows {
             ret.push(r?);
@@ -125,15 +131,42 @@ impl<'t> StorageTxn for Txn<'t> {
     }
 
     fn all_task_uuids(&mut self) -> anyhow::Result<Vec<Uuid>> {
-        todo!()
+        let t = self.get_txn()?;
+
+        let mut q = t.prepare("SELECT uuid FROM tasks")?;
+        let rows = q.query_map([], |r| {
+            let uuid: Uuid = r.get("uuid")?;
+            Ok(uuid)
+        })?;
+
+        let mut ret = vec![];
+        for r in rows {
+            ret.push(r?);
+        }
+        Ok(ret)
     }
 
     fn base_version(&mut self) -> anyhow::Result<VersionId> {
-        todo!()
+        let t = self.get_txn()?;
+
+        let mut version = t
+            .query_row(
+                "SELECT value FROM sync_meta WHERE key = 'base_version'",
+                [],
+                |r| r.get("value"),
+            )
+            .optional()?;
+        Ok(version.unwrap_or(DEFAULT_BASE_VERSION))
     }
 
     fn set_base_version(&mut self, version: VersionId) -> anyhow::Result<()> {
-        todo!()
+        let t = self.get_txn()?;
+        t.execute(
+            "INSERT OR REPLACE INTO sync_meta (key, value) VALUES (?, ?)",
+            params!["base_version", &version],
+        )
+        .context("Set base version")?;
+        Ok(())
     }
 
     fn operations(&mut self) -> anyhow::Result<Vec<Operation>> {
