@@ -11,6 +11,7 @@ As there are no major releases yet, we do not support any older versions. Users 
 ## ABI policy
 
 1. We target stable `rustc`.
+2. TaskChampion will never upgrade any backend to a non-compatible version without explicit user's request.
 
 ## API policy
 
