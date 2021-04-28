@@ -25,9 +25,10 @@ impl SqliteStorage {
         let con = Connection::open(db_file)?;
 
         let queries = vec![
-            "CREATE TABLE IF NOT EXISTS tasks (uuid STRING PRIMARY KEY, data STRING);",
             "CREATE TABLE IF NOT EXISTS operations (id INTEGER PRIMARY KEY AUTOINCREMENT, data STRING);",
             "CREATE TABLE IF NOT EXISTS sync_meta (key STRING PRIMARY KEY, value STRING);",
+            "CREATE TABLE IF NOT EXISTS tasks (uuid STRING PRIMARY KEY, data STRING);",
+            "CREATE TABLE IF NOT EXISTS working_set (id INTEGER PRIMARY KEY, uuid STRING);",
         ];
         for q in queries {
             con.execute(q, []).context("Creating table")?;
@@ -46,6 +47,18 @@ impl<'t> Txn<'t> {
         self.txn
             .as_ref()
             .ok_or(SqliteError::TransactionAlreadyCommitted)
+    }
+
+    fn get_next_working_set_number(&self) -> anyhow::Result<usize> {
+        let t = self.get_txn()?;
+        let result: Option<usize> = t
+            .query_row("SELECT COALESCE(MAX(id), 0) FROM working_set", [], |r| {
+                r.get(0)
+            })
+            .optional()
+            .context("Getting highest working set ID")?;
+
+        Ok(result.unwrap_or(0) + 1)
     }
 }
 
@@ -214,19 +227,64 @@ impl<'t> StorageTxn for Txn<'t> {
     }
 
     fn get_working_set(&mut self) -> anyhow::Result<Vec<Option<Uuid>>> {
-        todo!()
+        let t = self.get_txn()?;
+
+        let mut q = t.prepare("SELECT id, uuid FROM working_set ORDER BY id ASC")?;
+        let rows = q
+            .query_map([], |r| {
+                let id: usize = r.get("id")?;
+                let uuid: Uuid = r.get("uuid")?;
+                Ok((id, uuid))
+            })
+            .context("Get working set query")?;
+
+        let rows: Vec<Result<(usize, Uuid), _>> = rows.collect();
+        let mut res = Vec::with_capacity(rows.len());
+        for _ in 0..self.get_next_working_set_number().context("HUh")? {
+            res.push(None);
+        }
+        for r in rows {
+            let (id, uuid) = r?;
+            res[id as usize] = Some(uuid);
+        }
+
+        Ok(res)
     }
 
     fn add_to_working_set(&mut self, uuid: Uuid) -> anyhow::Result<usize> {
-        todo!()
+        let t = self.get_txn()?;
+
+        let next_working_id = self.get_next_working_set_number()?;
+
+        t.execute(
+            "INSERT INTO working_set (id, uuid) VALUES (?, ?)",
+            params![next_working_id, &uuid],
+        )
+        .context("Create task query")?;
+
+        Ok(next_working_id)
     }
 
     fn set_working_set_item(&mut self, index: usize, uuid: Option<Uuid>) -> anyhow::Result<()> {
-        todo!()
+        let t = self.get_txn()?;
+        match uuid {
+            // Add or override item
+            Some(uuid) => t.execute(
+                "INSERT OR REPLACE INTO working_set (id, uuid) VALUES (?, ?)",
+                params![index, &uuid],
+            ),
+            // Setting to None removes the row from database
+            None => t.execute("DELETE FROM working_set WHERE id = ?", [index]),
+        }
+        .context("Set working set item query")?;
+        Ok(())
     }
 
     fn clear_working_set(&mut self) -> anyhow::Result<()> {
-        todo!()
+        let t = self.get_txn()?;
+        t.execute("DELETE FROM working_set", [])
+            .context("Clear working set query")?;
+        Ok(())
     }
 
     fn commit(&mut self) -> anyhow::Result<()> {
@@ -565,6 +623,58 @@ mod test {
             let mut txn = storage.txn()?;
             let ws = txn.get_working_set()?;
             assert_eq!(ws, vec![None, Some(uuid2), Some(uuid1)]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn set_working_set_item() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let mut storage = SqliteStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1)?;
+            txn.add_to_working_set(uuid2)?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, Some(uuid1), Some(uuid2)]);
+        }
+
+        // Clear one item
+        dbg!(1);
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.set_working_set_item(1, None)?;
+            txn.commit()?;
+        }
+
+        dbg!(2);
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, None, Some(uuid2)]);
+        }
+
+        dbg!(3);
+        // Override item
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.set_working_set_item(2, Some(uuid1))?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, None, Some(uuid1)]);
         }
 
         Ok(())
