@@ -26,6 +26,7 @@ impl SqliteStorage {
 
         let queries = vec![
             "CREATE TABLE IF NOT EXISTS tasks (uuid STRING PRIMARY KEY, data STRING);",
+            "CREATE TABLE IF NOT EXISTS operations (id INTEGER PRIMARY KEY AUTOINCREMENT, data STRING);",
             "CREATE TABLE IF NOT EXISTS sync_meta (key STRING PRIMARY KEY, value STRING);",
         ];
         for q in queries {
@@ -170,15 +171,46 @@ impl<'t> StorageTxn for Txn<'t> {
     }
 
     fn operations(&mut self) -> anyhow::Result<Vec<Operation>> {
-        todo!()
+        let t = self.get_txn()?;
+
+        let mut q = t.prepare("SELECT data FROM operations ORDER BY id ASC")?;
+        let rows = q.query_map([], |r| {
+            let data_str: String = r.get("data")?;
+            let data: Operation = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
+            Ok(data)
+        })?;
+
+        let mut ret = vec![];
+        for r in rows {
+            ret.push(r?);
+        }
+        Ok(ret)
     }
 
     fn add_operation(&mut self, op: Operation) -> anyhow::Result<()> {
-        todo!()
+        let t = self.get_txn()?;
+
+        let data_str = serde_json::to_string(&op)?;
+        t.execute(
+            "INSERT INTO operations (data) VALUES (?)",
+            params![&data_str],
+        )
+        .context("Add operation query")?;
+        Ok(())
     }
 
     fn set_operations(&mut self, ops: Vec<Operation>) -> anyhow::Result<()> {
-        todo!()
+        let t = self.get_txn()?;
+        t.execute(
+            "DELETE FROM operations",
+            [],
+        )
+        .context("Clear all existing operations")?;
+
+        for o in ops {
+            self.add_operation(o)?;
+        }
+        Ok(())
     }
 
     fn get_working_set(&mut self) -> anyhow::Result<Vec<Option<Uuid>>> {
