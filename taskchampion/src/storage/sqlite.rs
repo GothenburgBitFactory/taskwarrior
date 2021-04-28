@@ -100,7 +100,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let data = TaskMap::default();
         let data_str = serde_json::to_string(&data)?;
         t.execute(
-            "INSERT INTO TASKS (uuid, data) VALUES (?, ?)",
+            "INSERT INTO tasks (uuid, data) VALUES (?, ?)",
             params![&uuid, &data_str],
         )
         .context("Create task query")?;
@@ -214,11 +214,8 @@ impl<'t> StorageTxn for Txn<'t> {
 
     fn set_operations(&mut self, ops: Vec<Operation>) -> anyhow::Result<()> {
         let t = self.get_txn()?;
-        t.execute(
-            "DELETE FROM operations",
-            [],
-        )
-        .context("Clear all existing operations")?;
+        t.execute("DELETE FROM operations", [])
+            .context("Clear all existing operations")?;
 
         for o in ops {
             self.add_operation(o)?;
