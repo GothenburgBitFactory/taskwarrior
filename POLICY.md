@@ -29,18 +29,18 @@ As there are no major releases yet, we do not support any older versions. Users 
 
 3. TaskChampion always uses UTF-8.
 
-## Exit codes
+## Command-line interface
+
+Considered to be part of the API policy.
+
+## CLI exit codes
 
 - `0` No errors, normal exit.
 - `1` Generic error.
 - `2` Never used to avoid conflicts with Bash.
 - `3` Unable to execute with the given parameters.
 - `4` I/O error.
-- `5` Database error, irrespective of the backend used.
-
-## Command-line interface
-
-Considered to be part of the API policy.
+- `5` Database error.
 
 # Security
 
