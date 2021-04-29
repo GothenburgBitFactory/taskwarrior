@@ -2228,8 +2228,11 @@ dependencies = [
  "futures",
  "kv",
  "log",
+ "rusqlite",
  "serde",
+ "serde_json",
  "tempfile",
+ "thiserror",
  "uuid",
 ]
 
