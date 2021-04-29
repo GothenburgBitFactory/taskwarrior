@@ -34,6 +34,7 @@ impl ToSql for StoredUuid {
 /// Wraps [`TaskMap`] (type alias for HashMap) so we can implement rusqlite conversion traits for it
 struct StoredTaskMap(TaskMap);
 
+/// Parses TaskMap stored as JSON in string column
 impl FromSql for StoredTaskMap {
     fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
         let o: TaskMap = serde_json::from_str(value.as_str()?)
@@ -42,6 +43,7 @@ impl FromSql for StoredTaskMap {
     }
 }
 
+/// Stores TaskMap in string column
 impl ToSql for StoredTaskMap {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
         let s = serde_json::to_string(&self.0)
@@ -49,7 +51,6 @@ impl ToSql for StoredTaskMap {
         Ok(s.into())
     }
 }
-
 
 /// Stores [`Operation`] in SQLite
 impl FromSql for Operation {
@@ -60,6 +61,7 @@ impl FromSql for Operation {
     }
 }
 
+/// Parsers Operation stored as JSON in string column
 impl ToSql for Operation {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
         let s = serde_json::to_string(&self)
@@ -67,7 +69,6 @@ impl ToSql for Operation {
         Ok(s.into())
     }
 }
-
 
 /// SqliteStorage is an on-disk storage backed by SQLite3.
 pub struct SqliteStorage {
@@ -220,9 +221,7 @@ impl<'t> StorageTxn for Txn<'t> {
                 |r| r.get("value"),
             )
             .optional()?;
-        Ok(version
-            .map(|u| u.0)
-            .unwrap_or(DEFAULT_BASE_VERSION))
+        Ok(version.map(|u| u.0).unwrap_or(DEFAULT_BASE_VERSION))
     }
 
     fn set_base_version(&mut self, version: VersionId) -> anyhow::Result<()> {
@@ -254,11 +253,8 @@ impl<'t> StorageTxn for Txn<'t> {
     fn add_operation(&mut self, op: Operation) -> anyhow::Result<()> {
         let t = self.get_txn()?;
 
-        t.execute(
-            "INSERT INTO operations (data) VALUES (?)",
-            params![&op],
-        )
-        .context("Add operation query")?;
+        t.execute("INSERT INTO operations (data) VALUES (?)", params![&op])
+            .context("Add operation query")?;
         Ok(())
     }
 
