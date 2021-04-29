@@ -351,6 +351,35 @@ mod test {
     use tempfile::TempDir;
 
     #[test]
+    fn drop_transaction() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let mut storage = SqliteStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            assert!(txn.create_task(uuid1)?);
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            assert!(txn.create_task(uuid2)?);
+            std::mem::drop(txn); // Unnecessary explicit drop of transaction
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let uuids = txn.all_task_uuids()?;
+
+            assert_eq!(uuids, [uuid1]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
     fn test_create() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
         let mut storage = SqliteStorage::new(&tmp_dir.path())?;
