@@ -696,21 +696,18 @@ mod test {
         }
 
         // Clear one item
-        dbg!(1);
         {
             let mut txn = storage.txn()?;
             txn.set_working_set_item(1, None)?;
             txn.commit()?;
         }
 
-        dbg!(2);
         {
             let mut txn = storage.txn()?;
             let ws = txn.get_working_set()?;
             assert_eq!(ws, vec![None, None, Some(uuid2)]);
         }
 
-        dbg!(3);
         // Override item
         {
             let mut txn = storage.txn()?;
