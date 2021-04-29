@@ -21,7 +21,7 @@ kv = {version = "^0.10.0", features = ["msgpack-value"]}
 ureq = "^2.1.0"
 log = "^0.4.14"
 tindercrypt = { version = "^0.2.2", default-features = false }
-rusqlite = { version = "0.25", features = ["bundled", "uuid", "serde_json"] }
+rusqlite = { version = "0.25", features = ["bundled"] }
 
 [dev-dependencies]
 proptest = "^1.0.0"

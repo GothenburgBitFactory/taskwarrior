@@ -1,5 +1,6 @@
 use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use anyhow::Context;
+use rusqlite::types::{FromSql, ToSql};
 use rusqlite::{params, Connection, OptionalExtension};
 use std::path::Path;
 use uuid::Uuid;
@@ -9,6 +10,64 @@ enum SqliteError {
     #[error("SQLite transaction already committted")]
     TransactionAlreadyCommitted,
 }
+
+/// Newtype to allow implementing `FromSql` for foreign `uuid::Uuid`
+struct StoredUuid(Uuid);
+
+/// Conversion from Uuid stored as a string (rusqlite's uuid feature stores as binary blob)
+impl FromSql for StoredUuid {
+    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
+        let u = Uuid::parse_str(value.as_str()?)
+            .map_err(|_| rusqlite::types::FromSqlError::InvalidType)?;
+        Ok(StoredUuid(u))
+    }
+}
+
+/// Store Uuid as string in database
+impl ToSql for StoredUuid {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        let s = self.0.to_string();
+        Ok(s.into())
+    }
+}
+
+/// Wraps [`TaskMap`] (type alias for HashMap) so we can implement rusqlite conversion traits for it
+struct StoredTaskMap(TaskMap);
+
+impl FromSql for StoredTaskMap {
+    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
+        let o: TaskMap = serde_json::from_str(value.as_str()?)
+            .map_err(|_| rusqlite::types::FromSqlError::InvalidType)?;
+        Ok(StoredTaskMap(o))
+    }
+}
+
+impl ToSql for StoredTaskMap {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        let s = serde_json::to_string(&self.0)
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
+        Ok(s.into())
+    }
+}
+
+
+/// Stores [`Operation`] in SQLite
+impl FromSql for Operation {
+    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
+        let o: Operation = serde_json::from_str(value.as_str()?)
+            .map_err(|_| rusqlite::types::FromSqlError::InvalidType)?;
+        Ok(o)
+    }
+}
+
+impl ToSql for Operation {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        let s = serde_json::to_string(&self)
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
+        Ok(s.into())
+    }
+}
+
 
 /// SqliteStorage is an on-disk storage backed by SQLite3.
 pub struct SqliteStorage {
@@ -68,25 +127,23 @@ impl Storage for SqliteStorage {
 impl<'t> StorageTxn for Txn<'t> {
     fn get_task(&mut self, uuid: Uuid) -> anyhow::Result<Option<TaskMap>> {
         let t = self.get_txn()?;
-        let result: Option<String> = t
+        let result: Option<StoredTaskMap> = t
             .query_row(
                 "SELECT data FROM tasks WHERE uuid = ? LIMIT 1",
-                [&uuid],
+                [&StoredUuid(uuid)],
                 |r| r.get("data"),
             )
             .optional()?;
 
-        match result {
-            None => Ok(None),
-            Some(r) => Ok(serde_json::from_str(&r)?),
-        }
+        // Get task from "stored" wrapper
+        Ok(result.and_then(|t: StoredTaskMap| Some(t.0)))
     }
 
     fn create_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
         let t = self.get_txn()?;
         let count: usize = t.query_row(
             "SELECT count(uuid) FROM tasks WHERE uuid = ?",
-            [&uuid],
+            [&StoredUuid(uuid)],
             |x| x.get(0),
         )?;
         if count > 0 {
@@ -94,10 +151,9 @@ impl<'t> StorageTxn for Txn<'t> {
         }
 
         let data = TaskMap::default();
-        let data_str = serde_json::to_string(&data)?;
         t.execute(
             "INSERT INTO tasks (uuid, data) VALUES (?, ?)",
-            params![&uuid, &data_str],
+            params![&StoredUuid(uuid), &StoredTaskMap(data)],
         )
         .context("Create task query")?;
         Ok(true)
@@ -105,10 +161,9 @@ impl<'t> StorageTxn for Txn<'t> {
 
     fn set_task(&mut self, uuid: Uuid, task: TaskMap) -> anyhow::Result<()> {
         let t = self.get_txn()?;
-        let data_str = serde_json::to_string(&task)?;
         t.execute(
             "INSERT OR REPLACE INTO tasks (uuid, data) VALUES (?, ?)",
-            params![&uuid, &data_str],
+            params![&StoredUuid(uuid), &StoredTaskMap(task)],
         )
         .context("Update task query")?;
         Ok(())
@@ -117,7 +172,7 @@ impl<'t> StorageTxn for Txn<'t> {
     fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
         let t = self.get_txn()?;
         let changed = t
-            .execute("DELETE FROM tasks WHERE uuid = ?", [&uuid])
+            .execute("DELETE FROM tasks WHERE uuid = ?", [&StoredUuid(uuid)])
             .context("Delete task query")?;
         Ok(changed > 0)
     }
@@ -127,10 +182,9 @@ impl<'t> StorageTxn for Txn<'t> {
 
         let mut q = t.prepare("SELECT uuid, data FROM tasks")?;
         let rows = q.query_map([], |r| {
-            let uuid: Uuid = r.get("uuid")?;
-            let data_str: String = r.get("data")?;
-            let data: TaskMap = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
-            Ok((uuid, data))
+            let uuid: StoredUuid = r.get("uuid")?;
+            let data: StoredTaskMap = r.get("data")?;
+            Ok((uuid.0, data.0))
         })?;
 
         let mut ret = vec![];
@@ -145,8 +199,8 @@ impl<'t> StorageTxn for Txn<'t> {
 
         let mut q = t.prepare("SELECT uuid FROM tasks")?;
         let rows = q.query_map([], |r| {
-            let uuid: Uuid = r.get("uuid")?;
-            Ok(uuid)
+            let uuid: StoredUuid = r.get("uuid")?;
+            Ok(uuid.0)
         })?;
 
         let mut ret = vec![];
@@ -159,21 +213,23 @@ impl<'t> StorageTxn for Txn<'t> {
     fn base_version(&mut self) -> anyhow::Result<VersionId> {
         let t = self.get_txn()?;
 
-        let mut version = t
+        let version: Option<StoredUuid> = t
             .query_row(
                 "SELECT value FROM sync_meta WHERE key = 'base_version'",
                 [],
                 |r| r.get("value"),
             )
             .optional()?;
-        Ok(version.unwrap_or(DEFAULT_BASE_VERSION))
+        Ok(version
+            .and_then(|u| Some(u.0))
+            .unwrap_or(DEFAULT_BASE_VERSION))
     }
 
     fn set_base_version(&mut self, version: VersionId) -> anyhow::Result<()> {
         let t = self.get_txn()?;
         t.execute(
             "INSERT OR REPLACE INTO sync_meta (key, value) VALUES (?, ?)",
-            params!["base_version", &version],
+            params!["base_version", &StoredUuid(version)],
         )
         .context("Set base version")?;
         Ok(())
@@ -184,8 +240,7 @@ impl<'t> StorageTxn for Txn<'t> {
 
         let mut q = t.prepare("SELECT data FROM operations ORDER BY id ASC")?;
         let rows = q.query_map([], |r| {
-            let data_str: String = r.get("data")?;
-            let data: Operation = serde_json::from_str(&data_str).unwrap(); // FIXME: Remove unwrap
+            let data: Operation = r.get("data")?;
             Ok(data)
         })?;
 
@@ -199,10 +254,9 @@ impl<'t> StorageTxn for Txn<'t> {
     fn add_operation(&mut self, op: Operation) -> anyhow::Result<()> {
         let t = self.get_txn()?;
 
-        let data_str = serde_json::to_string(&op)?;
         t.execute(
             "INSERT INTO operations (data) VALUES (?)",
-            params![&data_str],
+            params![&op],
         )
         .context("Add operation query")?;
         Ok(())
@@ -226,8 +280,8 @@ impl<'t> StorageTxn for Txn<'t> {
         let rows = q
             .query_map([], |r| {
                 let id: usize = r.get("id")?;
-                let uuid: Uuid = r.get("uuid")?;
-                Ok((id, uuid))
+                let uuid: StoredUuid = r.get("uuid")?;
+                Ok((id, uuid.0))
             })
             .context("Get working set query")?;
 
@@ -251,7 +305,7 @@ impl<'t> StorageTxn for Txn<'t> {
 
         t.execute(
             "INSERT INTO working_set (id, uuid) VALUES (?, ?)",
-            params![next_working_id, &uuid],
+            params![next_working_id, &StoredUuid(uuid)],
         )
         .context("Create task query")?;
 
@@ -264,7 +318,7 @@ impl<'t> StorageTxn for Txn<'t> {
             // Add or override item
             Some(uuid) => t.execute(
                 "INSERT OR REPLACE INTO working_set (id, uuid) VALUES (?, ?)",
-                params![index, &uuid],
+                params![index, &StoredUuid(uuid)],
             ),
             // Setting to None removes the row from database
             None => t.execute("DELETE FROM working_set WHERE id = ?", [index]),
@@ -645,7 +699,7 @@ mod test {
         dbg!(1);
         {
             let mut txn = storage.txn()?;
-            let ws = txn.set_working_set_item(1, None)?;
+            txn.set_working_set_item(1, None)?;
             txn.commit()?;
         }
 
@@ -660,7 +714,7 @@ mod test {
         // Override item
         {
             let mut txn = storage.txn()?;
-            let ws = txn.set_working_set_item(2, Some(uuid1))?;
+            txn.set_working_set_item(2, Some(uuid1))?;
             txn.commit()?;
         }
 
