@@ -1,8 +1,6 @@
 use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
-use crate::utils::Key;
 use anyhow::Context;
 use rusqlite::{params, Connection, OptionalExtension};
-use serde::serde_if_integer128;
 use std::path::Path;
 use uuid::Uuid;
 
@@ -10,8 +8,6 @@ use uuid::Uuid;
 enum SqliteError {
     #[error("SQLite transaction already committted")]
     TransactionAlreadyCommitted,
-    #[error("Invalid UUID string from database: {0}")]
-    InvalidUuidString(String),
 }
 
 /// SqliteStorage is an on-disk storage backed by SQLite3.
