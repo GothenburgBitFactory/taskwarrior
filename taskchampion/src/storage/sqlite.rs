@@ -136,7 +136,7 @@ impl<'t> StorageTxn for Txn<'t> {
             .optional()?;
 
         // Get task from "stored" wrapper
-        Ok(result.and_then(|t: StoredTaskMap| Some(t.0)))
+        Ok(result.map(|t| t.0))
     }
 
     fn create_task(&mut self, uuid: Uuid) -> anyhow::Result<bool> {
@@ -221,7 +221,7 @@ impl<'t> StorageTxn for Txn<'t> {
             )
             .optional()?;
         Ok(version
-            .and_then(|u| Some(u.0))
+            .map(|u| u.0)
             .unwrap_or(DEFAULT_BASE_VERSION))
     }
 
