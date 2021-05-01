@@ -217,7 +217,7 @@ impl Modify {
         }
         map_res(
             tuple((
-                Filter::parse,
+                Filter::parse1,
                 alt((
                     arg_matching(literal("modify")),
                     arg_matching(literal("prepend")),
@@ -235,47 +235,47 @@ impl Modify {
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
             name: "modify",
-            syntax: "[filter] modify [modification]",
+            syntax: "<filter> modify [modification]",
             summary: "Modify tasks",
             description: "
-                Modify all tasks matching the filter.",
+                Modify all tasks matching the required filter.",
         });
         u.subcommands.push(usage::Subcommand {
             name: "prepend",
-            syntax: "[filter] prepend [modification]",
+            syntax: "<filter> prepend [modification]",
             summary: "Prepend task description",
             description: "
-                Modify all tasks matching the filter by inserting the given description before each
+                Modify all tasks matching the required filter by inserting the given description before each
                 task's description.",
         });
         u.subcommands.push(usage::Subcommand {
             name: "append",
-            syntax: "[filter] append [modification]",
+            syntax: "<filter> append [modification]",
             summary: "Append task description",
             description: "
-                Modify all tasks matching the filter by adding the given description to the end
+                Modify all tasks matching the required filter by adding the given description to the end
                 of each task's description.",
         });
         u.subcommands.push(usage::Subcommand {
             name: "start",
-            syntax: "[filter] start [modification]",
+            syntax: "<filter> start [modification]",
             summary: "Start tasks",
             description: "
-                Start all tasks matching the filter, additionally applying any given modifications."
+                Start all tasks matching the required filter, additionally applying any given modifications."
         });
         u.subcommands.push(usage::Subcommand {
             name: "stop",
-            syntax: "[filter] stop [modification]",
+            syntax: "<filter> stop [modification]",
             summary: "Stop tasks",
             description: "
-                Stop all tasks matching the filter, additionally applying any given modifications.",
+                Stop all tasks matching the required filter, additionally applying any given modifications.",
         });
         u.subcommands.push(usage::Subcommand {
             name: "done",
-            syntax: "[filter] done [modification]",
+            syntax: "<filter> done [modification]",
             summary: "Mark tasks as completed",
             description: "
-                Mark all tasks matching the filter as completed, additionally applying any given
+                Mark all tasks matching the required filter as completed, additionally applying any given
                 modifications.",
         });
     }
@@ -293,14 +293,14 @@ impl Report {
         }
         // allow the filter expression before or after the report name
         alt((
-            map_res(pair(arg_matching(report_name), Filter::parse), |input| {
+            map_res(pair(arg_matching(report_name), Filter::parse0), |input| {
                 to_subcommand(input.1, input.0)
             }),
-            map_res(pair(Filter::parse, arg_matching(report_name)), |input| {
+            map_res(pair(Filter::parse0, arg_matching(report_name)), |input| {
                 to_subcommand(input.0, input.1)
             }),
             // default to a "next" report
-            map_res(Filter::parse, |input| to_subcommand(input, "next")),
+            map_res(Filter::parse0, |input| to_subcommand(input, "next")),
         ))(input)
     }
 
@@ -335,7 +335,7 @@ impl Info {
         }
         map_res(
             pair(
-                Filter::parse,
+                Filter::parse1,
                 alt((
                     arg_matching(literal("info")),
                     arg_matching(literal("debug")),
