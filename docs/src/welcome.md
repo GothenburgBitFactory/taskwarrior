@@ -60,4 +60,4 @@ server_origin: "https://taskchampion.example.com"
 The next run of `task sync` will upload your task history to that server.
 Configuring another device identically and running `task sync` will download that task history, and continue to stay in sync with subsequent runs of the command.
 
-See [Usage](./usage.md) for more detailed information on using TaskChampion.
+See [Usage](./using-task-command.md) for more detailed information on using TaskChampion.
