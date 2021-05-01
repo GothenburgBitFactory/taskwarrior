@@ -42,7 +42,7 @@ impl Usage {
         writeln!(w, "USAGE:\n  {} [args]\n", command_name)?;
         writeln!(w, "TaskChampion subcommands:")?;
         for subcommand in self.subcommands.iter() {
-            subcommand.write_help(&mut w, summary)?;
+            subcommand.write_help(&mut w, command_name, summary)?;
         }
         writeln!(w, "Filter Expressions:\n")?;
         writeln!(
@@ -56,7 +56,7 @@ impl Usage {
             )
         )?;
         for filter in self.filters.iter() {
-            filter.write_help(&mut w, summary)?;
+            filter.write_help(&mut w, command_name, summary)?;
         }
         writeln!(w, "Modifications:\n")?;
         writeln!(
@@ -70,10 +70,10 @@ impl Usage {
             )
         )?;
         for modification in self.modifications.iter() {
-            modification.write_help(&mut w, summary)?;
+            modification.write_help(&mut w, command_name, summary)?;
         }
         if !summary {
-            writeln!(w, "\nSee `task help` for more detail")?;
+            writeln!(w, "\nSee `{} help` for more detail", command_name)?;
         }
         Ok(())
     }
@@ -108,13 +108,14 @@ pub(crate) struct Subcommand {
 }
 
 impl Subcommand {
-    fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
+    fn write_help<W: Write>(&self, mut w: W, command_name: &str, summary: bool) -> Result<()> {
         if summary {
-            writeln!(w, "  task {} - {}", self.name, self.summary)?;
+            writeln!(w, "  {} {} - {}", command_name, self.name, self.summary)?;
         } else {
             writeln!(
                 w,
-                "  task {}\n{}",
+                "  {} {}\n{}",
+                command_name,
                 self.syntax,
                 indented(self.description, "    ")
             )?;
@@ -138,7 +139,7 @@ pub(crate) struct Filter {
 }
 
 impl Filter {
-    fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
+    fn write_help<W: Write>(&self, mut w: W, _: &str, summary: bool) -> Result<()> {
         if summary {
             writeln!(w, "  {} - {}", self.syntax, self.summary)?;
         } else {
@@ -168,7 +169,7 @@ pub(crate) struct Modification {
 }
 
 impl Modification {
-    fn write_help<W: Write>(&self, mut w: W, summary: bool) -> Result<()> {
+    fn write_help<W: Write>(&self, mut w: W, _: &str, summary: bool) -> Result<()> {
         if summary {
             writeln!(w, "  {} - {}", self.syntax, self.summary)?;
         } else {

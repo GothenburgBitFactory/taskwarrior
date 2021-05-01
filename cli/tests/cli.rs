@@ -4,7 +4,7 @@ use std::fs;
 use std::process::Command;
 use tempfile::TempDir;
 
-// NOTE: This tests that the task binary is running and parsing arguments.  The details of
+// NOTE: This tests that the `ta` binary is running and parsing arguments.  The details of
 // subcommands are handled with unit tests.
 
 /// These tests force config to be read via TASKCHAMPION_CONFIG so that a user's own config file
@@ -17,7 +17,7 @@ fn test_cmd(dir: &TempDir) -> Result<Command, Box<dyn std::error::Error>> {
     )?;
 
     let config_filename = config_filename.to_str().unwrap();
-    let mut cmd = Command::cargo_bin("task")?;
+    let mut cmd = Command::cargo_bin("ta")?;
     cmd.env("TASKCHAMPION_CONFIG", config_filename);
     Ok(cmd)
 }
