@@ -574,18 +574,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "config"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b1b9d958c2b1368a663f05538fc1b5975adce1e19f435acceae987aceeeb369"
-dependencies = [
- "lazy_static",
- "nom 5.1.2",
- "serde",
- "yaml-rust",
-]
-
-[[package]]
 name = "const_fn"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1361,17 +1349,6 @@ dependencies = [
  "cfg-if 0.1.10",
  "libc",
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "nom"
-version = "5.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ffb4262d26ed83a1c0a33a38fe2bb15797329c85770da05e6b828ddb782627af"
-dependencies = [
- "lexical-core",
- "memchr",
- "version_check",
 ]
 
 [[package]]
@@ -2170,17 +2147,17 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "atty",
- "config",
  "dirs-next",
  "env_logger",
  "log",
- "nom 6.1.2",
+ "nom",
  "predicates",
  "prettytable-rs",
  "taskchampion",
  "tempfile",
  "termcolor",
  "textwrap 0.13.4",
+ "toml",
 ]
 
 [[package]]
@@ -2778,12 +2755,3 @@ name = "wyz"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85e60b0d1b5f99db2556934e21937020776a5d31520bf169e851ac44e6420214"
-
-[[package]]
-name = "yaml-rust"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56c1936c4cc7a1c9ab21a1ebb602eb942ba868cbd44a99cb7cdc5892335e1c85"
-dependencies = [
- "linked-hash-map",
-]

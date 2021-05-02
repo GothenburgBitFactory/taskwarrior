@@ -2,14 +2,18 @@
 
 The `task` command will work out-of-the-box with no configuration file, using default values.
 
-Configuration is read from `taskchampion.yaml` in your config directory.
+Configuration is read from `taskchampion.toml` in your config directory.
 On Linux systems, that directory is `~/.config`.
 On OS X, it's `~/Library/Preferences`.
 On Windows, it's `AppData/Roaming` in your home directory.
-The path can be overridden by setting `$TASKCHAMPION_CONFIG`.
+This can be overridden by setting `$TASKCHAMPION_CONFIG` to the configuration filename.
 
-Individual configuration parameters can be overridden by environment variables, converted to upper-case and prefixed with `TASKCHAMPION_`, e.g., `TASKCHAMPION_DATA_DIR`.
-Nested configuration parameters such as `reports` cannot be overridden by environment variables.
+The file format is [TOML](https://toml.io/).
+For example:
+
+```toml
+data_dir = "/home/myuser/.tasks"
+```
 
 ## Directories
 
