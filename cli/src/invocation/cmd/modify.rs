@@ -8,7 +8,7 @@ pub(crate) fn execute<W: WriteColor>(
     replica: &mut Replica,
     filter: Filter,
     modification: Modification,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     for task in filtered_tasks(replica, &filter)? {
         let mut task = task.into_mut(replica);
 

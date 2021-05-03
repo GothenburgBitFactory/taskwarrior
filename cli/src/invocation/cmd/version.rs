@@ -1,6 +1,6 @@
 use termcolor::{ColorSpec, WriteColor};
 
-pub(crate) fn execute<W: WriteColor>(w: &mut W) -> anyhow::Result<()> {
+pub(crate) fn execute<W: WriteColor>(w: &mut W) -> Result<(), crate::Error> {
     write!(w, "TaskChampion ")?;
     w.set_color(ColorSpec::new().set_bold(true))?;
     writeln!(w, "{}", env!("CARGO_PKG_VERSION"))?;

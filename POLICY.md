@@ -35,12 +35,10 @@ Considered to be part of the API policy.
 
 ## CLI exit codes
 
-- `0` No errors, normal exit.
-- `1` Generic error.
-- `2` Never used to avoid conflicts with Bash.
-- `3` Unable to execute with the given parameters.
-- `4` I/O error.
-- `5` Database error.
+- `0` - No errors, normal exit.
+- `1` - Generic error.
+- `2` - Never used to avoid conflicts with Bash.
+- `3` - Command-line Syntax Error.
 
 # Security
 

@@ -19,7 +19,7 @@ use report::display_report;
 
 /// Invoke the given Command in the context of the given settings
 #[allow(clippy::needless_return)]
-pub(crate) fn invoke(command: Command, settings: Settings) -> anyhow::Result<()> {
+pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::Error> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
 
