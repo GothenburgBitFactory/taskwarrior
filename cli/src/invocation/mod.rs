@@ -1,7 +1,7 @@
 //! The invocation module handles invoking the commands parsed by the argparse module.
 
 use crate::argparse::{Command, Subcommand};
-use config::Config;
+use crate::settings::Settings;
 use taskchampion::{Replica, Server, ServerConfig, StorageConfig, Uuid};
 use termcolor::{ColorChoice, StandardStream};
 
@@ -19,7 +19,7 @@ use report::display_report;
 
 /// Invoke the given Command in the context of the given settings
 #[allow(clippy::needless_return)]
-pub(crate) fn invoke(command: Command, settings: Config) -> anyhow::Result<()> {
+pub(crate) fn invoke(command: Command, settings: Settings) -> anyhow::Result<()> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
 
@@ -100,35 +100,33 @@ pub(crate) fn invoke(command: Command, settings: Config) -> anyhow::Result<()> {
 // utilities for invoke
 
 /// Get the replica for this invocation
-fn get_replica(settings: &Config) -> anyhow::Result<Replica> {
-    let taskdb_dir = settings.get_str("data_dir")?.into();
+fn get_replica(settings: &Settings) -> anyhow::Result<Replica> {
+    let taskdb_dir = settings.data_dir.clone();
     log::debug!("Replica data_dir: {:?}", taskdb_dir);
     let storage_config = StorageConfig::OnDisk { taskdb_dir };
     Ok(Replica::new(storage_config.into_storage()?))
 }
 
 /// Get the server for this invocation
-fn get_server(settings: &Config) -> anyhow::Result<Box<dyn Server>> {
+fn get_server(settings: &Settings) -> anyhow::Result<Box<dyn Server>> {
     // if server_client_key and server_origin are both set, use
     // the remote server
-    let config = if let (Ok(client_key), Ok(origin)) = (
-        settings.get_str("server_client_key"),
-        settings.get_str("server_origin"),
+    let config = if let (Some(client_key), Some(origin), Some(encryption_secret)) = (
+        settings.server_client_key.as_ref(),
+        settings.server_origin.as_ref(),
+        settings.encryption_secret.as_ref(),
     ) {
         let client_key = Uuid::parse_str(&client_key)?;
-        let encryption_secret = settings
-            .get_str("encryption_secret")
-            .map_err(|_| anyhow::anyhow!("Could not read `encryption_secret` configuration"))?;
 
         log::debug!("Using sync-server with origin {}", origin);
         log::debug!("Sync client ID: {}", client_key);
         ServerConfig::Remote {
-            origin,
+            origin: origin.clone(),
             client_key,
             encryption_secret: encryption_secret.as_bytes().to_vec(),
         }
     } else {
-        let server_dir = settings.get_str("server_dir")?.into();
+        let server_dir = settings.server_dir.clone();
         log::debug!("Using local sync-server at `{:?}`", server_dir);
         ServerConfig::Local { server_dir }
     };

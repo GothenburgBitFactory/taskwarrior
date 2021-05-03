@@ -1,8 +1,8 @@
 use crate::argparse::Filter;
 use crate::invocation::filtered_tasks;
-use crate::report::{Column, Property, Report, SortBy};
+use crate::settings::{Column, Property, Report, Settings, SortBy};
 use crate::table;
-use config::Config;
+use anyhow::anyhow;
 use prettytable::{Row, Table};
 use std::cmp::Ordering;
 use taskchampion::{Replica, Task, WorkingSet};
@@ -79,7 +79,7 @@ fn task_column(task: &Task, column: &Column, working_set: &WorkingSet) -> String
 pub(super) fn display_report<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
-    settings: &Config,
+    settings: &Settings,
     report_name: String,
     filter: Filter,
 ) -> anyhow::Result<()> {
@@ -87,8 +87,11 @@ pub(super) fn display_report<W: WriteColor>(
     let working_set = replica.working_set()?;
 
     // Get the report from settings
-    let mut report = Report::from_config(settings.get(&format!("reports.{}", report_name))?)
-        .map_err(|e| anyhow::anyhow!("report.{}{}", report_name, e))?;
+    let mut report = settings
+        .reports
+        .get(&report_name)
+        .ok_or_else(|| anyhow!("report `{}` not defined", report_name))?
+        .clone();
 
     // include any user-supplied filter conditions
     report.filter = report.filter.intersect(filter);
@@ -122,7 +125,7 @@ pub(super) fn display_report<W: WriteColor>(
 mod test {
     use super::*;
     use crate::invocation::test::*;
-    use crate::report::Sort;
+    use crate::settings::Sort;
     use std::convert::TryInto;
     use taskchampion::{Status, Uuid};
 
