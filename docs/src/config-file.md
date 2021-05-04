@@ -1,6 +1,6 @@
 # Configuration
 
-The `task` command will work out-of-the-box with no configuration file, using default values.
+The `ta` command will work out-of-the-box with no configuration file, using default values.
 
 Configuration is read from `taskchampion.toml` in your config directory.
 On Linux systems, that directory is `~/.config`.

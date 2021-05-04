@@ -10,7 +10,7 @@ TaskChampion includes several "built-in" reports, as well as supporting custom r
 The `next` report is the default, and lists all pending tasks:
 
 ```text
-$ task
+$ ta
 Id Description              Active Tags              
 1  learn about TaskChampion        +next
 2  buy wedding gift         *      +buy
@@ -18,7 +18,7 @@ Id Description              Active Tags
 ```
 
 The `Id` column contains short numeric IDs that are assigned to pending tasks.
-These IDs are easy to type, such as to mark task 2 done (`task 2 done`).
+These IDs are easy to type, such as to mark task 2 done (`ta 2 done`).
 
 The `list` report lists all tasks, with a similar set of columns.
 

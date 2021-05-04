@@ -125,4 +125,4 @@ Without synchronization, its list of pending operations would grow indefinitely,
 So all replicas, even "singleton" replicas which do not replicate task data with any other replica, must synchronize periodically.
 
 TaskChampion provides a `LocalServer` for this purpose.
-It implements the `get_child_version` and `add_version` operations as described, storing data on-disk locally, all within the `task` binary.
+It implements the `get_child_version` and `add_version` operations as described, storing data on-disk locally, all within the `ta` binary.

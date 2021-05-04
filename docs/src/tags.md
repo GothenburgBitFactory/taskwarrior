@@ -4,7 +4,7 @@ Each task has a collection of associated tags.
 Tags are short words that categorize tasks, typically written with a leading `+`, such as `+next` or `+jobsearch`.
 
 Tags are useful for filtering tasks in reports or on the command line.
-For example, when it's time to continue the job search, `task +jobsearch` will show pending tasks with the `jobsearch` tag.
+For example, when it's time to continue the job search, `ta +jobsearch` will show pending tasks with the `jobsearch` tag.
 
 ## Allowed Tags
 
