@@ -40,7 +40,15 @@ If using a remote server:
 * `server_client_key` -  Client key to identify this replica to the sync server (a UUID)
   If not set, then sync is done to a local server.
 
-# Reports
+## Reports
 
 * `reports` - a mapping of each report's name to its definition.
   See [Reports](./reports.md) for details.
+
+## Editing
+
+As a shortcut, the simple, top-level configuration values can be edited from the command line:
+
+```shell
+ta config set data_dir /home/myuser/.taskchampion
+```
