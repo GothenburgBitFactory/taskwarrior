@@ -12,6 +12,9 @@ use toml::value::Table;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Settings {
+    // filename from which this configuration was loaded, if any
+    pub(crate) filename: Option<PathBuf>,
+
     // replica
     pub(crate) data_dir: PathBuf,
 
@@ -33,12 +36,21 @@ impl Settings {
             log::debug!("Loading configuration from {:?}", config_file);
             env::remove_var("TASKCHAMPION_CONFIG");
             Self::load_from_file(config_file.into(), true)
-        } else if let Some(mut dir) = dirs_next::config_dir() {
-            dir.push("taskchampion.toml");
-            log::debug!("Loading configuration from {:?} (optional)", dir);
-            Self::load_from_file(dir, false)
+        } else if let Some(filename) = Settings::default_filename() {
+            log::debug!("Loading configuration from {:?} (optional)", filename);
+            Self::load_from_file(filename, false)
         } else {
             Ok(Default::default())
+        }
+    }
+
+    /// Get the default filename for the configuration, or None if that cannot
+    /// be determined.
+    pub(crate) fn default_filename() -> Option<PathBuf> {
+        if let Some(dir) = dirs_next::config_dir() {
+            Some(dir.join("taskchampion.toml"))
+        } else {
+            None
         }
     }
 
@@ -60,6 +72,8 @@ impl Settings {
         let config_toml = config_toml
             .parse::<toml::Value>()
             .with_context(|| format!("error while reading {:?}", config_file))?;
+
+        settings.filename = Some(config_file.clone());
         settings
             .update_from_toml(&config_toml)
             .with_context(|| format!("error while parsing {:?}", config_file))?;
@@ -213,6 +227,7 @@ impl Default for Settings {
         );
 
         Self {
+            filename: None,
             data_dir,
             server_client_key: None,
             server_origin: None,
@@ -247,10 +262,12 @@ mod test {
     #[test]
     fn test_load_from_file_exists() {
         let cfg_dir = TempDir::new().unwrap();
-        fs::write(cfg_dir.path().join("foo.toml"), "data_dir = \"/nowhere\"").unwrap();
+        let cfg_file = cfg_dir.path().join("foo.toml");
+        fs::write(cfg_file.clone(), "data_dir = \"/nowhere\"").unwrap();
 
-        let settings = Settings::load_from_file(cfg_dir.path().join("foo.toml"), true).unwrap();
+        let settings = Settings::load_from_file(cfg_file.clone(), true).unwrap();
         assert_eq!(settings.data_dir, PathBuf::from("/nowhere"));
+        assert_eq!(settings.filename, Some(cfg_file));
     }
 
     #[test]
@@ -283,5 +300,6 @@ mod test {
         settings.update_from_toml(&val).unwrap();
 
         assert!(settings.reports.get("foo").is_some());
+        // beyond existence of this report, we can rely on Report's unit tests
     }
 }
