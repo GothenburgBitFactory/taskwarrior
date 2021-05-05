@@ -1,6 +1,7 @@
 //! Responsible for executing commands as parsed by [`crate::argparse`].
 
 pub(crate) mod add;
+pub(crate) mod config;
 pub(crate) mod gc;
 pub(crate) mod help;
 pub(crate) mod info;

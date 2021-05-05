@@ -36,6 +36,10 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> anyhow::Result<()>
             command_name,
         } => return cmd::help::execute(&mut w, command_name, summary),
         Command {
+            subcommand: Subcommand::Config { config_operation },
+            ..
+        } => return cmd::config::execute(&mut w, config_operation, &settings),
+        Command {
             subcommand: Subcommand::Version,
             ..
         } => return cmd::version::execute(&mut w),
@@ -88,6 +92,10 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> anyhow::Result<()>
         // handled in the first match, but here to ensure this match is exhaustive
         Command {
             subcommand: Subcommand::Help { .. },
+            ..
+        } => unreachable!(),
+        Command {
+            subcommand: Subcommand::Config { .. },
             ..
         } => unreachable!(),
         Command {

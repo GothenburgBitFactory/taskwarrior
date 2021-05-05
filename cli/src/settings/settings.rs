@@ -1,7 +1,7 @@
 use super::util::table_with_keys;
 use super::{Column, Property, Report, Sort, SortBy};
 use crate::argparse::{Condition, Filter};
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::env;
@@ -9,6 +9,7 @@ use std::fs;
 use std::path::PathBuf;
 use taskchampion::Status;
 use toml::value::Table;
+use toml_edit::Document;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Settings {
@@ -46,7 +47,7 @@ impl Settings {
 
     /// Get the default filename for the configuration, or None if that cannot
     /// be determined.
-    pub(crate) fn default_filename() -> Option<PathBuf> {
+    fn default_filename() -> Option<PathBuf> {
         if let Some(dir) = dirs_next::config_dir() {
             Some(dir.join("taskchampion.toml"))
         } else {
@@ -54,7 +55,9 @@ impl Settings {
         }
     }
 
-    fn load_from_file(config_file: PathBuf, required: bool) -> Result<Self> {
+    /// Update this settings object with the contents of the given TOML file.  Top-level settings
+    /// are overwritten, and reports are overwritten by name.
+    pub(crate) fn load_from_file(config_file: PathBuf, required: bool) -> Result<Self> {
         let mut settings = Self::default();
 
         let config_toml = match fs::read_to_string(config_file.clone()) {
@@ -62,6 +65,7 @@ impl Settings {
                 return if required {
                     Err(e.into())
                 } else {
+                    settings.filename = Some(config_file);
                     Ok(settings)
                 };
             }
@@ -140,6 +144,40 @@ impl Settings {
         }
 
         Ok(())
+    }
+
+    /// Set a value in the config file, modifying it in place.  Returns the filename.
+    pub(crate) fn set(&self, key: &str, value: &str) -> Result<PathBuf> {
+        let allowed_keys = [
+            "data_dir",
+            "server_client_key",
+            "server_origin",
+            "encryption_secret",
+            "server_dir",
+            // reports is not allowed, since it is not a string
+        ];
+        if !allowed_keys.contains(&key) {
+            bail!("No such configuration key {}", key);
+        }
+
+        let filename = if let Some(ref f) = self.filename {
+            f.clone()
+        } else {
+            Settings::default_filename()
+                .ok_or_else(|| anyhow!("Could not determine config file name"))?
+        };
+
+        let mut document = fs::read_to_string(filename.clone())
+            .context("Could not read existing configuration file")?
+            .parse::<Document>()
+            .context("Could not parse existing configuration file")?;
+
+        document[key] = toml_edit::value(value);
+
+        fs::write(filename.clone(), document.to_string())
+            .context("Could not write updated configuration file")?;
+
+        Ok(filename)
     }
 }
 
@@ -247,9 +285,13 @@ mod test {
     #[test]
     fn test_load_from_file_not_required() {
         let cfg_dir = TempDir::new().unwrap();
+        let cfg_file = cfg_dir.path().join("foo.toml");
 
-        let settings = Settings::load_from_file(cfg_dir.path().join("foo.toml"), false).unwrap();
-        assert_eq!(settings, Settings::default());
+        let settings = Settings::load_from_file(cfg_file.clone(), false).unwrap();
+
+        let mut expected = Settings::default();
+        expected.filename = Some(cfg_file.clone());
+        assert_eq!(settings, expected);
     }
 
     #[test]
@@ -301,5 +343,22 @@ mod test {
 
         assert!(settings.reports.get("foo").is_some());
         // beyond existence of this report, we can rely on Report's unit tests
+    }
+
+    #[test]
+    fn test_set_valid_key() {
+        let cfg_dir = TempDir::new().unwrap();
+        let cfg_file = cfg_dir.path().join("foo.toml");
+        fs::write(cfg_file.clone(), "server_dir = \"/srv\"").unwrap();
+
+        let settings = Settings::load_from_file(cfg_file.clone(), true).unwrap();
+        assert_eq!(settings.filename, Some(cfg_file.clone()));
+        settings.set("data_dir", "/data").unwrap();
+
+        // load the file again and see the change
+        let settings = Settings::load_from_file(cfg_file.clone(), true).unwrap();
+        assert_eq!(settings.data_dir, PathBuf::from("/data"));
+        assert_eq!(settings.server_dir, PathBuf::from("/srv"));
+        assert_eq!(settings.filename, Some(cfg_file));
     }
 }

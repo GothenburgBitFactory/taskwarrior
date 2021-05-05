@@ -15,6 +15,7 @@ textwrap = { version="^0.13.4", features=["terminal_size"] }
 termcolor = "^1.1.2"
 atty = "^0.2.14"
 toml = "^0.5.8"
+toml_edit = "^0.2.0"
 
 [dependencies.taskchampion]
 path = "../taskchampion"
