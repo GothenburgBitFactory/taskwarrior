@@ -1,5 +1,6 @@
 #![deny(clippy::all)]
 #![allow(clippy::unnecessary_wraps)] // for Rust 1.50, https://github.com/rust-lang/rust-clippy/pull/6765
+#![allow(clippy::module_inception)] // we use re-exports to shorten stuttering paths like settings::settings::Settings
 /*!
 This crate implements the command-line interface to TaskChampion.
 
