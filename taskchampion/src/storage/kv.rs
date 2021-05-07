@@ -308,7 +308,7 @@ impl<'t> StorageTxn for Txn<'t> {
             Err(e) => return Err(e.into()),
         };
 
-        if index >= next_index {
+        if index < 1 || index >= next_index {
             anyhow::bail!("Index {} is not in the working set", index);
         }
 
@@ -319,7 +319,11 @@ impl<'t> StorageTxn for Txn<'t> {
                 Msgpack::to_value_buf(uuid)?,
             )?;
         } else {
-            kvtxn.del(working_set_bucket, index.into())?;
+            match kvtxn.del(working_set_bucket, index.into()) {
+                Ok(_) => {}
+                Err(Error::NotFound) => {}
+                Err(e) => return Err(e.into()),
+            };
         }
 
         Ok(())
@@ -646,6 +650,82 @@ mod test {
             let ws = txn.get_working_set()?;
             assert_eq!(ws, vec![None, Some(uuid1), Some(uuid2)]);
         }
+
+        Ok(())
+    }
+
+    #[test]
+    fn set_working_set_item() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1)?;
+            txn.add_to_working_set(uuid2)?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            txn.set_working_set_item(1, Some(uuid2))?;
+            txn.set_working_set_item(2, None)?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, Some(uuid2), None]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn set_working_set_item_nonexistent() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+
+        {
+            let mut txn = storage.txn()?;
+            txn.add_to_working_set(uuid1)?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            txn.set_working_set_item(1, None)?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            // set it to None again, to check idempotency
+            txn.set_working_set_item(1, None)?;
+            txn.commit()?;
+        }
+
+        {
+            let mut txn = storage.txn()?;
+            let ws = txn.get_working_set()?;
+            assert_eq!(ws, vec![None, None]);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn set_working_set_item_zero() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let mut storage = KvStorage::new(&tmp_dir.path())?;
+        let uuid1 = Uuid::new_v4();
+
+        let mut txn = storage.txn()?;
+        assert!(txn.set_working_set_item(0, Some(uuid1)).is_err());
 
         Ok(())
     }
