@@ -21,6 +21,10 @@ impl WorkingSet {
     /// Create a new WorkingSet.  Typically this is acquired via `replica.working_set()`
     pub(crate) fn new(by_index: Vec<Option<Uuid>>) -> Self {
         let mut by_uuid = HashMap::new();
+
+        // working sets are 1-indexed, so element 0 should always be None
+        assert!(by_index.is_empty() || by_index[0].is_none());
+
         for (index, uuid) in by_index.iter().enumerate() {
             if let Some(uuid) = uuid {
                 by_uuid.insert(*uuid, index);
