@@ -6,7 +6,7 @@ Configuration is read from `taskchampion.toml` in your config directory.
 On Linux systems, that directory is `~/.config`.
 On OS X, it's `~/Library/Preferences`.
 On Windows, it's `AppData/Roaming` in your home directory.
-This can be overridden by setting `$TASKCHAMPION_CONFIG` to the configuration filename.
+This can be overridden by setting `TASKCHAMPION_CONFIG` to the configuration filename.
 
 The file format is [TOML](https://toml.io/).
 For example:
