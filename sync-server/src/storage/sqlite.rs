@@ -103,20 +103,20 @@ impl SqliteStorage {
 
 impl Storage for SqliteStorage {
     fn txn<'a>(&'a self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
-        let mut con = self.new_connection()?;
-        let mut t = Txn{con, txn: None};
+        let con = self.new_connection()?;
+        let t = Txn{con, txn: None};
         Ok(Box::new(t))
     }
 }
 
 struct Txn<'t> {
     con: Connection,
-    txn: Option<&'t rusqlite::Transaction<'t>>,
+    txn: Option<rusqlite::Transaction<'t>>,
 }
 
 impl <'t>Txn<'t> {
-    fn get_txn(&mut self) -> Result<&'t rusqlite::Transaction, SqliteError> {
-        Ok(&self.con.transaction().unwrap())
+    fn get_txn(&mut self) -> Result<rusqlite::Transaction, SqliteError> {
+        Ok(self.con.transaction().unwrap())
     }
 }
 
@@ -171,20 +171,28 @@ impl <'t>StorageTxn for Txn<'t> {
         parent_version_id: Uuid,
         history_segment: Vec<u8>,
     ) -> anyhow::Result<()> {
+        let t = self.get_txn()?;
+
         let version = Version {
             version_id,
             parent_version_id,
             history_segment,
         };
-        todo!();
+
+        t.execute(
+            "INSERT INTO versions (client_key, id, parent, history_segment)",
+            params![],
+            ).context("Add version query")?;
+
         Ok(())
     }
 
     fn commit(&mut self) -> anyhow::Result<()> {
-        let t = self
+        let t: rusqlite::Transaction = self
             .txn
             .take()
-            .ok_or(SqliteError::TransactionAlreadyCommitted)?;
+            .unwrap();
+            //.ok_or(SqliteError::TransactionAlreadyCommitted)?;
         t.commit().context("Committing transaction")?;
         Ok(())
     }
