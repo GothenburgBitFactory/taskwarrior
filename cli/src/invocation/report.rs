@@ -18,8 +18,6 @@ fn sort_tasks(tasks: &mut Vec<Task>, report: &Report, working_set: &WorkingSet) 
                     let b_uuid = b.get_uuid();
                     let a_id = working_set.by_uuid(a_uuid);
                     let b_id = working_set.by_uuid(b_uuid);
-                    println!("a_uuid {} -> a_id {:?}", a_uuid, a_id);
-                    println!("b_uuid {} -> b_id {:?}", b_uuid, b_id);
                     match (a_id, b_id) {
                         (Some(a_id), Some(b_id)) => a_id.cmp(&b_id),
                         (Some(_), None) => Ordering::Less,
