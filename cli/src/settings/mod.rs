@@ -187,10 +187,16 @@ impl Default for Settings {
         reports.insert(
             "next".to_owned(),
             Report {
-                sort: vec![Sort {
-                    ascending: true,
-                    sort_by: SortBy::Uuid,
-                }],
+                sort: vec![
+                    Sort {
+                        ascending: true,
+                        sort_by: SortBy::Id,
+                    },
+                    Sort {
+                        ascending: true,
+                        sort_by: SortBy::Uuid,
+                    },
+                ],
                 columns: vec![
                     Column {
                         label: "id".to_owned(),
