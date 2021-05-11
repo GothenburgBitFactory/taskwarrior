@@ -115,7 +115,9 @@ impl Modification {
             summary: "Set description",
             description: "
                 Set the task description.  Multiple arguments are combined into a single
-                space-separated description.",
+                space-separated description.  To avoid surprises from shell quoting, prefer
+                to use a single quoted argument, for example `ta 19 modify \"return library
+                books\"`",
         });
         u.modifications.push(usage::Modification {
             syntax: "+TAG",

@@ -49,9 +49,8 @@ columns = [
 ]
 ```
 
-The filter is a list of filter arguments, just like those that can be used on the command line.
-See the `ta help` output for more details on this syntax.
-It will be merged with any filters provided on the command line, when the report is invoked.
+The `filter` property is a list of [filters](./filters.md).
+It will be merged with any filters provided on the command line when the report is invoked.
 
 The sort order is defined by an array of tables containing a `sort_by` property and an optional `ascending` property.
 Tasks are compared by the first criterion, and if that is equal by the second, and so on.
@@ -70,11 +69,11 @@ sort = [
 
 The available values of `sort_by` are
 
-(TODO: generate automatically)
+<!-- INSERT GENERATED DOCUMENTATION - report-sort-by -->
 
 Finally, the `columns` configuration specifies the list of columns to display.
 Each element has a `label` and a `property`, as shown in the example above.
 
 The avaliable properties are:
 
-(TODO: generate automatically)
+<!-- INSERT GENERATED DOCUMENTATION - report-columns -->
