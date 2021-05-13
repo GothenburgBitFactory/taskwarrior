@@ -37,7 +37,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#if (defined OPENBSD || defined SOLARIS || defined NETBSD)
+#if (defined OPENBSD || defined SOLARIS || defined NETBSD || defined HAIKU)
 #include <errno.h>
 #else
 #include <sys/errno.h>
