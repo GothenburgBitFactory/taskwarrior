@@ -49,7 +49,10 @@ impl Server for RemoteServer {
         parent_version_id: VersionId,
         history_segment: HistorySegment,
     ) -> anyhow::Result<AddVersionResult> {
-        let url = format!("{}/client/add-version/{}", self.origin, parent_version_id);
+        let url = format!(
+            "{}/v1/client/add-version/{}",
+            self.origin, parent_version_id
+        );
         let history_cleartext = HistoryCleartext {
             parent_version_id,
             history_segment,
@@ -82,7 +85,7 @@ impl Server for RemoteServer {
         parent_version_id: VersionId,
     ) -> anyhow::Result<GetVersionResult> {
         let url = format!(
-            "{}/client/get-child-version/{}",
+            "{}/v1/client/get-child-version/{}",
             self.origin, parent_version_id
         );
         match self
