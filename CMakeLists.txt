@@ -112,6 +112,17 @@ else (HAVE_UUID_UNPARSE_LOWER)
   message ("-- Found libuuid, using internal uuid_unparse_lower")
 endif (HAVE_UUID_UNPARSE_LOWER)
 
+if (HAIKU)
+  # search for socket() in libnetwork on Haiku
+  message("-- Looking for libnetwork")
+  find_library (NETWORK_LIBRARY NAMES network)
+  if (NETWORK_LIBRARY)
+    set (TASK_LIBRARIES    ${TASK_LIBRARIES} ${NETWORK_LIBRARY})
+  else (NETWORK_LIBRARY)
+    message(FATAL_ERROR "-- libnetwork not found.")
+  endif (NETWORK_LIBRARY)
+endif (HAIKU)
+
 if (SOLARIS)
   # accept() is in libsocket according to its manpage
   message("-- Looking for libsocket")
