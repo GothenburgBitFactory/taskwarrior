@@ -144,10 +144,8 @@ impl TaskDb {
         // if renumbering, clear the working set and re-add
         if renumber {
             txn.clear_working_set()?;
-            for elt in new_ws.drain(0..new_ws.len()) {
-                if let Some(uuid) = elt {
-                    txn.add_to_working_set(uuid)?;
-                }
+            for uuid in new_ws.drain(0..new_ws.len()).flatten() {
+                txn.add_to_working_set(uuid)?;
             }
         } else {
             // ..otherwise, just clear the None items determined above from the working set
