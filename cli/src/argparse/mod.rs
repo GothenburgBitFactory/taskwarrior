@@ -18,12 +18,14 @@ That is, they contain no references, and have no methods to aid in their executi
 */
 mod args;
 mod command;
+mod config;
 mod filter;
 mod modification;
 mod subcommand;
 
 pub(crate) use args::TaskId;
 pub(crate) use command::Command;
+pub(crate) use config::ConfigOperation;
 pub(crate) use filter::{Condition, Filter};
 pub(crate) use modification::{DescriptionMod, Modification};
 pub(crate) use subcommand::Subcommand;
