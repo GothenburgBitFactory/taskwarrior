@@ -6,7 +6,7 @@ pub(crate) fn execute<W: WriteColor>(
     replica: &mut Replica,
     server: &mut Box<dyn Server>,
 ) -> anyhow::Result<()> {
-    replica.sync(server).unwrap();
+    replica.sync(server)?;
     writeln!(w, "sync complete.")?;
     Ok(())
 }

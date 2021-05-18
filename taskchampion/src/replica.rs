@@ -4,6 +4,7 @@ use crate::storage::{Operation, Storage, TaskMap};
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDb;
 use crate::workingset::WorkingSet;
+use anyhow::Context;
 use chrono::Utc;
 use log::trace;
 use std::collections::HashMap;
@@ -123,8 +124,10 @@ impl Replica {
     /// this occurs, but without renumbering, so any newly-pending tasks should appear in
     /// the working set.
     pub fn sync(&mut self, server: &mut Box<dyn Server>) -> anyhow::Result<()> {
-        self.taskdb.sync(server)?;
+        self.taskdb.sync(server).context("Failed to synchronize")?;
         self.rebuild_working_set(false)
+            .context("Failed to rebuild working set after sync")?;
+        Ok(())
     }
 
     /// Rebuild this replica's working set, based on whether tasks are pending or not.  If
