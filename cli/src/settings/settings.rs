@@ -48,11 +48,7 @@ impl Settings {
     /// Get the default filename for the configuration, or None if that cannot
     /// be determined.
     fn default_filename() -> Option<PathBuf> {
-        if let Some(dir) = dirs_next::config_dir() {
-            Some(dir.join("taskchampion.toml"))
-        } else {
-            None
-        }
+        dirs_next::config_dir().map(|dir| dir.join("taskchampion.toml"))
     }
 
     /// Update this settings object with the contents of the given TOML file.  Top-level settings
