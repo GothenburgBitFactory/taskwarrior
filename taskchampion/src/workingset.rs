@@ -58,13 +58,7 @@ impl WorkingSet {
         self.by_index
             .iter()
             .enumerate()
-            .filter_map(|(index, uuid)| {
-                if let Some(uuid) = uuid {
-                    Some((index, *uuid))
-                } else {
-                    None
-                }
-            })
+            .filter_map(|(index, uuid)| uuid.as_ref().map(|uuid| (index, *uuid)))
     }
 }
 
