@@ -3,8 +3,13 @@ use termcolor::{ColorSpec, WriteColor};
 pub(crate) fn execute<W: WriteColor>(w: &mut W) -> anyhow::Result<()> {
     write!(w, "TaskChampion ")?;
     w.set_color(ColorSpec::new().set_bold(true))?;
-    writeln!(w, "{}", env!("CARGO_PKG_VERSION"))?;
+    write!(w, "{}", env!("CARGO_PKG_VERSION"))?;
     w.reset()?;
+
+    if let Some(h) = option_env!("TC_GIT_REV") {
+        write!(w, " (git rev: {})", h)?;
+    }
+    writeln!(w)?;
     Ok(())
 }
 
