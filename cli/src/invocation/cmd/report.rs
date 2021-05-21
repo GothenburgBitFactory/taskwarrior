@@ -10,7 +10,7 @@ pub(crate) fn execute<W: WriteColor>(
     settings: &Settings,
     report_name: String,
     filter: Filter,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     display_report(w, replica, settings, report_name, filter)
 }
 

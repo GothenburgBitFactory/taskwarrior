@@ -6,7 +6,7 @@ pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     config_operation: ConfigOperation,
     settings: &Settings,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     match config_operation {
         ConfigOperation::Set(key, value) => {
             let filename = settings.set(&key, &value)?;

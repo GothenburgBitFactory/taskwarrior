@@ -40,6 +40,7 @@ mod taskdb;
 mod utils;
 mod workingset;
 
+pub use errors::Error;
 pub use replica::Replica;
 pub use server::{Server, ServerConfig};
 pub use storage::StorageConfig;

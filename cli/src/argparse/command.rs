@@ -1,6 +1,5 @@
 use super::args::*;
 use super::{ArgList, Subcommand};
-use anyhow::bail;
 use nom::{combinator::*, sequence::*, Err, IResult};
 
 /// A command is the overall command that the CLI should execute.
@@ -29,13 +28,22 @@ impl Command {
     }
 
     /// Parse a command from the given list of strings.
-    pub fn from_argv(argv: &[&str]) -> anyhow::Result<Command> {
+    pub fn from_argv(argv: &[&str]) -> Result<Command, crate::Error> {
         match Command::parse(argv) {
             Ok((&[], cmd)) => Ok(cmd),
-            Ok((trailing, _)) => bail!("command line has trailing arguments: {:?}", trailing),
+            Ok((trailing, _)) => Err(crate::Error::for_arguments(format!(
+                "command line has trailing arguments: {:?}",
+                trailing
+            ))),
             Err(Err::Incomplete(_)) => unreachable!(),
-            Err(Err::Error(e)) => bail!("command line not recognized: {:?}", e),
-            Err(Err::Failure(e)) => bail!("command line not recognized: {:?}", e),
+            Err(Err::Error(e)) => Err(crate::Error::for_arguments(format!(
+                "command line not recognized: {:?}",
+                e
+            ))),
+            Err(Err::Failure(e)) => Err(crate::Error::for_arguments(format!(
+                "command line not recognized: {:?}",
+                e
+            ))),
         }
     }
 }

@@ -6,7 +6,7 @@ pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
     modification: Modification,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     let description = match modification.description {
         DescriptionMod::Set(ref s) => s.clone(),
         _ => "(no description)".to_owned(),

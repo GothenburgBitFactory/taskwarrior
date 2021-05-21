@@ -2176,6 +2176,7 @@ dependencies = [
  "tempfile",
  "termcolor",
  "textwrap 0.13.4",
+ "thiserror",
  "toml",
  "toml_edit",
 ]

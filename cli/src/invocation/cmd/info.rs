@@ -10,7 +10,7 @@ pub(crate) fn execute<W: WriteColor>(
     replica: &mut Replica,
     filter: Filter,
     debug: bool,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     let working_set = replica.working_set()?;
 
     for task in filtered_tasks(replica, &filter)? {

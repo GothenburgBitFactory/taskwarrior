@@ -80,7 +80,7 @@ pub(super) fn display_report<W: WriteColor>(
     settings: &Settings,
     report_name: String,
     filter: Filter,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     let mut t = Table::new();
     let working_set = replica.working_set()?;
 
