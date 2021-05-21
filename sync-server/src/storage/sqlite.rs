@@ -3,7 +3,6 @@ use anyhow::Context;
 use rusqlite::types::{FromSql, ToSql};
 use rusqlite::{params, Connection, OptionalExtension};
 use std::path::Path;
-use std::sync::{Arc, Mutex};
 
 #[derive(Debug, thiserror::Error)]
 enum SqliteError {
