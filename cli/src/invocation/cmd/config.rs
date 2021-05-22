@@ -19,6 +19,13 @@ pub(crate) fn execute<W: WriteColor>(
             writeln!(w, "{:?}.", filename)?;
             w.set_color(ColorSpec::new().set_bold(false))?;
         }
+        ConfigOperation::Path => {
+            if let Some(ref filename) = settings.filename {
+                writeln!(w, "{}", filename.to_string_lossy())?;
+            } else {
+                return Err(anyhow::anyhow!("No configuration filename found").into());
+            }
+        }
     }
     Ok(())
 }
