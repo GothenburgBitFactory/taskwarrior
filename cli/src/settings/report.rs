@@ -46,6 +46,9 @@ pub(crate) enum Property {
 
     /// The task's tags
     Tags,
+
+    /// The task's wait date
+    Wait,
 }
 
 /// A sorting criterion for a sort operation.
@@ -71,6 +74,9 @@ pub(crate) enum SortBy {
 
     /// The task's description
     Description,
+
+    /// The task's wait date
+    Wait,
 }
 
 // Conversions from settings::Settings.
@@ -174,6 +180,7 @@ impl TryFrom<&toml::Value> for Property {
             "active" => Property::Active,
             "description" => Property::Description,
             "tags" => Property::Tags,
+            "wait" => Property::Wait,
             _ => bail!(": unknown property {}", s),
         })
     }
@@ -210,6 +217,7 @@ impl TryFrom<&toml::Value> for SortBy {
             "id" => SortBy::Id,
             "uuid" => SortBy::Uuid,
             "description" => SortBy::Description,
+            "wait" => SortBy::Wait,
             _ => bail!(": unknown sort_by value `{}`", s),
         })
     }
@@ -230,6 +238,11 @@ pub(crate) fn get_usage(u: &mut Usage) {
         name: "active",
         as_sort_by: None,
         as_column: Some("`*` if the task is active (started)"),
+    });
+    u.report_properties.push(usage::ReportProperty {
+        name: "wait",
+        as_sort_by: Some("Sort by the task's wait date, with non-waiting tasks first"),
+        as_column: Some("Wait date of the task"),
     });
     u.report_properties.push(usage::ReportProperty {
         name: "description",

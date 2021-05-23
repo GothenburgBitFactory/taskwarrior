@@ -218,6 +218,10 @@ impl Default for Settings {
                         label: "tags".to_owned(),
                         property: Property::Tags,
                     },
+                    Column {
+                        label: "wait".to_owned(),
+                        property: Property::Wait,
+                    },
                 ],
                 filter: Default::default(),
             },
