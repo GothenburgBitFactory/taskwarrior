@@ -32,6 +32,7 @@ The following keys, and key formats, are defined:
 * `modified` - the time of the last modification of this task
 * `start.<timestamp>` - either an empty string (representing work on the task to the task that has not been stopped) or a timestamp (representing the time that work stopped)
 * `tag.<tag>` - indicates this task has tag `<tag>` (value is an empty string)
+* `wait` - indicates the time before which this task should be hidden, as it is not actionable
 
 The following are not yet implemented:
 

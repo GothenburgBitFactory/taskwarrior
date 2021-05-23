@@ -31,8 +31,15 @@ pub(crate) use modification::{DescriptionMod, Modification};
 pub(crate) use subcommand::Subcommand;
 
 use crate::usage::Usage;
+use chrono::prelude::*;
+use lazy_static::lazy_static;
 
 type ArgList<'a> = &'a [&'a str];
+
+lazy_static! {
+    // A static value of NOW to make tests easier
+    pub(super) static ref NOW: DateTime<Utc> = Utc::now();
+}
 
 pub(crate) fn get_usage(usage: &mut Usage) {
     Subcommand::get_usage(usage);

@@ -1,6 +1,7 @@
-use super::args::{any, arg_matching, minus_tag, plus_tag};
+use super::args::{any, arg_matching, minus_tag, plus_tag, wait_colon};
 use super::ArgList;
 use crate::usage;
+use chrono::prelude::*;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
 use std::collections::HashSet;
 use taskchampion::Status;
@@ -36,6 +37,9 @@ pub struct Modification {
     /// Set the status
     pub status: Option<Status>,
 
+    /// Set (or, with `Some(None)`, clear) the wait timestamp
+    pub wait: Option<Option<DateTime<Utc>>>,
+
     /// Set the "active" state, that is, start (true) or stop (false) the task.
     pub active: Option<bool>,
 
@@ -51,6 +55,7 @@ enum ModArg<'a> {
     Description(&'a str),
     PlusTag(&'a str),
     MinusTag(&'a str),
+    Wait(Option<DateTime<Utc>>),
 }
 
 impl Modification {
@@ -71,6 +76,9 @@ impl Modification {
                 ModArg::MinusTag(tag) => {
                     acc.remove_tags.insert(tag.to_owned());
                 }
+                ModArg::Wait(wait) => {
+                    acc.wait = Some(wait);
+                }
             }
             acc
         }
@@ -78,6 +86,7 @@ impl Modification {
             alt((
                 Self::plus_tag,
                 Self::minus_tag,
+                Self::wait,
                 // this must come last
                 Self::description,
             )),
@@ -109,6 +118,13 @@ impl Modification {
         map_res(arg_matching(minus_tag), to_modarg)(input)
     }
 
+    fn wait(input: ArgList) -> IResult<ArgList, ModArg> {
+        fn to_modarg(input: Option<DateTime<Utc>>) -> Result<ModArg<'static>, ()> {
+            Ok(ModArg::Wait(input))
+        }
+        map_res(arg_matching(wait_colon), to_modarg)(input)
+    }
+
     pub(super) fn get_usage(u: &mut usage::Usage) {
         u.modifications.push(usage::Modification {
             syntax: "DESCRIPTION",
@@ -122,14 +138,25 @@ impl Modification {
         u.modifications.push(usage::Modification {
             syntax: "+TAG",
             summary: "Tag task",
-            description: "
-                Add the given tag to the task.",
+            description: "Add the given tag to the task.",
         });
         u.modifications.push(usage::Modification {
             syntax: "-TAG",
             summary: "Un-tag task",
+            description: "Remove the given tag from the task.",
+        });
+        u.modifications.push(usage::Modification {
+            syntax: "status:{pending,completed,deleted}",
+            summary: "Set the task's status",
+            description: "Set the status of the task explicitly.",
+        });
+        u.modifications.push(usage::Modification {
+            syntax: "wait:<timestamp>",
+            summary: "Set or unset the task's wait time",
             description: "
-                Remove the given tag from the task.",
+                Set the time before which the task is not actionable and
+                should not be shown in reports.  With `wait:`, the time
+                is un-set.",
         });
     }
 }
@@ -137,6 +164,7 @@ impl Modification {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::argparse::NOW;
 
     #[test]
     fn test_empty() {
@@ -171,6 +199,32 @@ mod test {
             modification,
             Modification {
                 add_tags: set![s!("abc"), s!("def")],
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn test_set_wait() {
+        let (input, modification) = Modification::parse(argv!["wait:2d"]).unwrap();
+        assert_eq!(input.len(), 0);
+        assert_eq!(
+            modification,
+            Modification {
+                wait: Some(Some(*NOW + chrono::Duration::days(2))),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn test_unset_wait() {
+        let (input, modification) = Modification::parse(argv!["wait:"]).unwrap();
+        assert_eq!(input.len(), 0);
+        assert_eq!(
+            modification,
+            Modification {
+                wait: Some(None),
                 ..Default::default()
             }
         );

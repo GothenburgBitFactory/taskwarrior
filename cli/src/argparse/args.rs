@@ -1,5 +1,7 @@
 //! Parsers for argument lists -- arrays of strings
 use super::ArgList;
+use super::NOW;
+use chrono::prelude::*;
 use nom::bytes::complete::tag as nomtag;
 use nom::{
     branch::*,
@@ -65,6 +67,30 @@ pub(super) fn status_colon(input: &str) -> IResult<&str, Status> {
         }
     }
     map_res(colon_prefixed("status"), to_status)(input)
+}
+
+/// Recognizes timestamps
+pub(super) fn timestamp(input: &str) -> IResult<&str, DateTime<Utc>> {
+    // TODO: full relative date language supported by TW
+    fn nn_d_to_timestamp(input: &str) -> Result<DateTime<Utc>, ()> {
+        // TODO: don't unwrap
+        Ok(*NOW + chrono::Duration::days(input.parse().unwrap()))
+    }
+    map_res(terminated(digit1, char('d')), nn_d_to_timestamp)(input)
+}
+
+/// Recognizes `wait:` to None and `wait:<ts>` to `Some(ts)`
+pub(super) fn wait_colon(input: &str) -> IResult<&str, Option<DateTime<Utc>>> {
+    fn to_wait(input: DateTime<Utc>) -> Result<Option<DateTime<Utc>>, ()> {
+        Ok(Some(input))
+    }
+    fn to_none(_: &str) -> Result<Option<DateTime<Utc>>, ()> {
+        Ok(None)
+    }
+    preceded(
+        nomtag("wait:"),
+        alt((map_res(timestamp, to_wait), map_res(nomtag(""), to_none))),
+    )(input)
 }
 
 /// Recognizes a comma-separated list of TaskIds
@@ -235,6 +261,17 @@ mod test {
         assert!(minus_tag("-abc123  ").is_err());
         assert!(minus_tag("  -abc123").is_err());
         assert!(minus_tag("-1abc").is_err());
+    }
+
+    #[test]
+    fn test_wait() {
+        assert_eq!(wait_colon("wait:").unwrap(), ("", None));
+
+        let one_day = *NOW + chrono::Duration::days(1);
+        assert_eq!(wait_colon("wait:1d").unwrap(), ("", Some(one_day)));
+
+        let one_day = *NOW + chrono::Duration::days(1);
+        assert_eq!(wait_colon("wait:1d2").unwrap(), ("2", Some(one_day)));
     }
 
     #[test]
