@@ -36,6 +36,9 @@ pub(crate) fn execute<W: WriteColor>(
                 tags.sort();
                 t.add_row(row![b->"Tags", tags.join(" ")]);
             }
+            if task.is_waiting() {
+                t.add_row(row![b->"Wait", task.get_wait().unwrap()]);
+            }
         }
         t.print(w)?;
     }
