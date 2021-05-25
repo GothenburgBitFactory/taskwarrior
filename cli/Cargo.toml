@@ -6,6 +6,9 @@ version = "0.3.0"
 
 build = "build.rs"
 
+# Run 'ta' when doing 'cargo run' at repo root
+default-run = "ta"
+
 [dependencies]
 dirs-next = "^2.0.0"
 env_logger = "^0.8.3"
