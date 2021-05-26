@@ -2,26 +2,31 @@
 //! a way that puts the source of that documentation near its implementation.
 
 use crate::argparse;
-use std::io::{Result, Write};
+use crate::settings;
+use anyhow::Result;
+use std::io::Write;
+
+#[cfg(feature = "usage-docs")]
+use std::fmt::Write as FmtWrite;
 
 /// A top-level structure containing usage/help information for the entire CLI.
 #[derive(Debug, Default)]
-pub(crate) struct Usage {
+pub struct Usage {
     pub(crate) subcommands: Vec<Subcommand>,
     pub(crate) filters: Vec<Filter>,
     pub(crate) modifications: Vec<Modification>,
+    pub(crate) report_properties: Vec<ReportProperty>,
 }
 
 impl Usage {
     /// Get a new, completely-filled-out usage object
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         let mut rv = Self {
             ..Default::default()
         };
 
         argparse::get_usage(&mut rv);
-
-        // TODO: sort subcommands
+        settings::get_usage(&mut rv);
 
         rv
     }
@@ -77,6 +82,62 @@ impl Usage {
         }
         Ok(())
     }
+
+    #[cfg(feature = "usage-docs")]
+    /// Substitute strings matching
+    ///
+    /// ```text
+    /// <!-- INSERT GENERATED DOCUMENTATION - $type -->
+    /// ```
+    ///
+    /// With the appropriate documentation.
+    pub fn substitute_docs(&self, content: &str) -> Result<String> {
+        // this is not efficient, but it doesn't need to be
+        let mut lines = content.lines();
+        let mut w = String::new();
+
+        const DOC_HEADER_PREFIX: &str = "<!-- INSERT GENERATED DOCUMENTATION - ";
+        const DOC_HEADER_SUFFIX: &str = " -->";
+
+        for line in lines {
+            if line.starts_with(DOC_HEADER_PREFIX) && line.ends_with(DOC_HEADER_SUFFIX) {
+                let doc_type = &line[DOC_HEADER_PREFIX.len()..line.len() - DOC_HEADER_SUFFIX.len()];
+
+                match doc_type {
+                    "subcommands" => {
+                        for subcommand in self.subcommands.iter() {
+                            subcommand.write_markdown(&mut w)?;
+                        }
+                    }
+                    "filters" => {
+                        for filter in self.filters.iter() {
+                            filter.write_markdown(&mut w)?;
+                        }
+                    }
+                    "modifications" => {
+                        for modification in self.modifications.iter() {
+                            modification.write_markdown(&mut w)?;
+                        }
+                    }
+                    "report-columns" => {
+                        for prop in self.report_properties.iter() {
+                            prop.write_column_markdown(&mut w)?;
+                        }
+                    }
+                    "report-sort-by" => {
+                        for prop in self.report_properties.iter() {
+                            prop.write_sort_by_markdown(&mut w)?;
+                        }
+                    }
+                    _ => anyhow::bail!("Unkonwn doc type {}", doc_type),
+                }
+            } else {
+                writeln!(w, "{}", line)?;
+            }
+        }
+
+        Ok(w)
+    }
 }
 
 /// wrap an indented string
@@ -122,6 +183,15 @@ impl Subcommand {
         }
         Ok(())
     }
+
+    #[cfg(feature = "usage-docs")]
+    fn write_markdown<W: FmtWrite>(&self, mut w: W) -> Result<()> {
+        writeln!(w, "### `ta {}` - {}", self.name, self.summary)?;
+        writeln!(w, "```shell\nta {}\n```", self.syntax)?;
+        writeln!(w, "{}", indented(self.description, ""))?;
+        writeln!(w)?;
+        Ok(())
+    }
 }
 
 /// Usage documentation for a filter argument
@@ -152,6 +222,15 @@ impl Filter {
         }
         Ok(())
     }
+
+    #[cfg(feature = "usage-docs")]
+    fn write_markdown<W: FmtWrite>(&self, mut w: W) -> Result<()> {
+        writeln!(w, "* `{}` - {}", self.syntax, self.summary)?;
+        writeln!(w)?;
+        writeln!(w, "{}", indented(self.description, "  "))?;
+        writeln!(w)?;
+        Ok(())
+    }
 }
 
 /// Usage documentation for a modification argument
@@ -179,6 +258,53 @@ impl Modification {
                 self.syntax,
                 indented(self.description, "    ")
             )?;
+        }
+        Ok(())
+    }
+
+    #[cfg(feature = "usage-docs")]
+    fn write_markdown<W: FmtWrite>(&self, mut w: W) -> Result<()> {
+        writeln!(w, "* `{}` - {}", self.syntax, self.summary)?;
+        writeln!(w)?;
+        writeln!(w, "{}", indented(self.description, "  "))?;
+        writeln!(w)?;
+        Ok(())
+    }
+}
+
+/// Usage documentation for a report property (which may be used for sorting, as a column, or
+/// both).
+#[derive(Debug, Default)]
+pub(crate) struct ReportProperty {
+    /// Name of the property
+    pub(crate) name: &'static str,
+
+    /// Usage description for sorting, if any
+    pub(crate) as_sort_by: Option<&'static str>,
+
+    /// Usage description as a column, if any
+    pub(crate) as_column: Option<&'static str>,
+}
+
+impl ReportProperty {
+    #[cfg(feature = "usage-docs")]
+    fn write_sort_by_markdown<W: FmtWrite>(&self, mut w: W) -> Result<()> {
+        if let Some(as_sort_by) = self.as_sort_by {
+            writeln!(w, "* `{}`", self.name)?;
+            writeln!(w)?;
+            writeln!(w, "{}", indented(as_sort_by, "  "))?;
+            writeln!(w)?;
+        }
+        Ok(())
+    }
+
+    #[cfg(feature = "usage-docs")]
+    fn write_column_markdown<W: FmtWrite>(&self, mut w: W) -> Result<()> {
+        if let Some(as_column) = self.as_column {
+            writeln!(w, "* `{}`", self.name)?;
+            writeln!(w)?;
+            writeln!(w, "{}", indented(as_column, "  "))?;
+            writeln!(w)?;
         }
         Ok(())
     }

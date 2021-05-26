@@ -47,6 +47,9 @@ mod usage;
 pub(crate) use errors::Error;
 use settings::Settings;
 
+// used by the `generate` command
+pub use usage::Usage;
+
 /// The main entry point for the command-line interface.  This builds an Invocation
 /// from the particulars of the operating-system interface, and then executes it.
 pub fn main() -> Result<(), Error> {
