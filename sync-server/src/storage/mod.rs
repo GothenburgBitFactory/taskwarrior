@@ -9,9 +9,6 @@ pub(crate) use inmemory::InMemoryStorage;
 mod sqlite;
 pub(crate) use self::sqlite::SqliteStorage;
 
-mod kv;
-pub(crate) use self::kv::KvStorage;
-
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct Client {
     pub(crate) latest_version_id: Uuid,

@@ -17,7 +17,6 @@ serde_json = "^1.0"
 chrono = { version = "^0.4.10", features = ["serde"] }
 anyhow = "1.0"
 thiserror = "1.0"
-kv = {version = "^0.10.0", features = ["msgpack-value"]}
 ureq = "^2.1.0"
 log = "^0.4.14"
 tindercrypt = { version = "^0.2.2", default-features = false }
