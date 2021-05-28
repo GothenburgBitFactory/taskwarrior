@@ -19,7 +19,7 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 /// parent version ID in the `X-Parent-Version-Id` header.
 ///
 /// Returns other 4xx or 5xx responses on other errors.
-#[post("/client/add-version/{parent_version_id}")]
+#[post("/v1/client/add-version/{parent_version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<ServerState>,
@@ -99,7 +99,7 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/add-version/{}", parent_version_id);
+        let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(
@@ -136,7 +136,7 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/add-version/{}", parent_version_id);
+        let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(
@@ -163,7 +163,7 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/add-version/{}", parent_version_id);
+        let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header("Content-Type", "not/correct")
@@ -182,7 +182,7 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/add-version/{}", parent_version_id);
+        let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(

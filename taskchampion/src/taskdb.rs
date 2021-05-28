@@ -117,14 +117,14 @@ impl TaskDb {
     {
         let mut txn = self.storage.txn()?;
 
-        let mut new_ws = vec![];
+        let mut new_ws = vec![None]; // index 0 is always None
         let mut seen = HashSet::new();
 
         // The goal here is for existing working-set items to be "compressed' down to index 1, so
         // we begin by scanning the current working set and inserting any tasks that should still
         // be in the set into new_ws, implicitly dropping any tasks that are no longer in the
         // working set.
-        for elt in txn.get_working_set()? {
+        for elt in txn.get_working_set()?.drain(1..) {
             if let Some(uuid) = elt {
                 if let Some(task) = txn.get_task(uuid)? {
                     if in_working_set(&task) {
@@ -144,14 +144,12 @@ impl TaskDb {
         // if renumbering, clear the working set and re-add
         if renumber {
             txn.clear_working_set()?;
-            for elt in new_ws.drain(0..new_ws.len()) {
-                if let Some(uuid) = elt {
-                    txn.add_to_working_set(uuid)?;
-                }
+            for elt in new_ws.drain(1..new_ws.len()).flatten() {
+                txn.add_to_working_set(elt)?;
             }
         } else {
             // ..otherwise, just clear the None items determined above from the working set
-            for (i, elt) in new_ws.iter().enumerate() {
+            for (i, elt) in new_ws.iter().enumerate().skip(1) {
                 if elt.is_none() {
                     txn.set_working_set_item(i, None)?;
                 }

@@ -13,7 +13,7 @@ use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
 ///
 /// If no such child exists, returns a 404 with no content.
 /// Returns other 4xx or 5xx responses on other errors.
-#[get("/client/get-child-version/{parent_version_id}")]
+#[get("/v1/client/get-child-version/{parent_version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<ServerState>,
@@ -68,7 +68,7 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/get-child-version/{}", parent_version_id);
+        let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
             .header("X-Client-Key", client_key.to_string())
@@ -101,7 +101,7 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/get-child-version/{}", parent_version_id);
+        let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
             .header("X-Client-Key", client_key.to_string())
@@ -126,7 +126,7 @@ mod test {
         let server_state = ServerState::new(server_box);
         let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
 
-        let uri = format!("/client/get-child-version/{}", parent_version_id);
+        let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
             .header("X-Client-Key", client_key.to_string())

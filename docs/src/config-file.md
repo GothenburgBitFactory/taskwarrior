@@ -1,15 +1,19 @@
 # Configuration
 
-The `task` command will work out-of-the-box with no configuration file, using default values.
+The `ta` command will work out-of-the-box with no configuration file, using default values.
 
-Configuration is read from `taskchampion.yaml` in your config directory.
+Configuration is read from `taskchampion.toml` in your config directory.
 On Linux systems, that directory is `~/.config`.
 On OS X, it's `~/Library/Preferences`.
 On Windows, it's `AppData/Roaming` in your home directory.
-The path can be overridden by setting `$TASKCHAMPION_CONFIG`.
+This can be overridden by setting `TASKCHAMPION_CONFIG` to the configuration filename.
 
-Individual configuration parameters can be overridden by environment variables, converted to upper-case and prefixed with `TASKCHAMPION_`, e.g., `TASKCHAMPION_DATA_DIR`.
-Nested configuration parameters such as `reports` cannot be overridden by environment variables.
+The file format is [TOML](https://toml.io/).
+For example:
+
+```toml
+data_dir = "/home/myuser/.tasks"
+```
 
 ## Directories
 
@@ -36,7 +40,15 @@ If using a remote server:
 * `server_client_key` -  Client key to identify this replica to the sync server (a UUID)
   If not set, then sync is done to a local server.
 
-# Reports
+## Reports
 
 * `reports` - a mapping of each report's name to its definition.
   See [Reports](./reports.md) for details.
+
+## Editing
+
+As a shortcut, the simple, top-level configuration values can be edited from the command line:
+
+```shell
+ta config set data_dir /home/myuser/.taskchampion
+```

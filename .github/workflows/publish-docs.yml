@@ -8,7 +8,6 @@ on:
 jobs:
   mdbook-deploy:
     runs-on: ubuntu-latest
-    needs: mdbook
 
     steps:
       - uses: actions/checkout@v1

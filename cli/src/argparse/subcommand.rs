@@ -1,5 +1,5 @@
 use super::args::*;
-use super::{ArgList, DescriptionMod, Filter, Modification};
+use super::{ArgList, ConfigOperation, DescriptionMod, Filter, Modification};
 use crate::usage;
 use nom::{branch::alt, combinator::*, sequence::*, IResult};
 use taskchampion::Status;
@@ -23,6 +23,11 @@ pub(crate) enum Subcommand {
     Help {
         /// Give the summary help (fitting on a few lines)
         summary: bool,
+    },
+
+    /// Manipulate configuration
+    Config {
+        config_operation: ConfigOperation,
     },
 
     /// Add a new task
@@ -61,6 +66,7 @@ impl Subcommand {
         all_consuming(alt((
             Version::parse,
             Help::parse,
+            Config::parse,
             Add::parse,
             Modify::parse,
             Info::parse,
@@ -74,6 +80,7 @@ impl Subcommand {
     pub(super) fn get_usage(u: &mut usage::Usage) {
         Version::get_usage(u);
         Help::get_usage(u);
+        Config::get_usage(u);
         Add::get_usage(u);
         Modify::get_usage(u);
         Info::get_usage(u);
@@ -129,6 +136,26 @@ impl Help {
     }
 
     fn get_usage(_u: &mut usage::Usage) {}
+}
+
+struct Config;
+
+impl Config {
+    fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
+        fn to_subcommand(input: (&str, ConfigOperation)) -> Result<Subcommand, ()> {
+            Ok(Subcommand::Config {
+                config_operation: input.1,
+            })
+        }
+        map_res(
+            tuple((arg_matching(literal("config")), ConfigOperation::parse)),
+            to_subcommand,
+        )(input)
+    }
+
+    fn get_usage(u: &mut usage::Usage) {
+        ConfigOperation::get_usage(u);
+    }
 }
 
 struct Add;
@@ -424,6 +451,19 @@ mod test {
         assert_eq!(
             Subcommand::parse(argv!["--help"]).unwrap(),
             (&EMPTY[..], Subcommand::Help { summary: false })
+        );
+    }
+
+    #[test]
+    fn test_config_set() {
+        assert_eq!(
+            Subcommand::parse(argv!["config", "set", "x", "y"]).unwrap(),
+            (
+                &EMPTY[..],
+                Subcommand::Config {
+                    config_operation: ConfigOperation::Set("x".to_owned(), "y".to_owned())
+                }
+            )
         );
     }
 

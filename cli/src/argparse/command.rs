@@ -49,10 +49,10 @@ mod test {
     #[test]
     fn test_version() {
         assert_eq!(
-            Command::from_argv(argv!["task", "version"]).unwrap(),
+            Command::from_argv(argv!["ta", "version"]).unwrap(),
             Command {
                 subcommand: Subcommand::Version,
-                command_name: s!("task"),
+                command_name: s!("ta"),
             }
         );
     }

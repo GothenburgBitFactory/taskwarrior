@@ -19,12 +19,12 @@ mod test {
     #[test]
     fn test_summary() {
         let mut w = test_writer();
-        execute(&mut w, s!("task"), true).unwrap();
+        execute(&mut w, s!("ta"), true).unwrap();
     }
 
     #[test]
     fn test_long() {
         let mut w = test_writer();
-        execute(&mut w, s!("task"), false).unwrap();
+        execute(&mut w, s!("ta"), false).unwrap();
     }
 }

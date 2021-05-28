@@ -1,13 +1,13 @@
 use crate::argparse::Filter;
 use crate::invocation::display_report;
-use config::Config;
+use crate::settings::Settings;
 use taskchampion::Replica;
 use termcolor::WriteColor;
 
 pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
-    settings: &Config,
+    settings: &Settings,
     report_name: String,
     filter: Filter,
 ) -> anyhow::Result<()> {
@@ -30,7 +30,7 @@ mod test {
         // The function being tested is only one line long, so this is sort of an integration test
         // for display_report.
 
-        let settings = crate::settings::default_settings().unwrap();
+        let settings = Default::default();
         let report_name = "next".to_owned();
         let filter = Filter {
             ..Default::default()

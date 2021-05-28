@@ -1,5 +1,6 @@
 #![deny(clippy::all)]
 #![allow(clippy::unnecessary_wraps)] // for Rust 1.50, https://github.com/rust-lang/rust-clippy/pull/6765
+#![allow(clippy::module_inception)] // we use re-exports to shorten stuttering paths like settings::settings::Settings
 /*!
 This crate implements the command-line interface to TaskChampion.
 
@@ -38,10 +39,11 @@ mod macros;
 
 mod argparse;
 mod invocation;
-mod report;
 mod settings;
 mod table;
 mod usage;
+
+use settings::Settings;
 
 /// The main entry point for the command-line interface.  This builds an Invocation
 /// from the particulars of the operating-system interface, and then executes it.
@@ -59,7 +61,7 @@ pub fn main() -> anyhow::Result<()> {
     let command = argparse::Command::from_argv(&argv[..])?;
 
     // load the application settings
-    let settings = settings::read_settings()?;
+    let settings = Settings::read()?;
 
     invocation::invoke(command, settings)?;
     Ok(())
