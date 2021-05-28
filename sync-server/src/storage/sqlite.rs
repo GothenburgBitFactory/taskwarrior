@@ -8,6 +8,8 @@ use std::path::Path;
 enum SqliteError {
     #[error("SQLite transaction already committted")]
     TransactionAlreadyCommitted,
+    #[error("Failed to create SQLite transaction")]
+    CreateTransactionFailed,
 }
 
 /// Newtype to allow implementing `FromSql` for foreign `uuid::Uuid`
@@ -96,7 +98,10 @@ struct Txn<'t> {
 
 impl<'t> Txn<'t> {
     fn get_txn(&mut self) -> Result<rusqlite::Transaction, SqliteError> {
-        Ok(self.con.transaction().unwrap())
+        Ok(self
+            .con
+            .transaction()
+            .map_err(|_e| SqliteError::CreateTransactionFailed)?)
     }
 }
 

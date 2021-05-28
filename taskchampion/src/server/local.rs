@@ -50,7 +50,7 @@ pub struct LocalServer {
 }
 
 impl LocalServer {
-    fn txn<'a>(&'a mut self) -> anyhow::Result<rusqlite::Transaction> {
+    fn txn(&mut self) -> anyhow::Result<rusqlite::Transaction> {
         let txn = self.con.transaction()?;
         Ok(txn)
     }
