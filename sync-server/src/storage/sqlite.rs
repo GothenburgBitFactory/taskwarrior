@@ -48,23 +48,6 @@ impl ToSql for Client {
     }
 }
 
-/// DB Key for versions: concatenation of client_key and parent_version_id
-type VersionDbKey = [u8; 32];
-
-fn version_db_key(client_key: Uuid, parent_version_id: Uuid) -> VersionDbKey {
-    let mut key = [0u8; 32];
-    key[..16].clone_from_slice(client_key.as_bytes());
-    key[16..].clone_from_slice(parent_version_id.as_bytes());
-    key
-}
-
-/// Key for clients: just the client_key
-type ClientDbKey = [u8; 16];
-
-fn client_db_key(client_key: Uuid) -> ClientDbKey {
-    *client_key.as_bytes()
-}
-
 /// An on-disk storage backend which uses SQLite
 pub(crate) struct SqliteStorage {
     db_file: std::path::PathBuf,
