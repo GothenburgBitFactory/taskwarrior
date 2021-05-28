@@ -1,13 +1,13 @@
-        use rusqlite::params;
-        use anyhow::Context;
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NO_VERSION_ID,
 };
+use anyhow::Context;
+use rusqlite::params;
+use rusqlite::types::{FromSql, ToSql};
+use rusqlite::OptionalExtension;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use uuid::Uuid;
-use rusqlite::types::{FromSql, ToSql};
-        use rusqlite::OptionalExtension;
 
 // FIXME: Duplicated
 /// Newtype to allow implementing `FromSql` for foreign `uuid::Uuid`
@@ -30,6 +30,14 @@ impl ToSql for StoredUuid {
     }
 }
 
+impl FromSql for Version {
+    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
+        let u = serde_json::from_str(value.as_str()?)
+            .map_err(|_| rusqlite::types::FromSqlError::InvalidType)?;
+        Ok(u)
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct Version {
     version_id: VersionId,
@@ -49,32 +57,38 @@ impl LocalServer {
 
     /// A server which has no notion of clients, signatures, encryption, etc.
     pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<LocalServer> {
-        let db_file = directory.as_ref().join("taskchampion-local-sync-server.sqlite3");
+        let db_file = directory
+            .as_ref()
+            .join("taskchampion-local-sync-server.sqlite3");
         let con = rusqlite::Connection::open(&db_file)?;
 
         let queries = vec![
             "CREATE TABLE IF NOT EXISTS data (key STRING PRIMARY KEY, value STRING);",
+            "CREATE TABLE IF NOT EXISTS versions (version_id STRING PRIMARY KEY, parent_version_id STRING, data STRING);",
         ];
         for q in queries {
             con.execute(q, []).context("Creating table")?;
         }
 
-        Ok(LocalServer {
-            con,
-        })
+        Ok(LocalServer { con })
     }
 
     fn get_latest_version_id(&mut self) -> anyhow::Result<VersionId> {
         let t = self.txn()?;
-        let result: Option<StoredUuid> = t.query_row("SELECT value FROM data WHERE key = latest_version_id LIMIT 1", rusqlite::params![], |r| r.get(0)).optional()?;
+        let result: Option<StoredUuid> = t
+            .query_row(
+                "SELECT value FROM data WHERE key = 'latest_version_id' LIMIT 1",
+                rusqlite::params![],
+                |r| r.get(0),
+            )
+            .optional()?;
         Ok(result.map(|x| x.0).unwrap_or(NO_VERSION_ID))
     }
 
     fn set_latest_version_id(&mut self, version_id: VersionId) -> anyhow::Result<()> {
-
         let t = self.txn()?;
         t.execute(
-            "INSERT OR REPLACE INTO tasks (uuid, data) VALUES (?, ?)",
+            "INSERT OR REPLACE INTO data (key, value) VALUES ('latest_version_id', ?)",
             params![&StoredUuid(version_id)],
         )
         .context("Update task query")?;
@@ -86,11 +100,38 @@ impl LocalServer {
         &mut self,
         parent_version_id: VersionId,
     ) -> anyhow::Result<Option<Version>> {
-        todo!()
+        let t = self.txn()?;
+        let r = t.query_row(
+            "SELECT version_id, parent_version_id, data FROM versions WHERE parent_version_id = ?",
+            params![&StoredUuid(parent_version_id)],
+            |r| {
+                let version_id: StoredUuid = r.get("version_id")?;
+                let parent_version_id: StoredUuid = r.get("parent_version_id")?;
+
+                Ok(Version{
+                version_id: version_id.0,
+                parent_version_id: parent_version_id.0,
+                history_segment: r.get("data")?,
+            })}
+            )
+        .optional()
+        .context("Get version query")
+        ?;
+        Ok(r)
     }
 
     fn add_version_by_parent_version_id(&mut self, version: Version) -> anyhow::Result<()> {
-        todo!()
+        let t = self.txn()?;
+        t.execute(
+            "INSERT INTO versions (version_id, parent_version_id, data) VALUES (?, ?, ?)",
+            params![
+                StoredUuid(version.version_id),
+                StoredUuid(version.parent_version_id),
+                version.history_segment
+            ],
+        )?;
+        t.commit()?;
+        Ok(())
     }
 }
 
