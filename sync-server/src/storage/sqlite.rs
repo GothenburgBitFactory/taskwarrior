@@ -86,7 +86,7 @@ impl SqliteStorage {
 
             let queries = vec![
                 "CREATE TABLE IF NOT EXISTS clients (client_key STRING PRIMARY KEY, latest_version_id STRING);",
-                "CREATE TABLE IF NOT EXISTS versions (id STRING PRIMARY KEY, client_key STRING, parent STRING, history_segment STRING);",
+                "CREATE TABLE IF NOT EXISTS versions (version_id STRING PRIMARY KEY, client_key STRING, parent_version_id STRING, history_segment STRING);",
             ];
             for q in queries {
                 txn.execute(q, []).context("Creating table")?;
@@ -145,6 +145,7 @@ impl<'t> StorageTxn for Txn<'t> {
             params![&StoredUuid(client_key), &StoredUuid(latest_version_id)],
         )
         .context("Create client query")?;
+        t.commit()?;
         Ok(())
     }
 
@@ -162,7 +163,24 @@ impl<'t> StorageTxn for Txn<'t> {
         client_key: Uuid,
         parent_version_id: Uuid,
     ) -> anyhow::Result<Option<Version>> {
-        todo!()
+        let t = self.get_txn()?;
+        let r = t.query_row(
+            "SELECT version_id, parent_version_id, history_segment FROM versions WHERE parent_version_id = ? AND client_key = ?",
+            params![&StoredUuid(parent_version_id), &StoredUuid(client_key)],
+            |r| {
+                let version_id: StoredUuid = r.get("version_id")?;
+                let parent_version_id: StoredUuid = r.get("parent_version_id")?;
+
+                Ok(Version{
+                version_id: version_id.0,
+                parent_version_id: parent_version_id.0,
+                history_segment: r.get("history_segment")?,
+            })}
+            )
+        .optional()
+        .context("Get version query")
+        ?;
+        Ok(r)
     }
 
     fn add_version(
@@ -175,7 +193,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let t = self.get_txn()?;
 
         t.execute(
-            "INSERT INTO versions (id, client_key, parent, history_segment) VALUES(?, ?, ?, ?)",
+            "INSERT INTO versions (version_id, client_key, parent_version_id, history_segment) VALUES(?, ?, ?, ?)",
             params![
                 StoredUuid(version_id),
                 StoredUuid(client_key),
@@ -184,7 +202,7 @@ impl<'t> StorageTxn for Txn<'t> {
             ],
         )
         .context("Add version query")?;
-
+        t.commit()?;
         Ok(())
     }
 
