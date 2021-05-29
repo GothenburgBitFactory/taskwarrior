@@ -22,8 +22,9 @@ termcolor = "^1.1.2"
 atty = "^0.2.14"
 toml = "^0.5.8"
 toml_edit = "^0.2.0"
-chrono = "*"
+chrono = "0.4"
 lazy_static = "1"
+iso8601-duration = "0.1"
 
 # only needed for usage-docs
 mdbook = { version = "0.4", optional = true }
@@ -36,6 +37,7 @@ path = "../taskchampion"
 assert_cmd = "^1.0.3"
 predicates = "^1.0.7"
 tempfile = "3"
+rstest = "0.10"
 
 [features]
 usage-docs = [ "mdbook", "serde_json" ]

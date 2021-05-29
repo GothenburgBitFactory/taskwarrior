@@ -156,7 +156,7 @@ impl Modification {
             description: "
                 Set the time before which the task is not actionable and
                 should not be shown in reports.  With `wait:`, the time
-                is un-set.",
+                is un-set.  See the documentation for the timestamp syntax.",
         });
     }
 }
