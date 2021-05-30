@@ -2,7 +2,7 @@
 
 use crate::argparse::{Command, Subcommand};
 use crate::settings::Settings;
-use taskchampion::{Replica, Server, ServerConfig, StorageConfig, Uuid};
+use taskchampion::{Replica, Server, ServerConfig, StorageConfig, Task, Uuid};
 use termcolor::{ColorChoice, StandardStream};
 
 mod cmd;
@@ -148,4 +148,15 @@ fn get_writer() -> StandardStream {
     } else {
         ColorChoice::Never
     })
+}
+
+/// Summarize a task in a single line
+fn summarize_task(replica: &mut Replica, task: &Task) -> anyhow::Result<String> {
+    let ws = replica.working_set()?;
+    let uuid = task.get_uuid();
+    if let Some(id) = ws.by_uuid(uuid) {
+        Ok(format!("{} - {}", id, task.get_description()))
+    } else {
+        Ok(format!("{} - {}", uuid, task.get_description()))
+    }
 }

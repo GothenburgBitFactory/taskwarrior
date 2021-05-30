@@ -1,5 +1,5 @@
 use crate::argparse::{Filter, Modification};
-use crate::invocation::{apply_modification, filtered_tasks};
+use crate::invocation::{apply_modification, filtered_tasks, summarize_task};
 use taskchampion::Replica;
 use termcolor::WriteColor;
 
@@ -12,7 +12,11 @@ pub(crate) fn execute<W: WriteColor>(
     for task in filtered_tasks(replica, &filter)? {
         let mut task = task.into_mut(replica);
 
-        apply_modification(w, &mut task, &modification)?;
+        apply_modification(&mut task, &modification)?;
+
+        let task = task.into_immut();
+        let summary = summarize_task(replica, &task)?;
+        writeln!(w, "modified task {}", summary)?;
     }
 
     Ok(())
@@ -51,7 +55,7 @@ mod test {
 
         assert_eq!(
             w.into_string(),
-            format!("modified task {}\n", task.get_uuid())
+            format!("modified task 1 - new description\n")
         );
     }
 }
