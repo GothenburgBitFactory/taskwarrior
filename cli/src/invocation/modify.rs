@@ -1,11 +1,9 @@
 use crate::argparse::{DescriptionMod, Modification};
 use std::convert::TryInto;
 use taskchampion::TaskMut;
-use termcolor::WriteColor;
 
 /// Apply the given modification
-pub(super) fn apply_modification<W: WriteColor>(
-    w: &mut W,
+pub(super) fn apply_modification(
     task: &mut TaskMut,
     modification: &Modification,
 ) -> anyhow::Result<()> {
@@ -41,8 +39,6 @@ pub(super) fn apply_modification<W: WriteColor>(
         let tag = tag.try_into()?; // see #111
         task.remove_tag(&tag)?;
     }
-
-    writeln!(w, "modified task {}", task.get_uuid())?;
 
     Ok(())
 }
