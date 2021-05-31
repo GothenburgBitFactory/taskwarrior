@@ -8,8 +8,9 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  test:
+  clippy:
     runs-on: ubuntu-latest
+    name: "Clippy"
 
     steps:
       - uses: actions/checkout@v1
@@ -25,37 +26,10 @@ jobs:
         with:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
 
       - uses: actions-rs/cargo@v1.0.1
         with:
           command: check
-
-      - name: test
-        run: cargo test
-
-  clippy:
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Cache cargo registry
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache cargo build
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
       - run: rustup component add clippy
 
@@ -66,6 +40,7 @@ jobs:
 
   mdbook:
     runs-on: ubuntu-latest
+    name: "Documentation"
 
     steps:
       - uses: actions/checkout@v1
