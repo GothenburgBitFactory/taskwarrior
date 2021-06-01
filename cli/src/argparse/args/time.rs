@@ -27,61 +27,27 @@ struct DurationCase(&'static str, Duration, bool);
 // TODO: use const when chrono supports it
 lazy_static! {
     static ref DURATION_CASES: Vec<DurationCase> = vec![
-        DurationCase("annual", Duration::days(365), true),
-        DurationCase("biannual", Duration::days(730), true),
-        DurationCase("bimonthly", Duration::days(61), true),
-        DurationCase("biweekly", Duration::days(14), true),
-        DurationCase("biyearly", Duration::days(730), true),
-        DurationCase("daily", Duration::days(1), true),
         DurationCase("days", Duration::days(1), false),
         DurationCase("day", Duration::days(1), true),
         DurationCase("d", Duration::days(1), false),
-        DurationCase("fortnight", Duration::days(14), true),
         DurationCase("hours", Duration::hours(1), false),
         DurationCase("hour", Duration::hours(1), true),
-        DurationCase("hrs", Duration::hours(1), false),
-        DurationCase("hr", Duration::hours(1), true),
         DurationCase("h", Duration::hours(1), false),
         DurationCase("minutes", Duration::minutes(1), false),
         DurationCase("minute", Duration::minutes(1), true),
         DurationCase("mins", Duration::minutes(1), false),
         DurationCase("min", Duration::minutes(1), true),
-        DurationCase("monthly", Duration::days(30), true),
         DurationCase("months", Duration::days(30), false),
         DurationCase("month", Duration::days(30), true),
-        DurationCase("mnths", Duration::days(30), false),
-        DurationCase("mths", Duration::days(30), false),
-        DurationCase("mth", Duration::days(30), true),
-        DurationCase("mos", Duration::days(30), false),
         DurationCase("mo", Duration::days(30), true),
-        DurationCase("m", Duration::days(30), false),
-        DurationCase("quarterly", Duration::days(91), true),
-        DurationCase("quarters", Duration::days(91), false),
-        DurationCase("quarter", Duration::days(91), true),
-        DurationCase("qrtrs", Duration::days(91), false),
-        DurationCase("qrtr", Duration::days(91), true),
-        DurationCase("qtrs", Duration::days(91), false),
-        DurationCase("qtr", Duration::days(91), true),
-        DurationCase("q", Duration::days(91), false),
-        DurationCase("semiannual", Duration::days(183), true),
-        DurationCase("sennight", Duration::days(14), false),
         DurationCase("seconds", Duration::seconds(1), false),
         DurationCase("second", Duration::seconds(1), true),
-        DurationCase("secs", Duration::seconds(1), false),
-        DurationCase("sec", Duration::seconds(1), true),
         DurationCase("s", Duration::seconds(1), false),
-        DurationCase("weekdays", Duration::days(1), true),
-        DurationCase("weekly", Duration::days(7), true),
         DurationCase("weeks", Duration::days(7), false),
         DurationCase("week", Duration::days(7), true),
-        DurationCase("wks", Duration::days(7), false),
-        DurationCase("wk", Duration::days(7), true),
         DurationCase("w", Duration::days(7), false),
-        DurationCase("yearly", Duration::days(365), true),
         DurationCase("years", Duration::days(365), false),
         DurationCase("year", Duration::days(365), true),
-        DurationCase("yrs", Duration::days(365), false),
-        DurationCase("yr", Duration::days(365), true),
         DurationCase("y", Duration::days(365), false),
     ];
 }
@@ -403,8 +369,6 @@ mod test {
     #[case("2 h", 2 * H)]
     #[case("10h", 10 * H)]
     #[case("1.5h", H + 30 * M)]
-    #[case("weekdays", DAY)]
-    #[case("daily", DAY)]
     #[case("0days", 0)]
     #[case("2 days", 2 * DAY)]
     #[case("10days", 10 * DAY)]
@@ -417,7 +381,6 @@ mod test {
     #[case("2 d", 2 * DAY)]
     #[case("10d", 10 * DAY)]
     #[case("1.5d", DAY + 12 * H)]
-    #[case("weekly", 7 * DAY)]
     #[case("0weeks", 0)]
     #[case("2 weeks", 14 * DAY)]
     #[case("10weeks", 70 * DAY)]
@@ -430,7 +393,6 @@ mod test {
     #[case("2 w", 14 * DAY)]
     #[case("10w", 70 * DAY)]
     #[case("1.5w", 10 * DAY + 12 * H)]
-    #[case("monthly", 30 * DAY)]
     #[case("0months", 0)]
     #[case("2 months", 60 * DAY)]
     #[case("10months", 300 * DAY)]
@@ -443,20 +405,6 @@ mod test {
     #[case("2 mo", 60 * DAY)]
     #[case("10mo", 300 * DAY)]
     #[case("1.5mo", 45 * DAY)]
-    #[case("quarterly", 91 * DAY)]
-    #[case("0quarters", 0)]
-    #[case("2 quarters", 182 * DAY)]
-    #[case("10quarters", 910 * DAY)]
-    #[case("1.5quarters", 136 * DAY + 12 * H)]
-    #[case("0quarter", 0)]
-    #[case("2 quarter", 182 * DAY)]
-    #[case("10quarter", 910 * DAY)]
-    #[case("1.5quarter", 136 * DAY + 12 * H)]
-    #[case("0q", 0)]
-    #[case("2 q", 182 * DAY)]
-    #[case("10q", 910 * DAY)]
-    #[case("1.5q", 136 * DAY + 12 * H)]
-    #[case("yearly", YEAR)]
     #[case("0years", 0)]
     #[case("2 years", 2 * YEAR)]
     #[case("10years", 10 * YEAR)]
@@ -469,17 +417,6 @@ mod test {
     #[case("2 y", 2 * YEAR)]
     #[case("10y", 10 * YEAR)]
     #[case("1.5y", 547 * DAY + 12 * H)]
-    #[case("annual", YEAR)]
-    #[case("biannual", 2 * YEAR)]
-    #[case("bimonthly", 61 * DAY)]
-    #[case("biweekly", 14 * DAY)]
-    #[case("biyearly", 2 * YEAR)]
-    #[case("fortnight", 14 * DAY)]
-    #[case("semiannual", 183 * DAY)]
-    #[case("0sennight", 0)]
-    #[case("2 sennight", 28 * DAY)]
-    #[case("10sennight", 140 * DAY)]
-    #[case("1.5sennight", 21 * DAY)]
     fn test_duration_units(#[case] input: &'static str, #[case] seconds: i64) {
         let (_, res) = complete_duration(input).expect(input);
         assert_eq!(res.num_seconds(), seconds, "parsing {}", input);
