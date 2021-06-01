@@ -5,8 +5,8 @@ use nom::bytes::complete::tag as nomtag;
 use nom::{branch::*, character::complete::*, combinator::*, sequence::*, IResult};
 use taskchampion::Status;
 
-/// Recognizes a colon-prefixed pair
-fn colon_prefixed(prefix: &'static str) -> impl Fn(&str) -> IResult<&str, &str> {
+/// Recognizes up to the colon of the common `<prefix>:...` syntax
+fn colon_prefix(prefix: &'static str) -> impl Fn(&str) -> IResult<&str, &str> {
     fn to_suffix<'a>(input: (&'a str, char, &'a str)) -> Result<&'a str, ()> {
         Ok(input.2)
     }
@@ -28,7 +28,7 @@ pub(crate) fn status_colon(input: &str) -> IResult<&str, Status> {
             _ => Err(()),
         }
     }
-    map_res(colon_prefixed("status"), to_status)(input)
+    map_res(colon_prefix("status"), to_status)(input)
 }
 
 /// Recognizes `wait:` to None and `wait:<ts>` to `Some(ts)`
@@ -53,10 +53,10 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_colon_prefixed() {
-        assert_eq!(colon_prefixed("foo")("foo:abc").unwrap().1, "abc");
-        assert_eq!(colon_prefixed("foo")("foo:").unwrap().1, "");
-        assert!(colon_prefixed("foo")("foo").is_err());
+    fn test_colon_prefix() {
+        assert_eq!(colon_prefix("foo")("foo:abc").unwrap().1, "abc");
+        assert_eq!(colon_prefix("foo")("foo:").unwrap().1, "");
+        assert!(colon_prefix("foo")("foo").is_err());
     }
 
     #[test]

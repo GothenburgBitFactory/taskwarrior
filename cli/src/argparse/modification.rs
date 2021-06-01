@@ -154,9 +154,9 @@ impl Modification {
             syntax: "wait:<timestamp>",
             summary: "Set or unset the task's wait time",
             description: "
-                Set the time before which the task is not actionable and
-                should not be shown in reports.  With `wait:`, the time
-                is un-set.  See the documentation for the timestamp syntax.",
+                Set the time before which the task is not actionable and should not be shown in
+                reports, e.g., `wait:3day` to wait for three days.  With `wait:`, the time is
+                un-set.  See the documentation for the timestamp syntax.",
         });
     }
 }
