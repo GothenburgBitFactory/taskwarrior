@@ -122,8 +122,6 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize ("Build Features")
       << '\n'
 
-  // Build date.
-      << "      Built: " << __DATE__ << ' ' << __TIME__ << '\n'
 #ifdef HAVE_COMMIT
       << "     Commit: " << COMMIT << '\n'
 #endif
