@@ -130,7 +130,7 @@ class TestBug1436(TestCase):
 
            This problem is entirely testing artifact, and not Taskwarrior.
         """
-        self.echo = Task(taskw=utils.binary_location("/bin/echo"))
+        self.echo = Task(taskw=utils.binary_location("echo", USE_PATH=True))
 
         # One level of backshashes gets eaten by bash
         # Verify with: $ echo xxx \\\\yyy zzz
