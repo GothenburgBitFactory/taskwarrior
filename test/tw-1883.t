@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Test for TW-1883 (#1896 on Github)
 # https://github.com/GothenburgBitFactory/taskwarrior/issues/1896
 

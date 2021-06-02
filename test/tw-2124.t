@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # A test case for TW-2124.
 # https://github.com/GothenburgBitFactory/taskwarrior/issues/2124
 
