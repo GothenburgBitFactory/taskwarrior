@@ -7,6 +7,7 @@
     * [Tags](./tags.md)
     * [Filters](./filters.md)
     * [Modifications](./modifications.md)
+    * [Dates and Durations](./time.md)
     * [Configuration](./config-file.md)
     * [Environment](./environment.md)
     * [Synchronization](./task-sync.md)

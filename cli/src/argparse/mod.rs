@@ -31,6 +31,13 @@ pub(crate) use modification::{DescriptionMod, Modification};
 pub(crate) use subcommand::Subcommand;
 
 use crate::usage::Usage;
+use chrono::prelude::*;
+use lazy_static::lazy_static;
+
+lazy_static! {
+    // A static value of NOW to make tests easier
+    pub(crate) static ref NOW: DateTime<Utc> = Utc::now();
+}
 
 type ArgList<'a> = &'a [&'a str];
 

@@ -211,6 +211,20 @@ impl Task {
             .unwrap_or("")
     }
 
+    /// Get the wait time.  If this value is set, it will be returned, even
+    /// if it is in the past.
+    pub fn get_wait(&self) -> Option<DateTime<Utc>> {
+        self.get_timestamp("wait")
+    }
+
+    /// Determine whether this task is waiting now.
+    pub fn is_waiting(&self) -> bool {
+        if let Some(ts) = self.get_wait() {
+            return ts > Utc::now();
+        }
+        false
+    }
+
     /// Determine whether this task is active -- that is, that it has been started
     /// and not stopped.
     pub fn is_active(&self) -> bool {
@@ -273,6 +287,10 @@ impl<'r> TaskMut<'r> {
 
     pub fn set_description(&mut self, description: String) -> anyhow::Result<()> {
         self.set_string("description", Some(description))
+    }
+
+    pub fn set_wait(&mut self, wait: Option<DateTime<Utc>>) -> anyhow::Result<()> {
+        self.set_timestamp("wait", wait)
     }
 
     pub fn set_modified(&mut self, modified: DateTime<Utc>) -> anyhow::Result<()> {
@@ -450,6 +468,43 @@ mod test {
         );
 
         assert!(!task.is_active());
+    }
+
+    #[test]
+    fn test_wait_not_set() {
+        let task = Task::new(Uuid::new_v4(), TaskMap::new());
+
+        assert!(!task.is_waiting());
+        assert_eq!(task.get_wait(), None);
+    }
+
+    #[test]
+    fn test_wait_in_past() {
+        let ts = Utc.ymd(1970, 1, 1).and_hms(0, 0, 0);
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("wait"), format!("{}", ts.timestamp()))]
+                .drain(..)
+                .collect(),
+        );
+        dbg!(&task);
+
+        assert!(!task.is_waiting());
+        assert_eq!(task.get_wait(), Some(ts));
+    }
+
+    #[test]
+    fn test_wait_in_future() {
+        let ts = Utc.ymd(3000, 1, 1).and_hms(0, 0, 0);
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("wait"), format!("{}", ts.timestamp()))]
+                .drain(..)
+                .collect(),
+        );
+
+        assert!(task.is_waiting());
+        assert_eq!(task.get_wait(), Some(ts));
     }
 
     #[test]

@@ -40,5 +40,9 @@ pub(super) fn apply_modification(
         task.remove_tag(&tag)?;
     }
 
+    if let Some(wait) = modification.wait {
+        task.set_wait(wait)?;
+    }
+
     Ok(())
 }
