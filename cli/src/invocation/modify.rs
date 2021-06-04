@@ -1,5 +1,4 @@
 use crate::argparse::{DescriptionMod, Modification};
-use std::convert::TryInto;
 use taskchampion::TaskMut;
 
 /// Apply the given modification
@@ -31,12 +30,10 @@ pub(super) fn apply_modification(
     }
 
     for tag in modification.add_tags.iter() {
-        let tag = tag.try_into()?; // see #111
         task.add_tag(&tag)?;
     }
 
     for tag in modification.remove_tags.iter() {
-        let tag = tag.try_into()?; // see #111
         task.remove_tag(&tag)?;
     }
 

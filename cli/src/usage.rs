@@ -93,7 +93,7 @@ impl Usage {
     /// With the appropriate documentation.
     pub fn substitute_docs(&self, content: &str) -> Result<String> {
         // this is not efficient, but it doesn't need to be
-        let mut lines = content.lines();
+        let lines = content.lines();
         let mut w = String::new();
 
         const DOC_HEADER_PREFIX: &str = "<!-- INSERT GENERATED DOCUMENTATION - ";

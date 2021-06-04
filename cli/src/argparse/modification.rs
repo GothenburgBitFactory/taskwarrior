@@ -4,7 +4,7 @@ use crate::usage;
 use chrono::prelude::*;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
 use std::collections::HashSet;
-use taskchampion::Status;
+use taskchampion::{Status, Tag};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum DescriptionMod {
@@ -44,17 +44,17 @@ pub struct Modification {
     pub active: Option<bool>,
 
     /// Add tags
-    pub add_tags: HashSet<String>,
+    pub add_tags: HashSet<Tag>,
 
     /// Remove tags
-    pub remove_tags: HashSet<String>,
+    pub remove_tags: HashSet<Tag>,
 }
 
 /// A single argument that is part of a modification, used internally to this module
 enum ModArg<'a> {
     Description(&'a str),
-    PlusTag(&'a str),
-    MinusTag(&'a str),
+    PlusTag(Tag),
+    MinusTag(Tag),
     Wait(Option<DateTime<Utc>>),
 }
 
@@ -71,10 +71,10 @@ impl Modification {
                     }
                 }
                 ModArg::PlusTag(tag) => {
-                    acc.add_tags.insert(tag.to_owned());
+                    acc.add_tags.insert(tag);
                 }
                 ModArg::MinusTag(tag) => {
-                    acc.remove_tags.insert(tag.to_owned());
+                    acc.remove_tags.insert(tag);
                 }
                 ModArg::Wait(wait) => {
                     acc.wait = Some(wait);
@@ -105,14 +105,14 @@ impl Modification {
     }
 
     fn plus_tag(input: ArgList) -> IResult<ArgList, ModArg> {
-        fn to_modarg(input: &str) -> Result<ModArg, ()> {
+        fn to_modarg(input: Tag) -> Result<ModArg<'static>, ()> {
             Ok(ModArg::PlusTag(input))
         }
         map_res(arg_matching(plus_tag), to_modarg)(input)
     }
 
     fn minus_tag(input: ArgList) -> IResult<ArgList, ModArg> {
-        fn to_modarg(input: &str) -> Result<ModArg, ()> {
+        fn to_modarg(input: Tag) -> Result<ModArg<'static>, ()> {
             Ok(ModArg::MinusTag(input))
         }
         map_res(arg_matching(minus_tag), to_modarg)(input)
@@ -198,7 +198,7 @@ mod test {
         assert_eq!(
             modification,
             Modification {
-                add_tags: set![s!("abc"), s!("def")],
+                add_tags: set![tag!("abc"), tag!("def")],
                 ..Default::default()
             }
         );
@@ -252,8 +252,8 @@ mod test {
             modification,
             Modification {
                 description: DescriptionMod::Set(s!("new desc fun")),
-                add_tags: set![s!("next")],
-                remove_tags: set![s!("daytime")],
+                add_tags: set![tag!("next")],
+                remove_tags: set![tag!("daytime")],
                 ..Default::default()
             }
         );

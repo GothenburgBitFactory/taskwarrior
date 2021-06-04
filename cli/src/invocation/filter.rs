@@ -1,22 +1,17 @@
 use crate::argparse::{Condition, Filter, TaskId};
 use std::collections::HashSet;
-use std::convert::TryInto;
-use taskchampion::{Replica, Status, Tag, Task, Uuid, WorkingSet};
+use taskchampion::{Replica, Status, Task, Uuid, WorkingSet};
 
 fn match_task(filter: &Filter, task: &Task, uuid: Uuid, working_set: &WorkingSet) -> bool {
     for cond in &filter.conditions {
         match cond {
             Condition::HasTag(ref tag) => {
-                // see #111 for the unwrap
-                let tag: Tag = tag.try_into().unwrap();
-                if !task.has_tag(&tag) {
+                if !task.has_tag(tag) {
                     return false;
                 }
             }
             Condition::NoTag(ref tag) => {
-                // see #111 for the unwrap
-                let tag: Tag = tag.try_into().unwrap();
-                if task.has_tag(&tag) {
+                if task.has_tag(tag) {
                     return false;
                 }
             }
@@ -254,8 +249,8 @@ mod test {
     #[test]
     fn tag_filtering() -> anyhow::Result<()> {
         let mut replica = test_replica();
-        let yes: Tag = "yes".try_into()?;
-        let no: Tag = "no".try_into()?;
+        let yes = tag!("yes");
+        let no = tag!("no");
 
         let mut t1 = replica
             .new_task(Status::Pending, s!("A"))?
@@ -274,7 +269,7 @@ mod test {
 
         // look for just "yes" (A and B)
         let filter = Filter {
-            conditions: vec![Condition::HasTag(s!("yes"))],
+            conditions: vec![Condition::HasTag(tag!("yes"))],
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
@@ -284,7 +279,7 @@ mod test {
 
         // look for tags without "no" (A, D)
         let filter = Filter {
-            conditions: vec![Condition::NoTag(s!("no"))],
+            conditions: vec![Condition::NoTag(tag!("no"))],
         };
         let mut filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())
@@ -294,7 +289,10 @@ mod test {
 
         // look for tags with "yes" and "no" (B)
         let filter = Filter {
-            conditions: vec![Condition::HasTag(s!("yes")), Condition::HasTag(s!("no"))],
+            conditions: vec![
+                Condition::HasTag(tag!("yes")),
+                Condition::HasTag(tag!("no")),
+            ],
         };
         let filtered: Vec<_> = filtered_tasks(&mut replica, &filter)?
             .map(|t| t.get_description().to_owned())

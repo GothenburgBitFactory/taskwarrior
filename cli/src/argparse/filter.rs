@@ -8,7 +8,7 @@ use nom::{
     multi::{fold_many0, fold_many1},
     IResult,
 };
-use taskchampion::Status;
+use taskchampion::{Status, Tag};
 
 /// A filter represents a selection of a particular set of tasks.
 ///
@@ -26,10 +26,10 @@ pub(crate) struct Filter {
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum Condition {
     /// Task has the given tag
-    HasTag(String),
+    HasTag(Tag),
 
     /// Task does not have the given tag
-    NoTag(String),
+    NoTag(Tag),
 
     /// Task has the given status
     Status(Status),
@@ -68,15 +68,15 @@ impl Condition {
     }
 
     fn parse_plus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: &str) -> Result<Condition, ()> {
-            Ok(Condition::HasTag(input.to_owned()))
+        fn to_condition(input: Tag) -> Result<Condition, ()> {
+            Ok(Condition::HasTag(input))
         }
         map_res(arg_matching(plus_tag), to_condition)(input)
     }
 
     fn parse_minus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: &str) -> Result<Condition, ()> {
-            Ok(Condition::NoTag(input.to_owned()))
+        fn to_condition(input: Tag) -> Result<Condition, ()> {
+            Ok(Condition::NoTag(input))
         }
         map_res(arg_matching(minus_tag), to_condition)(input)
     }
@@ -320,8 +320,8 @@ mod test {
             Filter {
                 conditions: vec![
                     Condition::IdList(vec![TaskId::WorkingSetId(1),]),
-                    Condition::HasTag("yes".into()),
-                    Condition::NoTag("no".into()),
+                    Condition::HasTag(tag!("yes")),
+                    Condition::NoTag(tag!("no")),
                 ],
             }
         );
@@ -353,10 +353,10 @@ mod test {
                 conditions: vec![
                     // from first filter
                     Condition::IdList(vec![TaskId::WorkingSetId(1), TaskId::WorkingSetId(2),]),
-                    Condition::HasTag("yes".into()),
+                    Condition::HasTag(tag!("yes")),
                     // from second filter
                     Condition::IdList(vec![TaskId::WorkingSetId(2), TaskId::WorkingSetId(3)]),
-                    Condition::HasTag("no".into()),
+                    Condition::HasTag(tag!("no")),
                 ],
             }
         );
@@ -373,9 +373,9 @@ mod test {
                 conditions: vec![
                     // from first filter
                     Condition::IdList(vec![TaskId::WorkingSetId(1), TaskId::WorkingSetId(2),]),
-                    Condition::HasTag("yes".into()),
+                    Condition::HasTag(tag!("yes")),
                     // from second filter
-                    Condition::HasTag("no".into()),
+                    Condition::HasTag(tag!("no")),
                 ],
             }
         );
@@ -390,8 +390,8 @@ mod test {
             both,
             Filter {
                 conditions: vec![
-                    Condition::HasTag("yes".into()),
-                    Condition::HasTag("no".into()),
+                    Condition::HasTag(tag!("yes")),
+                    Condition::HasTag(tag!("no")),
                 ],
             }
         );

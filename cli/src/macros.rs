@@ -30,3 +30,9 @@ macro_rules! set(
 macro_rules! s(
     { $s:expr } => { $s.to_owned() };
 );
+
+/// Create a Tag from an &str; just a testing shorthand
+#[cfg(test)]
+macro_rules! tag(
+    { $s:expr } => { { use std::convert::TryFrom; taskchampion::Tag::try_from($s).unwrap() } };
+);

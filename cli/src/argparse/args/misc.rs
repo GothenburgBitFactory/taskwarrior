@@ -25,7 +25,7 @@ mod test {
     fn test_arg_matching() {
         assert_eq!(
             arg_matching(plus_tag)(argv!["+foo", "bar"]).unwrap(),
-            (argv!["bar"], "foo")
+            (argv!["bar"], tag!("foo"))
         );
         assert!(arg_matching(plus_tag)(argv!["foo", "bar"]).is_err());
     }

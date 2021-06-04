@@ -40,7 +40,10 @@ fn process(_ctx: &PreprocessorContext, mut book: Book) -> Result<Book, Error> {
             if new_content != chapter.content {
                 eprintln!(
                     "Substituting usage in {:?}",
-                    chapter.source_path.as_ref().unwrap()
+                    chapter
+                        .source_path
+                        .as_ref()
+                        .unwrap_or(chapter.path.as_ref().unwrap())
                 );
             }
             chapter.content = new_content;

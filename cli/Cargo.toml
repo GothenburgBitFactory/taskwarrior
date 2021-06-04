@@ -27,7 +27,7 @@ lazy_static = "1"
 iso8601-duration = "0.1"
 
 # only needed for usage-docs
-mdbook = { version = "0.4", optional = true }
+mdbook = { version = "0.4.9", optional = true }
 serde_json = { version = "*", optional = true }
 
 [dependencies.taskchampion]
