@@ -20,7 +20,7 @@ impl Command {
                 .file_name()
                 // Convert to string, very unlikely to contain non-UTF8
                 .map(|x| x.to_string_lossy().to_string())
-                .unwrap_or(input.0.to_owned());
+                .unwrap_or_else(|| input.0.to_owned());
 
             let command = Command {
                 command_name,
