@@ -43,7 +43,7 @@ fn process(_ctx: &PreprocessorContext, mut book: Book) -> Result<Book, Error> {
                     chapter
                         .source_path
                         .as_ref()
-                        .unwrap_or(chapter.path.as_ref().unwrap())
+                        .unwrap_or_else(|| chapter.path.as_ref().unwrap())
                 );
             }
             chapter.content = new_content;
