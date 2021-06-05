@@ -10,7 +10,7 @@ on:
 jobs:
   clippy:
     runs-on: ubuntu-latest
-    name: "clippy"
+    name: "Clippy"
 
     steps:
       - uses: actions/checkout@v1
@@ -37,6 +37,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-features
+          name: "Clippy Results"
 
   mdbook:
     runs-on: ubuntu-latest
