@@ -1,4 +1,4 @@
-name: taskchampion
+name: Checks
 
 on:
   push:

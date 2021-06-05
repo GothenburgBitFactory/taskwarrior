@@ -1,4 +1,4 @@
-name: taskchampion
+name: Docs
 
 on:
   push:
