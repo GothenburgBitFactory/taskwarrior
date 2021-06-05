@@ -10,7 +10,7 @@ on:
 jobs:
   clippy:
     runs-on: ubuntu-latest
-    name: "Clippy"
+    name: "clippy"
 
     steps:
       - uses: actions/checkout@v1
