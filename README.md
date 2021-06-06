@@ -43,6 +43,7 @@ features, releases and various tips and tricks for new Taskwarrior users.
 [![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)](https://twitter.com/taskwarrior)
 [![Reddit](https://img.shields.io/reddit/subreddit-subscribers/taskwarrior?style=social)](https://reddit.com/r/taskwarrior/)
 ![Discord](https://img.shields.io/discord/796949983734661191?label=discord)
+[![Github discussions](https://img.shields.io/github/discussions/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/discussions)
 
 Taskwarrior has a lively community on many places on the internet.
 
@@ -97,6 +98,9 @@ Then build:
     $ sudo make install
 
 ## Contributing
+![Contributors](https://img.shields.io/github/contributors/GothenburgBitFactory/taskwarrior)
+![Downloads](https://img.shields.io/github/downloads/GothenburgBitFactory/taskwarrior/total)
+![OS-X downloads](https://img.shields.io/homebrew/installs/dy/task?label=OS-X%20downloads)
 
 Your contributions are especially welcome.
 Whether it comes in the form of code patches, ideas, discussion, bug reports, encouragement or criticism, your input is needed.
