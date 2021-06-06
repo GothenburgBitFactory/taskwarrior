@@ -1,9 +1,11 @@
-# Taskwarrior
+<div align="center">
+<img src="https://avatars.githubusercontent.com/u/36100920?s=400&u=24da05914c20c4ccfe8485310f7b83049407fa9a&v=4"></br>
 
 [![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=2.6.0)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
 ![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)
 ![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)
 ![Commits since release](https://img.shields.io/github/commits-since/GothenburgBitFactory/taskwarrior/latest)
+</div>
 
 Thank you for taking a look at Taskwarrior!
 
@@ -35,7 +37,9 @@ We also recommend following [@taskwarrior on
 Twitter](https://twitter.com/taskwarrior), where we share info about new
 features, releases and various tips and tricks for new Taskwarrior users.
 
-## Support
+## Community
+
+Taskwarrior has a lively community on many places on the internet.
 
 Best place to ask questions is our [discussions forum on
 Github](https://github.com/GothenburgBitFactory/taskwarrior/discussions). For
