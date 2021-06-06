@@ -15,8 +15,15 @@ pub(crate) struct Command {
 impl Command {
     pub(super) fn parse(input: ArgList) -> IResult<ArgList, Command> {
         fn to_command(input: (&str, Subcommand)) -> Result<Command, ()> {
+            // Clean up command name, so `./target/bin/ta` to `ta` etc
+            let command_name: String = std::path::PathBuf::from(&input.0)
+                .file_name()
+                // Convert to string, very unlikely to contain non-UTF8
+                .map(|x| x.to_string_lossy().to_string())
+                .unwrap_or_else(|| input.0.to_owned());
+
             let command = Command {
-                command_name: input.0.to_owned(),
+                command_name,
                 subcommand: input.1,
             };
             Ok(command)
@@ -58,6 +65,18 @@ mod test {
     fn test_version() {
         assert_eq!(
             Command::from_argv(argv!["ta", "version"]).unwrap(),
+            Command {
+                subcommand: Subcommand::Version,
+                command_name: s!("ta"),
+            }
+        );
+    }
+
+
+    #[test]
+    fn test_cleaning_command_name() {
+        assert_eq!(
+            Command::from_argv(argv!["/tmp/ta", "version"]).unwrap(),
             Command {
                 subcommand: Subcommand::Version,
                 command_name: s!("ta"),
