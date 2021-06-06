@@ -22,7 +22,29 @@ pub(super) enum TagInner {
 pub const INVALID_TAG_CHARACTERS: &str = "+-*/(<>^! %=~";
 
 impl Tag {
-    pub fn from_str(value: &str) -> Result<Tag, anyhow::Error> {
+    /// True if this tag is a synthetic tag
+    pub fn is_synthetic(&self) -> bool {
+        matches!(self.0, TagInner::Synthetic(_))
+    }
+
+    /// True if this tag is a user-provided tag (not synthetic)
+    pub fn is_user(&self) -> bool {
+        matches!(self.0, TagInner::User(_))
+    }
+
+    pub(super) fn inner(&self) -> &TagInner {
+        &self.0
+    }
+
+    pub(super) fn from_inner(inner: TagInner) -> Self {
+        Self(inner)
+    }
+}
+
+impl FromStr for Tag {
+    type Err = anyhow::Error;
+
+    fn from_str(value: &str) -> Result<Tag, anyhow::Error> {
         fn err(value: &str) -> Result<Tag, anyhow::Error> {
             anyhow::bail!("invalid tag {:?}", value)
         }
@@ -51,28 +73,6 @@ impl Tag {
             return err(value);
         }
         Ok(Self(TagInner::User(String::from(value))))
-    }
-
-    /// True if this tag is a synthetic tag
-    pub fn is_synthetic(&self) -> bool {
-        if let TagInner::Synthetic(_) = self.0 {
-            true
-        } else {
-            false
-        }
-    }
-
-    /// True if this tag is a user-provided tag (not synthetic)
-    pub fn is_user(&self) -> bool {
-        !self.is_synthetic()
-    }
-
-    pub(super) fn inner(&self) -> &TagInner {
-        &self.0
-    }
-
-    pub(super) fn from_inner(inner: TagInner) -> Self {
-        Self(inner)
     }
 }
 
