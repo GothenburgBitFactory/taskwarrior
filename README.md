@@ -2,11 +2,11 @@
 <img src="https://avatars.githubusercontent.com/u/36100920?s=200&u=24da05914c20c4ccfe8485310f7b83049407fa9a&v=4"></br>
 
 [![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=2.6.0)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
-![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)
-![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)
+[![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
+[![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
 ![Commits since release](https://img.shields.io/github/commits-since/GothenburgBitFactory/taskwarrior/latest)
 </br>
-![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)
+[![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)](https://twitter.com/taskwarrior)
 </div>
 
 ## Taskwarrior
@@ -40,8 +40,8 @@ Twitter](https://twitter.com/taskwarrior), where we share info about new
 features, releases and various tips and tricks for new Taskwarrior users.
 
 ## Community
-![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)
-![Reddit](https://img.shields.io/reddit/subreddit-subscribers/taskwarrior?style=social)
+[![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)](https://twitter.com/taskwarrior)
+[![Reddit](https://img.shields.io/reddit/subreddit-subscribers/taskwarrior?style=social)](https://reddit.com/r/taskwarrior/)
 ![Discord](https://img.shields.io/discord/796949983734661191?label=discord)
 
 Taskwarrior has a lively community on many places on the internet.
