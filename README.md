@@ -9,8 +9,19 @@ features](https://taskwarrior.org/docs/), developed as a portable open source pr
 with an active and quite vast [ecosystem of tools, hooks and
 extensions](https://taskwarrior.org/tools/).
 
-Taskwarrior runs on a wide range of [Linux/Unix systems, Mac OS and
-Windows](https://taskwarrior.org/download/).
+## Install
+![Arch](https://img.shields.io/archlinux/v/community/x86_64/task)
+![Debian](https://img.shields.io/debian/v/task/testing)
+![Fedora](https://img.shields.io/fedora/v/task)
+![Homebrew](https://img.shields.io/homebrew/v/task)
+![Ubuntu](https://img.shields.io/ubuntu/v/task)
+
+Taskwarrior is packaged on a wide range of [Linux/Unix systems, Mac OS and
+Windows](https://taskwarrior.org/download/). Check out the latest available
+packages in repositories of your OS distribution of choice [on
+Repology](https://repology.org/project/taskwarrior/versions).
+
+Alternatively, you can build Taskwarrior from source.
 
 ## Documentation
 
