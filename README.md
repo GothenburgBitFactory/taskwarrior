@@ -1,6 +1,9 @@
 # Taskwarrior
 
 [![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=2.6.0)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
+![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)
+![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)
+![Commits since release](https://img.shields.io/github/commits-since/GothenburgBitFactory/taskwarrior/latest)
 
 Thank you for taking a look at Taskwarrior!
 
