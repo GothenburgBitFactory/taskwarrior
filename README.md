@@ -42,6 +42,7 @@ features, releases and various tips and tricks for new Taskwarrior users.
 ## Community
 [![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)](https://twitter.com/taskwarrior)
 [![Reddit](https://img.shields.io/reddit/subreddit-subscribers/taskwarrior?style=social)](https://reddit.com/r/taskwarrior/)
+[![Libera.chat](https://img.shields.io/badge/IRC%20libera.chat-online-green)](https://web.libera.chat/#taskwarrior)
 ![Discord](https://img.shields.io/discord/796949983734661191?label=discord)
 [![Github discussions](https://img.shields.io/github/discussions/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/discussions)
 
