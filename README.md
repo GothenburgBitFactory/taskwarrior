@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://avatars.githubusercontent.com/u/36100920?s=400&u=24da05914c20c4ccfe8485310f7b83049407fa9a&v=4"></br>
+<img src="https://avatars.githubusercontent.com/u/36100920?s=200&u=24da05914c20c4ccfe8485310f7b83049407fa9a&v=4"></br>
 
 [![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=2.6.0)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
 ![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)
