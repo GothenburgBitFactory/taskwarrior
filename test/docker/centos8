@@ -3,8 +3,8 @@ FROM centos:8
 RUN dnf update -y
 RUN dnf install python3 git gcc gcc-c++ make gnutls-devel libuuid-devel glibc-langpack-en -y
 RUN dnf install epel-release -y
-RUN dnf install which cmake3 libfaketime -y
-RUN gcc --version; cmake3 --version
+RUN dnf install which cmake libfaketime -y
+RUN gcc --version; cmake --version
 
 # Setup language environment
 ENV LC_ALL en_US.UTF-8
