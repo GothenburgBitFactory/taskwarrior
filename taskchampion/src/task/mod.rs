@@ -13,6 +13,4 @@ pub use status::Status;
 pub use tag::{Tag, INVALID_TAG_CHARACTERS};
 pub use task::{Task, TaskMut};
 
-use tag::SyntheticTag;
-
 pub type Timestamp = DateTime<Utc>;

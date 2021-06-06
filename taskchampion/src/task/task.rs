@@ -1,4 +1,5 @@
-use super::{Status, SyntheticTag, Tag};
+use super::tag::{SyntheticTag, TagInner};
+use super::{Status, Tag};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
@@ -100,9 +101,9 @@ impl Task {
 
     /// Check if this task has the given tag
     pub fn has_tag(&self, tag: &Tag) -> bool {
-        match tag {
-            Tag::User(s) => self.taskmap.contains_key(&format!("tag.{}", s)),
-            Tag::Synthetic(st) => self.has_synthetic_tag(st),
+        match tag.inner() {
+            TagInner::User(s) => self.taskmap.contains_key(&format!("tag.{}", s)),
+            TagInner::Synthetic(st) => self.has_synthetic_tag(st),
         }
     }
 
@@ -124,7 +125,7 @@ impl Task {
             .chain(
                 SyntheticTag::iter()
                     .filter(move |st| self.has_synthetic_tag(st))
-                    .map(|st| Tag::Synthetic(st)),
+                    .map(|st| Tag::from_inner(TagInner::Synthetic(st))),
             )
     }
 
@@ -203,7 +204,7 @@ impl<'r> TaskMut<'r> {
 
     /// Add a tag to this task.  Does nothing if the tag is already present.
     pub fn add_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
-        if let Tag::Synthetic(_) = tag {
+        if tag.is_synthetic() {
             anyhow::bail!("Synthetic tags cannot be modified");
         }
         self.set_string(format!("tag.{}", tag), Some("".to_owned()))
@@ -211,7 +212,7 @@ impl<'r> TaskMut<'r> {
 
     /// Remove a tag from this task.  Does nothing if the tag is not present.
     pub fn remove_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
-        if let Tag::Synthetic(_) = tag {
+        if tag.is_synthetic() {
             anyhow::bail!("Synthetic tags cannot be modified");
         }
         self.set_string(format!("tag.{}", tag), None)
@@ -301,12 +302,12 @@ mod test {
 
     /// Create a user tag, without checking its validity
     fn utag(name: &'static str) -> Tag {
-        Tag::User(name.into())
+        Tag::from_inner(TagInner::User(name.into()))
     }
 
     /// Create a synthetic tag
     fn stag(synth: SyntheticTag) -> Tag {
-        Tag::Synthetic(synth)
+        Tag::from_inner(TagInner::Synthetic(synth))
     }
 
     #[test]

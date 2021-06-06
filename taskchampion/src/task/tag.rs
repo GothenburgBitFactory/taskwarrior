@@ -10,7 +10,11 @@ use std::str::FromStr;
 /// This definition is based on [that of
 /// TaskWarrior](https://github.com/GothenburgBitFactory/taskwarrior/blob/663c6575ceca5bd0135ae884879339dac89d3142/src/Lexer.cpp#L146-L164).
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub enum Tag {
+pub struct Tag(TagInner);
+
+/// Inner type to hide the implementation
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub(super) enum TagInner {
     User(String),
     Synthetic(SyntheticTag),
 }
@@ -18,7 +22,7 @@ pub enum Tag {
 pub const INVALID_TAG_CHARACTERS: &str = "+-*/(<>^! %=~";
 
 impl Tag {
-    fn from_str(value: &str) -> Result<Tag, anyhow::Error> {
+    pub fn from_str(value: &str) -> Result<Tag, anyhow::Error> {
         fn err(value: &str) -> Result<Tag, anyhow::Error> {
             anyhow::bail!("invalid tag {:?}", value)
         }
@@ -26,7 +30,7 @@ impl Tag {
         // first, look for synthetic tags
         if value.chars().all(|c| c.is_ascii_uppercase()) {
             if let Ok(st) = SyntheticTag::from_str(value) {
-                return Ok(Self::Synthetic(st));
+                return Ok(Self(TagInner::Synthetic(st)));
             }
             // all uppercase, but not a valid synthetic tag
             return err(value);
@@ -46,7 +50,29 @@ impl Tag {
         {
             return err(value);
         }
-        Ok(Self::User(String::from(value)))
+        Ok(Self(TagInner::User(String::from(value))))
+    }
+
+    /// True if this tag is a synthetic tag
+    pub fn is_synthetic(&self) -> bool {
+        if let TagInner::Synthetic(_) = self.0 {
+            true
+        } else {
+            false
+        }
+    }
+
+    /// True if this tag is a user-provided tag (not synthetic)
+    pub fn is_user(&self) -> bool {
+        !self.is_synthetic()
+    }
+
+    pub(super) fn inner(&self) -> &TagInner {
+        &self.0
+    }
+
+    pub(super) fn from_inner(inner: TagInner) -> Self {
+        Self(inner)
     }
 }
 
@@ -68,22 +94,24 @@ impl TryFrom<&String> for Tag {
 
 impl fmt::Display for Tag {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::User(s) => s.fmt(f),
-            Self::Synthetic(st) => st.as_ref().fmt(f),
+        match &self.0 {
+            TagInner::User(s) => s.fmt(f),
+            TagInner::Synthetic(st) => st.as_ref().fmt(f),
         }
     }
 }
 
 impl AsRef<str> for Tag {
     fn as_ref(&self) -> &str {
-        match self {
-            Self::User(s) => s.as_ref(),
-            Self::Synthetic(st) => st.as_ref(),
+        match &self.0 {
+            TagInner::User(s) => s.as_ref(),
+            TagInner::Synthetic(st) => st.as_ref(),
         }
     }
 }
 
+/// A synthetic tag, represented as an `enum`.  This type is used directly by
+/// [`taskchampion::task::task`] for efficiency.
 #[derive(
     Debug,
     Clone,
@@ -97,7 +125,7 @@ impl AsRef<str> for Tag {
     strum_macros::EnumIter,
 )]
 #[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
-pub enum SyntheticTag {
+pub(super) enum SyntheticTag {
     Waiting,
     Active,
 }
