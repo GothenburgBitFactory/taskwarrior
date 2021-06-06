@@ -126,8 +126,13 @@ impl AsRef<str> for Tag {
 )]
 #[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
 pub(super) enum SyntheticTag {
+    // When adding items here, also implement and test them in `task.rs` and document them in
+    // `docs/src/tags.md`.
     Waiting,
     Active,
+    Pending,
+    Completed,
+    Deleted,
 }
 
 #[cfg(test)]

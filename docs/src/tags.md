@@ -21,3 +21,6 @@ The following synthetic tags are defined:
 
 * `WAITING` - set if the task is waiting (has a `wait` property with a date in the future)
 * `ACTIVE` - set if the task is active (has been started and not stopped)
+* `PENDING` - set if the task is pending (not completed or deleted)
+* `COMPLETED` - set if the task has been completed
+* `DELETED` - set if the task has been deleted (but not yet flushed from the task list)

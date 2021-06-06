@@ -96,6 +96,9 @@ impl Task {
         match synth {
             SyntheticTag::Waiting => self.is_waiting(),
             SyntheticTag::Active => self.is_active(),
+            SyntheticTag::Pending => self.get_status() == Status::Pending,
+            SyntheticTag::Completed => self.get_status() == Status::Completed,
+            SyntheticTag::Deleted => self.get_status() == Status::Deleted,
         }
     }
 
@@ -200,6 +203,11 @@ impl<'r> TaskMut<'r> {
             self.set_timestamp(&key, Some(now))?;
         }
         Ok(())
+    }
+
+    /// Mark this task as complete
+    pub fn done(&mut self) -> anyhow::Result<()> {
+        self.set_status(Status::Completed)
     }
 
     /// Add a tag to this task.  Does nothing if the tag is already present.
@@ -392,6 +400,7 @@ mod test {
         assert!(task.has_tag(&utag("abc")));
         assert!(!task.has_tag(&utag("def")));
         assert!(task.has_tag(&stag(SyntheticTag::Active)));
+        assert!(task.has_tag(&stag(SyntheticTag::Pending)));
         assert!(!task.has_tag(&stag(SyntheticTag::Waiting)));
     }
 
@@ -411,10 +420,14 @@ mod test {
 
         let mut tags: Vec<_> = task.get_tags().collect();
         tags.sort();
-        assert_eq!(
-            tags,
-            vec![utag("abc"), utag("def"), stag(SyntheticTag::Waiting),]
-        );
+        let mut exp = vec![
+            utag("abc"),
+            utag("def"),
+            stag(SyntheticTag::Pending),
+            stag(SyntheticTag::Waiting),
+        ];
+        exp.sort();
+        assert_eq!(tags, exp);
     }
 
     #[test]
@@ -433,7 +446,7 @@ mod test {
 
         // only "ok" is OK
         let tags: Vec<_> = task.get_tags().collect();
-        assert_eq!(tags, vec![utag("ok")]);
+        assert_eq!(tags, vec![utag("ok"), stag(SyntheticTag::Pending)]);
     }
 
     fn count_taskmap(task: &TaskMut, f: fn(&(&String, &String)) -> bool) -> usize {
@@ -490,6 +503,20 @@ mod test {
                 count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
                 1
             );
+        });
+    }
+
+    #[test]
+    fn test_done() {
+        with_mut_task(|mut task| {
+            task.done().unwrap();
+            assert_eq!(task.get_status(), Status::Completed);
+            assert!(task.has_tag(&stag(SyntheticTag::Completed)));
+
+            // redundant call does nothing..
+            task.done().unwrap();
+            assert_eq!(task.get_status(), Status::Completed);
+            assert!(task.has_tag(&stag(SyntheticTag::Completed)));
         });
     }
 
