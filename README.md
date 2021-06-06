@@ -7,7 +7,7 @@
 ![Commits since release](https://img.shields.io/github/commits-since/GothenburgBitFactory/taskwarrior/latest)
 </div>
 
-Thank you for taking a look at Taskwarrior!
+## Taskwarrior
 
 Taskwarrior is a command line task list management utility with a [multitude of
 features](https://taskwarrior.org/docs/), developed as a portable open source project
