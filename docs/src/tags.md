@@ -10,3 +10,14 @@ For example, when it's time to continue the job search, `ta +jobsearch` will sho
 
 Specifically, tags must be at least one character long and cannot contain whitespace or any of the characters `+-*/(<>^! %=~`.
 The first character cannot be a digit, and `:` is not allowed after the first character.
+All-capital tags are reserved for synthetic tags (below) and cannot be added or removed from tasks.
+
+## Synthetic Tags
+
+Synthetic tags are present on tasks that meet specific criteria, that are commonly used for filtering.
+For example, `WAITING` is set for tasks that are currently waiting.
+These tags cannot be added or removed from a task, but appear and disappear as the task changes.
+The following synthetic tags are defined:
+
+* `WAITING` - set if the task is waiting (has a `wait` property with a date in the future)
+* `ACTIVE` - set if the task is active (has been started and not stopped)
