@@ -1,196 +1,11 @@
+use super::{Status, SyntheticTag, Tag};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
 use log::trace;
 use std::convert::AsRef;
-use std::convert::{TryFrom, TryInto};
-use std::fmt;
-use std::str::FromStr;
+use std::convert::TryInto;
 use uuid::Uuid;
-
-pub type Timestamp = DateTime<Utc>;
-
-/// The priority of a task
-#[derive(Debug, PartialEq)]
-pub enum Priority {
-    /// Low
-    L,
-    /// Medium
-    M,
-    /// High
-    H,
-}
-
-#[allow(dead_code)]
-impl Priority {
-    /// Get a Priority from the 1-character value in a TaskMap,
-    /// defaulting to M
-    pub(crate) fn from_taskmap(s: &str) -> Priority {
-        match s {
-            "L" => Priority::L,
-            "M" => Priority::M,
-            "H" => Priority::H,
-            _ => Priority::M,
-        }
-    }
-
-    /// Get the 1-character value for this priority to use in the TaskMap.
-    pub(crate) fn to_taskmap(&self) -> &str {
-        match self {
-            Priority::L => "L",
-            Priority::M => "M",
-            Priority::H => "H",
-        }
-    }
-}
-
-/// The status of a task.  The default status in "Pending".
-#[derive(Debug, PartialEq, Clone)]
-pub enum Status {
-    Pending,
-    Completed,
-    Deleted,
-}
-
-impl Status {
-    /// Get a Status from the 1-character value in a TaskMap,
-    /// defaulting to Pending
-    pub(crate) fn from_taskmap(s: &str) -> Status {
-        match s {
-            "P" => Status::Pending,
-            "C" => Status::Completed,
-            "D" => Status::Deleted,
-            _ => Status::Pending,
-        }
-    }
-
-    /// Get the 1-character value for this status to use in the TaskMap.
-    pub(crate) fn to_taskmap(&self) -> &str {
-        match self {
-            Status::Pending => "P",
-            Status::Completed => "C",
-            Status::Deleted => "D",
-        }
-    }
-
-    /// Get the full-name value for this status to use in the TaskMap.
-    pub fn to_string(&self) -> &str {
-        // TODO: should be impl Display
-        match self {
-            Status::Pending => "Pending",
-            Status::Completed => "Completed",
-            Status::Deleted => "Deleted",
-        }
-    }
-}
-
-// TODO: separate module, wrap in newtype to avoid pub details
-/// A Tag is a descriptor for a task, that is either present or absent, and can be used for
-/// filtering.  Tags composed of all uppercase letters are reserved for synthetic tags.
-///
-/// Valid tags must not contain whitespace or any of the characters in [`INVALID_TAG_CHARACTERS`].
-/// The first characters additionally cannot be a digit, and subsequent characters cannot be `:`.
-/// This definition is based on [that of
-/// TaskWarrior](https://github.com/GothenburgBitFactory/taskwarrior/blob/663c6575ceca5bd0135ae884879339dac89d3142/src/Lexer.cpp#L146-L164).
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-// TODO: impl Default
-pub enum Tag {
-    User(String),
-    Synthetic(SyntheticTag),
-}
-
-pub const INVALID_TAG_CHARACTERS: &str = "+-*/(<>^! %=~";
-
-impl Tag {
-    fn from_str(value: &str) -> Result<Tag, anyhow::Error> {
-        fn err(value: &str) -> Result<Tag, anyhow::Error> {
-            anyhow::bail!("invalid tag {:?}", value)
-        }
-
-        // first, look for synthetic tags
-        if value.chars().all(|c| c.is_ascii_uppercase()) {
-            if let Ok(st) = SyntheticTag::from_str(value) {
-                return Ok(Self::Synthetic(st));
-            }
-            // all uppercase, but not a valid synthetic tag
-            return err(value);
-        }
-
-        if let Some(c) = value.chars().next() {
-            if c.is_whitespace() || c.is_ascii_digit() || INVALID_TAG_CHARACTERS.contains(c) {
-                return err(value);
-            }
-        } else {
-            return err(value);
-        }
-        if !value
-            .chars()
-            .skip(1)
-            .all(|c| !(c.is_whitespace() || c == ':' || INVALID_TAG_CHARACTERS.contains(c)))
-        {
-            return err(value);
-        }
-        Ok(Self::User(String::from(value)))
-    }
-}
-
-impl TryFrom<&str> for Tag {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &str) -> Result<Tag, Self::Error> {
-        Self::from_str(value)
-    }
-}
-
-impl TryFrom<&String> for Tag {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &String) -> Result<Tag, Self::Error> {
-        Self::from_str(&value[..])
-    }
-}
-
-impl fmt::Display for Tag {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::User(s) => s.fmt(f),
-            Self::Synthetic(st) => st.as_ref().fmt(f),
-        }
-    }
-}
-
-impl AsRef<str> for Tag {
-    fn as_ref(&self) -> &str {
-        match self {
-            Self::User(s) => s.as_ref(),
-            Self::Synthetic(st) => st.as_ref(),
-        }
-    }
-}
-
-#[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Ord,
-    PartialOrd,
-    Hash,
-    strum_macros::EnumString,
-    strum_macros::AsRefStr,
-    strum_macros::EnumIter,
-)]
-#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
-pub enum SyntheticTag {
-    Waiting,
-    Active,
-}
-
-#[derive(Debug, PartialEq)]
-pub struct Annotation {
-    pub entry: Timestamp,
-    pub description: String,
-}
 
 /// A task, as publicly exposed by this crate.
 ///
@@ -476,7 +291,6 @@ impl<'r> std::ops::Deref for TaskMut<'r> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use rstest::rstest;
 
     fn with_mut_task<F: FnOnce(TaskMut)>(f: F) {
         let mut replica = Replica::new_inmemory();
@@ -493,32 +307,6 @@ mod test {
     /// Create a synthetic tag
     fn stag(synth: SyntheticTag) -> Tag {
         Tag::Synthetic(synth)
-    }
-
-    #[rstest]
-    #[case::simple("abc")]
-    #[case::colon_prefix(":abc")]
-    #[case::letters_and_numbers("a123_456")]
-    #[case::synthetic("WAITING")]
-    fn test_tag_try_into_success(#[case] s: &'static str) {
-        let tag: Tag = s.try_into().unwrap();
-        // check Display (via to_string) and AsRef while we're here
-        assert_eq!(tag.to_string(), s.to_owned());
-        assert_eq!(tag.as_ref(), s);
-    }
-
-    #[rstest]
-    #[case::empty("")]
-    #[case::colon_infix("a:b")]
-    #[case::digits("999")]
-    #[case::bangs("abc!!!")]
-    #[case::no_such_synthetic("NOSUCH")]
-    fn test_tag_try_into_err(#[case] s: &'static str) {
-        let tag: Result<Tag, _> = s.try_into();
-        assert_eq!(
-            tag.unwrap_err().to_string(),
-            format!("invalid tag \"{}\"", s)
-        );
     }
 
     #[test]
@@ -762,25 +550,5 @@ mod test {
             task.remove_tag(&utag("abc")).unwrap();
             assert!(!task.taskmap.contains_key("tag.abc"));
         });
-    }
-
-    #[test]
-    fn test_priority() {
-        assert_eq!(Priority::L.to_taskmap(), "L");
-        assert_eq!(Priority::M.to_taskmap(), "M");
-        assert_eq!(Priority::H.to_taskmap(), "H");
-        assert_eq!(Priority::from_taskmap("L"), Priority::L);
-        assert_eq!(Priority::from_taskmap("M"), Priority::M);
-        assert_eq!(Priority::from_taskmap("H"), Priority::H);
-    }
-
-    #[test]
-    fn test_status() {
-        assert_eq!(Status::Pending.to_taskmap(), "P");
-        assert_eq!(Status::Completed.to_taskmap(), "C");
-        assert_eq!(Status::Deleted.to_taskmap(), "D");
-        assert_eq!(Status::from_taskmap("P"), Status::Pending);
-        assert_eq!(Status::from_taskmap("C"), Status::Completed);
-        assert_eq!(Status::from_taskmap("D"), Status::Deleted);
     }
 }
