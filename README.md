@@ -103,8 +103,8 @@ Then build:
 
 ## Contributing
 ![Contributors](https://img.shields.io/github/contributors/GothenburgBitFactory/taskwarrior)
-![Downloads](https://img.shields.io/github/downloads/GothenburgBitFactory/taskwarrior/total)
-![OS-X downloads](https://img.shields.io/homebrew/installs/dy/task?label=OS-X%20downloads)
+[![Milestone progress](https://img.shields.io/github/milestones/progress/GothenburgBitFactory/taskwarrior/26?label=current%20milestone%20issues)](https://github.com/GothenburgBitFactory/taskwarrior/milestone/26)
+[![Good first issus](https://img.shields.io/github/issues/GothenburgBitFactory/taskwarrior/good%20first%20issue)](https://github.com/GothenburgBitFactory/taskwarrior/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
 Your contributions are especially welcome.
 Whether it comes in the form of code patches, ideas, discussion, bug reports, encouragement or criticism, your input is needed.
