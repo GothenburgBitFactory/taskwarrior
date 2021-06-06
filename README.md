@@ -6,6 +6,10 @@
 [![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
 ![Commits since release](https://img.shields.io/github/commits-since/GothenburgBitFactory/taskwarrior/latest)
 </br>
+![OS-X downloads](https://img.shields.io/homebrew/installs/dy/task?label=OS-X%20downloads)
+![Github downloads](https://img.shields.io/github/downloads/GothenburgBitFactory/taskwarrior/total?label=Github%20downloads)
+![Linux downloads](https://img.shields.io/badge/Linux%20downloads-unknown-gray)
+</br>
 [![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)](https://twitter.com/taskwarrior)
 </div>
 
