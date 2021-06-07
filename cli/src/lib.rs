@@ -44,6 +44,11 @@ mod settings;
 mod table;
 mod usage;
 
+/// See https://docs.rs/built
+pub(crate) mod built_info {
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
 pub(crate) use errors::Error;
 use settings::Settings;
 

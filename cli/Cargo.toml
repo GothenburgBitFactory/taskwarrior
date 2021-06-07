@@ -33,6 +33,9 @@ serde_json = { version = "*", optional = true }
 [dependencies.taskchampion]
 path = "../taskchampion"
 
+[build-dependencies]
+built = { version = "0.5", features = ["git2"] }
+
 [dev-dependencies]
 assert_cmd = "^1.0.3"
 predicates = "^1.0.7"
