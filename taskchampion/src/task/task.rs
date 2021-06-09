@@ -1,155 +1,12 @@
+use super::tag::{SyntheticTag, TagInner};
+use super::{Status, Tag};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
 use log::trace;
-use std::convert::{TryFrom, TryInto};
-use std::fmt;
+use std::convert::AsRef;
+use std::convert::TryInto;
 use uuid::Uuid;
-
-pub type Timestamp = DateTime<Utc>;
-
-/// The priority of a task
-#[derive(Debug, PartialEq)]
-pub enum Priority {
-    /// Low
-    L,
-    /// Medium
-    M,
-    /// High
-    H,
-}
-
-#[allow(dead_code)]
-impl Priority {
-    /// Get a Priority from the 1-character value in a TaskMap,
-    /// defaulting to M
-    pub(crate) fn from_taskmap(s: &str) -> Priority {
-        match s {
-            "L" => Priority::L,
-            "M" => Priority::M,
-            "H" => Priority::H,
-            _ => Priority::M,
-        }
-    }
-
-    /// Get the 1-character value for this priority to use in the TaskMap.
-    pub(crate) fn to_taskmap(&self) -> &str {
-        match self {
-            Priority::L => "L",
-            Priority::M => "M",
-            Priority::H => "H",
-        }
-    }
-}
-
-/// The status of a task.  The default status in "Pending".
-#[derive(Debug, PartialEq, Clone)]
-pub enum Status {
-    Pending,
-    Completed,
-    Deleted,
-}
-
-impl Status {
-    /// Get a Status from the 1-character value in a TaskMap,
-    /// defaulting to Pending
-    pub(crate) fn from_taskmap(s: &str) -> Status {
-        match s {
-            "P" => Status::Pending,
-            "C" => Status::Completed,
-            "D" => Status::Deleted,
-            _ => Status::Pending,
-        }
-    }
-
-    /// Get the 1-character value for this status to use in the TaskMap.
-    pub(crate) fn to_taskmap(&self) -> &str {
-        match self {
-            Status::Pending => "P",
-            Status::Completed => "C",
-            Status::Deleted => "D",
-        }
-    }
-
-    /// Get the full-name value for this status to use in the TaskMap.
-    pub fn to_string(&self) -> &str {
-        // TODO: should be impl Display
-        match self {
-            Status::Pending => "Pending",
-            Status::Completed => "Completed",
-            Status::Deleted => "Deleted",
-        }
-    }
-}
-
-/// A Tag is a newtype around a String that limits its values to valid tags.
-///
-/// Valid tags must not contain whitespace or any of the characters in [`INVALID_TAG_CHARACTERS`].
-/// The first characters additionally cannot be a digit, and subsequent characters cannot be `:`.
-/// This definition is based on [that of
-/// TaskWarrior](https://github.com/GothenburgBitFactory/taskwarrior/blob/663c6575ceca5bd0135ae884879339dac89d3142/src/Lexer.cpp#L146-L164).
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Default)]
-pub struct Tag(String);
-
-pub const INVALID_TAG_CHARACTERS: &str = "+-*/(<>^! %=~";
-
-impl Tag {
-    fn from_str(value: &str) -> Result<Tag, anyhow::Error> {
-        fn err(value: &str) -> Result<Tag, anyhow::Error> {
-            anyhow::bail!("invalid tag {:?}", value)
-        }
-
-        if let Some(c) = value.chars().next() {
-            if c.is_whitespace() || c.is_ascii_digit() || INVALID_TAG_CHARACTERS.contains(c) {
-                return err(value);
-            }
-        } else {
-            return err(value);
-        }
-        if !value
-            .chars()
-            .skip(1)
-            .all(|c| !(c.is_whitespace() || c == ':' || INVALID_TAG_CHARACTERS.contains(c)))
-        {
-            return err(value);
-        }
-        Ok(Self(String::from(value)))
-    }
-}
-
-impl TryFrom<&str> for Tag {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &str) -> Result<Tag, Self::Error> {
-        Self::from_str(value)
-    }
-}
-
-impl TryFrom<&String> for Tag {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &String) -> Result<Tag, Self::Error> {
-        Self::from_str(&value[..])
-    }
-}
-
-impl fmt::Display for Tag {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl AsRef<str> for Tag {
-    fn as_ref(&self) -> &str {
-        self.0.as_ref()
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct Annotation {
-    pub entry: Timestamp,
-    pub description: String,
-}
 
 /// A task, as publicly exposed by this crate.
 ///
@@ -233,22 +90,46 @@ impl Task {
             .any(|(k, v)| k.starts_with("start.") && v.is_empty())
     }
 
+    /// Determine whether a given synthetic tag is present on this task.  All other
+    /// synthetic tag calculations are based on this one.
+    fn has_synthetic_tag(&self, synth: &SyntheticTag) -> bool {
+        match synth {
+            SyntheticTag::Waiting => self.is_waiting(),
+            SyntheticTag::Active => self.is_active(),
+            SyntheticTag::Pending => self.get_status() == Status::Pending,
+            SyntheticTag::Completed => self.get_status() == Status::Completed,
+            SyntheticTag::Deleted => self.get_status() == Status::Deleted,
+        }
+    }
+
     /// Check if this task has the given tag
     pub fn has_tag(&self, tag: &Tag) -> bool {
-        self.taskmap.contains_key(&format!("tag.{}", tag))
+        match tag.inner() {
+            TagInner::User(s) => self.taskmap.contains_key(&format!("tag.{}", s)),
+            TagInner::Synthetic(st) => self.has_synthetic_tag(st),
+        }
     }
 
     /// Iterate over the task's tags
     pub fn get_tags(&self) -> impl Iterator<Item = Tag> + '_ {
-        self.taskmap.iter().filter_map(|(k, _)| {
-            if let Some(tag) = k.strip_prefix("tag.") {
-                if let Ok(tag) = tag.try_into() {
-                    return Some(tag);
+        use strum::IntoEnumIterator;
+
+        self.taskmap
+            .iter()
+            .filter_map(|(k, _)| {
+                if let Some(tag) = k.strip_prefix("tag.") {
+                    if let Ok(tag) = tag.try_into() {
+                        return Some(tag);
+                    }
+                    // note that invalid "tag.*" are ignored
                 }
-                // note that invalid "tag.*" are ignored
-            }
-            None
-        })
+                None
+            })
+            .chain(
+                SyntheticTag::iter()
+                    .filter(move |st| self.has_synthetic_tag(st))
+                    .map(|st| Tag::from_inner(TagInner::Synthetic(st))),
+            )
     }
 
     pub fn get_modified(&self) -> Option<DateTime<Utc>> {
@@ -324,13 +205,24 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
+    /// Mark this task as complete
+    pub fn done(&mut self) -> anyhow::Result<()> {
+        self.set_status(Status::Completed)
+    }
+
     /// Add a tag to this task.  Does nothing if the tag is already present.
     pub fn add_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
+        if tag.is_synthetic() {
+            anyhow::bail!("Synthetic tags cannot be modified");
+        }
         self.set_string(format!("tag.{}", tag), Some("".to_owned()))
     }
 
     /// Remove a tag from this task.  Does nothing if the tag is not present.
     pub fn remove_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
+        if tag.is_synthetic() {
+            anyhow::bail!("Synthetic tags cannot be modified");
+        }
         self.set_string(format!("tag.{}", tag), None)
     }
 
@@ -416,28 +308,14 @@ mod test {
         f(task)
     }
 
-    #[test]
-    fn test_tag_from_str() {
-        let tag: Tag = "abc".try_into().unwrap();
-        assert_eq!(tag, Tag("abc".to_owned()));
+    /// Create a user tag, without checking its validity
+    fn utag(name: &'static str) -> Tag {
+        Tag::from_inner(TagInner::User(name.into()))
+    }
 
-        let tag: Tag = ":abc".try_into().unwrap();
-        assert_eq!(tag, Tag(":abc".to_owned()));
-
-        let tag: Tag = "a123_456".try_into().unwrap();
-        assert_eq!(tag, Tag("a123_456".to_owned()));
-
-        let tag: Result<Tag, _> = "".try_into();
-        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"\"");
-
-        let tag: Result<Tag, _> = "a:b".try_into();
-        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"a:b\"");
-
-        let tag: Result<Tag, _> = "999".try_into();
-        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"999\"");
-
-        let tag: Result<Tag, _> = "abc!!".try_into();
-        assert_eq!(tag.unwrap_err().to_string(), "invalid tag \"abc!!\"");
+    /// Create a synthetic tag
+    fn stag(synth: SyntheticTag) -> Tag {
+        Tag::from_inner(TagInner::Synthetic(synth))
     }
 
     #[test]
@@ -511,13 +389,19 @@ mod test {
     fn test_has_tag() {
         let task = Task::new(
             Uuid::new_v4(),
-            vec![(String::from("tag.abc"), String::from(""))]
-                .drain(..)
-                .collect(),
+            vec![
+                (String::from("tag.abc"), String::from("")),
+                (String::from("start.1234"), String::from("")),
+            ]
+            .drain(..)
+            .collect(),
         );
 
-        assert!(task.has_tag(&"abc".try_into().unwrap()));
-        assert!(!task.has_tag(&"def".try_into().unwrap()));
+        assert!(task.has_tag(&utag("abc")));
+        assert!(!task.has_tag(&utag("def")));
+        assert!(task.has_tag(&stag(SyntheticTag::Active)));
+        assert!(task.has_tag(&stag(SyntheticTag::Pending)));
+        assert!(!task.has_tag(&stag(SyntheticTag::Waiting)));
     }
 
     #[test]
@@ -527,6 +411,8 @@ mod test {
             vec![
                 (String::from("tag.abc"), String::from("")),
                 (String::from("tag.def"), String::from("")),
+                // set `wait` so the synthetic tag WAITING is present
+                (String::from("wait"), String::from("33158909732")),
             ]
             .drain(..)
             .collect(),
@@ -534,7 +420,14 @@ mod test {
 
         let mut tags: Vec<_> = task.get_tags().collect();
         tags.sort();
-        assert_eq!(tags, vec![Tag("abc".to_owned()), Tag("def".to_owned())]);
+        let mut exp = vec![
+            utag("abc"),
+            utag("def"),
+            stag(SyntheticTag::Pending),
+            stag(SyntheticTag::Waiting),
+        ];
+        exp.sort();
+        assert_eq!(tags, exp);
     }
 
     #[test]
@@ -553,7 +446,7 @@ mod test {
 
         // only "ok" is OK
         let tags: Vec<_> = task.get_tags().collect();
-        assert_eq!(tags, vec![Tag("ok".to_owned())]);
+        assert_eq!(tags, vec![utag("ok"), stag(SyntheticTag::Pending)]);
     }
 
     fn count_taskmap(task: &TaskMut, f: fn(&(&String, &String)) -> bool) -> usize {
@@ -614,6 +507,20 @@ mod test {
     }
 
     #[test]
+    fn test_done() {
+        with_mut_task(|mut task| {
+            task.done().unwrap();
+            assert_eq!(task.get_status(), Status::Completed);
+            assert!(task.has_tag(&stag(SyntheticTag::Completed)));
+
+            // redundant call does nothing..
+            task.done().unwrap();
+            assert_eq!(task.get_status(), Status::Completed);
+            assert!(task.has_tag(&stag(SyntheticTag::Completed)));
+        });
+    }
+
+    #[test]
     fn test_stop_multiple() {
         with_mut_task(|mut task| {
             // simulate a task that has (through the synchronization process) been started twice
@@ -648,12 +555,12 @@ mod test {
     #[test]
     fn test_add_tags() {
         with_mut_task(|mut task| {
-            task.add_tag(&Tag("abc".to_owned())).unwrap();
+            task.add_tag(&utag("abc")).unwrap();
             assert!(task.taskmap.contains_key("tag.abc"));
             task.reload().unwrap();
             assert!(task.taskmap.contains_key("tag.abc"));
             // redundant add has no effect..
-            task.add_tag(&Tag("abc".to_owned())).unwrap();
+            task.add_tag(&utag("abc")).unwrap();
             assert!(task.taskmap.contains_key("tag.abc"));
         });
     }
@@ -661,35 +568,15 @@ mod test {
     #[test]
     fn test_remove_tags() {
         with_mut_task(|mut task| {
-            task.add_tag(&Tag("abc".to_owned())).unwrap();
+            task.add_tag(&utag("abc")).unwrap();
             task.reload().unwrap();
             assert!(task.taskmap.contains_key("tag.abc"));
 
-            task.remove_tag(&Tag("abc".to_owned())).unwrap();
+            task.remove_tag(&utag("abc")).unwrap();
             assert!(!task.taskmap.contains_key("tag.abc"));
             // redundant remove has no effect..
-            task.remove_tag(&Tag("abc".to_owned())).unwrap();
+            task.remove_tag(&utag("abc")).unwrap();
             assert!(!task.taskmap.contains_key("tag.abc"));
         });
-    }
-
-    #[test]
-    fn test_priority() {
-        assert_eq!(Priority::L.to_taskmap(), "L");
-        assert_eq!(Priority::M.to_taskmap(), "M");
-        assert_eq!(Priority::H.to_taskmap(), "H");
-        assert_eq!(Priority::from_taskmap("L"), Priority::L);
-        assert_eq!(Priority::from_taskmap("M"), Priority::M);
-        assert_eq!(Priority::from_taskmap("H"), Priority::H);
-    }
-
-    #[test]
-    fn test_status() {
-        assert_eq!(Status::Pending.to_taskmap(), "P");
-        assert_eq!(Status::Completed.to_taskmap(), "C");
-        assert_eq!(Status::Deleted.to_taskmap(), "D");
-        assert_eq!(Status::from_taskmap("P"), Status::Pending);
-        assert_eq!(Status::from_taskmap("C"), Status::Completed);
-        assert_eq!(Status::from_taskmap("D"), Status::Deleted);
     }
 }
