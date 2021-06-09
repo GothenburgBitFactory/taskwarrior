@@ -1215,9 +1215,9 @@ dependencies = [
 
 [[package]]
 name = "handlebars"
-version = "3.5.5"
+version = "4.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4498fc115fa7d34de968184e473529abb40eeb6be8bc5f7faba3d08c316cb3e3"
+checksum = "28f0fe89affef47e2c9729030a8f6e79df34cb66b8a44ecf91dad43f31150559"
 dependencies = [
  "log",
  "pest",
@@ -1701,9 +1701,9 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "mdbook"
-version = "0.4.9"
+version = "0.4.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aeb86d199d0c1e8d41f3a9e9b0ba8639d6951a10043129159809ac9c18e3ce05"
+checksum = "b6da0e609de0d4a7e0d42367d91b87117e3dce74d3d1699efeda1fefb2a6fa85"
 dependencies = [
  "ammonia",
  "anyhow",

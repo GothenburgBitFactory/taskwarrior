@@ -15,7 +15,8 @@ jobs:
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
         with:
-          mdbook-version: 'latest'
+          # if this changes, change it in cli/Cargo.toml and .github/workflows/publish-docs.yml as well
+          mdbook-version: '0.4.10'
 
       - name: Cache cargo registry
         uses: actions/cache@v1
