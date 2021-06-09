@@ -14,8 +14,12 @@ where
         if let Some(arg) = input.get(0) {
             return match f(arg) {
                 Ok(("", rv)) => Ok((&input[1..], rv)),
-                // single-arg parsers must consume the entire arg
-                Ok((unconsumed, _)) => panic!("unconsumed argument input {}", unconsumed),
+                // single-arg parsers must consume the entire arg, so consider unconsumed
+                // output to be an error.
+                Ok((_, _)) => Err(Err::Error(Error {
+                    input,
+                    code: ErrorKind::Eof,
+                })),
                 // single-arg parsers are all complete parsers
                 Err(Err::Incomplete(_)) => unreachable!(),
                 // for error and failure, rewrite to an error at this position in the arugment list
@@ -47,5 +51,10 @@ mod test {
             (argv!["bar"], tag!("foo"))
         );
         assert!(arg_matching(plus_tag)(argv!["foo", "bar"]).is_err());
+    }
+
+    #[test]
+    fn test_partial_arg_matching() {
+        assert!(arg_matching(wait_colon)(argv!["wait:UNRECOGNIZED"]).is_err());
     }
 }
