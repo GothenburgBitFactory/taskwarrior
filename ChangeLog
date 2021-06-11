@@ -53,6 +53,8 @@
            Thanks to Daniel Mowitz.
 - TW #2451 Command task $month doesn't behave correctly
            Thanks to Matias Laporte.
+- TW #2503 Warn against executing an empty execute command.
+           Thanks to heinrichat.
 
 ------ current release ---------------------------
 
