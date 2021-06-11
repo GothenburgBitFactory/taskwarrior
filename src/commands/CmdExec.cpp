@@ -49,7 +49,15 @@ CmdExec::CmdExec ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdExec::execute (std::string&)
 {
-  return system (join (" ", Context::getContext ().cli2.getWords ()).c_str ());
+  std::string command = join (" ", Context::getContext ().cli2.getWords ());
+
+  if (command.empty())
+  {
+    Context::getContext ().error ("Cannot execute an empty command.");
+    return 1;
+  }
+  else
+    return system (command.c_str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
