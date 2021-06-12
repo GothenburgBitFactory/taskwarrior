@@ -40,6 +40,8 @@ int main (int, char**)
   Variant v3 ("foo");
   Variant v4 (1234567890, Variant::type_date);
   Variant v5 (1200, Variant::type_duration);
+  Variant v6 (1234522800, Variant::type_date);  // 2009-02-13, 12.00pm UTC
+  Variant v7 ("2009-02-13");
 
   Variant v00 = v0.operator_partial (v0);
   t.is (v00.type (), Variant::type_boolean, "true == true --> boolean");
@@ -184,6 +186,14 @@ int main (int, char**)
   Variant v55 = v5.operator_partial (v5);
   t.is (v55.type (), Variant::type_boolean, "1200 == 1200 --> boolean");
   t.is (v55.get_bool (), true,              "1200 == 1200 --> true");
+
+  Variant v56 = v6.operator_partial (v7);
+  t.is (v56.type (), Variant::type_boolean, "1234522800 == '2009-02-13' --> boolean");
+  t.is (v56.get_bool (), true,              "1234522800 == '2009-02-13' --> true");
+
+  Variant v57 = v7.operator_partial (v6);
+  t.is (v57.type (), Variant::type_boolean, "'2009-02-13' == 1234522800 --> boolean");
+  t.is (v57.get_bool (), true,              "'2009-02-13' == 1234522800 --> true");
 
   return 0;
 }
