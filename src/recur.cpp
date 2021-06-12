@@ -412,3 +412,27 @@ void updateRecurrenceMask (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Delete expired tasks.
+void handleUntil ()
+{
+  Datetime now;
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  for (auto& t : tasks)
+  {
+    // TODO What about expiring template tasks?
+    if (t.getStatus () == Task::pending &&
+        t.has ("until"))
+    {
+      auto until = Datetime (t.get_date ("until"));
+      if (until < now)
+      {
+        Context::getContext ().debug (format ("handleUntil: recurrence expired until {1} < now {2}", until.toISOLocalExtended (), now.toISOLocalExtended ()));
+        t.setStatus (Task::deleted);
+        Context::getContext ().tdb2.modify(t);
+        Context::getContext ().footnote (onExpiration (t));
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////

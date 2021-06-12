@@ -39,13 +39,13 @@
 
 // recur.cpp
 void handleRecurrence ();
+void handleUntil ();
 Datetime getNextRecurrence (Datetime&, std::string&);
 bool generateDueDates (Task&, std::vector <Datetime>&);
 void updateRecurrenceMask (Task&);
 
 // recur2.cpp
 void handleRecurrence2 ();
-void handleUntil ();
 
 // nag.cpp
 bool nag (Task&);
