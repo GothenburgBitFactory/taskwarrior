@@ -20,11 +20,11 @@ with an active and quite vast [ecosystem of tools, hooks and
 extensions](https://taskwarrior.org/tools/).
 
 ## Install
-![Arch](https://img.shields.io/archlinux/v/community/x86_64/task)
-![Debian](https://img.shields.io/debian/v/task/testing)
-![Fedora](https://img.shields.io/fedora/v/task)
-![Homebrew](https://img.shields.io/homebrew/v/task)
-![Ubuntu](https://img.shields.io/ubuntu/v/task)
+[![Arch](https://img.shields.io/archlinux/v/community/x86_64/task)](https://archlinux.org/packages/community/x86_64/task/)
+[![Debian](https://img.shields.io/debian/v/task/testing)](https://packages.debian.org/search?keywords=task&searchon=names&suite=all&section=all)
+[![Fedora](https://img.shields.io/fedora/v/task)](https://bodhi.fedoraproject.org/updates/?packages=task)
+[![Homebrew](https://img.shields.io/homebrew/v/task)](https://formulae.brew.sh/formula/task#default)
+[![Ubuntu](https://img.shields.io/ubuntu/v/task)](https://packages.ubuntu.com/search?keywords=task&searchon=names&suite=hirsute&section=all)
 
 Taskwarrior is packaged on a wide range of [Linux/Unix systems, Mac OS and
 Windows](https://taskwarrior.org/download/). Check out the latest available
@@ -102,7 +102,7 @@ Then build:
     $ sudo make install
 
 ## Contributing
-![Contributors](https://img.shields.io/github/contributors/GothenburgBitFactory/taskwarrior)
+[![Contributors](https://img.shields.io/github/contributors/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/graphs/contributors)
 [![Milestone progress](https://img.shields.io/github/milestones/progress/GothenburgBitFactory/taskwarrior/26?label=current%20milestone%20issues)](https://github.com/GothenburgBitFactory/taskwarrior/milestone/26)
 [![Good first issus](https://img.shields.io/github/issues/GothenburgBitFactory/taskwarrior/good%20first%20issue)](https://github.com/GothenburgBitFactory/taskwarrior/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
