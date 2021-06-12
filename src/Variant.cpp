@@ -1098,8 +1098,15 @@ bool Variant::operator_partial (const Variant& other) const
     {
     // Same-day comparison.
     case type_string:
-      if (left.trivial () || right.trivial ())
-        return false;
+      {
+        if (left.trivial () || right.trivial ())
+          return false;
+
+        right.cast (type_date);
+        Datetime left_date (left._date);
+        Datetime right_date (right._date);
+        return left_date.sameDay (right_date);
+      }
 
     case type_boolean:
     case type_integer:
