@@ -184,10 +184,16 @@ impl Settings {
                 .ok_or_else(|| anyhow!("Could not determine config file name"))?
         };
 
-        let mut document = fs::read_to_string(filename.clone())
-            .context("Could not read existing configuration file")?
-            .parse::<Document>()
-            .context("Could not parse existing configuration file")?;
+        let exists = filename.exists();
+
+        let mut document = if exists {
+            fs::read_to_string(filename.clone())
+                .context("Could not read existing configuration file")?
+                .parse::<Document>()
+                .context("Could not parse existing configuration file")?
+        } else {
+            Document::new()
+        };
 
         // set the value as the correct type
         match key {
