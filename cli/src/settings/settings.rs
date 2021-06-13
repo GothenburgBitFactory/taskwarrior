@@ -186,6 +186,14 @@ impl Settings {
 
         let exists = filename.exists();
 
+        // try to create the parent directory if the file does not exist
+        if !exists {
+            if let Some(dir) = filename.parent() {
+                fs::create_dir_all(dir)?;
+            }
+        }
+
+        // start with the existing document, or a blank document
         let mut document = if exists {
             fs::read_to_string(filename.clone())
                 .context("Could not read existing configuration file")?
