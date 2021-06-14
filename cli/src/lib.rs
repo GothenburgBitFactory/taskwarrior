@@ -31,8 +31,7 @@ For the public TaskChampion Rust API, see the `taskchampion` crate.
 
 */
 
-use std::os::unix::ffi::OsStringExt;
-use std::string::FromUtf8Error;
+use std::ffi::OsString;
 
 // NOTE: it's important that this 'mod' comes first so that the macros can be used in other modules
 mod macros;
@@ -63,8 +62,8 @@ pub fn main() -> Result<(), Error> {
     // parse the command line into a vector of &str, failing if
     // there are invalid utf-8 sequences.
     let argv: Vec<String> = std::env::args_os()
-        .map(|oss| String::from_utf8(oss.into_vec()))
-        .collect::<Result<_, FromUtf8Error>>()
+        .map(|oss| oss.into_string())
+        .collect::<Result<_, OsString>>()
         .map_err(|_| Error::for_arguments("arguments must be valid utf-8"))?;
     let argv: Vec<&str> = argv.iter().map(|s| s.as_ref()).collect();
 
