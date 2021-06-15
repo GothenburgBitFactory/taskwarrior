@@ -22,6 +22,7 @@ jobs:
           - windows-latest
 
     name: "Test - Rust ${{ matrix.rust }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v1
