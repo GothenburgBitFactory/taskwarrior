@@ -352,6 +352,25 @@ mod test {
     use tempfile::TempDir;
 
     #[test]
+    fn test_empty_dir() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let non_existant = tmp_dir.path().join("subdir");
+        let mut storage = SqliteStorage::new(&non_existant)?;
+        let uuid = Uuid::new_v4();
+        {
+            let mut txn = storage.txn()?;
+            assert!(txn.create_task(uuid)?);
+            txn.commit()?;
+        }
+        {
+            let mut txn = storage.txn()?;
+            let task = txn.get_task(uuid)?;
+            assert_eq!(task, Some(taskmap_with(vec![])));
+        }
+        Ok(())
+    }
+
+    #[test]
     fn drop_transaction() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
         let mut storage = SqliteStorage::new(&tmp_dir.path())?;

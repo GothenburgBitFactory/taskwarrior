@@ -61,6 +61,7 @@ impl SqliteStorage {
     }
 
     pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<SqliteStorage> {
+        std::fs::create_dir_all(&directory)?;
         let db_file = directory.as_ref().join("taskchampion-sync-server.sqlite3");
 
         let o = SqliteStorage { db_file };
@@ -207,6 +208,17 @@ impl<'t> StorageTxn for Txn<'t> {
 mod test {
     use super::*;
     use tempfile::TempDir;
+
+    #[test]
+    fn test_emtpy_dir() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let non_existant = tmp_dir.path().join("subdir");
+        let storage = SqliteStorage::new(&non_existant)?;
+        let mut txn = storage.txn()?;
+        let maybe_client = txn.get_client(Uuid::new_v4())?;
+        assert!(maybe_client.is_none());
+        Ok(())
+    }
 
     #[test]
     fn test_get_client_empty() -> anyhow::Result<()> {
