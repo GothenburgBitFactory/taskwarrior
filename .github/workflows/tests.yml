@@ -21,7 +21,7 @@ jobs:
           - macOS-latest
           - windows-latest
 
-    name: "Test - Rust ${{ matrix.rust }} on ${{ matrix.os }"
+    name: "Test - Rust ${{ matrix.rust }} on ${{ matrix.os }}"
 
     steps:
       - uses: actions/checkout@v1
