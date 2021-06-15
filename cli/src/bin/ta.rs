@@ -1,8 +1,11 @@
 use std::process::exit;
 
 pub fn main() {
-    if let Err(err) = taskchampion_cli::main() {
-        eprintln!("{:?}", err);
-        exit(1);
+    match taskchampion_cli::main() {
+        Ok(_) => exit(0),
+        Err(e) => {
+            eprintln!("{:?}", e);
+            exit(e.exit_status());
+        }
     }
 }

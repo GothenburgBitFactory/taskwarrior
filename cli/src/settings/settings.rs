@@ -13,21 +13,25 @@ use toml_edit::Document;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Settings {
-    // filename from which this configuration was loaded, if any
+    /// filename from which this configuration was loaded, if any
     pub(crate) filename: Option<PathBuf>,
 
-    // replica
+    /// Maximum number of tasks to modify without a confirmation prompt; `Some(0)` means to never
+    /// prompt, and `None` means to use the default value.
+    pub(crate) modification_count_prompt: Option<i64>,
+
+    /// replica
     pub(crate) data_dir: PathBuf,
 
-    // remote sync server
+    /// remote sync server
     pub(crate) server_client_key: Option<String>,
     pub(crate) server_origin: Option<String>,
     pub(crate) encryption_secret: Option<String>,
 
-    // local sync server
+    /// local sync server
     pub(crate) server_dir: PathBuf,
 
-    // reports
+    /// reports
     pub(crate) reports: HashMap<String, Report>,
 }
 
@@ -86,6 +90,7 @@ impl Settings {
     fn update_from_toml(&mut self, config_toml: &toml::Value) -> Result<()> {
         let table_keys = [
             "data_dir",
+            "modification_count_prompt",
             "server_client_key",
             "server_origin",
             "encryption_secret",
@@ -109,8 +114,22 @@ impl Settings {
             Ok(())
         }
 
+        fn get_i64_cfg<F: FnOnce(i64)>(table: &Table, name: &'static str, setter: F) -> Result<()> {
+            if let Some(v) = table.get(name) {
+                setter(
+                    v.as_integer()
+                        .ok_or_else(|| anyhow!(".{}: not a number", name))?,
+                );
+            }
+            Ok(())
+        }
+
         get_str_cfg(table, "data_dir", |v| {
             self.data_dir = v.into();
+        })?;
+
+        get_i64_cfg(table, "modification_count_prompt", |v| {
+            self.modification_count_prompt = Some(v);
         })?;
 
         get_str_cfg(table, "server_client_key", |v| {
@@ -142,10 +161,12 @@ impl Settings {
         Ok(())
     }
 
-    /// Set a value in the config file, modifying it in place.  Returns the filename.
+    /// Set a value in the config file, modifying it in place.  Returns the filename.  The value is
+    /// interpreted as the appropriate type for the configuration setting.
     pub(crate) fn set(&self, key: &str, value: &str) -> Result<PathBuf> {
         let allowed_keys = [
             "data_dir",
+            "modification_count_prompt",
             "server_client_key",
             "server_origin",
             "encryption_secret",
@@ -168,7 +189,17 @@ impl Settings {
             .parse::<Document>()
             .context("Could not parse existing configuration file")?;
 
-        document[key] = toml_edit::value(value);
+        // set the value as the correct type
+        match key {
+            // integers
+            "modification_count_prompt" => {
+                let value: i64 = value.parse()?;
+                document[key] = toml_edit::value(value);
+            }
+
+            // most keys are strings
+            _ => document[key] = toml_edit::value(value),
+        }
 
         fs::write(filename.clone(), document.to_string())
             .context("Could not write updated configuration file")?;
@@ -218,6 +249,10 @@ impl Default for Settings {
                         label: "tags".to_owned(),
                         property: Property::Tags,
                     },
+                    Column {
+                        label: "wait".to_owned(),
+                        property: Property::Wait,
+                    },
                 ],
                 filter: Default::default(),
             },
@@ -263,6 +298,7 @@ impl Default for Settings {
         Self {
             filename: None,
             data_dir,
+            modification_count_prompt: None,
             server_client_key: None,
             server_origin: None,
             encryption_secret: None,
@@ -312,6 +348,7 @@ mod test {
     fn test_update_from_toml_top_level_keys() {
         let val = toml! {
             data_dir = "/data"
+            modification_count_prompt = 42
             server_client_key = "sck"
             server_origin = "so"
             encryption_secret = "es"
@@ -321,6 +358,7 @@ mod test {
         settings.update_from_toml(&val).unwrap();
 
         assert_eq!(settings.data_dir, PathBuf::from("/data"));
+        assert_eq!(settings.modification_count_prompt, Some(42));
         assert_eq!(settings.server_client_key, Some("sck".to_owned()));
         assert_eq!(settings.server_origin, Some("so".to_owned()));
         assert_eq!(settings.encryption_secret, Some("es".to_owned()));
@@ -350,11 +388,26 @@ mod test {
         let settings = Settings::load_from_file(cfg_file.clone(), true).unwrap();
         assert_eq!(settings.filename, Some(cfg_file.clone()));
         settings.set("data_dir", "/data").unwrap();
+        settings.set("modification_count_prompt", "42").unwrap();
 
-        // load the file again and see the change
+        // load the file again and see the changes
         let settings = Settings::load_from_file(cfg_file.clone(), true).unwrap();
         assert_eq!(settings.data_dir, PathBuf::from("/data"));
         assert_eq!(settings.server_dir, PathBuf::from("/srv"));
         assert_eq!(settings.filename, Some(cfg_file));
+        assert_eq!(settings.modification_count_prompt, Some(42));
+    }
+
+    #[test]
+    fn test_set_invalid_key() {
+        let cfg_dir = TempDir::new().unwrap();
+        let cfg_file = cfg_dir.path().join("foo.toml");
+        fs::write(cfg_file.clone(), "server_dir = \"/srv\"").unwrap();
+
+        let settings = Settings::load_from_file(cfg_file.clone(), true).unwrap();
+        assert_eq!(settings.filename, Some(cfg_file.clone()));
+        assert!(settings
+            .set("modification_count_prompt", "a string?")
+            .is_err());
     }
 }

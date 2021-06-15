@@ -49,12 +49,12 @@ impl TaskDb {
             Operation::Create { uuid } => {
                 // insert if the task does not already exist
                 if !txn.create_task(*uuid)? {
-                    return Err(Error::DbError(format!("Task {} already exists", uuid)).into());
+                    return Err(Error::Database(format!("Task {} already exists", uuid)).into());
                 }
             }
             Operation::Delete { ref uuid } => {
                 if !txn.delete_task(*uuid)? {
-                    return Err(Error::DbError(format!("Task {} does not exist", uuid)).into());
+                    return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
                 }
             }
             Operation::Update {
@@ -71,7 +71,7 @@ impl TaskDb {
                     };
                     txn.set_task(*uuid, task)?;
                 } else {
-                    return Err(Error::DbError(format!("Task {} does not exist", uuid)).into());
+                    return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
                 }
             }
         }

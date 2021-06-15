@@ -7,5 +7,5 @@ mod report;
 mod settings;
 mod util;
 
-pub(crate) use report::{Column, Property, Report, Sort, SortBy};
+pub(crate) use report::{get_usage, Column, Property, Report, Sort, SortBy};
 pub(crate) use settings::Settings;

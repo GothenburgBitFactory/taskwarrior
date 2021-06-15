@@ -1,4 +1,4 @@
-name: taskchampion
+name: Docs
 
 on:
   push:
@@ -15,7 +15,28 @@ jobs:
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
         with:
-          mdbook-version: 'latest'
+          # if this changes, change it in cli/Cargo.toml and .github/workflows/publish-docs.yml as well
+          mdbook-version: '0.4.10'
+
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Create usage-docs plugin
+        run: cargo build -p taskchampion-cli --features usage-docs --bin usage-docs
 
       - run: mdbook build docs
 

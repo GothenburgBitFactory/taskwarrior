@@ -38,23 +38,34 @@ use std::string::FromUtf8Error;
 mod macros;
 
 mod argparse;
+mod errors;
 mod invocation;
 mod settings;
 mod table;
 mod usage;
 
+/// See https://docs.rs/built
+pub(crate) mod built_info {
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
+pub(crate) use errors::Error;
 use settings::Settings;
+
+// used by the `generate` command
+pub use usage::Usage;
 
 /// The main entry point for the command-line interface.  This builds an Invocation
 /// from the particulars of the operating-system interface, and then executes it.
-pub fn main() -> anyhow::Result<()> {
+pub fn main() -> Result<(), Error> {
     env_logger::init();
 
     // parse the command line into a vector of &str, failing if
     // there are invalid utf-8 sequences.
     let argv: Vec<String> = std::env::args_os()
         .map(|oss| String::from_utf8(oss.into_vec()))
-        .collect::<Result<_, FromUtf8Error>>()?;
+        .collect::<Result<_, FromUtf8Error>>()
+        .map_err(|_| Error::for_arguments("arguments must be valid utf-8"))?;
     let argv: Vec<&str> = argv.iter().map(|s| s.as_ref()).collect();
 
     // parse the command line

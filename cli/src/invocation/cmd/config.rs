@@ -6,7 +6,7 @@ pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     config_operation: ConfigOperation,
     settings: &Settings,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     match config_operation {
         ConfigOperation::Set(key, value) => {
             let filename = settings.set(&key, &value)?;
@@ -18,6 +18,13 @@ pub(crate) fn execute<W: WriteColor>(
             w.set_color(ColorSpec::new().set_bold(true))?;
             writeln!(w, "{:?}.", filename)?;
             w.set_color(ColorSpec::new().set_bold(false))?;
+        }
+        ConfigOperation::Path => {
+            if let Some(ref filename) = settings.filename {
+                writeln!(w, "{}", filename.to_string_lossy())?;
+            } else {
+                return Err(anyhow::anyhow!("No configuration filename found").into());
+            }
         }
     }
     Ok(())

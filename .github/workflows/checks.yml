@@ -1,4 +1,4 @@
-name: taskchampion
+name: Checks
 
 on:
   push:
@@ -8,11 +8,49 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  test:
+  clippy:
     runs-on: ubuntu-latest
+    name: "Clippy"
 
     steps:
       - uses: actions/checkout@v1
+
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/cargo@v1.0.1
+        with:
+          command: check
+
+      - run: rustup component add clippy
+
+      - uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features
+          name: "Clippy Results"
+
+  mdbook:
+    runs-on: ubuntu-latest
+    name: "Documentation"
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v1
+        with:
+          # if this changes, change it in cli/Cargo.toml and .github/workflows/publish-docs.yml as well
+          mdbook-version: '0.4.10'
 
       - name: Cache cargo registry
         uses: actions/cache@v1
@@ -31,49 +69,8 @@ jobs:
           toolchain: stable
           override: true
 
-      - uses: actions-rs/cargo@v1.0.1
-        with:
-          command: check
-
-      - name: test
-        run: cargo test
-
-  clippy:
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Cache cargo registry
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache cargo build
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-
-      - run: rustup component add clippy
-
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features
-
-  mdbook:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v1
-        with:
-          mdbook-version: 'latest'
+      - name: Create usage-docs plugin
+        run: cargo build -p taskchampion-cli --features usage-docs --bin usage-docs
 
       - run: mdbook test docs
       - run: mdbook build docs

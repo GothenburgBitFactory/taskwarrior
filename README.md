@@ -33,3 +33,8 @@ There are three crates here:
  * [taskchampion-cli](./cli) - the command-line binary
  * [taskchampion-sync-server](./sync-server) - the server against which `task sync` operates
 
+## Documentation Generation
+
+The `mdbook` configuration contains a "preprocessor" implemented in the `taskchampion-cli` crate in order to reflect CLI usage information into the generated book.
+Tihs preprocessor is not built by default.
+To (re)build it, run `cargo build -p taskchampion-cli --features usage-docs --bin usage-docs`.

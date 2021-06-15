@@ -2,6 +2,7 @@
 
 use crate::argparse::{Condition, Filter};
 use crate::settings::util::table_with_keys;
+use crate::usage::{self, Usage};
 use anyhow::{anyhow, bail, Result};
 use std::convert::{TryFrom, TryInto};
 
@@ -30,6 +31,7 @@ pub(crate) struct Column {
 /// Task property to display in a report
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum Property {
+    // NOTE: when adding a property here, add it to get_usage, below, as well.
     /// The task's ID, either working-set index or Uuid if not in the working set
     Id,
 
@@ -44,6 +46,9 @@ pub(crate) enum Property {
 
     /// The task's tags
     Tags,
+
+    /// The task's wait date
+    Wait,
 }
 
 /// A sorting criterion for a sort operation.
@@ -59,6 +64,7 @@ pub(crate) struct Sort {
 /// Task property to sort by
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum SortBy {
+    // NOTE: when adding a property here, add it to get_usage, below, as well.
     /// The task's ID, either working-set index or a UUID prefix; working
     /// set tasks sort before others.
     Id,
@@ -68,6 +74,9 @@ pub(crate) enum SortBy {
 
     /// The task's description
     Description,
+
+    /// The task's wait date
+    Wait,
 }
 
 // Conversions from settings::Settings.
@@ -171,6 +180,7 @@ impl TryFrom<&toml::Value> for Property {
             "active" => Property::Active,
             "description" => Property::Description,
             "tags" => Property::Tags,
+            "wait" => Property::Wait,
             _ => bail!(": unknown property {}", s),
         })
     }
@@ -207,9 +217,43 @@ impl TryFrom<&toml::Value> for SortBy {
             "id" => SortBy::Id,
             "uuid" => SortBy::Uuid,
             "description" => SortBy::Description,
+            "wait" => SortBy::Wait,
             _ => bail!(": unknown sort_by value `{}`", s),
         })
     }
+}
+
+pub(crate) fn get_usage(u: &mut Usage) {
+    u.report_properties.push(usage::ReportProperty {
+        name: "id",
+        as_sort_by: Some("Sort by the task's shorthand ID"),
+        as_column: Some("The task's shorthand ID"),
+    });
+    u.report_properties.push(usage::ReportProperty {
+        name: "uuid",
+        as_sort_by: Some("Sort by the task's full UUID"),
+        as_column: Some("The task's full UUID"),
+    });
+    u.report_properties.push(usage::ReportProperty {
+        name: "active",
+        as_sort_by: None,
+        as_column: Some("`*` if the task is active (started)"),
+    });
+    u.report_properties.push(usage::ReportProperty {
+        name: "wait",
+        as_sort_by: Some("Sort by the task's wait date, with non-waiting tasks first"),
+        as_column: Some("Wait date of the task"),
+    });
+    u.report_properties.push(usage::ReportProperty {
+        name: "description",
+        as_sort_by: Some("Sort by the task's description"),
+        as_column: Some("The task's description"),
+    });
+    u.report_properties.push(usage::ReportProperty {
+        name: "tags",
+        as_sort_by: None,
+        as_column: Some("The task's tags"),
+    });
 }
 
 #[cfg(test)]

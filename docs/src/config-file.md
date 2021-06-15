@@ -20,6 +20,12 @@ data_dir = "/home/myuser/.tasks"
 * `data_dir` - path to a directory containing the replica's task data (which will be created if necessary).
   Default: `taskchampion` in the local data directory.
 
+## Command-Line Preferences
+
+* `modification_count_prompt` - when a modification will affect more than this many tasks, the `ta` command will prompt for confirmation.
+  A value of `0` will disable the prompts entirely.
+  Default: 3.
+
 ## Sync Server
 
 If using a local server:

@@ -4,10 +4,16 @@ edition = "2018"
 name = "taskchampion-cli"
 version = "0.3.0"
 
+build = "build.rs"
+
+# Run 'ta' when doing 'cargo run' at repo root
+default-run = "ta"
+
 [dependencies]
 dirs-next = "^2.0.0"
 env_logger = "^0.8.3"
 anyhow = "1.0"
+thiserror = "1.0"
 log = "^0.4.14"
 nom = "^6.1.2"
 prettytable-rs = "^0.8.0"
@@ -16,11 +22,35 @@ termcolor = "^1.1.2"
 atty = "^0.2.14"
 toml = "^0.5.8"
 toml_edit = "^0.2.0"
+chrono = "0.4"
+lazy_static = "1"
+iso8601-duration = "0.1"
+dialoguer = "0.8"
+
+# only needed for usage-docs
+# if the mdbook version changes, change it in .github/workflows/publish-docs.yml and .github/workflows/checks.yml as well
+mdbook = { version = "0.4.10", optional = true }
+serde_json = { version = "*", optional = true }
 
 [dependencies.taskchampion]
 path = "../taskchampion"
+
+[build-dependencies]
+built = { version = "0.5", features = ["git2"] }
 
 [dev-dependencies]
 assert_cmd = "^1.0.3"
 predicates = "^1.0.7"
 tempfile = "3"
+rstest = "0.10"
+
+[features]
+usage-docs = [ "mdbook", "serde_json" ]
+
+[[bin]]
+name = "ta"
+
+[[bin]]
+# this is an mdbook plugin and only needed when running `mdbook`
+name = "usage-docs"
+required-features = [ "usage-docs" ]

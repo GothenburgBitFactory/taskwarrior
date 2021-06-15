@@ -9,6 +9,7 @@ mod cmd;
 mod filter;
 mod modify;
 mod report;
+mod util;
 
 #[cfg(test)]
 mod test;
@@ -19,7 +20,7 @@ use report::display_report;
 
 /// Invoke the given Command in the context of the given settings
 #[allow(clippy::needless_return)]
-pub(crate) fn invoke(command: Command, settings: Settings) -> anyhow::Result<()> {
+pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::Error> {
     log::debug!("command: {:?}", command);
     log::debug!("settings: {:?}", settings);
 
@@ -60,7 +61,7 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> anyhow::Result<()>
                     modification,
                 },
             ..
-        } => return cmd::modify::execute(&mut w, &mut replica, filter, modification),
+        } => return cmd::modify::execute(&mut w, &mut replica, &settings, filter, modification),
 
         Command {
             subcommand:

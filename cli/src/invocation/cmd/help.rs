@@ -5,7 +5,7 @@ pub(crate) fn execute<W: WriteColor>(
     w: &mut W,
     command_name: String,
     summary: bool,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     let usage = Usage::new();
     usage.write_help(w, command_name.as_ref(), summary)?;
     Ok(())

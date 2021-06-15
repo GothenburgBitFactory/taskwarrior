@@ -1,10 +1,20 @@
+use crate::built_info;
 use termcolor::{ColorSpec, WriteColor};
 
-pub(crate) fn execute<W: WriteColor>(w: &mut W) -> anyhow::Result<()> {
+pub(crate) fn execute<W: WriteColor>(w: &mut W) -> Result<(), crate::Error> {
     write!(w, "TaskChampion ")?;
     w.set_color(ColorSpec::new().set_bold(true))?;
-    writeln!(w, "{}", env!("CARGO_PKG_VERSION"))?;
+    write!(w, "{}", built_info::PKG_VERSION)?;
     w.reset()?;
+
+    if let (Some(version), Some(dirty)) = (built_info::GIT_VERSION, built_info::GIT_DIRTY) {
+        if dirty {
+            write!(w, " (git version: {} with un-committed changes)", version)?;
+        } else {
+            write!(w, " (git version: {})", version)?;
+        };
+    }
+    writeln!(w)?;
     Ok(())
 }
 

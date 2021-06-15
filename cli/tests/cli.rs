@@ -56,7 +56,8 @@ fn invalid_option() -> Result<(), Box<dyn std::error::Error>> {
     cmd.arg("--no-such-option");
     cmd.assert()
         .failure()
-        .stderr(predicate::str::contains("command line not recognized"));
+        .stderr(predicate::str::contains("command line not recognized"))
+        .code(predicate::eq(3));
 
     Ok(())
 }

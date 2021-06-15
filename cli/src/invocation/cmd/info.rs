@@ -10,7 +10,7 @@ pub(crate) fn execute<W: WriteColor>(
     replica: &mut Replica,
     filter: Filter,
     debug: bool,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     let working_set = replica.working_set()?;
 
     for task in filtered_tasks(replica, &filter)? {
@@ -35,6 +35,9 @@ pub(crate) fn execute<W: WriteColor>(
             if !tags.is_empty() {
                 tags.sort();
                 t.add_row(row![b->"Tags", tags.join(" ")]);
+            }
+            if let Some(wait) = task.get_wait() {
+                t.add_row(row![b->"Wait", wait]);
             }
         }
         t.print(w)?;

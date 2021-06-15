@@ -29,6 +29,10 @@ Users can define their own server impelementations.
 See the [TaskChampion Book](http://taskchampion.github.com/taskchampion)
 for more information about the design and usage of the tool.
 
+# Minimum Supported Rust Version
+
+This crate supports Rust version 1.47 and higher.
+
  */
 
 mod errors;
@@ -40,6 +44,7 @@ mod taskdb;
 mod utils;
 mod workingset;
 
+pub use errors::Error;
 pub use replica::Replica;
 pub use server::{Server, ServerConfig};
 pub use storage::StorageConfig;

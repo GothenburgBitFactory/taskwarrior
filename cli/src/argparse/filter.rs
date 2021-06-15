@@ -1,9 +1,14 @@
-use super::args::{arg_matching, id_list, minus_tag, plus_tag, status_colon, TaskId};
+use super::args::{arg_matching, id_list, literal, minus_tag, plus_tag, status_colon, TaskId};
 use super::ArgList;
 use crate::usage;
 use anyhow::bail;
-use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
-use taskchampion::Status;
+use nom::{
+    branch::alt,
+    combinator::*,
+    multi::{fold_many0, fold_many1},
+    IResult,
+};
+use taskchampion::{Status, Tag};
 
 /// A filter represents a selection of a particular set of tasks.
 ///
@@ -21,10 +26,10 @@ pub(crate) struct Filter {
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum Condition {
     /// Task has the given tag
-    HasTag(String),
+    HasTag(Tag),
 
     /// Task does not have the given tag
-    NoTag(String),
+    NoTag(Tag),
 
     /// Task has the given status
     Status(Status),
@@ -63,15 +68,15 @@ impl Condition {
     }
 
     fn parse_plus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: &str) -> Result<Condition, ()> {
-            Ok(Condition::HasTag(input.to_owned()))
+        fn to_condition(input: Tag) -> Result<Condition, ()> {
+            Ok(Condition::HasTag(input))
         }
         map_res(arg_matching(plus_tag), to_condition)(input)
     }
 
     fn parse_minus_tag(input: ArgList) -> IResult<ArgList, Condition> {
-        fn to_condition(input: &str) -> Result<Condition, ()> {
-            Ok(Condition::NoTag(input.to_owned()))
+        fn to_condition(input: Tag) -> Result<Condition, ()> {
+            Ok(Condition::NoTag(input))
         }
         map_res(arg_matching(minus_tag), to_condition)(input)
     }
@@ -85,7 +90,9 @@ impl Condition {
 }
 
 impl Filter {
-    pub(super) fn parse(input: ArgList) -> IResult<ArgList, Filter> {
+    /// Parse a filter that can include an empty set of args (meaning
+    /// all tasks)
+    pub(super) fn parse0(input: ArgList) -> IResult<ArgList, Filter> {
         fold_many0(
             Condition::parse,
             Filter {
@@ -93,6 +100,30 @@ impl Filter {
             },
             |acc, arg| acc.with_arg(arg),
         )(input)
+    }
+
+    /// Parse a filter that must have at least one arg, which can be `all`
+    /// to mean all tasks
+    pub(super) fn parse1(input: ArgList) -> IResult<ArgList, Filter> {
+        alt((
+            Filter::parse_all,
+            fold_many1(
+                Condition::parse,
+                Filter {
+                    ..Default::default()
+                },
+                |acc, arg| acc.with_arg(arg),
+            ),
+        ))(input)
+    }
+
+    fn parse_all(input: ArgList) -> IResult<ArgList, Filter> {
+        fn to_filter(_: &str) -> Result<Filter, ()> {
+            Ok(Filter {
+                ..Default::default()
+            })
+        }
+        map_res(arg_matching(literal("all")), to_filter)(input)
     }
 
     /// fold multiple filter args into a single Filter instance
@@ -157,6 +188,13 @@ impl Filter {
             description: "
                 Select tasks with the given status.",
         });
+        u.filters.push(usage::Filter {
+            syntax: "all",
+            summary: "All tasks",
+            description: "
+                When specified alone for task-modification commands, `all` matches all tasks.
+                For example, `task all done` will mark all tasks as done.",
+        });
     }
 }
 
@@ -165,8 +203,8 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_empty() {
-        let (input, filter) = Filter::parse(argv![]).unwrap();
+    fn test_empty_parse0() {
+        let (input, filter) = Filter::parse0(argv![]).unwrap();
         assert_eq!(input.len(), 0);
         assert_eq!(
             filter,
@@ -177,8 +215,45 @@ mod test {
     }
 
     #[test]
+    fn test_empty_parse1() {
+        // parse1 does not allow empty input
+        assert!(Filter::parse1(argv![]).is_err());
+    }
+
+    #[test]
+    fn test_all_parse0() {
+        let (input, _) = Filter::parse0(argv!["all"]).unwrap();
+        assert_eq!(input.len(), 1); // did not parse "all"
+    }
+
+    #[test]
+    fn test_all_parse1() {
+        let (input, filter) = Filter::parse1(argv!["all"]).unwrap();
+        assert_eq!(input.len(), 0);
+        assert_eq!(
+            filter,
+            Filter {
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn test_all_with_other_stuff() {
+        let (input, filter) = Filter::parse1(argv!["all", "+foo"]).unwrap();
+        // filter ends after `all`
+        assert_eq!(input.len(), 1);
+        assert_eq!(
+            filter,
+            Filter {
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
     fn test_id_list_single() {
-        let (input, filter) = Filter::parse(argv!["1"]).unwrap();
+        let (input, filter) = Filter::parse0(argv!["1"]).unwrap();
         assert_eq!(input.len(), 0);
         assert_eq!(
             filter,
@@ -190,7 +265,7 @@ mod test {
 
     #[test]
     fn test_id_list_commas() {
-        let (input, filter) = Filter::parse(argv!["1,2,3"]).unwrap();
+        let (input, filter) = Filter::parse0(argv!["1,2,3"]).unwrap();
         assert_eq!(input.len(), 0);
         assert_eq!(
             filter,
@@ -206,7 +281,7 @@ mod test {
 
     #[test]
     fn test_id_list_multi_arg() {
-        let (input, filter) = Filter::parse(argv!["1,2", "3,4"]).unwrap();
+        let (input, filter) = Filter::parse0(argv!["1,2", "3,4"]).unwrap();
         assert_eq!(input.len(), 0);
         assert_eq!(
             filter,
@@ -223,7 +298,7 @@ mod test {
 
     #[test]
     fn test_id_list_uuids() {
-        let (input, filter) = Filter::parse(argv!["1,abcd1234"]).unwrap();
+        let (input, filter) = Filter::parse0(argv!["1,abcd1234"]).unwrap();
         assert_eq!(input.len(), 0);
         assert_eq!(
             filter,
@@ -238,15 +313,15 @@ mod test {
 
     #[test]
     fn test_tags() {
-        let (input, filter) = Filter::parse(argv!["1", "+yes", "-no"]).unwrap();
+        let (input, filter) = Filter::parse0(argv!["1", "+yes", "-no"]).unwrap();
         assert_eq!(input.len(), 0);
         assert_eq!(
             filter,
             Filter {
                 conditions: vec![
                     Condition::IdList(vec![TaskId::WorkingSetId(1),]),
-                    Condition::HasTag("yes".into()),
-                    Condition::NoTag("no".into()),
+                    Condition::HasTag(tag!("yes")),
+                    Condition::NoTag(tag!("no")),
                 ],
             }
         );
@@ -254,7 +329,7 @@ mod test {
 
     #[test]
     fn test_status() {
-        let (input, filter) = Filter::parse(argv!["status:completed", "status:pending"]).unwrap();
+        let (input, filter) = Filter::parse0(argv!["status:completed", "status:pending"]).unwrap();
         assert_eq!(input.len(), 0);
         assert_eq!(
             filter,
@@ -269,8 +344,8 @@ mod test {
 
     #[test]
     fn intersect_idlist_idlist() {
-        let left = Filter::parse(argv!["1,2", "+yes"]).unwrap().1;
-        let right = Filter::parse(argv!["2,3", "+no"]).unwrap().1;
+        let left = Filter::parse0(argv!["1,2", "+yes"]).unwrap().1;
+        let right = Filter::parse0(argv!["2,3", "+no"]).unwrap().1;
         let both = left.intersect(right);
         assert_eq!(
             both,
@@ -278,10 +353,10 @@ mod test {
                 conditions: vec![
                     // from first filter
                     Condition::IdList(vec![TaskId::WorkingSetId(1), TaskId::WorkingSetId(2),]),
-                    Condition::HasTag("yes".into()),
+                    Condition::HasTag(tag!("yes")),
                     // from second filter
                     Condition::IdList(vec![TaskId::WorkingSetId(2), TaskId::WorkingSetId(3)]),
-                    Condition::HasTag("no".into()),
+                    Condition::HasTag(tag!("no")),
                 ],
             }
         );
@@ -289,8 +364,8 @@ mod test {
 
     #[test]
     fn intersect_idlist_alltasks() {
-        let left = Filter::parse(argv!["1,2", "+yes"]).unwrap().1;
-        let right = Filter::parse(argv!["+no"]).unwrap().1;
+        let left = Filter::parse0(argv!["1,2", "+yes"]).unwrap().1;
+        let right = Filter::parse0(argv!["+no"]).unwrap().1;
         let both = left.intersect(right);
         assert_eq!(
             both,
@@ -298,9 +373,9 @@ mod test {
                 conditions: vec![
                     // from first filter
                     Condition::IdList(vec![TaskId::WorkingSetId(1), TaskId::WorkingSetId(2),]),
-                    Condition::HasTag("yes".into()),
+                    Condition::HasTag(tag!("yes")),
                     // from second filter
-                    Condition::HasTag("no".into()),
+                    Condition::HasTag(tag!("no")),
                 ],
             }
         );
@@ -308,15 +383,15 @@ mod test {
 
     #[test]
     fn intersect_alltasks_alltasks() {
-        let left = Filter::parse(argv!["+yes"]).unwrap().1;
-        let right = Filter::parse(argv!["+no"]).unwrap().1;
+        let left = Filter::parse0(argv!["+yes"]).unwrap().1;
+        let right = Filter::parse0(argv!["+no"]).unwrap().1;
         let both = left.intersect(right);
         assert_eq!(
             both,
             Filter {
                 conditions: vec![
-                    Condition::HasTag("yes".into()),
-                    Condition::HasTag("no".into()),
+                    Condition::HasTag(tag!("yes")),
+                    Condition::HasTag(tag!("no")),
                 ],
             }
         );

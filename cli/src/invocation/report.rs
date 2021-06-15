@@ -27,6 +27,7 @@ fn sort_tasks(tasks: &mut Vec<Task>, report: &Report, working_set: &WorkingSet) 
                 }
                 SortBy::Uuid => a.get_uuid().cmp(&b.get_uuid()),
                 SortBy::Description => a.get_description().cmp(b.get_description()),
+                SortBy::Wait => a.get_wait().cmp(&b.get_wait()),
             };
             // If this sort property is equal, go on to the next..
             if ord == Ordering::Equal {
@@ -71,6 +72,13 @@ fn task_column(task: &Task, column: &Column, working_set: &WorkingSet) -> String
             tags.sort();
             tags.join(" ")
         }
+        Property::Wait => {
+            if task.is_waiting() {
+                task.get_wait().unwrap().format("%Y-%m-%d").to_string()
+            } else {
+                "".to_owned()
+            }
+        }
     }
 }
 
@@ -80,7 +88,7 @@ pub(super) fn display_report<W: WriteColor>(
     settings: &Settings,
     report_name: String,
     filter: Filter,
-) -> anyhow::Result<()> {
+) -> Result<(), crate::Error> {
     let mut t = Table::new();
     let working_set = replica.working_set()?;
 
@@ -124,6 +132,7 @@ mod test {
     use super::*;
     use crate::invocation::test::*;
     use crate::settings::Sort;
+    use chrono::prelude::*;
     use std::convert::TryInto;
     use taskchampion::{Status, Uuid};
 
@@ -214,6 +223,50 @@ mod test {
         let got_uuids: Vec<_> = tasks.iter().map(|t| t.get_uuid()).collect();
         let mut exp_uuids = uuids.to_vec();
         exp_uuids.sort();
+        assert_eq!(got_uuids, exp_uuids);
+    }
+
+    #[test]
+    fn sorting_by_wait() {
+        let mut replica = test_replica();
+        let uuids = create_tasks(&mut replica);
+
+        replica
+            .get_task(uuids[0])
+            .unwrap()
+            .unwrap()
+            .into_mut(&mut replica)
+            .set_wait(Some(Utc::now() + chrono::Duration::days(2)))
+            .unwrap();
+
+        replica
+            .get_task(uuids[1])
+            .unwrap()
+            .unwrap()
+            .into_mut(&mut replica)
+            .set_wait(Some(Utc::now() + chrono::Duration::days(3)))
+            .unwrap();
+
+        let working_set = replica.working_set().unwrap();
+
+        let report = Report {
+            sort: vec![Sort {
+                ascending: true,
+                sort_by: SortBy::Wait,
+            }],
+            ..Default::default()
+        };
+
+        let mut tasks: Vec<_> = replica.all_tasks().unwrap().values().cloned().collect();
+        sort_tasks(&mut tasks, &report, &working_set);
+        let got_uuids: Vec<_> = tasks.iter().map(|t| t.get_uuid()).collect();
+
+        let exp_uuids = vec![
+            uuids[2], // no wait
+            uuids[0], // wait:2d
+            uuids[1], // wait:3d
+        ];
+
         assert_eq!(got_uuids, exp_uuids);
     }
 
@@ -350,8 +403,11 @@ mod test {
         };
 
         let task = replica.get_task(uuids[0]).unwrap().unwrap();
-        assert_eq!(task_column(&task, &column, &working_set), s!("+bar +foo"));
+        assert_eq!(
+            task_column(&task, &column, &working_set),
+            s!("+PENDING +bar +foo")
+        );
         let task = replica.get_task(uuids[2]).unwrap().unwrap();
-        assert_eq!(task_column(&task, &column, &working_set), s!(""));
+        assert_eq!(task_column(&task, &column, &working_set), s!("+PENDING"));
     }
 }
