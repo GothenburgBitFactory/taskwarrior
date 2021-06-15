@@ -98,10 +98,9 @@ struct Txn<'t> {
 
 impl<'t> Txn<'t> {
     fn get_txn(&mut self) -> Result<rusqlite::Transaction, SqliteError> {
-        Ok(self
-            .con
+        self.con
             .transaction()
-            .map_err(|_e| SqliteError::CreateTransactionFailed)?)
+            .map_err(|_e| SqliteError::CreateTransactionFailed)
     }
 }
 
