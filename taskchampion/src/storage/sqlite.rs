@@ -77,9 +77,14 @@ pub struct SqliteStorage {
 
 impl SqliteStorage {
     pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<SqliteStorage> {
+        // Ensure parent folder exists
+        std::fs::create_dir_all(&directory)?;
+
+        // Open (or create) database
         let db_file = directory.as_ref().join("taskchampion.sqlite3");
         let con = Connection::open(db_file)?;
 
+        // Initialize database
         let queries = vec![
             "CREATE TABLE IF NOT EXISTS operations (id INTEGER PRIMARY KEY AUTOINCREMENT, data STRING);",
             "CREATE TABLE IF NOT EXISTS sync_meta (key STRING PRIMARY KEY, value STRING);",
