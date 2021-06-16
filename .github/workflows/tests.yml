@@ -9,15 +9,18 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
         rust:
           - "1.47" # MSRV
           - "stable"
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
 
-    name: "Test - Rust ${{ matrix.rust }}"
+    name: "Test - Rust ${{ matrix.rust }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v1
