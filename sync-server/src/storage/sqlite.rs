@@ -87,17 +87,16 @@ impl SqliteStorage {
 impl Storage for SqliteStorage {
     fn txn<'a>(&'a self) -> anyhow::Result<Box<dyn StorageTxn + 'a>> {
         let con = self.new_connection()?;
-        let t = Txn { con, txn: None };
+        let t = Txn { con };
         Ok(Box::new(t))
     }
 }
 
-struct Txn<'t> {
+struct Txn {
     con: Connection,
-    txn: Option<rusqlite::Transaction<'t>>,
 }
 
-impl<'t> Txn<'t> {
+impl Txn {
     fn get_txn(&mut self) -> Result<rusqlite::Transaction, SqliteError> {
         self.con
             .transaction()
@@ -105,7 +104,7 @@ impl<'t> Txn<'t> {
     }
 }
 
-impl<'t> StorageTxn for Txn<'t> {
+impl StorageTxn for Txn {
     fn get_client(&mut self, client_key: Uuid) -> anyhow::Result<Option<Client>> {
         let t = self.get_txn()?;
         let result: Option<Client> = t
@@ -195,11 +194,10 @@ impl<'t> StorageTxn for Txn<'t> {
     }
 
     fn commit(&mut self) -> anyhow::Result<()> {
-        let t: rusqlite::Transaction = self
-            .txn
-            .take()
-            .ok_or(SqliteError::TransactionAlreadyCommitted)?;
-        t.commit().context("Committing transaction")?;
+        // FIXME: Note the queries aren't currently run in a
+        // transaction, as storing the transaction object and a pooled
+        // connection in the `Txn` object is complex.
+        // https://github.com/taskchampion/taskchampion/pull/206#issuecomment-860336073
         Ok(())
     }
 }
