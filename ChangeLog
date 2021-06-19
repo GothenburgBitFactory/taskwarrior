@@ -11,6 +11,8 @@
            Thanks to Matt Chun-Lum.
 - TW #1911 Support holidays longer then 1 day
            Thanks to Daniel Mowitz.
+- TW #1938 Missing annotation on import if entry is duplicated
+           Thanks to Florian.
 - TW #1955 Adding tasks in context.
            Thanks to Jean-Francois Joly, Matt Smith.
 - TW #2004 "shell" should not be expand to "exec tasksh"
