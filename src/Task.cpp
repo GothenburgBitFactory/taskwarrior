@@ -766,8 +766,23 @@ void Task::parseJSON (const json::object* root_obj)
           if (! what)
             throw format ("Annotation is missing a description: {1}", root_obj->dump ());
 
-          std::string name = "annotation_" + Datetime (when->_data).toEpochString ();
-          annos.insert (std::make_pair (name, json::decode (what->_data)));
+          // Extract 64-bit annotation entry value
+          // Time travelers from 2038, we have your back.
+          long long ann_timestamp = (long long) (Datetime (when->_data).toEpoch ());
+
+          std::stringstream name;
+          name << "annotation_" << ann_timestamp;
+
+          // Increment the entry timestamp in case of a conflict. Same
+          // behaviour as CmdAnnotate.
+          while (annos.find(name.str ()) != annos.end ())
+          {
+              name.str ("");  // Clear
+              ann_timestamp++;
+              name << "annotation_" << ann_timestamp;
+          }
+
+          annos.insert (std::make_pair (name.str (), json::decode (what->_data)));
         }
 
         setAnnotations (annos);
