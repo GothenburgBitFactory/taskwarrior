@@ -112,6 +112,17 @@ Whether it comes in the form of code patches, ideas, discussion, bug reports, en
 
 Visit [Github](https://github.com/GothenburgBitFactory/taskwarrior) and participate in the future of Taskwarrior.
 
+## Sponsoring
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/GothenburgBitFactory?color=green)](https://github.com/sponsors/GothenburgBitFactory/)
+
+Taskwarrior is a result of work of mostly small group of volunteers, and has been in development since 2006.
+
+If you are a happy Taskwarrior user, please consider [sponsoring us through
+Github Sponsors](https://github.com/sponsors/GothenburgBitFactory/).
+
+Every sponsorship matters, as it directly increases the number of hours core
+developers can contribute to the project and makes the project more sustainable.
+
 ## License
 
 Taskwarrior is released under the MIT license.
