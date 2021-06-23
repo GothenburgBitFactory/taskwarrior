@@ -757,14 +757,19 @@ void Task::parseJSON (const json::object* root_obj)
         for (auto& annotations : atts->_data)
         {
           auto annotation = (json::object*)annotations;
+
           auto when = (json::string*)annotation->_data["entry"];
           auto what = (json::string*)annotation->_data["description"];
 
-          if (! when)
-            throw format ("Annotation is missing an entry date: {1}", root_obj-> dump ());
+          if (! when) {
+            annotation->_data.erase ("entry");  // Erase NULL entry inserted by failed lookup above
+            throw format ("Annotation is missing an entry date: {1}", annotation-> dump ());
+          }
 
-          if (! what)
-            throw format ("Annotation is missing a description: {1}", root_obj->dump ());
+          if (! what) {
+            annotation->_data.erase ("description");  // Erase NULL description inserted by failed lookup above
+            throw format ("Annotation is missing a description: {1}", annotation->dump ());
+          }
 
           // Extract 64-bit annotation entry value
           // Time travelers from 2038, we have your back.
