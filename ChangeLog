@@ -5,6 +5,9 @@
 - TW #1788 When deleting recurring task all tasks, including completed tasks,
            are marked as deleted
            Thanks to Alan Young.
+- TW #1804 Importing malformed annotation (without entry timestamp) causes
+           segmentation fault.
+           Thanks to David Badura.
 - TW #1896 Parser cannot handle empty parentheses
            Thanks to Tomas Babej.
 - TW #1908 Cannot create task with explicit description 'start ....'
