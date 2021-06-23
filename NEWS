@@ -20,6 +20,8 @@ New Features in Taskwarrior 2.6.0
   - The currently selected context is now applied for "task add" and "task log"
     commands. Section on contexts in the manpage was updated to describe this
     functionality.
+  - The `task import` command can now accept annotations with missing entry
+    values. Current time will be assumed.
 
 
 New Commands in Taskwarrior 2.6.0
