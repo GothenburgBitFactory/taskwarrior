@@ -758,14 +758,8 @@ void Task::parseJSON (const json::object* root_obj)
         {
           auto annotation = (json::object*)annotations;
 
-          auto when = (json::string*)annotation->_data["entry"];
+          // Extract description. Fail if not present.
           auto what = (json::string*)annotation->_data["description"];
-
-          if (! when) {
-            annotation->_data.erase ("entry");  // Erase NULL entry inserted by failed lookup above
-            throw format ("Annotation is missing an entry date: {1}", annotation-> dump ());
-          }
-
           if (! what) {
             annotation->_data.erase ("description");  // Erase NULL description inserted by failed lookup above
             throw format ("Annotation is missing a description: {1}", annotation->dump ());
@@ -773,7 +767,16 @@ void Task::parseJSON (const json::object* root_obj)
 
           // Extract 64-bit annotation entry value
           // Time travelers from 2038, we have your back.
-          long long ann_timestamp = (long long) (Datetime (when->_data).toEpoch ());
+          long long ann_timestamp;
+
+          // Extract entry. Use current time if not present.
+          auto when = (json::string*)annotation->_data["entry"];
+          if (when)
+            ann_timestamp = (long long) (Datetime (when->_data).toEpoch ());
+          else {
+            annotation->_data.erase ("entry");  // Erase NULL entry inserted by failed lookup above
+            ann_timestamp = (long long) (Datetime ().toEpoch ());
+          }
 
           std::stringstream name;
           name << "annotation_" << ann_timestamp;
