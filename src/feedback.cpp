@@ -171,9 +171,19 @@ std::string taskInfoDifferences (
     }
     else if (name == "start")
     {
+      Datetime started (before.get ("start"));
+      Datetime stopped;
+
+      if (after.has ("end"))
+        // Task was marked as finished, use end time
+        stopped = Datetime (after.get ("end"));
+      else
+        // Start attribute was removed, use modification time
+        stopped = Datetime (current_timestamp);
+
       out << format ("{1} deleted (duration: {2}).",
                      Lexer::ucFirst (name),
-                     Duration (current_timestamp - last_timestamp).format ())
+                     Duration (stopped - started).format ())
           << "\n";
     }
     else
