@@ -65,6 +65,8 @@
            Thanks to Scott Kostyshak.
 - TW #2503 Warn against executing an empty execute command.
            Thanks to heinrichat.
+- TW #2514 Duration values can be mis-reported in the task info output
+           Thanks to reportaman.
 
 ------ current release ---------------------------
 
