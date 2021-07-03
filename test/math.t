@@ -44,7 +44,7 @@ class TestMath(TestCase):
         cls.t.config("dateformat", "YYYY-MM-DD")
 
         # YYYY-12-21.
-        cls.when = "%d-12-22T00:00:00\n" % datetime.now().year
+        cls.when = "%d-12-21T23:59:59\n" % datetime.now().year
 
         # Different ways of specifying YYYY-12-21.
         cls.t("add one   due:eoy-10days")
