@@ -67,6 +67,9 @@
            Thanks to heinrichat.
 - TW #2514 Duration values can be mis-reported in the task info output
            Thanks to reportaman.
+- TW #2519 Named date eod should be last minute of today and not first of
+           tomorrow.
+           Thanks to Pablo Vizcay.
 
 ------ current release ---------------------------
 
