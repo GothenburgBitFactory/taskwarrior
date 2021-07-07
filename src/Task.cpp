@@ -1841,6 +1841,7 @@ float Task::urgency_c () const
   value += fabsf (Task::urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    : 0.0;
   value += fabsf (Task::urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * Task::urgencyAgeCoefficient)         : 0.0;
 
+  const std::string taskProjectName = get("project");
   // Tag- and project-specific coefficients.
   for (auto& var : Task::coefficients)
   {
@@ -1855,8 +1856,11 @@ float Task::urgency_c () const
         {
           std::string project = var.first.substr (21, end - 21);
 
-          if (get ("project").find (project) == 0)
+          if (taskProjectName == project ||
+              taskProjectName.find(project + '.') == 0)
+          {
             value += var.second;
+          }
         }
 
         // urgency.user.tag.<tag>.coefficient

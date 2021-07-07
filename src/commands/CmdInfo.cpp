@@ -468,8 +468,12 @@ int CmdInfo::execute (std::string& output)
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
             auto project = var.first.substr (21, end - 21);
-            if (task.get ("project").find (project) == 0)
+            const std::string taskProjectName = task.get("project");
+            if (taskProjectName == project ||
+                taskProjectName.find(project + '.') == 0)
+            {
               urgencyTerm (urgencyDetails, "PROJECT " + project, 1.0, var.second);
+            }
           }
 
           // urgency.user.tag.<tag>.coefficient
