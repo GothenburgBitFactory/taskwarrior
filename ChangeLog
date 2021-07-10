@@ -70,6 +70,8 @@
 - TW #2519 Named date eod should be last minute of today and not first of
            tomorrow.
            Thanks to Pablo Vizcay.
+- TW #2530 Taskwarrior 2.5.3 time based filtering regression
+           Thanks to Matthias Tafelmeier.
 
 ------ current release ---------------------------
 
