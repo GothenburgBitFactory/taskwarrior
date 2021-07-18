@@ -397,6 +397,7 @@ static const char* modifierNames[] =
 {
   "before",     "under",    "below",
   "after",      "over",     "above",
+  "by",
   "none",
   "any",
   "is",         "equals",
