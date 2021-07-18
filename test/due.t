@@ -118,6 +118,25 @@ class TestBug418(TestCase):
         self.assertNotIn("nine", out)
 
 
+class TestBug2519(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_due_today_includes_eod(self):
+        """Verify that virtual tag +TODAY matches a task due eod"""
+        self.t("add zero due:eod")
+
+        code, out, err = self.t("+TODAY ls")
+        self.assertIn("zero", out)
+
+    def test_eoy_is_not_before_eoy(self):
+        """Verify that end of year is not before end of year"""
+        self.t("add zero due:eoy")
+
+        code, out, err = self.t.runError("due.before:eoy")
+        self.assertNotIn("1", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
