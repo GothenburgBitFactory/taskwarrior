@@ -32,6 +32,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <Color.h>
+#include <main.h>
 #include <shared.h>
 #include <format.h>
 #include <util.h>
@@ -260,20 +261,20 @@ int CmdSync::execute (std::string& output)
         // Present a clear status message.
         if (upload_count == 0 && download_count == 0)
           // Note: should not happen - expect code 201 instead.
-          Context::getContext ().footnote ("Sync successful.");
+          feedback_sync ("Sync successful.");
         else if (upload_count == 0 && download_count > 0)
-          Context::getContext ().footnote (format ("Sync successful.  {1} changes downloaded.", download_count));
+          feedback_sync (format ("Sync successful.  {1} changes downloaded.", download_count));
         else if (upload_count > 0 && download_count == 0)
-          Context::getContext ().footnote (format ("Sync successful.  {1} changes uploaded.", upload_count));
+          feedback_sync (format ("Sync successful.  {1} changes uploaded.", upload_count));
         else if (upload_count > 0 && download_count > 0)
-          Context::getContext ().footnote (format ("Sync successful.  {1} changes uploaded, {2} changes downloaded.", upload_count, download_count));
+          feedback_sync (format ("Sync successful.  {1} changes uploaded, {2} changes downloaded.", upload_count, download_count));
       }
 
       status = 0;
     }
     else if (code == "201")
     {
-      Context::getContext ().footnote ("Sync successful.  No changes.");
+      feedback_sync ("Sync successful.  No changes.");
       status = 0;
     }
     else if (code == "301")
