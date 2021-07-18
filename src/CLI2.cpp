@@ -1341,6 +1341,11 @@ void CLI2::desugarFilterAttributes ()
           op.attribute ("raw", ">");
           rhs.attribute ("raw", value);
         }
+        else if (mod == "by")
+        {
+          op.attribute ("raw", "<=");
+          rhs.attribute ("raw", value);
+        }
         else if (mod == "none")
         {
           op.attribute ("raw", "==");
