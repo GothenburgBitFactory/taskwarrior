@@ -310,6 +310,27 @@ void feedback_affected (const std::string& effect, const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Implements:
+//    <string>
+void feedback_sync (const std::string& effect)
+{
+  if (Context::getContext ().verbose ("sync"))
+    std::cout << effect << "\n";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Implements:
+//
+// The 'effect' string should contain:
+//    {1}    Quantity
+void feedback_sync (const std::string& effect, int quantity)
+{
+  if (Context::getContext ().verbose ("sync"))
+    std::cout << format (effect, quantity)
+              << "\n";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Implements feedback and error when adding a reserved tag name.
 void feedback_reserved_tags (const std::string& tag)
 {
