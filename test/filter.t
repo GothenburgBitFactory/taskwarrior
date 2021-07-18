@@ -836,6 +836,34 @@ class TestBefore(TestCase):
         self.assertIn("2", out)
 
 
+class TestBy(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_by_eoy_includes_eoy(self):
+        """ Verify by-end-of-year includes task due *at* end-of-year """
+        self.t("add zero due:eoy")
+
+        code, out, err = self.t("due.by:eoy")
+        self.assertIn("zero", out)
+
+    def test_by_tomorrow_includes_tomorrow(self):
+        """ Verify that by-tomorrow also includes tomorrow itself """
+        self.t.faketime("2021-07-16 21:00:00")
+        self.t("add zero due:2021-07-17")
+
+        code, out, err = self.t("due.by:tomorrow")
+        self.assertIn("zero", out)
+
+    def test_by_yesterday_does_not_include_today(self):
+        """ Verify that by-yesterday does not include today """
+        self.t("add zero")
+
+        code, out, err = self.t.runError("entry.by:yesterday")
+        self.assertIn("No matches", err)
+        self.assertNotIn("zero", out)
+
+
 class Test1424(TestCase):
     def setUp(self):
         self.t = Task()
