@@ -22,6 +22,11 @@ New Features in Taskwarrior 2.6.0
     functionality.
   - The `task import` command can now accept annotations with missing entry
     values. Current time will be assumed.
+  - The new 'by' filter attribute modifier compares using '<=' rather than '<'
+    as 'before' uses.  This allows the last second of the day to match with
+    'due.by:eod', which it would not otherwise.  It also works with
+    whole units like days, e.g. 'add test due:2021-07-17' would not match
+    'due.before:tomorrow' (on the 16th), but would match 'due.by:tomorrow'.
 
 
 New Commands in Taskwarrior 2.6.0

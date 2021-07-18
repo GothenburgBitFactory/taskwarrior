@@ -55,6 +55,7 @@ More filter examples:
   task                                      <command> <mods>
   task 28                                   <command> <mods>
   task +weekend                             <command> <mods>
+  task +bills due.by:eom                    <command> <mods>
   task project:Home due.before:today        <command> <mods>
   task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <mods>
 
@@ -819,6 +820,8 @@ Attribute modifiers improve filters.  Supported modifiers are:
 .br
 .B  after      (synonyms over, above)
 .br
+.B  by
+.br
 .B  none
 .br
 .B  any
@@ -865,6 +868,24 @@ The
 modifier is the inverse of the
 .I before
 modifier.
+
+The
+.I by
+modifier is the same as 'before', except it also includes the moment in
+question.  For example:
+
+    task add test due:eoy
+
+will be found when using the inclusive filter 'by':
+
+    task due.by:eoy
+
+but not when the non-inclusive filter 'before' is used:
+
+    task due.before:eoy
+
+this applies equally to other named dates such as 'eom', 'eod', etc; the
+modifier compares using '<=' rather than '<' like 'before' does.
 
 The
 .I none
