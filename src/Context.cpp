@@ -227,6 +227,7 @@ std::string configurationDefaults =
   "color.calendar.due.today=color15 on color1\n"
   "color.calendar.due=color0 on color1\n"
   "color.calendar.holiday=color0 on color11\n"
+  "color.calendar.scheduled=rgb013 on color15\n"
   "color.calendar.overdue=color0 on color9\n"
   "color.calendar.today=color15 on rgb013\n"
   "color.calendar.weekend=on color235\n"

@@ -98,6 +98,7 @@ int CmdShow::execute (std::string& output)
     " color.calendar.due"
     " color.calendar.due.today"
     " color.calendar.holiday"
+    " color.calendar.scheduled"
     " color.calendar.overdue"
     " color.calendar.today"
     " color.calendar.weekend"
