@@ -71,7 +71,7 @@ int CmdDone::execute (std::string&)
   Task& lowest = filtered.front();
 
   if(filtered.size() > 1) {
-    std::cout << "This command will alter " << format(filtered.size()) << " tasks." << std::endl;
+    feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
   for (auto& task : filtered)
   {
