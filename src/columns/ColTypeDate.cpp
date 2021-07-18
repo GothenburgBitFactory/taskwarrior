@@ -161,7 +161,7 @@ void ColumnTypeDate::render (
     else if (_style == "countdown")
     {
       Datetime now;
-      renderStringRight (lines, width, color, Duration (now - date).formatVague (true));
+      renderStringRight (lines, width, color, Duration (date - now).formatVague (true));
     }
     else if (_style == "julian")
       renderStringRight (lines, width, color, format (date.toJulian (), 13, 12));

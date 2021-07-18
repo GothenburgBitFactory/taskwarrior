@@ -75,6 +75,8 @@
 - TW #2536 Feature: inclusive range-end attribute modifier 'by' so 'end of'
            named dates can be filtered inclusively
            Thanks to Scott Mcdermott
+- TW #1824 Fixed countdown formatting
+           Thanks to Sebastian Uharek
 
 ------ current release ---------------------------
 

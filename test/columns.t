@@ -390,8 +390,8 @@ class TestDateFormats(TestCase):
     def test_date_format_countdown(self):
         """Verify due.countdown formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.countdown")
-        self.assertRegex(out, r'1\s+\d+\S+')
-        self.assertRegex(out, r'2\s+')
+        self.assertRegex(out, r'1\s+')
+        self.assertRegex(out, r'2\s+\d+\S+')
 
     def test_date_format_unrecognized(self):
         """Verify due.donkey formatting fails"""
