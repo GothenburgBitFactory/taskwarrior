@@ -290,6 +290,7 @@ int CmdCalendar::execute (std::string& output)
   Color color_overdue    (config.get ("color.calendar.overdue"));
   Color color_weekend    (config.get ("color.calendar.weekend"));
   Color color_holiday    (config.get ("color.calendar.holiday"));
+  Color color_scheduled  (config.get ("color.calendar.scheduled"));
   Color color_weeknumber (config.get ("color.calendar.weeknumber"));
 
   if (Context::getContext ().color () && config.getBoolean ("calendar.legend"))
@@ -307,6 +308,8 @@ int CmdCalendar::execute (std::string& output)
           << color_duetoday.colorize ("due-today")
           << ", "
           << color_overdue.colorize ("overdue")
+          << ", "
+          << color_scheduled.colorize ("scheduled")
           << ", ";
 
     // If colorizing holidays, print legend
@@ -528,6 +531,7 @@ std::string CmdCalendar::renderMonths (
   Color color_overdue    (config.get ("color.calendar.overdue"));
   Color color_weekend    (config.get ("color.calendar.weekend"));
   Color color_holiday    (config.get ("color.calendar.holiday"));
+  Color color_scheduled  (config.get ("color.calendar.scheduled"));
   Color color_weeknumber (config.get ("color.calendar.weeknumber"));
 
   // Loop through months to be added on this line.
@@ -573,7 +577,7 @@ std::string CmdCalendar::renderMonths (
         if (config.get ("calendar.holidays") != "none")
         {
           auto dateFormat = config.get ("dateformat.holiday");
-		  for (auto& hol : config)
+          for (auto& hol : config)
           {
             if (hol.first.substr (0, 8) == "holiday.")
             {
@@ -603,40 +607,55 @@ std::string CmdCalendar::renderMonths (
         if (today.sameDay (date))
           cellColor.blend (color_today);
 
-        // colorize due tasks
+        // colorize due and scheduled tasks
         if (config.get ("calendar.details") != "none")
         {
           config.set ("due", 0);
+          config.set ("scheduled", 0);
+          // if a date has a task that is due on that day, the due color
+          // takes precedence over the scheduled color
+          bool coloredWithDue = false;
           for (auto& task : all)
           {
             auto status = task.getStatus ();
             if ((status == Task::pending ||
                  status == Task::waiting ) &&
-                !task.hasTag ("nocal")     &&
-                task.has ("due"))
+                !task.hasTag ("nocal"))
             {
-              std::string due = task.get ("due");
-              Datetime duedmy (strtol (due.c_str(), nullptr, 10));
+              if(task.has("scheduled") && !coloredWithDue) {
+                std::string scheduled = task.get ("scheduled");
+                Datetime scheduleddmy (strtol (scheduled.c_str(), nullptr, 10));
 
-              if (duedmy.sameDay (date))
-              {
-                switch (task.getDateState ("due"))
+                if (scheduleddmy.sameDay (date))
                 {
-                case Task::dateNotDue:
-                  break;
+                  cellColor.blend(color_scheduled);
+                }
+              }
+              if(task.has("due")) {
+                std::string due = task.get ("due");
+                Datetime duedmy (strtol (due.c_str(), nullptr, 10));
 
-                case Task::dateAfterToday:
-                  cellColor.blend (color_due);
-                  break;
+                if (duedmy.sameDay (date))
+                {
+                  coloredWithDue = true;
+                  switch (task.getDateState ("due"))
+                  {
+                  case Task::dateNotDue:
+                    break;
 
-                case Task::dateLaterToday:
-                  cellColor.blend (color_duetoday);
-                  break;
+                  case Task::dateAfterToday:
+                    cellColor.blend (color_due);
+                    break;
 
-                case Task::dateEarlierToday:
-                case Task::dateBeforeToday:
-                  cellColor.blend (color_overdue);
-                  break;
+                  case Task::dateLaterToday:
+                    cellColor.blend (color_duetoday);
+                    break;
+
+                  case Task::dateEarlierToday:
+                  case Task::dateBeforeToday:
+                    cellColor.blend (color_overdue);
+                    break;
+                  }
                 }
               }
             }

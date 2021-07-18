@@ -77,6 +77,8 @@
            Thanks to Scott Mcdermott
 - TW #1824 Fixed countdown formatting
            Thanks to Sebastian Uharek
+- #2208    Feature: added coloring of dates with scheduled tasks to calendar
+           Thanks to Sebastian Uharek
 
 ------ current release ---------------------------
 
