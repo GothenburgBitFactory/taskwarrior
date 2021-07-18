@@ -69,6 +69,9 @@ int CmdStart::execute (std::string&)
   std::map <std::string, std::string> projectChanges;
 
   bool nagged = false;
+  if(filtered.size() > 1) {
+    std::cout << "This command will alter " << format(filtered.size()) << " tasks." << std::endl;
+  }
   for (auto& task : filtered)
   {
     if (! task.has ("start"))
