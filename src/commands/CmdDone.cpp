@@ -69,6 +69,10 @@ int CmdDone::execute (std::string&)
   std::map <std::string, std::string> projectChanges;
 
   Task& lowest = filtered.front();
+
+  if(filtered.size() > 1) {
+    std::cout << "This command will alter " << format(filtered.size()) << " tasks." << std::endl;
+  }
   for (auto& task : filtered)
   {
     Task before (task);
