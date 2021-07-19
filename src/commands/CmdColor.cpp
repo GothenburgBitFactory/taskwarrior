@@ -99,7 +99,7 @@ int CmdColor::execute (std::string& output)
 
     // If there is something in the description, then assume that is a color,
     // and display it as a sample.
-    else if (words.size ())
+    else if (!words.empty())
     {
       Color one    ("black on bright yellow");
       Color two    ("underline cyan on bright blue");

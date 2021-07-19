@@ -97,7 +97,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
   {
     if (i + 1 == ids.size ())
     {
-      if (result.str ().length ())
+      if (!result.str ().empty ())
         result << ' ';
 
       if (range_start < range_end)
@@ -113,7 +113,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
       }
       else
       {
-        if (result.str ().length ())
+        if (!result.str ().empty ())
           result << ' ';
 
         if (range_start < range_end)

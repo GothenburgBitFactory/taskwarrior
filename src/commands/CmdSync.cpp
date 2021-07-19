@@ -80,13 +80,13 @@ int CmdSync::execute (std::string& output)
 
   // If no server is set up, quit.
   std::string connection = Context::getContext ().config.get ("taskd.server");
-  if (connection == "" ||
+  if (connection.empty() ||
       connection.rfind (':') == std::string::npos)
     throw std::string ("Taskserver is not configured.");
 
   // Obtain credentials.
   std::string credentials_string = Context::getContext ().config.get ("taskd.credentials");
-  if (credentials_string == "")
+  if (credentials_string.empty())
     throw std::string ("Taskserver credentials malformed.");
 
   auto credentials = split (credentials_string, '/');
@@ -108,10 +108,10 @@ int CmdSync::execute (std::string& output)
 
   // CA must exist, if provided.
   File ca (Context::getContext ().config.get ("taskd.ca"));
-  if (ca._data != "" && ! ca.exists ())
+  if (!ca._data.empty() && ! ca.exists ())
     throw std::string ("CA certificate not found.");
 
-  if (trust == TLSClient::allow_all && ca._data != "")
+  if (trust == TLSClient::allow_all && !ca._data.empty())
     throw std::string ("You should either provide a CA certificate or override verification, but not both.");
 
   File certificate (Context::getContext ().config.get ("taskd.certificate"));
@@ -238,7 +238,7 @@ int CmdSync::execute (std::string& output)
             Context::getContext ().tdb2.add (from_server, false);
           }
         }
-        else if (line != "")
+        else if (!line.empty())
         {
           sync_key = line;
           Context::getContext ().debug ("Sync key " + sync_key);
@@ -249,7 +249,7 @@ int CmdSync::execute (std::string& output)
 
       // Only update everything if there is a new sync_key.  No sync_key means
       // something horrible happened on the other end of the wire.
-      if (sync_key != "")
+      if (!sync_key.empty())
       {
         // Truncate backlog.data, save new sync_key.
         Context::getContext ().tdb2.backlog._file.truncate ();
@@ -299,7 +299,7 @@ int CmdSync::execute (std::string& output)
 
     // Display all errors returned.  This is recommended by the server protocol.
     std::string to_be_displayed = response.get ("messages");
-    if (to_be_displayed != "")
+    if (!to_be_displayed.empty())
     {
       if (Context::getContext ().verbose ("footnote"))
         Context::getContext ().footnote (to_be_displayed);

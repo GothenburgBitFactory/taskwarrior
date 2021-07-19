@@ -41,7 +41,7 @@ bool nag (Task& task)
     return false;
 
   auto msg = Context::getContext ().config.get ("nag");
-  if (msg != "")
+  if (!msg.empty())
   {
     // Scan all pending, non-recurring tasks.
     auto pending = Context::getContext ().tdb2.pending.get_tasks ();

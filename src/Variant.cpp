@@ -1827,7 +1827,7 @@ void Variant::cast (const enum type new_type)
   case type_integer:
     switch (new_type)
     {
-    case type_boolean:  _bool = _integer == 0 ? false : true;  break;
+    case type_boolean:  _bool = _integer != 0;  break;
     case type_integer:                                         break;
     case type_real:     _real = static_cast<double>(_integer); break;
     case type_string:
@@ -1845,7 +1845,7 @@ void Variant::cast (const enum type new_type)
   case type_real:
     switch (new_type)
     {
-    case type_boolean:  _bool = _real == 0.0 ? false : true; break;
+    case type_boolean:  _bool = _real != 0.0; break;
     case type_integer:  _integer = (long long) _real;        break;
     case type_real:                                          break;
     case type_string:
@@ -1865,9 +1865,9 @@ void Variant::cast (const enum type new_type)
     switch (new_type)
     {
     case type_boolean:
-      _bool = (_string.length () == 0 ||
-               _string == "0"         ||
-               _string == "0.0") ? false : true;
+      _bool = !(_string.empty ()  ||
+               _string == "0"     ||
+               _string == "0.0");
       break;
     case type_integer:
       _integer = (long long) strtol (_string.c_str (), nullptr, (_string.substr (0, 2) == "0x" ? 16 : 10));
@@ -1895,7 +1895,7 @@ void Variant::cast (const enum type new_type)
           break;
         }
 
-        if (dateFormat != "")
+        if (!dateFormat.empty())
         {
           _date = Datetime (_string, dateFormat).toEpoch ();
           break;
@@ -1920,7 +1920,7 @@ void Variant::cast (const enum type new_type)
   case type_date:
     switch (new_type)
     {
-    case type_boolean:  _bool = _date != 0 ? true : false;  break;
+    case type_boolean:  _bool = _date != 0;  break;
     case type_integer:  _integer = (long long) _date;       break;
     case type_real:     _real = static_cast<double>(_date); break;
     case type_string:   _string = (std::string) *this;      break;
@@ -1934,7 +1934,7 @@ void Variant::cast (const enum type new_type)
   case type_duration:
     switch (new_type)
     {
-    case type_boolean:  _bool = _duration != 0 ? true : false;  break;
+    case type_boolean:  _bool = _duration != 0;  break;
     case type_integer:  _integer = (long long) _duration;       break;
     case type_real:     _real = static_cast<double>(_duration); break;
     case type_string:   _string = (std::string) *this;          break;
@@ -1958,7 +1958,7 @@ bool Variant::trivial () const
 {
   return (_type == type_integer  && _integer  == 0)   ||
          (_type == type_real     && _real     == 0.0) ||
-         (_type == type_string   && _string   == "")  ||
+         (_type == type_string   && _string.empty())  ||
          (_type == type_date     && _date     == 0)   ||
          (_type == type_duration && _duration == 0);
 }

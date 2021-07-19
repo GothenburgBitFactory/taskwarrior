@@ -190,10 +190,7 @@ void Task::setAsNow (const std::string& att)
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::has (const std::string& name) const
 {
-  if (data.find (name) != data.end ())
-    return true;
-
-  return false;
+  return data.find (name) != data.end ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +315,7 @@ void Task::setStatus (Task::status status)
 Task::dateState Task::getDateState (const std::string& name) const
 {
   std::string value = get (name);
-  if (value.length ())
+  if (!value.empty ())
   {
     Datetime reference (value);
     Datetime now;
@@ -588,7 +585,7 @@ void Task::parse (const std::string& input)
       {
         std::string line = input.substr(1, ending_bracket);
 
-        if (line.length () == 0)
+        if (line.empty ())
           throw std::string ("Empty record in input.");
 
         Pig attLine (line);
@@ -615,7 +612,7 @@ void Task::parse (const std::string& input)
 
         std::string remainder;
         attLine.getRemainder (remainder);
-        if (remainder.length ())
+        if (!remainder.empty ())
           throw std::string ("Unrecognized characters at end of line.");
       }
     }
@@ -654,7 +651,7 @@ void Task::parseJSON (const json::object* root_obj)
   {
     // If the attribute is a recognized column.
     std::string type = Task::attributes[i.first];
-    if (type != "")
+    if (!type.empty())
     {
       // Any specified id is ignored.
       if (i.first == "id")
@@ -679,7 +676,7 @@ void Task::parseJSON (const json::object* root_obj)
         auto text = i.second->dump ();
         Lexer::dequote (text);
         Datetime d (text);
-        set (i.first, text == "" ? "" : d.toEpochString ());
+        set (i.first, text.empty() ? "" : d.toEpochString ());
       }
 
       // Tags are an array of JSON strings.
@@ -864,11 +861,11 @@ std::string Task::composeF4 () const
   {
     // Orphans have no type, treat as string.
     std::string type = Task::attributes[it.first];
-    if (type == "")
+    if (type.empty())
       type = "string";
 
     // If there is a value.
-    if (it.second != "")
+    if (!it.second.empty())
     {
       ff4 += (first ? "" : " ");
       ff4 += it.first;
@@ -907,14 +904,14 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       continue;
 
     // If value is an empty string, do not ever output it
-    if (i.second == "")
+    if (i.second.empty())
         continue;
 
     if (attributes_written)
       out << ',';
 
     std::string type = Task::attributes[i.first];
-    if (type == "")
+    if (type.empty())
       type = "string";
 
     // Date fields are written as ISO 8601.
@@ -925,7 +922,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
           << (i.first == "modification" ? "modified" : i.first)
           << "\":\""
           // Date was deleted, do not export parsed empty string
-          << (i.second == "" ? "" : d.toISO ())
+          << (i.second.empty() ? "" : d.toISO ())
           << '"';
 
       ++attributes_written;
@@ -1073,7 +1070,7 @@ int Task::getAnnotationCount () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::hasAnnotations () const
 {
-  return annotation_count ? true : false;
+  return annotation_count != 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1148,7 +1145,7 @@ void Task::addDependency (int depid)
 {
   // Check that id is resolvable.
   std::string uuid = Context::getContext ().tdb2.pending.uuid (depid);
-  if (uuid == "")
+  if (uuid.empty())
     throw format ("Could not create a dependency on task {1} - not found.", depid);
 
   std::string depends = get ("depends");
@@ -1170,7 +1167,7 @@ void Task::addDependency (const std::string& uuid)
 
   // Store the dependency.
   std::string depends = get ("depends");
-  if (depends != "")
+  if (!depends.empty())
   {
     // Check for extant dependency.
     if (depends.find (uuid) == std::string::npos)
@@ -1217,7 +1214,7 @@ void Task::removeDependency (int id)
 {
   std::string depends = get ("depends");
   std::string uuid = Context::getContext ().tdb2.pending.uuid (id);
-  if (uuid != "" && depends.find (uuid) != std::string::npos)
+  if (!uuid.empty() && depends.find (uuid) != std::string::npos)
     removeDependency (uuid);
   else
     throw format ("Could not delete a dependency on task {1} - not found.", id);
@@ -1320,10 +1317,7 @@ bool Task::hasTag (const std::string& tag) const
   // Concrete tags.
   auto tags = split (get ("tags"), ',');
 
-  if (std::find (tags.begin (), tags.end (), tag) != tags.end ())
-    return true;
-
-  return false;
+  return std::find (tags.begin (), tags.end (), tag) != tags.end ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1392,7 +1386,7 @@ void Task::substitute (
   const std::string& to,
   const std::string& flags)
 {
-  bool global = (flags.find ('g') != std::string::npos ? true : false);
+  bool global = (flags.find ('g') != std::string::npos);
 
   // Get the data to modify.
   std::string description = get ("description");
@@ -1515,13 +1509,13 @@ void Task::substitute (
 void Task::validate (bool applyDefault /* = true */)
 {
   Task::status status = Task::pending;
-  if (get ("status") != "")
+  if (!get ("status").empty())
     status = getStatus ();
 
   // 1) Provide missing attributes where possible
   // Provide a UUID if necessary. Validate if present.
   std::string uid = get ("uuid");
-  if (has ("uuid") && uid != "")
+  if (has ("uuid") && !uid.empty())
   {
     Lexer lex (uid);
     std::string token;
@@ -1537,8 +1531,8 @@ void Task::validate (bool applyDefault /* = true */)
   if (status == Task::pending                     &&
       has ("due")                                 &&
       has ("recur")                               &&
-      (! has ("parent") || get ("parent") == "")  &&
-      (! has ("template") || get ("template") == ""))
+      (! has ("parent") || get ("parent").empty())  &&
+      (! has ("template") || get ("template").empty()))
   {
     status = Task::recurring;
   }
@@ -1556,16 +1550,16 @@ void Task::validate (bool applyDefault /* = true */)
   // Tasks with a wait: date get a special status.
   else if (status == Task::pending &&
            has ("wait")            &&
-           get ("wait") != "")
+           !get ("wait").empty())
     status = Task::waiting;
 
   // By default, tasks are pending.
-  else if (! has ("status") || get ("status") == "")
+  else if (! has ("status") || get ("status").empty())
     status = Task::pending;
 
   // Default to 'periodic' type recurrence.
   if (status == Task::recurring &&
-      (! has ("rtype") || get ("rtype") == ""))
+      (! has ("rtype") || get ("rtype").empty()))
   {
     set ("rtype", "periodic");
   }
@@ -1575,26 +1569,26 @@ void Task::validate (bool applyDefault /* = true */)
 
 #ifdef PRODUCT_TASKWARRIOR
   // Provide an entry date unless user already specified one.
-  if (! has ("entry") || get ("entry") == "")
+  if (! has ("entry") || get ("entry").empty())
     setAsNow ("entry");
 
   // Completed tasks need an end date, so inherit the entry date.
   if ((status == Task::completed || status == Task::deleted) &&
-      (! has ("end") || get ("end") == ""))
+      (! has ("end") || get ("end").empty()))
     setAsNow ("end");
 
   // Pending tasks cannot have an end date, remove if present
-  if ((status == Task::pending) && (get ("end") != ""))
+  if ((status == Task::pending) && (!get ("end").empty()))
     remove ("end");
 
   // Provide an entry date unless user already specified one.
-  if (! has ("modified") || get ("modified") == "")
+  if (! has ("modified") || get ("modified").empty())
     setAsNow ("modified");
 
-  if (applyDefault && (! has ("parent") || get ("parent") == ""))
+  if (applyDefault && (! has ("parent") || get ("parent").empty()))
   {
     // Override with default.project, if not specified.
-    if (Task::defaultProject != "" &&
+    if (!Task::defaultProject.empty() &&
         ! has ("project"))
     {
       if (Context::getContext ().columns["project"]->validate (Task::defaultProject))
@@ -1602,7 +1596,7 @@ void Task::validate (bool applyDefault /* = true */)
     }
 
     // Override with default.due, if not specified.
-    if (Task::defaultDue != "" &&
+    if (!Task::defaultDue.empty() &&
         ! has ("due"))
     {
       if (Context::getContext ().columns["due"]->validate (Task::defaultDue))
@@ -1616,7 +1610,7 @@ void Task::validate (bool applyDefault /* = true */)
     }
 
     // Override with default.scheduled, if not specified.
-    if (Task::defaultScheduled != "" &&
+    if (!Task::defaultScheduled.empty() &&
         ! has ("scheduled"))
     {
       if (Context::getContext ().columns["scheduled"]->validate (Task::defaultScheduled))
@@ -1644,7 +1638,7 @@ void Task::validate (bool applyDefault /* = true */)
       }
     }
 
-    if (udas.size ())
+    if (!udas.empty())
     {
       // For each of those, setup the default value on the task now,
       // of course only if we don't have one on the command line already
@@ -1653,7 +1647,7 @@ void Task::validate (bool applyDefault /* = true */)
         std::string defVal= Context::getContext ().config.get ("uda." + uda + ".default");
 
         // If the default is empty, or we already have a value, skip it
-        if (defVal != "" && get (uda) == "")
+        if (!defVal.empty() && get (uda).empty())
           set (uda, defVal);
       }
     }
@@ -1676,18 +1670,18 @@ void Task::validate (bool applyDefault /* = true */)
   // There is no fixing a missing description.
   if (! has ("description"))
     throw std::string ("A task must have a description.");
-  else if (get ("description") == "")
+  else if (get ("description").empty())
     throw std::string ("Cannot add a task that is blank.");
 
   // Cannot have a recur frequency with no due date - when would it recur?
-  if (has ("recur") && (! has ("due") || get ("due") == ""))
+  if (has ("recur") && (! has ("due") || get ("due").empty()))
     throw std::string ("A recurring task must also have a 'due' date.");
 
   // Recur durations must be valid.
   if (has ("recur"))
   {
     std::string value = get ("recur");
-    if (value != "")
+    if (!value.empty())
     {
       Duration p;
       std::string::size_type i = 0;
@@ -2102,13 +2096,13 @@ void Task::modify (modType type, bool text_required /* = false */)
         // 'value' requires eval.
         std::string name  = a.attribute ("canonical");
         std::string value = a.attribute ("value");
-        if (value == ""     ||
+        if (value.empty()     ||
             value == "''"   ||
             value == "\"\"")
         {
           // ::composeF4 will skip if the value is blank, but the presence of
           // the attribute will prevent ::validate from applying defaults.
-          if ((has (name) && get (name) != "") ||
+          if ((has (name) && !get (name).empty()) ||
               (name == "due"       && Context::getContext ().config.has ("default.due")) ||
               (name == "scheduled" && Context::getContext ().config.has ("default.scheduled")) ||
               (name == "project"   && Context::getContext ().config.has ("default.project")))
@@ -2183,7 +2177,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       // Unknown args are accumulated as though they were WORDs.
       else
       {
-        if (text != "")
+        if (!text.empty())
           text += ' ';
         text += a.attribute ("raw");
       }
@@ -2192,7 +2186,7 @@ void Task::modify (modType type, bool text_required /* = false */)
 
   // Task::modType determines what happens to the WORD arguments, if there are
   //  any.
-  if (text != "")
+  if (!text.empty())
   {
     Lexer::dequote (text);
 

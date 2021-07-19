@@ -142,7 +142,7 @@ int CmdPurge::execute (std::string&)
 
   // Apply filter.
   filter.subset (filtered);
-  if (filtered.size () == 0)
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No tasks specified.");
     return 1;
@@ -170,7 +170,7 @@ int CmdPurge::execute (std::string&)
     }
   }
 
-  if (filtered.size () > 0 and ! matched_deleted)
+  if (!filtered.empty() and ! matched_deleted)
     Context::getContext ().footnote ("No deleted tasks specified. Maybe you forgot to delete tasks first?");
 
   feedback_affected (count == 1 ? "Purged {1} task." : "Purged {1} tasks.", count);

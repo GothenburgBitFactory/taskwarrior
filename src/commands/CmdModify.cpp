@@ -61,7 +61,7 @@ int CmdModify::execute (std::string&)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  if (filtered.size () == 0)
+  if (filtered.empty())
   {
     Context::getContext ().footnote ("No tasks specified.");
     return 1;
@@ -104,7 +104,7 @@ int CmdModify::execute (std::string&)
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
+    if (!change.first.empty())
       Context::getContext ().footnote (change.second);
 
   feedback_affected (count == 1 ?  "Modified {1} task." : "Modified {1} tasks.", count);
@@ -124,12 +124,12 @@ void CmdModify::checkConsistency (Task &before, Task &after)
   if (before.has ("recur") &&
       before.has ("due")   &&
       (! after.has ("due")  ||
-        after.get ("due") == ""))
+        after.get ("due").empty()))
     throw std::string ("You cannot remove the due date from a recurring task.");
 
   if (before.has ("recur")  &&
       (! after.has ("recur") ||
-        after.get ("recur") == ""))
+        after.get ("recur").empty()))
     throw std::string ("You cannot remove the recurrence from a recurring task.");
 }
 
@@ -202,7 +202,7 @@ int CmdModify::modifyRecurrenceParent (
   auto count = 0;
 
   auto children = Context::getContext ().tdb2.children (task);
-  if (children.size () &&
+  if (!children.empty() &&
           ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
             && confirm (STRING_CMD_MODIFY_RECUR)) ||
            Context::getContext ().config.getBoolean ("recurrence.confirmation")))

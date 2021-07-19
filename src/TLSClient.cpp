@@ -156,7 +156,7 @@ void TLSClient::init (
     throw format ("Bad System Trust. {1}", gnutls_strerror (ret)); // All
 #endif
 
-  if (_ca != "")
+  if (!_ca.empty())
   {
     // The gnutls_certificate_set_x509_key_file call returns number of
     // certificates parsed on success (including 0, when no certificate was
@@ -170,8 +170,8 @@ void TLSClient::init (
   }
 
   // TODO This may need 0x030111 protection.
-  if (_cert != "" &&
-      _key != "" &&
+  if (!_cert.empty() &&
+      !_key.empty() &&
       (ret = gnutls_certificate_set_x509_key_file (_credentials, _cert.c_str (), _key.c_str (), GNUTLS_X509_FMT_PEM)) < 0) // 3.1.11
     throw format ("Bad client CERT/KEY file. {1}", gnutls_strerror (ret)); // All
 
@@ -189,7 +189,7 @@ void TLSClient::init (
     throw format ("TLS client init error. {1}", gnutls_strerror (ret)); // All
 
   // Use default priorities unless overridden.
-  if (_ciphers == "")
+  if (_ciphers.empty())
     _ciphers = "NORMAL";
 
   const char *err;

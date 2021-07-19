@@ -150,7 +150,7 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
 
   bool specificEnd = false;
   Datetime until;
-  if (parent.get ("until") != "")
+  if (!parent.get ("until").empty())
   {
     until = Datetime (parent.get ("until"));
     specificEnd = true;
@@ -169,11 +169,8 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
       // parent mask contains all + or X, then there never will be another task
       // to generate, and this parent task may be safely reaped.
       auto mask = parent.get ("mask");
-      if (mask.length () == allDue.size () &&
-          mask.find ('-') == std::string::npos)
-        return false;
-
-      return true;
+      return !(mask.length () == allDue.size () &&
+          mask.find ('-') == std::string::npos);
     }
 
     if (i > now)
@@ -375,7 +372,7 @@ void updateRecurrenceMask (Task& task)
   auto uuid = task.get ("parent");
   Task parent;
 
-  if (uuid != "" &&
+  if (!uuid.empty() &&
       Context::getContext ().tdb2.get (uuid, parent))
   {
     unsigned int index = strtol (task.get ("imask").c_str (), nullptr, 10);

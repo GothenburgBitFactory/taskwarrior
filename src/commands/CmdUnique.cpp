@@ -62,7 +62,7 @@ int CmdUnique::execute (std::string& output)
 
   // Just the first arg.
   auto words = Context::getContext ().cli2.getWords ();
-  if (words.size () == 0)
+  if (words.empty())
     throw std::string ("An attribute must be specified.  See 'task _columns'.");
   attribute = words[0];
 

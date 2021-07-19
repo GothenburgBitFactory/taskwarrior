@@ -50,7 +50,7 @@ ColumnDescription::ColumnDescription ()
                  "truncated_count"};
 
   _dateformat = Context::getContext ().config.get ("dateformat.annotation");
-  if (_dateformat == "")
+  if (_dateformat.empty())
     _dateformat = Context::getContext ().config.get ("dateformat");
 
   std::string t  = Datetime ().toString (_dateformat);

@@ -60,7 +60,7 @@ int CmdContext::execute (std::string& output)
 
   // Get the non-attribute, non-fancy command line arguments.
   auto words = Context::getContext ().cli2.getWords ();
-  if (words.size () > 0)
+  if (!words.empty())
   {
     auto subcommand = words[0];
 
@@ -69,7 +69,7 @@ int CmdContext::execute (std::string& output)
     else if (subcommand == "list")   listContexts (out);
     else if (subcommand == "none")   unsetContext (out);
     else if (subcommand == "show")   showContext (out);
-    else if (words.size ())          setContext (words, out);
+    else if (!words.empty())          setContext (words, out);
   }
   else
   {
@@ -168,7 +168,7 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     }
 
     // Make user explicitly confirm filters that are matching no pending tasks
-    if (filtered.size () == 0)
+    if (filtered.empty())
       if (confirmation &&
           ! confirm (format ("The filter '{1}' matches 0 pending tasks. Do you wish to continue?", value)))
         throw std::string ("Context definition aborted.");
@@ -248,7 +248,7 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
 void CmdContext::listContexts (std::stringstream& out)
 {
   auto contexts = getContexts();
-  if (contexts.size ())
+  if (!contexts.empty())
   {
     std::sort (contexts.begin (), contexts.end ());
 
@@ -331,7 +331,7 @@ void CmdContext::showContext (std::stringstream& out)
 {
   auto currentContext = Context::getContext ().config.get ("context");
 
-  if (currentContext == "")
+  if (currentContext.empty())
     out << "No context is currently applied.\n";
   else
   {

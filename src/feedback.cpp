@@ -128,7 +128,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   }
 
   // Shouldn't just say nothing.
-  if (out.str ().length () == 0)
+  if (out.str ().empty ())
     out << "  - No changes will be made.\n";
 
   return out.str ();
@@ -219,8 +219,8 @@ std::string taskInfoDifferences (
     if (name              != "uuid" &&
         name              != "modified" &&
         before.get (name) != after.get (name) &&
-        before.get (name) != "" &&
-        after.get (name)  != "")
+        !before.get (name).empty() &&
+        !after.get (name).empty())
     {
       if (name == "depends")
       {
@@ -242,7 +242,7 @@ std::string taskInfoDifferences (
     }
 
   // Shouldn't just say nothing.
-  if (out.str ().length () == 0)
+  if (out.str ().empty ())
     out << "No changes made.\n";
 
   return out.str ();
@@ -256,10 +256,10 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
     Column* col = Context::getContext ().columns[name];
     if (col                    &&
         col->type () == "date" &&
-        value != "")
+        !value.empty())
     {
       Datetime d ((time_t)strtol (value.c_str (), nullptr, 10));
-      if (format == "")
+      if (format.empty())
         return d.toString (Context::getContext ().config.get ("dateformat"));
 
       return d.toString (format);
@@ -364,7 +364,7 @@ void feedback_special_tags (const Task& task, const std::string& tag)
     else if (tag == "nocal")   msg = "The 'nocal' special tag will keep this task off the 'calendar' report.";
     else if (tag == "next")    msg = "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report.";
 
-    if (msg.length ())
+    if (!msg.empty ())
     {
       std::cout << format (msg, task.identifier ())
                 << "\n";
@@ -390,7 +390,7 @@ void feedback_unblocked (const Task& task)
     for (auto& i : blocked)
     {
       auto blocking = dependencyGetBlocking (i);
-      if (blocking.size () == 0)
+      if (blocking.empty())
       {
         if (i.id)
           std::cout << format ("Unblocked {1} '{2}'.",
@@ -413,7 +413,7 @@ void feedback_unblocked (const Task& task)
 ///////////////////////////////////////////////////////////////////////////////
 void feedback_backlog ()
 {
-  if (Context::getContext ().config.get ("taskd.server") != "" &&
+  if (!Context::getContext ().config.get ("taskd.server").empty() &&
       Context::getContext ().verbose ("sync"))
   {
     std::vector <std::string> lines = Context::getContext ().tdb2.backlog.get_lines ();
@@ -430,7 +430,7 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
   std::stringstream msg;
   std::string project = task.get ("project");
 
-  if (project != "")
+  if (!project.empty())
   {
     if (scope)
       msg << format ("The project '{1}' has changed.", project)
@@ -477,7 +477,7 @@ std::string onProjectChange (Task& task1, Task& task2)
   std::string messages1 = onProjectChange (task1);
   std::string messages2 = onProjectChange (task2);
 
-  if (messages1.length () && messages2.length ())
+  if (!messages1.empty () && !messages2.empty ())
     return messages1 + '\n' + messages2;
 
   return messages1 + messages2;

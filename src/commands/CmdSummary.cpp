@@ -156,7 +156,7 @@ int CmdSummary::execute (std::string& output)
   for (auto& i : sortedProjects)
   {
       int row = view.addRow ();
-      view.set (row, 0, (i.first == ""
+      view.set (row, 0, (i.first.empty()
                           ? "(none)"
                           : indentProject (i.first, "  ", '.')));
 

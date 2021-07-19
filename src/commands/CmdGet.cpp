@@ -85,7 +85,7 @@ int CmdGet::execute (std::string& output)
     }
   }
 
-  if (results.size () == 0)
+  if (results.empty())
     throw std::string ("No DOM reference specified.");
 
   output = join (" ", results);

@@ -57,7 +57,7 @@ int CmdImport::execute (std::string&)
 
   // Get filenames from command line arguments.
   auto words = Context::getContext ().cli2.getWords ();
-  if (! words.size () ||
+  if (words.empty() ||
       (words.size () == 1 && words[0] == "-"))
   {
     std::cout << format ("Importing '{1}'\n", "STDIN");
@@ -144,7 +144,7 @@ int CmdImport::import (const std::string& input)
   {
     for (auto& line : split (input, '\n'))
     {
-      if (line.length ())
+      if (!line.empty ())
       {
         json::value* root = json::parse (line);
         if (root)

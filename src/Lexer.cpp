@@ -72,7 +72,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
   //   - path < substitution < pattern
   //   - set < number
   //   - word last
-  if (isString       (token, type, "'\"") ||
+  return isString       (token, type, "'\"") ||
       isDate         (token, type)        ||
       isDuration     (token, type)        ||
       isURL          (token, type)        ||
@@ -89,10 +89,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
       isPattern      (token, type)        ||
       isOperator     (token, type)        ||
       isIdentifier   (token, type)        ||
-      isWord         (token, type))
-    return true;
-
-  return false;
+      isWord         (token, type);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -263,10 +260,7 @@ void Lexer::dequote (std::string& input, const std::string& quotes)
 // escapes, to get them past the shell.
 bool Lexer::wasQuoted (const std::string& input)
 {
-  if (input.find_first_of (" \t()<>&~") != std::string::npos)
-    return true;
-
-  return false;
+  return input.find_first_of (" \t()<>&~") != std::string::npos;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -432,7 +426,7 @@ std::string Lexer::ucFirst (const std::string& input)
 {
   std::string output = input;
 
-  if (output.length () > 0)
+  if (!output.empty ())
     output[0] = toupper (output[0]);
 
   return output;
@@ -1401,7 +1395,7 @@ std::string Lexer::typeToString (Lexer::Type type)
 ////////////////////////////////////////////////////////////////////////////////
 bool Lexer::isAllDigits (const std::string& text)
 {
-  return text.length () &&
+  return !text.empty () &&
          text.find_first_not_of ("0123456789") == std::string::npos;
 }
 
@@ -1584,7 +1578,7 @@ bool Lexer::readWord (
     prev = c;
   }
 
-  return word.length () > 0 ? true : false;
+  return !word.empty ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1659,7 +1653,7 @@ bool Lexer::decomposePair (
     value     = text.substr (sep_end);
 
     // An empty name is an error.
-    if (name.length ())
+    if (!name.empty ())
       return true;
   }
 
@@ -1677,7 +1671,7 @@ bool Lexer::decomposeSubstitution (
   std::string parsed_from;
   std::string::size_type cursor = 0;
   if (readWord (text, "/", cursor, parsed_from) &&
-      parsed_from.length ())
+      !parsed_from.empty ())
   {
     --cursor;
     std::string parsed_to;
@@ -1710,7 +1704,7 @@ bool Lexer::decomposePattern (
   std::string ignored;
   std::string::size_type cursor = 0;
   if (readWord (text, "/", cursor, ignored) &&
-      ignored.length ())
+      !ignored.empty ())
   {
     auto parsed_flags = text.substr (cursor);
     if (parsed_flags.find ('/') == std::string::npos)

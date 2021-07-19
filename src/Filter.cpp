@@ -66,14 +66,14 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     if (a.hasTag ("FILTER"))
       precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
 
-  if (precompiled.size ())
+  if (!precompiled.empty())
   {
     Eval eval;
     eval.addSource (domSource);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
+    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3);
     eval.compileExpression (precompiled);
 
     for (auto& task : input)
@@ -112,7 +112,7 @@ void Filter::subset (std::vector <Task>& output)
   // Shortcut indicates that only pending.data needs to be loaded.
   bool shortcut = false;
 
-  if (precompiled.size ())
+  if (!precompiled.empty())
   {
     Timer timer_pending;
     auto pending = Context::getContext ().tdb2.pending.get_tasks ();
@@ -124,7 +124,7 @@ void Filter::subset (std::vector <Task>& output)
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
+    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3);
     eval.compileExpression (precompiled);
 
     output.clear ();
@@ -252,16 +252,10 @@ bool Filter::pendingOnly () const
 
   if (countStatus)
   {
-    if (!countPending && !countWaiting && !countRecurring)
-      return false;
-
-    return true;
+    return !(!countPending && !countWaiting && !countRecurring);
   }
 
-  if (countId)
-    return true;
-
-  return false;
+  return countId != 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
