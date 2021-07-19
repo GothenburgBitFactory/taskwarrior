@@ -2130,7 +2130,7 @@ void CLI2::defaultCommand ()
     if (! found_sequence)
     {
       // Apply overrides, if any.
-      std::string defaultCommand = Context::getContext ().config.get ("default.command");
+      std::string defaultCommand = Context::getContext ().config.getFromContext ("default.command");
       if (defaultCommand != "")
       {
         // Modify _args, _original_args to be:
