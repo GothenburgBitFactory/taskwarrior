@@ -65,16 +65,7 @@ void Hooks::initialize ()
 
   // Scan <rc.hooks.location>
   //      <rc.data.location>/hooks
-  Directory d;
-  if (Context::getContext ().config.has ("hooks.location"))
-  {
-    d = Directory (Context::getContext ().config.get ("hooks.location"));
-  }
-  else
-  {
-    d = Directory (Context::getContext ().config.get ("data.location"));
-    d += "hooks";
-  }
+  Directory d = Directory (getHooksLocation());
 
   if (d.is_directory () &&
       d.readable ())

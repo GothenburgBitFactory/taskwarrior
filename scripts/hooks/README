@@ -6,9 +6,14 @@ expected name, with execute permission. If these conditions are met, the hook
 scripts will be run.
 
 Expected Location
-  The hooks scripts all reside in one location, which is in a 'hooks'
-  subdirectory, in your ~/.task (or rc.data.location override) directory.
-  You can use the command `task diagnostics` to verify hooks location.
+  The hooks scripts all reside in one location, under
+  `$XDG_CONFIG_HOME/task/hooks`.
+  It can be overiden with `hooks.location`.
+  For compatibility reasons, the previous hooks
+  folder location in ~/.task/hooks (or <rc.data.location>/hooks) is still
+  supported if the file ~/.taskrc exists.
+  You can use the command `task diagnostics` to verify hooks
+  location.
 
 Expected Name
   A hook scripts must be named according to which event triggers the script. A
