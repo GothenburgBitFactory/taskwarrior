@@ -48,7 +48,7 @@ void updateRecurrenceMask (Task&);
 void handleRecurrence2 ();
 
 // nag.cpp
-bool nag (Task&);
+void nag (std::vector <Task>&);
 
 // rules.cpp
 void initializeColorRules ();
