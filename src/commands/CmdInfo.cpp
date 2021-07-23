@@ -342,8 +342,8 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";         // 2017-01-07: Deprecated in 2.6.0
       if (task.hasTag ("PENDING"))   virtualTags += "PENDING ";
       if (task.hasTag ("PRIORITY"))  virtualTags += "PRIORITY ";
-      if (task.hasTag ("PROJECT"))   virtualTags += "PROJECT";
-      if (task.hasTag ("QUARTER"))   virtualTags += "QUARTER";
+      if (task.hasTag ("PROJECT"))   virtualTags += "PROJECT ";
+      if (task.hasTag ("QUARTER"))   virtualTags += "QUARTER ";
       if (task.hasTag ("READY"))     virtualTags += "READY ";
       if (task.hasTag ("SCHEDULED")) virtualTags += "SCHEDULED ";
       if (task.hasTag ("TAGGED"))    virtualTags += "TAGGED ";
