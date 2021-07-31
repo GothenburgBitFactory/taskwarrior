@@ -122,6 +122,24 @@ class TestVerbosity(TestCase):
         code, out, err = self.t("rc.verbose:project add proj:T two")
         self.assertIn("The project 'T' has changed.", err)
 
+    def test_bug_2247(self):
+        """
+        Verbosity override is applied regardless of the order of the arguments.
+        """
+
+        code, out, err = self.t("rc.color:0 add test")
+        self.assertIn("Configuration override", err)
+
+        # Once rc.verbose:nothing is set, no output about configuration overrides should appear
+        code, out, err = self.t("rc.verbose:nothing add test")
+        self.assertNotIn("Configuration override", err)
+
+        code, out, err = self.t("rc.color:0 rc.verbose:nothing add test")
+        self.assertNotIn("Configuration override", err)
+
+        code, out, err = self.t("rc.verbose:nothing rc.color:0 add test")
+        self.assertNotIn("Configuration override", err)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
