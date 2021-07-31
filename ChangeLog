@@ -32,6 +32,8 @@
            Thanks to Beka, Max Rossmannek.
 - TW #2101 Numeric UDA values above 2,147,483,647 overflow without warning
            Thanks to Adam Monsen.
+- TW #2247 Configuration override rc.verbose:off not respected
+           Thanks to Vignesh Prabhu.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
            Thanks to Julien Rabinow.
 - TW #2292 CmdEdit: Interruption should remove lock file

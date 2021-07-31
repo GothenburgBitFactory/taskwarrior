@@ -52,6 +52,10 @@ Fixed regressions in 2.6.0
   - The "end of <date>" named dates ('eod', 'eow', ...) were pointing to the
     first second of the next day, instead of last second of the referenced
     interval. This was a regression introduced in 2.5.2.
+  - The rc.verbose:nothing configuration override was applied only if it were
+    the first configuration override. Otherwise task would by default inform
+    about the other overrides (see #2247). This was a regression introduced in
+    2.5.2.
 
 Removed Features in 2.6.0
 
