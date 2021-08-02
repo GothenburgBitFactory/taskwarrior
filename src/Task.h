@@ -125,7 +125,7 @@ public:
   int getTagCount () const;
   bool hasTag (const std::string&) const;
   void addTag (const std::string&);
-  void addTags (const std::vector <std::string>&);
+  void setTags (const std::vector <std::string>&);
   std::vector <std::string> getTags () const;
   void removeTag (const std::string&);
 
@@ -170,6 +170,10 @@ private:
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;
   const std::string decode (const std::string&) const;
+  bool isTagAttr (const std::string&) const;
+  const std::string tag2Attr (const std::string&) const;
+  const std::string attr2Tag (const std::string&) const;
+  void fixTagsAttribute ();
 
 public:
   float urgency_project     () const;

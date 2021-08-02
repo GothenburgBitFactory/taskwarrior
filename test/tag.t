@@ -44,11 +44,16 @@ class TestTags(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
 
+    def split_tags(self, tags):
+        return sorted(tags.strip().split(','))
+
     def test_tag_manipulation(self):
         """Test addition and removal of tags"""
         self.t("add +one This +two is a test +three")
         code, out, err = self.t("_get 1.tags")
-        self.assertEqual("one,two,three\n", out)
+        self.assertEqual(
+            sorted(["one", "two", "three"]),
+            self.split_tags(out))
 
         # Remove tags.
         self.t("1 modify -three -two -one")
@@ -58,7 +63,9 @@ class TestTags(TestCase):
         # Add tags.
         self.t("1 modify +four +five +six")
         code, out, err = self.t("_get 1.tags")
-        self.assertEqual("four,five,six\n", out)
+        self.assertEqual(
+            sorted(["four", "five", "six"]),
+            self.split_tags(out))
 
         # Remove tags.
         self.t("1 modify -four -five -six")

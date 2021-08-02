@@ -630,6 +630,15 @@ void Task::parse (const std::string& input)
     parseLegacy (input);
   }
 
+  // for compatibility, include all tags in `tags` as `tag_..` attributes
+  if (data.find ("tags") != data.end ()) {
+    for (auto& tag : split(data["tags"], ',')) {
+      data[tag2Attr(tag)] = "x";
+    }
+  }
+  // ..and similarly, update `tags` to match the `tag_..` attributes
+  fixTagsAttribute();
+
   recalc_urgency = true;
 }
 
@@ -691,16 +700,6 @@ void Task::parseJSON (const json::object* root_obj)
           auto tag = (json::string*)t;
           addTag (tag->_data);
         }
-      }
-      // This is a temporary measure to accomodate a malformed JSON message from
-      // Mirakel sync.
-      //
-      // 2016-02-21 Mirakel dropped sync support in late 2015. This can be
-      //            removed in a later release.
-      else if (i.first == "tags" && i.second->type() == json::j_string)
-      {
-        auto tag = (json::string*)i.second;
-        addTag (tag->_data);
       }
 
       // Dependencies can be exported as an array of strings.
@@ -906,6 +905,10 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (! i.first.compare (0, 11, "annotation_", 11))
       continue;
 
+    if (i.first == "tags" || isTagAttr (i.first))
+      // Tags are handled below
+      continue;
+
     // If value is an empty string, do not ever output it
     if (i.second == "")
         continue;
@@ -944,26 +947,6 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
           << "\":"
           << i.second;
 
-      ++attributes_written;
-    }
-
-    // Tags are converted to an array.
-    else if (i.first == "tags")
-    {
-      auto tags = split (i.second, ',');
-
-      out << "\"tags\":[";
-
-      int count = 0;
-      for (const auto& i : tags)
-      {
-        if (count++)
-          out << ',';
-
-        out << '"' << i << '"';
-      }
-
-      out << ']';
       ++attributes_written;
     }
 
@@ -1045,6 +1028,25 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     }
 
     out << ']';
+  }
+
+  auto tags = getTags();
+  if (tags.size() > 0)
+  {
+    out << ','
+        << "\"tags\":[";
+
+    int count = 0;
+    for (const auto& tag : tags)
+    {
+      if (count++)
+        out << ',';
+
+      out << '"' << tag << '"';
+    }
+
+    out << ']';
+    ++attributes_written;
   }
 
 #ifdef PRODUCT_TASKWARRIOR
@@ -1257,8 +1259,13 @@ std::vector <Task> Task::getDependencyTasks () const
 ////////////////////////////////////////////////////////////////////////////////
 int Task::getTagCount () const
 {
-  auto tags = split (get ("tags"), ',');
-  return (int) tags.size ();
+  auto count = 0;
+  for (auto& attr : data) {
+    if (isTagAttr (attr.first)) {
+      count++;
+    }
+  }
+  return count;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1301,7 +1308,7 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "INSTANCE")  return has ("template") || has ("parent");
     if (tag == "UNTIL")     return has ("until");
     if (tag == "ANNOTATED") return hasAnnotations ();
-    if (tag == "TAGGED")    return has ("tags");
+    if (tag == "TAGGED")    return getTagCount() > 0;
     if (tag == "PARENT")    return has ("mask") || has ("last");       // 2017-01-07: Deprecated in 2.6.0
     if (tag == "TEMPLATE")  return has ("last") || has ("mask");
     if (tag == "WAITING")   return get ("status") == "waiting";
@@ -1318,9 +1325,7 @@ bool Task::hasTag (const std::string& tag) const
   }
 
   // Concrete tags.
-  auto tags = split (get ("tags"), ',');
-
-  if (std::find (tags.begin (), tags.end (), tag) != tags.end ())
+  if (has (tag2Attr (tag)))
     return true;
 
   return false;
@@ -1329,47 +1334,104 @@ bool Task::hasTag (const std::string& tag) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::addTag (const std::string& tag)
 {
-  auto tags = split (get ("tags"), ',');
-
-  if (std::find (tags.begin (), tags.end (), tag) == tags.end ())
-  {
-    tags.push_back (tag);
-    set ("tags", join (",", tags));
-
+  auto attr = tag2Attr (tag);
+  if (!has (attr)) {
+    set (attr, "x");
     recalc_urgency = true;
+    fixTagsAttribute();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::addTags (const std::vector <std::string>& tags)
+void Task::setTags (const std::vector <std::string>& tags)
 {
-  remove ("tags");
+  auto existing = getTags();
 
-  for (auto& tag : tags)
+  // edit in-place, determining which should be
+  // added and which should be removed
+  std::vector <std::string> toAdd;
+  std::vector <std::string> toRemove;
+
+  for (auto& tag : tags) {
+    if (std::find (existing.begin (), existing.end (), tag) == existing.end ())
+      toAdd.push_back(tag);
+  }
+
+  for (auto& tag : getTags ()) {
+    if (std::find (tags.begin (), tags.end (), tag) == tags.end ()) {
+      toRemove.push_back (tag);
+    }
+  }
+
+  for (auto& tag : toRemove) {
+    removeTag (tag);
+  }
+  for (auto& tag : toAdd) {
     addTag (tag);
+  }
 
-  recalc_urgency = true;
+  // (note: addTag / removeTag took care of recalculating urgency)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <std::string> Task::getTags () const
 {
-  return split (get ("tags"), ',');
+  std::vector <std::string> tags;
+
+  for (auto& attr : data) {
+    if (!isTagAttr (attr.first)) {
+      continue;
+    }
+    auto tag = attr2Tag (attr.first);
+    tags.push_back (tag);
+  }
+
+  return tags;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeTag (const std::string& tag)
 {
-  auto tags = split (get ("tags"), ',');
-
-  auto i = std::find (tags.begin (), tags.end (), tag);
-  if (i != tags.end ())
-  {
-    tags.erase (i);
-    set ("tags", join (",", tags));
+  auto attr = tag2Attr (tag);
+  if (has (attr)) {
+    data.erase (attr);
+    recalc_urgency = true;
+    fixTagsAttribute();
   }
+}
 
-  recalc_urgency = true;
+////////////////////////////////////////////////////////////////////////////////
+void Task::fixTagsAttribute ()
+{
+  // Fix up the old `tags` attribute to match the `tags_..` attributes (or
+  // remove it if there are no tags)
+  auto tags = getTags ();
+  if (tags.size () > 0) {
+    set ("tags", join (",", tags));
+  } else {
+    remove ("tags");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::isTagAttr(const std::string& attr) const
+{
+  return attr.compare(0, 5, "tags_") == 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Task::tag2Attr (const std::string& tag) const
+{
+  std::stringstream tag_attr;
+  tag_attr << "tags_" << tag;
+  return tag_attr.str();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Task::attr2Tag (const std::string& attr) const
+{
+  assert (isTagAttr (attr));
+  return attr.substr(5);
 }
 
 #ifdef PRODUCT_TASKWARRIOR
