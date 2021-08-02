@@ -115,17 +115,16 @@ void ColumnTags::render (
   int width,
   Color& color)
 {
-  if (task.has (_name))
+  auto all = task.getTags ();
+  if (all.size() > 0)
   {
-    std::string tags = task.get (_name);
     if (_style == "default" ||
         _style == "list")
     {
-      if (tags.find (',') != std::string::npos)
+      if (all.size () > 1)
       {
-        auto all = split (tags, ',');
         std::sort (all.begin (), all.end ());
-        tags = join (" ", all);
+        auto tags = join (" ", all);
 
         all.clear ();
         wrapText (all, tags, width, _hyphenate);
@@ -134,7 +133,7 @@ void ColumnTags::render (
           renderStringLeft (lines, width, color, i);
       }
       else
-        renderStringLeft (lines, width, color, tags);
+        renderStringLeft (lines, width, color, all[0]);
     }
     else if (_style == "indicator")
     {
@@ -142,7 +141,6 @@ void ColumnTags::render (
     }
     else if (_style == "count")
     {
-      auto all = split (tags, ',');
       renderStringRight (lines, width, color, '[' + format (static_cast <int> (all.size ())) + ']');
     }
   }
@@ -152,36 +150,36 @@ void ColumnTags::render (
 void ColumnTags::modify (Task& task, const std::string& value)
 {
   std::string label = "  [1;37;43mMODIFICATION[0m ";
+  std::string commasep;
+  std::vector <std::string> tags;
 
-  // TW-1701
-  task.set (_name, "");
-
-  for (auto& tag : split (value, ','))
+  // If it's a DOM ref, eval it first.
+  Lexer lexer (value);
+  std::string domRef;
+  Lexer::Type type;
+  if (lexer.token (domRef, type) &&
+      type == Lexer::Type::dom)
   {
-    // If it's a DOM ref, eval it first.
-    Lexer lexer (tag);
-    std::string domRef;
-    Lexer::Type type;
-    if (lexer.token (domRef, type) &&
-        type == Lexer::Type::dom)
-    {
-      Eval e;
-      e.addSource (domSource);
-      contextTask = task;
+    Eval e;
+    e.addSource (domSource);
+    contextTask = task;
 
-      Variant v;
-      e.evaluateInfixExpression (value, v);
-      task.addTag ((std::string) v);
-      Context::getContext ().debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + '\'');
-    }
-    else
-    {
-      task.addTag (tag);
-      Context::getContext ().debug (label + "tags <-- '" + tag + '\'');
-    }
+    Variant v;
+    e.evaluateInfixExpression (value, v);
+    commasep = (std::string) v;
+  } else {
+    commasep = (std::string) value;
+  }
+
+  for (auto& tag : split (commasep, ','))
+  {
+    tags.push_back ((std::string) tag);
+    Context::getContext ().debug (label + "tags <-- '" + tag + '\'');
 
     feedback_special_tags (task, tag);
   }
+
+  task.setTags(tags);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

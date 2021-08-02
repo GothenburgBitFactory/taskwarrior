@@ -366,7 +366,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   // tags
   value = findValue (after, "\n  Tags:");
   task.remove ("tags");
-  task.addTags (split (value, ' '));
+  task.setTags (split (value, ' '));
 
   // description.
   value = findMultilineValue (after, "\n  Description:", "\n  Created:");
