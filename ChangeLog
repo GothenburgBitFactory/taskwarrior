@@ -81,6 +81,9 @@
            Thanks to Sebastian Uharek
 - #2208    Feature: added coloring of dates with scheduled tasks to calendar
            Thanks to Sebastian Uharek
+-          Feature: Configuration options can be overwritten for current
+           context
+           Thanks to Sebastian Uharek
 
 ------ current release ---------------------------
 

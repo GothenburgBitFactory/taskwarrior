@@ -1321,6 +1321,11 @@ the user intention here, and instead, the user is expected to set the
 Note how read and write contexts differ for context "family", while for context
 "home" they stay the same.
 
+In addition, every configuration parameter can be overridden for the current 
+context, by specifying context.<name>.rc.<parameter>. For example, if the default
+command for the family context should be displaying the family_report:
+
+    $ task config context.family.rc.default.command family_report
 
 .SH COMMAND ABBREVIATION
 All Taskwarrior commands may be abbreviated as long as a unique prefix is used,
