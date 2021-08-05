@@ -170,7 +170,7 @@ void TF2::add_task (Task& task)
 
   // For faster lookup
   if (Context::getContext ().cli2.getCommand () == "import")
-    _tasks_map.insert (std::pair<std::string, Task> (task.get("uuid"), task));
+    _tasks_map.emplace (task.get("uuid"), task);
 
   Task::status status = task.getStatus ();
   if (task.id == 0 &&
@@ -410,7 +410,7 @@ void TF2::load_tasks (bool from_gc /* = false */)
         _tasks.push_back (task);
 
       if (Context::getContext ().cli2.getCommand () == "import")  // For faster lookup only
-        _tasks_map.insert (std::pair<std::string, Task> (task.get("uuid"), task));
+        _tasks_map.emplace (task.get("uuid"), task);
     }
 
     // TDB2::gc() calls this after loading both pending and completed

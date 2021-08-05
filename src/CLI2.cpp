@@ -302,7 +302,7 @@ void CLI2::entity (const std::string& category, const std::string& name)
       return;
 
   // The category/name pair was not found, therefore add it.
-  _entities.insert (std::pair <std::string, std::string> (category, name));
+  _entities.emplace (category, name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +325,7 @@ void CLI2::add (const std::vector <std::string>& arguments, int offset /* = 0 */
   std::vector <A2> replacement {_original_args.begin(), _original_args.begin() + offset + 1};
 
   for (const auto& arg : arguments)
-    replacement.push_back (A2 (arg, Lexer::Type::word));
+    replacement.emplace_back (arg, Lexer::Type::word);
 
   for (unsigned int i = 1 + offset; i < _original_args.size (); ++i)
     replacement.push_back (_original_args[i]);
@@ -849,7 +849,7 @@ void CLI2::aliasExpansion ()
         Lexer::Type type;
         Lexer lex (_aliases[raw]);
         while (lex.token (lexeme, type))
-          reconstructed.push_back (A2 (lexeme, type));
+          reconstructed.emplace_back (lexeme, type);
 
         action = true;
         changes = true;
@@ -879,7 +879,7 @@ void CLI2::aliasExpansion ()
         Lexer::Type type;
         Lexer lex (_aliases[i.attribute ("raw")]);
         while (lex.token (lexeme, type))
-          reconstructedOriginals.push_back (A2 (lexeme, type));
+          reconstructedOriginals.emplace_back (lexeme, type);
 
         action = true;
         changes = true;
@@ -1536,7 +1536,7 @@ void CLI2::findIDs ()
           {
             changes = true;
             std::string number = a.attribute ("raw");
-            _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
+            _id_ranges.emplace_back (number, number);
           }
         }
         else if (a._lextype == Lexer::Type::set)
@@ -1549,9 +1549,9 @@ void CLI2::findIDs ()
             changes = true;
             auto hyphen = element.find ('-');
             if (hyphen != std::string::npos)
-              _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
+              _id_ranges.emplace_back (element.substr (0, hyphen), element.substr (hyphen + 1));
             else
-              _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
+              _id_ranges.emplace_back (element, element);
           }
         }
 
@@ -1589,7 +1589,7 @@ void CLI2::findIDs ()
             changes = true;
             a.unTag ("MODIFICATION");
             a.tag ("FILTER");
-            _id_ranges.push_back (std::pair <std::string, std::string> (raw, raw));
+            _id_ranges.emplace_back (raw, raw);
           }
           else if (a._lextype == Lexer::Type::set)
           {
@@ -1604,9 +1604,9 @@ void CLI2::findIDs ()
               changes = true;
               auto hyphen = element.find ('-');
               if (hyphen != std::string::npos)
-                _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
+                _id_ranges.emplace_back (element.substr (0, hyphen), element.substr (hyphen + 1));
               else
-                _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
+                _id_ranges.emplace_back (element, element);
             }
           }
         }
@@ -2145,7 +2145,7 @@ void CLI2::defaultCommand ()
 
         while (lex.token (lexeme, type))
         {
-          reconstructedOriginals.push_back (A2 (lexeme, type));
+          reconstructedOriginals.emplace_back (lexeme, type);
 
           A2 cmd (lexeme, type);
           cmd.tag ("DEFAULT");

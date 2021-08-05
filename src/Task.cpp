@@ -790,7 +790,7 @@ void Task::parseJSON (const json::object* root_obj)
               name << "annotation_" << ann_timestamp;
           }
 
-          annos.insert (std::make_pair (name.str (), json::decode (what->_data)));
+          annos.emplace (name.str (), json::decode (what->_data));
         }
 
         setAnnotations (annos);

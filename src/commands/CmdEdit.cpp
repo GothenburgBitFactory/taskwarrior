@@ -656,7 +656,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         while (annotations.find (name.str ()) != annotations.end ());
 
         auto text = Lexer::trim (value.substr (gap + 4), "\t ");
-        annotations.insert (std::make_pair (name.str (), text));
+        annotations.emplace (name.str (), text);
       }
     }
   }
