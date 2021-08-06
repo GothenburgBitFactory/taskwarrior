@@ -235,7 +235,17 @@ void Chart::scan (std::vector <Task>& tasks)
   Datetime now;
 
   time_t epoch;
-  bool cumulative = !Context::getContext ().config.getBoolean ("burndown.nc");
+  auto& config = Context::getContext ().config;
+  bool cumulative;
+  if (config.has ("burndown.cumulative"))
+  {
+    cumulative = config.getBoolean ("burndown.cumulative");
+  }
+  else
+  {
+    cumulative = true;
+  }
+
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
