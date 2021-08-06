@@ -64,6 +64,15 @@ class TestBurndownCommand(TestCase):
         self.assertIn("+", out)
         self.assertIn("X", out)
 
+    def test_burndown_daily_non_cumulative(self):
+        """Ensure burndown.daily in non-cumulative mode generates a chart"""
+        self.t.config("burndown.nc", True)
+		  code, out, err = self.t("burndown.daily")
+        self.assertIn("Daily Burndown", out)
+        self.assertIn(".", out)
+        self.assertIn("+", out)
+        self.assertIn("X", out)
+
     def test_burndown_daily_color(self):
         """Ensure burndown.daily with color, generates a chart"""
         code, out, err = self.t("burndown.daily rc._forcecolor:on")

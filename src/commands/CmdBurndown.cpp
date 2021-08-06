@@ -235,6 +235,7 @@ void Chart::scan (std::vector <Task>& tasks)
   Datetime now;
 
   time_t epoch;
+  bool cumulative = !Context::getContext ().config.getBoolean ("burndown.nc");
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
@@ -292,50 +293,44 @@ void Chart::scan (std::vector <Task>& tasks)
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
 
+      if (cumulative)
+      {
       // Maintain a running total of 'done' tasks that are off the left of the
       // chart.
-      if (end < _earliest)
-      {
-        ++_carryover_done;
-        continue;
+        if (end < _earliest)
+        {
+          ++_carryover_done;
+          continue;
+        }
+
+        while (from < end)
+        {
+          epoch = from.toEpoch ();
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
+          from = increment (from, _period);
+        }
+
+        while (from < now)
+        {
+          epoch = from.toEpoch ();
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._done;
+          from = increment (from, _period);
+        }
       }
 
-      while (from < end)
+      else
       {
-        epoch = from.toEpoch ();
-        if (_bars.find (epoch) != _bars.end ())
-          ++_bars[epoch]._pending;
-        from = increment (from, _period);
-      }
-
-      while (from < now)
-      {
-        epoch = from.toEpoch ();
-        if (_bars.find (epoch) != _bars.end ())
-          ++_bars[epoch]._done;
-        from = increment (from, _period);
-      }
-    }
-
-    // e--D   e--s--D
-    // ppp    pppsss
-    else if (status == Task::deleted)
-    {
-      // Skip old deleted tasks.
-      Datetime end = quantize (Datetime (task.get_date ("end")), _period);
-      epoch = end.toEpoch ();
-      if (_bars.find (epoch) != _bars.end ())
-        ++_bars[epoch]._removed;
-
-      if (end < _earliest)
-        continue;
-
-      while (from < end)
-      {
-        epoch = from.toEpoch ();
-        if (_bars.find (epoch) != _bars.end ())
-          ++_bars[epoch]._pending;
-        from = increment (from, _period);
+        while (from < end)
+        {
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
+          from = increment (from, _period);
+          epoch = from.toEpoch ();
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._done;
+        }
       }
     }
   }
