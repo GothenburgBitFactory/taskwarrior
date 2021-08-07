@@ -73,8 +73,7 @@ int CmdAdd::execute (std::string& output)
     output += format ("Created task {1}.\n", task.get ("uuid"));
 
   else if (Context::getContext ().verbose ("new-id") &&
-      (status == Task::pending ||
-       status == Task::waiting))
+      status == Task::pending)
     output += format ("Created task {1}.\n", task.id);
 
   else if (Context::getContext ().verbose ("new-id") &&

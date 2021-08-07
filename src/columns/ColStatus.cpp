@@ -64,8 +64,6 @@ void ColumnStatus::measure (Task& task, unsigned int& minimum, unsigned int& max
       minimum = maximum = utf8_width ("Pending");
     else if (status == Task::deleted)
       minimum = maximum = utf8_width ("Deleted");
-    else if (status == Task::waiting)
-      minimum = maximum = utf8_width ("Waiting");
     else if (status == Task::completed)
       minimum = maximum = utf8_width ("Completed");
     else if (status == Task::recurring)
@@ -91,7 +89,6 @@ void ColumnStatus::render (
          if (status == Task::pending)   value = "Pending";
     else if (status == Task::completed) value = "Completed";
     else if (status == Task::deleted)   value = "Deleted";
-    else if (status == Task::waiting)   value = "Waiting";
     else if (status == Task::recurring) value = "Recurring";
   }
 
@@ -100,7 +97,6 @@ void ColumnStatus::render (
          if (status == Task::pending)   value = "P";
     else if (status == Task::completed) value = "C";
     else if (status == Task::deleted)   value = "D";
-    else if (status == Task::waiting)   value = "W";
     else if (status == Task::recurring) value = "R";
   }
 

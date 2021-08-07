@@ -510,7 +510,6 @@ static void countTasks (
       switch (it.getStatus ())
       {
       case Task::pending:
-      case Task::waiting:
         ++count_pending;
         break;
 

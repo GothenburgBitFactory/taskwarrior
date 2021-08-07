@@ -77,8 +77,7 @@ int CmdDone::execute (std::string&)
   {
     Task before (task);
 
-    if (task.getStatus () == Task::pending ||
-        task.getStatus () == Task::waiting)
+    if (task.getStatus () == Task::pending)
     {
       // Complete the specified task.
       std::string question = format ("Complete task {1} '{2}'?",

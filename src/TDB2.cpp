@@ -175,8 +175,7 @@ void TF2::add_task (Task& task)
   Task::status status = task.getStatus ();
   if (task.id == 0 &&
       (status == Task::pending   ||
-       status == Task::recurring ||
-       status == Task::waiting))
+       status == Task::recurring))
   {
     task.id = Context::getContext ().tdb2.next_id ();
   }
@@ -343,8 +342,7 @@ Task TF2::load_task (const std::string& line)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Check whether task needs to be relocated to pending/completed,
-// or needs to be 'woken'.
+// Check whether task needs to be relocated to pending/completed
 void TF2::load_gc (Task& task)
 {
   Datetime now;
@@ -353,23 +351,6 @@ void TF2::load_gc (Task& task)
   if (status == "pending" ||
       status == "recurring")
   {
-    Context::getContext ().tdb2.pending._tasks.push_back (task);
-  }
-  else if (status == "waiting")
-  {
-    Datetime wait (task.get_date ("wait"));
-    if (wait < now)
-    {
-      task.set ("status", "pending");
-      task.remove ("wait");
-      // Unwaiting pending tasks is the only case not caught by the size()
-      // checks in TDB2::gc(), so we need to signal it here.
-      Context::getContext ().tdb2.pending._dirty = true;
-
-      if (Context::getContext ().verbose ("unwait"))
-        Context::getContext ().footnote (format ("Un-waiting task {1} '{2}'", task.id, task.get ("description")));
-    }
-
     Context::getContext ().tdb2.pending._tasks.push_back (task);
   }
   else

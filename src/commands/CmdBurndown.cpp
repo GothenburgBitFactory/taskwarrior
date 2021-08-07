@@ -247,8 +247,7 @@ void Chart::scan (std::vector <Task>& tasks)
     // e-->   e--s-->
     // ppp>   pppsss>
     Task::status status = task.getStatus ();
-    if (status == Task::pending ||
-        status == Task::waiting)
+    if (status == Task::pending)
     {
       if (task.has ("start"))
       {

@@ -207,7 +207,6 @@ bool Filter::pendingOnly () const
   // - no 'or'
   int countStatus    = 0;
   int countPending   = 0;
-  int countWaiting   = 0;
   int countRecurring = 0;
   int countId        = (int) Context::getContext ().cli2._id_ranges.size ();
   int countUUID      = (int) Context::getContext ().cli2._uuid_list.size ();
@@ -229,7 +228,6 @@ bool Filter::pendingOnly () const
       if (a._lextype == Lexer::Type::op  && raw == "not")          ++countNot;
       if (a._lextype == Lexer::Type::dom && canonical == "status") ++countStatus;
       if (                                  raw == "pending")      ++countPending;
-      if (                                  raw == "waiting")      ++countWaiting;
       if (                                  raw == "recurring")    ++countRecurring;
     }
   }
@@ -252,7 +250,7 @@ bool Filter::pendingOnly () const
 
   if (countStatus)
   {
-    if (!countPending && !countWaiting && !countRecurring)
+    if (!countPending && !countRecurring)
       return false;
 
     return true;

@@ -89,7 +89,6 @@ int CmdStats::execute (std::string& output)
   int deletedT      = 0;
   int pendingT      = 0;
   int completedT    = 0;
-  int waitingT      = 0;
   int taggedT       = 0;
   int annotationsT  = 0;
   int recurringT    = 0;
@@ -111,7 +110,6 @@ int CmdStats::execute (std::string& output)
     case Task::pending:   ++pendingT;   break;
     case Task::completed: ++completedT; break;
     case Task::recurring: ++recurringT; break;
-    case Task::waiting:   ++waitingT;   break;
     }
 
     if (task.is_blocked)  ++blockedT;
@@ -156,10 +154,6 @@ int CmdStats::execute (std::string& output)
   int row = view.addRow ();
   view.set (row, 0, "Pending");
   view.set (row, 1, pendingT);
-
-  row = view.addRow ();
-  view.set (row, 0, "Waiting");
-  view.set (row, 1, waitingT);
 
   row = view.addRow ();
   view.set (row, 0, "Recurring");

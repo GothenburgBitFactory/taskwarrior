@@ -102,8 +102,7 @@ int CmdSummary::execute (std::string& output)
     for (auto& parent : projects)
       ++counter[parent];
 
-    if (task.getStatus () == Task::pending ||
-        task.getStatus () == Task::waiting)
+    if (task.getStatus () == Task::pending)
     {
       for (auto& parent : projects)
       {

@@ -24,6 +24,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <cmake.h>
 #include <Task.h>
 #include <sstream>
@@ -147,7 +148,8 @@ Task::status Task::textToStatus (const std::string& input)
   else if (input[0] == 'c') return Task::completed;
   else if (input[0] == 'd') return Task::deleted;
   else if (input[0] == 'r') return Task::recurring;
-  else if (input[0] == 'w') return Task::waiting;
+  // for backward compatibility, treat `w`(aiting) as pending
+  else if (input[0] == 'w') return Task::pending;
 
   throw format ("The status '{1}' is not valid.", input);
 }
@@ -157,7 +159,6 @@ std::string Task::statusToText (Task::status s)
 {
        if (s == Task::pending)   return "pending";
   else if (s == Task::recurring) return "recurring";
-  else if (s == Task::waiting)   return "waiting";
   else if (s == Task::completed) return "completed";
   else if (s == Task::deleted)   return "deleted";
 
@@ -558,6 +559,19 @@ bool Task::is_overdue () const
   return false;
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_waiting () const
+{
+  if (has ("wait"))
+  {
+    Datetime now;
+    Datetime wait (get_date ("wait"));
+    return wait > now;
+  }
+
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Task::parse, and in the event of an error
@@ -1311,7 +1325,7 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "TAGGED")    return getTagCount() > 0;
     if (tag == "PARENT")    return has ("mask") || has ("last");       // 2017-01-07: Deprecated in 2.6.0
     if (tag == "TEMPLATE")  return has ("last") || has ("mask");
-    if (tag == "WAITING")   return get ("status") == "waiting";
+    if (tag == "WAITING")   return is_waiting ();
     if (tag == "PENDING")   return get ("status") == "pending";
     if (tag == "COMPLETED") return get ("status") == "completed";
     if (tag == "DELETED")   return get ("status") == "deleted";
@@ -1615,12 +1629,6 @@ void Task::validate (bool applyDefault /* = true */)
   }
 */
 
-  // Tasks with a wait: date get a special status.
-  else if (status == Task::pending &&
-           has ("wait")            &&
-           get ("wait") != "")
-    status = Task::waiting;
-
   // By default, tasks are pending.
   else if (! has ("status") || get ("status") == "")
     status = Task::pending;
@@ -1895,6 +1903,7 @@ float Task::urgency_c () const
   value += fabsf (Task::urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * Task::urgencyProjectCoefficient)     : 0.0;
   value += fabsf (Task::urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * Task::urgencyActiveCoefficient)      : 0.0;
   value += fabsf (Task::urgencyScheduledCoefficient)   > epsilon ? (urgency_scheduled ()   * Task::urgencyScheduledCoefficient)   : 0.0;
+  //std::cout << "UW" << urgency_waiting() << "\n";
   value += fabsf (Task::urgencyWaitingCoefficient)     > epsilon ? (urgency_waiting ()     * Task::urgencyWaitingCoefficient)     : 0.0;
   value += fabsf (Task::urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * Task::urgencyBlockedCoefficient)     : 0.0;
   value += fabsf (Task::urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * Task::urgencyAnnotationsCoefficient) : 0.0;
@@ -2048,7 +2057,7 @@ float Task::urgency_scheduled () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_waiting () const
 {
-  if (get_ref ("status") == "waiting")
+  if (is_waiting ())
     return 1.0;
 
   return 0.0;

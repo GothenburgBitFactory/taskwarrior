@@ -41,7 +41,7 @@ class TestWait(TestCase):
         self.t.config("report.ls.columns", "id,project,priority,description")
         self.t.config("report.ls.labels", "ID,Proj,Pri,Description")
         self.t.config("report.ls.sort", "priority-,project+")
-        self.t.config("report.ls.filter", "status:pending")
+        self.t.config("report.ls.filter", "status:pending -WAITING")
 
     def test_visibility_waiting(self):
         """visibility of waiting tasks"""
@@ -61,8 +61,6 @@ class TestWait(TestCase):
         code, out, err = self.t("ls")
         self.assertIn("visible", out)
         self.assertIn("hidden", out)
-
-        self.assertIn("Un-waiting task 2 'hidden'", err)
 
 
 class TestBug434(TestCase):

@@ -1,5 +1,9 @@
 2.6.0 () -
 
+- TW #2554 "waiting" is no longer a task status.  Instead, a task with a
+		   'wait' in the future is tagged as +WAITING, but has status
+		   "pending".  This may require adjustments to custom reports.
+           Thanks to Dustin Mitchell.
 - TW #1654 "Due" parsing behaviour seems inconsistent
            Thanks to Max Rossmannek.
 - TW #1788 When deleting recurring task all tasks, including completed tasks,

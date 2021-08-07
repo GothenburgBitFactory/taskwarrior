@@ -279,8 +279,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
     Task t;
     Context::getContext ().tdb2.get (dependencies[i], t);
-    if (t.getStatus () == Task::pending ||
-        t.getStatus () == Task::waiting)
+    if (t.getStatus () == Task::pending)
       allDeps << t.id;
     else
       allDeps << dependencies[i];
@@ -578,14 +577,12 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       {
         Context::getContext ().footnote (STRING_EDIT_WAIT_MOD);
         task.set ("wait", Datetime (value, dateformat).toEpochString ());
-        task.setStatus (Task::waiting);
       }
     }
     else
     {
       Context::getContext ().footnote (STRING_EDIT_WAIT_MOD);
       task.set ("wait", Datetime (value, dateformat).toEpochString ());
-      task.setStatus (Task::waiting);
     }
   }
   else
@@ -594,7 +591,6 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     {
       Context::getContext ().footnote ("Wait date removed.");
       task.remove ("wait");
-      task.setStatus (Task::pending);
     }
   }
 

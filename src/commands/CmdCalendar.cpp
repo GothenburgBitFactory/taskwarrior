@@ -178,7 +178,7 @@ int CmdCalendar::execute (std::string& output)
     for (auto& task : tasks)
     {
       auto status = task.getStatus ();
-      if (status == Task::pending || status == Task::waiting)
+      if (status == Task::pending)
       {
         if (task.has ("due") &&
             !task.hasTag ("nocal"))
@@ -618,9 +618,7 @@ std::string CmdCalendar::renderMonths (
           for (auto& task : all)
           {
             auto status = task.getStatus ();
-            if ((status == Task::pending ||
-                 status == Task::waiting ) &&
-                !task.hasTag ("nocal"))
+            if (status == Task::pending && !task.hasTag ("nocal"))
             {
               if(task.has("scheduled") && !coloredWithDue) {
                 std::string scheduled = task.get ("scheduled");

@@ -68,7 +68,7 @@ public:
   std::string composeJSON (bool decorate = false) const;
 
   // Status values.
-  enum status {pending, completed, deleted, recurring, waiting};
+  enum status {pending, completed, deleted, recurring};
 
   // Date state values.
   enum dateState {dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday};
@@ -114,6 +114,7 @@ public:
   bool is_udaPresent () const;
   bool is_orphanPresent () const;
 #endif
+  bool is_waiting () const;
 
   status getStatus () const;
   void setStatus (status);

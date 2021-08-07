@@ -102,14 +102,9 @@ void handleRecurrence ()
             Datetime old_due (t.get_date ("due"));
             Datetime due (d);
             rec.set ("wait", format ((due + (old_wait - old_due)).toEpoch ()));
-            rec.setStatus (Task::waiting);
-            mask += 'W';
           }
-          else
-          {
-            mask += '-';
-            rec.setStatus (Task::pending);
-          }
+          mask += '-';
+          rec.setStatus (Task::pending);
 
           rec.set ("imask", i);
           rec.remove ("mask");                   // Remove the mask of the parent.
@@ -385,7 +380,6 @@ void updateRecurrenceMask (Task& task)
       mask[index] = (task.getStatus () == Task::pending)   ? '-'
                   : (task.getStatus () == Task::completed) ? '+'
                   : (task.getStatus () == Task::deleted)   ? 'X'
-                  : (task.getStatus () == Task::waiting)   ? 'W'
                   :                                          '?';
     }
     else
@@ -397,7 +391,6 @@ void updateRecurrenceMask (Task& task)
       mask += (task.getStatus () == Task::pending)   ? '-'
             : (task.getStatus () == Task::completed) ? '+'
             : (task.getStatus () == Task::deleted)   ? 'X'
-            : (task.getStatus () == Task::waiting)   ? 'W'
             :                                          '?';
     }
 
