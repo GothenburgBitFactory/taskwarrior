@@ -8,8 +8,9 @@ task add Actionable task wait:yesterday
 task add Non-actionable task wait:tomorrow+1h
 
 # Simulate this was created in 2.5.3 or earlier (status is equal to waiting,
-# not pending)
-sed -i 's/pending/waiting/' $TASKDATA/pending.data
+# not pending). Using more cumbersome sed syntax for Mac OS-X compatibility.
+sed -i".bak" 's/pending/waiting/g' $TASKDATA/pending.data
+rm -f $TASKDATA/pending.data.bak
 
 # Trigger upgrade
 task all
@@ -39,5 +40,6 @@ cat $TASKDATA/completed.data
 [[ -z `cat $TASKDATA/completed.data | grep waiting` ]]
 
 # Assertion: No tasks were moved into completed.data
-[[ `cat $TASKDATA/pending.data | wc -l` == "2" ]]
-[[ `cat $TASKDATA/completed.data | wc -l` == "0" ]]
+cat $TASKDATA/pending.data | wc -l | tr -d ' '
+[[ `cat $TASKDATA/pending.data | wc -l | tr -d ' '` == "2" ]]
+[[ `cat $TASKDATA/completed.data | wc -l | tr -d ' '` == "0" ]]
