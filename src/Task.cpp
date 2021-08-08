@@ -1344,7 +1344,7 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "PARENT")    return has ("mask") || has ("last");       // 2017-01-07: Deprecated in 2.6.0
     if (tag == "TEMPLATE")  return has ("last") || has ("mask");
     if (tag == "WAITING")   return is_waiting ();
-    if (tag == "PENDING")   return get ("status") == "pending";
+    if (tag == "PENDING")   return getStatus () == Task::pending;
     if (tag == "COMPLETED") return get ("status") == "completed";
     if (tag == "DELETED")   return get ("status") == "deleted";
 #ifdef PRODUCT_TASKWARRIOR
