@@ -355,6 +355,14 @@ void TF2::load_gc (Task& task)
   {
     Context::getContext ().tdb2.pending._tasks.push_back (task);
   }
+  // 2.6.0: Waiting status is deprecated. Convert to pending to upgrade status
+  // field value in the data files.
+  else if (status == "waiting")
+  {
+    task.set ("status", "pending");
+    Context::getContext ().tdb2.pending._tasks.push_back (task);
+    Context::getContext ().tdb2.pending._dirty = true;
+  }
   else
   {
     Context::getContext ().tdb2.completed._tasks.push_back (task);
