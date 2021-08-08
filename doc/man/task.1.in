@@ -304,7 +304,7 @@ value.
 .B task <filter> ready
 Shows a page of the most urgent ready tasks, sorted by urgency with started
 tasks first. A ready task is one that is either unscheduled, or has a scheduled
-date that is past and has no wait date.
+date that is past and is not waiting.
 
 .TP
 .B task <filter> oldest
@@ -796,9 +796,10 @@ to 25 lines.
 
 .TP
 .B wait:<wait-date>
-When a task is given a wait date, it is hidden from most reports by changing
-its status to 'waiting'. When that date is passed, the status is changed back
-to 'pending', and the task becomes visible.
+When a task is given a wait date, it is hidden from most built-in reports, which
+exclude +WAITING.  When the date is in the past, the task is not considered +WAITING,
+and again becomes visible.  Note that, for compatibilty, such tasks are shown as
+having status "waiting", but this will change in a future release.
 
 .TP
 .B depends:<id1,id2 ...>
