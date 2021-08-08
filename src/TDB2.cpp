@@ -355,23 +355,6 @@ void TF2::load_gc (Task& task)
   {
     Context::getContext ().tdb2.pending._tasks.push_back (task);
   }
-  else if (status == "waiting")
-  {
-    Datetime wait (task.get_date ("wait"));
-    if (wait < now)
-    {
-      task.set ("status", "pending");
-      task.remove ("wait");
-      // Unwaiting pending tasks is the only case not caught by the size()
-      // checks in TDB2::gc(), so we need to signal it here.
-      Context::getContext ().tdb2.pending._dirty = true;
-
-      if (Context::getContext ().verbose ("unwait"))
-        Context::getContext ().footnote (format ("Un-waiting task {1} '{2}'", task.id, task.get ("description")));
-    }
-
-    Context::getContext ().tdb2.pending._tasks.push_back (task);
-  }
   else
   {
     Context::getContext ().tdb2.completed._tasks.push_back (task);
@@ -1249,7 +1232,6 @@ void TDB2::show_diff (
 // Possible scenarios:
 // - task in pending that needs to be in completed
 // - task in completed that needs to be in pending
-// - waiting task in pending that needs to be un-waited
 void TDB2::gc ()
 {
   Timer timer;

@@ -62,8 +62,6 @@ class TestWait(TestCase):
         self.assertIn("visible", out)
         self.assertIn("hidden", out)
 
-        self.assertIn("Un-waiting task 2 'hidden'", err)
-
 
 class TestBug434(TestCase):
     # Bug #434: Task should not prevent users from marking as done tasks with
@@ -106,7 +104,7 @@ class TestFeature2322(TestCase):
         self.t = Task()
 
     def test_done_unwait(self):
-        """2322: Done should un-wait a waiting task"""
+        """2322: Done should remove the wait attribute"""
         self.t("add foo wait:tomorrow")
         code, out, err = self.t("export")
         self.assertIn('"wait":', out)
@@ -116,7 +114,7 @@ class TestFeature2322(TestCase):
         self.assertNotIn('"wait":', out)
 
     def test_delete_unwait(self):
-        """2322: Deleteion should un-wait a waiting task"""
+        """2322: Delete should remove the wait attribute"""
         self.t("add bar wait:tomorrow")
         code, out, err = self.t("export")
         self.assertIn('"wait":', out)

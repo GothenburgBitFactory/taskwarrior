@@ -114,6 +114,7 @@ public:
   bool is_udaPresent () const;
   bool is_orphanPresent () const;
 #endif
+  bool is_waiting () const;
 
   status getStatus () const;
   void setStatus (status);
