@@ -305,8 +305,9 @@ Task::status Task::getStatus () const
 
   auto status = textToStatus (get ("status"));
 
-  // implement the "virtual" Task::waiting status, which is not stored on-disk
+  // Implement the "virtual" Task::waiting status, which is not stored on-disk
   // but is defined as a pending task with a `wait` attribute in the future.
+  // This is workaround for 2.6.0, remove in 3.0.0.
   if (status == Task::pending && is_waiting ()) {
       return Task::waiting;
   }

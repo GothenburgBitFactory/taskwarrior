@@ -331,7 +331,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     }
 
     // Special handling of status required for virtual waiting status
-    // implementation
+    // implementation. Remove in 3.0.0.
     if (ref.data.size () && size == 1 && canonical == "status")
     {
       value = Variant (ref.statusToText (ref.getStatus ()));
