@@ -1346,8 +1346,8 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "TEMPLATE")  return has ("last") || has ("mask");
     if (tag == "WAITING")   return is_waiting ();
     if (tag == "PENDING")   return getStatus () == Task::pending;
-    if (tag == "COMPLETED") return get ("status") == "completed";
-    if (tag == "DELETED")   return get ("status") == "deleted";
+    if (tag == "COMPLETED") return getStatus () == Task::completed;
+    if (tag == "DELETED")   return getStatus () == Task::deleted;
 #ifdef PRODUCT_TASKWARRIOR
     if (tag == "UDA")       return is_udaPresent ();
     if (tag == "ORPHAN")    return is_orphanPresent ();
