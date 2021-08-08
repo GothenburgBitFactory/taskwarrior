@@ -147,7 +147,9 @@ Task::status Task::textToStatus (const std::string& input)
   else if (input[0] == 'c') return Task::completed;
   else if (input[0] == 'd') return Task::deleted;
   else if (input[0] == 'r') return Task::recurring;
-  else if (input[0] == 'w') return Task::waiting;
+  // for compatibility, parse `w` as pending; Task::getStatus will
+  // apply the virtual waiting status if appropriate
+  else if (input[0] == 'w') return Task::pending;
 
   throw format ("The status '{1}' is not valid.", input);
 }
@@ -301,12 +303,25 @@ Task::status Task::getStatus () const
   if (! has ("status"))
     return Task::pending;
 
-  return textToStatus (get ("status"));
+  auto status = textToStatus (get ("status"));
+
+  // implement the "virtual" Task::waiting status, which is not stored on-disk
+  // but is defined as a pending task with a `wait` attribute in the future.
+  if (status == Task::pending && is_waiting ()) {
+      return Task::waiting;
+  }
+
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setStatus (Task::status status)
 {
+  // the 'waiting' status is a virtual version of 'pending', so translate
+  // that back to 'pending' here
+  if (status == Task::waiting)
+      status = Task::pending;
+
   set ("status", statusToText (status));
 
   recalc_urgency = true;
@@ -558,6 +573,23 @@ bool Task::is_overdue () const
   return false;
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_waiting () const
+{
+  // note that is_waiting can return true for tasks in an actual status other
+  // than pending; in this case +WAITING will be set but the status will not be
+  // "waiting"
+  if (has ("wait"))
+  {
+    Datetime now;
+    Datetime wait (get_date ("wait"));
+    if (wait > now)
+      return true;
+  }
+
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Task::parse, and in the event of an error
@@ -1311,7 +1343,7 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "TAGGED")    return getTagCount() > 0;
     if (tag == "PARENT")    return has ("mask") || has ("last");       // 2017-01-07: Deprecated in 2.6.0
     if (tag == "TEMPLATE")  return has ("last") || has ("mask");
-    if (tag == "WAITING")   return get ("status") == "waiting";
+    if (tag == "WAITING")   return is_waiting ();
     if (tag == "PENDING")   return get ("status") == "pending";
     if (tag == "COMPLETED") return get ("status") == "completed";
     if (tag == "DELETED")   return get ("status") == "deleted";
@@ -2048,7 +2080,7 @@ float Task::urgency_scheduled () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_waiting () const
 {
-  if (get_ref ("status") == "waiting")
+  if (is_waiting ())
     return 1.0;
 
   return 0.0;
