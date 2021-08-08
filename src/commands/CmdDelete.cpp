@@ -92,10 +92,6 @@ int CmdDelete::execute (std::string&)
       if (! task.has ("end"))
         task.setAsNow ("end");
 
-      // Un-wait the task, if waiting.
-      if (task.has ("wait"))
-        task.remove ("wait");
-
       if (permission (question, filtered.size ()))
       {
         updateRecurrenceMask (task);

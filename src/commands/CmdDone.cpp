@@ -98,10 +98,6 @@ int CmdDone::execute (std::string&)
           task.addAnnotation (Context::getContext ().config.get ("journal.time.stop.annotation"));
       }
 
-      // Un-wait the task, if waiting.
-      if (task.has ("wait"))
-        task.remove ("wait");
-
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
