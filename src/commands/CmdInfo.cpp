@@ -414,6 +414,7 @@ int CmdInfo::execute (std::string& output)
     {
       if (att.substr (0, 11) != "annotation_" &&
           att.substr (0, 5) != "tags_" &&
+          att.substr (0, 4) != "dep_" &&
           Context::getContext ().columns.find (att) == Context::getContext ().columns.end ())
       {
          row = view.addRow ();

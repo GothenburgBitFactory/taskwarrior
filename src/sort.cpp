@@ -217,8 +217,8 @@ static bool sort_compare (int left, int right)
         return !ascending;
 
       // Sort on the first dependency.
-      left_number  = Context::getContext ().tdb2.id (left_deps[0].substr (0, 36));
-      right_number = Context::getContext ().tdb2.id (right_deps[0].substr (0, 36));
+      left_number  = Context::getContext ().tdb2.id (left_deps[0]);
+      right_number = Context::getContext ().tdb2.id (right_deps[0]);
 
       if (left_number == right_number)
         continue;

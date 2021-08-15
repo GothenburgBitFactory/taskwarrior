@@ -199,7 +199,7 @@ bool Task::has (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> Task::all ()
+std::vector <std::string> Task::all () const
 {
   std::vector <std::string> all;
   for (const auto& i : data)
@@ -672,6 +672,14 @@ void Task::parse (const std::string& input)
   // ..and similarly, update `tags` to match the `tag_..` attributes
   fixTagsAttribute();
 
+  // same for `depends` / `dep_..`
+  if (data.find ("depends") != data.end ()) {
+    for (auto& dep : split(data["depends"], ',')) {
+      data[dep2Attr(dep)] = "x";
+    }
+  }
+  fixDependsAttribute();
+
   recalc_urgency = true;
 }
 
@@ -938,8 +946,10 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (! i.first.compare (0, 11, "annotation_", 11))
       continue;
 
+    // Tags and dependencies are handled below
     if (i.first == "tags" || isTagAttr (i.first))
-      // Tags are handled below
+      continue;
+    if (i.first == "depends" || isDepAttr (i.first))
       continue;
 
     // If value is an empty string, do not ever output it
@@ -980,45 +990,6 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
           << "\":"
           << i.second;
 
-      ++attributes_written;
-    }
-
-    // Dependencies are an array by default.
-    else if (i.first == "depends"
-#ifdef PRODUCT_TASKWARRIOR
-    // 2016-02-20: Taskwarrior 2.5.0 introduced the 'json.depends.array' setting
-    //             which defaulted to 'on', and emitted this JSON for
-    //             dependencies:
-    //
-    //             With json.depends.array=on    "depends":["<uuid>","<uuid>"]
-    //             With json.depends.array=off   "depends":"<uuid>,<uuid>"
-    //
-    //             Taskwarrior 2.5.1 defaults this to 'off', because Taskserver
-    //             1.0.0 and 1.1.0 both expect that. Taskserver 1.2.0 will
-    //             accept both forms, but emit the 'off' variant.
-    //
-    //             When Taskwarrior 2.5.0 is no longer the dominant version,
-    //             and Taskserver 1.2.0 is released, the default for
-    //             'json.depends.array' can revert to 'on'.
-
-             && Context::getContext ().config.getBoolean ("json.depends.array")
-#endif
-            )
-    {
-      auto deps = split (i.second, ',');
-
-      out << "\"depends\":[";
-
-      int count = 0;
-      for (const auto& i : deps)
-      {
-        if (count++)
-          out << ',';
-
-        out << '"' << i << '"';
-      }
-
-      out << ']';
       ++attributes_written;
     }
 
@@ -1076,6 +1047,25 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
         out << ',';
 
       out << '"' << tag << '"';
+    }
+
+    out << ']';
+    ++attributes_written;
+  }
+
+  auto depends = getDependencyUUIDs ();
+  if (depends.size() > 0)
+  {
+    out << ','
+        << "\"depends\":[";
+
+    int count = 0;
+    for (const auto& dep : depends)
+    {
+      if (count++)
+        out << ',';
+
+      out << '"' << dep << '"';
     }
 
     out << ']';
@@ -1186,8 +1176,10 @@ void Task::addDependency (int depid)
   if (uuid == "")
     throw format ("Could not create a dependency on task {1} - not found.", depid);
 
-  std::string depends = get ("depends");
-  if (depends.find (uuid) != std::string::npos)
+  // the addDependency(&std::string) overload will check this, too, but here we
+  // can give an more natural error message containing the id the user
+  // provided.
+  if (hasDependency (uuid))
   {
     Context::getContext ().footnote (format ("Task {1} already depends on task {2}.", id, depid));
     return;
@@ -1203,23 +1195,16 @@ void Task::addDependency (const std::string& uuid)
   if (uuid == get ("uuid"))
     throw std::string ("A task cannot be dependent on itself.");
 
-  // Store the dependency.
-  std::string depends = get ("depends");
-  if (depends != "")
+  if (hasDependency (uuid))
   {
-    // Check for extant dependency.
-    if (depends.find (uuid) == std::string::npos)
-      set ("depends", depends + ',' + uuid);
-    else
-    {
 #ifdef PRODUCT_TASKWARRIOR
-      Context::getContext ().footnote (format ("Task {1} already depends on task {2}.", get ("uuid"), uuid));
+    Context::getContext ().footnote (format ("Task {1} already depends on task {2}.", get ("uuid"), uuid));
 #endif
-      return;
-    }
+    return;
   }
-  else
-    set ("depends", uuid);
+
+  // Store the dependency.
+  set (dep2Attr (uuid), "x");
 
   // Prevent circular dependencies.
 #ifdef PRODUCT_TASKWARRIOR
@@ -1228,75 +1213,84 @@ void Task::addDependency (const std::string& uuid)
 #endif
 
   recalc_urgency = true;
+  fixDependsAttribute();
 }
 
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
-void Task::removeDependency (const std::string& uuid)
+void Task::removeDependency (int id)
 {
-  auto deps = split (get ("depends"), ',');
+  std::string uuid = Context::getContext ().tdb2.pending.uuid (id);
 
-  auto i = std::find (deps.begin (), deps.end (), uuid);
-  if (i != deps.end ())
-  {
-    deps.erase (i);
-    set ("depends", join (",", deps));
-    recalc_urgency = true;
-  }
-  else
-    throw format ("Could not delete a dependency on task {1} - not found.", uuid);
+  // The removeDependency(std::string&) method will check this too, but here we
+  // can give a more natural error message containing the id provided by the user
+  if (uuid == "" || !has (dep2Attr (uuid)))
+    throw format ("Could not delete a dependency on task {1} - not found.", id);
+  removeDependency (uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::removeDependency (int id)
+void Task::removeDependency (const std::string& uuid)
 {
-  std::string depends = get ("depends");
-  std::string uuid = Context::getContext ().tdb2.pending.uuid (id);
-  if (uuid != "" && depends.find (uuid) != std::string::npos)
-    removeDependency (uuid);
+  auto depattr = dep2Attr (uuid);
+  if (has (depattr))
+    remove (depattr);
   else
-    throw format ("Could not delete a dependency on task {1} - not found.", id);
+    throw format ("Could not delete a dependency on task {1} - not found.", uuid);
+
+  recalc_urgency = true;
+  fixDependsAttribute();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::hasDependency (const std::string& uuid) const
 {
-  auto deps = split (get ("depends"), ',');
-
-  auto i = std::find (deps.begin (), deps.end (), uuid);
-  return i != deps.end ();
+  auto depattr = dep2Attr (uuid);
+  return has (depattr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <int> Task::getDependencyIDs () const
 {
-  std::vector <int> all;
-  for (auto& dep : split (get ("depends"), ','))
-    all.push_back (Context::getContext ().tdb2.pending.id (dep));
+  std::vector <int> ids;
+  for (auto& attr : all ()) {
+    if (!isDepAttr (attr))
+      continue;
+    auto dep = attr2Dep (attr);
+    ids.push_back (Context::getContext ().tdb2.pending.id (dep));
+  }
 
-  return all;
+  return ids;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <std::string> Task::getDependencyUUIDs () const
 {
-  return split (get ("depends"), ',');
+  std::vector <std::string> uuids;
+  for (auto& attr : all ()) {
+    if (!isDepAttr (attr))
+      continue;
+    auto dep = attr2Dep (attr);
+    uuids.push_back (dep);
+  }
+
+  return uuids;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <Task> Task::getDependencyTasks () const
 {
-  auto depends = get ("depends");
+  auto uuids = getDependencyUUIDs ();
 
   // NOTE: this may seem inefficient, but note that `TDB2::get` performs a
   // linear search on each invocation, so scanning *once* is quite a bit more
   // efficient.
   std::vector <Task> blocking;
-  if (depends != "")
+  if (uuids.size() > 0)
     for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
       if (it.getStatus () != Task::completed &&
           it.getStatus () != Task::deleted   &&
-          depends.find (it.get ("uuid")) != std::string::npos)
+          std::find (uuids.begin (), uuids.end (), it.get ("uuid")) != uuids.end ())
         blocking.push_back (it);
 
   return blocking;
@@ -1311,8 +1305,7 @@ std::vector <Task> Task::getBlockedTasks () const
   for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
     if (it.getStatus () != Task::completed &&
         it.getStatus () != Task::deleted   &&
-        it.has ("depends")                 &&
-        it.get ("depends").find (uuid) != std::string::npos)
+        it.hasDependency (uuid))
       blocked.push_back (it);
 
   return blocked;
@@ -1495,6 +1488,40 @@ const std::string Task::attr2Tag (const std::string& attr) const
 {
   assert (isTagAttr (attr));
   return attr.substr(5);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::fixDependsAttribute ()
+{
+  // Fix up the old `depends` attribute to match the `dep_..` attributes (or
+  // remove it if there are no deps)
+  auto deps = getDependencyUUIDs ();
+  if (deps.size () > 0) {
+    set ("depends", join (",", deps));
+  } else {
+    remove ("depends");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::isDepAttr(const std::string& attr) const
+{
+  return attr.compare(0, 4, "dep_") == 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Task::dep2Attr (const std::string& tag) const
+{
+  std::stringstream tag_attr;
+  tag_attr << "dep_" << tag;
+  return tag_attr.str();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Task::attr2Dep (const std::string& attr) const
+{
+  assert (isDepAttr (attr));
+  return attr.substr(4);
 }
 
 #ifdef PRODUCT_TASKWARRIOR

@@ -88,7 +88,7 @@ public:
 
   void setAsNow (const std::string&);
   bool has (const std::string&) const;
-  std::vector <std::string> all ();
+  std::vector <std::string> all () const;
   const std::string identifier (bool shortened = false) const;
   const std::string get (const std::string&) const;
   const std::string& get_ref (const std::string&) const;
@@ -176,6 +176,10 @@ private:
   bool isTagAttr (const std::string&) const;
   const std::string tag2Attr (const std::string&) const;
   const std::string attr2Tag (const std::string&) const;
+  bool isDepAttr (const std::string&) const;
+  const std::string dep2Attr (const std::string&) const;
+  const std::string attr2Dep (const std::string&) const;
+  void fixDependsAttribute ();
   void fixTagsAttribute ();
 
 public:
