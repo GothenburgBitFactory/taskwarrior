@@ -607,17 +607,18 @@ void CLI2::addContext (bool readable, bool writeable)
   if (contextString.empty ())
     return;
 
-  // Detect if UUID or ID is set, and bail out
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::uuid   ||
-        a._lextype == Lexer::Type::number ||
-        a._lextype == Lexer::Type::set)
+  // For readable contexts: Detect if UUID or ID is set, and bail out
+  if (readable)
+    for (auto& a : _args)
     {
-      Context::getContext ().debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
-      return;
+      if (a._lextype == Lexer::Type::uuid   ||
+          a._lextype == Lexer::Type::number ||
+          a._lextype == Lexer::Type::set)
+      {
+        Context::getContext ().debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
+        return;
+      }
     }
-  }
 
   // Apply the context. Readable (filtering) takes precedence. Also set the
   // block now, since addFilter calls analyze(), which calls addContext().
