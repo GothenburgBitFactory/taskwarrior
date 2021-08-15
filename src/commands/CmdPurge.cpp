@@ -71,8 +71,7 @@ void CmdPurge::handleDeps (Task& task)
    for (auto& blockedConst: Context::getContext ().tdb2.all_tasks ())
    {
      Task& blocked = const_cast<Task&>(blockedConst);
-     if (blocked.has ("depends") &&
-         blocked.get ("depends").find (uuid) != std::string::npos)
+     if (blocked.hasDependency (uuid))
      {
          blocked.removeDependency (uuid);
          Context::getContext ().tdb2.modify (blocked);

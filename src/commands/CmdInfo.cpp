@@ -147,7 +147,7 @@ int CmdInfo::execute (std::string& output)
 
     // dependencies: blocked
     {
-      auto blocked = dependencyGetBlocking (task);
+      auto blocked = task.getDependencyTasks ();
       if (blocked.size ())
       {
         std::stringstream message;
@@ -162,7 +162,7 @@ int CmdInfo::execute (std::string& output)
 
     // dependencies: blocking
     {
-      auto blocking = dependencyGetBlocked (task);
+      auto blocking = task.getBlockedTasks ();
       if (blocking.size ())
       {
         std::stringstream message;
