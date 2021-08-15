@@ -90,6 +90,8 @@
 - TW #2536 Feature: inclusive range-end attribute modifier 'by' so 'end of'
            named dates can be filtered inclusively
            Thanks to Scott Mcdermott
+- TW #2550 Write context skipped if description contains an identifier
+           Thanks to Sebastian Fricke.
 
 ------ current release ---------------------------
 
