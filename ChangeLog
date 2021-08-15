@@ -1,5 +1,14 @@
 2.6.0 () -
 
+- TW #2569 The `json.depends.array` configuration option is now ignored.
+           Dependencies are always represented as an array in JSON output.
+- TW #2554 Waiting is now an entirely "virtual" concept, based on a task's
+           'wait' property and the current time.  This is reflected in the +WAITING
+           tag, and in the now-deprecated `waiting` status.  Please upgrade filters
+           and other automation to use `+WAITING` or `wait.after:now` instead of
+           `status:waiting`, as support will be dropped in a future version.
+           TaskWarrior no longer explicitly "unwaits" a task, so the "unwait' verbosity
+           token is no longer available.
 - TW #1654 "Due" parsing behaviour seems inconsistent
            Thanks to Max Rossmannek.
 - TW #1788 When deleting recurring task all tasks, including completed tasks,
