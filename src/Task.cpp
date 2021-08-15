@@ -1259,6 +1259,15 @@ void Task::removeDependency (int id)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::hasDependency (const std::string& uuid) const
+{
+  auto deps = split (get ("depends"), ',');
+
+  auto i = std::find (deps.begin (), deps.end (), uuid);
+  return i != deps.end ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::vector <int> Task::getDependencyIDs () const
 {
   std::vector <int> all;
@@ -1277,15 +1286,36 @@ std::vector <std::string> Task::getDependencyUUIDs () const
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <Task> Task::getDependencyTasks () const
 {
-  std::vector <Task> all;
-  for (auto& dep : split (get ("depends"), ','))
-  {
-    Task task;
-    Context::getContext ().tdb2.get (dep, task);
-    all.push_back (task);
-  }
+  auto depends = get ("depends");
 
-  return all;
+  // NOTE: this may seem inefficient, but note that `TDB2::get` performs a
+  // linear search on each invocation, so scanning *once* is quite a bit more
+  // efficient.
+  std::vector <Task> blocking;
+  if (depends != "")
+    for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
+      if (it.getStatus () != Task::completed &&
+          it.getStatus () != Task::deleted   &&
+          depends.find (it.get ("uuid")) != std::string::npos)
+        blocking.push_back (it);
+
+  return blocking;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <Task> Task::getBlockedTasks () const
+{
+  auto uuid = get ("uuid");
+
+  std::vector <Task> blocked;
+  for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
+    if (it.getStatus () != Task::completed &&
+        it.getStatus () != Task::deleted   &&
+        it.has ("depends")                 &&
+        it.get ("depends").find (uuid) != std::string::npos)
+      blocked.push_back (it);
+
+  return blocked;
 }
 #endif
 
@@ -2038,9 +2068,9 @@ float Task::urgency_inherit () const
 {
   float v = FLT_MIN;
 #ifdef PRODUCT_TASKWARRIOR
-  // Calling dependencyGetBlocked is rather expensive.
+  // Calling getBlockedTasks is rather expensive.
   // It is called recursively for each dependency in the chain here.
-  for (auto& task : dependencyGetBlocked (*this))
+  for (auto& task : getBlockedTasks ())
   {
     // Find highest urgency in all blocked tasks.
     v = std::max (v, task.urgency ());

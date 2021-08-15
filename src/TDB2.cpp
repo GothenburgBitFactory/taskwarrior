@@ -516,29 +516,26 @@ void TF2::dependency_scan ()
   // Iterate and modify TDB2 in-place.  Don't do this at home.
   for (auto& left : _tasks)
   {
-    if (left.has ("depends"))
+    for (auto& dep : left.getDependencyUUIDs ())
     {
-      for (auto& dep : left.getDependencyUUIDs ())
+      for (auto& right : _tasks)
       {
-        for (auto& right : _tasks)
+        if (right.get ("uuid") == dep)
         {
-          if (right.get ("uuid") == dep)
+          // GC hasn't run yet, check both tasks for their current status
+          Task::status lstatus = left.getStatus ();
+          Task::status rstatus = right.getStatus ();
+          if (lstatus != Task::completed &&
+              lstatus != Task::deleted &&
+              rstatus != Task::completed &&
+              rstatus != Task::deleted)
           {
-            // GC hasn't run yet, check both tasks for their current status
-            Task::status lstatus = left.getStatus ();
-            Task::status rstatus = right.getStatus ();
-            if (lstatus != Task::completed &&
-                lstatus != Task::deleted &&
-                rstatus != Task::completed &&
-                rstatus != Task::deleted)
-            {
-              left.is_blocked = true;
-              right.is_blocking = true;
-            }
-
-            // Only want to break out of the "right" loop.
-            break;
+            left.is_blocked = true;
+            right.is_blocking = true;
           }
+
+          // Only want to break out of the "right" loop.
+          break;
         }
       }
     }

@@ -200,22 +200,25 @@ static bool sort_compare (int left, int right)
     // Depends string.
     else if (field == "depends")
     {
-      // Raw data is a comma-separated list of uuids
-      auto left_string  = (*global_data)[left].get_ref  (field);
-      auto right_string = (*global_data)[right].get_ref (field);
+      // Raw data is an un-sorted list of UUIDs.  We just need a stable
+      // sort, so we sort them lexically.
+      auto left_deps  = (*global_data)[left].getDependencyUUIDs ();
+      std::sort(left_deps.begin(), left_deps.end());
+      auto right_deps = (*global_data)[right].getDependencyUUIDs ();
+      std::sort(right_deps.begin(), right_deps.end());
 
-      if (left_string == right_string)
+      if (left_deps == right_deps)
         continue;
 
-      if (left_string == "" && right_string != "")
+      if (left_deps.size () == 0 && right_deps.size () > 0)
         return ascending;
 
-      if (left_string != "" && right_string == "")
+      if (left_deps.size () > 0 && right_deps.size () == 0)
         return !ascending;
 
       // Sort on the first dependency.
-      left_number  = Context::getContext ().tdb2.id (left_string.substr (0, 36));
-      right_number = Context::getContext ().tdb2.id (right_string.substr (0, 36));
+      left_number  = Context::getContext ().tdb2.id (left_deps[0].substr (0, 36));
+      right_number = Context::getContext ().tdb2.id (right_deps[0].substr (0, 36));
 
       if (left_number == right_number)
         continue;

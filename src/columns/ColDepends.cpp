@@ -68,7 +68,9 @@ void ColumnDepends::setStyle (const std::string& value)
 void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
-  if (task.has (_name))
+  auto deptasks = task.getDependencyTasks ();
+
+  if (deptasks.size () > 0)
   {
     if (_style == "indicator")
     {
@@ -77,25 +79,24 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
 
     else if (_style == "count")
     {
-      minimum = maximum = 2 + format ((int) dependencyGetBlocking (task).size ()).length ();
+      minimum = maximum = 2 + format ((int) deptasks.size ()).length ();
     }
 
     else if (_style == "default" ||
              _style == "list")
     {
       minimum = maximum = 0;
-      auto blocking = dependencyGetBlocking (task);
 
       std::vector <int> blocking_ids;
-      blocking_ids.reserve(blocking.size());
-      for (auto& i : blocking)
+      blocking_ids.reserve(deptasks.size());
+      for (auto& i : deptasks)
         blocking_ids.push_back (i.id);
 
       auto all = join (" ", blocking_ids);
       maximum = all.length ();
 
       unsigned int length;
-      for (auto& i : blocking)
+      for (auto& i : deptasks)
       {
         length = format (i.id).length ();
         if (length > minimum)
@@ -112,7 +113,9 @@ void ColumnDepends::render (
   int width,
   Color& color)
 {
-  if (task.has (_name))
+  auto deptasks = task.getDependencyTasks ();
+
+  if (deptasks.size () > 0)
   {
     if (_style == "indicator")
     {
@@ -121,17 +124,15 @@ void ColumnDepends::render (
 
     else if (_style == "count")
     {
-      renderStringRight (lines, width, color, '[' + format (static_cast <int>(dependencyGetBlocking (task).size ())) + ']');
+      renderStringRight (lines, width, color, '[' + format (static_cast <int>(deptasks.size ())) + ']');
     }
 
     else if (_style == "default" ||
              _style == "list")
     {
-      auto blocking = dependencyGetBlocking (task);
-
       std::vector <int> blocking_ids;
-      blocking_ids.reserve(blocking.size());
-      for (const auto& t : blocking)
+      blocking_ids.reserve(deptasks.size());
+      for (const auto& t : deptasks)
         blocking_ids.push_back (t.id);
 
       auto combined = join (" ", blocking_ids);

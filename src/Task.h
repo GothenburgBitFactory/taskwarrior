@@ -144,8 +144,10 @@ public:
 #ifdef PRODUCT_TASKWARRIOR
   void removeDependency (int);
   void removeDependency (const std::string&);
+  bool hasDependency (const std::string&) const;
   std::vector <int>         getDependencyIDs () const;
   std::vector <std::string> getDependencyUUIDs () const;
+  std::vector <Task>        getBlockedTasks () const;
   std::vector <Task>        getDependencyTasks () const;
 
   std::vector <std::string> getUDAOrphanUUIDs () const;

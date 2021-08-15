@@ -78,6 +78,7 @@ std::string taskDifferences (const Task& before, const Task& after)
         << format ("{1} will be deleted.", Lexer::ucFirst (name))
         << "\n";
 
+  // TODO: #2572 - rewrite to look at dep_ and tag_
   for (auto& name : afterOnly)
   {
     if (name == "depends")
@@ -384,12 +385,12 @@ void feedback_unblocked (const Task& task)
   if (Context::getContext ().verbose ("affected"))
   {
     // Get a list of tasks that depended on this task.
-    auto blocked = dependencyGetBlocked (task);
+    auto blocked = task.getBlockedTasks ();
 
     // Scan all the tasks that were blocked by this task
     for (auto& i : blocked)
     {
-      auto blocking = dependencyGetBlocking (i);
+      auto blocking = i.getDependencyTasks ();
       if (blocking.size () == 0)
       {
         if (i.id)

@@ -667,7 +667,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   value = findValue (after, "\n  Dependencies:");
   auto dependencies = split (value, ',');
 
-  task.remove ("depends");
+  for (auto& dep : task.getDependencyUUIDs ())
+    task.removeDependency (dep);
   for (auto& dep : dependencies)
   {
     if (dep.length () >= 7)
