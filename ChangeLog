@@ -15,6 +15,8 @@
 - TW #1804 Importing malformed annotation (without entry timestamp) causes
            segmentation fault.
            Thanks to David Badura.
+- TW #1824 Fixed countdown formatting
+           Thanks to Sebastian Uharek
 - TW #1896 Parser cannot handle empty parentheses
            Thanks to Tomas Babej.
 - TW #1908 Cannot create task with explicit description 'start ....'
@@ -76,6 +78,8 @@
            Thanks to Scott Kostyshak.
 - TW #2503 Warn against executing an empty execute command.
            Thanks to heinrichat.
+- TW #2208 Feature: added coloring of dates with scheduled tasks to calendar
+           Thanks to Sebastian Uharek
 - TW #2514 Duration values can be mis-reported in the task info output
            Thanks to reportaman.
 - TW #2519 Named date eod should be last minute of today and not first of
@@ -86,10 +90,6 @@
 - TW #2536 Feature: inclusive range-end attribute modifier 'by' so 'end of'
            named dates can be filtered inclusively
            Thanks to Scott Mcdermott
-- TW #1824 Fixed countdown formatting
-           Thanks to Sebastian Uharek
-- #2208    Feature: added coloring of dates with scheduled tasks to calendar
-           Thanks to Sebastian Uharek
 
 ------ current release ---------------------------
 
