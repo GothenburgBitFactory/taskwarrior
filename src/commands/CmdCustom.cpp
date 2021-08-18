@@ -87,9 +87,11 @@ int CmdCustom::execute (std::string& output)
   if (reportFilter != "")
     Context::getContext ().cli2.addFilter (reportFilter);
 
-  // Apply filter.
+  // Make sure reccurent tasks are generated.
   handleUntil ();
   handleRecurrence ();
+
+  // Apply filter.
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
