@@ -1,14 +1,5 @@
 2.6.0 () -
 
-- TW #2569 The `json.depends.array` configuration option is now ignored.
-           Dependencies are always represented as an array in JSON output.
-- TW #2554 Waiting is now an entirely "virtual" concept, based on a task's
-           'wait' property and the current time.  This is reflected in the +WAITING
-           tag, and in the now-deprecated `waiting` status.  Please upgrade filters
-           and other automation to use `+WAITING` or `wait.after:now` instead of
-           `status:waiting`, as support will be dropped in a future version.
-           TaskWarrior no longer explicitly "unwaits" a task, so the "unwait' verbosity
-           token is no longer available.
 - TW #1654 "Due" parsing behaviour seems inconsistent
            Thanks to Max Rossmannek.
 - TW #1788 When deleting recurring task all tasks, including completed tasks,
@@ -37,16 +28,18 @@
            Thanks to Janik Rabe
 - TW #2017 Support 64-bit datetime values
            Thanks to Evgeniy Vasilev
-- TW #2257 UDA string fields can't start with certain keywords
-           Thanks to Michael Russell.
 - TW #2060 Review timestamp is displayed as unix time, not formatted
            Thanks to JavaZauber
 - TW #2093 wrong order under projects command
            Thanks to Beka, Max Rossmannek.
 - TW #2101 Numeric UDA values above 2,147,483,647 overflow without warning
            Thanks to Adam Monsen.
+- TW #2208 Feature: added coloring of dates with scheduled tasks to calendar
+           Thanks to Sebastian Uharek
 - TW #2247 Configuration override rc.verbose:off not respected
            Thanks to Vignesh Prabhu.
+- TW #2257 UDA string fields can't start with certain keywords
+           Thanks to Michael Russell.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
            Thanks to Julien Rabinow.
 - TW #2292 CmdEdit: Interruption should remove lock file
@@ -80,8 +73,6 @@
            Thanks to Scott Kostyshak.
 - TW #2503 Warn against executing an empty execute command.
            Thanks to heinrichat.
-- TW #2208 Feature: added coloring of dates with scheduled tasks to calendar
-           Thanks to Sebastian Uharek
 - TW #2514 Duration values can be mis-reported in the task info output
            Thanks to reportaman.
 - TW #2519 Named date eod should be last minute of today and not first of
@@ -96,6 +87,9 @@
            Thanks to Sebastian Fricke.
 - TW #2554 Remove the waiting state, and consider any task with wait>now to be
            waiting
+           Thanks to Dustin J. Mitchell
+- TW #2569 The `json.depends.array` configuration option is now ignored.
+           Dependencies are always represented as an array in JSON output.
            Thanks to Dustin J. Mitchell
 
 ------ current release ---------------------------
