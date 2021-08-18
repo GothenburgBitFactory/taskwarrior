@@ -35,6 +35,8 @@ class CmdExport : public Command
 public:
   CmdExport ();
   int execute (std::string&);
+private:
+  void validateSortColumns (std::vector <std::string>&);
 };
 
 #endif
