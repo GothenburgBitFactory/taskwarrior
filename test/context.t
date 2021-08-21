@@ -490,6 +490,33 @@ class ContextEvaluationTest(TestCase):
         self.assertNotIn("work today task", output)
         self.assertNotIn("home today task", output)
 
+    def test_context_ignored(self):
+        """Test the context is not applied with report list command if
+        report.list.context is set to 0."""
+
+        # Turn off context for this report
+        self.t.config("report.list.context", "0")
+
+        # Get the tasks
+        code, out, err = self.t('list')
+
+        # Assert all the tasks are present in the output
+        self.assertIn("work task", out)
+        self.assertIn("home task", out)
+        self.assertIn("work today task", out)
+        self.assertIn("home today task", out)
+
+        # Set the home context and rerun the report
+        self.t('context home')
+
+        code, out, err = self.t('list')
+
+        # Assert nothing changed - all the tasks are present in the output
+        self.assertIn("work task", out)
+        self.assertIn("home task", out)
+        self.assertIn("work today task", out)
+        self.assertIn("home today task", out)
+
 
 class ContextErrorHandling(TestCase):
     def setUp(self):
