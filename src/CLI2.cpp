@@ -34,6 +34,8 @@
 #include <Color.h>
 #include <shared.h>
 #include <format.h>
+#include <CmdCustom.h>
+#include <CmdTimesheet.h>
 
 // Overridden by rc.abbreviation.minimum.
 int CLI2::minimumMatchLength = 3;
@@ -945,7 +947,23 @@ void CLI2::categorizeArgs ()
   // Context is only applied for commands that request it.
   std::string command = getCommand ();
   Command* cmd = Context::getContext ().commands[command];
-  if (cmd && cmd->uses_context ())
+
+  // Determine if the command uses Context. CmdCustom and CmdTimesheet need to
+  // be handled separately, as they override the parent Command::use_context
+  // method, and this is a pointer to Command class.
+  //
+  // All Command classes overriding uses_context () getter need to be specified
+  // here.
+  bool uses_context;
+  if (dynamic_cast<CmdCustom*> (cmd))
+    uses_context = (dynamic_cast<CmdCustom*> (cmd))->uses_context ();
+  else if (dynamic_cast<CmdTimesheet*> (cmd))
+    uses_context = (dynamic_cast<CmdTimesheet*> (cmd))->uses_context ();
+  else if (cmd)
+    uses_context = cmd->uses_context ();
+
+  // Apply the context, if applicable
+  if (cmd && uses_context)
     addContext (cmd->accepts_filter (), cmd->accepts_modifications ());
 
   bool changes = false;
