@@ -80,8 +80,9 @@ bool CmdConfig::setConfigVariable (
       {
         auto new_line = line.substr (0, pos + name.length () + 1) + json::encode (value);
 
+        // Preserve the comment
         if (comment != std::string::npos)
-          line += ' ' + line.substr (comment);
+          new_line += "  " + line.substr (comment);
 
         // Rewrite the line
         line = new_line;
