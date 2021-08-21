@@ -60,6 +60,21 @@ CmdCustom::CmdCustom (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Whether a report uses context is defined by the report.<name>.context
+// configuration variable.
+//
+bool CmdCustom::uses_context () const
+{
+  auto config = Context::getContext ().config;
+  auto key = "report." + _keyword + ".context";
+
+  if (config.has (key))
+    return config.getBoolean (key);
+  else
+    return _uses_context;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int CmdCustom::execute (std::string& output)
 {
   auto rc = 0;
