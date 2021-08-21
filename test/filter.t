@@ -1130,6 +1130,24 @@ class TestBug1915(TestCase):
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
+
+class Test2577(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_filtering_for_datetime_like(self):
+        """2577: Check that filtering for datetime-like project names works"""
+        self.t('add one pro:sat')  # looks like "saturday"
+        self.t('add two pro:whatever')
+
+        # This should not fail (fails on 2.5.3)
+        code, out, err = self.t('pro:sat')
+
+        # Assert expected output, but the crucial part of this test is success
+        # of the call above
+        self.assertIn("one", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
