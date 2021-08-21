@@ -44,6 +44,10 @@ New Configuration Options in Taskwarrior 2.6.0
   - The context definitions for reporting commmands are now stored in
     "context.<name>.read". Context definitions for write commands are now
     supported using "context.<name>.write" configuration variable.
+  - Each report (and the timesheet command) can explicitly opt-out from the
+    currently active context by setting the report.<name>.context variable to 0
+    (defaults to 1). Useful for defining universal reports that ignore
+    currently set context, such as 'inbox' report for GTD methodology.
   - Multi-day holidays are now supported. Use holiday.<name>.start=<date> and
     holiday.<name>.end=<date> to specify a range-based holiday, such as a
     vacation.
