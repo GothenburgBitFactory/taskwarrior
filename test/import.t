@@ -292,6 +292,12 @@ class TestImportValidate(TestCase):
         code, out, err = self.t.runError("import", input=j)
         self.assertIn("The status 'foo' is not valid.", err)
 
+    def test_import_malformed_annotation(self):
+        """Verify invalid 'annnotations' is caught"""
+        j = '{"description": "bad", "annotations": "bad"}'
+        code, out, err = self.t.runError("import", input=j)
+        self.assertIn('Annotations is malformed: "bad"', err)
+
 
 class TestImportWithoutISO(TestCase):
     def setUp(self):

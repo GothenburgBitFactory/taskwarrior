@@ -793,6 +793,11 @@ void Task::parseJSON (const json::object* root_obj)
       {
         std::map <std::string, std::string> annos;
 
+        // Fail if 'annotations' is not an array
+        if (i.second->type() != json::j_array) {
+            throw format ("Annotations is malformed: {1}", i.second->dump ());
+        }
+
         auto atts = (json::array*)i.second;
         for (auto& annotations : atts->_data)
         {
