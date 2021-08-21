@@ -91,6 +91,7 @@
 - TW #2569 The `json.depends.array` configuration option is now ignored.
            Dependencies are always represented as an array in JSON output.
            Thanks to Dustin J. Mitchell
+- TW #2581 Config entry with a trailing comment cannot be modified
 
 ------ current release ---------------------------
 
