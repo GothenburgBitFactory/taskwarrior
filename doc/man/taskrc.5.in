@@ -1280,6 +1280,12 @@ This is a comma-separated list of columns and formatting specifiers. See the
 command 'task columns' for a full list of options and examples.
 
 .TP
+.B report.X.context
+A boolean value representing whether the given report should respect (apply)
+the currently active context. See CONTEXT section for details about context.
+Defaults to 1.
+
+.TP
 .B report.X.labels
 The labels for each column that will be used when generating report X. The
 labels are a comma separated list.
