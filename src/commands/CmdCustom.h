@@ -34,6 +34,7 @@ class CmdCustom : public Command
 {
 public:
   CmdCustom (const std::string&, const std::string&, const std::string&);
+  bool uses_context () const override;
   int execute (std::string&);
 
 private:
