@@ -160,12 +160,12 @@ fn named_date<Tz: TimeZone>(
             "today" => Ok((remaining, local_today)),
             "tomorrow" => Ok((remaining, local_today + Duration::days(1))),
             // TODO: lots more!
-            "eod"=>Ok((remaining,local_today+Duration::days(1))),
-            "sod"=>Ok((remaining,local_today)),
-            "eow"=> Ok((remaining,local_today+Duration::days((6-day_index).into()))),
-            "eoww"=>Ok((remaining,local_today+Duration::days((5-day_index).into()))),
-            "sow"=>Ok((remaining,local_today+Duration::days((6-day_index).into()))),
-            "soww"=>Ok((remaining,local_today+Duration::days((7-day_index).into()))),
+            "eod" => Ok((remaining,local_today+Duration::days(1))),
+            "sod" => Ok((remaining,local_today)),
+            "eow" => Ok((remaining,local_today+Duration::days((6-day_index).into()))),
+            "eoww" => Ok((remaining,local_today+Duration::days((5-day_index).into()))),
+            "sow" => Ok((remaining,local_today+Duration::days((6-day_index).into()))),
+            "soww" => Ok((remaining,local_today+Duration::days((7-day_index).into()))),
             _ => Err(Err::Error(Error::new(input, ErrorKind::Tag))),
         }
         .map(|(rem, dt)| (rem, dt.and_hms(0, 0, 0).with_timezone(&Utc)))
