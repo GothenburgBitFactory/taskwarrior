@@ -45,4 +45,4 @@ Some commonly used named timestamps
  * `soww` Start of the next work week
 
 
-![named timestamp](/docs/assets/cgi/named_timestamp.jpg)
+![named timestamp](images/name_timestamp.png)
