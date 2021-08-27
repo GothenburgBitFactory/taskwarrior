@@ -41,5 +41,5 @@ Some commonly used named timestamps
  * `eod` End of today
  * `sow` Start of the next week
  * `eow` End of the week
- * 'eoww End of work week
+ * `eoww` End of work week
  * `soww` Start of the next work week
