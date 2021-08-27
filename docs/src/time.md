@@ -43,3 +43,6 @@ Some commonly used named timestamps
  * `eow` End of the week
  * `eoww` End of work week
  * `soww` Start of the next work week
+
+
+![named timestamp](/docs/assets/cgi/named_timestamp.jpg)
