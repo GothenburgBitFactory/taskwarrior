@@ -28,3 +28,21 @@ Some of the units allow an adjectival form, such as `daily` or `annually`; this 
 
 [ISO 8601 standard durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) are also allowed.
 While the standard does not specify the length of "P1Y" or "P1M", Taskchampion treats those as 365 and 30 days, respectively.
+
+
+## Named Timestamps
+
+Some commonly used named timestamps
+
+ * `today` Start of today
+ * `yesterday` Start of yesterday
+ * `tomorrow` Start of tomorrow
+ * `sod` Start of today
+ * `eod` End of today
+ * `sow` Start of the next week
+ * `eow` End of the week
+ * `eoww` End of work week
+ * `soww` Start of the next work week
+
+
+![named timestamp](images/name_timestamp.png)
