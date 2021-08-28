@@ -417,8 +417,18 @@ void CLI2::lexArguments ()
     else
     {
       std::string quote = "'";
-      std::string escaped = _original_args[i].attribute ("raw");
-      escaped = str_replace (escaped, quote, "\\'");
+      // Escape unescaped single quotes
+      std::string escaped = "";
+      bool nextEscaped = false;
+      for(auto c : _original_args[i].attribute ("raw")) {
+        if(!nextEscaped && (c == '\\')) {
+          nextEscaped = true;
+        } else {
+          if(c == '\'' && !nextEscaped) escaped += "\\";
+          nextEscaped = false;
+        }
+        escaped += c;
+      }
 
       std::string::size_type cursor = 0;
       std::string word;
