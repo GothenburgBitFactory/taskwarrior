@@ -422,10 +422,12 @@ void CLI2::lexArguments ()
 
       // Escape unescaped single quotes
       std::string escaped = "";
+
+      // For performance reasons. The escaped string is as long as the original.
+      escaped.reserve (_original_args[i].attribute ("raw").size ());
+
       std::string::size_type cursor = 0;
-
       bool nextEscaped = false;
-
       while (int num = utf8_next_char (_original_args[i].attribute ("raw"), cursor))
       {
         std::string character = utf8_character (num);
