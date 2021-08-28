@@ -36,6 +36,8 @@
 #include <format.h>
 #include <CmdCustom.h>
 #include <CmdTimesheet.h>
+#include <utf8.h>
+
 
 // Overridden by rc.abbreviation.minimum.
 int CLI2::minimumMatchLength = 3;
@@ -413,24 +415,31 @@ void CLI2::lexArguments ()
       _args.push_back (a);
     }
 
-    // Process muktiple-token arguments.
+    // Process multiple-token arguments.
     else
     {
       std::string quote = "'";
+
       // Escape unescaped single quotes
       std::string escaped = "";
+      std::string::size_type cursor = 0;
+
       bool nextEscaped = false;
-      for(auto c : _original_args[i].attribute ("raw")) {
-        if(!nextEscaped && (c == '\\')) {
+
+      while (int num = utf8_next_char (_original_args[i].attribute ("raw"), cursor))
+      {
+        std::string character = utf8_character (num);
+        if (!nextEscaped && (character == "\\"))
           nextEscaped = true;
-        } else {
-          if(c == '\'' && !nextEscaped) escaped += "\\";
+        else {
+          if (character == "\'" && !nextEscaped)
+            escaped += "\\";
           nextEscaped = false;
         }
-        escaped += c;
+        escaped += character;
       }
 
-      std::string::size_type cursor = 0;
+      cursor = 0;
       std::string word;
       if (Lexer::readWord (quote + escaped + quote, quote, cursor, word))
       {
