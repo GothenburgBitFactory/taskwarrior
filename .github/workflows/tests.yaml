@@ -6,9 +6,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "Centos 7"
-            runner: ubuntu-latest
-            dockerfile: centos7
           - name: "Centos 8"
             runner: ubuntu-latest
             dockerfile: centos8
