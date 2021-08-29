@@ -418,7 +418,7 @@ void CLI2::lexArguments ()
     // Process multiple-token arguments.
     else
     {
-      std::string quote = "'";
+      const std::string quote = "'";
 
       // Escape unescaped single quotes
       std::string escaped = "";
@@ -434,7 +434,7 @@ void CLI2::lexArguments ()
         if (!nextEscaped && (character == "\\"))
           nextEscaped = true;
         else {
-          if (character == "\'" && !nextEscaped)
+          if (character == quote && !nextEscaped)
             escaped += "\\";
           nextEscaped = false;
         }
