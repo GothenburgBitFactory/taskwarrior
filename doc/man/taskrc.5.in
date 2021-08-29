@@ -1480,9 +1480,15 @@ Stores the value of the currently active context.
 .RE
 
 .TP
-.B context.<name>=<filter>
+.B context.<name>.<type>=<filter>
 .RS
-Stores the definition of the context with the name <name>.
+Stores the definition of the context for type <type> with the name <name>. The
+type can either be read, write or rc. For details of the read and write types,
+please see the task(1) man page. The rc type allows to override any configuration
+parameter for the current context, e.g. if the default command for the context
+home should be changed to home_report, the following statement could be added:
+
+context.home.rc.default.command=home_report
 .RE
 
 .SS SYNC
