@@ -84,7 +84,7 @@ int CmdAppend::execute (std::string&)
 
     task.modify (Task::modAppend, true);
 
-    if (permission (taskDifferences (before, task) + question, filtered.size ()))
+    if (permission (before.diff (task) + question, filtered.size ()))
     {
       Context::getContext ().tdb2.modify (task);
       ++count;

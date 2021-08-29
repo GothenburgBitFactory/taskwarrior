@@ -165,6 +165,9 @@ public:
   void modify (modType, bool text_required = false);
 #endif
 
+  std::string diff (const Task& after) const;
+  std::string diffForInfo (const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp) const; 
+
 private:
   int determineVersion (const std::string&);
   void parseJSON (const std::string&);
@@ -179,6 +182,7 @@ private:
   bool isDepAttr (const std::string&) const;
   const std::string dep2Attr (const std::string&) const;
   const std::string attr2Dep (const std::string&) const;
+  bool isAnnotationAttr (const std::string&) const;
   void fixDependsAttribute ();
   void fixTagsAttribute ();
 

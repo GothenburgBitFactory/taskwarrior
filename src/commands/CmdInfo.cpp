@@ -571,7 +571,7 @@ int CmdInfo::execute (std::string& output)
 
             Task before (undo[previous].substr (4));
             Task after (undo[current].substr (4));
-            journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
+            journal.set (row, 1, before.diffForInfo (after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
           }
         }
       }

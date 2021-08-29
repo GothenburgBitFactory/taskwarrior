@@ -134,7 +134,7 @@ int CmdDenotate::execute (std::string&)
                               task.identifier (true),
                               task.get ("description"));
 
-      if (permission (taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (before.diff (task) + question, filtered.size ()))
       {
         ++count;
         Context::getContext ().tdb2.modify (task);
