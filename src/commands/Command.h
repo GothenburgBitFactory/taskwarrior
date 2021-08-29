@@ -63,7 +63,7 @@ public:
   bool read_only () const;
   bool displays_id () const;
   bool needs_gc () const;
-  bool uses_context () const;
+  virtual bool uses_context () const;
   bool accepts_filter () const;
   bool accepts_modifications () const;
   bool accepts_miscellaneous () const;

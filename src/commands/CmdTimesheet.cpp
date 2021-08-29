@@ -54,6 +54,22 @@ CmdTimesheet::CmdTimesheet ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Whether a the timesheet uses context is defined by the
+// report.timesheet.context configuration variable.
+//
+bool CmdTimesheet::uses_context () const
+{
+  auto config = Context::getContext ().config;
+  auto key = "report.timesheet.context";
+
+  if (config.has (key))
+    return config.getBoolean (key);
+  else
+    return _uses_context;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 int CmdTimesheet::execute (std::string& output)
 {
   int rc = 0;

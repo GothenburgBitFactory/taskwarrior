@@ -299,11 +299,10 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
     context    Show the current context. Displayed in footnote.
-    unwait     Notification when a task leaves the 'waiting' state
     override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
 
-"affected", "new-id", "new-uuid", "project", "unwait", "override" and "recur"
+"affected", "new-id", "new-uuid", "project", "override" and "recur"
 imply "footnote".
 
 Note that the "1" setting is equivalent to all the tokens being specified,
@@ -312,7 +311,7 @@ and the "nothing" setting is equivalent to none of the tokens being specified.
 Here are the shortcut equivalents:
 
     verbose=on
-    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait,override,recur
+    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,override,recur
 
     verbose=0
     verbose=blank,label,new-id,edit
@@ -423,12 +422,6 @@ Determines whether the export command encloses the JSON output in '[...]' and
 adds ',' after each exported task object to create a properly-formed JSON
 array.
 With json.array=0, export writes raw JSON objects to STDOUT, one per line.
-Defaults to "1".
-
-.TP
-.B json.depends.array=1
-Determines whether the export command encodes dependencies as an array of string
-UUIDs, or one comma-separated string.
 Defaults to "1".
 
 .TP
@@ -1285,6 +1278,12 @@ The description for report X when running the "task help" command.
 .B report.X.columns
 This is a comma-separated list of columns and formatting specifiers. See the
 command 'task columns' for a full list of options and examples.
+
+.TP
+.B report.X.context
+A boolean value representing whether the given report should respect (apply)
+the currently active context. See CONTEXT section for details about context.
+Defaults to 1.
 
 .TP
 .B report.X.labels

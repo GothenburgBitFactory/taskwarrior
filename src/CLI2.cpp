@@ -34,6 +34,10 @@
 #include <Color.h>
 #include <shared.h>
 #include <format.h>
+#include <CmdCustom.h>
+#include <CmdTimesheet.h>
+#include <utf8.h>
+
 
 // Overridden by rc.abbreviation.minimum.
 int CLI2::minimumMatchLength = 3;
@@ -411,14 +415,33 @@ void CLI2::lexArguments ()
       _args.push_back (a);
     }
 
-    // Process muktiple-token arguments.
+    // Process multiple-token arguments.
     else
     {
-      std::string quote = "'";
-      std::string escaped = _original_args[i].attribute ("raw");
-      escaped = str_replace (escaped, quote, "\\'");
+      const std::string quote = "'";
+
+      // Escape unescaped single quotes
+      std::string escaped = "";
+
+      // For performance reasons. The escaped string is as long as the original.
+      escaped.reserve (_original_args[i].attribute ("raw").size ());
 
       std::string::size_type cursor = 0;
+      bool nextEscaped = false;
+      while (int num = utf8_next_char (_original_args[i].attribute ("raw"), cursor))
+      {
+        std::string character = utf8_character (num);
+        if (!nextEscaped && (character == "\\"))
+          nextEscaped = true;
+        else {
+          if (character == quote && !nextEscaped)
+            escaped += "\\";
+          nextEscaped = false;
+        }
+        escaped += character;
+      }
+
+      cursor = 0;
       std::string word;
       if (Lexer::readWord (quote + escaped + quote, quote, cursor, word))
       {
@@ -607,17 +630,18 @@ void CLI2::addContext (bool readable, bool writeable)
   if (contextString.empty ())
     return;
 
-  // Detect if UUID or ID is set, and bail out
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::uuid   ||
-        a._lextype == Lexer::Type::number ||
-        a._lextype == Lexer::Type::set)
+  // For readable contexts: Detect if UUID or ID is set, and bail out
+  if (readable)
+    for (auto& a : _args)
     {
-      Context::getContext ().debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
-      return;
+      if (a._lextype == Lexer::Type::uuid   ||
+          a._lextype == Lexer::Type::number ||
+          a._lextype == Lexer::Type::set)
+      {
+        Context::getContext ().debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
+        return;
+      }
     }
-  }
 
   // Apply the context. Readable (filtering) takes precedence. Also set the
   // block now, since addFilter calls analyze(), which calls addContext().
@@ -944,7 +968,23 @@ void CLI2::categorizeArgs ()
   // Context is only applied for commands that request it.
   std::string command = getCommand ();
   Command* cmd = Context::getContext ().commands[command];
-  if (cmd && cmd->uses_context ())
+
+  // Determine if the command uses Context. CmdCustom and CmdTimesheet need to
+  // be handled separately, as they override the parent Command::use_context
+  // method, and this is a pointer to Command class.
+  //
+  // All Command classes overriding uses_context () getter need to be specified
+  // here.
+  bool uses_context;
+  if (dynamic_cast<CmdCustom*> (cmd))
+    uses_context = (dynamic_cast<CmdCustom*> (cmd))->uses_context ();
+  else if (dynamic_cast<CmdTimesheet*> (cmd))
+    uses_context = (dynamic_cast<CmdTimesheet*> (cmd))->uses_context ();
+  else if (cmd)
+    uses_context = cmd->uses_context ();
+
+  // Apply the context, if applicable
+  if (cmd && uses_context)
     addContext (cmd->accepts_filter (), cmd->accepts_modifications ());
 
   bool changes = false;
