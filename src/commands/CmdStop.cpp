@@ -87,7 +87,7 @@ int CmdStop::execute (std::string&)
       if (Context::getContext ().config.getBoolean ("journal.time"))
         task.addAnnotation (Context::getContext ().config.get ("journal.time.stop.annotation"));
 
-      if (permission (taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (before.diff (task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
         Context::getContext ().tdb2.modify (task);

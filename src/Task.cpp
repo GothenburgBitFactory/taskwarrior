@@ -273,7 +273,7 @@ void Task::set (const std::string& name, const std::string& value)
 {
   data[name] = value;
 
-  if (! name.compare (0, 11, "annotation_", 11))
+  if (isAnnotationAttr (name))
     ++annotation_count;
 
   recalc_urgency = true;
@@ -293,7 +293,7 @@ void Task::remove (const std::string& name)
   if (data.erase (name))
     recalc_urgency = true;
 
-  if (! name.compare (0, 11, "annotation_", 11))
+  if (isAnnotationAttr (name))
     --annotation_count;
 }
 
@@ -637,7 +637,7 @@ void Task::parse (const std::string& input)
             legacyAttributeMap (name);
 #endif
 
-            if (! name.compare (0, 11, "annotation_", 11))
+            if (isAnnotationAttr (name))
               ++annotation_count;
 
             data[name] = decode (json::decode (value));
@@ -1529,6 +1529,12 @@ const std::string Task::attr2Dep (const std::string& attr) const
   return attr.substr(4);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool Task::isAnnotationAttr(const std::string& attr) const
+{
+  return attr.compare(0, 11, "annotation_") == 0;
+}
+
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA Orphan is an attribute that is not represented in context.columns.
@@ -2389,5 +2395,250 @@ void Task::modify (modType type, bool text_required /* = false */)
   }
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+// Compare this task to another and summarize the differences for display
+std::string Task::diff (const Task& after) const
+{
+  // Attributes are all there is, so figure the different attribute names
+  // between this (before) and after.
+  std::vector <std::string> beforeAtts;
+  for (auto& att : data)
+    beforeAtts.push_back (att.first);
+
+  std::vector <std::string> afterAtts;
+  for (auto& att : after.data)
+    afterAtts.push_back (att.first);
+
+  std::vector <std::string> beforeOnly;
+  std::vector <std::string> afterOnly;
+  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+  // Now start generating a description of the differences.
+  std::stringstream out;
+  for (auto& name : beforeOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << "  - "
+          << format ("Annotation {1} will be removed.", name)
+          << "\n";
+    }
+    else if (isTagAttr (name))
+    {
+      out << "  - "
+          << format ("Tag {1} will be removed.", attr2Tag (name))
+          << "\n";
+    }
+    else if (isDepAttr (name))
+    {
+      out << "  - "
+          << format ("Depenency on {1} will be removed.", attr2Dep (name))
+          << "\n";
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else
+    {
+      out << "  - "
+          << format ("{1} will be deleted.", Lexer::ucFirst (name))
+          << "\n";
+    }
+  }
+
+  for (auto& name : afterOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << format ("Annotation of {1} will be added.\n", after.get (name));
+    }
+    else if (isTagAttr (name))
+    {
+      out << format ("Tag {1} will be added.\n", attr2Tag (name));
+    }
+    else if (isDepAttr (name))
+    {
+      out << format ("Dependency on {1} will be added.\n", attr2Dep (name));
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else
+      out << "  - "
+          << format ("{1} will be set to '{2}'.",
+                     Lexer::ucFirst (name),
+                     renderAttribute (name, after.get (name)))
+          << "\n";
+  }
+
+  for (auto& name : beforeAtts)
+  {
+    // Ignore UUID differences, and find values that changed, but are not also
+    // in the beforeOnly and afterOnly lists, which have been handled above..
+    if (name              != "uuid" &&
+        get (name)        != after.get (name) &&
+        std::find (beforeOnly.begin (), beforeOnly.end (), name) == beforeOnly.end () &&
+        std::find (afterOnly.begin (),  afterOnly.end (),  name) == afterOnly.end ())
+    {
+      if (name == "depends" || name == "tags")
+      {
+        // do nothing for legacy attributes
+      }
+      else if (isTagAttr (name) || isDepAttr (name))
+      {
+        // ignore new attributes
+      }
+      else if (isAnnotationAttr (name))
+      {
+        out << format ("Annotation will be changed to {1}.\n", after.get (name));
+      }
+      else
+        out << "  - "
+            << format ("{1} will be changed from '{2}' to '{3}'.",
+                       Lexer::ucFirst (name),
+                       renderAttribute (name, get (name)),
+                       renderAttribute (name, after.get (name)))
+            << "\n";
+    }
+  }
+
+  // Shouldn't just say nothing.
+  if (out.str ().length () == 0)
+    out << "  - No changes will be made.\n";
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Similar to diff, but formatted for inclusion in the output of the info command
+std::string Task::diffForInfo (
+  const Task& after,
+  const std::string& dateformat,
+  long& last_timestamp,
+  const long current_timestamp) const
+{
+  // Attributes are all there is, so figure the different attribute names
+  // between before and after.
+  std::vector <std::string> beforeAtts;
+  for (auto& att : data)
+    beforeAtts.push_back (att.first);
+
+  std::vector <std::string> afterAtts;
+  for (auto& att : after.data)
+    afterAtts.push_back (att.first);
+
+  std::vector <std::string> beforeOnly;
+  std::vector <std::string> afterOnly;
+  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+  // Now start generating a description of the differences.
+  std::stringstream out;
+  for (auto& name : beforeOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << format ("Annotation '{1}' deleted.\n", get (name));
+    }
+    else if (isTagAttr (name))
+    {
+      out << format ("Tag '{1}' deleted.\n", attr2Tag(name));
+    }
+    else if (isDepAttr (name))
+    {
+      out << format ("Dependency on '{1}' deleted.\n", attr2Dep(name));
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else if (name == "start")
+    {
+      Datetime started (get ("start"));
+      Datetime stopped;
+
+      if (after.has ("end"))
+        // Task was marked as finished, use end time
+        stopped = Datetime (after.get ("end"));
+      else
+        // Start attribute was removed, use modification time
+        stopped = Datetime (current_timestamp);
+
+      out << format ("{1} deleted (duration: {2}).",
+                     Lexer::ucFirst (name),
+                     Duration (stopped - started).format ())
+          << "\n";
+    }
+    else
+    {
+      out << format ("{1} deleted.\n", Lexer::ucFirst (name));
+    }
+  }
+
+  for (auto& name : afterOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << format ("Annotation of '{1}' added.\n", after.get (name));
+    }
+    else if (isTagAttr (name))
+    {
+      out << format ("Tag '{1}' added.\n", attr2Tag (name));
+    }
+    else if (isDepAttr (name))
+    {
+      out << format ("Dependency on '{1}' added.\n", attr2Dep (name));
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else
+    {
+      if (name == "start")
+          last_timestamp = current_timestamp;
+
+      out << format ("{1} set to '{2}'.",
+                     Lexer::ucFirst (name),
+                     renderAttribute (name, after.get (name), dateformat))
+          << "\n";
+    }
+  }
+
+  for (auto& name : beforeAtts)
+    if (name              != "uuid" &&
+        name              != "modified" &&
+        get (name)        != after.get (name) &&
+        get (name)        != "" &&
+        after.get (name)  != "")
+    {
+      if (name == "depends" || name == "tags")
+      {
+        // do nothing for legacy attributes
+      }
+      else if (isTagAttr (name) || isDepAttr (name))
+      {
+        // ignore new attributes
+      }
+      else if (isAnnotationAttr (name))
+      {
+        out << format ("Annotation changed to '{1}'.\n", after.get (name));
+      }
+      else
+        out << format ("{1} changed from '{2}' to '{3}'.",
+                       Lexer::ucFirst (name),
+                       renderAttribute (name, get (name), dateformat),
+                       renderAttribute (name, after.get (name), dateformat))
+            << "\n";
+    }
+
+  // Shouldn't just say nothing.
+  if (out.str ().length () == 0)
+    out << "No changes made.\n";
+
+  return out.str ();
+}
 
 ////////////////////////////////////////////////////////////////////////////////

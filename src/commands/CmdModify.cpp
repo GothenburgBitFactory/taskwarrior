@@ -88,7 +88,7 @@ int CmdModify::execute (std::string&)
                               task.identifier (true),
                               task.get ("description"));
 
-      if (permission (taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (before.diff (task) + question, filtered.size ()))
       {
         count += modifyAndUpdate (before, task, &projectChanges);
       }
