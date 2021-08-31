@@ -57,7 +57,7 @@ color.uda.priority.L=rgb010
 # Tags
 color.tag.next=
 color.tag.none=
-color.tagged=rgb342
+color.tagged=
 
 # Due
 color.due=rgb440

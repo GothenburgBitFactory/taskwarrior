@@ -74,7 +74,7 @@ color.uda.priority.L=bold color14
 # Tags
 color.tag.next=
 color.tag.none=
-color.tagged=color14
+color.tagged=
 
 # Due
 color.due=color9
