@@ -71,7 +71,7 @@ int CmdExport::execute (std::string& output)
     }
 
     if (selectedReport.empty ()) {
-        Context::getContext ().error("Unable to find report that matches '" + words[0] + "'.");
+        throw format("Unable to find report that matches '{1}'.", words[0]);
     }
   }
 
