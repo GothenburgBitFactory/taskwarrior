@@ -112,14 +112,14 @@ impl<'t> Txn<'t> {
 
     fn get_next_working_set_number(&self) -> anyhow::Result<usize> {
         let t = self.get_txn()?;
-        let result: Option<usize> = t
-            .query_row("SELECT COALESCE(MAX(id), 0) FROM working_set", [], |r| {
+        let next_id: Option<usize> = t
+            .query_row("SELECT COALESCE(MAX(id), 0) + 1 FROM working_set", [], |r| {
                 r.get(0)
             })
             .optional()
             .context("Getting highest working set ID")?;
 
-        Ok(result.unwrap_or(0) + 1)
+        Ok(next_id.unwrap_or(0))
     }
 }
 
