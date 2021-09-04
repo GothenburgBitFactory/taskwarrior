@@ -41,7 +41,7 @@ impl FromSql for Client {
     }
 }
 
-/// Parsers Operation stored as JSON in string column
+/// Parses Operation stored as JSON in string column
 impl ToSql for Client {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
         let s = serde_json::to_string(&self)
@@ -72,7 +72,7 @@ impl SqliteStorage {
 
             let queries = vec![
                 "CREATE TABLE IF NOT EXISTS clients (client_key STRING PRIMARY KEY, latest_version_id STRING);",
-                "CREATE TABLE IF NOT EXISTS versions (version_id STRING PRIMARY KEY, client_key STRING, parent_version_id STRING, history_segment STRING);",
+                "CREATE TABLE IF NOT EXISTS versions (version_id STRING PRIMARY KEY, client_key STRING, parent_version_id STRING, history_segment BLOB);",
             ];
             for q in queries {
                 txn.execute(q, []).context("Creating table")?;

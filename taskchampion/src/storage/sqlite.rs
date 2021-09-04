@@ -288,7 +288,7 @@ impl<'t> StorageTxn for Txn<'t> {
 
         let rows: Vec<Result<(usize, Uuid), _>> = rows.collect();
         let mut res = Vec::with_capacity(rows.len());
-        for _ in 0..self.get_next_working_set_number().context("HUh")? {
+        for _ in 0..self.get_next_working_set_number().context("Getting working set number")? {
             res.push(None);
         }
         for r in rows {
