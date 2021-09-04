@@ -1542,8 +1542,8 @@ std::vector <std::string> Task::getUDAOrphanUUIDs () const
 {
   std::vector <std::string> orphans;
   for (auto& it : data)
-    if (it.first.compare (0, 11, "annotation_", 11) != 0)
-      if (Context::getContext ().columns.find (it.first) == Context::getContext ().columns.end ())
+    if (Context::getContext ().columns.find (it.first) == Context::getContext ().columns.end ())
+      if (not (isAnnotationAttr (it.first) || isTagAttr (it.first) || isDepAttr (it.first)))
         orphans.push_back (it.first);
 
   return orphans;
