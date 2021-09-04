@@ -6,8 +6,6 @@ use std::path::Path;
 
 #[derive(Debug, thiserror::Error)]
 enum SqliteError {
-    #[error("SQLite transaction already committted")]
-    TransactionAlreadyCommitted,
     #[error("Failed to create SQLite transaction")]
     CreateTransactionFailed,
 }
