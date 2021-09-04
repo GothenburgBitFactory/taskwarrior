@@ -4,7 +4,6 @@ use crate::server::{
 use crate::storage::sqlite::StoredUuid;
 use anyhow::Context;
 use rusqlite::params;
-use rusqlite::types::{FromSql, ToSql};
 use rusqlite::OptionalExtension;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
