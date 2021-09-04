@@ -1,6 +1,7 @@
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NO_VERSION_ID,
 };
+use crate::storage::sqlite::StoredUuid;
 use anyhow::Context;
 use rusqlite::params;
 use rusqlite::types::{FromSql, ToSql};
@@ -8,35 +9,6 @@ use rusqlite::OptionalExtension;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use uuid::Uuid;
-
-// FIXME: Duplicated
-/// Newtype to allow implementing `FromSql` for foreign `uuid::Uuid`
-pub struct StoredUuid(Uuid);
-
-/// Conversion from Uuid stored as a string (rusqlite's uuid feature stores as binary blob)
-impl FromSql for StoredUuid {
-    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
-        let u = Uuid::parse_str(value.as_str()?)
-            .map_err(|_| rusqlite::types::FromSqlError::InvalidType)?;
-        Ok(StoredUuid(u))
-    }
-}
-
-/// Store Uuid as string in database
-impl ToSql for StoredUuid {
-    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
-        let s = self.0.to_string();
-        Ok(s.into())
-    }
-}
-
-impl FromSql for Version {
-    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
-        let u = serde_json::from_str(value.as_str()?)
-            .map_err(|_| rusqlite::types::FromSqlError::InvalidType)?;
-        Ok(u)
-    }
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Version {

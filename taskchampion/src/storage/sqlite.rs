@@ -12,7 +12,7 @@ enum SqliteError {
 }
 
 /// Newtype to allow implementing `FromSql` for foreign `uuid::Uuid`
-struct StoredUuid(Uuid);
+pub(crate) struct StoredUuid(pub(crate) Uuid);
 
 /// Conversion from Uuid stored as a string (rusqlite's uuid feature stores as binary blob)
 impl FromSql for StoredUuid {

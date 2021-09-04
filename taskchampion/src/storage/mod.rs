@@ -12,7 +12,7 @@ use uuid::Uuid;
 mod config;
 mod inmemory;
 mod operation;
-mod sqlite;
+pub(crate) mod sqlite;
 
 pub use config::StorageConfig;
 pub use inmemory::InMemoryStorage;
