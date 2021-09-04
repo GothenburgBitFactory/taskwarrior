@@ -267,6 +267,8 @@ impl<'t> StorageTxn for Txn<'t> {
         let t = self.get_txn()?;
         t.execute("DELETE FROM operations", [])
             .context("Clear all existing operations")?;
+        t.execute("DELETE FROM sqlite_sequence WHERE name = 'operations'", [])
+            .context("Clear all existing operations")?;
 
         for o in ops {
             self.add_operation(o)?;
