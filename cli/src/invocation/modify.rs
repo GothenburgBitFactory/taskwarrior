@@ -30,11 +30,11 @@ pub(super) fn apply_modification(
     }
 
     for tag in modification.add_tags.iter() {
-        task.add_tag(&tag)?;
+        task.add_tag(tag)?;
     }
 
     for tag in modification.remove_tags.iter() {
-        task.remove_tag(&tag)?;
+        task.remove_tag(tag)?;
     }
 
     if let Some(wait) = modification.wait {

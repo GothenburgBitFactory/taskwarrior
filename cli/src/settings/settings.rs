@@ -97,7 +97,7 @@ impl Settings {
             "server_dir",
             "reports",
         ];
-        let table = table_with_keys(&config_toml, &table_keys)?;
+        let table = table_with_keys(config_toml, &table_keys)?;
 
         fn get_str_cfg<F: FnOnce(String)>(
             table: &Table,

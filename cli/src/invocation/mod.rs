@@ -125,7 +125,7 @@ fn get_server(settings: &Settings) -> anyhow::Result<Box<dyn Server>> {
         settings.server_origin.as_ref(),
         settings.encryption_secret.as_ref(),
     ) {
-        let client_key = Uuid::parse_str(&client_key)?;
+        let client_key = Uuid::parse_str(client_key)?;
 
         log::debug!("Using sync-server with origin {}", origin);
         log::debug!("Sync client ID: {}", client_key);
