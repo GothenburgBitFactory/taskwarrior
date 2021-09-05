@@ -58,7 +58,7 @@ In order to manage this, changelog entries are stored as text files in the `.cha
 
 To add a new changelog entry, you can simply run `python3 ./script/changelog.py add "Fixed thingo to increase zorbloxification [Issue #2](http://example.com)`
 
-This creates a file named `./changelogs/yyyy-mm-dd-branchname.txt` (timestamp, current git branch) which contains a markdown snippet.
+This creates a file named `./changelogs/yyyy-mm-dd-branchname.md` (timestamp, current git branch) which contains a markdown snippet.
 
 If you don't have a Python 3 intepreter installed, you can simply create this file manually. It should contain a list item like `- Fixed thingo [...]`
 

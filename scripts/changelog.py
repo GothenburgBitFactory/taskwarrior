@@ -22,7 +22,7 @@ def get_changefiles() -> List[str]:
     changedir = get_dir()
     changefiles = []
     for f in os.listdir(changedir):
-        if f.endswith(".txt") and not f.startswith("."):
+        if f.endswith(".md") and not f.startswith("."):
             changefiles.append(os.path.join(changedir, f))
 
     return changefiles
@@ -34,7 +34,7 @@ def cmd_add(args):
 
     timestamp = ymd()
     branchname = git_current_branch()
-    fname = os.path.join(get_dir(), "%s-%s.txt" % (timestamp, branchname))
+    fname = os.path.join(get_dir(), "%s-%s.md" % (timestamp, branchname))
     with open(fname, "a") as f:
         f.write(text)
         f.write("\n")
