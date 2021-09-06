@@ -86,7 +86,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let bucket = self.clients_bucket();
         let kvtxn = self.kvtxn();
 
-        let client = match kvtxn.get(&bucket, key) {
+        let client = match kvtxn.get(bucket, key) {
             Ok(buf) => buf,
             Err(Error::NotFound) => return Ok(None),
             Err(e) => return Err(e.into()),
@@ -101,7 +101,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let bucket = self.clients_bucket();
         let kvtxn = self.kvtxn();
         let client = Client { latest_version_id };
-        kvtxn.set(&bucket, key, Msgpack::to_value_buf(client)?)?;
+        kvtxn.set(bucket, key, Msgpack::to_value_buf(client)?)?;
         Ok(())
     }
 
@@ -122,7 +122,7 @@ impl<'t> StorageTxn for Txn<'t> {
         let key = version_db_key(client_key, parent_version_id);
         let bucket = self.versions_bucket();
         let kvtxn = self.kvtxn();
-        let version = match kvtxn.get(&bucket, key) {
+        let version = match kvtxn.get(bucket, key) {
             Ok(buf) => buf,
             Err(Error::NotFound) => return Ok(None),
             Err(e) => return Err(e.into()),
@@ -147,7 +147,7 @@ impl<'t> StorageTxn for Txn<'t> {
             parent_version_id,
             history_segment,
         };
-        kvtxn.set(&bucket, key, Msgpack::to_value_buf(version)?)?;
+        kvtxn.set(bucket, key, Msgpack::to_value_buf(version)?)?;
         Ok(())
     }
 

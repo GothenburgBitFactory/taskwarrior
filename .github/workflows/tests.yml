@@ -12,7 +12,8 @@ jobs:
     strategy:
       matrix:
         rust:
-          - "1.47" # MSRV
+          # MSRV; most not be higher than the clippy rust version in checks.yml
+          - "1.47"
           - "stable"
         os:
           - ubuntu-latest
