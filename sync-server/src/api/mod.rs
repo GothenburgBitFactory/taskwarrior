@@ -20,7 +20,7 @@ pub(crate) const CLIENT_KEY_HEADER: &str = "X-Client-Key";
 pub(crate) const PARENT_VERSION_ID_HEADER: &str = "X-Parent-Version-Id";
 
 /// The type containing a reference to the Storage object in the Actix state.
-pub(crate) type ServerState = Arc<Box<dyn Storage>>;
+pub(crate) type ServerState = Arc<dyn Storage>;
 
 pub(crate) fn api_scope() -> Scope {
     web::scope("")

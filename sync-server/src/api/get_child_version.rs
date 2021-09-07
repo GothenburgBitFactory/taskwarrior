@@ -45,8 +45,8 @@ pub(crate) async fn service(
 #[cfg(test)]
 mod test {
     use crate::api::ServerState;
-    use crate::app_scope;
     use crate::storage::{InMemoryStorage, Storage};
+    use crate::Server;
     use actix_web::{http::StatusCode, test, App};
     use uuid::Uuid;
 
@@ -55,18 +55,18 @@ mod test {
         let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
 
         // set up the storage contents..
         {
-            let mut txn = server_box.txn().unwrap();
+            let mut txn = storage.txn().unwrap();
             txn.new_client(client_key, Uuid::new_v4()).unwrap();
             txn.add_version(client_key, version_id, parent_version_id, b"abcd".to_vec())
                 .unwrap();
         }
 
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
@@ -97,9 +97,9 @@ mod test {
     async fn test_client_not_found() {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
@@ -116,15 +116,15 @@ mod test {
     async fn test_version_not_found() {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
 
         // create the client, but not the version
         {
-            let mut txn = server_box.txn().unwrap();
+            let mut txn = storage.txn().unwrap();
             txn.new_client(client_key, Uuid::new_v4()).unwrap();
         }
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()

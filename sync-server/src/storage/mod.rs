@@ -1,27 +1,28 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[cfg(test)]
+#[cfg(debug_assertions)]
 mod inmemory;
-#[cfg(test)]
-pub(crate) use inmemory::InMemoryStorage;
+
+#[cfg(debug_assertions)]
+pub use inmemory::InMemoryStorage;
 
 mod sqlite;
-pub(crate) use self::sqlite::SqliteStorage;
+pub use self::sqlite::SqliteStorage;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-pub(crate) struct Client {
-    pub(crate) latest_version_id: Uuid,
+pub struct Client {
+    pub latest_version_id: Uuid,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-pub(crate) struct Version {
-    pub(crate) version_id: Uuid,
-    pub(crate) parent_version_id: Uuid,
-    pub(crate) history_segment: Vec<u8>,
+pub struct Version {
+    pub version_id: Uuid,
+    pub parent_version_id: Uuid,
+    pub history_segment: Vec<u8>,
 }
 
-pub(crate) trait StorageTxn {
+pub trait StorageTxn {
     /// Get information about the given client
     fn get_client(&mut self, client_key: Uuid) -> anyhow::Result<Option<Client>>;
 
@@ -58,7 +59,7 @@ pub(crate) trait StorageTxn {
 
 /// A trait for objects able to act as storage.  Most of the interesting behavior is in the
 /// [`crate::storage::StorageTxn`] trait.
-pub(crate) trait Storage: Send + Sync {
+pub trait Storage: Send + Sync {
     /// Begin a transaction
     fn txn<'a>(&'a self) -> anyhow::Result<Box<dyn StorageTxn + 'a>>;
 }

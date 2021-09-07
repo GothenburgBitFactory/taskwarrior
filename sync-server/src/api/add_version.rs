@@ -77,9 +77,8 @@ pub(crate) async fn service(
 
 #[cfg(test)]
 mod test {
-    use crate::api::ServerState;
-    use crate::app_scope;
     use crate::storage::{InMemoryStorage, Storage};
+    use crate::Server;
     use actix_web::{http::StatusCode, test, App};
     use uuid::Uuid;
 
@@ -88,16 +87,16 @@ mod test {
         let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
 
         // set up the storage contents..
         {
-            let mut txn = server_box.txn().unwrap();
+            let mut txn = storage.txn().unwrap();
             txn.new_client(client_key, Uuid::nil()).unwrap();
         }
 
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
@@ -125,16 +124,16 @@ mod test {
         let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
 
         // set up the storage contents..
         {
-            let mut txn = server_box.txn().unwrap();
+            let mut txn = storage.txn().unwrap();
             txn.new_client(client_key, version_id).unwrap();
         }
 
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
@@ -159,9 +158,9 @@ mod test {
     async fn test_bad_content_type() {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
@@ -178,9 +177,9 @@ mod test {
     async fn test_empty_body() {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
