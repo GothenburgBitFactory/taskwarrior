@@ -1,5 +1,6 @@
 # Release process
 
+1. Ensure the changelog is updated with everything from the `.changelogs` directory. `python3 ./script/changelog.py build` will output a Markdown snippet to include in `CHANGELOG.md` then `rm .changelog/*.txt`
 1. Run `git pull upstream main`
 1. Run `cargo test`
 1. Run `cargo clean && cargo clippy`
