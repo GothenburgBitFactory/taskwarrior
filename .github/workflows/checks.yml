@@ -27,6 +27,13 @@ jobs:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
+      - uses: actions-rs/toolchain@v1
+        with:
+          # Fixed version for clippy lints.  Bump this as necesary.  It must not
+          # be older than the MSRV in tests.yml.
+          toolchain: "1.54"
+          override: true
+
       - uses: actions-rs/cargo@v1.0.1
         with:
           command: check
