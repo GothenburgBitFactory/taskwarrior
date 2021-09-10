@@ -11,12 +11,12 @@ use uuid::Uuid;
 
 mod config;
 mod inmemory;
-mod kv;
 mod operation;
+pub(crate) mod sqlite;
 
-pub use self::kv::KvStorage;
 pub use config::StorageConfig;
 pub use inmemory::InMemoryStorage;
+pub use sqlite::SqliteStorage;
 
 pub use operation::Operation;
 

@@ -1,4 +1,4 @@
-use super::{InMemoryStorage, KvStorage, Storage};
+use super::{InMemoryStorage, SqliteStorage, Storage};
 use std::path::PathBuf;
 
 /// The configuration required for a replica's storage.
@@ -15,7 +15,7 @@ pub enum StorageConfig {
 impl StorageConfig {
     pub fn into_storage(self) -> anyhow::Result<Box<dyn Storage>> {
         Ok(match self {
-            StorageConfig::OnDisk { taskdb_dir } => Box::new(KvStorage::new(taskdb_dir)?),
+            StorageConfig::OnDisk { taskdb_dir } => Box::new(SqliteStorage::new(taskdb_dir)?),
             StorageConfig::InMemory => Box::new(InMemoryStorage::new()),
         })
     }

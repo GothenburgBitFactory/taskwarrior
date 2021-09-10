@@ -1,9 +1,10 @@
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NO_VERSION_ID,
 };
-use crate::utils::Key;
-use kv::msgpack::Msgpack;
-use kv::{Bucket, Config, Error, Integer, Serde, Store, ValueBuf};
+use crate::storage::sqlite::StoredUuid;
+use anyhow::Context;
+use rusqlite::params;
+use rusqlite::OptionalExtension;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use uuid::Uuid;
@@ -15,58 +16,54 @@ struct Version {
     history_segment: HistorySegment,
 }
 
-pub struct LocalServer<'t> {
-    store: Store,
-    // NOTE: indexed by parent_version_id!
-    versions_bucket: Bucket<'t, Key, ValueBuf<Msgpack<Version>>>,
-    latest_version_bucket: Bucket<'t, Integer, ValueBuf<Msgpack<Uuid>>>,
+pub struct LocalServer {
+    con: rusqlite::Connection,
 }
 
-impl<'t> LocalServer<'t> {
-    /// A test server has no notion of clients, signatures, encryption, etc.
-    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<LocalServer<'t>> {
-        let mut config = Config::default(directory);
-        config.bucket("versions", None);
-        config.bucket("numbers", None);
-        config.bucket("latest_version", None);
-        config.bucket("operations", None);
-        config.bucket("working_set", None);
-        let store = Store::new(config)?;
+impl LocalServer {
+    fn txn(&mut self) -> anyhow::Result<rusqlite::Transaction> {
+        let txn = self.con.transaction()?;
+        Ok(txn)
+    }
 
-        // versions are stored indexed by VersionId (uuid)
-        let versions_bucket = store.bucket::<Key, ValueBuf<Msgpack<Version>>>(Some("versions"))?;
+    /// A server which has no notion of clients, signatures, encryption, etc.
+    pub fn new<P: AsRef<Path>>(directory: P) -> anyhow::Result<LocalServer> {
+        let db_file = directory
+            .as_ref()
+            .join("taskchampion-local-sync-server.sqlite3");
+        let con = rusqlite::Connection::open(&db_file)?;
 
-        // this bucket contains the latest version at key 0
-        let latest_version_bucket =
-            store.int_bucket::<ValueBuf<Msgpack<Uuid>>>(Some("latest_version"))?;
+        let queries = vec![
+            "CREATE TABLE IF NOT EXISTS data (key STRING PRIMARY KEY, value STRING);",
+            "CREATE TABLE IF NOT EXISTS versions (version_id STRING PRIMARY KEY, parent_version_id STRING, data STRING);",
+        ];
+        for q in queries {
+            con.execute(q, []).context("Creating table")?;
+        }
 
-        Ok(LocalServer {
-            store,
-            versions_bucket,
-            latest_version_bucket,
-        })
+        Ok(LocalServer { con })
     }
 
     fn get_latest_version_id(&mut self) -> anyhow::Result<VersionId> {
-        let txn = self.store.read_txn()?;
-        let base_version = match txn.get(&self.latest_version_bucket, 0.into()) {
-            Ok(buf) => buf,
-            Err(Error::NotFound) => return Ok(NO_VERSION_ID),
-            Err(e) => return Err(e.into()),
-        }
-        .inner()?
-        .to_serde();
-        Ok(base_version as VersionId)
+        let t = self.txn()?;
+        let result: Option<StoredUuid> = t
+            .query_row(
+                "SELECT value FROM data WHERE key = 'latest_version_id' LIMIT 1",
+                rusqlite::params![],
+                |r| r.get(0),
+            )
+            .optional()?;
+        Ok(result.map(|x| x.0).unwrap_or(NO_VERSION_ID))
     }
 
     fn set_latest_version_id(&mut self, version_id: VersionId) -> anyhow::Result<()> {
-        let mut txn = self.store.write_txn()?;
-        txn.set(
-            &self.latest_version_bucket,
-            0.into(),
-            Msgpack::to_value_buf(version_id as Uuid)?,
-        )?;
-        txn.commit()?;
+        let t = self.txn()?;
+        t.execute(
+            "INSERT OR REPLACE INTO data (key, value) VALUES ('latest_version_id', ?)",
+            params![&StoredUuid(version_id)],
+        )
+        .context("Update task query")?;
+        t.commit()?;
         Ok(())
     }
 
@@ -74,31 +71,42 @@ impl<'t> LocalServer<'t> {
         &mut self,
         parent_version_id: VersionId,
     ) -> anyhow::Result<Option<Version>> {
-        let txn = self.store.read_txn()?;
+        let t = self.txn()?;
+        let r = t.query_row(
+            "SELECT version_id, parent_version_id, data FROM versions WHERE parent_version_id = ?",
+            params![&StoredUuid(parent_version_id)],
+            |r| {
+                let version_id: StoredUuid = r.get("version_id")?;
+                let parent_version_id: StoredUuid = r.get("parent_version_id")?;
 
-        let version = match txn.get(&self.versions_bucket, parent_version_id.into()) {
-            Ok(buf) => buf,
-            Err(Error::NotFound) => return Ok(None),
-            Err(e) => return Err(e.into()),
-        }
-        .inner()?
-        .to_serde();
-        Ok(Some(version))
+                Ok(Version{
+                version_id: version_id.0,
+                parent_version_id: parent_version_id.0,
+                history_segment: r.get("data")?,
+            })}
+            )
+        .optional()
+        .context("Get version query")
+        ?;
+        Ok(r)
     }
 
     fn add_version_by_parent_version_id(&mut self, version: Version) -> anyhow::Result<()> {
-        let mut txn = self.store.write_txn()?;
-        txn.set(
-            &self.versions_bucket,
-            version.parent_version_id.into(),
-            Msgpack::to_value_buf(version)?,
+        let t = self.txn()?;
+        t.execute(
+            "INSERT INTO versions (version_id, parent_version_id, data) VALUES (?, ?, ?)",
+            params![
+                StoredUuid(version.version_id),
+                StoredUuid(version.parent_version_id),
+                version.history_segment
+            ],
         )?;
-        txn.commit()?;
+        t.commit()?;
         Ok(())
     }
 }
 
-impl<'t> Server for LocalServer<'t> {
+impl Server for LocalServer {
     // TODO: better transaction isolation for add_version (gets and sets should be in the same
     // transaction)
 

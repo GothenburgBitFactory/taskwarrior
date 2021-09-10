@@ -6,8 +6,8 @@ mod inmemory;
 #[cfg(test)]
 pub(crate) use inmemory::InMemoryStorage;
 
-mod kv;
-pub(crate) use self::kv::KvStorage;
+mod sqlite;
+pub(crate) use self::sqlite::SqliteStorage;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct Client {

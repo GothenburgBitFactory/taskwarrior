@@ -72,7 +72,6 @@ mod test {
         );
     }
 
-
     #[test]
     fn test_cleaning_command_name() {
         assert_eq!(
