@@ -303,24 +303,16 @@ void Chart::scan (std::vector <Task>& tasks)
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
 
+      while (from < end)
+      {
+        epoch = from.toEpoch ();
+        if (_bars.find (epoch) != _bars.end ())
+          ++_bars[epoch]._pending;
+        from = increment (from, _period);
+      }
+
       if (cumulative)
       {
-      // Maintain a running total of 'done' tasks that are off the left of the
-      // chart.
-        if (end < _earliest)
-        {
-          ++_carryover_done;
-          continue;
-        }
-
-        while (from < end)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._pending;
-          from = increment (from, _period);
-        }
-
         while (from < now)
         {
           epoch = from.toEpoch ();
@@ -328,19 +320,21 @@ void Chart::scan (std::vector <Task>& tasks)
             ++_bars[epoch]._done;
           from = increment (from, _period);
         }
+
+        // Maintain a running total of 'done' tasks that are off the left of the
+        // chart.
+        if (end < _earliest)
+        {
+          ++_carryover_done;
+          continue;
+        }
       }
 
       else
       {
-        while (from < end)
-        {
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._pending;
-          from = increment (from, _period);
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._done;
-        }
+		  epoch = from.toEpoch ();
+        if (_bars.find (epoch) != _bars.end ())
+          ++_bars[epoch]._done;
       }
     }
   }
