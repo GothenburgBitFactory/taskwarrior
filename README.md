@@ -32,7 +32,7 @@ There are four crates here:
  * [taskchampion](./taskchampion) - the core of the tool
  * [taskchampion-cli](./cli) - the command-line binary
  * [taskchampion-sync-server](./sync-server) - the server against which `task sync` operates
- * [replica-server-tests](./replica-server-tests) - the server against which `task sync` operates
+ * [replica-server-tests](./replica-server-tests) - integration tests covering both _taskchampion-cli_ and _taskchampion-sync-server_
 
 ## Documentation Generation
 
