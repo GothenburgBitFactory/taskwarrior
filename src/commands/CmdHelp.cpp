@@ -140,7 +140,7 @@ int CmdHelp::execute (std::string& output)
              "  (  )                    Precedence\n"
              "\n"
              "  task due.before:eom priority.not:L   list\n"
-             "  task '(due < eom or priority != L)'  list\n"
+             "  task '(due < eom and priority != L)'  list\n"
              "\n"
              "The default .taskrc file can be overridden with:\n"
              "  task ... rc:<alternate file> ...\n"
