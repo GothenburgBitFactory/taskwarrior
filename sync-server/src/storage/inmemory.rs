@@ -10,10 +10,11 @@ struct Inner {
     versions: HashMap<(Uuid, Uuid), Version>,
 }
 
-pub(crate) struct InMemoryStorage(Mutex<Inner>);
+pub struct InMemoryStorage(Mutex<Inner>);
 
 impl InMemoryStorage {
-    pub(crate) fn new() -> Self {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
         Self(Mutex::new(Inner {
             clients: HashMap::new(),
             versions: HashMap::new(),

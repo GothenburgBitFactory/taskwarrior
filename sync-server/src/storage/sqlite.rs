@@ -49,7 +49,7 @@ impl ToSql for Client {
 }
 
 /// An on-disk storage backend which uses SQLite
-pub(crate) struct SqliteStorage {
+pub struct SqliteStorage {
     db_file: std::path::PathBuf,
 }
 

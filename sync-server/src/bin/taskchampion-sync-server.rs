@@ -1,29 +1,9 @@
 #![deny(clippy::all)]
 
-use crate::storage::{SqliteStorage, Storage};
-use actix_web::{get, middleware::Logger, web, App, HttpServer, Responder, Scope};
-use api::{api_scope, ServerState};
+use actix_web::{middleware::Logger, App, HttpServer};
 use clap::Arg;
-
-mod api;
-mod server;
-mod storage;
-
-// TODO: use hawk to sign requests
-
-#[get("/")]
-async fn index() -> impl Responder {
-    format!("TaskChampion sync server v{}", env!("CARGO_PKG_VERSION"))
-}
-
-/// Return a scope defining the URL rules for this server, with access to
-/// the given ServerState.
-pub(crate) fn app_scope(server_state: ServerState) -> Scope {
-    web::scope("")
-        .data(server_state)
-        .service(index)
-        .service(api_scope())
-}
+use taskchampion_sync_server::storage::SqliteStorage;
+use taskchampion_sync_server::Server;
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
@@ -56,33 +36,26 @@ async fn main() -> anyhow::Result<()> {
     let data_dir = matches.value_of("data-dir").unwrap();
     let port = matches.value_of("port").unwrap();
 
-    let server_box: Box<dyn Storage> = Box::new(SqliteStorage::new(data_dir)?);
-    let server_state = ServerState::new(server_box);
+    let server = Server::new(Box::new(SqliteStorage::new(data_dir)?));
 
     log::warn!("Serving on port {}", port);
-    HttpServer::new(move || {
-        App::new()
-            .wrap(Logger::default())
-            .service(app_scope(server_state.clone()))
-    })
-    .bind(format!("0.0.0.0:{}", port))?
-    .run()
-    .await?;
+    HttpServer::new(move || App::new().wrap(Logger::default()).service(server.service()))
+        .bind(format!("0.0.0.0:{}", port))?
+        .run()
+        .await?;
     Ok(())
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::api::ServerState;
-    use crate::storage::{InMemoryStorage, Storage};
     use actix_web::{test, App};
+    use taskchampion_sync_server::storage::{InMemoryStorage, Storage};
 
     #[actix_rt::test]
     async fn test_index_get() {
-        let server_box: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server_state = ServerState::new(server_box);
-        let mut app = test::init_service(App::new().service(app_scope(server_state))).await;
+        let server = Server::new(Box::new(InMemoryStorage::new()));
+        let mut app = test::init_service(App::new().service(server.service())).await;
 
         let req = test::TestRequest::get().uri("/").to_request();
         let resp = test::call_service(&mut app, req).await;

@@ -1,0 +1,18 @@
+[package]
+name = "replica-server-tests"
+version = "0.3.0"
+authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
+edition = "2018"
+publish = false
+
+[dependencies.taskchampion-sync-server]
+path = "../sync-server"
+
+[dependencies.taskchampion]
+path = "../taskchampion"
+
+[dev-dependencies]
+anyhow = "1.0"
+actix-web = "^3.3.2"
+actix-rt = "^1.1.1"
+tempfile = "3"

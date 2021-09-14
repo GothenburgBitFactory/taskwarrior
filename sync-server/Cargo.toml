@@ -3,6 +3,7 @@ name = "taskchampion-sync-server"
 version = "0.3.0"
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
 edition = "2018"
+publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -20,5 +21,5 @@ env_logger = "^0.8.3"
 rusqlite = { version = "0.25", features = ["bundled"] }
 
 [dev-dependencies]
-actix-rt = "^2.2.0"
+actix-rt = "^1.1.1"
 tempfile = "3"
