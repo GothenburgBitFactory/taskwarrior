@@ -3,7 +3,6 @@ authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
 edition = "2018"
 name = "taskchampion-cli"
 version = "0.3.0"
-publish = false
 
 build = "build.rs"
 
