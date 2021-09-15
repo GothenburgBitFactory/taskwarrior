@@ -44,7 +44,6 @@ pub(crate) async fn service(
 
 #[cfg(test)]
 mod test {
-    use crate::api::ServerState;
     use crate::storage::{InMemoryStorage, Storage};
     use crate::Server;
     use actix_web::{http::StatusCode, test, App};
