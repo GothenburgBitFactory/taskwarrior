@@ -49,7 +49,6 @@ class TestHyphenation(TestCase):
         code, out, err = self.t("ls")
         self.assertIn("1 AAAAAAAAAA\n", out)
 
-    @unittest.expectedFailure
     def test_hyphenation(self):
         """Verify hyphenation in the absence of white space"""
         self.t("add AAAAAAAAAABBBBBBBBBBCCCCCCCCCC")
