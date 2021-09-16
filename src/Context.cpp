@@ -1075,7 +1075,7 @@ bool Context::verbose (const std::string& token)
     // Some flags imply "header" verbosity being active.  Make it so.
     if (! verbosity.count ("header"))
     {
-      for (auto flag : {"default", "override"})
+      for (auto flag : {"default"})
       {
         if (verbosity.count (flag))
         {
