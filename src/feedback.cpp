@@ -152,7 +152,6 @@ void feedback_special_tags (const Task& task, const std::string& tag)
   if (Context::getContext ().verbose ("special"))
   {
     std::string msg;
-    std::string explanation;
          if (tag == "nocolor") msg = "The 'nocolor' special tag will disable color rules for this task.";
     else if (tag == "nonag")   msg = "The 'nonag' special tag will prevent nagging when this task is modified.";
     else if (tag == "nocal")   msg = "The 'nocal' special tag will keep this task off the 'calendar' report.";
