@@ -1071,6 +1071,19 @@ bool Context::verbose (const std::string& token)
         }
       }
     }
+
+    // Some flags imply "header" verbosity being active.  Make it so.
+    if (! verbosity.count ("header"))
+    {
+      for (auto flag : {"default", "override"})
+      {
+        if (verbosity.count (flag))
+        {
+          verbosity.insert ("header");
+          break;
+        }
+      }
+    }
   }
 
   // rc.verbose=true|y|yes|1|on overrides all.
