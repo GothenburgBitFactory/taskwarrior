@@ -51,6 +51,8 @@ New Configuration Options in Taskwarrior 2.6.0
   - Multi-day holidays are now supported. Use holiday.<name>.start=<date> and
     holiday.<name>.end=<date> to specify a range-based holiday, such as a
     vacation.
+  - Verbosity token 'default' was introduced in order to display information
+    about default actions.
 
 
 Newly Deprecated Features in Taskwarrior 2.6.0
