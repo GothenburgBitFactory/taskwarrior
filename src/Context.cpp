@@ -87,7 +87,7 @@ std::string configurationDefaults =
   "\n"
   "# Miscellaneous\n"
   "# verbose=                                     # Comma-separated list.  May contain any subset of:\n"
-  "# affected,blank,context,edit,filter,footnote,header,label,new-id,new-uuid,override,project,recur,special,sync"
+  "# affected,blank,context,default,edit,filter,footnote,header,label,new-id,new-uuid,override,project,recur,special,sync\n"
   "verbose=affected,blank,context,edit,header,footnote,label,new-id,project,special,sync,override,recur\n"
   "confirmation=1                                 # Confirmation on delete, big changes\n"
   "recurrence=1                                   # Enable recurrence\n"
@@ -633,11 +633,13 @@ int Context::initialize (int argc, const char** argv)
         foundAssumed = true;
     }
 
-    if (foundDefault)
-      header ("[" + combined + "]");
+    if (verbose ("default")) {
+      if (foundDefault)
+        header ("[" + combined + "]");
 
-    if (foundAssumed)
-      header ("No command specified - assuming 'information'.");
+      if (foundAssumed)
+        header ("No command specified - assuming 'information'.");
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     //
