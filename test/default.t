@@ -46,6 +46,7 @@ class TestCMD(TestCase):
 
     def test_default_command(self):
         """default command"""
+        self.t.config("verbose", "on")
         code, out, err = self.t()
         self.assertIn("task list]", err)
 

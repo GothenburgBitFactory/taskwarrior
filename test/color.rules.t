@@ -146,7 +146,7 @@ class TestColorRules(TestCase):
 
     def test_color_header(self):
         """Header color."""
-        code, out, err = self.t('rc.verbose=header /control/')
+        code, out, err = self.t('rc.verbose=header,default /control/')
         self.assertIn('\x1b[34m', err)
 
     def test_color_footnote(self):
