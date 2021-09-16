@@ -1037,21 +1037,22 @@ bool Context::verbose (const std::string& token)
     {
       std::string v = *(verbosity.begin ());
       if (v != "nothing"  &&
-          v != "blank"    &&  // This list must be complete.
-          v != "header"   &&  //
+          v != "affected" &&  // This list must be complete.
+          v != "blank"    &&  //
+          v != "context"  &&  //
+          v != "default"  &&  //
+          v != "edit"     &&  //
+          v != "filter"   &&  //
           v != "footnote" &&  //
+          v != "header"   &&  //
           v != "label"    &&  //
           v != "new-id"   &&  //
           v != "new-uuid" &&  //
-          v != "affected" &&  //
-          v != "edit"     &&  //
-          v != "special"  &&  //
-          v != "project"  &&  //
-          v != "sync"     &&  //
-          v != "filter"   &&  //
           v != "override" &&  //
-          v != "context" &&  //
-          v != "recur")       //
+          v != "project"  &&  //
+          v != "recur"    &&  //
+          v != "special"  &&  //
+          v != "sync")
       {
         // This list emulates rc.verbose=off in version 1.9.4.
         verbosity = {"blank", "label", "new-id", "edit"};
