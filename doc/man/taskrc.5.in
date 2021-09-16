@@ -306,7 +306,7 @@ control specific occasions when output is generated. This list may contain:
 The tokens "affected", "new-id", "new-uuid", "project", "override" and "recur"
 imply "footnote".
 
-The tokens "default" and "override" imply "header".
+The token "default" implies "header".
 
 Note that the "1" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
