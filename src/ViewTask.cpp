@@ -202,11 +202,53 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     widths = ideal;
   }
 
-  // Not enough for minimum.
+  // Not enough for minimum. Decrease certain columns.
   else if (overage < 0)
   {
-    Context::getContext ().error (format ("The report has a minimum width of {1} and does not fit in the available width of {2}.", sum_minimal + all_extra, _width));
+    // Determine which columns are the longest.
+    unsigned int longest = 0;
+    unsigned int second_longest = 0;
+    for (unsigned int j = 0; j < minimal.size(); j++)
+    {
+      if (minimal[j] > minimal[longest])
+      {
+        second_longest = longest;
+        longest = j;
+      }
+      else if (minimal[j] > minimal[second_longest])
+      {
+        second_longest = j;
+      }
+    }
+
+    // Case 1: Shortening longest column still keeps it longest. Let it bear
+    //         all the shortening.
     widths = minimal;
+    if (minimal[longest] + overage >= minimal[second_longest])
+      widths[longest] += overage;
+
+    // Case 2: Shorten the longest column to second longest length. Try to
+    //         split shortening them evenly.
+    else
+    {
+      int decrease = minimal[second_longest] - minimal[longest];
+      widths[longest] += decrease;
+      overage = overage - decrease;
+
+      // Attempt to decrease the two longest columns (at most to two characters)
+      if (-overage <= widths[longest] + widths[second_longest] - 4)
+      {
+        // Compute half of the overage, rounding up
+        int half_overage = overage / 2 + overage % 2;
+
+        // Decrease both larges columns by this amount
+        widths[longest] += half_overage;
+        widths[second_longest] += half_overage;
+      }
+      else
+        // If reducing two of the longest solumns to 2 characters is not sufficient, then give up.
+        Context::getContext ().error (format ("The report has a minimum width of {1} and does not fit in the available width of {2}.", sum_minimal + all_extra, _width));
+    }
   }
 
   // Perfect minimal width.
