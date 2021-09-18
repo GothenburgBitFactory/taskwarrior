@@ -701,7 +701,7 @@ void CLI2::prepareFilter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Return all the MISCELLANEOUS args.
+// Return all the MISCELLANEOUS args as strings.
 const std::vector <std::string> CLI2::getWords ()
 {
   std::vector <std::string> words;
@@ -719,6 +719,18 @@ const std::vector <std::string> CLI2::getWords ()
   }
 
   return words;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Return all the MISCELLANEOUS args.
+const std::vector <A2> CLI2::getMiscellaneous ()
+{
+  std::vector <A2> misc;
+  for (const auto& a : _args)
+    if (a.hasTag ("MISCELLANEOUS"))
+      misc.push_back (a);
+
+  return misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

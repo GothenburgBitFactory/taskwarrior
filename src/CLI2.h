@@ -78,6 +78,7 @@ public:
   void addContext (bool readable, bool writeable);
   void prepareFilter ();
   const std::vector <std::string> getWords ();
+  const std::vector <A2> getMiscellaneous ();
   bool canonicalize (std::string&, const std::string&, const std::string&);
   std::string getBinary () const;
   std::string getCommand (bool canonical = true) const;
