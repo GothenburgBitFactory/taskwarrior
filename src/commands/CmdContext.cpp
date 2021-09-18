@@ -381,8 +381,8 @@ CmdCompletionContext::CmdCompletionContext ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionContext::execute (std::string& output)
 {
-  for (auto& contet : CmdContext::getContexts ())
-    output += contet + '\n';
+  for (auto& context : CmdContext::getContexts ())
+    output += context + '\n';
 
   return 0;
 }
