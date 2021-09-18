@@ -23,11 +23,21 @@ RUN cmake -DCMAKE_BUILD_TYPE=debug .
 RUN make -j8
 RUN sudo make install
 
-# Install from the PR's branch
+# Use specified PR's branch, if provided
 ARG PR
-ADD https://github.com/GothenburgBitFactory/taskwarrior/pull/${PR}.patch .
-RUN git fetch origin refs/pull/${PR}/head:pr-${PR}
-RUN git checkout pr-${PR}
+RUN if [[ ! -z $PR ]]; then \
+      git fetch origin refs/pull/${PR}/head:pr-${PR}; \
+      git checkout pr-${PR}; fi
+
+# Use specified libshared PR's branch, if provided
+ARG LIBPR
+WORKDIR /home/warrior/taskwarrior/src/libshared/
+RUN if [[ ! -z $LIBPR ]]; then \
+      git fetch origin refs/pull/${LIBPR}/head:libpr-${LIBPR}; \
+      git checkout libpr-${LIBPR}; fi
+
+# Install taskwarrior
+WORKDIR /home/warrior/taskwarrior/
 RUN cmake -DCMAKE_BUILD_TYPE=debug .
 RUN make -j8
 RUN sudo make install

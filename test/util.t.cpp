@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -57,14 +57,14 @@ int main (int, char**)
 
   Task rightAgain (right);
 
-  std::string output = taskDifferences (left, right);
+  std::string output = left.diff (right);
   t.ok (left.data != right.data,                                                              "Detected changes");
   t.ok (output.find ("Zero will be changed from '0' to '00'") != std::string::npos, "Detected change zero:0 -> zero:00");
   t.ok (output.find ("One will be deleted")                   != std::string::npos, "Detected deletion one:1 ->");
   t.ok (output.find ("Two")                                   == std::string::npos, "Detected no change two:2 -> two:2");
   t.ok (output.find ("Three will be set to '3'")              != std::string::npos, "Detected addition -> three:3");
 
-  output = taskDifferences (right, rightAgain);
+  output = right.diff (rightAgain);
   t.ok (output.find ("No changes will be made")               != std::string::npos, "No changes detected");
 
   // std::vector<std::string> indentProject (const std::string&, const std::string whitespace="  ", char delimiter='.');

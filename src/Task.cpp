@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,9 @@ Task::status Task::textToStatus (const std::string& input)
   else if (input[0] == 'c') return Task::completed;
   else if (input[0] == 'd') return Task::deleted;
   else if (input[0] == 'r') return Task::recurring;
-  else if (input[0] == 'w') return Task::waiting;
+  // for compatibility, parse `w` as pending; Task::getStatus will
+  // apply the virtual waiting status if appropriate
+  else if (input[0] == 'w') return Task::pending;
 
   throw format ("The status '{1}' is not valid.", input);
 }
@@ -197,7 +199,7 @@ bool Task::has (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> Task::all ()
+std::vector <std::string> Task::all () const
 {
   std::vector <std::string> all;
   for (const auto& i : data)
@@ -271,7 +273,7 @@ void Task::set (const std::string& name, const std::string& value)
 {
   data[name] = value;
 
-  if (! name.compare (0, 11, "annotation_", 11))
+  if (isAnnotationAttr (name))
     ++annotation_count;
 
   recalc_urgency = true;
@@ -291,7 +293,7 @@ void Task::remove (const std::string& name)
   if (data.erase (name))
     recalc_urgency = true;
 
-  if (! name.compare (0, 11, "annotation_", 11))
+  if (isAnnotationAttr (name))
     --annotation_count;
 }
 
@@ -301,12 +303,26 @@ Task::status Task::getStatus () const
   if (! has ("status"))
     return Task::pending;
 
-  return textToStatus (get ("status"));
+  auto status = textToStatus (get ("status"));
+
+  // Implement the "virtual" Task::waiting status, which is not stored on-disk
+  // but is defined as a pending task with a `wait` attribute in the future.
+  // This is workaround for 2.6.0, remove in 3.0.0.
+  if (status == Task::pending && is_waiting ()) {
+      return Task::waiting;
+  }
+
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setStatus (Task::status status)
 {
+  // the 'waiting' status is a virtual version of 'pending', so translate
+  // that back to 'pending' here
+  if (status == Task::waiting)
+      status = Task::pending;
+
   set ("status", statusToText (status));
 
   recalc_urgency = true;
@@ -560,6 +576,23 @@ bool Task::is_overdue () const
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::is_waiting () const
+{
+  // note that is_waiting can return true for tasks in an actual status other
+  // than pending; in this case +WAITING will be set but the status will not be
+  // "waiting"
+  if (has ("wait"))
+  {
+    Datetime now;
+    Datetime wait (get_date ("wait"));
+    if (wait > now)
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Task::parse, and in the event of an error
 // try a JSON parse, otherwise a legacy parse (currently no legacy formats are
 // supported).
@@ -604,7 +637,7 @@ void Task::parse (const std::string& input)
             legacyAttributeMap (name);
 #endif
 
-            if (! name.compare (0, 11, "annotation_", 11))
+            if (isAnnotationAttr (name))
               ++annotation_count;
 
             data[name] = decode (json::decode (value));
@@ -638,6 +671,14 @@ void Task::parse (const std::string& input)
   }
   // ..and similarly, update `tags` to match the `tag_..` attributes
   fixTagsAttribute();
+
+  // same for `depends` / `dep_..`
+  if (data.find ("depends") != data.end ()) {
+    for (auto& dep : split(data["depends"], ',')) {
+      data[dep2Attr(dep)] = "x";
+    }
+  }
+  fixDependsAttribute();
 
   recalc_urgency = true;
 }
@@ -751,6 +792,11 @@ void Task::parseJSON (const json::object* root_obj)
       if (i.first == "annotations")
       {
         std::map <std::string, std::string> annos;
+
+        // Fail if 'annotations' is not an array
+        if (i.second->type() != json::j_array) {
+            throw format ("Annotations is malformed: {1}", i.second->dump ());
+        }
 
         auto atts = (json::array*)i.second;
         for (auto& annotations : atts->_data)
@@ -905,8 +951,10 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (! i.first.compare (0, 11, "annotation_", 11))
       continue;
 
+    // Tags and dependencies are handled below
     if (i.first == "tags" || isTagAttr (i.first))
-      // Tags are handled below
+      continue;
+    if (i.first == "depends" || isDepAttr (i.first))
       continue;
 
     // If value is an empty string, do not ever output it
@@ -947,45 +995,6 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
           << "\":"
           << i.second;
 
-      ++attributes_written;
-    }
-
-    // Dependencies are an array by default.
-    else if (i.first == "depends"
-#ifdef PRODUCT_TASKWARRIOR
-    // 2016-02-20: Taskwarrior 2.5.0 introduced the 'json.depends.array' setting
-    //             which defaulted to 'on', and emitted this JSON for
-    //             dependencies:
-    //
-    //             With json.depends.array=on    "depends":["<uuid>","<uuid>"]
-    //             With json.depends.array=off   "depends":"<uuid>,<uuid>"
-    //
-    //             Taskwarrior 2.5.1 defaults this to 'off', because Taskserver
-    //             1.0.0 and 1.1.0 both expect that. Taskserver 1.2.0 will
-    //             accept both forms, but emit the 'off' variant.
-    //
-    //             When Taskwarrior 2.5.0 is no longer the dominant version,
-    //             and Taskserver 1.2.0 is released, the default for
-    //             'json.depends.array' can revert to 'on'.
-
-             && Context::getContext ().config.getBoolean ("json.depends.array")
-#endif
-            )
-    {
-      auto deps = split (i.second, ',');
-
-      out << "\"depends\":[";
-
-      int count = 0;
-      for (const auto& i : deps)
-      {
-        if (count++)
-          out << ',';
-
-        out << '"' << i << '"';
-      }
-
-      out << ']';
       ++attributes_written;
     }
 
@@ -1043,6 +1052,25 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
         out << ',';
 
       out << '"' << tag << '"';
+    }
+
+    out << ']';
+    ++attributes_written;
+  }
+
+  auto depends = getDependencyUUIDs ();
+  if (depends.size() > 0)
+  {
+    out << ','
+        << "\"depends\":[";
+
+    int count = 0;
+    for (const auto& dep : depends)
+    {
+      if (count++)
+        out << ',';
+
+      out << '"' << dep << '"';
     }
 
     out << ']';
@@ -1153,8 +1181,10 @@ void Task::addDependency (int depid)
   if (uuid == "")
     throw format ("Could not create a dependency on task {1} - not found.", depid);
 
-  std::string depends = get ("depends");
-  if (depends.find (uuid) != std::string::npos)
+  // the addDependency(&std::string) overload will check this, too, but here we
+  // can give an more natural error message containing the id the user
+  // provided.
+  if (hasDependency (uuid))
   {
     Context::getContext ().footnote (format ("Task {1} already depends on task {2}.", id, depid));
     return;
@@ -1170,23 +1200,16 @@ void Task::addDependency (const std::string& uuid)
   if (uuid == get ("uuid"))
     throw std::string ("A task cannot be dependent on itself.");
 
-  // Store the dependency.
-  std::string depends = get ("depends");
-  if (depends != "")
+  if (hasDependency (uuid))
   {
-    // Check for extant dependency.
-    if (depends.find (uuid) == std::string::npos)
-      set ("depends", depends + ',' + uuid);
-    else
-    {
 #ifdef PRODUCT_TASKWARRIOR
-      Context::getContext ().footnote (format ("Task {1} already depends on task {2}.", get ("uuid"), uuid));
+    Context::getContext ().footnote (format ("Task {1} already depends on task {2}.", get ("uuid"), uuid));
 #endif
-      return;
-    }
+    return;
   }
-  else
-    set ("depends", uuid);
+
+  // Store the dependency.
+  set (dep2Attr (uuid), "x");
 
   // Prevent circular dependencies.
 #ifdef PRODUCT_TASKWARRIOR
@@ -1195,64 +1218,102 @@ void Task::addDependency (const std::string& uuid)
 #endif
 
   recalc_urgency = true;
+  fixDependsAttribute();
 }
 
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
-void Task::removeDependency (const std::string& uuid)
+void Task::removeDependency (int id)
 {
-  auto deps = split (get ("depends"), ',');
+  std::string uuid = Context::getContext ().tdb2.pending.uuid (id);
 
-  auto i = std::find (deps.begin (), deps.end (), uuid);
-  if (i != deps.end ())
-  {
-    deps.erase (i);
-    set ("depends", join (",", deps));
-    recalc_urgency = true;
-  }
-  else
-    throw format ("Could not delete a dependency on task {1} - not found.", uuid);
+  // The removeDependency(std::string&) method will check this too, but here we
+  // can give a more natural error message containing the id provided by the user
+  if (uuid == "" || !has (dep2Attr (uuid)))
+    throw format ("Could not delete a dependency on task {1} - not found.", id);
+  removeDependency (uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::removeDependency (int id)
+void Task::removeDependency (const std::string& uuid)
 {
-  std::string depends = get ("depends");
-  std::string uuid = Context::getContext ().tdb2.pending.uuid (id);
-  if (uuid != "" && depends.find (uuid) != std::string::npos)
-    removeDependency (uuid);
+  auto depattr = dep2Attr (uuid);
+  if (has (depattr))
+    remove (depattr);
   else
-    throw format ("Could not delete a dependency on task {1} - not found.", id);
+    throw format ("Could not delete a dependency on task {1} - not found.", uuid);
+
+  recalc_urgency = true;
+  fixDependsAttribute();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::hasDependency (const std::string& uuid) const
+{
+  auto depattr = dep2Attr (uuid);
+  return has (depattr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <int> Task::getDependencyIDs () const
 {
-  std::vector <int> all;
-  for (auto& dep : split (get ("depends"), ','))
-    all.push_back (Context::getContext ().tdb2.pending.id (dep));
+  std::vector <int> ids;
+  for (auto& attr : all ()) {
+    if (!isDepAttr (attr))
+      continue;
+    auto dep = attr2Dep (attr);
+    ids.push_back (Context::getContext ().tdb2.pending.id (dep));
+  }
 
-  return all;
+  return ids;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <std::string> Task::getDependencyUUIDs () const
 {
-  return split (get ("depends"), ',');
+  std::vector <std::string> uuids;
+  for (auto& attr : all ()) {
+    if (!isDepAttr (attr))
+      continue;
+    auto dep = attr2Dep (attr);
+    uuids.push_back (dep);
+  }
+
+  return uuids;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <Task> Task::getDependencyTasks () const
 {
-  std::vector <Task> all;
-  for (auto& dep : split (get ("depends"), ','))
-  {
-    Task task;
-    Context::getContext ().tdb2.get (dep, task);
-    all.push_back (task);
-  }
+  auto uuids = getDependencyUUIDs ();
 
-  return all;
+  // NOTE: this may seem inefficient, but note that `TDB2::get` performs a
+  // linear search on each invocation, so scanning *once* is quite a bit more
+  // efficient.
+  std::vector <Task> blocking;
+  if (uuids.size() > 0)
+    for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
+      if (it.getStatus () != Task::completed &&
+          it.getStatus () != Task::deleted   &&
+          std::find (uuids.begin (), uuids.end (), it.get ("uuid")) != uuids.end ())
+        blocking.push_back (it);
+
+  return blocking;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <Task> Task::getBlockedTasks () const
+{
+  auto uuid = get ("uuid");
+
+  std::vector <Task> blocked;
+  for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
+    if (it.getStatus () != Task::completed &&
+        it.getStatus () != Task::deleted   &&
+        it.hasDependency (uuid))
+      blocked.push_back (it);
+
+  return blocked;
 }
 #endif
 
@@ -1311,10 +1372,10 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "TAGGED")    return getTagCount() > 0;
     if (tag == "PARENT")    return has ("mask") || has ("last");       // 2017-01-07: Deprecated in 2.6.0
     if (tag == "TEMPLATE")  return has ("last") || has ("mask");
-    if (tag == "WAITING")   return get ("status") == "waiting";
-    if (tag == "PENDING")   return get ("status") == "pending";
-    if (tag == "COMPLETED") return get ("status") == "completed";
-    if (tag == "DELETED")   return get ("status") == "deleted";
+    if (tag == "WAITING")   return is_waiting ();
+    if (tag == "PENDING")   return getStatus () == Task::pending;
+    if (tag == "COMPLETED") return getStatus () == Task::completed;
+    if (tag == "DELETED")   return getStatus () == Task::deleted;
 #ifdef PRODUCT_TASKWARRIOR
     if (tag == "UDA")       return is_udaPresent ();
     if (tag == "ORPHAN")    return is_orphanPresent ();
@@ -1434,6 +1495,46 @@ const std::string Task::attr2Tag (const std::string& attr) const
   return attr.substr(5);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void Task::fixDependsAttribute ()
+{
+  // Fix up the old `depends` attribute to match the `dep_..` attributes (or
+  // remove it if there are no deps)
+  auto deps = getDependencyUUIDs ();
+  if (deps.size () > 0) {
+    set ("depends", join (",", deps));
+  } else {
+    remove ("depends");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::isDepAttr(const std::string& attr) const
+{
+  return attr.compare(0, 4, "dep_") == 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Task::dep2Attr (const std::string& tag) const
+{
+  std::stringstream tag_attr;
+  tag_attr << "dep_" << tag;
+  return tag_attr.str();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Task::attr2Dep (const std::string& attr) const
+{
+  assert (isDepAttr (attr));
+  return attr.substr(4);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::isAnnotationAttr(const std::string& attr) const
+{
+  return attr.compare(0, 11, "annotation_") == 0;
+}
+
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA Orphan is an attribute that is not represented in context.columns.
@@ -1441,8 +1542,8 @@ std::vector <std::string> Task::getUDAOrphanUUIDs () const
 {
   std::vector <std::string> orphans;
   for (auto& it : data)
-    if (it.first.compare (0, 11, "annotation_", 11) != 0)
-      if (Context::getContext ().columns.find (it.first) == Context::getContext ().columns.end ())
+    if (Context::getContext ().columns.find (it.first) == Context::getContext ().columns.end ())
+      if (not (isAnnotationAttr (it.first) || isTagAttr (it.first) || isDepAttr (it.first)))
         orphans.push_back (it.first);
 
   return orphans;
@@ -2005,9 +2106,9 @@ float Task::urgency_inherit () const
 {
   float v = FLT_MIN;
 #ifdef PRODUCT_TASKWARRIOR
-  // Calling dependencyGetBlocked is rather expensive.
+  // Calling getBlockedTasks is rather expensive.
   // It is called recursively for each dependency in the chain here.
-  for (auto& task : dependencyGetBlocked (*this))
+  for (auto& task : getBlockedTasks ())
   {
     // Find highest urgency in all blocked tasks.
     v = std::max (v, task.urgency ());
@@ -2048,7 +2149,7 @@ float Task::urgency_scheduled () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_waiting () const
 {
-  if (get_ref ("status") == "waiting")
+  if (is_waiting ())
     return 1.0;
 
   return 0.0;
@@ -2290,9 +2391,254 @@ void Task::modify (modType type, bool text_required /* = false */)
       getStatus () == originalStatus)
   {
     auto uuid = get ("uuid").substr (0, 8);
-    Context::getContext ().footnote (format ("Note: Modified task {1} is {2}.  You may wish to make this task pending with: task {3} modify status:pending", uuid, get ("status"), uuid));
+    Context::getContext ().footnote (format ("Note: Modified task {1} is {2}. You may wish to make this task pending with: task {3} modify status:pending", uuid, get ("status"), uuid));
   }
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+// Compare this task to another and summarize the differences for display
+std::string Task::diff (const Task& after) const
+{
+  // Attributes are all there is, so figure the different attribute names
+  // between this (before) and after.
+  std::vector <std::string> beforeAtts;
+  for (auto& att : data)
+    beforeAtts.push_back (att.first);
+
+  std::vector <std::string> afterAtts;
+  for (auto& att : after.data)
+    afterAtts.push_back (att.first);
+
+  std::vector <std::string> beforeOnly;
+  std::vector <std::string> afterOnly;
+  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+  // Now start generating a description of the differences.
+  std::stringstream out;
+  for (auto& name : beforeOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << "  - "
+          << format ("Annotation {1} will be removed.", name)
+          << "\n";
+    }
+    else if (isTagAttr (name))
+    {
+      out << "  - "
+          << format ("Tag {1} will be removed.", attr2Tag (name))
+          << "\n";
+    }
+    else if (isDepAttr (name))
+    {
+      out << "  - "
+          << format ("Depenency on {1} will be removed.", attr2Dep (name))
+          << "\n";
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else
+    {
+      out << "  - "
+          << format ("{1} will be deleted.", Lexer::ucFirst (name))
+          << "\n";
+    }
+  }
+
+  for (auto& name : afterOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << format ("Annotation of {1} will be added.\n", after.get (name));
+    }
+    else if (isTagAttr (name))
+    {
+      out << format ("Tag {1} will be added.\n", attr2Tag (name));
+    }
+    else if (isDepAttr (name))
+    {
+      out << format ("Dependency on {1} will be added.\n", attr2Dep (name));
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else
+      out << "  - "
+          << format ("{1} will be set to '{2}'.",
+                     Lexer::ucFirst (name),
+                     renderAttribute (name, after.get (name)))
+          << "\n";
+  }
+
+  for (auto& name : beforeAtts)
+  {
+    // Ignore UUID differences, and find values that changed, but are not also
+    // in the beforeOnly and afterOnly lists, which have been handled above..
+    if (name              != "uuid" &&
+        get (name)        != after.get (name) &&
+        std::find (beforeOnly.begin (), beforeOnly.end (), name) == beforeOnly.end () &&
+        std::find (afterOnly.begin (),  afterOnly.end (),  name) == afterOnly.end ())
+    {
+      if (name == "depends" || name == "tags")
+      {
+        // do nothing for legacy attributes
+      }
+      else if (isTagAttr (name) || isDepAttr (name))
+      {
+        // ignore new attributes
+      }
+      else if (isAnnotationAttr (name))
+      {
+        out << format ("Annotation will be changed to {1}.\n", after.get (name));
+      }
+      else
+        out << "  - "
+            << format ("{1} will be changed from '{2}' to '{3}'.",
+                       Lexer::ucFirst (name),
+                       renderAttribute (name, get (name)),
+                       renderAttribute (name, after.get (name)))
+            << "\n";
+    }
+  }
+
+  // Shouldn't just say nothing.
+  if (out.str ().length () == 0)
+    out << "  - No changes will be made.\n";
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Similar to diff, but formatted for inclusion in the output of the info command
+std::string Task::diffForInfo (
+  const Task& after,
+  const std::string& dateformat,
+  long& last_timestamp,
+  const long current_timestamp) const
+{
+  // Attributes are all there is, so figure the different attribute names
+  // between before and after.
+  std::vector <std::string> beforeAtts;
+  for (auto& att : data)
+    beforeAtts.push_back (att.first);
+
+  std::vector <std::string> afterAtts;
+  for (auto& att : after.data)
+    afterAtts.push_back (att.first);
+
+  std::vector <std::string> beforeOnly;
+  std::vector <std::string> afterOnly;
+  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+  // Now start generating a description of the differences.
+  std::stringstream out;
+  for (auto& name : beforeOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << format ("Annotation '{1}' deleted.\n", get (name));
+    }
+    else if (isTagAttr (name))
+    {
+      out << format ("Tag '{1}' deleted.\n", attr2Tag(name));
+    }
+    else if (isDepAttr (name))
+    {
+      out << format ("Dependency on '{1}' deleted.\n", attr2Dep(name));
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else if (name == "start")
+    {
+      Datetime started (get ("start"));
+      Datetime stopped;
+
+      if (after.has ("end"))
+        // Task was marked as finished, use end time
+        stopped = Datetime (after.get ("end"));
+      else
+        // Start attribute was removed, use modification time
+        stopped = Datetime (current_timestamp);
+
+      out << format ("{1} deleted (duration: {2}).",
+                     Lexer::ucFirst (name),
+                     Duration (stopped - started).format ())
+          << "\n";
+    }
+    else
+    {
+      out << format ("{1} deleted.\n", Lexer::ucFirst (name));
+    }
+  }
+
+  for (auto& name : afterOnly)
+  {
+    if (isAnnotationAttr (name))
+    {
+      out << format ("Annotation of '{1}' added.\n", after.get (name));
+    }
+    else if (isTagAttr (name))
+    {
+      out << format ("Tag '{1}' added.\n", attr2Tag (name));
+    }
+    else if (isDepAttr (name))
+    {
+      out << format ("Dependency on '{1}' added.\n", attr2Dep (name));
+    }
+    else if (name == "depends" || name == "tags")
+    {
+      // do nothing for legacy attributes
+    }
+    else
+    {
+      if (name == "start")
+          last_timestamp = current_timestamp;
+
+      out << format ("{1} set to '{2}'.",
+                     Lexer::ucFirst (name),
+                     renderAttribute (name, after.get (name), dateformat))
+          << "\n";
+    }
+  }
+
+  for (auto& name : beforeAtts)
+    if (name              != "uuid" &&
+        name              != "modified" &&
+        get (name)        != after.get (name) &&
+        get (name)        != "" &&
+        after.get (name)  != "")
+    {
+      if (name == "depends" || name == "tags")
+      {
+        // do nothing for legacy attributes
+      }
+      else if (isTagAttr (name) || isDepAttr (name))
+      {
+        // ignore new attributes
+      }
+      else if (isAnnotationAttr (name))
+      {
+        out << format ("Annotation changed to '{1}'.\n", after.get (name));
+      }
+      else
+        out << format ("{1} changed from '{2}' to '{3}'.",
+                       Lexer::ucFirst (name),
+                       renderAttribute (name, get (name), dateformat),
+                       renderAttribute (name, after.get (name), dateformat))
+            << "\n";
+    }
+
+  // Shouldn't just say nothing.
+  if (out.str ().length () == 0)
+    out << "No changes made.\n";
+
+  return out.str ();
+}
 
 ////////////////////////////////////////////////////////////////////////////////

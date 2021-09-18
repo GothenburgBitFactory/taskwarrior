@@ -6,9 +6,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "Centos 7"
-            runner: ubuntu-latest
-            dockerfile: centos7
           - name: "Centos 8"
             runner: ubuntu-latest
             dockerfile: centos8
@@ -24,9 +21,6 @@ jobs:
           - name: "Fedora 34"
             runner: ubuntu-latest
             dockerfile: fedora34
-          - name: "Debian Stable"
-            runner: ubuntu-latest
-            dockerfile: debianstable
           - name: "Debian Testing"
             runner: ubuntu-latest
             dockerfile: debiantesting

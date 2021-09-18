@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -78,6 +78,7 @@ public:
   void addContext (bool readable, bool writeable);
   void prepareFilter ();
   const std::vector <std::string> getWords ();
+  const std::vector <A2> getMiscellaneous ();
   bool canonicalize (std::string&, const std::string&, const std::string&);
   std::string getBinary () const;
   std::string getCommand (bool canonical = true) const;

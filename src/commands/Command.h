@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ public:
   bool read_only () const;
   bool displays_id () const;
   bool needs_gc () const;
-  bool uses_context () const;
+  virtual bool uses_context () const;
   bool accepts_filter () const;
   bool accepts_modifications () const;
   bool accepts_miscellaneous () const;

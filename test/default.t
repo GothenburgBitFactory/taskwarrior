@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,7 @@ class TestCMD(TestCase):
 
     def test_default_command(self):
         """default command"""
+        self.t.config("verbose", "on")
         code, out, err = self.t()
         self.assertIn("task list]", err)
 

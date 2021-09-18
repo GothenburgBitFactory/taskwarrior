@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -667,7 +667,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   value = findValue (after, "\n  Dependencies:");
   auto dependencies = split (value, ',');
 
-  task.remove ("depends");
+  for (auto& dep : task.getDependencyUUIDs ())
+    task.removeDependency (dep);
   for (auto& dep : dependencies)
   {
     if (dep.length () >= 7)

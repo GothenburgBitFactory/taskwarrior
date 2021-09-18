@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -71,8 +71,7 @@ void CmdPurge::handleDeps (Task& task)
    for (auto& blockedConst: Context::getContext ().tdb2.all_tasks ())
    {
      Task& blocked = const_cast<Task&>(blockedConst);
-     if (blocked.has ("depends") &&
-         blocked.get ("depends").find (uuid) != std::string::npos)
+     if (blocked.hasDependency (uuid))
      {
          blocked.removeDependency (uuid);
          Context::getContext ().tdb2.modify (blocked);

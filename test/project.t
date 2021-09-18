@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -478,6 +478,26 @@ class TestBug1627(TestCase):
         self.t("add foo project:mon")
         code, out, err = self.t("_get 1.project")
         self.assertEqual("mon\n", out)
+
+
+class TestBug1900(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_project_eval(self):
+        """1900: Project name can contain dashes"""
+        self.t("add foo project:due-b")
+        code, out, err = self.t("_get 1.project")
+        self.assertEqual("due-b\n", out)
+
+        self.t("add foo project:scheduled-home")
+        code, out, err = self.t("_get 2.project")
+        self.assertEqual("scheduled-home\n", out)
+
+        self.t("add foo project:entry-work")
+        code, out, err = self.t("_get 3.project")
+        self.assertEqual("entry-work\n", out)
 
 
 class TestBug1904(TestCase):

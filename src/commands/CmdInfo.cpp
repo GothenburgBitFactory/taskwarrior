@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,7 @@ int CmdInfo::execute (std::string& output)
 
     // dependencies: blocked
     {
-      auto blocked = dependencyGetBlocking (task);
+      auto blocked = task.getDependencyTasks ();
       if (blocked.size ())
       {
         std::stringstream message;
@@ -162,7 +162,7 @@ int CmdInfo::execute (std::string& output)
 
     // dependencies: blocking
     {
-      auto blocking = dependencyGetBlocked (task);
+      auto blocking = task.getBlockedTasks ();
       if (blocking.size ())
       {
         std::stringstream message;
@@ -414,6 +414,7 @@ int CmdInfo::execute (std::string& output)
     {
       if (att.substr (0, 11) != "annotation_" &&
           att.substr (0, 5) != "tags_" &&
+          att.substr (0, 4) != "dep_" &&
           Context::getContext ().columns.find (att) == Context::getContext ().columns.end ())
       {
          row = view.addRow ();
@@ -570,7 +571,7 @@ int CmdInfo::execute (std::string& output)
 
             Task before (undo[previous].substr (4));
             Task after (undo[current].substr (4));
-            journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
+            journal.set (row, 1, before.diffForInfo (after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
           }
         }
       }

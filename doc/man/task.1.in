@@ -304,7 +304,7 @@ value.
 .B task <filter> ready
 Shows a page of the most urgent ready tasks, sorted by urgency with started
 tasks first. A ready task is one that is either unscheduled, or has a scheduled
-date that is past and has no wait date.
+date that is past and is not waiting.
 
 .TP
 .B task <filter> oldest
@@ -796,9 +796,10 @@ to 25 lines.
 
 .TP
 .B wait:<wait-date>
-When a task is given a wait date, it is hidden from most reports by changing
-its status to 'waiting'. When that date is passed, the status is changed back
-to 'pending', and the task becomes visible.
+When a task is given a wait date, it is hidden from most built-in reports, which
+exclude +WAITING.  When the date is in the past, the task is not considered +WAITING,
+and again becomes visible.  Note that, for compatibilty, such tasks are shown as
+having status "waiting", but this will change in a future release.
 
 .TP
 .B depends:<id1,id2 ...>
@@ -1321,6 +1322,11 @@ the user intention here, and instead, the user is expected to set the
 Note how read and write contexts differ for context "family", while for context
 "home" they stay the same.
 
+In addition, every configuration parameter can be overridden for the current 
+context, by specifying context.<name>.rc.<parameter>. For example, if the default
+command for the family context should be displaying the family_report:
+
+    $ task config context.family.rc.default.command family_report
 
 .SH COMMAND ABBREVIATION
 All Taskwarrior commands may be abbreviated as long as a unique prefix is used,
@@ -1458,7 +1464,7 @@ The file that contains the completed ("done") tasks.
 The file that contains information needed by the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2021 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2021 T. Babej, P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 https://www.opensource.org/licenses/mit-license.php for more information.

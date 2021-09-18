@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -355,22 +355,13 @@ void TF2::load_gc (Task& task)
   {
     Context::getContext ().tdb2.pending._tasks.push_back (task);
   }
+  // 2.6.0: Waiting status is deprecated. Convert to pending to upgrade status
+  // field value in the data files.
   else if (status == "waiting")
   {
-    Datetime wait (task.get_date ("wait"));
-    if (wait < now)
-    {
-      task.set ("status", "pending");
-      task.remove ("wait");
-      // Unwaiting pending tasks is the only case not caught by the size()
-      // checks in TDB2::gc(), so we need to signal it here.
-      Context::getContext ().tdb2.pending._dirty = true;
-
-      if (Context::getContext ().verbose ("unwait"))
-        Context::getContext ().footnote (format ("Un-waiting task {1} '{2}'", task.id, task.get ("description")));
-    }
-
+    task.set ("status", "pending");
     Context::getContext ().tdb2.pending._tasks.push_back (task);
+    Context::getContext ().tdb2.pending._dirty = true;
   }
   else
   {
@@ -525,29 +516,26 @@ void TF2::dependency_scan ()
   // Iterate and modify TDB2 in-place.  Don't do this at home.
   for (auto& left : _tasks)
   {
-    if (left.has ("depends"))
+    for (auto& dep : left.getDependencyUUIDs ())
     {
-      for (auto& dep : left.getDependencyUUIDs ())
+      for (auto& right : _tasks)
       {
-        for (auto& right : _tasks)
+        if (right.get ("uuid") == dep)
         {
-          if (right.get ("uuid") == dep)
+          // GC hasn't run yet, check both tasks for their current status
+          Task::status lstatus = left.getStatus ();
+          Task::status rstatus = right.getStatus ();
+          if (lstatus != Task::completed &&
+              lstatus != Task::deleted &&
+              rstatus != Task::completed &&
+              rstatus != Task::deleted)
           {
-            // GC hasn't run yet, check both tasks for their current status
-            Task::status lstatus = left.getStatus ();
-            Task::status rstatus = right.getStatus ();
-            if (lstatus != Task::completed &&
-                lstatus != Task::deleted &&
-                rstatus != Task::completed &&
-                rstatus != Task::deleted)
-            {
-              left.is_blocked = true;
-              right.is_blocking = true;
-            }
-
-            // Only want to break out of the "right" loop.
-            break;
+            left.is_blocked = true;
+            right.is_blocking = true;
           }
+
+          // Only want to break out of the "right" loop.
+          break;
         }
       }
     }
@@ -1249,7 +1237,6 @@ void TDB2::show_diff (
 // Possible scenarios:
 // - task in pending that needs to be in completed
 // - task in completed that needs to be in pending
-// - waiting task in pending that needs to be un-waited
 void TDB2::gc ()
 {
   Timer timer;

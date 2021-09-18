@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -96,7 +96,7 @@ int CmdStart::execute (std::string&)
       if (Context::getContext ().config.getBoolean ("journal.time"))
         task.addAnnotation (Context::getContext ().config.get ("journal.time.start.annotation"));
 
-      if (permission (taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (before.diff (task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
         Context::getContext ().tdb2.modify (task);

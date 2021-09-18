@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1129,6 +1129,24 @@ class TestBug1915(TestCase):
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
+
+
+class Test2577(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_filtering_for_datetime_like(self):
+        """2577: Check that filtering for datetime-like project names works"""
+        self.t('add one pro:sat')  # looks like "saturday"
+        self.t('add two pro:whatever')
+
+        # This should not fail (fails on 2.5.3)
+        code, out, err = self.t('pro:sat')
+
+        # Assert expected output, but the crucial part of this test is success
+        # of the call above
+        self.assertIn("one", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,38 +35,6 @@
 #include <main.h>
 
 #define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
-
-////////////////////////////////////////////////////////////////////////////////
-std::vector <Task> dependencyGetBlocked (const Task& task)
-{
-  auto uuid = task.get ("uuid");
-
-  std::vector <Task> blocked;
-  for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
-    if (it.getStatus () != Task::completed &&
-        it.getStatus () != Task::deleted   &&
-        it.has ("depends")                 &&
-        it.get ("depends").find (uuid) != std::string::npos)
-      blocked.push_back (it);
-
-  return blocked;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::vector <Task> dependencyGetBlocking (const Task& task)
-{
-  auto depends = task.get ("depends");
-
-  std::vector <Task> blocking;
-  if (depends != "")
-    for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
-      if (it.getStatus () != Task::completed &&
-          it.getStatus () != Task::deleted   &&
-          depends.find (it.get ("uuid")) != std::string::npos)
-        blocking.push_back (it);
-
-  return blocking;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns true if the supplied task adds a cycle to the dependency chain.
@@ -150,12 +118,12 @@ bool dependencyIsCircular (const Task& task)
 //
 void dependencyChainOnComplete (Task& task)
 {
-  auto blocking = dependencyGetBlocking (task);
+  auto blocking = task.getDependencyTasks ();
 
   // If the task is anything but the tail end of a dependency chain.
   if (blocking.size ())
   {
-    auto blocked = dependencyGetBlocked (task);
+    auto blocked = task.getBlockedTasks ();
 
     // Nag about broken chain.
     if (Context::getContext ().config.getBoolean ("dependency.reminder"))
@@ -207,7 +175,7 @@ void dependencyChainOnStart (Task& task)
 {
   if (Context::getContext ().config.getBoolean ("dependency.reminder"))
   {
-    auto blocking = dependencyGetBlocking (task);
+    auto blocking = task.getDependencyTasks ();
 
     // If the task is anything but the tail end of a dependency chain, nag about
     // broken chain.

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -107,6 +107,56 @@ class ContextManagementTest(TestCase):
         self.assertIn(context_line, self.t.taskrc_content)
         self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
+    def test_context_define_invalid_for_write_due_to_modifier(self):
+        """Test definition of a context that is not a valid write context."""
+        self.t.config("confirmation", "off")
+        code, out, err = self.t('context define urgent due.before:today')
+        self.assertIn("Context 'urgent' defined", out)
+
+        # Assert the config contains read context definition
+        context_line = 'context.urgent.read=due.before:today\n'
+        self.assertIn(context_line, self.t.taskrc_content)
+
+        # Assert that it contains the definition only once
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
+
+        # Assert the config does not contain write context definition
+        context_line = 'context.work.write=due.before:today\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
+        # Assert that the write context was not set at all
+        self.assertNotIn('context.work.write=', self.t.taskrc_content)
+
+        # Assert that legacy style was not used
+        # Assert the config contains read context definition
+        context_line = 'context.work=due.before:today\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
+    def test_context_define_invalid_for_write_due_to_operator(self):
+        """Test definition of a context that is not a valid write context because it uses an OR operator."""
+        self.t.config("confirmation", "off")
+        code, out, err = self.t('context define urgent due:today or +next')
+        self.assertIn("Context 'urgent' defined", out)
+
+        # Assert the config contains read context definition
+        context_line = 'context.urgent.read=due:today or +next\n'
+        self.assertIn(context_line, self.t.taskrc_content)
+
+        # Assert that it contains the definition only once
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
+
+        # Assert the config does not contain write context definition
+        context_line = 'context.work.write=due:today or +next\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
+        # Assert that the write context was not set at all
+        self.assertNotIn('context.work.write=', self.t.taskrc_content)
+
+        # Assert that legacy style was not used
+        # Assert the config contains read context definition
+        context_line = 'context.work=due:today or +next\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
     def test_context_delete(self):
         """Test simple context deletion."""
         self.t('context define work project:Work', input='y\ny\n')
@@ -114,7 +164,7 @@ class ContextManagementTest(TestCase):
         self.assertIn("Context 'work' deleted.", out)
 
         # Assert that taskrc does not countain context work definition
-        self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.work' in line for line in self.t.taskrc_content))
 
     def test_context_delete_undefined(self):
         """Test deletion of undefined context."""
@@ -123,6 +173,7 @@ class ContextManagementTest(TestCase):
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.foo.read=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.foo.write=' in line for line in self.t.taskrc_content))
 
     def test_context_delete_unset_after_removal(self):
         """Test that context is unset if its definition has been removed."""
@@ -133,6 +184,8 @@ class ContextManagementTest(TestCase):
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.work.read=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.work.write=' in line for line in self.t.taskrc_content))
 
         # Aseert that the context is not set
         code, out, err = self.t('context show')
@@ -489,6 +542,33 @@ class ContextEvaluationTest(TestCase):
         self.assertIn("home task", output)
         self.assertNotIn("work today task", output)
         self.assertNotIn("home today task", output)
+
+    def test_context_ignored(self):
+        """Test the context is not applied with report list command if
+        report.list.context is set to 0."""
+
+        # Turn off context for this report
+        self.t.config("report.list.context", "0")
+
+        # Get the tasks
+        code, out, err = self.t('list')
+
+        # Assert all the tasks are present in the output
+        self.assertIn("work task", out)
+        self.assertIn("home task", out)
+        self.assertIn("work today task", out)
+        self.assertIn("home today task", out)
+
+        # Set the home context and rerun the report
+        self.t('context home')
+
+        code, out, err = self.t('list')
+
+        # Assert nothing changed - all the tasks are present in the output
+        self.assertIn("work task", out)
+        self.assertIn("home task", out)
+        self.assertIn("work today task", out)
+        self.assertIn("home today task", out)
 
 
 class ContextErrorHandling(TestCase):

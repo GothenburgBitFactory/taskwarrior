@@ -27,7 +27,13 @@ New Features in Taskwarrior 2.6.0
     'due.by:eod', which it would not otherwise.  It also works with
     whole units like days, e.g. 'add test due:2021-07-17' would not match
     'due.before:tomorrow' (on the 16th), but would match 'due.by:tomorrow'.
-
+  - Waiting is now an entirely "virtual" concept, based on a task's
+    'wait' property and the current time. Task is consiered "waiting" if its
+    wait attribute is in the future.  TaskWarrior no longer explicitly
+    "unwaits" a task (the wait attribute is not removed once its value is in
+    the past), so the "unwait' verbosity token is no longer available.
+    This allows for filtering for tasks that were waiting in the past
+    intervals, but are not waiting anymore.
 
 New Commands in Taskwarrior 2.6.0
 
@@ -38,14 +44,22 @@ New Configuration Options in Taskwarrior 2.6.0
   - The context definitions for reporting commmands are now stored in
     "context.<name>.read". Context definitions for write commands are now
     supported using "context.<name>.write" configuration variable.
+  - Each report (and the timesheet command) can explicitly opt-out from the
+    currently active context by setting the report.<name>.context variable to 0
+    (defaults to 1). Useful for defining universal reports that ignore
+    currently set context, such as 'inbox' report for GTD methodology.
   - Multi-day holidays are now supported. Use holiday.<name>.start=<date> and
     holiday.<name>.end=<date> to specify a range-based holiday, such as a
     vacation.
+  - Verbosity token 'default' was introduced in order to display information
+    about default actions.
 
 
 Newly Deprecated Features in Taskwarrior 2.6.0
 
   - The 'PARENT' and 'CHILD' virtual tags are replaced by 'TEMPLATE' and 'INSTANCE'.
+  - The 'waiting' status is now deprecated. We recommend using +WAITING virtual tag
+    or wait-attribute based filters, such as 'wait.before:eow' instead.
 
 Fixed regressions in 2.6.0
 
@@ -56,6 +70,9 @@ Fixed regressions in 2.6.0
     the first configuration override. Otherwise task would by default inform
     about the other overrides (see #2247). This was a regression introduced in
     2.5.2.
+  - The attribute values of the form "<attribute name>-<arbitrary string>", for
+    example "due-nextweek" or "scheduled-work" would fail to parse (see
+    #1913). This was a regression introduced in 2.5.1.
 
 Removed Features in 2.6.0
 

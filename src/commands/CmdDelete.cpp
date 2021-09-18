@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -91,10 +91,6 @@ int CmdDelete::execute (std::string&)
       task.setStatus (Task::deleted);
       if (! task.has ("end"))
         task.setAsNow ("end");
-
-      // Un-wait the task, if waiting.
-      if (task.has ("wait"))
-        task.remove ("wait");
 
       if (permission (question, filtered.size ()))
       {

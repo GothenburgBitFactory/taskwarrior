@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -327,6 +327,14 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     if (ref.data.size () && size == 1 && canonical == "urgency")
     {
       value = Variant (ref.urgency_c ());
+      return true;
+    }
+
+    // Special handling of status required for virtual waiting status
+    // implementation. Remove in 3.0.0.
+    if (ref.data.size () && size == 1 && canonical == "status")
+    {
+      value = Variant (ref.statusToText (ref.getStatus ()));
       return true;
     }
 

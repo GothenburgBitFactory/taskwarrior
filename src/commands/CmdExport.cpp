@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,16 @@
 #include <CmdExport.h>
 #include <Context.h>
 #include <Filter.h>
+#include <format.h>
+#include <shared.h>
+#include <shared.h>
 #include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdExport::CmdExport ()
 {
   _keyword               = "export";
-  _usage                 = "task <filter> export";
+  _usage                 = "task <filter> export [<report>]";
   _description           = "Exports tasks in JSON format";
   _read_only             = true;
   _displays_id           = true;
@@ -42,7 +45,7 @@ CmdExport::CmdExport ()
   _uses_context          = false;
   _accepts_filter        = true;
   _accepts_modifications = false;
-  _accepts_miscellaneous = false;
+  _accepts_miscellaneous = true;
   _category              = Command::Category::migration;
 }
 
@@ -50,6 +53,40 @@ CmdExport::CmdExport ()
 int CmdExport::execute (std::string& output)
 {
   int rc = 0;
+
+  auto words = Context::getContext ().cli2.getWords ();
+  std::string selectedReport = "";
+
+  if (words.size () == 1)
+  {
+    // Find the report matching the prompt
+    for (auto& command : Context::getContext ().commands)
+    {
+      if (command.second->category () == Command::Category::report &&
+          closeEnough(command.second->keyword (), words[0]))
+      {
+        selectedReport = command.second->keyword ();
+        break;
+      }
+    }
+
+    if (selectedReport.empty ()) {
+        throw format("Unable to find report that matches '{1}'.", words[0]);
+    }
+  }
+
+  auto reportSort    = Context::getContext ().config.get ("report." + selectedReport + ".sort");
+  auto reportFilter  = Context::getContext ().config.get ("report." + selectedReport + ".filter");
+
+  auto sortOrder = split (reportSort, ',');
+  if (sortOrder.size () != 0 &&
+      sortOrder[0] != "none") {
+    validateSortColumns (sortOrder);
+    }
+
+  // Add the report filter to any existing filter.
+  if (reportFilter != "")
+    Context::getContext ().cli2.addFilter (reportFilter);
 
   // Make sure reccurent tasks are generated.
   handleUntil ();
@@ -59,6 +96,32 @@ int CmdExport::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
+
+  std::vector <int> sequence;
+  if (sortOrder.size () &&
+      sortOrder[0] == "none")
+  {
+    // Assemble a sequence vector that represents the tasks listed in
+    // Context::getContext ().cli2._uuid_ranges, in the order in which they appear. This
+    // equates to no sorting, just a specified order.
+    sortOrder.clear ();
+    for (auto& i : Context::getContext ().cli2._uuid_list)
+      for (unsigned int t = 0; t < filtered.size (); ++t)
+        if (filtered[t].get ("uuid") == i)
+          sequence.push_back (t);
+  }
+  else
+  {
+    // There is a sortOrder, so sorting will take place, which means the initial
+    // order of sequence is ascending.
+    for (unsigned int i = 0; i < filtered.size (); ++i)
+      sequence.push_back (i);
+
+    // Sort the tasks.
+    if (sortOrder.size ()) {
+      sort_tasks (filtered, sequence, reportSort);
+    }
+  }
 
   // Export == render.
   Timer timer;
@@ -77,8 +140,9 @@ int CmdExport::execute (std::string& output)
     output += "[\n";
 
   int counter = 0;
-  for (auto& task : filtered)
+  for (auto& t : sequence)
   {
+    auto task = filtered[t];
     if (counter)
     {
       if (json_array)
@@ -104,3 +168,9 @@ int CmdExport::execute (std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+void CmdExport::validateSortColumns (std::vector <std::string>& columns)
+{
+  for (auto& col : columns)
+    legacySortColumnMap (col);
+}

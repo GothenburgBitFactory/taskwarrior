@@ -299,12 +299,14 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
     context    Show the current context. Displayed in footnote.
-    unwait     Notification when a task leaves the 'waiting' state
     override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
+    default    Notifications about taskwarrior choosing to perform a default action.
 
-"affected", "new-id", "new-uuid", "project", "unwait", "override" and "recur"
+The tokens "affected", "new-id", "new-uuid", "project", "override" and "recur"
 imply "footnote".
+
+The token "default" implies "header".
 
 Note that the "1" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
@@ -312,7 +314,7 @@ and the "nothing" setting is equivalent to none of the tokens being specified.
 Here are the shortcut equivalents:
 
     verbose=on
-    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait,override,recur
+    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,override,recur
 
     verbose=0
     verbose=blank,label,new-id,edit
@@ -423,12 +425,6 @@ Determines whether the export command encloses the JSON output in '[...]' and
 adds ',' after each exported task object to create a properly-formed JSON
 array.
 With json.array=0, export writes raw JSON objects to STDOUT, one per line.
-Defaults to "1".
-
-.TP
-.B json.depends.array=1
-Determines whether the export command encodes dependencies as an array of string
-UUIDs, or one comma-separated string.
 Defaults to "1".
 
 .TP
@@ -546,6 +542,12 @@ Taskwarrior supports command aliases. This alias provides an alternate name
 (rm) for the delete command. You can use aliases to provide alternate names for
 any of the commands. Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
+
+.TP
+.B burndown.cumulative=0
+May be "1" or "0", and controls the behaviour of the burndown command. When set 
+to 1, it sums up all completed tasks, otherwise they only get plotted in the 
+interval where the task was completed. Defaults to 1.
 
 .SS DATES
 
@@ -1287,6 +1289,12 @@ This is a comma-separated list of columns and formatting specifiers. See the
 command 'task columns' for a full list of options and examples.
 
 .TP
+.B report.X.context
+A boolean value representing whether the given report should respect (apply)
+the currently active context. See CONTEXT section for details about context.
+Defaults to 1.
+
+.TP
 .B report.X.labels
 The labels for each column that will be used when generating report X. The
 labels are a comma separated list.
@@ -1481,9 +1489,15 @@ Stores the value of the currently active context.
 .RE
 
 .TP
-.B context.<name>=<filter>
+.B context.<name>.<type>=<filter>
 .RS
-Stores the definition of the context with the name <name>.
+Stores the definition of the context for type <type> with the name <name>. The
+type can either be read, write or rc. For details of the read and write types,
+please see the task(1) man page. The rc type allows to override any configuration
+parameter for the current context, e.g. if the default command for the context
+home should be changed to home_report, the following statement could be added:
+
+context.home.rc.default.command=home_report
 .RE
 
 .SS SYNC
@@ -1544,7 +1558,7 @@ Default is "NORMAL". See GnuTLS documentation for full details.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2021 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2021 T. Babej, P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 

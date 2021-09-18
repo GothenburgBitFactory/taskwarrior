@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -60,6 +60,21 @@ CmdCustom::CmdCustom (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Whether a report uses context is defined by the report.<name>.context
+// configuration variable.
+//
+bool CmdCustom::uses_context () const
+{
+  auto config = Context::getContext ().config;
+  auto key = "report." + _keyword + ".context";
+
+  if (config.has (key))
+    return config.getBoolean (key);
+  else
+    return _uses_context;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int CmdCustom::execute (std::string& output)
 {
   auto rc = 0;
@@ -87,9 +102,11 @@ int CmdCustom::execute (std::string& output)
   if (reportFilter != "")
     Context::getContext ().cli2.addFilter (reportFilter);
 
-  // Apply filter.
+  // Make sure reccurent tasks are generated.
   handleUntil ();
   handleRecurrence ();
+
+  // Apply filter.
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);

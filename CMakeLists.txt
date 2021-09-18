@@ -166,8 +166,8 @@ foreach (doc_FILE ${doc_FILES})
 endforeach (doc_FILE)
 
 add_custom_command(OUTPUT run-review
-    COMMAND docker build -q --build-arg PR=$(PR) -t taskwarrior-review:$(PR) - < scripts/review-dockerfile
-    COMMAND docker run --rm --memory 1g --hostname pr-$(PR) -it taskwarrior-review:$(PR) bash || :
+    COMMAND docker build -q --build-arg PR=$(PR) --build-arg LIBPR=$(LIBPR) -t taskwarrior-review:$(PR)s$(LIBPR) - < scripts/review-dockerfile
+    COMMAND docker run --rm --memory 1g --hostname pr-$(PR)s$(LIBPR) -it taskwarrior-review:$(PR)s$(LIBPR) bash || :
 )
 add_custom_target(review DEPENDS run-review)
 
