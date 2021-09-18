@@ -18,6 +18,8 @@
            Thanks to Daniel Mowitz.
 - TW #1913 Project names with dashes and attribute names fail to parse
            Thanks to Yanick Champoux.
+- TW #1933 Support of environment variables for configuration options
+           Thanks to Sebastian Uharek
 - TW #1938 Missing annotation on import if entry is duplicated
            Thanks to Florian.
 - TW #1955 Adding tasks in context.
