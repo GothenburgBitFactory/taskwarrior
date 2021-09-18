@@ -107,6 +107,56 @@ class ContextManagementTest(TestCase):
         self.assertIn(context_line, self.t.taskrc_content)
         self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
+    def test_context_define_invalid_for_write_due_to_modifier(self):
+        """Test definition of a context that is not a valid write context."""
+        self.t.config("confirmation", "off")
+        code, out, err = self.t('context define urgent due.before:today')
+        self.assertIn("Context 'urgent' defined", out)
+
+        # Assert the config contains read context definition
+        context_line = 'context.urgent.read=due.before:today\n'
+        self.assertIn(context_line, self.t.taskrc_content)
+
+        # Assert that it contains the definition only once
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
+
+        # Assert the config does not contain write context definition
+        context_line = 'context.work.write=due.before:today\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
+        # Assert that the write context was not set at all
+        self.assertNotIn('context.work.write=', self.t.taskrc_content)
+
+        # Assert that legacy style was not used
+        # Assert the config contains read context definition
+        context_line = 'context.work=due.before:today\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
+    def test_context_define_invalid_for_write_due_to_operator(self):
+        """Test definition of a context that is not a valid write context because it uses an OR operator."""
+        self.t.config("confirmation", "off")
+        code, out, err = self.t('context define urgent due:today or +next')
+        self.assertIn("Context 'urgent' defined", out)
+
+        # Assert the config contains read context definition
+        context_line = 'context.urgent.read=due:today or +next\n'
+        self.assertIn(context_line, self.t.taskrc_content)
+
+        # Assert that it contains the definition only once
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
+
+        # Assert the config does not contain write context definition
+        context_line = 'context.work.write=due:today or +next\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
+        # Assert that the write context was not set at all
+        self.assertNotIn('context.work.write=', self.t.taskrc_content)
+
+        # Assert that legacy style was not used
+        # Assert the config contains read context definition
+        context_line = 'context.work=due:today or +next\n'
+        self.assertNotIn(context_line, self.t.taskrc_content)
+
     def test_context_delete(self):
         """Test simple context deletion."""
         self.t('context define work project:Work', input='y\ny\n')
