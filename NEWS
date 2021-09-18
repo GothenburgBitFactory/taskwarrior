@@ -34,6 +34,7 @@ New Features in Taskwarrior 2.6.0
     the past), so the "unwait' verbosity token is no longer available.
     This allows for filtering for tasks that were waiting in the past
     intervals, but are not waiting anymore.
+  - The configuration file now supports environment variables.
 
 New Commands in Taskwarrior 2.6.0
 
