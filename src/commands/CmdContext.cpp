@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <set>
 #include <format.h>
+#include <main.h>
 #include <shared.h>
 #include <util.h>
 
@@ -151,6 +152,9 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
       throw format ("The name '{1}' is reserved and not allowed to use as a context name.", words[1]);
     }
 
+    // Extract MISCELLANEOUS arguments (containign the filter definition) for later analysis
+    std::vector <A2> lexedArgs = Context::getContext ().cli2.getMiscellaneous();
+
     // Check if the value is a proper filter by filtering current pending.data
     Filter filter;
     std::vector <Task> filtered;
@@ -173,11 +177,49 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
           ! confirm (format ("The filter '{1}' matches 0 pending tasks. Do you wish to continue?", value)))
         throw std::string ("Context definition aborted.");
 
-    // TODO: Validate the context as valid for writing and prompt for alternative if invald
+    // Validate the context as valid for writing and fail the write context definition
+    // A valid write context:
+    //   - does not contain any operators except AND
+    //   - does not use modifiers
+    bool contains_or = false;
+    bool contains_modifier = false;
+    std::string modifier_token;
+
+    for (auto &arg: lexedArgs) {
+      if (arg._lextype == Lexer::Type::op)
+        if (arg.attribute ("raw") == "or")
+          contains_or = true;
+
+      if (arg._lextype == Lexer::Type::pair) {
+        auto modifier = arg.attribute ("modifier");
+        if (modifier != "" && modifier != "is" && modifier != "equals")
+        {
+          contains_modifier = true;
+          modifier_token = arg.attribute ("raw");
+          out << "The modifier value is '" << modifier << "'.\n";
+          break;
+        }
+      }
+    }
+
+    bool valid_write_context = not contains_or and not contains_modifier;
+
+    if (! valid_write_context)
+    {
+      std::stringstream warning;
+      warning << format ("The filter '{1}' is not a valid modification string, because it contains ", value)
+              << ( contains_or ? "the OR operator." : format ("an attribute modifier ({1}).", modifier_token) )
+              << "\nAs such, value for the write context cannot be set (context will not apply on task add / task log).\n\n"
+              << format ("Please use 'task config context.{1}.write <default mods>' to set default attribute values for new tasks in this context manually.\n\n", words[1]);
+      out << colorizeFootnote (warning.str ());
+    }
 
     // Set context definition config variable
     bool read_success = CmdConfig::setConfigVariable (name + ".read", value, confirmation);
-    bool write_success = CmdConfig::setConfigVariable (name + ".write", value, confirmation);
+    bool write_success = false;
+
+    if (valid_write_context)
+      write_success = CmdConfig::setConfigVariable (name + ".write", value, confirmation);
 
     if (!read_success and !write_success)
       throw format ("Context '{1}' not defined.", words[1]);
