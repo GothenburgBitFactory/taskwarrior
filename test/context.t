@@ -114,7 +114,7 @@ class ContextManagementTest(TestCase):
         self.assertIn("Context 'work' deleted.", out)
 
         # Assert that taskrc does not countain context work definition
-        self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.work' in line for line in self.t.taskrc_content))
 
     def test_context_delete_undefined(self):
         """Test deletion of undefined context."""
@@ -123,6 +123,7 @@ class ContextManagementTest(TestCase):
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.foo.read=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.foo.write=' in line for line in self.t.taskrc_content))
 
     def test_context_delete_unset_after_removal(self):
         """Test that context is unset if its definition has been removed."""
@@ -133,6 +134,8 @@ class ContextManagementTest(TestCase):
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.work.read=' in line for line in self.t.taskrc_content))
+        self.assertFalse(any('context.work.write=' in line for line in self.t.taskrc_content))
 
         # Aseert that the context is not set
         code, out, err = self.t('context show')
