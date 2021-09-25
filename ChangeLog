@@ -27,7 +27,8 @@
 - TW #1955 Adding tasks in context.
            Thanks to Jean-Francois Joly, Matt Smith.
 - TW #1960 Fixed bug with double escaped single quotes.
-           Thanks to Sebastian Uharek
+           Thanks to Ben Kelly for reporting, Sebastian Uharek for
+           contributing.
 - TW #2004 "shell" should not be expand to "exec tasksh"
            Thanks to Arvedui
 - TW #2007 Compute number of current tasks correctly
