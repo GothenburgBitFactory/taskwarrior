@@ -39,6 +39,9 @@ New Features in Taskwarrior 2.6.0
   - The configuration file now supports environment variables.
   - Taskwarrior can now handle displaying tasks in windows with limited width,
     even if columns contain long strings (like URLs).
+  - The nag message is emitted at most once per task command, even with bulk
+    operations.
+
 
 New Commands in Taskwarrior 2.6.0
 
