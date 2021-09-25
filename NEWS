@@ -16,6 +16,7 @@ New Features in Taskwarrior 2.6.0
     2038-01-18).
   - Calendar now supports displaying due dates until year 9999.
   - Calendar now displays waiting tasks with due dates on the calendar.
+  - Multi-day holidays are now supported.
   - A large portion of currently known parser-related issues was fixed.
   - The currently selected context is now applied for "task add" and "task log"
     commands. Section on contexts in the manpage was updated to describe this
