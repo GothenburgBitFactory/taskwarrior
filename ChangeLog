@@ -93,6 +93,8 @@
 - TW #2536 Feature: inclusive range-end attribute modifier 'by' so 'end of'
            named dates can be filtered inclusively
            Thanks to Scott Mcdermott
+- TW #2549 Write context with complex expressions should not be allowed
+           Thanks to Sebastian Fricke for reporting.
 - TW #2550 Write context skipped if description contains an identifier
            Thanks to Sebastian Fricke.
 - TW #2554 Remove the waiting state, and consider any task with wait>now to be
