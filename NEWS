@@ -61,6 +61,8 @@ Newly Deprecated Features in Taskwarrior 2.6.0
   - The 'PARENT' and 'CHILD' virtual tags are replaced by 'TEMPLATE' and 'INSTANCE'.
   - The 'waiting' status is now deprecated. We recommend using +WAITING virtual tag
     or wait-attribute based filters, such as 'wait.before:eow' instead.
+  - The configuration variable 'monthsperline' is deprecated. Please use
+    'calendar.monthsperline' instead.
 
 Fixed regressions in 2.6.0
 
