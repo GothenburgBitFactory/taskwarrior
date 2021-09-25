@@ -64,6 +64,8 @@
            Thanks to Vignesh Prabhu.
 - TW #2257 UDA string fields can't start with certain keywords
            Thanks to Michael Russell.
+- TW #2283 Support multi-line annotations in task edit without JSON encoding
+           Thanks to Jochen Sprickerhof for contributing.
 - TW #2287 Speed up fish autocompletion and more completion options.
            Thanks to Tin Lai.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
