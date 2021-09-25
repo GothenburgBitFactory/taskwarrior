@@ -81,6 +81,10 @@ Removed Features in 2.6.0
 
   -
 
+Other notable changes in 2.6.0
+
+  - C++17 compatible compiler is now required (GCC 7.1 or older / clang 5.0 or older).
+
 Known Issues
 
   - https://github.com/GothenburgBitFactory/taskwarrior
