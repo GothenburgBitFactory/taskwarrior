@@ -95,7 +95,7 @@ Taskwarrior 2.6.0 has been built and tested on the following configurations:
   * Debian (Stable, Testing)
   * CentOS (7, 8)
 
-We expect Taskwarrior to work on other platforms as well.
+However, we expect Taskwarrior to work on other platforms as well.
 
 ---
 
