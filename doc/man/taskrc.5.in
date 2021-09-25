@@ -85,9 +85,15 @@ include <file>
 
 There may be whitespace around 'include' and <file>. The file may be an
 absolute or relative path, and the special character '~' is expanded to mean
-$HOME. If relative path is specified, it will be searched in installation
-directory of configuration files, which contains themes.
-The entry must be on a single line, no continuations.
+$HOME. If relative path is specified, the it will be evaluated as relative with
+respect to the following directories (listed in order of precedence):
+1. the current working directory
+2. the directory containing the taskrc file
+3. the directories set by the package manager (which usually contain
+   pre-defined themes)
+
+Note that environment variables are also expanded in paths (and any other
+taskrc variables).
 
 .RS
 # <comment>
