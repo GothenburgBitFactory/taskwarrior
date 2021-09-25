@@ -91,10 +91,11 @@ Fixed regressions in 2.6.0
   - The "end of <date>" named dates ('eod', 'eow', ...) were pointing to the
     first second of the next day, instead of last second of the referenced
     interval. This was a regression introduced in 2.5.2.
-  - The rc.verbose:nothing configuration override was applied only if it were
-    the first configuration override. Otherwise task would by default inform
-    about the other overrides (see #2247). This was a regression introduced in
-    2.5.2.
+  - The rc.verbose=<value> configuration override was applied only if it were
+    the first configuration override. In #2247, this manifested itself as
+    inability to supress footnotes about the overrides, and in #1953 as failure
+    to force task to display UUIDs of on task add. This was a regression
+    introduced in 2.5.2.
   - The attribute values of the form "<attribute name>-<arbitrary string>", for
     example "due-nextweek" or "scheduled-work" would fail to parse (see
     #1913). This was a regression introduced in 2.5.1.

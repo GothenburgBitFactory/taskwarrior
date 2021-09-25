@@ -27,6 +27,8 @@
            Thanks to Sebastian Uharek
 - TW #1938 Missing annotation on import if entry is duplicated
            Thanks to Florian.
+- TW #1953 Setting rc.verbose=new-uuid override works only if given as first argument
+           Thanks to Paul Fenwick for reporting.
 - TW #1955 Adding tasks in context.
            Thanks to Jean-Francois Joly, Matt Smith.
 - TW #1960 Fixed bug with double escaped single quotes.
