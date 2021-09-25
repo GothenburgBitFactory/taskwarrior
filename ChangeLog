@@ -119,8 +119,10 @@
 - TW #2554 Remove the waiting state, and consider any task with wait>now to be
            waiting
            Thanks to Dustin J. Mitchell
-- TW #2560  Add report.<name>.context configuration variable
+- TW #2560 Add report.<name>.context configuration variable
            Thanks to Jake C.
+- TW #2461 The legend in calendar does not respect the calendar.holidays setting
+           Thanks to Tomas Babej for contributing.
 - TW #2569 The `json.depends.array` configuration option is now ignored.
            Dependencies are always represented as an array in JSON output.
            Thanks to Dustin J. Mitchell
