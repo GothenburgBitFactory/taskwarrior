@@ -550,7 +550,7 @@ any of the commands. Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
 
 .TP
-.B burndown.cumulative=0
+.B burndown.cumulative=1
 May be "1" or "0", and controls the behaviour of the burndown command. When set
 to 1, it sums up all completed tasks, otherwise they only get plotted in the
 interval where the task was completed. Defaults to 1.
