@@ -46,6 +46,8 @@
            Thanks to Vignesh Prabhu.
 - TW #2257 UDA string fields can't start with certain keywords
            Thanks to Michael Russell.
+- TW #2287 Speed up fish autocompletion and more completion options.
+           Thanks to Tin Lai.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
            Thanks to Julien Rabinow.
 - TW #2292 CmdEdit: Interruption should remove lock file
