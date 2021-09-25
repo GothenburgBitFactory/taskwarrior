@@ -96,6 +96,11 @@ class TestProjects(TestCase):
         self.assertRegex(err, self.STATUS.format("foo bar", "0%",
                                                          "1 task"))
 
+        # Ensure filtering for project with spaces works
+        code, out, err = self.t('pro:"foo bar" count')
+        self.assertEqual(out.strip(), '1')
+
+
     def add_tasks(self):
         self.t("add testing project:existingParent")
         self.t("add testing project:existingParent.child")
