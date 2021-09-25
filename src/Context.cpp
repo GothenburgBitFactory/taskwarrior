@@ -131,7 +131,7 @@ std::string configurationDefaults =
   "calendar.offset=0                              # Apply an offset value to control the first month of the calendar\n"
   "calendar.offset.value=-1                       # The number of months the first month of the calendar is moved\n"
   "calendar.holidays=none                         # Show public holidays on calendar:full, sparse or none\n"
-  "#monthsperline=3                               # Number of calendar months on a line\n"
+  "#calendar.monthsperline=3                      # Number of calendar months on a line\n"
   "\n"
   "# Journal controls\n"
   "journal.time=0                                 # Record start/stop commands as annotation\n"
