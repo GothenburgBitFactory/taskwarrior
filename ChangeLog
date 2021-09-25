@@ -48,8 +48,9 @@
            Thanks to Adam Monsen.
 - TW #2136 Configuration options can be overwritten for current context
            Thanks to Sebastian Uharek
-- TW #2208 Feature: added coloring of dates with scheduled tasks to calendar
-           Thanks to Sebastian Uharek
+- TW #2208 Support highlighting dates with scheduled tasks in calendar
+           Thanks to justf0rfun for suggesting, Sebastian Uharek for
+           contributing.
 - TW #2247 Configuration override rc.verbose:off not respected
            Thanks to Vignesh Prabhu.
 - TW #2257 UDA string fields can't start with certain keywords
