@@ -20,6 +20,7 @@ New Features in Taskwarrior 2.6.0
   - The currently selected context is now applied for "task add" and "task log"
     commands. Section on contexts in the manpage was updated to describe this
     functionality.
+  - Users can specify per-context specific overrides of configuration variables.
   - The `task import` command can now accept annotations with missing entry
     values. Current time will be assumed.
   - The new 'by' filter attribute modifier compares using '<=' rather than '<'
@@ -45,6 +46,10 @@ New Configuration Options in Taskwarrior 2.6.0
   - The context definitions for reporting commmands are now stored in
     "context.<name>.read". Context definitions for write commands are now
     supported using "context.<name>.write" configuration variable.
+  - The context-specific configuration overrides are now supported. Use
+    context.<name>.rc.<key>=<value> to override, such as
+    context.work.rc.urgency.blocking=5.0 to override the value of urgency.blocking
+    when the 'work' context is active.
   - Each report (and the timesheet command) can explicitly opt-out from the
     currently active context by setting the report.<name>.context variable to 0
     (defaults to 1). Useful for defining universal reports that ignore
