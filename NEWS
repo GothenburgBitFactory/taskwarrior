@@ -41,7 +41,8 @@ New Features in Taskwarrior 2.6.0
   - Taskwarrior can now handle displaying tasks in windows with limited width,
     even if columns contain long strings (like URLs).
   - The nag message is emitted at most once per task command, even with bulk
-    operations.
+    operations. Additionally, the urgency of the task considered is taken
+    before the completion, not after.
   - The export command now takes an optional argument that references an
     existing report. As such, "task export <report>" command will export
     the same tasks that "task <report>" prints, and in the same order.
