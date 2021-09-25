@@ -106,9 +106,9 @@ Fixed regressions in 2.6.0
     #1913). This was a regression introduced in 2.5.1.
   - The capitalized versions of named dates (such as Monday, February or
     Tomorrow) are again supported. This was a regression introduced in 2.5.2.
-  - Filtering for project names containing dashes and numbers (such as
-    'vs.2021-01') is again supported. This was a regression introduced in
-    2.4.0.
+  - Filtering for attribute values containing dashes and numbers (such as
+    'vs.2021-01', see #2392) or spaces (such as "Home renovation", see #2388)
+    is again supported. This was a regression introduced in 2.4.0.
 
 Removed Features in 2.6.0
 
