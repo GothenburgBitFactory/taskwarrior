@@ -1025,6 +1025,11 @@ Color of days with overdue tasks in calendar.
 .RE
 
 .TP
+.B color.calendar.scheduled=black on orange
+Color of days with scheduled tasks in calendar.
+.RE
+
+.TP
 .B color.calendar.weekend=bright white on black
 Color of weekend days in calendar.
 .RE
