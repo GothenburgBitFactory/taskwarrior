@@ -44,6 +44,8 @@ New Features in Taskwarrior 2.6.0
   - The export command now takes an optional argument that references an
     existing report. As such, "task export <report>" command will export
     the same tasks that "task <report>" prints, and in the same order.
+  - The burndown command now supports non-cumulative display, where tasks only
+    get plotted within the interval segment when they got completed.
 
 
 New Commands in Taskwarrior 2.6.0
@@ -68,6 +70,8 @@ New Configuration Options in Taskwarrior 2.6.0
     vacation.
   - Verbosity token 'default' was introduced in order to display information
     about default actions.
+  - The new burndown.cumulative option can be used to toggle between
+    non-cumulative and cumulative version of the burndown command.
 
 
 Newly Deprecated Features in Taskwarrior 2.6.0
