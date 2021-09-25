@@ -100,6 +100,14 @@ class TestProjects(TestCase):
         code, out, err = self.t('pro:"foo bar" count')
         self.assertEqual(out.strip(), '1')
 
+    def test_project_spaces(self):
+        """TW #2386: Filter for project:someday"""
+
+        self.t("add hello pro:someday")
+
+        # Ensure filtering for project with numeric date works
+        code, out, err = self.t('pro:someday count')
+        self.assertEqual(out.strip(), '1')
 
     def add_tasks(self):
         self.t("add testing project:existingParent")
