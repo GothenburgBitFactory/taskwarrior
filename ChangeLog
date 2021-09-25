@@ -105,6 +105,8 @@
 - TW #2569 The `json.depends.array` configuration option is now ignored.
            Dependencies are always represented as an array in JSON output.
            Thanks to Dustin J. Mitchell
+- TW #2575 Support exporting given report as JSON, including sort order
+           Thanks to Dheepak Krishnamurthy for contributing.
 - TW #2580 Importing malformed JSON task crashes TW
            Thanks to bharatvaj.
 - TW #2581 Config entry with a trailing comment cannot be modified

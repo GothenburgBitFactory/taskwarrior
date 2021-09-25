@@ -41,6 +41,9 @@ New Features in Taskwarrior 2.6.0
     even if columns contain long strings (like URLs).
   - The nag message is emitted at most once per task command, even with bulk
     operations.
+  - The export command now takes an optional argument that references an
+    existing report. As such, "task export <report>" command will export
+    the same tasks that "task <report>" prints, and in the same order.
 
 
 New Commands in Taskwarrior 2.6.0
