@@ -2422,7 +2422,7 @@ dependencies = [
 
 [[package]]
 name = "replica-server-tests"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "actix-rt",
  "actix-web",
@@ -2911,7 +2911,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
 name = "taskchampion"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2932,7 +2932,7 @@ dependencies = [
 
 [[package]]
 name = "taskchampion-cli"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -2962,7 +2962,7 @@ dependencies = [
 
 [[package]]
 name = "taskchampion-sync-server"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "actix-rt",
  "actix-web",

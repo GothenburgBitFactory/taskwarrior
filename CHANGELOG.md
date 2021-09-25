@@ -4,6 +4,9 @@
 
 Note: unreleased change log entries are kept in `.changelogs/` directory in repo root, and can be added with `./script/changelog.py add "Added thing for reason"
 
+## 0.4.0 - 2021-09-25
+- Breaking: Removed the KV based storage backend in client and server, and replaced with SQLite ([Issue #131](https://github.com/taskchampion/taskchampion/issues/131), [PR #206](https://github.com/taskchampion/taskchampion/pull/206))
+
 ## 0.3.0 - 2021-01-11
 - Flexible named reports
 - Updates to the TaskChampion crate API
