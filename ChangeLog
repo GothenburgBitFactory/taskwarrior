@@ -93,6 +93,9 @@
            Thanks to Pablo Vizcay.
 - TW #2530 Taskwarrior 2.5.3 time based filtering regression
            Thanks to Matthias Tafelmeier.
+- TW #2532 Show number of tasks to be modified in bulk updates
+           Thanks to jaker-dotcom for suggesting, Sebastian Uharek for
+		   contributing.
 - TW #2536 Feature: inclusive range-end attribute modifier 'by' so 'end of'
            named dates can be filtered inclusively
            Thanks to Scott Mcdermott
