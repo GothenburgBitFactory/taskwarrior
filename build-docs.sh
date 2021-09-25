@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -x
+
 REMOTE=origin
 
 set -e
@@ -13,6 +15,8 @@ fi
 cargo build -p taskchampion-cli --features usage-docs --bin usage-docs
 
 # create a worktree of this repo, with the `gh-pages` branch checked out
+git branch -D gh-pages 2>/dev/null || true
+git checkout -b gh-pages $REMOTE/gh-pages
 if ! [ -d ./docs/tmp ]; then
     git worktree add docs/tmp gh-pages
 fi
