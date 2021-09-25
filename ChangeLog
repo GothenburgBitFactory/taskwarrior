@@ -90,6 +90,8 @@
            Thanks to emkamau.
 - TW #2403 Undefined symbols (with -DBUILD_SHARED_LIBS=ON)
            Thanks to Jan Palus for contributing.
+- TW #2422 "eow" and "eonw" seem to use different week day as reference
+           Thanks to bgravato for reporting.
 - TW #2428 The "edit" command should respect "bulk" configuration option
            Thanks to Evan Edmond.
 - TW #2442 Bulk completions generate nagging message even if highest urgency
