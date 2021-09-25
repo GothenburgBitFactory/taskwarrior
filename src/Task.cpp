@@ -1695,7 +1695,7 @@ void Task::validate (bool applyDefault /* = true */)
   else
     set ("uuid", uuid ());
 
-  // TODO Obsolete remove for 2.6.0
+  // TODO Obsolete remove for 3.0.0
   // Recurring tasks get a special status.
   if (status == Task::pending                     &&
       has ("due")                                 &&
@@ -1706,7 +1706,7 @@ void Task::validate (bool applyDefault /* = true */)
     status = Task::recurring;
   }
 /*
-  // TODO Add for 2.6.0
+  // TODO Add for 3.0.0
   if (status == Task::pending &&
       has ("due")             &&
       has ("recur")          &&
