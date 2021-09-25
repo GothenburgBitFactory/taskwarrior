@@ -16,6 +16,7 @@ New Features in Taskwarrior 2.6.0
     2038-01-18).
   - Calendar now supports displaying due dates until year 9999.
   - Calendar now displays waiting tasks with due dates on the calendar.
+  - Calendar supports highlighting days with scheduled tasks.
   - Multi-day holidays are now supported.
   - A large portion of currently known parser-related issues was fixed.
   - The currently selected context is now applied for "task add" and "task log"
@@ -72,6 +73,8 @@ New Configuration Options in Taskwarrior 2.6.0
     about default actions.
   - The new burndown.cumulative option can be used to toggle between
     non-cumulative and cumulative version of the burndown command.
+  - The new color.calendar.scheduled setting can be used to control the
+    highlighting color of days in the calendar that have scheduled tasks.
 
 
 Newly Deprecated Features in Taskwarrior 2.6.0
