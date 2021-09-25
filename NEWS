@@ -19,6 +19,9 @@ New Features in Taskwarrior 2.6.0
   - Calendar supports highlighting days with scheduled tasks.
   - Multi-day holidays are now supported.
   - A large portion of currently known parser-related issues was fixed.
+  - The taskrc file now supports relative paths, which are evaluated with
+    respect to (a) current directory, (b) taskrc directory and (c) now also the
+    installation directory of configuration files.
   - The currently selected context is now applied for "task add" and "task log"
     commands. Section on contexts in the manpage was updated to describe this
     functionality.

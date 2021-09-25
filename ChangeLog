@@ -13,6 +13,8 @@
 - TW #1840 Countdown (date format) is not working properly
            Thanks to Eric Hymowitz for reporting, Sebastian Uharek for
            contributing.
+- TW #1847 Allow including files relative to $PREFIX/share/
+           Thanks to Georg Sauthoff for reporting, oxalica for contributing.
 - TW #1896 Parser cannot handle empty parentheses
            Thanks to Tomas Babej.
 - TW #1908 Cannot create task with explicit description 'start ....'
