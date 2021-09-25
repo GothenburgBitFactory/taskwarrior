@@ -739,7 +739,7 @@ turned off by setting the variable to none. The default value is "none".
 Determines whether the calendar legend is displayed. The default value is "1".
 
 .TP
-.B monthsperline=N
+.B calendar.monthsperline=N
 Determines how many months the "task calendar" command renders across the
 screen. Defaults to however many will fit. If more months than will fit are
 specified, Taskwarrior will only show as many that will fit.
