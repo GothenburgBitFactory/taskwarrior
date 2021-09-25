@@ -32,6 +32,8 @@
            Thanks to Janik Rabe
 - TW #2017 Support 64-bit datetime values
            Thanks to Evgeniy Vasilev
+- TW #2023 Layout breaks if report does not fit in the available width
+           Thanks to Adrian Sieber and Kaushik Gopal for reporting.
 - TW #2060 Review timestamp is displayed as unix time, not formatted
            Thanks to JavaZauber
 - TW #2093 wrong order under projects command

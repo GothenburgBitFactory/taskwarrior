@@ -37,6 +37,8 @@ New Features in Taskwarrior 2.6.0
     This allows for filtering for tasks that were waiting in the past
     intervals, but are not waiting anymore.
   - The configuration file now supports environment variables.
+  - Taskwarrior can now handle displaying tasks in windows with limited width,
+    even if columns contain long strings (like URLs).
 
 New Commands in Taskwarrior 2.6.0
 
