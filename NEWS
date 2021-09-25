@@ -18,6 +18,9 @@ New Features in Taskwarrior 2.6.0
   - Calendar now displays waiting tasks with due dates on the calendar.
   - Calendar supports highlighting days with scheduled tasks.
   - Multi-day holidays are now supported.
+  - The task edit command can now handle multi-line annotations and UDAs in a
+    user friendly way, withouth having to handle with JSON escaping of special
+    chars.
   - A large portion of currently known parser-related issues was fixed.
   - The taskrc file now supports relative paths, which are evaluated with
     respect to (a) current directory, (b) taskrc directory and (c) now also the
