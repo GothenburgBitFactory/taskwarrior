@@ -102,6 +102,8 @@ Fixed regressions in 2.6.0
   - The attribute values of the form "<attribute name>-<arbitrary string>", for
     example "due-nextweek" or "scheduled-work" would fail to parse (see
     #1913). This was a regression introduced in 2.5.1.
+  - The capitalized versions of named dates (such as Monday, February or
+    Tomorrow) are again supported. This was a regression introduced in 2.5.2.
 
 Removed Features in 2.6.0
 
