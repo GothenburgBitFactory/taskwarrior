@@ -94,6 +94,8 @@ Fixed regressions in 2.6.0
   - The "end of <date>" named dates ('eod', 'eow', ...) were pointing to the
     first second of the next day, instead of last second of the referenced
     interval. This was a regression introduced in 2.5.2.
+  - The "eow" and "eonw" were using a different weekday as a reference. This
+    was a regeression introduced in 2.5.2.
   - The rc.verbose=<value> configuration override was applied only if it were
     the first configuration override. In #2247, this manifested itself as
     inability to supress footnotes about the overrides, and in #1953 as failure
