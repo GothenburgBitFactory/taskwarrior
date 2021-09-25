@@ -64,7 +64,14 @@ int CmdCalendar::execute (std::string& output)
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
   auto width = Context::getContext ().getWidth ();
-  auto preferredMonthsPerLine = config.getInteger ("monthsperline");
+  int preferredMonthsPerLine;
+
+  if (config.has ("calendar.monthsperline"))
+    preferredMonthsPerLine = config.getInteger ("calendar.monthsperline");
+  else
+    // Legacy configuration variable value
+    preferredMonthsPerLine = config.getInteger ("monthsperline");
+
   auto monthsThatFit = width / 26;
 
   auto monthsPerLine = monthsThatFit;
