@@ -10,6 +10,9 @@
            Thanks to David Badura.
 - TW #1824 Fixed countdown formatting
            Thanks to Sebastian Uharek
+- TW #1840 Countdown (date format) is not working properly
+           Thanks to Eric Hymowitz for reporting, Sebastian Uharek for
+           contributing.
 - TW #1896 Parser cannot handle empty parentheses
            Thanks to Tomas Babej.
 - TW #1908 Cannot create task with explicit description 'start ....'
