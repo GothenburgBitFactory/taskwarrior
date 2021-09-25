@@ -44,9 +44,9 @@
     always ongoing discussions about new features and changes to existing
     features.
 
-  * Join us in the #taskwarrior IRC channel on freenode.net. Many great ideas,
-    suggestions, testing and discussions have taken place there. It is also
-    the quickest way to get help, or confirm a bug.
+  * Join us in the #taskwarrior IRC channel on freenode.net or libera.chat.
+    Many great ideas, suggestions, testing and discussions have taken place
+    there. It is also the quickest way to get help, or confirm a bug.
 
   * Review documentation: there are man pages, online articles, tutorials and
     so on, and these may contain errors, or they may not convey ideas in the
