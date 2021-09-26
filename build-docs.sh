@@ -17,13 +17,14 @@ cargo build -p taskchampion-cli --features usage-docs --bin usage-docs
 # create a worktree of this repo, with the `gh-pages` branch checked out
 git branch -f gh-pages $REMOTE/gh-pages
 if ! [ -d ./docs/tmp ]; then
-    git worktree add docs/tmp gh-pages
+    git worktree add -f docs/tmp gh-pages
 fi
 
 # update the wortree
 (cd docs/tmp && git pull $REMOTE gh-pages)
 
 # remove all files in the worktree and regenerate the book there
+git worktree rm docs/tmp
 rm -rf docs/tmp/*
 mdbook build docs
 cp -rp docs/book/* docs/tmp
