@@ -68,6 +68,7 @@
 #include <CmdLog.h>
 #include <CmdLogo.h>
 #include <CmdModify.h>
+#include <CmdNews.h>
 #include <CmdPrepend.h>
 #include <CmdProjects.h>
 #include <CmdPurge.h>
@@ -146,6 +147,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdLog ();                all[c->keyword ()] = c;
   c = new CmdLogo ();               all[c->keyword ()] = c;
   c = new CmdModify ();             all[c->keyword ()] = c;
+  c = new CmdNews ();               all[c->keyword ()] = c;
   c = new CmdPrepend ();            all[c->keyword ()] = c;
   c = new CmdProjects ();           all[c->keyword ()] = c;
   c = new CmdPurge ();              all[c->keyword ()] = c;
