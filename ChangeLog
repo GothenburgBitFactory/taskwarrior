@@ -1,57 +1,54 @@
 2.6.0 () -
 
 - TW #1654 "Due" parsing behaviour seems inconsistent
-           Thanks to Max Rossmannek.
+           Thanks to Jim B for reporting.
 - TW #1788 When deleting recurring task all tasks, including completed tasks,
            are marked as deleted
-           Thanks to Alan Young.
+           Thanks to Alan Young for reporting.
 - TW #1804 Importing malformed annotation (without entry timestamp) causes
            segmentation fault.
-           Thanks to David Badura.
-- TW #1824 Fixed countdown formatting
-           Thanks to Sebastian Uharek
+           Thanks to David Badura for reporting.
 - TW #1840 Countdown (date format) is not working properly
            Thanks to Eric Hymowitz for reporting, Sebastian Uharek for
            contributing.
 - TW #1847 Allow including files relative to $PREFIX/share/
-           Thanks to Georg Sauthoff for reporting, oxalica for contributing.
+           Thanks to Georg Sauthoff for suggesting, oxalica for contributing.
 - TW #1896 Parser cannot handle empty parentheses
-           Thanks to Tomas Babej.
 - TW #1908 Cannot create task with explicit description 'start ....'
-           Thanks to Matt Chun-Lum.
+           Thanks to Matt Chun-Lum for reporting.
 - TW #1911 Support holidays longer then 1 day
-           Thanks to Daniel Mowitz.
+           Thanks to Daniel Mowitz for contributing.
 - TW #1913 Project names with dashes and attribute names fail to parse
-           Thanks to Yanick Champoux.
+           Thanks to Yanick Champoux for reporting.
 - TW #1914 Non-cumulative burndown report
            Thanks to Daniel Mowitz for contributing.
-- TW #1933 Support of environment variables for configuration options
-           Thanks to Sebastian Uharek
 - TW #1938 Missing annotation on import if entry is duplicated
-           Thanks to Florian.
+           Thanks to Florian for reporting.
+- TW #1945 Support of environment variables for configuration options
+           Thanks to Sebastian Uharek for contributing.
 - TW #1953 Setting rc.verbose=new-uuid override works only if given as first argument
            Thanks to Paul Fenwick for reporting.
 - TW #1955 Adding tasks in context.
-           Thanks to Jean-Francois Joly, Matt Smith.
+           Thanks to Jean-Francois Joly, Matt Smith for suggesting.
 - TW #1960 Fixed bug with double escaped single quotes.
            Thanks to Ben Kelly for reporting, Sebastian Uharek for
            contributing.
 - TW #2004 "shell" should not be expand to "exec tasksh"
-           Thanks to Arvedui
+           Thanks to Arvedui for reporting.
 - TW #2007 Compute number of current tasks correctly
-           Thanks to Janik Rabe
+           Thanks to Janik Rabe for contributing.
 - TW #2017 Support 64-bit datetime values
-           Thanks to Evgeniy Vasilev
+           Thanks to Evgeniy Vasilev for suggesting.
 - TW #2023 Layout breaks if report does not fit in the available width
            Thanks to Adrian Sieber and Kaushik Gopal for reporting.
 - TW #2060 Review timestamp is displayed as unix time, not formatted
-           Thanks to JavaZauber
+           Thanks to JavaZauber for reporting.
 - TW #2093 wrong order under projects command
-           Thanks to Beka, Max Rossmannek.
+           Thanks to Beka, Max Rossmannek for reporting.
 - TW #2101 Numeric UDA values above 2,147,483,647 overflow without warning
-           Thanks to Adam Monsen.
+           Thanks to Adam Monsen for reporting.
 - TW #2136 Configuration options can be overwritten for current context
-           Thanks to Sebastian Uharek
+           Thanks to Sebastian Uharek for contributing.
 - TW #2160 Upper-case named dates are not supported
            Thanks to Scott Kostyshak for reporting, Max Rossmannek for
            contributing.
@@ -61,81 +58,80 @@
            Thanks to justf0rfun for suggesting, Sebastian Uharek for
            contributing.
 - TW #2247 Configuration override rc.verbose:off not respected
-           Thanks to Vignesh Prabhu.
+           Thanks to Vignesh Prabhu for reporting.
 - TW #2257 UDA string fields can't start with certain keywords
-           Thanks to Michael Russell.
+           Thanks to Michael Russell for reporting.
 - TW #2283 Support multi-line annotations in task edit without JSON encoding
            Thanks to Jochen Sprickerhof for contributing.
 - TW #2287 Speed up fish autocompletion and more completion options.
-           Thanks to Tin Lai.
+           Thanks to Tin Lai for contributing.
 - TW #2290 Support moving the config file to XDG_CONFIG_HOME
-           Thanks to Julien Rabinow.
+           Thanks to Julien Rabinow for contributing.
 - TW #2292 CmdEdit: Interruption should remove lock file
-           Thanks to indev12.
+           Thanks to Martin Michlmayr for reporting, indev12 for contributing.
 - TW #2333 Width determination of Unicode characters now works for up to
            Unicode 11 (from Unicode 5). Emojis are correctly displayed.
-           Thanks to Adam Monsen.
+           Thanks to Adam Monsen for reporting.
 - TW #2373 Year 2038 Problem
-           Thanks to Stephan Rieche.
+           Thanks to Stephan Rieche for reporting.
 - TW #2386 Filtering project:someday broken
-           Thanks to FRebbel.
+           Thanks to FRebbel for reporting.
 - TW #2388 Filtering for attribute values with spaces is broken
-           Thanks to angelus2014.
+           Thanks to angelus2014 for reporting.
 - TW #2389 For certain terminal widths, annotations with utf-8 chars can lead
            task to hang
-           Thanks to arooni.
+           Thanks to arooni for reporting.
 - TW #2390 Regression: Relative dates should be implicitly anchored around 'now'
-           Thanks to Dominik Russo.
+           Thanks to Dominik Russo for reporting.
 - TW #2392 Filtering for project-names containing hyphen and zero-leading number
-           Thanks to Nicola Chiapolini.
+           Thanks to Nicola Chiapolini for reporting.
 - TW #2393 Highlight due dates for waiting tasks in the calendar
-           Thanks to emkamau.
+           Thanks to emkamau for reporting.
 - TW #2403 Undefined symbols (with -DBUILD_SHARED_LIBS=ON)
            Thanks to Jan Palus for contributing.
 - TW #2422 "eow" and "eonw" seem to use different week day as reference
            Thanks to bgravato for reporting.
 - TW #2428 The "edit" command should respect "bulk" configuration option
-           Thanks to Evan Edmond.
+           Thanks to Evan Edmond for reporting.
 - TW #2442 Bulk completions generate nagging message even if highest urgency
            task was completed
-           Thanks to Daniel Mowitz.
+           Thanks to Daniel Mowitz for contributing.
 - TW #2451 Command task $month doesn't behave correctly
-           Thanks to Matias Laporte.
+           Thanks to Matias Laporte for reporting.
 - TW #2502 Two GCC warnings on 2.6.0.
-           Thanks to Scott Kostyshak.
+           Thanks to Scott Kostyshak for reporting.
 - TW #2503 Warn against executing an empty execute command.
-           Thanks to heinrichat.
+           Thanks to heinrichat for reporting.
 - TW #2514 Duration values can be mis-reported in the task info output
-           Thanks to reportaman.
+           Thanks to reportaman for reporting.
 - TW #2519 Named date eod should be last minute of today and not first of
            tomorrow.
-           Thanks to Pablo Vizcay.
+           Thanks to Pablo Vizcay for reporting.
 - TW #2530 Taskwarrior 2.5.3 time based filtering regression
-           Thanks to Matthias Tafelmeier.
+           Thanks to Matthias Tafelmeier for reporting.
 - TW #2532 Show number of tasks to be modified in bulk updates
            Thanks to jaker-dotcom for suggesting, Sebastian Uharek for
 		   contributing.
 - TW #2536 Feature: inclusive range-end attribute modifier 'by' so 'end of'
            named dates can be filtered inclusively
-           Thanks to Scott Mcdermott
+           Thanks to Scott Mcdermott for contributing.
 - TW #2549 Write context with complex expressions should not be allowed
            Thanks to Sebastian Fricke for reporting.
 - TW #2550 Write context skipped if description contains an identifier
-           Thanks to Sebastian Fricke.
+           Thanks to Sebastian Fricke for reporting.
 - TW #2554 Remove the waiting state, and consider any task with wait>now to be
            waiting
-           Thanks to Dustin J. Mitchell
+           Thanks to Dustin J. Mitchell for contributing.
 - TW #2560 Add report.<name>.context configuration variable
-           Thanks to Jake C.
+           Thanks to Jake C for suggesting.
 - TW #2461 The legend in calendar does not respect the calendar.holidays setting
-           Thanks to Tomas Babej for contributing.
 - TW #2569 The `json.depends.array` configuration option is now ignored.
            Dependencies are always represented as an array in JSON output.
-           Thanks to Dustin J. Mitchell
+           Thanks to Dustin J. Mitchell for contributing.
 - TW #2575 Support exporting given report as JSON, including sort order
            Thanks to Dheepak Krishnamurthy for contributing.
 - TW #2580 Importing malformed JSON task crashes TW
-           Thanks to bharatvaj.
+           Thanks to bharatvaj for contributing.
 - TW #2581 Config entry with a trailing comment cannot be modified
 
 
