@@ -55,6 +55,7 @@
 #include <utf8.h>
 #include <util.h>
 #include <main.h>
+#include <format.h>
 
 #define STRING_UTIL_CONFIRM_YES      "yes"
 #define STRING_UTIL_CONFIRM_YES_U    "Yes"
@@ -66,7 +67,7 @@
 static const char* newline = "\n";
 static const char* noline  = "";
 
-//////////////////////////////////////////////////////////////////////////////// 
+////////////////////////////////////////////////////////////////////////////////
 static void signal_handler (int s)
 {
   if (s == SIGINT)
@@ -306,6 +307,47 @@ void setHeaderUnderline (Table& table)
     else
       table.underlineHeaders ();
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+const std::string getXdgConfigHome () {
+  // Use XDG_CONFIG_HOME if defined, otherwise default to ~/.config
+  const char* env_xdg_config_home = getenv ("XDG_CONFIG_HOME");
+  std::string xdg_config_home;
+
+  if (env_xdg_config_home)
+    xdg_config_home = format ("{1}", env_xdg_config_home);
+  else
+    xdg_config_home = format ("{1}/.config", getenv("HOME"));
+
+  // Ensure the path does not end with '/'
+  if (xdg_config_home.back () == '/')
+    xdg_config_home.pop_back();
+
+  return xdg_config_home;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+const std::string getHooksLocation()
+{
+  std::string hooksLocation = "";
+
+  if (Context::getContext ().config.has ("hooks.location"))
+  {
+    hooksLocation = Context::getContext ().config.get ("hooks.location");
+  }
+  else if (Context::getContext ().rc_file._data == "~/.taskrc")
+  {
+    hooksLocation = Context::getContext ().config.get ("data.location");
+    hooksLocation += "hooks";
+  }
+  else
+  {
+    hooksLocation = format ("{1}/task/hooks", getXdgConfigHome());
+  }
+  return hooksLocation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -64,5 +64,9 @@ bool nontrivial (const std::string&);
 const char* optionalBlankLine ();
 void setHeaderUnderline (Table&);
 
+const std::string getXdgConfigHome ();
+const std::string getHooksLocation();
+
 #endif
+
 ////////////////////////////////////////////////////////////////////////////////

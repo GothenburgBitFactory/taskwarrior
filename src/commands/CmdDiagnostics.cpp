@@ -35,6 +35,7 @@
 #include <Context.h>
 #include <shared.h>
 #include <format.h>
+#include <util.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
@@ -291,16 +292,7 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n\n";
 
   // Display hook status.
-  Path hookLocation;
-  if (Context::getContext ().config.has ("hooks.location"))
-  {
-    hookLocation = Path (Context::getContext ().config.get ("hooks.location"));
-  }
-  else
-  {
-    hookLocation = Path (Context::getContext ().config.get ("data.location"));
-    hookLocation += "hooks";
-  }
+  Path hookLocation = getHooksLocation();
 
   out << bold.colorize ("Hooks")
       << '\n'

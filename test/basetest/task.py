@@ -43,6 +43,7 @@ class Task(object):
         # Configuration of the isolated environment
         self._original_pwd = os.getcwd()
         self.datadir = tempfile.mkdtemp(prefix="task_")
+        self.hooksdir = os.path.join(self.datadir, "hooks")
         self.taskrc = os.path.join(self.datadir, "test.rc")
 
         # Ensure any instance is properly destroyed at session end
@@ -52,8 +53,9 @@ class Task(object):
 
         with open(self.taskrc, 'w') as rc:
             rc.write("data.location={0}\n"
+                     "hooks.location={1}\n"
                      "hooks=off\n"
-                     "".format(self.datadir))
+                     "".format(self.datadir, self.hooksdir))
 
         # Setup configuration to talk to taskd automatically
         if self.taskd is not None:
