@@ -74,12 +74,19 @@ void wait_for_keypress ()
 int CmdNews::execute (std::string& output)
 {
   auto words = Context::getContext ().cli2.getWords ();
+  auto config = Context::getContext ().config;
 
   std::cout << "Taskwarrior 2.6.0 Release Notes" << std::endl;
 
   wait_for_keypress ();
 
-  output = "Thank you for catching up on new features!\n";
+  // Set a mark in the config to remember which version's release notes were displayed
+  if (config.get ("news.version") == "2.6.0")
+    output = "Repetition is the mother of all learning!\n";
+  else {
+    CmdConfig::setConfigVariable ("news.version", "2.6.0", false);
+    output = "Thank you for catching up on the new features!\n";
+  }
 
   return 0;
 }

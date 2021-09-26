@@ -29,6 +29,7 @@
 
 #include <string>
 #include <Command.h>
+#include <CmdConfig.h>
 
 class CmdNews : public Command
 {
