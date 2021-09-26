@@ -10,7 +10,7 @@ mod task;
 pub use annotation::Annotation;
 pub use priority::Priority;
 pub use status::Status;
-pub use tag::{Tag, INVALID_TAG_CHARACTERS};
+pub use tag::Tag;
 pub use task::{Task, TaskMut};
 
 pub type Timestamp = DateTime<Utc>;

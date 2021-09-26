@@ -5,7 +5,7 @@ use std::str::FromStr;
 /// A Tag is a descriptor for a task, that is either present or absent, and can be used for
 /// filtering.  Tags composed of all uppercase letters are reserved for synthetic tags.
 ///
-/// Valid tags must not contain whitespace or any of the characters in [`INVALID_TAG_CHARACTERS`].
+/// Valid tags must not contain whitespace or any of the characters in `+-*/(<>^! %=~`.
 /// The first characters additionally cannot be a digit, and subsequent characters cannot be `:`.
 /// This definition is based on [that of
 /// TaskWarrior](https://github.com/GothenburgBitFactory/taskwarrior/blob/663c6575ceca5bd0135ae884879339dac89d3142/src/Lexer.cpp#L146-L164).
@@ -19,6 +19,7 @@ pub(super) enum TagInner {
     Synthetic(SyntheticTag),
 }
 
+// see doc comment for Tag, above
 pub const INVALID_TAG_CHARACTERS: &str = "+-*/(<>^! %=~";
 
 impl Tag {
