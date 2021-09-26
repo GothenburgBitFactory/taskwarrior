@@ -24,9 +24,10 @@ fi
 (cd docs/tmp && git pull $REMOTE gh-pages)
 
 # remove all files in the worktree and regenerate the book there
-git worktree rm docs/tmp
+git worktree remove -f docs/tmp
 rm -rf docs/tmp/*
 mdbook build docs
+mkdir docs/tmp
 cp -rp docs/book/* docs/tmp
 
 # add everything in the worktree, commit, and push
