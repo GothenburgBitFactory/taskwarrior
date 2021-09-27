@@ -146,9 +146,19 @@ int CmdNews::execute (std::string& output)
   bool full_summary = matches.size () == 1 && matches[0] == "full" ? true : false;
 
   // Print release notes
-  std::cout << "Taskwarrior 2.6.0 Release Notes" << std::endl;
+  Color bold = Color ("bold");
+  std::cout << bold.colorize (
+    "\n"
+    "===============================\n"
+    "Taskwarrior 2.6.0 Release Notes\n"
+    "===============================\n"
+  );
 
-  wait_for_keypress ();
+  for (unsigned short i=0; i < items.size (); i++) {
+    std::cout << format ("\n({1}/{2}) ", i+1, items.size ());
+    items[i].render ();
+    wait_for_keypress ();
+  }
 
   // Set a mark in the config to remember which version's release notes were displayed
   if (config.get ("news.version") == "2.6.0")
