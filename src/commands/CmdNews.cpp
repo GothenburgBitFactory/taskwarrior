@@ -33,6 +33,7 @@
 #include <shared.h>
 #include <format.h>
 #include <util.h>
+#include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdNews::CmdNews ()
@@ -68,6 +69,28 @@ void wait_for_keypress ()
   std::getline (std::cin, dummy);
 
   signal (SIGINT, SIG_DFL);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Holds information about single improvement / bug.
+//
+NewsItem::NewsItem (bool major, const std::string& title, const std::string& update) {
+  _major = major;
+  _title = title;
+  _update = update;
+}
+
+void NewsItem::render () {
+  auto config = Context::getContext ().config;
+  Color header;
+  if (Context::getContext ().color ()) {
+    header = Color ("bold");
+    if (config.has ("color.header"))
+      header.blend(Color (config.get ("color.header")));
+  }
+
+  std::cout << header.colorize (format ("{1}\n", _title));
+  std::cout << format ("\n{1}\n", _update);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

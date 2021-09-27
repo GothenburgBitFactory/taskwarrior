@@ -31,6 +31,15 @@
 #include <Command.h>
 #include <CmdConfig.h>
 
+class NewsItem {
+public:
+  bool _major = false;
+  std::string _title;
+  std::string _update;
+  NewsItem (bool, const std::string&, const std::string&);
+  void render ();
+};
+
 class CmdNews : public Command
 {
 public:
