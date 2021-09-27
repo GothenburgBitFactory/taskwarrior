@@ -124,6 +124,11 @@ int CmdNews::execute (std::string& output)
   auto words = Context::getContext ().cli2.getWords ();
   auto config = Context::getContext ().config;
 
+  // TODO: 2.6.0 is the only version with explicit release notes, but in the
+  // future we need to only execute yet unread release notes
+  std::vector<NewsItem> items;
+  version2_6_0 (items);
+
   // Determine whether to use full or short summary
   std::vector <std::string> options {"full", "short"};
   std::vector <std::string> matches;
@@ -132,7 +137,11 @@ int CmdNews::execute (std::string& output)
 
   do
   {
-    std::cout << "Do you want to see full summary (11 features) or a short one (5 features)?  (full/short) ";
+    std::cout << format (
+      "Do you want to see full summary ({1} feature(s)) or a short one ({2} feature(s))?  (full/short) ",
+      items.size (),
+      std::count_if (items.begin (), items.end (), [](const NewsItem& n){return n._major;})
+    );
 
     std::string answer;
     std::getline (std::cin, answer);
