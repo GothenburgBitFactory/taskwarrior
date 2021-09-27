@@ -76,6 +76,28 @@ int CmdNews::execute (std::string& output)
   auto words = Context::getContext ().cli2.getWords ();
   auto config = Context::getContext ().config;
 
+  // Determine whether to use full or short summary
+  std::vector <std::string> options {"full", "short"};
+  std::vector <std::string> matches;
+
+  signal (SIGINT, signal_handler);
+
+  do
+  {
+    std::cout << "Do you want to see full summary (11 features) or a short one (5 features)?  (full/short) ";
+
+    std::string answer;
+    std::getline (std::cin, answer);
+    answer = std::cin.eof () ? "full" : lowerCase (trim (answer));
+
+    autoComplete (answer, options, matches, 1); // Hard-coded 1.
+  }
+  while (! std::cin.eof () && matches.size () != 1);
+
+  signal (SIGINT, SIG_DFL);
+  bool full_summary = matches.size () == 1 && matches[0] == "full" ? true : false;
+
+  // Print release notes
   std::cout << "Taskwarrior 2.6.0 Release Notes" << std::endl;
 
   wait_for_keypress ();
