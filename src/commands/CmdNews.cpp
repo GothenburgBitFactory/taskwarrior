@@ -94,6 +94,31 @@ void NewsItem::render () {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Generate the highlights for the 2.6.0 version.
+//
+// - XDG directory mode (high)
+// - Support for Unicode 11 characters (high)
+// - 64 bit values, UDAs, Datetime values until year 9999 (high)
+// - Writeable context (high)
+// - Config context variables
+// - Reports outside of context
+// - Environment variables in taskrc (high)
+// - Waiting is a virtual concept (high)
+// - Improved parser and task display mechanism
+// - The .by attribute modifier
+// - Exporting a report
+// - Multi-day holidays
+void CmdNews::version2_6_0 (bool full, std::vector<NewsItem>& items) {
+  NewsItem writeable_context (
+    true,
+    "'Writeable' context",
+    "  The currently active context definition is now applied as default\n"
+    "  modifications with 'task add' and 'task log'."
+  );
+  items.push_back(writeable_context);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int CmdNews::execute (std::string& output)
 {
   auto words = Context::getContext ().cli2.getWords ();
