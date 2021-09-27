@@ -108,7 +108,7 @@ void NewsItem::render () {
 // - The .by attribute modifier
 // - Exporting a report
 // - Multi-day holidays
-void CmdNews::version2_6_0 (bool full, std::vector<NewsItem>& items) {
+void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   NewsItem writeable_context (
     true,
     "'Writeable' context",

@@ -45,7 +45,7 @@ class CmdNews : public Command
 public:
   CmdNews ();
   int execute (std::string&);
-  void version2_6_0 (bool, std::vector<NewsItem>&);
+  void version2_6_0 (std::vector<NewsItem>&);
 };
 
 #endif
