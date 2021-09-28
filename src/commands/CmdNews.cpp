@@ -61,12 +61,14 @@ static void signal_handler (int s)
   }
 }
 
-void wait_for_keypress ()
+void wait_for_enter ()
 {
   signal (SIGINT, signal_handler);
 
   std::string dummy;
+  std::cout << "\nPress enter to continue..";
   std::getline (std::cin, dummy);
+  std::cout << "\33[2K\033[A\33[2K";  // Erase current line, move up, and erase again
 
   signal (SIGINT, SIG_DFL);
 }
@@ -176,7 +178,7 @@ int CmdNews::execute (std::string& output)
   for (unsigned short i=0; i < items.size (); i++) {
     std::cout << format ("\n({1}/{2}) ", i+1, items.size ());
     items[i].render ();
-    wait_for_keypress ();
+    wait_for_enter ();
   }
 
   // Set a mark in the config to remember which version's release notes were displayed
