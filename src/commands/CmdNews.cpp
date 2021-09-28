@@ -99,6 +99,7 @@ NewsItem::NewsItem (
 void NewsItem::render () {
   auto config = Context::getContext ().config;
   Color header;
+  Color footnote;
   Color bold;
   Color underline;
   if (Context::getContext ().color ()) {
@@ -106,18 +107,42 @@ void NewsItem::render () {
     underline = Color ("underline");
     if (config.has ("color.header"))
       header = Color (config.get ("color.header"));
+    if (config.has ("color.footnote"))
+      footnote = Color (config.get ("color.footnote"));
   }
 
   // TODO: For some reason, bold cannot be blended in 256-color terminals
   // Apply this workaround of colorizing twice.
   std::cout << bold.colorize (header.colorize (format ("{1}\n", _title)));
-  std::cout << format ("\n{1}\n", _update);
-  if (_reasoning.size ())
-    std::cout << "\n  " << underline.colorize ("What is the motivation for this feature?\n")
+  if (_background.size ()) {
+    if (_bg_title.empty ())
+      _bg_title = "Background";
+
+    std::cout << "\n  " << underline.colorize (_bg_title) << std::endl
+              << _background << std::endl;
+  }
+
+  wait_for_enter ();
+
+  std::cout << "  " << underline.colorize ("What changes in 2.6.0?\n");
+  if (_punchline.size ())
+    std::cout << footnote.colorize (format ("{1}\n", _punchline));
+
+  std::cout << format ("{1}\n", _update);
+
+  wait_for_enter ();
+
+  if (_reasoning.size ()) {
+    std::cout << "  " << underline.colorize ("What is the motivation for this feature?\n")
               << _reasoning << std::endl;
-  if (_actions.size ())
-    std::cout << "\n  " << underline.colorize ("What do I have to do?\n")
+    wait_for_enter ();
+  }
+
+  if (_actions.size ()) {
+    std::cout << "  " << underline.colorize ("What do I have to do?\n")
               << _actions << std::endl;
+    wait_for_enter ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +225,6 @@ int CmdNews::execute (std::string& output)
   for (unsigned short i=0; i < items.size (); i++) {
     std::cout << format ("\n({1}/{2}) ", i+1, items.size ());
     items[i].render ();
-    wait_for_enter ();
   }
 
   // Set a mark in the config to remember which version's release notes were displayed
