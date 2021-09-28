@@ -164,8 +164,40 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   NewsItem writeable_context (
     true,
     "'Writeable' context",
-    "  The currently active context definition is now applied as default\n"
-    "  modifications with 'task add' and 'task log'."
+    "Background - what is context?",
+    "  The 'context' is a feature (introduced in 2.5.0) that allows users to apply a\n"
+    "  predefined filter to all task reports.\n"
+    "  \n"
+    "    $ task context define work \"project:Work or +urgent\"\n"
+    "    $ task context work\n"
+    "    Context 'work' set. Use 'task context none' to remove.\n"
+    "  \n"
+    "  Now if we proceed to add two tasks:\n"
+    "    $ task add Talk to Jeff pro:Work\n"
+    "    $ task add Call mom pro:Personal\n"
+    "  \n"
+    "    $ task\n"
+    "    ID Age   Project Description  Urg\n"
+    "     1 16s   Work    Talk to Jeff    1\n"
+    "  \n"
+    "  The task \"Call mom\" will not be listed, because it does not match\n"
+    "  the active context (its project is 'Personal' and not 'Work').",
+    "  The currently active context definition is now applied as default modifications\n"
+    "  when creating new tasks using 'task add' and 'task log'.",
+    "  \n"
+    "  Consider following example, using contex 'work' defined as 'project:Work' above:\n"
+    "  \n"
+    "    $ task context work\n"
+    "    $ task add Talk to Jeff\n"
+    "    $ task\n"
+    "    ID Age  Project Description  Urg \n"
+    "     1 1s   Work    Talk to Jeff    1\n"
+    "            ^^^^^^^\n"
+    "  \n"
+    "  Note that project attribute was set to 'Work' automatically",
+    "  This was a popular feature request. Now, if you have a context active,\n"
+    "  newly added tasks no longer \"fall outside\" of the context by default.",
+    ""
   );
   items.push_back(writeable_context);
 }
