@@ -83,13 +83,16 @@ NewsItem::NewsItem (bool major, const std::string& title, const std::string& upd
 void NewsItem::render () {
   auto config = Context::getContext ().config;
   Color header;
+  Color bold;
   if (Context::getContext ().color ()) {
-    header = Color ("bold");
+    bold = Color ("bold");
     if (config.has ("color.header"))
-      header.blend(Color (config.get ("color.header")));
+      header = Color (config.get ("color.header"));
   }
 
-  std::cout << header.colorize (format ("{1}\n", _title));
+  // TODO: For some reason, bold cannot be blended in 256-color terminals
+  // Apply this workaround of colorizing twice.
+  std::cout << bold.colorize (header.colorize (format ("{1}\n", _title)));
   std::cout << format ("\n{1}\n", _update);
 }
 
