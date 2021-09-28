@@ -185,7 +185,7 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
       throw format ("The name '{1}' is reserved and not allowed to use as a context name.", words[1]);
     }
 
-    // Extract MISCELLANEOUS arguments (containign the filter definition) for later analysis
+    // Extract MISCELLANEOUS arguments (containing the filter definition) for later analysis
     std::vector <A2> lexedArgs = Context::getContext ().cli2.getMiscellaneous();
 
     // Check if the value is a proper filter by filtering current pending.data
