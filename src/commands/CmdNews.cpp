@@ -79,13 +79,19 @@ void wait_for_enter ()
 NewsItem::NewsItem (
   bool major,
   const std::string& title,
+  const std::string& punchline,
   const std::string& update,
+  const std::string& bg_title,
+  const std::string& background,
   const std::string& reasoning,
   const std::string& actions
 ) {
   _major = major;
   _title = title;
+  _punchline = punchline;
   _update = update;
+  _bg_title = bg_title;
+  _background = background;
   _reasoning = reasoning;
   _actions = actions;
 }

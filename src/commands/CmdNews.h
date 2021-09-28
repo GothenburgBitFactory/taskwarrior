@@ -35,10 +35,22 @@ class NewsItem {
 public:
   bool _major = false;
   std::string _title;
+  std::string _punchline;
   std::string _update;
+  std::string _bg_title;
+  std::string _background;
   std::string _reasoning;
   std::string _actions;
-  NewsItem (bool, const std::string&, const std::string&, const std::string& = "", const std::string& = "");
+  NewsItem (
+    bool,
+    const std::string&,
+    const std::string& = "",
+    const std::string& = "",
+    const std::string& = "",
+    const std::string& = "",
+    const std::string& = "",
+    const std::string& = ""
+  );
   void render ();
 };
 
