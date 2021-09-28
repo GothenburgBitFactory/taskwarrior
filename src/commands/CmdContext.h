@@ -29,6 +29,7 @@
 
 #include <string>
 #include <Command.h>
+#include <CLI2.h>
 
 class CmdContext : public Command
 {
@@ -36,6 +37,7 @@ public:
   CmdContext ();
   int execute (std::string&);
   std::string joinWords (const std::vector <std::string>&, unsigned int, unsigned int = 0);
+  bool validateWriteContext (const std::vector <A2>&, std::string&);
   static std::vector <std::string> getContexts ();
   void defineContext (const std::vector <std::string>&, std::stringstream&);
   void deleteContext (const std::vector <std::string>&, std::stringstream&);
