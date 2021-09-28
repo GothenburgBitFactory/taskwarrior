@@ -76,18 +76,28 @@ void wait_for_enter ()
 ////////////////////////////////////////////////////////////////////////////////
 // Holds information about single improvement / bug.
 //
-NewsItem::NewsItem (bool major, const std::string& title, const std::string& update) {
+NewsItem::NewsItem (
+  bool major,
+  const std::string& title,
+  const std::string& update,
+  const std::string& reasoning,
+  const std::string& actions
+) {
   _major = major;
   _title = title;
   _update = update;
+  _reasoning = reasoning;
+  _actions = actions;
 }
 
 void NewsItem::render () {
   auto config = Context::getContext ().config;
   Color header;
   Color bold;
+  Color underline;
   if (Context::getContext ().color ()) {
     bold = Color ("bold");
+    underline = Color ("underline");
     if (config.has ("color.header"))
       header = Color (config.get ("color.header"));
   }
@@ -96,6 +106,12 @@ void NewsItem::render () {
   // Apply this workaround of colorizing twice.
   std::cout << bold.colorize (header.colorize (format ("{1}\n", _title)));
   std::cout << format ("\n{1}\n", _update);
+  if (_reasoning.size ())
+    std::cout << "\n  " << underline.colorize ("What is the motivation for this feature?\n")
+              << _reasoning << std::endl;
+  if (_actions.size ())
+    std::cout << "\n  " << underline.colorize ("What do I have to do?\n")
+              << _actions << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

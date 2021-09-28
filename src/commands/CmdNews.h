@@ -36,7 +36,9 @@ public:
   bool _major = false;
   std::string _title;
   std::string _update;
-  NewsItem (bool, const std::string&, const std::string&);
+  std::string _reasoning;
+  std::string _actions;
+  NewsItem (bool, const std::string&, const std::string&, const std::string& = "", const std::string& = "");
   void render ();
 };
 
