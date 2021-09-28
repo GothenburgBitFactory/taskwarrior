@@ -154,6 +154,13 @@ int CmdNews::execute (std::string& output)
   signal (SIGINT, SIG_DFL);
   bool full_summary = matches.size () == 1 && matches[0] == "full" ? true : false;
 
+  // Remove non-major items if displaying a non-full (abbreviated) summary
+  if (! full_summary)
+    items.erase (
+      std::remove_if (items.begin (), items.end (), [](const NewsItem& n){return n._major == false;}),
+      items.end ()
+    );
+
   // Print release notes
   Color bold = Color ("bold");
   std::cout << bold.colorize (
