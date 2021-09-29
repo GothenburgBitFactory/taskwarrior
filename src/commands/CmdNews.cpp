@@ -296,6 +296,28 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     ""
   );
   items.push_back(contextless_reports);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - Waiting is a virtual status
+
+  NewsItem waiting_status (
+    false,
+    "Deprecation of the status:waiting",
+    "",
+    "  If a task has a 'wait' attribute set to a date in the future, it is modified.\n"
+    "  to have a 'waiting' status. Once that date is no longer in the future, the status\n"
+    "  is modified to back to 'pending'.",
+    "  The 'waiting' value of status is deprecated, instead users should use +WAITING\n"
+    "  virtual tag, or explicitly query for wait.after:now (the two are equivalent).",
+    "  \n"
+    "  The status:waiting query still works in 2.6.0, but support will be dropped in 3.0.",
+    "",
+    "  In your custom report definitions, the following expressions should be replaced:\n"
+    "  * 'status:pending or status:waiting' should be replaced by 'status:pending'\n"
+    "  * 'status:pending' should be replaced by 'status:pending -WAITING'"
+  );
+  items.push_back(waiting_status);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
