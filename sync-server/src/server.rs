@@ -105,6 +105,20 @@ pub(crate) fn add_version<'a>(
     Ok(AddVersionResult::Ok(version_id))
 }
 
+/// Implementation of the GetSnapshot protocol transaction
+pub(crate) fn get_snapshot<'a>(
+    mut txn: Box<dyn StorageTxn + 'a>,
+    client_key: ClientKey,
+    client: Client,
+) -> anyhow::Result<Option<(Uuid, Vec<u8>)>> {
+    Ok(if let Some(snap) = client.snapshot {
+        txn.get_snapshot_data(client_key, snap.version_id)?
+            .map(|data| (snap.version_id, data))
+    } else {
+        None
+    })
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -301,5 +315,47 @@ mod test {
     #[test]
     fn av_success_nil_latest_version_id() -> anyhow::Result<()> {
         test_av_success(false)
+    }
+
+    #[test]
+    fn get_snapshot_found() -> anyhow::Result<()> {
+        let storage = InMemoryStorage::new();
+        let mut txn = storage.txn()?;
+        let client_key = Uuid::new_v4();
+        let data = vec![1, 2, 3];
+        let snapshot_version_id = Uuid::new_v4();
+
+        txn.new_client(client_key, snapshot_version_id)?;
+        txn.set_snapshot(
+            client_key,
+            Snapshot {
+                version_id: snapshot_version_id,
+                versions_since: 3,
+                timestamp: Utc.ymd(2001, 9, 9).and_hms(1, 46, 40),
+            },
+            data.clone(),
+        )?;
+
+        let client = txn.get_client(client_key)?.unwrap();
+        assert_eq!(
+            get_snapshot(txn, client_key, client)?,
+            Some((snapshot_version_id, data.clone()))
+        );
+
+        Ok(())
+    }
+
+    #[test]
+    fn get_snapshot_not_found() -> anyhow::Result<()> {
+        let storage = InMemoryStorage::new();
+        let mut txn = storage.txn()?;
+        let client_key = Uuid::new_v4();
+
+        txn.new_client(client_key, NO_VERSION_ID)?;
+        let client = txn.get_client(client_key)?.unwrap();
+
+        assert_eq!(get_snapshot(txn, client_key, client)?, None);
+
+        Ok(())
     }
 }
