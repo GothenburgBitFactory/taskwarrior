@@ -172,7 +172,8 @@ std::vector <std::string> CmdContext::getContexts ()
 //
 void CmdContext::defineContext (const std::vector <std::string>& words, std::stringstream& out)
 {
-  auto confirmation = Context::getContext ().config.getBoolean ("confirmation");
+  auto config = Context::getContext ().config;
+  bool confirmation = config.getBoolean ("confirmation");
 
   if (words.size () > 2)
   {
@@ -229,6 +230,12 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
 
     if (valid_write_context)
       write_success = CmdConfig::setConfigVariable (name + ".write", value, confirmation);
+
+    // Remove old-school context name, if it exists, assuming the read context was defined
+    if (read_success)
+      if (config.has (name)) {
+        CmdConfig::unsetConfigVariable (name, false);
+      }
 
     if (!read_success and !write_success)
       throw format ("Context '{1}' not defined.", words[1]);
