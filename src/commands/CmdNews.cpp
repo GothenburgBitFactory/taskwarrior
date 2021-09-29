@@ -335,6 +335,29 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     ""
   );
   items.push_back(env_vars);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - Exporting a particular report
+
+  NewsItem exportable_reports (
+    false,
+    "Exporting a particular report",
+    "",
+    "",
+    "  You can now export the tasks listed by a particular report as JSON by simply\n"
+    "  calling 'task export <report>'.\n",
+    "  The export mirrors the filter and the sort order of the report.",
+    "  This feature can be used to quickly process the data displayed in a particular\n"
+    "  report using other CLI tools. For example, the following oneliner\n"
+    "  \n"
+    "      $ task export next | jq '.[].urgency' | datamash mean 1\n"
+    "      3.3455535142857\n"
+    "  \n"
+    "  combines jq and GNU datamash to compute average urgency of the tasks displayed\n"
+    "  in the 'next' report.",
+    ""
+  );
+  items.push_back(exportable_reports);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
