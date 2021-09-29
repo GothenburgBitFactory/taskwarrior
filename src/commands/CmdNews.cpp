@@ -358,6 +358,28 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     ""
   );
   items.push_back(exportable_reports);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - Multi-day holidays
+
+  NewsItem multi_holidays (
+    false,
+    "Multi-day holidays",
+    "",
+    "  Holidays are currently used in 'task calendar' to visualize the workload during\n"
+    "  the upcoming weeks/months. Up to date country-specific holiday data files can be\n"
+    "  obtained from our website, holidata.net",
+    "  Instead of single-day holiday entries only, Taskwarrior now supports holidays\n"
+    "  that span a range of days (i.e. vacation).\n",
+    "  Use a holday.<name>.start and holiday.<name>.end to configure a multi-day holiday:\n"
+    "  \n"
+    "      holiday.sysadmin.name=System Administrator Appreciation Week\n"
+    "      holiday.sysadmin.start=20100730\n"
+    "      holiday.sysadmin.end=20100805",
+    "",
+    ""
+  );
+  items.push_back(multi_holidays);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
