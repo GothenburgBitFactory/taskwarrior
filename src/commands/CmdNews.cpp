@@ -257,6 +257,23 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     advice.str ()
   );
   items.push_back(writeable_context);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - 64-bit datetime support (major)
+
+  NewsItem uint64_support (
+    false,
+    "Support for 64-bit timestamps and numeric values",
+    "",
+    "",
+    "  Taskwarrior now supports 64-bit timestamps, making it possible to set due dates\n"
+    "  and other date attributes beyond 19 January 2038 (limit of 32-bit timestamps).\n",
+    "  The current limit is 31 December 9999 for display reasons (last 4-digit year).",
+    "  With each year passing by faster than the last, setting tasks for 2040s\n"
+    "  is not as unfeasible as it once was.",
+    "  Don't forget that 50-year anniversary and 'task add' a long-term task today!"
+  );
+  items.push_back(uint64_support);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
