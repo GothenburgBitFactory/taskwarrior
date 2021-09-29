@@ -1,10 +1,13 @@
-use super::{Client, Storage, StorageTxn, Uuid, Version};
+use super::{Client, Snapshot, Storage, StorageTxn, Uuid, Version};
 use std::collections::HashMap;
 use std::sync::{Mutex, MutexGuard};
 
 struct Inner {
     /// Clients, indexed by client_key
     clients: HashMap<Uuid, Client>,
+
+    /// Snapshot data, indexed by client key
+    snapshots: HashMap<Uuid, Vec<u8>>,
 
     /// Versions, indexed by (client_key, version_id)
     versions: HashMap<(Uuid, Uuid), Version>,
@@ -20,6 +23,7 @@ impl InMemoryStorage {
     pub fn new() -> Self {
         Self(Mutex::new(Inner {
             clients: HashMap::new(),
+            snapshots: HashMap::new(),
             versions: HashMap::new(),
             children: HashMap::new(),
         }))
@@ -46,23 +50,44 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         if self.0.clients.get(&client_key).is_some() {
             return Err(anyhow::anyhow!("Client {} already exists", client_key));
         }
-        self.0
-            .clients
-            .insert(client_key, Client { latest_version_id });
+        self.0.clients.insert(
+            client_key,
+            Client {
+                latest_version_id,
+                snapshot: None,
+            },
+        );
         Ok(())
     }
 
-    fn set_client_latest_version_id(
+    fn set_snapshot(
         &mut self,
         client_key: Uuid,
-        latest_version_id: Uuid,
+        snapshot: Snapshot,
+        data: Vec<u8>,
     ) -> anyhow::Result<()> {
-        if let Some(client) = self.0.clients.get_mut(&client_key) {
-            client.latest_version_id = latest_version_id;
-            Ok(())
-        } else {
-            Err(anyhow::anyhow!("Client {} does not exist", client_key))
+        let mut client = self
+            .0
+            .clients
+            .get_mut(&client_key)
+            .ok_or_else(|| anyhow::anyhow!("no such client"))?;
+        client.snapshot = Some(snapshot);
+        self.0.snapshots.insert(client_key, data);
+        Ok(())
+    }
+
+    fn get_snapshot_data(
+        &mut self,
+        client_key: Uuid,
+        version_id: Uuid,
+    ) -> anyhow::Result<Option<Vec<u8>>> {
+        // sanity check
+        let client = self.0.clients.get(&client_key);
+        let client = client.ok_or_else(|| anyhow::anyhow!("no such client"))?;
+        if Some(&version_id) != client.snapshot.as_ref().map(|snap| &snap.version_id) {
+            return Err(anyhow::anyhow!("unexpected snapshot_version_id"));
         }
+        Ok(self.0.snapshots.get(&client_key).cloned())
     }
 
     fn get_version_by_parent(
@@ -102,12 +127,21 @@ impl<'a> StorageTxn for InnerTxn<'a> {
             parent_version_id,
             history_segment,
         };
+
+        if let Some(client) = self.0.clients.get_mut(&client_key) {
+            client.latest_version_id = version_id;
+            if let Some(ref mut snap) = client.snapshot {
+                snap.versions_since += 1;
+            }
+        } else {
+            return Err(anyhow::anyhow!("Client {} does not exist", client_key));
+        }
+
         self.0
             .children
-            .insert((client_key, version.parent_version_id), version.version_id);
-        self.0
-            .versions
-            .insert((client_key, version.version_id), version);
+            .insert((client_key, parent_version_id), version_id);
+        self.0.versions.insert((client_key, version_id), version);
+
         Ok(())
     }
 
@@ -119,15 +153,7 @@ impl<'a> StorageTxn for InnerTxn<'a> {
 #[cfg(test)]
 mod test {
     use super::*;
-
-    #[test]
-    fn test_emtpy_dir() -> anyhow::Result<()> {
-        let storage = InMemoryStorage::new();
-        let mut txn = storage.txn()?;
-        let maybe_client = txn.get_client(Uuid::new_v4())?;
-        assert!(maybe_client.is_none());
-        Ok(())
-    }
+    use chrono::Utc;
 
     #[test]
     fn test_get_client_empty() -> anyhow::Result<()> {
@@ -149,12 +175,25 @@ mod test {
 
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(client.latest_version_id, latest_version_id);
+        assert!(client.snapshot.is_none());
 
         let latest_version_id = Uuid::new_v4();
-        txn.set_client_latest_version_id(client_key, latest_version_id)?;
+        txn.add_version(client_key, latest_version_id, Uuid::new_v4(), vec![1, 1])?;
 
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(client.latest_version_id, latest_version_id);
+        assert!(client.snapshot.is_none());
+
+        let snap = Snapshot {
+            version_id: Uuid::new_v4(),
+            timestamp: Utc::now(),
+            versions_since: 4,
+        };
+        txn.set_snapshot(client_key, snap.clone(), vec![1, 2, 3])?;
+
+        let client = txn.get_client(client_key)?.unwrap();
+        assert_eq!(client.latest_version_id, latest_version_id);
+        assert_eq!(client.snapshot.unwrap(), snap);
 
         Ok(())
     }
@@ -177,6 +216,8 @@ mod test {
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let history_segment = b"abc".to_vec();
+
+        txn.new_client(client_key, parent_version_id)?;
         txn.add_version(
             client_key,
             version_id,
@@ -197,6 +238,49 @@ mod test {
 
         let version = txn.get_version(client_key, version_id)?.unwrap();
         assert_eq!(version, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_snapshots() -> anyhow::Result<()> {
+        let storage = InMemoryStorage::new();
+        let mut txn = storage.txn()?;
+
+        let client_key = Uuid::new_v4();
+
+        txn.new_client(client_key, Uuid::new_v4())?;
+        assert!(txn.get_client(client_key)?.unwrap().snapshot.is_none());
+
+        let snap = Snapshot {
+            version_id: Uuid::new_v4(),
+            timestamp: Utc::now(),
+            versions_since: 3,
+        };
+        txn.set_snapshot(client_key, snap.clone(), vec![9, 8, 9])?;
+
+        assert_eq!(
+            txn.get_snapshot_data(client_key, snap.version_id)?.unwrap(),
+            vec![9, 8, 9]
+        );
+        assert_eq!(txn.get_client(client_key)?.unwrap().snapshot, Some(snap));
+
+        let snap2 = Snapshot {
+            version_id: Uuid::new_v4(),
+            timestamp: Utc::now(),
+            versions_since: 10,
+        };
+        txn.set_snapshot(client_key, snap2.clone(), vec![0, 2, 4, 6])?;
+
+        assert_eq!(
+            txn.get_snapshot_data(client_key, snap2.version_id)?
+                .unwrap(),
+            vec![0, 2, 4, 6]
+        );
+        assert_eq!(txn.get_client(client_key)?.unwrap().snapshot, Some(snap2));
+
+        // check that mismatched version is detected
+        assert!(txn.get_snapshot_data(client_key, Uuid::new_v4()).is_err());
 
         Ok(())
     }

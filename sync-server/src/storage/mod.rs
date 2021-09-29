@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 #[cfg(debug_assertions)]
@@ -10,12 +10,27 @@ pub use inmemory::InMemoryStorage;
 mod sqlite;
 pub use self::sqlite::SqliteStorage;
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Client {
+    /// The latest version for this client (may be the nil version)
     pub latest_version_id: Uuid,
+    /// Data about the latest snapshot for this client
+    pub snapshot: Option<Snapshot>,
 }
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct Snapshot {
+    /// ID of the version at which this snapshot was made
+    pub version_id: Uuid,
+
+    /// Timestamp at which this snapshot was set
+    pub timestamp: DateTime<Utc>,
+
+    /// Number of versions since this snapshot was made
+    pub versions_since: u32,
+}
+
+#[derive(Clone, PartialEq, Debug)]
 pub struct Version {
     pub version_id: Uuid,
     pub parent_version_id: Uuid,
@@ -29,12 +44,21 @@ pub trait StorageTxn {
     /// Create a new client with the given latest_version_id
     fn new_client(&mut self, client_key: Uuid, latest_version_id: Uuid) -> anyhow::Result<()>;
 
-    /// Set the client's latest_version_id
-    fn set_client_latest_version_id(
+    /// Set the client's most recent snapshot.
+    fn set_snapshot(
         &mut self,
         client_key: Uuid,
-        latest_version_id: Uuid,
+        snapshot: Snapshot,
+        data: Vec<u8>,
     ) -> anyhow::Result<()>;
+
+    /// Get the data for the most recent snapshot.  The version_id
+    /// is used to verify that the snapshot is for the correct version.
+    fn get_snapshot_data(
+        &mut self,
+        client_key: Uuid,
+        version_id: Uuid,
+    ) -> anyhow::Result<Option<Vec<u8>>>;
 
     /// Get a version, indexed by parent version id
     fn get_version_by_parent(
@@ -50,7 +74,9 @@ pub trait StorageTxn {
         version_id: Uuid,
     ) -> anyhow::Result<Option<Version>>;
 
-    /// Add a version (that must not already exist)
+    /// Add a version (that must not already exist), and
+    ///  - update latest_version_id
+    ///  - increment snapshot.versions_since
     fn add_version(
         &mut self,
         client_key: Uuid,

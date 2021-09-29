@@ -71,7 +71,6 @@ pub(crate) fn add_version<'a>(
 
     // update the DB
     txn.add_version(client_key, version_id, parent_version_id, history_segment)?;
-    txn.set_client_latest_version_id(client_key, version_id)?;
     txn.commit()?;
 
     Ok(AddVersionResult::Ok(version_id))
@@ -102,6 +101,7 @@ mod test {
         let parent_version_id = Uuid::new_v4();
         let history_segment = b"abcd".to_vec();
 
+        txn.new_client(client_key, version_id)?;
         txn.add_version(
             client_key,
             version_id,
@@ -130,6 +130,7 @@ mod test {
         let existing_parent_version_id = Uuid::new_v4();
         let client = Client {
             latest_version_id: existing_parent_version_id,
+            snapshot: None,
         };
 
         assert_eq!(

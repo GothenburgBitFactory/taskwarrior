@@ -1,5 +1,6 @@
-use super::{Client, Storage, StorageTxn, Uuid, Version};
+use super::{Client, Snapshot, Storage, StorageTxn, Uuid, Version};
 use anyhow::Context;
+use chrono::{TimeZone, Utc};
 use rusqlite::types::{FromSql, ToSql};
 use rusqlite::{params, Connection, OptionalExtension};
 use std::path::Path;
@@ -30,24 +31,6 @@ impl ToSql for StoredUuid {
     }
 }
 
-/// Stores [`Client`] in SQLite
-impl FromSql for Client {
-    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
-        let o: Client = serde_json::from_str(value.as_str()?)
-            .map_err(|_| rusqlite::types::FromSqlError::InvalidType)?;
-        Ok(o)
-    }
-}
-
-/// Parses Operation stored as JSON in string column
-impl ToSql for Client {
-    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
-        let s = serde_json::to_string(&self)
-            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
-        Ok(s.into())
-    }
-}
-
 /// An on-disk storage backend which uses SQLite
 pub struct SqliteStorage {
     db_file: std::path::PathBuf,
@@ -69,12 +52,19 @@ impl SqliteStorage {
             let txn = con.transaction()?;
 
             let queries = vec![
-                "CREATE TABLE IF NOT EXISTS clients (client_key STRING PRIMARY KEY, latest_version_id STRING);",
+                "CREATE TABLE IF NOT EXISTS clients (
+                    client_key STRING PRIMARY KEY,
+                    latest_version_id STRING,
+                    snapshot_version_id STRING,
+                    versions_since_snapshot INTEGER,
+                    snapshot_timestamp INTEGER,
+                    snapshot BLOB);",
                 "CREATE TABLE IF NOT EXISTS versions (version_id STRING PRIMARY KEY, client_key STRING, parent_version_id STRING, history_segment BLOB);",
                 "CREATE INDEX IF NOT EXISTS versions_by_parent ON versions (parent_version_id);",
             ];
             for q in queries {
-                txn.execute(q, []).context("Creating table")?;
+                txn.execute(q, [])
+                    .context("Error while creating SQLite tables")?;
             }
             txn.commit()?;
         }
@@ -126,7 +116,7 @@ impl Txn {
                 },
             )
             .optional()
-            .context("Get version query")?;
+            .context("Error getting version")?;
         Ok(r)
     }
 }
@@ -136,17 +126,42 @@ impl StorageTxn for Txn {
         let t = self.get_txn()?;
         let result: Option<Client> = t
             .query_row(
-                "SELECT latest_version_id FROM clients WHERE client_key = ? LIMIT 1",
+                "SELECT
+                    latest_version_id,
+                    snapshot_timestamp,
+                    versions_since_snapshot,
+                    snapshot_version_id
+                 FROM clients
+                 WHERE client_key = ?
+                 LIMIT 1",
                 [&StoredUuid(client_key)],
                 |r| {
                     let latest_version_id: StoredUuid = r.get(0)?;
+                    let snapshot_timestamp: Option<i64> = r.get(1)?;
+                    let versions_since_snapshot: Option<u32> = r.get(2)?;
+                    let snapshot_version_id: Option<StoredUuid> = r.get(3)?;
+
+                    // if all of the relevant fields are non-NULL, return a snapshot
+                    let snapshot = match (
+                        snapshot_timestamp,
+                        versions_since_snapshot,
+                        snapshot_version_id,
+                    ) {
+                        (Some(ts), Some(vs), Some(v)) => Some(Snapshot {
+                            version_id: v.0,
+                            timestamp: Utc.timestamp(ts, 0),
+                            versions_since: vs,
+                        }),
+                        _ => None,
+                    };
                     Ok(Client {
                         latest_version_id: latest_version_id.0,
+                        snapshot,
                     })
                 },
             )
             .optional()
-            .context("Get client query")?;
+            .context("Error getting client")?;
 
         Ok(result)
     }
@@ -158,18 +173,66 @@ impl StorageTxn for Txn {
             "INSERT OR REPLACE INTO clients (client_key, latest_version_id) VALUES (?, ?)",
             params![&StoredUuid(client_key), &StoredUuid(latest_version_id)],
         )
-        .context("Create client query")?;
+        .context("Error creating/updating client")?;
         t.commit()?;
         Ok(())
     }
 
-    fn set_client_latest_version_id(
+    fn set_snapshot(
         &mut self,
         client_key: Uuid,
-        latest_version_id: Uuid,
+        snapshot: Snapshot,
+        data: Vec<u8>,
     ) -> anyhow::Result<()> {
-        // Implementation is same as new_client
-        self.new_client(client_key, latest_version_id)
+        let t = self.get_txn()?;
+
+        t.execute(
+            "UPDATE clients
+             SET
+               snapshot_version_id = ?,
+               snapshot_timestamp = ?,
+               versions_since_snapshot = ?,
+               snapshot = ?
+             WHERE client_key = ?",
+            params![
+                &StoredUuid(snapshot.version_id),
+                snapshot.timestamp.timestamp(),
+                snapshot.versions_since,
+                data,
+                &StoredUuid(client_key),
+            ],
+        )
+        .context("Error creating/updating snapshot")?;
+        t.commit()?;
+        Ok(())
+    }
+
+    fn get_snapshot_data(
+        &mut self,
+        client_key: Uuid,
+        version_id: Uuid,
+    ) -> anyhow::Result<Option<Vec<u8>>> {
+        let t = self.get_txn()?;
+        let r = t
+            .query_row(
+                "SELECT snapshot, snapshot_version_id FROM clients WHERE client_key = ?",
+                params![&StoredUuid(client_key)],
+                |r| {
+                    let v: StoredUuid = r.get("snapshot_version_id")?;
+                    let d: Vec<u8> = r.get("snapshot")?;
+                    Ok((v.0, d))
+                },
+            )
+            .optional()
+            .context("Error getting snapshot")?;
+        r.map(|(v, d)| {
+            if v != version_id {
+                return Err(anyhow::anyhow!("unexpected snapshot_version_id"));
+            }
+
+            Ok(d)
+        })
+        .transpose()
     }
 
     fn get_version_by_parent(
@@ -182,6 +245,7 @@ impl StorageTxn for Txn {
             client_key,
             parent_version_id)
     }
+
     fn get_version(
         &mut self,
         client_key: Uuid,
@@ -209,9 +273,19 @@ impl StorageTxn for Txn {
                 StoredUuid(client_key),
                 StoredUuid(parent_version_id),
                 history_segment
-            ],
+            ]
         )
-        .context("Add version query")?;
+        .context("Error adding version")?;
+        t.execute(
+            "UPDATE clients
+             SET
+               latest_version_id = ?,
+               versions_since_snapshot = versions_since_snapshot + 1
+             WHERE client_key = ?",
+            params![StoredUuid(version_id), StoredUuid(client_key),],
+        )
+        .context("Error updating client for new version")?;
+
         t.commit()?;
         Ok(())
     }
@@ -228,6 +302,7 @@ impl StorageTxn for Txn {
 #[cfg(test)]
 mod test {
     use super::*;
+    use chrono::DateTime;
     use pretty_assertions::assert_eq;
     use tempfile::TempDir;
 
@@ -264,12 +339,25 @@ mod test {
 
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(client.latest_version_id, latest_version_id);
+        assert!(client.snapshot.is_none());
 
         let latest_version_id = Uuid::new_v4();
-        txn.set_client_latest_version_id(client_key, latest_version_id)?;
+        txn.add_version(client_key, latest_version_id, Uuid::new_v4(), vec![1, 1])?;
 
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(client.latest_version_id, latest_version_id);
+        assert!(client.snapshot.is_none());
+
+        let snap = Snapshot {
+            version_id: Uuid::new_v4(),
+            timestamp: "2014-11-28T12:00:09Z".parse::<DateTime<Utc>>().unwrap(),
+            versions_since: 4,
+        };
+        txn.set_snapshot(client_key, snap.clone(), vec![1, 2, 3])?;
+
+        let client = txn.get_client(client_key)?.unwrap();
+        assert_eq!(client.latest_version_id, latest_version_id);
+        assert_eq!(client.snapshot.unwrap(), snap);
 
         Ok(())
     }
@@ -314,6 +402,50 @@ mod test {
 
         let version = txn.get_version(client_key, version_id)?.unwrap();
         assert_eq!(version, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_snapshots() -> anyhow::Result<()> {
+        let tmp_dir = TempDir::new()?;
+        let storage = SqliteStorage::new(&tmp_dir.path())?;
+        let mut txn = storage.txn()?;
+
+        let client_key = Uuid::new_v4();
+
+        txn.new_client(client_key, Uuid::new_v4())?;
+        assert!(txn.get_client(client_key)?.unwrap().snapshot.is_none());
+
+        let snap = Snapshot {
+            version_id: Uuid::new_v4(),
+            timestamp: "2013-10-08T12:00:09Z".parse::<DateTime<Utc>>().unwrap(),
+            versions_since: 3,
+        };
+        txn.set_snapshot(client_key, snap.clone(), vec![9, 8, 9])?;
+
+        assert_eq!(
+            txn.get_snapshot_data(client_key, snap.version_id)?.unwrap(),
+            vec![9, 8, 9]
+        );
+        assert_eq!(txn.get_client(client_key)?.unwrap().snapshot, Some(snap));
+
+        let snap2 = Snapshot {
+            version_id: Uuid::new_v4(),
+            timestamp: "2014-11-28T12:00:09Z".parse::<DateTime<Utc>>().unwrap(),
+            versions_since: 10,
+        };
+        txn.set_snapshot(client_key, snap2.clone(), vec![0, 2, 4, 6])?;
+
+        assert_eq!(
+            txn.get_snapshot_data(client_key, snap2.version_id)?
+                .unwrap(),
+            vec![0, 2, 4, 6]
+        );
+        assert_eq!(txn.get_client(client_key)?.unwrap().snapshot, Some(snap2));
+
+        // check that mismatched version is detected
+        assert!(txn.get_snapshot_data(client_key, Uuid::new_v4()).is_err());
 
         Ok(())
     }
