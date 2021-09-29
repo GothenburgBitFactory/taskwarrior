@@ -70,7 +70,7 @@
 - TW #2292 CmdEdit: Interruption should remove lock file
            Thanks to Martin Michlmayr for reporting, indev12 for contributing.
 - TW #2333 Width determination of Unicode characters now works for up to
-           Unicode 11 (from Unicode 5). Emojis are correctly displayed.
+           Unicode 12 (from Unicode 5). Emojis are correctly displayed.
            Thanks to Adam Monsen for reporting.
 - TW #2373 Year 2038 Problem
            Thanks to Stephan Rieche for reporting.
