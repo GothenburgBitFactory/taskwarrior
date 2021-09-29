@@ -275,6 +275,27 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  Don't forget that 50-year anniversary and 'task add' a long-term task today!"
   );
   items.push_back(uint64_support);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - Reports outside of context
+
+  NewsItem contextless_reports (
+    false,
+    "Context-less reports",
+    "",
+    "  By default, every report is affected by currently active context.",
+    "  You can now make a selected report ignore currently active context by setting\n"
+    "  'report.<name>.context' configuration variable to 0.",
+    "",
+    "  This is useful for users who utilize a single place (such as project:Inbox)\n"
+    "  to collect their new tasks that are then triaged on a regular basis\n"
+    "  (such as in GTD methodology).\n"
+    "  \n"
+    "  In such a case, defining a report that filters for project:Inbox and making it\n"
+    "  fully accessible from any context is a major usability improvement.",
+    ""
+  );
+  items.push_back(contextless_reports);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
