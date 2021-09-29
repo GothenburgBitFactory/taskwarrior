@@ -124,7 +124,7 @@ void NewsItem::render () {
 
   wait_for_enter ();
 
-  std::cout << "  " << underline.colorize ("What changes in 2.6.0?\n");
+  std::cout << "  " << underline.colorize ("What changed in 2.6.0?\n");
   if (_punchline.size ())
     std::cout << footnote.colorize (format ("{1}\n", _punchline));
 
