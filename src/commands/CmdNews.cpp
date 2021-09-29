@@ -318,6 +318,23 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   );
   items.push_back(waiting_status);
 
+  /////////////////////////////////////////////////////////////////////////////
+  // - Support for environment variables in the taskrc
+
+  NewsItem env_vars (
+    false,
+    "Environment variables in the taskrc",
+    "",
+    "",
+    "  Taskwarrior now supports expanding environment variables in the taskrc file,\n"
+    "  allowing users to customize the behaviour of 'task' based on the current env.\n",
+    "  The environment variables can either be used in paths, or as separate values:\n"
+    "    data.location=$XDG_DATA_HOME/task/\n"
+    "    default.project=$PROJECT",
+    "",
+    ""
+  );
+  items.push_back(env_vars);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
