@@ -30,6 +30,7 @@
 #include <string>
 #include <Command.h>
 #include <CmdConfig.h>
+#include <CmdContext.h>
 
 class NewsItem {
 public:

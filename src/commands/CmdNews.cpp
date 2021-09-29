@@ -151,7 +151,6 @@ void NewsItem::render () {
 // - XDG directory mode (high)
 // - Support for Unicode 11 characters (high)
 // - 64 bit values, UDAs, Datetime values until year 9999 (high)
-// - Writeable context (high)
 // - Config context variables
 // - Reports outside of context
 // - Environment variables in taskrc (high)
@@ -161,6 +160,64 @@ void NewsItem::render () {
 // - Exporting a report
 // - Multi-day holidays
 void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
+  /////////////////////////////////////////////////////////////////////////////
+  // - Writeable context (major)
+
+  // Detect whether user uses any contexts
+  auto config = Context::getContext ().config;
+  std::stringstream advice;
+
+  auto defined = CmdContext::getContexts ();
+  if (defined.size ())
+  {
+    // Detect the old-style contexts
+    std::vector<std::string> old_style;
+    std::copy_if (
+      defined.begin(),
+      defined.end(),
+      std::back_inserter(old_style),
+      [&](auto& name){return config.has ("context." + name);}
+    );
+
+    if (old_style.size ())
+    {
+      advice << format (
+        "  You have {1} defined contexts, out of which {2} are old-style:\n",
+        defined.size (),
+        std::count_if (
+          defined.begin (),
+          defined.end (),
+          [&](auto& name){return config.has ("context." + name);}
+      ));
+
+      for (auto context: defined) {
+        std::string old_definition = config.get ("context." + context);
+        if (old_definition != "")
+          advice << format ("  * {1}: {2}\n", context, old_definition);
+      }
+
+      advice << "\n"
+                "  These need to be migrated to new-style, which uses context.<name>.read and\n"
+                "  context.<name>.write config variables. Please run the following commands:\n";
+
+      for (auto context: defined) {
+        std::string old_definition = config.get ("context." + context);
+        if (old_definition != "")
+          advice << format ("  $ task context define {1} '{2}'\n", context, old_definition);
+      }
+
+      advice << "\n"
+                "  Please check these filters are also valid modifications. If a context filter is not\n"
+                "  a valid modification, you can set the context.<name>.write configuration variable to\n"
+                "  specify the write context explicitly. Read more in CONTEXT section of man taskrc.";
+    }
+    else
+      advice << "  You don't have any old-style contexts defined, so you're good to go as is!";
+  }
+  else
+    advice << "  You don't have any contexts defined, so you're good to go as is!\n"
+              "  Read more about how to use contexts in CONTEXT section of 'man task'.";
+
   NewsItem writeable_context (
     true,
     "'Writeable' context",
@@ -197,7 +254,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  Note that project attribute was set to 'Work' automatically",
     "  This was a popular feature request. Now, if you have a context active,\n"
     "  newly added tasks no longer \"fall outside\" of the context by default.",
-    ""
+    advice.str ()
   );
   items.push_back(writeable_context);
 }
