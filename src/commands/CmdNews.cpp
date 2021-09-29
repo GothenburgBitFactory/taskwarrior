@@ -128,7 +128,8 @@ void NewsItem::render () {
   if (_punchline.size ())
     std::cout << footnote.colorize (format ("{1}\n", _punchline));
 
-  std::cout << format ("{1}\n", _update);
+  if (_update.size ())
+    std::cout << format ("{1}\n", _update);
 
   wait_for_enter ();
 
