@@ -2,7 +2,7 @@ use crate::api::{
     client_key_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
     PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
 };
-use crate::server::{get_child_version, VersionId};
+use crate::server::{get_child_version, GetVersionResult, VersionId};
 use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
 
 /// Get a child version.
@@ -23,27 +23,31 @@ pub(crate) async fn service(
 
     let client_key = client_key_header(&req)?;
 
-    txn.get_client(client_key)
+    let client = txn
+        .get_client(client_key)
         .map_err(failure_to_ise)?
         .ok_or_else(|| error::ErrorNotFound("no such client"))?;
 
-    let result = get_child_version(txn, client_key, parent_version_id).map_err(failure_to_ise)?;
-    if let Some(result) = result {
-        Ok(HttpResponse::Ok()
+    return match get_child_version(txn, client_key, client, parent_version_id)
+        .map_err(failure_to_ise)?
+    {
+        GetVersionResult::Success {
+            version_id,
+            parent_version_id,
+            history_segment,
+        } => Ok(HttpResponse::Ok()
             .content_type(HISTORY_SEGMENT_CONTENT_TYPE)
-            .header(VERSION_ID_HEADER, result.version_id.to_string())
-            .header(
-                PARENT_VERSION_ID_HEADER,
-                result.parent_version_id.to_string(),
-            )
-            .body(result.history_segment))
-    } else {
-        Err(error::ErrorNotFound("no such version"))
-    }
+            .header(VERSION_ID_HEADER, version_id.to_string())
+            .header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string())
+            .body(history_segment)),
+        GetVersionResult::NotFound => Err(error::ErrorNotFound("no such version")),
+        GetVersionResult::Gone => Err(error::ErrorGone("version has been deleted")),
+    };
 }
 
 #[cfg(test)]
 mod test {
+    use crate::server::NO_VERSION_ID;
     use crate::storage::{InMemoryStorage, Storage};
     use crate::Server;
     use actix_web::{http::StatusCode, test, App};
@@ -113,7 +117,7 @@ mod test {
     }
 
     #[actix_rt::test]
-    async fn test_version_not_found() {
+    async fn test_version_not_found_and_gone() {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
@@ -126,7 +130,21 @@ mod test {
         let server = Server::new(storage);
         let mut app = test::init_service(App::new().service(server.service())).await;
 
+        // the child of an unknown parent_version_id is GONE
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
+        let req = test::TestRequest::get()
+            .uri(&uri)
+            .header("X-Client-Key", client_key.to_string())
+            .to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::GONE);
+        assert_eq!(resp.headers().get("X-Version-Id"), None);
+        assert_eq!(resp.headers().get("X-Parent-Version-Id"), None);
+
+        // but the child of the nil parent_version_id is NOT FOUND, since
+        // there is no snapshot.  The tests in crate::server test more
+        // corner cases.
+        let uri = format!("/v1/client/get-child-version/{}", NO_VERSION_ID);
         let req = test::TestRequest::get()
             .uri(&uri)
             .header("X-Client-Key", client_key.to_string())
