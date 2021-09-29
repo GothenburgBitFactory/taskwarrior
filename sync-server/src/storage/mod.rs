@@ -43,6 +43,13 @@ pub trait StorageTxn {
         parent_version_id: Uuid,
     ) -> anyhow::Result<Option<Version>>;
 
+    /// Get a version, indexed by its own version id
+    fn get_version(
+        &mut self,
+        client_key: Uuid,
+        version_id: Uuid,
+    ) -> anyhow::Result<Option<Version>>;
+
     /// Add a version (that must not already exist)
     fn add_version(
         &mut self,

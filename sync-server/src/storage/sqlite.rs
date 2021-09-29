@@ -71,6 +71,7 @@ impl SqliteStorage {
             let queries = vec![
                 "CREATE TABLE IF NOT EXISTS clients (client_key STRING PRIMARY KEY, latest_version_id STRING);",
                 "CREATE TABLE IF NOT EXISTS versions (version_id STRING PRIMARY KEY, client_key STRING, parent_version_id STRING, history_segment BLOB);",
+                "CREATE INDEX IF NOT EXISTS versions_by_parent ON versions (parent_version_id);",
             ];
             for q in queries {
                 txn.execute(q, []).context("Creating table")?;
@@ -99,6 +100,34 @@ impl Txn {
         self.con
             .transaction()
             .map_err(|_e| SqliteError::CreateTransactionFailed)
+    }
+
+    /// Implementation for queries from the versions table
+    fn get_version_impl(
+        &mut self,
+        query: &'static str,
+        client_key: Uuid,
+        version_id_arg: Uuid,
+    ) -> anyhow::Result<Option<Version>> {
+        let t = self.get_txn()?;
+        let r = t
+            .query_row(
+                query,
+                params![&StoredUuid(version_id_arg), &StoredUuid(client_key)],
+                |r| {
+                    let version_id: StoredUuid = r.get("version_id")?;
+                    let parent_version_id: StoredUuid = r.get("parent_version_id")?;
+
+                    Ok(Version {
+                        version_id: version_id.0,
+                        parent_version_id: parent_version_id.0,
+                        history_segment: r.get("history_segment")?,
+                    })
+                },
+            )
+            .optional()
+            .context("Get version query")?;
+        Ok(r)
     }
 }
 
@@ -148,24 +177,20 @@ impl StorageTxn for Txn {
         client_key: Uuid,
         parent_version_id: Uuid,
     ) -> anyhow::Result<Option<Version>> {
-        let t = self.get_txn()?;
-        let r = t.query_row(
+        self.get_version_impl(
             "SELECT version_id, parent_version_id, history_segment FROM versions WHERE parent_version_id = ? AND client_key = ?",
-            params![&StoredUuid(parent_version_id), &StoredUuid(client_key)],
-            |r| {
-                let version_id: StoredUuid = r.get("version_id")?;
-                let parent_version_id: StoredUuid = r.get("parent_version_id")?;
-
-                Ok(Version{
-                version_id: version_id.0,
-                parent_version_id: parent_version_id.0,
-                history_segment: r.get("history_segment")?,
-            })}
-            )
-        .optional()
-        .context("Get version query")
-        ?;
-        Ok(r)
+            client_key,
+            parent_version_id)
+    }
+    fn get_version(
+        &mut self,
+        client_key: Uuid,
+        version_id: Uuid,
+    ) -> anyhow::Result<Option<Version>> {
+        self.get_version_impl(
+            "SELECT version_id, parent_version_id, history_segment FROM versions WHERE version_id = ? AND client_key = ?",
+            client_key,
+            version_id)
     }
 
     fn add_version(
@@ -260,7 +285,7 @@ mod test {
     }
 
     #[test]
-    fn test_add_version_and_gvbp() -> anyhow::Result<()> {
+    fn test_add_version_and_get_version() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
         let storage = SqliteStorage::new(&tmp_dir.path())?;
         let mut txn = storage.txn()?;
@@ -275,18 +300,21 @@ mod test {
             parent_version_id,
             history_segment.clone(),
         )?;
+
+        let expected = Version {
+            version_id,
+            parent_version_id,
+            history_segment,
+        };
+
         let version = txn
             .get_version_by_parent(client_key, parent_version_id)?
             .unwrap();
+        assert_eq!(version, expected);
 
-        assert_eq!(
-            version,
-            Version {
-                version_id,
-                parent_version_id,
-                history_segment,
-            }
-        );
+        let version = txn.get_version(client_key, version_id)?.unwrap();
+        assert_eq!(version, expected);
+
         Ok(())
     }
 }
