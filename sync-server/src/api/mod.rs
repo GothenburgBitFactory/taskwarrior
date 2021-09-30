@@ -3,6 +3,7 @@ use crate::storage::Storage;
 use actix_web::{error, http::StatusCode, web, HttpRequest, Result, Scope};
 use std::sync::Arc;
 
+mod add_snapshot;
 mod add_version;
 mod get_child_version;
 mod get_snapshot;
@@ -31,6 +32,7 @@ pub(crate) fn api_scope() -> Scope {
         .service(get_child_version::service)
         .service(add_version::service)
         .service(get_snapshot::service)
+        .service(add_snapshot::service)
 }
 
 /// Convert a failure::Error to an Actix ISE
