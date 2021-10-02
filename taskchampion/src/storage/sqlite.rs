@@ -113,9 +113,11 @@ impl<'t> Txn<'t> {
     fn get_next_working_set_number(&self) -> anyhow::Result<usize> {
         let t = self.get_txn()?;
         let next_id: Option<usize> = t
-            .query_row("SELECT COALESCE(MAX(id), 0) + 1 FROM working_set", [], |r| {
-                r.get(0)
-            })
+            .query_row(
+                "SELECT COALESCE(MAX(id), 0) + 1 FROM working_set",
+                [],
+                |r| r.get(0),
+            )
             .optional()
             .context("Getting highest working set ID")?;
 
@@ -290,7 +292,10 @@ impl<'t> StorageTxn for Txn<'t> {
 
         let rows: Vec<Result<(usize, Uuid), _>> = rows.collect();
         let mut res = Vec::with_capacity(rows.len());
-        for _ in 0..self.get_next_working_set_number().context("Getting working set number")? {
+        for _ in 0..self
+            .get_next_working_set_number()
+            .context("Getting working set number")?
+        {
             res.push(None);
         }
         for r in rows {

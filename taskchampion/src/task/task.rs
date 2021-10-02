@@ -8,6 +8,16 @@ use std::convert::AsRef;
 use std::convert::TryInto;
 use uuid::Uuid;
 
+/* The Task and TaskMut classes wrap the underlying [`TaskMap`], which is a simple key/value map.
+ * They provide semantic meaning to that TaskMap according to the TaskChampion data model.  For
+ * example, [`get_status`](Task::get_status) and [`set_status`](TaskMut::set_status) translate from
+ * strings in the TaskMap to [`Status`].
+ *
+ * The same approach applies for more complex data such as dependencies or annotations.  Users of
+ * this API should only need the [`get_taskmap`](Task::get_taskmap) method for debugging purposes,
+ * and should never need to make changes to the TaskMap directly.
+ */
+
 /// A task, as publicly exposed by this crate.
 ///
 /// Note that Task objects represent a snapshot of the task at a moment in time, and are not
@@ -15,16 +25,21 @@ use uuid::Uuid;
 /// but a Task that is cached for more than a few seconds may cause the user to see stale
 /// data.  Fetch, use, and drop Tasks quickly.
 ///
-/// This struct contains only getters for various values on the task. The `into_mut` method returns
-/// a TaskMut which can be used to modify the task.
+/// This struct contains only getters for various values on the task. The
+/// [`into_mut`](Task::into_mut) method
+/// returns a TaskMut which can be used to modify the task.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Task {
     uuid: Uuid,
     taskmap: TaskMap,
 }
 
-/// A mutable task, with setter methods.  Most methods are simple setters and not further
-/// described.  Calling a setter will update the Replica, as well as the included Task.
+/// A mutable task, with setter methods.
+///
+/// Most methods are simple setters and not further described.  Calling a setter will update the
+/// referenced Replica, as well as the included Task, immediately.
+///
+/// The [`Task`] methods are available on [`TaskMut`] via [`Deref`](std::ops::Deref).
 pub struct TaskMut<'r> {
     task: Task,
     replica: &'r mut Replica,
@@ -150,8 +165,7 @@ impl Task {
 }
 
 impl<'r> TaskMut<'r> {
-    /// Get the immutable version of this object.  Note that TaskMut [`std::ops::Deref`]s to
-    /// [`crate::task::Task`], so all of that struct's getter methods can be used on TaskMut.
+    /// Get the immutable version of this object, ending the exclusive reference to the Replica.
     pub fn into_immut(self) -> Task {
         self.task
     }

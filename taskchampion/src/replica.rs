@@ -16,7 +16,10 @@ use uuid::Uuid;
 /// ## Tasks
 ///
 /// Tasks are uniquely identified by UUIDs.
-/// Most task modifications are performed via the [`crate::Task`] and [`crate::TaskMut`] types.
+/// Most task modifications are performed via the [`Task`](crate::Task) and
+/// [`TaskMut`](crate::TaskMut) types.  Use of two types for tasks allows easy
+/// read-only manipulation of lots of tasks, with exclusive access required only
+/// for modifications.
 ///
 /// ## Working Set
 ///
