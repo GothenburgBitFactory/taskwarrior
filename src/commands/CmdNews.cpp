@@ -27,9 +27,12 @@
 #include <cmake.h>
 #include <CmdNews.h>
 #include <iostream>
+#include <cmath>
 #include <csignal>
 #include <Table.h>
 #include <Context.h>
+#include <Datetime.h>
+#include <Duration.h>
 #include <shared.h>
 #include <format.h>
 #include <util.h>
@@ -544,12 +547,57 @@ int CmdNews::execute (std::string& output)
     items[i].render ();
   }
 
+  std::cout << "Thank you for catching up on the new features!\n";
+  wait_for_enter ();
+
+  // Display outro
+  Datetime now;
+  Datetime beginning (2006, 11, 29);
+  Duration development_time = Duration (now - beginning);
+
+  Color underline = Color ("underline");
+
+  std::stringstream outro;
+  outro << underline.colorize (bold.colorize ("Taskwarrior crowdfunding\n"));
+  outro << format (
+    "Taskwarrior has been in development for {1} years and its continued survival\n"
+    "depends on your support!\n\n"
+    "Please consider joining our {2} fundraiser and visit crowdfunding page at:\n\n",
+    std::lround (static_cast<float>(development_time.days ()) / 365.25),
+    now.year ()
+  );
+  outro << bold.colorize("    https://github.com/sponsors/GothenburgBitFactory/\n\n");
+  outro << "Interesting perks are available for our sponsors.\nSponsorship directly translates to more development time spent on the project.\n";
+
+  std::cout << outro.str ();
+
   // Set a mark in the config to remember which version's release notes were displayed
-  if (config.get ("news.version") == "2.6.0")
-    output = "Repetition is the mother of all learning!\n";
-  else {
+  if (config.get ("news.version") != "2.6.0")
+  {
     CmdConfig::setConfigVariable ("news.version", "2.6.0", false);
-    output = "Thank you for catching up on the new features!\n";
+
+    std::string question = format (
+      "\nWould you like to open Taskwarrior {1} fundraising campaign to read more?",
+      now.year ()
+    );
+
+    std::vector <std::string> options {"yes", "no"};
+    std::vector <std::string> matches;
+
+    std::cout << question << " (YES/no) ";
+
+    std::string answer;
+    std::getline (std::cin, answer);
+
+    if (std::cin.eof () || trim (answer).empty ())
+      answer = "yes";
+    else
+      lowerCase (trim (answer));
+
+    autoComplete (answer, options, matches, 1); // Hard-coded 1.
+
+    if (matches.size () == 1 && matches[0] == "yes")
+      system ("xdg-open 'https://github.com/sponsors/GothenburgBitFactory/'");
   }
 
   if (! full_summary && major_items)
