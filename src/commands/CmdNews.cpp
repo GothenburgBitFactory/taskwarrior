@@ -416,6 +416,30 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     ""
   );
   items.push_back(by_modifier);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - Context-specific configuration overrides
+
+  NewsItem context_config (
+    false,
+    "Context-specific configuration overrides",
+    "",
+    "",
+    "  Any context can now define context-specific configuration overrides\n"
+    "  via context.<name>.rc.<setting>=<value>.\n",
+    "  This allows the user to customize the behaviour of Taskwarrior in a given context,\n"
+    "  for example, to change the default command in the 'work' context to 'overdue':\n"
+    "\n"
+    "      $ task config context.work.rc.default.command overdue\n"
+    "\n"
+    "  Another example would be to ensure that while context 'work' is active, tasks get\n"
+    "  stored in a ~/.worktasks directory:\n"
+    "\n"
+    "      $ task config context.work.rc.data.location=~/.worktasks",
+    "",
+    ""
+  );
+  items.push_back(context_config);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
