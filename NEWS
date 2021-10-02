@@ -60,7 +60,9 @@ New Features in Taskwarrior 2.6.0
 
 New Commands in Taskwarrior 2.6.0
 
-  -
+  - The 'news' command will guide the user through important release notes
+    anytime a new version of Taskwarrior is installed. It provides personalized
+    feedback, deprecation warnings and usage advice, where applicable.
 
 New Configuration Options in Taskwarrior 2.6.0
 
