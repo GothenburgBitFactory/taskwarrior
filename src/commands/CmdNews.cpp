@@ -148,7 +148,7 @@ void NewsItem::render () {
   wait_for_enter ();
 
   if (_reasoning.size ()) {
-    std::cout << "  " << underline.colorize ("What is the motivation for this feature?\n")
+    std::cout << "  " << underline.colorize ("What was the motivation behind this feature?\n")
               << _reasoning << std::endl;
     wait_for_enter ();
   }
@@ -266,7 +266,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "     1 1s   Work    Talk to Jeff    1\n"
     "            ^^^^^^^\n"
     "  \n"
-    "  Note that project attribute was set to 'Work' automatically",
+    "  Note that project attribute was set to 'Work' automatically.",
     "  This was a popular feature request. Now, if you have a context active,\n"
     "  newly added tasks no longer \"fall outside\" of the context by default.",
     advice.str ()
@@ -297,7 +297,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     true,
     "Deprecation of the status:waiting",
     "",
-    "  If a task has a 'wait' attribute set to a date in the future, it is modified.\n"
+    "  If a task has a 'wait' attribute set to a date in the future, it is modified\n"
     "  to have a 'waiting' status. Once that date is no longer in the future, the status\n"
     "  is modified to back to 'pending'.",
     "  The 'waiting' value of status is deprecated, instead users should use +WAITING\n"
@@ -382,7 +382,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "",
     "  Holidays are currently used in 'task calendar' to visualize the workload during\n"
     "  the upcoming weeks/months. Up to date country-specific holiday data files can be\n"
-    "  obtained from our website, holidata.net",
+    "  obtained from our website, holidata.net.",
     "  Instead of single-day holiday entries only, Taskwarrior now supports holidays\n"
     "  that span a range of days (i.e. vacation).\n",
     "  Use a holday.<name>.start and holiday.<name>.end to configure a multi-day holiday:\n"
@@ -476,7 +476,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "      data.location=$XDG_DATA_HOME/task/\n"
     "      hooks.location=$XDG_CONFIG_HOME/task/hooks/\n\n"
     "  Solutions in the past required symlinks or more cumbersome configuration overrides.",
-    "  If you configure you're data.location and hooks.location as above, ensure\n"
+    "  If you configure your data.location and hooks.location as above, ensure\n"
     "  that the XFG_DATA_HOME and XDG_CONFIG_HOME environment variables are set,\n"
     "  otherwise they're going to expand to empty string. Alternatively you can\n"
     "  hardcode the desired paths on your system."
