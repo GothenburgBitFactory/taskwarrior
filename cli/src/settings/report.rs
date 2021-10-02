@@ -259,6 +259,7 @@ pub(crate) fn get_usage(u: &mut Usage) {
 #[cfg(test)]
 mod test {
     use super::*;
+    use pretty_assertions::assert_eq;
     use taskchampion::Status;
     use toml::toml;
 

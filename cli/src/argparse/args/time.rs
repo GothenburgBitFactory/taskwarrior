@@ -239,6 +239,7 @@ pub(crate) fn timestamp<Tz: TimeZone + Copy>(
 mod test {
     use super::*;
     use crate::argparse::NOW;
+    use pretty_assertions::assert_eq;
     use rstest::rstest;
 
     const M: i64 = 60;

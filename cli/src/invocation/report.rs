@@ -133,6 +133,7 @@ mod test {
     use crate::invocation::test::*;
     use crate::settings::Sort;
     use chrono::prelude::*;
+    use pretty_assertions::assert_eq;
     use std::convert::TryInto;
     use taskchampion::{Status, Uuid};
 

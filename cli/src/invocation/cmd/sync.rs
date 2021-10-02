@@ -15,6 +15,7 @@ pub(crate) fn execute<W: WriteColor>(
 mod test {
     use super::*;
     use crate::invocation::test::*;
+    use pretty_assertions::assert_eq;
     use tempfile::TempDir;
 
     #[test]

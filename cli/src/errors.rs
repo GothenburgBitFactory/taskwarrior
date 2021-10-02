@@ -39,6 +39,7 @@ impl From<std::io::Error> for Error {
 mod test {
     use super::*;
     use anyhow::anyhow;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_exit_status() {

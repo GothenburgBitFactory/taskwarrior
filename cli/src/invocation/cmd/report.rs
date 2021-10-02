@@ -19,6 +19,7 @@ mod test {
     use super::*;
     use crate::argparse::Filter;
     use crate::invocation::test::*;
+
     use taskchampion::Status;
 
     #[test]

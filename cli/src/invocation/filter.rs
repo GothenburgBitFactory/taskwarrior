@@ -172,6 +172,7 @@ pub(super) fn filtered_tasks(
 mod test {
     use super::*;
     use crate::invocation::test::*;
+    use pretty_assertions::assert_eq;
     use taskchampion::Status;
 
     #[test]

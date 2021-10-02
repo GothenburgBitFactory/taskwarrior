@@ -356,6 +356,7 @@ impl<'t> StorageTxn for Txn<'t> {
 mod test {
     use super::*;
     use crate::storage::taskmap_with;
+    use pretty_assertions::assert_eq;
     use tempfile::TempDir;
 
     #[test]

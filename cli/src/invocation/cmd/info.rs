@@ -50,6 +50,7 @@ pub(crate) fn execute<W: WriteColor>(
 mod test {
     use super::*;
     use crate::invocation::test::*;
+
     use taskchampion::Status;
 
     #[test]

@@ -314,6 +314,7 @@ impl<'r> std::ops::Deref for TaskMut<'r> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     fn with_mut_task<F: FnOnce(TaskMut)>(f: F) {
         let mut replica = Replica::new_inmemory();

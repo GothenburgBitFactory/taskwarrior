@@ -359,6 +359,7 @@ mod tests {
     use crate::server::test::TestServer;
     use crate::storage::InMemoryStorage;
     use chrono::Utc;
+    use pretty_assertions::assert_eq;
     use proptest::prelude::*;
     use std::collections::HashMap;
     use uuid::Uuid;

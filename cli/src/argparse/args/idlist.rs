@@ -75,6 +75,7 @@ pub(crate) fn id_list(input: &str) -> IResult<&str, Vec<TaskId>> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_id_list_single() {

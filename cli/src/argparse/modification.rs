@@ -165,6 +165,7 @@ impl Modification {
 mod test {
     use super::*;
     use crate::argparse::NOW;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_empty() {

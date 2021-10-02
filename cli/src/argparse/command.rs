@@ -58,6 +58,7 @@ impl Command {
 #[cfg(test)]
 mod test {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     // NOTE: most testing of specific subcommands is handled in `subcommand.rs`.
 
