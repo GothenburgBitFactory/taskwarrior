@@ -506,6 +506,9 @@ int CmdNews::execute (std::string& output)
   auto words = Context::getContext ().cli2.getWords ();
   auto config = Context::getContext ().config;
 
+  // Supress compiler warning about unused argument
+  output = "";
+
   // TODO: 2.6.0 is the only version with explicit release notes, but in the
   // future we need to only execute yet unread release notes
   std::vector<NewsItem> items;
