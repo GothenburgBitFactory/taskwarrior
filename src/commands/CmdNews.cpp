@@ -465,9 +465,9 @@ int CmdNews::execute (std::string& output)
   Color bold = Color ("bold");
   std::cout << bold.colorize (
     "\n"
-    "===============================\n"
-    "Taskwarrior 2.6.0 Release Notes\n"
-    "===============================\n"
+    "====================================\n"
+    "Taskwarrior 2.6.0 Release highlights\n"
+    "====================================\n"
   );
 
   for (unsigned short i=0; i < items.size (); i++) {
