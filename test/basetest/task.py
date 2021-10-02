@@ -53,6 +53,7 @@ class Task(object):
         with open(self.taskrc, 'w') as rc:
             rc.write("data.location={0}\n"
                      "hooks=off\n"
+                     "news.version=2.6.0\n"
                      "".format(self.datadir))
 
         # Setup configuration to talk to taskd automatically
