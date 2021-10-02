@@ -398,6 +398,24 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  You can try it out - 'task add Prepare for an 👽 invasion!'"
   );
   items.push_back(unicode_12);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - The .by attribute modifier
+
+  NewsItem by_modifier (
+    false,
+    "The .by attribute modifier",
+    "",
+    "",
+    "  A new attribute modifier '.by' was introduced, equivalent to the operator '<='.\n",
+    "  This modifier can be used to list all tasks due by the end of the months,\n"
+    "  including the last day of the month, using: 'due.by:eom' query",
+    "  There was no convenient way to express '<=' relation using attribute modifiers.\n"
+    "  As a workaround, instead of 'due.by:eom' one could use 'due.before:eom+1d',\n"
+    "  but that requires a certain amount of mental overhead.",
+    ""
+  );
+  items.push_back(by_modifier);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
