@@ -177,6 +177,7 @@ int CmdShow::execute (std::string& output)
     " list.all.tags"
     " locking"
     " nag"
+    " news.version"
     " obfuscate"
     " print.empty.columns"
     " recurrence"
