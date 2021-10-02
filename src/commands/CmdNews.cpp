@@ -552,5 +552,12 @@ int CmdNews::execute (std::string& output)
     output = "Thank you for catching up on the new features!\n";
   }
 
+  if (! full_summary && major_items)
+    Context::getContext ().footnote (format (
+      "\nOnly major higlights were displayed.\n"
+      "If you're interested in more release highlights, run 'task news {1} minor'.",
+      version
+    ));
+
   return 0;
 }
