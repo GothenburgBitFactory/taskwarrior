@@ -539,6 +539,7 @@ int CmdNews::execute (std::string& output)
   signal (SIGINT, signal_handler);
 
   // Remove non-major items if displaying a non-full (abbreviated) summary
+  int total_highlights = items.size ();
   if (! full_summary)
     items.erase (
       std::remove_if (items.begin (), items.end (), [&](const NewsItem& n){return n._major != major_items;}),
@@ -615,12 +616,18 @@ int CmdNews::execute (std::string& output)
 
     if (matches.size () == 1 && matches[0] == "yes")
       system ("xdg-open 'https://github.com/sponsors/GothenburgBitFactory/'");
+
+    std::cout << std::endl;
   }
+  else
+    wait_for_enter ();  // Do not display the outro and footnote at once
 
   if (! full_summary && major_items)
     Context::getContext ().footnote (format (
-      "\nOnly major higlights were displayed.\n"
-      "If you're interested in more release highlights, run 'task news {1} minor'.",
+      "Only major higlights were displayed ({1} out of {2} total).\n"
+      "If you're interested in more release highlights, run 'task news {3} minor'.",
+      items.size (),
+      total_highlights,
       version
     ));
 
