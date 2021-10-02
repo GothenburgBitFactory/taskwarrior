@@ -440,6 +440,34 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     ""
   );
   items.push_back(context_config);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - XDG config home support
+
+  NewsItem xdg_support (
+    false,
+    "Support for XDG Base Directory Specification",
+    "",
+    "  The XDG Base Directory specification provides standard locations to store\n"
+    "  application data, configuration, state, and cached data in order to keep $HOME\n"
+    "  clutter-free. The locations are usually set to ~/.local/share, ~/.config,\n"
+    "  ~/.local/state and ~/.cache respectively.",
+    "  If taskrc is not found at '~/.taskrc', Taskwarrior will attempt to find it\n"
+    "  at '$XDG_CONFIG_HOME/task/taskrc' (defaults to '~/.config/task/taskrc').",
+    "",
+    "  This allows users to fully follow XDG Base Directory Spec by moving their taskrc:\n"
+    "      $ mkdir $XDG_CONFIG_HOME/task\n"
+    "      $ mv ~/.taskrc $XDG_CONFIG_HOME/task/taskrc\n\n"
+    "  and further setting:\n"
+    "      data.location=$XDG_DATA_HOME/task/\n"
+    "      hooks.location=$XDG_CONFIG_HOME/task/hooks/\n\n"
+    "  Solutions in the past required symlinks or more cumbersome configuration overrides.",
+    "  If you configure you're data.location and hooks.location as above, ensure\n"
+    "  that the XFG_DATA_HOME and XDG_CONFIG_HOME environment variables are set,\n"
+    "  otherwise they're going to expand to empty string. Alternatively you can\n"
+    "  hardcode the desired paths on your system."
+  );
+  items.push_back(xdg_support);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
