@@ -18,6 +18,8 @@ New Features in Taskwarrior 2.6.0
   - Calendar now displays waiting tasks with due dates on the calendar.
   - Calendar supports highlighting days with scheduled tasks.
   - Multi-day holidays are now supported.
+  - Holiday data files for fr-CA, hu-HU, pt-BR, sk-SK and sv-FI locales are now
+    generated and shipped with Taskwarrior.
   - The task edit command can now handle multi-line annotations and UDAs in a
     user friendly way, withouth having to handle with JSON escaping of special
     chars.
