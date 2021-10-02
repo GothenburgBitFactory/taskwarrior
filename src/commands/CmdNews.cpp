@@ -495,6 +495,7 @@ int CmdNews::execute (std::string& output)
   // TODO: 2.6.0 is the only version with explicit release notes, but in the
   // future we need to only execute yet unread release notes
   std::vector<NewsItem> items;
+  std::string version = "2.6.0";
   version2_6_0 (items);
 
   bool full_summary = false;
@@ -529,12 +530,14 @@ int CmdNews::execute (std::string& output)
 
   // Print release notes
   Color bold = Color ("bold");
-  std::cout << bold.colorize (
+  std::cout << bold.colorize (format (
     "\n"
-    "====================================\n"
-    "Taskwarrior 2.6.0 Release highlights\n"
-    "====================================\n"
-  );
+    "==========================================\n"
+    "Taskwarrior {1} {2} Release highlights\n"
+    "==========================================\n",
+    version,
+    (full_summary ? "All" : (major_items ? "Major" : "Minor"))
+   ));
 
   for (unsigned short i=0; i < items.size (); i++) {
     std::cout << format ("\n({1}/{2}) ", i+1, items.size ());
