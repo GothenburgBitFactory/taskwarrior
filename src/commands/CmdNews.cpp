@@ -59,7 +59,18 @@ static void signal_handler (int s)
 {
   if (s == SIGINT)
   {
+    Color footnote;
+    if (Context::getContext ().color ()) {
+      if (Context::getContext ().config.has ("color.footnote"))
+        footnote = Color (Context::getContext ().config.get ("color.footnote"));
+    }
+
     std::cout << "\n\nCome back and read about new features later!\n";
+
+    std::cout << footnote.colorize (
+      "\nIf you enjoy Taskwarrior, please consider supporting the project at:\n"
+      "    https://github.com/sponsors/GothenburgBitFactory/\n"
+    );
     exit (1);
   }
 }
