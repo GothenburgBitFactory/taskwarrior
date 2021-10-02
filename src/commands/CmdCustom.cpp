@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <CmdCustom.h>
+#include <random>
 #include <sstream>
 #include <map>
 #include <vector>
@@ -247,6 +248,29 @@ int CmdCustom::execute (std::string& output)
     Context::getContext ().footnote ("No matches.");
     rc = 1;
   }
+
+  // Inform user about the new release higlights if not presented yet
+  if (Context::getContext ().config.get ("news.version") != "2.6.0")
+  {
+    std::random_device device;
+    std::mt19937 random_generator(device());
+    std::uniform_int_distribution<std::mt19937::result_type> ten_percent(1, 10);
+
+    std::string NEWS_NOTICE = (
+      "Recently upgraded to 2.6.0. "
+      "Please run 'task news' to read higlights about the new release."
+    );
+
+    // 1 in 10 chance to display the message.
+    if (ten_percent(random_generator) == 10)
+    {
+      if (Context::getContext ().verbose ("footnote"))
+        Context::getContext ().footnote (NEWS_NOTICE);
+      else if (Context::getContext ().verbose ("header"))
+        Context::getContext ().header (NEWS_NOTICE);
+    }
+  }
+
 
   feedback_backlog ();
   output = out.str ();
