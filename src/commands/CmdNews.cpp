@@ -590,6 +590,9 @@ int CmdNews::execute (std::string& output)
   {
     CmdConfig::setConfigVariable ("news.version", "2.6.0", false);
 
+    // Revert back to default signal handling after displaying the outro
+    signal (SIGINT, SIG_DFL);
+
     std::string question = format (
       "\nWould you like to open Taskwarrior {1} fundraising campaign to read more?",
       now.year ()
