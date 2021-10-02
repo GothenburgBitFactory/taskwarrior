@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/de-CH/2020.json
 # https://holidata.net/de-CH/2021.json
+# https://holidata.net/de-CH/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,74 +28,74 @@
 ###############################################################################
 
 holiday.de-CH1.name=Neujahrstag
-holiday.de-CH1.date=20200101
+holiday.de-CH1.date=20210101
 holiday.de-CH2.name=Berchtoldstag
-holiday.de-CH2.date=20200102
+holiday.de-CH2.date=20210102
 holiday.de-CH3.name=Heilige Drei Könige
-holiday.de-CH3.date=20200106
+holiday.de-CH3.date=20210106
 holiday.de-CH4.name=Josefstag
-holiday.de-CH4.date=20200319
+holiday.de-CH4.date=20210319
 holiday.de-CH5.name=Karfreitag
-holiday.de-CH5.date=20200410
+holiday.de-CH5.date=20210402
 holiday.de-CH6.name=Ostersonntag
-holiday.de-CH6.date=20200412
+holiday.de-CH6.date=20210404
 holiday.de-CH7.name=Ostermontag
-holiday.de-CH7.date=20200413
+holiday.de-CH7.date=20210405
 holiday.de-CH8.name=Tag der Arbeit
-holiday.de-CH8.date=20200501
+holiday.de-CH8.date=20210501
 holiday.de-CH9.name=Auffahrt
-holiday.de-CH9.date=20200521
+holiday.de-CH9.date=20210513
 holiday.de-CH10.name=Pfingstsonntag
-holiday.de-CH10.date=20200531
+holiday.de-CH10.date=20210523
 holiday.de-CH11.name=Pfingstmontag
-holiday.de-CH11.date=20200601
+holiday.de-CH11.date=20210524
 holiday.de-CH12.name=Fronleichnam
-holiday.de-CH12.date=20200611
+holiday.de-CH12.date=20210603
 holiday.de-CH13.name=Bundesfeier
-holiday.de-CH13.date=20200801
+holiday.de-CH13.date=20210801
 holiday.de-CH14.name=Mariä Himmelfahrt
-holiday.de-CH14.date=20200815
+holiday.de-CH14.date=20210815
 holiday.de-CH15.name=Allerheiligen
-holiday.de-CH15.date=20201101
+holiday.de-CH15.date=20211101
 holiday.de-CH16.name=Mariä Empfängnis
-holiday.de-CH16.date=20201208
+holiday.de-CH16.date=20211208
 holiday.de-CH17.name=Weihnachtstag
-holiday.de-CH17.date=20201225
+holiday.de-CH17.date=20211225
 holiday.de-CH18.name=Stephanstag
-holiday.de-CH18.date=20201226
+holiday.de-CH18.date=20211226
 holiday.de-CH19.name=Neujahrstag
-holiday.de-CH19.date=20210101
+holiday.de-CH19.date=20220101
 holiday.de-CH20.name=Berchtoldstag
-holiday.de-CH20.date=20210102
+holiday.de-CH20.date=20220102
 holiday.de-CH21.name=Heilige Drei Könige
-holiday.de-CH21.date=20210106
+holiday.de-CH21.date=20220106
 holiday.de-CH22.name=Josefstag
-holiday.de-CH22.date=20210319
+holiday.de-CH22.date=20220319
 holiday.de-CH23.name=Karfreitag
-holiday.de-CH23.date=20210402
+holiday.de-CH23.date=20220415
 holiday.de-CH24.name=Ostersonntag
-holiday.de-CH24.date=20210404
+holiday.de-CH24.date=20220417
 holiday.de-CH25.name=Ostermontag
-holiday.de-CH25.date=20210405
+holiday.de-CH25.date=20220418
 holiday.de-CH26.name=Tag der Arbeit
-holiday.de-CH26.date=20210501
+holiday.de-CH26.date=20220501
 holiday.de-CH27.name=Auffahrt
-holiday.de-CH27.date=20210513
+holiday.de-CH27.date=20220526
 holiday.de-CH28.name=Pfingstsonntag
-holiday.de-CH28.date=20210523
+holiday.de-CH28.date=20220605
 holiday.de-CH29.name=Pfingstmontag
-holiday.de-CH29.date=20210524
+holiday.de-CH29.date=20220606
 holiday.de-CH30.name=Fronleichnam
-holiday.de-CH30.date=20210603
+holiday.de-CH30.date=20220616
 holiday.de-CH31.name=Bundesfeier
-holiday.de-CH31.date=20210801
+holiday.de-CH31.date=20220801
 holiday.de-CH32.name=Mariä Himmelfahrt
-holiday.de-CH32.date=20210815
+holiday.de-CH32.date=20220815
 holiday.de-CH33.name=Allerheiligen
-holiday.de-CH33.date=20211101
+holiday.de-CH33.date=20221101
 holiday.de-CH34.name=Mariä Empfängnis
-holiday.de-CH34.date=20211208
+holiday.de-CH34.date=20221208
 holiday.de-CH35.name=Weihnachtstag
-holiday.de-CH35.date=20211225
+holiday.de-CH35.date=20221225
 holiday.de-CH36.name=Stephanstag
-holiday.de-CH36.date=20211226
+holiday.de-CH36.date=20221226

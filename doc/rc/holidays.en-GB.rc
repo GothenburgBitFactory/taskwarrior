@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/en-GB/2020.json
 # https://holidata.net/en-GB/2021.json
+# https://holidata.net/en-GB/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,40 +28,42 @@
 ###############################################################################
 
 holiday.en-GB1.name=New Year's Day
-holiday.en-GB1.date=20200101
+holiday.en-GB1.date=20210101
 holiday.en-GB2.name=Good Friday
-holiday.en-GB2.date=20200410
+holiday.en-GB2.date=20210402
 holiday.en-GB3.name=Easter Monday
-holiday.en-GB3.date=20200413
+holiday.en-GB3.date=20210405
 holiday.en-GB4.name=Early May Bank Holiday
-holiday.en-GB4.date=20200504
+holiday.en-GB4.date=20210503
 holiday.en-GB5.name=Spring Bank Holiday
-holiday.en-GB5.date=20200525
+holiday.en-GB5.date=20210531
 holiday.en-GB6.name=August Bank Holiday
-holiday.en-GB6.date=20200831
+holiday.en-GB6.date=20210830
 holiday.en-GB7.name=Christmas Day
-holiday.en-GB7.date=20201225
+holiday.en-GB7.date=20211225
 holiday.en-GB8.name=Boxing Day
-holiday.en-GB8.date=20201226
-holiday.en-GB9.name=Boxing Day (observed)
-holiday.en-GB9.date=20201228
-holiday.en-GB10.name=New Year's Day
-holiday.en-GB10.date=20210101
-holiday.en-GB11.name=Good Friday
-holiday.en-GB11.date=20210402
-holiday.en-GB12.name=Easter Monday
-holiday.en-GB12.date=20210405
-holiday.en-GB13.name=Early May Bank Holiday
-holiday.en-GB13.date=20210503
-holiday.en-GB14.name=Spring Bank Holiday
-holiday.en-GB14.date=20210531
-holiday.en-GB15.name=August Bank Holiday
-holiday.en-GB15.date=20210830
-holiday.en-GB16.name=Christmas Day
-holiday.en-GB16.date=20211225
-holiday.en-GB17.name=Boxing Day
-holiday.en-GB17.date=20211226
-holiday.en-GB18.name=Christmas Day (observed)
-holiday.en-GB18.date=20211227
-holiday.en-GB19.name=Boxing Day (observed)
-holiday.en-GB19.date=20211228
+holiday.en-GB8.date=20211226
+holiday.en-GB9.name=Christmas Day (observed)
+holiday.en-GB9.date=20211227
+holiday.en-GB10.name=Boxing Day (observed)
+holiday.en-GB10.date=20211228
+holiday.en-GB11.name=New Year's Day
+holiday.en-GB11.date=20220101
+holiday.en-GB12.name=New Year's Day (observed)
+holiday.en-GB12.date=20220103
+holiday.en-GB13.name=Good Friday
+holiday.en-GB13.date=20220415
+holiday.en-GB14.name=Easter Monday
+holiday.en-GB14.date=20220418
+holiday.en-GB15.name=Early May Bank Holiday
+holiday.en-GB15.date=20220502
+holiday.en-GB16.name=Spring Bank Holiday
+holiday.en-GB16.date=20220530
+holiday.en-GB17.name=August Bank Holiday
+holiday.en-GB17.date=20220829
+holiday.en-GB18.name=Christmas Day
+holiday.en-GB18.date=20221225
+holiday.en-GB19.name=Boxing Day
+holiday.en-GB19.date=20221226
+holiday.en-GB20.name=Christmas Day (observed)
+holiday.en-GB20.date=20221227

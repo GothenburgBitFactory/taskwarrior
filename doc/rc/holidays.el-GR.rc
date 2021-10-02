@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/el-GR/2020.json
 # https://holidata.net/el-GR/2021.json
+# https://holidata.net/el-GR/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,58 +28,58 @@
 ###############################################################################
 
 holiday.el-GR1.name=Πρωτοχρονιά
-holiday.el-GR1.date=20200101
+holiday.el-GR1.date=20210101
 holiday.el-GR2.name=Θεοφάνεια
-holiday.el-GR2.date=20200106
+holiday.el-GR2.date=20210106
 holiday.el-GR3.name=Καθαρά Δευτέρα
-holiday.el-GR3.date=20200302
+holiday.el-GR3.date=20210315
 holiday.el-GR4.name=Ευαγγελισμός της Θεοτόκου και Εθνική Ημέρα Ανεξαρτησίας της Ελλάδας
-holiday.el-GR4.date=20200325
+holiday.el-GR4.date=20210325
 holiday.el-GR5.name=Μεγάλη Παρασκευή
-holiday.el-GR5.date=20200417
+holiday.el-GR5.date=20210430
 holiday.el-GR6.name=Μεγάλο Σάββατο
-holiday.el-GR6.date=20200418
-holiday.el-GR7.name=Πάσχα
-holiday.el-GR7.date=20200419
-holiday.el-GR8.name=Δευτέρα του Πάσχα
-holiday.el-GR8.date=20200420
-holiday.el-GR9.name=Πρωτομαγιά
-holiday.el-GR9.date=20200501
+holiday.el-GR6.date=20210501
+holiday.el-GR7.name=Πρωτομαγιά
+holiday.el-GR7.date=20210501
+holiday.el-GR8.name=Πάσχα
+holiday.el-GR8.date=20210502
+holiday.el-GR9.name=Δευτέρα του Πάσχα
+holiday.el-GR9.date=20210503
 holiday.el-GR10.name=Δευτέρα του Αγίου Πνεύματος
-holiday.el-GR10.date=20200608
+holiday.el-GR10.date=20210621
 holiday.el-GR11.name=Κοίμηση της Θεοτόκου
-holiday.el-GR11.date=20200815
+holiday.el-GR11.date=20210815
 holiday.el-GR12.name=Ημέρα του ΌΧΙ
-holiday.el-GR12.date=20201028
+holiday.el-GR12.date=20211028
 holiday.el-GR13.name=Χριστούγεννα
-holiday.el-GR13.date=20201225
+holiday.el-GR13.date=20211225
 holiday.el-GR14.name=Επόμενη ημέρα Χριστουγέννων
-holiday.el-GR14.date=20201226
+holiday.el-GR14.date=20211226
 holiday.el-GR15.name=Πρωτοχρονιά
-holiday.el-GR15.date=20210101
+holiday.el-GR15.date=20220101
 holiday.el-GR16.name=Θεοφάνεια
-holiday.el-GR16.date=20210106
+holiday.el-GR16.date=20220106
 holiday.el-GR17.name=Καθαρά Δευτέρα
-holiday.el-GR17.date=20210315
+holiday.el-GR17.date=20220307
 holiday.el-GR18.name=Ευαγγελισμός της Θεοτόκου και Εθνική Ημέρα Ανεξαρτησίας της Ελλάδας
-holiday.el-GR18.date=20210325
+holiday.el-GR18.date=20220325
 holiday.el-GR19.name=Μεγάλη Παρασκευή
-holiday.el-GR19.date=20210430
+holiday.el-GR19.date=20220422
 holiday.el-GR20.name=Μεγάλο Σάββατο
-holiday.el-GR20.date=20210501
-holiday.el-GR21.name=Πρωτομαγιά
-holiday.el-GR21.date=20210501
-holiday.el-GR22.name=Πάσχα
-holiday.el-GR22.date=20210502
-holiday.el-GR23.name=Δευτέρα του Πάσχα
-holiday.el-GR23.date=20210503
+holiday.el-GR20.date=20220423
+holiday.el-GR21.name=Πάσχα
+holiday.el-GR21.date=20220424
+holiday.el-GR22.name=Δευτέρα του Πάσχα
+holiday.el-GR22.date=20220425
+holiday.el-GR23.name=Πρωτομαγιά
+holiday.el-GR23.date=20220501
 holiday.el-GR24.name=Δευτέρα του Αγίου Πνεύματος
-holiday.el-GR24.date=20210621
+holiday.el-GR24.date=20220613
 holiday.el-GR25.name=Κοίμηση της Θεοτόκου
-holiday.el-GR25.date=20210815
+holiday.el-GR25.date=20220815
 holiday.el-GR26.name=Ημέρα του ΌΧΙ
-holiday.el-GR26.date=20211028
+holiday.el-GR26.date=20221028
 holiday.el-GR27.name=Χριστούγεννα
-holiday.el-GR27.date=20211225
+holiday.el-GR27.date=20221225
 holiday.el-GR28.name=Επόμενη ημέρα Χριστουγέννων
-holiday.el-GR28.date=20211226
+holiday.el-GR28.date=20221226

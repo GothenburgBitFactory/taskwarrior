@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/fi-FI/2020.json
 # https://holidata.net/fi-FI/2021.json
+# https://holidata.net/fi-FI/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,54 +28,54 @@
 ###############################################################################
 
 holiday.fi-FI1.name=Uudenvuodenpäivä
-holiday.fi-FI1.date=20200101
+holiday.fi-FI1.date=20210101
 holiday.fi-FI2.name=Loppiainen
-holiday.fi-FI2.date=20200106
+holiday.fi-FI2.date=20210106
 holiday.fi-FI3.name=Pitkäperjantai
-holiday.fi-FI3.date=20200410
+holiday.fi-FI3.date=20210402
 holiday.fi-FI4.name=Pääsiäispäivä
-holiday.fi-FI4.date=20200412
+holiday.fi-FI4.date=20210404
 holiday.fi-FI5.name=2. pääsiäispäivä
-holiday.fi-FI5.date=20200413
+holiday.fi-FI5.date=20210405
 holiday.fi-FI6.name=Vappu
-holiday.fi-FI6.date=20200501
+holiday.fi-FI6.date=20210501
 holiday.fi-FI7.name=Helatorstai
-holiday.fi-FI7.date=20200521
+holiday.fi-FI7.date=20210513
 holiday.fi-FI8.name=Helluntaipäivä
-holiday.fi-FI8.date=20200531
+holiday.fi-FI8.date=20210523
 holiday.fi-FI9.name=Juhannuspäivä
-holiday.fi-FI9.date=20200620
+holiday.fi-FI9.date=20210626
 holiday.fi-FI10.name=Pyhäinpäivä
-holiday.fi-FI10.date=20201031
+holiday.fi-FI10.date=20211106
 holiday.fi-FI11.name=Itsenäisyyspäivä
-holiday.fi-FI11.date=20201206
+holiday.fi-FI11.date=20211206
 holiday.fi-FI12.name=Joulupäivä
-holiday.fi-FI12.date=20201225
+holiday.fi-FI12.date=20211225
 holiday.fi-FI13.name=Tapaninpäivä
-holiday.fi-FI13.date=20201226
+holiday.fi-FI13.date=20211226
 holiday.fi-FI14.name=Uudenvuodenpäivä
-holiday.fi-FI14.date=20210101
+holiday.fi-FI14.date=20220101
 holiday.fi-FI15.name=Loppiainen
-holiday.fi-FI15.date=20210106
+holiday.fi-FI15.date=20220106
 holiday.fi-FI16.name=Pitkäperjantai
-holiday.fi-FI16.date=20210402
+holiday.fi-FI16.date=20220415
 holiday.fi-FI17.name=Pääsiäispäivä
-holiday.fi-FI17.date=20210404
+holiday.fi-FI17.date=20220417
 holiday.fi-FI18.name=2. pääsiäispäivä
-holiday.fi-FI18.date=20210405
+holiday.fi-FI18.date=20220418
 holiday.fi-FI19.name=Vappu
-holiday.fi-FI19.date=20210501
+holiday.fi-FI19.date=20220501
 holiday.fi-FI20.name=Helatorstai
-holiday.fi-FI20.date=20210513
+holiday.fi-FI20.date=20220526
 holiday.fi-FI21.name=Helluntaipäivä
-holiday.fi-FI21.date=20210523
+holiday.fi-FI21.date=20220605
 holiday.fi-FI22.name=Juhannuspäivä
-holiday.fi-FI22.date=20210626
+holiday.fi-FI22.date=20220625
 holiday.fi-FI23.name=Pyhäinpäivä
-holiday.fi-FI23.date=20211106
+holiday.fi-FI23.date=20221105
 holiday.fi-FI24.name=Itsenäisyyspäivä
-holiday.fi-FI24.date=20211206
+holiday.fi-FI24.date=20221206
 holiday.fi-FI25.name=Joulupäivä
-holiday.fi-FI25.date=20211225
+holiday.fi-FI25.date=20221225
 holiday.fi-FI26.name=Tapaninpäivä
-holiday.fi-FI26.date=20211226
+holiday.fi-FI26.date=20221226

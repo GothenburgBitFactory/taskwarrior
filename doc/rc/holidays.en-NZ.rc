@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/en-NZ/2020.json
 # https://holidata.net/en-NZ/2021.json
+# https://holidata.net/en-NZ/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,54 +28,56 @@
 ###############################################################################
 
 holiday.en-NZ1.name=New Year's Day
-holiday.en-NZ1.date=20200101
+holiday.en-NZ1.date=20210101
 holiday.en-NZ2.name=Day after New Year's Day
-holiday.en-NZ2.date=20200102
+holiday.en-NZ2.date=20210104
 holiday.en-NZ3.name=Waitangi Day
-holiday.en-NZ3.date=20200206
-holiday.en-NZ4.name=Good Friday
-holiday.en-NZ4.date=20200410
-holiday.en-NZ5.name=Easter Monday
-holiday.en-NZ5.date=20200413
-holiday.en-NZ6.name=ANZAC Day
-holiday.en-NZ6.date=20200425
-holiday.en-NZ7.name=ANZAC Day (observed)
-holiday.en-NZ7.date=20200427
-holiday.en-NZ8.name=Queen's Birthday
-holiday.en-NZ8.date=20200601
-holiday.en-NZ9.name=Labour Day
-holiday.en-NZ9.date=20201026
-holiday.en-NZ10.name=Christmas Day
-holiday.en-NZ10.date=20201225
-holiday.en-NZ11.name=Boxing Day
-holiday.en-NZ11.date=20201226
-holiday.en-NZ12.name=Boxing Day (observed)
-holiday.en-NZ12.date=20201228
-holiday.en-NZ13.name=New Year's Day
-holiday.en-NZ13.date=20210101
-holiday.en-NZ14.name=Day after New Year's Day
-holiday.en-NZ14.date=20210104
-holiday.en-NZ15.name=Waitangi Day
-holiday.en-NZ15.date=20210206
-holiday.en-NZ16.name=Waitangi Day (observed)
-holiday.en-NZ16.date=20210208
-holiday.en-NZ17.name=Good Friday
-holiday.en-NZ17.date=20210402
-holiday.en-NZ18.name=Easter Monday
-holiday.en-NZ18.date=20210405
-holiday.en-NZ19.name=ANZAC Day
-holiday.en-NZ19.date=20210425
-holiday.en-NZ20.name=ANZAC Day (observed)
-holiday.en-NZ20.date=20210426
-holiday.en-NZ21.name=Queen's Birthday
-holiday.en-NZ21.date=20210607
-holiday.en-NZ22.name=Labour Day
-holiday.en-NZ22.date=20211025
-holiday.en-NZ23.name=Christmas Day
-holiday.en-NZ23.date=20211225
-holiday.en-NZ24.name=Boxing Day
-holiday.en-NZ24.date=20211226
-holiday.en-NZ25.name=Christmas Day (observed)
-holiday.en-NZ25.date=20211227
-holiday.en-NZ26.name=Boxing Day (observed)
-holiday.en-NZ26.date=20211228
+holiday.en-NZ3.date=20210206
+holiday.en-NZ4.name=Waitangi Day (observed)
+holiday.en-NZ4.date=20210208
+holiday.en-NZ5.name=Good Friday
+holiday.en-NZ5.date=20210402
+holiday.en-NZ6.name=Easter Monday
+holiday.en-NZ6.date=20210405
+holiday.en-NZ7.name=ANZAC Day
+holiday.en-NZ7.date=20210425
+holiday.en-NZ8.name=ANZAC Day (observed)
+holiday.en-NZ8.date=20210426
+holiday.en-NZ9.name=Queen's Birthday
+holiday.en-NZ9.date=20210607
+holiday.en-NZ10.name=Labour Day
+holiday.en-NZ10.date=20211025
+holiday.en-NZ11.name=Christmas Day
+holiday.en-NZ11.date=20211225
+holiday.en-NZ12.name=Boxing Day
+holiday.en-NZ12.date=20211226
+holiday.en-NZ13.name=Christmas Day (observed)
+holiday.en-NZ13.date=20211227
+holiday.en-NZ14.name=Boxing Day (observed)
+holiday.en-NZ14.date=20211228
+holiday.en-NZ15.name=New Year's Day
+holiday.en-NZ15.date=20220101
+holiday.en-NZ16.name=New Year's Day (observed)
+holiday.en-NZ16.date=20220103
+holiday.en-NZ17.name=Day after New Year's Day
+holiday.en-NZ17.date=20220104
+holiday.en-NZ18.name=Waitangi Day
+holiday.en-NZ18.date=20220206
+holiday.en-NZ19.name=Waitangi Day (observed)
+holiday.en-NZ19.date=20220207
+holiday.en-NZ20.name=Good Friday
+holiday.en-NZ20.date=20220415
+holiday.en-NZ21.name=Easter Monday
+holiday.en-NZ21.date=20220418
+holiday.en-NZ22.name=ANZAC Day
+holiday.en-NZ22.date=20220425
+holiday.en-NZ23.name=Queen's Birthday
+holiday.en-NZ23.date=20220606
+holiday.en-NZ24.name=Labour Day
+holiday.en-NZ24.date=20221024
+holiday.en-NZ25.name=Christmas Day
+holiday.en-NZ25.date=20221225
+holiday.en-NZ26.name=Boxing Day
+holiday.en-NZ26.date=20221226
+holiday.en-NZ27.name=Christmas Day (observed)
+holiday.en-NZ27.date=20221227

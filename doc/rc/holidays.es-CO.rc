@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/es-CO/2020.json
 # https://holidata.net/es-CO/2021.json
+# https://holidata.net/es-CO/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,78 +28,78 @@
 ###############################################################################
 
 holiday.es-CO1.name=Año Nuevo
-holiday.es-CO1.date=20200101
+holiday.es-CO1.date=20210101
 holiday.es-CO2.name=Día de los Reyes Magos
-holiday.es-CO2.date=20200106
+holiday.es-CO2.date=20210111
 holiday.es-CO3.name=Día de San José
-holiday.es-CO3.date=20200323
+holiday.es-CO3.date=20210322
 holiday.es-CO4.name=Jueves Santo
-holiday.es-CO4.date=20200409
+holiday.es-CO4.date=20210401
 holiday.es-CO5.name=Viernes Santo
-holiday.es-CO5.date=20200410
+holiday.es-CO5.date=20210402
 holiday.es-CO6.name=Domingo de Pascua
-holiday.es-CO6.date=20200412
+holiday.es-CO6.date=20210404
 holiday.es-CO7.name=Día del Trabajo
-holiday.es-CO7.date=20200501
+holiday.es-CO7.date=20210501
 holiday.es-CO8.name=La Ascensión del Señor
-holiday.es-CO8.date=20200525
+holiday.es-CO8.date=20210517
 holiday.es-CO9.name=Corpus Christi
-holiday.es-CO9.date=20200615
+holiday.es-CO9.date=20210607
 holiday.es-CO10.name=El Sagrado Corazón de Jesús
-holiday.es-CO10.date=20200622
+holiday.es-CO10.date=20210614
 holiday.es-CO11.name=San Pedro y San Pablo
-holiday.es-CO11.date=20200629
+holiday.es-CO11.date=20210705
 holiday.es-CO12.name=Grito de Independencia
-holiday.es-CO12.date=20200720
+holiday.es-CO12.date=20210720
 holiday.es-CO13.name=Batalla de Boyacá
-holiday.es-CO13.date=20200807
+holiday.es-CO13.date=20210807
 holiday.es-CO14.name=Asunción de la Virgen
-holiday.es-CO14.date=20200817
+holiday.es-CO14.date=20210816
 holiday.es-CO15.name=Día de la Raza
-holiday.es-CO15.date=20201012
+holiday.es-CO15.date=20211018
 holiday.es-CO16.name=Todos los Santos
-holiday.es-CO16.date=20201102
+holiday.es-CO16.date=20211101
 holiday.es-CO17.name=Independencia de Cartagena
-holiday.es-CO17.date=20201116
+holiday.es-CO17.date=20211115
 holiday.es-CO18.name=Inmaculada Concepción
-holiday.es-CO18.date=20201208
+holiday.es-CO18.date=20211208
 holiday.es-CO19.name=Navidad
-holiday.es-CO19.date=20201225
+holiday.es-CO19.date=20211225
 holiday.es-CO20.name=Año Nuevo
-holiday.es-CO20.date=20210101
+holiday.es-CO20.date=20220101
 holiday.es-CO21.name=Día de los Reyes Magos
-holiday.es-CO21.date=20210111
+holiday.es-CO21.date=20220110
 holiday.es-CO22.name=Día de San José
-holiday.es-CO22.date=20210322
+holiday.es-CO22.date=20220321
 holiday.es-CO23.name=Jueves Santo
-holiday.es-CO23.date=20210401
+holiday.es-CO23.date=20220414
 holiday.es-CO24.name=Viernes Santo
-holiday.es-CO24.date=20210402
+holiday.es-CO24.date=20220415
 holiday.es-CO25.name=Domingo de Pascua
-holiday.es-CO25.date=20210404
+holiday.es-CO25.date=20220417
 holiday.es-CO26.name=Día del Trabajo
-holiday.es-CO26.date=20210501
+holiday.es-CO26.date=20220501
 holiday.es-CO27.name=La Ascensión del Señor
-holiday.es-CO27.date=20210517
+holiday.es-CO27.date=20220530
 holiday.es-CO28.name=Corpus Christi
-holiday.es-CO28.date=20210607
+holiday.es-CO28.date=20220620
 holiday.es-CO29.name=El Sagrado Corazón de Jesús
-holiday.es-CO29.date=20210614
+holiday.es-CO29.date=20220627
 holiday.es-CO30.name=San Pedro y San Pablo
-holiday.es-CO30.date=20210705
+holiday.es-CO30.date=20220704
 holiday.es-CO31.name=Grito de Independencia
-holiday.es-CO31.date=20210720
+holiday.es-CO31.date=20220720
 holiday.es-CO32.name=Batalla de Boyacá
-holiday.es-CO32.date=20210807
+holiday.es-CO32.date=20220807
 holiday.es-CO33.name=Asunción de la Virgen
-holiday.es-CO33.date=20210816
+holiday.es-CO33.date=20220815
 holiday.es-CO34.name=Día de la Raza
-holiday.es-CO34.date=20211018
+holiday.es-CO34.date=20221017
 holiday.es-CO35.name=Todos los Santos
-holiday.es-CO35.date=20211101
+holiday.es-CO35.date=20221107
 holiday.es-CO36.name=Independencia de Cartagena
-holiday.es-CO36.date=20211115
+holiday.es-CO36.date=20221114
 holiday.es-CO37.name=Inmaculada Concepción
-holiday.es-CO37.date=20211208
+holiday.es-CO37.date=20221208
 holiday.es-CO38.name=Navidad
-holiday.es-CO38.date=20211225
+holiday.es-CO38.date=20221225

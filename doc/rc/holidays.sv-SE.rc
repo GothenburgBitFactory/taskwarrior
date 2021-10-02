@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/sv-SE/2020.json
 # https://holidata.net/sv-SE/2021.json
+# https://holidata.net/sv-SE/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,66 +28,66 @@
 ###############################################################################
 
 holiday.sv-SE1.name=Nyårsdagen
-holiday.sv-SE1.date=20200101
+holiday.sv-SE1.date=20210101
 holiday.sv-SE2.name=Trettondedag jul
-holiday.sv-SE2.date=20200106
+holiday.sv-SE2.date=20210106
 holiday.sv-SE3.name=Långfredagen
-holiday.sv-SE3.date=20200410
+holiday.sv-SE3.date=20210402
 holiday.sv-SE4.name=Påskdagen
-holiday.sv-SE4.date=20200412
+holiday.sv-SE4.date=20210404
 holiday.sv-SE5.name=Annandag påsk
-holiday.sv-SE5.date=20200413
+holiday.sv-SE5.date=20210405
 holiday.sv-SE6.name=Första maj
-holiday.sv-SE6.date=20200501
+holiday.sv-SE6.date=20210501
 holiday.sv-SE7.name=Kristi himmelsfärdsdag
-holiday.sv-SE7.date=20200521
+holiday.sv-SE7.date=20210513
 holiday.sv-SE8.name=Pingstdagen
-holiday.sv-SE8.date=20200531
+holiday.sv-SE8.date=20210523
 holiday.sv-SE9.name=Nationaldagen
-holiday.sv-SE9.date=20200606
+holiday.sv-SE9.date=20210606
 holiday.sv-SE10.name=Midsommarafton
-holiday.sv-SE10.date=20200619
+holiday.sv-SE10.date=20210625
 holiday.sv-SE11.name=Midsommardagen
-holiday.sv-SE11.date=20200620
+holiday.sv-SE11.date=20210626
 holiday.sv-SE12.name=Alla helgons dag
-holiday.sv-SE12.date=20201031
+holiday.sv-SE12.date=20211106
 holiday.sv-SE13.name=Julafton
-holiday.sv-SE13.date=20201224
+holiday.sv-SE13.date=20211224
 holiday.sv-SE14.name=Juldagen
-holiday.sv-SE14.date=20201225
+holiday.sv-SE14.date=20211225
 holiday.sv-SE15.name=Annandag jul
-holiday.sv-SE15.date=20201226
+holiday.sv-SE15.date=20211226
 holiday.sv-SE16.name=Nyårsafton
-holiday.sv-SE16.date=20201231
+holiday.sv-SE16.date=20211231
 holiday.sv-SE17.name=Nyårsdagen
-holiday.sv-SE17.date=20210101
+holiday.sv-SE17.date=20220101
 holiday.sv-SE18.name=Trettondedag jul
-holiday.sv-SE18.date=20210106
+holiday.sv-SE18.date=20220106
 holiday.sv-SE19.name=Långfredagen
-holiday.sv-SE19.date=20210402
+holiday.sv-SE19.date=20220415
 holiday.sv-SE20.name=Påskdagen
-holiday.sv-SE20.date=20210404
+holiday.sv-SE20.date=20220417
 holiday.sv-SE21.name=Annandag påsk
-holiday.sv-SE21.date=20210405
+holiday.sv-SE21.date=20220418
 holiday.sv-SE22.name=Första maj
-holiday.sv-SE22.date=20210501
+holiday.sv-SE22.date=20220501
 holiday.sv-SE23.name=Kristi himmelsfärdsdag
-holiday.sv-SE23.date=20210513
+holiday.sv-SE23.date=20220526
 holiday.sv-SE24.name=Pingstdagen
-holiday.sv-SE24.date=20210523
+holiday.sv-SE24.date=20220605
 holiday.sv-SE25.name=Nationaldagen
-holiday.sv-SE25.date=20210606
+holiday.sv-SE25.date=20220606
 holiday.sv-SE26.name=Midsommarafton
-holiday.sv-SE26.date=20210625
+holiday.sv-SE26.date=20220624
 holiday.sv-SE27.name=Midsommardagen
-holiday.sv-SE27.date=20210626
+holiday.sv-SE27.date=20220625
 holiday.sv-SE28.name=Alla helgons dag
-holiday.sv-SE28.date=20211106
+holiday.sv-SE28.date=20221105
 holiday.sv-SE29.name=Julafton
-holiday.sv-SE29.date=20211224
+holiday.sv-SE29.date=20221224
 holiday.sv-SE30.name=Juldagen
-holiday.sv-SE30.date=20211225
+holiday.sv-SE30.date=20221225
 holiday.sv-SE31.name=Annandag jul
-holiday.sv-SE31.date=20211226
+holiday.sv-SE31.date=20221226
 holiday.sv-SE32.name=Nyårsafton
-holiday.sv-SE32.date=20211231
+holiday.sv-SE32.date=20221231

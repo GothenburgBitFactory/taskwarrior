@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/it-IT/2020.json
 # https://holidata.net/it-IT/2021.json
+# https://holidata.net/it-IT/2022.json
 #
 # Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
@@ -28,50 +28,50 @@
 ###############################################################################
 
 holiday.it-IT1.name=Capodanno
-holiday.it-IT1.date=20200101
+holiday.it-IT1.date=20210101
 holiday.it-IT2.name=Epifania
-holiday.it-IT2.date=20200106
+holiday.it-IT2.date=20210106
 holiday.it-IT3.name=Pasqua
-holiday.it-IT3.date=20200412
+holiday.it-IT3.date=20210404
 holiday.it-IT4.name=Pasquetta
-holiday.it-IT4.date=20200413
+holiday.it-IT4.date=20210405
 holiday.it-IT5.name=Festa della liberazione
-holiday.it-IT5.date=20200425
+holiday.it-IT5.date=20210425
 holiday.it-IT6.name=Festa del lavoro
-holiday.it-IT6.date=20200501
+holiday.it-IT6.date=20210501
 holiday.it-IT7.name=Festa della repubblica
-holiday.it-IT7.date=20200602
+holiday.it-IT7.date=20210602
 holiday.it-IT8.name=Assunzione (ferragosto)
-holiday.it-IT8.date=20200815
+holiday.it-IT8.date=20210815
 holiday.it-IT9.name=Ognissanti
-holiday.it-IT9.date=20201101
+holiday.it-IT9.date=20211101
 holiday.it-IT10.name=Immacolata concezione
-holiday.it-IT10.date=20201208
+holiday.it-IT10.date=20211208
 holiday.it-IT11.name=Natale
-holiday.it-IT11.date=20201225
+holiday.it-IT11.date=20211225
 holiday.it-IT12.name=S.to Stefano
-holiday.it-IT12.date=20201226
+holiday.it-IT12.date=20211226
 holiday.it-IT13.name=Capodanno
-holiday.it-IT13.date=20210101
+holiday.it-IT13.date=20220101
 holiday.it-IT14.name=Epifania
-holiday.it-IT14.date=20210106
+holiday.it-IT14.date=20220106
 holiday.it-IT15.name=Pasqua
-holiday.it-IT15.date=20210404
+holiday.it-IT15.date=20220417
 holiday.it-IT16.name=Pasquetta
-holiday.it-IT16.date=20210405
+holiday.it-IT16.date=20220418
 holiday.it-IT17.name=Festa della liberazione
-holiday.it-IT17.date=20210425
+holiday.it-IT17.date=20220425
 holiday.it-IT18.name=Festa del lavoro
-holiday.it-IT18.date=20210501
+holiday.it-IT18.date=20220501
 holiday.it-IT19.name=Festa della repubblica
-holiday.it-IT19.date=20210602
+holiday.it-IT19.date=20220602
 holiday.it-IT20.name=Assunzione (ferragosto)
-holiday.it-IT20.date=20210815
+holiday.it-IT20.date=20220815
 holiday.it-IT21.name=Ognissanti
-holiday.it-IT21.date=20211101
+holiday.it-IT21.date=20221101
 holiday.it-IT22.name=Immacolata concezione
-holiday.it-IT22.date=20211208
+holiday.it-IT22.date=20221208
 holiday.it-IT23.name=Natale
-holiday.it-IT23.date=20211225
+holiday.it-IT23.date=20221225
 holiday.it-IT24.name=S.to Stefano
-holiday.it-IT24.date=20211226
+holiday.it-IT24.date=20221226
