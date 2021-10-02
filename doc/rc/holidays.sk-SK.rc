@@ -1,0 +1,89 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# https://holidata.net/sk-SK/2021.json
+# https://holidata.net/sk-SK/2022.json
+#
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# https://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.sk-SK1.name=Deň vzniku Slovenskej republiky
+holiday.sk-SK1.date=20210101
+holiday.sk-SK2.name=Zjavenie Pána / Traja králi
+holiday.sk-SK2.date=20210106
+holiday.sk-SK3.name=Veľký piatok
+holiday.sk-SK3.date=20210402
+holiday.sk-SK4.name=Veľkonočný pondelok
+holiday.sk-SK4.date=20210405
+holiday.sk-SK5.name=Sviatok práce
+holiday.sk-SK5.date=20210501
+holiday.sk-SK6.name=Deň víťazstva nad fašizmom
+holiday.sk-SK6.date=20210508
+holiday.sk-SK7.name=Sviatok svätého Cyrila a Metoda
+holiday.sk-SK7.date=20210705
+holiday.sk-SK8.name=Výročie SNP
+holiday.sk-SK8.date=20210829
+holiday.sk-SK9.name=Deň Ústavy Slovenskej republiky
+holiday.sk-SK9.date=20210901
+holiday.sk-SK10.name=Sedembolestná Panna Mária
+holiday.sk-SK10.date=20210915
+holiday.sk-SK11.name=Sviatok všetkých svätých
+holiday.sk-SK11.date=20211101
+holiday.sk-SK12.name=Deň boja za slobodu a demokraciu
+holiday.sk-SK12.date=20211117
+holiday.sk-SK13.name=Štedrý deň
+holiday.sk-SK13.date=20211224
+holiday.sk-SK14.name=Prvý sviatok vianočný
+holiday.sk-SK14.date=20211225
+holiday.sk-SK15.name=Druhý sviatok vianočný
+holiday.sk-SK15.date=20211226
+holiday.sk-SK16.name=Deň vzniku Slovenskej republiky
+holiday.sk-SK16.date=20220101
+holiday.sk-SK17.name=Zjavenie Pána / Traja králi
+holiday.sk-SK17.date=20220106
+holiday.sk-SK18.name=Veľký piatok
+holiday.sk-SK18.date=20220415
+holiday.sk-SK19.name=Veľkonočný pondelok
+holiday.sk-SK19.date=20220418
+holiday.sk-SK20.name=Sviatok práce
+holiday.sk-SK20.date=20220501
+holiday.sk-SK21.name=Deň víťazstva nad fašizmom
+holiday.sk-SK21.date=20220508
+holiday.sk-SK22.name=Sviatok svätého Cyrila a Metoda
+holiday.sk-SK22.date=20220705
+holiday.sk-SK23.name=Výročie SNP
+holiday.sk-SK23.date=20220829
+holiday.sk-SK24.name=Deň Ústavy Slovenskej republiky
+holiday.sk-SK24.date=20220901
+holiday.sk-SK25.name=Sedembolestná Panna Mária
+holiday.sk-SK25.date=20220915
+holiday.sk-SK26.name=Sviatok všetkých svätých
+holiday.sk-SK26.date=20221101
+holiday.sk-SK27.name=Deň boja za slobodu a demokraciu
+holiday.sk-SK27.date=20221117
+holiday.sk-SK28.name=Štedrý deň
+holiday.sk-SK28.date=20221224
+holiday.sk-SK29.name=Prvý sviatok vianočný
+holiday.sk-SK29.date=20221225
+holiday.sk-SK30.name=Druhý sviatok vianočný
+holiday.sk-SK30.date=20221226
