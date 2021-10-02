@@ -17,6 +17,7 @@ pub(super) fn table_with_keys<'a>(cfg: &'a toml::Value, keys: &[&str]) -> Result
 #[cfg(test)]
 mod test {
     use super::*;
+    use pretty_assertions::assert_eq;
     use toml::toml;
 
     #[test]

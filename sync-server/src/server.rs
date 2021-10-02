@@ -81,6 +81,7 @@ pub(crate) fn add_version<'a>(
 mod test {
     use super::*;
     use crate::storage::{InMemoryStorage, Storage};
+    use pretty_assertions::{assert_eq};
 
     #[test]
     fn gcv_not_found() -> anyhow::Result<()> {

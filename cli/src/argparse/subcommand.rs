@@ -411,6 +411,7 @@ impl Sync {
 mod test {
     use super::*;
     use crate::argparse::Condition;
+    use pretty_assertions::assert_eq;
 
     const EMPTY: Vec<&str> = vec![];
 

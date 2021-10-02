@@ -166,6 +166,7 @@ impl Storage for InMemoryStorage {
 #[cfg(test)]
 mod test {
     use super::*;
+    use pretty_assertions::{assert_eq};
 
     // (note: this module is heavily used in tests so most of its functionality is well-tested
     // elsewhere and not tested here)

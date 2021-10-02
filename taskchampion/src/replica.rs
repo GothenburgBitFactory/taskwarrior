@@ -146,6 +146,7 @@ impl Replica {
 mod tests {
     use super::*;
     use crate::task::Status;
+    use pretty_assertions::{assert_eq};
     use uuid::Uuid;
 
     #[test]

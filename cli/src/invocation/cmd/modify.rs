@@ -71,6 +71,7 @@ mod test {
     use crate::argparse::DescriptionMod;
     use crate::invocation::test::test_replica;
     use crate::invocation::test::*;
+    use pretty_assertions::assert_eq;
     use taskchampion::Status;
 
     #[test]

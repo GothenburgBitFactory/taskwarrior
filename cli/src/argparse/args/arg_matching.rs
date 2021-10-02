@@ -43,6 +43,7 @@ where
 mod test {
     use super::super::*;
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_arg_matching() {

@@ -160,12 +160,24 @@ fn named_date<Tz: TimeZone>(
             "today" => Ok((remaining, local_today)),
             "tomorrow" => Ok((remaining, local_today + Duration::days(1))),
             // TODO: lots more!
-            "eod" => Ok((remaining,local_today + Duration::days(1))),
-            "sod" => Ok((remaining,local_today)),
-            "eow" => Ok((remaining,local_today + Duration::days((6-day_index).into()))),
-            "eoww" => Ok((remaining,local_today + Duration::days((5-day_index).into()))),
-            "sow" => Ok((remaining,local_today + Duration::days((6-day_index).into()))),
-            "soww" => Ok((remaining,local_today + Duration::days((7-day_index).into()))),
+            "eod" => Ok((remaining, local_today + Duration::days(1))),
+            "sod" => Ok((remaining, local_today)),
+            "eow" => Ok((
+                remaining,
+                local_today + Duration::days((6 - day_index).into()),
+            )),
+            "eoww" => Ok((
+                remaining,
+                local_today + Duration::days((5 - day_index).into()),
+            )),
+            "sow" => Ok((
+                remaining,
+                local_today + Duration::days((6 - day_index).into()),
+            )),
+            "soww" => Ok((
+                remaining,
+                local_today + Duration::days((7 - day_index).into()),
+            )),
             _ => Err(Err::Error(Error::new(input, ErrorKind::Tag))),
         }
         .map(|(rem, dt)| (rem, dt.and_hms(0, 0, 0).with_timezone(&Utc)))
@@ -227,6 +239,7 @@ pub(crate) fn timestamp<Tz: TimeZone + Copy>(
 mod test {
     use super::*;
     use crate::argparse::NOW;
+    use pretty_assertions::assert_eq;
     use rstest::rstest;
 
     const M: i64 = 60;
@@ -308,12 +321,12 @@ mod test {
     #[case::today_from_evening(ldt(2021, 3, 1, 21, 30, 30), "today", ld(2021, 3, 1))]
     #[case::tomorrow(ld(2021, 3, 1), "tomorrow", ld(2021, 3, 2))]
     #[case::tomorow_from_evening(ldt(2021, 3, 1, 21, 30, 30), "tomorrow", ld(2021, 3, 2))]
-    #[case::end_of_week(ld(2021,8,25,), "eow", ld(2021,8,29))]
-    #[case::end_of_work_week(ld(2021,8,25), "eoww", ld(2021,8,28))]
-    #[case::start_of_week(ld(2021,8,25), "sow", ld(2021,8,29))]
-    #[case::start_of_work_week(ld(2021,8,25), "soww", ld(2021,8,30))]
-    #[case::end_of_today(ld(2021,8,25), "eod", ld(2021,8,26))]
-    #[case::start_of_today(ld(2021,8,25), "sod", ld(2021,8,25))]
+    #[case::end_of_week(ld(2021, 8, 25,), "eow", ld(2021, 8, 29))]
+    #[case::end_of_work_week(ld(2021, 8, 25), "eoww", ld(2021, 8, 28))]
+    #[case::start_of_week(ld(2021, 8, 25), "sow", ld(2021, 8, 29))]
+    #[case::start_of_work_week(ld(2021, 8, 25), "soww", ld(2021, 8, 30))]
+    #[case::end_of_today(ld(2021, 8, 25), "eod", ld(2021, 8, 26))]
+    #[case::start_of_today(ld(2021, 8, 25), "sod", ld(2021, 8, 25))]
     fn test_local_timestamp(
         #[case] now: Box<dyn Fn(FixedOffset) -> DateTime<Utc>>,
         #[values(*IST, *UTC_FO, *HST)] tz: FixedOffset,

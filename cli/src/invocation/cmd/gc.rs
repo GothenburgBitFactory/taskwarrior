@@ -12,6 +12,7 @@ pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Result
 mod test {
     use super::*;
     use crate::invocation::test::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_gc() {

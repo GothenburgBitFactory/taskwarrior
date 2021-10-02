@@ -47,6 +47,7 @@ mod test {
     use crate::storage::{InMemoryStorage, Storage};
     use crate::Server;
     use actix_web::{http::StatusCode, test, App};
+    use pretty_assertions::{assert_eq};
     use uuid::Uuid;
 
     #[actix_rt::test]
