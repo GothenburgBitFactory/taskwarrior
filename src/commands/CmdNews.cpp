@@ -497,35 +497,33 @@ int CmdNews::execute (std::string& output)
   std::vector<NewsItem> items;
   version2_6_0 (items);
 
-  // Determine whether to use full or short summary
-  std::vector <std::string> options {"full", "short"};
-  std::vector <std::string> matches;
+  bool full_summary = false;
+  bool major_items = true;
+
+  for (auto word: words)
+  {
+    if (word == "major") {
+        major_items = true;
+        break;
+    }
+
+    if (word == "minor") {
+        major_items = false;
+        break;
+    }
+
+    if (word == "all") {
+        full_summary = true;
+        break;
+    }
+  }
 
   signal (SIGINT, signal_handler);
-
-  do
-  {
-    std::cout << format (
-      "Do you want to see full summary ({1} feature(s)) or a short one ({2} feature(s))?  (full/short) ",
-      items.size (),
-      std::count_if (items.begin (), items.end (), [](const NewsItem& n){return n._major;})
-    );
-
-    std::string answer;
-    std::getline (std::cin, answer);
-    answer = std::cin.eof () ? "full" : lowerCase (trim (answer));
-
-    autoComplete (answer, options, matches, 1); // Hard-coded 1.
-  }
-  while (! std::cin.eof () && matches.size () != 1);
-
-  signal (SIGINT, SIG_DFL);
-  bool full_summary = matches.size () == 1 && matches[0] == "full" ? true : false;
 
   // Remove non-major items if displaying a non-full (abbreviated) summary
   if (! full_summary)
     items.erase (
-      std::remove_if (items.begin (), items.end (), [](const NewsItem& n){return n._major == false;}),
+      std::remove_if (items.begin (), items.end (), [&](const NewsItem& n){return n._major != major_items;}),
       items.end ()
     );
 
