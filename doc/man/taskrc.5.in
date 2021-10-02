@@ -1501,6 +1501,8 @@ Stores the value of the currently active context.
 
 .TP
 .B context.<name>.read=<filter>
+.RE
+.br
 .B context.<name>.write=<modifications>
 .RS
 Stores the definition of the read or write context with the name <name>. Read
