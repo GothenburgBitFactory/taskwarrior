@@ -128,7 +128,7 @@ mod test {
     use crate::storage::InMemoryStorage;
     use crate::taskdb::TaskDb;
     use chrono::{Duration, Utc};
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
     use proptest::prelude::*;
 
     // note that `tests/operation_transform_invariant.rs` tests the transform function quite

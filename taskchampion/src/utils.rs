@@ -41,7 +41,7 @@ impl AsRef<[u8]> for Key {
 #[cfg(test)]
 mod test {
     use super::*;
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_from_bytes() {

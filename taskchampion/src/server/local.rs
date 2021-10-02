@@ -159,7 +159,7 @@ impl Server for LocalServer {
 #[cfg(test)]
 mod test {
     use super::*;
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
     use tempfile::TempDir;
 
     #[test]

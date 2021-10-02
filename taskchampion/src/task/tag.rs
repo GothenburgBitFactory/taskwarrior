@@ -138,7 +138,7 @@ pub(super) enum SyntheticTag {
 #[cfg(test)]
 mod test {
     use super::*;
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
     use rstest::rstest;
     use std::convert::TryInto;
 

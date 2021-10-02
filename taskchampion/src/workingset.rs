@@ -69,7 +69,7 @@ impl WorkingSet {
 #[cfg(test)]
 mod test {
     use super::*;
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
 
     fn make() -> (Uuid, Uuid, WorkingSet) {
         let uuid1 = Uuid::new_v4();

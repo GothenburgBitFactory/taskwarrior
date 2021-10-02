@@ -65,7 +65,7 @@ async fn main() -> anyhow::Result<()> {
 mod test {
     use super::*;
     use actix_web::{test, App};
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
     use taskchampion_sync_server::storage::InMemoryStorage;
 
     #[actix_rt::test]
