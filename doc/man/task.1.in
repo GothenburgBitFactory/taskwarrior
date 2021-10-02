@@ -522,6 +522,12 @@ conjunction with aliases and extensions can provide seamless integration.
 Displays the Taskwarrior logo.
 
 .TP
+.B task news
+Guides the user through important release notes anytime a new version of
+Taskwarrior is installed. It provides personalized feedback, deprecation
+warnings and usage advice, where applicable.
+
+.TP
 .B task reports
 Lists all supported reports.  This includes the built-in reports, and any custom
 reports you have defined.
