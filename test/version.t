@@ -90,13 +90,15 @@ class TestVersion(TestCase):
         # corresponding to "compiled from git" or "compiled from tarball"
         version = out.split()
 
-        if 2 >= len(version) > 0:
-            git = version[1]
-            git_expected = "({0})".format(self.slurp_git())
-            self.assertEqual(git_expected, git)
-        else:
-            raise ValueError("Unexpected output from _version '{0}'".format(
-                out))
+        # If we are within a git repository, check the tag version
+        if os.path.exists("../.git"):
+          if 2 >= len(version) > 0:
+              git = version[1]
+              git_expected = "({0})".format(self.slurp_git())
+              self.assertEqual(git_expected, git)
+          else:
+              raise ValueError("Unexpected output from _version '{0}'".format(
+                  out))
 
         ver = version[0]
         ver_expected = self.slurp()
