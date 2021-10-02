@@ -28,13 +28,13 @@ else (ENABLE_SYNC)
 endif (ENABLE_SYNC)
 
 message ("-- Looking for libshared")
-if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
   message ("-- Found libshared")
-else (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+else (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
   message ("-- Cloning libshared")
   execute_process (COMMAND git submodule update --init
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endif (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+endif (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
 
 message ("-- Looking for SHA1 references")
 if (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
