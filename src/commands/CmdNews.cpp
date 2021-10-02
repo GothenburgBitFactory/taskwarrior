@@ -468,6 +468,22 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  hardcode the desired paths on your system."
   );
   items.push_back(xdg_support);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // - Update holiday data
+
+  NewsItem holidata_2022 (
+    false,
+    "Updated holiday data for 2022",
+    "",
+    "",
+    "  Holiday data has been refreshed for 2022 and five more holiday locales\n"
+    "  have been added: fr-CA, hu-HU, pt-BR, sk-SK and sv-FI.",
+    "",
+    "  Refreshing the holiday data is part of every release. The addition of the new\n"
+    "  locales allows us to better support users in those particular countries."
+  );
+  items.push_back(holidata_2022);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
