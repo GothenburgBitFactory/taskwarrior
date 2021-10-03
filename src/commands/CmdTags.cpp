@@ -212,7 +212,8 @@ int CmdCompletionTags::execute (std::string& output)
   unique["WEEK"]      = 0;
   unique["YEAR"]      = 0;
   unique["YESTERDAY"] = 0;
-  // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
+
+  // If you update the above list, update src/commands/CmdInfo.cpp and src/Task.cpp as well.
 
   std::stringstream out;
   for (auto& it : unique)

@@ -357,7 +357,7 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("WEEK"))      virtualTags += "WEEK ";
       if (task.hasTag ("YEAR"))      virtualTags += "YEAR ";
       if (task.hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
-      // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
+      // If you update the above list, update src/Task.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
       view.set (row, 0, "Virtual tags");
