@@ -1,8 +1,8 @@
 use crate::api::{
     client_key_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
-    PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
+    PARENT_VERSION_ID_HEADER, SNAPSHOT_REQUEST_HEADER, VERSION_ID_HEADER,
 };
-use crate::server::{add_version, AddVersionResult, VersionId, NO_VERSION_ID};
+use crate::server::{add_version, AddVersionResult, SnapshotUrgency, VersionId, NO_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
 
@@ -17,6 +17,9 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 /// On success, the response is a 200 OK with the new version ID in the `X-Version-Id` header.  If
 /// the version cannot be added due to a conflict, the response is a 409 CONFLICT with the expected
 /// parent version ID in the `X-Parent-Version-Id` header.
+///
+/// If included, a snapshot request appears in the `X-Snapshot-Request` header with value
+/// `urgency=low` or `urgency=high`.
 ///
 /// Returns other 4xx or 5xx responses on other errors.
 #[post("/v1/client/add-version/{parent_version_id}")]
@@ -63,15 +66,30 @@ pub(crate) async fn service(
         }
     };
 
-    let result = add_version(txn, client_key, client, parent_version_id, body.to_vec())
-        .map_err(failure_to_ise)?;
+    let (result, snap_urgency) =
+        add_version(txn, client_key, client, parent_version_id, body.to_vec())
+            .map_err(failure_to_ise)?;
+
     Ok(match result {
-        AddVersionResult::Ok(version_id) => HttpResponse::Ok()
-            .header(VERSION_ID_HEADER, version_id.to_string())
-            .body(""),
-        AddVersionResult::ExpectedParentVersion(parent_version_id) => HttpResponse::Conflict()
-            .header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string())
-            .body(""),
+        AddVersionResult::Ok(version_id) => {
+            let mut rb = HttpResponse::Ok();
+            rb.header(VERSION_ID_HEADER, version_id.to_string());
+            match snap_urgency {
+                SnapshotUrgency::None => {}
+                SnapshotUrgency::Low => {
+                    rb.header(SNAPSHOT_REQUEST_HEADER, "urgency=low");
+                }
+                SnapshotUrgency::High => {
+                    rb.header(SNAPSHOT_REQUEST_HEADER, "urgency=high");
+                }
+            };
+            rb.finish()
+        }
+        AddVersionResult::ExpectedParentVersion(parent_version_id) => {
+            let mut rb = HttpResponse::Conflict();
+            rb.header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string());
+            rb.finish()
+        }
     })
 }
 
@@ -116,6 +134,10 @@ mod test {
         // the passed parent version ID, at least
         let new_version_id = resp.headers().get("X-Version-Id").unwrap();
         assert!(new_version_id != &version_id.to_string());
+
+        // Shapshot should be requested, since there is no existing snapshot
+        let snapshot_request = resp.headers().get("X-Snapshot-Request").unwrap();
+        assert_eq!(snapshot_request, "urgency=high");
 
         assert_eq!(resp.headers().get("X-Parent-Version-Id"), None);
     }

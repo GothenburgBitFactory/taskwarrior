@@ -24,6 +24,9 @@ pub(crate) const CLIENT_KEY_HEADER: &str = "X-Client-Key";
 /// The header name for parent version ID
 pub(crate) const PARENT_VERSION_ID_HEADER: &str = "X-Parent-Version-Id";
 
+/// The header name for parent version ID
+pub(crate) const SNAPSHOT_REQUEST_HEADER: &str = "X-Snapshot-Request";
+
 /// The type containing a reference to the Storage object in the Actix state.
 pub(crate) type ServerState = Arc<dyn Storage>;
 
