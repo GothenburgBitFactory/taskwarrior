@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <Lexer.h>
 #include <FS.h>
 
@@ -60,8 +61,8 @@ class CLI2
 public:
   static int minimumMatchLength;
 
-  static void getOverride (int, const char**, std::string&, File&);
-  static void getDataLocation (int, const char**, Path&);
+  static bool getOverride (int, const char**, File&);
+  static bool getDataLocation (int, const char**, Path&);
   static void applyOverrides (int, const char**);
 
 public:
@@ -70,13 +71,15 @@ public:
   void entity (const std::string&, const std::string&);
 
   void add (const std::string&);
-  void add (const std::vector <std::string>&);
+  void add (const std::vector <std::string>&, int offset = 0);
   void analyze ();
   void addFilter (const std::string& arg);
-  void addContextFilter ();
+  void addModifications (const std::string& arg);
+  void addContext (bool readable, bool writeable);
   void prepareFilter ();
   const std::vector <std::string> getWords ();
-  bool canonicalize (std::string&, const std::string&, const std::string&) const;
+  const std::vector <A2> getMiscellaneous ();
+  bool canonicalize (std::string&, const std::string&, const std::string&);
   std::string getBinary () const;
   std::string getCommand (bool canonical = true) const;
   const std::string dump (const std::string& title = "CLI2 Parser") const;
@@ -99,6 +102,7 @@ private:
   void findUUIDs ();
   void insertIDExpr ();
   void lexFilterArgs ();
+  bool isEmptyParenExpression (std::vector<A2>::iterator it, bool forward = true) const;
   void desugarFilterPlainArgs ();
   void insertJunctions ();
   void defaultCommand ();
@@ -107,12 +111,14 @@ private:
 public:
   std::multimap <std::string, std::string>           _entities             {};
   std::map <std::string, std::string>                _aliases              {};
+  std::unordered_map <int, std::string>              _canonical_cache      {};
   std::vector <A2>                                   _original_args        {};
   std::vector <A2>                                   _args                 {};
 
   std::vector <std::pair <std::string, std::string>> _id_ranges            {};
   std::vector <std::string>                          _uuid_list            {};
-  bool                                               _context_filter_added {false};
+  std::string                                        _command            {""};
+  bool                                               _context_added   {false};
 };
 
 #endif

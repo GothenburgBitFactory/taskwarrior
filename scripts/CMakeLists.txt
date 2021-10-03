@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.0)
-install (DIRECTORY bash fish vim zsh hooks
+install (DIRECTORY bash fish vim hooks
          DESTINATION ${TASK_DOCDIR}/scripts)
+install (FILES zsh/_task
+         DESTINATION share/zsh/site-functions)
 install (DIRECTORY add-ons
          DESTINATION ${TASK_DOCDIR}/scripts
          FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE

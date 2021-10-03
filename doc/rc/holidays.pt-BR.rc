@@ -1,0 +1,241 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# https://holidata.net/pt-BR/2021.json
+# https://holidata.net/pt-BR/2022.json
+#
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# https://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.pt-BR1.name=Confraternização Universal
+holiday.pt-BR1.date=20210101
+holiday.pt-BR2.name=Criação do Estado de Rondônia
+holiday.pt-BR2.date=20210104
+holiday.pt-BR3.name=Dia do Evangélico no Acre
+holiday.pt-BR3.date=20210123
+holiday.pt-BR4.name=Carnaval
+holiday.pt-BR4.date=20210216
+holiday.pt-BR5.name=Revolução Pernambucana de 1817
+holiday.pt-BR5.date=20210306
+holiday.pt-BR6.name=Dia Internacional da Mulher
+holiday.pt-BR6.date=20210308
+holiday.pt-BR7.name=Autonomia do Estado de Tocantins
+holiday.pt-BR7.date=20210318
+holiday.pt-BR8.name=Dia de São José
+holiday.pt-BR8.date=20210319
+holiday.pt-BR9.name=Abolição da Escravidão no Ceará
+holiday.pt-BR9.date=20210325
+holiday.pt-BR10.name=Páscoa
+holiday.pt-BR10.date=20210404
+holiday.pt-BR11.name=Fundação de Brasília
+holiday.pt-BR11.date=20210421
+holiday.pt-BR12.name=Execução de Tiradentes
+holiday.pt-BR12.date=20210421
+holiday.pt-BR13.name=Tiradentes
+holiday.pt-BR13.date=20210421
+holiday.pt-BR14.name=Dia de São Jorge
+holiday.pt-BR14.date=20210423
+holiday.pt-BR15.name=Dia Internacional do Trabalhador
+holiday.pt-BR15.date=20210501
+holiday.pt-BR16.name=Aniversário do Estado do Acre
+holiday.pt-BR16.date=20210615
+holiday.pt-BR17.name=Dia do Evangélico em Rondônia
+holiday.pt-BR17.date=20210618
+holiday.pt-BR18.name=São João
+holiday.pt-BR18.date=20210624
+holiday.pt-BR19.name=São Pedro
+holiday.pt-BR19.date=20210629
+holiday.pt-BR20.name=Independência da Bahia
+holiday.pt-BR20.date=20210702
+holiday.pt-BR21.name=Emancipação Política de Sergipe
+holiday.pt-BR21.date=20210708
+holiday.pt-BR22.name=Revolução Constitucionalista de 1932
+holiday.pt-BR22.date=20210709
+holiday.pt-BR23.name=Fundação da Cidade de Goiás
+holiday.pt-BR23.date=20210726
+holiday.pt-BR24.name=Adesão do Maranhão à Independência do Brasil
+holiday.pt-BR24.date=20210728
+holiday.pt-BR25.name=Fundação do Estado da Paraíba
+holiday.pt-BR25.date=20210805
+holiday.pt-BR26.name=Dia do Rio Grande do Norte
+holiday.pt-BR26.date=20210807
+holiday.pt-BR27.name=Dia de Santa Catarina
+holiday.pt-BR27.date=20210811
+holiday.pt-BR28.name=Dia de Nossa Senhora da Assunção
+holiday.pt-BR28.date=20210815
+holiday.pt-BR29.name=Adesão do Pará à Independência do Brasil
+holiday.pt-BR29.date=20210815
+holiday.pt-BR30.name=Dia da Amazônia
+holiday.pt-BR30.date=20210905
+holiday.pt-BR31.name=Elevação do Amazonas à Categoria de Província
+holiday.pt-BR31.date=20210905
+holiday.pt-BR32.name=Independência do Brasil
+holiday.pt-BR32.date=20210907
+holiday.pt-BR33.name=Nossa Senhora da Natividade
+holiday.pt-BR33.date=20210908
+holiday.pt-BR34.name=Criação do Território Federal do Amapá
+holiday.pt-BR34.date=20210913
+holiday.pt-BR35.name=Emancipação Política do Alagoas
+holiday.pt-BR35.date=20210916
+holiday.pt-BR36.name=Dia do Gaúcho
+holiday.pt-BR36.date=20210920
+holiday.pt-BR37.name=Mártires de Cunhaú e Uruaçu
+holiday.pt-BR37.date=20211003
+holiday.pt-BR38.name=Criação dos Estado de Roraima
+holiday.pt-BR38.date=20211005
+holiday.pt-BR39.name=Criação dos Estado de Tocantins
+holiday.pt-BR39.date=20211005
+holiday.pt-BR40.name=Criação do Estado do Mato Grosso do Sul
+holiday.pt-BR40.date=20211011
+holiday.pt-BR41.name=Nossa Senhora Aparecida
+holiday.pt-BR41.date=20211012
+holiday.pt-BR42.name=Dia do Piauí
+holiday.pt-BR42.date=20211019
+holiday.pt-BR43.name=Pedra Fundamental de Goiânia
+holiday.pt-BR43.date=20211024
+holiday.pt-BR44.name=Finados
+holiday.pt-BR44.date=20211102
+holiday.pt-BR45.name=Proclamação da República
+holiday.pt-BR45.date=20211115
+holiday.pt-BR46.name=Assinatura do Tratado de Petrópolis
+holiday.pt-BR46.date=20211117
+holiday.pt-BR47.name=Morte de Zumbi dos Palmares
+holiday.pt-BR47.date=20211120
+holiday.pt-BR48.name=Dia da Consciência Negra
+holiday.pt-BR48.date=20211120
+holiday.pt-BR49.name=Dia de Santa Catarina de Alexandria
+holiday.pt-BR49.date=20211125
+holiday.pt-BR50.name=Dia do Evangélico do Distrito Federal
+holiday.pt-BR50.date=20211130
+holiday.pt-BR51.name=Nossa Senhora da Conceição
+holiday.pt-BR51.date=20211208
+holiday.pt-BR52.name=Emancipação Política do Estado do Paraná
+holiday.pt-BR52.date=20211219
+holiday.pt-BR53.name=Natal
+holiday.pt-BR53.date=20211225
+holiday.pt-BR54.name=Confraternização Universal
+holiday.pt-BR54.date=20220101
+holiday.pt-BR55.name=Criação do Estado de Rondônia
+holiday.pt-BR55.date=20220104
+holiday.pt-BR56.name=Dia do Evangélico no Acre
+holiday.pt-BR56.date=20220123
+holiday.pt-BR57.name=Carnaval
+holiday.pt-BR57.date=20220301
+holiday.pt-BR58.name=Revolução Pernambucana de 1817
+holiday.pt-BR58.date=20220306
+holiday.pt-BR59.name=Dia Internacional da Mulher
+holiday.pt-BR59.date=20220308
+holiday.pt-BR60.name=Autonomia do Estado de Tocantins
+holiday.pt-BR60.date=20220318
+holiday.pt-BR61.name=Dia de São José
+holiday.pt-BR61.date=20220319
+holiday.pt-BR62.name=Abolição da Escravidão no Ceará
+holiday.pt-BR62.date=20220325
+holiday.pt-BR63.name=Páscoa
+holiday.pt-BR63.date=20220417
+holiday.pt-BR64.name=Fundação de Brasília
+holiday.pt-BR64.date=20220421
+holiday.pt-BR65.name=Execução de Tiradentes
+holiday.pt-BR65.date=20220421
+holiday.pt-BR66.name=Tiradentes
+holiday.pt-BR66.date=20220421
+holiday.pt-BR67.name=Dia de São Jorge
+holiday.pt-BR67.date=20220423
+holiday.pt-BR68.name=Dia Internacional do Trabalhador
+holiday.pt-BR68.date=20220501
+holiday.pt-BR69.name=Aniversário do Estado do Acre
+holiday.pt-BR69.date=20220615
+holiday.pt-BR70.name=Dia do Evangélico em Rondônia
+holiday.pt-BR70.date=20220618
+holiday.pt-BR71.name=São João
+holiday.pt-BR71.date=20220624
+holiday.pt-BR72.name=São Pedro
+holiday.pt-BR72.date=20220629
+holiday.pt-BR73.name=Independência da Bahia
+holiday.pt-BR73.date=20220702
+holiday.pt-BR74.name=Emancipação Política de Sergipe
+holiday.pt-BR74.date=20220708
+holiday.pt-BR75.name=Revolução Constitucionalista de 1932
+holiday.pt-BR75.date=20220709
+holiday.pt-BR76.name=Fundação da Cidade de Goiás
+holiday.pt-BR76.date=20220726
+holiday.pt-BR77.name=Adesão do Maranhão à Independência do Brasil
+holiday.pt-BR77.date=20220728
+holiday.pt-BR78.name=Fundação do Estado da Paraíba
+holiday.pt-BR78.date=20220805
+holiday.pt-BR79.name=Dia do Rio Grande do Norte
+holiday.pt-BR79.date=20220807
+holiday.pt-BR80.name=Dia de Santa Catarina
+holiday.pt-BR80.date=20220811
+holiday.pt-BR81.name=Dia de Nossa Senhora da Assunção
+holiday.pt-BR81.date=20220815
+holiday.pt-BR82.name=Adesão do Pará à Independência do Brasil
+holiday.pt-BR82.date=20220815
+holiday.pt-BR83.name=Dia da Amazônia
+holiday.pt-BR83.date=20220905
+holiday.pt-BR84.name=Elevação do Amazonas à Categoria de Província
+holiday.pt-BR84.date=20220905
+holiday.pt-BR85.name=Independência do Brasil
+holiday.pt-BR85.date=20220907
+holiday.pt-BR86.name=Nossa Senhora da Natividade
+holiday.pt-BR86.date=20220908
+holiday.pt-BR87.name=Criação do Território Federal do Amapá
+holiday.pt-BR87.date=20220913
+holiday.pt-BR88.name=Emancipação Política do Alagoas
+holiday.pt-BR88.date=20220916
+holiday.pt-BR89.name=Dia do Gaúcho
+holiday.pt-BR89.date=20220920
+holiday.pt-BR90.name=Mártires de Cunhaú e Uruaçu
+holiday.pt-BR90.date=20221003
+holiday.pt-BR91.name=Criação dos Estado de Roraima
+holiday.pt-BR91.date=20221005
+holiday.pt-BR92.name=Criação dos Estado de Tocantins
+holiday.pt-BR92.date=20221005
+holiday.pt-BR93.name=Criação do Estado do Mato Grosso do Sul
+holiday.pt-BR93.date=20221011
+holiday.pt-BR94.name=Nossa Senhora Aparecida
+holiday.pt-BR94.date=20221012
+holiday.pt-BR95.name=Dia do Piauí
+holiday.pt-BR95.date=20221019
+holiday.pt-BR96.name=Pedra Fundamental de Goiânia
+holiday.pt-BR96.date=20221024
+holiday.pt-BR97.name=Finados
+holiday.pt-BR97.date=20221102
+holiday.pt-BR98.name=Proclamação da República
+holiday.pt-BR98.date=20221115
+holiday.pt-BR99.name=Assinatura do Tratado de Petrópolis
+holiday.pt-BR99.date=20221117
+holiday.pt-BR100.name=Morte de Zumbi dos Palmares
+holiday.pt-BR100.date=20221120
+holiday.pt-BR101.name=Dia da Consciência Negra
+holiday.pt-BR101.date=20221120
+holiday.pt-BR102.name=Dia de Santa Catarina de Alexandria
+holiday.pt-BR102.date=20221125
+holiday.pt-BR103.name=Dia do Evangélico do Distrito Federal
+holiday.pt-BR103.date=20221130
+holiday.pt-BR104.name=Nossa Senhora da Conceição
+holiday.pt-BR104.date=20221208
+holiday.pt-BR105.name=Emancipação Política do Estado do Paraná
+holiday.pt-BR105.date=20221219
+holiday.pt-BR106.name=Natal
+holiday.pt-BR106.date=20221225

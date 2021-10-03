@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,6 +85,7 @@ int CmdShow::execute (std::string& output)
     " calendar.details.report"
     " calendar.holidays"
     " calendar.legend"
+    " calendar.monthsperline"
     " calendar.offset"
     " calendar.offset.value"
     " color"
@@ -98,6 +99,7 @@ int CmdShow::execute (std::string& output)
     " color.calendar.due"
     " color.calendar.due.today"
     " color.calendar.holiday"
+    " color.calendar.scheduled"
     " color.calendar.overdue"
     " color.calendar.today"
     " color.calendar.weekend"
@@ -171,12 +173,11 @@ int CmdShow::execute (std::string& output)
     " journal.time.start.annotation"
     " journal.time.stop.annotation"
     " json.array"
-    " json.depends.array"
     " list.all.projects"
     " list.all.tags"
     " locking"
-    " monthsperline"
     " nag"
+    " news.version"
     " obfuscate"
     " print.empty.columns"
     " recurrence"

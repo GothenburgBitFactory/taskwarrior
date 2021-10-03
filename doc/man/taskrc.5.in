@@ -9,6 +9,8 @@ taskrc \- Configuration details for the task(1) command
 .B task rc:<directory-path>/.taskrc ...
 .br
 .B TASKRC=<directory-path>/.taskrc task ...
+.br
+.B XDG_CONFIG_HOME=<directory-path>/task/taskrc task ...
 
 .SH DESCRIPTION
 .B Taskwarrior
@@ -32,6 +34,12 @@ or using the TASKRC environment variable:
 
 .RS
 $ TASKRC=/tmp/.taskrc task ...
+.RE
+
+Additionally, if no ~/.taskrc exists, taskwarrior will check if the XDG_CONFIG_HOME environment variable is defined:
+
+.RS
+$ XDG_CONFIG_HOME=~/.config task ...
 .RE
 
 Individual options can be overridden by using the
@@ -77,8 +85,15 @@ include <file>
 
 There may be whitespace around 'include' and <file>. The file may be an
 absolute or relative path, and the special character '~' is expanded to mean
-$HOME.
-The entry must be on a single line, no continuations.
+$HOME. If relative path is specified, the it will be evaluated as relative with
+respect to the following directories (listed in order of precedence):
+1. the current working directory
+2. the directory containing the taskrc file
+3. the directories set by the package manager (which usually contain
+   pre-defined themes)
+
+Note that environment variables are also expanded in paths (and any other
+taskrc variables).
 
 .RS
 # <comment>
@@ -144,9 +159,9 @@ ones containing just the relevant configuration data like colors, etc.
 There are two excellent uses of includes in your .taskrc, shown here:
 
 .RS
-include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
+include holidays.en-US.rc
 .br
-include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-16.theme
+include dark-16.theme
 .RE
 
 This includes two standard files that are distributed with Taskwarrior, which
@@ -154,7 +169,7 @@ define a set of US holidays, and set up a 16-color theme to use, to color the
 reports and calendar.
 
 .SH ENVIRONMENT VARIABLES
-These environment variables override defaults and command line arguments.
+These environment variables override defaults, but not command-line arguments.
 
 .TP
 .B TASKDATA=~/.task
@@ -163,6 +178,17 @@ This overrides the default path for the Taskwarrior data files.
 .TP
 .B TASKRC=~/.taskrc
 This overrides the default RC file.
+.RE
+
+This environment variable will be checked if
+.I ~/.taskrc
+doesn't exist
+
+.TP
+.B XDG_CONFIG_HOME=~/.config
+If set, taskwarrior will look for a
+.I $XDG_CONFIG_HOME/task/taskrc
+file
 
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
@@ -270,21 +296,23 @@ control specific occasions when output is generated. This list may contain:
     header     Messages that appear before report output (this includes .taskrc/.task overrides and the "[task next]" message)
     footnote   Messages that appear after report output (mostly status messages and change descriptions)
     label      Column labels on tabular reports
-    new-id     Provides feedback of any new task IDs
-    new-uuid   Provides feedback of any new task UUIDs. Deprecated, to be
-               merged with new-id.
+    new-id     Provides feedback on any new task with IDs (and UUIDs for new tasks with ID 0, such as new completed tasks).
+    new-uuid   Provides feedback on any new task with UUIDs. Overrides new-id. Useful for automation.
     affected   Reports 'N tasks affected' and similar
     edit       Used the verbose template for the 'edit' command
     special    Feedback when applying special tags
     project    Feedback about project status changes
     sync       Feedback about sync
     filter     Shows the filter used in the command
-    unwait     Notification when a task leaves the 'waiting' state
+    context    Show the current context. Displayed in footnote.
     override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
+    default    Notifications about taskwarrior choosing to perform a default action.
 
-"affected", "new-id", "new-uuid", "project", "unwait", "override" and "recur"
+The tokens "affected", "new-id", "new-uuid", "project", "override" and "recur"
 imply "footnote".
+
+The token "default" implies "header".
 
 Note that the "1" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
@@ -292,7 +320,7 @@ and the "nothing" setting is equivalent to none of the tokens being specified.
 Here are the shortcut equivalents:
 
     verbose=on
-    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait,override
+    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,override,recur
 
     verbose=0
     verbose=blank,label,new-id,edit
@@ -406,12 +434,6 @@ With json.array=0, export writes raw JSON objects to STDOUT, one per line.
 Defaults to "1".
 
 .TP
-.B json.depends.array=1
-Determines whether the export command encodes dependencies as an array of string
-UUIDs, or one comma-separated string.
-Defaults to "1".
-
-.TP
 .B _forcecolor=1
 Taskwarrior shuts off color automatically when the output is not sent directly
 to a TTY. For example, this command:
@@ -440,7 +462,7 @@ The character or string to show in the tag.indicator column. Defaults to +.
 
 .TP
 .B dependency.indicator=D
-The character or string to show in the depends.indicator column. Defaults to +.
+The character or string to show in the depends.indicator column. Defaults to D.
 
 .TP
 .B uda.<name>.indicator=U
@@ -515,7 +537,7 @@ Controls the GnuTLS diagnostic level. For 'sync' debugging. Level 0 means no
 diagnostics. Level 9 is the highest. Level 2 is a good setting for debugging.
 
 .TP
-.B obfuscate=1
+.B obfuscate=0
 When set to '1', will replace all report text with 'xxx'.
 This is useful for sharing report output in bug reports.
 Default value is '0'.
@@ -526,6 +548,12 @@ Taskwarrior supports command aliases. This alias provides an alternate name
 (rm) for the delete command. You can use aliases to provide alternate names for
 any of the commands. Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
+
+.TP
+.B burndown.cumulative=1
+May be "1" or "0", and controls the behaviour of the burndown command. When set
+to 1, it sums up all completed tasks, otherwise they only get plotted in the
+interval where the task was completed. Defaults to 1.
 
 .SS DATES
 
@@ -662,6 +690,8 @@ field that is set. Otherwise, they are set to the corresponding values of
 .B date.iso=1
 Enables ISO-8601 date support.  The default value is "1".
 
+.SS CALENDAR
+
 .TP
 .B weekstart=Sunday
 Determines the day a week starts. Valid values are Sunday or Monday only. The
@@ -703,7 +733,7 @@ The offset value to apply to the first month in the calendar report. The default
 value is "-1".
 
 .TP
-.B calendar.holidays=full
+.B calendar.holidays=none
 If set to full running "task calendar" will display holidays in the calendar by
 color-coding the corresponding days. A detailed list with the dates and names
 of the holidays is also shown. If set to sparse only the days are color-coded
@@ -713,6 +743,12 @@ turned off by setting the variable to none. The default value is "none".
 .TP
 .B calendar.legend=1
 Determines whether the calendar legend is displayed. The default value is "1".
+
+.TP
+.B calendar.monthsperline=N
+Determines how many months the "task calendar" command renders across the
+screen. Defaults to however many will fit. If more months than will fit are
+specified, Taskwarrior will only show as many that will fit.
 
 .SS JOURNAL ENTRIES
 
@@ -739,7 +775,7 @@ the 'info' command. Default value is "1".
 
 .SS HOLIDAYS
 Holidays are entered either directly in the .taskrc file or via an include file
-that is specified in .taskrc. For each holiday the name and the date is
+that is specified in .taskrc. For single-day holidays the name and the date is
 required to be given:
 
 .RS
@@ -748,10 +784,20 @@ required to be given:
 holiday.towel.name=Day of the towel
 .br
 holiday.towel.date=20100525
+.RE
+.RE
+
+For holidays that span a range of days (i.e. vacation), you can use a start date
+and an end date:
+
+.RS
+.RS
 .br
-holiday.sysadmin.name=System Administrator Appreciation Day
+holiday.sysadmin.name=System Administrator Appreciation Week
 .br
-holiday.sysadmin.date=20100730
+holiday.sysadmin.start=20100730
+.br
+holiday.sysadmin.end=20100805
 .RE
 .RE
 
@@ -781,15 +827,9 @@ be included like this:
 .RS
 .RS
 .br
-include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
+include holidays.en-US.rc
 .RE
 .RE
-
-.TP
-.B monthsperline=3
-Determines how many months the "task calendar" command renders across the
-screen. Defaults to however many will fit. If more months than will fit are
-specified, Taskwarrior will only show as many that will fit.
 
 .SS DEPENDENCIES
 
@@ -982,6 +1022,11 @@ Color of today with due tasks in calendar.
 .TP
 .B color.calendar.overdue=black on red
 Color of days with overdue tasks in calendar.
+.RE
+
+.TP
+.B color.calendar.scheduled=black on orange
+Color of days with scheduled tasks in calendar.
 .RE
 
 .TP
@@ -1255,6 +1300,12 @@ This is a comma-separated list of columns and formatting specifiers. See the
 command 'task columns' for a full list of options and examples.
 
 .TP
+.B report.X.context
+A boolean value representing whether the given report should respect (apply)
+the currently active context. See CONTEXT section for details about context.
+Defaults to 1.
+
+.TP
 .B report.X.labels
 The labels for each column that will be used when generating report X. The
 labels are a comma separated list.
@@ -1449,10 +1500,27 @@ Stores the value of the currently active context.
 .RE
 
 .TP
-.B context.<name>=<filter>
-.RS
-Stores the definition of the context with the name <name>.
+.B context.<name>.read=<filter>
 .RE
+.br
+.B context.<name>.write=<modifications>
+.RS
+Stores the definition of the read or write context with the name <name>. Read
+context is the default filter applied when the context is active. The write
+context are the default modifications applied to newly added tasks when the
+context is active.
+.RE
+
+.TP
+.B context.<name>.rc.<key>=<value>
+.RS
+The rc type allows to override any configuration parameter for the current
+context, e.g. if the default command for the context home should be changed to
+home_report, the following statement could be added:
+
+context.home.rc.default.command=home_report
+.RE
+
 
 .SS SYNC
 
@@ -1512,7 +1580,7 @@ Default is "NORMAL". See GnuTLS documentation for full details.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2021 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2021 T. Babej, P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 

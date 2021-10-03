@@ -8,8 +8,8 @@
 # "taskrc" is a file set up in bash_tap_tw.sh:setup_taskrc(), and can be
 # appended to or changed as needed.
 #
-# Subject to the MIT License. See LICENSE file or http://opensource.org/licenses/MIT
-# Copyright (c) 2015 - 2021 Wilhelm Schürmann
+# Subject to the MIT License. See LICENSE file or https://opensource.org/licenses/MIT
+# Copyright (c) 2015 - 2021, Wilhelm Schürmann
 
 function setup_taskrc {
     # Configuration
@@ -35,7 +35,7 @@ function find_task_binary {
     for t in "${bashtap_org_pwd}/task" "${bashtap_org_pwd}/src/task" "${bashtap_org_pwd}/../task" "${bashtap_org_pwd}/../src/task" "${bashtap_org_pwd}/../build/src/task"; do
         if [ -f "$t" ] && [ -x "$t" ]; then
             t_abs=$(bashtap_get_absolute_path "$t")
-            eval "function task { ${t_abs} rc:taskrc \"\$@\"; }"
+            eval "function task { '${t_abs}' rc:taskrc \"\$@\"; }"
             return 0
         fi
     done

@@ -56,7 +56,7 @@ if __name__ == "__main__":
     timestamp = re.compile("^# (\d+(?:\.\d+)?) ==>.*$")
 
     expected_fail = re.compile(r"^not ok.*?#\s*TODO", re.I)
-    unexpected_pass = re.compile(r"^ok .*?#\s*TODO", re.I)
+    unexpected_pass = re.compile(r"^not ok .*?#\s*FIXED", re.I)
     skip = re.compile(r"^ok .*?#\s*skip", re.I)
     ok = re.compile(r"^ok ", re.I)
     not_ok = re.compile(r"^not ok", re.I)

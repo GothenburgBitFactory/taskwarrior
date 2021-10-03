@@ -19,12 +19,12 @@ RUN git clean -dfx
 RUN git submodule init
 RUN git submodule update
 RUN source scl_source enable devtoolset-7; cmake -DCMAKE_BUILD_TYPE=debug .
-RUN source scl_source enable devtoolset-7; make -j2
+RUN source scl_source enable devtoolset-7; make -j8
 RUN source scl_source enable devtoolset-7; make install
 RUN task --version
 
 # Setup tests
 WORKDIR /root/code/test/
-RUN source scl_source enable devtoolset-7; make
+RUN source scl_source enable devtoolset-7; make -j8
 
 CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]

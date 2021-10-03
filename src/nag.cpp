@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,41 +24,37 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <cmake.h>
 #include <Context.h>
+#include <iterator>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
-// Returns a Boolean indicator as to whether a nag message was generated, so
-// that commands can control the number of nag messages displayed (ie one is
-// enough).
-//
-// Otherwise generates a nag message, if one is defined, if there are tasks of
-// higher urgency.
-bool nag (Task& task)
+// Generates a nag message when there are READY tasks of a higher urgency.
+void nag (std::vector <Task>& tasks)
 {
-  // Special tag overrides nagging.
-  if (task.hasTag ("nonag"))
-    return false;
-
   auto msg = Context::getContext ().config.get ("nag");
-  if (msg != "")
-  {
-    // Scan all pending, non-recurring tasks.
-    auto pending = Context::getContext ().tdb2.pending.get_tasks ();
-    for (auto& t : pending)
-    {
-      if ((t.getStatus () == Task::pending  ||
-           t.getStatus () == Task::waiting) &&
-          t.hasTag ("READY")                &&
-          t.urgency () > task.urgency ())
+  if (msg == "")
+      return;
+
+  auto pending = Context::getContext ().tdb2.pending.get_tasks ();
+  for (auto& t1 : tasks) {
+    if (t1.hasTag ("nonag"))
+      continue;
+
+    for (auto& t2 : pending) {
+      if (t1.get ("uuid") != t2.get ("uuid") &&
+        t2.hasTag ("READY")                  &&
+        t1.urgency () < t2.urgency ())
       {
         Context::getContext ().footnote (msg);
-        return true;
+        return;
       }
     }
   }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,7 @@ int CmdInfo::execute (std::string& output)
 
     // dependencies: blocked
     {
-      auto blocked = dependencyGetBlocking (task);
+      auto blocked = task.getDependencyTasks ();
       if (blocked.size ())
       {
         std::stringstream message;
@@ -162,7 +162,7 @@ int CmdInfo::execute (std::string& output)
 
     // dependencies: blocking
     {
-      auto blocking = dependencyGetBlocked (task);
+      auto blocking = task.getBlockedTasks ();
       if (blocking.size ())
       {
         std::stringstream message;
@@ -184,6 +184,7 @@ int CmdInfo::execute (std::string& output)
     }
 
     // parent
+    // 2017-01-07: Deprecated in 2.6.0
     if (task.has ("parent"))
     {
       row = view.addRow ();
@@ -192,6 +193,7 @@ int CmdInfo::execute (std::string& output)
     }
 
     // mask
+    // 2017-01-07: Deprecated in 2.6.0
     if (task.has ("mask"))
     {
       row = view.addRow ();
@@ -200,11 +202,36 @@ int CmdInfo::execute (std::string& output)
     }
 
     // imask
+    // 2017-01-07: Deprecated in 2.6.0
     if (task.has ("imask"))
     {
       row = view.addRow ();
       view.set (row, 0, "Mask Index");
       view.set (row, 1, task.get ("imask"));
+    }
+
+    // template
+    if (task.has ("template"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, "Template task");
+      view.set (row, 1, task.get ("template"));
+    }
+
+    // last
+    if (task.has ("last"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, "Last instance");
+      view.set (row, 1, task.get ("last"));
+    }
+
+    // rtype
+    if (task.has ("rtype"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, "Recurrence type");
+      view.set (row, 1, task.get ("rtype"));
     }
 
     // entry
@@ -302,16 +329,17 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("ANNOTATED")) virtualTags += "ANNOTATED ";
       if (task.hasTag ("BLOCKED"))   virtualTags += "BLOCKED ";
       if (task.hasTag ("BLOCKING"))  virtualTags += "BLOCKING ";
-      if (task.hasTag ("CHILD"))     virtualTags += "CHILD ";
+      if (task.hasTag ("CHILD"))     virtualTags += "CHILD ";          // 2017-01-07: Deprecated in 2.6.0
       if (task.hasTag ("COMPLETED")) virtualTags += "COMPLETED ";
       if (task.hasTag ("DELETED"))   virtualTags += "DELETED ";
       if (task.hasTag ("DUE"))       virtualTags += "DUE ";
-      if (task.hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";
+      if (task.hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";      // 2016-03-29: Deprecated in 2.6.0
+      if (task.hasTag ("INSTANCE"))  virtualTags += "INSTANCE ";
       if (task.hasTag ("LATEST"))    virtualTags += "LATEST ";
       if (task.hasTag ("MONTH"))     virtualTags += "MONTH ";
       if (task.hasTag ("ORPHAN"))    virtualTags += "ORPHAN ";
       if (task.hasTag ("OVERDUE"))   virtualTags += "OVERDUE ";
-      if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";
+      if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";         // 2017-01-07: Deprecated in 2.6.0
       if (task.hasTag ("PENDING"))   virtualTags += "PENDING ";
       if (task.hasTag ("PRIORITY"))  virtualTags += "PRIORITY ";
       if (task.hasTag ("PROJECT"))   virtualTags += "PROJECT ";
@@ -319,6 +347,7 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("READY"))     virtualTags += "READY ";
       if (task.hasTag ("SCHEDULED")) virtualTags += "SCHEDULED ";
       if (task.hasTag ("TAGGED"))    virtualTags += "TAGGED ";
+      if (task.hasTag ("TEMPLATE"))  virtualTags += "TEMPLATE ";
       if (task.hasTag ("TODAY"))     virtualTags += "TODAY ";
       if (task.hasTag ("TOMORROW"))  virtualTags += "TOMORROW ";
       if (task.hasTag ("UDA"))       virtualTags += "UDA ";
@@ -328,7 +357,7 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("WEEK"))      virtualTags += "WEEK ";
       if (task.hasTag ("YEAR"))      virtualTags += "YEAR ";
       if (task.hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
-      // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
+      // If you update the above list, update src/Task.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
       view.set (row, 0, "Virtual tags");
@@ -348,7 +377,6 @@ int CmdInfo::execute (std::string& output)
 
     // Show any UDAs
     auto all = task.all ();
-    std::string type;
     for (auto& att: all)
     {
       if (Context::getContext ().columns.find (att) != Context::getContext ().columns.end ())
@@ -362,9 +390,9 @@ int CmdInfo::execute (std::string& output)
             row = view.addRow ();
             view.set (row, 0, col->label ());
 
-            if (type == "date")
+            if (col->type () == "date")
               value = Datetime (value).toString (dateformat);
-            else if (type == "duration")
+            else if (col->type () == "duration")
             {
               Duration iso;
               std::string::size_type cursor = 0;
@@ -385,6 +413,8 @@ int CmdInfo::execute (std::string& output)
     for (auto& att : all)
     {
       if (att.substr (0, 11) != "annotation_" &&
+          att.substr (0, 5) != "tags_" &&
+          att.substr (0, 4) != "dep_" &&
           Context::getContext ().columns.find (att) == Context::getContext ().columns.end ())
       {
          row = view.addRow ();
@@ -440,8 +470,12 @@ int CmdInfo::execute (std::string& output)
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
             auto project = var.first.substr (21, end - 21);
-            if (task.get ("project").find (project) == 0)
+            const std::string taskProjectName = task.get("project");
+            if (taskProjectName == project ||
+                taskProjectName.find(project + '.') == 0)
+            {
               urgencyTerm (urgencyDetails, "PROJECT " + project, 1.0, var.second);
+            }
           }
 
           // urgency.user.tag.<tag>.coefficient
@@ -472,7 +506,7 @@ int CmdInfo::execute (std::string& output)
           if (end != std::string::npos)
           {
             auto uda = var.first.substr (12, end - 12);
-            auto dot = uda.find (".");
+            auto dot = uda.find ('.');
             if (dot == std::string::npos)
             {
               // urgency.uda.<name>.coefficient
@@ -537,7 +571,7 @@ int CmdInfo::execute (std::string& output)
 
             Task before (undo[previous].substr (4));
             Task after (undo[current].substr (4));
-            journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
+            journal.set (row, 1, before.diffForInfo (after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
           }
         }
       }

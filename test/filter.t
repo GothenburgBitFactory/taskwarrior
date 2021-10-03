@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -659,7 +659,6 @@ class TestBug1600(TestCase):
     def setUp(self):
         self.t = Task()
 
-    @unittest.expectedFailure
     def test_filter_plus_in_descriptions(self):
         """filter - description contains +"""
         self.t("add foobar1")
@@ -671,7 +670,7 @@ class TestBug1600(TestCase):
         self.assertIn("foobar1", out)
         self.assertIn("foobar2", out)
 
-        code, out, err = self.t("all description.contains:'foobar\\+'")
+        code, out, err = self.t(r"all description.contains:\'foobar\\+\'")
         self.assertIn("foobar+", out)
         self.assertNotIn("foobar1", out)
         self.assertNotIn("foobar2", out)
@@ -837,6 +836,34 @@ class TestBefore(TestCase):
         self.assertIn("2", out)
 
 
+class TestBy(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_by_eoy_includes_eoy(self):
+        """ Verify by-end-of-year includes task due *at* end-of-year """
+        self.t("add zero due:eoy")
+
+        code, out, err = self.t("due.by:eoy")
+        self.assertIn("zero", out)
+
+    def test_by_tomorrow_includes_tomorrow(self):
+        """ Verify that by-tomorrow also includes tomorrow itself """
+        self.t.faketime("2021-07-16 21:00:00")
+        self.t("add zero due:2021-07-17")
+
+        code, out, err = self.t("due.by:tomorrow")
+        self.assertIn("zero", out)
+
+    def test_by_yesterday_does_not_include_today(self):
+        """ Verify that by-yesterday does not include today """
+        self.t("add zero")
+
+        code, out, err = self.t.runError("entry.by:yesterday")
+        self.assertIn("No matches", err)
+        self.assertNotIn("zero", out)
+
+
 class Test1424(TestCase):
     def setUp(self):
         self.t = Task()
@@ -875,14 +902,14 @@ class Test1452(TestCase):
         self.task_uuid = self.t.export_one()['uuid']
 
     def test_get_task_by_uuid_with_prefix(self):
-        """1452: Tries to filter task simply by it's uuid, using uuid: prefix."""
+        """1452: Tries to filter task simply by its uuid, using uuid: prefix."""
         output = self.t.export_one('uuid:%s' % self.task_uuid)
 
         # Sanity check it is the correct one
         self.assertEqual(output['uuid'], self.task_uuid)
 
     def test_get_task_by_uuid_without_prefix(self):
-        """1452: Tries to filter task simply by it's uuid, without using uuid: prefix."""
+        """1452: Tries to filter task simply by its uuid, without using uuid: prefix."""
         output = self.t.export_one(self.task_uuid)
 
         # Sanity check it is the correct one
@@ -967,7 +994,6 @@ class TestBug1609(TestCase):
         self.assertIn("two", out)
 
 
-@unittest.expectedFailure
 class TestBug1630(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -1096,12 +1122,31 @@ class TestBug1915(TestCase):
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
+    @unittest.expectedFailure
     def test_complex_and_or_query_variant_eight(self):
         """1915: Make sure parser handles complex and-or queries correctly (8)"""
         code, out, err = self.t("rc.verbose:nothing status:pending and \\(project:A or project:B\\) all")
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
+
+
+class Test2577(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_filtering_for_datetime_like(self):
+        """2577: Check that filtering for datetime-like project names works"""
+        self.t('add one pro:sat')  # looks like "saturday"
+        self.t('add two pro:whatever')
+
+        # This should not fail (fails on 2.5.3)
+        code, out, err = self.t('pro:sat')
+
+        # Assert expected output, but the crucial part of this test is success
+        # of the call above
+        self.assertIn("one", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

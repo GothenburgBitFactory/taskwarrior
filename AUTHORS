@@ -3,6 +3,7 @@ contributions of the following people:
 
   Paul Beckingham    (Principal Author)
   Federico Hernandez (Principal Author)
+  Tomas Babej        (Principal Author)
   David J Patrick    (Designer)
   John Florian       (Contributing Author)
   Cory Donnelly      (Contributing Author)
@@ -13,7 +14,6 @@ contributions of the following people:
   Louis-Claude Canon (Contributing Author)
   Scott Kostyshak    (Contributing Author)
   Renato Alves       (Contributing Author)
-  Tomas Babej        (Contributing Author)
 
 The following submitted code, packages or analysis, and deserve special thanks:
 
@@ -150,9 +150,14 @@ The following submitted code, packages or analysis, and deserve special thanks:
   Janik Rabe
   mrossinek
   taiyu-len
-  Lionel Miller
   Chad Phillips
   Lionel Miller
+  Florian Heiderich
+  Anthony VB
+  Julien Rabinow
+  Daniel Mowitz
+  Scott Mcdermott
+  Bharatvaj
 
 Thanks to the following, who submitted detailed bug reports and excellent
 suggestions:
@@ -336,5 +341,8 @@ suggestions:
   Martin F. Krafft
   tom-doerr
   ad-si
-  Adrien Lemaire
-  Wray Zheng
+  coaxial
+  Arvedui
+  reportaman
+  Pablo Vizcay
+  Jake C.

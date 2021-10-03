@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -50,17 +50,14 @@ CmdCount::CmdCount ()
 int CmdCount::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
 
   // Find number of matching tasks.  Skip recurring parent tasks.
-  int count = 0;
-  for (const auto& task : filtered)
-    if (task.getStatus () != Task::recurring)
-      ++count;
-
+  int count = std::count_if(filtered.begin(), filtered.end(), [](const auto& task){ return task.getStatus () != Task::recurring; });
   output = format (count) + '\n';
   return 0;
 }

@@ -2,10 +2,10 @@
 
 ## Satisfy the Requirements:
  * CMake 3.0 or later
- * gcc 5.0 or later, clang 3.4 or later, or a compiler with full C++14 support
+ * gcc 7.0 or later, clang 6.0 or later, or a compiler with full C++17 support
  * libuuid (if not on macOS)
  * gnutls (optional)
- * python 2.7 or 3 (optional, for running the test suite)
+ * python 3 (optional, for running the test suite)
 
 ## Obtain and build code:
 ```
@@ -20,7 +20,7 @@
 ```
 ## Running Test Suite:
 ```
-    $ cd tests
+    $ cd test
     $ make VERBOSE=1                     # Shows details
     $ ./run_all                          # Runs all tests silently > all.log
     $ ./problems                         # Enumerate test failures in all.log
@@ -44,9 +44,9 @@
     always ongoing discussions about new features and changes to existing
     features.
 
-  * Join us in the #taskwarrior IRC channel on freenode.net. Many great ideas,
-    suggestions, testing and discussions have taken place there. It is also
-    the quickest way to get help, or confirm a bug.
+  * Join us in the #taskwarrior IRC channel on freenode.net or libera.chat.
+    Many great ideas, suggestions, testing and discussions have taken place
+    there. It is also the quickest way to get help, or confirm a bug.
 
   * Review documentation: there are man pages, online articles, tutorials and
     so on, and these may contain errors, or they may not convey ideas in the
@@ -148,10 +148,9 @@
 # Current Code Base Condition
 
 **'master' branch**:
- * 2.5.1 Current release, locked.
+ * 2.5.3 Current release, locked.
 
- **'2.6.0' branch**:
-  * Current development branch.
+**'2.6.0' branch**:
+  * Current development branch no plans yet.
 
 ---
-2018-05-13 Updated for 2.5.2

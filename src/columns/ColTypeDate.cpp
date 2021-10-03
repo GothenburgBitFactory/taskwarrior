@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -161,7 +161,7 @@ void ColumnTypeDate::render (
     else if (_style == "countdown")
     {
       Datetime now;
-      renderStringRight (lines, width, color, Duration (now - date).formatVague (true));
+      renderStringRight (lines, width, color, Duration (date - now).formatVague (true));
     }
     else if (_style == "julian")
       renderStringRight (lines, width, color, format (date.toJulian (), 13, 12));
@@ -222,14 +222,13 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
     evaluatedValue = Variant (value);
   }
 
-  // If v is duration, add 'now' to it, else store as date.
+  // If v is duration, we need to convert it to date (and implicitly add now),
+  // else store as date.
   std::string label = "  [1;37;43mMODIFICATION[0m ";
   if (evaluatedValue.type () == Variant::type_duration)
   {
     Context::getContext ().debug (label + _name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + '\'');
-    Datetime date_now;
-    Variant now (date_now.toEpoch (), Variant::type_date);
-    evaluatedValue += now;
+    evaluatedValue.cast (Variant::type_date);
   }
   else
   {

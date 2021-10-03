@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -88,7 +88,7 @@ public:
 
   void setAsNow (const std::string&);
   bool has (const std::string&) const;
-  std::vector <std::string> all ();
+  std::vector <std::string> all () const;
   const std::string identifier (bool shortened = false) const;
   const std::string get (const std::string&) const;
   const std::string& get_ref (const std::string&) const;
@@ -97,7 +97,7 @@ public:
   float get_float (const std::string&) const;
   time_t get_date (const std::string&) const;
   void set (const std::string&, const std::string&);
-  void set (const std::string&, int);
+  void set (const std::string&, long long);
   void remove (const std::string&);
 
 #ifdef PRODUCT_TASKWARRIOR
@@ -114,6 +114,7 @@ public:
   bool is_udaPresent () const;
   bool is_orphanPresent () const;
 #endif
+  bool is_waiting () const;
 
   status getStatus () const;
   void setStatus (status);
@@ -125,7 +126,7 @@ public:
   int getTagCount () const;
   bool hasTag (const std::string&) const;
   void addTag (const std::string&);
-  void addTags (const std::vector <std::string>&);
+  void setTags (const std::vector <std::string>&);
   std::vector <std::string> getTags () const;
   void removeTag (const std::string&);
 
@@ -143,8 +144,10 @@ public:
 #ifdef PRODUCT_TASKWARRIOR
   void removeDependency (int);
   void removeDependency (const std::string&);
+  bool hasDependency (const std::string&) const;
   std::vector <int>         getDependencyIDs () const;
   std::vector <std::string> getDependencyUUIDs () const;
+  std::vector <Task>        getBlockedTasks () const;
   std::vector <Task>        getDependencyTasks () const;
 
   std::vector <std::string> getUDAOrphanUUIDs () const;
@@ -162,6 +165,9 @@ public:
   void modify (modType, bool text_required = false);
 #endif
 
+  std::string diff (const Task& after) const;
+  std::string diffForInfo (const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp) const; 
+
 private:
   int determineVersion (const std::string&);
   void parseJSON (const std::string&);
@@ -170,6 +176,15 @@ private:
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;
   const std::string decode (const std::string&) const;
+  bool isTagAttr (const std::string&) const;
+  const std::string tag2Attr (const std::string&) const;
+  const std::string attr2Tag (const std::string&) const;
+  bool isDepAttr (const std::string&) const;
+  const std::string dep2Attr (const std::string&) const;
+  const std::string attr2Dep (const std::string&) const;
+  bool isAnnotationAttr (const std::string&) const;
+  void fixDependsAttribute ();
+  void fixTagsAttribute ();
 
 public:
   float urgency_project     () const;

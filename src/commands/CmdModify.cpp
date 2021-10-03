@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -71,6 +71,9 @@ int CmdModify::execute (std::string&)
   std::map <std::string, std::string> projectChanges;
 
   auto count = 0;
+  if(filtered.size() > 1) {
+    feedback_affected("This command will alter {1} tasks.", filtered.size());
+  }
   for (auto& task : filtered)
   {
     Task before (task);
@@ -85,7 +88,7 @@ int CmdModify::execute (std::string&)
                               task.identifier (true),
                               task.get ("description"));
 
-      if (permission (taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (before.diff (task) + question, filtered.size ()))
       {
         count += modifyAndUpdate (before, task, &projectChanges);
       }
@@ -200,8 +203,9 @@ int CmdModify::modifyRecurrenceParent (
 
   auto children = Context::getContext ().tdb2.children (task);
   if (children.size () &&
-      (! Context::getContext ().config.getBoolean ("recurrence.confirmation") ||
-        confirm (STRING_CMD_MODIFY_RECUR)))
+          ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
+            && confirm (STRING_CMD_MODIFY_RECUR)) ||
+           Context::getContext ().config.getBoolean ("recurrence.confirmation")))
   {
     for (auto& child : children)
     {

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,6 +56,8 @@ public:
 
   int getWidth ();                     // determine terminal width
   int getHeight ();                    // determine terminal height
+
+  std::string getTaskContext (const std::string&, std::string, bool fallback=true);
 
   const std::vector <std::string> getColumns () const;
   void getLimits (int&, int&);

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -44,11 +44,16 @@ class TestTags(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
 
+    def split_tags(self, tags):
+        return sorted(tags.strip().split(','))
+
     def test_tag_manipulation(self):
         """Test addition and removal of tags"""
         self.t("add +one This +two is a test +three")
         code, out, err = self.t("_get 1.tags")
-        self.assertEqual("one,two,three\n", out)
+        self.assertEqual(
+            sorted(["one", "two", "three"]),
+            self.split_tags(out))
 
         # Remove tags.
         self.t("1 modify -three -two -one")
@@ -58,7 +63,9 @@ class TestTags(TestCase):
         # Add tags.
         self.t("1 modify +four +five +six")
         code, out, err = self.t("_get 1.tags")
-        self.assertEqual("four,five,six\n", out)
+        self.assertEqual(
+            sorted(["four", "five", "six"]),
+            self.split_tags(out))
 
         # Remove tags.
         self.t("1 modify -four -five -six")
@@ -377,6 +384,22 @@ class TestVirtualTags(TestCase):
         code, out, err = self.t("-SCHEDULED all")
         self.assertNotIn("is_scheduled", out)
 
+    def test_virtual_tag_TEMPLATE(self):
+        """Verify 'TEMPLATE' appears when expected"""
+        code, out, err = self.t("+TEMPLATE status:recurring all")
+        self.assertIn("is_recurring", out)
+
+        code, out, err = self.t.runError("-TEMPLATE status:recurring all")
+        self.assertNotIn("is_recurring", out)
+
+    def test_virtual_tag_INSTANCE(self):
+        """Verify 'INSTANCE' appears when expected"""
+        code, out, err = self.t("+INSTANCE status:pending all")
+        self.assertIn("is_recurring", out)
+
+        code, out, err = self.t("-INSTANCE status:pending all")
+        self.assertNotIn("is_recurring", out)
+
     def test_virtual_tag_UNTIL(self):
         """Verify 'UNTIL' appears when expected"""
         self.t("add has_until until:eonm")
@@ -394,6 +417,7 @@ class TestVirtualTags(TestCase):
 
         code, out, err = self.t("-WAITING all")
         self.assertNotIn("is_waiting", out)
+
 
 class TestVirtualTagUDA(TestCase):
     def setUp(self):

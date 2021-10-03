@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -95,6 +95,19 @@ class TestProjects(TestCase):
         code, out, err = self.t('1 mod pro:"foo bar"')
         self.assertRegex(err, self.STATUS.format("foo bar", "0%",
                                                          "1 task"))
+
+        # Ensure filtering for project with spaces works
+        code, out, err = self.t('pro:"foo bar" count')
+        self.assertEqual(out.strip(), '1')
+
+    def test_project_spaces(self):
+        """TW #2386: Filter for project:someday"""
+
+        self.t("add hello pro:someday")
+
+        # Ensure filtering for project with numeric date works
+        code, out, err = self.t('pro:someday count')
+        self.assertEqual(out.strip(), '1')
 
     def add_tasks(self):
         self.t("add testing project:existingParent")
@@ -381,7 +394,6 @@ class TestBug1455(TestCase):
     def setUp(self):
         self.t = Task()
 
-    @unittest.expectedFailure
     def test_project_hierarchy_filter(self):
         """1455: Test project:school)
 
@@ -454,7 +466,6 @@ class TestBug1430(TestCase):
         self.assertEqual("home/garden\n", out)
 
 
-@unittest.expectedFailure
 class TestBug1617(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -465,7 +476,7 @@ class TestBug1617(TestCase):
         self.t("add one")
         self.t("add two project:'three four'")
 
-        code, out, err = self.t("project:'three four' list")
+        code, out, err = self.t(r"project:\'three\ four\' list")
         self.assertIn("two", out)
         self.assertNotIn("one", out)
 
@@ -480,6 +491,60 @@ class TestBug1627(TestCase):
         self.t("add foo project:mon")
         code, out, err = self.t("_get 1.project")
         self.assertEqual("mon\n", out)
+
+
+class TestBug1900(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_project_eval(self):
+        """1900: Project name can contain dashes"""
+        self.t("add foo project:due-b")
+        code, out, err = self.t("_get 1.project")
+        self.assertEqual("due-b\n", out)
+
+        self.t("add foo project:scheduled-home")
+        code, out, err = self.t("_get 2.project")
+        self.assertEqual("scheduled-home\n", out)
+
+        self.t("add foo project:entry-work")
+        code, out, err = self.t("_get 3.project")
+        self.assertEqual("entry-work\n", out)
+
+
+class TestBug1904(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def add_tasks(self):
+        self.t("add pro:a-b test1")
+        self.t("add pro:a.b test2")
+
+    def validate_order(self, out):
+        order = ("a",
+                 "  b",
+                 "a-b")
+
+        lines = out.splitlines(True)
+        # position where project names start on the lines list
+        position = 3
+
+        for i, proj in enumerate(order):
+            pos = position + i
+
+            self.assertTrue(
+                lines[pos].startswith(proj),
+                msg=("Project '{0}' is not in line #{1} or has an unexpected "
+                     "indentation.{2}".format(proj, pos, out))
+            )
+
+    def test_project_eval(self):
+        """1904: verify correct order under projects command"""
+        self.add_tasks()
+        code, out, err = self.t("projects")
+        self.validate_order(out)
 
 
 if __name__ == "__main__":

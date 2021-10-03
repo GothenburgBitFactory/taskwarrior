@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@
 #include <format.h>
 #include <util.h>
 #include <main.h>
+#include <list>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdProjects::CmdProjects ()
@@ -57,6 +58,7 @@ int CmdProjects::execute (std::string& output)
   int rc = 0;
 
   // Get all the tasks.
+  handleUntil ();
   handleRecurrence ();
   auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 
@@ -108,25 +110,18 @@ int CmdProjects::execute (std::string& output)
     view.add ("Tasks", false);
     setHeaderUnderline (view);
 
-    std::vector <std::string> processed;
-    for (auto& project : unique)
+    // create sorted list of table entries
+    std::list <std::pair<std::string, int>> sorted_view;
+    sort_projects (sorted_view, unique);
+
+    // construct view from sorted list
+    for (auto& item: sorted_view)
     {
-      const std::vector <std::string> parents = extractParents (project.first);
-      for (auto& parent : parents)
-      {
-        if (std::find (processed.begin (), processed.end (), parent) == processed.end ())
-        {
-          int row = view.addRow ();
-          view.set (row, 0, indentProject (parent));
-          processed.push_back (parent);
-        }
-      }
       int row = view.addRow ();
-      view.set (row, 0, (project.first == ""
+      view.set (row, 0, (item.first == ""
                           ? "(none)"
-                          : indentProject (project.first, "  ", '.')));
-      view.set (row, 1, project.second);
-      processed.push_back (project.first);
+                          : indentProject (item.first, "  ", '.')));
+      view.set (row, 1, item.second);
     }
 
     int number_projects = unique.size ();
@@ -175,6 +170,7 @@ CmdCompletionProjects::CmdCompletionProjects ()
 int CmdCompletionProjects::execute (std::string& output)
 {
   // Get all the tasks.
+  handleUntil ();
   handleRecurrence ();
   auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 

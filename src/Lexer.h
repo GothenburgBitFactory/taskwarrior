@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2013 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ public:
                     date, duration };
 
   Lexer (const std::string&);
-  ~Lexer ();
+  ~Lexer () = default;
   bool token (std::string&, Lexer::Type&);
   static std::vector <std::string> split (const std::string&);
   static std::string typeToString (Lexer::Type);

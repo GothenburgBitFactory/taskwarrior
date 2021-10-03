@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
-      precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
+      precompiled.emplace_back (a.getToken (), a._lextype);
 
   if (precompiled.size ())
   {
@@ -107,7 +107,7 @@ void Filter::subset (std::vector <Task>& output)
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
-      precompiled.push_back (std::pair <std::string, Lexer::Type> (a.getToken (), a._lextype));
+      precompiled.emplace_back (a.getToken (), a._lextype);
 
   // Shortcut indicates that only pending.data needs to be loaded.
   bool shortcut = false;
@@ -214,6 +214,8 @@ bool Filter::pendingOnly () const
   int countOr        = 0;
   int countXor       = 0;
   int countNot       = 0;
+  bool pendingTag = false;
+  bool activeTag  = false;
 
   for (const auto& a : Context::getContext ().cli2._args)
   {
@@ -227,16 +229,26 @@ bool Filter::pendingOnly () const
       if (a._lextype == Lexer::Type::op  && raw == "not")          ++countNot;
       if (a._lextype == Lexer::Type::dom && canonical == "status") ++countStatus;
       if (                                  raw == "pending")      ++countPending;
-      if (                                  raw == "waiting")      ++countPending;
-      if (                                  raw == "recurring")    ++countPending;
+      if (                                  raw == "waiting")      ++countWaiting;
+      if (                                  raw == "recurring")    ++countRecurring;
     }
   }
+
+  for (const auto& word : Context::getContext ().cli2._original_args)
+  {
+    if (word.attribute ("raw") == "+PENDING") pendingTag = true;
+    if (word.attribute ("raw") == "+ACTIVE")  activeTag = true;
+  }
+
 
   if (countUUID)
     return false;
 
   if (countOr || countXor || countNot)
     return false;
+
+  if (pendingTag || activeTag)
+    return true;
 
   if (countStatus)
   {

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -67,10 +67,24 @@ void ColumnTypeNumeric::modify (Task& task, const std::string& value)
   std::string label = "  [1;37;43mMODIFICATION[0m ";
   Context::getContext ().debug (label + _name + " <-- '" + evaluatedValue.get_string () + "' <-- '" + value + '\'');
 
-  // If the result is not readily convertible to a numeric value, then this is
-  // an error.
-  if (evaluatedValue.type () == Variant::type_string)
-    throw format ("The value '{1}' is not a valid numeric value.", evaluatedValue.get_string ());
+  // Convert the value of the expression to the correct type if needed
+  switch (evaluatedValue.type ())
+  {
+    // Expected variants - no conversion
+    case Variant::type_integer:
+    case Variant::type_real:
+      break;
+    // Convertible variants - convert to int
+    case Variant::type_date:
+    case Variant::type_duration:
+      evaluatedValue.cast (Variant::type_integer);
+      break;
+    // Non-convertible variants
+    case Variant::type_string:
+      throw format ("The value '{1}' is not a valid numeric value.", evaluatedValue.get_string ());
+    default:
+      throw format ("Unexpected variant type: '{1}'", evaluatedValue.type ());
+  }
 
   task.set (_name, evaluatedValue);
 }

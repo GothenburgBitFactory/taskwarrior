@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2013 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -122,7 +122,7 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    tokens.emplace_back (token, type);
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
@@ -149,7 +149,7 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    tokens.emplace_back (token, type);
 
   if (_debug)
     Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
@@ -195,8 +195,9 @@ void Eval::debug (bool value)
 std::vector <std::string> Eval::getOperators ()
 {
   std::vector <std::string> all;
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    all.push_back (operators[i].op);
+  all.reserve(NUM_OPERATORS);
+  for (const auto &opr : operators)
+    all.push_back (opr.op);
 
   return all;
 }
@@ -206,9 +207,9 @@ std::vector <std::string> Eval::getOperators ()
 std::vector <std::string> Eval::getBinaryOperators ()
 {
   std::vector <std::string> all;
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    if (operators[i].type == 'b')
-      all.push_back (operators[i].op);
+  for (const auto &opr : operators)
+    if (opr.type == 'b')
+      all.push_back (opr.op);
 
   return all;
 }
@@ -223,6 +224,8 @@ void Eval::evaluatePostfixStack (
 
   // This is stack used by the postfix evaluator.
   std::vector <Variant> values;
+  values.reserve(tokens.size());
+
   for (const auto& token : tokens)
   {
     // Unary operators.
@@ -338,9 +341,9 @@ void Eval::evaluatePostfixStack (
       case Lexer::Type::identifier:
         {
           bool found = false;
-          for (auto source = _sources.begin (); source != _sources.end (); ++source)
+          for (const auto& source : _sources)
           {
-            if ((*source) (token.first, v))
+            if (source (token.first, v))
             {
               if (_debug)
                 Context::getContext ().debug (format ("Eval identifier source '{1}' → ↑'{2}'", token.first, (std::string) v));
@@ -669,10 +672,10 @@ bool Eval::parsePrimitive (
     else
     {
       bool found = false;
-      for (auto source = _sources.begin (); source != _sources.end (); ++source)
+      for (const auto& source : _sources)
       {
         Variant v;
-        if ((*source) (infix[i].first, v))
+        if (source (infix[i].first, v))
         {
           found = true;
           break;
@@ -697,7 +700,7 @@ bool Eval::parsePrimitive (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Dijkstra Shunting Algorithm.
-// http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+// https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 //
 //   While there are tokens to be read:
 //     Read a token.
@@ -810,13 +813,13 @@ bool Eval::identifyOperator (
   unsigned int& precedence,
   char& associativity) const
 {
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+  for (const auto& opr : operators)
   {
-    if (operators[i].op == op)
+    if (opr.op == op)
     {
-      type          = operators[i].type;
-      precedence    = operators[i].precedence;
-      associativity = operators[i].associativity;
+      type          = opr.type;
+      precedence    = opr.precedence;
+      associativity = opr.associativity;
       return true;
     }
   }

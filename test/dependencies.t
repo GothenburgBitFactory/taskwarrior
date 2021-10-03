@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 #
 ###############################################################################
 
+import string
 import sys
 import os
 import unittest
@@ -231,7 +232,6 @@ class TestBug697(TestCase):
         self.assertEqual("BLOCKED\n", out)
 
 
-@unittest.skip("WaitingFor TW-1262")
 class TestBug1262(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -241,8 +241,9 @@ class TestBug1262(TestCase):
         cls.t('add "Buy apples"')
 
         cls.DEPS = ("1", "2")
-        cls.t("add dep:" + ",".join(cls.DEPS) + '"Make fruit salad!"')
+        cls.t("add dep:" + ",".join(cls.DEPS) + ' "Make fruit salad!"')
 
+    @unittest.skip  # Skipping due to undeterminism
     def test_dependency_contains_matches_ID(self):
         """1262: dep.contains matches task IDs"""
         # NOTE: A more robust test is needed as alternative to this
@@ -254,13 +255,14 @@ class TestBug1262(TestCase):
 
     def test_dependency_contains_not_matches_other(self):
         """1262: dep.contains matches other characters not present in ID nor UUID"""
-        for char in set(string.letters).difference(string.hexdigits):
+        for char in set(string.ascii_letters).difference(string.hexdigits):
             self.t.runError("list dep.contains:{0}".format(char))
 
+    @unittest.expectedFailure
     def test_dependency_contains_not_UUID(self):
         """1262: dep.contains matches characters in the tasks' UUIDs"""
         # Get the UUID of the task with description "Buy"
-        code, out, err = self.t("uuid Buy")
+        code, out, err = self.t("uuids Buy")
 
         # Get only characters that show up in the UUID
         uuid = {chr for chr in out.splitlines()[0] if chr in string.hexdigits}

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -64,23 +64,28 @@ bool CmdConfig::setConfigVariable (
 
   for (auto& line : contents)
   {
+    // Get l-trimmed version of the line
+    auto trimmed_line = trim (line, " ");
+
     // If there is a comment on the line, it must follow the pattern.
     auto comment = line.find ('#');
-    auto pos     = line.find (name + '=');
+    auto pos = trimmed_line.find (name + '=');
 
-    if (pos != std::string::npos &&
-        (comment == std::string::npos ||
-         comment > pos))
+    // TODO: Use std::regex here
+    if (pos == 0)
     {
       found = true;
       if (!confirmation ||
           confirm (format ("Are you sure you want to change the value of '{1}' from '{2}' to '{3}'?", name, Context::getContext ().config.get (name), value)))
       {
-        line = name + '=' + json::encode (value);
+        auto new_line = line.substr (0, pos + name.length () + 1) + json::encode (value);
 
+        // Preserve the comment
         if (comment != std::string::npos)
-          line += ' ' + line.substr (comment);
+          new_line += "  " + line.substr (comment);
 
+        // Rewrite the line
+        line = new_line;
         change = true;
       }
     }
@@ -115,13 +120,13 @@ int CmdConfig::unsetConfigVariable (const std::string& name, bool confirmation /
   {
     auto lineDeleted = false;
 
-    // If there is a comment on the line, it must follow the pattern.
-    auto comment = line->find ('#');
-    auto pos     = line->find (name + '=');
+    // Get l-trimmed version of the line
 
-    if (pos != std::string::npos &&
-        (comment == std::string::npos ||
-         comment > pos))
+    // If there is a comment on the line, it must follow the pattern.
+    auto pos = trim (*line, " ").find (name + '=');
+
+    // TODO: Use std::regex here
+    if (pos == 0)
     {
       found = true;
 

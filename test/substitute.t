@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -83,6 +83,14 @@ class TestSubstitutions(TestCase):
         self.t("1 modify /b{3}/BbB/")
         code, out, err = self.t("_get 1.description")
         self.assertEqual("aaa BbB\n", out)
+
+    def test_substitution_long_with_short(self):
+        """Verify substitution of a sequence with a shorter sequence."""
+        self.t("add aaaaBaaaa")
+        self.t("1 modify /aaaa/c/g")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("cBc\n", out)
+
 
 class TestBug441(TestCase):
     def setUp(self):

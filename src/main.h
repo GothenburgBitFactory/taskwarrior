@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 #include <sys/types.h>
 #include <Context.h>
@@ -38,12 +39,16 @@
 
 // recur.cpp
 void handleRecurrence ();
+void handleUntil ();
 Datetime getNextRecurrence (Datetime&, std::string&);
 bool generateDueDates (Task&, std::vector <Datetime>&);
 void updateRecurrenceMask (Task&);
 
+// recur2.cpp
+void handleRecurrence2 ();
+
 // nag.cpp
-bool nag (Task&);
+void nag (std::vector <Task>&);
 
 // rules.cpp
 void initializeColorRules ();
@@ -54,15 +59,11 @@ std::string colorizeError (const std::string&);
 std::string colorizeDebug (const std::string&);
 
 // dependency.cpp
-std::vector <Task> dependencyGetBlocked (const Task&);
-std::vector <Task> dependencyGetBlocking (const Task&);
 bool dependencyIsCircular (const Task&);
 void dependencyChainOnComplete (Task&);
 void dependencyChainOnStart (Task&);
 
 // feedback.cpp
-std::string taskDifferences (const Task&, const Task&);
-std::string taskInfoDifferences (const Task&, const Task&, const std::string&, long&, const long);
 std::string renderAttribute (const std::string&, const std::string&, const std::string& format = "");
 void feedback_affected (const std::string&);
 void feedback_affected (const std::string&, int);
@@ -77,6 +78,8 @@ std::string onExpiration (Task&);
 
 // sort.cpp
 void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);
+void sort_projects (std::list <std::pair <std::string, int>>& sorted, std::map <std::string, int>& allProjects);
+void sort_projects (std::list <std::pair <std::string, int>>& sorted, std::map <std::string, bool>& allProjects);
 
 // legacy.cpp
 void legacyColumnMap (std::string&);

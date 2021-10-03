@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -59,13 +59,17 @@
 // This string is parsed and used as default values for configuration.
 std::string configurationDefaults =
   "# Taskwarrior program configuration file.\n"
-  "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-color',\n"
+  "# For more documentation, see https://taskwarrior.org or try 'man task', 'man task-color',\n"
   "# 'man task-sync' or 'man taskrc'\n"
   "\n"
   "# Here is an example of entries that use the default, override and blank values\n"
   "#   variable=foo   -- By specifying a value, this overrides the default\n"
   "#   variable=      -- By specifying no value, this means no default\n"
   "#   #variable=foo  -- By commenting out the line, or deleting it, this uses the default\n"
+  "\n"
+  "# You can also refence environment variables:\n"
+  "#   variable=$HOME/task\n"
+  "#   variable=$VALUE\n"
   "\n"
   "# Use the command 'task show' to see all defaults and overrides\n"
   "\n"
@@ -86,8 +90,9 @@ std::string configurationDefaults =
   "reserved.lines=1                               # Assume a 1-line prompt\n"
   "\n"
   "# Miscellaneous\n"
-  "#                                              # Comma-separated list.  May contain any subset of:\n"
-  "verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,unwait,override,recur\n"
+  "# verbose=                                     # Comma-separated list.  May contain any subset of:\n"
+  "# affected,blank,context,default,edit,filter,footnote,header,label,new-id,new-uuid,override,project,recur,special,sync\n"
+  "verbose=affected,blank,context,edit,header,footnote,label,new-id,project,special,sync,override,recur\n"
   "confirmation=1                                 # Confirmation on delete, big changes\n"
   "recurrence=1                                   # Enable recurrence\n"
   "recurrence.confirmation=prompt                 # Confirmation for propagating changes among recurring tasks (yes/no/prompt)\n"
@@ -109,8 +114,8 @@ std::string configurationDefaults =
   "xterm.title=0                                  # Sets xterm title for some commands\n"
   "expressions=infix                              # Prefer infix over postfix expressions\n"
   "json.array=1                                   # Enclose JSON output in [ ]\n"
-  "json.depends.array=0                           # Encode dependencies as a JSON array\n"
   "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
+  "news.version=                                  # Latest version higlights read by the user\n"
   "\n"
   "# Dates\n"
   "dateformat=Y-M-D                               # Preferred input and display date format\n"
@@ -131,7 +136,7 @@ std::string configurationDefaults =
   "calendar.offset=0                              # Apply an offset value to control the first month of the calendar\n"
   "calendar.offset.value=-1                       # The number of months the first month of the calendar is moved\n"
   "calendar.holidays=none                         # Show public holidays on calendar:full, sparse or none\n"
-  "#monthsperline=3                               # Number of calendar months on a line\n"
+  "#calendar.monthsperline=3                      # Number of calendar months on a line\n"
   "\n"
   "# Journal controls\n"
   "journal.time=0                                 # Record start/stop commands as annotation\n"
@@ -227,6 +232,7 @@ std::string configurationDefaults =
   "color.calendar.due.today=color15 on color1\n"
   "color.calendar.due=color0 on color1\n"
   "color.calendar.holiday=color0 on color11\n"
+  "color.calendar.scheduled=rgb013 on color15\n"
   "color.calendar.overdue=color0 on color9\n"
   "color.calendar.today=color15 on rgb013\n"
   "color.calendar.weekend=on color235\n"
@@ -285,112 +291,129 @@ std::string configurationDefaults =
   "alias.history=history.monthly                  # Prefer monthly over annual history reports\n"
   "alias.ghistory=ghistory.monthly                # Prefer monthly graphical over annual history reports\n"
   "alias.burndown=burndown.weekly                 # Prefer the weekly burndown chart\n"
-  "alias.shell=exec tasksh                        # Alias old shell command to new shell\n"
   "\n"
   "# Reports\n"
   "\n"
   "report.long.description=All details of tasks\n"
   "report.long.labels=ID,A,Created,Mod,Deps,P,Project,Tags,Recur,Wait,Sched,Due,Until,Description\n"
   "report.long.columns=id,start.active,entry,modified.age,depends,priority,project,tags,recur,wait.remaining,scheduled,due,until,description\n"
-  "report.long.filter=status:pending\n"
+  "report.long.filter=status:pending -WAITING\n"
   "report.long.sort=modified-\n"
+  "report.long.context=1\n"
   "\n"
   "report.list.description=Most details of tasks\n"
   "report.list.labels=ID,Active,Age,D,P,Project,Tags,R,Sch,Due,Until,Description,Urg\n"
   "report.list.columns=id,start.age,entry.age,depends.indicator,priority,project,tags,recur.indicator,scheduled.countdown,due,until.remaining,description.count,urgency\n"
-  "report.list.filter=status:pending\n"
+  "report.list.filter=status:pending -WAITING\n"
   "report.list.sort=start-,due+,project+,urgency-\n"
+  "report.list.context=1\n"
   "\n"
   "report.ls.description=Few details of tasks\n"
   "report.ls.labels=ID,A,D,Project,Tags,R,Wait,S,Due,Until,Description\n"
   "report.ls.columns=id,start.active,depends.indicator,project,tags,recur.indicator,wait.remaining,scheduled.countdown,due.countdown,until.countdown,description.count\n"
-  "report.ls.filter=status:pending\n"
+  "report.ls.filter=status:pending -WAITING\n"
   "report.ls.sort=start-,description+\n"
+  "report.ls.context=1\n"
   "\n"
   "report.minimal.description=Minimal details of tasks\n"
   "report.minimal.labels=ID,Project,Tags,Description\n"
   "report.minimal.columns=id,project,tags.count,description.count\n"
-  "report.minimal.filter=status:pending or status:waiting\n"
+  "report.minimal.filter=status:pending\n"
   "report.minimal.sort=project+/,description+\n"
+  "report.minimal.context=1\n"
   "\n"
   "report.newest.description=Newest tasks\n"
   "report.newest.labels=ID,Active,Created,Age,Mod,D,P,Project,Tags,R,Wait,Sch,Due,Until,Description\n"
   "report.newest.columns=id,start.age,entry,entry.age,modified.age,depends.indicator,priority,project,tags,recur.indicator,wait.remaining,scheduled.countdown,due,until.age,description\n"
-  "report.newest.filter=status:pending or status:waiting\n"
+  "report.newest.filter=status:pending\n"
   "report.newest.sort=entry-\n"
+  "report.newest.context=1\n"
   "\n"
   "report.oldest.description=Oldest tasks\n"
   "report.oldest.labels=ID,Active,Created,Age,Mod,D,P,Project,Tags,R,Wait,Sch,Due,Until,Description\n"
   "report.oldest.columns=id,start.age,entry,entry.age,modified.age,depends.indicator,priority,project,tags,recur.indicator,wait.remaining,scheduled.countdown,due,until.age,description\n"
-  "report.oldest.filter=status:pending or status:waiting\n"
+  "report.oldest.filter=status:pending\n"
   "report.oldest.sort=entry+\n"
+  "report.oldest.context=1\n"
   "\n"
   "report.overdue.description=Overdue tasks\n"
   "report.overdue.labels=ID,Active,Age,Deps,P,Project,Tag,R,S,Due,Until,Description,Urg\n"
   "report.overdue.columns=id,start.age,entry.age,depends,priority,project,tags,recur.indicator,scheduled.countdown,due,until,description,urgency\n"
-  "report.overdue.filter=(status:pending or status:waiting) and +OVERDUE\n"
+  "report.overdue.filter=status:pending and +OVERDUE\n"
   "report.overdue.sort=urgency-,due+\n"
+  "report.overdue.context=1\n"
   "\n"
   "report.active.description=Active tasks\n"
   "report.active.labels=ID,Started,Active,Age,D,P,Project,Tags,Recur,W,Sch,Due,Until,Description\n"
   "report.active.columns=id,start,start.age,entry.age,depends.indicator,priority,project,tags,recur,wait,scheduled.remaining,due,until,description\n"
   "report.active.filter=status:pending and +ACTIVE\n"
   "report.active.sort=project+,start+\n"
+  "report.active.context=1\n"
   "\n"
   "report.completed.description=Completed tasks\n"
   "report.completed.labels=ID,UUID,Created,Completed,Age,Deps,P,Project,Tags,R,Due,Description\n"
   "report.completed.columns=id,uuid.short,entry,end,entry.age,depends,priority,project,tags,recur.indicator,due,description\n"
   "report.completed.filter=status:completed\n"
   "report.completed.sort=end+\n"
+  "report.completed.context=1\n"
   "\n"
   "report.recurring.description=Recurring Tasks\n"
   "report.recurring.labels=ID,Active,Age,D,P,Project,Tags,Recur,Sch,Due,Until,Description,Urg\n"
   "report.recurring.columns=id,start.age,entry.age,depends.indicator,priority,project,tags,recur,scheduled.countdown,due,until.remaining,description,urgency\n"
-  "report.recurring.filter=(status:pending or status:waiting) and (+PARENT or +CHILD)\n"
+  "report.recurring.filter=status:pending and (+PARENT or +CHILD)\n"
   "report.recurring.sort=due+,urgency-,entry+\n"
+  "report.recurring.context=1\n"
   "\n"
   "report.waiting.description=Waiting (hidden) tasks\n"
   "report.waiting.labels=ID,A,Age,D,P,Project,Tags,R,Wait,Remaining,Sched,Due,Until,Description\n"
   "report.waiting.columns=id,start.active,entry.age,depends.indicator,priority,project,tags,recur.indicator,wait,wait.remaining,scheduled,due,until,description\n"
   "report.waiting.filter=+WAITING\n"
   "report.waiting.sort=due+,wait+,entry+\n"
+  "report.waiting.context=1\n"
   "\n"
   "report.all.description=All tasks\n"
   "report.all.labels=ID,St,UUID,A,Age,Done,D,P,Project,Tags,R,Wait,Sch,Due,Until,Description\n"
   "report.all.columns=id,status.short,uuid.short,start.active,entry.age,end.age,depends.indicator,priority,project.parent,tags.count,recur.indicator,wait.remaining,scheduled.remaining,due,until.remaining,description\n"
   "report.all.sort=entry-\n"
+  "report.all.context=1\n"
   "\n"
   "report.next.description=Most urgent tasks\n"
   "report.next.labels=ID,Active,Age,Deps,P,Project,Tag,Recur,S,Due,Until,Description,Urg\n"
   "report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.relative,until.remaining,description,urgency\n"
-  "report.next.filter=status:pending limit:page\n"
+  "report.next.filter=status:pending -WAITING limit:page\n"
   "report.next.sort=urgency-\n"
+  "report.next.context=1\n"
   "\n"
   "report.ready.description=Most urgent actionable tasks\n"
   "report.ready.labels=ID,Active,Age,D,P,Project,Tags,R,S,Due,Until,Description,Urg\n"
   "report.ready.columns=id,start.age,entry.age,depends.indicator,priority,project,tags,recur.indicator,scheduled.countdown,due.countdown,until.remaining,description,urgency\n"
   "report.ready.filter=+READY\n"
   "report.ready.sort=start-,urgency-\n"
+  "report.ready.context=1\n"
   "\n"
   "report.blocked.description=Blocked tasks\n"
   "report.blocked.columns=id,depends,project,priority,due,start.active,entry.age,description\n"
   "report.blocked.labels=ID,Deps,Proj,Pri,Due,Active,Age,Description\n"
   "report.blocked.sort=due+,priority-,start-,project+\n"
-  "report.blocked.filter=status:pending +BLOCKED\n"
+  "report.blocked.filter=status:pending -WAITING +BLOCKED\n"
+  "report.blocked.context=1\n"
   "\n"
   "report.unblocked.description=Unblocked tasks\n"
   "report.unblocked.columns=id,depends,project,priority,due,start.active,entry.age,description\n"
   "report.unblocked.labels=ID,Deps,Proj,Pri,Due,Active,Age,Description\n"
   "report.unblocked.sort=due+,priority-,start-,project+\n"
-  "report.unblocked.filter=status:pending -BLOCKED\n"
+  "report.unblocked.filter=status:pending -WAITING -BLOCKED\n"
+  "report.unblocked.context=1\n"
   "\n"
   "report.blocking.description=Blocking tasks\n"
   "report.blocking.labels=ID,UUID,A,Deps,Project,Tags,R,W,Sch,Due,Until,Description,Urg\n"
   "report.blocking.columns=id,uuid.short,start.active,depends,project,tags,recur,wait,scheduled.remaining,due.relative,until.remaining,description.count,urgency\n"
   "report.blocking.sort=urgency-,due+,entry+\n"
-  "report.blocking.filter=status:pending +BLOCKING\n"
+  "report.blocking.filter=status:pending -WAITING +BLOCKING\n"
+  "report.blocking.context=1\n"
   "\n"
   "report.timesheet.filter=(+PENDING and start.after:now-4wks) or (+COMPLETED and end.after:now-4wks)\n"
+  "report.timesheet.context=0\n"
   "\n";
 
 // Supported modifiers, synonyms on the same line.
@@ -398,6 +421,7 @@ static const char* modifierNames[] =
 {
   "before",     "under",    "below",
   "after",      "over",     "above",
+  "by",
   "none",
   "any",
   "is",         "equals",
@@ -409,8 +433,6 @@ static const char* modifierNames[] =
   "word",
   "noword"
 };
-
-#define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
 
 Context* Context::context;
 
@@ -441,6 +463,9 @@ int Context::initialize (int argc, const char** argv)
 {
   timer_total.start ();
   int rc = 0;
+  home_dir = getenv ("HOME");
+
+  std::vector <std::string> searchPaths { TASK_RCDIR };
 
   try
   {
@@ -448,52 +473,90 @@ int Context::initialize (int argc, const char** argv)
     //
     // [1] Load the correct config file.
     //     - Default to ~/.taskrc (ctor).
-    //     - Allow command line override rc:<file>
+    //     - If no ~/.taskrc, use $XDG_CONFIG_HOME/task/taskrc if exists, or
+    //       ~/.config/task/taskrc if $XDG_DATA_HOME is unset
     //     - Allow $TASKRC override.
+    //     - Allow command line override rc:<file>
     //     - Load resultant file.
     //     - Apply command line overrides to the config.
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    CLI2::getOverride (argc, argv, home_dir, rc_file);
+    bool taskrc_overridden = false;
 
-    char* override = getenv ("TASKRC");
+    // XDG_CONFIG_HOME doesn't count as an override (no warning header)
+    if (! rc_file.exists ())
+    {
+      // Use XDG_CONFIG_HOME if defined, otherwise default to ~/.config
+      std::string xdg_config_home;
+      const char* env_xdg_config_home = getenv ("XDG_CONFIG_HOME");
+
+      if (env_xdg_config_home)
+        xdg_config_home = format ("{1}", env_xdg_config_home);
+      else
+        xdg_config_home = format ("{1}/.config", home_dir);
+
+      // Ensure the path does not end with '/'
+      if (xdg_config_home.back () == '/')
+        xdg_config_home.pop_back();
+
+      // https://github.com/GothenburgBitFactory/libshared/issues/32
+      std::string rcfile_path = format ("{1}/task/taskrc", xdg_config_home);
+
+      File maybe_rc_file = File (rcfile_path);
+      if ( maybe_rc_file.exists ())
+        rc_file = maybe_rc_file;
+    }
+
+    char *override = getenv ("TASKRC");
     if (override)
     {
       rc_file = File (override);
-      header (format ("TASKRC override: {1}", rc_file._data));
+      taskrc_overridden = true;
     }
+
+    taskrc_overridden =
+        CLI2::getOverride (argc, argv, rc_file) || taskrc_overridden;
 
     // Artificial scope for timing purposes.
     {
       Timer timer;
-      config.parse (configurationDefaults);
-      config.load (rc_file._data);
+      config.parse (configurationDefaults, 1, searchPaths);
+      config.load (rc_file._data, 1, searchPaths);
       debugTiming (format ("Config::load ({1})", rc_file._data), timer);
     }
 
     CLI2::applyOverrides (argc, argv);
 
+    if (taskrc_overridden && verbose ("override"))
+      header (format ("TASKRC override: {1}", rc_file._data));
+
     ////////////////////////////////////////////////////////////////////////////
     //
     // [2] Locate the data directory.
     //     - Default to ~/.task (ctor).
-    //     - Allow command line override rc.data.location:<dir>
     //     - Allow $TASKDATA override.
+    //     - Allow command line override rc.data.location:<dir>
     //     - Inform TDB2 where to find data.
     //     - Create the rc_file and data_dir, if necessary.
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    CLI2::getDataLocation (argc, argv, data_dir);
+    bool taskdata_overridden = false;
 
     override = getenv ("TASKDATA");
     if (override)
     {
       data_dir = Directory (override);
       config.set ("data.location", data_dir._data);
-      header (format ("TASKDATA override: {1}", data_dir._data));
+      taskdata_overridden = true;
     }
+
+    taskdata_overridden =
+        CLI2::getDataLocation (argc, argv, data_dir) || taskdata_overridden;
+
+    if (taskdata_overridden && verbose ("override"))
+      header (format ("TASKDATA override: {1}", data_dir._data));
 
     tdb2.set_location (data_dir);
     createDefaultConfig ();
@@ -526,8 +589,8 @@ int Context::initialize (int argc, const char** argv)
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-      cli2.entity ("modifier", modifierNames[i]);
+    for (auto& modifierName : modifierNames)
+      cli2.entity ("modifier", modifierName);
 
     for (auto& op : Eval::getOperators ())
       cli2.entity ("operator", op);
@@ -575,11 +638,13 @@ int Context::initialize (int argc, const char** argv)
         foundAssumed = true;
     }
 
-    if (foundDefault)
-      header ("[" + combined + "]");
+    if (verbose ("default")) {
+      if (foundDefault)
+        header ("[" + combined + "]");
 
-    if (foundAssumed)
-      header ("No command specified - assuming 'information'.");
+      if (foundAssumed)
+        header ("No command specified - assuming 'information'.");
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     //
@@ -885,6 +950,38 @@ int Context::getHeight ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Context::getTaskContext (const std::string& kind, std::string name, bool fallback /* = true */)
+{
+  // Consider currently selected context, if none specified
+  if (name.empty ())
+    name = config.get ("context");
+
+  // Detect if any context is set, and bail out if not
+  if (! name.empty ())
+    debug (format ("Applying context '{1}'", name));
+  else
+  {
+    debug ("No context set");
+    return "";
+  }
+
+  // Figure out the context string for this kind (read/write)
+  std::string contextString = config.get ("context." + name + "." + kind);
+  if (contextString.empty ())
+  {
+    debug ("Specific " + kind + " context for '" + name + "' not defined. ");
+    if (fallback)
+    {
+      debug ("Falling back on generic.");
+      contextString = config.get ("context." + name);
+    }
+  }
+
+  debug (format ("Detected context string: {1}", contextString.empty() ? "(empty)" : contextString));
+  return contextString;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Context::color ()
 {
   if (determine_color_use)
@@ -945,21 +1042,22 @@ bool Context::verbose (const std::string& token)
     {
       std::string v = *(verbosity.begin ());
       if (v != "nothing"  &&
-          v != "blank"    &&  // This list must be complete.
-          v != "header"   &&  //
+          v != "affected" &&  // This list must be complete.
+          v != "blank"    &&  //
+          v != "context"  &&  //
+          v != "default"  &&  //
+          v != "edit"     &&  //
+          v != "filter"   &&  //
           v != "footnote" &&  //
+          v != "header"   &&  //
           v != "label"    &&  //
           v != "new-id"   &&  //
           v != "new-uuid" &&  //
-          v != "affected" &&  //
-          v != "edit"     &&  //
-          v != "special"  &&  //
-          v != "project"  &&  //
-          v != "sync"     &&  //
-          v != "filter"   &&  //
-          v != "unwait"   &&  //
           v != "override" &&  //
-          v != "recur")       //
+          v != "project"  &&  //
+          v != "recur"    &&  //
+          v != "special"  &&  //
+          v != "sync")
       {
         // This list emulates rc.verbose=off in version 1.9.4.
         verbosity = {"blank", "label", "new-id", "edit"};
@@ -970,11 +1068,24 @@ bool Context::verbose (const std::string& token)
     if (! verbosity.count ("footnote"))
     {
       // TODO: Some of these may not use footnotes yet.  They should.
-      for (auto flag : {"affected", "new-id", "new-uuid", "project", "unwait", "override", "recur"})
+      for (auto flag : {"affected", "new-id", "new-uuid", "project", "override", "recur"})
       {
         if (verbosity.count (flag))
         {
           verbosity.insert ("footnote");
+          break;
+        }
+      }
+    }
+
+    // Some flags imply "header" verbosity being active.  Make it so.
+    if (! verbosity.count ("header"))
+    {
+      for (auto flag : {"default"})
+      {
+        if (verbosity.count (flag))
+        {
+          verbosity.insert ("header");
           break;
         }
       }
@@ -1117,21 +1228,25 @@ void Context::createDefaultConfig ()
              << "]\n"
              << configurationDefaults.substr (0, loc + 14)
              << data_dir._original
-             << "\n\n# Color theme (uncomment one to use)\n"
-             << "#include " << TASK_RCDIR << "/light-16.theme\n"
-             << "#include " << TASK_RCDIR << "/light-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-16.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-red-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-green-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-blue-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-violets-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-yellow-green.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-gray-256.theme\n"
-             << "#include " << TASK_RCDIR << "/dark-gray-blue-256.theme\n"
-             << "#include " << TASK_RCDIR << "/solarized-dark-256.theme\n"
-             << "#include " << TASK_RCDIR << "/solarized-light-256.theme\n"
-             << "#include " << TASK_RCDIR << "/no-color.theme\n"
+             << "\n\n# To use the default location of the XDG directories,\n"
+             << "# move this configuration file from ~/.taskrc to ~/.config/task/taskrc and uncomment below\n"
+             << "\n#data.location=~/.local/share/task\n"
+             << "#hooks.location=~/.config/task/hooks\n"
+             << "\n# Color theme (uncomment one to use)\n"
+             << "#include light-16.theme\n"
+             << "#include light-256.theme\n"
+             << "#include dark-16.theme\n"
+             << "#include dark-256.theme\n"
+             << "#include dark-red-256.theme\n"
+             << "#include dark-green-256.theme\n"
+             << "#include dark-blue-256.theme\n"
+             << "#include dark-violets-256.theme\n"
+             << "#include dark-yellow-green.theme\n"
+             << "#include dark-gray-256.theme\n"
+             << "#include dark-gray-blue-256.theme\n"
+             << "#include solarized-dark-256.theme\n"
+             << "#include solarized-light-256.theme\n"
+             << "#include no-color.theme\n"
              << '\n';
 
     // Write out the new file.

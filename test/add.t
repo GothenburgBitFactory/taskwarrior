@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -191,7 +191,7 @@ class Test1549(TestCase):
         """
 
         # This command will hang and therefore timeout in 2.4.1.
-        code, out, err = self.t('add 1e x')
+        code, out, err = self.t('rc.verbose:new-id add 1e x')
         self.assertIn("Created task 1.", out)
 
 

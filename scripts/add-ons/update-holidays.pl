@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 ################################################################################
 ##
-## Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+## Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -99,7 +99,7 @@ Schwyz:
                      --region Schwyz \
                      --file holidays.de-CH.rc
 
-See http://holidata.net for details of supported locales and regions.
+See https://holidata.net for details of supported locales and regions.
 
 It is recommended that you regularly update your holiday files.  Not only does
 this keep your holiday data current, but allows for corrected data to be used.
@@ -189,7 +189,7 @@ if (open my $fh, '>:utf8', $file)
         "# ${url_current}\n",
         "# ${url_next}\n",
         "#\n",
-        "# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.\n",
+        "# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.\n",
         "#\n",
         "# Permission is hereby granted, free of charge, to any person obtaining a copy\n",
         "# of this software and associated documentation files (the \"Software\"), to deal\n",

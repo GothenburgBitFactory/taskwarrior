@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/en-CA/2020.json
 # https://holidata.net/en-CA/2021.json
+# https://holidata.net/en-CA/2022.json
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,78 +28,78 @@
 ###############################################################################
 
 holiday.en-CA1.name=New Year's Day
-holiday.en-CA1.date=20200101
+holiday.en-CA1.date=20210101
 holiday.en-CA2.name=Family Day
-holiday.en-CA2.date=20200217
+holiday.en-CA2.date=20210215
 holiday.en-CA3.name=Louis Riel Day
-holiday.en-CA3.date=20200217
+holiday.en-CA3.date=20210215
 holiday.en-CA4.name=Islander Day
-holiday.en-CA4.date=20200217
+holiday.en-CA4.date=20210215
 holiday.en-CA5.name=Good Friday
-holiday.en-CA5.date=20200410
+holiday.en-CA5.date=20210402
 holiday.en-CA6.name=Easter Monday
-holiday.en-CA6.date=20200413
+holiday.en-CA6.date=20210405
 holiday.en-CA7.name=National Patriots' Day
-holiday.en-CA7.date=20200518
+holiday.en-CA7.date=20210524
 holiday.en-CA8.name=Victoria Day
-holiday.en-CA8.date=20200518
+holiday.en-CA8.date=20210524
 holiday.en-CA9.name=National Holiday
-holiday.en-CA9.date=20200624
+holiday.en-CA9.date=20210624
 holiday.en-CA10.name=Canada Day
-holiday.en-CA10.date=20200701
+holiday.en-CA10.date=20210701
 holiday.en-CA11.name=August Civic Holiday
-holiday.en-CA11.date=20200803
+holiday.en-CA11.date=20210802
 holiday.en-CA12.name=Saskatchewan Day
-holiday.en-CA12.date=20200803
+holiday.en-CA12.date=20210802
 holiday.en-CA13.name=Heritage Day
-holiday.en-CA13.date=20200803
+holiday.en-CA13.date=20210802
 holiday.en-CA14.name=New Brunswick Day
-holiday.en-CA14.date=20200803
+holiday.en-CA14.date=20210802
 holiday.en-CA15.name=Labour Day
-holiday.en-CA15.date=20200907
+holiday.en-CA15.date=20210906
 holiday.en-CA16.name=Thanksgiving Day
-holiday.en-CA16.date=20201012
+holiday.en-CA16.date=20211011
 holiday.en-CA17.name=Remembrance Day
-holiday.en-CA17.date=20201111
+holiday.en-CA17.date=20211111
 holiday.en-CA18.name=Christmas Day
-holiday.en-CA18.date=20201225
+holiday.en-CA18.date=20211225
 holiday.en-CA19.name=Boxing Day
-holiday.en-CA19.date=20201226
+holiday.en-CA19.date=20211226
 holiday.en-CA20.name=New Year's Day
-holiday.en-CA20.date=20210101
+holiday.en-CA20.date=20220101
 holiday.en-CA21.name=Family Day
-holiday.en-CA21.date=20210215
+holiday.en-CA21.date=20220221
 holiday.en-CA22.name=Louis Riel Day
-holiday.en-CA22.date=20210215
+holiday.en-CA22.date=20220221
 holiday.en-CA23.name=Islander Day
-holiday.en-CA23.date=20210215
+holiday.en-CA23.date=20220221
 holiday.en-CA24.name=Good Friday
-holiday.en-CA24.date=20210402
+holiday.en-CA24.date=20220415
 holiday.en-CA25.name=Easter Monday
-holiday.en-CA25.date=20210405
+holiday.en-CA25.date=20220418
 holiday.en-CA26.name=National Patriots' Day
-holiday.en-CA26.date=20210524
+holiday.en-CA26.date=20220523
 holiday.en-CA27.name=Victoria Day
-holiday.en-CA27.date=20210524
+holiday.en-CA27.date=20220523
 holiday.en-CA28.name=National Holiday
-holiday.en-CA28.date=20210624
+holiday.en-CA28.date=20220624
 holiday.en-CA29.name=Canada Day
-holiday.en-CA29.date=20210701
+holiday.en-CA29.date=20220701
 holiday.en-CA30.name=August Civic Holiday
-holiday.en-CA30.date=20210802
+holiday.en-CA30.date=20220801
 holiday.en-CA31.name=Saskatchewan Day
-holiday.en-CA31.date=20210802
+holiday.en-CA31.date=20220801
 holiday.en-CA32.name=Heritage Day
-holiday.en-CA32.date=20210802
+holiday.en-CA32.date=20220801
 holiday.en-CA33.name=New Brunswick Day
-holiday.en-CA33.date=20210802
+holiday.en-CA33.date=20220801
 holiday.en-CA34.name=Labour Day
-holiday.en-CA34.date=20210906
+holiday.en-CA34.date=20220905
 holiday.en-CA35.name=Thanksgiving Day
-holiday.en-CA35.date=20211011
+holiday.en-CA35.date=20221010
 holiday.en-CA36.name=Remembrance Day
-holiday.en-CA36.date=20211111
+holiday.en-CA36.date=20221111
 holiday.en-CA37.name=Christmas Day
-holiday.en-CA37.date=20211225
+holiday.en-CA37.date=20221225
 holiday.en-CA38.name=Boxing Day
-holiday.en-CA38.date=20211226
+holiday.en-CA38.date=20221226

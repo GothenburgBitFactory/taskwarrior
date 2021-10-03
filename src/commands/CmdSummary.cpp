@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@
 #include <format.h>
 #include <util.h>
 #include <main.h>
+#include <list>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdSummary::CmdSummary ()
@@ -63,6 +64,7 @@ int CmdSummary::execute (std::string& output)
   bool showAllProjects = Context::getContext ().config.getBoolean ("summary.all.projects");
 
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -145,24 +147,14 @@ int CmdSummary::execute (std::string& output)
     bg_color  = Color (Context::getContext ().config.get ("color.summary.background"));
   }
 
-  int barWidth = 30;
-  std::vector <std::string> processed;
-  for (auto& i : allProjects)
-  {
-    if (showAllProjects || countPending[i.first] > 0)
-    {
-      const std::vector <std::string> parents = extractParents (i.first);
-      for (auto& parent : parents)
-      {
-        if (std::find (processed.begin (), processed.end (), parent)
-           == processed.end ())
-        {
-          int row = view.addRow ();
-          view.set (row, 0, indentProject (parent));
-          processed.push_back (parent);
-        }
-      }
+  // sort projects into sorted list
+  std::list<std::pair<std::string, int>> sortedProjects;
+  sort_projects (sortedProjects, allProjects);
 
+  int barWidth = 30;
+  // construct view from sorted list
+  for (auto& i : sortedProjects)
+  {
       int row = view.addRow ();
       view.set (row, 0, (i.first == ""
                           ? "(none)"
@@ -196,8 +188,6 @@ int CmdSummary::execute (std::string& output)
       if (c + p)
         snprintf (percent, 12, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
-      processed.push_back (i.first);
-    }
   }
 
   std::stringstream out;

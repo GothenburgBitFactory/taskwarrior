@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -55,6 +55,7 @@ CmdIDs::CmdIDs ()
 int CmdIDs::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -148,6 +149,7 @@ CmdCompletionIds::CmdCompletionIds ()
 int CmdCompletionIds::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -186,6 +188,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
 int CmdZshCompletionIds::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -211,7 +214,7 @@ CmdUUIDs::CmdUUIDs ()
 {
   _keyword               = "uuids";
   _usage                 = "task <filter> uuids";
-  _description           = "Shows the UUIDs of matching tasks, as a comma-separated list";
+  _description           = "Shows the UUIDs of matching tasks, as a space-separated list";
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
@@ -226,12 +229,14 @@ CmdUUIDs::CmdUUIDs ()
 int CmdUUIDs::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
 
   std::vector <std::string> uuids;
+  uuids.reserve(filtered.size());
   for (auto& task : filtered)
     uuids.push_back (task.get ("uuid"));
 
@@ -262,12 +267,14 @@ CmdCompletionUuids::CmdCompletionUuids ()
 int CmdCompletionUuids::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
 
   std::vector <std::string> uuids;
+  uuids.reserve(filtered.size());
   for (auto& task : filtered)
     uuids.push_back (task.get ("uuid"));
 
@@ -298,6 +305,7 @@ CmdZshCompletionUuids::CmdZshCompletionUuids ()
 int CmdZshCompletionUuids::execute (std::string& output)
 {
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

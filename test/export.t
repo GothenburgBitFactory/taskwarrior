@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -146,26 +146,12 @@ class TestExportCommand(TestCase):
         self.t(('add', 'everything depends on me task'))
         self.t(('add', 'wrong, everything depends on me task'))
         self.t('1 modify depends:2,3')
-        self.t.config('json.depends.array', 'on')
 
         deps = self.export(1)['depends']
         self.assertType(deps, list)
         self.assertEqual(len(deps), 2)
 
         for uuid in deps:
-            self.assertString(uuid, UUID_REGEXP, regexp=True)
-
-    def test_export_depends_oldformat(self):
-        self.t(('add', 'everything depends on me task'))
-        self.t(('add', 'wrong, everything depends on me task'))
-        self.t('1 modify depends:2,3')
-
-        code, out, err = self.t("rc.json.array=off rc.json.depends.array=off 1 export")
-        deps = json.loads(out)["depends"]
-        self.assertString(deps)
-        self.assertEqual(len(deps.split(",")), 2)
-
-        for uuid in deps.split(','):
             self.assertString(uuid, UUID_REGEXP, regexp=True)
 
     def test_export_urgency(self):

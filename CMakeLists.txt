@@ -7,8 +7,9 @@ include (CheckStructHasMember)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "2.5.3")
 include (CXXSniffer)
+
+set (PROJECT_VERSION "2.6.0")
 
 OPTION (ENABLE_WASM "Enable 'wasm' support" OFF)
 
@@ -27,13 +28,13 @@ else (ENABLE_SYNC)
 endif (ENABLE_SYNC)
 
 message ("-- Looking for libshared")
-if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
   message ("-- Found libshared")
-else (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+else (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
   message ("-- Cloning libshared")
   execute_process (COMMAND git submodule update --init
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endif (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/.git)
+endif (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
 
 message ("-- Looking for SHA1 references")
 if (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
@@ -111,6 +112,17 @@ else (HAVE_UUID_UNPARSE_LOWER)
   message ("-- Found libuuid, using internal uuid_unparse_lower")
 endif (HAVE_UUID_UNPARSE_LOWER)
 
+if (HAIKU)
+  # search for socket() in libnetwork on Haiku
+  message("-- Looking for libnetwork")
+  find_library (NETWORK_LIBRARY NAMES network)
+  if (NETWORK_LIBRARY)
+    set (TASK_LIBRARIES    ${TASK_LIBRARIES} ${NETWORK_LIBRARY})
+  else (NETWORK_LIBRARY)
+    message(FATAL_ERROR "-- libnetwork not found.")
+  endif (NETWORK_LIBRARY)
+endif (HAIKU)
+
 if (SOLARIS)
   # accept() is in libsocket according to its manpage
   message("-- Looking for libsocket")
@@ -153,6 +165,18 @@ foreach (doc_FILE ${doc_FILES})
   install (FILES ${doc_FILE}  DESTINATION ${TASK_DOCDIR})
 endforeach (doc_FILE)
 
+add_custom_command(OUTPUT run-review
+    COMMAND docker build -q --build-arg PR=$(PR) --build-arg LIBPR=$(LIBPR) -t taskwarrior-review:$(PR)s$(LIBPR) - < scripts/review-dockerfile
+    COMMAND docker run --rm --memory 1g --hostname pr-$(PR)s$(LIBPR) -it taskwarrior-review:$(PR)s$(LIBPR) bash || :
+)
+add_custom_target(review DEPENDS run-review)
+
+add_custom_command(OUTPUT run-reproduce
+    COMMAND docker build -q --build-arg RELEASE=$(RELEASE) -t taskwarrior-reproduce:$(RELEASE) - < scripts/reproduce-dockerfile
+    COMMAND docker run --rm --memory 1g --hostname tw-$(RELEASE) -it taskwarrior-reproduce:$(RELEASE) bash || :
+)
+add_custom_target(reproduce DEPENDS run-reproduce)
+
 # ---
 
 set (CPACK_SOURCE_GENERATOR "TGZ")
@@ -161,5 +185,7 @@ set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSo
                                 "_CPack_Packages" "cmake_install" "install_manifest" "Makefile$"
                                 "test" "package-config" "misc/*" "src/task$" "src/calc$" "performance"
                                 "src/libtask.a" "src/columns/libcolumns.a" "src/commands/libcommands.a"
-                                ".github/" "/\\\\.gitignore" "/\\\\.git/" "swp$" "src/lex$" ".*tar.gz")
+                                "swp$" "src/lex$" "task-.*.tar.gz" "commit.h" "cmake.h$" "\\\\.gitmodules"
+                                "src/libshared/\\\\.git" ".github/" ".*\\\\.gitignore$"
+                                "src/liblibshared.a" "docker-compose.yml" "\\\\.git/")
 include (CPack)

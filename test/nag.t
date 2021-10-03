@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -90,6 +90,70 @@ class TestNagging(TestCase):
 
         code, out, err = self.t("1 done")
         self.assertNotIn("NAG", err)
+
+    def test_nagging_bulk(self):
+        """Verify that only one nag message occurs when completing multiple tasks"""
+        self.t("add one")
+        self.t.faketime("+1d")
+        self.t("add two")
+        self.t("add two")
+
+        code, out, err = self.t("2 done")
+
+        self.assertEqual(err.count("NAG"), 1)
+
+    def test_nagging_active(self):
+        """Bug 2163: Verify that nagging does not occur when completing the most urgent active task"""
+        self.t("add one")
+        self.t.faketime("+1d")
+        self.t("add two")
+        self.t("2 start")
+
+        code, out, err = self.t("2 done")
+
+        # Taskwarrior should not nag about more urgent tasks
+        self.assertNotIn("NAG", err)
+
+    def test_nagging_start_only_task(self):
+        """Verify that nagging does not occur when there are no other tasks while starting a task"""
+        self.t("add one")
+
+        code, out, err = self.t("1 start")
+
+        self.assertNotIn("NAG", err)
+
+    def test_nagging_start(self):
+        """Verify that nagging occurs when there are READY tasks of higher urgency while starting a task"""
+        self.t("add one")
+        self.t.faketime("+10d")
+        self.t("add two")
+
+        code, out, err = self.t("2 start")
+
+        self.assertIn("NAG", err)
+
+    def test_nagging_nonag(self):
+        """Verify that nagging does not occur when a task has the nonag tag"""
+        self.t("add one +other")
+        self.t.faketime("+10d")
+        self.t("add two +nonag")
+
+        code, out, err = self.t("2 done")
+
+        self.assertNotIn("NAG", err)
+
+    def test_nagging_nonag_bulk(self):
+        """Verify that nagging occurs even if some tasks in a bulk operation have a nonag tag"""
+        self.t("add one +other")
+        self.t.faketime("+10d")
+        self.t("add two +other")
+        self.t.faketime("+10d")
+        self.t("add three +nonag")
+
+        code, out, err = self.t("2-3 done")
+
+        self.assertIn("NAG", err)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

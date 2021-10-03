@@ -14,9 +14,9 @@ from source. More information on CMake can be obtained at https://cmake.org
 You will also need:
   - make
 
-You will need a C++ compiler that supports full C++14, which includes:
-  - gcc 5.0   (released 2013-12-23)
-  - clang 3.4 (released 2014-01-02)
+You will need a C++ compiler that supports full C++17, which includes:
+  - gcc 7.1   (released 2017-05-02)
+  - clang 5.0 (released 2017-09-07)
 
 You will need the following libraries:
   - libuuid (not needed for OSX)
@@ -142,9 +142,9 @@ Darwin, 32bit
 
   See:
     https://taskwarrior.org/issues/817
-    http://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
-    http://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
-    http://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
+    https://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
+    https://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
+    https://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
 
 
 OpenBSD

@@ -99,13 +99,13 @@ int main (int, char**)
   t.notok (l1.token (token, type), "'       \\t ' --> no tokens");
 
   // \u20ac = Euro symbol.
-  Lexer l2 (" one 'two \\'three\\''+456-(1.3*2 - 0x12) 1.2e-3.4    foo.bar and '\\u20ac'");
+  Lexer l2 (R"( one 'two \'three\''+456-(1.3*2 - 0x12) 1.2e-3.4    foo.bar and '\u20ac')");
 
   tokens.clear ();
   while (l2.token (token, type))
   {
     std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    tokens.emplace_back (token, type);
   }
 
   t.is (tokens[0].first,                     "one",           "tokens[0] = 'one'"); // 30
@@ -147,7 +147,7 @@ int main (int, char**)
   while (l3.token (token, type))
   {
     std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    tokens.emplace_back (token, type);
   }
 
   t.is ((int)tokens.size (),     7,                           "7 tokens");
@@ -246,13 +246,13 @@ int main (int, char**)
 
   std::string text = "one 'two' three\\ four";
   cursor = 0;
-  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.ok (Lexer::readWord (text, cursor, word),              R"(readWord "one 'two' three\ four" --> true)");
   t.is (word, "one",                                        "  word '" + word + "'");
   cursor++;
-  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.ok (Lexer::readWord (text, cursor, word),              R"(readWord "one 'two' three\ four" --> true)");
   t.is (word, "'two'",                                      "  word '" + word + "'");
   cursor++;
-  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.ok (Lexer::readWord (text, cursor, word),              R"(readWord "one 'two' three\ four" --> true)");
   t.is (word, "three four",                                 "  word '" + word + "'");
 
   text = "one     ";
@@ -298,219 +298,221 @@ int main (int, char**)
     {
       const char* token;
       Lexer::Type type;
+      bool expfail_token = false;
+      bool expfail_type = false;
     } results[5];
   } lexerTests[] =
   {
     // Pattern
-    { "/foo/",                                        { { "/foo/",                                        Lexer::Type::pattern      }, NO, NO, NO, NO }, },
-    { "/a\\/b/",                                      { { "/a\\/b/",                                      Lexer::Type::pattern      }, NO, NO, NO, NO }, },
-    { "/'/",                                          { { "/'/",                                          Lexer::Type::pattern      }, NO, NO, NO, NO }, },
+    { "/foo/",                                        { { "/foo/",                                        Lexer::Type::pattern                 }, NO, NO, NO, NO }, },
+    { "/a\\/b/",                                      { { "/a\\/b/",                                      Lexer::Type::pattern                 }, NO, NO, NO, NO }, },
+    { "/'/",                                          { { "/'/",                                          Lexer::Type::pattern                 }, NO, NO, NO, NO }, },
 
     // Substitution
-    { "/from/to/g",                                   { { "/from/to/g",                                   Lexer::Type::substitution }, NO, NO, NO, NO }, },
-    { "/from/to/",                                    { { "/from/to/",                                    Lexer::Type::substitution }, NO, NO, NO, NO }, },
+    { "/from/to/g",                                   { { "/from/to/g",                                   Lexer::Type::substitution            }, NO, NO, NO, NO }, },
+    { "/from/to/",                                    { { "/from/to/",                                    Lexer::Type::substitution            }, NO, NO, NO, NO }, },
 
     // Tag
-    { "+tag",                                         { { "+tag",                                         Lexer::Type::tag          }, NO, NO, NO, NO }, },
-    { "-tag",                                         { { "-tag",                                         Lexer::Type::tag          }, NO, NO, NO, NO }, },
-    { "+@tag",                                        { { "+@tag",                                        Lexer::Type::tag          }, NO, NO, NO, NO }, },
+    { "+tag",                                         { { "+tag",                                         Lexer::Type::tag                     }, NO, NO, NO, NO }, },
+    { "-tag",                                         { { "-tag",                                         Lexer::Type::tag                     }, NO, NO, NO, NO }, },
+    { "+@tag",                                        { { "+@tag",                                        Lexer::Type::tag                     }, NO, NO, NO, NO }, },
 
     // Path
-    { "/long/path/to/file.txt",                       { { "/long/path/to/file.txt",                       Lexer::Type::path         }, NO, NO, NO, NO }, },
+    { "/long/path/to/file.txt",                       { { "/long/path/to/file.txt",                       Lexer::Type::path                    }, NO, NO, NO, NO }, },
 
     // Word
-    { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::word         }, NO, NO, NO, NO }, },
+    { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::word                    }, NO, NO, NO, NO }, },
 
     // Identifier
-    { "foo",                                          { { "foo",                                          Lexer::Type::identifier   }, NO, NO, NO, NO }, },
-    { "Çirçös",                                       { { "Çirçös",                                       Lexer::Type::identifier   }, NO, NO, NO, NO }, },
-    { "☺",                                            { { "☺",                                            Lexer::Type::identifier   }, NO, NO, NO, NO }, },
-    { "name",                                         { { "name",                                         Lexer::Type::identifier   }, NO, NO, NO, NO }, },
-    { "f1",                                           { { "f1",                                           Lexer::Type::identifier   }, NO, NO, NO, NO }, },
-    { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::identifier   }, NO, NO, NO, NO }, },
-    { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         { { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "foo",                                          { { "foo",                                          Lexer::Type::identifier              }, NO, NO, NO, NO }, },
+    { "Çirçös",                                       { { "Çirçös",                                       Lexer::Type::identifier              }, NO, NO, NO, NO }, },
+    { "☺",                                            { { "☺",                                            Lexer::Type::identifier              }, NO, NO, NO, NO }, },
+    { "name",                                         { { "name",                                         Lexer::Type::identifier              }, NO, NO, NO, NO }, },
+    { "f1",                                           { { "f1",                                           Lexer::Type::identifier              }, NO, NO, NO, NO }, },
+    { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::identifier              }, NO, NO, NO, NO }, },
+    { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         { { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         Lexer::Type::identifier              }, NO, NO, NO, NO }, },
 
     // Word that starts wih 'or', which is an operator, but should be ignored.
-    { "ordinary",                                     { { "ordinary",                                     Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "ordinary",                                     { { "ordinary",                                     Lexer::Type::identifier              }, NO, NO, NO, NO }, },
 
     // DOM
-    { "due",                                          { { "due",                                          Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "123.tags",                                     { { "123.tags",                                     Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "123.tags.PENDING",                             { { "123.tags.PENDING",                             Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "123.description",                              { { "123.description",                              Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "123.annotations.1.description",                { { "123.annotations.1.description",                Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "123.annotations.1.entry",                      { { "123.annotations.1.entry",                      Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "123.annotations.1.entry.year",                 { { "123.annotations.1.entry.year",                 Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     { { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "12345678-1234-1234-1234-123456789012.due",     { { "12345678-1234-1234-1234-123456789012.due",     Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "system.os",                                    { { "system.os",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "rc.foo",                                       { { "rc.foo",                                       Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "due",                                          { { "due",                                          Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "123.tags",                                     { { "123.tags",                                     Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "123.tags.PENDING",                             { { "123.tags.PENDING",                             Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "123.description",                              { { "123.description",                              Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "123.annotations.1.description",                { { "123.annotations.1.description",                Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "123.annotations.1.entry",                      { { "123.annotations.1.entry",                      Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "123.annotations.1.entry.year",                 { { "123.annotations.1.entry.year",                 Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     { { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "12345678-1234-1234-1234-123456789012.due",     { { "12345678-1234-1234-1234-123456789012.due",     Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "system.os",                                    { { "system.os",                                    Lexer::Type::dom                     }, NO, NO, NO, NO }, },
+    { "rc.foo",                                       { { "rc.foo",                                       Lexer::Type::dom                     }, NO, NO, NO, NO }, },
 
     // URL
-    { "http://example.com",                         { { "http://example.com",                         Lexer::Type::url          }, NO, NO, NO, NO }, },
-    { "https://foo.example.com",                    { { "https://foo.example.com",                    Lexer::Type::url          }, NO, NO, NO, NO }, },
+    { "http://example.com",                         { { "http://example.com",                         Lexer::Type::url                         }, NO, NO, NO, NO }, },
+    { "https://foo.example.com",                    { { "https://foo.example.com",                    Lexer::Type::url                         }, NO, NO, NO, NO }, },
 
     // String
-    { "'one two'",                                    { { "'one two'",                                    Lexer::Type::string       }, NO, NO, NO, NO }, },
-    { "\"three\"",                                    { { "\"three\"",                                    Lexer::Type::string       }, NO, NO, NO, NO }, },
-    { "'\\''",                                        { { "'''",                                          Lexer::Type::string       }, NO, NO, NO, NO }, },
-    { "\"\\\"\"",                                     { { "\"\"\"",                                       Lexer::Type::string       }, NO, NO, NO, NO }, },
-    { "\"\tfoo\t\"",                                  { { "\"\tfoo\t\"",                                  Lexer::Type::string       }, NO, NO, NO, NO }, },
-    { "\"\\u20A43\"",                                 { { "\"₤3\"",                                       Lexer::Type::string       }, NO, NO, NO, NO }, },
-    { "\"U+20AC4\"",                                  { { "\"€4\"",                                       Lexer::Type::string       }, NO, NO, NO, NO }, },
+    { "'one two'",                                    { { "'one two'",                                    Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    { "\"three\"",                                    { { "\"three\"",                                    Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    { "'\\''",                                        { { "'''",                                          Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    {R"("\"")",                                       { {R"(""")",                                        Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    { "\"\tfoo\t\"",                                  { { "\"\tfoo\t\"",                                  Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    {R"("\u20A43")",                                  { { "\"₤3\"",                                       Lexer::Type::string                  }, NO, NO, NO, NO }, },
+    { "\"U+20AC4\"",                                  { { "\"€4\"",                                       Lexer::Type::string                  }, NO, NO, NO, NO }, },
 
     // Number
-    { "1",                                            { { "1",                                            Lexer::Type::number       }, NO, NO, NO, NO }, },
-    { "3.14",                                         { { "3.14",                                         Lexer::Type::number       }, NO, NO, NO, NO }, },
-    { "6.02217e23",                                   { { "6.02217e23",                                   Lexer::Type::number       }, NO, NO, NO, NO }, },
-    { "1.2e-3.4",                                     { { "1.2e-3.4",                                     Lexer::Type::number       }, NO, NO, NO, NO }, },
-    { "0x2f",                                         { { "0x2f",                                         Lexer::Type::hex          }, NO, NO, NO, NO }, },
+    { "1",                                            { { "1",                                            Lexer::Type::number                  }, NO, NO, NO, NO }, },
+    { "3.14",                                         { { "3.14",                                         Lexer::Type::number                  }, NO, NO, NO, NO }, },
+    { "6.02217e23",                                   { { "6.02217e23",                                   Lexer::Type::number                  }, NO, NO, NO, NO }, },
+    { "1.2e-3.4",                                     { { "1.2e-3.4",                                     Lexer::Type::number                  }, NO, NO, NO, NO }, },
+    { "0x2f",                                         { { "0x2f",                                         Lexer::Type::hex                     }, NO, NO, NO, NO }, },
 
     // Set (1,2,4-7,9)
-    { "1,2",                                          { { "1,2",                                          Lexer::Type::set          }, NO, NO, NO, NO }, },
-    { "1-2",                                          { { "1-2",                                          Lexer::Type::set          }, NO, NO, NO, NO }, },
-    { "1-2,4",                                        { { "1-2,4",                                        Lexer::Type::set          }, NO, NO, NO, NO }, },
-    { "1-2,4,6-8",                                    { { "1-2,4,6-8",                                    Lexer::Type::set          }, NO, NO, NO, NO }, },
-    { "1-2,4,6-8,10-12",                              { { "1-2,4,6-8,10-12",                              Lexer::Type::set          }, NO, NO, NO, NO }, },
+    { "1,2",                                          { { "1,2",                                          Lexer::Type::set                     }, NO, NO, NO, NO }, },
+    { "1-2",                                          { { "1-2",                                          Lexer::Type::set                     }, NO, NO, NO, NO }, },
+    { "1-2,4",                                        { { "1-2,4",                                        Lexer::Type::set                     }, NO, NO, NO, NO }, },
+    { "1-2,4,6-8",                                    { { "1-2,4,6-8",                                    Lexer::Type::set                     }, NO, NO, NO, NO }, },
+    { "1-2,4,6-8,10-12",                              { { "1-2,4,6-8,10-12",                              Lexer::Type::set                     }, NO, NO, NO, NO }, },
 
     // Pair
-    { "name:value",                                   { { "name:value",                                   Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name=value",                                   { { "name=value",                                   Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name:=value",                                  { { "name:=value",                                  Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name.mod:value",                               { { "name.mod:value",                               Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name.mod=value",                               { { "name.mod=value",                               Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name:",                                        { { "name:",                                        Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name=",                                        { { "name=",                                        Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name.mod:",                                    { { "name.mod:",                                    Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name.mod=",                                    { { "name.mod=",                                    Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "pro:'P 1'",                                    { { "pro:'P 1'",                                    Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "rc:x",                                         { { "rc:x",                                         Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "rc.name:value",                                { { "rc.name:value",                                Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "rc.name:=value",                               { { "rc.name:=value",                               Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "due:='eow - 2d'",                              { { "due:='eow - 2d'",                              Lexer::Type::pair         }, NO, NO, NO, NO }, },
-    { "name:'foo\nbar'",                              { { "name:'foo\nbar'",                              Lexer::Type::pair         }, NO, NO, NO, NO }, },
+    { "name:value",                                   { { "name:value",                                   Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name=value",                                   { { "name=value",                                   Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name:=value",                                  { { "name:=value",                                  Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name.mod:value",                               { { "name.mod:value",                               Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name.mod=value",                               { { "name.mod=value",                               Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name:",                                        { { "name:",                                        Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name=",                                        { { "name=",                                        Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name.mod:",                                    { { "name.mod:",                                    Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name.mod=",                                    { { "name.mod=",                                    Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "pro:'P 1'",                                    { { "pro:'P 1'",                                    Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "rc:x",                                         { { "rc:x",                                         Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "rc.name:value",                                { { "rc.name:value",                                Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "rc.name:=value",                               { { "rc.name:=value",                               Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "due:='eow - 2d'",                              { { "due:='eow - 2d'",                              Lexer::Type::pair                    }, NO, NO, NO, NO }, },
+    { "name:'foo\nbar'",                              { { "name:'foo\nbar'",                              Lexer::Type::pair                    }, NO, NO, NO, NO }, },
 
     // Operator - complete set
-    { "^",                                            { { "^",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "!",                                            { { "!",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "_neg_",                                        { { "_neg_",                                        Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "_pos_",                                        { { "_pos_",                                        Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "_hastag_",                                     { { "_hastag_",                                     Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "_notag_",                                      { { "_notag_",                                      Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "*",                                            { { "*",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "/",                                            { { "/",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "%",                                            { { "%",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "+",                                            { { "+",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "-",                                            { { "-",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "<=",                                           { { "<=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { ">=",                                           { { ">=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { ">",                                            { { ">",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "<",                                            { { "<",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "=",                                            { { "=",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "==",                                           { { "==",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "!=",                                           { { "!=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "!==",                                          { { "!==",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "~",                                            { { "~",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "!~",                                           { { "!~",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "and",                                          { { "and",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "or",                                           { { "or",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "xor",                                          { { "xor",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "(",                                            { { "(",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { ")",                                            { { ")",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "^",                                            { { "^",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "!",                                            { { "!",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "_neg_",                                        { { "_neg_",                                        Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "_pos_",                                        { { "_pos_",                                        Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "_hastag_",                                     { { "_hastag_",                                     Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "_notag_",                                      { { "_notag_",                                      Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "*",                                            { { "*",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "/",                                            { { "/",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "%",                                            { { "%",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "+",                                            { { "+",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "-",                                            { { "-",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "<=",                                           { { "<=",                                           Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { ">=",                                           { { ">=",                                           Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { ">",                                            { { ">",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "<",                                            { { "<",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "=",                                            { { "=",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "==",                                           { { "==",                                           Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "!=",                                           { { "!=",                                           Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "!==",                                          { { "!==",                                          Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "~",                                            { { "~",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "!~",                                           { { "!~",                                           Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "and",                                          { { "and",                                          Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "or",                                           { { "or",                                           Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "xor",                                          { { "xor",                                          Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { "(",                                            { { "(",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
+    { ")",                                            { { ")",                                            Lexer::Type::op                      }, NO, NO, NO, NO }, },
 
     // UUID
-    { "ffffffff-ffff-ffff-ffff-ffffffffffff",         { { "ffffffff-ffff-ffff-ffff-ffffffffffff",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "00000000-0000-0000-0000-0000000",              { { "00000000-0000-0000-0000-0000000",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "00000000-0000-0000-0000",                      { { "00000000-0000-0000-0000",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "00000000-0000-0000",                           { { "00000000-0000-0000",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "00000000-0000",                                { { "00000000-0000",                                Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "00000000",                                     { { "00000000",                                     Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "a360fc44-315c-4366-b70c-ea7e7520b749",         { { "a360fc44-315c-4366-b70c-ea7e7520b749",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "a360fc44-315c-4366-b70c-ea7e752",              { { "a360fc44-315c-4366-b70c-ea7e752",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "a360fc44-315c-4366-b70c",                      { { "a360fc44-315c-4366-b70c",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "a360fc44-315c-4366",                           { { "a360fc44-315c-4366",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "a360fc44-315c",                                { { "a360fc44-315c",                                Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "a360fc44",                                     { { "a360fc44",                                     Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "ffffffff-ffff-ffff-ffff-ffffffffffff",         { { "ffffffff-ffff-ffff-ffff-ffffffffffff",         Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "0000000d-0000-0000-0000-000000000000",         { { "0000000d-0000-0000-0000-000000000000",         Lexer::Type::uuid,        true, true }, NO, NO, NO, NO }, },
+    { "00000000-0000-0000-0000-0000000",              { { "00000000-0000-0000-0000-0000000",              Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "00000000-0000-0000-0000",                      { { "00000000-0000-0000-0000",                      Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "00000000-0000-0000",                           { { "00000000-0000-0000",                           Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "00000000-0000",                                { { "00000000-0000",                                Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "00000000",                                     { { "00000000",                                     Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "a360fc44-315c-4366-b70c-ea7e7520b749",         { { "a360fc44-315c-4366-b70c-ea7e7520b749",         Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "a360fc44-315c-4366-b70c-ea7e752",              { { "a360fc44-315c-4366-b70c-ea7e752",              Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "a360fc44-315c-4366-b70c",                      { { "a360fc44-315c-4366-b70c",                      Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "a360fc44-315c-4366",                           { { "a360fc44-315c-4366",                           Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "a360fc44-315c",                                { { "a360fc44-315c",                                Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
+    { "a360fc44",                                     { { "a360fc44",                                     Lexer::Type::uuid                    }, NO, NO, NO, NO }, },
 
     // Date
-    { "2015-W01",                                     { { "2015-W01",                                     Lexer::Type::date         }, NO, NO, NO, NO }, },
-    { "2015-02-17",                                   { { "2015-02-17",                                   Lexer::Type::date         }, NO, NO, NO, NO }, },
-    { "2013-11-29T22:58:00Z",                         { { "2013-11-29T22:58:00Z",                         Lexer::Type::date         }, NO, NO, NO, NO }, },
-    { "20131129T225800Z",                             { { "20131129T225800Z",                             Lexer::Type::date         }, NO, NO, NO, NO }, },
+    { "2015-W01",                                     { { "2015-W01",                                     Lexer::Type::date                    }, NO, NO, NO, NO }, },
+    { "2015-02-17",                                   { { "2015-02-17",                                   Lexer::Type::date                    }, NO, NO, NO, NO }, },
+    { "2013-11-29T22:58:00Z",                         { { "2013-11-29T22:58:00Z",                         Lexer::Type::date                    }, NO, NO, NO, NO }, },
+    { "20131129T225800Z",                             { { "20131129T225800Z",                             Lexer::Type::date                    }, NO, NO, NO, NO }, },
 #ifdef PRODUCT_TASKWARRIOR
-    { "9th",                                          { { "9th",                                          Lexer::Type::date         }, NO, NO, NO, NO }, },
-    { "10th",                                         { { "10th",                                         Lexer::Type::date         }, NO, NO, NO, NO }, },
-    { "today",                                        { { "today",                                        Lexer::Type::date         }, NO, NO, NO, NO }, },
+    { "9th",                                          { { "9th",                                          Lexer::Type::date                    }, NO, NO, NO, NO }, },
+    { "10th",                                         { { "10th",                                         Lexer::Type::date                    }, NO, NO, NO, NO }, },
+    { "today",                                        { { "today",                                        Lexer::Type::date                    }, NO, NO, NO, NO }, },
 #endif
 
     // Duration
-    { "year",                                         { { "year",                                         Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "4weeks",                                       { { "4weeks",                                       Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "PT23H",                                        { { "PT23H",                                        Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "1second",                                      { { "1second",                                      Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "1s",                                           { { "1s",                                           Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "1minute",                                      { { "1minute",                                      Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "2hour",                                        { { "2hour",                                        Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "3 days",                                       { { "3 days",                                       Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "4w",                                           { { "4w",                                           Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "5mo",                                          { { "5mo",                                          Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "6 years",                                      { { "6 years",                                      Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "P1Y",                                          { { "P1Y",                                          Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "PT1H",                                         { { "PT1H",                                         Lexer::Type::duration     }, NO, NO, NO, NO }, },
-    { "P1Y1M1DT1H1M1S",                               { { "P1Y1M1DT1H1M1S",                               Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "year",                                         { { "year",                                         Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "4weeks",                                       { { "4weeks",                                       Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "PT23H",                                        { { "PT23H",                                        Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "1second",                                      { { "1second",                                      Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "1s",                                           { { "1s",                                           Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "1minute",                                      { { "1minute",                                      Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "2hour",                                        { { "2hour",                                        Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "3 days",                                       { { "3 days",                                       Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "4w",                                           { { "4w",                                           Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "5mo",                                          { { "5mo",                                          Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "6 years",                                      { { "6 years",                                      Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "P1Y",                                          { { "P1Y",                                          Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "PT1H",                                         { { "PT1H",                                         Lexer::Type::duration                }, NO, NO, NO, NO }, },
+    { "P1Y1M1DT1H1M1S",                               { { "P1Y1M1DT1H1M1S",                               Lexer::Type::duration                }, NO, NO, NO, NO }, },
 
     // Misc
-    { "--",                                           { { "--",                                           Lexer::Type::separator    }, NO, NO, NO, NO }, },
+    { "--",                                           { { "--",                                           Lexer::Type::separator               }, NO, NO, NO, NO }, },
 
     // Expression
     //   due:eom-2w
     //   due < eom + 1w + 1d
     //   ( /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 )
-    { "(1+2)",                                        { { "(",                                            Lexer::Type::op           },
-                                                        { "1",                                            Lexer::Type::number       },
-                                                        { "+",                                            Lexer::Type::op           },
-                                                        { "2",                                            Lexer::Type::number       },
-                                                        { ")",                                            Lexer::Type::op           },                }, },
-    { "description~pattern",                          { { "description",                                  Lexer::Type::dom          },
-                                                        { "~",                                            Lexer::Type::op           },
-                                                        { "pattern",                                      Lexer::Type::identifier   },         NO, NO }, },
-    { "(+tag)",                                       { { "(",                                            Lexer::Type::op           },
-                                                        { "+tag",                                         Lexer::Type::tag          },
-                                                        { ")",                                            Lexer::Type::op           },         NO, NO }, },
-    { "(name:value)",                                 { { "(",                                            Lexer::Type::op           },
-                                                        { "name:value",                                   Lexer::Type::pair         },
-                                                        { ")",                                            Lexer::Type::op           },         NO, NO }, },
+    { "(1+2)",                                        { { "(",                                            Lexer::Type::op                      },
+                                                        { "1",                                            Lexer::Type::number                  },
+                                                        { "+",                                            Lexer::Type::op                      },
+                                                        { "2",                                            Lexer::Type::number                  },
+                                                        { ")",                                            Lexer::Type::op                      },                }, },
+    { "description~pattern",                          { { "description",                                  Lexer::Type::dom                     },
+                                                        { "~",                                            Lexer::Type::op                      },
+                                                        { "pattern",                                      Lexer::Type::identifier              },         NO, NO }, },
+    { "(+tag)",                                       { { "(",                                            Lexer::Type::op                      },
+                                                        { "+tag",                                         Lexer::Type::tag                     },
+                                                        { ")",                                            Lexer::Type::op                      },         NO, NO }, },
+    { "(name:value)",                                 { { "(",                                            Lexer::Type::op                      },
+                                                        { "name:value",                                   Lexer::Type::pair                    },
+                                                        { ")",                                            Lexer::Type::op                      },         NO, NO }, },
   };
-  #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
-  for (unsigned int i = 0; i < NUM_TESTS; i++)
+  for (const auto& lexerTest : lexerTests)
   {
     // The isolated test puts the input string directly into the Lexer.
-    Lexer isolated (lexerTests[i].input);
+    Lexer isolated (lexerTest.input);
 
-    for (int j = 0; j < 5; j++)
+    for (const auto& result : lexerTest.results)
     {
-      if (lexerTests[i].results[j].token[0])
+      if (result.token[0])
       {
         // Isolated: "<token>"
         t.ok (isolated.token (token, type),                  "Isolated Lexer::token(...) --> true");
-        t.is (token, lexerTests[i].results[j].token,         "  token --> " + token);
-        t.is ((int)type, (int)lexerTests[i].results[j].type, "  type --> Lexer::Type::" + Lexer::typeToString (type));
+        t.is (token, result.token,                           "  token --> " + token, result.expfail_token);
+        t.is ((int)type, (int)result.type,                   "  type --> Lexer::Type::" + Lexer::typeToString (type), result.expfail_type);
       }
     }
 
     // The embedded test surrounds the input string with a space.
-    Lexer embedded (std::string (" ") + lexerTests[i].input + " ");
+    Lexer embedded (std::string (" ") + lexerTest.input + " ");
 
-    for (int j = 0; j < 5; j++)
+    for (const auto& result : lexerTest.results)
     {
-      if (lexerTests[i].results[j].token[0])
+      if (result.token[0])
       {
         // Embedded: "<token>"
         t.ok (embedded.token (token, type),                  "Embedded Lexer::token(...) --> true");
-        t.is (token, lexerTests[i].results[j].token,         "  token --> " + token);
-        t.is ((int)type, (int)lexerTests[i].results[j].type, "  type --> Lexer::Type::" + Lexer::typeToString (type));
+        t.is (token, result.token,                           "  token --> " + token, result.expfail_token);
+        t.is ((int)type, (int)result.type,                   "  type --> Lexer::Type::" + Lexer::typeToString (type), result.expfail_type);
       }
     }
   }
@@ -571,8 +573,8 @@ int main (int, char**)
   t.is (Lexer::trimLeft ("",              " \t"), "",            "Lexer::trimLeft '' -> ''");
   t.is (Lexer::trimLeft ("xxx"),                  "xxx",         "Lexer::trimLeft 'xxx' -> 'xxx'");
   t.is (Lexer::trimLeft ("xxx",           " \t"), "xxx",         "Lexer::trimLeft 'xxx' -> 'xxx'");
-  t.is (Lexer::trimLeft ("  \t xxx \t  "),        "\t xxx \t  ", "Lexer::trimLeft '  \\t xxx \\t  ' -> '\\t xxx \\t  '");
-  t.is (Lexer::trimLeft ("  \t xxx \t  ", " \t"), "xxx \t  ",    "Lexer::trimLeft '  \\t xxx \\t  ' -> 'xxx \\t  '");
+  t.is (Lexer::trimLeft ("  \t xxx \t  "),        "\t xxx \t  ",R"(Lexer::trimLeft '  \t xxx \t  ' -> '\t xxx \t  ')");
+  t.is (Lexer::trimLeft ("  \t xxx \t  ", " \t"), "xxx \t  ",   R"(Lexer::trimLeft '  \t xxx \t  ' -> 'xxx \t  ')");
 
   // std::string Lexer::trimRight (const std::string& in, const std::string& t /*= " "*/)
   t.is (Lexer::trimRight (""),                     "",            "Lexer::trimRight '' -> ''");
@@ -580,8 +582,8 @@ int main (int, char**)
   t.is (Lexer::trimRight ("",              " \t"), "",            "Lexer::trimRight '' -> ''");
   t.is (Lexer::trimRight ("xxx"),                  "xxx",         "Lexer::trimRight 'xxx' -> 'xxx'");
   t.is (Lexer::trimRight ("xxx",           " \t"), "xxx",         "Lexer::trimRight 'xxx' -> 'xxx'");
-  t.is (Lexer::trimRight ("  \t xxx \t  "),        "  \t xxx \t", "Lexer::trimRight '  \\t xxx \\t  ' -> '  \\t xxx \\t'");
-  t.is (Lexer::trimRight ("  \t xxx \t  ", " \t"), "  \t xxx",    "Lexer::trimRight '  \\t xxx \\t  ' -> '  \\t xxx'");
+  t.is (Lexer::trimRight ("  \t xxx \t  "),        "  \t xxx \t", R"(Lexer::trimRight '  \t xxx \t  ' -> '  \t xxx \t')");
+  t.is (Lexer::trimRight ("  \t xxx \t  ", " \t"), "  \t xxx",    R"(Lexer::trimRight '  \t xxx \t  ' -> '  \t xxx')");
 
   // std::string Lexer::trim (const std::string& in, const std::string& t /*= " "*/)
   t.is (Lexer::trim (""),                     "",          "Lexer::trim '' -> ''");
@@ -589,7 +591,7 @@ int main (int, char**)
   t.is (Lexer::trim ("",              " \t"), "",          "Lexer::trim '' -> ''");
   t.is (Lexer::trim ("xxx"),                  "xxx",       "Lexer::trim 'xxx' -> 'xxx'");
   t.is (Lexer::trim ("xxx",           " \t"), "xxx",       "Lexer::trim 'xxx' -> 'xxx'");
-  t.is (Lexer::trim ("  \t xxx \t  "),        "\t xxx \t", "Lexer::trim '  \\t xxx \\t  ' -> '\\t xxx \\t'");
+  t.is (Lexer::trim ("  \t xxx \t  "),        "\t xxx \t",R"(Lexer::trim '  \t xxx \t  ' -> '\t xxx \t')");
   t.is (Lexer::trim ("  \t xxx \t  ", " \t"), "xxx",       "Lexer::trim '  \\t xxx \\t  ' -> 'xxx'");
 
   return 0;

@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# https://holidata.net/hr-HR/2020.json
 # https://holidata.net/hr-HR/2021.json
+# https://holidata.net/hr-HR/2022.json
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,62 +28,60 @@
 ###############################################################################
 
 holiday.hr-HR1.name=Nova Godina
-holiday.hr-HR1.date=20200101
+holiday.hr-HR1.date=20210101
 holiday.hr-HR2.name=Bogojavljenje
-holiday.hr-HR2.date=20200106
+holiday.hr-HR2.date=20210106
 holiday.hr-HR3.name=Uskrs
-holiday.hr-HR3.date=20200412
+holiday.hr-HR3.date=20210404
 holiday.hr-HR4.name=Uskrsni ponedjeljak
-holiday.hr-HR4.date=20200413
+holiday.hr-HR4.date=20210405
 holiday.hr-HR5.name=Praznik rada
-holiday.hr-HR5.date=20200501
+holiday.hr-HR5.date=20210501
 holiday.hr-HR6.name=Tijelovo
-holiday.hr-HR6.date=20200611
+holiday.hr-HR6.date=20210603
 holiday.hr-HR7.name=Dan antifašističke borbe
-holiday.hr-HR7.date=20200622
+holiday.hr-HR7.date=20210622
 holiday.hr-HR8.name=Dan državnosti
-holiday.hr-HR8.date=20200625
+holiday.hr-HR8.date=20210625
 holiday.hr-HR9.name=Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja
-holiday.hr-HR9.date=20200805
+holiday.hr-HR9.date=20210805
 holiday.hr-HR10.name=Velika Gospa
-holiday.hr-HR10.date=20200815
+holiday.hr-HR10.date=20210815
 holiday.hr-HR11.name=Dan neovisnosti
-holiday.hr-HR11.date=20201008
+holiday.hr-HR11.date=20211008
 holiday.hr-HR12.name=Svi sveti
-holiday.hr-HR12.date=20201101
+holiday.hr-HR12.date=20211101
 holiday.hr-HR13.name=Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje
-holiday.hr-HR13.date=20201118
+holiday.hr-HR13.date=20211118
 holiday.hr-HR14.name=Božić
-holiday.hr-HR14.date=20201225
+holiday.hr-HR14.date=20211225
 holiday.hr-HR15.name=Sveti Stjepan
-holiday.hr-HR15.date=20201226
+holiday.hr-HR15.date=20211226
 holiday.hr-HR16.name=Nova Godina
-holiday.hr-HR16.date=20210101
-holiday.hr-HR17.name=Bogojavljenje
-holiday.hr-HR17.date=20210106
+holiday.hr-HR16.date=20220101
+holiday.hr-HR17.name=Sveta tri kralja
+holiday.hr-HR17.date=20220106
 holiday.hr-HR18.name=Uskrs
-holiday.hr-HR18.date=20210404
-holiday.hr-HR19.name=Uskrsni ponedjeljak
-holiday.hr-HR19.date=20210405
+holiday.hr-HR18.date=20220417
+holiday.hr-HR19.name=Uskršnji ponedjeljak
+holiday.hr-HR19.date=20220418
 holiday.hr-HR20.name=Praznik rada
-holiday.hr-HR20.date=20210501
-holiday.hr-HR21.name=Tijelovo
-holiday.hr-HR21.date=20210603
-holiday.hr-HR22.name=Dan antifašističke borbe
-holiday.hr-HR22.date=20210622
-holiday.hr-HR23.name=Dan državnosti
-holiday.hr-HR23.date=20210625
+holiday.hr-HR20.date=20220501
+holiday.hr-HR21.name=Dan državnosti
+holiday.hr-HR21.date=20220530
+holiday.hr-HR22.name=Tijelovo
+holiday.hr-HR22.date=20220616
+holiday.hr-HR23.name=Dan antifašističke borbe
+holiday.hr-HR23.date=20220622
 holiday.hr-HR24.name=Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja
-holiday.hr-HR24.date=20210805
+holiday.hr-HR24.date=20220805
 holiday.hr-HR25.name=Velika Gospa
-holiday.hr-HR25.date=20210815
-holiday.hr-HR26.name=Dan neovisnosti
-holiday.hr-HR26.date=20211008
-holiday.hr-HR27.name=Svi sveti
-holiday.hr-HR27.date=20211101
-holiday.hr-HR28.name=Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje
-holiday.hr-HR28.date=20211118
-holiday.hr-HR29.name=Božić
-holiday.hr-HR29.date=20211225
-holiday.hr-HR30.name=Sveti Stjepan
-holiday.hr-HR30.date=20211226
+holiday.hr-HR25.date=20220815
+holiday.hr-HR26.name=Dan svih svetih
+holiday.hr-HR26.date=20221101
+holiday.hr-HR27.name=Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje
+holiday.hr-HR27.date=20221118
+holiday.hr-HR28.name=Božić
+holiday.hr-HR28.date=20221225
+holiday.hr-HR29.name=Sveti Stjepan
+holiday.hr-HR29.date=20221226

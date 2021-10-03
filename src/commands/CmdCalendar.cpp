@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -59,10 +59,19 @@ int CmdCalendar::execute (std::string& output)
 {
   int rc = 0;
 
+  auto& config = Context::getContext ().config;
+
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
   auto width = Context::getContext ().getWidth ();
-  auto preferredMonthsPerLine = Context::getContext ().config.getInteger ("monthsperline");
+  int preferredMonthsPerLine;
+
+  if (config.has ("calendar.monthsperline"))
+    preferredMonthsPerLine = config.getInteger ("calendar.monthsperline");
+  else
+    // Legacy configuration variable value
+    preferredMonthsPerLine = config.getInteger ("monthsperline");
+
   auto monthsThatFit = width / 26;
 
   auto monthsPerLine = monthsThatFit;
@@ -70,6 +79,7 @@ int CmdCalendar::execute (std::string& output)
     monthsPerLine = preferredMonthsPerLine;
 
   // Load the pending tasks.
+  handleUntil ();
   handleRecurrence ();
   auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
 
@@ -108,11 +118,11 @@ int CmdCalendar::execute (std::string& output)
   for (auto& arg : Context::getContext ().cli2.getWords ())
   {
     // Some version of "calendar".
-    if (autoComplete (Lexer::lowerCase (arg), commandNames, matches, Context::getContext ().config.getInteger ("abbreviation.minimum")) == 1)
+    if (autoComplete (Lexer::lowerCase (arg), commandNames, matches, config.getInteger ("abbreviation.minimum")) == 1)
       continue;
 
     // "due".
-    else if (autoComplete (Lexer::lowerCase (arg), keywordNames, matches, Context::getContext ().config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (Lexer::lowerCase (arg), keywordNames, matches, config.getInteger ("abbreviation.minimum")) == 1)
       getPendingDate = true;
 
     // "y".
@@ -132,7 +142,7 @@ int CmdCalendar::execute (std::string& output)
     }
 
     // "January" etc.
-    else if (autoComplete (Lexer::lowerCase (arg), monthNames, matches, Context::getContext ().config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (Lexer::lowerCase (arg), monthNames, matches, config.getInteger ("abbreviation.minimum")) == 1)
     {
       argMonth = Datetime::monthOfYear (matches[0]);
       if (argMonth == -1)
@@ -171,10 +181,11 @@ int CmdCalendar::execute (std::string& output)
   if (getPendingDate == true)
   {
     // Find the oldest pending due date.
-    Datetime oldest (2037, 12, 31);
+    Datetime oldest (9999, 12, 31);
     for (auto& task : tasks)
     {
-      if (task.getStatus () == Task::pending)
+      auto status = task.getStatus ();
+      if (status == Task::pending || status == Task::waiting)
       {
         if (task.has ("due") &&
             !task.hasTag ("nocal"))
@@ -185,14 +196,18 @@ int CmdCalendar::execute (std::string& output)
         }
       }
     }
-    mFrom = oldest.month();
-    yFrom = oldest.year();
+
+    // Default to current month if no due date is present
+    if (oldest != Datetime (9999, 12, 31)) {
+      mFrom = oldest.month();
+      yFrom = oldest.year();
+    }
   }
 
-  if (Context::getContext ().config.getBoolean ("calendar.offset"))
+  if (config.getBoolean ("calendar.offset"))
   {
-    auto moffset = Context::getContext ().config.getInteger ("calendar.offset.value") % 12;
-    auto yoffset = Context::getContext ().config.getInteger ("calendar.offset.value") / 12;
+    auto moffset = config.getInteger ("calendar.offset.value") % 12;
+    auto yoffset = config.getInteger ("calendar.offset.value") / 12;
     mFrom += moffset;
     yFrom += yoffset;
     if (mFrom < 1)
@@ -276,34 +291,45 @@ int CmdCalendar::execute (std::string& output)
     }
   }
 
-  Color color_today      (Context::getContext ().config.get ("color.calendar.today"));
-  Color color_due        (Context::getContext ().config.get ("color.calendar.due"));
-  Color color_duetoday   (Context::getContext ().config.get ("color.calendar.due.today"));
-  Color color_overdue    (Context::getContext ().config.get ("color.calendar.overdue"));
-  Color color_weekend    (Context::getContext ().config.get ("color.calendar.weekend"));
-  Color color_holiday    (Context::getContext ().config.get ("color.calendar.holiday"));
-  Color color_weeknumber (Context::getContext ().config.get ("color.calendar.weeknumber"));
+  Color color_today      (config.get ("color.calendar.today"));
+  Color color_due        (config.get ("color.calendar.due"));
+  Color color_duetoday   (config.get ("color.calendar.due.today"));
+  Color color_overdue    (config.get ("color.calendar.overdue"));
+  Color color_weekend    (config.get ("color.calendar.weekend"));
+  Color color_holiday    (config.get ("color.calendar.holiday"));
+  Color color_scheduled  (config.get ("color.calendar.scheduled"));
+  Color color_weeknumber (config.get ("color.calendar.weeknumber"));
 
-  if (Context::getContext ().color () && Context::getContext ().config.getBoolean ("calendar.legend"))
+  if (Context::getContext ().color () && config.getBoolean ("calendar.legend"))
+  {
     out << "Legend: "
         << color_today.colorize ("today")
         << ", "
-        << color_due.colorize ("due")
-        << ", "
-        << color_duetoday.colorize ("due-today")
-        << ", "
-        << color_overdue.colorize ("overdue")
-        << ", "
         << color_weekend.colorize ("weekend")
-        << ", "
-        << color_holiday.colorize ("holiday")
-        << ", "
-        << color_weeknumber.colorize ("weeknumber")
+        << ", ";
+
+    // If colorizing due dates, print legend
+    if (config.get ("calendar.details") != "none")
+      out << color_due.colorize ("due")
+          << ", "
+          << color_duetoday.colorize ("due-today")
+          << ", "
+          << color_overdue.colorize ("overdue")
+          << ", "
+          << color_scheduled.colorize ("scheduled")
+          << ", ";
+
+    // If colorizing holidays, print legend
+    if (config.get ("calendar.holidays") != "none")
+      out << color_holiday.colorize ("holiday") << ", ";
+
+    out << color_weeknumber.colorize ("weeknumber")
         << '.'
         << optionalBlankLine ()
         << '\n';
+  }
 
-  if (Context::getContext ().config.get ("calendar.details") == "full" || Context::getContext ().config.get ("calendar.holidays") == "full")
+  if (config.get ("calendar.details") == "full" || config.get ("calendar.holidays") == "full")
   {
     --details_mFrom;
     if (details_mFrom == 0)
@@ -321,16 +347,16 @@ int CmdCalendar::execute (std::string& output)
     }
 
     Datetime date_after (details_yFrom, details_mFrom, details_dFrom);
-    auto after = date_after.toString (Context::getContext ().config.get ("dateformat"));
+    auto after = date_after.toString (config.get ("dateformat"));
 
     Datetime date_before (yTo, mTo, 1);
-    auto before = date_before.toString (Context::getContext ().config.get ("dateformat"));
+    auto before = date_before.toString (config.get ("dateformat"));
 
     // Table with due date information
-    if (Context::getContext ().config.get ("calendar.details") == "full")
+    if (config.get ("calendar.details") == "full")
     {
       // Assert that 'report' is a valid report.
-      auto report = Context::getContext ().config.get ("calendar.details.report");
+      auto report = config.get ("calendar.details.report");
       if (Context::getContext ().commands.find (report) == Context::getContext ().commands.end ())
         throw std::string ("The setting 'calendar.details.report' must contain a single report name.");
 
@@ -347,6 +373,8 @@ int CmdCalendar::execute (std::string& output)
       args.push_back ("rc:" + Context::getContext ().rc_file._data);
       args.push_back ("rc.due:0");
       args.push_back ("rc.verbose:label,affected,blank");
+      if (Context::getContext ().color ())
+          args.push_back ("rc._forcecolor:on");
       args.push_back ("due.after:" + after);
       args.push_back ("due.before:" + before);
       args.push_back ("-nocal");
@@ -358,7 +386,7 @@ int CmdCalendar::execute (std::string& output)
     }
 
     // Table with holiday information
-    if (Context::getContext ().config.get ("calendar.holidays") == "full")
+    if (config.get ("calendar.holidays") == "full")
     {
       Table holTable;
       holTable.width (Context::getContext ().getWidth ());
@@ -366,37 +394,54 @@ int CmdCalendar::execute (std::string& output)
       holTable.add ("Holiday");
       setHeaderUnderline (holTable);
 
+      auto dateFormat = config.get ("dateformat.holiday");
+
       std::map <time_t, std::vector<std::string>> hm; // we need to store multiple holidays per day
-      for (auto& it : Context::getContext ().config)
+      for (auto& it : config)
         if (it.first.substr (0, 8) == "holiday.")
           if (it.first.substr (it.first.size () - 4) == "name")
           {
-            auto holName = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
-            auto holDate = Context::getContext ().config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
-            Datetime hDate (holDate.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
+            auto holName = it.second;
+            auto date = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
+            auto start = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".start");
+            auto end = config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".end");
+            if (!date.empty ())
+            {
+              Datetime holDate (date.c_str (), dateFormat);
 
-            if (date_after < hDate && hDate < date_before)
-              hm[hDate.toEpoch()].push_back (holName);
+              if (date_after < holDate && holDate < date_before)
+                hm[holDate.toEpoch()].push_back (holName);
+            }
+            if (!start.empty () && !end.empty ())
+            {
+              Datetime holStart (start.c_str (), dateFormat);
+              Datetime holEnd (end.c_str (), dateFormat);
+
+              if (date_after < holStart && holStart < date_before)
+                hm[holStart.toEpoch()].push_back ("Start of " + holName);
+              if (date_after < holEnd && holEnd < date_before)
+                hm[holEnd.toEpoch()].push_back ("End of " + holName);
+            }
           }
 
-      auto format = Context::getContext ().config.get ("report." +
-                                        Context::getContext ().config.get ("calendar.details.report") +
-                                        ".dateformat");
+      auto format = config.get ("report." +
+                                config.get ("calendar.details.report") +
+                                ".dateformat");
       if (format == "")
-        format = Context::getContext ().config.get ("dateformat.report");
+        format = config.get ("dateformat.report");
       if (format == "")
-        format = Context::getContext ().config.get ("dateformat");
+        format = config.get ("dateformat");
 
       for (auto& hm_it : hm)
       {
         auto v = hm_it.second;
         Datetime hDate (hm_it.first);
         auto d = hDate.toString (format);
-        for (size_t i = 0; i < v.size(); i++)
+        for (const auto& i : v)
         {
           auto row = holTable.addRow ();
           holTable.set (row, 0, d);
-          holTable.set (row, 1, v[i]);
+          holTable.set (row, 1, i);
         }
       }
 
@@ -418,8 +463,11 @@ std::string CmdCalendar::renderMonths (
   std::vector <Task>& all,
   int monthsPerLine)
 {
+
+  auto& config = Context::getContext ().config;
+
   // What day of the week does the user consider the first?
-  auto weekStart = Datetime::dayOfWeek (Context::getContext ().config.get ("weekstart"));
+  auto weekStart = Datetime::dayOfWeek (config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string ("The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'.");
 
@@ -484,13 +532,14 @@ std::string CmdCalendar::renderMonths (
 
   auto row = 0;
 
-  Color color_today      (Context::getContext ().config.get ("color.calendar.today"));
-  Color color_due        (Context::getContext ().config.get ("color.calendar.due"));
-  Color color_duetoday   (Context::getContext ().config.get ("color.calendar.due.today"));
-  Color color_overdue    (Context::getContext ().config.get ("color.calendar.overdue"));
-  Color color_weekend    (Context::getContext ().config.get ("color.calendar.weekend"));
-  Color color_holiday    (Context::getContext ().config.get ("color.calendar.holiday"));
-  Color color_weeknumber (Context::getContext ().config.get ("color.calendar.weeknumber"));
+  Color color_today      (config.get ("color.calendar.today"));
+  Color color_due        (config.get ("color.calendar.due"));
+  Color color_duetoday   (config.get ("color.calendar.due.today"));
+  Color color_overdue    (config.get ("color.calendar.overdue"));
+  Color color_weekend    (config.get ("color.calendar.weekend"));
+  Color color_holiday    (config.get ("color.calendar.holiday"));
+  Color color_scheduled  (config.get ("color.calendar.scheduled"));
+  Color color_weeknumber (config.get ("color.calendar.weeknumber"));
 
   // Loop through months to be added on this line.
   for (int mpl = 0; mpl < monthsPerLine ; mpl++)
@@ -502,11 +551,11 @@ std::string CmdCalendar::renderMonths (
     // Loop through days in month and add to table.
     for (int d = 1; d <= daysInMonth[mpl]; ++d)
     {
-      Datetime temp (years[mpl], months[mpl], d);
-      auto dow = temp.dayOfWeek ();
-      auto woy = temp.week ();
+      Datetime date (years[mpl], months[mpl], d);
+      auto dow = date.dayOfWeek ();
+      auto woy = date.week ();
 
-      if (Context::getContext ().config.getBoolean ("displayweeknumber"))
+      if (config.getBoolean ("displayweeknumber"))
         view.set (row,
                   (8 * mpl),
                   // Make sure the week number is always 4 columns, space-padded.
@@ -532,62 +581,88 @@ std::string CmdCalendar::renderMonths (
           cellColor.blend (color_weekend);
 
         // colorize holidays
-        if (Context::getContext ().config.get ("calendar.holidays") != "none")
+        if (config.get ("calendar.holidays") != "none")
         {
-          for (auto& hol : Context::getContext ().config)
+          auto dateFormat = config.get ("dateformat.holiday");
+          for (auto& hol : config)
+          {
             if (hol.first.substr (0, 8) == "holiday.")
+            {
               if (hol.first.substr (hol.first.size () - 4) == "date")
               {
-                std::string value = hol.second;
-                Datetime holDate (value.c_str (), Context::getContext ().config.get ("dateformat.holiday"));
-                if (holDate.day   () == d           &&
-                    holDate.month () == months[mpl] &&
-                    holDate.year  () == years[mpl])
+                auto value = hol.second;
+                Datetime holDate (value.c_str (), dateFormat);
+                if (holDate.sameDay (date))
                   cellColor.blend (color_holiday);
               }
+
+              if (hol.first.substr (hol.first.size () - 5) == "start" &&
+                  config.has ("holiday." + hol.first.substr (8, hol.first.size () - 14) + ".end"))
+              {
+                auto start = hol.second;
+                auto end = config.get ("holiday." + hol.first.substr (8, hol.first.size () - 14) + ".end");
+                Datetime holStart (start.c_str (), dateFormat);
+                Datetime holEnd   (end.c_str (), dateFormat);
+                if (holStart <= date && date <= holEnd)
+                  cellColor.blend (color_holiday);
+              }
+            }
+          }
         }
 
         // colorize today
-        if (today.day   () == d                &&
-            today.month () == months.at (mpl)  &&
-            today.year  () == years.at  (mpl))
+        if (today.sameDay (date))
           cellColor.blend (color_today);
 
-        // colorize due tasks
-        if (Context::getContext ().config.get ("calendar.details") != "none")
+        // colorize due and scheduled tasks
+        if (config.get ("calendar.details") != "none")
         {
-          Context::getContext ().config.set ("due", 0);
+          config.set ("due", 0);
+          config.set ("scheduled", 0);
+          // if a date has a task that is due on that day, the due color
+          // takes precedence over the scheduled color
+          bool coloredWithDue = false;
           for (auto& task : all)
           {
-            if (task.getStatus () == Task::pending &&
-                !task.hasTag ("nocal")             &&
-                task.has ("due"))
+            auto status = task.getStatus ();
+            if ((status == Task::pending ||
+                 status == Task::waiting ) &&
+                !task.hasTag ("nocal"))
             {
-              std::string due = task.get ("due");
-              Datetime duedmy (strtol (due.c_str(), nullptr, 10));
+              if(task.has("scheduled") && !coloredWithDue) {
+                std::string scheduled = task.get ("scheduled");
+                Datetime scheduleddmy (strtol (scheduled.c_str(), nullptr, 10));
 
-              if (duedmy.day   () == d           &&
-                  duedmy.month () == months[mpl] &&
-                  duedmy.year  () == years[mpl])
-              {
-                switch (task.getDateState ("due"))
+                if (scheduleddmy.sameDay (date))
                 {
-                case Task::dateNotDue:
-                  break;
+                  cellColor.blend(color_scheduled);
+                }
+              }
+              if(task.has("due")) {
+                std::string due = task.get ("due");
+                Datetime duedmy (strtol (due.c_str(), nullptr, 10));
 
-                case Task::dateAfterToday:
-                  cellColor.blend (color_due);
-                  break;
+                if (duedmy.sameDay (date))
+                {
+                  coloredWithDue = true;
+                  switch (task.getDateState ("due"))
+                  {
+                  case Task::dateNotDue:
+                    break;
 
-                case Task::dateEarlierToday:
-                case Task::dateLaterToday:
-                  cellColor.blend (color_duetoday);
-                  cellColor.blend (color_duetoday);
-                  break;
+                  case Task::dateAfterToday:
+                    cellColor.blend (color_due);
+                    break;
 
-                case Task::dateBeforeToday:
-                  cellColor.blend (color_overdue);
-                  break;
+                  case Task::dateLaterToday:
+                    cellColor.blend (color_duetoday);
+                    break;
+
+                  case Task::dateEarlierToday:
+                  case Task::dateBeforeToday:
+                    cellColor.blend (color_overdue);
+                    break;
+                  }
                 }
               }
             }

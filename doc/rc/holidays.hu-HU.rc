@@ -1,0 +1,83 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# https://holidata.net/hu-HU/2021.json
+# https://holidata.net/hu-HU/2022.json
+#
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# https://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.hu-HU1.name=Újév
+holiday.hu-HU1.date=20210101
+holiday.hu-HU2.name=Az 1848-as forradalom ünnepe
+holiday.hu-HU2.date=20210315
+holiday.hu-HU3.name=Nagypéntek
+holiday.hu-HU3.date=20210402
+holiday.hu-HU4.name=Húsvét
+holiday.hu-HU4.date=20210404
+holiday.hu-HU5.name=Húsvéthétfő
+holiday.hu-HU5.date=20210405
+holiday.hu-HU6.name=A munka ünnepe
+holiday.hu-HU6.date=20210501
+holiday.hu-HU7.name=Pünkösd
+holiday.hu-HU7.date=20210523
+holiday.hu-HU8.name=Pünkösdhétfő
+holiday.hu-HU8.date=20210524
+holiday.hu-HU9.name=Az államalapítás ünnepe
+holiday.hu-HU9.date=20210820
+holiday.hu-HU10.name=Az 1956-os forradalom ünnepe
+holiday.hu-HU10.date=20211023
+holiday.hu-HU11.name=Mindenszentek
+holiday.hu-HU11.date=20211101
+holiday.hu-HU12.name=Munkaszüneti Nap
+holiday.hu-HU12.date=20211224
+holiday.hu-HU13.name=Karácsony
+holiday.hu-HU13.date=20211225
+holiday.hu-HU14.name=Karácsony
+holiday.hu-HU14.date=20211226
+holiday.hu-HU15.name=Újév
+holiday.hu-HU15.date=20220101
+holiday.hu-HU16.name=Az 1848-as forradalom ünnepe
+holiday.hu-HU16.date=20220315
+holiday.hu-HU17.name=Nagypéntek
+holiday.hu-HU17.date=20220415
+holiday.hu-HU18.name=Húsvét
+holiday.hu-HU18.date=20220417
+holiday.hu-HU19.name=Húsvéthétfő
+holiday.hu-HU19.date=20220418
+holiday.hu-HU20.name=A munka ünnepe
+holiday.hu-HU20.date=20220501
+holiday.hu-HU21.name=Pünkösd
+holiday.hu-HU21.date=20220605
+holiday.hu-HU22.name=Pünkösdhétfő
+holiday.hu-HU22.date=20220606
+holiday.hu-HU23.name=Az államalapítás ünnepe
+holiday.hu-HU23.date=20220820
+holiday.hu-HU24.name=Az 1956-os forradalom ünnepe
+holiday.hu-HU24.date=20221023
+holiday.hu-HU25.name=Mindenszentek
+holiday.hu-HU25.date=20221101
+holiday.hu-HU26.name=Karácsony
+holiday.hu-HU26.date=20221225
+holiday.hu-HU27.name=Karácsony
+holiday.hu-HU27.date=20221226

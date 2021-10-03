@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,15 @@ class TestBurndownCommand(TestCase):
 
     def test_burndown_daily(self):
         """Ensure burndown.daily generates a chart"""
+        code, out, err = self.t("burndown.daily")
+        self.assertIn("Daily Burndown", out)
+        self.assertIn(".", out)
+        self.assertIn("+", out)
+        self.assertIn("X", out)
+
+    def test_burndown_daily_non_cumulative(self):
+        """Ensure burndown.daily in non-cumulative mode generates a chart"""
+        self.t.config("burndown.cumulative", "0")
         code, out, err = self.t("burndown.daily")
         self.assertIn("Daily Burndown", out)
         self.assertIn(".", out)

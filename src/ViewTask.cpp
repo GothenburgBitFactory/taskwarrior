@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -202,11 +202,53 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     widths = ideal;
   }
 
-  // Not enough for minimum.
+  // Not enough for minimum. Decrease certain columns.
   else if (overage < 0)
   {
-    Context::getContext ().error (format ("The report has a minimum width of {1} and does not fit in the available width of {2}.", sum_minimal + all_extra, _width));
+    // Determine which columns are the longest.
+    unsigned int longest = 0;
+    unsigned int second_longest = 0;
+    for (unsigned int j = 0; j < minimal.size(); j++)
+    {
+      if (minimal[j] > minimal[longest])
+      {
+        second_longest = longest;
+        longest = j;
+      }
+      else if (minimal[j] > minimal[second_longest])
+      {
+        second_longest = j;
+      }
+    }
+
+    // Case 1: Shortening longest column still keeps it longest. Let it bear
+    //         all the shortening.
     widths = minimal;
+    if (minimal[longest] + overage >= minimal[second_longest])
+      widths[longest] += overage;
+
+    // Case 2: Shorten the longest column to second longest length. Try to
+    //         split shortening them evenly.
+    else
+    {
+      int decrease = minimal[second_longest] - minimal[longest];
+      widths[longest] += decrease;
+      overage = overage - decrease;
+
+      // Attempt to decrease the two longest columns (at most to two characters)
+      if (-overage <= widths[longest] + widths[second_longest] - 4)
+      {
+        // Compute half of the overage, rounding up
+        int half_overage = overage / 2 + overage % 2;
+
+        // Decrease both larges columns by this amount
+        widths[longest] += half_overage;
+        widths[second_longest] += half_overage;
+      }
+      else
+        // If reducing two of the longest solumns to 2 characters is not sufficient, then give up.
+        Context::getContext ().error (format ("The report has a minimum width of {1} and does not fit in the available width of {2}.", sum_minimal + all_extra, _width));
+    }
   }
 
   // Perfect minimal width.
@@ -242,7 +284,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   std::vector <std::vector <std::string>> headers;
   for (unsigned int c = 0; c < _columns.size (); ++c)
   {
-    headers.push_back (std::vector <std::string> ());
+    headers.emplace_back ();
     _columns[c]->renderHeader (headers[c], widths[c], _sort[c] ? _sort_header : _header);
 
     if (headers[c].size () > max_lines)
@@ -279,7 +321,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     out += extra;
 
     // Trim right.
-    out.erase (out.find_last_not_of (" ") + 1);
+    out.erase (out.find_last_not_of (' ') + 1);
     out += "\n";
 
     // Stop if the line limit is exceeded.
@@ -312,7 +354,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     for (unsigned int c = 0; c < _columns.size (); ++c)
     {
-      cells.push_back (std::vector <std::string> ());
+      cells.emplace_back ();
       _columns[c]->render (cells[c], data[sequence[s]], widths[c], row_color);
 
       if (cells[c].size () > max_lines)
@@ -320,8 +362,8 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
       if (obfuscate)
         if (_columns[c]->type () == "string")
-          for (unsigned int line = 0; line < cells[c].size (); ++line)
-            cells[c][line] = obfuscateText (cells[c][line]);
+          for (auto& line : cells[c])
+            line = obfuscateText (line);
     }
 
     // Listing breaks are simply blank lines inserted when a column value
@@ -329,7 +371,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     if (s > 0 &&
         _breaks.size () > 0)
     {
-      for (auto& b : _breaks)
+      for (const auto& b : _breaks)
       {
         if (data[sequence[s - 1]].get (b) != data[sequence[s]].get (b))
         {
@@ -365,7 +407,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       out += (odd ? extra_odd : extra_even);
 
       // Trim right.
-      out.erase (out.find_last_not_of (" ") + 1);
+      out.erase (out.find_last_not_of (' ') + 1);
       out += "\n";
 
       // Stop if the line limit is exceeded.

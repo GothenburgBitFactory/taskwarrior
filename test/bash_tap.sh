@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 # For more information, see https://github.com/wbsch/bash_tap
-# Subject to the MIT License. See LICENSE file or http://opensource.org/licenses/MIT
-# Copyright (c) 2015 - 2021 Wilhelm Schürmann
+# Subject to the MIT License. See LICENSE file or https://opensource.org/licenses/MIT
+# Copyright (c) 2015 - 2021, Wilhelm Schürmann
 
 function bashtap_on_error {
     # A command in the parent script failed, interpret this as a test failure.
     # $bashtap_line contains the last executed line, or an error.
     echo -n "$bashtap_output"
-    echo "not ok 1 - ${bashtap_line}"
+
+    # Determine if this failure was expected
+    if [[ ! -z "$EXPFAIL" ]]
+    then
+        todo_suffix=" # TODO"
+    fi
+
+    echo "not ok 1 - ${bashtap_line}${todo_suffix}"
     bashtap_clean_tmpdir
 }
 

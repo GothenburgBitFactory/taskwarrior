@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ int main (int, char**)
     t.is ((int) backlog.size (),   0, "TDB2 Read empty backlog");
 
     // Add a task.
-    Task task ("[description:\"description\" name:\"value\"]");
+    Task task (R"([description:"description" name:"value"])");
     context.tdb2.add (task);
 
     pending   = context.tdb2.pending.get_tasks ();

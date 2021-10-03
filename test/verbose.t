@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -105,11 +105,11 @@ class TestVerbosity(TestCase):
     def test_verbosity_header(self):
         """Verbosity header"""
 
-        code, out, err = self.t("rc.verbose:nothing ls")
+        code, out, err = self.t("rc.verbose:override ls")
         self.assertNotIn("TASKRC override:", err)
         self.assertNotIn("TASKDATA override:", err)
 
-        code, out, err = self.t("rc.verbose:header ls")
+        code, out, err = self.t("rc.verbose:header,override ls")
         self.assertIn("TASKRC override:", err)
         self.assertIn("TASKDATA override:", err)
 
@@ -121,6 +121,24 @@ class TestVerbosity(TestCase):
 
         code, out, err = self.t("rc.verbose:project add proj:T two")
         self.assertIn("The project 'T' has changed.", err)
+
+    def test_bug_2247(self):
+        """
+        Verbosity override is applied regardless of the order of the arguments.
+        """
+
+        code, out, err = self.t("rc.color:0 add test")
+        self.assertIn("Configuration override", err)
+
+        # Once rc.verbose:nothing is set, no output about configuration overrides should appear
+        code, out, err = self.t("rc.verbose:nothing add test")
+        self.assertNotIn("Configuration override", err)
+
+        code, out, err = self.t("rc.color:0 rc.verbose:nothing add test")
+        self.assertNotIn("Configuration override", err)
+
+        code, out, err = self.t("rc.verbose:nothing rc.color:0 add test")
+        self.assertNotIn("Configuration override", err)
 
 
 if __name__ == "__main__":

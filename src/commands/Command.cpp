@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +68,7 @@
 #include <CmdLog.h>
 #include <CmdLogo.h>
 #include <CmdModify.h>
+#include <CmdNews.h>
 #include <CmdPrepend.h>
 #include <CmdProjects.h>
 #include <CmdPurge.h>
@@ -146,6 +147,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdLog ();                all[c->keyword ()] = c;
   c = new CmdLogo ();               all[c->keyword ()] = c;
   c = new CmdModify ();             all[c->keyword ()] = c;
+  c = new CmdNews ();               all[c->keyword ()] = c;
   c = new CmdPrepend ();            all[c->keyword ()] = c;
   c = new CmdProjects ();           all[c->keyword ()] = c;
   c = new CmdPurge ();              all[c->keyword ()] = c;
@@ -232,11 +234,6 @@ Command::Command ()
 , _permission_quit (false)
 , _permission_all (false)
 , _first_iteration (true)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Command::~Command ()
 {
 }
 

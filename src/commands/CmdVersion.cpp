@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ int CmdVersion::execute (std::string& output)
   Table link;
   link.width (width);
   link.add ("");
-  link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org");
+  link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at https://taskwarrior.org");
 
   Color bold;
   if (Context::getContext ().color ())
@@ -78,7 +78,7 @@ int CmdVersion::execute (std::string& output)
       << format ("{1} {2} built for ", bold.colorize (PACKAGE), bold.colorize (VERSION))
       << osName ()
       << '\n'
-      << "Copyright (C) 2006 - 2021 P. Beckingham, F. Hernandez."
+      << "Copyright (C) 2006 - 2021 T. Babej, P. Beckingham, F. Hernandez."
       << '\n'
       << '\n'
       << disclaimer.render ()

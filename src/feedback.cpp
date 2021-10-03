@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,205 +41,6 @@
 #include <format.h>
 
 static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
-
-////////////////////////////////////////////////////////////////////////////////
-// Converts a vector of tasks to a human-readable string that represents the tasks.
-std::string taskIdentifiers (const std::vector <Task>& tasks)
-{
-  std::vector <std::string> identifiers;
-  for (auto task: tasks)
-    identifiers.push_back (task.identifier (true));
-
-  return join (", ", identifiers);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string taskDifferences (const Task& before, const Task& after)
-{
-  // Attributes are all there is, so figure the different attribute names
-  // between before and after.
-  std::vector <std::string> beforeAtts;
-  for (auto& att : before.data)
-    beforeAtts.push_back (att.first);
-
-  std::vector <std::string> afterAtts;
-  for (auto& att : after.data)
-    afterAtts.push_back (att.first);
-
-  std::vector <std::string> beforeOnly;
-  std::vector <std::string> afterOnly;
-  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
-
-  // Now start generating a description of the differences.
-  std::stringstream out;
-  for (auto& name : beforeOnly)
-    out << "  - "
-        << format ("{1} will be deleted.", Lexer::ucFirst (name))
-        << "\n";
-
-  for (auto& name : afterOnly)
-  {
-    if (name == "depends")
-    {
-      auto deps_after = after.getDependencyTasks ();
-
-      out << "  - "
-          << format ("Dependencies will be set to '{1}'.", taskIdentifiers (deps_after))
-          << "\n";
-    }
-    else
-      out << "  - "
-          << format ("{1} will be set to '{2}'.",
-                     Lexer::ucFirst (name),
-                     renderAttribute (name, after.get (name)))
-          << "\n";
-  }
-
-  for (auto& name : beforeAtts)
-  {
-    // Ignore UUID differences, and find values that changed, but are not also
-    // in the beforeOnly and afterOnly lists, which have been handled above..
-    if (name              != "uuid" &&
-        before.get (name) != after.get (name) &&
-        std::find (beforeOnly.begin (), beforeOnly.end (), name) == beforeOnly.end () &&
-        std::find (afterOnly.begin (),  afterOnly.end (),  name) == afterOnly.end ())
-    {
-      if (name == "depends")
-      {
-        auto deps_before = before.getDependencyTasks ();
-        std::string from = taskIdentifiers (deps_before);
-
-        auto deps_after = after.getDependencyTasks ();
-        std::string to = taskIdentifiers (deps_after);
-
-        out << "  - "
-            << format ("Dependencies will be changed from '{1}' to '{2}'.", from, to)
-            << "\n";
-      }
-      else
-        out << "  - "
-            << format ("{1} will be changed from '{2}' to '{3}'.",
-                       Lexer::ucFirst (name),
-                       renderAttribute (name, before.get (name)),
-                       renderAttribute (name, after.get (name)))
-            << "\n";
-    }
-  }
-
-  // Shouldn't just say nothing.
-  if (out.str ().length () == 0)
-    out << "  - No changes will be made.\n";
-
-  return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string taskInfoDifferences (
-  const Task& before,
-  const Task& after,
-  const std::string& dateformat,
-  long& last_timestamp,
-  const long current_timestamp)
-{
-  // Attributes are all there is, so figure the different attribute names
-  // between before and after.
-  std::vector <std::string> beforeAtts;
-  for (auto& att : before.data)
-    beforeAtts.push_back (att.first);
-
-  std::vector <std::string> afterAtts;
-  for (auto& att : after.data)
-    afterAtts.push_back (att.first);
-
-  std::vector <std::string> beforeOnly;
-  std::vector <std::string> afterOnly;
-  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
-
-  // Now start generating a description of the differences.
-  std::stringstream out;
-  for (auto& name : beforeOnly)
-  {
-    if (name == "depends")
-    {
-        out << format ("Dependencies '{1}' deleted.", taskIdentifiers (before.getDependencyTasks ()))
-            << "\n";
-    }
-    else if (name.substr (0, 11) == "annotation_")
-    {
-      out << format ("Annotation '{1}' deleted.\n", before.get (name));
-    }
-    else if (name == "start")
-    {
-      if (last_timestamp > 0)
-        out << format ("{1} deleted (duration: {2}).",
-                       Lexer::ucFirst (name),
-                       Duration (current_timestamp - last_timestamp).format ())
-            << "\n";
-      else
-        out << format ("{1} deleted.", Lexer::ucFirst (name))
-            << "\n";
-    }
-    else
-    {
-      out << format ("{1} deleted.\n", Lexer::ucFirst (name));
-    }
-  }
-
-  for (auto& name : afterOnly)
-  {
-    if (name == "depends")
-    {
-      out << format ("Dependencies set to '{1}'.", taskIdentifiers (after.getDependencyTasks ()))
-          << "\n";
-    }
-    else if (name.substr (0, 11) == "annotation_")
-    {
-      out << format ("Annotation of '{1}' added.\n", after.get (name));
-    }
-    else
-    {
-      if (name == "start")
-          last_timestamp = current_timestamp;
-
-      out << format ("{1} set to '{2}'.",
-                     Lexer::ucFirst (name),
-                     renderAttribute (name, after.get (name), dateformat))
-          << "\n";
-    }
-  }
-
-  for (auto& name : beforeAtts)
-    if (name              != "uuid" &&
-        name              != "modified" &&
-        before.get (name) != after.get (name) &&
-        before.get (name) != "" &&
-        after.get (name)  != "")
-    {
-      if (name == "depends")
-      {
-        auto from = taskIdentifiers (before.getDependencyTasks ());
-        auto to   = taskIdentifiers (after.getDependencyTasks ());
-
-        out << format ("Dependencies changed from '{1}' to '{2}'.\n", from, to);
-      }
-      else if (name.substr (0, 11) == "annotation_")
-      {
-        out << format ("Annotation changed to '{1}'.\n", after.get (name));
-      }
-      else
-        out << format ("{1} changed from '{2}' to '{3}'.",
-                       Lexer::ucFirst (name),
-                       renderAttribute (name, before.get (name), dateformat),
-                       renderAttribute (name, after.get (name), dateformat))
-            << "\n";
-    }
-
-  // Shouldn't just say nothing.
-  if (out.str ().length () == 0)
-    out << "No changes made.\n";
-
-  return out.str ();
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string renderAttribute (const std::string& name, const std::string& value, const std::string& format /* = "" */)
@@ -312,16 +113,17 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "ANNOTATED" ||
       tag == "BLOCKED"   ||
       tag == "BLOCKING"  ||
-      tag == "CHILD"     ||
+      tag == "CHILD"     ||   // Deprecated 2.6.0
       tag == "COMPLETED" ||
       tag == "DELETED"   ||
       tag == "DUE"       ||
       tag == "DUETODAY"  ||
+      tag == "INSTANCE"  ||
       tag == "LATEST"    ||
       tag == "MONTH"     ||
       tag == "ORPHAN"    ||
       tag == "OVERDUE"   ||
-      tag == "PARENT"    ||
+      tag == "PARENT"    ||   // Deprecated 2.6.0
       tag == "PENDING"   ||
       tag == "PRIORITY"  ||
       tag == "PROJECT"   ||
@@ -329,6 +131,7 @@ void feedback_reserved_tags (const std::string& tag)
       tag == "READY"     ||
       tag == "SCHEDULED" ||
       tag == "TAGGED"    ||
+      tag == "TEMPLATE"  ||
       tag == "TODAY"     ||
       tag == "TOMORROW"  ||
       tag == "UDA"       ||
@@ -350,7 +153,6 @@ void feedback_special_tags (const Task& task, const std::string& tag)
   if (Context::getContext ().verbose ("special"))
   {
     std::string msg;
-    std::string explanation;
          if (tag == "nocolor") msg = "The 'nocolor' special tag will disable color rules for this task.";
     else if (tag == "nonag")   msg = "The 'nonag' special tag will prevent nagging when this task is modified.";
     else if (tag == "nocal")   msg = "The 'nocal' special tag will keep this task off the 'calendar' report.";
@@ -376,12 +178,12 @@ void feedback_unblocked (const Task& task)
   if (Context::getContext ().verbose ("affected"))
   {
     // Get a list of tasks that depended on this task.
-    auto blocked = dependencyGetBlocked (task);
+    auto blocked = task.getBlockedTasks ();
 
     // Scan all the tasks that were blocked by this task
     for (auto& i : blocked)
     {
-      auto blocking = dependencyGetBlocking (i);
+      auto blocking = i.getDependencyTasks ();
       if (blocking.size () == 0)
       {
         if (i.id)
@@ -408,12 +210,8 @@ void feedback_backlog ()
   if (Context::getContext ().config.get ("taskd.server") != "" &&
       Context::getContext ().verbose ("sync"))
   {
-    int count = 0;
     std::vector <std::string> lines = Context::getContext ().tdb2.backlog.get_lines ();
-    for (auto& line : lines)
-      if ((line)[0] == '{')
-        ++count;
-
+    int count = std::count_if(lines.begin(), lines.end(), [](const auto& line){ return line.front() == '{'; });
     if (count)
       Context::getContext ().footnote (format (count > 1 ?  "There are {1} local changes.  Sync required."
                                                          : "There is {1} local change.  Sync required.", count));

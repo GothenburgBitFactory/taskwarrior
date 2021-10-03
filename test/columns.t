@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -390,8 +390,8 @@ class TestDateFormats(TestCase):
     def test_date_format_countdown(self):
         """Verify due.countdown formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.countdown")
-        self.assertRegex(out, r'1\s+\d+\S+')
-        self.assertRegex(out, r'2\s+')
+        self.assertRegex(out, r'1\s+')
+        self.assertRegex(out, r'2\s+\d+\S+')
 
     def test_date_format_unrecognized(self):
         """Verify due.donkey formatting fails"""

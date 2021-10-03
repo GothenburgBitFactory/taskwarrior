@@ -55,6 +55,7 @@ More filter examples:
   task                                      <command> <mods>
   task 28                                   <command> <mods>
   task +weekend                             <command> <mods>
+  task +bills due.by:eom                    <command> <mods>
   task project:Home due.before:today        <command> <mods>
   task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <mods>
 
@@ -75,6 +76,10 @@ UUID numbers or ID ranges):
   task 1 2-5 19                                 modify pri:H
   task 4-7 ebeeab00-ccf8-464b-8b58-f7f2d606edfb info
 
+Note that it may be necessary to properly escape special characters as well as
+quotes in order to avoid their special meanings in the shell. See also the
+section 'SPECIFYING DESCRIPTIONS' for more information.
+
 .SH MODIFICATIONS
 
 The <mods> consist of zero or more changes to apply to the selected tasks, such
@@ -93,7 +98,10 @@ write commands, miscellaneous commands and script helper commands.  Read
 commands do not allow modification of tasks.  Write commands can alter almost
 any aspect of a task.  Script helper commands are provided to help you write
 add-on scripts, for example, shell completion (only minimal output is
-generated, as with verbose=nothing).
+generated, as with verbose=nothing). Those commands which are explicitly affected
+by the
+.I context
+are denoted as such.
 
 .SH READ SUBCOMMANDS
 
@@ -130,16 +138,16 @@ Shows all tasks matching the filter, that block other tasks.
 
 .TP
 .B task <filter> burndown.daily
-Shows a graphical burndown chart, by day.
+Shows a graphical burndown chart, by day. Is affected by the context.
 
 .TP
 .B task <filter> burndown.weekly
 Shows a graphical burndown chart, by week.  Note that 'burndown' is an alias to
-the 'burndown.weekly' report.
+the 'burndown.weekly' report. Is affected by the context.
 
 .TP
 .B task <filter> burndown.monthly
-Shows a graphical burndown chart, by month.
+Shows a graphical burndown chart, by month. Is affected by the context.
 
 .TP
 .B task calendar [due|<month> <year>|<year>] [y]
@@ -171,7 +179,7 @@ Shows all tasks matching the filter that are completed.
 
 .TP
 .B task <filter> count
-Displays only a count of tasks matching the filter.
+Displays only a count of tasks matching the filter. Is affected by the context.
 
 .TP
 .B task <filter> export
@@ -214,20 +222,20 @@ Shows the long usage text.
 
 .TP
 .B task <filter> history.annual
-Shows a report of task history by year.
+Shows a report of task history by year. Is affected by the context.
 
 .TP
 .B task <filter> history.monthly
 Shows a report of task history by month.  Note that 'history' is
-an alias to 'history.monthly'.
+an alias to 'history.monthly'. Is affected by the context.
 
 .TP
 .B task <filter> history.weekly
-Shows a report of task history by week.
+Shows a report of task history by week. Is affected by the context.
 
 .TP
 .B task <filter> history.daily
-Shows a report of task history by day.
+Shows a report of task history by day. Is affected by the context.
 
 .TP
 .B task <filter> ids
@@ -296,7 +304,7 @@ value.
 .B task <filter> ready
 Shows a page of the most urgent ready tasks, sorted by urgency with started
 tasks first. A ready task is one that is either unscheduled, or has a scheduled
-date that is past and has no wait date.
+date that is past and is not waiting.
 
 .TP
 .B task <filter> oldest
@@ -309,7 +317,7 @@ Shows all incomplete tasks matching the filter that are beyond their due date.
 .TP
 .B task <filter> projects
 Lists all project names that are currently used by pending tasks, and the
-number of tasks for each.
+number of tasks for each. Is affected by the context.
 
 .TP
 .B task <filter> recurring
@@ -328,7 +336,8 @@ Shows all waiting tasks matching the filter.
 
 .TP
 .B task add <mods>
-Adds a new pending task to the task list.
+Adds a new pending task to the task list. It is affected by the currently set
+context.
 
 .TP
 .B task <filter> annotate <mods>
@@ -340,28 +349,28 @@ Appends description text to an existing task.
 
 .TP
 .B task <filter> delete <mods>
-Deletes the specified task from task list.
+Deletes the specified task from task list. Is affected by the context.
 
 .TP
 .B task <filter> denotate <mods>
 Deletes an annotation for the specified task. If the provided description
 matches an annotation exactly, the corresponding annotation is deleted. If the
 provided description matches annotations partly, the first partly matched
-annotation is deleted.
+annotation is deleted. Is affected by the context.
 
 .TP
 .B task <filter> done <mods>
-Marks the specified task as done.
+Marks the specified task as done. Is affected by the context.
 
 .TP
 .B task <filter> duplicate <mods>
-Duplicates the specified task and allows modifications.
+Duplicates the specified task and allows modifications. Is affected by the context.
 
 .TP
 .B task <filter> edit
 Launches a text editor to let you modify all aspects of a task directly.
 In general, this is not the recommended method of modifying tasks, but is
-provided for exceptional circumstances.  Use carefully.
+provided for exceptional circumstances.  Use carefully. Is affected by the context.
 
 .TP
 .B task import [<file> ...]
@@ -381,7 +390,8 @@ few example scripts, such as:
 
 .TP
 .B task log <mods>
-Adds a new task that is already completed, to the task list.
+Adds a new task that is already completed, to the task list. It is affected by
+the currently set context.
 
 .TP
 .B task <filter> modify <mods>
@@ -389,25 +399,26 @@ Modifies the existing task with provided information.
 
 .TP
 .B task <filter> prepend <mods>
-Prepends description text to an existing task.
+Prepends description text to an existing task. Is affected by the context.
 
 .TP
 .B task <filter> purge
 Permanently removes the specified tasks from the data files. Only
-tasks that are alredy deleted can be purged. This command has a
+tasks that are already deleted can be purged. This command has a
 local-only effect and changes introduced by it are not synced.
+Is affected by the context.
 
 Warning: causes permanent, non-revertible loss of data.
 
 .TP
 .B task <filter> start <mods>
-Marks the specified tasks as started.
+Marks the specified tasks as started. Is affected by the context.
 
 .TP
 .B task <filter> stop <mods>
 Removes the
 .I start
-time from the specified task.
+time from the specified task. Is affected by the context.
 
 .SH MISCELLANEOUS SUBCOMMANDS
 
@@ -511,6 +522,12 @@ conjunction with aliases and extensions can provide seamless integration.
 Displays the Taskwarrior logo.
 
 .TP
+.B task news
+Guides the user through important release notes anytime a new version of
+Taskwarrior is installed. It provides personalized feedback, deprecation
+warnings and usage advice, where applicable.
+
+.TP
 .B task reports
 Lists all supported reports.  This includes the built-in reports, and any custom
 reports you have defined.
@@ -523,11 +540,11 @@ displayed.
 
 .TP
 .B task <filter> stats
-Shows statistics of the tasks defined by the filter.
+Shows statistics of the tasks defined by the filter. Is affected by the context.
 
 .TP
 .B task <filter> summary
-Shows a report of aggregated task status by project.
+Shows a report of aggregated task status by project. Is affected by the context.
 
 .TP
 .B task sync [init]
@@ -553,7 +570,7 @@ This is a workaround to avoid a recurrence bug that duplicates recurring tasks.
 Show a list of all tags used. Any special tags used are highlighted. Note that
 virtual tags are not listed - they don't really exist, and are just a convenient
 notation for other task metadata. It is an error to attempt to add or remove a
-virtual tag.
+virtual tag. Is affected by the context.
 
 .TP
 .B task timesheet [<weeks>]
@@ -718,15 +735,16 @@ are:
     ANNOTATED    Matches if the task has annotations
     BLOCKED      Matches if the task is blocked
     BLOCKING     Matches if the task is blocking
-    CHILD        Matches if the task has a parent
+    CHILD        Matches if the task has a parent (deprecated in 2.6.0)
     COMPLETED    Matches if the task has completed status
     DELETED      Matches if the task has deleted status
     DUE          Matches if the task is due
+    INSTANCE     Matches if the task is a recurrent instance
     LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
     ORPHAN       Matches if the task has any orphaned UDA values
     OVERDUE      Matches if the task is overdue
-    PARENT       Matches if the task is a parent
+    PARENT       Matches if the task is a parent (deprecated in 2.6.0)
     PENDING      Matches if the task has pending status
     PRIORITY     Matches if the task has a priority
     PROJECT      Matches if the task has a project
@@ -734,6 +752,7 @@ are:
     READY        Matches if the task is actionable
     SCHEDULED    Matches if the task is scheduled
     TAGGED       Matches if the task has tags
+    TEMPLATE     Matches if the task is a recurrence template
     TODAY        Matches if the task is due today
     TOMORROW     Matches if the task is due sometime tomorrow
     UDA          Matches if the task has any UDA values
@@ -783,9 +802,10 @@ to 25 lines.
 
 .TP
 .B wait:<wait-date>
-When a task is given a wait date, it is hidden from most reports by changing
-its status to 'waiting'. When that date is passed, the status is changed back
-to 'pending', and the task becomes visible.
+When a task is given a wait date, it is hidden from most built-in reports, which
+exclude +WAITING.  When the date is in the past, the task is not considered +WAITING,
+and again becomes visible.  Note that, for compatibilty, such tasks are shown as
+having status "waiting", but this will change in a future release.
 
 .TP
 .B depends:<id1,id2 ...>
@@ -806,6 +826,8 @@ Attribute modifiers improve filters.  Supported modifiers are:
 .B  before     (synonyms under, below)
 .br
 .B  after      (synonyms over, above)
+.br
+.B  by
 .br
 .B  none
 .br
@@ -853,6 +875,24 @@ The
 modifier is the inverse of the
 .I before
 modifier.
+
+The
+.I by
+modifier is the same as 'before', except it also includes the moment in
+question.  For example:
+
+    task add test due:eoy
+
+will be found when using the inclusive filter 'by':
+
+    task due.by:eoy
+
+but not when the non-inclusive filter 'before' is used:
+
+    task due.before:eoy
+
+this applies equally to other named dates such as 'eom', 'eod', etc; the
+modifier compares using '<=' rather than '<' like 'before' does.
 
 The
 .I none
@@ -1074,7 +1114,7 @@ task ... wait:later
 .br
 task ... wait:someday
 
-This sets the wait date to 1/18/2038.
+This sets the wait date to 12/30/9999.
 
 .TP
 Next occurring weekday
@@ -1143,9 +1183,31 @@ Every two years.
 .RE
 
 .SH CONTEXT
-Context is a user-defined filter, which is automatically applied to all commands
-that filter the task list. In particular, any report command will have its
-result affected by the current active context.
+Context is a user-defined query, which is automatically applied to all commands
+that filter the task list and to commands that create new tasks (add, log). For
+example, any report command will have its result affected by the current
+active context.  Here is a list of the commands that are affected:
+.IP
+    add
+    burndown
+    count
+    delete
+    denotate
+    done
+    duplicate
+    edit
+    history
+    log
+    prepend
+    projects
+    purge
+    start
+    stats
+    stop
+    summary
+    tags
+
+All other commands are NOT affected by the context.
 
     $ task list
     ID Age Project  Description        Urg
@@ -1160,6 +1222,21 @@ result affected by the current active context.
     2  1d  Home     Clean the dishes   1.14
     Context 'home' set. Use 'task context none' to remove.
 
+Task list got automatically filtered for project:Home.
+
+    $ task add Vaccuum the carpet
+    Created task 3.
+    Context 'home' set. Use 'task context none' to remove.
+
+    $ task list
+    ID Age Project  Description         Urg
+    2  1d  Home     Clean the dishes    1.14
+    3  5s  Home     Vaccuum the carpet  1.14
+    Context 'home' set. Use 'task context none' to remove.
+
+Note that the newly added task "Vaccuum the carpet" has "project:Home" set
+automatically.
+
 As seen in the example above, context is applied by specifying its name to the
 "context" command. To change the currently applied context, just pass the
 new context's name to the 'context' command.
@@ -1170,37 +1247,92 @@ To unset any context, use the 'none' subcommand.
     Context unset.
 
     $ task list
-    ID Age Project  Description        Urg
-    1  2d  Sport    Run 5 miles        1.42
-    2  1d  Home     Clean the dishes   1.14
+    ID Age Project  Description         Urg
+    1  2d  Sport    Run 5 miles         1.42
+    2  1d  Home     Clean the dishes    1.14
+    3  7s  Home     Vaccuum the carpet  1.14
 
 Context can be defined using the 'define' subcommand, specifying both the name
 of the new context, and it's assigned filter.
 
     $ task context define home project:Home
-    Are you sure you want to add 'context.home' with a value of 'project:Home'? (yes/no) yes
+    Are you sure you want to add 'context.home.read' with a value of 'project:Home'? (yes/no) yes
+    Are you sure you want to add 'context.home.write' with a value of 'project:Home'? (yes/no) yes
     Context 'home' successfully defined.
+
+Note that you were separately prompted to set the 'read' and 'write' context.
+This allows you to specify contexts that only work for reporting commands or
+only for commands that create tasks.
 
 To remove the definition, use the 'delete' subcommand.
 
     $ task context delete home
-    Are you sure you want to remove 'context.home'? (yes/no) yes
-    Context 'home' successfully undefined.
+    Are you sure you want to remove 'context.home.read'? (yes/no) yes
+    Are you sure you want to remove 'context.home.write'? (yes/no) yes
+    Context 'home' deleted.
 
 To check what is the currently active context, use the 'show' subcommand.
 
     $ task context show
-    Context 'home' with filter 'project:Home' is currently applied.
+    Context 'home' with
+
+    * read filter: '+home'
+    * write filter: '+home'
+
+    is currently applied.
 
 Contexts can store arbitrarily complex filters.
 
     $ task context define family project:Family or +paul or +nancy
-    Are you sure you want to add 'context.home' with a value of 'project:Family or +paul or +nancy'? (yes/no) yes
+    Are you sure you want to add 'context.family.read' with a value of 'project:Family or +paul or +nancy'? (yes/no) yes
+    Are you sure you want to add 'context.family.write' with a value of 'project:Family or +paul or +nancy'? (yes/no) no
     Context 'family' successfully defined.
 
 Contexts are permanent, and the currently set context name is stored in the
 "context" configuration variable. The context definition is stored in the
-"context.<name>" configuration variable.
+"context.<name>.read" configuration variable (for reporting commands) and
+"context.<name>.write" configuration variable (for task additions, i.e. task
+add/log).
+
+Note that in the example above, the user decided not to define the complex
+filter as writeable context. The reason for this decision is that the complex
+filter in the example does not directly translate to a modification. In fact,
+if such a context is used as a writeable context, the following happens:
+
+    $ task add Call Paul
+    Created task 4.
+    Context 'family' set. Use 'task context none' to remove.
+
+    $ task 4 list
+    ID Age  Project Tags       Description      Urg
+     4 9min Family  nancy paul or or Call Paul    0
+
+
+There is no clear mapping between the complex filter used and the modifications
+(should only the project be set? only the tags? both?). Additionally note the 'or'
+operators being present in the description. Taskwarrior does not try to guess
+the user intention here, and instead, the user is expected to set the
+"context.<name>.write" variable to make their intention explicit, for example:
+
+    $ task config context.family.write project:Family
+    Are you sure you want to change the value of 'context.family.write' from 'project:Family or +paul or +nancy' to 'project:Family'? (yes/no) yes
+    Config file /home/tbabej/.config/task/taskrc modified.
+
+    $ task context
+    Name   Type  Definition                        Active
+    family read  project:Family or +paul or +nancy yes
+           write project:Family                    yes
+    home   read  +home                             no
+           write +home                             no
+
+Note how read and write contexts differ for context "family", while for context
+"home" they stay the same.
+
+In addition, every configuration parameter can be overridden for the current
+context, by specifying context.<name>.rc.<parameter>. For example, if the default
+command for the family context should be displaying the family_report:
+
+    $ task config context.family.rc.default.command family_report
 
 .SH COMMAND ABBREVIATION
 All Taskwarrior commands may be abbreviated as long as a unique prefix is used,
@@ -1278,12 +1410,15 @@ Taskwarrior stores its configuration in a file in the user's home directory:
 
 .TP
 .B task rc:<path-to-alternate-file> ...
-Specifies an alternate configuration file.
+Specifies an alternate configuration file with highest priority.
 
 .TP
-.B TASKRC=/tmp/.taskrc task ..
-The environment variable overrides the default and the command line
-specification of the .taskrc file.
+.B TASKRC=<path-to-alternate-file> task ..
+The environment variable specifies an alternate configuration file to use.
+
+.TP
+.B XDG_CONFIG_HOME=<path-to-alternate-config-home> task ..
+The environment variable specifies an alternate configuration file to use.
 
 .TP
 .B task rc.<name>:<value> ...
@@ -1292,8 +1427,8 @@ Specifies individual configuration file overrides.
 
 .TP
 .B TASKDATA=/tmp/.task task ...
-The environment variable overrides the default, the command line, and
-the 'data.location' configuration setting of the task data directory.
+The environment variable overrides the default, and the 'data.location'
+configuration setting of the task data directory.
 
 .SH MORE EXAMPLES
 
@@ -1311,7 +1446,10 @@ this man page.
 .TP
 ~/.taskrc
 User configuration file - see also taskrc(5).  Note that this can be
-overridden on the command line or by the TASKRC environment variable.
+overridden on the command line or by the TASKRC environment variable. Also, if
+.I ~/.taskrc
+doesn't exist and XDG_CONFIG_HOME environment variable is defined, taskwarrior
+will check if $XDG_CONFIG_HOME/task/taskrc exists and attempt to read it
 
 .TP
 ~/.task
@@ -1332,7 +1470,7 @@ The file that contains the completed ("done") tasks.
 The file that contains information needed by the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2021 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2021 T. Babej, P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 https://www.opensource.org/licenses/mit-license.php for more information.

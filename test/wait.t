@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -62,8 +62,6 @@ class TestWait(TestCase):
         self.assertIn("visible", out)
         self.assertIn("hidden", out)
 
-        self.assertIn("Un-waiting task 2 'hidden'", err)
-
 
 class TestBug434(TestCase):
     # Bug #434: Task should not prevent users from marking as done tasks with
@@ -98,6 +96,32 @@ class Test1486(TestCase):
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
         self.assertIn('waited', out)
         self.assertNotIn('regular', out)
+
+
+class TestFeature2563(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_done_unwait(self):
+        """2563: Done should NOT remove the wait attribute"""
+        self.t("add foo wait:tomorrow")
+        code, out, err = self.t("export")
+        self.assertIn('"wait":', out)
+
+        self.t("1 done")
+        code, out, err = self.t("export")
+        self.assertIn('"wait":', out)
+
+    def test_delete_unwait(self):
+        """2563: Delete should NOT remove the wait attribute"""
+        self.t("add bar wait:tomorrow")
+        code, out, err = self.t("export")
+        self.assertIn('"wait":', out)
+
+        self.t("1 delete", input="y\n")
+        code, out, err = self.t("export")
+        self.assertIn('"wait":', out)
 
 
 if __name__ == "__main__":

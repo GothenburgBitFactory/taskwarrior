@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -102,6 +102,10 @@ class TestInfoCommand(TestCase):
         self.assertIn("UDA priority.H", out)
         self.assertIn("U_ONE", out)
         self.assertIn("U_TWO", out)
+
+        # TW-#2060: Make sure UDA attributes are formatted
+        self.assertRegex(out, r"U_ONE\s+\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"U_TWO\s+P1D")
 
 class TestBug425(TestCase):
     def setUp(self):

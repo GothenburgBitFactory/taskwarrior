@@ -1,7 +1,7 @@
 ###############################################################################
 # taskwarrior - a command line task list manager.
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -160,6 +160,10 @@ class TAPTestResult(unittest.result.TestResult):
                 )
             elif status == "EXPECTED_FAILURE":
                 self.stream.writeln("{0} {1} - {2}: {3} # TODO".format(
+                    color("not ok", "yellow"), self.testsRun, filename, desc)
+                )
+            elif status == "UNEXPECTED_SUCCESS":
+                self.stream.writeln("{0} {1} - {2}: {3} # FIXED".format(
                     color("not ok", "yellow"), self.testsRun, filename, desc)
                 )
             else:

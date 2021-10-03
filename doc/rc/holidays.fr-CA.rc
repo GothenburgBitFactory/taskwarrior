@@ -1,0 +1,109 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# https://holidata.net/fr-CA/2021.json
+# https://holidata.net/fr-CA/2022.json
+#
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# https://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.fr-CA1.name=Jour de l'An
+holiday.fr-CA1.date=20210101
+holiday.fr-CA2.name=Fête de la Famille
+holiday.fr-CA2.date=20210215
+holiday.fr-CA3.name=Journée Louis Riel
+holiday.fr-CA3.date=20210215
+holiday.fr-CA4.name=Fête des Insulaires
+holiday.fr-CA4.date=20210215
+holiday.fr-CA5.name=Vendredi Saint
+holiday.fr-CA5.date=20210402
+holiday.fr-CA6.name=Lundi de Pâques
+holiday.fr-CA6.date=20210405
+holiday.fr-CA7.name=Fête de la Reine Victoria
+holiday.fr-CA7.date=20210524
+holiday.fr-CA8.name=Journée Nationale des Patriotes
+holiday.fr-CA8.date=20210524
+holiday.fr-CA9.name=Fête Nationale
+holiday.fr-CA9.date=20210624
+holiday.fr-CA10.name=Fête du Canada
+holiday.fr-CA10.date=20210701
+holiday.fr-CA11.name=Premier lundi d'août
+holiday.fr-CA11.date=20210802
+holiday.fr-CA12.name=Fête du Patrimoine
+holiday.fr-CA12.date=20210802
+holiday.fr-CA13.name=Fête de la Saskatchewan
+holiday.fr-CA13.date=20210802
+holiday.fr-CA14.name=Jour de la Fondation
+holiday.fr-CA14.date=20210802
+holiday.fr-CA15.name=Jour du Nouveau-Brunswick
+holiday.fr-CA15.date=20210802
+holiday.fr-CA16.name=Fête du Travail
+holiday.fr-CA16.date=20210906
+holiday.fr-CA17.name=Jour de l'Action de grâce
+holiday.fr-CA17.date=20211011
+holiday.fr-CA18.name=Jour du Souvenir
+holiday.fr-CA18.date=20211111
+holiday.fr-CA19.name=Jour de Noël
+holiday.fr-CA19.date=20211225
+holiday.fr-CA20.name=Lendemain de Noël
+holiday.fr-CA20.date=20211226
+holiday.fr-CA21.name=Jour de l'An
+holiday.fr-CA21.date=20220101
+holiday.fr-CA22.name=Fête de la Famille
+holiday.fr-CA22.date=20220221
+holiday.fr-CA23.name=Journée Louis Riel
+holiday.fr-CA23.date=20220221
+holiday.fr-CA24.name=Fête des Insulaires
+holiday.fr-CA24.date=20220221
+holiday.fr-CA25.name=Vendredi Saint
+holiday.fr-CA25.date=20220415
+holiday.fr-CA26.name=Lundi de Pâques
+holiday.fr-CA26.date=20220418
+holiday.fr-CA27.name=Fête de la Reine Victoria
+holiday.fr-CA27.date=20220523
+holiday.fr-CA28.name=Journée Nationale des Patriotes
+holiday.fr-CA28.date=20220523
+holiday.fr-CA29.name=Fête Nationale
+holiday.fr-CA29.date=20220624
+holiday.fr-CA30.name=Fête du Canada
+holiday.fr-CA30.date=20220701
+holiday.fr-CA31.name=Premier lundi d'août
+holiday.fr-CA31.date=20220801
+holiday.fr-CA32.name=Fête du Patrimoine
+holiday.fr-CA32.date=20220801
+holiday.fr-CA33.name=Fête de la Saskatchewan
+holiday.fr-CA33.date=20220801
+holiday.fr-CA34.name=Jour de la Fondation
+holiday.fr-CA34.date=20220801
+holiday.fr-CA35.name=Jour du Nouveau-Brunswick
+holiday.fr-CA35.date=20220801
+holiday.fr-CA36.name=Fête du Travail
+holiday.fr-CA36.date=20220905
+holiday.fr-CA37.name=Jour de l'Action de grâce
+holiday.fr-CA37.date=20221010
+holiday.fr-CA38.name=Jour du Souvenir
+holiday.fr-CA38.date=20221111
+holiday.fr-CA39.name=Jour de Noël
+holiday.fr-CA39.date=20221225
+holiday.fr-CA40.name=Lendemain de Noël
+holiday.fr-CA40.date=20221226

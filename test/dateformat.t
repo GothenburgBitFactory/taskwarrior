@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -107,6 +107,43 @@ class TestBug1620(TestCase):
         code, out, err = self.t ('long')
         self.assertIn("20150601-1415", out)
 
+class TestCapitalizedDays(TestCase):
+    """Make sure capitalized names such as 'Friday' work.
+
+    Requested in:
+    * https://github.com/GothenburgBitFactory/taskwarrior/issues/2160
+    * https://github.com/GothenburgBitFactory/taskwarrior/issues/2364
+
+    Implemented in libshared:
+    * https://github.com/GothenburgBitFactory/libshared/pull/33
+    """
+
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_dateformat_capitalized(self):
+        """Verify upper case days and months work"""
+        # Lower case:
+        code, out, err = self.t('add sometask due:mon')
+        code, out, err = self.t('add sometask due:monday')
+        code, out, err = self.t('add sometask due:jan')
+        code, out, err = self.t('add sometask due:january')
+        # Upper case days of the week
+        code, out, err = self.t('add sometask due:Tue')
+        code, out, err = self.t('add sometask due:Tuesday')
+        code, out, err = self.t('add sometask due:Thu')
+        code, out, err = self.t('add sometask due:Thursday')
+        # Upper case months:
+        code, out, err = self.t('add sometask due:Jan')
+        code, out, err = self.t('add sometask due:January')
+        code, out, err = self.t('add sometask due:Jun')
+        code, out, err = self.t('add sometask due:June')
+        code, out, err = self.t('add sometask due:May')
+
+        # Incorrect:
+        code, out, err = self.t.runError('add sometask due:Yo')
+        code, out, err = self.t.runError('add sometask due:TU')
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

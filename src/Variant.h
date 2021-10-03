@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2013 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -99,7 +99,7 @@ public:
   bool trivial () const;
 
   bool               get_bool () const;
-  int                get_integer () const;
+  long long          get_integer () const;
   double             get_real () const;
   const std::string& get_string () const;
   time_t             get_date () const;
@@ -108,7 +108,7 @@ public:
 private:
   enum type   _type     {type_boolean};
   bool        _bool     {false};
-  int         _integer  {0};
+  long long   _integer  {0};
   double      _real     {0.0};
   std::string _string   {""};
   time_t      _date     {0};

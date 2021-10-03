@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,11 @@ class TestDiagnostics(TestCase):
         self.assertRegex(out, "libgnutls:\s+\d+\.\d+\.\d+")
         self.assertIn("edlin", out)
         self.assertIn("strict", out)
+
+    def test_64bit_time_t(self):
+        """Test that time_t has size of 64 bits"""
+        code, out, err = self.t.diag()
+        self.assertIn("+time_t64", out)
 
 
 if __name__ == "__main__":

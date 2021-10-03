@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -71,8 +71,7 @@ void CmdPurge::handleDeps (Task& task)
    for (auto& blockedConst: Context::getContext ().tdb2.all_tasks ())
    {
      Task& blocked = const_cast<Task&>(blockedConst);
-     if (blocked.has ("depends") &&
-         blocked.get ("depends").find (uuid) != std::string::npos)
+     if (blocked.hasDependency (uuid))
      {
          blocked.removeDependency (uuid);
          Context::getContext ().tdb2.modify (blocked);
@@ -135,6 +134,7 @@ int CmdPurge::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
+  bool matched_deleted = false;
 
   Filter filter;
   std::vector <Task> filtered;
@@ -156,6 +156,9 @@ int CmdPurge::execute (std::string&)
     // mark tasks as deleted before purging.
     if (task.getStatus () == Task::deleted)
     {
+      // Mark that at least one deleted task matched the filter
+      matched_deleted = true;
+
       std::string question;
       question = format ("Permanently remove task {1} '{2}'?",
                          task.identifier (true),
@@ -165,6 +168,9 @@ int CmdPurge::execute (std::string&)
         purgeTask (task, count);
     }
   }
+
+  if (filtered.size () > 0 and ! matched_deleted)
+    Context::getContext ().footnote ("No deleted tasks specified. Maybe you forgot to delete tasks first?");
 
   feedback_affected (count == 1 ? "Purged {1} task." : "Purged {1} tasks.", count);
   return rc;

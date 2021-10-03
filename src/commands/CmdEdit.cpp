@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,8 @@
 #define STRING_EDIT_UNTIL_MOD        "Until date modified."
 #define STRING_EDIT_WAIT_MOD         "Wait date modified."
 
+const std::string CmdEdit::ANNOTATION_EDIT_MARKER = "\n                     ";
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdEdit::CmdEdit ()
 {
@@ -74,6 +76,7 @@ CmdEdit::CmdEdit ()
 int CmdEdit::execute (std::string&)
 {
   // Filter the tasks.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -84,6 +87,14 @@ int CmdEdit::execute (std::string&)
     Context::getContext ().footnote ("No matches.");
     return 1;
   }
+
+  unsigned int bulk = Context::getContext ().config.getInteger ("bulk");
+
+  // If we are editing more than "bulk" tasks, ask for confirmation.
+  // Bulk = 0 denotes infinite bulk.
+  if ((filtered.size () > bulk) && (bulk != 0))
+    if (! confirm (format ("Do you wish to manually edit {1} tasks?", filtered.size ())))
+      return 2;
 
   // Find number of matching tasks.
   for (auto& task : filtered)
@@ -245,13 +256,14 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   if (verbose)
     before << "# Annotations look like this: <date> -- <text> and there can be any number of them.\n"
               "# The ' -- ' separator between the date and text field should not be removed.\n"
+              "# Multiline annotations need to be indented up to <date> (" << ANNOTATION_EDIT_MARKER.length () - 1 << " spaces).\n"
               "# A \"blank slot\" for adding an annotation follows for your convenience.\n";
 
   for (auto& anno : task.getAnnotations ())
   {
     Datetime dt (strtol (anno.first.substr (11).c_str (), nullptr, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
-           << " -- "                  << json::encode (anno.second) << '\n';
+           << " -- "                  << str_replace (anno.second, "\n", ANNOTATION_EDIT_MARKER) << '\n';
   }
 
   Datetime now;
@@ -354,7 +366,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   // tags
   value = findValue (after, "\n  Tags:");
   task.remove ("tags");
-  task.addTags (split (value, ' '));
+  task.setTags (split (value, ' '));
 
   // description.
   value = findMultilineValue (after, "\n  Description:", "\n  Created:");
@@ -609,10 +621,14 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     found += 14;  // Length of "\n  Annotation:".
 
-    auto eol = after.find ('\n', found + 1);
+    auto eol = found;
+    while ((eol = after.find ('\n', ++eol)) != std::string::npos)
+      if (after.substr (eol, ANNOTATION_EDIT_MARKER.length ()) != ANNOTATION_EDIT_MARKER)
+        break;
+
     if (eol != std::string::npos)
     {
-      auto value = Lexer::trim (after.substr (found, eol - found), "\t ");
+      auto value = Lexer::trim (str_replace (after.substr (found, eol - found), ANNOTATION_EDIT_MARKER, "\n"), "\t ");
       auto gap = value.find (" -- ");
       if (gap != std::string::npos)
       {
@@ -625,7 +641,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         // if there is no corresponding id, then a new unique date is created).
         Datetime when (value.substr (0, gap), dateformat);
 
-        // If the map already contains a annotation for a given timestamp
+        // If the map already contains an annotation for a given timestamp
         // we need to increment until we find an unused key
         int timestamp = (int) when.toEpoch ();
 
@@ -640,7 +656,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         while (annotations.find (name.str ()) != annotations.end ());
 
         auto text = Lexer::trim (value.substr (gap + 4), "\t ");
-        annotations.insert (std::make_pair (name.str (), json::decode (text)));
+        annotations.emplace (name.str (), text);
       }
     }
   }
@@ -651,7 +667,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   value = findValue (after, "\n  Dependencies:");
   auto dependencies = split (value, ',');
 
-  task.remove ("depends");
+  for (auto& dep : task.getDependencyUUIDs ())
+    task.removeDependency (dep);
   for (auto& dep : dependencies)
   {
     if (dep.length () >= 7)
@@ -787,6 +804,7 @@ ARE_THESE_REALLY_HARMFUL:
     std::cout << format ("Editing failed with exit code {1}.\n", exitcode);
     if (-1 == exitcode)
       std::cout << std::strerror (captured_errno) << '\n';
+    File::remove (file.str ());
     return CmdEdit::editResult::error;
   }
 
@@ -817,12 +835,16 @@ ARE_THESE_REALLY_HARMFUL:
     {
       std::cerr << "Error: " << problem << '\n';
 
-      // Preserve the edits.
-      before = after;
-      File::write (file.str (), before);
+      File::remove (file.str());
 
       if (confirm ("Taskwarrior couldn't handle your edits.  Would you like to try again?"))
+      {
+        // Preserve the edits.
+        before = after;
+        File::write (file.str (), before);
+
         goto ARE_THESE_REALLY_HARMFUL;
+      }
     }
     else
       changes = true;

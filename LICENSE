@@ -1,6 +1,8 @@
-Taskwarrior - a command line task list manager.
+The MIT License
 
-Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+https://www.opensource.org/licenses/mit-license.php
+
+Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,4 +22,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-https://www.opensource.org/licenses/mit-license.php

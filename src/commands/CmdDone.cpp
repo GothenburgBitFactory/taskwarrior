@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,11 @@ int CmdDone::execute (std::string&)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  auto nagged = false;
+  if(filtered.size() > 1) {
+    feedback_affected("This command will alter {1} tasks.", filtered.size());
+  }
+
+  std::vector <Task> modified;
   for (auto& task : filtered)
   {
     Task before (task);
@@ -94,18 +98,19 @@ int CmdDone::execute (std::string&)
           task.addAnnotation (Context::getContext ().config.get ("journal.time.stop.annotation"));
       }
 
-      if (permission (taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (before.diff (task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
         Context::getContext ().tdb2.modify (task);
         ++count;
         feedback_affected ("Completed task {1} '{2}'.", task);
         feedback_unblocked (task);
-        if (!nagged)
-          nagged = nag (task);
         dependencyChainOnComplete (task);
         if (Context::getContext ().verbose ("project"))
           projectChanges[task.get ("project")] = onProjectChange (task);
+
+        // Save unmodified task for potential nagging later
+        modified.push_back(before);
       }
       else
       {
@@ -124,7 +129,9 @@ int CmdDone::execute (std::string&)
       rc = 1;
     }
   }
-
+  
+  nag (modified);
+  
   // Now list the project changes.
   for (const auto& change : projectChanges)
     if (change.first != "")

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -107,7 +107,7 @@ int CmdImport::import (const std::string& input)
       if (root->type () == json::j_object)
       {
         // For each object element...
-        json::object* root_obj = (json::object*)root;
+        auto root_obj = (json::object*)root;
         importSingleTask (root_obj);
         ++count;
       }
@@ -116,13 +116,13 @@ int CmdImport::import (const std::string& input)
       //   [ { ... } , { ... } ]
       else if (root->type () == json::j_array)
       {
-        json::array* root_arr = (json::array*)root;
+        auto root_arr = (json::array*)root;
 
         // For each object element...
         for (auto& element : root_arr->_data)
         {
           // For each object element...
-          json::object* root_obj = (json::object*)element;
+          auto root_obj = (json::object*)element;
           importSingleTask (root_obj);
           ++count;
         }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -338,6 +338,7 @@ int CmdHistoryBase<HistoryStrategy>::execute (std::string& output)
   completedGroup.clear ();
 
   // Apply filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -538,10 +539,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);
@@ -585,10 +589,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);
@@ -632,10 +639,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);
@@ -679,10 +689,13 @@ public:
     int last_m, last_d, last_y;
     last_dt.toYMD (last_y, last_m, last_d);
 
-    if ((y != last_y) || (lastTime == 0))
+    bool y_changed = (y != last_y) || (lastTime == 0);
+    bool m_changed = (m != last_m) || (lastTime == 0);
+
+    if (y_changed)
       view.set (row, 0, y);
 
-    if ((m != last_m) || (lastTime == 0))
+    if (y_changed || m_changed)
       view.set (row, 1, Datetime::monthName (m));
 
     view.set (row, 2, d);

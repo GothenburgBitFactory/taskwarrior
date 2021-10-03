@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -85,15 +85,13 @@ class TestUnicode(TestCase):
     def test_unicode_escape2(self):
         """Verify \\uNNNN unicode sequences"""
 
-        # The following can be used to prove that \\\\ --> \.
-        # The Python string converts \\\\ --> \\.
-        # Something in the launch code converts \\ --> \.
-        # Taskwarrior sees \.
-        #
-        #code, out, err = self.t("add rc.debug.parser=2 Price \\\\u20A43")
-        #self.tap(err)
-
-        self.t("add Price \\\\u20A43")
+        # The quotes around 'Price \u20A43' are necessarry, because otherwise
+        # bash eats the \ sign and task never sees it.
+        # Verify by running:
+        #   $ echo add Price \u20A43    # \ is consumed
+        #   $ echo add "Price \u20A43"  # \ is preserved
+        #   $ echo add 'Price \u20A43'  # \ is preserved
+        self.t(r"add 'Price \u20A43'")
         code, out, err = self.t("_get 1.description")
         self.assertEqual("Price ₤3\n", out);
 

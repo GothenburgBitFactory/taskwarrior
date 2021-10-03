@@ -40,10 +40,10 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-ubuntu1604:
+  test-fedora34:
     build:
         context: .
-        dockerfile: test/docker/ubuntu1604
+        dockerfile: test/docker/fedora34
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
@@ -60,6 +60,14 @@ services:
     build:
         context: .
         dockerfile: test/docker/ubuntu2004
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-ubuntu2104:
+    build:
+        context: .
+        dockerfile: test/docker/ubuntu2104
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t

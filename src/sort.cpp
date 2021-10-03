@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,15 @@
 #include <cmake.h>
 #include <algorithm>
 #include <vector>
+#include <list>
+#include <map>
 #include <string>
 #include <stdlib.h>
 #include <Context.h>
 #include <Duration.h>
 #include <Task.h>
 #include <shared.h>
+#include <util.h>
 #include <format.h>
 
 static std::vector <Task>* global_data = nullptr;
@@ -46,7 +49,6 @@ void sort_tasks (
   const std::string& keys)
 {
   Timer timer;
-
   global_data = &data;
 
   // Split the key defs.
@@ -58,6 +60,50 @@ void sort_tasks (
 
   Context::getContext ().time_sort_us += timer.total_us ();
 }
+
+void sort_projects (
+    std::list <std::pair <std::string, int>>& sorted,
+    std::map <std::string, int>& allProjects)
+{
+  for (auto& project : allProjects)
+  {
+    const std::vector <std::string> parents = extractParents (project.first);
+    if (parents.size ())
+    {
+      // if parents exist: store iterator position of last parent
+      std::list <std::pair <std::string, int>>::iterator parent_pos;
+      for (auto& parent : parents)
+      {
+        parent_pos = std::find_if (sorted.begin (), sorted.end (),
+            [&parent](const std::pair <std::string, int>& item) { return item.first == parent; });
+        
+        // if parent does not exist yet: insert into sorted view
+        if (parent_pos == sorted.end ())
+          sorted.emplace_back (parent, 1);
+      }
+      
+      // insert new element below latest parent
+      sorted.insert ((parent_pos == sorted.end ()) ? parent_pos : ++parent_pos, project);
+    }
+    else
+    {
+      // if has no parents: simply push to end of list
+      sorted.push_back (project);
+    }
+  }
+}
+
+void sort_projects (
+    std::list <std::pair <std::string, int>>& sorted,
+    std::map <std::string, bool>& allProjects)
+{
+  std::map <std::string, int> allProjectsInt;
+  for (auto& p : allProjects)
+    allProjectsInt[p.first] = (int) p.second;
+  
+  sort_projects (sorted, allProjectsInt);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Re-implementation, using direct Task access instead of data copies that
@@ -154,22 +200,25 @@ static bool sort_compare (int left, int right)
     // Depends string.
     else if (field == "depends")
     {
-      // Raw data is a comma-separated list of uuids
-      auto left_string  = (*global_data)[left].get_ref  (field);
-      auto right_string = (*global_data)[right].get_ref (field);
+      // Raw data is an un-sorted list of UUIDs.  We just need a stable
+      // sort, so we sort them lexically.
+      auto left_deps  = (*global_data)[left].getDependencyUUIDs ();
+      std::sort(left_deps.begin(), left_deps.end());
+      auto right_deps = (*global_data)[right].getDependencyUUIDs ();
+      std::sort(right_deps.begin(), right_deps.end());
 
-      if (left_string == right_string)
+      if (left_deps == right_deps)
         continue;
 
-      if (left_string == "" && right_string != "")
+      if (left_deps.size () == 0 && right_deps.size () > 0)
         return ascending;
 
-      if (left_string != "" && right_string == "")
+      if (left_deps.size () > 0 && right_deps.size () == 0)
         return !ascending;
 
       // Sort on the first dependency.
-      left_number  = Context::getContext ().tdb2.id (left_string.substr (0, 36));
-      right_number = Context::getContext ().tdb2.id (right_string.substr (0, 36));
+      left_number  = Context::getContext ().tdb2.id (left_deps[0]);
+      right_number = Context::getContext ().tdb2.id (right_deps[0]);
 
       if (left_number == right_number)
         continue;

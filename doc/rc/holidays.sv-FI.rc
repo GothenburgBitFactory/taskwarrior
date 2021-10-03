@@ -1,0 +1,81 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# https://holidata.net/sv-FI/2021.json
+# https://holidata.net/sv-FI/2022.json
+#
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# https://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.sv-FI1.name=Nyårsdagen
+holiday.sv-FI1.date=20210101
+holiday.sv-FI2.name=Trettondedagen
+holiday.sv-FI2.date=20210106
+holiday.sv-FI3.name=Långfredagen
+holiday.sv-FI3.date=20210402
+holiday.sv-FI4.name=Påskdagen
+holiday.sv-FI4.date=20210404
+holiday.sv-FI5.name=Annandag påsk
+holiday.sv-FI5.date=20210405
+holiday.sv-FI6.name=Första maj
+holiday.sv-FI6.date=20210501
+holiday.sv-FI7.name=Kristi himmelfärdsdag
+holiday.sv-FI7.date=20210513
+holiday.sv-FI8.name=Pingst
+holiday.sv-FI8.date=20210523
+holiday.sv-FI9.name=Midsommardagen
+holiday.sv-FI9.date=20210626
+holiday.sv-FI10.name=Alla helgons dag
+holiday.sv-FI10.date=20211106
+holiday.sv-FI11.name=Självständighetsdagen
+holiday.sv-FI11.date=20211206
+holiday.sv-FI12.name=Juldagen
+holiday.sv-FI12.date=20211225
+holiday.sv-FI13.name=Annandag jul
+holiday.sv-FI13.date=20211226
+holiday.sv-FI14.name=Nyårsdagen
+holiday.sv-FI14.date=20220101
+holiday.sv-FI15.name=Trettondedagen
+holiday.sv-FI15.date=20220106
+holiday.sv-FI16.name=Långfredagen
+holiday.sv-FI16.date=20220415
+holiday.sv-FI17.name=Påskdagen
+holiday.sv-FI17.date=20220417
+holiday.sv-FI18.name=Annandag påsk
+holiday.sv-FI18.date=20220418
+holiday.sv-FI19.name=Första maj
+holiday.sv-FI19.date=20220501
+holiday.sv-FI20.name=Kristi himmelfärdsdag
+holiday.sv-FI20.date=20220526
+holiday.sv-FI21.name=Pingst
+holiday.sv-FI21.date=20220605
+holiday.sv-FI22.name=Midsommardagen
+holiday.sv-FI22.date=20220625
+holiday.sv-FI23.name=Alla helgons dag
+holiday.sv-FI23.date=20221105
+holiday.sv-FI24.name=Självständighetsdagen
+holiday.sv-FI24.date=20221206
+holiday.sv-FI25.name=Juldagen
+holiday.sv-FI25.date=20221225
+holiday.sv-FI26.name=Annandag jul
+holiday.sv-FI26.date=20221226

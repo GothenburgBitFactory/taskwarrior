@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,16 +29,26 @@
 import sys
 import os
 import unittest
+from datetime import datetime, timedelta
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 
 
+def timestamp_in_holiday_format(time):
+    return time.strftime("%Y%m%d")
+
 class TestCalendarCommandLine(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
+
+        tomorrow = datetime.now() + timedelta(days=1)
+        next_month = datetime.now() + timedelta(days=32)
+
+        self.tomorrow = timestamp_in_holiday_format(tomorrow)
+        self.next_month = timestamp_in_holiday_format(next_month)
 
     def test_basic_command(self):
         """Verify 'calendar' does not fail"""
@@ -76,6 +86,16 @@ class TestCalendarCommandLine(TestCase):
         """Verify 'calendar rc.calendar.holidays:full' does not fail"""
         code, out, err = self.t("calendar rc.calendar.holidays:full")
         self.assertIn("Date Holiday", out)
+
+    def test_basic_command_single_holiday(self):
+        """Verify 'calendar rc.holiday.test.name:donkeyday rc.holiday.test.date:[tomorrws date] rc.calendar.holidays:full' does not fail"""
+        code, out, err = self.t("calendar rc.holiday.test.name:donkeyday rc.holliday.test.date:{0} rc.calendar.holidays:full".format(self.tomorrow))
+        self.assertRegex(out, "Date +Holiday")
+
+    def test_basic_command_multiday_holiday(self):
+        """Verify 'calendar rc.holiday.test.name:donkeyday rc.holiday.test.start:[tomorrws date] rc.holiday.test.end:[date a month later] rc.calendar.holidays:full' does not fail"""
+        code, out, err = self.t("calendar rc.holiday.test.name:donkeyday rc.holiday.test.start:{0} rc.holiday.test.end:{1} rc.calendar.holidays:full".format(self.tomorrow, self.next_month))
+        self.assertRegex(out, "Date +Holiday")
 
     def test_y_argument(self):
         """Verify 'calendar y' does not fail"""

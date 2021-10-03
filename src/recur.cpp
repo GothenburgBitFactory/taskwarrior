@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ void handleRecurrence ()
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
       std::vector <Datetime> due;
-      if (!generateDueDates (t, due))
+      if (! generateDueDates (t, due))
       {
         // Determine the end date.
         t.setStatus (Task::deleted);
@@ -129,18 +129,6 @@ void handleRecurrence ()
 
         if (Context::getContext ().verbose ("recur"))
           Context::getContext ().footnote (format ("Creating recurring task instance '{1}'", t.get ("description")));
-      }
-    }
-
-    // Non-recurring tasks expire too.
-    else
-    {
-      if (t.has ("until") &&
-          Datetime (t.get_date ("until")) < now)
-      {
-        t.setStatus (Task::deleted);
-        Context::getContext ().tdb2.modify(t);
-        Context::getContext ().footnote (onExpiration (t));
       }
     }
   }
@@ -241,6 +229,9 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
   {
     int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
 
+    if (increment <= 0)
+      throw format ("Recurrence period '{1}' is equivalent to {2} and hence invalid.", period, increment);
+
     m += increment;
     while (m > 12)
     {
@@ -258,7 +249,10 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
            Lexer::isAllDigits (period.substr (1, period.length () - 2)) &&
            period[period.length () - 1] == 'M')
   {
-    int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
+    int increment = strtol (period.substr (1, period.length () - 2).c_str (), nullptr, 10);
+
+    if (increment <= 0)
+      throw format ("Recurrence period '{1}' is equivalent to {2} and hence invalid.", period, increment);
 
     m += increment;
     while (m > 12)
@@ -292,6 +286,9 @@ Datetime getNextRecurrence (Datetime& current, std::string& period)
   else if (unicodeLatinDigit (period[0]) && period[period.length () - 1] == 'q')
   {
     int increment = strtol (period.substr (0, period.length () - 1).c_str (), nullptr, 10);
+
+    if (increment <= 0)
+      throw format ("Recurrence period '{1}' is equivalent to {2} and hence invalid.", period, increment);
 
     m += 3 * increment;
     while (m > 12)
@@ -406,6 +403,30 @@ void updateRecurrenceMask (Task& task)
 
     parent.set ("mask", mask);
     Context::getContext ().tdb2.modify (parent);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Delete expired tasks.
+void handleUntil ()
+{
+  Datetime now;
+  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  for (auto& t : tasks)
+  {
+    // TODO What about expiring template tasks?
+    if (t.getStatus () == Task::pending &&
+        t.has ("until"))
+    {
+      auto until = Datetime (t.get_date ("until"));
+      if (until < now)
+      {
+        Context::getContext ().debug (format ("handleUntil: recurrence expired until {1} < now {2}", until.toISOLocalExtended (), now.toISOLocalExtended ()));
+        t.setStatus (Task::deleted);
+        Context::getContext ().tdb2.modify(t);
+        Context::getContext ().footnote (onExpiration (t));
+      }
+    }
   }
 }
 

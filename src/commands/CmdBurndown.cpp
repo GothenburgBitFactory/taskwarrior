@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -124,7 +124,7 @@ public:
   Chart (char);
   Chart (const Chart&);              // Unimplemented
   Chart& operator= (const Chart&);   // Unimplemented
-  ~Chart ();
+  ~Chart () = default;
 
   void scan (std::vector <Task>&);
   void scanForPeak (std::vector <Task>&);
@@ -185,16 +185,13 @@ Chart::Chart (char type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Chart::~Chart ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Scan all tasks, quantize the dates by day, and find the peak pending count
 // and corresponding epoch.
 void Chart::scanForPeak (std::vector <Task>& tasks)
 {
   std::map <time_t, int> pending;
+  _current_count = 0;
+
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
@@ -203,6 +200,8 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
     Datetime end;
     if (task.has ("end"))
       end = Datetime (task.get_date ("end"));
+    else
+      ++_current_count;
 
     while (entry < end)
     {
@@ -216,7 +215,7 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
     }
   }
 
-  // Find the peak, peak date and current.
+  // Find the peak and peak date.
   for (auto& count : pending)
   {
     if (count.second > _peak_count)
@@ -224,8 +223,6 @@ void Chart::scanForPeak (std::vector <Task>& tasks)
       _peak_count = count.second;
       _peak_epoch = count.first;
     }
-
-    _current_count = count.second;
   }
 }
 
@@ -238,6 +235,17 @@ void Chart::scan (std::vector <Task>& tasks)
   Datetime now;
 
   time_t epoch;
+  auto& config = Context::getContext ().config;
+  bool cumulative;
+  if (config.has ("burndown.cumulative"))
+  {
+    cumulative = config.getBoolean ("burndown.cumulative");
+  }
+  else
+  {
+    cumulative = true;
+  }
+
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
@@ -295,14 +303,6 @@ void Chart::scan (std::vector <Task>& tasks)
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
 
-      // Maintain a running total of 'done' tasks that are off the left of the
-      // chart.
-      if (end < _earliest)
-      {
-        ++_carryover_done;
-        continue;
-      }
-
       while (from < end)
       {
         epoch = from.toEpoch ();
@@ -311,34 +311,30 @@ void Chart::scan (std::vector <Task>& tasks)
         from = increment (from, _period);
       }
 
-      while (from < now)
+      if (cumulative)
       {
-        epoch = from.toEpoch ();
+        while (from < now)
+        {
+          epoch = from.toEpoch ();
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._done;
+          from = increment (from, _period);
+        }
+
+        // Maintain a running total of 'done' tasks that are off the left of the
+        // chart.
+        if (end < _earliest)
+        {
+          ++_carryover_done;
+          continue;
+        }
+      }
+
+      else
+      {
+		  epoch = from.toEpoch ();
         if (_bars.find (epoch) != _bars.end ())
           ++_bars[epoch]._done;
-        from = increment (from, _period);
-      }
-    }
-
-    // e--D   e--s--D
-    // ppp    pppsss
-    else if (status == Task::deleted)
-    {
-      // Skip old deleted tasks.
-      Datetime end = quantize (Datetime (task.get_date ("end")), _period);
-      epoch = end.toEpoch ();
-      if (_bars.find (epoch) != _bars.end ())
-        ++_bars[epoch]._removed;
-
-      if (end < _earliest)
-        continue;
-
-      while (from < end)
-      {
-        epoch = from.toEpoch ();
-        if (_bars.find (epoch) != _bars.end ())
-          ++_bars[epoch]._pending;
-        from = increment (from, _period);
       }
     }
   }
@@ -846,7 +842,7 @@ unsigned Chart::burndown_size (unsigned ntasks)
 
   // Choose the number from here rounded up to the nearest 10% of the next
   // highest power of 10 or half of power of 10.
-  const unsigned count = (unsigned) log10 (static_cast<double>(std::numeric_limits<unsigned>::max ()));
+  const auto count = (unsigned) log10 (static_cast<double>(std::numeric_limits<unsigned>::max ()));
   unsigned half = 500;
   unsigned full = 1000;
 
@@ -889,6 +885,7 @@ int CmdBurndownMonthly::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -924,6 +921,7 @@ int CmdBurndownWeekly::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;
@@ -959,6 +957,7 @@ int CmdBurndownDaily::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
+  handleUntil ();
   handleRecurrence ();
   Filter filter;
   std::vector <Task> filtered;

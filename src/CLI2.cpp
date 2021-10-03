@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,10 @@
 #include <Color.h>
 #include <shared.h>
 #include <format.h>
+#include <CmdCustom.h>
+#include <CmdTimesheet.h>
+#include <utf8.h>
+
 
 // Overridden by rc.abbreviation.minimum.
 int CLI2::minimumMatchLength = 3;
@@ -49,21 +53,10 @@ A2::A2 (const std::string& raw, Lexer::Type lextype)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A2::A2 (const A2& other)
-: _lextype (other._lextype)
-, _tags (other._tags)
-, _attributes (other._attributes)
-{
-}
+A2::A2 (const A2& other) = default;
 
 ////////////////////////////////////////////////////////////////////////////////
-A2& A2::operator= (const A2& other)
-{
-  _lextype    = other._lextype;
-  _tags       = other._tags;
-  _attributes = other._attributes;
-  return *this;
-}
+A2& A2::operator= (const A2& other) = default;
 
 ////////////////////////////////////////////////////////////////////////////////
 bool A2::hasTag (const std::string& tag) const
@@ -214,94 +207,87 @@ const std::string A2::dump () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Static method.
-void CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc)
+static
+const char* getValue (int argc, const char** argv, std::string arg)
 {
-  for (int i = 0; i < argc; ++i)
+  const auto is_arg = [&] (std::string s)
   {
-    std::string raw = argv[i];
-    if (raw == "--")
-      return;
+    return s.size () > arg.size () + 1
+      && (s[arg.size ()] == ':' || s[arg.size ()] == '=')
+      && s.compare (0, arg.size (), arg) == 0;
+  };
+  // find last argument before --
+  auto last = std::make_reverse_iterator (argv);
+  auto first = std::make_reverse_iterator (
+    std::find (argv, argv + argc, std::string ("--")));
+  auto it = std::find_if (first, last, is_arg);
+  if (it == last)
+    return nullptr;
+  // return the string after : or =
+  return *it + arg.size () + 1;
+}
 
-    if (raw.length () >= 3 &&
-        raw.substr (0, 3) == "rc:")
-    {
-      rc = raw.substr (3);
-
-      home = ".";
-      auto last_slash = rc._data.rfind ("/");
-      if (last_slash != std::string::npos)
-        home = rc.parent ();
-
-      Context::getContext ().header (format ("Using alternate .taskrc file {1}", rc._data));
-
-      // Keep looping, because if there are multiple rc:file arguments, the last
-      // one should dominate.
-    }
-  }
+////////////////////////////////////////////////////////////////////////////////
+// Static method.
+bool CLI2::getOverride (int argc, const char** argv, File& rc)
+{
+  const char* value = getValue (argc, argv, "rc");
+  if (value == nullptr)
+    return false;
+  rc = File (value);
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Look for CONFIG data.location and initialize a Path object.
 // Static method.
-void CLI2::getDataLocation (int argc, const char** argv, Path& data)
+bool CLI2::getDataLocation (int argc, const char** argv, Path& data)
 {
-  std::string location = Context::getContext ().config.get ("data.location");
-  if (location != "")
-    data = location;
-
-  for (int i = 0; i < argc; ++i)
+  const char* value = getValue (argc, argv, "rc.data.location");
+  if (value == nullptr)
   {
-    std::string raw = argv[i];
-    if (raw == "--")
-      break;
-
-    if (raw.length () > 17 &&
-        raw.substr (0, 16) == "rc.data.location")
-    {
-      data = Directory (raw.substr (17));
-      Context::getContext ().header (format ("Using alternate data.location {1}", (std::string) data));
-
-      // Keep looping, because if there are multiple rc:file arguments, the last
-      // one should dominate.
-    }
+    std::string location = Context::getContext ().config.get ("data.location");
+    if (location != "")
+      data = location;
+    return false;
   }
+  data = Directory (value);
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static method.
 void CLI2::applyOverrides (int argc, const char** argv)
 {
-  for (int i = 0; i < argc; ++i)
+  auto& context = Context::getContext ();
+  auto last = std::find (argv, argv + argc, std::string ("--"));
+  auto is_override = [] (const std::string& s)
   {
-
-    // Don't process any arguments after a '--'
-    std::string raw = argv[i];
-    if (raw == "--")
-      break;
-
-    // Overrides always start with 'rc.'
-    if (raw.length () > 3 &&
-        raw.substr (0, 3) == "rc.")
-    {
-
-      // Our separator can either be '=' or ':', so try and find both.
-      auto sep = raw.find ('=', 3);
-      if (sep == std::string::npos)
-        sep = raw.find (':', 3);
-
-      // Process our override if well-formed
-      if (sep != std::string::npos)
-      {
-        std::string name  = raw.substr (3, sep - 3);
-        std::string value = raw.substr (sep + 1);
-        Context::getContext ().config.set (name, value);
-
-        if (Context::getContext ().verbose("override"))
-          Context::getContext ().footnote (format ("Configuration override rc.{1}:{2}", name, value));
-      }
-    }
-  }
+    return s.compare (0, 3, "rc.") == 0;
+  };
+  auto get_sep = [&] (const std::string& s)
+  {
+    if (is_override (s))
+      return s.find_first_of (":=", 3);
+    return std::string::npos;
+  };
+  auto override_settings = [&] (std::string raw)
+  {
+    auto sep = get_sep (raw);
+    if (sep == std::string::npos)
+      return;
+    std::string name  = raw.substr (3, sep - 3);
+    std::string value = raw.substr (sep + 1);
+    context.config.set (name, value);
+  };
+  auto display_overrides = [&] (std::string raw)
+  {
+    if (is_override (raw))
+      context.footnote (format ("Configuration override {1}", raw));
+  };
+  std::for_each (argv, last, override_settings);
+  if (context.verbose ("override"))
+    std::for_each (argv, last, display_overrides);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -320,7 +306,7 @@ void CLI2::entity (const std::string& category, const std::string& name)
       return;
 
   // The category/name pair was not found, therefore add it.
-  _entities.insert (std::pair <std::string, std::string> (category, name));
+  _entities.emplace (category, name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -336,15 +322,16 @@ void CLI2::add (const std::string& argument)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Capture a set of arguments, inserted immediately after the binary.
-void CLI2::add (const std::vector <std::string>& arguments)
+// Capture a set of arguments, inserted immediately after <offset> arguments
+// after the binary..
+void CLI2::add (const std::vector <std::string>& arguments, int offset /* = 0 */)
 {
-  std::vector <A2> replacement {_original_args[0]};
+  std::vector <A2> replacement {_original_args.begin(), _original_args.begin() + offset + 1};
 
   for (const auto& arg : arguments)
-    replacement.push_back (A2 (arg, Lexer::Type::word));
+    replacement.emplace_back (arg, Lexer::Type::word);
 
-  for (unsigned int i = 1; i < _original_args.size (); ++i)
+  for (unsigned int i = 1 + offset; i < _original_args.size (); ++i)
     replacement.push_back (_original_args[i]);
 
   _original_args = replacement;
@@ -428,14 +415,33 @@ void CLI2::lexArguments ()
       _args.push_back (a);
     }
 
-    // Process muktiple-token arguments.
+    // Process multiple-token arguments.
     else
     {
-      std::string quote = "'";
-      std::string escaped = _original_args[i].attribute ("raw");
-      escaped = str_replace (escaped, quote, "\\'");
+      const std::string quote = "'";
+
+      // Escape unescaped single quotes
+      std::string escaped = "";
+
+      // For performance reasons. The escaped string is as long as the original.
+      escaped.reserve (_original_args[i].attribute ("raw").size ());
 
       std::string::size_type cursor = 0;
+      bool nextEscaped = false;
+      while (int num = utf8_next_char (_original_args[i].attribute ("raw"), cursor))
+      {
+        std::string character = utf8_character (num);
+        if (!nextEscaped && (character == "\\"))
+          nextEscaped = true;
+        else {
+          if (character == quote && !nextEscaped)
+            escaped += "\\";
+          nextEscaped = false;
+        }
+        escaped += character;
+      }
+
+      cursor = 0;
       std::string word;
       if (Lexer::readWord (quote + escaped + quote, quote, cursor, word))
       {
@@ -540,10 +546,14 @@ void CLI2::analyze ()
   // Determine arg types: FILTER, MODIFICATION, MISCELLANEOUS.
   categorizeArgs ();
   parenthesizeOriginalFilter ();
+
+  // Cache frequently looked up items
+  _command = getCommand ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Process raw string.
+// Process raw filter string.
+// Insert filter arguments (wrapped in parentheses) immediatelly after the binary.
 void CLI2::addFilter (const std::string& arg)
 {
   if (arg.length ())
@@ -565,48 +575,88 @@ void CLI2::addFilter (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Process raw modification string.
+// Insert modification arguments immediatelly after the command (i.e. 'add')
+void CLI2::addModifications (const std::string& arg)
+{
+  if (arg.length ())
+  {
+    std::vector <std::string> mods;
+
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (arg);
+
+    while (lex.token (lexeme, type))
+      mods.push_back (lexeme);
+
+    // Determine at which argument index does the task modification command
+    // reside
+    unsigned int cmdIndex = 0;
+    for (; cmdIndex < _args.size(); ++cmdIndex)
+    {
+      // Command found, stop iterating.
+      if (_args[cmdIndex].hasTag ("CMD"))
+        break;
+    }
+
+    // Insert modifications after the command.
+    add (mods, cmdIndex);
+    analyze ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // There are situations where a context filter is applied. This method
 // determines whether one applies, and if so, applies it. Disqualifiers include:
 //   - filter contains ID or UUID
-void CLI2::addContextFilter ()
+void CLI2::addContext (bool readable, bool writeable)
 {
   // Recursion block.
-  if (_context_filter_added)
+  if (_context_added)
     return;
 
   // Detect if any context is set, and bail out if not
-  std::string contextName = Context::getContext ().config.get ("context");
-  if (contextName == "")
-  {
-    Context::getContext ().debug ("No context.");
-    return;
-  }
-
-  // Detect if UUID or ID is set, and bail out
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::uuid   ||
-        a._lextype == Lexer::Type::number ||
-        a._lextype == Lexer::Type::set)
-    {
-      Context::getContext ().debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
-      return;
-    }
-  }
-
-  // Apply context
-  Context::getContext ().debug ("Applying context: " + contextName);
-  std::string contextFilter = Context::getContext ().config.get ("context." + contextName);
-
-  if (contextFilter == "")
-    Context::getContext ().debug ("Context '" + contextName + "' not defined.");
+  std::string contextString;
+  if (readable)
+    // Empty string is treated as "currently selected context"
+    contextString = Context::getContext ().getTaskContext("read", "");
+  else if (writeable)
+    contextString = Context::getContext ().getTaskContext("write", "");
   else
-  {
-    _context_filter_added = true;
-    addFilter (contextFilter);
-    if (Context::getContext ().verbose ("context"))
-      Context::getContext ().footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
-  }
+    return;
+
+  // If context is empty, bail out too
+  if (contextString.empty ())
+    return;
+
+  // For readable contexts: Detect if UUID or ID is set, and bail out
+  if (readable)
+    for (auto& a : _args)
+    {
+      if (a._lextype == Lexer::Type::uuid   ||
+          a._lextype == Lexer::Type::number ||
+          a._lextype == Lexer::Type::set)
+      {
+        Context::getContext ().debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
+        return;
+      }
+    }
+
+  // Apply the context. Readable (filtering) takes precedence. Also set the
+  // block now, since addFilter calls analyze(), which calls addContext().
+  _context_added = true;
+  if (readable)
+    addFilter (contextString);
+  else if (writeable)
+    addModifications (contextString);
+
+  // Inform the user about the application of context
+  if (Context::getContext ().verbose ("context"))
+    Context::getContext ().footnote (format (
+        "Context '{1}' set. Use 'task context none' to remove.",
+        Context::getContext ().config.get ("context")
+    ));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -617,7 +667,7 @@ void CLI2::prepareFilter ()
   // Clear and re-populate.
   _id_ranges.clear ();
   _uuid_list.clear ();
-  _context_filter_added = false;
+  _context_added = false;
 
   // Remove all the syntactic sugar for FILTERs.
   lexFilterArgs ();
@@ -651,7 +701,7 @@ void CLI2::prepareFilter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Return all the MISCELLANEOUS args.
+// Return all the MISCELLANEOUS args as strings.
 const std::vector <std::string> CLI2::getWords ()
 {
   std::vector <std::string> words;
@@ -672,12 +722,35 @@ const std::vector <std::string> CLI2::getWords ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Return all the MISCELLANEOUS args.
+const std::vector <A2> CLI2::getMiscellaneous ()
+{
+  std::vector <A2> misc;
+  for (const auto& a : _args)
+    if (a.hasTag ("MISCELLANEOUS"))
+      misc.push_back (a);
+
+  return misc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Search for 'value' in _entities category, return canonicalized value.
 bool CLI2::canonicalize (
   std::string& canonicalized,
   const std::string& category,
-  const std::string& value) const
+  const std::string& value)
 {
+  // Utilize a cache mapping of (category, value) -> canonicalized value.
+  // This cache does not need to be invalidated, because entities are defined
+  // only once per initialization of the Context object.
+  int cache_key = 31 * std::hash<std::string>{} (category) + std::hash<std::string>{} (value);
+  auto cache_result = _canonical_cache.find (cache_key);
+  if (cache_result != _canonical_cache.end())
+  {
+    canonicalized = cache_result->second;
+    return true;
+  }
+
   // Extract a list of entities for category.
   std::vector <std::string> options;
   auto c = _entities.equal_range (category);
@@ -687,6 +760,7 @@ bool CLI2::canonicalize (
     if (value == e->second)
     {
       canonicalized = value;
+      _canonical_cache[cache_key] = value;
       return true;
     }
 
@@ -698,6 +772,7 @@ bool CLI2::canonicalize (
   if (autoComplete (value, options, matches, minimumMatchLength) == 1)
   {
     canonicalized = matches[0];
+    _canonical_cache[cache_key] = matches[0];
     return true;
   }
 
@@ -716,6 +791,10 @@ std::string CLI2::getBinary () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getCommand (bool canonical) const
 {
+  // Shortcut if analysis has been finalized
+  if (_command != "")
+    return _command;
+
   for (const auto& a : _args)
     if (a.hasTag ("CMD"))
       return a.attribute (canonical ? "canonical" : "raw");
@@ -806,7 +885,7 @@ void CLI2::aliasExpansion ()
         Lexer::Type type;
         Lexer lex (_aliases[raw]);
         while (lex.token (lexeme, type))
-          reconstructed.push_back (A2 (lexeme, type));
+          reconstructed.emplace_back (lexeme, type);
 
         action = true;
         changes = true;
@@ -836,7 +915,7 @@ void CLI2::aliasExpansion ()
         Lexer::Type type;
         Lexer lex (_aliases[i.attribute ("raw")]);
         while (lex.token (lexeme, type))
-          reconstructedOriginals.push_back (A2 (lexeme, type));
+          reconstructedOriginals.emplace_back (lexeme, type);
 
         action = true;
         changes = true;
@@ -901,8 +980,24 @@ void CLI2::categorizeArgs ()
   // Context is only applied for commands that request it.
   std::string command = getCommand ();
   Command* cmd = Context::getContext ().commands[command];
-  if (cmd && cmd->uses_context ())
-    addContextFilter ();
+
+  // Determine if the command uses Context. CmdCustom and CmdTimesheet need to
+  // be handled separately, as they override the parent Command::use_context
+  // method, and this is a pointer to Command class.
+  //
+  // All Command classes overriding uses_context () getter need to be specified
+  // here.
+  bool uses_context;
+  if (dynamic_cast<CmdCustom*> (cmd))
+    uses_context = (dynamic_cast<CmdCustom*> (cmd))->uses_context ();
+  else if (dynamic_cast<CmdTimesheet*> (cmd))
+    uses_context = (dynamic_cast<CmdTimesheet*> (cmd))->uses_context ();
+  else if (cmd)
+    uses_context = cmd->uses_context ();
+
+  // Apply the context, if applicable
+  if (cmd && uses_context)
+    addContext (cmd->accepts_filter (), cmd->accepts_modifications ());
 
   bool changes = false;
   bool afterCommand = false;
@@ -1277,7 +1372,9 @@ void CLI2::desugarFilterAttributes ()
         A2 op ("", Lexer::Type::op);
         op.tag ("FILTER");
 
-        A2 rhs ("", values[0]._lextype);
+        // Attribute types that do not support evaluation should be interpreted
+        // as strings (currently this means that string attributes are not evaluated)
+        A2 rhs ("", evalSupported ? values[0]._lextype: Lexer::Type::string);
         rhs.tag ("FILTER");
 
         // Special case for '<name>:<value>'.
@@ -1294,6 +1391,11 @@ void CLI2::desugarFilterAttributes ()
         else if (mod == "after" || mod == "over" || mod == "above")
         {
           op.attribute ("raw", ">");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "by")
+        {
+          op.attribute ("raw", "<=");
           rhs.attribute ("raw", value);
         }
         else if (mod == "none")
@@ -1371,7 +1473,7 @@ void CLI2::desugarFilterAttributes ()
 
         // Do not modify this construct without full understanding.
         // Getting this wrong breaks a whole lot of filtering tests.
-        if (values.size () > 1 || evalSupported)
+        if (evalSupported)
         {
           for (auto& v : values)
             reconstructed.push_back (v);
@@ -1486,7 +1588,7 @@ void CLI2::findIDs ()
           {
             changes = true;
             std::string number = a.attribute ("raw");
-            _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
+            _id_ranges.emplace_back (number, number);
           }
         }
         else if (a._lextype == Lexer::Type::set)
@@ -1497,11 +1599,11 @@ void CLI2::findIDs ()
           for (auto& element : elements)
           {
             changes = true;
-            auto hyphen = element.find ("-");
+            auto hyphen = element.find ('-');
             if (hyphen != std::string::npos)
-              _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
+              _id_ranges.emplace_back (element.substr (0, hyphen), element.substr (hyphen + 1));
             else
-              _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
+              _id_ranges.emplace_back (element, element);
           }
         }
 
@@ -1539,7 +1641,7 @@ void CLI2::findIDs ()
             changes = true;
             a.unTag ("MODIFICATION");
             a.tag ("FILTER");
-            _id_ranges.push_back (std::pair <std::string, std::string> (raw, raw));
+            _id_ranges.emplace_back (raw, raw);
           }
           else if (a._lextype == Lexer::Type::set)
           {
@@ -1552,11 +1654,11 @@ void CLI2::findIDs ()
             for (const auto& element : elements)
             {
               changes = true;
-              auto hyphen = element.find ("-");
+              auto hyphen = element.find ('-');
               if (hyphen != std::string::npos)
-                _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
+                _id_ranges.emplace_back (element.substr (0, hyphen), element.substr (hyphen + 1));
               else
-                _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
+                _id_ranges.emplace_back (element, element);
             }
           }
         }
@@ -1846,7 +1948,9 @@ void CLI2::lexFilterArgs ()
 //     - task ... argX candidate argY
 //   Where:
 //     - neither argX nor argY are an operator, except (, ), and, or, xor
-//     - candidate is Lexer::Type::word
+//     - candidate is one of: Lexer::Type::word
+//                            Lexer::Type::identifier
+//                            Lexer::Type::date
 //
 void CLI2::desugarFilterPlainArgs ()
 {
@@ -1868,6 +1972,7 @@ void CLI2::desugarFilterPlainArgs ()
          ppraw == "xor")                           &&
 
         (prev->_lextype == Lexer::Type::identifier ||  // candidate
+         prev->_lextype == Lexer::Type::date       ||  // candidate
          prev->_lextype == Lexer::Type::word)      &&  // candidate
 
         prev->hasTag ("FILTER")                    &&  // candidate
@@ -1946,6 +2051,40 @@ void CLI2::desugarFilterPlainArgs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Detects if the bracket at iterator it is a start or end of an empty paren expression
+// Examples:
+// ( status = pending ) ( )
+//                      ^
+//              it -----|         => true
+//
+// ( status = pending ) ( project = Home )
+//                      ^
+//              it -----|         => false
+bool CLI2::isEmptyParenExpression (std::vector<A2>::iterator it, bool forward /* = true */) const
+{
+  int open = 0;
+  int closed = 0;
+
+  for (auto a = it; a != (forward ? _args.end (): _args.begin()); (forward ? ++a: --a))
+  {
+    if (a->attribute("raw") == "(")
+      open++;
+    else if (a->attribute("raw") == ")")
+      closed++;
+    else
+      // Encountering a non-paren token means there is something between parenthees
+      return false;
+
+    // Getting balanced parentheses means we have an empty paren expression
+    if (open == closed && open != 0)
+      return true;
+  }
+
+  // Should not end here.
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
 // "and" operator inserted between them.
 //
@@ -1971,10 +2110,18 @@ void CLI2::insertJunctions ()
       // Insert AND between terms.
       else if (a != prev)
       {
-        if ((prev->_lextype != Lexer::Type::op && a->attribute ("raw") == "(")    ||
-            (prev->_lextype != Lexer::Type::op && a->_lextype != Lexer::Type::op) ||
-            (prev->attribute ("raw") == ")"    && a->_lextype != Lexer::Type::op) ||
-            (prev->attribute ("raw") == ")"    && a->attribute ("raw") == "("))
+        if ((prev->_lextype != Lexer::Type::op &&
+             a->attribute ("raw") == "("       &&
+             ! isEmptyParenExpression(a, true)    ) ||
+            (prev->attribute ("raw") == ")"    &&
+             a->_lextype != Lexer::Type::op    &&
+             ! isEmptyParenExpression(prev, false)) ||
+            (prev->attribute ("raw") == ")"    &&
+             a->attribute ("raw") == "("       &&
+             ! isEmptyParenExpression(a, true) &&
+             ! isEmptyParenExpression(prev, false)) ||
+            (prev->_lextype != Lexer::Type::op &&
+             a->_lextype != Lexer::Type::op))
         {
           A2 opOr ("and", Lexer::Type::op);
           opOr.tag ("FILTER");
@@ -2050,7 +2197,7 @@ void CLI2::defaultCommand ()
 
         while (lex.token (lexeme, type))
         {
-          reconstructedOriginals.push_back (A2 (lexeme, type));
+          reconstructedOriginals.emplace_back (lexeme, type);
 
           A2 cmd (lexeme, type);
           cmd.tag ("DEFAULT");

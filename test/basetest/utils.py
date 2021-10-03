@@ -351,7 +351,7 @@ def release_port(port):
 
 
 def memoize(obj):
-    """Keep an in-memory cache of function results given it's inputs
+    """Keep an in-memory cache of function results given its inputs
     """
     cache = obj.cache = {}
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -81,16 +81,17 @@ class TestColorRules(TestCase):
         cls.t('3 modify depends:4')
         cls.t('add tomorrow  due:tomorrow')               # 5
         cls.t('add yesterday due:yesterday')              # 6
-        cls.t('add someday   due:yesterday')              # 7
-        cls.t('add project_x project:x')                  # 8
-        cls.t('add pri_h     priority:H')                 # 9
-        cls.t('add pri_m     priority:M')                 # 10
-        cls.t('add pri_l     priority:L')                 # 11
-        cls.t('add keyword')                              # 12
-        cls.t('add tag_x     +x')                         # 13
-        cls.t('add uda_xxx_1 xxx:1')                      # 14
-        cls.t('add uda_xxx_4 xxx:4')                      # 15
-        cls.t('add recurring due:tomorrow recur:1week')   # 16 # Keep this last
+        cls.t('add anhourago due:now-1h')                 # 7
+        cls.t('add someday   due:yesterday')              # 8
+        cls.t('add project_x project:x')                  # 9
+        cls.t('add pri_h     priority:H')                 # 10
+        cls.t('add pri_m     priority:M')                 # 11
+        cls.t('add pri_l     priority:L')                 # 12
+        cls.t('add keyword')                              # 13
+        cls.t('add tag_x     +x')                         # 14
+        cls.t('add uda_xxx_1 xxx:1')                      # 15
+        cls.t('add uda_xxx_4 xxx:4')                      # 16
+        cls.t('add recurring due:tomorrow recur:1week')   # 17 Keep this last
 
     def test_control(self):
         """No color on control task."""
@@ -122,6 +123,12 @@ class TestColorRules(TestCase):
         code, out, err = self.t('/yesterday/ info')
         self.assertIn('\x1b[34m', out)
 
+    def test_due_anhourago(self):
+        """Overdue color rule from an hour ago."""
+        code, out, err = self.t('/anhourago/ info')
+        # Match 4-bit or 8-bit blue color code
+        self.assertRegex(out, '\x1b\[(38;5;4|34)m')
+
     def test_due_tomorrow(self):
         """Due tomorrow color rule."""
         code, out, err = self.t('/tomorrow/ info')
@@ -139,7 +146,7 @@ class TestColorRules(TestCase):
 
     def test_color_header(self):
         """Header color."""
-        code, out, err = self.t('rc.verbose=header /control/')
+        code, out, err = self.t('rc.verbose=header,default /control/')
         self.assertIn('\x1b[34m', err)
 
     def test_color_footnote(self):

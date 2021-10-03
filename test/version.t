@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -75,12 +75,37 @@ class TestVersion(TestCase):
         expected = "task {0}".format(self.slurp())
         self.assertIn(expected, out)
         self.assertIn("MIT license", out)
-        self.assertIn("http://taskwarrior.org", out)
+        self.assertIn("https://taskwarrior.org", out)
 
     def slurp_git(self):
         git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")
         _, hash, _ = run_cmd_wait(git_cmd)
         return hash.rstrip("\n")
+
+    def test_under_version(self):
+        """_version and diagnostics output expected version and syntax"""
+        code, out, err = self.t("_version")
+
+        # version = "x.x.x (git-hash)" or simply "x.x.x"
+        # corresponding to "compiled from git" or "compiled from tarball"
+        version = out.split()
+
+        # If we are within a git repository, check the tag version
+        if os.path.exists("../.git"):
+          if 2 >= len(version) > 0:
+              git = version[1]
+              git_expected = "({0})".format(self.slurp_git())
+              self.assertEqual(git_expected, git)
+          else:
+              raise ValueError("Unexpected output from _version '{0}'".format(
+                  out))
+
+        ver = version[0]
+        ver_expected = self.slurp()
+        self.assertEqual(ver_expected, ver)
+
+        code, out, err = self.t.diag()
+        self.assertIn(ver_expected, out)
 
     def test_version_option(self):
         """Verify that  'task --version' returns something valid"""

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -184,16 +184,17 @@ int CmdCompletionTags::execute (std::string& output)
   unique["ANNOTATED"] = 0;
   unique["BLOCKED"]   = 0;
   unique["BLOCKING"]  = 0;
-  unique["CHILD"]     = 0;
+  unique["CHILD"]     = 0;     // 2017-01-07: Deprecated in 2.6.0
   unique["COMPLETED"] = 0;
   unique["DELETED"]   = 0;
   unique["DUE"]       = 0;
-  unique["DUETODAY"]  = 0;
+  unique["DUETODAY"]  = 0;     // 2016-03-29: Deprecated in 2.6.0
+  unique["INSTANCE"]  = 0;
   unique["LATEST"]    = 0;
   unique["MONTH"]     = 0;
   unique["ORPHAN"]    = 0;
   unique["OVERDUE"]   = 0;
-  unique["PARENT"]    = 0;
+  unique["PARENT"]    = 0;     // 2017-01-07: Deprecated in 2.6.0
   unique["PENDING"]   = 0;
   unique["PRIORITY"]  = 0;
   unique["PROJECT"]   = 0;
@@ -201,6 +202,7 @@ int CmdCompletionTags::execute (std::string& output)
   unique["READY"]     = 0;
   unique["SCHEDULED"] = 0;
   unique["TAGGED"]    = 0;
+  unique["TEMPLATE"]  = 0;
   unique["TODAY"]     = 0;
   unique["TOMORROW"]  = 0;
   unique["UDA"]       = 0;
