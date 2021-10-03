@@ -1,5 +1,5 @@
 use anyhow::{anyhow, bail, Result};
-use toml::value::{Table};
+use toml::value::Table;
 
 /// Check that the input is a table and contains no keys not in the given list, returning
 /// the table.
