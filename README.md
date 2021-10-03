@@ -80,8 +80,8 @@ There are many binary packages available, but to install from source requires:
 * cmake
 * make
 * C++ compiler, currently gcc 7.1+ or clang 5.0+ for full C++17 support
-* GnuTLS
 * libuuid
+* GnuTLS (optional, required for sync)
 
 Download the tarball, and expand it:
 
