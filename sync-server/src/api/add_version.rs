@@ -5,6 +5,7 @@ use crate::api::{
 use crate::server::{add_version, AddVersionResult, SnapshotUrgency, VersionId, NIL_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
+use std::sync::Arc;
 
 /// Max history segment size: 100MB
 const MAX_SIZE: usize = 100 * 1024 * 1024;
@@ -25,7 +26,7 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 #[post("/v1/client/add-version/{parent_version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
-    server_state: web::Data<ServerState>,
+    server_state: web::Data<Arc<ServerState>>,
     web::Path((parent_version_id,)): web::Path<(VersionId,)>,
     mut payload: web::Payload,
 ) -> Result<HttpResponse> {
@@ -54,7 +55,7 @@ pub(crate) async fn service(
     // note that we do not open the transaction until the body has been read
     // completely, to avoid blocking other storage access while that data is
     // in transit.
-    let mut txn = server_state.txn().map_err(failure_to_ise)?;
+    let mut txn = server_state.storage.txn().map_err(failure_to_ise)?;
 
     // get, or create, the client
     let client = match txn.get_client(client_key).map_err(failure_to_ise)? {
@@ -66,9 +67,15 @@ pub(crate) async fn service(
         }
     };
 
-    let (result, snap_urgency) =
-        add_version(txn, client_key, client, parent_version_id, body.to_vec())
-            .map_err(failure_to_ise)?;
+    let (result, snap_urgency) = add_version(
+        txn,
+        &server_state.config,
+        client_key,
+        client,
+        parent_version_id,
+        body.to_vec(),
+    )
+    .map_err(failure_to_ise)?;
 
     Ok(match result {
         AddVersionResult::Ok(version_id) => {
@@ -114,7 +121,7 @@ mod test {
             txn.new_client(client_key, Uuid::nil()).unwrap();
         }
 
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -156,7 +163,7 @@ mod test {
             txn.new_client(client_key, version_id).unwrap();
         }
 
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -184,7 +191,7 @@ mod test {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -204,7 +211,7 @@ mod test {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 

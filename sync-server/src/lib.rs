@@ -6,7 +6,9 @@ pub mod storage;
 
 use crate::storage::Storage;
 use actix_web::{get, middleware, web, Responder};
+use anyhow::Context;
 use api::{api_scope, ServerState};
+use std::sync::Arc;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -16,14 +18,44 @@ async fn index() -> impl Responder {
 /// A Server represents a sync server.
 #[derive(Clone)]
 pub struct Server {
-    storage: ServerState,
+    server_state: Arc<ServerState>,
+}
+
+/// ServerConfig contains configuration parameters for the server.
+pub struct ServerConfig {
+    /// Target number of days between snapshots.
+    pub snapshot_days: i64,
+
+    /// Target number of versions between snapshots.
+    pub snapshot_versions: u32,
+}
+
+impl Default for ServerConfig {
+    fn default() -> Self {
+        ServerConfig {
+            snapshot_days: 14,
+            snapshot_versions: 100,
+        }
+    }
+}
+impl ServerConfig {
+    pub fn from_args(snapshot_days: &str, snapshot_versions: &str) -> anyhow::Result<ServerConfig> {
+        Ok(ServerConfig {
+            snapshot_days: snapshot_days
+                .parse()
+                .context("--snapshot-days must be a number")?,
+            snapshot_versions: snapshot_versions
+                .parse()
+                .context("--snapshot-days must be a number")?,
+        })
+    }
 }
 
 impl Server {
     /// Create a new sync server with the given storage implementation.
-    pub fn new(storage: Box<dyn Storage>) -> Self {
+    pub fn new(config: ServerConfig, storage: Box<dyn Storage>) -> Self {
         Self {
-            storage: storage.into(),
+            server_state: Arc::new(ServerState { config, storage }),
         }
     }
 
@@ -31,7 +63,7 @@ impl Server {
     pub fn config(&self, cfg: &mut web::ServiceConfig) {
         cfg.service(
             web::scope("")
-                .data(self.storage.clone())
+                .data(self.server_state.clone())
                 .wrap(
                     middleware::DefaultHeaders::new()
                         .header("Cache-Control", "no-store, max-age=0"),
@@ -55,7 +87,7 @@ mod test {
 
     #[actix_rt::test]
     async fn test_cache_control() {
-        let server = Server::new(Box::new(InMemoryStorage::new()));
+        let server = Server::new(Default::default(), Box::new(InMemoryStorage::new()));
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
