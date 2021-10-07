@@ -57,7 +57,8 @@ pub(super) fn sync(server: &mut Box<dyn Server>, txn: &mut dyn StorageTxn) -> an
         let new_version = Version { operations };
         let history_segment = serde_json::to_string(&new_version).unwrap().into();
         info!("sending new version to server");
-        match server.add_version(base_version_id, history_segment)? {
+        let (res, _snapshot_urgency) = server.add_version(base_version_id, history_segment)?;
+        match res {
             AddVersionResult::Ok(new_version_id) => {
                 info!("version {:?} received by server", new_version_id);
                 txn.set_base_version(new_version_id)?;

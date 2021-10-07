@@ -1,4 +1,6 @@
-use crate::server::{AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId};
+use crate::server::{
+    AddVersionResult, GetVersionResult, HistorySegment, Server, SnapshotUrgency, VersionId,
+};
 use std::convert::TryInto;
 use std::time::Duration;
 use uuid::Uuid;
@@ -43,12 +45,24 @@ fn get_uuid_header(resp: &ureq::Response, name: &str) -> anyhow::Result<Uuid> {
     Ok(value)
 }
 
+/// Read the X-Snapshot-Request header and return a SnapshotUrgency
+fn get_snapshot_urgency(resp: &ureq::Response) -> SnapshotUrgency {
+    match resp.header("X-Snapshot-Request") {
+        None => SnapshotUrgency::None,
+        Some(hdr) => match hdr {
+            "urgency=low" => SnapshotUrgency::Low,
+            "urgency=high" => SnapshotUrgency::High,
+            _ => SnapshotUrgency::None,
+        },
+    }
+}
+
 impl Server for RemoteServer {
     fn add_version(
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> anyhow::Result<AddVersionResult> {
+    ) -> anyhow::Result<(AddVersionResult, SnapshotUrgency)> {
         let url = format!(
             "{}/v1/client/add-version/{}",
             self.origin, parent_version_id
@@ -70,11 +84,17 @@ impl Server for RemoteServer {
         {
             Ok(resp) => {
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-                Ok(AddVersionResult::Ok(version_id))
+                Ok((
+                    AddVersionResult::Ok(version_id),
+                    get_snapshot_urgency(&resp),
+                ))
             }
             Err(ureq::Error::Status(status, resp)) if status == 409 => {
                 let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
-                Ok(AddVersionResult::ExpectedParentVersion(parent_version_id))
+                Ok((
+                    AddVersionResult::ExpectedParentVersion(parent_version_id),
+                    SnapshotUrgency::None,
+                ))
             }
             Err(err) => Err(err.into()),
         }

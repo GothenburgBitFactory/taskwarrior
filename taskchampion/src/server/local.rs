@@ -1,5 +1,6 @@
 use crate::server::{
-    AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NIL_VERSION_ID,
+    AddVersionResult, GetVersionResult, HistorySegment, Server, SnapshotUrgency, VersionId,
+    NIL_VERSION_ID,
 };
 use crate::storage::sqlite::StoredUuid;
 use anyhow::Context;
@@ -116,14 +117,17 @@ impl Server for LocalServer {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> anyhow::Result<AddVersionResult> {
+    ) -> anyhow::Result<(AddVersionResult, SnapshotUrgency)> {
         // no client lookup
         // no signature validation
 
         // check the parent_version_id for linearity
         let latest_version_id = self.get_latest_version_id()?;
         if latest_version_id != NIL_VERSION_ID && parent_version_id != latest_version_id {
-            return Ok(AddVersionResult::ExpectedParentVersion(latest_version_id));
+            return Ok((
+                AddVersionResult::ExpectedParentVersion(latest_version_id),
+                SnapshotUrgency::None,
+            ));
         }
 
         // invent a new ID for this version
@@ -136,7 +140,7 @@ impl Server for LocalServer {
         })?;
         self.set_latest_version_id(version_id)?;
 
-        Ok(AddVersionResult::Ok(version_id))
+        Ok((AddVersionResult::Ok(version_id), SnapshotUrgency::None))
     }
 
     /// Get a vector of all versions after `since_version`
@@ -176,7 +180,7 @@ mod test {
         let tmp_dir = TempDir::new()?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();
-        match server.add_version(NIL_VERSION_ID, history.clone())? {
+        match server.add_version(NIL_VERSION_ID, history.clone())?.0 {
             AddVersionResult::ExpectedParentVersion(_) => {
                 panic!("should have accepted the version")
             }
@@ -204,7 +208,7 @@ mod test {
         let parent_version_id = Uuid::new_v4() as VersionId;
 
         // This is OK because the server has no latest_version_id yet
-        match server.add_version(parent_version_id, history.clone())? {
+        match server.add_version(parent_version_id, history.clone())?.0 {
             AddVersionResult::ExpectedParentVersion(_) => {
                 panic!("should have accepted the version")
             }
@@ -232,14 +236,16 @@ mod test {
         let parent_version_id = Uuid::new_v4() as VersionId;
 
         // add a version
-        if let AddVersionResult::ExpectedParentVersion(_) =
+        if let (AddVersionResult::ExpectedParentVersion(_), SnapshotUrgency::None) =
             server.add_version(parent_version_id, history.clone())?
         {
             panic!("should have accepted the version")
         }
 
         // then add another, not based on that one
-        if let AddVersionResult::Ok(_) = server.add_version(parent_version_id, history.clone())? {
+        if let (AddVersionResult::Ok(_), SnapshotUrgency::None) =
+            server.add_version(parent_version_id, history.clone())?
+        {
             panic!("should not have accepted the version")
         }
 

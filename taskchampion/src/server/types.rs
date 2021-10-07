@@ -10,13 +10,24 @@ pub const NIL_VERSION_ID: VersionId = Uuid::nil();
 /// data is pre-encoded, and from the protocol level appears as a sequence of bytes.
 pub type HistorySegment = Vec<u8>;
 
-/// VersionAdd is the response type from [`crate::server::Server::add_version`].
+/// AddVersionResult is the response type from [`crate::server::Server::add_version`].
 #[derive(Debug, PartialEq)]
 pub enum AddVersionResult {
     /// OK, version added with the given ID
     Ok(VersionId),
     /// Rejected; expected a version with the given parent version
     ExpectedParentVersion(VersionId),
+}
+
+/// SnapshotUrgency indicates how much the server would like this replica to send a snapshot.
+#[derive(PartialEq, Debug, Clone, Copy, Eq, PartialOrd, Ord)]
+pub enum SnapshotUrgency {
+    /// Don't need a snapshot right now.
+    None,
+    /// A snapshot would be good, but can wait for other replicas to provide it.
+    Low,
+    /// A snapshot is needed right now.
+    High,
 }
 
 /// A version as downloaded from the server
@@ -40,7 +51,7 @@ pub trait Server {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> anyhow::Result<AddVersionResult>;
+    ) -> anyhow::Result<(AddVersionResult, SnapshotUrgency)>;
 
     /// Get the version with the given parent VersionId
     fn get_child_version(

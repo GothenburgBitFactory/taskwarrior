@@ -1,5 +1,6 @@
 use crate::server::{
-    AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NIL_VERSION_ID,
+    AddVersionResult, GetVersionResult, HistorySegment, Server, SnapshotUrgency, VersionId,
+    NIL_VERSION_ID,
 };
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -33,15 +34,16 @@ impl Server for TestServer {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> anyhow::Result<AddVersionResult> {
+    ) -> anyhow::Result<(AddVersionResult, SnapshotUrgency)> {
         // no client lookup
         // no signature validation
 
         // check the parent_version_id for linearity
         if self.latest_version_id != NIL_VERSION_ID {
             if parent_version_id != self.latest_version_id {
-                return Ok(AddVersionResult::ExpectedParentVersion(
-                    self.latest_version_id,
+                return Ok((
+                    AddVersionResult::ExpectedParentVersion(self.latest_version_id),
+                    SnapshotUrgency::None,
                 ));
             }
         }
@@ -59,7 +61,7 @@ impl Server for TestServer {
         );
         self.latest_version_id = version_id;
 
-        Ok(AddVersionResult::Ok(version_id))
+        Ok((AddVersionResult::Ok(version_id), SnapshotUrgency::None))
     }
 
     /// Get a vector of all versions after `since_version`
