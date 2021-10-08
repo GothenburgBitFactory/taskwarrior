@@ -23,6 +23,7 @@ tindercrypt = { version = "^0.2.2", default-features = false }
 rusqlite = { version = "0.25", features = ["bundled"] }
 strum = "0.21"
 strum_macros = "0.21"
+flate2 = "1"
 
 [dev-dependencies]
 proptest = "^1.0.0"

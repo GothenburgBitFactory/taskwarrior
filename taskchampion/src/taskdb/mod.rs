@@ -3,6 +3,7 @@ use crate::storage::{Operation, Storage, TaskMap};
 use uuid::Uuid;
 
 mod ops;
+mod snapshot;
 mod sync;
 mod working_set;
 
