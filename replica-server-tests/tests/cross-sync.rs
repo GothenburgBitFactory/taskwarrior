@@ -7,7 +7,7 @@ use taskchampion_sync_server::{storage::InMemoryStorage, Server};
 async fn cross_sync() -> anyhow::Result<()> {
     let server = Server::new(Box::new(InMemoryStorage::new()));
     let httpserver =
-        HttpServer::new(move || App::new().service(server.service())).bind("0.0.0.0:0")?;
+        HttpServer::new(move || App::new().configure(|sc| server.config(sc))).bind("0.0.0.0:0")?;
 
     // bind was to :0, so the kernel will have selected an unused port
     let port = httpserver.addrs()[0].port();

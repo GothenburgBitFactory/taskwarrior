@@ -5,7 +5,7 @@ mod server;
 pub mod storage;
 
 use crate::storage::Storage;
-use actix_web::{get, web, Responder, Scope};
+use actix_web::{get, middleware, web, Responder};
 use api::{api_scope, ServerState};
 
 #[get("/")]
@@ -28,17 +28,43 @@ impl Server {
     }
 
     /// Get an Actix-web service for this server.
-    pub fn service(&self) -> Scope {
-        web::scope("")
-            .data(self.storage.clone())
-            .service(index)
-            .service(api_scope())
+    pub fn config(&self, cfg: &mut web::ServiceConfig) {
+        cfg.service(
+            web::scope("")
+                .data(self.storage.clone())
+                .wrap(
+                    middleware::DefaultHeaders::new()
+                        .header("Cache-Control", "no-store, max-age=0"),
+                )
+                .service(index)
+                .service(api_scope()),
+        );
     }
 }
 
 #[cfg(test)]
 mod test {
+    use super::*;
+    use crate::storage::InMemoryStorage;
+    use actix_web::{test, App};
+    use pretty_assertions::assert_eq;
+
     pub(crate) fn init_logging() {
         let _ = env_logger::builder().is_test(true).try_init();
+    }
+
+    #[actix_rt::test]
+    async fn test_cache_control() {
+        let server = Server::new(Box::new(InMemoryStorage::new()));
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
+
+        let req = test::TestRequest::get().uri("/").to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert!(resp.status().is_success());
+        assert_eq!(
+            resp.headers().get("Cache-Control").unwrap(),
+            &"no-store, max-age=0".to_string()
+        )
     }
 }
