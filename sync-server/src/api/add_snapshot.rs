@@ -1,36 +1,28 @@
-use crate::api::{
-    client_key_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
-    PARENT_VERSION_ID_HEADER, SNAPSHOT_REQUEST_HEADER, VERSION_ID_HEADER,
-};
-use crate::server::{add_version, AddVersionResult, SnapshotUrgency, VersionId, NO_VERSION_ID};
+use crate::api::{client_key_header, failure_to_ise, ServerState, SNAPSHOT_CONTENT_TYPE};
+use crate::server::{add_snapshot, VersionId, NO_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
 
-/// Max history segment size: 100MB
+/// Max snapshot size: 100MB
 const MAX_SIZE: usize = 100 * 1024 * 1024;
 
-/// Add a new version, after checking prerequisites.  The history segment should be transmitted in
-/// the request entity body and must have content-type
-/// `application/vnd.taskchampion.history-segment`.  The content can be encoded in any of the
-/// formats supported by actix-web.
+/// Add a new snapshot, after checking prerequisites.  The snapshot should be transmitted in the
+/// request entity body and must have content-type `application/vnd.taskchampion.snapshot`.  The
+/// content can be encoded in any of the formats supported by actix-web.
 ///
-/// On success, the response is a 200 OK with the new version ID in the `X-Version-Id` header.  If
-/// the version cannot be added due to a conflict, the response is a 409 CONFLICT with the expected
-/// parent version ID in the `X-Parent-Version-Id` header.
-///
-/// If included, a snapshot request appears in the `X-Snapshot-Request` header with value
-/// `urgency=low` or `urgency=high`.
+/// On success, the response is a 200 OK. Even in a 200 OK, the snapshot may not appear in a
+/// subsequent `GetSnapshot` call.
 ///
 /// Returns other 4xx or 5xx responses on other errors.
-#[post("/v1/client/add-version/{parent_version_id}")]
+#[post("/v1/client/add-snapshot/{version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<ServerState>,
-    web::Path((parent_version_id,)): web::Path<(VersionId,)>,
+    web::Path((version_id,)): web::Path<(VersionId,)>,
     mut payload: web::Payload,
 ) -> Result<HttpResponse> {
     // check content-type
-    if req.content_type() != HISTORY_SEGMENT_CONTENT_TYPE {
+    if req.content_type() != SNAPSHOT_CONTENT_TYPE {
         return Err(error::ErrorBadRequest("Bad content-type"));
     }
 
@@ -42,13 +34,13 @@ pub(crate) async fn service(
         let chunk = chunk?;
         // limit max size of in-memory payload
         if (body.len() + chunk.len()) > MAX_SIZE {
-            return Err(error::ErrorBadRequest("overflow"));
+            return Err(error::ErrorBadRequest("Snapshot over maximum allowed size"));
         }
         body.extend_from_slice(&chunk);
     }
 
     if body.is_empty() {
-        return Err(error::ErrorBadRequest("Empty body"));
+        return Err(error::ErrorBadRequest("No snapshot supplied"));
     }
 
     // note that we do not open the transaction until the body has been read
@@ -66,35 +58,13 @@ pub(crate) async fn service(
         }
     };
 
-    let (result, snap_urgency) =
-        add_version(txn, client_key, client, parent_version_id, body.to_vec())
-            .map_err(failure_to_ise)?;
-
-    Ok(match result {
-        AddVersionResult::Ok(version_id) => {
-            let mut rb = HttpResponse::Ok();
-            rb.header(VERSION_ID_HEADER, version_id.to_string());
-            match snap_urgency {
-                SnapshotUrgency::None => {}
-                SnapshotUrgency::Low => {
-                    rb.header(SNAPSHOT_REQUEST_HEADER, "urgency=low");
-                }
-                SnapshotUrgency::High => {
-                    rb.header(SNAPSHOT_REQUEST_HEADER, "urgency=high");
-                }
-            };
-            rb.finish()
-        }
-        AddVersionResult::ExpectedParentVersion(parent_version_id) => {
-            let mut rb = HttpResponse::Conflict();
-            rb.header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string());
-            rb.finish()
-        }
-    })
+    add_snapshot(txn, client_key, client, version_id, body.to_vec()).map_err(failure_to_ise)?;
+    Ok(HttpResponse::Ok().body(""))
 }
 
 #[cfg(test)]
 mod test {
+    use super::*;
     use crate::storage::{InMemoryStorage, Storage};
     use crate::Server;
     use actix_web::{http::StatusCode, test, App};
@@ -102,90 +72,92 @@ mod test {
     use uuid::Uuid;
 
     #[actix_rt::test]
-    async fn test_success() {
+    async fn test_success() -> anyhow::Result<()> {
         let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
-        let parent_version_id = Uuid::new_v4();
-        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-
-        // set up the storage contents..
-        {
-            let mut txn = storage.txn().unwrap();
-            txn.new_client(client_key, Uuid::nil()).unwrap();
-        }
-
-        let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
-
-        let uri = format!("/v1/client/add-version/{}", parent_version_id);
-        let req = test::TestRequest::post()
-            .uri(&uri)
-            .header(
-                "Content-Type",
-                "application/vnd.taskchampion.history-segment",
-            )
-            .header("X-Client-Key", client_key.to_string())
-            .set_payload(b"abcd".to_vec())
-            .to_request();
-        let resp = test::call_service(&mut app, req).await;
-        assert_eq!(resp.status(), StatusCode::OK);
-
-        // the returned version ID is random, but let's check that it's not
-        // the passed parent version ID, at least
-        let new_version_id = resp.headers().get("X-Version-Id").unwrap();
-        assert!(new_version_id != &version_id.to_string());
-
-        // Shapshot should be requested, since there is no existing snapshot
-        let snapshot_request = resp.headers().get("X-Snapshot-Request").unwrap();
-        assert_eq!(snapshot_request, "urgency=high");
-
-        assert_eq!(resp.headers().get("X-Parent-Version-Id"), None);
-    }
-
-    #[actix_rt::test]
-    async fn test_conflict() {
-        let client_key = Uuid::new_v4();
-        let version_id = Uuid::new_v4();
-        let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
 
         // set up the storage contents..
         {
             let mut txn = storage.txn().unwrap();
             txn.new_client(client_key, version_id).unwrap();
+            txn.add_version(client_key, version_id, NO_VERSION_ID, vec![])?;
         }
 
         let server = Server::new(storage);
         let mut app = test::init_service(App::new().service(server.service())).await;
 
-        let uri = format!("/v1/client/add-version/{}", parent_version_id);
+        let uri = format!("/v1/client/add-snapshot/{}", version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header(
-                "Content-Type",
-                "application/vnd.taskchampion.history-segment",
-            )
+            .header("Content-Type", "application/vnd.taskchampion.snapshot")
             .header("X-Client-Key", client_key.to_string())
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
-        assert_eq!(resp.status(), StatusCode::CONFLICT);
-        assert_eq!(resp.headers().get("X-Version-Id"), None);
-        assert_eq!(
-            resp.headers().get("X-Parent-Version-Id").unwrap(),
-            &version_id.to_string()
-        );
+        assert_eq!(resp.status(), StatusCode::OK);
+
+        // read back that snapshot
+        let uri = "/v1/client/snapshot";
+        let req = test::TestRequest::get()
+            .uri(uri)
+            .header("X-Client-Key", client_key.to_string())
+            .to_request();
+        let mut resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::OK);
+
+        use futures::StreamExt;
+        let (bytes, _) = resp.take_body().into_future().await;
+        assert_eq!(bytes.unwrap().unwrap().as_ref(), b"abcd");
+
+        Ok(())
+    }
+
+    #[actix_rt::test]
+    async fn test_not_added_200() {
+        let client_key = Uuid::new_v4();
+        let version_id = Uuid::new_v4();
+        let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
+
+        // set up the storage contents..
+        {
+            let mut txn = storage.txn().unwrap();
+            txn.new_client(client_key, NO_VERSION_ID).unwrap();
+        }
+
+        let server = Server::new(storage);
+        let mut app = test::init_service(App::new().service(server.service())).await;
+
+        // add a snapshot for a nonexistent version
+        let uri = format!("/v1/client/add-snapshot/{}", version_id);
+        let req = test::TestRequest::post()
+            .uri(&uri)
+            .header("Content-Type", "application/vnd.taskchampion.snapshot")
+            .header("X-Client-Key", client_key.to_string())
+            .set_payload(b"abcd".to_vec())
+            .to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::OK);
+
+        // read back, seeing no snapshot
+        let uri = "/v1/client/snapshot";
+        let req = test::TestRequest::get()
+            .uri(uri)
+            .header("X-Client-Key", client_key.to_string())
+            .to_request();
+        let resp = test::call_service(&mut app, req).await;
+        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
     }
 
     #[actix_rt::test]
     async fn test_bad_content_type() {
         let client_key = Uuid::new_v4();
-        let parent_version_id = Uuid::new_v4();
+        let version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server = Server::new(storage);
         let mut app = test::init_service(App::new().service(server.service())).await;
 
-        let uri = format!("/v1/client/add-version/{}", parent_version_id);
+        let uri = format!("/v1/client/add-snapshot/{}", version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header("Content-Type", "not/correct")
@@ -199,12 +171,12 @@ mod test {
     #[actix_rt::test]
     async fn test_empty_body() {
         let client_key = Uuid::new_v4();
-        let parent_version_id = Uuid::new_v4();
+        let version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server = Server::new(storage);
         let mut app = test::init_service(App::new().service(server.service())).await;
 
-        let uri = format!("/v1/client/add-version/{}", parent_version_id);
+        let uri = format!("/v1/client/add-snapshot/{}", version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
             .header(

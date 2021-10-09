@@ -35,3 +35,10 @@ impl Server {
             .service(api_scope())
     }
 }
+
+#[cfg(test)]
+mod test {
+    pub(crate) fn init_logging() {
+        let _ = env_logger::builder().is_test(true).try_init();
+    }
+}

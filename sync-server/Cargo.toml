@@ -19,6 +19,7 @@ clap = "^2.33.0"
 log = "^0.4.14"
 env_logger = "^0.8.3"
 rusqlite = { version = "0.25", features = ["bundled"] }
+chrono = { version = "^0.4.10", features = ["serde"] }
 
 [dev-dependencies]
 actix-rt = "^1.1.1"

@@ -19,5 +19,6 @@
     * [Tasks](./tasks.md)
   * [Synchronization and the Sync Server](./sync.md)
     * [Synchronization Model](./sync-model.md)
+    * [Snapshots](./snapshots.md)
     * [Server-Replica Protocol](./sync-protocol.md)
     * [Planned Functionality](./plans.md)

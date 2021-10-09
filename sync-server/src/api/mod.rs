@@ -3,12 +3,17 @@ use crate::storage::Storage;
 use actix_web::{error, http::StatusCode, web, HttpRequest, Result, Scope};
 use std::sync::Arc;
 
+mod add_snapshot;
 mod add_version;
 mod get_child_version;
+mod get_snapshot;
 
 /// The content-type for history segments (opaque blobs of bytes)
 pub(crate) const HISTORY_SEGMENT_CONTENT_TYPE: &str =
     "application/vnd.taskchampion.history-segment";
+
+/// The content-type for snapshots (opaque blobs of bytes)
+pub(crate) const SNAPSHOT_CONTENT_TYPE: &str = "application/vnd.taskchampion.snapshot";
 
 /// The header name for version ID
 pub(crate) const VERSION_ID_HEADER: &str = "X-Version-Id";
@@ -19,6 +24,9 @@ pub(crate) const CLIENT_KEY_HEADER: &str = "X-Client-Key";
 /// The header name for parent version ID
 pub(crate) const PARENT_VERSION_ID_HEADER: &str = "X-Parent-Version-Id";
 
+/// The header name for parent version ID
+pub(crate) const SNAPSHOT_REQUEST_HEADER: &str = "X-Snapshot-Request";
+
 /// The type containing a reference to the Storage object in the Actix state.
 pub(crate) type ServerState = Arc<dyn Storage>;
 
@@ -26,6 +34,8 @@ pub(crate) fn api_scope() -> Scope {
     web::scope("")
         .service(get_child_version::service)
         .service(add_version::service)
+        .service(get_snapshot::service)
+        .service(add_snapshot::service)
 }
 
 /// Convert a failure::Error to an Actix ISE
