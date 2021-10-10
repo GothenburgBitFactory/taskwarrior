@@ -115,7 +115,8 @@ mod test {
         }
 
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
@@ -156,7 +157,8 @@ mod test {
         }
 
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
@@ -183,7 +185,8 @@ mod test {
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
@@ -202,7 +205,8 @@ mod test {
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()

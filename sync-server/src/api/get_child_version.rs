@@ -70,7 +70,8 @@ mod test {
         }
 
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
@@ -103,7 +104,8 @@ mod test {
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
@@ -128,7 +130,8 @@ mod test {
             txn.new_client(client_key, Uuid::new_v4()).unwrap();
         }
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         // the child of an unknown parent_version_id is GONE
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);

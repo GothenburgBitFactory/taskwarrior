@@ -59,7 +59,8 @@ mod test {
         }
 
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
@@ -94,7 +95,8 @@ mod test {
         }
 
         let server = Server::new(storage);
-        let mut app = test::init_service(App::new().service(server.service())).await;
+        let app = App::new().configure(|sc| server.config(sc));
+        let mut app = test::init_service(app).await;
 
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
