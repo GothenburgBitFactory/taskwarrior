@@ -47,7 +47,7 @@ pub(crate) async fn service(
 
 #[cfg(test)]
 mod test {
-    use crate::server::NO_VERSION_ID;
+    use crate::server::NIL_VERSION_ID;
     use crate::storage::{InMemoryStorage, Storage};
     use crate::Server;
     use actix_web::{http::StatusCode, test, App};
@@ -147,7 +147,7 @@ mod test {
         // but the child of the nil parent_version_id is NOT FOUND, since
         // there is no snapshot.  The tests in crate::server test more
         // corner cases.
-        let uri = format!("/v1/client/get-child-version/{}", NO_VERSION_ID);
+        let uri = format!("/v1/client/get-child-version/{}", NIL_VERSION_ID);
         let req = test::TestRequest::get()
             .uri(&uri)
             .header("X-Client-Key", client_key.to_string())

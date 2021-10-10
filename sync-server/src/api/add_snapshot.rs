@@ -1,5 +1,5 @@
 use crate::api::{client_key_header, failure_to_ise, ServerState, SNAPSHOT_CONTENT_TYPE};
-use crate::server::{add_snapshot, VersionId, NO_VERSION_ID};
+use crate::server::{add_snapshot, VersionId, NIL_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
 
@@ -52,7 +52,7 @@ pub(crate) async fn service(
     let client = match txn.get_client(client_key).map_err(failure_to_ise)? {
         Some(client) => client,
         None => {
-            txn.new_client(client_key, NO_VERSION_ID)
+            txn.new_client(client_key, NIL_VERSION_ID)
                 .map_err(failure_to_ise)?;
             txn.get_client(client_key).map_err(failure_to_ise)?.unwrap()
         }
@@ -81,7 +81,7 @@ mod test {
         {
             let mut txn = storage.txn().unwrap();
             txn.new_client(client_key, version_id).unwrap();
-            txn.add_version(client_key, version_id, NO_VERSION_ID, vec![])?;
+            txn.add_version(client_key, version_id, NIL_VERSION_ID, vec![])?;
         }
 
         let server = Server::new(storage);
@@ -123,7 +123,7 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = storage.txn().unwrap();
-            txn.new_client(client_key, NO_VERSION_ID).unwrap();
+            txn.new_client(client_key, NIL_VERSION_ID).unwrap();
         }
 
         let server = Server::new(storage);

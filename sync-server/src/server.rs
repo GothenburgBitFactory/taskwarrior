@@ -6,7 +6,7 @@ use chrono::Utc;
 use uuid::Uuid;
 
 /// The distinguished value for "no version"
-pub const NO_VERSION_ID: VersionId = Uuid::nil();
+pub const NIL_VERSION_ID: VersionId = Uuid::nil();
 
 /// Number of versions to search back from the latest to find the
 /// version for a newly-added snapshot.  Snapshots for versions older
@@ -52,7 +52,7 @@ pub(crate) fn get_child_version<'a>(
     }
 
     // If the requested parentVersionId is the nil UUID ..
-    if parent_version_id == NO_VERSION_ID {
+    if parent_version_id == NIL_VERSION_ID {
         return Ok(match client.snapshot {
             // ..and snapshotVersionId is nil, the response is _not-found_ (the client has no
             // versions).
@@ -133,7 +133,7 @@ pub(crate) fn add_version<'a>(
     );
 
     // check if this version is acceptable, under the protection of the transaction
-    if client.latest_version_id != NO_VERSION_ID && parent_version_id != client.latest_version_id {
+    if client.latest_version_id != NIL_VERSION_ID && parent_version_id != client.latest_version_id {
         log::debug!("add_version request rejected: mismatched latest_version_id");
         return Ok((
             AddVersionResult::ExpectedParentVersion(client.latest_version_id),
@@ -206,7 +206,7 @@ pub(crate) fn add_snapshot<'a>(
     let mut vid = client.latest_version_id;
 
     loop {
-        if vid == version_id && version_id != NO_VERSION_ID {
+        if vid == version_id && version_id != NIL_VERSION_ID {
             // the new snapshot is for a recent version, so proceed
             break;
         }
@@ -221,7 +221,7 @@ pub(crate) fn add_snapshot<'a>(
         }
 
         search_len -= 1;
-        if search_len <= 0 || vid == NO_VERSION_ID {
+        if search_len <= 0 || vid == NIL_VERSION_ID {
             // this should not happen in normal operation, so warn about it
             log::warn!(
                 "rejecting snapshot for version {}: version is too old or no such version",
@@ -320,12 +320,12 @@ mod test {
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
         let client_key = Uuid::new_v4();
-        txn.new_client(client_key, NO_VERSION_ID)?;
+        txn.new_client(client_key, NIL_VERSION_ID)?;
 
         // when no snapshot exists, the first version is NotFound
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(
-            get_child_version(txn, client_key, client, NO_VERSION_ID)?,
+            get_child_version(txn, client_key, client, NIL_VERSION_ID)?,
             GetVersionResult::NotFound
         );
         Ok(())
@@ -353,7 +353,7 @@ mod test {
         // when a snapshot exists, the first version is GONE
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(
-            get_child_version(txn, client_key, client, NO_VERSION_ID)?,
+            get_child_version(txn, client_key, client, NIL_VERSION_ID)?,
             GetVersionResult::Gone
         );
         Ok(())
@@ -370,7 +370,7 @@ mod test {
         // add a parent version, but not the requested child version
         let parent_version_id = Uuid::new_v4();
         txn.new_client(client_key, parent_version_id)?;
-        txn.add_version(client_key, parent_version_id, NO_VERSION_ID, vec![])?;
+        txn.add_version(client_key, parent_version_id, NIL_VERSION_ID, vec![])?;
 
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(
@@ -660,7 +660,7 @@ mod test {
 
         // set up a task DB with one version in it
         txn.new_client(client_key, version_id)?;
-        txn.add_version(client_key, version_id, NO_VERSION_ID, vec![])?;
+        txn.add_version(client_key, version_id, NIL_VERSION_ID, vec![])?;
 
         // add a snapshot for that version
         let client = txn.get_client(client_key)?.unwrap();
@@ -692,7 +692,7 @@ mod test {
 
         // set up a task DB with two versions in it
         txn.new_client(client_key, version_id_2)?;
-        txn.add_version(client_key, version_id_1, NO_VERSION_ID, vec![])?;
+        txn.add_version(client_key, version_id_1, NIL_VERSION_ID, vec![])?;
         txn.add_version(client_key, version_id_2, version_id_1, vec![])?;
 
         // add a snapshot for version 1
@@ -725,7 +725,7 @@ mod test {
 
         // set up a task DB with two versions in it
         txn.new_client(client_key, version_id_2)?;
-        txn.add_version(client_key, version_id_1, NO_VERSION_ID, vec![])?;
+        txn.add_version(client_key, version_id_1, NIL_VERSION_ID, vec![])?;
         txn.add_version(client_key, version_id_2, version_id_1, vec![])?;
 
         // add a snapshot for unknown version
@@ -830,11 +830,11 @@ mod test {
         let client_key = Uuid::new_v4();
 
         // just set up the client
-        txn.new_client(client_key, NO_VERSION_ID)?;
+        txn.new_client(client_key, NIL_VERSION_ID)?;
 
         // add a snapshot for the nil version
         let client = txn.get_client(client_key)?.unwrap();
-        add_snapshot(txn, client_key, client, NO_VERSION_ID, vec![9, 9, 9])?;
+        add_snapshot(txn, client_key, client, NIL_VERSION_ID, vec![9, 9, 9])?;
 
         // verify the snapshot does not exist
         let mut txn = storage.txn()?;
@@ -882,7 +882,7 @@ mod test {
         let mut txn = storage.txn()?;
         let client_key = Uuid::new_v4();
 
-        txn.new_client(client_key, NO_VERSION_ID)?;
+        txn.new_client(client_key, NIL_VERSION_ID)?;
         let client = txn.get_client(client_key)?.unwrap();
 
         assert_eq!(get_snapshot(txn, client_key, client)?, None);

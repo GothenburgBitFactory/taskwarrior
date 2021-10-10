@@ -2,7 +2,7 @@ use crate::api::{
     client_key_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
     PARENT_VERSION_ID_HEADER, SNAPSHOT_REQUEST_HEADER, VERSION_ID_HEADER,
 };
-use crate::server::{add_version, AddVersionResult, SnapshotUrgency, VersionId, NO_VERSION_ID};
+use crate::server::{add_version, AddVersionResult, SnapshotUrgency, VersionId, NIL_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
 
@@ -60,7 +60,7 @@ pub(crate) async fn service(
     let client = match txn.get_client(client_key).map_err(failure_to_ise)? {
         Some(client) => client,
         None => {
-            txn.new_client(client_key, NO_VERSION_ID)
+            txn.new_client(client_key, NIL_VERSION_ID)
                 .map_err(failure_to_ise)?;
             txn.get_client(client_key).map_err(failure_to_ise)?.unwrap()
         }
