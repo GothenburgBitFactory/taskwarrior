@@ -1,6 +1,6 @@
 use crate::server::{
-    AddVersionResult, GetVersionResult, HistorySegment, Server, SnapshotUrgency, VersionId,
-    NIL_VERSION_ID,
+    AddVersionResult, GetVersionResult, HistorySegment, Server, Snapshot, SnapshotUrgency,
+    VersionId, NIL_VERSION_ID,
 };
 use crate::storage::sqlite::StoredUuid;
 use anyhow::Context;
@@ -111,8 +111,6 @@ impl Server for LocalServer {
     // TODO: better transaction isolation for add_version (gets and sets should be in the same
     // transaction)
 
-    /// Add a new version.  If the given version number is incorrect, this responds with the
-    /// appropriate version and expects the caller to try again.
     fn add_version(
         &mut self,
         parent_version_id: VersionId,
@@ -143,7 +141,6 @@ impl Server for LocalServer {
         Ok((AddVersionResult::Ok(version_id), SnapshotUrgency::None))
     }
 
-    /// Get a vector of all versions after `since_version`
     fn get_child_version(
         &mut self,
         parent_version_id: VersionId,
@@ -157,6 +154,11 @@ impl Server for LocalServer {
         } else {
             Ok(GetVersionResult::NoSuchVersion)
         }
+    }
+
+    fn add_snapshot(&mut self, _version_id: VersionId, _snapshot: Snapshot) -> anyhow::Result<()> {
+        // the local server never requests a snapshot, so it should never get one
+        unreachable!()
     }
 }
 

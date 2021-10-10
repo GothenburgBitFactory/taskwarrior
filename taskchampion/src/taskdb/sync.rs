@@ -1,5 +1,5 @@
-use super::ops;
-use crate::server::{AddVersionResult, GetVersionResult, Server};
+use super::{ops, snapshot};
+use crate::server::{AddVersionResult, GetVersionResult, Server, SnapshotUrgency};
 use crate::storage::{Operation, StorageTxn};
 use log::{info, trace, warn};
 use serde::{Deserialize, Serialize};
@@ -57,12 +57,19 @@ pub(super) fn sync(server: &mut Box<dyn Server>, txn: &mut dyn StorageTxn) -> an
         let new_version = Version { operations };
         let history_segment = serde_json::to_string(&new_version).unwrap().into();
         info!("sending new version to server");
-        let (res, _snapshot_urgency) = server.add_version(base_version_id, history_segment)?;
+        let (res, snapshot_urgency) = server.add_version(base_version_id, history_segment)?;
         match res {
             AddVersionResult::Ok(new_version_id) => {
                 info!("version {:?} received by server", new_version_id);
                 txn.set_base_version(new_version_id)?;
                 txn.set_operations(vec![])?;
+
+                // TODO: configurable urgency levels
+                if snapshot_urgency != SnapshotUrgency::None {
+                    let snapshot = snapshot::make_snapshot(txn)?;
+                    server.add_snapshot(new_version_id, snapshot)?;
+                }
+
                 break;
             }
             AddVersionResult::ExpectedParentVersion(parent_version_id) => {
@@ -150,8 +157,9 @@ mod test {
     use super::*;
     use crate::server::test::TestServer;
     use crate::storage::{InMemoryStorage, Operation};
-    use crate::taskdb::TaskDb;
+    use crate::taskdb::{snapshot::SnapshotTasks, TaskDb};
     use chrono::Utc;
+    use pretty_assertions::assert_eq;
     use uuid::Uuid;
 
     fn newdb() -> TaskDb {
@@ -160,7 +168,7 @@ mod test {
 
     #[test]
     fn test_sync() -> anyhow::Result<()> {
-        let mut server: Box<dyn Server> = Box::new(TestServer::new());
+        let mut server: Box<dyn Server> = TestServer::new().server();
 
         let mut db1 = newdb();
         sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
@@ -222,7 +230,7 @@ mod test {
 
     #[test]
     fn test_sync_create_delete() -> anyhow::Result<()> {
-        let mut server: Box<dyn Server> = Box::new(TestServer::new());
+        let mut server: Box<dyn Server> = TestServer::new().server();
 
         let mut db1 = newdb();
         sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
@@ -271,6 +279,39 @@ mod test {
         sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
         sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_sync_adds_snapshot() -> anyhow::Result<()> {
+        let test_server = TestServer::new();
+
+        let mut server: Box<dyn Server> = test_server.server();
+        let mut db1 = newdb();
+
+        let uuid = Uuid::new_v4();
+        db1.apply(Operation::Create { uuid }).unwrap();
+        db1.apply(Operation::Update {
+            uuid,
+            property: "title".into(),
+            value: Some("my first task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        test_server.set_snapshot_urgency(SnapshotUrgency::High);
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+
+        // assert that a snapshot was added
+        let base_version = db1.storage.txn()?.base_version()?;
+        let (v, s) = test_server
+            .snapshot()
+            .ok_or_else(|| anyhow::anyhow!("no snapshot"))?;
+        assert_eq!(v, base_version);
+
+        let tasks = SnapshotTasks::decode(&s)?.into_inner();
+        assert_eq!(tasks[0].0, uuid);
 
         Ok(())
     }

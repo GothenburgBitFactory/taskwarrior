@@ -10,6 +10,10 @@ pub const NIL_VERSION_ID: VersionId = Uuid::nil();
 /// data is pre-encoded, and from the protocol level appears as a sequence of bytes.
 pub type HistorySegment = Vec<u8>;
 
+/// A snapshot of the state of the task database.  This is encoded by the taskdb implementation
+/// and treated as a sequence of bytes by the server implementation.
+pub type Snapshot = Vec<u8>;
+
 /// AddVersionResult is the response type from [`crate::server::Server::add_version`].
 #[derive(Debug, PartialEq)]
 pub enum AddVersionResult {
@@ -58,4 +62,7 @@ pub trait Server {
         &mut self,
         parent_version_id: VersionId,
     ) -> anyhow::Result<GetVersionResult>;
+
+    /// Add a snapshot on the server
+    fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> anyhow::Result<()>;
 }
