@@ -8,6 +8,9 @@ use taskchampion_sync_server::{Server, ServerConfig};
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
     env_logger::init();
+    let defaults = ServerConfig::default();
+    let default_snapshot_versions = defaults.snapshot_versions.to_string();
+    let default_snapshot_days = defaults.snapshot_days.to_string();
     let matches = clap::App::new("taskchampion-sync-server")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Server for TaskChampion")
@@ -36,7 +39,7 @@ async fn main() -> anyhow::Result<()> {
                 .long("snapshot-versions")
                 .value_name("NUM")
                 .help("Target number of versions between snapshots")
-                .default_value("100")
+                .default_value(&default_snapshot_versions)
                 .takes_value(true)
                 .required(false),
         )
@@ -45,7 +48,7 @@ async fn main() -> anyhow::Result<()> {
                 .long("snapshot-days")
                 .value_name("NUM")
                 .help("Target number of days between snapshots")
-                .default_value("14")
+                .default_value(&default_snapshot_days)
                 .takes_value(true)
                 .required(false),
         )
