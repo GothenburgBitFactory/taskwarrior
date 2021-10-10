@@ -1,5 +1,5 @@
 use crate::server::{
-    AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NO_VERSION_ID,
+    AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NIL_VERSION_ID,
 };
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -20,7 +20,7 @@ impl TestServer {
     /// A test server has no notion of clients, signatures, encryption, etc.
     pub fn new() -> TestServer {
         TestServer {
-            latest_version_id: NO_VERSION_ID,
+            latest_version_id: NIL_VERSION_ID,
             versions: HashMap::new(),
         }
     }
@@ -38,7 +38,7 @@ impl Server for TestServer {
         // no signature validation
 
         // check the parent_version_id for linearity
-        if self.latest_version_id != NO_VERSION_ID {
+        if self.latest_version_id != NIL_VERSION_ID {
             if parent_version_id != self.latest_version_id {
                 return Ok(AddVersionResult::ExpectedParentVersion(
                     self.latest_version_id,

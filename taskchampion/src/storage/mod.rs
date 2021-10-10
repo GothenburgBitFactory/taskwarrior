@@ -36,7 +36,7 @@ fn taskmap_with(mut properties: Vec<(String, String)>) -> TaskMap {
 pub use crate::server::VersionId;
 
 /// The default for base_version.
-pub(crate) const DEFAULT_BASE_VERSION: Uuid = crate::server::NO_VERSION_ID;
+pub(crate) const DEFAULT_BASE_VERSION: Uuid = crate::server::NIL_VERSION_ID;
 
 /// A Storage transaction, in which storage operations are performed.
 ///

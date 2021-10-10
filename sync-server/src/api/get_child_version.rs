@@ -4,6 +4,7 @@ use crate::api::{
 };
 use crate::server::{get_child_version, GetVersionResult, VersionId};
 use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
+use std::sync::Arc;
 
 /// Get a child version.
 ///
@@ -16,10 +17,10 @@ use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
 #[get("/v1/client/get-child-version/{parent_version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
-    server_state: web::Data<ServerState>,
+    server_state: web::Data<Arc<ServerState>>,
     web::Path((parent_version_id,)): web::Path<(VersionId,)>,
 ) -> Result<HttpResponse> {
-    let mut txn = server_state.txn().map_err(failure_to_ise)?;
+    let mut txn = server_state.storage.txn().map_err(failure_to_ise)?;
 
     let client_key = client_key_header(&req)?;
 
@@ -28,8 +29,14 @@ pub(crate) async fn service(
         .map_err(failure_to_ise)?
         .ok_or_else(|| error::ErrorNotFound("no such client"))?;
 
-    return match get_child_version(txn, client_key, client, parent_version_id)
-        .map_err(failure_to_ise)?
+    return match get_child_version(
+        txn,
+        &server_state.config,
+        client_key,
+        client,
+        parent_version_id,
+    )
+    .map_err(failure_to_ise)?
     {
         GetVersionResult::Success {
             version_id,
@@ -69,7 +76,7 @@ mod test {
                 .unwrap();
         }
 
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -103,7 +110,7 @@ mod test {
         let client_key = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -129,7 +136,7 @@ mod test {
             let mut txn = storage.txn().unwrap();
             txn.new_client(client_key, Uuid::new_v4()).unwrap();
         }
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 

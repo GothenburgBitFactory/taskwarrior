@@ -1,7 +1,7 @@
 use crate::server::ClientKey;
 use crate::storage::Storage;
+use crate::ServerConfig;
 use actix_web::{error, http::StatusCode, web, HttpRequest, Result, Scope};
-use std::sync::Arc;
 
 mod add_snapshot;
 mod add_version;
@@ -27,8 +27,11 @@ pub(crate) const PARENT_VERSION_ID_HEADER: &str = "X-Parent-Version-Id";
 /// The header name for parent version ID
 pub(crate) const SNAPSHOT_REQUEST_HEADER: &str = "X-Snapshot-Request";
 
-/// The type containing a reference to the Storage object in the Actix state.
-pub(crate) type ServerState = Arc<dyn Storage>;
+/// The type containing a reference to the persistent state for the server
+pub(crate) struct ServerState {
+    pub(crate) storage: Box<dyn Storage>,
+    pub(crate) config: ServerConfig,
+}
 
 pub(crate) fn api_scope() -> Scope {
     web::scope("")

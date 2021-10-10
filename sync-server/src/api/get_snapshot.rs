@@ -3,6 +3,7 @@ use crate::api::{
 };
 use crate::server::get_snapshot;
 use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
+use std::sync::Arc;
 
 /// Get a snapshot.
 ///
@@ -15,9 +16,9 @@ use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
 #[get("/v1/client/snapshot")]
 pub(crate) async fn service(
     req: HttpRequest,
-    server_state: web::Data<ServerState>,
+    server_state: web::Data<Arc<ServerState>>,
 ) -> Result<HttpResponse> {
-    let mut txn = server_state.txn().map_err(failure_to_ise)?;
+    let mut txn = server_state.storage.txn().map_err(failure_to_ise)?;
 
     let client_key = client_key_header(&req)?;
 
@@ -27,7 +28,7 @@ pub(crate) async fn service(
         .ok_or_else(|| error::ErrorNotFound("no such client"))?;
 
     if let Some((version_id, data)) =
-        get_snapshot(txn, client_key, client).map_err(failure_to_ise)?
+        get_snapshot(txn, &server_state.config, client_key, client).map_err(failure_to_ise)?
     {
         Ok(HttpResponse::Ok()
             .content_type(SNAPSHOT_CONTENT_TYPE)
@@ -58,7 +59,7 @@ mod test {
             txn.new_client(client_key, Uuid::new_v4()).unwrap();
         }
 
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -94,7 +95,7 @@ mod test {
             .unwrap();
         }
 
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 

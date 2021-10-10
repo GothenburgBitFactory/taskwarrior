@@ -5,7 +5,7 @@ use taskchampion_sync_server::{storage::InMemoryStorage, Server};
 
 #[actix_rt::test]
 async fn cross_sync() -> anyhow::Result<()> {
-    let server = Server::new(Box::new(InMemoryStorage::new()));
+    let server = Server::new(Default::default(), Box::new(InMemoryStorage::new()));
     let httpserver =
         HttpServer::new(move || App::new().configure(|sc| server.config(sc))).bind("0.0.0.0:0")?;
 

@@ -7,6 +7,9 @@ pub mod storage;
 use crate::storage::Storage;
 use actix_web::{get, middleware, web, Responder};
 use api::{api_scope, ServerState};
+use std::sync::Arc;
+
+pub use server::ServerConfig;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -16,14 +19,14 @@ async fn index() -> impl Responder {
 /// A Server represents a sync server.
 #[derive(Clone)]
 pub struct Server {
-    storage: ServerState,
+    server_state: Arc<ServerState>,
 }
 
 impl Server {
     /// Create a new sync server with the given storage implementation.
-    pub fn new(storage: Box<dyn Storage>) -> Self {
+    pub fn new(config: ServerConfig, storage: Box<dyn Storage>) -> Self {
         Self {
-            storage: storage.into(),
+            server_state: Arc::new(ServerState { config, storage }),
         }
     }
 
@@ -31,7 +34,7 @@ impl Server {
     pub fn config(&self, cfg: &mut web::ServiceConfig) {
         cfg.service(
             web::scope("")
-                .data(self.storage.clone())
+                .data(self.server_state.clone())
                 .wrap(
                     middleware::DefaultHeaders::new()
                         .header("Cache-Control", "no-store, max-age=0"),
@@ -55,7 +58,7 @@ mod test {
 
     #[actix_rt::test]
     async fn test_cache_control() {
-        let server = Server::new(Box::new(InMemoryStorage::new()));
+        let server = Server::new(Default::default(), Box::new(InMemoryStorage::new()));
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 

@@ -2,6 +2,7 @@ use crate::api::{client_key_header, failure_to_ise, ServerState, SNAPSHOT_CONTEN
 use crate::server::{add_snapshot, VersionId, NIL_VERSION_ID};
 use actix_web::{error, post, web, HttpMessage, HttpRequest, HttpResponse, Result};
 use futures::StreamExt;
+use std::sync::Arc;
 
 /// Max snapshot size: 100MB
 const MAX_SIZE: usize = 100 * 1024 * 1024;
@@ -17,7 +18,7 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 #[post("/v1/client/add-snapshot/{version_id}")]
 pub(crate) async fn service(
     req: HttpRequest,
-    server_state: web::Data<ServerState>,
+    server_state: web::Data<Arc<ServerState>>,
     web::Path((version_id,)): web::Path<(VersionId,)>,
     mut payload: web::Payload,
 ) -> Result<HttpResponse> {
@@ -46,7 +47,7 @@ pub(crate) async fn service(
     // note that we do not open the transaction until the body has been read
     // completely, to avoid blocking other storage access while that data is
     // in transit.
-    let mut txn = server_state.txn().map_err(failure_to_ise)?;
+    let mut txn = server_state.storage.txn().map_err(failure_to_ise)?;
 
     // get, or create, the client
     let client = match txn.get_client(client_key).map_err(failure_to_ise)? {
@@ -58,7 +59,15 @@ pub(crate) async fn service(
         }
     };
 
-    add_snapshot(txn, client_key, client, version_id, body.to_vec()).map_err(failure_to_ise)?;
+    add_snapshot(
+        txn,
+        &server_state.config,
+        client_key,
+        client,
+        version_id,
+        body.to_vec(),
+    )
+    .map_err(failure_to_ise)?;
     Ok(HttpResponse::Ok().body(""))
 }
 
@@ -84,7 +93,7 @@ mod test {
             txn.add_version(client_key, version_id, NIL_VERSION_ID, vec![])?;
         }
 
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -126,7 +135,7 @@ mod test {
             txn.new_client(client_key, NIL_VERSION_ID).unwrap();
         }
 
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -156,7 +165,7 @@ mod test {
         let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 
@@ -176,7 +185,7 @@ mod test {
         let client_key = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
-        let server = Server::new(storage);
+        let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
         let mut app = test::init_service(app).await;
 

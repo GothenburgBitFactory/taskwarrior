@@ -1,5 +1,5 @@
 use crate::server::{
-    AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NO_VERSION_ID,
+    AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId, NIL_VERSION_ID,
 };
 use crate::storage::sqlite::StoredUuid;
 use anyhow::Context;
@@ -53,7 +53,7 @@ impl LocalServer {
                 |r| r.get(0),
             )
             .optional()?;
-        Ok(result.map(|x| x.0).unwrap_or(NO_VERSION_ID))
+        Ok(result.map(|x| x.0).unwrap_or(NIL_VERSION_ID))
     }
 
     fn set_latest_version_id(&mut self, version_id: VersionId) -> anyhow::Result<()> {
@@ -122,7 +122,7 @@ impl Server for LocalServer {
 
         // check the parent_version_id for linearity
         let latest_version_id = self.get_latest_version_id()?;
-        if latest_version_id != NO_VERSION_ID && parent_version_id != latest_version_id {
+        if latest_version_id != NIL_VERSION_ID && parent_version_id != latest_version_id {
             return Ok(AddVersionResult::ExpectedParentVersion(latest_version_id));
         }
 
@@ -166,7 +166,7 @@ mod test {
     fn test_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
-        let child_version = server.get_child_version(NO_VERSION_ID)?;
+        let child_version = server.get_child_version(NIL_VERSION_ID)?;
         assert_eq!(child_version, GetVersionResult::NoSuchVersion);
         Ok(())
     }
@@ -176,17 +176,17 @@ mod test {
         let tmp_dir = TempDir::new()?;
         let mut server = LocalServer::new(&tmp_dir.path())?;
         let history = b"1234".to_vec();
-        match server.add_version(NO_VERSION_ID, history.clone())? {
+        match server.add_version(NIL_VERSION_ID, history.clone())? {
             AddVersionResult::ExpectedParentVersion(_) => {
                 panic!("should have accepted the version")
             }
             AddVersionResult::Ok(version_id) => {
-                let new_version = server.get_child_version(NO_VERSION_ID)?;
+                let new_version = server.get_child_version(NIL_VERSION_ID)?;
                 assert_eq!(
                     new_version,
                     GetVersionResult::Version {
                         version_id,
-                        parent_version_id: NO_VERSION_ID,
+                        parent_version_id: NIL_VERSION_ID,
                         history_segment: history,
                     }
                 );

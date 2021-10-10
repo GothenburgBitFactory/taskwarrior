@@ -4,7 +4,7 @@ use uuid::Uuid;
 pub type VersionId = Uuid;
 
 /// The distinguished value for "no version"
-pub const NO_VERSION_ID: VersionId = Uuid::nil();
+pub const NIL_VERSION_ID: VersionId = Uuid::nil();
 
 /// A segment in the history of this task database, in the form of a sequence of operations.  This
 /// data is pre-encoded, and from the protocol level appears as a sequence of bytes.
