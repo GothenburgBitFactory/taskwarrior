@@ -2,7 +2,7 @@
 //! invariants, and so on.  This does not implement the HTTP-specific portions; those
 //! are in [`crate::api`].  See the protocol documentation for details.
 use crate::storage::{Client, Snapshot, StorageTxn};
-use crate::ServerConfig; // TODO: move here
+use anyhow::Context;
 use chrono::Utc;
 use uuid::Uuid;
 
@@ -17,6 +17,37 @@ const SNAPSHOT_SEARCH_LEN: i32 = 5;
 pub(crate) type HistorySegment = Vec<u8>;
 pub(crate) type ClientKey = Uuid;
 pub(crate) type VersionId = Uuid;
+
+/// ServerConfig contains configuration parameters for the server.
+pub struct ServerConfig {
+    /// Target number of days between snapshots.
+    pub snapshot_days: i64,
+
+    /// Target number of versions between snapshots.
+    pub snapshot_versions: u32,
+}
+
+impl Default for ServerConfig {
+    fn default() -> Self {
+        ServerConfig {
+            snapshot_days: 14,
+            snapshot_versions: 100,
+        }
+    }
+}
+
+impl ServerConfig {
+    pub fn from_args(snapshot_days: &str, snapshot_versions: &str) -> anyhow::Result<ServerConfig> {
+        Ok(ServerConfig {
+            snapshot_days: snapshot_days
+                .parse()
+                .context("--snapshot-days must be a number")?,
+            snapshot_versions: snapshot_versions
+                .parse()
+                .context("--snapshot-days must be a number")?,
+        })
+    }
+}
 
 /// Response to get_child_version.  See the protocol documentation.
 #[derive(Clone, PartialEq, Debug)]

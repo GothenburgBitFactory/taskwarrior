@@ -6,9 +6,10 @@ pub mod storage;
 
 use crate::storage::Storage;
 use actix_web::{get, middleware, web, Responder};
-use anyhow::Context;
 use api::{api_scope, ServerState};
 use std::sync::Arc;
+
+pub use server::ServerConfig;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -19,36 +20,6 @@ async fn index() -> impl Responder {
 #[derive(Clone)]
 pub struct Server {
     server_state: Arc<ServerState>,
-}
-
-/// ServerConfig contains configuration parameters for the server.
-pub struct ServerConfig {
-    /// Target number of days between snapshots.
-    pub snapshot_days: i64,
-
-    /// Target number of versions between snapshots.
-    pub snapshot_versions: u32,
-}
-
-impl Default for ServerConfig {
-    fn default() -> Self {
-        ServerConfig {
-            snapshot_days: 14,
-            snapshot_versions: 100,
-        }
-    }
-}
-impl ServerConfig {
-    pub fn from_args(snapshot_days: &str, snapshot_versions: &str) -> anyhow::Result<ServerConfig> {
-        Ok(ServerConfig {
-            snapshot_days: snapshot_days
-                .parse()
-                .context("--snapshot-days must be a number")?,
-            snapshot_versions: snapshot_versions
-                .parse()
-                .context("--snapshot-days must be a number")?,
-        })
-    }
 }
 
 impl Server {
