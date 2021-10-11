@@ -38,6 +38,41 @@ This observation allows the server to discard older versions.
 The third invariant prevents the server from discarding versions if there is no snapshot.
 The fourth invariant prevents the server from discarding versions newer than the snapshot.
 
+## Data Formats
+
+### Encryption
+
+TBD (#299)
+
+### Version
+
+The decrypted form of a version is a JSON array containing operations in the order they should be applied.
+Each operation has the form `{TYPE: DATA}`, for example:
+
+ * `{"Create":{"uuid":"56e0be07-c61f-494c-a54c-bdcfdd52d2a7"}}`
+ * `{"Delete":{"uuid":"56e0be07-c61f-494c-a54c-bdcfdd52d2a7"}}`
+ * `{"Update":{"uuid":"56e0be07-c61f-494c-a54c-bdcfdd52d2a7","property":"prop","value":"v","timestamp":"2021-10-11T12:47:07.188090948Z"}}`
+ * `{"Update":{"uuid":"56e0be07-c61f-494c-a54c-bdcfdd52d2a7","property":"prop","value":null,"timestamp":"2021-10-11T12:47:07.188090948Z"}}` (to delete a property)
+
+Timestamps are in RFC3339 format with a `Z` suffix.
+
+### Snapshot
+
+The decrypted form of a snapshot is a JSON object mapping task IDs to task properties.
+For example (pretty-printed for clarity):
+
+```json
+{
+ "56e0be07-c61f-494c-a54c-bdcfdd52d2a7": {
+   "description": "a task",
+   "priority": "H"
+ },
+ "4b7ed904-f7b0-4293-8a10-ad452422c7b3": {
+   "description": "another task"
+ }
+}
+```
+
 ## Transactions
 
 ### AddVersion

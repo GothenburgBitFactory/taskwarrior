@@ -274,6 +274,72 @@ mod test {
         );
     }
 
+    #[test]
+    fn test_json_create() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let op = Create { uuid };
+        assert_eq!(
+            serde_json::to_string(&op)?,
+            format!(r#"{{"Create":{{"uuid":"{}"}}}}"#, uuid),
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_json_delete() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let op = Delete { uuid };
+        assert_eq!(
+            serde_json::to_string(&op)?,
+            format!(r#"{{"Delete":{{"uuid":"{}"}}}}"#, uuid),
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_json_update() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let timestamp = Utc::now();
+
+        let op = Update {
+            uuid,
+            property: "abc".into(),
+            value: Some("false".into()),
+            timestamp,
+        };
+
+        assert_eq!(
+            serde_json::to_string(&op)?,
+            format!(
+                r#"{{"Update":{{"uuid":"{}","property":"abc","value":"false","timestamp":"{:?}"}}}}"#,
+                uuid, timestamp,
+            ),
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_json_update_none() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let timestamp = Utc::now();
+
+        let op = Update {
+            uuid,
+            property: "abc".into(),
+            value: None,
+            timestamp,
+        };
+
+        assert_eq!(
+            serde_json::to_string(&op)?,
+            format!(
+                r#"{{"Update":{{"uuid":"{}","property":"abc","value":null,"timestamp":"{:?}"}}}}"#,
+                uuid, timestamp,
+            ),
+        );
+        Ok(())
+    }
+
     fn uuid_strategy() -> impl Strategy<Value = Uuid> {
         prop_oneof![
             Just(Uuid::parse_str("83a2f9ef-f455-4195-b92e-a54c161eebfc").unwrap()),
