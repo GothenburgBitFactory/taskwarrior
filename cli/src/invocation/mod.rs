@@ -87,7 +87,7 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::
             ..
         } => {
             let mut server = get_server(&settings)?;
-            return cmd::sync::execute(&mut w, &mut replica, &mut server);
+            return cmd::sync::execute(&mut w, &mut replica, &settings, &mut server);
         }
 
         // handled in the first match, but here to ensure this match is exhaustive
