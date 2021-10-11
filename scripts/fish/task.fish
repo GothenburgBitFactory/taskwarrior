@@ -107,7 +107,7 @@ function __fish.task.need_to_complete.attr_value
   or return 1
   # only start completion when there's a colon in attr_name
   set -l cmd (commandline -ct)
-  string match -q "*:*" "$cmd[-1]"
+  string match -q -- "*:*" "$cmd[-1]"
 end
 
 function __fish.task.need_to_complete.command
@@ -251,13 +251,13 @@ function __fish.task.list.dates
     echo -e (string replace --all -r "^|\n" "\n$user_input_numeric" $__fish_task_static_reldates | string collect)
     # special cases for 1st, 2nd and 3rd, and 4-0th
     set -l suffix 'th' '4th, 5th, etc.'
-    if string match -q "*1" $user_input_numeric
+    if string match -q -- "*1" $user_input_numeric
       set suffix 'st' 'first'
-    else if string match -q "*2" $user_input_numeric
+    else if string match -q -- "*2" $user_input_numeric
       set suffix 'nd' 'second'
-    else if string match -q "*3" $user_input_numeric
+    else if string match -q -- "*3" $user_input_numeric
       set suffix 'rd' 'third'
-    end                  
+    end
     echo -e $user_input_numeric"$suffix[1]\t$suffix[2]"
   else
     echo -e $__fish_task_static_dates
