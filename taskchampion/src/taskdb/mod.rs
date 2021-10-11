@@ -96,9 +96,20 @@ impl TaskDb {
     }
 
     /// Sync to the given server, pulling remote changes and pushing local changes.
-    pub fn sync(&mut self, server: &mut Box<dyn Server>) -> anyhow::Result<()> {
+    ///
+    /// If `avoid_snapshots` is true, the sync operations produces a snapshot only when the server
+    /// indicate it is urgent (snapshot urgency "high").  This allows time for other replicas to
+    /// create a snapshot before this one does.
+    ///
+    /// Set this to true on systems more constrained in CPU, memory, or bandwidth than a typical desktop
+    /// system
+    pub fn sync(
+        &mut self,
+        server: &mut Box<dyn Server>,
+        avoid_snapshots: bool,
+    ) -> anyhow::Result<()> {
         let mut txn = self.storage.txn()?;
-        sync::sync(server, txn.as_mut())
+        sync::sync(server, txn.as_mut(), avoid_snapshots)
     }
 
     // functions for supporting tests
@@ -212,7 +223,7 @@ mod tests {
                             println!("  {:?} (ignored)", e);
                         }
                     },
-                    Action::Sync => db.sync(&mut server).unwrap(),
+                    Action::Sync => db.sync(&mut server, false).unwrap(),
                 }
             }
 

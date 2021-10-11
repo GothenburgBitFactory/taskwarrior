@@ -11,7 +11,11 @@ struct Version {
 }
 
 /// Sync to the given server, pulling remote changes and pushing local changes.
-pub(super) fn sync(server: &mut Box<dyn Server>, txn: &mut dyn StorageTxn) -> anyhow::Result<()> {
+pub(super) fn sync(
+    server: &mut Box<dyn Server>,
+    txn: &mut dyn StorageTxn,
+    avoid_snapshots: bool,
+) -> anyhow::Result<()> {
     // retry synchronizing until the server accepts our version (this allows for races between
     // replicas trying to sync to the same server).  If the server insists on the same base
     // version twice, then we have diverged.
@@ -64,8 +68,13 @@ pub(super) fn sync(server: &mut Box<dyn Server>, txn: &mut dyn StorageTxn) -> an
                 txn.set_base_version(new_version_id)?;
                 txn.set_operations(vec![])?;
 
-                // TODO: configurable urgency levels
-                if snapshot_urgency != SnapshotUrgency::None {
+                // make a snapshot if the server indicates it is urgent enough
+                let base_urgency = if avoid_snapshots {
+                    SnapshotUrgency::High
+                } else {
+                    SnapshotUrgency::Low
+                };
+                if snapshot_urgency >= base_urgency {
                     let snapshot = snapshot::make_snapshot(txn)?;
                     server.add_snapshot(new_version_id, snapshot)?;
                 }
@@ -171,10 +180,10 @@ mod test {
         let mut server: Box<dyn Server> = TestServer::new().server();
 
         let mut db1 = newdb();
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
 
         let mut db2 = newdb();
-        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut(), false).unwrap();
 
         // make some changes in parallel to db1 and db2..
         let uuid1 = Uuid::new_v4();
@@ -198,9 +207,9 @@ mod test {
         .unwrap();
 
         // and synchronize those around
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
         // now make updates to the same task on both sides
@@ -220,9 +229,9 @@ mod test {
         .unwrap();
 
         // and synchronize those around
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
         Ok(())
@@ -233,10 +242,10 @@ mod test {
         let mut server: Box<dyn Server> = TestServer::new().server();
 
         let mut db1 = newdb();
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
 
         let mut db2 = newdb();
-        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut(), false).unwrap();
 
         // create and update a task..
         let uuid = Uuid::new_v4();
@@ -250,9 +259,9 @@ mod test {
         .unwrap();
 
         // and synchronize those around
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
         // delete and re-create the task on db1
@@ -275,9 +284,9 @@ mod test {
         })
         .unwrap();
 
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
         Ok(())
@@ -301,7 +310,7 @@ mod test {
         .unwrap();
 
         test_server.set_snapshot_urgency(SnapshotUrgency::High);
-        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
 
         // assert that a snapshot was added
         let base_version = db1.storage.txn()?.base_version()?;
@@ -312,6 +321,26 @@ mod test {
 
         let tasks = SnapshotTasks::decode(&s)?.into_inner();
         assert_eq!(tasks[0].0, uuid);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_sync_avoids_snapshot() -> anyhow::Result<()> {
+        let test_server = TestServer::new();
+
+        let mut server: Box<dyn Server> = test_server.server();
+        let mut db1 = newdb();
+
+        let uuid = Uuid::new_v4();
+        db1.apply(Operation::Create { uuid }).unwrap();
+
+        test_server.set_snapshot_urgency(SnapshotUrgency::Low);
+        sync(&mut server, db1.storage.txn()?.as_mut(), true).unwrap();
+
+        // assert that a snapshot was not added, because we indicated
+        // we wanted to avoid snapshots and it was only low urgency
+        assert_eq!(test_server.snapshot(), None);
 
         Ok(())
     }

@@ -6,7 +6,8 @@ pub(crate) fn execute<W: WriteColor>(
     replica: &mut Replica,
     server: &mut Box<dyn Server>,
 ) -> Result<(), crate::Error> {
-    replica.sync(server)?;
+    // TODO: configurable avoid_snapshots
+    replica.sync(server, false)?;
     writeln!(w, "sync complete.")?;
     Ok(())
 }

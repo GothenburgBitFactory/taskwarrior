@@ -41,8 +41,8 @@ async fn cross_sync() -> anyhow::Result<()> {
     t1.start()?;
     let t1 = t1.into_immut();
 
-    rep1.sync(&mut serv1)?;
-    rep2.sync(&mut serv2)?;
+    rep1.sync(&mut serv1, false)?;
+    rep2.sync(&mut serv2, false)?;
 
     // those tasks should exist on rep2 now
     let t12 = rep2
@@ -66,9 +66,9 @@ async fn cross_sync() -> anyhow::Result<()> {
     t12.set_status(Status::Completed)?;
 
     // sync those changes back and forth
-    rep1.sync(&mut serv1)?; // rep1 -> server
-    rep2.sync(&mut serv2)?; // server -> rep2, rep2 -> server
-    rep1.sync(&mut serv1)?; // server -> rep1
+    rep1.sync(&mut serv1, false)?; // rep1 -> server
+    rep2.sync(&mut serv2, false)?; // server -> rep2, rep2 -> server
+    rep1.sync(&mut serv1, false)?; // server -> rep1
 
     let t1 = rep1
         .get_task(t1.get_uuid())?
