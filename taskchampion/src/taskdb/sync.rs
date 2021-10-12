@@ -143,3 +143,134 @@ fn apply_version(txn: &mut dyn StorageTxn, mut version: Version) -> anyhow::Resu
     txn.set_operations(local_operations)?;
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::server::test::TestServer;
+    use crate::storage::{InMemoryStorage, Operation};
+    use crate::taskdb::TaskDb;
+    use chrono::Utc;
+    use uuid::Uuid;
+
+    fn newdb() -> TaskDb {
+        TaskDb::new(Box::new(InMemoryStorage::new()))
+    }
+
+    #[test]
+    fn test_sync() -> anyhow::Result<()> {
+        let mut server: Box<dyn Server> = Box::new(TestServer::new());
+
+        let mut db1 = newdb();
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+
+        let mut db2 = newdb();
+        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+
+        // make some changes in parallel to db1 and db2..
+        let uuid1 = Uuid::new_v4();
+        db1.apply(Operation::Create { uuid: uuid1 }).unwrap();
+        db1.apply(Operation::Update {
+            uuid: uuid1,
+            property: "title".into(),
+            value: Some("my first task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        let uuid2 = Uuid::new_v4();
+        db2.apply(Operation::Create { uuid: uuid2 }).unwrap();
+        db2.apply(Operation::Update {
+            uuid: uuid2,
+            property: "title".into(),
+            value: Some("my second task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and synchronize those around
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+
+        // now make updates to the same task on both sides
+        db1.apply(Operation::Update {
+            uuid: uuid2,
+            property: "priority".into(),
+            value: Some("H".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+        db2.apply(Operation::Update {
+            uuid: uuid2,
+            property: "project".into(),
+            value: Some("personal".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and synchronize those around
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_sync_create_delete() -> anyhow::Result<()> {
+        let mut server: Box<dyn Server> = Box::new(TestServer::new());
+
+        let mut db1 = newdb();
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+
+        let mut db2 = newdb();
+        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+
+        // create and update a task..
+        let uuid = Uuid::new_v4();
+        db1.apply(Operation::Create { uuid }).unwrap();
+        db1.apply(Operation::Update {
+            uuid,
+            property: "title".into(),
+            value: Some("my first task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and synchronize those around
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+
+        // delete and re-create the task on db1
+        db1.apply(Operation::Delete { uuid }).unwrap();
+        db1.apply(Operation::Create { uuid }).unwrap();
+        db1.apply(Operation::Update {
+            uuid,
+            property: "title".into(),
+            value: Some("my second task".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        // and on db2, update a property of the task
+        db2.apply(Operation::Update {
+            uuid,
+            property: "project".into(),
+            value: Some("personal".into()),
+            timestamp: Utc::now(),
+        })
+        .unwrap();
+
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db2.storage.txn()?.as_mut()).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut()).unwrap();
+        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
+
+        Ok(())
+    }
+}
