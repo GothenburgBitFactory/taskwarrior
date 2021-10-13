@@ -46,6 +46,12 @@ If using a remote server:
 * `server_client_key` -  Client key to identify this replica to the sync server (a UUID)
   If not set, then sync is done to a local server.
 
+## Snapshots
+
+* `avoid_snapshots` - If running on a CPU-, memory-, or bandwidth-constrained
+  device, set this to true.  The effect is that this replica will wait longer
+  to produce a snapshot, in the hopes that other replicas will do so first.
+
 ## Reports
 
 * `reports` - a mapping of each report's name to its definition.

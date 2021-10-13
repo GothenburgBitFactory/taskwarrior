@@ -1,10 +1,12 @@
-use crate::server::{AddVersionResult, GetVersionResult, HistorySegment, Server, VersionId};
-use std::convert::TryInto;
+use crate::server::{
+    AddVersionResult, GetVersionResult, HistorySegment, Server, Snapshot, SnapshotUrgency,
+    VersionId,
+};
 use std::time::Duration;
 use uuid::Uuid;
 
 mod crypto;
-use crypto::{HistoryCiphertext, HistoryCleartext, Secret};
+use crypto::{Ciphertext, Cleartext, Secret};
 
 pub struct RemoteServer {
     origin: String,
@@ -12,6 +14,12 @@ pub struct RemoteServer {
     encryption_secret: Secret,
     agent: ureq::Agent,
 }
+
+/// The content-type for history segments (opaque blobs of bytes)
+const HISTORY_SEGMENT_CONTENT_TYPE: &str = "application/vnd.taskchampion.history-segment";
+
+/// The content-type for snapshots (opaque blobs of bytes)
+const SNAPSHOT_CONTENT_TYPE: &str = "application/vnd.taskchampion.snapshot";
 
 /// A RemoeServer communicates with a remote server over HTTP (such as with
 /// taskchampion-sync-server).
@@ -43,38 +51,53 @@ fn get_uuid_header(resp: &ureq::Response, name: &str) -> anyhow::Result<Uuid> {
     Ok(value)
 }
 
+/// Read the X-Snapshot-Request header and return a SnapshotUrgency
+fn get_snapshot_urgency(resp: &ureq::Response) -> SnapshotUrgency {
+    match resp.header("X-Snapshot-Request") {
+        None => SnapshotUrgency::None,
+        Some(hdr) => match hdr {
+            "urgency=low" => SnapshotUrgency::Low,
+            "urgency=high" => SnapshotUrgency::High,
+            _ => SnapshotUrgency::None,
+        },
+    }
+}
+
 impl Server for RemoteServer {
     fn add_version(
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> anyhow::Result<AddVersionResult> {
+    ) -> anyhow::Result<(AddVersionResult, SnapshotUrgency)> {
         let url = format!(
             "{}/v1/client/add-version/{}",
             self.origin, parent_version_id
         );
-        let history_cleartext = HistoryCleartext {
-            parent_version_id,
-            history_segment,
+        let cleartext = Cleartext {
+            version_id: parent_version_id,
+            payload: history_segment,
         };
-        let history_ciphertext = history_cleartext.seal(&self.encryption_secret)?;
+        let ciphertext = cleartext.seal(&self.encryption_secret)?;
         match self
             .agent
             .post(&url)
-            .set(
-                "Content-Type",
-                "application/vnd.taskchampion.history-segment",
-            )
+            .set("Content-Type", HISTORY_SEGMENT_CONTENT_TYPE)
             .set("X-Client-Key", &self.client_key.to_string())
-            .send_bytes(history_ciphertext.as_ref())
+            .send_bytes(ciphertext.as_ref())
         {
             Ok(resp) => {
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-                Ok(AddVersionResult::Ok(version_id))
+                Ok((
+                    AddVersionResult::Ok(version_id),
+                    get_snapshot_urgency(&resp),
+                ))
             }
             Err(ureq::Error::Status(status, resp)) if status == 409 => {
                 let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
-                Ok(AddVersionResult::ExpectedParentVersion(parent_version_id))
+                Ok((
+                    AddVersionResult::ExpectedParentVersion(parent_version_id),
+                    SnapshotUrgency::None,
+                ))
             }
             Err(err) => Err(err.into()),
         }
@@ -97,10 +120,10 @@ impl Server for RemoteServer {
             Ok(resp) => {
                 let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-                let history_ciphertext: HistoryCiphertext = resp.try_into()?;
-                let history_segment = history_ciphertext
+                let ciphertext = Ciphertext::from_resp(resp, HISTORY_SEGMENT_CONTENT_TYPE)?;
+                let history_segment = ciphertext
                     .open(&self.encryption_secret, parent_version_id)?
-                    .history_segment;
+                    .payload;
                 Ok(GetVersionResult::Version {
                     version_id,
                     parent_version_id,
@@ -112,5 +135,21 @@ impl Server for RemoteServer {
             }
             Err(err) => Err(err.into()),
         }
+    }
+
+    fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> anyhow::Result<()> {
+        let url = format!("{}/v1/client/add-snapshot/{}", self.origin, version_id);
+        let cleartext = Cleartext {
+            version_id,
+            payload: snapshot,
+        };
+        let ciphertext = cleartext.seal(&self.encryption_secret)?;
+        Ok(self
+            .agent
+            .post(&url)
+            .set("Content-Type", SNAPSHOT_CONTENT_TYPE)
+            .set("X-Client-Key", &self.client_key.to_string())
+            .send_bytes(ciphertext.as_ref())
+            .map(|_| ())?)
     }
 }

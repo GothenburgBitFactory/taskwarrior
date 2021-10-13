@@ -22,6 +22,7 @@ pub(crate) struct Settings {
 
     /// replica
     pub(crate) data_dir: PathBuf,
+    pub(crate) avoid_snapshots: bool,
 
     /// remote sync server
     pub(crate) server_client_key: Option<String>,
@@ -91,6 +92,7 @@ impl Settings {
         let table_keys = [
             "data_dir",
             "modification_count_prompt",
+            "avoid_snapshots",
             "server_client_key",
             "server_origin",
             "encryption_secret",
@@ -124,12 +126,30 @@ impl Settings {
             Ok(())
         }
 
+        fn get_bool_cfg<F: FnOnce(bool)>(
+            table: &Table,
+            name: &'static str,
+            setter: F,
+        ) -> Result<()> {
+            if let Some(v) = table.get(name) {
+                setter(
+                    v.as_bool()
+                        .ok_or_else(|| anyhow!(".{}: not a boolean value", name))?,
+                );
+            }
+            Ok(())
+        }
+
         get_str_cfg(table, "data_dir", |v| {
             self.data_dir = v.into();
         })?;
 
         get_i64_cfg(table, "modification_count_prompt", |v| {
             self.modification_count_prompt = Some(v);
+        })?;
+
+        get_bool_cfg(table, "avoid_snapshots", |v| {
+            self.avoid_snapshots = v;
         })?;
 
         get_str_cfg(table, "server_client_key", |v| {
@@ -313,6 +333,7 @@ impl Default for Settings {
             filename: None,
             data_dir,
             modification_count_prompt: None,
+            avoid_snapshots: false,
             server_client_key: None,
             server_origin: None,
             encryption_secret: None,

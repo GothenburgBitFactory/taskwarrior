@@ -2962,6 +2962,7 @@ version = "0.4.1"
 dependencies = [
  "anyhow",
  "chrono",
+ "flate2",
  "log",
  "pretty_assertions",
  "proptest",
