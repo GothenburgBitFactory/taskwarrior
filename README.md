@@ -9,21 +9,11 @@ See the [documentation](https://taskchampion.github.io/taskchampion/) for more!
 
 ## Status
 
-TC is still under development.
-You are welcome to [help out!](https://github.com/djmitche/taskchampion/blob/main/CONTRIBUTING.md).
-Even if you just want to get some practice with Rust, your contribution is welcome.
+TaskChampion currently functions as a "testbed" for new functionality that may later be incorporated into TaskWarrior.
+It can be developed without the requirements of compatibliity, allowing us to explore and fix edge-cases in things like the replica-synchronization model.
 
-Since development of TaskChampion began, TaskWarrior developers have resumed work and made several releases.
-Assuming that continues, it is unlikely that TaskChampion will ever be recommended for day-to-day use, as that would only serve to split the TaskWarrior community.
-
-## Goals
-
- * Feature parity with TaskWarrior (but not compatibility)
- * Aproachable, maintainable codebase
- * Active development community
- * Reasonable privacy: user's task details not visible on server
- * Reliable concurrency - clients do not diverge
- * Storage performance O(n) with n number of tasks
+While you are welcome to [help out](https://github.com/taskchampion/taskchampion/blob/main/CONTRIBUTING.md), you should do so with the awareness that your work might never be used.
+But, if you just want to get some practice with Rust, we'd be happy to have you.
 
 ## Structure
 
