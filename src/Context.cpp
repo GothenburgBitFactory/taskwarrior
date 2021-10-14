@@ -966,8 +966,9 @@ std::string Context::getTaskContext (const std::string& kind, std::string name, 
   }
 
   // Figure out the context string for this kind (read/write)
-  std::string contextString = config.get ("context." + name + "." + kind);
-  if (contextString.empty ())
+  std::string contextString;
+
+  if (! config.has ("context." + name + "." + kind))
   {
     debug ("Specific " + kind + " context for '" + name + "' not defined. ");
     if (fallback)
@@ -976,6 +977,8 @@ std::string Context::getTaskContext (const std::string& kind, std::string name, 
       contextString = config.get ("context." + name);
     }
   }
+  else
+    contextString = config.get ("context." + name + "." + kind);
 
   debug (format ("Detected context string: {1}", contextString.empty() ? "(empty)" : contextString));
   return contextString;
