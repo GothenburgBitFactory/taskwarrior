@@ -206,6 +206,16 @@ class ContextManagementTest(TestCase):
         self.assertEqual(len(list(filter(contains_work, out.splitlines()))), 1)
         self.assertEqual(len(list(filter(contains_home, out.splitlines()))), 1)
 
+    def test_context_list_legacy(self):
+        """Test the determination of legacy context definition."""
+        self.t('config context.old project:Old', input='y\n')
+        self.t('context old')
+        code, out, err = self.t('context list')
+
+        # Assert that "old" context has only the read component defined
+        self.assertRegex(out, r'read\s+project:Old\s+yes')
+        self.assertRegex(out, r'write\s+yes')
+
     def test_context_initially_empty(self):
         """Test that no context is set initially."""
         self.t('context define work project:Work', input='y\ny\n')
