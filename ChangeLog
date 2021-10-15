@@ -3,6 +3,9 @@
 - TW #2619 Fish autocompletion fails when completing tag removal
            Thanks to Alexandre Provencio for reporting, Tin Lai and Alexandre
            Provencio for contributing.
+- TW #2620 Old-style context definition should only be interpreted as read
+           context.
+           Thanks to bongoman and Tom Dörr for reporting.
 
 ------ current release ---------------------------
 
