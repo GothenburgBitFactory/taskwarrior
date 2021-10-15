@@ -2961,6 +2961,7 @@ name = "taskchampion"
 version = "0.4.1"
 dependencies = [
  "anyhow",
+ "byteorder",
  "chrono",
  "flate2",
  "log",
