@@ -966,14 +966,14 @@ std::string Context::getTaskContext (const std::string& kind, std::string name, 
   }
 
   // Figure out the context string for this kind (read/write)
-  std::string contextString;
+  std::string contextString = "";
 
-  if (! config.has ("context." + name + "." + kind))
+  if (! config.has ("context." + name + "." + kind) && kind == "read")
   {
     debug ("Specific " + kind + " context for '" + name + "' not defined. ");
     if (fallback)
     {
-      debug ("Falling back on generic.");
+      debug ("Trying to interpret old-style context definition as read context.");
       contextString = config.get ("context." + name);
     }
   }
