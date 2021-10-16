@@ -33,7 +33,7 @@ impl ServerConfig {
                 origin,
                 client_key,
                 encryption_secret,
-            } => Box::new(RemoteServer::new(origin, client_key, encryption_secret)),
+            } => Box::new(RemoteServer::new(origin, client_key, encryption_secret)?),
         })
     }
 }

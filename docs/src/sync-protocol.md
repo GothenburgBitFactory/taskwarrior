@@ -42,7 +42,32 @@ The fourth invariant prevents the server from discarding versions newer than the
 
 ### Encryption
 
-TBD (#299)
+The client configuration includes an encryption secret of arbitrary length and a clientId to identify itself.
+This section describes how that information is used to encrypt and decrypt data sent to the server (versions and snapshots).
+
+#### Key Derivation
+
+The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 100,000 iterations.
+The salt is the SHA256 hash of the 16-byte form of the client key.
+
+#### Encryption
+
+The client uses [AEAD](https://commondatastorage.googleapis.com/chromium-boringssl-docs/aead.h.html), with algorithm AES_256_GCM.
+Each encrypted payload has an associated version ID.
+The 16-byte form of this UUID is used as the associated data (AAD) with the AEAD algorithm.
+The client should generate a random nonce, noting that AEAD is _not secure_ if a nonce is used repeatedly for the same key.
+
+Although the AEAD specification distinguishes ciphertext and tags, for purposes of this specification they are considered concatenated into a single bytestring as in BoringSSL's `EVP_AEAD_CTX_seal`.
+
+#### Representation
+
+The final byte-stream is comprised of the following structure, with integers represented in network-endian format.
+
+* `version` (32-bit int) - format version (always 1)
+* `nonce` (12 bytes) - encryption nonce
+* `ciphertext` (remaining bytes) - ciphertext from sealing operation
+
+Future versions may have a completely different format.
 
 ### Version
 
