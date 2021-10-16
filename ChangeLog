@@ -6,11 +6,13 @@
 - TW #2620 Old-style context definition should only be interpreted as read
            context.
            Thanks to bongoman and Tom Dörr for reporting.
+- TW #2622 Tags and dependencies appear as orphaned UDAs.
+           Thanks to Scott Mcdermott for reporting.
+- TW #2626 Waiting report lists deleted and/or completed tasks.
+           Thanks to Don Harper for reporting.
 - TW #2629 New-style context definition should take precendence over old-style
            even if the new-style is an empty string.
            Thanks to Denis Kasak for reporting.
-- TW #2622 Tags and dependencies appear as orphaned UDAs.
-           Thanks to Scott Mcdermott for reporting.
 
 ------ current release ---------------------------
 
