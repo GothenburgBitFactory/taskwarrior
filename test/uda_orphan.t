@@ -82,6 +82,24 @@ class TestUDAOrphans(TestCase):
         code, out, err = self.t("_get 1.description")
         self.assertIn("one extra:foo", out)
 
+    def test_orphan_identification(self):
+        """Verify that orphans are identified by +ORPHAN tag and udas command"""
+
+        # Create one task with legitimate orphan attribute and others without
+        self.t("rc.uda.extra.type:string rc.uda.extra.label:Extra add one extra:foo")
+        self.t("add two no attributes")
+        self.t("add three +test ")
+        self.t("add four +test depends:3")
+        self.t("4 annotate annotation content")
+
+        # Only the first task should be identified as orphan
+        code, out, err = self.t("+ORPHAN ids")
+        self.assertEqual("1", out.strip())
+
+        # Only the first task should be identified as orphan
+        code, out, err = self.t("udas")
+        self.assertRegex(out, r'extra\s+1\s+1 Orphan UDA')
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
