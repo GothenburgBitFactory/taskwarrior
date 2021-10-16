@@ -5,8 +5,7 @@ use crate::server::{
 use std::time::Duration;
 use uuid::Uuid;
 
-mod crypto;
-use crypto::{Cryptor, Sealed, Secret, Unsealed};
+use super::crypto::{Cryptor, Sealed, Secret, Unsealed};
 
 pub struct RemoteServer {
     origin: String,
