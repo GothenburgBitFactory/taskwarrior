@@ -578,12 +578,14 @@ bool Task::is_overdue () const
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+// Task is considered waiting if it's pending and the wait attribute is set as
+// future datetime value.
+// While this is not consistent with other attribute-based virtual tags, such
+// as +BLOCKED, it is more backwards compatible with how +WAITING virtual tag
+// behaved in the past, when waiting had a dedicated status value.
 bool Task::is_waiting () const
 {
-  // note that is_waiting can return true for tasks in an actual status other
-  // than pending; in this case +WAITING will be set but the status will not be
-  // "waiting"
-  if (has ("wait"))
+  if (has ("wait") && get ("status") == "pending")
   {
     Datetime now;
     Datetime wait (get_date ("wait"));
