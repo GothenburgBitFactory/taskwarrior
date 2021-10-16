@@ -546,9 +546,11 @@ bool Task::is_udaPresent () const
 bool Task::is_orphanPresent () const
 {
   for (auto& att : data)
-    if (att.first.compare (0, 11, "annotation_", 11) != 0)
-      if (Context::getContext ().columns.find (att.first) == Context::getContext ().columns.end ())
-        return true;
+    if (! isAnnotationAttr (att.first) &&
+        ! isTagAttr (att.first) &&
+        ! isDepAttr (att.first) &&
+        Context::getContext ().columns.find (att.first) == Context::getContext ().columns.end ())
+      return true;
 
   return false;
 }
