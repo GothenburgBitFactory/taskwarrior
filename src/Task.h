@@ -113,6 +113,10 @@ public:
   bool is_overdue () const;
   bool is_udaPresent () const;
   bool is_orphanPresent () const;
+
+  static bool isTagAttr (const std::string&);
+  static bool isDepAttr (const std::string&);
+  static bool isAnnotationAttr (const std::string&);
 #endif
   bool is_waiting () const;
 
@@ -176,13 +180,10 @@ private:
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;
   const std::string decode (const std::string&) const;
-  bool isTagAttr (const std::string&) const;
   const std::string tag2Attr (const std::string&) const;
   const std::string attr2Tag (const std::string&) const;
-  bool isDepAttr (const std::string&) const;
   const std::string dep2Attr (const std::string&) const;
   const std::string attr2Dep (const std::string&) const;
-  bool isAnnotationAttr (const std::string&) const;
   void fixDependsAttribute ();
   void fixTagsAttribute ();
 

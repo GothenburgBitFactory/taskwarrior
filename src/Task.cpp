@@ -1478,7 +1478,7 @@ void Task::fixTagsAttribute ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Task::isTagAttr(const std::string& attr) const
+bool Task::isTagAttr(const std::string& attr)
 {
   return attr.compare(0, 5, "tags_") == 0;
 }
@@ -1512,7 +1512,7 @@ void Task::fixDependsAttribute ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Task::isDepAttr(const std::string& attr) const
+bool Task::isDepAttr(const std::string& attr)
 {
   return attr.compare(0, 4, "dep_") == 0;
 }
@@ -1533,7 +1533,7 @@ const std::string Task::attr2Dep (const std::string& attr) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Task::isAnnotationAttr(const std::string& attr) const
+bool Task::isAnnotationAttr(const std::string& attr)
 {
   return attr.compare(0, 11, "annotation_") == 0;
 }
