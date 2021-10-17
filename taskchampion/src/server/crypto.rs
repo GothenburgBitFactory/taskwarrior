@@ -1,12 +1,13 @@
 /// This module implements the encryption specified in the sync-protocol
 /// document.
-use byteorder::{NetworkEndian, ReadBytesExt, WriteBytesExt};
 use ring::{aead, digest, pbkdf2, rand, rand::SecureRandom};
-use std::io::{Cursor, Read};
+use std::io::Read;
 use uuid::Uuid;
 
 const PBKDF2_ITERATIONS: u32 = 100000;
-const ENVELOPE_VERSION: u32 = 1;
+const ENVELOPE_VERSION: u8 = 1;
+const AAD_LEN: usize = 17;
+const TASK_APP_ID: u8 = 1;
 
 /// An Cryptor stores a secret and allows sealing and unsealing.  It derives a key from the secret,
 /// which takes a nontrivial amount of time, so it should be created once and re-used for the given
@@ -55,7 +56,7 @@ impl Cryptor {
             .map_err(|_| anyhow::anyhow!("error generating random nonce"))?;
         let nonce = aead::Nonce::assume_unique_for_key(nonce_buf);
 
-        let aad = aead::Aad::from(version_id.as_bytes());
+        let aad = self.make_aad(version_id);
 
         let tag = self
             .key
@@ -86,7 +87,7 @@ impl Cryptor {
         let mut nonce = [0u8; aead::NONCE_LEN];
         nonce.copy_from_slice(env.nonce);
         let nonce = aead::Nonce::assume_unique_for_key(nonce);
-        let aad = aead::Aad::from(version_id.as_bytes());
+        let aad = self.make_aad(version_id);
 
         let mut payload = env.payload.to_vec();
         let plaintext = self
@@ -98,6 +99,13 @@ impl Cryptor {
             version_id,
             payload: plaintext.to_vec(),
         })
+    }
+
+    fn make_aad(&self, version_id: Uuid) -> aead::Aad<[u8; AAD_LEN]> {
+        let mut aad = [0u8; AAD_LEN];
+        aad[0] = TASK_APP_ID;
+        aad[1..].copy_from_slice(version_id.as_bytes());
+        aead::Aad::from(aad)
     }
 }
 
@@ -126,26 +134,25 @@ struct Envelope<'a> {
 
 impl<'a> Envelope<'a> {
     fn from_bytes(buf: &'a [u8]) -> anyhow::Result<Envelope<'a>> {
-        if buf.len() <= 4 + aead::NONCE_LEN {
+        if buf.len() <= 1 + aead::NONCE_LEN {
             anyhow::bail!("envelope is too small");
         }
 
-        let mut rdr = Cursor::new(buf);
-        let version = rdr.read_u32::<NetworkEndian>().unwrap();
-        if version != 1 {
-            anyhow::bail!("unrecognized envelope version {}", version);
+        let version = buf[0];
+        if version != ENVELOPE_VERSION {
+            anyhow::bail!("unrecognized encryption envelope version {}", version);
         }
 
         Ok(Envelope {
-            nonce: &buf[4..4 + aead::NONCE_LEN],
-            payload: &buf[4 + aead::NONCE_LEN..],
+            nonce: &buf[1..1 + aead::NONCE_LEN],
+            payload: &buf[1 + aead::NONCE_LEN..],
         })
     }
 
     fn to_bytes(&self) -> Vec<u8> {
-        let mut buf = Vec::with_capacity(4 + self.nonce.len() + self.payload.len());
+        let mut buf = Vec::with_capacity(1 + self.nonce.len() + self.payload.len());
 
-        buf.write_u32::<NetworkEndian>(ENVELOPE_VERSION).unwrap();
+        buf.push(ENVELOPE_VERSION);
         buf.extend_from_slice(self.nonce);
         buf.extend_from_slice(self.payload);
         buf
@@ -208,6 +215,30 @@ mod test {
         let bytes = env.to_bytes();
         let env2 = Envelope::from_bytes(&bytes).unwrap();
         assert_eq!(env, env2);
+    }
+
+    #[test]
+    fn envelope_bad_version() {
+        let env = Envelope {
+            nonce: &[2; 12],
+            payload: b"HELLO",
+        };
+
+        let mut bytes = env.to_bytes();
+        bytes[0] = 99;
+        assert!(Envelope::from_bytes(&bytes).is_err());
+    }
+
+    #[test]
+    fn envelope_too_short() {
+        let env = Envelope {
+            nonce: &[2; 12],
+            payload: b"HELLO",
+        };
+
+        let bytes = env.to_bytes();
+        let bytes = &bytes[..10];
+        assert!(Envelope::from_bytes(bytes).is_err());
     }
 
     #[test]
