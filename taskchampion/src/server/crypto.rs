@@ -28,7 +28,7 @@ impl Cryptor {
     fn derive_key(client_key: Uuid, secret: &Secret) -> anyhow::Result<aead::LessSafeKey> {
         let salt = digest::digest(&digest::SHA256, client_key.as_bytes());
 
-        let mut key_bytes = vec![0u8; ring::aead::AES_256_GCM.key_len()];
+        let mut key_bytes = vec![0u8; aead::CHACHA20_POLY1305.key_len()];
         pbkdf2::derive(
             pbkdf2::PBKDF2_HMAC_SHA256,
             std::num::NonZeroU32::new(PBKDF2_ITERATIONS).unwrap(),
@@ -37,9 +37,9 @@ impl Cryptor {
             &mut key_bytes,
         );
 
-        let unbound_key = ring::aead::UnboundKey::new(&ring::aead::AES_256_GCM, &key_bytes)
+        let unbound_key = aead::UnboundKey::new(&aead::CHACHA20_POLY1305, &key_bytes)
             .map_err(|_| anyhow::anyhow!("error while creating AEAD key"))?;
-        Ok(ring::aead::LessSafeKey::new(unbound_key))
+        Ok(aead::LessSafeKey::new(unbound_key))
     }
 
     /// Encrypt the given payload.
@@ -53,9 +53,9 @@ impl Cryptor {
         self.rng
             .fill(&mut nonce_buf)
             .map_err(|_| anyhow::anyhow!("error generating random nonce"))?;
-        let nonce = ring::aead::Nonce::assume_unique_for_key(nonce_buf);
+        let nonce = aead::Nonce::assume_unique_for_key(nonce_buf);
 
-        let aad = ring::aead::Aad::from(version_id.as_bytes());
+        let aad = aead::Aad::from(version_id.as_bytes());
 
         let tag = self
             .key
@@ -85,8 +85,8 @@ impl Cryptor {
 
         let mut nonce = [0u8; aead::NONCE_LEN];
         nonce.copy_from_slice(env.nonce);
-        let nonce = ring::aead::Nonce::assume_unique_for_key(nonce);
-        let aad = ring::aead::Aad::from(version_id.as_bytes());
+        let nonce = aead::Nonce::assume_unique_for_key(nonce);
+        let aad = aead::Aad::from(version_id.as_bytes());
 
         let mut payload = env.payload.to_vec();
         let plaintext = self

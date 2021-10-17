@@ -52,7 +52,7 @@ The salt is the SHA256 hash of the 16-byte form of the client key.
 
 #### Encryption
 
-The client uses [AEAD](https://commondatastorage.googleapis.com/chromium-boringssl-docs/aead.h.html), with algorithm AES_256_GCM.
+The client uses [AEAD](https://commondatastorage.googleapis.com/chromium-boringssl-docs/aead.h.html), with algorithm CHACHA20_POLY1305.
 Each encrypted payload has an associated version ID.
 The 16-byte form of this UUID is used as the associated data (AAD) with the AEAD algorithm.
 The client should generate a random nonce, noting that AEAD is _not secure_ if a nonce is used repeatedly for the same key.
