@@ -254,7 +254,7 @@ int CmdCustom::execute (std::string& output)
   {
     std::random_device device;
     std::mt19937 random_generator(device());
-    std::uniform_int_distribution<std::mt19937::result_type> ten_percent(1, 10);
+    std::uniform_int_distribution<std::mt19937::result_type> twentyfive_percent(1, 4);
 
     std::string NEWS_NOTICE = (
       "Recently upgraded to 2.6.0. "
@@ -262,7 +262,7 @@ int CmdCustom::execute (std::string& output)
     );
 
     // 1 in 10 chance to display the message.
-    if (ten_percent(random_generator) == 10)
+    if (twentyfive_percent(random_generator) == 4)
     {
       if (Context::getContext ().verbose ("footnote"))
         Context::getContext ().footnote (NEWS_NOTICE);
