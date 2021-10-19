@@ -13,6 +13,8 @@
 - TW #2629 New-style context definition should take precendence over old-style
            even if the new-style is an empty string.
            Thanks to Denis Kasak for reporting.
+- TW #2639 Unable to use ranges for some tasks with IDs above 1000.
+           Thanks to Manuel Haussmann for reporting.
 
 ------ current release ---------------------------
 
