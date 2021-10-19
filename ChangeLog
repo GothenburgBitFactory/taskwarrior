@@ -1,4 +1,6 @@
-2.6.1 () -
+------ current release ---------------------------
+
+2.6.1 (2021-10-19) - a696b6b155f9c8af87a6a496c0d298c58e6fe369
 
 - TW #2619 Fish autocompletion fails when completing tag removal
            Thanks to Alexandre Provencio for reporting, Tin Lai and Alexandre
@@ -17,8 +19,6 @@
            Thanks to Michael Esemplare for contributing.
 - TW #2639 Unable to use ranges for some tasks with IDs above 1000.
            Thanks to Manuel Haussmann for reporting.
-
------- current release ---------------------------
 
 2.6.0 (2021-10-03) - 8174287f917a3b24c19a6601ba36fca9bdaa78c9
 
