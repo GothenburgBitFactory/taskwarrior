@@ -1,7 +1,7 @@
 <div align="center">
 <img src="https://avatars.githubusercontent.com/u/36100920?s=200&u=24da05914c20c4ccfe8485310f7b83049407fa9a&v=4"></br>
 
-[![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=2.6.0)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
+[![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=develop)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
 [![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
 [![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
 ![Commits since release](https://img.shields.io/github/commits-since/GothenburgBitFactory/taskwarrior/latest)
@@ -87,13 +87,13 @@ There are many binary packages available, but to install from source requires:
 
 Download the tarball, and expand it:
 
-    $ curl -O https://taskwarrior.org/download/task-2.6.0.tar.gz
-    $ tar xzf task-2.6.0.tar.gz
-    $ cd task-2.6.0
+    $ curl -O https://taskwarrior.org/download/task-2.6.1.tar.gz
+    $ tar xzf task-2.6.1.tar.gz
+    $ cd task-2.6.1
 
 Or clone this repository:
 
-    $ git clone --recursive -b 2.6.0 https://github.com/GothenburgBitFactory/taskwarrior.git
+    $ git clone --recursive -b stable https://github.com/GothenburgBitFactory/taskwarrior.git
     $ cd taskwarrior
 
 Then build:
