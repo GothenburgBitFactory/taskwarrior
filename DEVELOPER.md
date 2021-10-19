@@ -11,7 +11,7 @@
 ```
     $ git clone --recursive https://github.com/GothenburgBitFactory/taskwarrior taskwarrior.git
     $ cd taskwarrior.git
-    $ git checkout 2.6.0                 # Latest dev branch
+    $ git checkout develop               # Latest dev branch
     $ git submodule init                 # This is now done by cmake as a test
     $ git submodule update               # Update the libhsared.git submodule
     $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither
@@ -144,13 +144,3 @@
   is possible that a patch may be rejected because it conflicts in some way with
   plans or upcoming changes. Check with us first, before sinking time and effort
   into a patch.
-
-# Current Code Base Condition
-
-**'master' branch**:
- * 2.5.3 Current release, locked.
-
-**'2.6.0' branch**:
-  * Current development branch no plans yet.
-
----
