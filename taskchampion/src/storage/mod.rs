@@ -105,6 +105,16 @@ pub trait StorageTxn {
     /// Note that this is the only way items are removed from the set.
     fn clear_working_set(&mut self) -> Result<()>;
 
+    /// Check whether this storage is entirely empty
+    fn is_empty(&mut self) -> Result<bool> {
+        let mut empty = true;
+        empty = empty && self.all_tasks()?.is_empty();
+        empty = empty && self.get_working_set()? == vec![None];
+        empty = empty && self.base_version()? == Uuid::nil();
+        empty = empty && self.operations()?.is_empty();
+        Ok(empty)
+    }
+
     /// Commit any changes made in the transaction.  It is an error to call this more than
     /// once.
     fn commit(&mut self) -> Result<()>;

@@ -152,4 +152,25 @@ impl Server for RemoteServer {
             .send_bytes(ciphertext.as_ref())
             .map(|_| ())?)
     }
+
+    fn get_snapshot(&mut self) -> anyhow::Result<Option<(VersionId, Snapshot)>> {
+        let url = format!("{}/v1/client/snapshot", self.origin);
+        match self
+            .agent
+            .get(&url)
+            .set("X-Client-Key", &self.client_key.to_string())
+            .call()
+        {
+            Ok(resp) => {
+                let version_id = get_uuid_header(&resp, "X-Version-Id")?;
+                let ciphertext = Ciphertext::from_resp(resp, SNAPSHOT_CONTENT_TYPE)?;
+                let snapshot = ciphertext
+                    .open(&self.encryption_secret, version_id)?
+                    .payload;
+                Ok(Some((version_id, snapshot)))
+            }
+            Err(ureq::Error::Status(status, _)) if status == 404 => Ok(None),
+            Err(err) => Err(err.into()),
+        }
+    }
 }

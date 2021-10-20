@@ -160,6 +160,10 @@ impl Server for LocalServer {
         // the local server never requests a snapshot, so it should never get one
         unreachable!()
     }
+
+    fn get_snapshot(&mut self) -> anyhow::Result<Option<(VersionId, Snapshot)>> {
+        Ok(None)
+    }
 }
 
 #[cfg(test)]

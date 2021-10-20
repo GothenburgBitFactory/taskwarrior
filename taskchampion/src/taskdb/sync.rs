@@ -16,6 +16,15 @@ pub(super) fn sync(
     txn: &mut dyn StorageTxn,
     avoid_snapshots: bool,
 ) -> anyhow::Result<()> {
+    // if this taskdb is entirely empty, then start by getting and applying a snapshot
+    if txn.is_empty()? {
+        trace!("storage is empty; attempting to apply a snapshot");
+        if let Some((version, snap)) = server.get_snapshot()? {
+            snapshot::apply_snapshot(txn, version, snap.as_ref())?;
+            trace!("applied snapshot for version {}", version);
+        }
+    }
+
     // retry synchronizing until the server accepts our version (this allows for races between
     // replicas trying to sync to the same server).  If the server insists on the same base
     // version twice, then we have diverged.
@@ -293,24 +302,23 @@ mod test {
     }
 
     #[test]
-    fn test_sync_adds_snapshot() -> anyhow::Result<()> {
-        let test_server = TestServer::new();
+    fn test_sync_add_snapshot_start_with_snapshot() -> anyhow::Result<()> {
+        let mut test_server = TestServer::new();
 
         let mut server: Box<dyn Server> = test_server.server();
         let mut db1 = newdb();
 
         let uuid = Uuid::new_v4();
-        db1.apply(Operation::Create { uuid }).unwrap();
+        db1.apply(Operation::Create { uuid })?;
         db1.apply(Operation::Update {
             uuid,
             property: "title".into(),
             value: Some("my first task".into()),
             timestamp: Utc::now(),
-        })
-        .unwrap();
+        })?;
 
         test_server.set_snapshot_urgency(SnapshotUrgency::High);
-        sync(&mut server, db1.storage.txn()?.as_mut(), false).unwrap();
+        sync(&mut server, db1.storage.txn()?.as_mut(), false)?;
 
         // assert that a snapshot was added
         let base_version = db1.storage.txn()?.base_version()?;
@@ -321,6 +329,26 @@ mod test {
 
         let tasks = SnapshotTasks::decode(&s)?.into_inner();
         assert_eq!(tasks[0].0, uuid);
+
+        // update the taskdb and sync again
+        db1.apply(Operation::Update {
+            uuid,
+            property: "title".into(),
+            value: Some("my first task, updated".into()),
+            timestamp: Utc::now(),
+        })?;
+        sync(&mut server, db1.storage.txn()?.as_mut(), false)?;
+
+        // delete the first version, so that db2 *must* initialize from
+        // the snapshot
+        test_server.delete_version(Uuid::nil());
+
+        // sync to a new DB and check that we got the expected results
+        let mut db2 = newdb();
+        sync(&mut server, db2.storage.txn()?.as_mut(), false)?;
+
+        let task = db2.get_task(uuid)?.unwrap();
+        assert_eq!(task.get("title").unwrap(), "my first task, updated");
 
         Ok(())
     }

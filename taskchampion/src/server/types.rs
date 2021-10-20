@@ -65,4 +65,6 @@ pub trait Server {
 
     /// Add a snapshot on the server
     fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> anyhow::Result<()>;
+
+    fn get_snapshot(&mut self) -> anyhow::Result<Option<(VersionId, Snapshot)>>;
 }
