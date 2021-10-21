@@ -380,7 +380,6 @@ mod test {
                 .drain(..)
                 .collect(),
         );
-        dbg!(&task);
 
         assert!(!task.is_waiting());
         assert_eq!(task.get_wait(), Some(ts));

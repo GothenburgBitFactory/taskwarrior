@@ -61,7 +61,6 @@ mod test {
         assert!(w.into_string().starts_with("Set configuration value "));
 
         let updated_toml = fs::read_to_string(cfg_file.clone()).unwrap();
-        dbg!(&updated_toml);
         assert_eq!(
             updated_toml,
             "# store data everywhere\ndata_dir = \"/somewhere\"\n"
