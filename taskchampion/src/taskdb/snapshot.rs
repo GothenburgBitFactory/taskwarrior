@@ -70,7 +70,6 @@ impl SnapshotTasks {
     }
 }
 
-#[allow(dead_code)]
 /// Generate a snapshot (compressed, unencrypted) for the current state of the taskdb in the given
 /// storage.
 pub(super) fn make_snapshot(txn: &mut dyn StorageTxn) -> anyhow::Result<Vec<u8>> {
@@ -78,7 +77,6 @@ pub(super) fn make_snapshot(txn: &mut dyn StorageTxn) -> anyhow::Result<Vec<u8>>
     all_tasks.encode()
 }
 
-#[allow(dead_code)]
 /// Apply the given snapshot (compressed, unencrypted) to the taskdb's storage.
 pub(super) fn apply_snapshot(
     txn: &mut dyn StorageTxn,
@@ -87,14 +85,8 @@ pub(super) fn apply_snapshot(
 ) -> anyhow::Result<()> {
     let all_tasks = SnapshotTasks::decode(snapshot)?;
 
-    // first, verify that the taskdb truly is empty
-    let mut empty = true;
-    empty = empty && txn.all_tasks()?.is_empty();
-    empty = empty && txn.get_working_set()? == vec![None];
-    empty = empty && txn.base_version()? == Uuid::nil();
-    empty = empty && txn.operations()?.is_empty();
-
-    if !empty {
+    // double-check emptiness
+    if !txn.is_empty()? {
         anyhow::bail!("Cannot apply snapshot to a non-empty task database");
     }
 

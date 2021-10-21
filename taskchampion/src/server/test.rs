@@ -12,9 +12,8 @@ struct Version {
     history_segment: HistorySegment,
 }
 
-#[derive(Clone)]
-
 /// TestServer implements the Server trait with a test implementation.
+#[derive(Clone)]
 pub(crate) struct TestServer(Arc<Mutex<Inner>>);
 
 pub(crate) struct Inner {
@@ -35,6 +34,7 @@ impl TestServer {
             snapshot: None,
         })))
     }
+    // feel free to add any test utility functions here
 
     /// Get a boxed Server implementation referring to this TestServer
     pub(crate) fn server(&self) -> Box<dyn Server> {
@@ -50,6 +50,12 @@ impl TestServer {
     pub(crate) fn snapshot(&self) -> Option<(VersionId, Snapshot)> {
         let inner = self.0.lock().unwrap();
         inner.snapshot.as_ref().cloned()
+    }
+
+    /// Delete a version from storage
+    pub(crate) fn delete_version(&mut self, parent_version_id: VersionId) {
+        let mut inner = self.0.lock().unwrap();
+        inner.versions.remove(&parent_version_id);
     }
 }
 
@@ -118,5 +124,10 @@ impl Server for TestServer {
         // test implementation -- does not perform any validation
         inner.snapshot = Some((version_id, snapshot));
         Ok(())
+    }
+
+    fn get_snapshot(&mut self) -> anyhow::Result<Option<(VersionId, Snapshot)>> {
+        let inner = self.0.lock().unwrap();
+        Ok(inner.snapshot.clone())
     }
 }
