@@ -140,7 +140,7 @@ impl Replica {
     ) -> anyhow::Result<()> {
         self.taskdb
             .sync(server, avoid_snapshots)
-            .context("Failed to synchronize")?;
+            .context("Failed to synchronize with server")?;
         self.rebuild_working_set(false)
             .context("Failed to rebuild working set after sync")?;
         Ok(())

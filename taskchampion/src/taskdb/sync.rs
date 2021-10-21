@@ -1,6 +1,7 @@
 use super::{ops, snapshot};
 use crate::server::{AddVersionResult, GetVersionResult, Server, SnapshotUrgency};
 use crate::storage::{Operation, StorageTxn};
+use crate::Error;
 use log::{info, trace, warn};
 use serde::{Deserialize, Serialize};
 use std::str;
@@ -97,7 +98,7 @@ pub(super) fn sync(
                 );
                 if let Some(requested) = requested_parent_version_id {
                     if parent_version_id == requested {
-                        anyhow::bail!("Server's task history has diverged from this replica");
+                        return Err(Error::OutOfSync.into());
                     }
                 }
                 requested_parent_version_id = Some(parent_version_id);
