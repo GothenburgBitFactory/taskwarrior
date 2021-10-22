@@ -12,7 +12,7 @@
            Thanks to Scott Mcdermott for reporting.
 - TW #2626 Waiting report lists deleted and/or completed tasks.
            Thanks to Don Harper for reporting.
-- TW #2629 New-style context definition should take precendence over old-style
+- TW #2629 New-style context definition should take precedence over old-style
            even if the new-style is an empty string.
            Thanks to Denis Kasak for reporting.
 - TW #2632 Cannot build on Cygwin
