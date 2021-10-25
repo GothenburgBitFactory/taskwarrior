@@ -30,7 +30,7 @@ The following keys, and key formats, are defined:
 * `status` - one of `P` for a pending task (the default), `C` for completed or `D` for deleted
 * `description` - the one-line summary of the task
 * `modified` - the time of the last modification of this task
-* `start.<timestamp>` - either an empty string (representing work on the task to the task that has not been stopped) or a timestamp (representing the time that work stopped)
+* `start` - the most recent time at which this task was started (a task with no `start` key is not active)
 * `tag.<tag>` - indicates this task has tag `<tag>` (value is an empty string)
 * `wait` - indicates the time before which this task should be hidden, as it is not actionable
 
