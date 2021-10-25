@@ -100,9 +100,7 @@ impl Task {
     /// Determine whether this task is active -- that is, that it has been started
     /// and not stopped.
     pub fn is_active(&self) -> bool {
-        self.taskmap
-            .iter()
-            .any(|(k, v)| k.starts_with("start.") && v.is_empty())
+        self.taskmap.contains_key("start")
     }
 
     /// Determine whether a given synthetic tag is present on this task.  All other
@@ -192,31 +190,18 @@ impl<'r> TaskMut<'r> {
         self.set_timestamp("modified", Some(modified))
     }
 
-    /// Start the task by creating "start.<timestamp": "", if the task is not already
+    /// Start the task by creating "start": "<timestamp>", if the task is not already
     /// active.
     pub fn start(&mut self) -> anyhow::Result<()> {
         if self.is_active() {
             return Ok(());
         }
-        let k = format!("start.{}", Utc::now().timestamp());
-        self.set_string(k, Some(String::from("")))
+        self.set_timestamp("start", Some(Utc::now()))
     }
 
-    /// Stop the task by adding the current timestamp to all un-resolved "start.<timestamp>" keys.
+    /// Stop the task by removing the `start` key
     pub fn stop(&mut self) -> anyhow::Result<()> {
-        let keys = self
-            .taskmap
-            .iter()
-            .filter(|(k, v)| k.starts_with("start.") && v.is_empty())
-            .map(|(k, _)| k)
-            .cloned()
-            .collect::<Vec<_>>();
-        let now = Utc::now();
-        for key in keys {
-            println!("{}", key);
-            self.set_timestamp(&key, Some(now))?;
-        }
-        Ok(())
+        self.set_timestamp("start", None)
     }
 
     /// Mark this task as complete
@@ -340,10 +325,10 @@ mod test {
     }
 
     #[test]
-    fn test_is_active() {
+    fn test_is_active_active() {
         let task = Task::new(
             Uuid::new_v4(),
-            vec![(String::from("start.1234"), String::from(""))]
+            vec![(String::from("start"), String::from("1234"))]
                 .drain(..)
                 .collect(),
         );
@@ -352,14 +337,8 @@ mod test {
     }
 
     #[test]
-    fn test_is_active_stopped() {
-        let task = Task::new(
-            Uuid::new_v4(),
-            vec![(String::from("start.1234"), String::from("1235"))]
-                .drain(..)
-                .collect(),
-        );
-
+    fn test_is_active_inactive() {
+        let task = Task::new(Uuid::new_v4(), Default::default());
         assert!(!task.is_active());
     }
 
@@ -405,7 +384,7 @@ mod test {
             Uuid::new_v4(),
             vec![
                 (String::from("tag.abc"), String::from("")),
-                (String::from("start.1234"), String::from("")),
+                (String::from("start"), String::from("1234")),
             ]
             .drain(..)
             .collect(),
@@ -463,35 +442,21 @@ mod test {
         assert_eq!(tags, vec![utag("ok"), stag(SyntheticTag::Pending)]);
     }
 
-    fn count_taskmap(task: &TaskMut, f: fn(&(&String, &String)) -> bool) -> usize {
-        task.taskmap.iter().filter(f).count()
-    }
-
     #[test]
     fn test_start() {
         with_mut_task(|mut task| {
             task.start().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                1
-            );
+            assert!(task.taskmap.contains_key("start"));
+
             task.reload().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                1
-            );
+            assert!(task.taskmap.contains_key("start"));
 
             // second start doesn't change anything..
             task.start().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                1
-            );
+            assert!(task.taskmap.contains_key("start"));
+
             task.reload().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                1
-            );
+            assert!(task.taskmap.contains_key("start"));
         });
     }
 
@@ -500,23 +465,17 @@ mod test {
         with_mut_task(|mut task| {
             task.start().unwrap();
             task.stop().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                0
-            );
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
-                1
-            );
+            assert!(!task.taskmap.contains_key("start"));
+
             task.reload().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                0
-            );
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
-                1
-            );
+            assert!(!task.taskmap.contains_key("start"));
+
+            // redundant call does nothing..
+            task.stop().unwrap();
+            assert!(!task.taskmap.contains_key("start"));
+
+            task.reload().unwrap();
+            assert!(!task.taskmap.contains_key("start"));
         });
     }
 
@@ -531,38 +490,6 @@ mod test {
             task.done().unwrap();
             assert_eq!(task.get_status(), Status::Completed);
             assert!(task.has_tag(&stag(SyntheticTag::Completed)));
-        });
-    }
-
-    #[test]
-    fn test_stop_multiple() {
-        with_mut_task(|mut task| {
-            // simulate a task that has (through the synchronization process) been started twice
-            task.task
-                .taskmap
-                .insert(String::from("start.1234"), String::from(""));
-            task.task
-                .taskmap
-                .insert(String::from("start.5678"), String::from(""));
-
-            task.stop().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                0
-            );
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
-                2
-            );
-            task.reload().unwrap();
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && v.is_empty()),
-                0
-            );
-            assert_eq!(
-                count_taskmap(&task, |(k, v)| k.starts_with("start.") && !v.is_empty()),
-                2
-            );
         });
     }
 
