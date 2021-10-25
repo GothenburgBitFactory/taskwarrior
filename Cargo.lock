@@ -2473,6 +2473,8 @@ dependencies = [
  "actix-rt",
  "actix-web",
  "anyhow",
+ "env_logger 0.8.4",
+ "log",
  "pretty_assertions",
  "taskchampion",
  "taskchampion-sync-server",

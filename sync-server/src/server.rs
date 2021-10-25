@@ -188,7 +188,6 @@ pub(crate) fn add_version<'a>(
         }
     };
 
-    println!("{:?}", client.snapshot);
     let version_urgency = match client.snapshot {
         None => SnapshotUrgency::High,
         Some(Snapshot { versions_since, .. }) => {
