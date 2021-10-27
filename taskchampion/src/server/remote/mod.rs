@@ -165,10 +165,8 @@ impl Server for RemoteServer {
         {
             Ok(resp) => {
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-                let ciphertext = Ciphertext::from_resp(resp, SNAPSHOT_CONTENT_TYPE)?;
-                let snapshot = ciphertext
-                    .open(&self.encryption_secret, version_id)?
-                    .payload;
+                let sealed = Sealed::from_resp(resp, version_id, SNAPSHOT_CONTENT_TYPE)?;
+                let snapshot = self.cryptor.unseal(sealed)?.payload;
                 Ok(Some((version_id, snapshot)))
             }
             Err(ureq::Error::Status(status, _)) if status == 404 => Ok(None),
