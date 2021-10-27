@@ -1,5 +1,6 @@
 use crate::argparse::{DescriptionMod, Modification};
-use taskchampion::TaskMut;
+use chrono::Utc;
+use taskchampion::{Annotation, TaskMut};
 
 /// Apply the given modification
 pub(super) fn apply_modification(
@@ -39,6 +40,13 @@ pub(super) fn apply_modification(
 
     if let Some(wait) = modification.wait {
         task.set_wait(wait)?;
+    }
+
+    if let Some(ref ann) = modification.annotate {
+        task.add_annotation(Annotation {
+            entry: Utc::now(),
+            description: ann.into(),
+        })?;
     }
 
     Ok(())

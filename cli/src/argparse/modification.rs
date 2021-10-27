@@ -48,6 +48,9 @@ pub struct Modification {
 
     /// Remove tags
     pub remove_tags: HashSet<Tag>,
+
+    /// Add annotation
+    pub annotate: Option<String>,
 }
 
 /// A single argument that is part of a modification, used internally to this module
@@ -128,12 +131,12 @@ impl Modification {
     pub(super) fn get_usage(u: &mut usage::Usage) {
         u.modifications.push(usage::Modification {
             syntax: "DESCRIPTION",
-            summary: "Set description",
+            summary: "Set description/annotation",
             description: "
-                Set the task description.  Multiple arguments are combined into a single
-                space-separated description.  To avoid surprises from shell quoting, prefer
-                to use a single quoted argument, for example `ta 19 modify \"return library
-                books\"`",
+                Set the task description (or the task annotation for `ta annotate`).  Multiple
+                arguments are combined into a single space-separated description.  To avoid
+                surprises from shell quoting, prefer to use a single quoted argument, for example
+                `ta 19 modify \"return library books\"`",
         });
         u.modifications.push(usage::Modification {
             syntax: "+TAG",

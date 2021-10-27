@@ -1,5 +1,5 @@
 use super::tag::{SyntheticTag, TagInner};
-use super::{Status, Tag};
+use super::{Annotation, Status, Tag, Timestamp};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
@@ -145,6 +145,22 @@ impl Task {
             )
     }
 
+    /// Iterate over the task's annotations, in arbitrary order.
+    pub fn get_annotations(&self) -> impl Iterator<Item = Annotation> + '_ {
+        self.taskmap.iter().filter_map(|(k, v)| {
+            if let Some(ts) = k.strip_prefix("annotation_") {
+                if let Ok(ts) = ts.parse::<i64>() {
+                    return Some(Annotation {
+                        entry: Utc.timestamp(ts, 0),
+                        description: v.to_owned(),
+                    });
+                }
+                // note that invalid "annotation_*" are ignored
+            }
+            None
+        })
+    }
+
     pub fn get_modified(&self) -> Option<DateTime<Utc>> {
         self.get_timestamp("modified")
     }
@@ -223,6 +239,20 @@ impl<'r> TaskMut<'r> {
             anyhow::bail!("Synthetic tags cannot be modified");
         }
         self.set_string(format!("tag.{}", tag), None)
+    }
+
+    /// Add a new annotation.  Note that annotations with the same entry time
+    /// will overwrite one another.
+    pub fn add_annotation(&mut self, ann: Annotation) -> anyhow::Result<()> {
+        self.set_string(
+            format!("annotation_{}", ann.entry.timestamp()),
+            Some(ann.description),
+        )
+    }
+
+    /// Remove an annotation, based on its entry time.
+    pub fn remove_annotation(&mut self, entry: Timestamp) -> anyhow::Result<()> {
+        self.set_string(format!("annotation_{}", entry.timestamp()), None)
     }
 
     // -- utility functions
@@ -440,6 +470,90 @@ mod test {
         // only "ok" is OK
         let tags: Vec<_> = task.get_tags().collect();
         assert_eq!(tags, vec![utag("ok"), stag(SyntheticTag::Pending)]);
+    }
+
+    #[test]
+    fn test_get_annotations() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![
+                (
+                    String::from("annotation_1635301873"),
+                    String::from("left message"),
+                ),
+                (
+                    String::from("annotation_1635301883"),
+                    String::from("left another message"),
+                ),
+                (String::from("annotation_"), String::from("invalid")),
+                (String::from("annotation_abcde"), String::from("invalid")),
+            ]
+            .drain(..)
+            .collect(),
+        );
+
+        let mut anns: Vec<_> = task.get_annotations().collect();
+        anns.sort();
+        assert_eq!(
+            anns,
+            vec![
+                Annotation {
+                    entry: Utc.timestamp(1635301873, 0),
+                    description: "left message".into()
+                },
+                Annotation {
+                    entry: Utc.timestamp(1635301883, 0),
+                    description: "left another message".into()
+                }
+            ]
+        );
+    }
+
+    #[test]
+    fn test_add_annotation() {
+        with_mut_task(|mut task| {
+            task.add_annotation(Annotation {
+                entry: Utc.timestamp(1635301900, 0),
+                description: "right message".into(),
+            })
+            .unwrap();
+            let k = "annotation_1635301900";
+            assert_eq!(task.taskmap[k], "right message".to_owned());
+            task.reload().unwrap();
+            assert_eq!(task.taskmap[k], "right message".to_owned());
+            // adding with same time overwrites..
+            task.add_annotation(Annotation {
+                entry: Utc.timestamp(1635301900, 0),
+                description: "right message 2".into(),
+            })
+            .unwrap();
+            assert_eq!(task.taskmap[k], "right message 2".to_owned());
+        });
+    }
+
+    #[test]
+    fn test_remove_annotation() {
+        with_mut_task(|mut task| {
+            task.set_string("annotation_1635301873", Some("left message".into()))
+                .unwrap();
+            task.set_string("annotation_1635301883", Some("left another message".into()))
+                .unwrap();
+
+            task.remove_annotation(Utc.timestamp(1635301873, 0))
+                .unwrap();
+
+            task.reload().unwrap();
+
+            let mut anns: Vec<_> = task.get_annotations().collect();
+            anns.sort();
+            assert_eq!(
+                anns,
+                vec![Annotation {
+                    entry: Utc.timestamp(1635301883, 0),
+                    description: "left another message".into()
+                }]
+            );
+        });
     }
 
     #[test]
