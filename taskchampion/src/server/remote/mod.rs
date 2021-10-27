@@ -5,13 +5,12 @@ use crate::server::{
 use std::time::Duration;
 use uuid::Uuid;
 
-mod crypto;
-use crypto::{Ciphertext, Cleartext, Secret};
+use super::crypto::{Cryptor, Sealed, Secret, Unsealed};
 
 pub struct RemoteServer {
     origin: String,
     client_key: Uuid,
-    encryption_secret: Secret,
+    cryptor: Cryptor,
     agent: ureq::Agent,
 }
 
@@ -28,16 +27,20 @@ impl RemoteServer {
     /// without a trailing slash, such as `https://tcsync.example.com`.  Pass a client_key to
     /// identify this client to the server.  Multiple replicas synchronizing the same task history
     /// should use the same client_key.
-    pub fn new(origin: String, client_key: Uuid, encryption_secret: Vec<u8>) -> RemoteServer {
-        RemoteServer {
+    pub fn new(
+        origin: String,
+        client_key: Uuid,
+        encryption_secret: Vec<u8>,
+    ) -> anyhow::Result<RemoteServer> {
+        Ok(RemoteServer {
             origin,
             client_key,
-            encryption_secret: encryption_secret.into(),
+            cryptor: Cryptor::new(client_key, &Secret(encryption_secret.to_vec()))?,
             agent: ureq::AgentBuilder::new()
                 .timeout_connect(Duration::from_secs(10))
                 .timeout_read(Duration::from_secs(60))
                 .build(),
-        }
+        })
     }
 }
 
@@ -73,17 +76,17 @@ impl Server for RemoteServer {
             "{}/v1/client/add-version/{}",
             self.origin, parent_version_id
         );
-        let cleartext = Cleartext {
+        let unsealed = Unsealed {
             version_id: parent_version_id,
             payload: history_segment,
         };
-        let ciphertext = cleartext.seal(&self.encryption_secret)?;
+        let sealed = self.cryptor.seal(unsealed)?;
         match self
             .agent
             .post(&url)
             .set("Content-Type", HISTORY_SEGMENT_CONTENT_TYPE)
             .set("X-Client-Key", &self.client_key.to_string())
-            .send_bytes(ciphertext.as_ref())
+            .send_bytes(sealed.as_ref())
         {
             Ok(resp) => {
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
@@ -120,10 +123,9 @@ impl Server for RemoteServer {
             Ok(resp) => {
                 let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-                let ciphertext = Ciphertext::from_resp(resp, HISTORY_SEGMENT_CONTENT_TYPE)?;
-                let history_segment = ciphertext
-                    .open(&self.encryption_secret, parent_version_id)?
-                    .payload;
+                let sealed =
+                    Sealed::from_resp(resp, parent_version_id, HISTORY_SEGMENT_CONTENT_TYPE)?;
+                let history_segment = self.cryptor.unseal(sealed)?.payload;
                 Ok(GetVersionResult::Version {
                     version_id,
                     parent_version_id,
@@ -139,17 +141,17 @@ impl Server for RemoteServer {
 
     fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> anyhow::Result<()> {
         let url = format!("{}/v1/client/add-snapshot/{}", self.origin, version_id);
-        let cleartext = Cleartext {
+        let unsealed = Unsealed {
             version_id,
             payload: snapshot,
         };
-        let ciphertext = cleartext.seal(&self.encryption_secret)?;
+        let sealed = self.cryptor.seal(unsealed)?;
         Ok(self
             .agent
             .post(&url)
             .set("Content-Type", SNAPSHOT_CONTENT_TYPE)
             .set("X-Client-Key", &self.client_key.to_string())
-            .send_bytes(ciphertext.as_ref())
+            .send_bytes(sealed.as_ref())
             .map(|_| ())?)
     }
 

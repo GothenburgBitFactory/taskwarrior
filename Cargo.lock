@@ -2254,12 +2254,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "protobuf"
-version = "2.24.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db50e77ae196458ccd3dc58a31ea1a90b0698ab1b7928d89f644c25d72070267"
-
-[[package]]
 name = "pulldown-cmark"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2963,11 +2957,13 @@ name = "taskchampion"
 version = "0.4.1"
 dependencies = [
  "anyhow",
+ "byteorder",
  "chrono",
  "flate2",
  "log",
  "pretty_assertions",
  "proptest",
+ "ring",
  "rstest",
  "rusqlite",
  "serde",
@@ -2976,7 +2972,6 @@ dependencies = [
  "strum_macros 0.21.1",
  "tempfile",
  "thiserror",
- "tindercrypt",
  "ureq",
  "uuid",
 ]
@@ -3183,18 +3178,6 @@ dependencies = [
  "quote",
  "standback",
  "syn",
-]
-
-[[package]]
-name = "tindercrypt"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f34fd5cc8db265f27abf29e8a3cec5cc643ae9f3f9ae39f08a77dc4add375b6d"
-dependencies = [
- "protobuf",
- "rand 0.7.3",
- "ring",
- "thiserror",
 ]
 
 [[package]]

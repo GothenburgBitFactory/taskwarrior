@@ -12,6 +12,7 @@ However, users who wish to implement their own server interfaces can implement t
 pub(crate) mod test;
 
 mod config;
+mod crypto;
 mod local;
 mod remote;
 mod types;
