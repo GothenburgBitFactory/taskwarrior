@@ -31,7 +31,7 @@ The following keys, and key formats, are defined:
 * `description` - the one-line summary of the task
 * `modified` - the time of the last modification of this task
 * `start` - the most recent time at which this task was started (a task with no `start` key is not active)
-* `tag.<tag>` - indicates this task has tag `<tag>` (value is an empty string)
+* `tag_<tag>` - indicates this task has tag `<tag>` (value is an empty string)
 * `wait` - indicates the time before which this task should be hidden, as it is not actionable
 
 The following are not yet implemented:

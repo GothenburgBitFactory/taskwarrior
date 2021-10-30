@@ -118,7 +118,7 @@ impl Task {
     /// Check if this task has the given tag
     pub fn has_tag(&self, tag: &Tag) -> bool {
         match tag.inner() {
-            TagInner::User(s) => self.taskmap.contains_key(&format!("tag.{}", s)),
+            TagInner::User(s) => self.taskmap.contains_key(&format!("tag_{}", s)),
             TagInner::Synthetic(st) => self.has_synthetic_tag(st),
         }
     }
@@ -130,11 +130,11 @@ impl Task {
         self.taskmap
             .iter()
             .filter_map(|(k, _)| {
-                if let Some(tag) = k.strip_prefix("tag.") {
+                if let Some(tag) = k.strip_prefix("tag_") {
                     if let Ok(tag) = tag.try_into() {
                         return Some(tag);
                     }
-                    // note that invalid "tag.*" are ignored
+                    // note that invalid "tag_*" are ignored
                 }
                 None
             })
@@ -214,7 +214,7 @@ impl<'r> TaskMut<'r> {
         if tag.is_synthetic() {
             anyhow::bail!("Synthetic tags cannot be modified");
         }
-        self.set_string(format!("tag.{}", tag), Some("".to_owned()))
+        self.set_string(format!("tag_{}", tag), Some("".to_owned()))
     }
 
     /// Remove a tag from this task.  Does nothing if the tag is not present.
@@ -222,7 +222,7 @@ impl<'r> TaskMut<'r> {
         if tag.is_synthetic() {
             anyhow::bail!("Synthetic tags cannot be modified");
         }
-        self.set_string(format!("tag.{}", tag), None)
+        self.set_string(format!("tag_{}", tag), None)
     }
 
     // -- utility functions
@@ -383,7 +383,7 @@ mod test {
         let task = Task::new(
             Uuid::new_v4(),
             vec![
-                (String::from("tag.abc"), String::from("")),
+                (String::from("tag_abc"), String::from("")),
                 (String::from("start"), String::from("1234")),
             ]
             .drain(..)
@@ -402,8 +402,8 @@ mod test {
         let task = Task::new(
             Uuid::new_v4(),
             vec![
-                (String::from("tag.abc"), String::from("")),
-                (String::from("tag.def"), String::from("")),
+                (String::from("tag_abc"), String::from("")),
+                (String::from("tag_def"), String::from("")),
                 // set `wait` so the synthetic tag WAITING is present
                 (String::from("wait"), String::from("33158909732")),
             ]
@@ -428,10 +428,10 @@ mod test {
         let task = Task::new(
             Uuid::new_v4(),
             vec![
-                (String::from("tag.ok"), String::from("")),
-                (String::from("tag."), String::from("")),
-                (String::from("tag.123"), String::from("")),
-                (String::from("tag.a!!"), String::from("")),
+                (String::from("tag_ok"), String::from("")),
+                (String::from("tag_"), String::from("")),
+                (String::from("tag_123"), String::from("")),
+                (String::from("tag_a!!"), String::from("")),
             ]
             .drain(..)
             .collect(),
@@ -497,12 +497,12 @@ mod test {
     fn test_add_tags() {
         with_mut_task(|mut task| {
             task.add_tag(&utag("abc")).unwrap();
-            assert!(task.taskmap.contains_key("tag.abc"));
+            assert!(task.taskmap.contains_key("tag_abc"));
             task.reload().unwrap();
-            assert!(task.taskmap.contains_key("tag.abc"));
+            assert!(task.taskmap.contains_key("tag_abc"));
             // redundant add has no effect..
             task.add_tag(&utag("abc")).unwrap();
-            assert!(task.taskmap.contains_key("tag.abc"));
+            assert!(task.taskmap.contains_key("tag_abc"));
         });
     }
 
@@ -511,13 +511,13 @@ mod test {
         with_mut_task(|mut task| {
             task.add_tag(&utag("abc")).unwrap();
             task.reload().unwrap();
-            assert!(task.taskmap.contains_key("tag.abc"));
+            assert!(task.taskmap.contains_key("tag_abc"));
 
             task.remove_tag(&utag("abc")).unwrap();
-            assert!(!task.taskmap.contains_key("tag.abc"));
+            assert!(!task.taskmap.contains_key("tag_abc"));
             // redundant remove has no effect..
             task.remove_tag(&utag("abc")).unwrap();
-            assert!(!task.taskmap.contains_key("tag.abc"));
+            assert!(!task.taskmap.contains_key("tag_abc"));
         });
     }
 }
