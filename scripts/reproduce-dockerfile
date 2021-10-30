@@ -5,7 +5,7 @@ FROM centos:8
 
 RUN dnf update -y
 RUN yum install epel-release -y
-RUN dnf install python38 git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime sudo man gdb -y
+RUN dnf install python38 vim git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime sudo man gdb -y
 
 RUN useradd warrior
 RUN echo warrior ALL=NOPASSWD:ALL > /etc/sudoers.d/warrior
