@@ -1,7 +1,7 @@
 use super::Timestamp;
 
 /// An annotation for a task
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Annotation {
     /// Time the annotation was made
     pub entry: Timestamp,

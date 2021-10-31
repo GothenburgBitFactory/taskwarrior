@@ -33,8 +33,8 @@ The following keys, and key formats, are defined:
 * `start` - the most recent time at which this task was started (a task with no `start` key is not active)
 * `tag_<tag>` - indicates this task has tag `<tag>` (value is an empty string)
 * `wait` - indicates the time before which this task should be hidden, as it is not actionable
+* `annotation_<timestamp>` - value is an annotation created at the given time
 
 The following are not yet implemented:
 
-* `dep.<uuid>` - indicates this task depends on `<uuid>` (value is an empty string)
-* `annotation.<timestamp>` - value is an annotation created at the given time
+* `dep_<uuid>` - indicates this task depends on `<uuid>` (value is an empty string)

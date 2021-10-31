@@ -207,6 +207,13 @@ impl Modify {
                 "start" => modification.active = Some(true),
                 "stop" => modification.active = Some(false),
                 "done" => modification.status = Some(Status::Completed),
+                "annotate" => {
+                    // what would be parsed as a description is, here, used as the annotation
+                    if let DescriptionMod::Set(s) = modification.description {
+                        modification.description = DescriptionMod::None;
+                        modification.annotate = Some(s);
+                    }
+                }
                 _ => {}
             }
 
@@ -225,6 +232,7 @@ impl Modify {
                     arg_matching(literal("start")),
                     arg_matching(literal("stop")),
                     arg_matching(literal("done")),
+                    arg_matching(literal("annotate")),
                 )),
                 Modification::parse,
             )),
@@ -277,6 +285,13 @@ impl Modify {
             description: "
                 Mark all tasks matching the required filter as completed, additionally applying any given
                 modifications.",
+        });
+        u.subcommands.push(usage::Subcommand {
+            name: "annotate",
+            syntax: "<filter> annotate [modification]",
+            summary: "Mark tasks as completed",
+            description: "
+                Add an annotation to all tasks matching the required filter.",
         });
     }
 }
@@ -648,6 +663,23 @@ mod test {
         };
         assert_eq!(
             Subcommand::parse(argv!["123", "stop", "mod"]).unwrap(),
+            (&EMPTY[..], subcommand)
+        );
+    }
+
+    #[test]
+    fn test_annotate() {
+        let subcommand = Subcommand::Modify {
+            filter: Filter {
+                conditions: vec![Condition::IdList(vec![TaskId::WorkingSetId(123)])],
+            },
+            modification: Modification {
+                annotate: Some("sent invoice".into()),
+                ..Default::default()
+            },
+        };
+        assert_eq!(
+            Subcommand::parse(argv!["123", "annotate", "sent", "invoice"]).unwrap(),
             (&EMPTY[..], subcommand)
         );
     }

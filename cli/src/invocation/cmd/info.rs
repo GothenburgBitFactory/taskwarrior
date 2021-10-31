@@ -39,6 +39,11 @@ pub(crate) fn execute<W: WriteColor>(
             if let Some(wait) = task.get_wait() {
                 t.add_row(row![b->"Wait", wait]);
             }
+            let mut annotations: Vec<_> = task.get_annotations().collect();
+            annotations.sort();
+            for ann in annotations {
+                t.add_row(row![b->"Annotation", format!("{}: {}", ann.entry, ann.description)]);
+            }
         }
         t.print(w)?;
     }
