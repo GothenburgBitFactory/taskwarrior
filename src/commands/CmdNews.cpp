@@ -616,7 +616,11 @@ int CmdNews::execute (std::string& output)
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
 
     if (matches.size () == 1 && matches[0] == "yes")
+#if defined (DARWIN)
+      system ("open 'https://github.com/sponsors/GothenburgBitFactory/'");
+#else
       system ("xdg-open 'https://github.com/sponsors/GothenburgBitFactory/'");
+#endif
 
     std::cout << std::endl;
   }
