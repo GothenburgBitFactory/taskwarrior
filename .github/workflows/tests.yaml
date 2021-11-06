@@ -18,6 +18,9 @@ jobs:
           - name: "Fedora 34"
             runner: ubuntu-latest
             dockerfile: fedora34
+          - name: "Fedora 35"
+            runner: ubuntu-latest
+            dockerfile: fedora35
           - name: "Debian Testing"
             runner: ubuntu-latest
             dockerfile: debiantesting
