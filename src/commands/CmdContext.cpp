@@ -221,14 +221,13 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
           ! confirm (format ("The filter '{1}' matches 0 pending tasks. Do you wish to continue?", value)))
         throw std::string ("Context definition aborted.");
 
-    std::string modifier_token = "";
-    bool valid_write_context = CmdContext::validateWriteContext (lexedArgs, modifier_token);
+    std::string reason = "";
+    bool valid_write_context = CmdContext::validateWriteContext (lexedArgs, reason);
 
     if (! valid_write_context)
     {
       std::stringstream warning;
-      warning << format ("The filter '{1}' is not a valid modification string, because it contains ", value)
-              << ( modifier_token.empty () ? "the OR operator." : format ("an attribute modifier ({1}).", modifier_token) )
+      warning << format ("The filter '{1}' is not a valid modification string, because it contains {2}.", value, reason)
               << "\nAs such, value for the write context cannot be set (context will not apply on task add / task log).\n\n"
               << format ("Please use 'task config context.{1}.write <default mods>' to set default attribute values for new tasks in this context manually.\n\n", words[1]);
       out << colorizeFootnote (warning.str ());
