@@ -117,41 +117,36 @@ std::string CmdContext::joinWords (const std::vector <std::string>& words, unsig
 // invalid due to a wrong modifier use, the modifier string will contain the
 // first invalid modifier.
 //
-bool CmdContext::validateWriteContext (const std::vector <A2>& lexedArgs, std::string& modifier_token)
+bool CmdContext::validateWriteContext (const std::vector <A2>& lexedArgs, std::string& reason)
 {
-  bool contains_or = false;
-  bool contains_modifier = false;
-  bool contains_tag_exclusion = false;
-
   for (auto &arg: lexedArgs) {
     if (arg._lextype == Lexer::Type::op)
       if (arg.attribute ("raw") == "or")
       {
-        contains_or = true;
-        break;
+        reason = "contains the 'OR' operator";
+        return false;
       }
 
     if (arg._lextype == Lexer::Type::pair) {
       auto modifier = arg.attribute ("modifier");
       if (modifier != "" && modifier != "is" && modifier != "equals")
       {
-        contains_modifier = true;
-        modifier_token = arg.attribute ("raw");
-        break;
+        reason = format ("contains an attribute modifier '{1}'", arg.attribute ("raw"));
+        return false;
       }
     }
 
     if (arg._lextype == Lexer::Type::tag) {
       if (arg.attribute ("sign") == "-")
       {
-        contains_tag_exclusion = true;
-        break;
+        reason = format ("contains tag exclusion '{1}'", arg.attribute ("raw"));
+        return false;
       }
     }
 
   }
 
-  return not contains_or and not contains_modifier and not contains_tag_exclusion;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
