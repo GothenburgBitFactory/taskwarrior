@@ -39,9 +39,9 @@ jobs:
           - name: "Ubuntu 21.10"
             runner: ubuntu-latest
             dockerfile: ubuntu2110
-          - name: "OpenSUSE 15.0"
+          - name: "OpenSUSE 15"
             runner: ubuntu-latest
-            dockerfile: opensuse1500
+            dockerfile: opensuse15
           - name: "Archlinux Base (Rolling)"
             runner: ubuntu-latest
             dockerfile: arch
