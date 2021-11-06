@@ -3,6 +3,8 @@
 
 - TW #2648 xdg-open is not available on Mac OS-X
            Thanks to chapterjson for reporting.
+- TW #2664 Tag exclusion should be detected as invalid write context
+           Thanks to bentwitthold for reporting.
 
 2.6.1 (2021-10-19) - a696b6b155f9c8af87a6a496c0d298c58e6fe369
 
