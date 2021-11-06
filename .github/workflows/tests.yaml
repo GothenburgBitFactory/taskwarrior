@@ -9,9 +9,6 @@ jobs:
           - name: "Centos 8"
             runner: ubuntu-latest
             dockerfile: centos8
-          - name: "Fedora 31"
-            runner: ubuntu-latest
-            dockerfile: fedora31
           - name: "Fedora 32"
             runner: ubuntu-latest
             dockerfile: fedora32

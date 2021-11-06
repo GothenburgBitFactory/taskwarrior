@@ -16,14 +16,6 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-fedora31:
-    build:
-        context: .
-        dockerfile: test/docker/fedora31
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
   test-fedora32:
     build:
         context: .
