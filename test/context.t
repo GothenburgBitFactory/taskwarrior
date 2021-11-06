@@ -121,15 +121,15 @@ class ContextManagementTest(TestCase):
         self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
         # Assert the config does not contain write context definition
-        context_line = 'context.work.write=due.before:today\n'
+        context_line = 'context.urgent.write=due.before:today\n'
         self.assertNotIn(context_line, self.t.taskrc_content)
 
         # Assert that the write context was not set at all
-        self.assertNotIn('context.work.write=', self.t.taskrc_content)
+        self.assertNotIn('context.urgent.write=', self.t.taskrc_content)
 
         # Assert that legacy style was not used
         # Assert the config contains read context definition
-        context_line = 'context.work=due.before:today\n'
+        context_line = 'context.urgent=due.before:today\n'
         self.assertNotIn(context_line, self.t.taskrc_content)
 
     def test_context_define_invalid_for_write_due_to_operator(self):
@@ -146,15 +146,15 @@ class ContextManagementTest(TestCase):
         self.assertEqual(self.t.taskrc_content.count(context_line), 1)
 
         # Assert the config does not contain write context definition
-        context_line = 'context.work.write=due:today or +next\n'
+        context_line = 'context.urgent.write=due:today or +next\n'
         self.assertNotIn(context_line, self.t.taskrc_content)
 
         # Assert that the write context was not set at all
-        self.assertNotIn('context.work.write=', self.t.taskrc_content)
+        self.assertNotIn('context.urgent.write=', self.t.taskrc_content)
 
         # Assert that legacy style was not used
         # Assert the config contains read context definition
-        context_line = 'context.work=due:today or +next\n'
+        context_line = 'context.urgent=due:today or +next\n'
         self.assertNotIn(context_line, self.t.taskrc_content)
 
     def test_context_delete(self):
