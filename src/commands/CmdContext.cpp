@@ -110,7 +110,8 @@ std::string CmdContext::joinWords (const std::vector <std::string>& words, unsig
 // Validate the context as valid for writing and fail the write context definition
 // A valid write context:
 //   - does not contain any operators except AND
-//   - does not use modifiers
+//   - does not contain tag exclusion
+//   - does not use modifiers, except for 'equals' and 'is'
 //
 // Returns True if the context is a valid write context. If the context is
 // invalid due to a wrong modifier use, the modifier string will contain the
