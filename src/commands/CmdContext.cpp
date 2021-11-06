@@ -123,7 +123,10 @@ bool CmdContext::validateWriteContext (const std::vector <A2>& lexedArgs, std::s
   for (auto &arg: lexedArgs) {
     if (arg._lextype == Lexer::Type::op)
       if (arg.attribute ("raw") == "or")
+      {
         contains_or = true;
+        break;
+      }
 
     if (arg._lextype == Lexer::Type::pair) {
       auto modifier = arg.attribute ("modifier");
