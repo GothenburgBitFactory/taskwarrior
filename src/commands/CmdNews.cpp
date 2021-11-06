@@ -629,7 +629,7 @@ int CmdNews::execute (std::string& output)
 
   if (! full_summary && major_items)
     Context::getContext ().footnote (format (
-      "Only major higlights were displayed ({1} out of {2} total).\n"
+      "Only major highlights were displayed ({1} out of {2} total).\n"
       "If you're interested in more release highlights, run 'task news {3} minor'.",
       items.size (),
       total_highlights,

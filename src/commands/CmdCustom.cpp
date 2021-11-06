@@ -249,7 +249,7 @@ int CmdCustom::execute (std::string& output)
     rc = 1;
   }
 
-  // Inform user about the new release higlights if not presented yet
+  // Inform user about the new release highlights if not presented yet
   if (Context::getContext ().config.get ("news.version") != "2.6.0")
   {
     std::random_device device;
@@ -258,7 +258,7 @@ int CmdCustom::execute (std::string& output)
 
     std::string NEWS_NOTICE = (
       "Recently upgraded to 2.6.0. "
-      "Please run 'task news' to read higlights about the new release."
+      "Please run 'task news' to read highlights about the new release."
     );
 
     // 1 in 10 chance to display the message.
