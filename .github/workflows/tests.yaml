@@ -30,6 +30,9 @@ jobs:
           - name: "Ubuntu 20.04"
             runner: ubuntu-latest
             dockerfile: ubuntu2004
+          - name: "Ubuntu 20.10"
+            runner: ubuntu-latest
+            dockerfile: ubuntu2010
           - name: "Ubuntu 21.04"
             runner: ubuntu-latest
             dockerfile: ubuntu2104
