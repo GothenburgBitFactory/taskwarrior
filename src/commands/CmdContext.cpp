@@ -115,10 +115,12 @@ std::string CmdContext::joinWords (const std::vector <std::string>& words, unsig
 // Returns True if the context is a valid write context. If the context is
 // invalid due to a wrong modifier use, the modifier string will contain the
 // first invalid modifier.
+//
 bool CmdContext::validateWriteContext (const std::vector <A2>& lexedArgs, std::string& modifier_token)
 {
   bool contains_or = false;
   bool contains_modifier = false;
+  bool contains_tag_exclusion = false;
 
   for (auto &arg: lexedArgs) {
     if (arg._lextype == Lexer::Type::op)
@@ -137,9 +139,18 @@ bool CmdContext::validateWriteContext (const std::vector <A2>& lexedArgs, std::s
         break;
       }
     }
+
+    if (arg._lextype == Lexer::Type::tag) {
+      if (arg.attribute ("sign") == "-")
+      {
+        contains_tag_exclusion = true;
+        break;
+      }
+    }
+
   }
 
-  return not contains_or and not contains_modifier;
+  return not contains_or and not contains_modifier and not contains_tag_exclusion;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
