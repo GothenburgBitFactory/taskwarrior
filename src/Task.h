@@ -100,6 +100,8 @@ public:
   void set (const std::string&, long long);
   void remove (const std::string&);
 
+  bool is_empty () const;
+
 #ifdef PRODUCT_TASKWARRIOR
   bool is_ready () const;
   bool is_due () const;

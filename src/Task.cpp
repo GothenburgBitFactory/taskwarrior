@@ -364,6 +364,14 @@ Task::dateState Task::getDateState (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// An empty task is typically a "dummy", such as in DOM evaluation, which may or
+// may not occur in the context of a task.
+bool Task::is_empty () const
+{
+  return data.size () == 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Ready means pending, not blocked and either not scheduled or scheduled before
 // now.
 bool Task::is_ready () const
