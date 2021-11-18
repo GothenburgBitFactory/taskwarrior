@@ -1048,11 +1048,11 @@ void TDB2::show_diff (
       Task before (prior);
 
       std::vector <std::string> beforeAtts;
-      for (auto& att : before.data)
+      for (auto& att : before.data_removeme ())
         beforeAtts.push_back (att.first);
 
       std::vector <std::string> afterAtts;
-      for (auto& att : after.data)
+      for (auto& att : after.data_removeme ())
         afterAtts.push_back (att.first);
 
       std::vector <std::string> beforeOnly;
@@ -1067,7 +1067,7 @@ void TDB2::show_diff (
         view.set (row, 1, renderAttribute (name, before.get (name)), color_red);
       }
 
-      for (auto& att : before.data)
+      for (auto& att : before.data_removeme ())
       {
         std::string priorValue   = before.get (att.first);
         std::string currentValue = after.get  (att.first);
@@ -1093,7 +1093,7 @@ void TDB2::show_diff (
     else
     {
       int row;
-      for (auto& att : after.data)
+      for (auto& att : after.data_removeme ())
       {
         row = view.addRow ();
         view.set (row, 0, att.first);
@@ -1151,11 +1151,11 @@ void TDB2::show_diff (
     std::vector <std::string> all = Context::getContext ().getColumns ();
 
     // Now factor in the annotation attributes.
-    for (auto& it : before.data)
+    for (auto& it : before.data_removeme ())
       if (it.first.substr (0, 11) == "annotation_")
         all.push_back (it.first);
 
-    for (auto& it : after.data)
+    for (auto& it : after.data_removeme ())
       if (it.first.substr (0, 11) == "annotation_")
         all.push_back (it.first);
 

@@ -74,7 +74,7 @@ public:
   enum dateState {dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday};
 
   // Public data.
-  std::map <std::string, std::string> data {};
+  const std::map <std::string, std::string> &data_removeme () const { return data; };
   int id                                   {0};
   float urgency_value                      {0.0};
   bool recalc_urgency                      {true};
@@ -186,6 +186,9 @@ private:
   const std::string attr2Dep (const std::string&) const;
   void fixDependsAttribute ();
   void fixTagsAttribute ();
+
+protected:
+  std::map <std::string, std::string> data {};
 
 public:
   float urgency_project     () const;
