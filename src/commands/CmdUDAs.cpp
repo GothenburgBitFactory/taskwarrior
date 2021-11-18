@@ -134,7 +134,7 @@ int CmdUDAs::execute (std::string& output)
   std::map <std::string, int> orphans;
   for (auto& i : filtered)
   {
-    for (auto& att : i.data)
+    for (auto& att : i.data_removeme ())
       if (! Task::isAnnotationAttr (att.first) &&
           ! Task::isTagAttr (att.first) &&
           ! Task::isDepAttr (att.first) &&
