@@ -36,7 +36,7 @@
 #include <format.h>
 #include <utf8.h>
 
-extern Task& contextTask;
+extern Task* contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::ColumnRecur ()
@@ -108,7 +108,7 @@ void ColumnRecur::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    contextTask = task;
+    contextTask = &task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
 

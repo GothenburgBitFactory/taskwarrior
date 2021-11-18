@@ -36,9 +36,8 @@
 #include <shared.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-// Const iterator that can be derefenced into a Task by domSource.
-static Task dummy;
-Task& contextTask = dummy;
+// Context for DOM evaluations
+const Task* contextTask = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
 bool domSource (const std::string& identifier, Variant& value)
@@ -79,7 +78,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     for (auto& task : input)
     {
       // Set up context for any DOM references.
-      contextTask = task;
+      contextTask = &task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -131,7 +130,7 @@ void Filter::subset (std::vector <Task>& output)
     for (auto& task : pending)
     {
       // Set up context for any DOM references.
-      contextTask = task;
+      contextTask = &task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -150,7 +149,7 @@ void Filter::subset (std::vector <Task>& output)
       for (auto& task : completed)
       {
         // Set up context for any DOM references.
-        contextTask = task;
+        contextTask = &task;
 
         Variant var;
         eval.evaluateCompiledExpression (var);
