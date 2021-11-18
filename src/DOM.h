@@ -33,7 +33,7 @@
 
 // 2017-04-22 Deprecated, use DOM::get.
 bool getDOM (const std::string&, Variant&);
-bool getDOM (const std::string&, const Task&, Variant&);
+bool getDOM (const std::string&, const Task*, Variant&);
 
 class DOM
 {

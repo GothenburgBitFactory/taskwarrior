@@ -36,7 +36,7 @@
 #include <utf8.h>
 #include <util.h>
 
-extern Task& contextTask;
+extern Task* contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnProject::ColumnProject ()
@@ -121,7 +121,7 @@ void ColumnProject::modify (Task& task, const std::string& value)
     {
       Eval e;
       e.addSource (domSource);
-      contextTask = task;
+      contextTask = &task;
 
       Variant v;
       e.evaluateInfixExpression (value, v);

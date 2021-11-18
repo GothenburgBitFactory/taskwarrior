@@ -32,7 +32,7 @@
 #include <Filter.h>
 #include <format.h>
 
-extern Task& contextTask;
+extern Task* contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeNumeric::ColumnTypeNumeric ()
@@ -55,7 +55,7 @@ void ColumnTypeNumeric::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    contextTask = task;
+    contextTask = &task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
 

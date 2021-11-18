@@ -34,7 +34,7 @@
 #include <Filter.h>
 #include <format.h>
 
-extern Task& contextTask;
+extern Task* contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeDate::ColumnTypeDate ()
@@ -213,7 +213,7 @@ void ColumnTypeDate::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    contextTask = task;
+    contextTask = &task;
     e.evaluateInfixExpression (value, evaluatedValue);
   }
 
