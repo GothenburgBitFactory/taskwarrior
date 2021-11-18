@@ -312,7 +312,12 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     return task;
 
   } ();
-  auto have_ref = !ref.is_empty();
+
+  // The remainder of this method requires a contextual task, so if we do not
+  // have one, delegate to the two-argument getDOM
+  if (ref.is_empty ()) {
+    return getDOM (name, value);
+  }
 
   auto size = elements.size ();
 
@@ -321,13 +326,13 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   {
     // Now that 'ref' is the contextual task, and any ID/UUID is chopped off the
     // elements vector, DOM resolution is now simple.
-    if (have_ref && size == 1 && canonical == "id")
+    if (size == 1 && canonical == "id")
     {
       value = Variant (static_cast<int> (ref.id));
       return true;
     }
 
-    if (have_ref && size == 1 && canonical == "urgency")
+    if (size == 1 && canonical == "urgency")
     {
       value = Variant (ref.urgency_c ());
       return true;
@@ -335,7 +340,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 
     // Special handling of status required for virtual waiting status
     // implementation. Remove in 3.0.0.
-    if (have_ref && size == 1 && canonical == "status")
+    if (size == 1 && canonical == "status")
     {
       value = Variant (ref.statusToText (ref.getStatus ()));
       return true;
@@ -343,7 +348,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 
     Column* column = Context::getContext ().columns[canonical];
 
-    if (have_ref && size == 1 && column)
+    if (size == 1 && column)
     {
       if (column->is_uda () && ! ref.has (canonical))
       {
@@ -378,13 +383,13 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
       return true;
     }
 
-    if (have_ref && size == 2 && canonical == "tags")
+    if (size == 2 && canonical == "tags")
     {
       value = Variant (ref.hasTag (elements[1]) ? elements[1] : "");
       return true;
     }
 
-    if (have_ref && size == 2 && column && column->type () == "date")
+    if (size == 2 && column && column->type () == "date")
     {
       Datetime date (ref.get_date (canonical));
            if (elements[1] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
@@ -399,13 +404,13 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     }
   }
 
-  if (have_ref && size == 2 && elements[0] == "annotations" && elements[1] == "count")
+  if (size == 2 && elements[0] == "annotations" && elements[1] == "count")
   {
     value = Variant (static_cast<int> (ref.getAnnotationCount ()));
     return true;
   }
 
-  if (have_ref && size == 3 && elements[0] == "annotations")
+  if (size == 3 && elements[0] == "annotations")
   {
     auto annos = ref.getAnnotations ();
 
@@ -433,7 +438,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     }
   }
 
-  if (have_ref && size == 4 && elements[0] == "annotations" && elements[2] == "entry")
+  if (size == 4 && elements[0] == "annotations" && elements[2] == "entry")
   {
     auto annos = ref.getAnnotations ();
 
