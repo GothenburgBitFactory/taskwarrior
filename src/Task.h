@@ -33,6 +33,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <JSON.h>
+#include <Table.h>
+#include <Datetime.h>
 
 class Task
 {
@@ -173,6 +175,8 @@ public:
 
   std::string diff (const Task& after) const;
   std::string diffForInfo (const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp) const; 
+  Table diffForUndoSide (const Task& after) const;
+  Table diffForUndoPatch (const Task& after, const Datetime& lastChange) const;
 
 private:
   int determineVersion (const std::string&);
