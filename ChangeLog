@@ -5,6 +5,8 @@
            Thanks to Andreas Kalex and Reg for reporting.
 - TW #2648 xdg-open is not available on Mac OS-X
            Thanks to chapterjson for reporting.
+- TW #2655 The bulk removal of depends: and tags: is ignored
+           Thanks to angelus2014 for reporting.
 - TW #2664 Tag exclusion should be detected as invalid write context
            Thanks to bentwitthold for reporting.
 - TW #2671 The value of soww named date is incorrect
