@@ -145,6 +145,22 @@ class TestDependencies(TestCase):
         code, out, err = self.t("_get 1.tags.BLOCKED")
         self.assertEqual("\n", out)
 
+    def test_dependency_bulk_removal(self):
+        """2655: Check that one can bulk undepend a task"""
+        self.t("add three")
+        self.t("1 modify dep:2,3")
+
+        code, out, err = self.t("_get 1.tags.BLOCKED")
+        self.assertEqual("BLOCKED\n", out)
+
+        self.t("1 modify depends:")
+
+        code, out, err = self.t("_get 1.tags.BLOCKED")
+        self.assertEqual("\n", out)
+
+        code, out, err = self.t("_get 1.depends")
+        self.assertEqual("\n", out)
+
     def test_chain_repair(self):
         """Check that a broken chain is repaired"""
         self.t("add three")
