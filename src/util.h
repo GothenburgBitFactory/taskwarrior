@@ -63,6 +63,7 @@ const std::vector <std::string> extractParents (
 bool nontrivial (const std::string&);
 const char* optionalBlankLine ();
 void setHeaderUnderline (Table&);
+bool extractLongInteger (const std::string&, long&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

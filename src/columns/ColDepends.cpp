@@ -32,6 +32,7 @@
 #include <format.h>
 #include <utf8.h>
 #include <main.h>
+#include <util.h>
 #include <stdlib.h>
 
 #define STRING_COLUMN_LABEL_DEP "Depends"
@@ -161,10 +162,25 @@ void ColumnDepends::modify (Task& task, const std::string& value)
     }
     else
     {
+      auto hyphen = dep.find ('-');
+      long lower, upper;  // For ID ranges
+
+      // UUID
       if (dep.length () == 36)
         task.addDependency (dep);
+      // ID range
+      else if (dep.find ('-') != std::string::npos &&
+               extractLongInteger (dep.substr (0, hyphen), lower) &&
+               extractLongInteger (dep.substr (hyphen + 1), upper))
+      {
+        for (long i = lower; i <= upper; i++)
+          task.addDependency(i);
+      }
+      // Simple ID
+      else if (extractLongInteger (dep, lower))
+        task.addDependency (lower);
       else
-        task.addDependency (strtol (dep.c_str (), nullptr, 10));
+        throw format ("Invalid dependency value: '{1}'", dep);
     }
   }
 }
