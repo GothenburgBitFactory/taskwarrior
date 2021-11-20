@@ -169,7 +169,6 @@ class TestDependencies(TestCase):
         self.assertNotIn("Would you like the dependency chain fixed?", out)
         self.assertIn("Deleted 1 task", out)
 
-    @unittest.expectedFailure
     def test_id_range_dep(self):
         """Check that an ID range can be used for deps"""
         self.t("add three")
@@ -178,7 +177,7 @@ class TestDependencies(TestCase):
         self.t("3 modify dep:1-2")
         code, out, err = self.t("_get 1.tags.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
-        code, out, err = self.t("_get 2.tag.BLOCKING")
+        code, out, err = self.t("_get 2.tags.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
 
     def test_id_uuid_dep(self):
