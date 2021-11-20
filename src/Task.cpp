@@ -2276,6 +2276,19 @@ void Task::modify (modType type, bool text_required /* = false */)
             value == "''"   ||
             value == "\"\"")
         {
+          // Special case: Handle bulk removal of 'tags' and 'depends" virtual
+          // attributes
+          if (name == "depends")
+          {
+            for (auto dep: getDependencyUUIDs ())
+              removeDependency(dep);
+          }
+          else if (name == "tags")
+          {
+            for (auto tag: getTags ())
+              removeTag(tag);
+          }
+
           // ::composeF4 will skip if the value is blank, but the presence of
           // the attribute will prevent ::validate from applying defaults.
           if ((has (name) && get (name) != "") ||
