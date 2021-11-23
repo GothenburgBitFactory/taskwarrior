@@ -477,7 +477,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "      hooks.location=$XDG_CONFIG_HOME/task/hooks/\n\n"
     "  Solutions in the past required symlinks or more cumbersome configuration overrides.",
     "  If you configure your data.location and hooks.location as above, ensure\n"
-    "  that the XFG_DATA_HOME and XDG_CONFIG_HOME environment variables are set,\n"
+    "  that the XDG_DATA_HOME and XDG_CONFIG_HOME environment variables are set,\n"
     "  otherwise they're going to expand to empty string. Alternatively you can\n"
     "  hardcode the desired paths on your system."
   );
