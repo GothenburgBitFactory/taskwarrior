@@ -43,6 +43,7 @@
 #include <shared.h>
 #include <format.h>
 #include <main.h>
+#include <regex>
 
 #ifdef HAVE_COMMIT
 #include <commit.h>
@@ -667,9 +668,13 @@ int Context::initialize (int argc, const char** argv)
     rc = 4;
   }
 
+  catch (const std::regex_error& e)
+  {
+    std::cout << "regex_error caught: " << e.what() << '\n';
+  }
   catch (...)
   {
-    error ("Unknown error. Please report.");
+    error ("knknown error. Please report.");
     rc = 3;
   }
 

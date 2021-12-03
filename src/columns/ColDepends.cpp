@@ -34,6 +34,7 @@
 #include <main.h>
 #include <util.h>
 #include <stdlib.h>
+#include <regex>
 
 #define STRING_COLUMN_LABEL_DEP "Depends"
 
@@ -164,10 +165,25 @@ void ColumnDepends::modify (Task& task, const std::string& value)
     {
       auto hyphen = dep.find ('-');
       long lower, upper;  // For ID ranges
+      std::regex valid_uuid ("[a-f0-9]{8}([a-f0-9-]{4,28})?"); // TODO: Make more precise
 
       // UUID
-      if (dep.length () == 36)
-        task.addDependency (dep);
+      if (dep.length () >= 8 && std::regex_match (dep, valid_uuid))
+      {
+         // Full UUID, can be added directly
+         if (dep.length () == 36)
+           task.addDependency (dep);
+
+         // Short UUID, need to look up full form
+         else
+         {
+           Task loaded_task;
+           if (Context::getContext ().tdb2.get (dep, loaded_task))
+             task.addDependency (loaded_task.get ("uuid"));
+           else
+             throw format ("Dependency could not be set - task with UUID '{1}' does not exist.", dep);
+         }
+      }
       // ID range
       else if (dep.find ('-') != std::string::npos &&
                extractLongInteger (dep.substr (0, hyphen), lower) &&
