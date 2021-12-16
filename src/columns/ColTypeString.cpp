@@ -67,7 +67,9 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    contextTask = &task;
+    if (!task.is_empty ()) {
+      contextTask = &task;
+    }
 
     Variant v;
     e.evaluateInfixExpression (value, v);
