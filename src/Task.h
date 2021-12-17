@@ -77,7 +77,6 @@ public:
   enum dateState {dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday};
 
   // Public data.
-  const std::map <std::string, std::string> &data_removeme () const { return data; };
   int id                                   {0};
   float urgency_value                      {0.0};
   bool recalc_urgency                      {true};
