@@ -62,6 +62,7 @@ public:
 public:
   Task () = default;
   bool operator== (const Task&);
+  bool operator!= (const Task&);
   Task (const std::string&);
   Task (const json::object*);
 
