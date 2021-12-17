@@ -211,7 +211,7 @@ TODO Task::decode
   test.is (task.composeF4 (), "[name:\"value\"]", "Task::remove");
 
   // Task::all
-  test.is (task.data_removeme ().size (), (size_t)1, "Task::all size");
+  test.is (task.all ().size (), (size_t)1, "Task::all size");
 
   ////////////////////////////////////////////////////////////////////////////////
 
