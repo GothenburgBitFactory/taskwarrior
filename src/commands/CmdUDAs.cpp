@@ -134,12 +134,8 @@ int CmdUDAs::execute (std::string& output)
   std::map <std::string, int> orphans;
   for (auto& i : filtered)
   {
-    for (auto& att : i.data_removeme ())
-      if (! Task::isAnnotationAttr (att.first) &&
-          ! Task::isTagAttr (att.first) &&
-          ! Task::isDepAttr (att.first) &&
-          Context::getContext ().columns.find (att.first) == Context::getContext ().columns.end ())
-        orphans[att.first]++;
+    for (auto& att : i.getUDAOrphans ())
+      orphans[att]++;
   }
 
   if (orphans.size ())

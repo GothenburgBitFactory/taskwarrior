@@ -159,7 +159,7 @@ public:
   std::vector <Task>        getBlockedTasks () const;
   std::vector <Task>        getDependencyTasks () const;
 
-  std::vector <std::string> getUDAOrphanUUIDs () const;
+  std::vector <std::string> getUDAOrphans () const;
 
   void substitute (const std::string&, const std::string&, const std::string&);
 #endif
