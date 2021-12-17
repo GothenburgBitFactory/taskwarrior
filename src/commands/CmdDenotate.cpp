@@ -128,7 +128,7 @@ int CmdDenotate::execute (std::string&)
       }
     }
 
-    if (before.data_removeme () != task.data_removeme ())
+    if (before.getAnnotations () != task.getAnnotations ())
     {
       auto question = format ("Denotate task {1} '{2}'?",
                               task.identifier (true),
