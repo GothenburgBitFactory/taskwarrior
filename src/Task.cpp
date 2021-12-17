@@ -1559,7 +1559,7 @@ bool Task::isAnnotationAttr(const std::string& attr)
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA Orphan is an attribute that is not represented in context.columns.
-std::vector <std::string> Task::getUDAOrphanUUIDs () const
+std::vector <std::string> Task::getUDAOrphans () const
 {
   std::vector <std::string> orphans;
   for (auto& it : data)

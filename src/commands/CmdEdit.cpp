@@ -324,7 +324,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   }
 
   // UDA orphans
-  auto orphans = task.getUDAOrphanUUIDs ();
+  auto orphans = task.getUDAOrphans ();
   if (orphans.size ())
   {
     before << "# User Defined Attribute Orphans\n";
