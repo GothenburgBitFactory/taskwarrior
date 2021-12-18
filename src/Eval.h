@@ -32,6 +32,8 @@
 #include <Lexer.h>
 #include <Variant.h>
 
+bool domSource (const std::string&, Variant&);
+
 class Eval
 {
 public:

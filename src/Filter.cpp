@@ -40,18 +40,6 @@
 const Task* contextTask = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
-bool domSource (const std::string& identifier, Variant& value)
-{
-  if (getDOM (identifier, contextTask, value))
-  {
-    value.source (identifier);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
 void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
