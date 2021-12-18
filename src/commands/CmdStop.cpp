@@ -32,6 +32,8 @@
 #include <main.h>
 #include <format.h>
 
+extern Task* contextTask;
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdStop::CmdStop ()
 {
@@ -81,6 +83,7 @@ int CmdStop::execute (std::string&)
                                      task.identifier (true),
                                      task.get ("description"));
 
+      contextTask = &task;
       task.modify (Task::modAnnotate);
       task.remove ("start");
 

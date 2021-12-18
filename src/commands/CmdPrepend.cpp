@@ -33,6 +33,8 @@
 #include <format.h>
 #include <main.h>
 
+extern Task* contextTask;
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdPrepend::CmdPrepend ()
 {
@@ -82,6 +84,7 @@ int CmdPrepend::execute (std::string&)
                                    task.identifier (true),
                                    task.get ("description"));
 
+    contextTask = &task;
     task.modify (Task::modPrepend, true);
 
     if (permission (before.diff (task) + question, filtered.size ()))
@@ -102,6 +105,7 @@ int CmdPrepend::execute (std::string&)
           std::vector <Task> siblings = Context::getContext ().tdb2.siblings (task);
           for (auto& sibling : siblings)
           {
+            contextTask = &sibling;
             sibling.modify (Task::modPrepend, true);
             Context::getContext ().tdb2.modify (sibling);
             ++count;
@@ -111,6 +115,7 @@ int CmdPrepend::execute (std::string&)
           // Prepend to the parent
           Task parent;
           Context::getContext ().tdb2.get (task.get ("parent"), parent);
+          contextTask = &parent;
           parent.modify (Task::modPrepend, true);
           Context::getContext ().tdb2.modify (parent);
         }
