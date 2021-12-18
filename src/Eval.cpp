@@ -35,8 +35,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 // Supported operators, borrowed from C++, particularly the precedence.
 // Note: table is sorted by length of operator string, so searches match
@@ -106,7 +104,7 @@ static bool namedConstants (const std::string& name, Variant& value)
 // Support for evaluating DOM references (add with `e.AddSource(domSource)`)
 bool domSource (const std::string& identifier, Variant& value)
 {
-  if (getDOM (identifier, contextTask, value))
+  if (getDOM (identifier, Context::getContext ().currentTask, value))
   {
     value.source (identifier);
     return true;
@@ -292,6 +290,8 @@ void Eval::evaluatePostfixStack (
       Variant left = values.back ();
       values.pop_back ();
 
+      auto contextTask = Context::getContext ().currentTask;
+
       // Ordering these by anticipation frequency of use is a good idea.
       Variant result;
            if (token.first == "and")      result = left && right;
@@ -313,10 +313,14 @@ void Eval::evaluatePostfixStack (
       else if (token.first == "^")        result = left ^ right;
       else if (token.first == "%")        result = left % right;
       else if (token.first == "xor")      result = left.operator_xor (right);
-      else if (token.first == "~")        result = left.operator_match (right, *contextTask);
-      else if (token.first == "!~")       result = left.operator_nomatch (right, *contextTask);
-      else if (token.first == "_hastag_") result = left.operator_hastag (right, *contextTask);
-      else if (token.first == "_notag_")  result = left.operator_notag (right, *contextTask);
+      else if (contextTask) {
+             if (token.first == "~")        result = left.operator_match (right, *contextTask);
+        else if (token.first == "!~")       result = left.operator_nomatch (right, *contextTask);
+        else if (token.first == "_hastag_") result = left.operator_hastag (right, *contextTask);
+        else if (token.first == "_notag_")  result = left.operator_notag (right, *contextTask);
+        else
+          throw format ("Unsupported operator '{1}'.", token.first);
+      }
       else
         throw format ("Unsupported operator '{1}'.", token.first);
 

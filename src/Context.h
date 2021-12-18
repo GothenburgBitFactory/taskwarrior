@@ -129,6 +129,7 @@ public:
 // CurrentTask resets Context::currentTask to NULL on destruction; this ensures
 // that this context value is not a dangling pointer.
 class CurrentTask {
+public:
   ~CurrentTask();
 
 private:
