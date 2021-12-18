@@ -36,8 +36,6 @@
 #include <utf8.h>
 #include <main.h>
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTags::ColumnTags ()
 {
@@ -162,9 +160,6 @@ void ColumnTags::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    if (!task.is_empty ()) {
-      contextTask = &task;
-    }
 
     Variant v;
     e.evaluateInfixExpression (value, v);

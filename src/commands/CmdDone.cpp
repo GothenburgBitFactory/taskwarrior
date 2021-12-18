@@ -33,6 +33,8 @@
 #include <format.h>
 #include <main.h>
 
+extern Task* contextTask;
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdDone::CmdDone ()
 {
@@ -85,6 +87,7 @@ int CmdDone::execute (std::string&)
                                      task.identifier (true),
                                      task.get ("description"));
 
+      contextTask = &task;
       task.modify (Task::modAnnotate);
       task.setStatus (Task::completed);
       if (! task.has ("end"))

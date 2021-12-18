@@ -32,8 +32,6 @@
 #include <Filter.h>
 #include <format.h>
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeDuration::ColumnTypeDuration ()
 {
@@ -55,9 +53,6 @@ void ColumnTypeDuration::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    if (!task.is_empty ()) {
-      contextTask = &task;
-    }
     e.evaluateInfixExpression (value, evaluatedValue);
   }
 

@@ -33,6 +33,8 @@
 #include <format.h>
 #include <util.h>
 
+extern Task* contextTask;
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdStart::CmdStart ()
 {
@@ -83,6 +85,7 @@ int CmdStart::execute (std::string&)
       std::string question = format ("Start task {1} '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
+      contextTask = &task;
       task.modify (Task::modAnnotate);
       task.setAsNow ("start");
 
