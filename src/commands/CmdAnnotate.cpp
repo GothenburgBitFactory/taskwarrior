@@ -33,8 +33,6 @@
 #include <shared.h>
 #include <format.h>
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdAnnotate::CmdAnnotate ()
 {
@@ -84,7 +82,6 @@ int CmdAnnotate::execute (std::string&)
                                    task.identifier (true),
                                    task.get ("description"));
 
-    contextTask = &task;
     task.modify (Task::modAnnotate, true);
 
     if (permission (before.diff (task) + question, filtered.size ()))
@@ -105,7 +102,6 @@ int CmdAnnotate::execute (std::string&)
           auto siblings = Context::getContext ().tdb2.siblings (task);
           for (auto& sibling : siblings)
           {
-            contextTask = &sibling;
             sibling.modify (Task::modAnnotate, true);
             Context::getContext ().tdb2.modify (sibling);
             ++count;
@@ -115,7 +111,6 @@ int CmdAnnotate::execute (std::string&)
           // Annotate the parent
           Task parent;
           Context::getContext ().tdb2.get (task.get ("parent"), parent);
-          contextTask = &parent;
           parent.modify (Task::modAnnotate, true);
           Context::getContext ().tdb2.modify (parent);
         }

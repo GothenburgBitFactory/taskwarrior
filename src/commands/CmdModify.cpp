@@ -36,8 +36,6 @@
 #define STRING_CMD_MODIFY_TASK_R     "Modifying recurring task {1} '{2}'."
 #define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdModify::CmdModify ()
 {
@@ -79,7 +77,6 @@ int CmdModify::execute (std::string&)
   for (auto& task : filtered)
   {
     Task before (task);
-    contextTask = &task;
     task.modify (Task::modReplace);
 
     if (before != task)
@@ -177,7 +174,6 @@ int CmdModify::modifyRecurrenceSiblings (
     for (auto& sibling : siblings)
     {
       Task alternate (sibling);
-      contextTask = &sibling;
       sibling.modify (Task::modReplace);
       updateRecurrenceMask (sibling);
       ++count;
@@ -191,7 +187,6 @@ int CmdModify::modifyRecurrenceSiblings (
     // Modify the parent
     Task parent;
     Context::getContext ().tdb2.get (task.get ("parent"), parent);
-    contextTask = &parent;
     parent.modify (Task::modReplace);
     Context::getContext ().tdb2.modify (parent);
   }
@@ -215,7 +210,6 @@ int CmdModify::modifyRecurrenceParent (
     for (auto& child : children)
     {
       Task alternate (child);
-      contextTask = &child;
       child.modify (Task::modReplace);
       updateRecurrenceMask (child);
       Context::getContext ().tdb2.modify (child);
