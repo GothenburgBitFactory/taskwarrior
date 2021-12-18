@@ -6,6 +6,7 @@ use chrono::prelude::*;
 use log::trace;
 use std::convert::AsRef;
 use std::convert::TryInto;
+use std::str::FromStr;
 use uuid::Uuid;
 
 /* The Task and TaskMut classes wrap the underlying [`TaskMap`], which is a simple key/value map.
@@ -46,6 +47,18 @@ pub struct TaskMut<'r> {
     updated_modified: bool,
 }
 
+/// An enum containing all of the key names defined in the data model, with the exception
+/// of the properties containing data (`tag_..`, etc.)
+#[derive(strum_macros::AsRefStr, strum_macros::EnumString)]
+#[strum(serialize_all = "kebab-case")]
+enum Prop {
+    Description,
+    Modified,
+    Start,
+    Status,
+    Wait,
+}
+
 impl Task {
     pub(crate) fn new(uuid: Uuid, taskmap: TaskMap) -> Task {
         Task { uuid, taskmap }
@@ -71,14 +84,14 @@ impl Task {
 
     pub fn get_status(&self) -> Status {
         self.taskmap
-            .get("status")
+            .get(Prop::Status.as_ref())
             .map(|s| Status::from_taskmap(s))
             .unwrap_or(Status::Pending)
     }
 
     pub fn get_description(&self) -> &str {
         self.taskmap
-            .get("description")
+            .get(Prop::Description.as_ref())
             .map(|s| s.as_ref())
             .unwrap_or("")
     }
@@ -86,7 +99,7 @@ impl Task {
     /// Get the wait time.  If this value is set, it will be returned, even
     /// if it is in the past.
     pub fn get_wait(&self) -> Option<DateTime<Utc>> {
-        self.get_timestamp("wait")
+        self.get_timestamp(Prop::Wait.as_ref())
     }
 
     /// Determine whether this task is waiting now.
@@ -100,7 +113,7 @@ impl Task {
     /// Determine whether this task is active -- that is, that it has been started
     /// and not stopped.
     pub fn is_active(&self) -> bool {
-        self.taskmap.contains_key("start")
+        self.taskmap.contains_key(Prop::Start.as_ref())
     }
 
     /// Determine whether a given synthetic tag is present on this task.  All other
@@ -161,11 +174,36 @@ impl Task {
         })
     }
 
+    /// Get the named user defined attributes (UDA).  This will return None
+    /// for any key defined in the Task data model, regardless of whether
+    /// it is set or not.
+    pub fn get_uda(&self, key: &str) -> Option<&str> {
+        if Task::is_known_key(key) {
+            return None;
+        }
+        self.taskmap.get(key).map(|s| s.as_ref())
+    }
+
+    /// Get the user defined attributes (UDAs) of this task, in arbitrary order.
+    pub fn get_udas(&self) -> impl Iterator<Item = (&str, &str)> + '_ {
+        self.taskmap
+            .iter()
+            .filter(|(p, _)| !Task::is_known_key(p))
+            .map(|(p, v)| (p.as_ref(), v.as_ref()))
+    }
+
     pub fn get_modified(&self) -> Option<DateTime<Utc>> {
-        self.get_timestamp("modified")
+        self.get_timestamp(Prop::Modified.as_ref())
     }
 
     // -- utility functions
+
+    fn is_known_key(key: &str) -> bool {
+        Prop::from_str(key).is_ok()
+            || key.starts_with("tag_")
+            || key.starts_with("annotation_")
+            || key.starts_with("dep_")
+    }
 
     fn get_timestamp(&self, property: &str) -> Option<DateTime<Utc>> {
         if let Some(ts) = self.taskmap.get(property) {
@@ -191,19 +229,22 @@ impl<'r> TaskMut<'r> {
             let uuid = self.uuid;
             self.replica.add_to_working_set(uuid)?;
         }
-        self.set_string("status", Some(String::from(status.to_taskmap())))
+        self.set_string(
+            Prop::Status.as_ref(),
+            Some(String::from(status.to_taskmap())),
+        )
     }
 
     pub fn set_description(&mut self, description: String) -> anyhow::Result<()> {
-        self.set_string("description", Some(description))
+        self.set_string(Prop::Description.as_ref(), Some(description))
     }
 
     pub fn set_wait(&mut self, wait: Option<DateTime<Utc>>) -> anyhow::Result<()> {
-        self.set_timestamp("wait", wait)
+        self.set_timestamp(Prop::Wait.as_ref(), wait)
     }
 
     pub fn set_modified(&mut self, modified: DateTime<Utc>) -> anyhow::Result<()> {
-        self.set_timestamp("modified", Some(modified))
+        self.set_timestamp(Prop::Modified.as_ref(), Some(modified))
     }
 
     /// Start the task by creating "start": "<timestamp>", if the task is not already
@@ -212,12 +253,12 @@ impl<'r> TaskMut<'r> {
         if self.is_active() {
             return Ok(());
         }
-        self.set_timestamp("start", Some(Utc::now()))
+        self.set_timestamp(Prop::Start.as_ref(), Some(Utc::now()))
     }
 
     /// Stop the task by removing the `start` key
     pub fn stop(&mut self) -> anyhow::Result<()> {
-        self.set_timestamp("start", None)
+        self.set_timestamp(Prop::Start.as_ref(), None)
     }
 
     /// Mark this task as complete
@@ -255,15 +296,50 @@ impl<'r> TaskMut<'r> {
         self.set_string(format!("annotation_{}", entry.timestamp()), None)
     }
 
+    /// Set a user-defined attribute (UDA).  This will fail if the key is defined by the data
+    /// model.
+    pub fn set_uda<S1, S2>(&mut self, key: S1, value: S2) -> anyhow::Result<()>
+    where
+        S1: Into<String>,
+        S2: Into<String>,
+    {
+        let key = key.into();
+        if Task::is_known_key(&key) {
+            anyhow::bail!(
+                "Property name {} as special meaning in a task and cannot be used as a UDA",
+                key
+            );
+        }
+        self.set_string(key, Some(value.into()))
+    }
+
+    /// Remove a user-defined attribute (UDA).  This will fail if the key is defined by the data
+    /// model.
+    pub fn remove_uda<S>(&mut self, key: S) -> anyhow::Result<()>
+    where
+        S: Into<String>,
+    {
+        let key = key.into();
+        if Task::is_known_key(&key) {
+            anyhow::bail!(
+                "Property name {} as special meaning in a task and cannot be used as a UDA",
+                key
+            );
+        }
+        self.set_string(key, None)
+    }
+
     // -- utility functions
 
     fn lastmod(&mut self) -> anyhow::Result<()> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
             self.replica
-                .update_task(self.task.uuid, "modified", Some(now.clone()))?;
+                .update_task(self.task.uuid, Prop::Modified.as_ref(), Some(now.clone()))?;
             trace!("task {}: set property modified={:?}", self.task.uuid, now);
-            self.task.taskmap.insert(String::from("modified"), now);
+            self.task
+                .taskmap
+                .insert(String::from(Prop::Modified.as_ref()), now);
             self.updated_modified = true;
         }
         Ok(())
@@ -633,5 +709,91 @@ mod test {
             task.remove_tag(&utag("abc")).unwrap();
             assert!(!task.taskmap.contains_key("tag_abc"));
         });
+    }
+
+    #[test]
+    fn test_get_udas() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![
+                ("description".into(), "not a uda".into()),
+                ("modified".into(), "not a uda".into()),
+                ("start".into(), "not a uda".into()),
+                ("status".into(), "not a uda".into()),
+                ("wait".into(), "not a uda".into()),
+                ("start".into(), "not a uda".into()),
+                ("tag_abc".into(), "not a uda".into()),
+                ("dep_1234".into(), "not a uda".into()),
+                ("annotation_1234".into(), "not a uda".into()),
+                ("githubid".into(), "123".into()),
+            ]
+            .drain(..)
+            .collect(),
+        );
+
+        let udas: Vec<_> = task.get_udas().collect();
+        assert_eq!(udas, vec![("githubid", "123")]);
+    }
+
+    #[test]
+    fn test_get_uda() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![
+                ("description".into(), "not a uda".into()),
+                ("dep_1234".into(), "not a uda".into()),
+                ("githubid".into(), "123".into()),
+            ]
+            .drain(..)
+            .collect(),
+        );
+
+        assert_eq!(task.get_uda("description"), None); // invalid UDA
+        assert_eq!(task.get_uda("dep_1234"), None); // invalid UDA
+        assert_eq!(task.get_uda("githubid"), Some("123"));
+        assert_eq!(task.get_uda("jiraid"), None);
+    }
+
+    #[test]
+    fn test_set_uda() {
+        with_mut_task(|mut task| {
+            task.set_uda("githubid", "123").unwrap();
+
+            let udas: Vec<_> = task.get_udas().collect();
+            assert_eq!(udas, vec![("githubid", "123")]);
+
+            task.set_uda("jiraid", "TW-1234").unwrap();
+
+            let mut udas: Vec<_> = task.get_udas().collect();
+            udas.sort_unstable();
+            assert_eq!(udas, vec![("githubid", "123"), ("jiraid", "TW-1234")]);
+        })
+    }
+
+    #[test]
+    fn test_set_uda_invalid() {
+        with_mut_task(|mut task| {
+            assert!(task.set_uda("modified", "123").is_err());
+            assert!(task.set_uda("tag_abc", "123").is_err());
+        })
+    }
+
+    #[test]
+    fn test_rmmove_uda() {
+        with_mut_task(|mut task| {
+            task.set_string("githubid", Some("123".into())).unwrap();
+            task.remove_uda("githubid").unwrap();
+
+            let udas: Vec<_> = task.get_udas().collect();
+            assert_eq!(udas, vec![]);
+        })
+    }
+
+    #[test]
+    fn test_remove_uda_invalid() {
+        with_mut_task(|mut task| {
+            assert!(task.remove_uda("modified").is_err());
+            assert!(task.remove_uda("tag_abc").is_err());
+        })
     }
 }
