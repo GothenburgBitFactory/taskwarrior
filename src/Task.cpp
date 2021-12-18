@@ -60,8 +60,6 @@
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
-extern Task* contextTask;
-
 static const float epsilon = 0.000001;
 #endif
 
@@ -2273,7 +2271,7 @@ void Task::modify (modType type, bool text_required /* = false */)
 
   // while reading the parse tree, consider DOM references in the context of
   // this task
-  contextTask = this;
+  auto currentTask = Context::getContext ().withCurrentTask(this);
 
   // Need this for later comparison.
   auto originalStatus = getStatus ();
