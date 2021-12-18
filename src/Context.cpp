@@ -1329,6 +1329,12 @@ void Context::debugTiming (const std::string& details, const Timer& timer)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CurrentTask Context::withCurrentTask (const Task *task)
+{
+  return CurrentTask(this, task);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // This capability is to answer the question of 'what did I just do to generate
 // this output?'.
 void Context::updateXtermTitle ()
@@ -1427,6 +1433,19 @@ void Context::debug (const std::string& input)
 {
   if (input.length ())
     debugMessages.push_back (input);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CurrentTask::CurrentTask (Context *context, const Task *task)
+  : context {context}, previous {context->currentTask}
+{
+  context->currentTask = task;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CurrentTask::~CurrentTask ()
+{
+  context->currentTask = previous;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
