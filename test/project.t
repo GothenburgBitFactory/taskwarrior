@@ -500,17 +500,9 @@ class TestBug1900(TestCase):
 
     def test_project_eval(self):
         """1900: Project name can contain dashes"""
-        self.t("add foo project:due-b")
+        self.t("add foo project:doo-bee")
         code, out, err = self.t("_get 1.project")
-        self.assertEqual("due-b\n", out)
-
-        self.t("add foo project:scheduled-home")
-        code, out, err = self.t("_get 2.project")
-        self.assertEqual("scheduled-home\n", out)
-
-        self.t("add foo project:entry-work")
-        code, out, err = self.t("_get 3.project")
-        self.assertEqual("entry-work\n", out)
+        self.assertEqual("doo-bee\n", out)
 
 
 class TestBug1904(TestCase):
