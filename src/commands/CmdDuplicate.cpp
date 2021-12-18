@@ -33,8 +33,6 @@
 #include <util.h>
 #include <main.h>
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdDuplicate::CmdDuplicate ()
 {
@@ -102,7 +100,6 @@ int CmdDuplicate::execute (std::string&)
     dup.setStatus (Task::pending); // Does not inherit status.
                                    // Must occur after Task::recurring check.
 
-    contextTask = &dup;
     dup.modify (Task::modAnnotate);
 
     if (permission (format ("Duplicate task {1} '{2}'?",

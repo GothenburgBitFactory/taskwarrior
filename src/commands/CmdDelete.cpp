@@ -36,8 +36,6 @@
 #define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
 #define STRING_CMD_DELETE_CONFIRM_R  "This is a recurring task.  Do you want to delete all pending recurrences of this same task?"
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdDelete::CmdDelete ()
 {
@@ -89,7 +87,6 @@ int CmdDelete::execute (std::string&)
                          task.identifier (true),
                          task.get ("description"));
 
-      contextTask = &task;
       task.modify (Task::modAnnotate);
       task.setStatus (Task::deleted);
       if (! task.has ("end"))
@@ -116,7 +113,6 @@ int CmdDelete::execute (std::string&)
             std::vector <Task> siblings = Context::getContext ().tdb2.siblings (task);
             for (auto& sibling : siblings)
             {
-              contextTask = &sibling;
               sibling.modify (Task::modAnnotate);
               sibling.setStatus (Task::deleted);
               if (! sibling.has ("end"))
@@ -151,7 +147,6 @@ int CmdDelete::execute (std::string&)
           {
             for (auto& child : children)
             {
-              contextTask = &child;
               child.modify (Task::modAnnotate);
               child.setStatus (Task::deleted);
               if (! child.has ("end"))

@@ -60,7 +60,7 @@
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
-extern Task& contextTask;
+extern Task* contextTask;
 
 static const float epsilon = 0.000001;
 #endif
@@ -2270,6 +2270,10 @@ float Task::urgency_blocking () const
 void Task::modify (modType type, bool text_required /* = false */)
 {
   std::string label = "  [1;37;43mMODIFICATION[0m ";
+
+  // while reading the parse tree, consider DOM references in the context of
+  // this task
+  contextTask = this;
 
   // Need this for later comparison.
   auto originalStatus = getStatus ();

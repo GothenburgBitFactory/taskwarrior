@@ -30,8 +30,6 @@
 #include <format.h>
 #include <main.h>
 
-extern Task* contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdAdd::CmdAdd ()
 {
@@ -56,7 +54,6 @@ int CmdAdd::execute (std::string& output)
 
   // the task is empty, but DOM references can refer to earlier parts of the
   // command line, e.g., `task add due:20110101 wait:due`.
-  contextTask = &task;
   task.modify (Task::modReplace, true);
   Context::getContext ().tdb2.add (task);
 
