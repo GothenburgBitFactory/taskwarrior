@@ -1,4 +1,4 @@
-use crate::server::Server;
+use crate::server::{Server, SyncOp};
 use crate::storage::{Operation, Storage, TaskMap};
 use uuid::Uuid;
 
@@ -22,7 +22,10 @@ impl TaskDb {
 
     #[cfg(test)]
     pub fn new_inmemory() -> TaskDb {
-        TaskDb::new(Box::new(crate::storage::InMemoryStorage::new()))
+        #[cfg(test)]
+        use crate::storage::InMemoryStorage;
+
+        TaskDb::new(Box::new(InMemoryStorage::new()))
     }
 
     /// Apply an operation to the TaskDb.  Aside from synchronization operations, this is the only way
@@ -37,6 +40,27 @@ impl TaskDb {
         txn.add_operation(op)?;
         txn.commit()?;
         Ok(())
+    }
+
+    // temporary
+    pub fn apply_sync_tmp(&mut self, op: SyncOp) -> anyhow::Result<()> {
+        // create an op from SyncOp
+        let op = match op {
+            SyncOp::Create { uuid } => Operation::Create { uuid },
+            SyncOp::Delete { uuid } => Operation::Delete { uuid },
+            SyncOp::Update {
+                uuid,
+                property,
+                value,
+                timestamp,
+            } => Operation::Update {
+                uuid,
+                property,
+                value,
+                timestamp,
+            },
+        };
+        self.apply(op)
     }
 
     /// Get all tasks.
