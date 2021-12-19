@@ -1,5 +1,5 @@
 use crate::server::{Server, SyncOp};
-use crate::storage::{Operation, Storage, TaskMap};
+use crate::storage::{ReplicaOp, Storage, TaskMap};
 use uuid::Uuid;
 
 mod ops;
@@ -31,7 +31,7 @@ impl TaskDb {
     /// Apply an operation to the TaskDb.  Aside from synchronization operations, this is the only way
     /// to modify the TaskDb.  In cases where an operation does not make sense, this function will do
     /// nothing and return an error (but leave the TaskDb in a consistent state).
-    pub fn apply(&mut self, op: Operation) -> anyhow::Result<()> {
+    pub fn apply(&mut self, op: ReplicaOp) -> anyhow::Result<()> {
         // TODO: differentiate error types here?
         let mut txn = self.storage.txn()?;
         if let err @ Err(_) = ops::apply_op(txn.as_mut(), &op) {
@@ -46,14 +46,14 @@ impl TaskDb {
     pub fn apply_sync_tmp(&mut self, op: SyncOp) -> anyhow::Result<()> {
         // create an op from SyncOp
         let op = match op {
-            SyncOp::Create { uuid } => Operation::Create { uuid },
-            SyncOp::Delete { uuid } => Operation::Delete { uuid },
+            SyncOp::Create { uuid } => ReplicaOp::Create { uuid },
+            SyncOp::Delete { uuid } => ReplicaOp::Delete { uuid },
             SyncOp::Update {
                 uuid,
                 property,
                 value,
                 timestamp,
-            } => Operation::Update {
+            } => ReplicaOp::Update {
                 uuid,
                 property,
                 value,
@@ -158,7 +158,7 @@ impl TaskDb {
     }
 
     #[cfg(test)]
-    pub(crate) fn operations(&mut self) -> Vec<Operation> {
+    pub(crate) fn operations(&mut self) -> Vec<ReplicaOp> {
         let mut txn = self.storage.txn().unwrap();
         txn.operations()
             .unwrap()
@@ -184,7 +184,7 @@ mod tests {
         // operations; more detailed tests are in the `ops` module.
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op = Operation::Create { uuid };
+        let op = ReplicaOp::Create { uuid };
         db.apply(op.clone()).unwrap();
 
         assert_eq!(db.sorted_tasks(), vec![(uuid, vec![]),]);
@@ -197,7 +197,7 @@ mod tests {
 
     #[derive(Debug)]
     enum Action {
-        Op(Operation),
+        Op(ReplicaOp),
         Sync,
     }
 
@@ -209,14 +209,14 @@ mod tests {
                 .chunks(2)
                 .map(|action_on| {
                     let action = match action_on[0] {
-                        b'C' => Action::Op(Operation::Create { uuid }),
-                        b'U' => Action::Op(Operation::Update {
+                        b'C' => Action::Op(ReplicaOp::Create { uuid }),
+                        b'U' => Action::Op(ReplicaOp::Update {
                             uuid,
                             property: "title".into(),
                             value: Some("foo".into()),
                             timestamp: Utc::now(),
                         }),
-                        b'D' => Action::Op(Operation::Delete { uuid }),
+                        b'D' => Action::Op(ReplicaOp::Delete { uuid }),
                         b'S' => Action::Sync,
                         _ => unreachable!(),
                     };

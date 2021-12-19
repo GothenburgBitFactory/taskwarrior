@@ -11,14 +11,14 @@ use uuid::Uuid;
 
 mod config;
 mod inmemory;
-mod operation;
+mod op;
 pub(crate) mod sqlite;
 
 pub use config::StorageConfig;
 pub use inmemory::InMemoryStorage;
 pub use sqlite::SqliteStorage;
 
-pub use operation::Operation;
+pub use op::ReplicaOp;
 
 /// An in-memory representation of a task as a simple hashmap
 pub type TaskMap = HashMap<String, String>;
@@ -80,14 +80,14 @@ pub trait StorageTxn {
 
     /// Get the current set of outstanding operations (operations that have not been sync'd to the
     /// server yet)
-    fn operations(&mut self) -> Result<Vec<Operation>>;
+    fn operations(&mut self) -> Result<Vec<ReplicaOp>>;
 
     /// Add an operation to the end of the list of operations in the storage.  Note that this
     /// merely *stores* the operation; it is up to the TaskDb to apply it.
-    fn add_operation(&mut self, op: Operation) -> Result<()>;
+    fn add_operation(&mut self, op: ReplicaOp) -> Result<()>;
 
     /// Replace the current list of operations with a new list.
-    fn set_operations(&mut self, ops: Vec<Operation>) -> Result<()>;
+    fn set_operations(&mut self, ops: Vec<ReplicaOp>) -> Result<()>;
 
     /// Get the entire working set, with each task UUID at its appropriate (1-based) index.
     /// Element 0 is always None.

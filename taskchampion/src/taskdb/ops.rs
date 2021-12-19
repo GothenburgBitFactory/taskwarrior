@@ -1,20 +1,20 @@
 use crate::errors::Error;
-use crate::storage::{Operation, StorageTxn};
+use crate::storage::{ReplicaOp, StorageTxn};
 
-pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &Operation) -> anyhow::Result<()> {
+pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &ReplicaOp) -> anyhow::Result<()> {
     match op {
-        Operation::Create { uuid } => {
+        ReplicaOp::Create { uuid } => {
             // insert if the task does not already exist
             if !txn.create_task(*uuid)? {
                 return Err(Error::Database(format!("Task {} already exists", uuid)).into());
             }
         }
-        Operation::Delete { ref uuid } => {
+        ReplicaOp::Delete { ref uuid } => {
             if !txn.delete_task(*uuid)? {
                 return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
             }
         }
-        Operation::Update {
+        ReplicaOp::Update {
             ref uuid,
             ref property,
             ref value,
@@ -49,7 +49,7 @@ mod tests {
     fn test_apply_create() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op = Operation::Create { uuid };
+        let op = ReplicaOp::Create { uuid };
 
         {
             let mut txn = db.storage.txn()?;
@@ -65,7 +65,7 @@ mod tests {
     fn test_apply_create_exists() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op = Operation::Create { uuid };
+        let op = ReplicaOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
             apply_op(txn.as_mut(), &op)?;
@@ -86,7 +86,7 @@ mod tests {
     fn test_apply_create_update() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op1 = Operation::Create { uuid };
+        let op1 = ReplicaOp::Create { uuid };
 
         {
             let mut txn = db.storage.txn()?;
@@ -94,7 +94,7 @@ mod tests {
             txn.commit()?;
         }
 
-        let op2 = Operation::Update {
+        let op2 = ReplicaOp::Update {
             uuid,
             property: String::from("title"),
             value: Some("my task".into()),
@@ -118,14 +118,14 @@ mod tests {
     fn test_apply_create_update_delete_prop() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op1 = Operation::Create { uuid };
+        let op1 = ReplicaOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
             apply_op(txn.as_mut(), &op1)?;
             txn.commit()?;
         }
 
-        let op2 = Operation::Update {
+        let op2 = ReplicaOp::Update {
             uuid,
             property: String::from("title"),
             value: Some("my task".into()),
@@ -137,7 +137,7 @@ mod tests {
             txn.commit()?;
         }
 
-        let op3 = Operation::Update {
+        let op3 = ReplicaOp::Update {
             uuid,
             property: String::from("priority"),
             value: Some("H".into()),
@@ -149,7 +149,7 @@ mod tests {
             txn.commit()?;
         }
 
-        let op4 = Operation::Update {
+        let op4 = ReplicaOp::Update {
             uuid,
             property: String::from("title"),
             value: None,
@@ -177,7 +177,7 @@ mod tests {
     fn test_apply_update_does_not_exist() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op = Operation::Update {
+        let op = ReplicaOp::Update {
             uuid,
             property: String::from("title"),
             value: Some("my task".into()),
@@ -199,8 +199,8 @@ mod tests {
     fn test_apply_create_delete() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op1 = Operation::Create { uuid };
-        let op2 = Operation::Delete { uuid };
+        let op1 = ReplicaOp::Create { uuid };
+        let op2 = ReplicaOp::Delete { uuid };
 
         {
             let mut txn = db.storage.txn()?;
@@ -218,7 +218,7 @@ mod tests {
     fn test_apply_delete_not_present() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op = Operation::Delete { uuid };
+        let op = ReplicaOp::Delete { uuid };
         {
             let mut txn = db.storage.txn()?;
             assert_eq!(

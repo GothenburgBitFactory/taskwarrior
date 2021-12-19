@@ -1,6 +1,6 @@
 use crate::errors::Error;
 use crate::server::Server;
-use crate::storage::{Operation, Storage, TaskMap};
+use crate::storage::{ReplicaOp, Storage, TaskMap};
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDb;
 use crate::workingset::WorkingSet;
@@ -56,7 +56,7 @@ impl Replica {
         S1: Into<String>,
         S2: Into<String>,
     {
-        self.taskdb.apply(Operation::Update {
+        self.taskdb.apply(ReplicaOp::Update {
             uuid,
             property: property.into(),
             value: value.map(|v| v.into()),
@@ -100,7 +100,7 @@ impl Replica {
     /// Create a new task.  The task must not already exist.
     pub fn new_task(&mut self, status: Status, description: String) -> anyhow::Result<Task> {
         let uuid = Uuid::new_v4();
-        self.taskdb.apply(Operation::Create { uuid })?;
+        self.taskdb.apply(ReplicaOp::Create { uuid })?;
         trace!("task {} created", uuid);
         let mut task = Task::new(uuid, TaskMap::new()).into_mut(self);
         task.set_description(description)?;
@@ -118,7 +118,7 @@ impl Replica {
         if self.taskdb.get_task(uuid)?.is_none() {
             return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
         }
-        self.taskdb.apply(Operation::Delete { uuid })?;
+        self.taskdb.apply(ReplicaOp::Delete { uuid })?;
         trace!("task {} deleted", uuid);
         Ok(())
     }

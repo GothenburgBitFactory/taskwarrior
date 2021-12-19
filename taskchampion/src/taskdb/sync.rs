@@ -1,6 +1,6 @@
 use super::{ops, snapshot};
 use crate::server::{AddVersionResult, GetVersionResult, Server, SnapshotUrgency};
-use crate::storage::{Operation, StorageTxn};
+use crate::storage::{ReplicaOp, StorageTxn};
 use crate::Error;
 use log::{info, trace, warn};
 use serde::{Deserialize, Serialize};
@@ -8,7 +8,7 @@ use std::str;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Version {
-    operations: Vec<Operation>,
+    operations: Vec<ReplicaOp>,
 }
 
 /// Sync to the given server, pulling remote changes and pushing local changes.
@@ -58,7 +58,7 @@ pub(super) fn sync(
             }
         }
 
-        let operations: Vec<Operation> = txn.operations()?.to_vec();
+        let operations: Vec<ReplicaOp> = txn.operations()?.to_vec();
         if operations.is_empty() {
             info!("no changes to push to server");
             // nothing to sync back to the server..
@@ -136,7 +136,7 @@ fn apply_version(txn: &mut dyn StorageTxn, mut version: Version) -> anyhow::Resu
     // This is slightly complicated by the fact that the transform function can return None,
     // indicating no operation is required.  If this happens for a local op, we can just omit
     // it.  If it happens for server op, then we must copy the remaining local ops.
-    let mut local_operations: Vec<Operation> = txn.operations()?;
+    let mut local_operations: Vec<ReplicaOp> = txn.operations()?;
     for server_op in version.operations.drain(..) {
         trace!(
             "rebasing local operations onto server operation {:?}",
@@ -146,7 +146,7 @@ fn apply_version(txn: &mut dyn StorageTxn, mut version: Version) -> anyhow::Resu
         let mut svr_op = Some(server_op);
         for local_op in local_operations.drain(..) {
             if let Some(o) = svr_op {
-                let (new_server_op, new_local_op) = Operation::transform(o, local_op.clone());
+                let (new_server_op, new_local_op) = ReplicaOp::transform(o, local_op.clone());
                 trace!("local operation {:?} -> {:?}", local_op, new_local_op);
                 svr_op = new_server_op;
                 if let Some(o) = new_local_op {
@@ -175,7 +175,7 @@ fn apply_version(txn: &mut dyn StorageTxn, mut version: Version) -> anyhow::Resu
 mod test {
     use super::*;
     use crate::server::test::TestServer;
-    use crate::storage::{InMemoryStorage, Operation};
+    use crate::storage::{InMemoryStorage, ReplicaOp};
     use crate::taskdb::{snapshot::SnapshotTasks, TaskDb};
     use chrono::Utc;
     use pretty_assertions::assert_eq;
@@ -197,8 +197,8 @@ mod test {
 
         // make some changes in parallel to db1 and db2..
         let uuid1 = Uuid::new_v4();
-        db1.apply(Operation::Create { uuid: uuid1 }).unwrap();
-        db1.apply(Operation::Update {
+        db1.apply(ReplicaOp::Create { uuid: uuid1 }).unwrap();
+        db1.apply(ReplicaOp::Update {
             uuid: uuid1,
             property: "title".into(),
             value: Some("my first task".into()),
@@ -207,8 +207,8 @@ mod test {
         .unwrap();
 
         let uuid2 = Uuid::new_v4();
-        db2.apply(Operation::Create { uuid: uuid2 }).unwrap();
-        db2.apply(Operation::Update {
+        db2.apply(ReplicaOp::Create { uuid: uuid2 }).unwrap();
+        db2.apply(ReplicaOp::Update {
             uuid: uuid2,
             property: "title".into(),
             value: Some("my second task".into()),
@@ -223,14 +223,14 @@ mod test {
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
         // now make updates to the same task on both sides
-        db1.apply(Operation::Update {
+        db1.apply(ReplicaOp::Update {
             uuid: uuid2,
             property: "priority".into(),
             value: Some("H".into()),
             timestamp: Utc::now(),
         })
         .unwrap();
-        db2.apply(Operation::Update {
+        db2.apply(ReplicaOp::Update {
             uuid: uuid2,
             property: "project".into(),
             value: Some("personal".into()),
@@ -259,8 +259,8 @@ mod test {
 
         // create and update a task..
         let uuid = Uuid::new_v4();
-        db1.apply(Operation::Create { uuid }).unwrap();
-        db1.apply(Operation::Update {
+        db1.apply(ReplicaOp::Create { uuid }).unwrap();
+        db1.apply(ReplicaOp::Update {
             uuid,
             property: "title".into(),
             value: Some("my first task".into()),
@@ -275,9 +275,9 @@ mod test {
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
 
         // delete and re-create the task on db1
-        db1.apply(Operation::Delete { uuid }).unwrap();
-        db1.apply(Operation::Create { uuid }).unwrap();
-        db1.apply(Operation::Update {
+        db1.apply(ReplicaOp::Delete { uuid }).unwrap();
+        db1.apply(ReplicaOp::Create { uuid }).unwrap();
+        db1.apply(ReplicaOp::Update {
             uuid,
             property: "title".into(),
             value: Some("my second task".into()),
@@ -286,7 +286,7 @@ mod test {
         .unwrap();
 
         // and on db2, update a property of the task
-        db2.apply(Operation::Update {
+        db2.apply(ReplicaOp::Update {
             uuid,
             property: "project".into(),
             value: Some("personal".into()),
@@ -310,8 +310,8 @@ mod test {
         let mut db1 = newdb();
 
         let uuid = Uuid::new_v4();
-        db1.apply(Operation::Create { uuid })?;
-        db1.apply(Operation::Update {
+        db1.apply(ReplicaOp::Create { uuid })?;
+        db1.apply(ReplicaOp::Update {
             uuid,
             property: "title".into(),
             value: Some("my first task".into()),
@@ -332,7 +332,7 @@ mod test {
         assert_eq!(tasks[0].0, uuid);
 
         // update the taskdb and sync again
-        db1.apply(Operation::Update {
+        db1.apply(ReplicaOp::Update {
             uuid,
             property: "title".into(),
             value: Some("my first task, updated".into()),
@@ -362,7 +362,7 @@ mod test {
         let mut db1 = newdb();
 
         let uuid = Uuid::new_v4();
-        db1.apply(Operation::Create { uuid }).unwrap();
+        db1.apply(ReplicaOp::Create { uuid }).unwrap();
 
         test_server.set_snapshot_urgency(SnapshotUrgency::Low);
         sync(&mut server, db1.storage.txn()?.as_mut(), true).unwrap();

@@ -2,9 +2,10 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-/// An Operation defines a single change to the task database
+/// A ReplicaOp defines a single change to the task database, as stored locally in the replica.
+/// This contains additional information not included in SyncOp.
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
-pub enum Operation {
+pub enum ReplicaOp {
     /// Create a new task.
     ///
     /// On application, if the task already exists, the operation does nothing.
@@ -27,9 +28,9 @@ pub enum Operation {
     },
 }
 
-use Operation::*;
+use ReplicaOp::*;
 
-impl Operation {
+impl ReplicaOp {
     // Transform takes two operations A and B that happened concurrently and produces two
     // operations A' and B' such that `apply(apply(S, A), B') = apply(apply(S, B), A')`. This
     // function is used to serialize operations in a process similar to a Git "rebase".
@@ -53,9 +54,9 @@ impl Operation {
     // reached different states, to return to the same state by applying op2' and op1',
     // respectively.
     pub fn transform(
-        operation1: Operation,
-        operation2: Operation,
-    ) -> (Option<Operation>, Option<Operation>) {
+        operation1: ReplicaOp,
+        operation2: ReplicaOp,
+    ) -> (Option<ReplicaOp>, Option<ReplicaOp>) {
         match (&operation1, &operation2) {
             // Two creations or deletions of the same uuid reach the same state, so there's no need
             // for any further operations to bring the state together.
@@ -135,13 +136,13 @@ mod test {
     // thoroughly, so this testing is light.
 
     fn test_transform(
-        setup: Option<Operation>,
-        o1: Operation,
-        o2: Operation,
-        exp1p: Option<Operation>,
-        exp2p: Option<Operation>,
+        setup: Option<ReplicaOp>,
+        o1: ReplicaOp,
+        o2: ReplicaOp,
+        exp1p: Option<ReplicaOp>,
+        exp2p: Option<ReplicaOp>,
     ) {
-        let (o1p, o2p) = Operation::transform(o1.clone(), o2.clone());
+        let (o1p, o2p) = ReplicaOp::transform(o1.clone(), o2.clone());
         assert_eq!((&o1p, &o2p), (&exp1p, &exp2p));
 
         // check that the two operation sequences have the same effect, enforcing the invariant of
@@ -349,12 +350,12 @@ mod test {
         ]
     }
 
-    fn operation_strategy() -> impl Strategy<Value = Operation> {
+    fn operation_strategy() -> impl Strategy<Value = ReplicaOp> {
         prop_oneof![
-            uuid_strategy().prop_map(|uuid| Operation::Create { uuid }),
-            uuid_strategy().prop_map(|uuid| Operation::Delete { uuid }),
+            uuid_strategy().prop_map(|uuid| ReplicaOp::Create { uuid }),
+            uuid_strategy().prop_map(|uuid| ReplicaOp::Delete { uuid }),
             (uuid_strategy(), "(title|project|status)").prop_map(|(uuid, property)| {
-                Operation::Update {
+                ReplicaOp::Update {
                     uuid,
                     property,
                     value: Some("true".into()),
@@ -372,30 +373,30 @@ mod test {
         // check that the two operation sequences have the same effect, enforcing the invariant of
         // the transform function.
         fn transform_invariant_holds(o1 in operation_strategy(), o2 in operation_strategy()) {
-            let (o1p, o2p) = Operation::transform(o1.clone(), o2.clone());
+            let (o1p, o2p) = ReplicaOp::transform(o1.clone(), o2.clone());
 
             let mut db1 = TaskDb::new(Box::new(InMemoryStorage::new()));
             let mut db2 = TaskDb::new(Box::new(InMemoryStorage::new()));
 
             // Ensure that any expected tasks already exist
-            if let Operation::Update{ ref uuid, .. } = o1 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let ReplicaOp::Update{ ref uuid, .. } = o1 {
+                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
+                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
             }
 
-            if let Operation::Update{ ref uuid, .. } = o2 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let ReplicaOp::Update{ ref uuid, .. } = o2 {
+                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
+                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
             }
 
-            if let Operation::Delete{ ref uuid } = o1 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let ReplicaOp::Delete{ ref uuid } = o1 {
+                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
+                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
             }
 
-            if let Operation::Delete{ ref uuid } = o2 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let ReplicaOp::Delete{ ref uuid } = o2 {
+                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
+                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
             }
 
             // if applying the initial operations fail, that indicates the operation was invalid
