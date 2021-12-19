@@ -126,163 +126,17 @@ impl ReplicaOp {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::storage::InMemoryStorage;
-    use crate::taskdb::TaskDb;
-    use chrono::{Duration, Utc};
+    use chrono::Utc;
     use pretty_assertions::assert_eq;
-    use proptest::prelude::*;
-
-    // note that `tests/operation_transform_invariant.rs` tests the transform function quite
-    // thoroughly, so this testing is light.
-
-    fn test_transform(
-        setup: Option<ReplicaOp>,
-        o1: ReplicaOp,
-        o2: ReplicaOp,
-        exp1p: Option<ReplicaOp>,
-        exp2p: Option<ReplicaOp>,
-    ) {
-        let (o1p, o2p) = ReplicaOp::transform(o1.clone(), o2.clone());
-        assert_eq!((&o1p, &o2p), (&exp1p, &exp2p));
-
-        // check that the two operation sequences have the same effect, enforcing the invariant of
-        // the transform function.
-        let mut db1 = TaskDb::new_inmemory();
-        if let Some(ref o) = setup {
-            db1.apply(o.clone()).unwrap();
-        }
-        db1.apply(o1).unwrap();
-        if let Some(o) = o2p {
-            db1.apply(o).unwrap();
-        }
-
-        let mut db2 = TaskDb::new_inmemory();
-        if let Some(ref o) = setup {
-            db2.apply(o.clone()).unwrap();
-        }
-        db2.apply(o2).unwrap();
-        if let Some(o) = o1p {
-            db2.apply(o).unwrap();
-        }
-
-        assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
-    }
-
-    #[test]
-    fn test_unrelated_create() {
-        let uuid1 = Uuid::new_v4();
-        let uuid2 = Uuid::new_v4();
-
-        test_transform(
-            None,
-            Create { uuid: uuid1 },
-            Create { uuid: uuid2 },
-            Some(Create { uuid: uuid1 }),
-            Some(Create { uuid: uuid2 }),
-        );
-    }
-
-    #[test]
-    fn test_related_updates_different_props() {
-        let uuid = Uuid::new_v4();
-        let timestamp = Utc::now();
-
-        test_transform(
-            Some(Create { uuid }),
-            Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("true".into()),
-                timestamp,
-            },
-            Update {
-                uuid,
-                property: "def".into(),
-                value: Some("false".into()),
-                timestamp,
-            },
-            Some(Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("true".into()),
-                timestamp,
-            }),
-            Some(Update {
-                uuid,
-                property: "def".into(),
-                value: Some("false".into()),
-                timestamp,
-            }),
-        );
-    }
-
-    #[test]
-    fn test_related_updates_same_prop() {
-        let uuid = Uuid::new_v4();
-        let timestamp1 = Utc::now();
-        let timestamp2 = timestamp1 + Duration::seconds(10);
-
-        test_transform(
-            Some(Create { uuid }),
-            Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("true".into()),
-                timestamp: timestamp1,
-            },
-            Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("false".into()),
-                timestamp: timestamp2,
-            },
-            None,
-            Some(Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("false".into()),
-                timestamp: timestamp2,
-            }),
-        );
-    }
-
-    #[test]
-    fn test_related_updates_same_prop_same_time() {
-        let uuid = Uuid::new_v4();
-        let timestamp = Utc::now();
-
-        test_transform(
-            Some(Create { uuid }),
-            Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("true".into()),
-                timestamp,
-            },
-            Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("false".into()),
-                timestamp,
-            },
-            Some(Update {
-                uuid,
-                property: "abc".into(),
-                value: Some("true".into()),
-                timestamp,
-            }),
-            None,
-        );
-    }
 
     #[test]
     fn test_json_create() -> anyhow::Result<()> {
         let uuid = Uuid::new_v4();
         let op = Create { uuid };
-        assert_eq!(
-            serde_json::to_string(&op)?,
-            format!(r#"{{"Create":{{"uuid":"{}"}}}}"#, uuid),
-        );
+        let json = serde_json::to_string(&op)?;
+        assert_eq!(json, format!(r#"{{"Create":{{"uuid":"{}"}}}}"#, uuid));
+        let deser: ReplicaOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
         Ok(())
     }
 
@@ -290,10 +144,10 @@ mod test {
     fn test_json_delete() -> anyhow::Result<()> {
         let uuid = Uuid::new_v4();
         let op = Delete { uuid };
-        assert_eq!(
-            serde_json::to_string(&op)?,
-            format!(r#"{{"Delete":{{"uuid":"{}"}}}}"#, uuid),
-        );
+        let json = serde_json::to_string(&op)?;
+        assert_eq!(json, format!(r#"{{"Delete":{{"uuid":"{}"}}}}"#, uuid));
+        let deser: ReplicaOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
         Ok(())
     }
 
@@ -309,13 +163,16 @@ mod test {
             timestamp,
         };
 
+        let json = serde_json::to_string(&op)?;
         assert_eq!(
-            serde_json::to_string(&op)?,
+            json,
             format!(
                 r#"{{"Update":{{"uuid":"{}","property":"abc","value":"false","timestamp":"{:?}"}}}}"#,
                 uuid, timestamp,
-            ),
+            )
         );
+        let deser: ReplicaOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
         Ok(())
     }
 
@@ -331,90 +188,16 @@ mod test {
             timestamp,
         };
 
+        let json = serde_json::to_string(&op)?;
         assert_eq!(
-            serde_json::to_string(&op)?,
+            json,
             format!(
                 r#"{{"Update":{{"uuid":"{}","property":"abc","value":null,"timestamp":"{:?}"}}}}"#,
                 uuid, timestamp,
-            ),
+            )
         );
+        let deser: ReplicaOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
         Ok(())
-    }
-
-    fn uuid_strategy() -> impl Strategy<Value = Uuid> {
-        prop_oneof![
-            Just(Uuid::parse_str("83a2f9ef-f455-4195-b92e-a54c161eebfc").unwrap()),
-            Just(Uuid::parse_str("56e0be07-c61f-494c-a54c-bdcfdd52d2a7").unwrap()),
-            Just(Uuid::parse_str("4b7ed904-f7b0-4293-8a10-ad452422c7b3").unwrap()),
-            Just(Uuid::parse_str("9bdd0546-07c8-4e1f-a9bc-9d6299f4773b").unwrap()),
-        ]
-    }
-
-    fn operation_strategy() -> impl Strategy<Value = ReplicaOp> {
-        prop_oneof![
-            uuid_strategy().prop_map(|uuid| ReplicaOp::Create { uuid }),
-            uuid_strategy().prop_map(|uuid| ReplicaOp::Delete { uuid }),
-            (uuid_strategy(), "(title|project|status)").prop_map(|(uuid, property)| {
-                ReplicaOp::Update {
-                    uuid,
-                    property,
-                    value: Some("true".into()),
-                    timestamp: Utc::now(),
-                }
-            }),
-        ]
-    }
-
-    proptest! {
-        #![proptest_config(ProptestConfig {
-          cases: 1024, .. ProptestConfig::default()
-        })]
-        #[test]
-        // check that the two operation sequences have the same effect, enforcing the invariant of
-        // the transform function.
-        fn transform_invariant_holds(o1 in operation_strategy(), o2 in operation_strategy()) {
-            let (o1p, o2p) = ReplicaOp::transform(o1.clone(), o2.clone());
-
-            let mut db1 = TaskDb::new(Box::new(InMemoryStorage::new()));
-            let mut db2 = TaskDb::new(Box::new(InMemoryStorage::new()));
-
-            // Ensure that any expected tasks already exist
-            if let ReplicaOp::Update{ ref uuid, .. } = o1 {
-                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
-                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
-            }
-
-            if let ReplicaOp::Update{ ref uuid, .. } = o2 {
-                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
-                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
-            }
-
-            if let ReplicaOp::Delete{ ref uuid } = o1 {
-                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
-                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
-            }
-
-            if let ReplicaOp::Delete{ ref uuid } = o2 {
-                let _ = db1.apply(ReplicaOp::Create{uuid: uuid.clone()});
-                let _ = db2.apply(ReplicaOp::Create{uuid: uuid.clone()});
-            }
-
-            // if applying the initial operations fail, that indicates the operation was invalid
-            // in the base state, so consider the case successful.
-            if let Err(_) = db1.apply(o1) {
-                return Ok(());
-            }
-            if let Err(_) = db2.apply(o2) {
-                return Ok(());
-            }
-
-            if let Some(o) = o2p {
-                db1.apply(o).map_err(|e| TestCaseError::Fail(format!("Applying to db1: {}", e).into()))?;
-            }
-            if let Some(o) = o1p {
-                db2.apply(o).map_err(|e| TestCaseError::Fail(format!("Applying to db2: {}", e).into()))?;
-            }
-            assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
-        }
     }
 }

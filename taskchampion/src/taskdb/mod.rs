@@ -1,8 +1,11 @@
 use crate::server::{Server, SyncOp};
-use crate::storage::{ReplicaOp, Storage, TaskMap};
+use crate::storage::{Storage, TaskMap};
 use uuid::Uuid;
 
-mod ops;
+#[cfg(test)]
+use crate::storage::ReplicaOp;
+
+mod apply;
 mod snapshot;
 mod sync;
 mod working_set;
@@ -28,39 +31,16 @@ impl TaskDb {
         TaskDb::new(Box::new(InMemoryStorage::new()))
     }
 
-    /// Apply an operation to the TaskDb.  Aside from synchronization operations, this is the only way
-    /// to modify the TaskDb.  In cases where an operation does not make sense, this function will do
-    /// nothing and return an error (but leave the TaskDb in a consistent state).
-    pub fn apply(&mut self, op: ReplicaOp) -> anyhow::Result<()> {
-        // TODO: differentiate error types here?
+    /// Apply an operation to the TaskDb.  This will update the set of tasks and add a ReplicaOp to
+    /// the set of operations in the TaskDb, and return the TaskMap containing the resulting task's
+    /// properties (or an empty TaskMap for deletion).
+    ///
+    /// Aside from synchronization operations, this is the only way to modify the TaskDb.  In cases
+    /// where an operation does not make sense, this function will do nothing and return an error
+    /// (but leave the TaskDb in a consistent state).
+    pub fn apply(&mut self, op: SyncOp) -> anyhow::Result<TaskMap> {
         let mut txn = self.storage.txn()?;
-        if let err @ Err(_) = ops::apply_op(txn.as_mut(), &op) {
-            return err;
-        }
-        txn.add_operation(op)?;
-        txn.commit()?;
-        Ok(())
-    }
-
-    // temporary
-    pub fn apply_sync_tmp(&mut self, op: SyncOp) -> anyhow::Result<()> {
-        // create an op from SyncOp
-        let op = match op {
-            SyncOp::Create { uuid } => ReplicaOp::Create { uuid },
-            SyncOp::Delete { uuid } => ReplicaOp::Delete { uuid },
-            SyncOp::Update {
-                uuid,
-                property,
-                value,
-                timestamp,
-            } => ReplicaOp::Update {
-                uuid,
-                property,
-                value,
-                timestamp,
-            },
-        };
-        self.apply(op)
+        apply::apply(txn.as_mut(), op)
     }
 
     /// Get all tasks.
@@ -172,7 +152,7 @@ impl TaskDb {
 mod tests {
     use super::*;
     use crate::server::test::TestServer;
-    use crate::storage::InMemoryStorage;
+    use crate::storage::{InMemoryStorage, ReplicaOp};
     use chrono::Utc;
     use pretty_assertions::assert_eq;
     use proptest::prelude::*;
@@ -181,14 +161,14 @@ mod tests {
     #[test]
     fn test_apply() {
         // this verifies that the operation is both applied and included in the list of
-        // operations; more detailed tests are in the `ops` module.
+        // operations; more detailed tests are in the `apply` module.
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op = ReplicaOp::Create { uuid };
+        let op = SyncOp::Create { uuid };
         db.apply(op.clone()).unwrap();
 
         assert_eq!(db.sorted_tasks(), vec![(uuid, vec![]),]);
-        assert_eq!(db.operations(), vec![op]);
+        assert_eq!(db.operations(), vec![ReplicaOp::Create { uuid }]);
     }
 
     fn newdb() -> TaskDb {
@@ -197,7 +177,7 @@ mod tests {
 
     #[derive(Debug)]
     enum Action {
-        Op(ReplicaOp),
+        Op(SyncOp),
         Sync,
     }
 
@@ -209,14 +189,14 @@ mod tests {
                 .chunks(2)
                 .map(|action_on| {
                     let action = match action_on[0] {
-                        b'C' => Action::Op(ReplicaOp::Create { uuid }),
-                        b'U' => Action::Op(ReplicaOp::Update {
+                        b'C' => Action::Op(SyncOp::Create { uuid }),
+                        b'U' => Action::Op(SyncOp::Update {
                             uuid,
                             property: "title".into(),
                             value: Some("foo".into()),
                             timestamp: Utc::now(),
                         }),
-                        b'D' => Action::Op(ReplicaOp::Delete { uuid }),
+                        b'D' => Action::Op(SyncOp::Delete { uuid }),
                         b'S' => Action::Sync,
                         _ => unreachable!(),
                     };

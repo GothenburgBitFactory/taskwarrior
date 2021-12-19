@@ -1,6 +1,5 @@
-use crate::errors::Error;
-use crate::server::Server;
-use crate::storage::{ReplicaOp, Storage, TaskMap};
+use crate::server::{Server, SyncOp};
+use crate::storage::{Storage, TaskMap};
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDb;
 use crate::workingset::WorkingSet;
@@ -51,12 +50,12 @@ impl Replica {
         uuid: Uuid,
         property: S1,
         value: Option<S2>,
-    ) -> anyhow::Result<()>
+    ) -> anyhow::Result<TaskMap>
     where
         S1: Into<String>,
         S2: Into<String>,
     {
-        self.taskdb.apply(ReplicaOp::Update {
+        self.taskdb.apply(SyncOp::Update {
             uuid,
             property: property.into(),
             value: value.map(|v| v.into()),
@@ -100,9 +99,9 @@ impl Replica {
     /// Create a new task.  The task must not already exist.
     pub fn new_task(&mut self, status: Status, description: String) -> anyhow::Result<Task> {
         let uuid = Uuid::new_v4();
-        self.taskdb.apply(ReplicaOp::Create { uuid })?;
+        let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
         trace!("task {} created", uuid);
-        let mut task = Task::new(uuid, TaskMap::new()).into_mut(self);
+        let mut task = Task::new(uuid, taskmap).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
         Ok(task.into_immut())
@@ -113,12 +112,7 @@ impl Replica {
     /// should only occur through expiration.
     #[allow(dead_code)]
     fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<()> {
-        // check that it already exists; this is a convenience check, as the task may already exist
-        // when this Create operation is finally sync'd with operations from other replicas
-        if self.taskdb.get_task(uuid)?.is_none() {
-            return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
-        }
-        self.taskdb.apply(ReplicaOp::Delete { uuid })?;
+        self.taskdb.apply(SyncOp::Delete { uuid })?;
         trace!("task {} deleted", uuid);
         Ok(())
     }

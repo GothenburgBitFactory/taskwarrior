@@ -63,7 +63,7 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::storage::ReplicaOp;
+    use crate::server::SyncOp;
     use crate::taskdb::TaskDb;
     use chrono::Utc;
     use uuid::Uuid;
@@ -94,10 +94,10 @@ mod test {
 
         // add everything to the TaskDb
         for uuid in &uuids {
-            db.apply(ReplicaOp::Create { uuid: *uuid })?;
+            db.apply(SyncOp::Create { uuid: *uuid })?;
         }
         for i in &[0usize, 1, 4] {
-            db.apply(ReplicaOp::Update {
+            db.apply(SyncOp::Update {
                 uuid: uuids[*i].clone(),
                 property: String::from("status"),
                 value: Some("pending".into()),

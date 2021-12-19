@@ -215,20 +215,20 @@ mod test {
         // the transform function.
         let mut db1 = TaskDb::new_inmemory();
         if let Some(ref o) = setup {
-            db1.apply_sync_tmp(o.clone()).unwrap();
+            db1.apply(o.clone()).unwrap();
         }
-        db1.apply_sync_tmp(o1).unwrap();
+        db1.apply(o1).unwrap();
         if let Some(o) = o2p {
-            db1.apply_sync_tmp(o).unwrap();
+            db1.apply(o).unwrap();
         }
 
         let mut db2 = TaskDb::new_inmemory();
         if let Some(ref o) = setup {
-            db2.apply_sync_tmp(o.clone()).unwrap();
+            db2.apply(o.clone()).unwrap();
         }
-        db2.apply_sync_tmp(o2).unwrap();
+        db2.apply(o2).unwrap();
         if let Some(o) = o1p {
-            db2.apply_sync_tmp(o).unwrap();
+            db2.apply(o).unwrap();
         }
 
         assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
@@ -380,39 +380,39 @@ mod test {
 
             // Ensure that any expected tasks already exist
             if let Update{ uuid, .. } = o1 {
-                let _ = db1.apply_sync_tmp(Create{uuid});
-                let _ = db2.apply_sync_tmp(Create{uuid});
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
             if let Update{ uuid, .. } = o2 {
-                let _ = db1.apply_sync_tmp(Create{uuid});
-                let _ = db2.apply_sync_tmp(Create{uuid});
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
             if let Delete{ uuid } = o1 {
-                let _ = db1.apply_sync_tmp(Create{uuid});
-                let _ = db2.apply_sync_tmp(Create{uuid});
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
             if let Delete{ uuid } = o2 {
-                let _ = db1.apply_sync_tmp(Create{uuid});
-                let _ = db2.apply_sync_tmp(Create{uuid});
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
             // if applying the initial operations fail, that indicates the operation was invalid
             // in the base state, so consider the case successful.
-            if db1.apply_sync_tmp(o1).is_err() {
+            if db1.apply(o1).is_err() {
                 return Ok(());
             }
-            if db2.apply_sync_tmp(o2).is_err() {
+            if db2.apply(o2).is_err() {
                 return Ok(());
             }
 
             if let Some(o) = o2p {
-                db1.apply_sync_tmp(o).map_err(|e| TestCaseError::Fail(format!("Applying to db1: {}", e).into()))?;
+                db1.apply(o).map_err(|e| TestCaseError::Fail(format!("Applying to db1: {}", e).into()))?;
             }
             if let Some(o) = o1p {
-                db2.apply_sync_tmp(o).map_err(|e| TestCaseError::Fail(format!("Applying to db2: {}", e).into()))?;
+                db2.apply(o).map_err(|e| TestCaseError::Fail(format!("Applying to db2: {}", e).into()))?;
             }
             assert_eq!(db1.sorted_tasks(), db2.sorted_tasks());
         }
