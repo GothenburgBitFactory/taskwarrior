@@ -1,9 +1,6 @@
 use crate::server::{Server, SyncOp};
-use crate::storage::{Storage, TaskMap};
+use crate::storage::{ReplicaOp, Storage, TaskMap};
 use uuid::Uuid;
-
-#[cfg(test)]
-use crate::storage::ReplicaOp;
 
 mod apply;
 mod snapshot;
@@ -41,6 +38,13 @@ impl TaskDb {
     pub fn apply(&mut self, op: SyncOp) -> anyhow::Result<TaskMap> {
         let mut txn = self.storage.txn()?;
         apply::apply(txn.as_mut(), op)
+    }
+
+    /// Add an UndoPoint operation to the list of replica operations.
+    pub fn add_undo_point(&mut self) -> anyhow::Result<()> {
+        let mut txn = self.storage.txn()?;
+        txn.add_operation(ReplicaOp::UndoPoint)?;
+        txn.commit()
     }
 
     /// Get all tasks.
@@ -169,6 +173,13 @@ mod tests {
 
         assert_eq!(db.sorted_tasks(), vec![(uuid, vec![]),]);
         assert_eq!(db.operations(), vec![ReplicaOp::Create { uuid }]);
+    }
+
+    #[test]
+    fn test_add_undo_point() {
+        let mut db = TaskDb::new_inmemory();
+        db.add_undo_point().unwrap();
+        assert_eq!(db.operations(), vec![ReplicaOp::UndoPoint]);
     }
 
     fn newdb() -> TaskDb {

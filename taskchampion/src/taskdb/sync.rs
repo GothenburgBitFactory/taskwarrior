@@ -75,7 +75,7 @@ pub(super) fn sync(
         let mut local_ops: Vec<SyncOp> = txn
             .operations()?
             .drain(..)
-            .map(|op| op.into_sync())
+            .filter_map(|op| op.into_sync())
             .collect();
 
         // first pull changes and "rebase" on top of them

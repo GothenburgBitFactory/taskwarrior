@@ -29,26 +29,33 @@ pub enum ReplicaOp {
         value: Option<String>,
         timestamp: DateTime<Utc>,
     },
+
+    /// Mark a point in the operations history to which the user might like to undo.  Users
+    /// typically want to undo more than one operation at a time (for example, most changes update
+    /// both the `modified` property and some other task property -- the user would like to "undo"
+    /// both updates at the same time).  Applying an UndoPoint does nothing.
+    UndoPoint,
 }
 
 impl ReplicaOp {
     /// Convert this operation into a [`SyncOp`].
-    pub fn into_sync(self) -> SyncOp {
+    pub fn into_sync(self) -> Option<SyncOp> {
         match self {
-            Self::Create { uuid } => SyncOp::Create { uuid },
-            Self::Delete { uuid, .. } => SyncOp::Delete { uuid },
+            Self::Create { uuid } => Some(SyncOp::Create { uuid }),
+            Self::Delete { uuid, .. } => Some(SyncOp::Delete { uuid }),
             Self::Update {
                 uuid,
                 property,
                 value,
                 timestamp,
                 ..
-            } => SyncOp::Update {
+            } => Some(SyncOp::Update {
                 uuid,
                 property,
                 value,
                 timestamp,
-            },
+            }),
+            Self::UndoPoint => None,
         }
     }
 }
@@ -145,7 +152,7 @@ mod test {
     #[test]
     fn test_into_sync_create() {
         let uuid = Uuid::new_v4();
-        assert_eq!(Create { uuid }.into_sync(), SyncOp::Create { uuid });
+        assert_eq!(Create { uuid }.into_sync(), Some(SyncOp::Create { uuid }));
     }
 
     #[test]
@@ -157,7 +164,7 @@ mod test {
                 old_task: TaskMap::new()
             }
             .into_sync(),
-            SyncOp::Delete { uuid }
+            Some(SyncOp::Delete { uuid })
         );
     }
 
@@ -174,12 +181,17 @@ mod test {
                 timestamp,
             }
             .into_sync(),
-            SyncOp::Update {
+            Some(SyncOp::Update {
                 uuid,
                 property: "prop".into(),
                 value: Some("v".into()),
                 timestamp,
-            }
+            })
         );
+    }
+
+    #[test]
+    fn test_into_sync_undo_point() {
+        assert_eq!(UndoPoint.into_sync(), None);
     }
 }
