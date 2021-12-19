@@ -1,4 +1,5 @@
 use crate::server::SyncOp;
+use crate::storage::TaskMap;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -9,21 +10,22 @@ use uuid::Uuid;
 pub enum ReplicaOp {
     /// Create a new task.
     ///
-    /// On application, if the task already exists, the operation does nothing.
+    /// On undo, the task is deleted.
     Create { uuid: Uuid },
 
     /// Delete an existing task.
     ///
-    /// On application, if the task does not exist, the operation does nothing.
-    Delete { uuid: Uuid },
+    /// On undo, the task's data is restored from old_task.
+    Delete { uuid: Uuid, old_task: TaskMap },
 
     /// Update an existing task, setting the given property to the given value.  If the value is
     /// None, then the corresponding property is deleted.
     ///
-    /// If the given task does not exist, the operation does nothing.  
+    /// On undo, the property is set back to its previous value.
     Update {
         uuid: Uuid,
         property: String,
+        old_value: Option<String>,
         value: Option<String>,
         timestamp: DateTime<Utc>,
     },
@@ -34,12 +36,13 @@ impl ReplicaOp {
     pub fn into_sync(self) -> SyncOp {
         match self {
             Self::Create { uuid } => SyncOp::Create { uuid },
-            Self::Delete { uuid } => SyncOp::Delete { uuid },
+            Self::Delete { uuid, .. } => SyncOp::Delete { uuid },
             Self::Update {
                 uuid,
                 property,
                 value,
                 timestamp,
+                ..
             } => SyncOp::Update {
                 uuid,
                 property,
@@ -56,6 +59,8 @@ mod test {
     use chrono::Utc;
     use pretty_assertions::assert_eq;
 
+    use ReplicaOp::*;
+
     #[test]
     fn test_json_create() -> anyhow::Result<()> {
         let uuid = Uuid::new_v4();
@@ -70,9 +75,16 @@ mod test {
     #[test]
     fn test_json_delete() -> anyhow::Result<()> {
         let uuid = Uuid::new_v4();
-        let op = Delete { uuid };
+        let old_task = vec![("foo".into(), "bar".into())].drain(..).collect();
+        let op = Delete { uuid, old_task };
         let json = serde_json::to_string(&op)?;
-        assert_eq!(json, format!(r#"{{"Delete":{{"uuid":"{}"}}}}"#, uuid));
+        assert_eq!(
+            json,
+            format!(
+                r#"{{"Delete":{{"uuid":"{}","old_task":{{"foo":"bar"}}}}}}"#,
+                uuid
+            )
+        );
         let deser: ReplicaOp = serde_json::from_str(&json)?;
         assert_eq!(deser, op);
         Ok(())
@@ -86,6 +98,7 @@ mod test {
         let op = Update {
             uuid,
             property: "abc".into(),
+            old_value: Some("true".into()),
             value: Some("false".into()),
             timestamp,
         };
@@ -94,7 +107,7 @@ mod test {
         assert_eq!(
             json,
             format!(
-                r#"{{"Update":{{"uuid":"{}","property":"abc","value":"false","timestamp":"{:?}"}}}}"#,
+                r#"{{"Update":{{"uuid":"{}","property":"abc","old_value":"true","value":"false","timestamp":"{:?}"}}}}"#,
                 uuid, timestamp,
             )
         );
@@ -111,6 +124,7 @@ mod test {
         let op = Update {
             uuid,
             property: "abc".into(),
+            old_value: None,
             value: None,
             timestamp,
         };
@@ -119,7 +133,7 @@ mod test {
         assert_eq!(
             json,
             format!(
-                r#"{{"Update":{{"uuid":"{}","property":"abc","value":null,"timestamp":"{:?}"}}}}"#,
+                r#"{{"Update":{{"uuid":"{}","property":"abc","old_value":null,"value":null,"timestamp":"{:?}"}}}}"#,
                 uuid, timestamp,
             )
         );
@@ -137,7 +151,14 @@ mod test {
     #[test]
     fn test_into_sync_delete() {
         let uuid = Uuid::new_v4();
-        assert_eq!(Delete { uuid }.into_sync(), SyncOp::Delete { uuid });
+        assert_eq!(
+            Delete {
+                uuid,
+                old_task: TaskMap::new()
+            }
+            .into_sync(),
+            SyncOp::Delete { uuid }
+        );
     }
 
     #[test]
@@ -148,6 +169,7 @@ mod test {
             Update {
                 uuid,
                 property: "prop".into(),
+                old_value: Some("foo".into()),
                 value: Some("v".into()),
                 timestamp,
             }

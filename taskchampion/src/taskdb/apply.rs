@@ -20,10 +20,12 @@ pub(super) fn apply(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<Task
         }
         SyncOp::Delete { uuid } => {
             let task = txn.get_task(uuid)?;
-            // (we'll need _task in the next commit)
-            if let Some(_task) = task {
+            if let Some(task) = task {
                 txn.delete_task(uuid)?;
-                txn.add_operation(ReplicaOp::Delete { uuid })?;
+                txn.add_operation(ReplicaOp::Delete {
+                    uuid,
+                    old_task: task,
+                })?;
                 txn.commit()?;
                 Ok(TaskMap::new())
             } else {
@@ -38,6 +40,7 @@ pub(super) fn apply(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<Task
         } => {
             let task = txn.get_task(uuid)?;
             if let Some(mut task) = task {
+                let old_value = task.get(&property).cloned();
                 if let Some(ref v) = value {
                     task.insert(property.clone(), v.clone());
                 } else {
@@ -47,6 +50,7 @@ pub(super) fn apply(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<Task
                 txn.add_operation(ReplicaOp::Update {
                     uuid,
                     property,
+                    old_value,
                     value,
                     timestamp,
                 })?;
@@ -149,6 +153,7 @@ mod tests {
                 ReplicaOp::Update {
                     uuid,
                     property: "title".into(),
+                    old_value: None,
                     value: Some("my task".into()),
                     timestamp: now
                 }
@@ -226,18 +231,21 @@ mod tests {
                 ReplicaOp::Update {
                     uuid,
                     property: "title".into(),
+                    old_value: None,
                     value: Some("my task".into()),
                     timestamp: now,
                 },
                 ReplicaOp::Update {
                     uuid,
                     property: "priority".into(),
+                    old_value: None,
                     value: Some("H".into()),
                     timestamp: now,
                 },
                 ReplicaOp::Update {
                     uuid,
                     property: "title".into(),
+                    old_value: Some("my task".into()),
                     value: None,
                     timestamp: now,
                 }
@@ -273,22 +281,52 @@ mod tests {
     fn test_apply_create_delete() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op1 = SyncOp::Create { uuid };
-        let op2 = SyncOp::Delete { uuid };
+        let now = Utc::now();
 
+        let op1 = SyncOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
             let taskmap = apply(txn.as_mut(), op1)?;
             assert_eq!(taskmap.len(), 0);
+        }
+
+        let op2 = SyncOp::Update {
+            uuid,
+            property: String::from("priority"),
+            value: Some("H".into()),
+            timestamp: now,
+        };
+        {
+            let mut txn = db.storage.txn()?;
             let taskmap = apply(txn.as_mut(), op2)?;
+            assert_eq!(taskmap.get("priority"), Some(&"H".to_owned()));
+            txn.commit()?;
+        }
+
+        let op3 = SyncOp::Delete { uuid };
+        {
+            let mut txn = db.storage.txn()?;
+            let taskmap = apply(txn.as_mut(), op3)?;
             assert_eq!(taskmap.len(), 0);
             txn.commit()?;
         }
 
         assert_eq!(db.sorted_tasks(), vec![]);
+        let mut old_task = TaskMap::new();
+        old_task.insert("priority".into(), "H".into());
         assert_eq!(
             db.operations(),
-            vec![ReplicaOp::Create { uuid }, ReplicaOp::Delete { uuid },]
+            vec![
+                ReplicaOp::Create { uuid },
+                ReplicaOp::Update {
+                    uuid,
+                    property: "priority".into(),
+                    old_value: None,
+                    value: Some("H".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Delete { uuid, old_task },
+            ]
         );
 
         Ok(())

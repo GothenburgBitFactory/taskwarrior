@@ -633,8 +633,14 @@ mod test {
         {
             let mut txn = storage.txn()?;
             txn.set_operations(vec![
-                ReplicaOp::Delete { uuid: uuid2 },
-                ReplicaOp::Delete { uuid: uuid1 },
+                ReplicaOp::Delete {
+                    uuid: uuid2,
+                    old_task: TaskMap::new(),
+                },
+                ReplicaOp::Delete {
+                    uuid: uuid1,
+                    old_task: TaskMap::new(),
+                },
             ])?;
             txn.commit()?;
         }
@@ -643,7 +649,10 @@ mod test {
         {
             let mut txn = storage.txn()?;
             txn.add_operation(ReplicaOp::Create { uuid: uuid3 })?;
-            txn.add_operation(ReplicaOp::Delete { uuid: uuid3 })?;
+            txn.add_operation(ReplicaOp::Delete {
+                uuid: uuid3,
+                old_task: TaskMap::new(),
+            })?;
             txn.commit()?;
         }
 
@@ -654,10 +663,19 @@ mod test {
             assert_eq!(
                 ops,
                 vec![
-                    ReplicaOp::Delete { uuid: uuid2 },
-                    ReplicaOp::Delete { uuid: uuid1 },
+                    ReplicaOp::Delete {
+                        uuid: uuid2,
+                        old_task: TaskMap::new()
+                    },
+                    ReplicaOp::Delete {
+                        uuid: uuid1,
+                        old_task: TaskMap::new()
+                    },
                     ReplicaOp::Create { uuid: uuid3 },
-                    ReplicaOp::Delete { uuid: uuid3 },
+                    ReplicaOp::Delete {
+                        uuid: uuid3,
+                        old_task: TaskMap::new()
+                    },
                 ]
             );
         }
