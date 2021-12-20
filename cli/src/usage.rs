@@ -274,6 +274,7 @@ impl Modification {
 
 /// Usage documentation for a report property (which may be used for sorting, as a column, or
 /// both).
+#[allow(dead_code)]
 #[derive(Debug, Default)]
 pub(crate) struct ReportProperty {
     /// Name of the property
