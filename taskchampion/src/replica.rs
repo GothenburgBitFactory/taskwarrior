@@ -274,7 +274,7 @@ mod tests {
                     uuid: t.get_uuid(),
                     property: "status".into(),
                     old_value: None,
-                    value: Some("P".into()),
+                    value: Some("pending".into()),
                     timestamp: now,
                 },
                 ReplicaOp::Update {
@@ -294,8 +294,8 @@ mod tests {
                 ReplicaOp::Update {
                     uuid: t.get_uuid(),
                     property: "status".into(),
-                    old_value: Some("P".into()),
-                    value: Some("C".into()),
+                    old_value: Some("pending".into()),
+                    value: Some("completed".into()),
                     timestamp: now,
                 },
             ]
