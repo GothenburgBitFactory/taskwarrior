@@ -5,7 +5,7 @@ use crate::storage::{ReplicaOp, StorageTxn, TaskMap};
 /// Apply the given SyncOp to the replica, updating both the task data and adding a
 /// ReplicaOp to the list of operations.  Returns the TaskMap of the task after the
 /// operation has been applied (or an empty TaskMap for Delete).
-pub(super) fn apply(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<TaskMap> {
+pub(super) fn apply_and_record(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<TaskMap> {
     match op {
         SyncOp::Create { uuid } => {
             let created = txn.create_task(uuid)?;
@@ -63,6 +63,45 @@ pub(super) fn apply(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<Task
     }
 }
 
+/// Apply an op to the TaskDb's set of tasks (without recording it in the list of operations)
+pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &SyncOp) -> anyhow::Result<()> {
+    // TODO: test
+    // TODO: it'd be nice if this was integrated into apply() somehow, but that clones TaskMaps
+    // unnecessariliy
+    match op {
+        SyncOp::Create { uuid } => {
+            // insert if the task does not already exist
+            if !txn.create_task(*uuid)? {
+                return Err(Error::Database(format!("Task {} already exists", uuid)).into());
+            }
+        }
+        SyncOp::Delete { ref uuid } => {
+            if !txn.delete_task(*uuid)? {
+                return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
+            }
+        }
+        SyncOp::Update {
+            ref uuid,
+            ref property,
+            ref value,
+            timestamp: _,
+        } => {
+            // update if this task exists, otherwise ignore
+            if let Some(mut task) = txn.get_task(*uuid)? {
+                match value {
+                    Some(ref val) => task.insert(property.to_string(), val.clone()),
+                    None => task.remove(property),
+                };
+                txn.set_task(*uuid, task)?;
+            } else {
+                return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
+            }
+        }
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -80,7 +119,7 @@ mod tests {
 
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op)?;
+            let taskmap = apply_and_record(txn.as_mut(), op)?;
             assert_eq!(taskmap.len(), 0);
             txn.commit()?;
         }
@@ -97,10 +136,13 @@ mod tests {
         let op = SyncOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op.clone())?;
+            let taskmap = apply_and_record(txn.as_mut(), op.clone())?;
             assert_eq!(taskmap.len(), 0);
             assert_eq!(
-                apply(txn.as_mut(), op).err().unwrap().to_string(),
+                apply_and_record(txn.as_mut(), op)
+                    .err()
+                    .unwrap()
+                    .to_string(),
                 format!("Task Database Error: Task {} already exists", uuid)
             );
             txn.commit()?;
@@ -121,7 +163,7 @@ mod tests {
 
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op1)?;
+            let taskmap = apply_and_record(txn.as_mut(), op1)?;
             assert_eq!(taskmap.len(), 0);
             txn.commit()?;
         }
@@ -134,7 +176,7 @@ mod tests {
         };
         {
             let mut txn = db.storage.txn()?;
-            let mut taskmap = apply(txn.as_mut(), op2)?;
+            let mut taskmap = apply_and_record(txn.as_mut(), op2)?;
             assert_eq!(
                 taskmap.drain().collect::<Vec<(_, _)>>(),
                 vec![("title".into(), "my task".into())]
@@ -171,7 +213,7 @@ mod tests {
         let op1 = SyncOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op1)?;
+            let taskmap = apply_and_record(txn.as_mut(), op1)?;
             assert_eq!(taskmap.len(), 0);
             txn.commit()?;
         }
@@ -184,7 +226,7 @@ mod tests {
         };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op2)?;
+            let taskmap = apply_and_record(txn.as_mut(), op2)?;
             assert_eq!(taskmap.get("title"), Some(&"my task".to_owned()));
             txn.commit()?;
         }
@@ -197,7 +239,7 @@ mod tests {
         };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op3)?;
+            let taskmap = apply_and_record(txn.as_mut(), op3)?;
             assert_eq!(taskmap.get("priority"), Some(&"H".to_owned()));
             txn.commit()?;
         }
@@ -210,7 +252,7 @@ mod tests {
         };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op4)?;
+            let taskmap = apply_and_record(txn.as_mut(), op4)?;
             assert_eq!(taskmap.get("title"), None);
             assert_eq!(taskmap.get("priority"), Some(&"H".to_owned()));
             txn.commit()?;
@@ -268,7 +310,10 @@ mod tests {
         {
             let mut txn = db.storage.txn()?;
             assert_eq!(
-                apply(txn.as_mut(), op).err().unwrap().to_string(),
+                apply_and_record(txn.as_mut(), op)
+                    .err()
+                    .unwrap()
+                    .to_string(),
                 format!("Task Database Error: Task {} does not exist", uuid)
             );
             txn.commit()?;
@@ -286,7 +331,7 @@ mod tests {
         let op1 = SyncOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op1)?;
+            let taskmap = apply_and_record(txn.as_mut(), op1)?;
             assert_eq!(taskmap.len(), 0);
         }
 
@@ -298,7 +343,7 @@ mod tests {
         };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op2)?;
+            let taskmap = apply_and_record(txn.as_mut(), op2)?;
             assert_eq!(taskmap.get("priority"), Some(&"H".to_owned()));
             txn.commit()?;
         }
@@ -306,7 +351,7 @@ mod tests {
         let op3 = SyncOp::Delete { uuid };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply(txn.as_mut(), op3)?;
+            let taskmap = apply_and_record(txn.as_mut(), op3)?;
             assert_eq!(taskmap.len(), 0);
             txn.commit()?;
         }
@@ -340,7 +385,10 @@ mod tests {
         {
             let mut txn = db.storage.txn()?;
             assert_eq!(
-                apply(txn.as_mut(), op).err().unwrap().to_string(),
+                apply_and_record(txn.as_mut(), op)
+                    .err()
+                    .unwrap()
+                    .to_string(),
                 format!("Task Database Error: Task {} does not exist", uuid)
             );
             txn.commit()?;

@@ -5,6 +5,7 @@ use uuid::Uuid;
 mod apply;
 mod snapshot;
 mod sync;
+mod undo;
 mod working_set;
 
 /// A TaskDb is the backend for a replica.  It manages the storage, operations, synchronization,
@@ -37,7 +38,7 @@ impl TaskDb {
     /// (but leave the TaskDb in a consistent state).
     pub fn apply(&mut self, op: SyncOp) -> anyhow::Result<TaskMap> {
         let mut txn = self.storage.txn()?;
-        apply::apply(txn.as_mut(), op)
+        apply::apply_and_record(txn.as_mut(), op)
     }
 
     /// Add an UndoPoint operation to the list of replica operations.
@@ -118,6 +119,13 @@ impl TaskDb {
     ) -> anyhow::Result<()> {
         let mut txn = self.storage.txn()?;
         sync::sync(server, txn.as_mut(), avoid_snapshots)
+    }
+
+    /// Undo local operations until the most recent UndoPoint, returning false if there are no
+    /// local operations to undo.
+    pub fn undo(&mut self) -> anyhow::Result<bool> {
+        let mut txn = self.storage.txn()?;
+        undo::undo(txn.as_mut())
     }
 
     // functions for supporting tests

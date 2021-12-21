@@ -1,4 +1,4 @@
-use super::snapshot;
+use super::{apply, snapshot};
 use crate::server::{AddVersionResult, GetVersionResult, Server, SnapshotUrgency, SyncOp};
 use crate::storage::StorageTxn;
 use crate::Error;
@@ -9,44 +9,6 @@ use std::str;
 #[derive(Serialize, Deserialize, Debug)]
 struct Version {
     operations: Vec<SyncOp>,
-}
-
-/// Apply an op to the TaskDb's set of tasks (without recording it in the list of operations)
-pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &SyncOp) -> anyhow::Result<()> {
-    // TODO: it'd be nice if this was integrated into apply() somehow, but that clones TaskMaps
-    // unnecessariliy
-    match op {
-        SyncOp::Create { uuid } => {
-            // insert if the task does not already exist
-            if !txn.create_task(*uuid)? {
-                return Err(Error::Database(format!("Task {} already exists", uuid)).into());
-            }
-        }
-        SyncOp::Delete { ref uuid } => {
-            if !txn.delete_task(*uuid)? {
-                return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
-            }
-        }
-        SyncOp::Update {
-            ref uuid,
-            ref property,
-            ref value,
-            timestamp: _,
-        } => {
-            // update if this task exists, otherwise ignore
-            if let Some(mut task) = txn.get_task(*uuid)? {
-                match value {
-                    Some(ref val) => task.insert(property.to_string(), val.clone()),
-                    None => task.remove(property),
-                };
-                txn.set_task(*uuid, task)?;
-            } else {
-                return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
-            }
-        }
-    }
-
-    Ok(())
 }
 
 /// Sync to the given server, pulling remote changes and pushing local changes.
@@ -209,7 +171,7 @@ fn apply_version(
             }
         }
         if let Some(o) = svr_op {
-            if let Err(e) = apply_op(txn, &o) {
+            if let Err(e) = apply::apply_op(txn, &o) {
                 warn!("Invalid operation when syncing: {} (ignored)", e);
             }
         }

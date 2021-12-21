@@ -58,11 +58,47 @@ impl ReplicaOp {
             Self::UndoPoint => None,
         }
     }
+
+    /// Generate a sequence of SyncOp's to reverse the effects of this ReplicaOp.
+    pub fn reverse_ops(self) -> Vec<SyncOp> {
+        match self {
+            Self::Create { uuid } => vec![SyncOp::Delete { uuid }],
+            Self::Delete { uuid, mut old_task } => {
+                let mut ops = vec![SyncOp::Create { uuid }];
+                // We don't have the original update timestamp, but it doesn't
+                // matter because this SyncOp will just be applied and discarded.
+                let timestamp = Utc::now();
+                for (property, value) in old_task.drain() {
+                    ops.push(SyncOp::Update {
+                        uuid,
+                        property,
+                        value: Some(value),
+                        timestamp,
+                    });
+                }
+                ops
+            }
+            Self::Update {
+                uuid,
+                property,
+                old_value,
+                timestamp,
+                ..
+            } => vec![SyncOp::Update {
+                uuid,
+                property,
+                value: old_value,
+                timestamp,
+            }],
+            Self::UndoPoint => vec![],
+        }
+    }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::storage::taskmap_with;
     use chrono::Utc;
     use pretty_assertions::assert_eq;
 
@@ -193,5 +229,55 @@ mod test {
     #[test]
     fn test_into_sync_undo_point() {
         assert_eq!(UndoPoint.into_sync(), None);
+    }
+
+    #[test]
+    fn test_reverse_create() {
+        let uuid = Uuid::new_v4();
+        assert_eq!(Create { uuid }.reverse_ops(), vec![SyncOp::Delete { uuid }]);
+    }
+
+    #[test]
+    fn test_reverse_delete() {
+        let uuid = Uuid::new_v4();
+        let reversed = Delete {
+            uuid,
+            old_task: taskmap_with(vec![("prop1".into(), "v1".into())]),
+        }
+        .reverse_ops();
+        assert_eq!(reversed.len(), 2);
+        assert_eq!(reversed[0], SyncOp::Create { uuid });
+        assert!(matches!(
+            &reversed[1],
+            SyncOp::Update { uuid: u, property: p, value: Some(v), ..}
+                if u == &uuid && p == "prop1" && v == "v1"
+        ));
+    }
+
+    #[test]
+    fn test_reverse_update() {
+        let uuid = Uuid::new_v4();
+        let timestamp = Utc::now();
+        assert_eq!(
+            Update {
+                uuid,
+                property: "prop".into(),
+                old_value: Some("foo".into()),
+                value: Some("v".into()),
+                timestamp,
+            }
+            .reverse_ops(),
+            vec![SyncOp::Update {
+                uuid,
+                property: "prop".into(),
+                value: Some("foo".into()),
+                timestamp,
+            }]
+        );
+    }
+
+    #[test]
+    fn test_reverse_undo_point() {
+        assert_eq!(UndoPoint.reverse_ops(), vec![]);
     }
 }

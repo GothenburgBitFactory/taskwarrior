@@ -145,6 +145,12 @@ impl Replica {
         Ok(())
     }
 
+    /// Undo local operations until the most recent UndoPoint, returning false if there are no
+    /// local operations to undo.
+    pub fn undo(&mut self) -> anyhow::Result<bool> {
+        self.taskdb.undo()
+    }
+
     /// Rebuild this replica's working set, based on whether tasks are pending or not.  If
     /// `renumber` is true, then existing tasks may be moved to new working-set indices; in any
     /// case, on completion all pending tasks are in the working set and all non- pending tasks are
