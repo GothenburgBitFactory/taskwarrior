@@ -1,5 +1,6 @@
 use super::apply;
 use crate::storage::{ReplicaOp, StorageTxn};
+use log::{debug, trace};
 
 /// Undo local operations until an UndoPoint.
 pub(super) fn undo(txn: &mut dyn StorageTxn) -> anyhow::Result<bool> {
@@ -12,8 +13,10 @@ pub(super) fn undo(txn: &mut dyn StorageTxn) -> anyhow::Result<bool> {
         if op == ReplicaOp::UndoPoint {
             break;
         }
+        debug!("Reversing operation {:?}", op);
         let rev_ops = op.reverse_ops();
         for op in rev_ops {
+            trace!("Applying reversed operation {:?}", op);
             apply::apply_op(txn, &op)?;
             applied = true;
         }
