@@ -261,9 +261,9 @@ impl<'r> TaskMut<'r> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
             trace!("task {}: set property modified={:?}", self.task.uuid, now);
-            self.task.taskmap =
-                self.replica
-                    .update_task(self.task.uuid, "modified", Some(now.clone()))?;
+            self.task.taskmap = self
+                .replica
+                .update_task(self.task.uuid, "modified", Some(now))?;
             self.updated_modified = true;
         }
         Ok(())
