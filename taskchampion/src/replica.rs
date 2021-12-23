@@ -1,6 +1,5 @@
-use crate::errors::Error;
-use crate::server::Server;
-use crate::storage::{Operation, Storage, TaskMap};
+use crate::server::{Server, SyncOp};
+use crate::storage::{Storage, TaskMap};
 use crate::task::{Status, Task};
 use crate::taskdb::TaskDb;
 use crate::workingset::WorkingSet;
@@ -29,12 +28,14 @@ use uuid::Uuid;
 /// during the garbage-collection process.
 pub struct Replica {
     taskdb: TaskDb,
+    added_undo_point: bool,
 }
 
 impl Replica {
     pub fn new(storage: Box<dyn Storage>) -> Replica {
         Replica {
             taskdb: TaskDb::new(storage),
+            added_undo_point: false,
         }
     }
 
@@ -51,12 +52,13 @@ impl Replica {
         uuid: Uuid,
         property: S1,
         value: Option<S2>,
-    ) -> anyhow::Result<()>
+    ) -> anyhow::Result<TaskMap>
     where
         S1: Into<String>,
         S2: Into<String>,
     {
-        self.taskdb.apply(Operation::Update {
+        self.add_undo_point(false)?;
+        self.taskdb.apply(SyncOp::Update {
             uuid,
             property: property.into(),
             value: value.map(|v| v.into()),
@@ -99,10 +101,11 @@ impl Replica {
 
     /// Create a new task.  The task must not already exist.
     pub fn new_task(&mut self, status: Status, description: String) -> anyhow::Result<Task> {
+        self.add_undo_point(false)?;
         let uuid = Uuid::new_v4();
-        self.taskdb.apply(Operation::Create { uuid })?;
+        let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
         trace!("task {} created", uuid);
-        let mut task = Task::new(uuid, TaskMap::new()).into_mut(self);
+        let mut task = Task::new(uuid, taskmap).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
         Ok(task.into_immut())
@@ -113,12 +116,8 @@ impl Replica {
     /// should only occur through expiration.
     #[allow(dead_code)]
     fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<()> {
-        // check that it already exists; this is a convenience check, as the task may already exist
-        // when this Create operation is finally sync'd with operations from other replicas
-        if self.taskdb.get_task(uuid)?.is_none() {
-            return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
-        }
-        self.taskdb.apply(Operation::Delete { uuid })?;
+        self.add_undo_point(false)?;
+        self.taskdb.apply(SyncOp::Delete { uuid })?;
         trace!("task {} deleted", uuid);
         Ok(())
     }
@@ -146,6 +145,12 @@ impl Replica {
         Ok(())
     }
 
+    /// Undo local operations until the most recent UndoPoint, returning false if there are no
+    /// local operations to undo.
+    pub fn undo(&mut self) -> anyhow::Result<bool> {
+        self.taskdb.undo()
+    }
+
     /// Rebuild this replica's working set, based on whether tasks are pending or not.  If
     /// `renumber` is true, then existing tasks may be moved to new working-set indices; in any
     /// case, on completion all pending tasks are in the working set and all non- pending tasks are
@@ -156,11 +161,24 @@ impl Replica {
             .rebuild_working_set(|t| t.get("status") == Some(&pending), renumber)?;
         Ok(())
     }
+
+    /// Add an UndoPoint, if one has not already been added by this Replica.  This occurs
+    /// automatically when a change is made.  The `force` flag allows forcing a new UndoPoint
+    /// even if one has laready been created by this Replica, and may be useful when a Replica
+    /// instance is held for a long time and used to apply more than one user-visible change.
+    pub fn add_undo_point(&mut self, force: bool) -> anyhow::Result<()> {
+        if force || !self.added_undo_point {
+            self.taskdb.add_undo_point()?;
+            self.added_undo_point = true;
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::storage::ReplicaOp;
     use crate::task::Status;
     use pretty_assertions::assert_eq;
     use uuid::Uuid;
@@ -193,10 +211,95 @@ mod tests {
         assert_eq!(t.get_description(), "past tense");
         assert_eq!(t.get_status(), Status::Completed);
 
-        // check tha values have changed in storage, too
+        // check that values have changed in storage, too
         let t = rep.get_task(t.get_uuid()).unwrap().unwrap();
         assert_eq!(t.get_description(), "past tense");
         assert_eq!(t.get_status(), Status::Completed);
+
+        // and check for the corresponding operations, cleaning out the timestamps
+        // and modified properties as these are based on the current time
+        let now = Utc::now();
+        let clean_op = |op: ReplicaOp| {
+            if let ReplicaOp::Update {
+                uuid,
+                property,
+                mut old_value,
+                mut value,
+                ..
+            } = op
+            {
+                if property == "modified" {
+                    if value.is_some() {
+                        value = Some("just-now".into());
+                    }
+                    if old_value.is_some() {
+                        old_value = Some("just-now".into());
+                    }
+                }
+                ReplicaOp::Update {
+                    uuid,
+                    property,
+                    old_value,
+                    value,
+                    timestamp: now,
+                }
+            } else {
+                op
+            }
+        };
+        assert_eq!(
+            rep.taskdb
+                .operations()
+                .drain(..)
+                .map(clean_op)
+                .collect::<Vec<_>>(),
+            vec![
+                ReplicaOp::UndoPoint,
+                ReplicaOp::Create { uuid: t.get_uuid() },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "modified".into(),
+                    old_value: None,
+                    value: Some("just-now".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "description".into(),
+                    old_value: None,
+                    value: Some("a task".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "status".into(),
+                    old_value: None,
+                    value: Some("P".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "modified".into(),
+                    old_value: Some("just-now".into()),
+                    value: Some("just-now".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "description".into(),
+                    old_value: Some("a task".into()),
+                    value: Some("past tense".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "status".into(),
+                    old_value: Some("P".into()),
+                    value: Some("C".into()),
+                    timestamp: now,
+                },
+            ]
+        );
     }
 
     #[test]

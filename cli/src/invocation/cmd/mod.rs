@@ -8,4 +8,5 @@ pub(crate) mod info;
 pub(crate) mod modify;
 pub(crate) mod report;
 pub(crate) mod sync;
+pub(crate) mod undo;
 pub(crate) mod version;

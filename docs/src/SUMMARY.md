@@ -10,6 +10,7 @@
     * [Dates and Durations](./time.md)
     * [Configuration](./config-file.md)
     * [Environment](./environment.md)
+    * [Undo](./undo.md)
     * [Synchronization](./task-sync.md)
   * [Running the Sync Server](./running-sync-server.md)
 - [Internal Details](./internals.md)

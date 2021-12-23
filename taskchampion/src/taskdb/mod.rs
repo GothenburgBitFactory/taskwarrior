@@ -1,10 +1,11 @@
-use crate::server::Server;
-use crate::storage::{Operation, Storage, TaskMap};
+use crate::server::{Server, SyncOp};
+use crate::storage::{ReplicaOp, Storage, TaskMap};
 use uuid::Uuid;
 
-mod ops;
+mod apply;
 mod snapshot;
 mod sync;
+mod undo;
 mod working_set;
 
 /// A TaskDb is the backend for a replica.  It manages the storage, operations, synchronization,
@@ -22,21 +23,29 @@ impl TaskDb {
 
     #[cfg(test)]
     pub fn new_inmemory() -> TaskDb {
-        TaskDb::new(Box::new(crate::storage::InMemoryStorage::new()))
+        #[cfg(test)]
+        use crate::storage::InMemoryStorage;
+
+        TaskDb::new(Box::new(InMemoryStorage::new()))
     }
 
-    /// Apply an operation to the TaskDb.  Aside from synchronization operations, this is the only way
-    /// to modify the TaskDb.  In cases where an operation does not make sense, this function will do
-    /// nothing and return an error (but leave the TaskDb in a consistent state).
-    pub fn apply(&mut self, op: Operation) -> anyhow::Result<()> {
-        // TODO: differentiate error types here?
+    /// Apply an operation to the TaskDb.  This will update the set of tasks and add a ReplicaOp to
+    /// the set of operations in the TaskDb, and return the TaskMap containing the resulting task's
+    /// properties (or an empty TaskMap for deletion).
+    ///
+    /// Aside from synchronization operations, this is the only way to modify the TaskDb.  In cases
+    /// where an operation does not make sense, this function will do nothing and return an error
+    /// (but leave the TaskDb in a consistent state).
+    pub fn apply(&mut self, op: SyncOp) -> anyhow::Result<TaskMap> {
         let mut txn = self.storage.txn()?;
-        if let err @ Err(_) = ops::apply_op(txn.as_mut(), &op) {
-            return err;
-        }
-        txn.add_operation(op)?;
-        txn.commit()?;
-        Ok(())
+        apply::apply_and_record(txn.as_mut(), op)
+    }
+
+    /// Add an UndoPoint operation to the list of replica operations.
+    pub fn add_undo_point(&mut self) -> anyhow::Result<()> {
+        let mut txn = self.storage.txn()?;
+        txn.add_operation(ReplicaOp::UndoPoint)?;
+        txn.commit()
     }
 
     /// Get all tasks.
@@ -112,6 +121,13 @@ impl TaskDb {
         sync::sync(server, txn.as_mut(), avoid_snapshots)
     }
 
+    /// Undo local operations until the most recent UndoPoint, returning false if there are no
+    /// local operations to undo.
+    pub fn undo(&mut self) -> anyhow::Result<bool> {
+        let mut txn = self.storage.txn()?;
+        undo::undo(txn.as_mut())
+    }
+
     // functions for supporting tests
 
     #[cfg(test)]
@@ -134,7 +150,7 @@ impl TaskDb {
     }
 
     #[cfg(test)]
-    pub(crate) fn operations(&mut self) -> Vec<Operation> {
+    pub(crate) fn operations(&mut self) -> Vec<ReplicaOp> {
         let mut txn = self.storage.txn().unwrap();
         txn.operations()
             .unwrap()
@@ -148,7 +164,7 @@ impl TaskDb {
 mod tests {
     use super::*;
     use crate::server::test::TestServer;
-    use crate::storage::InMemoryStorage;
+    use crate::storage::{InMemoryStorage, ReplicaOp};
     use chrono::Utc;
     use pretty_assertions::assert_eq;
     use proptest::prelude::*;
@@ -157,14 +173,21 @@ mod tests {
     #[test]
     fn test_apply() {
         // this verifies that the operation is both applied and included in the list of
-        // operations; more detailed tests are in the `ops` module.
+        // operations; more detailed tests are in the `apply` module.
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
-        let op = Operation::Create { uuid };
+        let op = SyncOp::Create { uuid };
         db.apply(op.clone()).unwrap();
 
         assert_eq!(db.sorted_tasks(), vec![(uuid, vec![]),]);
-        assert_eq!(db.operations(), vec![op]);
+        assert_eq!(db.operations(), vec![ReplicaOp::Create { uuid }]);
+    }
+
+    #[test]
+    fn test_add_undo_point() {
+        let mut db = TaskDb::new_inmemory();
+        db.add_undo_point().unwrap();
+        assert_eq!(db.operations(), vec![ReplicaOp::UndoPoint]);
     }
 
     fn newdb() -> TaskDb {
@@ -173,7 +196,7 @@ mod tests {
 
     #[derive(Debug)]
     enum Action {
-        Op(Operation),
+        Op(SyncOp),
         Sync,
     }
 
@@ -185,14 +208,14 @@ mod tests {
                 .chunks(2)
                 .map(|action_on| {
                     let action = match action_on[0] {
-                        b'C' => Action::Op(Operation::Create { uuid }),
-                        b'U' => Action::Op(Operation::Update {
+                        b'C' => Action::Op(SyncOp::Create { uuid }),
+                        b'U' => Action::Op(SyncOp::Update {
                             uuid,
                             property: "title".into(),
                             value: Some("foo".into()),
                             timestamp: Utc::now(),
                         }),
-                        b'D' => Action::Op(Operation::Delete { uuid }),
+                        b'D' => Action::Op(SyncOp::Delete { uuid }),
                         b'S' => Action::Sync,
                         _ => unreachable!(),
                     };

@@ -59,6 +59,7 @@ pub(crate) enum Subcommand {
     /// Basic operations without args
     Gc,
     Sync,
+    Undo,
 }
 
 impl Subcommand {
@@ -72,6 +73,7 @@ impl Subcommand {
             Info::parse,
             Gc::parse,
             Sync::parse,
+            Undo::parse,
             // This must come last since it accepts arbitrary report names
             Report::parse,
         )))(input)
@@ -418,6 +420,29 @@ impl Sync {
 
                 Synchronization is a critical part of maintaining the task database, and should
                 be done regularly, even if only locally.  It is typically run in a crontask.",
+        })
+    }
+}
+
+struct Undo;
+
+impl Undo {
+    fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
+        fn to_subcommand(_: &str) -> Result<Subcommand, ()> {
+            Ok(Subcommand::Undo)
+        }
+        map_res(arg_matching(literal("undo")), to_subcommand)(input)
+    }
+
+    fn get_usage(u: &mut usage::Usage) {
+        u.subcommands.push(usage::Subcommand {
+            name: "undo",
+            syntax: "undo",
+            summary: "Undo the latest change made on this replica",
+            description: "
+                Undo the latest change made on this replica.
+
+                Changes cannot be undone once they have been synchronized.",
         })
     }
 }
@@ -811,6 +836,15 @@ mod test {
         let subcommand = Subcommand::Sync;
         assert_eq!(
             Subcommand::parse(argv!["sync"]).unwrap(),
+            (&EMPTY[..], subcommand)
+        );
+    }
+
+    #[test]
+    fn test_undo() {
+        let subcommand = Subcommand::Undo;
+        assert_eq!(
+            Subcommand::parse(argv!["undo"]).unwrap(),
             (&EMPTY[..], subcommand)
         );
     }

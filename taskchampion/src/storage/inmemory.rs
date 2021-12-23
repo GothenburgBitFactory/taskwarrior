@@ -1,6 +1,6 @@
 #![allow(clippy::new_without_default)]
 
-use crate::storage::{Operation, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
+use crate::storage::{ReplicaOp, Storage, StorageTxn, TaskMap, VersionId, DEFAULT_BASE_VERSION};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -9,7 +9,7 @@ use uuid::Uuid;
 struct Data {
     tasks: HashMap<Uuid, TaskMap>,
     base_version: VersionId,
-    operations: Vec<Operation>,
+    operations: Vec<ReplicaOp>,
     working_set: Vec<Option<Uuid>>,
 }
 
@@ -87,16 +87,16 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(())
     }
 
-    fn operations(&mut self) -> anyhow::Result<Vec<Operation>> {
+    fn operations(&mut self) -> anyhow::Result<Vec<ReplicaOp>> {
         Ok(self.data_ref().operations.clone())
     }
 
-    fn add_operation(&mut self, op: Operation) -> anyhow::Result<()> {
+    fn add_operation(&mut self, op: ReplicaOp) -> anyhow::Result<()> {
         self.mut_data_ref().operations.push(op);
         Ok(())
     }
 
-    fn set_operations(&mut self, ops: Vec<Operation>) -> anyhow::Result<()> {
+    fn set_operations(&mut self, ops: Vec<ReplicaOp>) -> anyhow::Result<()> {
         self.mut_data_ref().operations = ops;
         Ok(())
     }

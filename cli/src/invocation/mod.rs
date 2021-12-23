@@ -90,6 +90,13 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::
             return cmd::sync::execute(&mut w, &mut replica, &settings, &mut server);
         }
 
+        Command {
+            subcommand: Subcommand::Undo,
+            ..
+        } => {
+            return cmd::undo::execute(&mut w, &mut replica);
+        }
+
         // handled in the first match, but here to ensure this match is exhaustive
         Command {
             subcommand: Subcommand::Help { .. },

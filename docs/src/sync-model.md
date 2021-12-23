@@ -34,6 +34,16 @@ Since the replicas are not connected, each may have additional operations that h
 The synchronization process uses operational transformation to "linearize" those operations.
 This process is analogous (vaguely) to rebasing a sequence of Git commits.
 
+### Sync Operations
+
+The [Replica Storage](./storage.md) model contains additional information in its operations that is not included in operations synchronized to other replicas.
+In this document, we will be discussing "sync operations" of the form
+
+ * `Create(uuid)`
+ * `Delete(uuid)`
+ * `Update(uuid, property, value, timestamp)`
+
+
 ### Versions
 
 Occasionally, database states are given a name (that takes the form of a UUID).
