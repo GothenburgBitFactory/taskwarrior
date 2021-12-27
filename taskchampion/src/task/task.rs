@@ -61,10 +61,13 @@ enum Prop {
 
 #[allow(clippy::ptr_arg)]
 fn uda_string_to_tuple(key: &str) -> (&str, &str) {
-    if let Some((ns, key)) = key.split_once('.') {
-        (ns, key)
+    let mut iter = key.splitn(2, '.');
+    let first = iter.next().unwrap();
+    let second = iter.next();
+    if let Some(second) = second {
+        (first, second)
     } else {
-        ("", key)
+        ("", first)
     }
 }
 
