@@ -38,3 +38,14 @@ The following keys, and key formats, are defined:
 The following are not yet implemented:
 
 * `dep_<uuid>` - indicates this task depends on `<uuid>` (value is an empty string)
+
+### UDAs
+
+Any unrecognized keys are treated as "user-defined attributes" (UDAs).
+These attributes can be used to store additional data associated with a task.
+For example, applications that synchronize tasks with other systems such as calendars or team planning services might store unique identifiers for those systems as UDAs.
+The application defining a UDA defines the format of the value.
+
+UDAs _should_ have a namespaced structure of the form `<namespace>.<key>`, where `<namespace>` identifies the application defining the UDA.
+For example, a service named "DevSync" synchronizing tasks from GitHub might use UDAs like `devsync.github.issue-id`.
+Note that many existing UDAs for Taskwarrior integrations do not follow this pattern; these are referred to as legacy UDAs.
