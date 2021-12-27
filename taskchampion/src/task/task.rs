@@ -60,21 +60,21 @@ enum Prop {
 }
 
 #[allow(clippy::ptr_arg)]
-fn uda_string_to_tuple(key: &String) -> (&str, &str) {
+fn uda_string_to_tuple(key: &str) -> (&str, &str) {
     if let Some((ns, key)) = key.split_once('.') {
         (ns, key)
     } else {
-        ("", key.as_ref())
+        ("", key)
     }
 }
 
-fn uda_tuple_to_string(namespace: impl Into<String>, key: impl Into<String>) -> String {
-    // TODO: maybe not Into<String>
-    let namespace = namespace.into();
+fn uda_tuple_to_string(namespace: impl AsRef<str>, key: impl AsRef<str>) -> String {
+    let namespace = namespace.as_ref();
+    let key = key.as_ref();
     if namespace.is_empty() {
         key.into()
     } else {
-        format!("{}.{}", namespace, key.into())
+        format!("{}.{}", namespace, key)
     }
 }
 
@@ -335,8 +335,8 @@ impl<'r> TaskMut<'r> {
     /// model.
     pub fn set_uda(
         &mut self,
-        namespace: impl Into<String>,
-        key: impl Into<String>,
+        namespace: impl AsRef<str>,
+        key: impl AsRef<str>,
         value: impl Into<String>,
     ) -> anyhow::Result<()> {
         let key = uda_tuple_to_string(namespace, key);
@@ -347,8 +347,8 @@ impl<'r> TaskMut<'r> {
     /// model.
     pub fn remove_uda(
         &mut self,
-        namespace: impl Into<String>,
-        key: impl Into<String>,
+        namespace: impl AsRef<str>,
+        key: impl AsRef<str>,
     ) -> anyhow::Result<()> {
         let key = uda_tuple_to_string(namespace, key);
         self.remove_legacy_uda(key)
@@ -388,9 +388,9 @@ impl<'r> TaskMut<'r> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
             trace!("task {}: set property modified={:?}", self.task.uuid, now);
-            self.task.taskmap = self
-                .replica
-                .update_task(self.task.uuid, Prop::Modified.as_ref(), Some(now))?;
+            self.task.taskmap =
+                self.replica
+                    .update_task(self.task.uuid, Prop::Modified.as_ref(), Some(now))?;
             self.updated_modified = true;
         }
         Ok(())
