@@ -130,7 +130,7 @@ impl TryFrom<&toml::Value> for Report {
                 .map(|(i, v)| {
                     v.as_str()
                         .ok_or_else(|| anyhow!(".filter[{}]: not a string", i))
-                        .and_then(|s| Condition::parse_str(s))
+                        .and_then(Condition::parse_str)
                         .map_err(|e| anyhow!(".filter[{}]: {}", i, e))
                 })
                 .collect::<Result<Vec<_>>>()?,

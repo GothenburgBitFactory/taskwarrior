@@ -14,6 +14,7 @@ pub(crate) mod test;
 mod config;
 mod crypto;
 mod local;
+mod op;
 mod remote;
 mod types;
 
@@ -21,3 +22,5 @@ pub use config::ServerConfig;
 pub use local::LocalServer;
 pub use remote::RemoteServer;
 pub use types::*;
+
+pub(crate) use op::SyncOp;

@@ -387,12 +387,10 @@ impl<'r> TaskMut<'r> {
     fn lastmod(&mut self) -> anyhow::Result<()> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
-            self.replica
-                .update_task(self.task.uuid, Prop::Modified.as_ref(), Some(now.clone()))?;
             trace!("task {}: set property modified={:?}", self.task.uuid, now);
-            self.task
-                .taskmap
-                .insert(String::from(Prop::Modified.as_ref()), now);
+            self.task.taskmap = self
+                .replica
+                .update_task(self.task.uuid, Prop::Modified.as_ref(), Some(now))?;
             self.updated_modified = true;
         }
         Ok(())
@@ -405,16 +403,17 @@ impl<'r> TaskMut<'r> {
     ) -> anyhow::Result<()> {
         let property = property.into();
         self.lastmod()?;
-        self.replica
-            .update_task(self.task.uuid, &property, value.as_ref())?;
 
-        if let Some(v) = value {
+        if let Some(ref v) = value {
             trace!("task {}: set property {}={:?}", self.task.uuid, property, v);
-            self.task.taskmap.insert(property, v);
         } else {
             trace!("task {}: remove property {}", self.task.uuid, property);
-            self.task.taskmap.remove(&property);
         }
+
+        self.task.taskmap = self
+            .replica
+            .update_task(self.task.uuid, &property, value.as_ref())?;
+
         Ok(())
     }
 
@@ -423,18 +422,7 @@ impl<'r> TaskMut<'r> {
         property: &str,
         value: Option<DateTime<Utc>>,
     ) -> anyhow::Result<()> {
-        self.lastmod()?;
-        if let Some(value) = value {
-            let ts = format!("{}", value.timestamp());
-            self.replica
-                .update_task(self.task.uuid, property, Some(ts.clone()))?;
-            self.task.taskmap.insert(property.to_string(), ts);
-        } else {
-            self.replica
-                .update_task::<_, &str>(self.task.uuid, property, None)?;
-            self.task.taskmap.remove(property);
-        }
-        Ok(())
+        self.set_string(property, value.map(|v| v.timestamp().to_string()))
     }
 
     /// Used by tests to ensure that updates are properly written

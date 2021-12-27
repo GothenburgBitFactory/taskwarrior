@@ -2,9 +2,10 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-/// An Operation defines a single change to the task database
+/// A SyncOp defines a single change to the task database, that can be synchronized
+/// via a server.
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
-pub enum Operation {
+pub enum SyncOp {
     /// Create a new task.
     ///
     /// On application, if the task already exists, the operation does nothing.
@@ -18,7 +19,7 @@ pub enum Operation {
     /// Update an existing task, setting the given property to the given value.  If the value is
     /// None, then the corresponding property is deleted.
     ///
-    /// If the given task does not exist, the operation does nothing.  
+    /// If the given task does not exist, the operation does nothing.
     Update {
         uuid: Uuid,
         property: String,
@@ -27,9 +28,9 @@ pub enum Operation {
     },
 }
 
-use Operation::*;
+use SyncOp::*;
 
-impl Operation {
+impl SyncOp {
     // Transform takes two operations A and B that happened concurrently and produces two
     // operations A' and B' such that `apply(apply(S, A), B') = apply(apply(S, B), A')`. This
     // function is used to serialize operations in a process similar to a Git "rebase".
@@ -52,10 +53,7 @@ impl Operation {
     // allows two different systems which have already applied op1 and op2, respectively, and thus
     // reached different states, to return to the same state by applying op2' and op1',
     // respectively.
-    pub fn transform(
-        operation1: Operation,
-        operation2: Operation,
-    ) -> (Option<Operation>, Option<Operation>) {
+    pub fn transform(operation1: SyncOp, operation2: SyncOp) -> (Option<SyncOp>, Option<SyncOp>) {
         match (&operation1, &operation2) {
             // Two creations or deletions of the same uuid reach the same state, so there's no need
             // for any further operations to bring the state together.
@@ -131,17 +129,86 @@ mod test {
     use pretty_assertions::assert_eq;
     use proptest::prelude::*;
 
-    // note that `tests/operation_transform_invariant.rs` tests the transform function quite
-    // thoroughly, so this testing is light.
+    #[test]
+    fn test_json_create() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let op = Create { uuid };
+        let json = serde_json::to_string(&op)?;
+        assert_eq!(json, format!(r#"{{"Create":{{"uuid":"{}"}}}}"#, uuid));
+        let deser: SyncOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
+        Ok(())
+    }
+
+    #[test]
+    fn test_json_delete() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let op = Delete { uuid };
+        let json = serde_json::to_string(&op)?;
+        assert_eq!(json, format!(r#"{{"Delete":{{"uuid":"{}"}}}}"#, uuid));
+        let deser: SyncOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
+        Ok(())
+    }
+
+    #[test]
+    fn test_json_update() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let timestamp = Utc::now();
+
+        let op = Update {
+            uuid,
+            property: "abc".into(),
+            value: Some("false".into()),
+            timestamp,
+        };
+
+        let json = serde_json::to_string(&op)?;
+        assert_eq!(
+            json,
+            format!(
+                r#"{{"Update":{{"uuid":"{}","property":"abc","value":"false","timestamp":"{:?}"}}}}"#,
+                uuid, timestamp,
+            )
+        );
+        let deser: SyncOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
+        Ok(())
+    }
+
+    #[test]
+    fn test_json_update_none() -> anyhow::Result<()> {
+        let uuid = Uuid::new_v4();
+        let timestamp = Utc::now();
+
+        let op = Update {
+            uuid,
+            property: "abc".into(),
+            value: None,
+            timestamp,
+        };
+
+        let json = serde_json::to_string(&op)?;
+        assert_eq!(
+            json,
+            format!(
+                r#"{{"Update":{{"uuid":"{}","property":"abc","value":null,"timestamp":"{:?}"}}}}"#,
+                uuid, timestamp,
+            )
+        );
+        let deser: SyncOp = serde_json::from_str(&json)?;
+        assert_eq!(deser, op);
+        Ok(())
+    }
 
     fn test_transform(
-        setup: Option<Operation>,
-        o1: Operation,
-        o2: Operation,
-        exp1p: Option<Operation>,
-        exp2p: Option<Operation>,
+        setup: Option<SyncOp>,
+        o1: SyncOp,
+        o2: SyncOp,
+        exp1p: Option<SyncOp>,
+        exp2p: Option<SyncOp>,
     ) {
-        let (o1p, o2p) = Operation::transform(o1.clone(), o2.clone());
+        let (o1p, o2p) = SyncOp::transform(o1.clone(), o2.clone());
         assert_eq!((&o1p, &o2p), (&exp1p, &exp2p));
 
         // check that the two operation sequences have the same effect, enforcing the invariant of
@@ -274,72 +341,6 @@ mod test {
         );
     }
 
-    #[test]
-    fn test_json_create() -> anyhow::Result<()> {
-        let uuid = Uuid::new_v4();
-        let op = Create { uuid };
-        assert_eq!(
-            serde_json::to_string(&op)?,
-            format!(r#"{{"Create":{{"uuid":"{}"}}}}"#, uuid),
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn test_json_delete() -> anyhow::Result<()> {
-        let uuid = Uuid::new_v4();
-        let op = Delete { uuid };
-        assert_eq!(
-            serde_json::to_string(&op)?,
-            format!(r#"{{"Delete":{{"uuid":"{}"}}}}"#, uuid),
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn test_json_update() -> anyhow::Result<()> {
-        let uuid = Uuid::new_v4();
-        let timestamp = Utc::now();
-
-        let op = Update {
-            uuid,
-            property: "abc".into(),
-            value: Some("false".into()),
-            timestamp,
-        };
-
-        assert_eq!(
-            serde_json::to_string(&op)?,
-            format!(
-                r#"{{"Update":{{"uuid":"{}","property":"abc","value":"false","timestamp":"{:?}"}}}}"#,
-                uuid, timestamp,
-            ),
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn test_json_update_none() -> anyhow::Result<()> {
-        let uuid = Uuid::new_v4();
-        let timestamp = Utc::now();
-
-        let op = Update {
-            uuid,
-            property: "abc".into(),
-            value: None,
-            timestamp,
-        };
-
-        assert_eq!(
-            serde_json::to_string(&op)?,
-            format!(
-                r#"{{"Update":{{"uuid":"{}","property":"abc","value":null,"timestamp":"{:?}"}}}}"#,
-                uuid, timestamp,
-            ),
-        );
-        Ok(())
-    }
-
     fn uuid_strategy() -> impl Strategy<Value = Uuid> {
         prop_oneof![
             Just(Uuid::parse_str("83a2f9ef-f455-4195-b92e-a54c161eebfc").unwrap()),
@@ -349,12 +350,12 @@ mod test {
         ]
     }
 
-    fn operation_strategy() -> impl Strategy<Value = Operation> {
+    fn operation_strategy() -> impl Strategy<Value = SyncOp> {
         prop_oneof![
-            uuid_strategy().prop_map(|uuid| Operation::Create { uuid }),
-            uuid_strategy().prop_map(|uuid| Operation::Delete { uuid }),
+            uuid_strategy().prop_map(|uuid| Create { uuid }),
+            uuid_strategy().prop_map(|uuid| Delete { uuid }),
             (uuid_strategy(), "(title|project|status)").prop_map(|(uuid, property)| {
-                Operation::Update {
+                Update {
                     uuid,
                     property,
                     value: Some("true".into()),
@@ -372,38 +373,38 @@ mod test {
         // check that the two operation sequences have the same effect, enforcing the invariant of
         // the transform function.
         fn transform_invariant_holds(o1 in operation_strategy(), o2 in operation_strategy()) {
-            let (o1p, o2p) = Operation::transform(o1.clone(), o2.clone());
+            let (o1p, o2p) = SyncOp::transform(o1.clone(), o2.clone());
 
             let mut db1 = TaskDb::new(Box::new(InMemoryStorage::new()));
             let mut db2 = TaskDb::new(Box::new(InMemoryStorage::new()));
 
             // Ensure that any expected tasks already exist
-            if let Operation::Update{ ref uuid, .. } = o1 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let Update{ uuid, .. } = o1 {
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
-            if let Operation::Update{ ref uuid, .. } = o2 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let Update{ uuid, .. } = o2 {
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
-            if let Operation::Delete{ ref uuid } = o1 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let Delete{ uuid } = o1 {
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
-            if let Operation::Delete{ ref uuid } = o2 {
-                let _ = db1.apply(Operation::Create{uuid: uuid.clone()});
-                let _ = db2.apply(Operation::Create{uuid: uuid.clone()});
+            if let Delete{ uuid } = o2 {
+                let _ = db1.apply(Create{uuid});
+                let _ = db2.apply(Create{uuid});
             }
 
             // if applying the initial operations fail, that indicates the operation was invalid
             // in the base state, so consider the case successful.
-            if let Err(_) = db1.apply(o1) {
+            if db1.apply(o1).is_err() {
                 return Ok(());
             }
-            if let Err(_) = db2.apply(o2) {
+            if db2.apply(o2).is_err() {
                 return Ok(());
             }
 
