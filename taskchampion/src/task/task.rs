@@ -59,6 +59,25 @@ enum Prop {
     Wait,
 }
 
+#[allow(clippy::ptr_arg)]
+fn uda_string_to_tuple(key: &String) -> (&str, &str) {
+    if let Some((ns, key)) = key.split_once('.') {
+        (ns, key)
+    } else {
+        ("", key.as_ref())
+    }
+}
+
+fn uda_tuple_to_string(namespace: impl Into<String>, key: impl Into<String>) -> String {
+    // TODO: maybe not Into<String>
+    let namespace = namespace.into();
+    if namespace.is_empty() {
+        key.into()
+    } else {
+        format!("{}.{}", namespace, key.into())
+    }
+}
+
 impl Task {
     pub(crate) fn new(uuid: Uuid, taskmap: TaskMap) -> Task {
         Task { uuid, taskmap }
@@ -177,15 +196,31 @@ impl Task {
     /// Get the named user defined attributes (UDA).  This will return None
     /// for any key defined in the Task data model, regardless of whether
     /// it is set or not.
-    pub fn get_uda(&self, key: &str) -> Option<&str> {
+    pub fn get_uda(&self, namespace: &str, key: &str) -> Option<&str> {
+        self.get_legacy_uda(uda_tuple_to_string(namespace, key).as_ref())
+    }
+
+    /// Get the user defined attributes (UDAs) of this task, in arbitrary order.  Each key is split
+    /// on the first `.` character.  Legacy keys that do not contain `.` are represented as `("",
+    /// key)`.
+    pub fn get_udas(&self) -> impl Iterator<Item = ((&str, &str), &str)> + '_ {
+        self.taskmap
+            .iter()
+            .filter(|(k, _)| !Task::is_known_key(k))
+            .map(|(k, v)| (uda_string_to_tuple(k), v.as_ref()))
+    }
+
+    /// Get the named user defined attribute (UDA) in a legacy format.  This will return None for
+    /// any key defined in the Task data model, regardless of whether it is set or not.
+    pub fn get_legacy_uda(&self, key: &str) -> Option<&str> {
         if Task::is_known_key(key) {
             return None;
         }
         self.taskmap.get(key).map(|s| s.as_ref())
     }
 
-    /// Get the user defined attributes (UDAs) of this task, in arbitrary order.
-    pub fn get_udas(&self) -> impl Iterator<Item = (&str, &str)> + '_ {
+    /// Like `get_udas`, but returning each UDA key as a single string.
+    pub fn get_legacy_udas(&self) -> impl Iterator<Item = (&str, &str)> + '_ {
         self.taskmap
             .iter()
             .filter(|(p, _)| !Task::is_known_key(p))
@@ -298,11 +333,33 @@ impl<'r> TaskMut<'r> {
 
     /// Set a user-defined attribute (UDA).  This will fail if the key is defined by the data
     /// model.
-    pub fn set_uda<S1, S2>(&mut self, key: S1, value: S2) -> anyhow::Result<()>
-    where
-        S1: Into<String>,
-        S2: Into<String>,
-    {
+    pub fn set_uda(
+        &mut self,
+        namespace: impl Into<String>,
+        key: impl Into<String>,
+        value: impl Into<String>,
+    ) -> anyhow::Result<()> {
+        let key = uda_tuple_to_string(namespace, key);
+        self.set_legacy_uda(key, value)
+    }
+
+    /// Remove a user-defined attribute (UDA).  This will fail if the key is defined by the data
+    /// model.
+    pub fn remove_uda(
+        &mut self,
+        namespace: impl Into<String>,
+        key: impl Into<String>,
+    ) -> anyhow::Result<()> {
+        let key = uda_tuple_to_string(namespace, key);
+        self.remove_legacy_uda(key)
+    }
+
+    /// Set a user-defined attribute (UDA), where the key is a legacy key.
+    pub fn set_legacy_uda(
+        &mut self,
+        key: impl Into<String>,
+        value: impl Into<String>,
+    ) -> anyhow::Result<()> {
         let key = key.into();
         if Task::is_known_key(&key) {
             anyhow::bail!(
@@ -313,12 +370,8 @@ impl<'r> TaskMut<'r> {
         self.set_string(key, Some(value.into()))
     }
 
-    /// Remove a user-defined attribute (UDA).  This will fail if the key is defined by the data
-    /// model.
-    pub fn remove_uda<S>(&mut self, key: S) -> anyhow::Result<()>
-    where
-        S: Into<String>,
-    {
+    /// Remove a user-defined attribute (UDA), where the key is a legacy key.
+    pub fn remove_legacy_uda(&mut self, key: impl Into<String>) -> anyhow::Result<()> {
         let key = key.into();
         if Task::is_known_key(&key) {
             anyhow::bail!(
@@ -726,13 +779,18 @@ mod test {
                 ("dep_1234".into(), "not a uda".into()),
                 ("annotation_1234".into(), "not a uda".into()),
                 ("githubid".into(), "123".into()),
+                ("jira.url".into(), "h://x".into()),
             ]
             .drain(..)
             .collect(),
         );
 
-        let udas: Vec<_> = task.get_udas().collect();
-        assert_eq!(udas, vec![("githubid", "123")]);
+        let mut udas: Vec<_> = task.get_udas().collect();
+        udas.sort_unstable();
+        assert_eq!(
+            udas,
+            vec![(("", "githubid"), "123"), (("jira", "url"), "h://x")]
+        );
     }
 
     #[test]
@@ -741,48 +799,102 @@ mod test {
             Uuid::new_v4(),
             vec![
                 ("description".into(), "not a uda".into()),
-                ("dep_1234".into(), "not a uda".into()),
                 ("githubid".into(), "123".into()),
+                ("jira.url".into(), "h://x".into()),
             ]
             .drain(..)
             .collect(),
         );
 
-        assert_eq!(task.get_uda("description"), None); // invalid UDA
-        assert_eq!(task.get_uda("dep_1234"), None); // invalid UDA
-        assert_eq!(task.get_uda("githubid"), Some("123"));
-        assert_eq!(task.get_uda("jiraid"), None);
+        assert_eq!(task.get_uda("", "description"), None); // invalid UDA
+        assert_eq!(task.get_uda("", "githubid"), Some("123"));
+        assert_eq!(task.get_uda("jira", "url"), Some("h://x"));
+        assert_eq!(task.get_uda("bugzilla", "url"), None);
+    }
+
+    #[test]
+    fn test_get_legacy_uda() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![
+                ("description".into(), "not a uda".into()),
+                ("dep_1234".into(), "not a uda".into()),
+                ("githubid".into(), "123".into()),
+                ("jira.url".into(), "h://x".into()),
+            ]
+            .drain(..)
+            .collect(),
+        );
+
+        assert_eq!(task.get_legacy_uda("description"), None); // invalid UDA
+        assert_eq!(task.get_legacy_uda("dep_1234"), None); // invalid UDA
+        assert_eq!(task.get_legacy_uda("githubid"), Some("123"));
+        assert_eq!(task.get_legacy_uda("jira.url"), Some("h://x"));
+        assert_eq!(task.get_legacy_uda("bugzilla.url"), None);
     }
 
     #[test]
     fn test_set_uda() {
         with_mut_task(|mut task| {
-            task.set_uda("githubid", "123").unwrap();
-
+            task.set_uda("jira", "url", "h://y").unwrap();
             let udas: Vec<_> = task.get_udas().collect();
-            assert_eq!(udas, vec![("githubid", "123")]);
+            assert_eq!(udas, vec![(("jira", "url"), "h://y")]);
 
-            task.set_uda("jiraid", "TW-1234").unwrap();
+            task.set_uda("", "jiraid", "TW-1234").unwrap();
 
             let mut udas: Vec<_> = task.get_udas().collect();
             udas.sort_unstable();
-            assert_eq!(udas, vec![("githubid", "123"), ("jiraid", "TW-1234")]);
+            assert_eq!(
+                udas,
+                vec![(("", "jiraid"), "TW-1234"), (("jira", "url"), "h://y")]
+            );
+        })
+    }
+
+    #[test]
+    fn test_set_legacy_uda() {
+        with_mut_task(|mut task| {
+            task.set_legacy_uda("jira.url", "h://y").unwrap();
+            let udas: Vec<_> = task.get_udas().collect();
+            assert_eq!(udas, vec![(("jira", "url"), "h://y")]);
+
+            task.set_legacy_uda("jiraid", "TW-1234").unwrap();
+
+            let mut udas: Vec<_> = task.get_udas().collect();
+            udas.sort_unstable();
+            assert_eq!(
+                udas,
+                vec![(("", "jiraid"), "TW-1234"), (("jira", "url"), "h://y")]
+            );
         })
     }
 
     #[test]
     fn test_set_uda_invalid() {
         with_mut_task(|mut task| {
-            assert!(task.set_uda("modified", "123").is_err());
-            assert!(task.set_uda("tag_abc", "123").is_err());
+            assert!(task.set_uda("", "modified", "123").is_err());
+            assert!(task.set_uda("", "tag_abc", "123").is_err());
+            assert!(task.set_legacy_uda("modified", "123").is_err());
+            assert!(task.set_legacy_uda("tag_abc", "123").is_err());
         })
     }
 
     #[test]
-    fn test_rmmove_uda() {
+    fn test_remove_uda() {
+        with_mut_task(|mut task| {
+            task.set_string("github.id", Some("123".into())).unwrap();
+            task.remove_uda("github", "id").unwrap();
+
+            let udas: Vec<_> = task.get_udas().collect();
+            assert_eq!(udas, vec![]);
+        })
+    }
+
+    #[test]
+    fn test_remove_legacy_uda() {
         with_mut_task(|mut task| {
             task.set_string("githubid", Some("123".into())).unwrap();
-            task.remove_uda("githubid").unwrap();
+            task.remove_legacy_uda("githubid").unwrap();
 
             let udas: Vec<_> = task.get_udas().collect();
             assert_eq!(udas, vec![]);
@@ -792,8 +904,10 @@ mod test {
     #[test]
     fn test_remove_uda_invalid() {
         with_mut_task(|mut task| {
-            assert!(task.remove_uda("modified").is_err());
-            assert!(task.remove_uda("tag_abc").is_err());
+            assert!(task.remove_uda("", "modified").is_err());
+            assert!(task.remove_uda("", "tag_abc").is_err());
+            assert!(task.remove_legacy_uda("modified").is_err());
+            assert!(task.remove_legacy_uda("tag_abc").is_err());
         })
     }
 }

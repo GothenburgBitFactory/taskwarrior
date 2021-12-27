@@ -48,4 +48,4 @@ The application defining a UDA defines the format of the value.
 
 UDAs _should_ have a namespaced structure of the form `<namespace>.<key>`, where `<namespace>` identifies the application defining the UDA.
 For example, a service named "DevSync" synchronizing tasks from GitHub might use UDAs like `devsync.github.issue-id`.
-Note that many existing UDAs for Taskwarrior integrations do not follow this pattern.
+Note that many existing UDAs for Taskwarrior integrations do not follow this pattern; these are referred to as legacy UDAs.
