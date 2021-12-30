@@ -133,9 +133,9 @@ public:
   ~CurrentTask();
 
 private:
-  CurrentTask(Context *context, const Task *previous);
+  CurrentTask(Context &context, const Task *previous);
 
-  Context *context;
+  Context &context;
   const Task *previous;
 
   friend class Context;
