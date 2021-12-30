@@ -126,7 +126,8 @@ class TestRecurrenceWeekdays(TestCase):
         # The due dates should be Friday and Monday, three days apart,
         # having skipped the weekend.
         # Note: On daylight savings in the fall, this '3' becomes '2.9583'.
-        self.assertTrue(int(monday.strip()) - int(friday.strip()) >= 2)
+        # Note: when monday is next year, friday+2 > 365
+        self.assertTrue(int(monday.strip()) >= (int(friday.strip()) + 2) % 365)
 
 
 class TestRecurrenceUntil(TestCase):
