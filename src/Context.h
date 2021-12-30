@@ -126,8 +126,8 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// CurrentTask resets Context::currentTask to NULL on destruction; this ensures
-// that this context value is not a dangling pointer.
+// CurrentTask resets Context::currentTask to previous context task on destruction; this ensures
+// that this context value is restored when exiting the scope where the context was applied.
 class CurrentTask {
 public:
   ~CurrentTask();
