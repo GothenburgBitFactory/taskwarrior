@@ -1331,7 +1331,7 @@ void Context::debugTiming (const std::string& details, const Timer& timer)
 ////////////////////////////////////////////////////////////////////////////////
 CurrentTask Context::withCurrentTask (const Task *task)
 {
-  return CurrentTask(this, task);
+  return CurrentTask(*this, task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1436,16 +1436,16 @@ void Context::debug (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CurrentTask::CurrentTask (Context *context, const Task *task)
-  : context {context}, previous {context->currentTask}
+CurrentTask::CurrentTask (Context &context, const Task *task)
+  : context {context}, previous {context.currentTask}
 {
-  context->currentTask = task;
+  context.currentTask = task;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CurrentTask::~CurrentTask ()
 {
-  context->currentTask = previous;
+  context.currentTask = previous;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
