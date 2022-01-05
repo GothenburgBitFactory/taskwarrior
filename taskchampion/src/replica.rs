@@ -47,7 +47,10 @@ impl Replica {
     /// Update an existing task.  If the value is Some, the property is added or updated.  If the
     /// value is None, the property is deleted.  It is not an error to delete a nonexistent
     /// property.
-    pub(crate) fn update_task<S1, S2>(
+    ///
+    /// This is a low-level method, and requires knowledge of the Task data model.  Prefer to
+    /// use the [`TaskMut`] methods to modify tasks, where possible.
+    pub fn update_task<S1, S2>(
         &mut self,
         uuid: Uuid,
         property: S1,
