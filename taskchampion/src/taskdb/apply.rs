@@ -4,7 +4,8 @@ use crate::storage::{ReplicaOp, StorageTxn, TaskMap};
 
 /// Apply the given SyncOp to the replica, updating both the task data and adding a
 /// ReplicaOp to the list of operations.  Returns the TaskMap of the task after the
-/// operation has been applied (or an empty TaskMap for Delete).
+/// operation has been applied (or an empty TaskMap for Delete).  It is not an error
+/// to create an existing task, nor to delete a nonexistent task.
 pub(super) fn apply_and_record(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<TaskMap> {
     match op {
         SyncOp::Create { uuid } => {
@@ -14,8 +15,9 @@ pub(super) fn apply_and_record(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::
                 txn.commit()?;
                 Ok(TaskMap::new())
             } else {
-                // TODO: differentiate error types here?
-                Err(Error::Database(format!("Task {} already exists", uuid)).into())
+                Ok(txn
+                    .get_task(uuid)?
+                    .expect("create_task failed but task does not exist"))
             }
         }
         SyncOp::Delete { uuid } => {
@@ -29,7 +31,7 @@ pub(super) fn apply_and_record(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::
                 txn.commit()?;
                 Ok(TaskMap::new())
             } else {
-                Err(Error::Database(format!("Task {} does not exist", uuid)).into())
+                Ok(TaskMap::new())
             }
         }
         SyncOp::Update {
@@ -105,6 +107,7 @@ pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &SyncOp) -> anyhow::Result<
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::storage::TaskMap;
     use crate::taskdb::TaskDb;
     use chrono::Utc;
     use pretty_assertions::assert_eq;
@@ -133,24 +136,33 @@ mod tests {
     fn test_apply_create_exists() -> anyhow::Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
+        {
+            let mut txn = db.storage.txn()?;
+            txn.create_task(uuid)?;
+            let mut taskmap = TaskMap::new();
+            taskmap.insert("foo".into(), "bar".into());
+            txn.set_task(uuid, taskmap)?;
+            txn.commit()?;
+        }
+
         let op = SyncOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
             let taskmap = apply_and_record(txn.as_mut(), op.clone())?;
-            assert_eq!(taskmap.len(), 0);
-            assert_eq!(
-                apply_and_record(txn.as_mut(), op)
-                    .err()
-                    .unwrap()
-                    .to_string(),
-                format!("Task Database Error: Task {} already exists", uuid)
-            );
+
+            assert_eq!(taskmap.len(), 1);
+            assert_eq!(taskmap.get("foo").unwrap(), "bar");
+
             txn.commit()?;
         }
 
-        // first op was applied
-        assert_eq!(db.sorted_tasks(), vec![(uuid, vec![])]);
-        assert_eq!(db.operations(), vec![ReplicaOp::Create { uuid }]);
+        // create did not delete the old task..
+        assert_eq!(
+            db.sorted_tasks(),
+            vec![(uuid, vec![("foo".into(), "bar".into())])]
+        );
+        // create was done "manually" above, and no new op was added
+        assert_eq!(db.operations(), vec![]);
         Ok(())
     }
 
@@ -384,13 +396,8 @@ mod tests {
         let op = SyncOp::Delete { uuid };
         {
             let mut txn = db.storage.txn()?;
-            assert_eq!(
-                apply_and_record(txn.as_mut(), op)
-                    .err()
-                    .unwrap()
-                    .to_string(),
-                format!("Task Database Error: Task {} does not exist", uuid)
-            );
+            let taskmap = apply_and_record(txn.as_mut(), op)?;
+            assert_eq!(taskmap.len(), 0);
             txn.commit()?;
         }
 
