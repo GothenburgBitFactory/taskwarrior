@@ -91,6 +91,13 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::
         }
 
         Command {
+            subcommand: Subcommand::Import,
+            ..
+        } => {
+            return cmd::import::execute(&mut w, &mut replica);
+        }
+
+        Command {
             subcommand: Subcommand::Undo,
             ..
         } => {

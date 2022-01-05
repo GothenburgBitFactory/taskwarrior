@@ -2997,6 +2997,7 @@ dependencies = [
  "pretty_assertions",
  "prettytable-rs",
  "rstest",
+ "serde",
  "serde_json",
  "taskchampion",
  "tempfile",

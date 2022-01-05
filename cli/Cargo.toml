@@ -22,7 +22,9 @@ termcolor = "^1.1.2"
 atty = "^0.2.14"
 toml = "^0.5.8"
 toml_edit = "^0.2.0"
-chrono = "0.4"
+serde = { version = "^1.0.125", features = ["derive"] }
+serde_json = "^1.0"
+chrono = { version = "^0.4.10", features = ["serde"] }
 lazy_static = "1"
 iso8601-duration = "0.1"
 dialoguer = "0.8"
@@ -30,7 +32,6 @@ dialoguer = "0.8"
 # only needed for usage-docs
 # if the mdbook version changes, change it in .github/workflows/publish-docs.yml and .github/workflows/checks.yml as well
 mdbook = { version = "0.4.10", optional = true }
-serde_json = { version = "*", optional = true }
 
 [dependencies.taskchampion]
 path = "../taskchampion"
@@ -46,7 +47,7 @@ rstest = "0.10"
 pretty_assertions = "1"
 
 [features]
-usage-docs = [ "mdbook", "serde_json" ]
+usage-docs = [ "mdbook" ]
 
 [[bin]]
 name = "ta"

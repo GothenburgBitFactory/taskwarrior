@@ -59,6 +59,7 @@ pub(crate) enum Subcommand {
     /// Basic operations without args
     Gc,
     Sync,
+    Import,
     Undo,
 }
 
@@ -73,6 +74,7 @@ impl Subcommand {
             Info::parse,
             Gc::parse,
             Sync::parse,
+            Import::parse,
             Undo::parse,
             // This must come last since it accepts arbitrary report names
             Report::parse,
@@ -88,6 +90,8 @@ impl Subcommand {
         Info::get_usage(u);
         Gc::get_usage(u);
         Sync::get_usage(u);
+        Import::get_usage(u);
+        Undo::get_usage(u);
         Report::get_usage(u);
     }
 }
@@ -420,6 +424,35 @@ impl Sync {
 
                 Synchronization is a critical part of maintaining the task database, and should
                 be done regularly, even if only locally.  It is typically run in a crontask.",
+        })
+    }
+}
+
+struct Import;
+
+impl Import {
+    fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
+        fn to_subcommand(_: &str) -> Result<Subcommand, ()> {
+            Ok(Subcommand::Import)
+        }
+        map_res(arg_matching(literal("import")), to_subcommand)(input)
+    }
+
+    fn get_usage(u: &mut usage::Usage) {
+        u.subcommands.push(usage::Subcommand {
+            name: "import",
+            syntax: "import",
+            summary: "Import tasks",
+            description: "
+                Import tasks into this replica.
+
+                The tasks must be provided in the TaskWarrior JSON format on stdin.  If tasks
+                in the import already exist, they are 'merged'.
+
+                Because TaskChampion lacks the information about the types of UDAs that is stored
+                in the TaskWarrior configuration, UDA values are imported as simple strings, in the
+                format they appear in the JSON export.  This may cause undesirable results.
+                ",
         })
     }
 }
