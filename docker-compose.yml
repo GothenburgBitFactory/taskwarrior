@@ -64,14 +64,6 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-ubuntu2010:
-    build:
-        context: .
-        dockerfile: test/docker/ubuntu2010
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
   test-ubuntu2104:
     build:
         context: .
