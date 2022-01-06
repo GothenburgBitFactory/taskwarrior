@@ -41,6 +41,7 @@ mod errors;
 mod invocation;
 mod settings;
 mod table;
+mod tdb2;
 mod usage;
 
 /// See https://docs.rs/built
