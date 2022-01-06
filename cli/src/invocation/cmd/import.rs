@@ -8,10 +8,10 @@ use termcolor::WriteColor;
 
 pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Result<(), crate::Error> {
     writeln!(w, "Importing tasks from stdin.")?;
-    let tasks: Vec<HashMap<String, Value>> =
+    let mut tasks: Vec<HashMap<String, Value>> =
         serde_json::from_reader(std::io::stdin()).map_err(|_| anyhow!("Invalid JSON"))?;
 
-    for task_json in &tasks {
+    for task_json in tasks.drain(..) {
         import_task(w, replica, task_json)?;
     }
 
@@ -21,9 +21,9 @@ pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Result
 
 /// Convert the given value to a string, failing on compound types (arrays
 /// and objects).
-fn stringify(v: &Value) -> anyhow::Result<String> {
+fn stringify(v: Value) -> anyhow::Result<String> {
     Ok(match v {
-        Value::String(ref s) => s.clone(),
+        Value::String(s) => s,
         Value::Number(n) => n.to_string(),
         Value::Bool(true) => "true".to_string(),
         Value::Bool(false) => "false".to_string(),
@@ -62,8 +62,7 @@ struct Annotation {
 fn import_task<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
-    // TOOD: take this by value and consume it
-    task_json: &HashMap<String, Value>,
+    mut task_json: HashMap<String, Value>,
 ) -> anyhow::Result<()> {
     let uuid = task_json
         .get("uuid")
@@ -75,7 +74,7 @@ fn import_task<W: WriteColor>(
     replica.create_task(uuid)?;
 
     let mut description = None;
-    for (k, v) in task_json.iter() {
+    for (k, v) in task_json.drain() {
         match k.as_ref() {
             // `id` is the working-set ID and is not stored
             "id" => {}
@@ -88,7 +87,7 @@ fn import_task<W: WriteColor>(
 
             // `annotations` is a sub-aray
             "annotations" => {
-                let annotations: Vec<Annotation> = serde_json::from_value(v.clone())?;
+                let annotations: Vec<Annotation> = serde_json::from_value(v)?;
                 for ann in annotations {
                     let k = format!("annotation_{}", ann.entry.tc_timestamp());
                     replica.update_task(uuid, k, Some(ann.description))?;
@@ -97,7 +96,7 @@ fn import_task<W: WriteColor>(
 
             // `depends` is a sub-aray
             "depends" => {
-                let deps: Vec<String> = serde_json::from_value(v.clone())?;
+                let deps: Vec<String> = serde_json::from_value(v)?;
                 for dep in deps {
                     let k = format!("dep_{}", dep);
                     replica.update_task(uuid, k, Some("".to_owned()))?;
@@ -106,7 +105,7 @@ fn import_task<W: WriteColor>(
 
             // `tags` is a sub-aray
             "tags" => {
-                let tags: Vec<String> = serde_json::from_value(v.clone())?;
+                let tags: Vec<String> = serde_json::from_value(v)?;
                 for tag in tags {
                     let k = format!("tag_{}", tag);
                     replica.update_task(uuid, k, Some("".to_owned()))?;
@@ -115,17 +114,18 @@ fn import_task<W: WriteColor>(
 
             // convert all datetimes -> epoch integers
             "end" | "entry" | "modified" | "wait" | "due" => {
-                let v: TwDateTime = serde_json::from_value(v.clone())?;
+                let v: TwDateTime = serde_json::from_value(v)?;
                 replica.update_task(uuid, k, Some(v.tc_timestamp()))?;
             }
 
             // everything else is inserted directly
             _ => {
                 let v = stringify(v)?;
-                replica.update_task(uuid, k, Some(v.clone()))?;
                 if k == "description" {
-                    description = Some(v);
+                    // keep a copy of the description for console output
+                    description = Some(v.clone());
                 }
+                replica.update_task(uuid, k, Some(v))?;
             }
         }
     }
@@ -152,29 +152,29 @@ mod test {
 
     #[test]
     fn stringify_string() {
-        assert_eq!(stringify(&json!("foo")).unwrap(), "foo".to_string());
+        assert_eq!(stringify(json!("foo")).unwrap(), "foo".to_string());
     }
 
     #[test]
     fn stringify_number() {
-        assert_eq!(stringify(&json!(2.14)).unwrap(), "2.14".to_string());
+        assert_eq!(stringify(json!(2.14)).unwrap(), "2.14".to_string());
     }
 
     #[test]
     fn stringify_bool() {
-        assert_eq!(stringify(&json!(true)).unwrap(), "true".to_string());
-        assert_eq!(stringify(&json!(false)).unwrap(), "false".to_string());
+        assert_eq!(stringify(json!(true)).unwrap(), "true".to_string());
+        assert_eq!(stringify(json!(false)).unwrap(), "false".to_string());
     }
 
     #[test]
     fn stringify_null() {
-        assert_eq!(stringify(&json!(null)).unwrap(), "null".to_string());
+        assert_eq!(stringify(json!(null)).unwrap(), "null".to_string());
     }
 
     #[test]
     fn stringify_invalid() {
-        assert!(stringify(&json!([1])).is_err());
-        assert!(stringify(&json!({"a": 1})).is_err());
+        assert!(stringify(json!([1])).is_err());
+        assert!(stringify(json!({"a": 1})).is_err());
     }
 
     #[test]
@@ -219,7 +219,7 @@ mod test {
           ],
           "urgency": 4.16849
         }))?;
-        import_task(&mut w, &mut replica, &task_json)?;
+        import_task(&mut w, &mut replica, task_json)?;
 
         let task = replica
             .get_task(Uuid::parse_str("fa01e916-1587-4c7d-a646-f7be62be8ee7").unwrap())
