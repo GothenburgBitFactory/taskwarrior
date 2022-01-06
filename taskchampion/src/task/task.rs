@@ -57,6 +57,7 @@ enum Prop {
     Start,
     Status,
     Wait,
+    End,
 }
 
 #[allow(clippy::ptr_arg)]
@@ -263,9 +264,23 @@ impl<'r> TaskMut<'r> {
     /// Set the task's status.  This also adds the task to the working set if the
     /// new status puts it in that set.
     pub fn set_status(&mut self, status: Status) -> anyhow::Result<()> {
-        if status == Status::Pending {
-            let uuid = self.uuid;
-            self.replica.add_to_working_set(uuid)?;
+        if status == Status::Pending {}
+        match status {
+            Status::Pending => {
+                // clear "end" when a task becomes "pending"
+                if self.taskmap.contains_key(Prop::End.as_ref()) {
+                    self.set_timestamp(Prop::End.as_ref(), None)?;
+                }
+                let uuid = self.uuid;
+                self.replica.add_to_working_set(uuid)?;
+            }
+            Status::Completed | Status::Deleted => {
+                // set "end" when a task is deleted or completed
+                if !self.taskmap.contains_key(Prop::End.as_ref()) {
+                    self.set_timestamp(Prop::End.as_ref(), Some(Utc::now()))?;
+                }
+            }
+            _ => {}
         }
         self.set_string(
             Prop::Status.as_ref(),
@@ -302,6 +317,14 @@ impl<'r> TaskMut<'r> {
     /// Mark this task as complete
     pub fn done(&mut self) -> anyhow::Result<()> {
         self.set_status(Status::Completed)
+    }
+
+    /// Mark this task as deleted.
+    ///
+    /// Note that this does not delete the task.  It merely marks the task as
+    /// deleted.
+    pub fn delete(&mut self) -> anyhow::Result<()> {
+        self.set_status(Status::Deleted)
     }
 
     /// Add a tag to this task.  Does nothing if the tag is already present.
@@ -677,6 +700,41 @@ mod test {
     }
 
     #[test]
+    fn test_set_status_pending() {
+        with_mut_task(|mut task| {
+            task.done().unwrap();
+
+            task.set_status(Status::Pending).unwrap();
+            assert_eq!(task.get_status(), Status::Pending);
+            assert!(!task.taskmap.contains_key("end"));
+            assert!(task.has_tag(&stag(SyntheticTag::Pending)));
+            assert!(!task.has_tag(&stag(SyntheticTag::Completed)));
+        });
+    }
+
+    #[test]
+    fn test_set_status_completed() {
+        with_mut_task(|mut task| {
+            task.set_status(Status::Completed).unwrap();
+            assert_eq!(task.get_status(), Status::Completed);
+            assert!(task.taskmap.contains_key("end"));
+            assert!(!task.has_tag(&stag(SyntheticTag::Pending)));
+            assert!(task.has_tag(&stag(SyntheticTag::Completed)));
+        });
+    }
+
+    #[test]
+    fn test_set_status_deleted() {
+        with_mut_task(|mut task| {
+            task.set_status(Status::Deleted).unwrap();
+            assert_eq!(task.get_status(), Status::Deleted);
+            assert!(task.taskmap.contains_key("end"));
+            assert!(!task.has_tag(&stag(SyntheticTag::Pending)));
+            assert!(!task.has_tag(&stag(SyntheticTag::Completed)));
+        });
+    }
+
+    #[test]
     fn test_start() {
         with_mut_task(|mut task| {
             task.start().unwrap();
@@ -718,12 +776,28 @@ mod test {
         with_mut_task(|mut task| {
             task.done().unwrap();
             assert_eq!(task.get_status(), Status::Completed);
+            assert!(task.taskmap.contains_key("end"));
             assert!(task.has_tag(&stag(SyntheticTag::Completed)));
 
             // redundant call does nothing..
             task.done().unwrap();
             assert_eq!(task.get_status(), Status::Completed);
             assert!(task.has_tag(&stag(SyntheticTag::Completed)));
+        });
+    }
+
+    #[test]
+    fn test_delete() {
+        with_mut_task(|mut task| {
+            task.delete().unwrap();
+            assert_eq!(task.get_status(), Status::Deleted);
+            assert!(task.taskmap.contains_key("end"));
+            assert!(!task.has_tag(&stag(SyntheticTag::Completed)));
+
+            // redundant call does nothing..
+            task.delete().unwrap();
+            assert_eq!(task.get_status(), Status::Deleted);
+            assert!(!task.has_tag(&stag(SyntheticTag::Completed)));
         });
     }
 

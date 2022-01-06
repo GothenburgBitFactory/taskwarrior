@@ -228,7 +228,7 @@ mod tests {
                 ..
             } = op
             {
-                if property == "modified" {
+                if property == "modified" || property == "end" {
                     if value.is_some() {
                         value = Some("just-now".into());
                     }
@@ -289,6 +289,13 @@ mod tests {
                     property: "description".into(),
                     old_value: Some("a task".into()),
                     value: Some("past tense".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "end".into(),
+                    old_value: None,
+                    value: Some("just-now".into()),
                     timestamp: now,
                 },
                 ReplicaOp::Update {

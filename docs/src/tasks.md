@@ -17,6 +17,12 @@ The result of this reconciliation will be `oldtag,newtag2`, while the user almos
 
 The key names given below avoid this issue, allowing user updates such as adding a tag or deleting a dependency to be represented in a single `Update` operation.
 
+## Validity
+
+_Any_ key/value map is a valid task.
+Consumers of task data must make a best effort to interpret any map, even if it contains apparently contradictory information.
+For example, a task with status "completed" but no "end" key present should be interpreted as completed at an unknown time.
+
 ## Representations
 
 Integers are stored in decimal notation.
@@ -31,6 +37,7 @@ The following keys, and key formats, are defined:
 * `description` - the one-line summary of the task
 * `modified` - the time of the last modification of this task
 * `start` - the most recent time at which this task was started (a task with no `start` key is not active)
+* `end` - if present, the time at which this task was completed or deleted (note that this key may not agree with `status`: it may be present for a pending task, or absent for a deleted or completed task)
 * `tag_<tag>` - indicates this task has tag `<tag>` (value is an empty string)
 * `wait` - indicates the time before which this task should be hidden, as it is not actionable
 * `annotation_<timestamp>` - value is an annotation created at the given time
