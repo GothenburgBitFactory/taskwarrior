@@ -27,7 +27,8 @@ impl File {
 
     fn parse(input: &str) -> IResult<&str, File> {
         all_consuming(fold_many0(
-            terminated(Line::parse, char('\n')),
+            // allow windows or normal newlines
+            terminated(Line::parse, pair(opt(char('\r')), char('\n'))),
             File { lines: vec![] },
             |mut file, line| {
                 file.lines.push(line);
