@@ -4,10 +4,13 @@ use serde::{self, Deserialize, Deserializer};
 use serde_json::Value;
 use std::collections::HashMap;
 use taskchampion::{Replica, Uuid};
-use termcolor::WriteColor;
+use termcolor::{Color, ColorSpec, WriteColor};
 
 pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Result<(), crate::Error> {
+    w.set_color(ColorSpec::new().set_bold(true))?;
     writeln!(w, "Importing tasks from stdin.")?;
+    w.reset()?;
+
     let mut tasks: Vec<HashMap<String, Value>> =
         serde_json::from_reader(std::io::stdin()).map_err(|_| anyhow!("Invalid JSON"))?;
 
@@ -15,7 +18,10 @@ pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Result
         import_task(w, replica, task_json)?;
     }
 
+    w.set_color(ColorSpec::new().set_bold(true))?;
     writeln!(w, "{} tasks imported.", tasks.len())?;
+    w.reset()?;
+
     Ok(())
 }
 
@@ -130,10 +136,12 @@ fn import_task<W: WriteColor>(
         }
     }
 
+    w.set_color(ColorSpec::new().set_fg(Some(Color::Yellow)))?;
+    write!(w, "{}", uuid)?;
+    w.reset()?;
     writeln!(
         w,
-        "{} {}",
-        uuid,
+        " {}",
         description.unwrap_or_else(|| "(no description)".into())
     )?;
 

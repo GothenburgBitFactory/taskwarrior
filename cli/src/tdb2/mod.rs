@@ -22,7 +22,7 @@ pub(crate) struct Attr {
 
 impl File {
     pub(crate) fn from_str(input: &str) -> Result<File, ()> {
-        Ok(File::parse(input).map(|(_, res)| res).map_err(|_| ())?)
+        File::parse(input).map(|(_, res)| res).map_err(|_| ())
     }
 
     fn parse(input: &str) -> IResult<&str, File> {
