@@ -119,6 +119,48 @@ int main (int, char**)
   value = ff4.get ("description");
   test.is (value, "Description", "ff4 description");
 
+  // depends as a comma-separated set of strings
+  sample = "["
+           "uuid:\"00000000-0000-0000-0000-000000000000\" "
+           "description:\"d\" "
+           "depends:\"cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743\""
+           "]";
+  ff4 = Task (sample);
+  value = ff4.get ("uuid");
+  test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
+  value = ff4.get ("depends");
+  test.is (value, "cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743", "ff4 depends");
+  test.ok (ff4.has ("dep_cfee3170-f153-4075-aa1d-e20bcac2841b"), "ff4 dep attr");
+  test.ok (ff4.has ("dep_f5982cca-2ea1-4bfd-832c-9bd571dc0743"), "ff4 dep attr");
+
+  // depends as JSON string (issue#2689)
+  sample = "["
+           "uuid:\"00000000-0000-0000-0000-000000000000\" "
+           "description:\"d\" "
+           "depends:\"[\\\"cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743\\\"]\""
+           "]";
+  ff4 = Task (sample);
+  value = ff4.get ("uuid");
+  test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
+  value = ff4.get ("depends");
+  test.is (value, "cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743", "ff4 depends");
+  test.ok (ff4.has ("dep_cfee3170-f153-4075-aa1d-e20bcac2841b"), "ff4 dep attr");
+  test.ok (ff4.has ("dep_f5982cca-2ea1-4bfd-832c-9bd571dc0743"), "ff4 dep attr");
+
+  // depends as HTML-entity-encoded JSON string (issue#2689)
+  sample = "["
+           "uuid:\"00000000-0000-0000-0000-000000000000\" "
+           "description:\"d\" "
+           "depends:\"&open;\\\"cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743\\\"&close;\""
+           "]";
+  ff4 = Task (sample);
+  value = ff4.get ("uuid");
+  test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
+  value = ff4.get ("depends");
+  test.is (value, "cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743", "ff4 depends");
+  test.ok (ff4.has ("dep_cfee3170-f153-4075-aa1d-e20bcac2841b"), "ff4 dep attr");
+  test.ok (ff4.has ("dep_f5982cca-2ea1-4bfd-832c-9bd571dc0743"), "ff4 dep attr");
+
 /*
 
 TODO Task::composeCSV
