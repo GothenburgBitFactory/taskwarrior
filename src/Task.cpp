@@ -657,6 +657,20 @@ void Task::parse (const std::string& input)
               ++annotation_count;
 
             data[name] = decode (json::decode (value));
+
+            // Fix for issue#2689: taskserver sometimes encodes the depends
+            // property as a JSON-encoded one-element array of strings.  So, if
+            // depends has form `[".."]`, then apply another layer of JSON
+            // decoding.
+            if (name == "depends" && data[name].length () >= 4) {
+              auto l = data[name].length ();
+              if (data[name][0] == '[' &&
+                  data[name][1] == '"' &&
+                  data[name][l-2] == '"' &&
+                  data[name][l-1] == ']') {
+                data[name] = data[name].substr(2, l-4);
+              }
+            }
           }
 
           attLine.skip (' ');
