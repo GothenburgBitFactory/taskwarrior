@@ -657,21 +657,6 @@ void Task::parse (const std::string& input)
               ++annotation_count;
 
             data[name] = decode (json::decode (value));
-
-            // Fix for issue#2689: taskserver sometimes encodes the depends
-            // property as a JSON-encoded array of strings.  To avoid this whole
-            // issue, we strip anything that isn't a UUID character or a comma.
-            if (name == "depends") {
-              std::string newDep;
-              for (auto &c: data[name]) {
-                if ((c >= '0' && c <= '9') ||
-                    (c >= 'a' && c <= 'f') ||
-                    c == ',' || c == '-') {
-                  newDep.push_back(c);
-                }
-              }
-              data[name] = newDep;
-            }
           }
 
           attLine.skip (' ');
@@ -792,7 +777,25 @@ void Task::parseJSON (const json::object* root_obj)
       else if (i.first == "depends" && i.second->type() == json::j_string)
       {
         auto deps = (json::string*)i.second;
-        auto uuids = split (deps->_data, ',');
+
+        // Fix for issue#2689: taskserver sometimes encodes the depends
+        // property as a string of the format `[\"uuid\",\"uuid\"]`
+        // The string includes the backslash-escaped `"` characters, making
+        // it invalid JSON.  Since we know the characters we're looking for,
+        // we'll just filter out everything else.
+        std::string deps_str = deps->_data;
+        if (deps_str.front () == '[' && deps_str.back () == ']') {
+          std::string filtered;
+		  for (auto &c: deps_str) {
+			if ((c >= '0' && c <= '9') ||
+				(c >= 'a' && c <= 'f') ||
+				c == ',' || c == '-') {
+			  filtered.push_back(c);
+			}
+		  }
+		  deps_str = filtered;
+        }
+        auto uuids = split (deps_str, ',');
 
         for (const auto& uuid : uuids)
           addDependency (uuid);
