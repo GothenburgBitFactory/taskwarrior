@@ -137,7 +137,7 @@ int main (int, char**)
   sample = "["
            "uuid:\"00000000-0000-0000-0000-000000000000\" "
            "description:\"d\" "
-           "depends:\"[\\\"cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743\\\"]\""
+           "depends:\"[\\\"cfee3170-f153-4075-aa1d-e20bcac2841b\\\",\\\"f5982cca-2ea1-4bfd-832c-9bd571dc0743\\\"]\""
            "]";
   ff4 = Task (sample);
   value = ff4.get ("uuid");
@@ -151,7 +151,7 @@ int main (int, char**)
   sample = "["
            "uuid:\"00000000-0000-0000-0000-000000000000\" "
            "description:\"d\" "
-           "depends:\"&open;\\\"cfee3170-f153-4075-aa1d-e20bcac2841b,f5982cca-2ea1-4bfd-832c-9bd571dc0743\\\"&close;\""
+           "depends:\"&open;\\\"cfee3170-f153-4075-aa1d-e20bcac2841b\\\",\\\"f5982cca-2ea1-4bfd-832c-9bd571dc0743\\\"&close;\""
            "]";
   ff4 = Task (sample);
   value = ff4.get ("uuid");
