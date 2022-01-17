@@ -659,17 +659,18 @@ void Task::parse (const std::string& input)
             data[name] = decode (json::decode (value));
 
             // Fix for issue#2689: taskserver sometimes encodes the depends
-            // property as a JSON-encoded one-element array of strings.  So, if
-            // depends has form `[".."]`, then apply another layer of JSON
-            // decoding.
-            if (name == "depends" && data[name].length () >= 4) {
-              auto l = data[name].length ();
-              if (data[name][0] == '[' &&
-                  data[name][1] == '"' &&
-                  data[name][l-2] == '"' &&
-                  data[name][l-1] == ']') {
-                data[name] = data[name].substr(2, l-4);
+            // property as a JSON-encoded array of strings.  To avoid this whole
+            // issue, we strip anything that isn't a UUID character or a comma.
+            if (name == "depends") {
+              std::string newDep;
+              for (auto &c: data[name]) {
+                if ((c >= '0' && c <= '9') ||
+                    (c >= 'a' && c <= 'f') ||
+                    c == ',' || c == '-') {
+                  newDep.push_back(c);
+                }
               }
+              data[name] = newDep;
             }
           }
 
