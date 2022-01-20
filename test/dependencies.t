@@ -211,6 +211,22 @@ class TestDependencies(TestCase):
         code, out, err = self.t("3 modify dep:-1,-%s" % uuid)
         self.assertIn("Modifying task 3 'three'.", out)
 
+    def test_id_uuid_short_dep(self):
+        """Check that short UUIDs are usable for deps"""
+
+        # Get 2.uuid
+        code, out, err = self.t("_get 2.uuid")
+        short_uuid = out.strip().split("-")[0]
+
+        # Add a mix of IDs and UUID
+        code, out, err = self.t("add three dep:%s" % short_uuid)
+        self.assertIn("Created task 3.", out)
+
+        # Remove a mix of IЅs and UUID
+        code, out, err = self.t("3 modify dep:-%s" % short_uuid)
+        self.assertIn("Modifying task 3 'three'.", out)
+
+
 class TestBug697(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
