@@ -154,50 +154,59 @@ void ColumnDepends::modify (Task& task, const std::string& value)
   // Apply or remove dendencies in turn.
   for (auto& dep : split (value, ','))
   {
+    bool removal = false;
     if (dep[0] == '-')
     {
-      if (dep.length () == 37)
-        task.removeDependency (dep.substr (1));
-      else
-        task.removeDependency (strtol (dep.substr (1).c_str (), nullptr, 10));
+      removal = true;
+      dep = dep.substr(1);
     }
-    else
-    {
-      auto hyphen = dep.find ('-');
-      long lower, upper;  // For ID ranges
-      std::regex valid_uuid ("[a-f0-9]{8}([a-f0-9-]{4,28})?"); // TODO: Make more precise
 
-      // UUID
-      if (dep.length () >= 8 && std::regex_match (dep, valid_uuid))
-      {
-         // Full UUID, can be added directly
-         if (dep.length () == 36)
+    auto hyphen = dep.find ('-');
+    long lower, upper;  // For ID ranges
+    std::regex valid_uuid ("[a-f0-9]{8}([a-f0-9-]{4,28})?"); // TODO: Make more precise
+
+    // UUID
+    if (dep.length () >= 8 && std::regex_match (dep, valid_uuid))
+    {
+       // Full UUID, can be added directly
+       if (dep.length () == 36)
+         if (removal)
+           task.removeDependency (dep);
+         else
            task.addDependency (dep);
 
-         // Short UUID, need to look up full form
-         else
-         {
-           Task loaded_task;
-           if (Context::getContext ().tdb2.get (dep, loaded_task))
-             task.addDependency (loaded_task.get ("uuid"));
+       // Short UUID, need to look up full form
+       else
+       {
+         Task loaded_task;
+         if (Context::getContext ().tdb2.get (dep, loaded_task))
+           if (removal)
+             task.removeDependency (loaded_task.get ("uuid"));
            else
-             throw format ("Dependency could not be set - task with UUID '{1}' does not exist.", dep);
-         }
-      }
-      // ID range
-      else if (dep.find ('-') != std::string::npos &&
-               extractLongInteger (dep.substr (0, hyphen), lower) &&
-               extractLongInteger (dep.substr (hyphen + 1), upper))
-      {
-        for (long i = lower; i <= upper; i++)
-          task.addDependency(i);
-      }
-      // Simple ID
-      else if (extractLongInteger (dep, lower))
-        task.addDependency (lower);
-      else
-        throw format ("Invalid dependency value: '{1}'", dep);
+             task.addDependency (loaded_task.get ("uuid"));
+         else
+           throw format ("Dependency could not be set - task with UUID '{1}' does not exist.", dep);
+       }
     }
+    // ID range
+    else if (dep.find ('-') != std::string::npos &&
+             extractLongInteger (dep.substr (0, hyphen), lower) &&
+             extractLongInteger (dep.substr (hyphen + 1), upper))
+    {
+      for (long i = lower; i <= upper; i++)
+         if (removal)
+           task.removeDependency (i);
+         else
+           task.addDependency (i);
+    }
+    // Simple ID
+    else if (extractLongInteger (dep, lower))
+      if (removal)
+        task.removeDependency (lower);
+      else
+        task.addDependency (lower);
+    else
+      throw format ("Invalid dependency value: '{1}'", dep);
   }
 }
 
