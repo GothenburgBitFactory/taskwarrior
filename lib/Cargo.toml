@@ -1,0 +1,15 @@
+[package]
+name = "taskchampion-lib"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[lib]
+name = "taskchampion"
+crate-type = ["cdylib"]
+
+[dependencies]
+taskchampion = { path = "../taskchampion" }
+
+[build-dependencies]
+cbindgen = "0.20.0"

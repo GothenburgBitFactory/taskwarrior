@@ -4,5 +4,6 @@ members = [
     "taskchampion",
     "cli",
     "sync-server",
-    "replica-server-tests"
+    "replica-server-tests",
+    "lib"
 ]
