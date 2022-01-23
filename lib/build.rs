@@ -10,16 +10,6 @@ fn main() {
         .with_language(Language::C)
         .with_config(Config {
             cpp_compat: true,
-            export: ExportConfig {
-                item_types: vec![
-                    ItemType::Structs,
-                    ItemType::Globals,
-                    ItemType::Functions,
-                    ItemType::Constants,
-                    ItemType::OpaqueItems,
-                ],
-                ..Default::default()
-            },
             ..Default::default()
         })
         .generate()
