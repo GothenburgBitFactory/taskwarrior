@@ -265,7 +265,6 @@ impl<'r> TaskMut<'r> {
     /// Set the task's status.  This also adds the task to the working set if the
     /// new status puts it in that set.
     pub fn set_status(&mut self, status: Status) -> anyhow::Result<()> {
-        if status == Status::Pending {}
         match status {
             Status::Pending => {
                 // clear "end" when a task becomes "pending"
