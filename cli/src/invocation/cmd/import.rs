@@ -77,7 +77,7 @@ fn import_task<W: WriteColor>(
         .as_str()
         .ok_or_else(|| anyhow!("uuid is not a string"))?;
     let uuid = Uuid::parse_str(uuid)?;
-    replica.create_task(uuid)?;
+    replica.import_task_with_uuid(uuid)?;
 
     let mut description = None;
     for (k, v) in task_json.drain() {

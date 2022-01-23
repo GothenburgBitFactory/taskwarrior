@@ -47,7 +47,7 @@ fn import_task<W: WriteColor>(
         }
     }
     let uuid = uuid.ok_or_else(|| anyhow!("task has no uuid"))?;
-    replica.create_task(uuid)?;
+    replica.import_task_with_uuid(uuid)?;
 
     let mut description = None;
     for attr in line.attrs.drain(..) {

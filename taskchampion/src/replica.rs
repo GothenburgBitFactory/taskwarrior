@@ -105,7 +105,9 @@ impl Replica {
     /// Create a new task.
     pub fn new_task(&mut self, status: Status, description: String) -> anyhow::Result<Task> {
         let uuid = Uuid::new_v4();
-        let mut task = self.create_task(uuid)?.into_mut(self);
+        self.add_undo_point(false)?;
+        let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
+        let mut task = Task::new(uuid, taskmap).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
         task.set_entry(Utc::now())?;
@@ -116,7 +118,7 @@ impl Replica {
     /// Create a new, empty task with the given UUID.  This is useful for importing tasks, but
     /// otherwise should be avoided in favor of `new_task`.  If the task already exists, this
     /// does nothing and returns the existing task.
-    pub fn create_task(&mut self, uuid: Uuid) -> anyhow::Result<Task> {
+    pub fn import_task_with_uuid(&mut self, uuid: Uuid) -> anyhow::Result<Task> {
         self.add_undo_point(false)?;
         let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
         Ok(Task::new(uuid, taskmap))
