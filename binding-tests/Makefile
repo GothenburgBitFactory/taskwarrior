@@ -3,7 +3,7 @@ INC=-I ../lib
 LIB=-L ../target/debug
 RPATH=-Wl,-rpath,../target/debug 
 
-TESTS = uuid.cpp
+TESTS = replica.cpp
 
 .PHONY: all test
 

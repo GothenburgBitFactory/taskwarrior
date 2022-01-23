@@ -9,6 +9,7 @@ name = "taskchampion"
 crate-type = ["cdylib"]
 
 [dependencies]
+libc = "0.2.113"
 taskchampion = { path = "../taskchampion" }
 
 [build-dependencies]

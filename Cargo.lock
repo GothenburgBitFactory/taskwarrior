@@ -1617,9 +1617,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.97"
+version = "0.2.113"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12b8adadd720df158f4d70dfe7ccc6adb0472d7c55ca83445f6a5ab3e36f8fb6"
+checksum = "eef78b64d87775463c549fbd80e19249ef436ea3bf1de2a1eb7e717ec7fab1e9"
 
 [[package]]
 name = "libgit2-sys"
@@ -3032,6 +3032,7 @@ name = "taskchampion-lib"
 version = "0.1.0"
 dependencies = [
  "cbindgen",
+ "libc",
  "taskchampion",
 ]
 
