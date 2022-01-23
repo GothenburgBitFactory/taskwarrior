@@ -20,8 +20,11 @@ extern "C" {
 /// Replicas are not threadsafe.
 Replica *tc_replica_new(const char *path);
 
-/// temporary (testing errors)
-uint32_t uhoh(Replica *rep);
+/// Undo local operations until the most recent UndoPoint.
+///
+/// Returns -1 on error, 0 if there are no local operations to undo, and 1 if operations were
+/// undone.
+int32_t tc_replica_undo(Replica *rep);
 
 /// Get the latest error for a replica, or NULL if the last operation succeeded.
 ///

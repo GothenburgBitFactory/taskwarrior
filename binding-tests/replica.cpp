@@ -5,8 +5,14 @@
 TEST_CASE("creating an in-memory Replica does not crash") {
     Replica *rep = tc_replica_new(NULL);
     CHECK(tc_replica_error(rep) == NULL);
-    uhoh(rep);
-    REQUIRE(tc_replica_error(rep) != NULL);
-    CHECK(strcmp(tc_replica_error(rep), "uhoh!") == 0);
+    tc_replica_free(rep);
+}
+
+TEST_CASE("undo on an empty in-memory Replica does nothing") {
+    Replica *rep = tc_replica_new(NULL);
+    CHECK(tc_replica_error(rep) == NULL);
+    int rv = tc_replica_undo(rep);
+    CHECK(rv == 0);
+    CHECK(tc_replica_error(rep) == NULL);
     tc_replica_free(rep);
 }

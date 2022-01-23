@@ -10,6 +10,7 @@ use std::os::unix::ffi::OsStrExt;
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
 pub struct Replica {
+    // TODO: make this an option so that it can be take()n when holding a mut ref
     inner: TCReplica,
     error: Option<CString>,
 }
@@ -51,25 +52,32 @@ fn rep_ref(rep: *mut Replica) -> &'static mut Replica {
     unsafe { &mut *rep }
 }
 
-fn wrap<T, F>(rep: *mut Replica, f: F, err_value: T) -> T
+fn wrap<'a, T, F>(rep: *mut Replica, f: F, err_value: T) -> T
 where
-    F: FnOnce(&mut Replica) -> Result<T, &'static str>,
+    F: FnOnce(&mut TCReplica) -> anyhow::Result<T>,
 {
-    debug_assert!(!rep.is_null());
-    let rep = unsafe { &mut *rep };
-    match f(rep) {
+    let rep: &'a mut Replica = rep_ref(rep);
+    match f(&mut rep.inner) {
         Ok(v) => v,
         Err(e) => {
-            rep.error = Some(CString::new(e.as_bytes()).unwrap());
+            let error = e.to_string();
+            let error = match CString::new(error.as_bytes()) {
+                Ok(e) => e,
+                Err(_) => CString::new("(invalid error message)".as_bytes()).unwrap(),
+            };
+            rep.error = Some(error);
             err_value
         }
     }
 }
 
-/// temporary (testing errors)
+/// Undo local operations until the most recent UndoPoint.
+///
+/// Returns -1 on error, 0 if there are no local operations to undo, and 1 if operations were
+/// undone.
 #[no_mangle]
-pub extern "C" fn uhoh<'a>(rep: *mut Replica) -> u32 {
-    wrap(rep, |rep| Err("uhoh!"), 0)
+pub extern "C" fn tc_replica_undo<'a>(rep: *mut Replica) -> i32 {
+    wrap(rep, |rep| Ok(if rep.undo()? { 1 } else { 0 }), -1)
 }
 
 /// Get the latest error for a replica, or NULL if the last operation succeeded.

@@ -3031,6 +3031,7 @@ dependencies = [
 name = "taskchampion-lib"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "cbindgen",
  "libc",
  "taskchampion",

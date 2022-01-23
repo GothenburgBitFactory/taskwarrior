@@ -11,6 +11,7 @@ crate-type = ["cdylib"]
 [dependencies]
 libc = "0.2.113"
 taskchampion = { path = "../taskchampion" }
+anyhow = "1.0"
 
 [build-dependencies]
 cbindgen = "0.20.0"
