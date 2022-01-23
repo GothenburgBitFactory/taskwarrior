@@ -59,7 +59,7 @@ pub(crate) enum Subcommand {
     /// Basic operations without args
     Gc,
     Sync,
-    Import,
+    ImportTW,
     ImportTDB2 {
         path: String,
     },
@@ -77,7 +77,7 @@ impl Subcommand {
             Info::parse,
             Gc::parse,
             Sync::parse,
-            Import::parse,
+            ImportTW::parse,
             ImportTDB2::parse,
             Undo::parse,
             // This must come last since it accepts arbitrary report names
@@ -94,7 +94,7 @@ impl Subcommand {
         Info::get_usage(u);
         Gc::get_usage(u);
         Sync::get_usage(u);
-        Import::get_usage(u);
+        ImportTW::get_usage(u);
         ImportTDB2::get_usage(u);
         Undo::get_usage(u);
         Report::get_usage(u);
@@ -433,21 +433,21 @@ impl Sync {
     }
 }
 
-struct Import;
+struct ImportTW;
 
-impl Import {
+impl ImportTW {
     fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
         fn to_subcommand(_: &str) -> Result<Subcommand, ()> {
-            Ok(Subcommand::Import)
+            Ok(Subcommand::ImportTW)
         }
-        map_res(arg_matching(literal("import")), to_subcommand)(input)
+        map_res(arg_matching(literal("import-tw")), to_subcommand)(input)
     }
 
     fn get_usage(u: &mut usage::Usage) {
         u.subcommands.push(usage::Subcommand {
-            name: "import",
-            syntax: "import",
-            summary: "Import tasks",
+            name: "import-tw",
+            syntax: "import-tw",
+            summary: "Import tasks from TaskWarrior export",
             description: "
                 Import tasks into this replica.
 

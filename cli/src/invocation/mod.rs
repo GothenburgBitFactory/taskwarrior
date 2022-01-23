@@ -91,10 +91,10 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::
         }
 
         Command {
-            subcommand: Subcommand::Import,
+            subcommand: Subcommand::ImportTW,
             ..
         } => {
-            return cmd::import::execute(&mut w, &mut replica);
+            return cmd::import_tw::execute(&mut w, &mut replica);
         }
 
         Command {
