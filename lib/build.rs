@@ -10,6 +10,11 @@ fn main() {
         .with_language(Language::C)
         .with_config(Config {
             cpp_compat: true,
+            enumeration: EnumConfig {
+                // this appears to still default to true for C
+                enum_class: false,
+                ..Default::default()
+            },
             ..Default::default()
         })
         .generate()

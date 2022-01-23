@@ -1,3 +1,4 @@
+use crate::{status::TCStatus, string::TCString, task::TCTask};
 use libc::c_char;
 use std::ffi::{CStr, CString, OsStr};
 use std::path::PathBuf;
@@ -9,9 +10,35 @@ use std::os::unix::ffi::OsStrExt;
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
 pub struct TCReplica {
-    // TODO: make this an option so that it can be take()n when holding a mut ref
+    // TODO: make this a RefCell so that it can be take()n when holding a mut ref
     inner: Replica,
     error: Option<CString>,
+}
+
+/// Utility function to safely convert *mut TCReplica into &mut TCReplica
+fn rep_ref(rep: *mut TCReplica) -> &'static mut TCReplica {
+    debug_assert!(!rep.is_null());
+    unsafe { &mut *rep }
+}
+
+/// Utility function to allow using `?` notation to return an error value.
+fn wrap<'a, T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
+where
+    F: FnOnce(&mut Replica) -> anyhow::Result<T>,
+{
+    let rep: &'a mut TCReplica = rep_ref(rep);
+    match f(&mut rep.inner) {
+        Ok(v) => v,
+        Err(e) => {
+            let error = e.to_string();
+            let error = match CString::new(error.as_bytes()) {
+                Ok(e) => e,
+                Err(_) => CString::new("(invalid error message)".as_bytes()).unwrap(),
+            };
+            rep.error = Some(error);
+            err_value
+        }
+    }
 }
 
 /// Create a new TCReplica.
@@ -45,30 +72,37 @@ pub extern "C" fn tc_replica_new<'a>(path: *const c_char) -> *mut TCReplica {
     }))
 }
 
-/// Utility function to safely convert *mut TCReplica into &mut TCReplica
-fn rep_ref(rep: *mut TCReplica) -> &'static mut TCReplica {
-    debug_assert!(!rep.is_null());
-    unsafe { &mut *rep }
+/*
+ * TODO:
+ * - tc_replica_all_tasks
+ * - tc_replica_all_task_uuids
+ * - tc_replica_working_set
+ * - tc_replica_get_task
+ */
+
+/// Create a new task.  The task must not already exist.
+///
+/// Returns the task, or NULL on error.
+#[no_mangle]
+pub extern "C" fn tc_replica_new_task<'a>(
+    rep: *mut TCReplica,
+    status: TCStatus,
+    description: *mut TCString,
+) -> *mut TCTask {
+    wrap(
+        rep,
+        |rep| {
+            let description = TCString::from_arg(description);
+            let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
+            Ok(TCTask::as_ptr(task))
+        },
+        std::ptr::null_mut(),
+    )
 }
 
-fn wrap<'a, T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
-where
-    F: FnOnce(&mut Replica) -> anyhow::Result<T>,
-{
-    let rep: &'a mut TCReplica = rep_ref(rep);
-    match f(&mut rep.inner) {
-        Ok(v) => v,
-        Err(e) => {
-            let error = e.to_string();
-            let error = match CString::new(error.as_bytes()) {
-                Ok(e) => e,
-                Err(_) => CString::new("(invalid error message)".as_bytes()).unwrap(),
-            };
-            rep.error = Some(error);
-            err_value
-        }
-    }
-}
+/* - tc_replica_import_task_with_uuid
+ * - tc_replica_sync
+ */
 
 /// Undo local operations until the most recent UndoPoint.
 ///
@@ -95,5 +129,11 @@ pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *const c_char {
 /// Free a TCReplica.
 #[no_mangle]
 pub extern "C" fn tc_replica_free(rep: *mut TCReplica) {
+    debug_assert!(!rep.is_null());
     drop(unsafe { Box::from_raw(rep) });
 }
+
+/*
+ * - tc_replica_rebuild_working_set
+ * - tc_replica_add_undo_point
+ */
