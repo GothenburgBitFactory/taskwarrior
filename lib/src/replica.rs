@@ -1,11 +1,7 @@
 use crate::{status::TCStatus, string::TCString, task::TCTask};
 use libc::c_char;
-use std::ffi::{CStr, CString, OsStr};
-use std::path::PathBuf;
+use std::ffi::CString;
 use taskchampion::{Replica, StorageConfig};
-
-// TODO: unix-only
-use std::os::unix::ffi::OsStrExt;
 
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
@@ -50,14 +46,15 @@ where
 ///
 /// TCReplicas are not threadsafe.
 #[no_mangle]
-pub extern "C" fn tc_replica_new<'a>(path: *const c_char) -> *mut TCReplica {
+pub extern "C" fn tc_replica_new<'a>(path: *mut TCString) -> *mut TCReplica {
     let storage_res = if path.is_null() {
         StorageConfig::InMemory.into_storage()
     } else {
-        let path: &'a [u8] = unsafe { CStr::from_ptr(path) }.to_bytes();
-        let path: &OsStr = OsStr::from_bytes(path);
-        let path: PathBuf = path.to_os_string().into();
-        StorageConfig::OnDisk { taskdb_dir: path }.into_storage()
+        let path = TCString::from_arg(path);
+        StorageConfig::OnDisk {
+            taskdb_dir: path.to_path_buf(),
+        }
+        .into_storage()
     };
 
     let storage = match storage_res {

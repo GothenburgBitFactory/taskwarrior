@@ -15,28 +15,6 @@ impl TCTask {
     }
 }
 
-/// Utility function to allow using `?` notation to return an error value.
-fn wrap<'a, T, F>(task: *const TCTask, f: F, err_value: T) -> T
-where
-    F: FnOnce(&Task) -> anyhow::Result<T>,
-{
-    let task: &'a Task = task_ref(task);
-    match f(task) {
-        Ok(v) => v,
-        Err(e) => {
-            /*
-            let error = e.to_string();
-            let error = match CString::new(error.as_bytes()) {
-                Ok(e) => e,
-                Err(_) => CString::new("(invalid error message)".as_bytes()).unwrap(),
-            };
-            */
-            //task.error = Some(error);
-            err_value
-        }
-    }
-}
-
 /// Utility function to safely convert *const TCTask into &Task
 fn task_ref(task: *const TCTask) -> &'static Task {
     debug_assert!(!task.is_null());
@@ -66,12 +44,10 @@ pub extern "C" fn tc_task_get_status<'a>(task: *const TCTask) -> TCStatus {
 /// Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
 /// contains embedded NUL characters).
 #[no_mangle]
-pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCString {
-    wrap(
-        task,
-        |task| Ok(TCString::return_string(task.get_description())?),
-        std::ptr::null_mut(),
-    )
+pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCString<'static> {
+    let task = task_ref(task);
+    let descr: TCString = task.get_description().into();
+    descr.return_val()
 }
 
 /* TODO

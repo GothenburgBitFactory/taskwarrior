@@ -8,6 +8,12 @@ TEST_CASE("creating an in-memory TCReplica does not crash") {
     tc_replica_free(rep);
 }
 
+TEST_CASE("creating an on-disk TCReplica does not crash") {
+    TCReplica *rep = tc_replica_new(tc_string_new("test-db"));
+    CHECK(tc_replica_error(rep) == NULL);
+    tc_replica_free(rep);
+}
+
 TEST_CASE("undo on an empty in-memory TCReplica does nothing") {
     TCReplica *rep = tc_replica_new(NULL);
     CHECK(tc_replica_error(rep) == NULL);

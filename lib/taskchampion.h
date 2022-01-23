@@ -19,6 +19,10 @@ enum TCStatus {
 struct TCReplica;
 
 /// TCString supports passing strings into and out of the TaskChampion API.
+///
+/// Unless specified otherwise, functions in this API take ownership of a TCString when it appears
+/// as a function argument, and transfer ownership to the caller when the TCString appears as a
+/// return value or otput argument.
 struct TCString;
 
 /// A task, as publicly exposed by this library.
@@ -46,7 +50,7 @@ extern const uintptr_t TC_UUID_STRING_BYTES;
 /// Returns NULL on error; see tc_replica_error.
 ///
 /// TCReplicas are not threadsafe.
-TCReplica *tc_replica_new(const char *path);
+TCReplica *tc_replica_new(TCString *path);
 
 /// Create a new task.  The task must not already exist.
 ///
@@ -67,10 +71,24 @@ const char *tc_replica_error(TCReplica *rep);
 /// Free a TCReplica.
 void tc_replica_free(TCReplica *rep);
 
+/// Create a new TCString referencing the given C string.  The C string must remain valid until
+/// after the TCString is freed.  It's typically easiest to ensure this by using a static string.
 TCString *tc_string_new(const char *cstr);
 
-const char *tc_string_content(TCString *string);
+/// Create a new TCString by cloning the content of the given C string.
+TCString *tc_string_clone(const char *cstr);
 
+/// Create a new TCString containing the given string with the given length. This allows creation
+/// of strings containing embedded NUL characters.  If the given string is not valid UTF-8, this
+/// function will return NULL.
+TCString *tc_string_clone_with_len(const char *buf, uintptr_t len);
+
+/// Get the content of the string as a regular C string.  The given string must not be NULL.  The
+/// returned value may be NULL if the string contains NUL bytes.
+/// This function does _not_ take ownership of the TCString.
+const char *tc_string_content(TCString *tcstring);
+
+/// Free a TCString.
 void tc_string_free(TCString *string);
 
 /// Get a task's UUID.
