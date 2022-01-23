@@ -8,7 +8,14 @@
 /// for querying and modifying that data.
 struct Replica;
 
+/// Uuid is used as a task identifier.  Uuids do not contain any pointers and need not be freed.
+struct Uuid {
+  uint8_t _0[16];
+};
+
 extern "C" {
+
+extern const uintptr_t TC_UUID_STRING_BYTES;
 
 /// Create a new Replica.
 ///
@@ -33,5 +40,19 @@ const char *tc_replica_error(Replica *rep);
 
 /// Free a Replica.
 void tc_replica_free(Replica *rep);
+
+/// Create a new, randomly-generated UUID.
+Uuid tc_uuid_new_v4();
+
+/// Create a new UUID with the nil value.
+Uuid tc_uuid_nil();
+
+/// Write the string representation of a Uuid into the given buffer, which must be
+/// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
+void tc_uuid_to_str(Uuid uuid, char *out);
+
+/// Parse the given value as a UUID.  The value must be exactly TC_UUID_STRING_BYTES long.  Returns
+/// false on failure.
+bool tc_uuid_from_str(const char *val, Uuid *out);
 
 } // extern "C"
