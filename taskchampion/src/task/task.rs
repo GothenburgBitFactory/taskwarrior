@@ -57,6 +57,7 @@ enum Prop {
     Start,
     Status,
     Wait,
+    Entry,
 }
 
 #[allow(clippy::ptr_arg)]
@@ -282,6 +283,10 @@ impl<'r> TaskMut<'r> {
 
     pub fn set_description(&mut self, description: String) -> anyhow::Result<()> {
         self.set_string(Prop::Description.as_ref(), Some(description))
+    }
+
+    pub(crate) fn set_entry(&mut self, entry: DateTime<Utc>) -> anyhow::Result<()> {
+        self.set_timestamp(Prop::Entry.as_ref(), Some(entry))
     }
 
     pub fn set_wait(&mut self, wait: Option<DateTime<Utc>>) -> anyhow::Result<()> {

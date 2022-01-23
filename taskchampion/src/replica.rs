@@ -108,6 +108,7 @@ impl Replica {
         let mut task = self.create_task(uuid)?.into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
+        task.set_entry(Utc::now())?;
         trace!("task {} created", uuid);
         Ok(task.into_immut())
     }
@@ -238,7 +239,7 @@ mod tests {
                 ..
             } = op
             {
-                if property == "modified" {
+                if property == "modified" || property == "entry" {
                     if value.is_some() {
                         value = Some("just-now".into());
                     }
@@ -285,6 +286,13 @@ mod tests {
                     property: "status".into(),
                     old_value: None,
                     value: Some("pending".into()),
+                    timestamp: now,
+                },
+                ReplicaOp::Update {
+                    uuid: t.get_uuid(),
+                    property: "entry".into(),
+                    old_value: None,
+                    value: Some("just-now".into()),
                     timestamp: now,
                 },
                 ReplicaOp::Update {
