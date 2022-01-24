@@ -4,6 +4,8 @@ pub(crate) mod add;
 pub(crate) mod config;
 pub(crate) mod gc;
 pub(crate) mod help;
+pub(crate) mod import_tdb2;
+pub(crate) mod import_tw;
 pub(crate) mod info;
 pub(crate) mod modify;
 pub(crate) mod report;

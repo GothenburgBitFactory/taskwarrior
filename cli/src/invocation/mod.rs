@@ -91,6 +91,20 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::
         }
 
         Command {
+            subcommand: Subcommand::ImportTW,
+            ..
+        } => {
+            return cmd::import_tw::execute(&mut w, &mut replica);
+        }
+
+        Command {
+            subcommand: Subcommand::ImportTDB2 { path },
+            ..
+        } => {
+            return cmd::import_tdb2::execute(&mut w, &mut replica, path.as_ref());
+        }
+
+        Command {
             subcommand: Subcommand::Undo,
             ..
         } => {

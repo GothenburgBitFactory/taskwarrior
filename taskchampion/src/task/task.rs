@@ -1,5 +1,5 @@
 use super::tag::{SyntheticTag, TagInner};
-use super::{Annotation, Status, Tag, Timestamp};
+use super::{Annotation, Priority, Status, Tag, Timestamp};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
@@ -117,6 +117,13 @@ impl Task {
             .get(Prop::Description.as_ref())
             .map(|s| s.as_ref())
             .unwrap_or("")
+    }
+
+    pub fn get_priority(&self) -> Priority {
+        self.taskmap
+            .get(Prop::Status.as_ref())
+            .map(|s| Priority::from_taskmap(s))
+            .unwrap_or(Priority::M)
     }
 
     /// Get the wait time.  If this value is set, it will be returned, even

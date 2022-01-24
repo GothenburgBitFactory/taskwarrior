@@ -47,7 +47,10 @@ impl Replica {
     /// Update an existing task.  If the value is Some, the property is added or updated.  If the
     /// value is None, the property is deleted.  It is not an error to delete a nonexistent
     /// property.
-    pub(crate) fn update_task<S1, S2>(
+    ///
+    /// This is a low-level method, and requires knowledge of the Task data model.  Prefer to
+    /// use the [`TaskMut`] methods to modify tasks, where possible.
+    pub fn update_task<S1, S2>(
         &mut self,
         uuid: Uuid,
         property: S1,
@@ -99,17 +102,26 @@ impl Replica {
             .map(move |tm| Task::new(uuid, tm)))
     }
 
-    /// Create a new task.  The task must not already exist.
+    /// Create a new task.
     pub fn new_task(&mut self, status: Status, description: String) -> anyhow::Result<Task> {
-        self.add_undo_point(false)?;
         let uuid = Uuid::new_v4();
+        self.add_undo_point(false)?;
         let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
-        trace!("task {} created", uuid);
         let mut task = Task::new(uuid, taskmap).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
         task.set_entry(Utc::now())?;
+        trace!("task {} created", uuid);
         Ok(task.into_immut())
+    }
+
+    /// Create a new, empty task with the given UUID.  This is useful for importing tasks, but
+    /// otherwise should be avoided in favor of `new_task`.  If the task already exists, this
+    /// does nothing and returns the existing task.
+    pub fn import_task_with_uuid(&mut self, uuid: Uuid) -> anyhow::Result<Task> {
+        self.add_undo_point(false)?;
+        let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
+        Ok(Task::new(uuid, taskmap))
     }
 
     /// Delete a task.  The task must exist.  Note that this is different from setting status to

@@ -59,6 +59,10 @@ pub(crate) enum Subcommand {
     /// Basic operations without args
     Gc,
     Sync,
+    ImportTW,
+    ImportTDB2 {
+        path: String,
+    },
     Undo,
 }
 
@@ -73,6 +77,8 @@ impl Subcommand {
             Info::parse,
             Gc::parse,
             Sync::parse,
+            ImportTW::parse,
+            ImportTDB2::parse,
             Undo::parse,
             // This must come last since it accepts arbitrary report names
             Report::parse,
@@ -88,6 +94,9 @@ impl Subcommand {
         Info::get_usage(u);
         Gc::get_usage(u);
         Sync::get_usage(u);
+        ImportTW::get_usage(u);
+        ImportTDB2::get_usage(u);
+        Undo::get_usage(u);
         Report::get_usage(u);
     }
 }
@@ -420,6 +429,66 @@ impl Sync {
 
                 Synchronization is a critical part of maintaining the task database, and should
                 be done regularly, even if only locally.  It is typically run in a crontask.",
+        })
+    }
+}
+
+struct ImportTW;
+
+impl ImportTW {
+    fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
+        fn to_subcommand(_: &str) -> Result<Subcommand, ()> {
+            Ok(Subcommand::ImportTW)
+        }
+        map_res(arg_matching(literal("import-tw")), to_subcommand)(input)
+    }
+
+    fn get_usage(u: &mut usage::Usage) {
+        u.subcommands.push(usage::Subcommand {
+            name: "import-tw",
+            syntax: "import-tw",
+            summary: "Import tasks from TaskWarrior export",
+            description: "
+                Import tasks into this replica.
+
+                The tasks must be provided in the TaskWarrior JSON format on stdin.  If tasks
+                in the import already exist, they are 'merged'.
+
+                Because TaskChampion lacks the information about the types of UDAs that is stored
+                in the TaskWarrior configuration, UDA values are imported as simple strings, in the
+                format they appear in the JSON export.  This may cause undesirable results.
+                ",
+        })
+    }
+}
+
+struct ImportTDB2;
+
+impl ImportTDB2 {
+    fn parse(input: ArgList) -> IResult<ArgList, Subcommand> {
+        fn to_subcommand(input: (&str, &str)) -> Result<Subcommand, ()> {
+            Ok(Subcommand::ImportTDB2 {
+                path: input.1.into(),
+            })
+        }
+        map_res(
+            pair(arg_matching(literal("import-tdb2")), arg_matching(any)),
+            to_subcommand,
+        )(input)
+    }
+
+    fn get_usage(u: &mut usage::Usage) {
+        u.subcommands.push(usage::Subcommand {
+            name: "import-tdb2",
+            syntax: "import-tdb2 <directory>",
+            summary: "Import tasks from the TaskWarrior data directory",
+            description: "
+                Import tasks into this replica from a TaskWarrior data directory.  If tasks in the
+                import already exist, they are 'merged'.  This mode of import supports UDAs better
+                than the `import` subcommand, but requires access to the \"raw\" TaskWarrior data.
+
+                This command supports task directories written by TaskWarrior-2.6.1 or later.
+                ",
         })
     }
 }
