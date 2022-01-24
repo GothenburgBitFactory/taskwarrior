@@ -23,7 +23,7 @@ struct TCReplica;
 ///
 /// Unless specified otherwise, functions in this API take ownership of a TCString when it appears
 /// as a function argument, and transfer ownership to the caller when the TCString appears as a
-/// return value or otput argument.
+/// return value or output argument.
 struct TCString;
 
 /// A task, as publicly exposed by this library.

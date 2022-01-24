@@ -10,8 +10,7 @@ pub struct TCUuid([u8; 16]);
 
 impl From<Uuid> for TCUuid {
     fn from(uuid: Uuid) -> TCUuid {
-        // TODO: can we avoid clone here?
-        TCUuid(uuid.as_bytes().clone())
+        TCUuid(*uuid.as_bytes())
     }
 }
 
