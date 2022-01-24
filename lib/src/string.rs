@@ -6,11 +6,21 @@ use std::path::PathBuf;
 ///
 /// Unless specified otherwise, functions in this API take ownership of a TCString when it appears
 /// as a function argument, and transfer ownership to the caller when the TCString appears as a
-/// return value or otput argument.
+/// return value or output argument.
 pub enum TCString<'a> {
     CString(CString),
     CStr(&'a CStr),
     String(String),
+
+    /// None is the default value for TCString, but this variant is never seen by C code or by Rust
+    /// code outside of this module.
+    None,
+}
+
+impl<'a> Default for TCString<'a> {
+    fn default() -> Self {
+        TCString::None
+    }
 }
 
 impl<'a> TCString<'a> {
@@ -33,6 +43,7 @@ impl<'a> TCString<'a> {
             TCString::CString(cstring) => cstring.as_c_str().to_str(),
             TCString::CStr(cstr) => cstr.to_str(),
             TCString::String(string) => Ok(string.as_ref()),
+            TCString::None => unreachable!(),
         }
     }
 
@@ -41,6 +52,7 @@ impl<'a> TCString<'a> {
             TCString::CString(cstring) => cstring.as_bytes(),
             TCString::CStr(cstr) => cstr.to_bytes(),
             TCString::String(string) => string.as_bytes(),
+            TCString::None => unreachable!(),
         }
     }
 
@@ -101,31 +113,64 @@ pub extern "C" fn tc_string_clone_with_len(
 }
 
 /// Get the content of the string as a regular C string.  The given string must not be NULL.  The
-/// returned value may be NULL if the string contains NUL bytes.
+/// returned value is NULL if the string contains NUL bytes.  The returned string is valid until
+/// the TCString is freed or passed to another TC API function.
+///
 /// This function does _not_ take ownership of the TCString.
 #[no_mangle]
 pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_char {
     let tcstring = TCString::from_arg_ref(tcstring);
     // if we have a String, we need to consume it and turn it into
     // a CString.
-    if let TCString::String(string) = tcstring {
-        // TODO: get rid of this clone
-        match CString::new(string.clone()) {
-            Ok(cstring) => {
-                *tcstring = TCString::CString(cstring);
+    if matches!(tcstring, TCString::String(_)) {
+        if let TCString::String(string) = std::mem::take(tcstring) {
+            match CString::new(string) {
+                Ok(cstring) => {
+                    *tcstring = TCString::CString(cstring);
+                }
+                Err(nul_err) => {
+                    // recover the underlying String from the NulError
+                    let original_bytes = nul_err.into_vec();
+                    // SAFETY: original_bytes just came from a String, so must be valid utf8
+                    let string = unsafe { String::from_utf8_unchecked(original_bytes) };
+                    *tcstring = TCString::String(string);
+
+                    // and return NULL as advertized
+                    return std::ptr::null();
+                }
             }
-            Err(_) => {
-                // TODO: could recover the underlying String
-                return std::ptr::null();
-            }
+        } else {
+            unreachable!()
         }
     }
 
     match tcstring {
         TCString::CString(cstring) => cstring.as_ptr(),
-        TCString::String(_) => unreachable!(), // just converted this
+        TCString::String(_) => unreachable!(), // just converted to CString
         TCString::CStr(cstr) => cstr.as_ptr(),
+        TCString::None => unreachable!(),
     }
+}
+
+/// Get the content of the string as a pointer and length.  The given string must not be NULL.
+/// This function can return any string, even one including NUL bytes.  The returned string is
+/// valid until the TCString is freed or passed to another TC API function.
+///
+/// This function does _not_ take ownership of the TCString.
+#[no_mangle]
+pub extern "C" fn tc_string_content_with_len(
+    tcstring: *mut TCString,
+    len_out: *mut usize,
+) -> *const libc::c_char {
+    let tcstring = TCString::from_arg_ref(tcstring);
+    let bytes = match tcstring {
+        TCString::CString(cstring) => cstring.as_bytes(),
+        TCString::String(string) => string.as_bytes(),
+        TCString::CStr(cstr) => cstr.to_bytes(),
+        TCString::None => unreachable!(),
+    };
+    unsafe { *len_out = bytes.len() };
+    bytes.as_ptr() as *const libc::c_char
 }
 
 /// Free a TCString.

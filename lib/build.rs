@@ -10,6 +10,7 @@ fn main() {
         .with_language(Language::C)
         .with_config(Config {
             cpp_compat: true,
+            usize_is_size_t: true,
             enumeration: EnumConfig {
                 // this appears to still default to true for C
                 enum_class: false,

@@ -1,4 +1,5 @@
 #include <cstdarg>
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <ostream>
@@ -40,7 +41,7 @@ struct TCUuid {
 
 extern "C" {
 
-extern const uintptr_t TC_UUID_STRING_BYTES;
+extern const size_t TC_UUID_STRING_BYTES;
 
 /// Create a new TCReplica.
 ///
@@ -81,12 +82,21 @@ TCString *tc_string_clone(const char *cstr);
 /// Create a new TCString containing the given string with the given length. This allows creation
 /// of strings containing embedded NUL characters.  If the given string is not valid UTF-8, this
 /// function will return NULL.
-TCString *tc_string_clone_with_len(const char *buf, uintptr_t len);
+TCString *tc_string_clone_with_len(const char *buf, size_t len);
 
 /// Get the content of the string as a regular C string.  The given string must not be NULL.  The
-/// returned value may be NULL if the string contains NUL bytes.
+/// returned value is NULL if the string contains NUL bytes.  The returned string is valid until
+/// the TCString is freed or passed to another TC API function.
+///
 /// This function does _not_ take ownership of the TCString.
 const char *tc_string_content(TCString *tcstring);
+
+/// Get the content of the string as a pointer and length.  The given string must not be NULL.
+/// This function can return any string, even one including NUL bytes.  The returned string is
+/// valid until the TCString is freed or passed to another TC API function.
+///
+/// This function does _not_ take ownership of the TCString.
+const char *tc_string_content_with_len(TCString *tcstring, size_t *len_out);
 
 /// Free a TCString.
 void tc_string_free(TCString *string);
