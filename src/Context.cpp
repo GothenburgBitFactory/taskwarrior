@@ -475,7 +475,7 @@ int Context::initialize (int argc, const char** argv)
     // [1] Load the correct config file.
     //     - Default to ~/.taskrc (ctor).
     //     - If no ~/.taskrc, use $XDG_CONFIG_HOME/task/taskrc if exists, or
-    //       ~/.config/task/taskrc if $XDG_DATA_HOME is unset
+    //       ~/.config/task/taskrc if $XDG_CONFIG_HOME is unset
     //     - Allow $TASKRC override.
     //     - Allow command line override rc:<file>
     //     - Load resultant file.
