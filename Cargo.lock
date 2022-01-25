@@ -1521,6 +1521,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "integration-tests"
+version = "0.4.1"
+dependencies = [
+ "cc",
+ "taskchampion",
+ "taskchampion-lib",
+]
+
+[[package]]
 name = "iovec"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"

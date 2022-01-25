@@ -1,0 +1,14 @@
+[package]
+name = "integration-tests"
+version = "0.4.1"
+authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
+edition = "2018"
+publish = false
+build = "build.rs"
+
+[dependencies]
+taskchampion = { path = "../taskchampion" }
+
+[build-dependencies]
+cc = "1.0"
+taskchampion-lib = { path = "../lib" }

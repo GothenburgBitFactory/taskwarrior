@@ -7,10 +7,12 @@ fn main() {
 
     Builder::new()
         .with_crate(crate_dir)
-        .with_language(Language::C)
         .with_config(Config {
+            language: Language::C,
             cpp_compat: true,
+            sys_includes: vec!["stdbool.h".into(), "stdint.h".into()],
             usize_is_size_t: true,
+            no_includes: true,
             enumeration: EnumConfig {
                 // this appears to still default to true for C
                 enum_class: false,

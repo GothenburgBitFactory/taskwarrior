@@ -1,20 +1,24 @@
 use crate::{status::TCStatus, string::TCString, task::TCTask};
-use libc::c_char;
-use std::ffi::CString;
 use taskchampion::{Replica, StorageConfig};
 
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
+///
+/// TCReplicas are not threadsafe.
 pub struct TCReplica {
     // TODO: make this a RefCell so that it can be take()n when holding a mut ref
     inner: Replica,
-    error: Option<CString>,
+    error: Option<TCString<'static>>,
 }
 
 /// Utility function to safely convert *mut TCReplica into &mut TCReplica
 fn rep_ref(rep: *mut TCReplica) -> &'static mut TCReplica {
     debug_assert!(!rep.is_null());
     unsafe { &mut *rep }
+}
+
+fn err_to_tcstring(e: impl std::string::ToString) -> TCString<'static> {
+    TCString::from(e.to_string())
 }
 
 /// Utility function to allow using `?` notation to return an error value.
@@ -26,41 +30,48 @@ where
     match f(&mut rep.inner) {
         Ok(v) => v,
         Err(e) => {
-            let error = e.to_string();
-            let error = match CString::new(error.as_bytes()) {
-                Ok(e) => e,
-                Err(_) => CString::new("(invalid error message)".as_bytes()).unwrap(),
-            };
-            rep.error = Some(error);
+            rep.error = Some(err_to_tcstring(e));
             err_value
         }
     }
 }
 
-/// Create a new TCReplica.
-///
-/// If path is NULL, then an in-memory replica is created.  Otherwise, path is the path to the
-/// on-disk storage for this replica.  The path argument is no longer referenced after return.
-///
-/// Returns NULL on error; see tc_replica_error.
-///
-/// TCReplicas are not threadsafe.
+/// Create a new TCReplica with an in-memory database.  The contents of the database will be
+/// lost when it is freed.
 #[no_mangle]
-pub extern "C" fn tc_replica_new<'a>(path: *mut TCString) -> *mut TCReplica {
-    let storage_res = if path.is_null() {
-        StorageConfig::InMemory.into_storage()
-    } else {
-        let path = TCString::from_arg(path);
-        StorageConfig::OnDisk {
-            taskdb_dir: path.to_path_buf(),
-        }
+pub extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
+    let storage = StorageConfig::InMemory
         .into_storage()
-    };
+        .expect("in-memory always succeeds");
+    Box::into_raw(Box::new(TCReplica {
+        inner: Replica::new(storage),
+        error: None,
+    }))
+}
+
+/// Create a new TCReplica with an on-disk database.  On error, a string is written to the
+/// `error_out` parameter (if it is not NULL) and NULL is returned.
+#[no_mangle]
+pub extern "C" fn tc_replica_new_on_disk<'a>(
+    path: *mut TCString,
+    error_out: *mut *mut TCString,
+) -> *mut TCReplica {
+    let path = TCString::from_arg(path);
+    let storage_res = StorageConfig::OnDisk {
+        taskdb_dir: path.to_path_buf(),
+    }
+    .into_storage();
 
     let storage = match storage_res {
         Ok(storage) => storage,
-        // TODO: report errors somehow
-        Err(_) => return std::ptr::null_mut(),
+        Err(e) => {
+            if !error_out.is_null() {
+                unsafe {
+                    *error_out = err_to_tcstring(e).return_val();
+                }
+            }
+            return std::ptr::null_mut();
+        }
     };
 
     Box::into_raw(Box::new(TCReplica {
@@ -111,15 +122,15 @@ pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica) -> i32 {
 }
 
 /// Get the latest error for a replica, or NULL if the last operation succeeded.
-///
-/// The returned string is valid until the next replica operation.
+/// Subsequent calls to this function will return NULL.  The caller must free the
+/// returned string.
 #[no_mangle]
-pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *const c_char {
-    let rep: &'a TCReplica = rep_ref(rep);
-    if let Some(ref e) = rep.error {
-        e.as_ptr()
+pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'static> {
+    let rep: &'a mut TCReplica = rep_ref(rep);
+    if let Some(tcstring) = rep.error.take() {
+        tcstring.return_val()
     } else {
-        std::ptr::null()
+        std::ptr::null_mut()
     }
 }
 
