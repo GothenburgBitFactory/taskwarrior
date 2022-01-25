@@ -2,11 +2,20 @@ use std::ffi::{CStr, CString, OsStr};
 use std::os::unix::ffi::OsStrExt;
 use std::path::PathBuf;
 
-/// TCString supports passing strings into and out of the TaskChampion API.
+// TODO: is utf-8-ness always checked? (no) when?
+
+/// TCString supports passing strings into and out of the TaskChampion API.  A string must contain
+/// valid UTF-8, and can contain embedded NUL characters.  Strings containing such embedded NULs
+/// cannot be represented as a "C string" and must be accessed using `tc_string_content_and_len`
+/// and `tc_string_clone_with_len`.  In general, these two functions should be used for handling
+/// arbitrary data, while more convenient forms may be used where embedded NUL characters are
+/// impossible, such as in static strings.
 ///
-/// Unless specified otherwise, functions in this API take ownership of a TCString when it appears
-/// as a function argument, and transfer ownership to the caller when the TCString appears as a
-/// return value or output argument.
+/// Unless specified otherwise, functions in this API take ownership of a TCString when it is given
+/// as a function argument, and free the string before returning.  Thus the following is valid:
+///
+/// When a TCString appears as a return value or output argument, it is the responsibility of the
+/// caller to free the string.
 pub enum TCString<'a> {
     CString(CString),
     CStr(&'a CStr),
@@ -82,13 +91,24 @@ impl<'a> From<&str> for TCString<'a> {
 
 /// Create a new TCString referencing the given C string.  The C string must remain valid until
 /// after the TCString is freed.  It's typically easiest to ensure this by using a static string.
+///
+/// NOTE: this function does _not_ take responsibility for freeing the C string itself.
+/// The underlying string once the TCString has been freed.  Among other times, TCStrings are
+/// freed when they are passed to API functions (unless documented otherwise).  For example:
+///
+/// ```
+/// char *url = get_item_url(..); // dynamically allocate C string
+/// tc_task_annotate(task, tc_string_borrow(url)); // TCString created, passed, and freed
+/// free(url); // string is no longer referenced and can be freed
+/// ```
 #[no_mangle]
-pub extern "C" fn tc_string_new(cstr: *const libc::c_char) -> *mut TCString<'static> {
+pub extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCString<'static> {
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
     TCString::CStr(cstr).return_val()
 }
 
-/// Create a new TCString by cloning the content of the given C string.
+/// Create a new TCString by cloning the content of the given C string.  The resulting TCString
+/// is independent of the given string, which can be freed or overwritten immediately.
 #[no_mangle]
 pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'static> {
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
@@ -96,8 +116,9 @@ pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'s
 }
 
 /// Create a new TCString containing the given string with the given length. This allows creation
-/// of strings containing embedded NUL characters.  If the given string is not valid UTF-8, this
-/// function will return NULL.
+/// of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
+/// TCString is independent of the passed buffer, which may be reused or freed immediately.  If the
+/// given string is not valid UTF-8, this function will return NULL.
 #[no_mangle]
 pub extern "C" fn tc_string_clone_with_len(
     buf: *const libc::c_char,

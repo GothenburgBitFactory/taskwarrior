@@ -2,6 +2,16 @@
 #include <stdint.h>
 
 /**
+ * A result combines a boolean success value with
+ * an error response.  It is equivalent to `Result<bool, ()>`.
+ */
+typedef enum TCResult {
+  TC_RESULT_TRUE,
+  TC_RESULT_FALSE,
+  TC_RESULT_ERROR,
+} TCResult;
+
+/**
  * The status of a task, as defined by the task data model.
  */
 typedef enum TCStatus {
@@ -24,11 +34,18 @@ typedef enum TCStatus {
 typedef struct TCReplica TCReplica;
 
 /**
- * TCString supports passing strings into and out of the TaskChampion API.
+ * TCString supports passing strings into and out of the TaskChampion API.  A string must contain
+ * valid UTF-8, and can contain embedded NUL characters.  Strings containing such embedded NULs
+ * cannot be represented as a "C string" and must be accessed using `tc_string_content_and_len`
+ * and `tc_string_clone_with_len`.  In general, these two functions should be used for handling
+ * arbitrary data, while more convenient forms may be used where embedded NUL characters are
+ * impossible, such as in static strings.
  *
- * Unless specified otherwise, functions in this API take ownership of a TCString when it appears
- * as a function argument, and transfer ownership to the caller when the TCString appears as a
- * return value or output argument.
+ * Unless specified otherwise, functions in this API take ownership of a TCString when it is given
+ * as a function argument, and free the string before returning.  Thus the following is valid:
+ *
+ * When a TCString appears as a return value or output argument, it is the responsibility of the
+ * caller to free the string.
  */
 typedef struct TCString TCString;
 
@@ -79,10 +96,10 @@ struct TCTask *tc_replica_new_task(struct TCReplica *rep,
 /**
  * Undo local operations until the most recent UndoPoint.
  *
- * Returns -1 on error, 0 if there are no local operations to undo, and 1 if operations were
- * undone.
+ * Returns TC_RESULT_TRUE if an undo occurred, TC_RESULT_FALSE if there are no operations
+ * to be undone, or TC_RESULT_ERROR on error.
  */
-int32_t tc_replica_undo(struct TCReplica *rep);
+enum TCResult tc_replica_undo(struct TCReplica *rep);
 
 /**
  * Get the latest error for a replica, or NULL if the last operation succeeded.
@@ -99,18 +116,30 @@ void tc_replica_free(struct TCReplica *rep);
 /**
  * Create a new TCString referencing the given C string.  The C string must remain valid until
  * after the TCString is freed.  It's typically easiest to ensure this by using a static string.
+ *
+ * NOTE: this function does _not_ take responsibility for freeing the C string itself.
+ * The underlying string once the TCString has been freed.  Among other times, TCStrings are
+ * freed when they are passed to API functions (unless documented otherwise).  For example:
+ *
+ * ```
+ * char *url = get_item_url(..); // dynamically allocate C string
+ * tc_task_annotate(task, tc_string_borrow(url)); // TCString created, passed, and freed
+ * free(url); // string is no longer referenced and can be freed
+ * ```
  */
-struct TCString *tc_string_new(const char *cstr);
+struct TCString *tc_string_borrow(const char *cstr);
 
 /**
- * Create a new TCString by cloning the content of the given C string.
+ * Create a new TCString by cloning the content of the given C string.  The resulting TCString
+ * is independent of the given string, which can be freed or overwritten immediately.
  */
 struct TCString *tc_string_clone(const char *cstr);
 
 /**
  * Create a new TCString containing the given string with the given length. This allows creation
- * of strings containing embedded NUL characters.  If the given string is not valid UTF-8, this
- * function will return NULL.
+ * of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
+ * TCString is independent of the passed buffer, which may be reused or freed immediately.  If the
+ * given string is not valid UTF-8, this function will return NULL.
  */
 struct TCString *tc_string_clone_with_len(const char *buf, size_t len);
 

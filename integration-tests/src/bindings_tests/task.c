@@ -11,7 +11,7 @@ static void test_task_creation(void) {
     TCTask *task = tc_replica_new_task(
             rep,
             TC_STATUS_PENDING,
-            tc_string_new("my task"));
+            tc_string_borrow("my task"));
     TEST_ASSERT_NOT_NULL(task);
 
     TEST_ASSERT_EQUAL(TC_STATUS_PENDING, tc_task_get_status(task));

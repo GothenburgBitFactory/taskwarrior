@@ -1,4 +1,4 @@
-use crate::{status::TCStatus, string::TCString, task::TCTask};
+use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask};
 use taskchampion::{Replica, StorageConfig};
 
 /// A replica represents an instance of a user's task data, providing an easy interface
@@ -114,11 +114,21 @@ pub extern "C" fn tc_replica_new_task<'a>(
 
 /// Undo local operations until the most recent UndoPoint.
 ///
-/// Returns -1 on error, 0 if there are no local operations to undo, and 1 if operations were
-/// undone.
+/// Returns TC_RESULT_TRUE if an undo occurred, TC_RESULT_FALSE if there are no operations
+/// to be undone, or TC_RESULT_ERROR on error.
 #[no_mangle]
-pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica) -> i32 {
-    wrap(rep, |rep| Ok(if rep.undo()? { 1 } else { 0 }), -1)
+pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica) -> TCResult {
+    wrap(
+        rep,
+        |rep| {
+            Ok(if rep.undo()? {
+                TCResult::True
+            } else {
+                TCResult::False
+            })
+        },
+        TCResult::Error,
+    )
 }
 
 /// Get the latest error for a replica, or NULL if the last operation succeeded.

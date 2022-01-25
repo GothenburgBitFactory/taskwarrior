@@ -13,7 +13,7 @@ static void test_replica_creation(void) {
 
 // creating an on-disk replica does not crash
 static void test_replica_creation_disk(void) {
-    TCReplica *rep = tc_replica_new_on_disk(tc_string_new("test-db"), NULL);
+    TCReplica *rep = tc_replica_new_on_disk(tc_string_borrow("test-db"), NULL);
     TEST_ASSERT_NOT_NULL(rep);
     TEST_ASSERT_NULL(tc_replica_error(rep));
     tc_replica_free(rep);
@@ -24,7 +24,7 @@ static void test_replica_undo_empty(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep));
     int rv = tc_replica_undo(rep);
-    TEST_ASSERT_EQUAL(0, rv);
+    TEST_ASSERT_EQUAL(TC_RESULT_FALSE, rv);
     TEST_ASSERT_NULL(tc_replica_error(rep));
     tc_replica_free(rep);
 }

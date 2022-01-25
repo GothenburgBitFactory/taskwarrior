@@ -5,7 +5,7 @@
 
 // creating strings does not crash
 static void test_string_creation(void) {
-    TCString *s = tc_string_new("abcdef");
+    TCString *s = tc_string_borrow("abcdef");
     tc_string_free(s);
 }
 
@@ -22,7 +22,7 @@ static void test_string_cloning(void) {
 
 // borrowed strings echo back their content
 static void test_string_borrowed_strings_echo(void) {
-    TCString *s = tc_string_new("abcdef");
+    TCString *s = tc_string_borrow("abcdef");
     TEST_ASSERT_NOT_NULL(s);
 
     TEST_ASSERT_EQUAL_STRING("abcdef", tc_string_content(s));
