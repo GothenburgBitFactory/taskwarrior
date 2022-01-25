@@ -1524,9 +1524,17 @@ dependencies = [
 name = "integration-tests"
 version = "0.4.1"
 dependencies = [
+ "actix-rt",
+ "actix-web",
+ "anyhow",
  "cc",
+ "env_logger 0.8.4",
+ "log",
+ "pretty_assertions",
  "taskchampion",
  "taskchampion-lib",
+ "taskchampion-sync-server",
+ "tempfile",
 ]
 
 [[package]]
@@ -2486,21 +2494,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3acd125665422973a33ac9d3dd2df85edad0f4ae9b00dafb1a05e43a9f5ef8e7"
 dependencies = [
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "replica-server-tests"
-version = "0.4.1"
-dependencies = [
- "actix-rt",
- "actix-web",
- "anyhow",
- "env_logger 0.8.4",
- "log",
- "pretty_assertions",
- "taskchampion",
- "taskchampion-sync-server",
- "tempfile",
 ]
 
 [[package]]
