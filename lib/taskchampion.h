@@ -94,6 +94,13 @@ struct TCTask *tc_replica_new_task(struct TCReplica *rep,
                                    struct TCString *description);
 
 /**
+ * Create a new task.  The task must not already exist.
+ *
+ * Returns the task, or NULL on error.
+ */
+struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid uuid);
+
+/**
  * Undo local operations until the most recent UndoPoint.
  *
  * Returns TC_RESULT_TRUE if an undo occurred, TC_RESULT_FALSE if there are no operations

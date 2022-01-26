@@ -1,5 +1,5 @@
-use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask};
-use taskchampion::{Replica, StorageConfig};
+use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask, uuid::TCUuid};
+use taskchampion::{Replica, StorageConfig, Uuid};
 
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
@@ -89,7 +89,7 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
 ///
 /// Returns the task, or NULL on error.
 #[no_mangle]
-pub extern "C" fn tc_replica_new_task<'a>(
+pub extern "C" fn tc_replica_new_task(
     rep: *mut TCReplica,
     status: TCStatus,
     description: *mut TCString,
@@ -105,7 +105,25 @@ pub extern "C" fn tc_replica_new_task<'a>(
     )
 }
 
-// TODO: tc_replica_import_task_with_uuid
+/// Create a new task.  The task must not already exist.
+///
+/// Returns the task, or NULL on error.
+#[no_mangle]
+pub extern "C" fn tc_replica_import_task_with_uuid(
+    rep: *mut TCReplica,
+    uuid: TCUuid,
+) -> *mut TCTask {
+    wrap(
+        rep,
+        |rep| {
+            let uuid: Uuid = uuid.into();
+            let task = rep.import_task_with_uuid(uuid)?;
+            Ok(TCTask::as_ptr(task))
+        },
+        std::ptr::null_mut(),
+    )
+}
+
 // TODO: tc_replica_sync
 
 /// Undo local operations until the most recent UndoPoint.
