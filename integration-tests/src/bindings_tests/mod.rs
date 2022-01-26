@@ -13,8 +13,4 @@ macro_rules! suite(
     };
 );
 
-// keep this list in sync with integration-tests/build.rs and integration-tests/tests/bindings.rs.
-suite!(uuid_tests);
-suite!(string_tests);
-suite!(task_tests);
-suite!(replica_tests);
+include!(concat!(env!("OUT_DIR"), "/bindings_test_suites.rs"));
