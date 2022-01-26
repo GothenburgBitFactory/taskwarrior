@@ -92,9 +92,10 @@ impl<'a> From<&str> for TCString<'a> {
 /// Create a new TCString referencing the given C string.  The C string must remain valid until
 /// after the TCString is freed.  It's typically easiest to ensure this by using a static string.
 ///
-/// NOTE: this function does _not_ take responsibility for freeing the C string itself.
-/// The underlying string once the TCString has been freed.  Among other times, TCStrings are
-/// freed when they are passed to API functions (unless documented otherwise).  For example:
+/// NOTE: this function does _not_ take responsibility for freeing the C string itself.  The
+/// underlying string can be freed once the TCString referencing it has been freed.
+///
+/// For example:
 ///
 /// ```
 /// char *url = get_item_url(..); // dynamically allocate C string
