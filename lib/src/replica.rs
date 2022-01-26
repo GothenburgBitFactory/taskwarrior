@@ -80,13 +80,10 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
     }))
 }
 
-/*
- * TODO:
- * - tc_replica_all_tasks
- * - tc_replica_all_task_uuids
- * - tc_replica_working_set
- * - tc_replica_get_task
- */
+// TODO: tc_replica_all_tasks
+// TODO: tc_replica_all_task_uuids
+// TODO: tc_replica_working_set
+// TODO: tc_replica_get_task
 
 /// Create a new task.  The task must not already exist.
 ///
@@ -108,9 +105,8 @@ pub extern "C" fn tc_replica_new_task<'a>(
     )
 }
 
-/* - tc_replica_import_task_with_uuid
- * - tc_replica_sync
- */
+// TODO: tc_replica_import_task_with_uuid
+// TODO: tc_replica_sync
 
 /// Undo local operations until the most recent UndoPoint.
 ///

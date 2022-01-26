@@ -202,13 +202,19 @@ struct TCUuid tc_uuid_nil(void);
  * Write the string representation of a TCUuid into the given buffer, which must be
  * at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
  */
-void tc_uuid_to_str(struct TCUuid uuid, char *out);
+void tc_uuid_to_buf(struct TCUuid uuid, char *buf);
+
+/**
+ * Write the string representation of a TCUuid into the given buffer, which must be
+ * at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
+ */
+struct TCString *tc_uuid_to_str(struct TCUuid uuid);
 
 /**
  * Parse the given value as a UUID.  The value must be exactly TC_UUID_STRING_BYTES long.  Returns
  * false on failure.
  */
-bool tc_uuid_from_str(const char *val, struct TCUuid *out);
+bool tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
 
 #ifdef __cplusplus
 } // extern "C"

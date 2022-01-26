@@ -1,3 +1,4 @@
+use crate::string::TCString;
 use libc;
 use taskchampion::Uuid;
 
@@ -33,31 +34,41 @@ pub extern "C" fn tc_uuid_nil() -> TCUuid {
 }
 
 /// Length, in bytes, of a C string containing a TCUuid.
+// TODO: why not a const?
 #[no_mangle]
 pub static TC_UUID_STRING_BYTES: usize = ::uuid::adapter::Hyphenated::LENGTH;
 
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
 #[no_mangle]
-pub extern "C" fn tc_uuid_to_str<'a>(uuid: TCUuid, out: *mut libc::c_char) {
-    debug_assert!(!out.is_null());
+pub extern "C" fn tc_uuid_to_buf<'a>(uuid: TCUuid, buf: *mut libc::c_char) {
+    debug_assert!(!buf.is_null());
     let buf: &'a mut [u8] = unsafe {
-        std::slice::from_raw_parts_mut(out as *mut u8, ::uuid::adapter::Hyphenated::LENGTH)
+        std::slice::from_raw_parts_mut(buf as *mut u8, ::uuid::adapter::Hyphenated::LENGTH)
     };
     let uuid: Uuid = uuid.into();
     uuid.to_hyphenated().encode_lower(buf);
 }
 
+/// Write the string representation of a TCUuid into the given buffer, which must be
+/// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
+#[no_mangle]
+pub extern "C" fn tc_uuid_to_str(uuid: TCUuid) -> *mut TCString<'static> {
+    let uuid: Uuid = uuid.into();
+    let s = uuid.to_string();
+    TCString::from(s).return_val()
+}
+
 /// Parse the given value as a UUID.  The value must be exactly TC_UUID_STRING_BYTES long.  Returns
 /// false on failure.
 #[no_mangle]
-pub extern "C" fn tc_uuid_from_str<'a>(val: *const libc::c_char, out: *mut TCUuid) -> bool {
-    debug_assert!(!val.is_null());
-    debug_assert!(!out.is_null());
-    let slice = unsafe { std::slice::from_raw_parts(val as *const u8, TC_UUID_STRING_BYTES) };
-    if let Ok(s) = std::str::from_utf8(slice) {
+pub extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> bool {
+    debug_assert!(!s.is_null());
+    debug_assert!(!uuid_out.is_null());
+    let s = TCString::from_arg(s);
+    if let Ok(s) = s.as_str() {
         if let Ok(u) = Uuid::parse_str(s) {
-            unsafe { *out = u.into() };
+            unsafe { *uuid_out = u.into() };
             return true;
         }
     }
