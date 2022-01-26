@@ -18,6 +18,7 @@ tempfile = "3"
 pretty_assertions = "1"
 log = "^0.4.14"
 env_logger = "^0.8.3"
+lazy_static = "1"
 
 [build-dependencies]
 cc = "1.0"
