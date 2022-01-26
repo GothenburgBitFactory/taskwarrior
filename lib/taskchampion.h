@@ -85,6 +85,14 @@ struct TCReplica *tc_replica_new_in_memory(void);
 struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString **error_out);
 
 /**
+ * Get an existing task by its UUID.
+ *
+ * Returns NULL when the task does not exist, and on error.  Consult tc_replica_error
+ * to distinguish the two conditions.
+ */
+struct TCTask *tc_replica_get_task(struct TCReplica *rep, struct TCUuid uuid);
+
+/**
  * Create a new task.  The task must not already exist.
  *
  * Returns the task, or NULL on error.

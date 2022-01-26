@@ -27,6 +27,7 @@ where
     F: FnOnce(&mut Replica) -> anyhow::Result<T>,
 {
     let rep: &'a mut TCReplica = rep_ref(rep);
+    rep.error = None;
     match f(&mut rep.inner) {
         Ok(v) => v,
         Err(e) => {
@@ -83,7 +84,26 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
 // TODO: tc_replica_all_tasks
 // TODO: tc_replica_all_task_uuids
 // TODO: tc_replica_working_set
-// TODO: tc_replica_get_task
+
+/// Get an existing task by its UUID.
+///
+/// Returns NULL when the task does not exist, and on error.  Consult tc_replica_error
+/// to distinguish the two conditions.
+#[no_mangle]
+pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, uuid: TCUuid) -> *mut TCTask {
+    wrap(
+        rep,
+        |rep| {
+            let uuid: Uuid = uuid.into();
+            if let Some(task) = rep.get_task(uuid)? {
+                Ok(TCTask::as_ptr(task))
+            } else {
+                Ok(std::ptr::null_mut())
+            }
+        },
+        std::ptr::null_mut(),
+    )
+}
 
 /// Create a new task.  The task must not already exist.
 ///
