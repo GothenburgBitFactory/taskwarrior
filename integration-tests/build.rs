@@ -14,6 +14,7 @@ fn build_libtaskchampion(suites: &[&'static str]) {
     libtaskchampion.push("libtaskchampion.so");
 
     let mut build = cc::Build::new();
+    build.shared_flag(true);
     build.object(libtaskchampion);
     build.include("../lib");
     build.include("src/bindings_tests/unity");
