@@ -59,13 +59,15 @@ pub extern "C" fn tc_uuid_to_str(uuid: TCUuid) -> *mut TCString<'static> {
     TCString::from(s).return_val()
 }
 
-/// Parse the given value as a UUID.  The value must be exactly TC_UUID_STRING_BYTES long.  Returns
-/// false on failure.
+/// Parse the given string as a UUID.  The string must not be NULL.  Returns false on failure.
 #[no_mangle]
 pub extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> bool {
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
-    let s = TCString::from_arg(s);
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
+    let s = unsafe { TCString::from_arg(s) };
     if let Ok(s) = s.as_str() {
         if let Ok(u) = Uuid::parse_str(s) {
             unsafe { *uuid_out = u.into() };

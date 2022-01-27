@@ -14,7 +14,8 @@ use std::str::Utf8Error;
 /// containing invalid UTF-8.
 ///
 /// Unless specified otherwise, functions in this API take ownership of a TCString when it is given
-/// as a function argument, and free the string before returning.
+/// as a function argument, and free the string before returning.  Callers must not use or free
+/// strings after passing them to such API functions.
 ///
 /// When a TCString appears as a return value or output argument, it is the responsibility of the
 /// caller to free the string.
@@ -39,17 +40,31 @@ impl<'a> Default for TCString<'a> {
 }
 
 impl<'a> TCString<'a> {
-    /// Take a TCString from C as an argument.  C callers generally expect TC functions to take
-    /// ownership of a string, which is what this function does.
-    pub(crate) fn from_arg(tcstring: *mut TCString<'a>) -> Self {
+    /// Take a TCString from C as an argument.
+    ///
+    /// C callers generally expect TC functions to take ownership of a string, which is what this
+    /// function does.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
+    /// lifetime assigned to the reference and the lifetime of the TCString itself do not outlive
+    /// the lifetime promised by C.
+    pub(crate) unsafe fn from_arg(tcstring: *mut TCString<'a>) -> Self {
         debug_assert!(!tcstring.is_null());
-        *(unsafe { Box::from_raw(tcstring) })
+        *(Box::from_raw(tcstring))
     }
 
     /// Borrow a TCString from C as an argument.
-    pub(crate) fn from_arg_ref(tcstring: *mut TCString<'a>) -> &'a mut Self {
+    ///
+    /// # Safety
+    ///
+    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
+    /// lifetime assigned to the reference and the lifetime of the TCString itself do not outlive
+    /// the lifetime promised by C.
+    pub(crate) unsafe fn from_arg_ref(tcstring: *mut TCString<'a>) -> &'a mut Self {
         debug_assert!(!tcstring.is_null());
-        unsafe { &mut *tcstring }
+        &mut *tcstring
     }
 
     /// Get a regular Rust &str for this value.
@@ -97,11 +112,12 @@ impl<'a> From<&str> for TCString<'a> {
     }
 }
 
-/// Create a new TCString referencing the given C string.  The C string must remain valid until
-/// after the TCString is freed.  It's typically easiest to ensure this by using a static string.
+/// Create a new TCString referencing the given C string.  The C string must remain valid and
+/// unchanged until after the TCString is freed.  It's typically easiest to ensure this by using a
+/// static string.
 ///
-/// NOTE: this function does _not_ take responsibility for freeing the C string itself.  The
-/// underlying string can be freed once the TCString referencing it has been freed.
+/// NOTE: this function does _not_ take responsibility for freeing the given C string.  The
+/// given string can be freed once the TCString referencing it has been freed.
 ///
 /// For example:
 ///
@@ -112,6 +128,12 @@ impl<'a> From<&str> for TCString<'a> {
 /// ```
 #[no_mangle]
 pub extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCString<'static> {
+    debug_assert!(!cstr.is_null());
+    // SAFETY:
+    //  - cstr is not NULL (promised by caller, verified by assertion)
+    //  - cstr's lifetime exceeds that of the TCString (promised by caller)
+    //  - cstr contains a valid NUL terminator (promised by caller)
+    //  - cstr's content will not change before it is destroyed (promised by caller)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
     TCString::CStr(cstr).return_val()
 }
@@ -120,6 +142,12 @@ pub extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCString<'
 /// is independent of the given string, which can be freed or overwritten immediately.
 #[no_mangle]
 pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'static> {
+    debug_assert!(!cstr.is_null());
+    // SAFETY:
+    //  - cstr is not NULL (promised by caller, verified by assertion)
+    //  - cstr's lifetime exceeds that of this function (by C convention)
+    //  - cstr contains a valid NUL terminator (promised by caller)
+    //  - cstr's content will not change before it is destroyed (by C convention)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
     TCString::CString(cstr.into()).return_val()
 }
@@ -127,11 +155,21 @@ pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'s
 /// Create a new TCString containing the given string with the given length. This allows creation
 /// of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
 /// TCString is independent of the passed buffer, which may be reused or freed immediately.
+///
+/// The given length must be less than half the maximum value of usize.
 #[no_mangle]
 pub extern "C" fn tc_string_clone_with_len(
     buf: *const libc::c_char,
     len: usize,
 ) -> *mut TCString<'static> {
+    debug_assert!(!buf.is_null());
+    debug_assert!(len < isize::MAX as usize);
+    // SAFETY:
+    //  - buf is valid for len bytes (by C convention)
+    //  - (no alignment requirements for a byte slice)
+    //  - content of buf will not be mutated during the lifetime of this slice (lifetime
+    //    does not outlive this function call)
+    //  - the length of the buffer is less than isize::MAX (promised by caller)
     let slice = unsafe { std::slice::from_raw_parts(buf as *const u8, len) };
     let vec = slice.to_vec();
     // try converting to a string, which is the only variant that can contain embedded NULs.  If
@@ -156,7 +194,11 @@ pub extern "C" fn tc_string_clone_with_len(
 /// This function does _not_ take ownership of the TCString.
 #[no_mangle]
 pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_char {
-    let tcstring = TCString::from_arg_ref(tcstring);
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - lifetime of tcstring outlives the lifetime of this function
+    //  - lifetime of tcstring outlives the lifetime of the returned pointer (promised by caller)
+    let tcstring = unsafe { TCString::from_arg_ref(tcstring) };
 
     // if we have a String, we need to consume it and turn it into
     // a CString.
@@ -201,9 +243,13 @@ pub extern "C" fn tc_string_content_with_len(
     tcstring: *mut TCString,
     len_out: *mut usize,
 ) -> *const libc::c_char {
-    debug_assert!(!tcstring.is_null());
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - lifetime of tcstring outlives the lifetime of this function
+    //  - lifetime of tcstring outlives the lifetime of the returned pointer (promised by caller)
+    let tcstring = unsafe { TCString::from_arg_ref(tcstring) };
     debug_assert!(!len_out.is_null());
-    let tcstring = TCString::from_arg_ref(tcstring);
+
     let bytes = match tcstring {
         TCString::CString(cstring) => cstring.as_bytes(),
         TCString::String(string) => string.as_bytes(),
@@ -211,13 +257,20 @@ pub extern "C" fn tc_string_content_with_len(
         TCString::InvalidUtf8(_, ref v) => v.as_ref(),
         TCString::None => unreachable!(),
     };
+    // SAFETY:
+    //  - len_out is not NULL (checked by assertion, promised by caller)
+    //  - len_out points to valid memory (promised by caller)
+    //  - len_out is properly aligned (C convention)
     unsafe { *len_out = bytes.len() };
     bytes.as_ptr() as *const libc::c_char
 }
 
-/// Free a TCString.
+/// Free a TCString.  The given string must not be NULL.  The string must not be used
+/// after this function returns, and must not be freed more than once.
 #[no_mangle]
-pub extern "C" fn tc_string_free(string: *mut TCString) {
-    debug_assert!(!string.is_null());
-    drop(unsafe { Box::from_raw(string) });
+pub extern "C" fn tc_string_free(tcstring: *mut TCString) {
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - caller is exclusive owner of tcstring (promised by caller)
+    drop(unsafe { TCString::from_arg(tcstring) });
 }

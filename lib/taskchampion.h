@@ -45,7 +45,8 @@ typedef struct TCReplica TCReplica;
  * containing invalid UTF-8.
  *
  * Unless specified otherwise, functions in this API take ownership of a TCString when it is given
- * as a function argument, and free the string before returning.
+ * as a function argument, and free the string before returning.  Callers must not use or free
+ * strings after passing them to such API functions.
  *
  * When a TCString appears as a return value or output argument, it is the responsibility of the
  * caller to free the string.
@@ -82,8 +83,9 @@ extern const size_t TC_UUID_STRING_BYTES;
 struct TCReplica *tc_replica_new_in_memory(void);
 
 /**
- * Create a new TCReplica with an on-disk database.  On error, a string is written to the
- * `error_out` parameter (if it is not NULL) and NULL is returned.
+ * Create a new TCReplica with an on-disk database having the given filename. The filename must
+ * not be NULL. On error, a string is written to the `error_out` parameter (if it is not NULL) and
+ * NULL is returned.
  */
 struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString **error_out);
 
@@ -97,6 +99,8 @@ struct TCTask *tc_replica_get_task(struct TCReplica *rep, struct TCUuid uuid);
 
 /**
  * Create a new task.  The task must not already exist.
+ *
+ * The description must not be NULL.
  *
  * Returns the task, or NULL on error.
  */
@@ -132,11 +136,12 @@ struct TCString *tc_replica_error(struct TCReplica *rep);
 void tc_replica_free(struct TCReplica *rep);
 
 /**
- * Create a new TCString referencing the given C string.  The C string must remain valid until
- * after the TCString is freed.  It's typically easiest to ensure this by using a static string.
+ * Create a new TCString referencing the given C string.  The C string must remain valid and
+ * unchanged until after the TCString is freed.  It's typically easiest to ensure this by using a
+ * static string.
  *
- * NOTE: this function does _not_ take responsibility for freeing the C string itself.  The
- * underlying string can be freed once the TCString referencing it has been freed.
+ * NOTE: this function does _not_ take responsibility for freeing the given C string.  The
+ * given string can be freed once the TCString referencing it has been freed.
  *
  * For example:
  *
@@ -158,6 +163,8 @@ struct TCString *tc_string_clone(const char *cstr);
  * Create a new TCString containing the given string with the given length. This allows creation
  * of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
  * TCString is independent of the passed buffer, which may be reused or freed immediately.
+ *
+ * The given length must be less than half the maximum value of usize.
  */
 struct TCString *tc_string_clone_with_len(const char *buf, size_t len);
 
@@ -183,9 +190,10 @@ const char *tc_string_content(struct TCString *tcstring);
 const char *tc_string_content_with_len(struct TCString *tcstring, size_t *len_out);
 
 /**
- * Free a TCString.
+ * Free a TCString.  The given string must not be NULL.  The string must not be used
+ * after this function returns, and must not be freed more than once.
  */
-void tc_string_free(struct TCString *string);
+void tc_string_free(struct TCString *tcstring);
 
 /**
  * Get a task's UUID.
@@ -231,8 +239,7 @@ void tc_uuid_to_buf(struct TCUuid uuid, char *buf);
 struct TCString *tc_uuid_to_str(struct TCUuid uuid);
 
 /**
- * Parse the given value as a UUID.  The value must be exactly TC_UUID_STRING_BYTES long.  Returns
- * false on failure.
+ * Parse the given string as a UUID.  The string must not be NULL.  Returns false on failure.
  */
 bool tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
 

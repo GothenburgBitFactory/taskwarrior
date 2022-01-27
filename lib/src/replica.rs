@@ -50,14 +50,18 @@ pub extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
     }))
 }
 
-/// Create a new TCReplica with an on-disk database.  On error, a string is written to the
-/// `error_out` parameter (if it is not NULL) and NULL is returned.
+/// Create a new TCReplica with an on-disk database having the given filename. The filename must
+/// not be NULL. On error, a string is written to the `error_out` parameter (if it is not NULL) and
+/// NULL is returned.
 #[no_mangle]
 pub extern "C" fn tc_replica_new_on_disk<'a>(
     path: *mut TCString,
     error_out: *mut *mut TCString,
 ) -> *mut TCReplica {
-    let path = TCString::from_arg(path);
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
+    let path = unsafe { TCString::from_arg(path) };
     let storage_res = StorageConfig::OnDisk {
         taskdb_dir: path.to_path_buf(),
     }
@@ -107,6 +111,8 @@ pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, uuid: TCUuid) -> *mut
 
 /// Create a new task.  The task must not already exist.
 ///
+/// The description must not be NULL.
+///
 /// Returns the task, or NULL on error.
 #[no_mangle]
 pub extern "C" fn tc_replica_new_task(
@@ -114,10 +120,13 @@ pub extern "C" fn tc_replica_new_task(
     status: TCStatus,
     description: *mut TCString,
 ) -> *mut TCTask {
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
+    let description = unsafe { TCString::from_arg(description) };
     wrap(
         rep,
         |rep| {
-            let description = TCString::from_arg(description);
             let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
             Ok(TCTask::as_ptr(task))
         },
