@@ -34,15 +34,18 @@ typedef enum TCStatus {
 typedef struct TCReplica TCReplica;
 
 /**
- * TCString supports passing strings into and out of the TaskChampion API.  A string must contain
- * valid UTF-8, and can contain embedded NUL characters.  Strings containing such embedded NULs
- * cannot be represented as a "C string" and must be accessed using `tc_string_content_and_len`
- * and `tc_string_clone_with_len`.  In general, these two functions should be used for handling
- * arbitrary data, while more convenient forms may be used where embedded NUL characters are
- * impossible, such as in static strings.
+ * TCString supports passing strings into and out of the TaskChampion API.  A string can contain
+ * embedded NUL characters.  Strings containing such embedded NULs cannot be represented as a "C
+ * string" and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.
+ * In general, these two functions should be used for handling arbitrary data, while more
+ * convenient forms may be used where embedded NUL characters are impossible, such as in static
+ * strings.
+ *
+ * Rust expects all strings to be UTF-8, and API functions will fail if given a TCString
+ * containing invalid UTF-8.
  *
  * Unless specified otherwise, functions in this API take ownership of a TCString when it is given
- * as a function argument, and free the string before returning.  Thus the following is valid:
+ * as a function argument, and free the string before returning.
  *
  * When a TCString appears as a return value or output argument, it is the responsibility of the
  * caller to free the string.
@@ -154,15 +157,17 @@ struct TCString *tc_string_clone(const char *cstr);
 /**
  * Create a new TCString containing the given string with the given length. This allows creation
  * of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
- * TCString is independent of the passed buffer, which may be reused or freed immediately.  If the
- * given string is not valid UTF-8, this function will return NULL.
+ * TCString is independent of the passed buffer, which may be reused or freed immediately.
  */
 struct TCString *tc_string_clone_with_len(const char *buf, size_t len);
 
 /**
  * Get the content of the string as a regular C string.  The given string must not be NULL.  The
- * returned value is NULL if the string contains NUL bytes.  The returned string is valid until
- * the TCString is freed or passed to another TC API function.
+ * returned value is NULL if the string contains NUL bytes or (in some cases) invalid UTF-8.  The
+ * returned C string is valid until the TCString is freed or passed to another TC API function.
+ *
+ * In general, prefer [`tc_string_content_with_len`] except when it's certain that the string is
+ * valid and NUL-free.
  *
  * This function does _not_ take ownership of the TCString.
  */
@@ -170,8 +175,8 @@ const char *tc_string_content(struct TCString *tcstring);
 
 /**
  * Get the content of the string as a pointer and length.  The given string must not be NULL.
- * This function can return any string, even one including NUL bytes.  The returned string is
- * valid until the TCString is freed or passed to another TC API function.
+ * This function can return any string, even one including NUL bytes or invalid UTF-8.  The
+ * returned buffer is valid until the TCString is freed or passed to another TC API function.
  *
  * This function does _not_ take ownership of the TCString.
  */

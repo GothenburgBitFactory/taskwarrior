@@ -52,6 +52,12 @@ static void test_uuid_bad_utf8(void) {
     TEST_ASSERT_FALSE(tc_uuid_from_str(tc_string_borrow(ustr), &u));
 }
 
+// converting a string with embedded NUL fails as expected
+static void test_uuid_embedded_nul(void) {
+    TCUuid u;
+    TEST_ASSERT_FALSE(tc_uuid_from_str(tc_string_clone_with_len("ab\0de", 5), &u));
+}
+
 int uuid_tests(void) {
     UNITY_BEGIN();
     // each test case above should be named here, in order.
@@ -61,5 +67,6 @@ int uuid_tests(void) {
     RUN_TEST(test_uuid_to_str);
     RUN_TEST(test_uuid_invalid_string_fails);
     RUN_TEST(test_uuid_bad_utf8);
+    RUN_TEST(test_uuid_embedded_nul);
     return UNITY_END();
 }

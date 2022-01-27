@@ -1,18 +1,20 @@
 use std::ffi::{CStr, CString, OsStr};
 use std::os::unix::ffi::OsStrExt;
 use std::path::PathBuf;
+use std::str::Utf8Error;
 
-// TODO: is utf-8-ness always checked? (no) when?
-
-/// TCString supports passing strings into and out of the TaskChampion API.  A string must contain
-/// valid UTF-8, and can contain embedded NUL characters.  Strings containing such embedded NULs
-/// cannot be represented as a "C string" and must be accessed using `tc_string_content_and_len`
-/// and `tc_string_clone_with_len`.  In general, these two functions should be used for handling
-/// arbitrary data, while more convenient forms may be used where embedded NUL characters are
-/// impossible, such as in static strings.
+/// TCString supports passing strings into and out of the TaskChampion API.  A string can contain
+/// embedded NUL characters.  Strings containing such embedded NULs cannot be represented as a "C
+/// string" and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.
+/// In general, these two functions should be used for handling arbitrary data, while more
+/// convenient forms may be used where embedded NUL characters are impossible, such as in static
+/// strings.
+///
+/// Rust expects all strings to be UTF-8, and API functions will fail if given a TCString
+/// containing invalid UTF-8.
 ///
 /// Unless specified otherwise, functions in this API take ownership of a TCString when it is given
-/// as a function argument, and free the string before returning.  Thus the following is valid:
+/// as a function argument, and free the string before returning.
 ///
 /// When a TCString appears as a return value or output argument, it is the responsibility of the
 /// caller to free the string.
@@ -20,6 +22,10 @@ pub enum TCString<'a> {
     CString(CString),
     CStr(&'a CStr),
     String(String),
+
+    /// This variant denotes an input string that was not valid UTF-8.  This allows reporting this
+    /// error when the string is read, with the constructor remaining infallible.
+    InvalidUtf8(Utf8Error, Vec<u8>),
 
     /// None is the default value for TCString, but this variant is never seen by C code or by Rust
     /// code outside of this module.
@@ -52,15 +58,17 @@ impl<'a> TCString<'a> {
             TCString::CString(cstring) => cstring.as_c_str().to_str(),
             TCString::CStr(cstr) => cstr.to_str(),
             TCString::String(string) => Ok(string.as_ref()),
+            TCString::InvalidUtf8(e, _) => Err(*e),
             TCString::None => unreachable!(),
         }
     }
 
-    pub(crate) fn as_bytes(&self) -> &[u8] {
+    fn as_bytes(&self) -> &[u8] {
         match self {
             TCString::CString(cstring) => cstring.as_bytes(),
             TCString::CStr(cstr) => cstr.to_bytes(),
             TCString::String(string) => string.as_bytes(),
+            TCString::InvalidUtf8(_, data) => data.as_ref(),
             TCString::None => unreachable!(),
         }
     }
@@ -118,8 +126,7 @@ pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'s
 
 /// Create a new TCString containing the given string with the given length. This allows creation
 /// of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
-/// TCString is independent of the passed buffer, which may be reused or freed immediately.  If the
-/// given string is not valid UTF-8, this function will return NULL.
+/// TCString is independent of the passed buffer, which may be reused or freed immediately.
 #[no_mangle]
 pub extern "C" fn tc_string_clone_with_len(
     buf: *const libc::c_char,
@@ -127,21 +134,30 @@ pub extern "C" fn tc_string_clone_with_len(
 ) -> *mut TCString<'static> {
     let slice = unsafe { std::slice::from_raw_parts(buf as *const u8, len) };
     let vec = slice.to_vec();
-    if let Ok(string) = String::from_utf8(vec) {
-        TCString::String(string).return_val()
-    } else {
-        std::ptr::null_mut()
+    // try converting to a string, which is the only variant that can contain embedded NULs.  If
+    // the bytes are not valid utf-8, store that information for reporting later.
+    match String::from_utf8(vec) {
+        Ok(string) => TCString::String(string),
+        Err(e) => {
+            let (e, vec) = (e.utf8_error(), e.into_bytes());
+            TCString::InvalidUtf8(e, vec)
+        }
     }
+    .return_val()
 }
 
 /// Get the content of the string as a regular C string.  The given string must not be NULL.  The
-/// returned value is NULL if the string contains NUL bytes.  The returned string is valid until
-/// the TCString is freed or passed to another TC API function.
+/// returned value is NULL if the string contains NUL bytes or (in some cases) invalid UTF-8.  The
+/// returned C string is valid until the TCString is freed or passed to another TC API function.
+///
+/// In general, prefer [`tc_string_content_with_len`] except when it's certain that the string is
+/// valid and NUL-free.
 ///
 /// This function does _not_ take ownership of the TCString.
 #[no_mangle]
 pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_char {
     let tcstring = TCString::from_arg_ref(tcstring);
+
     // if we have a String, we need to consume it and turn it into
     // a CString.
     if matches!(tcstring, TCString::String(_)) {
@@ -153,7 +169,7 @@ pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_c
                 Err(nul_err) => {
                     // recover the underlying String from the NulError
                     let original_bytes = nul_err.into_vec();
-                    // SAFETY: original_bytes just came from a String, so must be valid utf8
+                    // SAFETY: original_bytes came from a String moments ago, so still valid utf8
                     let string = unsafe { String::from_utf8_unchecked(original_bytes) };
                     *tcstring = TCString::String(string);
 
@@ -170,13 +186,14 @@ pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_c
         TCString::CString(cstring) => cstring.as_ptr(),
         TCString::String(_) => unreachable!(), // just converted to CString
         TCString::CStr(cstr) => cstr.as_ptr(),
+        TCString::InvalidUtf8(_, _) => std::ptr::null(),
         TCString::None => unreachable!(),
     }
 }
 
 /// Get the content of the string as a pointer and length.  The given string must not be NULL.
-/// This function can return any string, even one including NUL bytes.  The returned string is
-/// valid until the TCString is freed or passed to another TC API function.
+/// This function can return any string, even one including NUL bytes or invalid UTF-8.  The
+/// returned buffer is valid until the TCString is freed or passed to another TC API function.
 ///
 /// This function does _not_ take ownership of the TCString.
 #[no_mangle]
@@ -184,11 +201,14 @@ pub extern "C" fn tc_string_content_with_len(
     tcstring: *mut TCString,
     len_out: *mut usize,
 ) -> *const libc::c_char {
+    debug_assert!(!tcstring.is_null());
+    debug_assert!(!len_out.is_null());
     let tcstring = TCString::from_arg_ref(tcstring);
     let bytes = match tcstring {
         TCString::CString(cstring) => cstring.as_bytes(),
         TCString::String(string) => string.as_bytes(),
         TCString::CStr(cstr) => cstr.to_bytes(),
+        TCString::InvalidUtf8(_, ref v) => v.as_ref(),
         TCString::None => unreachable!(),
     };
     unsafe { *len_out = bytes.len() };
