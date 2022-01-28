@@ -124,8 +124,8 @@ struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TC
 enum TCResult tc_replica_undo(struct TCReplica *rep);
 
 /**
- * Get the latest error for a replica, or NULL if the last operation succeeded.
- * Subsequent calls to this function will return NULL.  The caller must free the
+ * Get the latest error for a replica, or NULL if the last operation succeeded.  Subsequent calls
+ * to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
  * returned string.
  */
 struct TCString *tc_replica_error(struct TCReplica *rep);
@@ -212,7 +212,8 @@ enum TCStatus tc_task_get_status(const struct TCTask *task);
 struct TCString *tc_task_get_description(const struct TCTask *task);
 
 /**
- * Free a task.
+ * Free a task.  The given task must not be NULL.  The task must not be used after this function
+ * returns, and must not be freed more than once.
  */
 void tc_task_free(struct TCTask *task);
 

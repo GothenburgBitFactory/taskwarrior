@@ -43,6 +43,12 @@ pub static TC_UUID_STRING_BYTES: usize = ::uuid::adapter::Hyphenated::LENGTH;
 #[no_mangle]
 pub extern "C" fn tc_uuid_to_buf<'a>(uuid: TCUuid, buf: *mut libc::c_char) {
     debug_assert!(!buf.is_null());
+    // SAFETY:
+    //  - buf is valid for len bytes (by C convention)
+    //  - (no alignment requirements for a byte slice)
+    //  - content of buf will not be mutated during the lifetime of this slice (lifetime
+    //    does not outlive this function call)
+    //  - the length of the buffer is less than isize::MAX (promised by caller)
     let buf: &'a mut [u8] = unsafe {
         std::slice::from_raw_parts_mut(buf as *mut u8, ::uuid::adapter::Hyphenated::LENGTH)
     };
@@ -70,6 +76,9 @@ pub extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) 
     let s = unsafe { TCString::from_arg(s) };
     if let Ok(s) = s.as_str() {
         if let Ok(u) = Uuid::parse_str(s) {
+            // SAFETY:
+            //  - uuid_out is not NULL (promised by caller)
+            //  - alignment is not required
             unsafe { *uuid_out = u.into() };
             return true;
         }

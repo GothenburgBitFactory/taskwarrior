@@ -11,10 +11,18 @@ pub struct TCReplica {
     error: Option<TCString<'static>>,
 }
 
-/// Utility function to safely convert *mut TCReplica into &mut TCReplica
-fn rep_ref(rep: *mut TCReplica) -> &'static mut TCReplica {
-    debug_assert!(!rep.is_null());
-    unsafe { &mut *rep }
+impl TCReplica {
+    /// Borrow a TCReplica from C as an argument.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
+    /// lifetime assigned to the reference and the lifetime of the TCReplica itself do not outlive
+    /// the lifetime promised by C.
+    pub(crate) unsafe fn from_arg_ref<'a>(tcstring: *mut TCReplica) -> &'a mut Self {
+        debug_assert!(!tcstring.is_null());
+        &mut *tcstring
+    }
 }
 
 fn err_to_tcstring(e: impl std::string::ToString) -> TCString<'static> {
@@ -26,7 +34,10 @@ fn wrap<'a, T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
 where
     F: FnOnce(&mut Replica) -> anyhow::Result<T>,
 {
-    let rep: &'a mut TCReplica = rep_ref(rep);
+    // SAFETY:
+    //  - rep is not null (promised by caller)
+    //  - rep outlives 'a (promised by caller)
+    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
     rep.error = None;
     match f(&mut rep.inner) {
         Ok(v) => v,
@@ -100,7 +111,7 @@ pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, uuid: TCUuid) -> *mut
         |rep| {
             let uuid: Uuid = uuid.into();
             if let Some(task) = rep.get_task(uuid)? {
-                Ok(TCTask::as_ptr(task))
+                Ok(TCTask::return_val(task))
             } else {
                 Ok(std::ptr::null_mut())
             }
@@ -128,7 +139,7 @@ pub extern "C" fn tc_replica_new_task(
         rep,
         |rep| {
             let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
-            Ok(TCTask::as_ptr(task))
+            Ok(TCTask::return_val(task))
         },
         std::ptr::null_mut(),
     )
@@ -147,7 +158,7 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
         |rep| {
             let uuid: Uuid = uuid.into();
             let task = rep.import_task_with_uuid(uuid)?;
-            Ok(TCTask::as_ptr(task))
+            Ok(TCTask::return_val(task))
         },
         std::ptr::null_mut(),
     )
@@ -174,12 +185,15 @@ pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica) -> TCResult {
     )
 }
 
-/// Get the latest error for a replica, or NULL if the last operation succeeded.
-/// Subsequent calls to this function will return NULL.  The caller must free the
+/// Get the latest error for a replica, or NULL if the last operation succeeded.  Subsequent calls
+/// to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
 /// returned string.
 #[no_mangle]
 pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'static> {
-    let rep: &'a mut TCReplica = rep_ref(rep);
+    // SAFETY:
+    //  - rep is not null (promised by caller)
+    //  - rep outlives 'a (promised by caller)
+    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
     if let Some(tcstring) = rep.error.take() {
         tcstring.return_val()
     } else {

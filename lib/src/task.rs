@@ -10,21 +10,31 @@ pub struct TCTask {
 }
 
 impl TCTask {
-    pub(crate) fn as_ptr(task: Task) -> *mut TCTask {
+    /// Borrow a TCTask from C as an argument.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
+    /// lifetime assigned to the reference and the lifetime of the TCTask itself do not outlive
+    /// the lifetime promised by C.
+    pub(crate) unsafe fn from_arg_ref<'a>(tcstring: *const TCTask) -> &'a Self {
+        debug_assert!(!tcstring.is_null());
+        &*tcstring
+    }
+
+    /// Convert this to a return value for handing off to C.
+    pub(crate) fn return_val(task: Task) -> *mut TCTask {
         Box::into_raw(Box::new(TCTask { inner: task }))
     }
-}
-
-/// Utility function to safely convert *const TCTask into &Task
-fn task_ref(task: *const TCTask) -> &'static Task {
-    debug_assert!(!task.is_null());
-    unsafe { &(*task).inner }
 }
 
 /// Get a task's UUID.
 #[no_mangle]
 pub extern "C" fn tc_task_get_uuid<'a>(task: *const TCTask) -> TCUuid {
-    let task: &'a Task = task_ref(task);
+    // SAFETY:
+    //  - task is not NULL (promised by caller)
+    //  - task's lifetime exceeds this function (promised by caller)
+    let task: &'a Task = &unsafe { TCTask::from_arg_ref(task) }.inner;
     let uuid = task.get_uuid();
     uuid.into()
 }
@@ -32,7 +42,10 @@ pub extern "C" fn tc_task_get_uuid<'a>(task: *const TCTask) -> TCUuid {
 /// Get a task's status.
 #[no_mangle]
 pub extern "C" fn tc_task_get_status<'a>(task: *const TCTask) -> TCStatus {
-    let task: &'a Task = task_ref(task);
+    // SAFETY:
+    //  - task is not NULL (promised by caller)
+    //  - task's lifetime exceeds this function (promised by caller)
+    let task: &'a Task = &unsafe { TCTask::from_arg_ref(task) }.inner;
     task.get_status().into()
 }
 
@@ -45,7 +58,10 @@ pub extern "C" fn tc_task_get_status<'a>(task: *const TCTask) -> TCStatus {
 /// contains embedded NUL characters).
 #[no_mangle]
 pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCString<'static> {
-    let task = task_ref(task);
+    // SAFETY:
+    //  - task is not NULL (promised by caller)
+    //  - task's lifetime exceeds this function (promised by caller)
+    let task: &'a Task = &unsafe { TCTask::from_arg_ref(task) }.inner;
     let descr: TCString = task.get_description().into();
     descr.return_val()
 }
@@ -64,9 +80,14 @@ pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCStr
  * get_modified
  */
 
-/// Free a task.
+/// Free a task.  The given task must not be NULL.  The task must not be used after this function
+/// returns, and must not be freed more than once.
 #[no_mangle]
 pub extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
     debug_assert!(!task.is_null());
+    // SAFETY:
+    //  - task is not NULL (promised by caller)
+    //  - task's lifetime exceeds the drop (promised by caller)
+    //  - task does not outlive this function (promised by caller)
     drop(unsafe { Box::from_raw(task) });
 }
