@@ -33,10 +33,9 @@ pub extern "C" fn tc_uuid_nil() -> TCUuid {
     Uuid::nil().into()
 }
 
-/// Length, in bytes, of a C string containing a TCUuid.
-// TODO: why not a const?
-#[no_mangle]
-pub static TC_UUID_STRING_BYTES: usize = ::uuid::adapter::Hyphenated::LENGTH;
+// NOTE: this must be a simple constant so that cbindgen can evaluate it
+/// Length, in bytes, of the string representation of a UUID (without NUL terminator)
+pub const TC_UUID_STRING_BYTES: usize = 36;
 
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.

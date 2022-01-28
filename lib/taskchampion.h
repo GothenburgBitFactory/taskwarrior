@@ -1,5 +1,11 @@
 #include <stdbool.h>
 #include <stdint.h>
+#define TC_UUID_STRING_BYTES 36
+
+/**
+ * Length, in bytes, of the string representation of a UUID (without NUL terminator)
+ */
+#define TC_UUID_STRING_BYTES 36
 
 /**
  * A result combines a boolean success value with
@@ -73,8 +79,6 @@ typedef struct TCUuid {
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
-
-extern const size_t TC_UUID_STRING_BYTES;
 
 /**
  * Create a new TCReplica with an in-memory database.  The contents of the database will be
