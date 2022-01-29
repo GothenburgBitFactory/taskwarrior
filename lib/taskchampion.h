@@ -61,6 +61,10 @@ typedef struct TCString TCString;
 /**
  * A task, as publicly exposed by this library.
  *
+ * A task begins in "immutable" mode.  It must be converted to "mutable" mode
+ * to make any changes, and doing so requires exclusive access to the replica
+ * until the task is freed or converted back to immutable mode.
+ *
  * A task carries no reference to the replica that created it, and can
  * be used until it is freed or converted to a TaskMut.
  */
@@ -199,6 +203,34 @@ const char *tc_string_content_with_len(struct TCString *tcstring, size_t *len_ou
 void tc_string_free(struct TCString *tcstring);
 
 /**
+ * Convert an immutable task into a mutable task.
+ *
+ * The task is modified in-place, and becomes mutable.
+ *
+ * The replica _cannot be used at all_ until this task is made immutable again.  This implies that
+ * it is not allowed for more than one task associated with a replica to be mutable at any time.
+ *
+ * Typical mutation of tasks is bracketed with `tc_task_to_mut` and `tc_task_to_immut`:
+ *
+ * ```c
+ * tc_task_to_mut(task, rep);
+ * success = tc_task_done(task);
+ * tc_task_to_immut(task, rep);
+ * if (!success) { ... }
+ * ```
+ */
+void tc_task_to_mut(struct TCTask *task, struct TCReplica *rep);
+
+/**
+ * Convert a mutable task into an immutable task.
+ *
+ * The task is modified in-place, and becomes immutable.
+ *
+ * The replica may be used freely after this call.
+ */
+void tc_task_to_immut(struct TCTask *task, struct TCReplica *rep);
+
+/**
  * Get a task's UUID.
  */
 struct TCUuid tc_task_get_uuid(const struct TCTask *task);
@@ -215,8 +247,24 @@ enum TCStatus tc_task_get_status(const struct TCTask *task);
 struct TCString *tc_task_get_description(const struct TCTask *task);
 
 /**
- * Free a task.  The given task must not be NULL.  The task must not be used after this function
- * returns, and must not be freed more than once.
+ * Set a mutable task's status.
+ *
+ * Returns false on error.
+ */
+bool tc_task_set_status(struct TCTask *task, enum TCStatus status);
+
+/**
+ * Set a mutable task's description.
+ *
+ * Returns false on error.
+ */
+bool tc_task_set_description(struct TCTask *task, struct TCString *description);
+
+/**
+ * Free a task.  The given task must not be NULL and must be immutable.  The task must not be used
+ * after this function returns, and must not be freed more than once.
+ *
+ * The restriction that the task must be immutable may be lifted (TODO)
  */
 void tc_task_free(struct TCTask *task);
 

@@ -1,5 +1,4 @@
 use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask, uuid::TCUuid};
-use std::cell::{RefCell, RefMut};
 use taskchampion::{Replica, StorageConfig, Uuid};
 
 /// A replica represents an instance of a user's task data, providing an easy interface
@@ -7,7 +6,13 @@ use taskchampion::{Replica, StorageConfig, Uuid};
 ///
 /// TCReplicas are not threadsafe.
 pub struct TCReplica {
-    inner: RefCell<Replica>,
+    /// The wrapped Replica
+    inner: Replica,
+
+    /// If true, this replica has an outstanding &mut (for a TaskMut)
+    mut_borrowed: bool,
+
+    /// The error from the most recent operation, if any
     error: Option<TCString<'static>>,
 }
 
@@ -24,16 +29,36 @@ impl TCReplica {
         &mut *tcreplica
     }
 
+    // TODO: from_arg_owned, use in drop
+
     /// Convert this to a return value for handing off to C.
     pub(crate) fn return_val(self) -> *mut TCReplica {
         Box::into_raw(Box::new(self))
+    }
+
+    /// Mutably borrow the inner Replica
+    pub(crate) fn borrow_mut(&mut self) -> &mut Replica {
+        if self.mut_borrowed {
+            panic!("replica is already borrowed");
+        }
+        self.mut_borrowed = true;
+        &mut self.inner
+    }
+
+    /// Release the borrow made by [`borrow_mut`]
+    pub(crate) fn release_borrow(&mut self) {
+        if !self.mut_borrowed {
+            panic!("replica is not borrowed");
+        }
+        self.mut_borrowed = false;
     }
 }
 
 impl From<Replica> for TCReplica {
     fn from(rep: Replica) -> TCReplica {
         TCReplica {
-            inner: RefCell::new(rep),
+            inner: rep,
+            mut_borrowed: false,
             error: None,
         }
     }
@@ -47,14 +72,17 @@ fn err_to_tcstring(e: impl std::string::ToString) -> TCString<'static> {
 /// a mutable borrow, because most Replica methods require a `&mut`.
 fn wrap<'a, T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
 where
-    F: FnOnce(RefMut<'_, Replica>) -> anyhow::Result<T>,
+    F: FnOnce(&mut Replica) -> anyhow::Result<T>,
 {
     // SAFETY:
     //  - rep is not null (promised by caller)
     //  - rep outlives 'a (promised by caller)
     let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
+    if rep.mut_borrowed {
+        panic!("replica is borrowed and cannot be used");
+    }
     rep.error = None;
-    match f(rep.inner.borrow_mut()) {
+    match f(&mut rep.inner) {
         Ok(v) => v,
         Err(e) => {
             rep.error = Some(err_to_tcstring(e));
@@ -117,7 +145,7 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
 pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, uuid: TCUuid) -> *mut TCTask {
     wrap(
         rep,
-        |mut rep| {
+        |rep| {
             let uuid: Uuid = uuid.into();
             if let Some(task) = rep.get_task(uuid)? {
                 Ok(TCTask::from(task).return_val())
@@ -146,7 +174,7 @@ pub extern "C" fn tc_replica_new_task(
     let description = unsafe { TCString::from_arg(description) };
     wrap(
         rep,
-        |mut rep| {
+        |rep| {
             let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
             Ok(TCTask::from(task).return_val())
         },
@@ -164,7 +192,7 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
 ) -> *mut TCTask {
     wrap(
         rep,
-        |mut rep| {
+        |rep| {
             let uuid: Uuid = uuid.into();
             let task = rep.import_task_with_uuid(uuid)?;
             Ok(TCTask::from(task).return_val())
@@ -183,7 +211,7 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
 pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica) -> TCResult {
     wrap(
         rep,
-        |mut rep| {
+        |rep| {
             Ok(if rep.undo()? {
                 TCResult::True
             } else {
@@ -213,7 +241,11 @@ pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'st
 /// Free a TCReplica.
 #[no_mangle]
 pub extern "C" fn tc_replica_free(rep: *mut TCReplica) {
-    debug_assert!(!rep.is_null());
+    let replica: &mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
+    if replica.mut_borrowed {
+        panic!("replica is borrowed and cannot be freed");
+    }
+    drop(replica);
     drop(unsafe { Box::from_raw(rep) });
 }
 
