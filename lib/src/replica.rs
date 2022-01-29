@@ -1,4 +1,5 @@
 use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask, uuid::TCUuid};
+use std::cell::{RefCell, RefMut};
 use taskchampion::{Replica, StorageConfig, Uuid};
 
 /// A replica represents an instance of a user's task data, providing an easy interface
@@ -6,8 +7,7 @@ use taskchampion::{Replica, StorageConfig, Uuid};
 ///
 /// TCReplicas are not threadsafe.
 pub struct TCReplica {
-    // TODO: make this a RefCell so that it can be take()n when holding a mut ref
-    inner: Replica,
+    inner: RefCell<Replica>,
     error: Option<TCString<'static>>,
 }
 
@@ -19,9 +19,23 @@ impl TCReplica {
     /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
     /// lifetime assigned to the reference and the lifetime of the TCReplica itself do not outlive
     /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg_ref<'a>(tcstring: *mut TCReplica) -> &'a mut Self {
-        debug_assert!(!tcstring.is_null());
-        &mut *tcstring
+    pub(crate) unsafe fn from_arg_ref<'a>(tcreplica: *mut TCReplica) -> &'a mut Self {
+        debug_assert!(!tcreplica.is_null());
+        &mut *tcreplica
+    }
+
+    /// Convert this to a return value for handing off to C.
+    pub(crate) fn return_val(self) -> *mut TCReplica {
+        Box::into_raw(Box::new(self))
+    }
+}
+
+impl From<Replica> for TCReplica {
+    fn from(rep: Replica) -> TCReplica {
+        TCReplica {
+            inner: RefCell::new(rep),
+            error: None,
+        }
     }
 }
 
@@ -29,17 +43,18 @@ fn err_to_tcstring(e: impl std::string::ToString) -> TCString<'static> {
     TCString::from(e.to_string())
 }
 
-/// Utility function to allow using `?` notation to return an error value.
+/// Utility function to allow using `?` notation to return an error value.  This makes
+/// a mutable borrow, because most Replica methods require a `&mut`.
 fn wrap<'a, T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
 where
-    F: FnOnce(&mut Replica) -> anyhow::Result<T>,
+    F: FnOnce(RefMut<'_, Replica>) -> anyhow::Result<T>,
 {
     // SAFETY:
     //  - rep is not null (promised by caller)
     //  - rep outlives 'a (promised by caller)
     let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
     rep.error = None;
-    match f(&mut rep.inner) {
+    match f(rep.inner.borrow_mut()) {
         Ok(v) => v,
         Err(e) => {
             rep.error = Some(err_to_tcstring(e));
@@ -55,10 +70,7 @@ pub extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
     let storage = StorageConfig::InMemory
         .into_storage()
         .expect("in-memory always succeeds");
-    Box::into_raw(Box::new(TCReplica {
-        inner: Replica::new(storage),
-        error: None,
-    }))
+    TCReplica::from(Replica::new(storage)).return_val()
 }
 
 /// Create a new TCReplica with an on-disk database having the given filename. The filename must
@@ -90,10 +102,7 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
         }
     };
 
-    Box::into_raw(Box::new(TCReplica {
-        inner: Replica::new(storage),
-        error: None,
-    }))
+    TCReplica::from(Replica::new(storage)).return_val()
 }
 
 // TODO: tc_replica_all_tasks
@@ -108,10 +117,10 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
 pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, uuid: TCUuid) -> *mut TCTask {
     wrap(
         rep,
-        |rep| {
+        |mut rep| {
             let uuid: Uuid = uuid.into();
             if let Some(task) = rep.get_task(uuid)? {
-                Ok(TCTask::return_val(task))
+                Ok(TCTask::from(task).return_val())
             } else {
                 Ok(std::ptr::null_mut())
             }
@@ -137,9 +146,9 @@ pub extern "C" fn tc_replica_new_task(
     let description = unsafe { TCString::from_arg(description) };
     wrap(
         rep,
-        |rep| {
+        |mut rep| {
             let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
-            Ok(TCTask::return_val(task))
+            Ok(TCTask::from(task).return_val())
         },
         std::ptr::null_mut(),
     )
@@ -155,10 +164,10 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
 ) -> *mut TCTask {
     wrap(
         rep,
-        |rep| {
+        |mut rep| {
             let uuid: Uuid = uuid.into();
             let task = rep.import_task_with_uuid(uuid)?;
-            Ok(TCTask::return_val(task))
+            Ok(TCTask::from(task).return_val())
         },
         std::ptr::null_mut(),
     )
@@ -174,7 +183,7 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
 pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica) -> TCResult {
     wrap(
         rep,
-        |rep| {
+        |mut rep| {
             Ok(if rep.undo()? {
                 TCResult::True
             } else {
@@ -208,7 +217,5 @@ pub extern "C" fn tc_replica_free(rep: *mut TCReplica) {
     drop(unsafe { Box::from_raw(rep) });
 }
 
-/*
- * - tc_replica_rebuild_working_set
- * - tc_replica_add_undo_point
- */
+// TODO: tc_replica_rebuild_working_set
+// TODO: tc_replica_add_undo_point

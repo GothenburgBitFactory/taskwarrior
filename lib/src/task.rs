@@ -17,14 +17,20 @@ impl TCTask {
     /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
     /// lifetime assigned to the reference and the lifetime of the TCTask itself do not outlive
     /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg_ref<'a>(tcstring: *const TCTask) -> &'a Self {
-        debug_assert!(!tcstring.is_null());
-        &*tcstring
+    pub(crate) unsafe fn from_arg_ref<'a>(tctask: *const TCTask) -> &'a Self {
+        debug_assert!(!tctask.is_null());
+        &*tctask
     }
 
-    /// Convert this to a return value for handing off to C.
-    pub(crate) fn return_val(task: Task) -> *mut TCTask {
-        Box::into_raw(Box::new(TCTask { inner: task }))
+    /// Convert a TCTask to a return value for handing off to C.
+    pub(crate) fn return_val(self) -> *mut TCTask {
+        Box::into_raw(Box::new(self))
+    }
+}
+
+impl From<Task> for TCTask {
+    fn from(task: Task) -> TCTask {
+        TCTask { inner: task }
     }
 }
 
@@ -49,10 +55,8 @@ pub extern "C" fn tc_task_get_status<'a>(task: *const TCTask) -> TCStatus {
     task.get_status().into()
 }
 
-/* TODO
- * into_mut
- * get_taskmap
- */
+// TODO: into_mut
+// TODO: get_taskmap
 
 /// Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
 /// contains embedded NUL characters).
@@ -66,19 +70,17 @@ pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCStr
     descr.return_val()
 }
 
-/* TODO
- * get_wait
- * is_waiting
- * is_active
- * has_tag
- * get_tags
- * get_annotations
- * get_uda
- * get_udas
- * get_legacy_uda
- * get_legacy_udas
- * get_modified
- */
+// TODO: :get_wait
+// TODO: :is_waiting
+// TODO: :is_active
+// TODO: :has_tag
+// TODO: :get_tags
+// TODO: :get_annotations
+// TODO: :get_uda
+// TODO: :get_udas
+// TODO: :get_legacy_uda
+// TODO: :get_legacy_udas
+// TODO: :get_modified
 
 /// Free a task.  The given task must not be NULL.  The task must not be used after this function
 /// returns, and must not be freed more than once.

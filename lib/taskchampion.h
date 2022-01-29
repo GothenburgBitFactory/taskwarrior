@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdint.h>
-#define TC_UUID_STRING_BYTES 36
 
 /**
  * Length, in bytes, of the string representation of a UUID (without NUL terminator)
