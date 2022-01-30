@@ -11,10 +11,16 @@ use taskchampion::{Task, TaskMut};
 /// A task carries no reference to the replica that created it, and can
 /// be used until it is freed or converted to a TaskMut.
 pub enum TCTask {
+    /// A regular, immutable task
     Immutable(Task),
-    Mutable(TaskMut<'static>),
 
-    /// A transitional state for a TCTask as it goes from mutable to immutable.
+    /// A mutable task, together with the replica to which it holds an exclusive
+    /// reference.
+    Mutable(TaskMut<'static>, *mut TCReplica),
+
+    /// A transitional state for a TCTask as it goes from mutable to immutable and back.  A task
+    /// can only be in this state outside of [`to_mut`] and [`to_immut`] if a panic occurs during
+    /// one of those methods.
     Invalid,
 }
 
@@ -52,24 +58,38 @@ impl TCTask {
 
     /// Make an immutable TCTask into a mutable TCTask.  Does nothing if the task
     /// is already mutable.
-    fn to_mut(&mut self, tcreplica: &'static mut TCReplica) {
+    ///
+    /// # Safety
+    ///
+    /// The tcreplica pointer must not be NULL, and the replica it points to must not
+    /// be freed before TCTask.to_immut completes.
+    unsafe fn to_mut(&mut self, tcreplica: *mut TCReplica) {
         *self = match std::mem::replace(self, TCTask::Invalid) {
             TCTask::Immutable(task) => {
-                let rep_ref = tcreplica.borrow_mut();
-                TCTask::Mutable(task.into_mut(rep_ref))
+                // SAFETY:
+                //  - tcreplica is not null (promised by caller)
+                //  - tcreplica outlives the pointer in this variant (promised by caller)
+                let tcreplica_ref: &mut TCReplica = TCReplica::from_arg_ref(tcreplica);
+                let rep_ref = tcreplica_ref.borrow_mut();
+                TCTask::Mutable(task.into_mut(rep_ref), tcreplica)
             }
-            TCTask::Mutable(task) => TCTask::Mutable(task),
+            TCTask::Mutable(task, tcreplica) => TCTask::Mutable(task, tcreplica),
             TCTask::Invalid => unreachable!(),
         }
     }
 
     /// Make an mutable TCTask into a immutable TCTask.  Does nothing if the task
     /// is already immutable.
-    fn to_immut(&mut self, tcreplica: &mut TCReplica) {
+    fn to_immut(&mut self) {
         *self = match std::mem::replace(self, TCTask::Invalid) {
             TCTask::Immutable(task) => TCTask::Immutable(task),
-            TCTask::Mutable(task) => {
-                tcreplica.release_borrow();
+            TCTask::Mutable(task, tcreplica) => {
+                // SAFETY:
+                //  - tcreplica is not null (promised by caller of to_mut, which created this
+                //    variant)
+                //  - tcreplica is still alive (promised by caller of to_mut)
+                let tcreplica_ref: &mut TCReplica = unsafe { TCReplica::from_arg_ref(tcreplica) };
+                tcreplica_ref.release_borrow();
                 TCTask::Immutable(task.into_immut())
             }
             TCTask::Invalid => unreachable!(),
@@ -94,7 +114,7 @@ where
     let tctask: &'a TCTask = unsafe { TCTask::from_arg_ref(task) };
     let task: &'a Task = match tctask {
         TCTask::Immutable(t) => t,
-        TCTask::Mutable(t) => t.deref(),
+        TCTask::Mutable(t, _) => t.deref(),
         TCTask::Invalid => unreachable!(),
     };
     f(task)
@@ -112,7 +132,7 @@ where
     let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
     let task: &'a mut TaskMut = match tctask {
         TCTask::Immutable(_) => panic!("Task is immutable"),
-        TCTask::Mutable(ref mut t) => t,
+        TCTask::Mutable(ref mut t, _) => t,
         TCTask::Invalid => unreachable!(),
     };
     // TODO: add TCTask error handling, like replica
@@ -121,10 +141,11 @@ where
 
 /// Convert an immutable task into a mutable task.
 ///
-/// The task is modified in-place, and becomes mutable.
+/// The task must not be NULL. It is modified in-place, and becomes mutable.
 ///
-/// The replica _cannot be used at all_ until this task is made immutable again.  This implies that
-/// it is not allowed for more than one task associated with a replica to be mutable at any time.
+/// The replica must not be NULL. After this function returns, the replica _cannot be used at all_
+/// until this task is made immutable again.  This implies that it is not allowed for more than one
+/// task associated with a replica to be mutable at any time.
 ///
 /// Typical mutation of tasks is bracketed with `tc_task_to_mut` and `tc_task_to_immut`:
 ///
@@ -135,22 +156,30 @@ where
 /// if (!success) { ... }
 /// ```
 #[no_mangle]
-pub extern "C" fn tc_task_to_mut<'a>(task: *mut TCTask, rep: *mut TCReplica) {
+pub extern "C" fn tc_task_to_mut<'a>(task: *mut TCTask, tcreplica: *mut TCReplica) {
+    // SAFETY:
+    //  - task is not null (promised by caller)
+    //  - task outlives 'a (promised by caller)
     let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
-    let tcreplica: &'static mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
-    tctask.to_mut(tcreplica);
+    // SAFETY:
+    //  - tcreplica is not NULL (promised by caller)
+    //  - tcreplica lives until later call to to_immut via tc_task_to_immut (promised by caller,
+    //    who cannot call tc_replica_free during this time)
+    unsafe { tctask.to_mut(tcreplica) };
 }
 
 /// Convert a mutable task into an immutable task.
 ///
-/// The task is modified in-place, and becomes immutable.
+/// The task must not be NULL.  It is modified in-place, and becomes immutable.
 ///
-/// The replica may be used freely after this call.
+/// The replica passed to `tc_task_to_mut` may be used freely after this call.
 #[no_mangle]
-pub extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask, rep: *mut TCReplica) {
+pub extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask) {
+    // SAFETY:
+    //  - task is not null (promised by caller)
+    //  - task outlives 'a (promised by caller)
     let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
-    let tcreplica: &'static mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
-    tctask.to_immut(tcreplica);
+    tctask.to_immut();
 }
 
 /// Get a task's UUID.

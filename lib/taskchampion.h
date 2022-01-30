@@ -205,10 +205,11 @@ void tc_string_free(struct TCString *tcstring);
 /**
  * Convert an immutable task into a mutable task.
  *
- * The task is modified in-place, and becomes mutable.
+ * The task must not be NULL. It is modified in-place, and becomes mutable.
  *
- * The replica _cannot be used at all_ until this task is made immutable again.  This implies that
- * it is not allowed for more than one task associated with a replica to be mutable at any time.
+ * The replica must not be NULL. After this function returns, the replica _cannot be used at all_
+ * until this task is made immutable again.  This implies that it is not allowed for more than one
+ * task associated with a replica to be mutable at any time.
  *
  * Typical mutation of tasks is bracketed with `tc_task_to_mut` and `tc_task_to_immut`:
  *
@@ -219,16 +220,16 @@ void tc_string_free(struct TCString *tcstring);
  * if (!success) { ... }
  * ```
  */
-void tc_task_to_mut(struct TCTask *task, struct TCReplica *rep);
+void tc_task_to_mut(struct TCTask *task, struct TCReplica *tcreplica);
 
 /**
  * Convert a mutable task into an immutable task.
  *
- * The task is modified in-place, and becomes immutable.
+ * The task must not be NULL.  It is modified in-place, and becomes immutable.
  *
- * The replica may be used freely after this call.
+ * The replica passed to `tc_task_to_mut` may be used freely after this call.
  */
-void tc_task_to_immut(struct TCTask *task, struct TCReplica *rep);
+void tc_task_to_immut(struct TCTask *task);
 
 /**
  * Get a task's UUID.

@@ -42,7 +42,7 @@ static void test_task_get_set_status(void) {
     tc_task_to_mut(task, rep);
     TEST_ASSERT_TRUE(tc_task_set_status(task, TC_STATUS_DELETED));
     TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task)); // while mut
-    tc_task_to_immut(task, rep);
+    tc_task_to_immut(task);
     TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task)); // while immut
 
     tc_task_free(task);
@@ -71,7 +71,7 @@ static void test_task_get_set_description(void) {
     TEST_ASSERT_EQUAL_STRING("updated", tc_string_content(desc));
     tc_string_free(desc);
 
-    tc_task_to_immut(task, rep);
+    tc_task_to_immut(task);
 
     desc = tc_task_get_description(task);
     TEST_ASSERT_NOT_NULL(desc);
