@@ -49,7 +49,15 @@ impl TCTask {
         &mut *tctask
     }
 
-    // TODO: from_arg_owned, use in drop
+    /// Take a TCTask from C as an argument.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must not be NULL.  The pointer becomes invalid before this function returns.
+    pub(crate) unsafe fn from_arg<'a>(tctask: *mut TCTask) -> Self {
+        debug_assert!(!tctask.is_null());
+        *Box::from_raw(tctask)
+    }
 
     /// Convert a TCTask to a return value for handing off to C.
     pub(crate) fn return_val(self) -> *mut TCTask {
@@ -272,8 +280,10 @@ pub extern "C" fn tc_task_set_description<'a>(
 /// The restriction that the task must be immutable may be lifted (TODO)
 #[no_mangle]
 pub extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
-    // convert the task to immutable before freeing
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    // SAFETY:
+    //  - rep is not NULL
+    //  - caller will not use the TCTask after this
+    let tctask = unsafe { TCTask::from_arg(task) };
     if !matches!(tctask, TCTask::Immutable(_)) {
         // this limit is in place because we require the caller to supply a pointer
         // to the replica to make a task immutable, and no such pointer is available
@@ -281,10 +291,4 @@ pub extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
         panic!("Task must be immutable when freed");
     }
     drop(tctask);
-
-    // SAFETY:
-    //  - task is not NULL (promised by caller)
-    //  - task's lifetime exceeds the drop (promised by caller)
-    //  - task does not outlive this function (promised by caller)
-    drop(unsafe { Box::from_raw(task) });
 }

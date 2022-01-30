@@ -29,7 +29,15 @@ impl TCReplica {
         &mut *tcreplica
     }
 
-    // TODO: from_arg_owned, use in drop
+    /// Take a TCReplica from C as an argument.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must not be NULL.  The pointer becomes invalid before this function returns.
+    pub(crate) unsafe fn from_arg(tcreplica: *mut TCReplica) -> Self {
+        debug_assert!(!tcreplica.is_null());
+        *Box::from_raw(tcreplica)
+    }
 
     /// Convert this to a return value for handing off to C.
     pub(crate) fn return_val(self) -> *mut TCReplica {
@@ -238,15 +246,18 @@ pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'st
     }
 }
 
-/// Free a TCReplica.
+/// Free a replica.  The replica may not be used after this function returns and must not be freed
+/// more than once.
 #[no_mangle]
 pub extern "C" fn tc_replica_free(rep: *mut TCReplica) {
-    let replica: &mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
+    // SAFETY:
+    //  - rep is not NULL
+    //  - caller will not use the TCReplica after this
+    let replica = unsafe { TCReplica::from_arg(rep) };
     if replica.mut_borrowed {
         panic!("replica is borrowed and cannot be freed");
     }
     drop(replica);
-    drop(unsafe { Box::from_raw(rep) });
 }
 
 // TODO: tc_replica_rebuild_working_set

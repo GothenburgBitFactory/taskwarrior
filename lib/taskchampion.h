@@ -138,7 +138,8 @@ enum TCResult tc_replica_undo(struct TCReplica *rep);
 struct TCString *tc_replica_error(struct TCReplica *rep);
 
 /**
- * Free a TCReplica.
+ * Free a replica.  The replica may not be used after this function returns and must not be freed
+ * more than once.
  */
 void tc_replica_free(struct TCReplica *rep);
 
