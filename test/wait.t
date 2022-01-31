@@ -87,14 +87,18 @@ class Test1486(TestCase):
 
     def test_waiting(self):
         """1486: Verify waiting report shows waiting tasks"""
-        self.t.config('uda.sep.type', 'string')
-
         self.t('add regular')
-        self.t('add waited wait:later')
+        self.t('add waited and pending wait:later')
+        self.t('add waited but deleted wait:later')
+        self.t('add waited but done wait:later')
+        self.t('rc.confirmation=off 3 delete')
+        self.t('4 done')
 
         code, out, err = self.t('waiting')
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
-        self.assertIn('waited', out)
+        self.assertIn('waited and pending', out)
+        self.assertNotIn('waited but deleted', out)
+        self.assertNotIn('waited but done', out)
         self.assertNotIn('regular', out)
 
 

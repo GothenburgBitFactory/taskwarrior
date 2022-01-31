@@ -36,23 +36,6 @@
 #include <shared.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-// Const iterator that can be derefenced into a Task by domSource.
-static Task dummy;
-Task& contextTask = dummy;
-
-////////////////////////////////////////////////////////////////////////////////
-bool domSource (const std::string& identifier, Variant& value)
-{
-  if (getDOM (identifier, contextTask, value))
-  {
-    value.source (identifier);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
 void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
@@ -79,7 +62,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     for (auto& task : input)
     {
       // Set up context for any DOM references.
-      contextTask = task;
+      auto currentTask = Context::getContext ().withCurrentTask(&task);
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -131,7 +114,7 @@ void Filter::subset (std::vector <Task>& output)
     for (auto& task : pending)
     {
       // Set up context for any DOM references.
-      contextTask = task;
+      auto currentTask = Context::getContext ().withCurrentTask(&task);
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -150,7 +133,7 @@ void Filter::subset (std::vector <Task>& output)
       for (auto& task : completed)
       {
         // Set up context for any DOM references.
-        contextTask = task;
+        auto currentTask = Context::getContext ().withCurrentTask(&task);
 
         Variant var;
         eval.evaluateCompiledExpression (var);

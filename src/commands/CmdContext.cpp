@@ -110,33 +110,43 @@ std::string CmdContext::joinWords (const std::vector <std::string>& words, unsig
 // Validate the context as valid for writing and fail the write context definition
 // A valid write context:
 //   - does not contain any operators except AND
-//   - does not use modifiers
+//   - does not contain tag exclusion
+//   - does not use modifiers, except for 'equals' and 'is'
 //
 // Returns True if the context is a valid write context. If the context is
 // invalid due to a wrong modifier use, the modifier string will contain the
 // first invalid modifier.
-bool CmdContext::validateWriteContext (const std::vector <A2>& lexedArgs, std::string& modifier_token)
+//
+bool CmdContext::validateWriteContext (const std::vector <A2>& lexedArgs, std::string& reason)
 {
-  bool contains_or = false;
-  bool contains_modifier = false;
-
   for (auto &arg: lexedArgs) {
     if (arg._lextype == Lexer::Type::op)
       if (arg.attribute ("raw") == "or")
-        contains_or = true;
+      {
+        reason = "contains the 'OR' operator";
+        return false;
+      }
 
     if (arg._lextype == Lexer::Type::pair) {
       auto modifier = arg.attribute ("modifier");
       if (modifier != "" && modifier != "is" && modifier != "equals")
       {
-        contains_modifier = true;
-        modifier_token = arg.attribute ("raw");
-        break;
+        reason = format ("contains an attribute modifier '{1}'", arg.attribute ("raw"));
+        return false;
       }
     }
+
+    if (arg._lextype == Lexer::Type::tag) {
+      if (arg.attribute ("sign") == "-")
+      {
+        reason = format ("contains tag exclusion '{1}'", arg.attribute ("raw"));
+        return false;
+      }
+    }
+
   }
 
-  return not contains_or and not contains_modifier;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,14 +221,13 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
           ! confirm (format ("The filter '{1}' matches 0 pending tasks. Do you wish to continue?", value)))
         throw std::string ("Context definition aborted.");
 
-    std::string modifier_token = "";
-    bool valid_write_context = CmdContext::validateWriteContext (lexedArgs, modifier_token);
+    std::string reason = "";
+    bool valid_write_context = CmdContext::validateWriteContext (lexedArgs, reason);
 
     if (! valid_write_context)
     {
       std::stringstream warning;
-      warning << format ("The filter '{1}' is not a valid modification string, because it contains ", value)
-              << ( modifier_token.empty () ? "the OR operator." : format ("an attribute modifier ({1}).", modifier_token) )
+      warning << format ("The filter '{1}' is not a valid modification string, because it contains {2}.", value, reason)
               << "\nAs such, value for the write context cannot be set (context will not apply on task add / task log).\n\n"
               << format ("Please use 'task config context.{1}.write <default mods>' to set default attribute values for new tasks in this context manually.\n\n", words[1]);
       out << colorizeFootnote (warning.str ());

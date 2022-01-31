@@ -187,7 +187,7 @@ TODO Task::decode
   test.is (task.get ("three"), "four", "three=four");
 
   // Task::set
-  task.data.clear ();
+  task = Task();
   task.set ("name", "value");
   test.is (task.composeF4 (), "[name:\"value\"]", "Task::set");
 
@@ -211,7 +211,7 @@ TODO Task::decode
   test.is (task.composeF4 (), "[name:\"value\"]", "Task::remove");
 
   // Task::all
-  test.is (task.data.size (), (size_t)1, "Task::all size");
+  test.is (task.all ().size (), (size_t)1, "Task::all size");
 
   ////////////////////////////////////////////////////////////////////////////////
 

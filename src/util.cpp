@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <format.h>
 #include <shared.h>
 // If <iostream> is included, put it after <stdio.h>, because it includes
 // <stdio.h>, and therefore would ignore the _WITH_GETLINE.
@@ -309,3 +310,10 @@ void setHeaderUnderline (Table& table)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Perform strtol on a string and check if the extracted value matches.
+//
+bool extractLongInteger (const std::string& input, long& output)
+{
+  output = strtol (input.c_str (), nullptr, 10);
+  return (format ("{1}", output) == input);
+}

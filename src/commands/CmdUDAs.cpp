@@ -35,6 +35,7 @@
 #include <format.h>
 #include <shared.h>
 #include <util.h>
+#include <Task.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdUDAs::CmdUDAs ()
@@ -133,10 +134,8 @@ int CmdUDAs::execute (std::string& output)
   std::map <std::string, int> orphans;
   for (auto& i : filtered)
   {
-    for (auto& att : i.data)
-      if (att.first.substr (0, 11) != "annotation_" &&
-          Context::getContext ().columns.find (att.first) == Context::getContext ().columns.end ())
-        orphans[att.first]++;
+    for (auto& att : i.getUDAOrphans ())
+      orphans[att]++;
   }
 
   if (orphans.size ())

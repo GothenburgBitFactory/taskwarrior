@@ -34,8 +34,6 @@
 
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
 
-extern Task& contextTask;
-
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeString::ColumnTypeString ()
 {
@@ -67,7 +65,6 @@ void ColumnTypeString::modify (Task& task, const std::string& value)
   {
     Eval e;
     e.addSource (domSource);
-    contextTask = task;
 
     Variant v;
     e.evaluateInfixExpression (value, v);

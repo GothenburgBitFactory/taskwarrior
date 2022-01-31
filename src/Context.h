@@ -38,6 +38,8 @@
 #include <Timer.h>
 #include <set>
 
+class CurrentTask;
+
 class Context
 {
 public:
@@ -72,6 +74,9 @@ public:
 
   void decomposeSortField (const std::string&, std::string&, bool&, bool&);
   void debugTiming (const std::string&, const Timer&);
+
+  CurrentTask withCurrentTask (const Task *);
+  friend class CurrentTask;
 
 private:
   void staticInitialization ();
@@ -115,6 +120,25 @@ public:
   long                                time_sort_us        {0};
   long                                time_render_us      {0};
   long                                time_hooks_us       {0};
+
+  // the current task for DOM references, or NULL if there is no task
+  const Task *                        currentTask         {NULL};
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// CurrentTask resets Context::currentTask to previous context task on destruction; this ensures
+// that this context value is restored when exiting the scope where the context was applied.
+class CurrentTask {
+public:
+  ~CurrentTask();
+
+private:
+  CurrentTask(Context &context, const Task *previous);
+
+  Context &context;
+  const Task *previous;
+
+  friend class Context;
 };
 
 #endif

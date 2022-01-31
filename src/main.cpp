@@ -29,6 +29,7 @@
 #include <new>
 #include <cstring>
 #include <Context.h>
+#include <regex>
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, const char** argv)
@@ -62,6 +63,11 @@ int main (int argc, const char** argv)
     {
       std::cerr << "Error: Memory allocation failed: " << error.what () << "\n";
       status = -3;
+    }
+
+    catch (const std::regex_error& e)
+    {
+      std::cout << "regex_error caught: " << e.what() << '\n';
     }
 
     catch (...)

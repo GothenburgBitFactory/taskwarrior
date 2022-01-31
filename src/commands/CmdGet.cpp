@@ -64,9 +64,8 @@ int CmdGet::execute (std::string& output)
     {
     case Lexer::Type::dom:
       {
-        Task t;
         Variant result;
-        if (getDOM (arg.attribute ("raw"), t, result))
+        if (getDOM (arg.attribute ("raw"), NULL, result))
           results.emplace_back (result);
         else
           results.emplace_back ("");

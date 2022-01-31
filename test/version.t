@@ -77,11 +77,6 @@ class TestVersion(TestCase):
         self.assertIn("MIT license", out)
         self.assertIn("https://taskwarrior.org", out)
 
-    def slurp_git(self):
-        git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")
-        _, hash, _ = run_cmd_wait(git_cmd)
-        return hash.rstrip("\n")
-
     def test_under_version(self):
         """_version and diagnostics output expected version and syntax"""
         code, out, err = self.t("_version")
@@ -94,8 +89,7 @@ class TestVersion(TestCase):
         if os.path.exists("../.git"):
           if 2 >= len(version) > 0:
               git = version[1]
-              git_expected = "({0})".format(self.slurp_git())
-              self.assertEqual(git_expected, git)
+              self.assertRegex(git, r'\([a-f0-9]*\)'))
           else:
               raise ValueError("Unexpected output from _version '{0}'".format(
                   out))

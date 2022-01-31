@@ -16,14 +16,6 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-fedora31:
-    build:
-        context: .
-        dockerfile: test/docker/fedora31
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
   test-fedora32:
     build:
         context: .
@@ -44,6 +36,14 @@ services:
     build:
         context: .
         dockerfile: test/docker/fedora34
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+  test-fedora35:
+    build:
+        context: .
+        dockerfile: test/docker/fedora35
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
@@ -72,6 +72,14 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
+  test-ubuntu2110:
+    build:
+        context: .
+        dockerfile: test/docker/ubuntu2110
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
   test-debianstable:
     build:
         context: .
@@ -96,10 +104,10 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-opensuse1500:
+  test-opensuse15:
     build:
         context: .
-        dockerfile: test/docker/opensuse1500
+        dockerfile: test/docker/opensuse15
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t

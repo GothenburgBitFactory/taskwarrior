@@ -43,6 +43,7 @@
 #include <shared.h>
 #include <format.h>
 #include <main.h>
+#include <regex>
 
 #ifdef HAVE_COMMIT
 #include <commit.h>
@@ -115,7 +116,7 @@ std::string configurationDefaults =
   "expressions=infix                              # Prefer infix over postfix expressions\n"
   "json.array=1                                   # Enclose JSON output in [ ]\n"
   "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
-  "news.version=                                  # Latest version higlights read by the user\n"
+  "news.version=                                  # Latest version highlights read by the user\n"
   "\n"
   "# Dates\n"
   "dateformat=Y-M-D                               # Preferred input and display date format\n"
@@ -474,7 +475,7 @@ int Context::initialize (int argc, const char** argv)
     // [1] Load the correct config file.
     //     - Default to ~/.taskrc (ctor).
     //     - If no ~/.taskrc, use $XDG_CONFIG_HOME/task/taskrc if exists, or
-    //       ~/.config/task/taskrc if $XDG_DATA_HOME is unset
+    //       ~/.config/task/taskrc if $XDG_CONFIG_HOME is unset
     //     - Allow $TASKRC override.
     //     - Allow command line override rc:<file>
     //     - Load resultant file.
@@ -667,9 +668,13 @@ int Context::initialize (int argc, const char** argv)
     rc = 4;
   }
 
+  catch (const std::regex_error& e)
+  {
+    std::cout << "regex_error caught: " << e.what() << '\n';
+  }
   catch (...)
   {
-    error ("Unknown error. Please report.");
+    error ("knknown error. Please report.");
     rc = 3;
   }
 
@@ -966,16 +971,19 @@ std::string Context::getTaskContext (const std::string& kind, std::string name, 
   }
 
   // Figure out the context string for this kind (read/write)
-  std::string contextString = config.get ("context." + name + "." + kind);
-  if (contextString.empty ())
+  std::string contextString = "";
+
+  if (! config.has ("context." + name + "." + kind) && kind == "read")
   {
     debug ("Specific " + kind + " context for '" + name + "' not defined. ");
     if (fallback)
     {
-      debug ("Falling back on generic.");
+      debug ("Trying to interpret old-style context definition as read context.");
       contextString = config.get ("context." + name);
     }
   }
+  else
+    contextString = config.get ("context." + name + "." + kind);
 
   debug (format ("Detected context string: {1}", contextString.empty() ? "(empty)" : contextString));
   return contextString;
@@ -1321,6 +1329,12 @@ void Context::debugTiming (const std::string& details, const Timer& timer)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CurrentTask Context::withCurrentTask (const Task *task)
+{
+  return CurrentTask(*this, task);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // This capability is to answer the question of 'what did I just do to generate
 // this output?'.
 void Context::updateXtermTitle ()
@@ -1419,6 +1433,19 @@ void Context::debug (const std::string& input)
 {
   if (input.length ())
     debugMessages.push_back (input);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CurrentTask::CurrentTask (Context &context, const Task *task)
+  : context {context}, previous {context.currentTask}
+{
+  context.currentTask = task;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CurrentTask::~CurrentTask ()
+{
+  context.currentTask = previous;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

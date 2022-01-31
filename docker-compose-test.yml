@@ -1,0 +1,9 @@
+version: '3'
+services:
+  test-debian-new:
+    build:
+      context: .
+      dockerfile: test/test-containers/Dockerfile-debiantesting
+    volumes:
+      - ./:/root/src/
+    entrypoint:  /root/src/entrypoint.sh

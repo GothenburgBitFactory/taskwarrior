@@ -189,10 +189,9 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
   // first match.
   else
   {
-    for (const auto& att : task.data)
+    for (const auto& att : task.getAnnotations ())
     {
-      if (! att.first.compare (0, 11, "annotation_", 11) &&
-          find (att.second, rule.substr (14), sensitive) != std::string::npos)
+      if (find (att.second, rule.substr (14), sensitive) != std::string::npos)
       {
         applyColor (base, c, merge);
         return;

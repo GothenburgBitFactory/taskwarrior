@@ -1025,203 +1025,24 @@ void TDB2::show_diff (
   Color color_red   (Context::getContext ().color () ? Context::getContext ().config.get ("color.undo.before") : "");
   Color color_green (Context::getContext ().color () ? Context::getContext ().config.get ("color.undo.after") : "");
 
+  auto before = prior == "" ? Task() : Task(prior);
+  auto after = Task(current);
+
   if (Context::getContext ().config.get ("undo.style") == "side")
   {
+    Table view = before.diffForUndoSide(after);
+
     std::cout << '\n'
               << format ("The last modification was made {1}", lastChange.toString ())
-              << '\n';
-
-    // Attributes are all there is, so figure the different attribute names
-    // between before and after.
-    Table view;
-    view.width (Context::getContext ().getWidth ());
-    view.intraPadding (2);
-    view.add ("");
-    view.add ("Prior Values");
-    view.add ("Current Values");
-    setHeaderUnderline (view);
-
-    Task after (current);
-
-    if (prior != "")
-    {
-      Task before (prior);
-
-      std::vector <std::string> beforeAtts;
-      for (auto& att : before.data)
-        beforeAtts.push_back (att.first);
-
-      std::vector <std::string> afterAtts;
-      for (auto& att : after.data)
-        afterAtts.push_back (att.first);
-
-      std::vector <std::string> beforeOnly;
-      std::vector <std::string> afterOnly;
-      listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
-
-      int row;
-      for (auto& name : beforeOnly)
-      {
-        row = view.addRow ();
-        view.set (row, 0, name);
-        view.set (row, 1, renderAttribute (name, before.get (name)), color_red);
-      }
-
-      for (auto& att : before.data)
-      {
-        std::string priorValue   = before.get (att.first);
-        std::string currentValue = after.get  (att.first);
-
-        if (currentValue != "")
-        {
-          row = view.addRow ();
-          view.set (row, 0, att.first);
-          view.set (row, 1, renderAttribute (att.first, priorValue),
-                    (priorValue != currentValue ? color_red : Color ()));
-          view.set (row, 2, renderAttribute (att.first, currentValue),
-                    (priorValue != currentValue ? color_green : Color ()));
-        }
-      }
-
-      for (auto& name : afterOnly)
-      {
-        row = view.addRow ();
-        view.set (row, 0, name);
-        view.set (row, 2, renderAttribute (name, after.get (name)), color_green);
-      }
-    }
-    else
-    {
-      int row;
-      for (auto& att : after.data)
-      {
-        row = view.addRow ();
-        view.set (row, 0, att.first);
-        view.set (row, 2, renderAttribute (att.first, after.get (att.first)), color_green);
-      }
-    }
-
-    std::cout << '\n'
+              << '\n'
+              << '\n'
               << view.render ()
               << '\n';
   }
 
-  // This style looks like this:
-  //  --- before    2009-07-04 00:00:25.000000000 +0200
-  //  +++ after    2009-07-04 00:00:45.000000000 +0200
-  //
-  // - name: old           // att deleted
-  // + name:
-  //
-  // - name: old           // att changed
-  // + name: new
-  //
-  // - name:
-  // + name: new           // att added
-  //
   else if (Context::getContext ().config.get ("undo.style") == "diff")
   {
-    // Create reference tasks.
-    Task before;
-    if (prior != "")
-      before.parse (prior);
-
-    Task after (current);
-
-    // Generate table header.
-    Table view;
-    view.width (Context::getContext ().getWidth ());
-    view.intraPadding (2);
-    view.add ("");
-    view.add ("");
-
-    int row = view.addRow ();
-    view.set (row, 0, "--- previous state", color_red);
-    view.set (row, 1, "Undo will restore this state", color_red);
-
-    row = view.addRow ();
-    view.set (row, 0, "+++ current state ", color_green);
-    view.set (row, 1, format ("Change made {1}",
-                              lastChange.toString (Context::getContext ().config.get ("dateformat"))),
-                      color_green);
-
-    view.addRow ();
-
-    // Add rows to table showing diffs.
-    std::vector <std::string> all = Context::getContext ().getColumns ();
-
-    // Now factor in the annotation attributes.
-    for (auto& it : before.data)
-      if (it.first.substr (0, 11) == "annotation_")
-        all.push_back (it.first);
-
-    for (auto& it : after.data)
-      if (it.first.substr (0, 11) == "annotation_")
-        all.push_back (it.first);
-
-    // Now render all the attributes.
-    std::sort (all.begin (), all.end ());
-
-    std::string before_att;
-    std::string after_att;
-    std::string last_att;
-    for (auto& a : all)
-    {
-      if (a != last_att)  // Skip duplicates.
-      {
-        last_att = a;
-
-        before_att = before.get (a);
-        after_att  = after.get (a);
-
-        // Don't report different uuid.
-        // Show nothing if values are the unchanged.
-        if (a == "uuid" ||
-            before_att == after_att)
-        {
-          // Show nothing - no point displaying that which did not change.
-
-          // row = view.addRow ();
-          // view.set (row, 0, *a + ":");
-          // view.set (row, 1, before_att);
-        }
-
-        // Attribute deleted.
-        else if (before_att != "" && after_att == "")
-        {
-          row = view.addRow ();
-          view.set (row, 0, '-' + a + ':', color_red);
-          view.set (row, 1, before_att, color_red);
-
-          row = view.addRow ();
-          view.set (row, 0, '+' + a + ':', color_green);
-        }
-
-        // Attribute added.
-        else if (before_att == "" && after_att != "")
-        {
-          row = view.addRow ();
-          view.set (row, 0, '-' + a + ':', color_red);
-
-          row = view.addRow ();
-          view.set (row, 0, '+' + a + ':', color_green);
-          view.set (row, 1, after_att, color_green);
-        }
-
-        // Attribute changed.
-        else
-        {
-          row = view.addRow ();
-          view.set (row, 0, '-' + a + ':', color_red);
-          view.set (row, 1, before_att, color_red);
-
-          row = view.addRow ();
-          view.set (row, 0, '+' + a + ':', color_green);
-          view.set (row, 1, after_att, color_green);
-        }
-      }
-    }
-
+    Table view = before.diffForUndoPatch(after, lastChange);
     std::cout << '\n'
               << view.render ()
               << '\n';

@@ -145,6 +145,22 @@ class TestDependencies(TestCase):
         code, out, err = self.t("_get 1.tags.BLOCKED")
         self.assertEqual("\n", out)
 
+    def test_dependency_bulk_removal(self):
+        """2655: Check that one can bulk undepend a task"""
+        self.t("add three")
+        self.t("1 modify dep:2,3")
+
+        code, out, err = self.t("_get 1.tags.BLOCKED")
+        self.assertEqual("BLOCKED\n", out)
+
+        self.t("1 modify depends:")
+
+        code, out, err = self.t("_get 1.tags.BLOCKED")
+        self.assertEqual("\n", out)
+
+        code, out, err = self.t("_get 1.depends")
+        self.assertEqual("\n", out)
+
     def test_chain_repair(self):
         """Check that a broken chain is repaired"""
         self.t("add three")
@@ -169,7 +185,6 @@ class TestDependencies(TestCase):
         self.assertNotIn("Would you like the dependency chain fixed?", out)
         self.assertIn("Deleted 1 task", out)
 
-    @unittest.expectedFailure
     def test_id_range_dep(self):
         """Check that an ID range can be used for deps"""
         self.t("add three")
@@ -178,7 +193,7 @@ class TestDependencies(TestCase):
         self.t("3 modify dep:1-2")
         code, out, err = self.t("_get 1.tags.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
-        code, out, err = self.t("_get 2.tag.BLOCKING")
+        code, out, err = self.t("_get 2.tags.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
 
     def test_id_uuid_dep(self):
@@ -195,6 +210,22 @@ class TestDependencies(TestCase):
         # Remove a mix of IЅs and UUID
         code, out, err = self.t("3 modify dep:-1,-%s" % uuid)
         self.assertIn("Modifying task 3 'three'.", out)
+
+    def test_id_uuid_short_dep(self):
+        """Check that short UUIDs are usable for deps"""
+
+        # Get 2.uuid
+        code, out, err = self.t("_get 2.uuid")
+        short_uuid = out.strip().split("-")[0]
+
+        # Add a mix of IDs and UUID
+        code, out, err = self.t("add three dep:%s" % short_uuid)
+        self.assertIn("Created task 3.", out)
+
+        # Remove a mix of IЅs and UUID
+        code, out, err = self.t("3 modify dep:-%s" % short_uuid)
+        self.assertIn("Modifying task 3 'three'.", out)
+
 
 class TestBug697(TestCase):
     def setUp(self):

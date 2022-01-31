@@ -314,7 +314,7 @@ class Test1447(TestCase):
         self.t = Task()
 
     def test_filter_uda(self):
-        """1447: Verify ability to filter on empty UDA"""
+        """1447: Verify ability to filter on empty UDA that resembles named date"""
         self.t.config('uda.sep.type', 'string')
         self.t('add one')
         self.t('add two sep:foo')

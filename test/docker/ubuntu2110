@@ -1,0 +1,27 @@
+FROM ubuntu:21.10
+
+RUN apt-get update
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y build-essential cmake git uuid-dev libgnutls28-dev faketime locales python3
+
+# Setup language environment
+RUN locale-gen en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Setup taskwarrior
+ADD . /root/code/
+WORKDIR /root/code/
+RUN git clean -dfx
+RUN git submodule init
+RUN git submodule update
+RUN cmake -DCMAKE_BUILD_TYPE=debug .
+RUN make -j8
+RUN make install
+RUN task --version
+
+# Setup tests
+WORKDIR /root/code/test/
+RUN make -j8
+
+CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]

@@ -1,4 +1,38 @@
-2.6.0 () -
+------ current release ---------------------------
+2.6.2 -
+
+- TW #502  Sequence of IDs doesn't work with attribute "depends"
+           Thanks to Andreas Kalex and Reg for reporting.
+- TW #2648 xdg-open is not available on Mac OS-X
+           Thanks to chapterjson for reporting.
+- TW #2655 The bulk removal of depends: and tags: is ignored
+           Thanks to angelus2014 for reporting.
+- TW #2664 Tag exclusion should be detected as invalid write context
+           Thanks to bentwitthold for reporting.
+- TW #2671 The value of soww named date is incorrect
+           Thanks to Lennart Kill for reporting.
+
+2.6.1 (2021-10-19) - a696b6b155f9c8af87a6a496c0d298c58e6fe369
+
+- TW #2619 Fish autocompletion fails when completing tag removal
+           Thanks to Alexandre Provencio for reporting, Tin Lai and Alexandre
+           Provencio for contributing.
+- TW #2620 Old-style context definition should only be interpreted as read
+           context.
+           Thanks to bongoman and Tom Dörr for reporting.
+- TW #2622 Tags and dependencies appear as orphaned UDAs.
+           Thanks to Scott Mcdermott for reporting.
+- TW #2626 Waiting report lists deleted and/or completed tasks.
+           Thanks to Don Harper for reporting.
+- TW #2629 New-style context definition should take precedence over old-style
+           even if the new-style is an empty string.
+           Thanks to Denis Kasak for reporting.
+- TW #2632 Cannot build on Cygwin
+           Thanks to Michael Esemplare for contributing.
+- TW #2639 Unable to use ranges for some tasks with IDs above 1000.
+           Thanks to Manuel Haussmann for reporting.
+
+2.6.0 (2021-10-03) - 8174287f917a3b24c19a6601ba36fca9bdaa78c9
 
 - TW #1654 "Due" parsing behaviour seems inconsistent
            Thanks to Jim B for reporting.
@@ -134,15 +168,12 @@
            Thanks to bharatvaj for contributing.
 - TW #2581 Config entry with a trailing comment cannot be modified
 
-
------- current release ---------------------------
+------ old releases ------------------------------
 
 2.5.3 (2021-01-05) - 2f47226f91f0b02f7617912175274d9eed85924f
 
 - #2375   task hangs then dies when certain tasks are present in a report
           Thanks to Max Rossmannek, Tomáš Janoušek and Chad Phillips.
-
------- old releases ------------------------------
 
 2.5.2 (2020-12-05) - b0c17d11639dc6e783befd89c8508f2abb9b4287
 

@@ -239,22 +239,25 @@ bool getDOM (const std::string& name, Variant& value)
 //
 // This code emphasizes speed, hence 'id' and 'urgency' being evaluated first
 // as special cases.
-bool getDOM (const std::string& name, const Task& task, Variant& value)
+//
+// If task is NULL, then the contextual task will be determined from the DOM
+// string, if any exists.
+bool getDOM (const std::string& name, const Task* task, Variant& value)
 {
   // Special case, blank refs cause problems.
   if (name == "")
     return false;
 
   // Quickly deal with the most common cases.
-  if (task.data.size () && name == "id")
+  if (task && name == "id")
   {
-    value = Variant (static_cast<int> (task.id));
+    value = Variant (static_cast<int> (task->id));
     return true;
   }
 
-  if (task.data.size () && name == "urgency")
+  if (task && name == "urgency")
   {
-    value = Variant (task.urgency_c ());
+    value = Variant (task->urgency_c ());
     return true;
   }
 
@@ -262,54 +265,55 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   auto elements = split (name, '.');
   Task loaded_task;
 
-  // Use a lambda to decide whether the reference is going to be the passed
+  // decide whether the reference is going to be the passed
   // "task" or whether it's going to be a newly loaded task (if id/uuid was
   // given).
-  const Task& ref = [&]() -> const Task&
+  const Task* ref = task;
+  Lexer lexer (elements[0]);
+  std::string token;
+  Lexer::Type type;
+
+  // If this can be ID/UUID reference (the name contains '.'),
+  // lex it to figure out. Otherwise don't lex, as lexing can be slow.
+  if ((elements.size() > 1) and lexer.token (token, type))
   {
-    Lexer lexer (elements[0]);
-    std::string token;
-    Lexer::Type type;
+    bool reloaded = false;
 
-    // If this can be ID/UUID reference (the name contains '.'),
-    // lex it to figure out. Otherwise don't lex, as lexing can be slow.
-    if ((elements.size() > 1) and lexer.token (token, type))
+    if (type == Lexer::Type::uuid &&
+        token.length () == elements[0].length ())
     {
-      bool reloaded = false;
-
-      if (type == Lexer::Type::uuid &&
-          token.length () == elements[0].length ())
+      if (!task || token != task->get ("uuid"))
       {
-        if (token != task.get ("uuid"))
-        {
-          Context::getContext ().tdb2.get (token, loaded_task);
+        if (Context::getContext ().tdb2.get (token, loaded_task))
           reloaded = true;
-        }
-
-        // Eat elements[0]/UUID.
-        elements.erase (elements.begin ());
-      }
-      else if (type == Lexer::Type::number &&
-               token.find ('.') == std::string::npos)
-      {
-        auto id = strtol (token.c_str (), nullptr, 10);
-        if (id && id != task.id)
-        {
-          Context::getContext ().tdb2.get (id, loaded_task);
-          reloaded = true;
-        }
-
-        // Eat elements[0]/ID.
-        elements.erase (elements.begin ());
       }
 
-      if (reloaded)
-        return loaded_task;
+      // Eat elements[0]/UUID.
+      elements.erase (elements.begin ());
+    }
+    else if (type == Lexer::Type::number &&
+             token.find ('.') == std::string::npos)
+    {
+      auto id = strtol (token.c_str (), nullptr, 10);
+      if (id && (!task || id != task->id))
+      {
+        if (Context::getContext ().tdb2.get (id, loaded_task))
+          reloaded = true;
+      }
+
+      // Eat elements[0]/ID.
+      elements.erase (elements.begin ());
     }
 
-    return task;
+    if (reloaded)
+      ref = &loaded_task;
+  }
 
-  } ();
+
+  // The remainder of this method requires a contextual task, so if we do not
+  // have one, delegate to the two-argument getDOM
+  if (!ref)
+    return getDOM (name, value);
 
   auto size = elements.size ();
 
@@ -318,31 +322,31 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
   {
     // Now that 'ref' is the contextual task, and any ID/UUID is chopped off the
     // elements vector, DOM resolution is now simple.
-    if (ref.data.size () && size == 1 && canonical == "id")
+    if (size == 1 && canonical == "id")
     {
-      value = Variant (static_cast<int> (ref.id));
+      value = Variant (static_cast<int> (ref->id));
       return true;
     }
 
-    if (ref.data.size () && size == 1 && canonical == "urgency")
+    if (size == 1 && canonical == "urgency")
     {
-      value = Variant (ref.urgency_c ());
+      value = Variant (ref->urgency_c ());
       return true;
     }
 
     // Special handling of status required for virtual waiting status
     // implementation. Remove in 3.0.0.
-    if (ref.data.size () && size == 1 && canonical == "status")
+    if (size == 1 && canonical == "status")
     {
-      value = Variant (ref.statusToText (ref.getStatus ()));
+      value = Variant (ref->statusToText (ref->getStatus ()));
       return true;
     }
 
     Column* column = Context::getContext ().columns[canonical];
 
-    if (ref.data.size () && size == 1 && column)
+    if (size == 1 && column)
     {
-      if (column->is_uda () && ! ref.has (canonical))
+      if (column->is_uda () && ! ref->has (canonical))
       {
         value = Variant ("");
         return true;
@@ -350,7 +354,7 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
 
       if (column->type () == "date")
       {
-        auto numeric = ref.get_date (canonical);
+        auto numeric = ref->get_date (canonical);
         if (numeric == 0)
           value = Variant ("");
         else
@@ -358,32 +362,32 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
       }
       else if (column->type () == "duration" || canonical == "recur")
       {
-        auto period = ref.get (canonical);
+        auto period = ref->get (canonical);
 
         Duration iso;
         std::string::size_type cursor = 0;
         if (iso.parse (period, cursor))
           value = Variant (iso.toTime_t (), Variant::type_duration);
         else
-          value = Variant (Duration (ref.get (canonical)).toTime_t (), Variant::type_duration);
+          value = Variant (Duration (ref->get (canonical)).toTime_t (), Variant::type_duration);
       }
       else if (column->type () == "numeric")
-        value = Variant (ref.get_float (canonical));
+        value = Variant (ref->get_float (canonical));
       else
-        value = Variant (ref.get (canonical));
+        value = Variant (ref->get (canonical));
 
       return true;
     }
 
-    if (ref.data.size () && size == 2 && canonical == "tags")
+    if (size == 2 && canonical == "tags")
     {
-      value = Variant (ref.hasTag (elements[1]) ? elements[1] : "");
+      value = Variant (ref->hasTag (elements[1]) ? elements[1] : "");
       return true;
     }
 
-    if (ref.data.size () && size == 2 && column && column->type () == "date")
+    if (size == 2 && column && column->type () == "date")
     {
-      Datetime date (ref.get_date (canonical));
+      Datetime date (ref->get_date (canonical));
            if (elements[1] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
       else if (elements[1] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
       else if (elements[1] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
@@ -396,15 +400,15 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     }
   }
 
-  if (ref.data.size () && size == 2 && elements[0] == "annotations" && elements[1] == "count")
+  if (size == 2 && elements[0] == "annotations" && elements[1] == "count")
   {
-    value = Variant (static_cast<int> (ref.getAnnotationCount ()));
+    value = Variant (static_cast<int> (ref->getAnnotationCount ()));
     return true;
   }
 
-  if (ref.data.size () && size == 3 && elements[0] == "annotations")
+  if (size == 3 && elements[0] == "annotations")
   {
-    auto annos = ref.getAnnotations ();
+    auto annos = ref->getAnnotations ();
 
     int a = strtol (elements[1].c_str (), nullptr, 10);
     int count = 0;
@@ -430,9 +434,9 @@ bool getDOM (const std::string& name, const Task& task, Variant& value)
     }
   }
 
-  if (ref.data.size () && size == 4 && elements[0] == "annotations" && elements[2] == "entry")
+  if (size == 4 && elements[0] == "annotations" && elements[2] == "entry")
   {
-    auto annos = ref.getAnnotations ();
+    auto annos = ref->getAnnotations ();
 
     int a = strtol (elements[1].c_str (), nullptr, 10);
     int count = 0;

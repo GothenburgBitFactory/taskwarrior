@@ -51,6 +51,9 @@ int CmdAdd::execute (std::string& output)
 {
   // Apply the command line modifications to the new task.
   Task task;
+
+  // the task is empty, but DOM references can refer to earlier parts of the
+  // command line, e.g., `task add due:20110101 wait:due`.
   task.modify (Task::modReplace, true);
   Context::getContext ().tdb2.add (task);
 

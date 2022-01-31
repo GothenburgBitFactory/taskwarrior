@@ -1,10 +1,9 @@
 <div align="center">
 <img src="https://avatars.githubusercontent.com/u/36100920?s=200&u=24da05914c20c4ccfe8485310f7b83049407fa9a&v=4"></br>
 
-[![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=2.6.0)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
+[![GitHub Actions build status](https://github.com/GothenburgBitFactory/taskwarrior/workflows/tests/badge.svg?branch=develop)](https://github.com/GothenburgBitFactory/taskwarrior/actions)
 [![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
 [![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
-![Commits since release](https://img.shields.io/github/commits-since/GothenburgBitFactory/taskwarrior/latest)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/GothenburgBitFactory?color=green)](https://github.com/sponsors/GothenburgBitFactory/)
 </br>
 [![Twitter](https://img.shields.io/twitter/follow/taskwarrior?style=social)](https://twitter.com/taskwarrior)
@@ -64,13 +63,15 @@ For code contributions, please use pull requests, or alternately send your code 
 
 We use the following branching model:
 
-* `master` is the stable branch. Building from here is the same as building
-  from the latest tarball, or installing a binary package. No development is
-  done on the `master` branch.
+* `stable` is a branch containing the content of the latest release. Building
+  from here is the same as building from the latest tarball, or installing a
+  binary package. No development is done on the `stable` branch.
 
-* `2.6.0` is the current development branch. All work is done here, and upon
-  release it will be merged to `master`. This development branch is not stable,
-  and should be treated accordingly. Make backups.
+* `develop` is the current development branch. All work is done here, and upon
+  release it will be merged to `stable`. While development branch is not
+  stable, we utilize CI to ensure we're at least not merging improvements that
+  break existing tests, and hence should be relatively safe. We still recommend
+  making backups when using the development branch.
 
 ## Installing
 
@@ -85,13 +86,13 @@ There are many binary packages available, but to install from source requires:
 
 Download the tarball, and expand it:
 
-    $ curl -O https://taskwarrior.org/download/task-2.6.0.tar.gz
-    $ tar xzf task-2.6.0.tar.gz
-    $ cd task-2.6.0
+    $ curl -O https://taskwarrior.org/download/task-2.6.1.tar.gz
+    $ tar xzf task-2.6.1.tar.gz
+    $ cd task-2.6.1
 
 Or clone this repository:
 
-    $ git clone --recursive -b 2.6.0 https://github.com/GothenburgBitFactory/taskwarrior.git
+    $ git clone --recursive -b stable https://github.com/GothenburgBitFactory/taskwarrior.git
     $ cd taskwarrior
 
 Then build:

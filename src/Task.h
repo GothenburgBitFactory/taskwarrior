@@ -33,6 +33,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <JSON.h>
+#include <Table.h>
+#include <Datetime.h>
 
 class Task
 {
@@ -60,6 +62,7 @@ public:
 public:
   Task () = default;
   bool operator== (const Task&);
+  bool operator!= (const Task&);
   Task (const std::string&);
   Task (const json::object*);
 
@@ -74,7 +77,6 @@ public:
   enum dateState {dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday};
 
   // Public data.
-  std::map <std::string, std::string> data {};
   int id                                   {0};
   float urgency_value                      {0.0};
   bool recalc_urgency                      {true};
@@ -100,6 +102,8 @@ public:
   void set (const std::string&, long long);
   void remove (const std::string&);
 
+  bool is_empty () const;
+
 #ifdef PRODUCT_TASKWARRIOR
   bool is_ready () const;
   bool is_due () const;
@@ -113,6 +117,10 @@ public:
   bool is_overdue () const;
   bool is_udaPresent () const;
   bool is_orphanPresent () const;
+
+  static bool isTagAttr (const std::string&);
+  static bool isDepAttr (const std::string&);
+  static bool isAnnotationAttr (const std::string&);
 #endif
   bool is_waiting () const;
 
@@ -150,7 +158,7 @@ public:
   std::vector <Task>        getBlockedTasks () const;
   std::vector <Task>        getDependencyTasks () const;
 
-  std::vector <std::string> getUDAOrphanUUIDs () const;
+  std::vector <std::string> getUDAOrphans () const;
 
   void substitute (const std::string&, const std::string&, const std::string&);
 #endif
@@ -167,6 +175,8 @@ public:
 
   std::string diff (const Task& after) const;
   std::string diffForInfo (const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp) const; 
+  Table diffForUndoSide (const Task& after) const;
+  Table diffForUndoPatch (const Task& after, const Datetime& lastChange) const;
 
 private:
   int determineVersion (const std::string&);
@@ -176,15 +186,15 @@ private:
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;
   const std::string decode (const std::string&) const;
-  bool isTagAttr (const std::string&) const;
   const std::string tag2Attr (const std::string&) const;
   const std::string attr2Tag (const std::string&) const;
-  bool isDepAttr (const std::string&) const;
   const std::string dep2Attr (const std::string&) const;
   const std::string attr2Dep (const std::string&) const;
-  bool isAnnotationAttr (const std::string&) const;
   void fixDependsAttribute ();
   void fixTagsAttribute ();
+
+protected:
+  std::map <std::string, std::string> data {};
 
 public:
   float urgency_project     () const;

@@ -477,7 +477,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "      hooks.location=$XDG_CONFIG_HOME/task/hooks/\n\n"
     "  Solutions in the past required symlinks or more cumbersome configuration overrides.",
     "  If you configure your data.location and hooks.location as above, ensure\n"
-    "  that the XFG_DATA_HOME and XDG_CONFIG_HOME environment variables are set,\n"
+    "  that the XDG_DATA_HOME and XDG_CONFIG_HOME environment variables are set,\n"
     "  otherwise they're going to expand to empty string. Alternatively you can\n"
     "  hardcode the desired paths on your system."
   );
@@ -575,14 +575,15 @@ int CmdNews::execute (std::string& output)
   std::stringstream outro;
   outro << underline.colorize (bold.colorize ("Taskwarrior crowdfunding\n"));
   outro << format (
-    "Taskwarrior has been in development for {1} years and its continued survival\n"
+    "Taskwarrior has been in development for {1} years but its survival\n"
     "depends on your support!\n\n"
-    "Please consider joining our {2} fundraiser and visit crowdfunding page at:\n\n",
+    "Please consider joining our {2} fundraiser to help us fund maintenance\n"
+    "and development of new features:\n\n",
     std::lround (static_cast<float>(development_time.days ()) / 365.25),
     now.year ()
   );
   outro << bold.colorize("    https://github.com/sponsors/GothenburgBitFactory/\n\n");
-  outro << "Interesting perks are available for our sponsors.\nSponsorship directly translates to more development time spent on the project.\n";
+  outro << "Perks are available for our sponsors.\n";
 
   std::cout << outro.str ();
 
@@ -615,7 +616,11 @@ int CmdNews::execute (std::string& output)
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
 
     if (matches.size () == 1 && matches[0] == "yes")
+#if defined (DARWIN)
+      system ("open 'https://github.com/sponsors/GothenburgBitFactory/'");
+#else
       system ("xdg-open 'https://github.com/sponsors/GothenburgBitFactory/'");
+#endif
 
     std::cout << std::endl;
   }
@@ -624,7 +629,7 @@ int CmdNews::execute (std::string& output)
 
   if (! full_summary && major_items)
     Context::getContext ().footnote (format (
-      "Only major higlights were displayed ({1} out of {2} total).\n"
+      "Only major highlights were displayed ({1} out of {2} total).\n"
       "If you're interested in more release highlights, run 'task news {3} minor'.",
       items.size (),
       total_highlights,

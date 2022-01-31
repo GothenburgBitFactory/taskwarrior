@@ -28,6 +28,7 @@
 
 import sys
 import os
+import tempfile
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -115,6 +116,53 @@ class TestIDMisParse(TestCase):
         self.assertIn("one", out)
         self.assertNotIn("two", out)
         self.assertNotIn("three", out)
+
+
+class TestIDRangeParsing(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def generate_tasks(self, n):
+        """Generates n tasks for testing purposes"""
+        with tempfile.NamedTemporaryFile(mode='w') as f:
+            f.write('\n'.join([f'{{"description": "test task {i+1}"}}' for i in range(n)]))
+            f.flush()
+            code, out, err = self.t(f'import {f.name}')
+
+    def test_single_digit_range(self):
+        """Test that parsing single digit ID range works"""
+        self.generate_tasks(20)
+        code, out, err = self.t("4-6 count")
+        self.assertEqual("3", out.strip())
+
+    def test_double_digit_range(self):
+        """Test that parsing double digit ID range works"""
+        self.generate_tasks(30)
+        code, out, err = self.t("14-26 count")
+        self.assertEqual("13", out.strip())
+
+    def test_triple_digit_range(self):
+        """Test that parsing triple digit ID range works"""
+        self.generate_tasks(150)
+        code, out, err = self.t("110-128 count")
+        self.assertEqual("19", out.strip())
+
+    def test_quadruple_digit_range(self):
+        """Test that parsing four digit ID range works"""
+        self.generate_tasks(1200)
+
+        # Full range
+        code, out, err = self.t("1100-1189 count")
+        self.assertEqual("90", out.strip())
+
+        # Partially existing range, 1200 is the last ID
+        code, out, err = self.t("1100-1289 count")
+        self.assertEqual("101", out.strip())
+
+        # Also if the range resembles time
+        code, out, err = self.t("1100-1140 count")
+        self.assertEqual("41", out.strip())
 
 
 if __name__ == "__main__":

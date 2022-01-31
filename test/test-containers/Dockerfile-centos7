@@ -1,0 +1,28 @@
+FROM centos/devtoolset-7-toolchain-centos7:7
+
+USER root
+RUN yum update --assumeyes
+RUN yum install --assumeyes https://repo.ius.io/ius-release-el7.rpm https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm &\
+    yum install --assumeyes centos-release-scl &\
+    yum install --assumeyes git224 &\
+    yum install --assumeyes python make gnutls-devel libuuid-devel libfaketime &\
+    yum install --assumeyes epel-release &\
+    yum install --assumeyes which cmake3
+
+RUN alternatives --install /usr/local/bin/cmake cmake /usr/bin/cmake 10 \
+                 --slave /usr/local/bin/ctest ctest /usr/bin/ctest \
+                 --slave /usr/local/bin/cpack cpack /usr/bin/cpack \
+                 --slave /usr/local/bin/ccmake ccmake /usr/bin/ccmake \
+                 --family cmake
+
+RUN alternatives --install /usr/local/bin/cmake cmake /usr/bin/cmake3 20 \
+                 --slave /usr/local/bin/ctest ctest /usr/bin/ctest3 \
+                 --slave /usr/local/bin/cpack cpack /usr/bin/cpack3 \
+                 --slave /usr/local/bin/ccmake ccmake /usr/bin/ccmake3 \
+                 --family cmake
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+CMD ["/bin/bash"]

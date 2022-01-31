@@ -39,8 +39,8 @@ New Features in Taskwarrior 2.6.0
     whole units like days, e.g. 'add test due:2021-07-17' would not match
     'due.before:tomorrow' (on the 16th), but would match 'due.by:tomorrow'.
   - Waiting is now an entirely "virtual" concept, based on a task's
-    'wait' property and the current time. Task is consiered "waiting" if its
-    wait attribute is in the future.  TaskWarrior no longer explicitly
+    'wait' property and the current time. Task is considered "waiting" if its
+    wait attribute is in the future. TaskWarrior no longer explicitly
     "unwaits" a task (the wait attribute is not removed once its value is in
     the past), so the "unwait' verbosity token is no longer available.
     This allows for filtering for tasks that were waiting in the past

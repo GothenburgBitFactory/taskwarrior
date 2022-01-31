@@ -36,13 +36,10 @@ from basetest import Task, TestCase
 
 
 class TestTags(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        """Executed once before any test in the class"""
-        cls.t = Task()
 
     def setUp(self):
         """Executed before each test in the class"""
+        self.t = Task()
 
     def split_tags(self, tags):
         return sorted(tags.strip().split(','))
@@ -80,6 +77,19 @@ class TestTags(TestCase):
         # Remove missing tag.
         code, out, err = self.t("1 modify -missing")
         self.assertIn("Modified 0 tasks", out)
+
+    def test_tag_bulk_removal(self):
+        """2655: Test bulk removal of tags"""
+        self.t("add +one This +two is a test +three")
+        code, out, err = self.t("_get 1.tags")
+        self.assertEqual(
+            sorted(["one", "two", "three"]),
+            self.split_tags(out))
+
+        # Remove all tags in bulk
+        self.t("1 modify tags:")
+        code, out, err = self.t("_get 1.tags")
+        self.assertEqual("\n", out)
 
 
 class TestVirtualTags(TestCase):
