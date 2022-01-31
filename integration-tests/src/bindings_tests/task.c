@@ -136,6 +136,35 @@ static void test_task_start_stop_is_active(void) {
     tc_replica_free(rep);
 }
 
+// adding tags to a task works, and invalid tags are rejected
+static void task_task_add_tag(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_TRUE, tc_task_add_tag(task, tc_string_borrow("next")));
+
+    // invalid - synthetic tag
+    TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_add_tag(task, tc_string_borrow("PENDING")));
+    // invald - not a valid tag string
+    TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_add_tag(task, tc_string_borrow("my tag")));
+    // invald - not utf-8
+    TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_add_tag(task, tc_string_borrow("\xf0\x28\x8c\x28")));
+
+    // TODO: check error messages
+    // TODO: test getting the tag
+
+    tc_task_free(task);
+    tc_replica_free(rep);
+}
+
 int task_tests(void) {
     UNITY_BEGIN();
     // each test case above should be named here, in order.
@@ -144,5 +173,6 @@ int task_tests(void) {
     RUN_TEST(test_task_get_set_status);
     RUN_TEST(test_task_get_set_description);
     RUN_TEST(test_task_start_stop_is_active);
+    RUN_TEST(task_task_add_tag);
     return UNITY_END();
 }

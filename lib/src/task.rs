@@ -2,7 +2,8 @@ use crate::{
     replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, uuid::TCUuid,
 };
 use std::ops::Deref;
-use taskchampion::{Task, TaskMut};
+use std::str::FromStr;
+use taskchampion::{Tag, Task, TaskMut};
 
 /// A task, as publicly exposed by this library.
 ///
@@ -282,7 +283,6 @@ pub extern "C" fn tc_task_set_description<'a>(
     )
 }
 
-// TODO: tc_task_set_description
 // TODO: tc_task_set_entry
 // TODO: tc_task_set_wait
 // TODO: tc_task_set_modified
@@ -319,7 +319,28 @@ pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) -> TCResult {
 
 // TODO: tc_task_done
 // TODO: tc_task_delete
-// TODO: tc_task_add_tag
+
+/// Add a tag to a mutable task.
+///
+/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
+#[no_mangle]
+pub extern "C" fn tc_task_add_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> TCResult {
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
+    let tcstring = unsafe { TCString::from_arg(tag) };
+    wrap_mut(
+        task,
+        |task| {
+            let tagstr = tcstring.as_str()?;
+            let tag = Tag::from_str(tagstr)?;
+            task.add_tag(&tag)?;
+            Ok(TCResult::True)
+        },
+        TCResult::Error,
+    )
+}
+
 // TODO: tc_task_remove_tag
 // TODO: tc_task_add_annotation
 // TODO: tc_task_remove_annotation

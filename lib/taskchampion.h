@@ -284,6 +284,13 @@ enum TCResult tc_task_start(struct TCTask *task);
 enum TCResult tc_task_stop(struct TCTask *task);
 
 /**
+ * Add a tag to a mutable task.
+ *
+ * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
+ */
+enum TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
+
+/**
  * Free a task.  The given task must not be NULL.  The task must not be used after this function
  * returns, and must not be freed more than once.
  *
