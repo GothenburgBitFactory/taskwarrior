@@ -41,7 +41,7 @@ static void test_task_free_mutable_task(void) {
     TCUuid uuid = tc_task_get_uuid(task);
 
     tc_task_to_mut(task, rep);
-    TEST_ASSERT_TRUE(tc_task_set_status(task, TC_STATUS_DELETED));
+    TEST_ASSERT_EQUAL(TC_RESULT_TRUE, tc_task_set_status(task, TC_STATUS_DELETED));
     TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task));
 
     tc_task_free(task); // implicitly converts to immut
@@ -68,7 +68,7 @@ static void test_task_get_set_status(void) {
     TEST_ASSERT_EQUAL(TC_STATUS_PENDING, tc_task_get_status(task));
 
     tc_task_to_mut(task, rep);
-    TEST_ASSERT_TRUE(tc_task_set_status(task, TC_STATUS_DELETED));
+    TEST_ASSERT_EQUAL(TC_RESULT_TRUE, tc_task_set_status(task, TC_STATUS_DELETED));
     TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task)); // while mut
     tc_task_to_immut(task);
     TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task)); // while immut
@@ -92,7 +92,7 @@ static void test_task_get_set_description(void) {
     TCString *desc;
 
     tc_task_to_mut(task, rep);
-    tc_task_set_description(task, tc_string_borrow("updated"));
+    TEST_ASSERT_EQUAL(TC_RESULT_TRUE, tc_task_set_description(task, tc_string_borrow("updated")));
 
     TEST_ASSERT_TRUE(desc = tc_task_get_description(task));
     TEST_ASSERT_NOT_NULL(desc);
@@ -127,9 +127,9 @@ static void test_task_start_stop_is_active(void) {
     tc_task_to_mut(task, rep);
 
     TEST_ASSERT_FALSE(tc_task_is_active(task));
-    tc_task_start(task);
+    TEST_ASSERT_EQUAL(TC_RESULT_TRUE, tc_task_start(task));
     TEST_ASSERT_TRUE(tc_task_is_active(task));
-    tc_task_stop(task);
+    TEST_ASSERT_EQUAL(TC_RESULT_TRUE, tc_task_stop(task));
     TEST_ASSERT_FALSE(tc_task_is_active(task));
 
     tc_task_free(task);

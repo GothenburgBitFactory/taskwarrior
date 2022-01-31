@@ -11,9 +11,9 @@
  * an error response.  It is equivalent to `Result<bool, ()>`.
  */
 typedef enum TCResult {
-  TC_RESULT_TRUE,
-  TC_RESULT_FALSE,
-  TC_RESULT_ERROR,
+  TC_RESULT_ERROR = -1,
+  TC_RESULT_FALSE = 0,
+  TC_RESULT_TRUE = 1,
 } TCResult;
 
 /**
@@ -258,30 +258,30 @@ bool tc_task_is_active(const struct TCTask *task);
 /**
  * Set a mutable task's status.
  *
- * Returns false on error.
+ * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-bool tc_task_set_status(struct TCTask *task, enum TCStatus status);
+enum TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
 
 /**
  * Set a mutable task's description.
  *
- * Returns false on error.
+ * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-bool tc_task_set_description(struct TCTask *task, struct TCString *description);
+enum TCResult tc_task_set_description(struct TCTask *task, struct TCString *description);
 
 /**
  * Start a task.
  *
- * TODO: error
+ * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-void tc_task_start(struct TCTask *task);
+enum TCResult tc_task_start(struct TCTask *task);
 
 /**
  * Stop a task.
  *
- * TODO: error
+ * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-void tc_task_stop(struct TCTask *task);
+enum TCResult tc_task_stop(struct TCTask *task);
 
 /**
  * Free a task.  The given task must not be NULL.  The task must not be used after this function

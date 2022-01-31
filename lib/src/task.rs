@@ -1,4 +1,6 @@
-use crate::{replica::TCReplica, status::TCStatus, string::TCString, uuid::TCUuid};
+use crate::{
+    replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, uuid::TCUuid,
+};
 use std::ops::Deref;
 use taskchampion::{Task, TaskMut};
 
@@ -113,7 +115,8 @@ impl From<Task> for TCTask {
     }
 }
 
-/// Utility function to get a shared reference to the underlying Task.
+/// Utility function to get a shared reference to the underlying Task.  All Task getters
+/// are error-free, so this does not handle errors.
 fn wrap<'a, T, F>(task: *const TCTask, f: F) -> T
 where
     F: FnOnce(&Task) -> T,
@@ -131,8 +134,9 @@ where
 }
 
 /// Utility function to get a mutable reference to the underlying Task.  The
-/// TCTask must be mutable.
-fn wrap_mut<'a, T, F>(task: *mut TCTask, f: F) -> T
+/// TCTask must be mutable.  The inner function may use `?` syntax to return an
+/// error, which will be represented with the `err_value` returned to C.
+fn wrap_mut<'a, T, F>(task: *mut TCTask, f: F, err_value: T) -> T
 where
     F: FnOnce(&mut TaskMut) -> anyhow::Result<T>,
 {
@@ -145,8 +149,13 @@ where
         TCTask::Mutable(ref mut t, _) => t,
         TCTask::Invalid => unreachable!(),
     };
-    // TODO: add TCTask error handling, like replica
-    f(task).unwrap()
+    match f(task) {
+        Ok(rv) => rv,
+        Err(e) => {
+            // TODO: add TCTask error handling, like replica
+            err_value
+        }
+    }
 }
 
 /// Convert an immutable task into a mutable task.
@@ -238,31 +247,39 @@ pub extern "C" fn tc_task_is_active<'a>(task: *const TCTask) -> bool {
 
 /// Set a mutable task's status.
 ///
-/// Returns false on error.
+/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
-pub extern "C" fn tc_task_set_status<'a>(task: *mut TCTask, status: TCStatus) -> bool {
-    wrap_mut(task, |task| {
-        task.set_status(status.into())?;
-        Ok(true)
-    })
+pub extern "C" fn tc_task_set_status<'a>(task: *mut TCTask, status: TCStatus) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.set_status(status.into())?;
+            Ok(TCResult::True)
+        },
+        TCResult::Error,
+    )
 }
 
 /// Set a mutable task's description.
 ///
-/// Returns false on error.
+/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
 pub extern "C" fn tc_task_set_description<'a>(
     task: *mut TCTask,
     description: *mut TCString,
-) -> bool {
+) -> TCResult {
     // SAFETY:
     //  - tcstring is not NULL (promised by caller)
     //  - caller is exclusive owner of tcstring (implicitly promised by caller)
     let description = unsafe { TCString::from_arg(description) };
-    wrap_mut(task, |task| {
-        task.set_description(description.as_str()?.to_string())?;
-        Ok(true)
-    })
+    wrap_mut(
+        task,
+        |task| {
+            task.set_description(description.as_str()?.to_string())?;
+            Ok(TCResult::True)
+        },
+        TCResult::Error,
+    )
 }
 
 // TODO: tc_task_set_description
@@ -272,24 +289,32 @@ pub extern "C" fn tc_task_set_description<'a>(
 
 /// Start a task.
 ///
-/// TODO: error
+/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
-pub extern "C" fn tc_task_start<'a>(task: *mut TCTask) {
-    wrap_mut(task, |task| {
-        task.start()?;
-        Ok(())
-    })
+pub extern "C" fn tc_task_start<'a>(task: *mut TCTask) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.start()?;
+            Ok(TCResult::True)
+        },
+        TCResult::Error,
+    )
 }
 
 /// Stop a task.
 ///
-/// TODO: error
+/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
-pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) {
-    wrap_mut(task, |task| {
-        task.stop()?;
-        Ok(())
-    })
+pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.stop()?;
+            Ok(TCResult::True)
+        },
+        TCResult::Error,
+    )
 }
 
 // TODO: tc_task_done
