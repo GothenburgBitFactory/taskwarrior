@@ -26,17 +26,20 @@ impl TCReplica {
     /// the lifetime promised by C.
     pub(crate) unsafe fn from_arg_ref<'a>(tcreplica: *mut TCReplica) -> &'a mut Self {
         debug_assert!(!tcreplica.is_null());
-        &mut *tcreplica
+        // SAFETY: see doc comment
+        unsafe { &mut *tcreplica }
     }
 
     /// Take a TCReplica from C as an argument.
     ///
     /// # Safety
     ///
-    /// The pointer must not be NULL.  The pointer becomes invalid before this function returns.
+    /// The pointer must not be NULL and must point to a valid replica.  The pointer becomes
+    /// invalid before this function returns and must not be used afterward.
     pub(crate) unsafe fn from_arg(tcreplica: *mut TCReplica) -> Self {
         debug_assert!(!tcreplica.is_null());
-        *Box::from_raw(tcreplica)
+        // SAFETY: see doc comment
+        unsafe { *Box::from_raw(tcreplica) }
     }
 
     /// Convert this to a return value for handing off to C.

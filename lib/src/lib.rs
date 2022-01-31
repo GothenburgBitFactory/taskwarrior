@@ -1,3 +1,4 @@
+#[warn(unsafe_op_in_unsafe_fn)]
 pub mod replica;
 pub mod result;
 pub mod status;
