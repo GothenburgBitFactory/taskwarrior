@@ -251,8 +251,8 @@ pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'st
 #[no_mangle]
 pub extern "C" fn tc_replica_free(rep: *mut TCReplica) {
     // SAFETY:
-    //  - rep is not NULL
-    //  - caller will not use the TCReplica after this
+    //  - rep is not NULL (promised by caller)
+    //  - caller will not use the TCReplica after this (promised by caller)
     let replica = unsafe { TCReplica::from_arg(rep) };
     if replica.mut_borrowed {
         panic!("replica is borrowed and cannot be freed");

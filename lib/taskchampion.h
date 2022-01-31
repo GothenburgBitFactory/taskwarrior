@@ -67,6 +67,8 @@ typedef struct TCString TCString;
  *
  * A task carries no reference to the replica that created it, and can
  * be used until it is freed or converted to a TaskMut.
+ *
+ * All `tc_task_..` functions taking a task as an argument require that it not be NULL.
  */
 typedef struct TCTask TCTask;
 
@@ -249,6 +251,11 @@ enum TCStatus tc_task_get_status(const struct TCTask *task);
 struct TCString *tc_task_get_description(const struct TCTask *task);
 
 /**
+ * Check if a task is active (started and not stopped).
+ */
+bool tc_task_is_active(const struct TCTask *task);
+
+/**
  * Set a mutable task's status.
  *
  * Returns false on error.
@@ -263,10 +270,24 @@ bool tc_task_set_status(struct TCTask *task, enum TCStatus status);
 bool tc_task_set_description(struct TCTask *task, struct TCString *description);
 
 /**
- * Free a task.  The given task must not be NULL and must be immutable.  The task must not be used
- * after this function returns, and must not be freed more than once.
+ * Start a task.
  *
- * The restriction that the task must be immutable may be lifted (TODO)
+ * TODO: error
+ */
+void tc_task_start(struct TCTask *task);
+
+/**
+ * Stop a task.
+ *
+ * TODO: error
+ */
+void tc_task_stop(struct TCTask *task);
+
+/**
+ * Free a task.  The given task must not be NULL.  The task must not be used after this function
+ * returns, and must not be freed more than once.
+ *
+ * If the task is currently mutable, it will first be made immutable.
  */
 void tc_task_free(struct TCTask *task);
 

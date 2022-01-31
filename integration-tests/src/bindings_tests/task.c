@@ -26,6 +26,34 @@ static void test_task_creation(void) {
     tc_replica_free(rep);
 }
 
+// freeing a mutable task works, marking it immutable
+static void test_task_free_mutable_task(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    TEST_ASSERT_EQUAL(TC_STATUS_PENDING, tc_task_get_status(task));
+    TCUuid uuid = tc_task_get_uuid(task);
+
+    tc_task_to_mut(task, rep);
+    TEST_ASSERT_TRUE(tc_task_set_status(task, TC_STATUS_DELETED));
+    TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task));
+
+    tc_task_free(task); // implicitly converts to immut
+
+    task = tc_replica_get_task(rep, uuid);
+    TEST_ASSERT_NOT_NULL(task);
+    TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task));
+    tc_task_free(task);
+
+    tc_replica_free(rep);
+}
+
 // updating status on a task works
 static void test_task_get_set_status(void) {
     TCReplica *rep = tc_replica_new_in_memory();
@@ -83,11 +111,38 @@ static void test_task_get_set_description(void) {
     tc_replica_free(rep);
 }
 
+// starting and stopping a task works, as seen by tc_task_is_active
+static void test_task_start_stop_is_active(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    TEST_ASSERT_FALSE(tc_task_is_active(task));
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_FALSE(tc_task_is_active(task));
+    tc_task_start(task);
+    TEST_ASSERT_TRUE(tc_task_is_active(task));
+    tc_task_stop(task);
+    TEST_ASSERT_FALSE(tc_task_is_active(task));
+
+    tc_task_free(task);
+    tc_replica_free(rep);
+}
+
 int task_tests(void) {
     UNITY_BEGIN();
     // each test case above should be named here, in order.
     RUN_TEST(test_task_creation);
+    RUN_TEST(test_task_free_mutable_task);
     RUN_TEST(test_task_get_set_status);
     RUN_TEST(test_task_get_set_description);
+    RUN_TEST(test_task_start_stop_is_active);
     return UNITY_END();
 }

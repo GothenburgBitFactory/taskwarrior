@@ -10,6 +10,8 @@ use taskchampion::{Task, TaskMut};
 ///
 /// A task carries no reference to the replica that created it, and can
 /// be used until it is freed or converted to a TaskMut.
+///
+/// All `tc_task_..` functions taking a task as an argument require that it not be NULL.
 pub enum TCTask {
     /// A regular, immutable task
     Immutable(Task),
@@ -202,7 +204,7 @@ pub extern "C" fn tc_task_get_status<'a>(task: *const TCTask) -> TCStatus {
     wrap(task, |task| task.get_status().into())
 }
 
-// TODO: get_taskmap
+// TODO: tc_task_get_taskmap (?? then we have to wrap a map..)
 
 /// Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
 /// contains embedded NUL characters).
@@ -214,19 +216,25 @@ pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCStr
     })
 }
 
-// TODO: :get_entry
-// TODO: :get_wait
-// TODO: :get_modified
-// TODO: :is_waiting
-// TODO: :is_active
-// TODO: :has_tag
-// TODO: :get_tags
-// TODO: :get_annotations
-// TODO: :get_uda
-// TODO: :get_udas
-// TODO: :get_legacy_uda
-// TODO: :get_legacy_udas
-// TODO: :get_modified
+// TODO: tc_task_get_entry
+// TODO: tc_task_get_wait
+// TODO: tc_task_get_modified
+// TODO: tc_task_is_waiting
+
+/// Check if a task is active (started and not stopped).
+#[no_mangle]
+pub extern "C" fn tc_task_is_active<'a>(task: *const TCTask) -> bool {
+    wrap(task, |task| task.is_active())
+}
+
+// TODO: tc_task_has_tag
+// TODO: tc_task_get_tags
+// TODO: tc_task_get_annotations
+// TODO: tc_task_get_uda
+// TODO: tc_task_get_udas
+// TODO: tc_task_get_legacy_uda
+// TODO: tc_task_get_legacy_udas
+// TODO: tc_task_get_modified
 
 /// Set a mutable task's status.
 ///
@@ -261,8 +269,29 @@ pub extern "C" fn tc_task_set_description<'a>(
 // TODO: tc_task_set_entry
 // TODO: tc_task_set_wait
 // TODO: tc_task_set_modified
-// TODO: tc_task_start
-// TODO: tc_task_stop
+
+/// Start a task.
+///
+/// TODO: error
+#[no_mangle]
+pub extern "C" fn tc_task_start<'a>(task: *mut TCTask) {
+    wrap_mut(task, |task| {
+        task.start()?;
+        Ok(())
+    })
+}
+
+/// Stop a task.
+///
+/// TODO: error
+#[no_mangle]
+pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) {
+    wrap_mut(task, |task| {
+        task.stop()?;
+        Ok(())
+    })
+}
+
 // TODO: tc_task_done
 // TODO: tc_task_delete
 // TODO: tc_task_add_tag
@@ -274,21 +303,19 @@ pub extern "C" fn tc_task_set_description<'a>(
 // TODO: tc_task_set_legacy_uda
 // TODO: tc_task_remove_legacy_uda
 
-/// Free a task.  The given task must not be NULL and must be immutable.  The task must not be used
-/// after this function returns, and must not be freed more than once.
+/// Free a task.  The given task must not be NULL.  The task must not be used after this function
+/// returns, and must not be freed more than once.
 ///
-/// The restriction that the task must be immutable may be lifted (TODO)
+/// If the task is currently mutable, it will first be made immutable.
 #[no_mangle]
 pub extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
     // SAFETY:
-    //  - rep is not NULL
-    //  - caller will not use the TCTask after this
-    let tctask = unsafe { TCTask::from_arg(task) };
-    if !matches!(tctask, TCTask::Immutable(_)) {
-        // this limit is in place because we require the caller to supply a pointer
-        // to the replica to make a task immutable, and no such pointer is available
-        // here.
-        panic!("Task must be immutable when freed");
-    }
+    //  - rep is not NULL (promised by caller)
+    //  - caller will not use the TCTask after this (promised by caller)
+    let mut tctask = unsafe { TCTask::from_arg(task) };
+
+    // convert to immut if it was mutable
+    tctask.to_immut();
+
     drop(tctask);
 }
