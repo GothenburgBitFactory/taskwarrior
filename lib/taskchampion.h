@@ -277,6 +277,11 @@ time_t tc_task_get_entry(struct TCTask *task);
 time_t tc_task_get_wait(struct TCTask *task);
 
 /**
+ * Get the modified timestamp for a task, or 0 if not set.
+ */
+time_t tc_task_get_modified(struct TCTask *task);
+
+/**
  * Check if a task is waiting.
  */
 bool tc_task_is_waiting(struct TCTask *task);
@@ -309,10 +314,14 @@ TCResult tc_task_set_description(struct TCTask *task, struct TCString *descripti
 TCResult tc_task_set_entry(struct TCTask *task, time_t entry);
 
 /**
- * Set a mutable task's wait (creation time).  Pass wait=0 to unset the
- * wait field.
+ * Set a mutable task's wait timestamp.  Pass wait=0 to unset the wait field.
  */
 TCResult tc_task_set_wait(struct TCTask *task, time_t wait);
+
+/**
+ * Set a mutable task's modified timestamp.  The value cannot be zero.
+ */
+TCResult tc_task_set_modified(struct TCTask *task, time_t modified);
 
 /**
  * Start a task.
@@ -323,6 +332,16 @@ TCResult tc_task_start(struct TCTask *task);
  * Stop a task.
  */
 TCResult tc_task_stop(struct TCTask *task);
+
+/**
+ * Mark a task as done.
+ */
+TCResult tc_task_done(struct TCTask *task);
+
+/**
+ * Mark a task as deleted.
+ */
+TCResult tc_task_delete(struct TCTask *task);
 
 /**
  * Add a tag to a mutable task.

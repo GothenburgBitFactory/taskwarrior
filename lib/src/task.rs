@@ -275,7 +275,11 @@ pub extern "C" fn tc_task_get_wait<'a>(task: *mut TCTask) -> libc::time_t {
     wrap(task, |task| to_time_t(task.get_wait()))
 }
 
-// TODO: tc_task_get_modified
+/// Get the modified timestamp for a task, or 0 if not set.
+#[no_mangle]
+pub extern "C" fn tc_task_get_modified<'a>(task: *mut TCTask) -> libc::time_t {
+    wrap(task, |task| to_time_t(task.get_modified()))
+}
 
 /// Check if a task is waiting.
 #[no_mangle]
@@ -312,7 +316,6 @@ pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
 // TODO: tc_task_get_udas
 // TODO: tc_task_get_legacy_uda
 // TODO: tc_task_get_legacy_udas
-// TODO: tc_task_get_modified
 
 /// Set a mutable task's status.
 #[no_mangle]
@@ -350,7 +353,7 @@ pub extern "C" fn tc_task_set_description<'a>(
 /// Set a mutable task's entry (creation time).  Pass entry=0 to unset
 /// the entry field.
 #[no_mangle]
-pub extern "C" fn tc_task_set_entry<'a>(task: *mut TCTask, entry: libc::time_t) -> TCResult {
+pub extern "C" fn tc_task_set_entry(task: *mut TCTask, entry: libc::time_t) -> TCResult {
     wrap_mut(
         task,
         |task| {
@@ -361,10 +364,9 @@ pub extern "C" fn tc_task_set_entry<'a>(task: *mut TCTask, entry: libc::time_t) 
     )
 }
 
-/// Set a mutable task's wait (creation time).  Pass wait=0 to unset the
-/// wait field.
+/// Set a mutable task's wait timestamp.  Pass wait=0 to unset the wait field.
 #[no_mangle]
-pub extern "C" fn tc_task_set_wait<'a>(task: *mut TCTask, wait: libc::time_t) -> TCResult {
+pub extern "C" fn tc_task_set_wait(task: *mut TCTask, wait: libc::time_t) -> TCResult {
     wrap_mut(
         task,
         |task| {
@@ -375,12 +377,24 @@ pub extern "C" fn tc_task_set_wait<'a>(task: *mut TCTask, wait: libc::time_t) ->
     )
 }
 
-// TODO: tc_task_set_wait
-// TODO: tc_task_set_modified
+/// Set a mutable task's modified timestamp.  The value cannot be zero.
+#[no_mangle]
+pub extern "C" fn tc_task_set_modified(task: *mut TCTask, modified: libc::time_t) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.set_modified(
+                to_datetime(modified).ok_or_else(|| anyhow::anyhow!("modified cannot be zero"))?,
+            )?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
 
 /// Start a task.
 #[no_mangle]
-pub extern "C" fn tc_task_start<'a>(task: *mut TCTask) -> TCResult {
+pub extern "C" fn tc_task_start(task: *mut TCTask) -> TCResult {
     wrap_mut(
         task,
         |task| {
@@ -393,7 +407,7 @@ pub extern "C" fn tc_task_start<'a>(task: *mut TCTask) -> TCResult {
 
 /// Stop a task.
 #[no_mangle]
-pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) -> TCResult {
+pub extern "C" fn tc_task_stop(task: *mut TCTask) -> TCResult {
     wrap_mut(
         task,
         |task| {
@@ -404,12 +418,35 @@ pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) -> TCResult {
     )
 }
 
-// TODO: tc_task_done
-// TODO: tc_task_delete
+/// Mark a task as done.
+#[no_mangle]
+pub extern "C" fn tc_task_done(task: *mut TCTask) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.done()?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Mark a task as deleted.
+#[no_mangle]
+pub extern "C" fn tc_task_delete(task: *mut TCTask) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.delete()?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
 
 /// Add a tag to a mutable task.
 #[no_mangle]
-pub extern "C" fn tc_task_add_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> TCResult {
+pub extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
     // SAFETY:
     //  - tcstring is not NULL (promised by caller)
     //  - caller is exclusive owner of tcstring (implicitly promised by caller)

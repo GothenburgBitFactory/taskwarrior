@@ -172,6 +172,33 @@ static void test_task_get_set_wait_and_is_waiting(void) {
     tc_replica_free(rep);
 }
 
+// updating modified on a task works
+static void test_task_get_set_modified(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    // creation of a task sets modified to current time
+    TEST_ASSERT_NOT_EQUAL(0, tc_task_get_modified(task));
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_modified(task, 1643679997));
+    TEST_ASSERT_EQUAL(1643679997, tc_task_get_modified(task));
+
+    // zero is not allowed
+    TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_set_modified(task, 0));
+
+    tc_task_free(task);
+
+    tc_replica_free(rep);
+}
+
 // starting and stopping a task works, as seen by tc_task_is_active
 static void test_task_start_stop_is_active(void) {
     TCReplica *rep = tc_replica_new_in_memory();
@@ -192,6 +219,29 @@ static void test_task_start_stop_is_active(void) {
     TEST_ASSERT_TRUE(tc_task_is_active(task));
     TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_stop(task));
     TEST_ASSERT_FALSE(tc_task_is_active(task));
+
+    tc_task_free(task);
+    tc_replica_free(rep);
+}
+
+// tc_task_done and delete work and set the status
+static void test_task_done_and_delete(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_EQUAL(TC_STATUS_PENDING, tc_task_get_status(task));
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_done(task));
+    TEST_ASSERT_EQUAL(TC_STATUS_COMPLETED, tc_task_get_status(task));
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_delete(task));
+    TEST_ASSERT_EQUAL(TC_STATUS_DELETED, tc_task_get_status(task));
 
     tc_task_free(task);
     tc_replica_free(rep);
@@ -249,8 +299,10 @@ int task_tests(void) {
     RUN_TEST(test_task_get_set_status);
     RUN_TEST(test_task_get_set_description);
     RUN_TEST(test_task_get_set_entry);
+    RUN_TEST(test_task_get_set_modified);
     RUN_TEST(test_task_get_set_wait_and_is_waiting);
     RUN_TEST(test_task_start_stop_is_active);
+    RUN_TEST(test_task_done_and_delete);
     RUN_TEST(task_task_add_tag);
     return UNITY_END();
 }
