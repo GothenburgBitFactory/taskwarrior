@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include <time.h>
 
 /**
  * Length, in bytes, of the string representation of a UUID (without NUL terminator)
@@ -74,8 +75,9 @@ typedef struct TCString TCString;
  * to make any changes, and doing so requires exclusive access to the replica
  * until the task is freed or converted back to immutable mode.
  *
- * A task carries no reference to the replica that created it, and can
- * be used until it is freed or converted to a TaskMut.
+ * An immutable task carries no reference to the replica that created it, and can be used until it
+ * is freed or converted to a TaskMut.  A mutable task carries a reference to the replica and
+ * must be freed or made immutable before the replica is freed.
  *
  * All `tc_task_..` functions taking a task as an argument require that it not be NULL.
  *
@@ -265,6 +267,21 @@ enum TCStatus tc_task_get_status(struct TCTask *task);
 struct TCString *tc_task_get_description(struct TCTask *task);
 
 /**
+ * Get the entry timestamp for a task (when it was created), or 0 if not set.
+ */
+time_t tc_task_get_entry(struct TCTask *task);
+
+/**
+ * Get the wait timestamp for a task, or 0 if not set.
+ */
+time_t tc_task_get_wait(struct TCTask *task);
+
+/**
+ * Check if a task is waiting.
+ */
+bool tc_task_is_waiting(struct TCTask *task);
+
+/**
  * Check if a task is active (started and not stopped).
  */
 bool tc_task_is_active(struct TCTask *task);
@@ -284,6 +301,18 @@ TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
  * Set a mutable task's description.
  */
 TCResult tc_task_set_description(struct TCTask *task, struct TCString *description);
+
+/**
+ * Set a mutable task's entry (creation time).  Pass entry=0 to unset
+ * the entry field.
+ */
+TCResult tc_task_set_entry(struct TCTask *task, time_t entry);
+
+/**
+ * Set a mutable task's wait (creation time).  Pass wait=0 to unset the
+ * wait field.
+ */
+TCResult tc_task_set_wait(struct TCTask *task, time_t wait);
 
 /**
  * Start a task.

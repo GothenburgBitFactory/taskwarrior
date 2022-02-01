@@ -2,6 +2,7 @@ use crate::util::err_to_tcstring;
 use crate::{
     replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, uuid::TCUuid,
 };
+use chrono::{DateTime, TimeZone, Utc};
 use std::convert::TryFrom;
 use std::ops::Deref;
 use std::str::FromStr;
@@ -13,8 +14,9 @@ use taskchampion::{Tag, Task, TaskMut};
 /// to make any changes, and doing so requires exclusive access to the replica
 /// until the task is freed or converted back to immutable mode.
 ///
-/// A task carries no reference to the replica that created it, and can
-/// be used until it is freed or converted to a TaskMut.
+/// An immutable task carries no reference to the replica that created it, and can be used until it
+/// is freed or converted to a TaskMut.  A mutable task carries a reference to the replica and
+/// must be freed or made immutable before the replica is freed.
 ///
 /// All `tc_task_..` functions taking a task as an argument require that it not be NULL.
 ///
@@ -178,6 +180,22 @@ impl TryFrom<TCString<'_>> for Tag {
     }
 }
 
+/// Convert a DateTime<Utc> to a libc::time_t, or zero if not set.
+fn to_time_t(timestamp: Option<DateTime<Utc>>) -> libc::time_t {
+    timestamp
+        .map(|ts| ts.timestamp() as libc::time_t)
+        .unwrap_or(0 as libc::time_t)
+}
+
+/// Convert a libc::time_t to Option<DateTime<Utc>>, treating time zero as None
+fn to_datetime(time: libc::time_t) -> Option<DateTime<Utc>> {
+    if time == 0 {
+        None
+    } else {
+        Some(Utc.timestamp(time as i64, 0))
+    }
+}
+
 /// Convert an immutable task into a mutable task.
 ///
 /// The task must not be NULL. It is modified in-place, and becomes mutable.
@@ -245,14 +263,29 @@ pub extern "C" fn tc_task_get_description<'a>(task: *mut TCTask) -> *mut TCStrin
     })
 }
 
-// TODO: tc_task_get_entry
-// TODO: tc_task_get_wait
+/// Get the entry timestamp for a task (when it was created), or 0 if not set.
+#[no_mangle]
+pub extern "C" fn tc_task_get_entry<'a>(task: *mut TCTask) -> libc::time_t {
+    wrap(task, |task| to_time_t(task.get_entry()))
+}
+
+/// Get the wait timestamp for a task, or 0 if not set.
+#[no_mangle]
+pub extern "C" fn tc_task_get_wait<'a>(task: *mut TCTask) -> libc::time_t {
+    wrap(task, |task| to_time_t(task.get_wait()))
+}
+
 // TODO: tc_task_get_modified
-// TODO: tc_task_is_waiting
+
+/// Check if a task is waiting.
+#[no_mangle]
+pub extern "C" fn tc_task_is_waiting(task: *mut TCTask) -> bool {
+    wrap(task, |task| task.is_waiting())
+}
 
 /// Check if a task is active (started and not stopped).
 #[no_mangle]
-pub extern "C" fn tc_task_is_active<'a>(task: *mut TCTask) -> bool {
+pub extern "C" fn tc_task_is_active(task: *mut TCTask) -> bool {
     wrap(task, |task| task.is_active())
 }
 
@@ -314,7 +347,34 @@ pub extern "C" fn tc_task_set_description<'a>(
     )
 }
 
-// TODO: tc_task_set_entry
+/// Set a mutable task's entry (creation time).  Pass entry=0 to unset
+/// the entry field.
+#[no_mangle]
+pub extern "C" fn tc_task_set_entry<'a>(task: *mut TCTask, entry: libc::time_t) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.set_entry(to_datetime(entry))?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Set a mutable task's wait (creation time).  Pass wait=0 to unset the
+/// wait field.
+#[no_mangle]
+pub extern "C" fn tc_task_set_wait<'a>(task: *mut TCTask, wait: libc::time_t) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.set_wait(to_datetime(wait))?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
 // TODO: tc_task_set_wait
 // TODO: tc_task_set_modified
 

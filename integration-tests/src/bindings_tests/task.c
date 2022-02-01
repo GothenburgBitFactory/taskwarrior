@@ -111,6 +111,67 @@ static void test_task_get_set_description(void) {
     tc_replica_free(rep);
 }
 
+// updating entry on a task works
+static void test_task_get_set_entry(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    // creation of a task sets entry to current time
+    TEST_ASSERT_NOT_EQUAL(0, tc_task_get_entry(task));
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_entry(task, 1643679997));
+    TEST_ASSERT_EQUAL(1643679997, tc_task_get_entry(task));
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_entry(task, 0));
+    TEST_ASSERT_EQUAL(0, tc_task_get_entry(task));
+
+    tc_task_free(task);
+
+    tc_replica_free(rep);
+}
+
+// updating wait on a task works
+static void test_task_get_set_wait_and_is_waiting(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    // wait is not set on creation
+    TEST_ASSERT_EQUAL(0, tc_task_get_wait(task));
+    TEST_ASSERT_FALSE(tc_task_is_waiting(task));
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_wait(task, 3643679997)); // 2085
+    TEST_ASSERT_EQUAL(3643679997, tc_task_get_wait(task));
+    TEST_ASSERT_TRUE(tc_task_is_waiting(task));
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_wait(task, 643679997)); // THE PAST!
+    TEST_ASSERT_EQUAL(643679997, tc_task_get_wait(task));
+    TEST_ASSERT_FALSE(tc_task_is_waiting(task));
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_wait(task, 0));
+    TEST_ASSERT_EQUAL(0, tc_task_get_wait(task));
+    TEST_ASSERT_FALSE(tc_task_is_waiting(task));
+
+    tc_task_free(task);
+
+    tc_replica_free(rep);
+}
+
 // starting and stopping a task works, as seen by tc_task_is_active
 static void test_task_start_stop_is_active(void) {
     TCReplica *rep = tc_replica_new_in_memory();
@@ -187,6 +248,8 @@ int task_tests(void) {
     RUN_TEST(test_task_free_mutable_task);
     RUN_TEST(test_task_get_set_status);
     RUN_TEST(test_task_get_set_description);
+    RUN_TEST(test_task_get_set_entry);
+    RUN_TEST(test_task_get_set_wait_and_is_waiting);
     RUN_TEST(test_task_start_stop_is_active);
     RUN_TEST(task_task_add_tag);
     return UNITY_END();

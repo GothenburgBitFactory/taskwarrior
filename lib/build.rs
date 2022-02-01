@@ -10,7 +10,7 @@ fn main() {
         .with_config(Config {
             language: Language::C,
             cpp_compat: true,
-            sys_includes: vec!["stdbool.h".into(), "stdint.h".into()],
+            sys_includes: vec!["stdbool.h".into(), "stdint.h".into(), "time.h".into()],
             usize_is_size_t: true,
             no_includes: true,
             enumeration: EnumConfig {

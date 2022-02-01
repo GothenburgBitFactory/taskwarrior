@@ -110,7 +110,7 @@ impl Replica {
         let mut task = Task::new(uuid, taskmap).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
-        task.set_entry(Utc::now())?;
+        task.set_entry(Some(Utc::now()))?;
         trace!("task {} created", uuid);
         Ok(task.into_immut())
     }

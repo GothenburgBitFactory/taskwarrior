@@ -120,6 +120,10 @@ impl Task {
             .unwrap_or("")
     }
 
+    pub fn get_entry(&self) -> Option<DateTime<Utc>> {
+        self.get_timestamp(Prop::Entry.as_ref())
+    }
+
     pub fn get_priority(&self) -> Priority {
         self.taskmap
             .get(Prop::Status.as_ref())
@@ -299,8 +303,8 @@ impl<'r> TaskMut<'r> {
         self.set_string(Prop::Description.as_ref(), Some(description))
     }
 
-    pub(crate) fn set_entry(&mut self, entry: DateTime<Utc>) -> anyhow::Result<()> {
-        self.set_timestamp(Prop::Entry.as_ref(), Some(entry))
+    pub fn set_entry(&mut self, entry: Option<DateTime<Utc>>) -> anyhow::Result<()> {
+        self.set_timestamp(Prop::Entry.as_ref(), entry)
     }
 
     pub fn set_wait(&mut self, wait: Option<DateTime<Utc>>) -> anyhow::Result<()> {
@@ -524,6 +528,24 @@ mod test {
     fn test_is_active_inactive() {
         let task = Task::new(Uuid::new_v4(), Default::default());
         assert!(!task.is_active());
+    }
+
+    #[test]
+    fn test_entry_not_set() {
+        let task = Task::new(Uuid::new_v4(), TaskMap::new());
+        assert_eq!(task.get_entry(), None);
+    }
+
+    #[test]
+    fn test_entry_set() {
+        let ts = Utc.ymd(1980, 1, 1).and_hms(0, 0, 0);
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("entry"), format!("{}", ts.timestamp()))]
+                .drain(..)
+                .collect(),
+        );
+        assert_eq!(task.get_entry(), Some(ts));
     }
 
     #[test]

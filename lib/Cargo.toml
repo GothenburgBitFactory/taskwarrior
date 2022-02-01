@@ -10,8 +10,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 libc = "0.2.113"
+chrono = "^0.4.10"
 taskchampion = { path = "../taskchampion" }
-uuid = { version = "^0.8.2", features = ["serde", "v4"] }
+uuid = { version = "^0.8.2", features = ["v4"] }
 anyhow = "1.0"
 
 [build-dependencies]
