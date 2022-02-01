@@ -150,15 +150,26 @@ static void task_task_add_tag(void) {
     tc_task_to_mut(task, rep);
 
     TEST_ASSERT_EQUAL(TC_RESULT_TRUE, tc_task_add_tag(task, tc_string_borrow("next")));
+    TEST_ASSERT_NULL(tc_task_error(task));
 
     // invalid - synthetic tag
     TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_add_tag(task, tc_string_borrow("PENDING")));
+    TCString *err = tc_task_error(task);
+    TEST_ASSERT_NOT_NULL(err);
+    tc_string_free(err);
+
     // invald - not a valid tag string
     TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_add_tag(task, tc_string_borrow("my tag")));
+    err = tc_task_error(task);
+    TEST_ASSERT_NOT_NULL(err);
+    tc_string_free(err);
+
     // invald - not utf-8
     TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_add_tag(task, tc_string_borrow("\xf0\x28\x8c\x28")));
+    err = tc_task_error(task);
+    TEST_ASSERT_NOT_NULL(err);
+    tc_string_free(err);
 
-    // TODO: check error messages
     // TODO: test getting the tag
 
     tc_task_free(task);

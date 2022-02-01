@@ -237,23 +237,23 @@ void tc_task_to_immut(struct TCTask *task);
 /**
  * Get a task's UUID.
  */
-struct TCUuid tc_task_get_uuid(const struct TCTask *task);
+struct TCUuid tc_task_get_uuid(struct TCTask *task);
 
 /**
  * Get a task's status.
  */
-enum TCStatus tc_task_get_status(const struct TCTask *task);
+enum TCStatus tc_task_get_status(struct TCTask *task);
 
 /**
  * Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
  * contains embedded NUL characters).
  */
-struct TCString *tc_task_get_description(const struct TCTask *task);
+struct TCString *tc_task_get_description(struct TCTask *task);
 
 /**
  * Check if a task is active (started and not stopped).
  */
-bool tc_task_is_active(const struct TCTask *task);
+bool tc_task_is_active(struct TCTask *task);
 
 /**
  * Set a mutable task's status.
@@ -289,6 +289,13 @@ enum TCResult tc_task_stop(struct TCTask *task);
  * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
 enum TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
+
+/**
+ * Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls
+ * to this function will return NULL.  The task pointer must not be NULL.  The caller must free the
+ * returned string.
+ */
+struct TCString *tc_task_error(struct TCTask *task);
 
 /**
  * Free a task.  The given task must not be NULL.  The task must not be used after this function

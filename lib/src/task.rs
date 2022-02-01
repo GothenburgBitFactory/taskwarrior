@@ -1,3 +1,4 @@
+use crate::util::err_to_tcstring;
 use crate::{
     replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, uuid::TCUuid,
 };
@@ -15,7 +16,15 @@ use taskchampion::{Tag, Task, TaskMut};
 /// be used until it is freed or converted to a TaskMut.
 ///
 /// All `tc_task_..` functions taking a task as an argument require that it not be NULL.
-pub enum TCTask {
+pub struct TCTask {
+    /// The wrapped Task or TaskMut
+    inner: Inner,
+
+    /// The error from the most recent operation, if any
+    error: Option<TCString<'static>>,
+}
+
+enum Inner {
     /// A regular, immutable task
     Immutable(Task),
 
@@ -37,19 +46,7 @@ impl TCTask {
     /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
     /// lifetime assigned to the reference and the lifetime of the TCTask itself do not outlive
     /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg_ref<'a>(tctask: *const TCTask) -> &'a Self {
-        debug_assert!(!tctask.is_null());
-        &*tctask
-    }
-
-    /// Borrow a TCTask from C as an argument, allowing mutation.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
-    /// lifetime assigned to the reference and the lifetime of the TCTask itself do not outlive
-    /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg_ref_mut<'a>(tctask: *mut TCTask) -> &'a mut Self {
+    pub(crate) unsafe fn from_arg_ref<'a>(tctask: *mut TCTask) -> &'a mut Self {
         debug_assert!(!tctask.is_null());
         &mut *tctask
     }
@@ -77,60 +74,64 @@ impl TCTask {
     /// The tcreplica pointer must not be NULL, and the replica it points to must not
     /// be freed before TCTask.to_immut completes.
     unsafe fn to_mut(&mut self, tcreplica: *mut TCReplica) {
-        *self = match std::mem::replace(self, TCTask::Invalid) {
-            TCTask::Immutable(task) => {
+        self.inner = match std::mem::replace(&mut self.inner, Inner::Invalid) {
+            Inner::Immutable(task) => {
                 // SAFETY:
                 //  - tcreplica is not null (promised by caller)
                 //  - tcreplica outlives the pointer in this variant (promised by caller)
                 let tcreplica_ref: &mut TCReplica = TCReplica::from_arg_ref(tcreplica);
                 let rep_ref = tcreplica_ref.borrow_mut();
-                TCTask::Mutable(task.into_mut(rep_ref), tcreplica)
+                Inner::Mutable(task.into_mut(rep_ref), tcreplica)
             }
-            TCTask::Mutable(task, tcreplica) => TCTask::Mutable(task, tcreplica),
-            TCTask::Invalid => unreachable!(),
+            Inner::Mutable(task, tcreplica) => Inner::Mutable(task, tcreplica),
+            Inner::Invalid => unreachable!(),
         }
     }
 
     /// Make an mutable TCTask into a immutable TCTask.  Does nothing if the task
     /// is already immutable.
     fn to_immut(&mut self) {
-        *self = match std::mem::replace(self, TCTask::Invalid) {
-            TCTask::Immutable(task) => TCTask::Immutable(task),
-            TCTask::Mutable(task, tcreplica) => {
+        self.inner = match std::mem::replace(&mut self.inner, Inner::Invalid) {
+            Inner::Immutable(task) => Inner::Immutable(task),
+            Inner::Mutable(task, tcreplica) => {
                 // SAFETY:
                 //  - tcreplica is not null (promised by caller of to_mut, which created this
                 //    variant)
                 //  - tcreplica is still alive (promised by caller of to_mut)
                 let tcreplica_ref: &mut TCReplica = unsafe { TCReplica::from_arg_ref(tcreplica) };
                 tcreplica_ref.release_borrow();
-                TCTask::Immutable(task.into_immut())
+                Inner::Immutable(task.into_immut())
             }
-            TCTask::Invalid => unreachable!(),
+            Inner::Invalid => unreachable!(),
         }
     }
 }
 
 impl From<Task> for TCTask {
     fn from(task: Task) -> TCTask {
-        TCTask::Immutable(task)
+        TCTask {
+            inner: Inner::Immutable(task),
+            error: None,
+        }
     }
 }
 
 /// Utility function to get a shared reference to the underlying Task.  All Task getters
 /// are error-free, so this does not handle errors.
-fn wrap<'a, T, F>(task: *const TCTask, f: F) -> T
+fn wrap<'a, T, F>(task: *mut TCTask, f: F) -> T
 where
     F: FnOnce(&Task) -> T,
 {
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a TCTask = unsafe { TCTask::from_arg_ref(task) };
-    let task: &'a Task = match tctask {
-        TCTask::Immutable(t) => t,
-        TCTask::Mutable(t, _) => t.deref(),
-        TCTask::Invalid => unreachable!(),
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    let task: &'a Task = match &tctask.inner {
+        Inner::Immutable(t) => t,
+        Inner::Mutable(t, _) => t.deref(),
+        Inner::Invalid => unreachable!(),
     };
+    tctask.error = None;
     f(task)
 }
 
@@ -144,16 +145,17 @@ where
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
-    let task: &'a mut TaskMut = match tctask {
-        TCTask::Immutable(_) => panic!("Task is immutable"),
-        TCTask::Mutable(ref mut t, _) => t,
-        TCTask::Invalid => unreachable!(),
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    let task: &'a mut TaskMut = match tctask.inner {
+        Inner::Immutable(_) => panic!("Task is immutable"),
+        Inner::Mutable(ref mut t, _) => t,
+        Inner::Invalid => unreachable!(),
     };
+    tctask.error = None;
     match f(task) {
         Ok(rv) => rv,
         Err(e) => {
-            // TODO: add TCTask error handling, like replica
+            tctask.error = Some(err_to_tcstring(e));
             err_value
         }
     }
@@ -180,7 +182,7 @@ pub extern "C" fn tc_task_to_mut<'a>(task: *mut TCTask, tcreplica: *mut TCReplic
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
     // SAFETY:
     //  - tcreplica is not NULL (promised by caller)
     //  - tcreplica lives until later call to to_immut via tc_task_to_immut (promised by caller,
@@ -198,19 +200,19 @@ pub extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask) {
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
     tctask.to_immut();
 }
 
 /// Get a task's UUID.
 #[no_mangle]
-pub extern "C" fn tc_task_get_uuid(task: *const TCTask) -> TCUuid {
+pub extern "C" fn tc_task_get_uuid(task: *mut TCTask) -> TCUuid {
     wrap(task, |task| task.get_uuid().into())
 }
 
 /// Get a task's status.
 #[no_mangle]
-pub extern "C" fn tc_task_get_status<'a>(task: *const TCTask) -> TCStatus {
+pub extern "C" fn tc_task_get_status<'a>(task: *mut TCTask) -> TCStatus {
     wrap(task, |task| task.get_status().into())
 }
 
@@ -219,7 +221,7 @@ pub extern "C" fn tc_task_get_status<'a>(task: *const TCTask) -> TCStatus {
 /// Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
 /// contains embedded NUL characters).
 #[no_mangle]
-pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCString<'static> {
+pub extern "C" fn tc_task_get_description<'a>(task: *mut TCTask) -> *mut TCString<'static> {
     wrap(task, |task| {
         let descr: TCString = task.get_description().into();
         descr.return_val()
@@ -233,7 +235,7 @@ pub extern "C" fn tc_task_get_description<'a>(task: *const TCTask) -> *mut TCStr
 
 /// Check if a task is active (started and not stopped).
 #[no_mangle]
-pub extern "C" fn tc_task_is_active<'a>(task: *const TCTask) -> bool {
+pub extern "C" fn tc_task_is_active<'a>(task: *mut TCTask) -> bool {
     wrap(task, |task| task.is_active())
 }
 
@@ -348,6 +350,22 @@ pub extern "C" fn tc_task_add_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
 // TODO: tc_task_remove_uda
 // TODO: tc_task_set_legacy_uda
 // TODO: tc_task_remove_legacy_uda
+
+/// Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls
+/// to this function will return NULL.  The task pointer must not be NULL.  The caller must free the
+/// returned string.
+#[no_mangle]
+pub extern "C" fn tc_task_error<'a>(task: *mut TCTask) -> *mut TCString<'static> {
+    // SAFETY:
+    //  - task is not null (promised by caller)
+    //  - task outlives 'a (promised by caller)
+    let task: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    if let Some(tcstring) = task.error.take() {
+        tcstring.return_val()
+    } else {
+        std::ptr::null_mut()
+    }
+}
 
 /// Free a task.  The given task must not be NULL.  The task must not be used after this function
 /// returns, and must not be freed more than once.

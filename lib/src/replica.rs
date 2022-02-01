@@ -1,3 +1,4 @@
+use crate::util::err_to_tcstring;
 use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask, uuid::TCUuid};
 use taskchampion::{Replica, StorageConfig, Uuid};
 
@@ -73,10 +74,6 @@ impl From<Replica> for TCReplica {
             error: None,
         }
     }
-}
-
-fn err_to_tcstring(e: impl std::string::ToString) -> TCString<'static> {
-    TCString::from(e.to_string())
 }
 
 /// Utility function to allow using `?` notation to return an error value.  This makes
