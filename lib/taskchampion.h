@@ -7,14 +7,20 @@
 #define TC_UUID_STRING_BYTES 36
 
 /**
- * A result combines a boolean success value with
- * an error response.  It is equivalent to `Result<bool, ()>`.
+ * A result from a TC operation.  Typically if this value is TC_RESULT_ERROR,
+ * the associated object's `tc_.._error` method will return an error message.
  */
-typedef enum TCResult {
+enum TCResult
+#ifdef __cplusplus
+  : int32_t
+#endif // __cplusplus
+ {
   TC_RESULT_ERROR = -1,
-  TC_RESULT_FALSE = 0,
-  TC_RESULT_TRUE = 1,
-} TCResult;
+  TC_RESULT_OK = 0,
+};
+#ifndef __cplusplus
+typedef int32_t TCResult;
+#endif // __cplusplus
 
 /**
  * The status of a task, as defined by the task data model.
@@ -35,6 +41,9 @@ typedef enum TCStatus {
  * for querying and modifying that data.
  *
  * TCReplicas are not threadsafe.
+ *
+ * When a `tc_replica_..` function that returns a TCResult returns TC_RESULT_ERROR, then
+ * `tc_replica_error` will return the error message.
  */
 typedef struct TCReplica TCReplica;
 
@@ -69,6 +78,11 @@ typedef struct TCString TCString;
  * be used until it is freed or converted to a TaskMut.
  *
  * All `tc_task_..` functions taking a task as an argument require that it not be NULL.
+ *
+ * When a `tc_task_..` function that returns a TCResult returns TC_RESULT_ERROR, then
+ * `tc_task_error` will return the error message.
+ *
+ * TCTasks are not threadsafe.
  */
 typedef struct TCTask TCTask;
 
@@ -127,10 +141,10 @@ struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TC
 /**
  * Undo local operations until the most recent UndoPoint.
  *
- * Returns TC_RESULT_TRUE if an undo occurred, TC_RESULT_FALSE if there are no operations
- * to be undone, or TC_RESULT_ERROR on error.
+ * If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
+ * there are no operations that can be done.
  */
-enum TCResult tc_replica_undo(struct TCReplica *rep);
+TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
 
 /**
  * Get the latest error for a replica, or NULL if the last operation succeeded.  Subsequent calls
@@ -257,38 +271,28 @@ bool tc_task_is_active(struct TCTask *task);
 
 /**
  * Set a mutable task's status.
- *
- * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-enum TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
+TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
 
 /**
  * Set a mutable task's description.
- *
- * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-enum TCResult tc_task_set_description(struct TCTask *task, struct TCString *description);
+TCResult tc_task_set_description(struct TCTask *task, struct TCString *description);
 
 /**
  * Start a task.
- *
- * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-enum TCResult tc_task_start(struct TCTask *task);
+TCResult tc_task_start(struct TCTask *task);
 
 /**
  * Stop a task.
- *
- * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-enum TCResult tc_task_stop(struct TCTask *task);
+TCResult tc_task_stop(struct TCTask *task);
 
 /**
  * Add a tag to a mutable task.
- *
- * Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
  */
-enum TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
+TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
 
 /**
  * Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls

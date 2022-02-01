@@ -6,6 +6,9 @@ use taskchampion::{Replica, StorageConfig, Uuid};
 /// for querying and modifying that data.
 ///
 /// TCReplicas are not threadsafe.
+///
+/// When a `tc_replica_..` function that returns a TCResult returns TC_RESULT_ERROR, then
+/// `tc_replica_error` will return the error message.
 pub struct TCReplica {
     /// The wrapped Replica
     inner: Replica,
@@ -213,18 +216,21 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
 
 /// Undo local operations until the most recent UndoPoint.
 ///
-/// Returns TC_RESULT_TRUE if an undo occurred, TC_RESULT_FALSE if there are no operations
-/// to be undone, or TC_RESULT_ERROR on error.
+/// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
+/// there are no operations that can be done.
 #[no_mangle]
-pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica) -> TCResult {
+pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica, undone_out: *mut i32) -> TCResult {
     wrap(
         rep,
         |rep| {
-            Ok(if rep.undo()? {
-                TCResult::True
-            } else {
-                TCResult::False
-            })
+            let undone = if rep.undo()? { 1 } else { 0 };
+            if !undone_out.is_null() {
+                // SAFETY:
+                //  - undone_out is not NULL (just checked)
+                //  - undone_out is properly aligned (implicitly promised by caller)
+                unsafe { *undone_out = undone };
+            }
+            Ok(TCResult::Ok)
         },
         TCResult::Error,
     )

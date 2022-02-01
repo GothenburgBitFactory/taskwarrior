@@ -1,11 +1,9 @@
-// TODO: make true = 1, false = 0, error = -1
-/// A result combines a boolean success value with
-/// an error response.  It is equivalent to `Result<bool, ()>`.
+/// A result from a TC operation.  Typically if this value is TC_RESULT_ERROR,
+/// the associated object's `tc_.._error` method will return an error message.
 /// cbindgen:prefix-with-name
 /// cbindgen:rename-all=ScreamingSnakeCase
-#[repr(C)]
+#[repr(i32)]
 pub enum TCResult {
     Error = -1,
-    False = 0,
-    True = 1,
+    Ok = 0,
 }

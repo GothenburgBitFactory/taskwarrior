@@ -23,8 +23,20 @@ static void test_replica_creation_disk(void) {
 static void test_replica_undo_empty(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep));
-    int rv = tc_replica_undo(rep);
-    TEST_ASSERT_EQUAL(TC_RESULT_FALSE, rv);
+    int undone;
+    int rv = tc_replica_undo(rep, &undone);
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, rv);
+    TEST_ASSERT_EQUAL(0, undone);
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+    tc_replica_free(rep);
+}
+
+// When tc_replica_undo is passed NULL for undone_out, it still succeeds
+static void test_replica_undo_empty_null_undone_out(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+    int rv = tc_replica_undo(rep, NULL);
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, rv);
     TEST_ASSERT_NULL(tc_replica_error(rep));
     tc_replica_free(rep);
 }
@@ -110,6 +122,7 @@ int replica_tests(void) {
     RUN_TEST(test_replica_creation);
     RUN_TEST(test_replica_creation_disk);
     RUN_TEST(test_replica_undo_empty);
+    RUN_TEST(test_replica_undo_empty_null_undone_out);
     RUN_TEST(test_replica_task_creation);
     RUN_TEST(test_replica_task_import);
     RUN_TEST(test_replica_get_task_not_found);

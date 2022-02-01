@@ -16,6 +16,11 @@ use taskchampion::{Tag, Task, TaskMut};
 /// be used until it is freed or converted to a TaskMut.
 ///
 /// All `tc_task_..` functions taking a task as an argument require that it not be NULL.
+///
+/// When a `tc_task_..` function that returns a TCResult returns TC_RESULT_ERROR, then
+/// `tc_task_error` will return the error message.
+///
+/// TCTasks are not threadsafe.
 pub struct TCTask {
     /// The wrapped Task or TaskMut
     inner: Inner,
@@ -249,23 +254,19 @@ pub extern "C" fn tc_task_is_active<'a>(task: *mut TCTask) -> bool {
 // TODO: tc_task_get_modified
 
 /// Set a mutable task's status.
-///
-/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
 pub extern "C" fn tc_task_set_status<'a>(task: *mut TCTask, status: TCStatus) -> TCResult {
     wrap_mut(
         task,
         |task| {
             task.set_status(status.into())?;
-            Ok(TCResult::True)
+            Ok(TCResult::Ok)
         },
         TCResult::Error,
     )
 }
 
 /// Set a mutable task's description.
-///
-/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
 pub extern "C" fn tc_task_set_description<'a>(
     task: *mut TCTask,
@@ -279,7 +280,7 @@ pub extern "C" fn tc_task_set_description<'a>(
         task,
         |task| {
             task.set_description(description.as_str()?.to_string())?;
-            Ok(TCResult::True)
+            Ok(TCResult::Ok)
         },
         TCResult::Error,
     )
@@ -290,30 +291,26 @@ pub extern "C" fn tc_task_set_description<'a>(
 // TODO: tc_task_set_modified
 
 /// Start a task.
-///
-/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
 pub extern "C" fn tc_task_start<'a>(task: *mut TCTask) -> TCResult {
     wrap_mut(
         task,
         |task| {
             task.start()?;
-            Ok(TCResult::True)
+            Ok(TCResult::Ok)
         },
         TCResult::Error,
     )
 }
 
 /// Stop a task.
-///
-/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
 pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) -> TCResult {
     wrap_mut(
         task,
         |task| {
             task.stop()?;
-            Ok(TCResult::True)
+            Ok(TCResult::Ok)
         },
         TCResult::Error,
     )
@@ -323,8 +320,6 @@ pub extern "C" fn tc_task_stop<'a>(task: *mut TCTask) -> TCResult {
 // TODO: tc_task_delete
 
 /// Add a tag to a mutable task.
-///
-/// Returns TC_RESULT_TRUE on success and TC_RESULT_ERROR on failure.
 #[no_mangle]
 pub extern "C" fn tc_task_add_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> TCResult {
     // SAFETY:
@@ -337,7 +332,7 @@ pub extern "C" fn tc_task_add_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
             let tagstr = tcstring.as_str()?;
             let tag = Tag::from_str(tagstr)?;
             task.add_tag(&tag)?;
-            Ok(TCResult::True)
+            Ok(TCResult::Ok)
         },
         TCResult::Error,
     )
