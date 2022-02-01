@@ -1,7 +1,6 @@
+#![warn(unsafe_op_in_unsafe_fn)]
 mod util;
 
-// TODO: #![..]
-#[warn(unsafe_op_in_unsafe_fn)]
 pub mod replica;
 pub mod result;
 pub mod status;

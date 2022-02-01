@@ -53,7 +53,8 @@ impl TCTask {
     /// the lifetime promised by C.
     pub(crate) unsafe fn from_arg_ref<'a>(tctask: *mut TCTask) -> &'a mut Self {
         debug_assert!(!tctask.is_null());
-        &mut *tctask
+        // SAFETY: see docstring
+        unsafe { &mut *tctask }
     }
 
     /// Take a TCTask from C as an argument.
@@ -63,7 +64,8 @@ impl TCTask {
     /// The pointer must not be NULL.  The pointer becomes invalid before this function returns.
     pub(crate) unsafe fn from_arg<'a>(tctask: *mut TCTask) -> Self {
         debug_assert!(!tctask.is_null());
-        *Box::from_raw(tctask)
+        // SAFETY: see docstring
+        unsafe { *Box::from_raw(tctask) }
     }
 
     /// Convert a TCTask to a return value for handing off to C.
@@ -84,7 +86,7 @@ impl TCTask {
                 // SAFETY:
                 //  - tcreplica is not null (promised by caller)
                 //  - tcreplica outlives the pointer in this variant (promised by caller)
-                let tcreplica_ref: &mut TCReplica = TCReplica::from_arg_ref(tcreplica);
+                let tcreplica_ref: &mut TCReplica = unsafe { TCReplica::from_arg_ref(tcreplica) };
                 let rep_ref = tcreplica_ref.borrow_mut();
                 Inner::Mutable(task.into_mut(rep_ref), tcreplica)
             }

@@ -52,7 +52,8 @@ impl<'a> TCString<'a> {
     /// the lifetime promised by C.
     pub(crate) unsafe fn from_arg(tcstring: *mut TCString<'a>) -> Self {
         debug_assert!(!tcstring.is_null());
-        *(Box::from_raw(tcstring))
+        // SAFETY: see docstring
+        unsafe { *(Box::from_raw(tcstring)) }
     }
 
     /// Borrow a TCString from C as an argument.
@@ -64,7 +65,8 @@ impl<'a> TCString<'a> {
     /// the lifetime promised by C.
     pub(crate) unsafe fn from_arg_ref(tcstring: *mut TCString<'a>) -> &'a mut Self {
         debug_assert!(!tcstring.is_null());
-        &mut *tcstring
+        // SAFETY: see docstring
+        unsafe { &mut *tcstring }
     }
 
     /// Get a regular Rust &str for this value.
