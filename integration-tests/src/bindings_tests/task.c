@@ -149,8 +149,12 @@ static void task_task_add_tag(void) {
 
     tc_task_to_mut(task, rep);
 
+    TEST_ASSERT_FALSE(tc_task_has_tag(task, tc_string_borrow("next")));
+
     TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_add_tag(task, tc_string_borrow("next")));
     TEST_ASSERT_NULL(tc_task_error(task));
+
+    TEST_ASSERT_TRUE(tc_task_has_tag(task, tc_string_borrow("next")));
 
     // invalid - synthetic tag
     TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_task_add_tag(task, tc_string_borrow("PENDING")));
@@ -170,7 +174,7 @@ static void task_task_add_tag(void) {
     TEST_ASSERT_NOT_NULL(err);
     tc_string_free(err);
 
-    // TODO: test getting the tag
+    TEST_ASSERT_TRUE(tc_task_has_tag(task, tc_string_borrow("next")));
 
     tc_task_free(task);
     tc_replica_free(rep);

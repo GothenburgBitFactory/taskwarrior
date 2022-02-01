@@ -2,6 +2,7 @@ use crate::util::err_to_tcstring;
 use crate::{
     replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, uuid::TCUuid,
 };
+use std::convert::TryFrom;
 use std::ops::Deref;
 use std::str::FromStr;
 use taskchampion::{Tag, Task, TaskMut};
@@ -168,6 +169,15 @@ where
     }
 }
 
+impl TryFrom<TCString<'_>> for Tag {
+    type Error = anyhow::Error;
+
+    fn try_from(tcstring: TCString) -> Result<Tag, anyhow::Error> {
+        let tagstr = tcstring.as_str()?;
+        Tag::from_str(tagstr)
+    }
+}
+
 /// Convert an immutable task into a mutable task.
 ///
 /// The task must not be NULL. It is modified in-place, and becomes mutable.
@@ -246,7 +256,23 @@ pub extern "C" fn tc_task_is_active<'a>(task: *mut TCTask) -> bool {
     wrap(task, |task| task.is_active())
 }
 
-// TODO: tc_task_has_tag
+/// Check if a task has the given tag.  If the tag is invalid, this function will simply return
+/// false with no error from `tc_task_error`.  The given tag must not be NULL.
+#[no_mangle]
+pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> bool {
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
+    let tcstring = unsafe { TCString::from_arg(tag) };
+    wrap(task, |task| {
+        if let Ok(tag) = Tag::try_from(tcstring) {
+            task.has_tag(&tag)
+        } else {
+            false
+        }
+    })
+}
+
 // TODO: tc_task_get_tags
 // TODO: tc_task_get_annotations
 // TODO: tc_task_get_uda
@@ -331,8 +357,7 @@ pub extern "C" fn tc_task_add_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
     wrap_mut(
         task,
         |task| {
-            let tagstr = tcstring.as_str()?;
-            let tag = Tag::from_str(tagstr)?;
+            let tag = Tag::try_from(tcstring)?;
             task.add_tag(&tag)?;
             Ok(TCResult::Ok)
         },

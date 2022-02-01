@@ -270,6 +270,12 @@ struct TCString *tc_task_get_description(struct TCTask *task);
 bool tc_task_is_active(struct TCTask *task);
 
 /**
+ * Check if a task has the given tag.  If the tag is invalid, this function will simply return
+ * false with no error from `tc_task_error`.  The given tag must not be NULL.
+ */
+bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
+
+/**
  * Set a mutable task's status.
  */
 TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
