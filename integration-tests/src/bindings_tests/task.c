@@ -247,8 +247,8 @@ static void test_task_done_and_delete(void) {
     tc_replica_free(rep);
 }
 
-// adding tags to a task works, and invalid tags are rejected
-static void task_task_add_tag(void) {
+// adding and removing tags to a task works, and invalid tags are rejected
+static void test_task_add_remove_has_tag(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep));
 
@@ -287,6 +287,48 @@ static void task_task_add_tag(void) {
 
     TEST_ASSERT_TRUE(tc_task_has_tag(task, tc_string_borrow("next")));
 
+    // remove the tag
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_remove_tag(task, tc_string_borrow("next")));
+    TEST_ASSERT_NULL(tc_task_error(task));
+
+    TEST_ASSERT_FALSE(tc_task_has_tag(task, tc_string_borrow("next")));
+
+    tc_task_free(task);
+    tc_replica_free(rep);
+}
+
+// get_tags returns the list of tags
+static void test_task_get_tags(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_add_tag(task, tc_string_borrow("next")));
+
+    TCTags tags = tc_task_get_tags(task);
+
+    int found_pending = false, found_next = false;
+    for (size_t i = 0; i < tags.num_tags; i++) {
+        if (strcmp("PENDING", tc_string_content(tags.tags[i])) == 0) {
+            found_pending = true;
+        }
+        if (strcmp("next", tc_string_content(tags.tags[i])) == 0) {
+            found_next = true;
+        }
+    }
+    TEST_ASSERT_TRUE(found_pending);
+    TEST_ASSERT_TRUE(found_next);
+
+    tc_tags_free(&tags);
+    TEST_ASSERT_NULL(tags.tags);
+
     tc_task_free(task);
     tc_replica_free(rep);
 }
@@ -303,6 +345,7 @@ int task_tests(void) {
     RUN_TEST(test_task_get_set_wait_and_is_waiting);
     RUN_TEST(test_task_start_stop_is_active);
     RUN_TEST(test_task_done_and_delete);
-    RUN_TEST(task_task_add_tag);
+    RUN_TEST(test_task_add_remove_has_tag);
+    RUN_TEST(test_task_get_tags);
     return UNITY_END();
 }

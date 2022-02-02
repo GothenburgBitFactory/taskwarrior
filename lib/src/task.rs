@@ -1,12 +1,16 @@
 use crate::util::err_to_tcstring;
 use crate::{
-    replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, uuid::TCUuid,
+    arrays::TCTags, replica::TCReplica, result::TCResult, status::TCStatus, string::TCString,
+    uuid::TCUuid,
 };
 use chrono::{DateTime, TimeZone, Utc};
 use std::convert::TryFrom;
 use std::ops::Deref;
+use std::ptr::NonNull;
 use std::str::FromStr;
 use taskchampion::{Tag, Task, TaskMut};
+
+// TODO: use NonNull more
 
 /// A task, as publicly exposed by this library.
 ///
@@ -310,7 +314,22 @@ pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
     })
 }
 
-// TODO: tc_task_get_tags
+/// Get the tags for the task.  The task must not be NULL.
+#[no_mangle]
+pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCTags {
+    wrap(task, |task| {
+        let tcstrings: Vec<NonNull<TCString<'static>>> = task
+            .get_tags()
+            .map(|t| {
+                let t_ptr = TCString::from(t.as_ref()).return_val();
+                // SAFETY: t_ptr was just created and is not NULL
+                unsafe { NonNull::new_unchecked(t_ptr) }
+            })
+            .collect();
+        TCTags::new(tcstrings)
+    })
+}
+
 // TODO: tc_task_get_annotations
 // TODO: tc_task_get_uda
 // TODO: tc_task_get_udas
@@ -462,7 +481,24 @@ pub extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) -> TCRe
     )
 }
 
-// TODO: tc_task_remove_tag
+/// Remove a tag from a mutable task.
+#[no_mangle]
+pub extern "C" fn tc_task_remove_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
+    // SAFETY:
+    //  - tcstring is not NULL (promised by caller)
+    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
+    let tcstring = unsafe { TCString::from_arg(tag) };
+    wrap_mut(
+        task,
+        |task| {
+            let tag = Tag::try_from(tcstring)?;
+            task.remove_tag(&tag)?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
 // TODO: tc_task_add_annotation
 // TODO: tc_task_remove_annotation
 // TODO: tc_task_set_uda

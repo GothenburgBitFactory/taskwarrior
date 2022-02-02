@@ -89,6 +89,30 @@ typedef struct TCString TCString;
 typedef struct TCTask TCTask;
 
 /**
+ * TCTags represents a list of tags associated with a task.
+ *
+ * The content of this struct must be treated as read-only.
+ *
+ * The lifetime of a TCTags instance is independent of the task, and it
+ * will remain valid even if the task is freed.
+ */
+typedef struct TCTags {
+  /**
+   * strings representing each tag. these remain owned by the
+   * TCTags instance and will be freed by tc_tags_free.
+   */
+  struct TCString *const *tags;
+  /**
+   * number of tags in tags
+   */
+  size_t num_tags;
+  /**
+   * total size of tags (internal use only; do not change)
+   */
+  size_t _capacity;
+} TCTags;
+
+/**
  * TCUuid is used as a task identifier.  Uuids do not contain any pointers and need not be freed.
  * Uuids are typically treated as opaque, but the bytes are available in big-endian format.
  *
@@ -100,6 +124,12 @@ typedef struct TCUuid {
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
+
+/**
+ * Free a TCTags instance.  The given pointer must not be NULL.  The instance must not be used
+ * after this call.
+ */
+void tc_tags_free(struct TCTags *tctags);
 
 /**
  * Create a new TCReplica with an in-memory database.  The contents of the database will be
@@ -298,6 +328,11 @@ bool tc_task_is_active(struct TCTask *task);
 bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
 
 /**
+ * Get the tags for the task.  The task must not be NULL.
+ */
+struct TCTags tc_task_get_tags(struct TCTask *task);
+
+/**
  * Set a mutable task's status.
  */
 TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
@@ -347,6 +382,11 @@ TCResult tc_task_delete(struct TCTask *task);
  * Add a tag to a mutable task.
  */
 TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
+
+/**
+ * Remove a tag from a mutable task.
+ */
+TCResult tc_task_remove_tag(struct TCTask *task, struct TCString *tag);
 
 /**
  * Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls

@@ -108,8 +108,8 @@ impl<'a> From<String> for TCString<'a> {
     }
 }
 
-impl<'a> From<&str> for TCString<'a> {
-    fn from(string: &str) -> TCString<'a> {
+impl<'a> From<&str> for TCString<'static> {
+    fn from(string: &str) -> TCString<'static> {
         TCString::String(string.to_string())
     }
 }
