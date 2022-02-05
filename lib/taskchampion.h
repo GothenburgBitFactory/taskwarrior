@@ -107,7 +107,7 @@ typedef struct TCTags {
    */
   size_t num_tags;
   /**
-   * total size of tags (internal use only; do not change)
+   * total size of tags (internal use only)
    */
   size_t _capacity;
 } TCTags;

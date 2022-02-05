@@ -26,5 +26,5 @@ Keep the `RUN_TEST`s in the same order as the functions they call.
 
 To add a suite,
 
-1. Add a new C file in `integration-tests/src/bindings_tests/`, based off of one of hte others.
+1. Add a new C file in `integration-tests/src/bindings_tests/`, based off of one of the others.
 1. Add a the suite name to `suites` in `integration-tests/build.rs`.
