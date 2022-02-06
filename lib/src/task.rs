@@ -11,8 +11,6 @@ use std::ptr::NonNull;
 use std::str::FromStr;
 use taskchampion::{Tag, Task, TaskMut};
 
-// TODO: use NonNull more
-
 /// A task, as publicly exposed by this library.
 ///
 /// A task begins in "immutable" mode.  It must be converted to "mutable" mode
@@ -301,9 +299,8 @@ pub extern "C" fn tc_task_is_active(task: *mut TCTask) -> bool {
     wrap(task, |task| task.is_active())
 }
 
-/// Check if a task has the given tag.  If the tag is invalid, this function will simply return
-/// false, with no error from `tc_task_error`.
-// TODO: why no error??
+/// Check if a task has the given tag.  If the tag is invalid, this function will return false, as
+/// that (invalid) tag is not present. No error will be reported via `tc_task_error`.
 #[no_mangle]
 pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> bool {
     // SAFETY: see TCString docstring
@@ -317,7 +314,10 @@ pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
     })
 }
 
-/// Get the tags for the task.  The task must not be NULL.
+/// Get the tags for the task.
+///
+/// The caller must free the returned TCStrings instance.  The TCStrings instance does not
+/// reference the task and the two may be freed in any order.
 #[no_mangle]
 pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStrings {
     wrap(task, |task| {

@@ -3,12 +3,9 @@ use crate::traits::*;
 use crate::util::{drop_pointer_array, vec_into_raw_parts};
 use std::ptr::NonNull;
 
-/// TCStrings represents a list of tags associated with a task.
+/// TCStrings represents a list of string.
 ///
 /// The content of this struct must be treated as read-only.
-///
-/// The lifetime of a TCStrings instance is independent of the task, and it
-/// will remain valid even if the task is freed.
 #[repr(C)]
 pub struct TCStrings {
     /// number of tags in items
