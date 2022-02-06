@@ -1,4 +1,5 @@
 use crate::string::TCString;
+use crate::traits::*;
 use std::ptr::NonNull;
 
 // TODO: generalize to TCStrings?
@@ -88,10 +89,8 @@ pub extern "C" fn tc_tags_free<'a>(tctags: *mut TCTags) {
 
     // drop each contained string
     for tcstring in vec.drain(..) {
-        // SAFETY:
-        //  - the pointer is not NULL (as created by TCString::new)
-        //  - C does not expect the string's lifetime to exceed this function
-        drop(unsafe { TCString::from_arg(tcstring.as_ptr()) });
+        // SAFETY: see TCString docstring
+        drop(unsafe { TCString::take_from_arg(tcstring.as_ptr()) });
     }
 
     drop(vec);

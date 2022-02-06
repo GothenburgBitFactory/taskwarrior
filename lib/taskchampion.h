@@ -41,30 +41,59 @@ typedef enum TCStatus {
  * A replica represents an instance of a user's task data, providing an easy interface
  * for querying and modifying that data.
  *
- * TCReplicas are not threadsafe.
+ * # Error Handling
  *
  * When a `tc_replica_..` function that returns a TCResult returns TC_RESULT_ERROR, then
  * `tc_replica_error` will return the error message.
+ *
+ * # Safety
+ *
+ * The `*TCReplica` returned from `tc_replica_new…` functions is owned by the caller and
+ * must later be freed to avoid a memory leak.
+ *
+ * Any function taking a `*TCReplica` requires:
+ *  - the pointer must not be NUL;
+ *  - the pointer must be one previously returned from a tc_… function;
+ *  - the memory referenced by the pointer must never be modified by C code; and
+ *  - except for `tc_replica_free`, ownership of a `*TCReplica` remains with the caller.
+ *
+ * Once passed to `tc_replica_free`, a `*TCReplica` becmes invalid and must not be used again.
+ *
+ * TCReplicas are not threadsafe.
  */
 typedef struct TCReplica TCReplica;
 
 /**
- * TCString supports passing strings into and out of the TaskChampion API.  A string can contain
- * embedded NUL characters.  Strings containing such embedded NULs cannot be represented as a "C
- * string" and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.
- * In general, these two functions should be used for handling arbitrary data, while more
- * convenient forms may be used where embedded NUL characters are impossible, such as in static
- * strings.
+ * TCString supports passing strings into and out of the TaskChampion API.
  *
- * Rust expects all strings to be UTF-8, and API functions will fail if given a TCString
- * containing invalid UTF-8.
+ * # Rust Strings and C Strings
  *
- * Unless specified otherwise, functions in this API take ownership of a TCString when it is given
- * as a function argument, and free the string before returning.  Callers must not use or free
- * strings after passing them to such API functions.
+ * A Rust string can contain embedded NUL characters, while C considers such a character to mark
+ * the end of a string.  Strings containing embedded NULs cannot be represented as a "C string"
+ * and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.  In
+ * general, these two functions should be used for handling arbitrary data, while more convenient
+ * forms may be used where embedded NUL characters are impossible, such as in static strings.
  *
- * When a TCString appears as a return value or output argument, it is the responsibility of the
- * caller to free the string.
+ * # UTF-8
+ *
+ * TaskChampion expects all strings to be valid UTF-8. `tc_string_…` functions will fail if given
+ * a `*TCString` containing invalid UTF-8.
+ *
+ * # Safety
+ *
+ * When a `*TCString` appears as a return value or output argument, ownership is passed to the
+ * caller.  The caller must pass that ownerhsip back to another function or free the string.
+ *
+ * Any function taking a `*TCReplica` requires:
+ *  - the pointer must not be NUL;
+ *  - the pointer must be one previously returned from a tc_… function; and
+ *  - the memory referenced by the pointer must never be modified by C code.
+ *
+ * Unless specified otherwise, TaskChampion functions take ownership of a `*TCString` when it is
+ * given as a function argument, and the pointer is invalid when the function returns.  Callers
+ * must not use or free TCStrings after passing them to such API functions.
+ *
+ * TCStrings are not threadsafe.
  */
 typedef struct TCString TCString;
 
@@ -138,9 +167,8 @@ void tc_tags_free(struct TCTags *tctags);
 struct TCReplica *tc_replica_new_in_memory(void);
 
 /**
- * Create a new TCReplica with an on-disk database having the given filename. The filename must
- * not be NULL. On error, a string is written to the `error_out` parameter (if it is not NULL) and
- * NULL is returned.
+ * Create a new TCReplica with an on-disk database having the given filename. On error, a string
+ * is written to the `error_out` parameter (if it is not NULL) and NULL is returned.
  */
 struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString **error_out);
 
@@ -150,12 +178,10 @@ struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString 
  * Returns NULL when the task does not exist, and on error.  Consult tc_replica_error
  * to distinguish the two conditions.
  */
-struct TCTask *tc_replica_get_task(struct TCReplica *rep, struct TCUuid uuid);
+struct TCTask *tc_replica_get_task(struct TCReplica *rep, struct TCUuid tcuuid);
 
 /**
  * Create a new task.  The task must not already exist.
- *
- * The description must not be NULL.
  *
  * Returns the task, or NULL on error.
  */
@@ -168,7 +194,7 @@ struct TCTask *tc_replica_new_task(struct TCReplica *rep,
  *
  * Returns the task, or NULL on error.
  */
-struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid uuid);
+struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid tcuuid);
 
 /**
  * Undo local operations until the most recent UndoPoint.
@@ -239,7 +265,8 @@ const char *tc_string_content(struct TCString *tcstring);
 /**
  * Get the content of the string as a pointer and length.  The given string must not be NULL.
  * This function can return any string, even one including NUL bytes or invalid UTF-8.  The
- * returned buffer is valid until the TCString is freed or passed to another TC API function.
+ * returned buffer is valid until the TCString is freed or passed to another TaskChampio
+ * function.
  *
  * This function does _not_ take ownership of the TCString.
  */
@@ -323,7 +350,7 @@ bool tc_task_is_active(struct TCTask *task);
 
 /**
  * Check if a task has the given tag.  If the tag is invalid, this function will simply return
- * false with no error from `tc_task_error`.  The given tag must not be NULL.
+ * false, with no error from `tc_task_error`.
  */
 bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
 
@@ -417,16 +444,16 @@ struct TCUuid tc_uuid_nil(void);
  * Write the string representation of a TCUuid into the given buffer, which must be
  * at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
  */
-void tc_uuid_to_buf(struct TCUuid uuid, char *buf);
+void tc_uuid_to_buf(struct TCUuid tcuuid, char *buf);
 
 /**
  * Write the string representation of a TCUuid into the given buffer, which must be
  * at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
  */
-struct TCString *tc_uuid_to_str(struct TCUuid uuid);
+struct TCString *tc_uuid_to_str(struct TCUuid tcuuid);
 
 /**
- * Parse the given string as a UUID.  The string must not be NULL.  Returns false on failure.
+ * Parse the given string as a UUID.  Returns false on failure.
  */
 bool tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
 

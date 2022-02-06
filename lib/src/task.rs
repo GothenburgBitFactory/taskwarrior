@@ -1,3 +1,4 @@
+use crate::traits::*;
 use crate::util::err_to_tcstring;
 use crate::{
     arrays::TCTags, replica::TCReplica, result::TCResult, status::TCStatus, string::TCString,
@@ -93,7 +94,8 @@ impl TCTask {
                 // SAFETY:
                 //  - tcreplica is not null (promised by caller)
                 //  - tcreplica outlives the pointer in this variant (promised by caller)
-                let tcreplica_ref: &mut TCReplica = unsafe { TCReplica::from_arg_ref(tcreplica) };
+                let tcreplica_ref: &mut TCReplica =
+                    unsafe { TCReplica::from_arg_ref_mut(tcreplica) };
                 let rep_ref = tcreplica_ref.borrow_mut();
                 Inner::Mutable(task.into_mut(rep_ref), tcreplica)
             }
@@ -112,7 +114,8 @@ impl TCTask {
                 //  - tcreplica is not null (promised by caller of to_mut, which created this
                 //    variant)
                 //  - tcreplica is still alive (promised by caller of to_mut)
-                let tcreplica_ref: &mut TCReplica = unsafe { TCReplica::from_arg_ref(tcreplica) };
+                let tcreplica_ref: &mut TCReplica =
+                    unsafe { TCReplica::from_arg_ref_mut(tcreplica) };
                 tcreplica_ref.release_borrow();
                 Inner::Immutable(task.into_immut())
             }
@@ -246,7 +249,7 @@ pub extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask) {
 /// Get a task's UUID.
 #[no_mangle]
 pub extern "C" fn tc_task_get_uuid(task: *mut TCTask) -> TCUuid {
-    wrap(task, |task| task.get_uuid().into())
+    wrap(task, |task| task.get_uuid().return_val())
 }
 
 /// Get a task's status.
@@ -263,7 +266,8 @@ pub extern "C" fn tc_task_get_status<'a>(task: *mut TCTask) -> TCStatus {
 pub extern "C" fn tc_task_get_description<'a>(task: *mut TCTask) -> *mut TCString<'static> {
     wrap(task, |task| {
         let descr: TCString = task.get_description().into();
-        descr.return_val()
+        // SAFETY: see TCString docstring
+        unsafe { descr.return_val() }
     })
 }
 
@@ -298,13 +302,12 @@ pub extern "C" fn tc_task_is_active(task: *mut TCTask) -> bool {
 }
 
 /// Check if a task has the given tag.  If the tag is invalid, this function will simply return
-/// false with no error from `tc_task_error`.  The given tag must not be NULL.
+/// false, with no error from `tc_task_error`.
+// TODO: why no error??
 #[no_mangle]
 pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> bool {
-    // SAFETY:
-    //  - tcstring is not NULL (promised by caller)
-    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
-    let tcstring = unsafe { TCString::from_arg(tag) };
+    // SAFETY: see TCString docstring
+    let tcstring = unsafe { TCString::take_from_arg(tag) };
     wrap(task, |task| {
         if let Ok(tag) = Tag::try_from(tcstring) {
             task.has_tag(&tag)
@@ -321,7 +324,8 @@ pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCTags {
         let tcstrings: Vec<NonNull<TCString<'static>>> = task
             .get_tags()
             .map(|t| {
-                let t_ptr = TCString::from(t.as_ref()).return_val();
+                // SAFETY: see TCString docstring
+                let t_ptr = unsafe { TCString::from(t.as_ref()).return_val() };
                 // SAFETY: t_ptr was just created and is not NULL
                 unsafe { NonNull::new_unchecked(t_ptr) }
             })
@@ -355,10 +359,8 @@ pub extern "C" fn tc_task_set_description<'a>(
     task: *mut TCTask,
     description: *mut TCString,
 ) -> TCResult {
-    // SAFETY:
-    //  - tcstring is not NULL (promised by caller)
-    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
-    let description = unsafe { TCString::from_arg(description) };
+    // SAFETY: see TCString docstring
+    let description = unsafe { TCString::take_from_arg(description) };
     wrap_mut(
         task,
         |task| {
@@ -466,10 +468,8 @@ pub extern "C" fn tc_task_delete(task: *mut TCTask) -> TCResult {
 /// Add a tag to a mutable task.
 #[no_mangle]
 pub extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
-    // SAFETY:
-    //  - tcstring is not NULL (promised by caller)
-    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
-    let tcstring = unsafe { TCString::from_arg(tag) };
+    // SAFETY: see TCString docstring
+    let tcstring = unsafe { TCString::take_from_arg(tag) };
     wrap_mut(
         task,
         |task| {
@@ -484,10 +484,8 @@ pub extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) -> TCRe
 /// Remove a tag from a mutable task.
 #[no_mangle]
 pub extern "C" fn tc_task_remove_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
-    // SAFETY:
-    //  - tcstring is not NULL (promised by caller)
-    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
-    let tcstring = unsafe { TCString::from_arg(tag) };
+    // SAFETY: see TCString docstring
+    let tcstring = unsafe { TCString::take_from_arg(tag) };
     wrap_mut(
         task,
         |task| {
@@ -516,7 +514,7 @@ pub extern "C" fn tc_task_error<'a>(task: *mut TCTask) -> *mut TCString<'static>
     //  - task outlives 'a (promised by caller)
     let task: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
     if let Some(tcstring) = task.error.take() {
-        tcstring.return_val()
+        unsafe { tcstring.return_val() }
     } else {
         std::ptr::null_mut()
     }

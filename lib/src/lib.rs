@@ -1,4 +1,6 @@
 #![warn(unsafe_op_in_unsafe_fn)]
+
+mod traits;
 mod util;
 
 pub mod arrays;

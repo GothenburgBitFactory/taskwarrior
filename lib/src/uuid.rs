@@ -1,4 +1,5 @@
 use crate::string::TCString;
+use crate::traits::*;
 use libc;
 use taskchampion::Uuid;
 
@@ -9,28 +10,30 @@ use taskchampion::Uuid;
 #[repr(C)]
 pub struct TCUuid([u8; 16]);
 
-impl From<Uuid> for TCUuid {
-    fn from(uuid: Uuid) -> TCUuid {
-        TCUuid(*uuid.as_bytes())
-    }
-}
+impl PassByValue for Uuid {
+    type CType = TCUuid;
 
-impl From<TCUuid> for Uuid {
-    fn from(uuid: TCUuid) -> Uuid {
-        Uuid::from_bytes(uuid.0)
+    unsafe fn from_ctype(arg: TCUuid) -> Self {
+        // SAFETY:
+        //  - any 16-byte value is a valid Uuid
+        Uuid::from_bytes(arg.0)
+    }
+
+    fn as_ctype(self) -> TCUuid {
+        TCUuid(*self.as_bytes())
     }
 }
 
 /// Create a new, randomly-generated UUID.
 #[no_mangle]
 pub extern "C" fn tc_uuid_new_v4() -> TCUuid {
-    Uuid::new_v4().into()
+    Uuid::new_v4().return_val()
 }
 
 /// Create a new UUID with the nil value.
 #[no_mangle]
 pub extern "C" fn tc_uuid_nil() -> TCUuid {
-    Uuid::nil().into()
+    Uuid::nil().return_val()
 }
 
 // NOTE: this must be a simple constant so that cbindgen can evaluate it
@@ -40,7 +43,7 @@ pub const TC_UUID_STRING_BYTES: usize = 36;
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
 #[no_mangle]
-pub extern "C" fn tc_uuid_to_buf<'a>(uuid: TCUuid, buf: *mut libc::c_char) {
+pub extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
     debug_assert!(!buf.is_null());
     // SAFETY:
     //  - buf is valid for len bytes (by C convention)
@@ -51,34 +54,34 @@ pub extern "C" fn tc_uuid_to_buf<'a>(uuid: TCUuid, buf: *mut libc::c_char) {
     let buf: &'a mut [u8] = unsafe {
         std::slice::from_raw_parts_mut(buf as *mut u8, ::uuid::adapter::Hyphenated::LENGTH)
     };
-    let uuid: Uuid = uuid.into();
+    let uuid: Uuid = Uuid::from_arg(tcuuid);
     uuid.to_hyphenated().encode_lower(buf);
 }
 
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
 #[no_mangle]
-pub extern "C" fn tc_uuid_to_str(uuid: TCUuid) -> *mut TCString<'static> {
-    let uuid: Uuid = uuid.into();
+pub extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
+    let uuid: Uuid = Uuid::from_arg(tcuuid);
     let s = uuid.to_string();
-    TCString::from(s).return_val()
+    // SAFETY: see TCString docstring
+    unsafe { TCString::from(s).return_val() }
 }
 
-/// Parse the given string as a UUID.  The string must not be NULL.  Returns false on failure.
+/// Parse the given string as a UUID.  Returns false on failure.
 #[no_mangle]
 pub extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> bool {
+    // TODO: TCResult instead
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
-    // SAFETY:
-    //  - tcstring is not NULL (promised by caller)
-    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
-    let s = unsafe { TCString::from_arg(s) };
+    // SAFETY: see TCString docstring
+    let s = unsafe { TCString::take_from_arg(s) };
     if let Ok(s) = s.as_str() {
         if let Ok(u) = Uuid::parse_str(s) {
             // SAFETY:
             //  - uuid_out is not NULL (promised by caller)
             //  - alignment is not required
-            unsafe { *uuid_out = u.into() };
+            unsafe { u.to_arg_out(uuid_out) };
             return true;
         }
     }

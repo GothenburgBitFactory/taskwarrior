@@ -1,24 +1,39 @@
+use crate::traits::*;
 use std::ffi::{CStr, CString, OsStr};
 use std::os::unix::ffi::OsStrExt;
 use std::path::PathBuf;
 use std::str::Utf8Error;
 
-/// TCString supports passing strings into and out of the TaskChampion API.  A string can contain
-/// embedded NUL characters.  Strings containing such embedded NULs cannot be represented as a "C
-/// string" and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.
-/// In general, these two functions should be used for handling arbitrary data, while more
-/// convenient forms may be used where embedded NUL characters are impossible, such as in static
-/// strings.
+/// TCString supports passing strings into and out of the TaskChampion API.
 ///
-/// Rust expects all strings to be UTF-8, and API functions will fail if given a TCString
-/// containing invalid UTF-8.
+/// # Rust Strings and C Strings
 ///
-/// Unless specified otherwise, functions in this API take ownership of a TCString when it is given
-/// as a function argument, and free the string before returning.  Callers must not use or free
-/// strings after passing them to such API functions.
+/// A Rust string can contain embedded NUL characters, while C considers such a character to mark
+/// the end of a string.  Strings containing embedded NULs cannot be represented as a "C string"
+/// and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.  In
+/// general, these two functions should be used for handling arbitrary data, while more convenient
+/// forms may be used where embedded NUL characters are impossible, such as in static strings.
 ///
-/// When a TCString appears as a return value or output argument, it is the responsibility of the
-/// caller to free the string.
+/// # UTF-8
+///
+/// TaskChampion expects all strings to be valid UTF-8. `tc_string_…` functions will fail if given
+/// a `*TCString` containing invalid UTF-8.
+///
+/// # Safety
+///
+/// When a `*TCString` appears as a return value or output argument, ownership is passed to the
+/// caller.  The caller must pass that ownerhsip back to another function or free the string.
+///
+/// Any function taking a `*TCReplica` requires:
+///  - the pointer must not be NUL;
+///  - the pointer must be one previously returned from a tc_… function; and
+///  - the memory referenced by the pointer must never be modified by C code.
+///
+/// Unless specified otherwise, TaskChampion functions take ownership of a `*TCString` when it is
+/// given as a function argument, and the pointer is invalid when the function returns.  Callers
+/// must not use or free TCStrings after passing them to such API functions.
+///
+/// TCStrings are not threadsafe.
 pub enum TCString<'a> {
     CString(CString),
     CStr(&'a CStr),
@@ -39,36 +54,9 @@ impl<'a> Default for TCString<'a> {
     }
 }
 
+impl<'a> PassByPointer for TCString<'a> {}
+
 impl<'a> TCString<'a> {
-    /// Take a TCString from C as an argument.
-    ///
-    /// C callers generally expect TC functions to take ownership of a string, which is what this
-    /// function does.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
-    /// lifetime assigned to the reference and the lifetime of the TCString itself do not outlive
-    /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg(tcstring: *mut TCString<'a>) -> Self {
-        debug_assert!(!tcstring.is_null());
-        // SAFETY: see docstring
-        unsafe { *(Box::from_raw(tcstring)) }
-    }
-
-    /// Borrow a TCString from C as an argument.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
-    /// lifetime assigned to the reference and the lifetime of the TCString itself do not outlive
-    /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg_ref(tcstring: *mut TCString<'a>) -> &'a mut Self {
-        debug_assert!(!tcstring.is_null());
-        // SAFETY: see docstring
-        unsafe { &mut *tcstring }
-    }
-
     /// Get a regular Rust &str for this value.
     pub(crate) fn as_str(&self) -> Result<&str, std::str::Utf8Error> {
         match self {
@@ -94,11 +82,6 @@ impl<'a> TCString<'a> {
         // TODO: this is UNIX-specific.
         let path: &OsStr = OsStr::from_bytes(self.as_bytes());
         path.to_os_string().into()
-    }
-
-    /// Convert this to a return value for handing off to C.
-    pub(crate) fn return_val(self) -> *mut TCString<'a> {
-        Box::into_raw(Box::new(self))
     }
 }
 
@@ -137,7 +120,8 @@ pub extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCString<'
     //  - cstr contains a valid NUL terminator (promised by caller)
     //  - cstr's content will not change before it is destroyed (promised by caller)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
-    TCString::CStr(cstr).return_val()
+    // SAFETY: see docstring
+    unsafe { TCString::CStr(cstr).return_val() }
 }
 
 /// Create a new TCString by cloning the content of the given C string.  The resulting TCString
@@ -151,7 +135,8 @@ pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'s
     //  - cstr contains a valid NUL terminator (promised by caller)
     //  - cstr's content will not change before it is destroyed (by C convention)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
-    TCString::CString(cstr.into()).return_val()
+    // SAFETY: see docstring
+    unsafe { TCString::CString(cstr.into()).return_val() }
 }
 
 /// Create a new TCString containing the given string with the given length. This allows creation
@@ -176,14 +161,15 @@ pub extern "C" fn tc_string_clone_with_len(
     let vec = slice.to_vec();
     // try converting to a string, which is the only variant that can contain embedded NULs.  If
     // the bytes are not valid utf-8, store that information for reporting later.
-    match String::from_utf8(vec) {
+    let tcstring = match String::from_utf8(vec) {
         Ok(string) => TCString::String(string),
         Err(e) => {
             let (e, vec) = (e.utf8_error(), e.into_bytes());
             TCString::InvalidUtf8(e, vec)
         }
-    }
-    .return_val()
+    };
+    // SAFETY: see docstring
+    unsafe { tcstring.return_val() }
 }
 
 /// Get the content of the string as a regular C string.  The given string must not be NULL.  The
@@ -200,11 +186,12 @@ pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_c
     //  - tcstring is not NULL (promised by caller)
     //  - lifetime of tcstring outlives the lifetime of this function
     //  - lifetime of tcstring outlives the lifetime of the returned pointer (promised by caller)
-    let tcstring = unsafe { TCString::from_arg_ref(tcstring) };
+    let tcstring = unsafe { TCString::from_arg_ref_mut(tcstring) };
 
     // if we have a String, we need to consume it and turn it into
     // a CString.
     if matches!(tcstring, TCString::String(_)) {
+        // TODO: put this in a method
         if let TCString::String(string) = std::mem::take(tcstring) {
             match CString::new(string) {
                 Ok(cstring) => {
@@ -237,7 +224,8 @@ pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_c
 
 /// Get the content of the string as a pointer and length.  The given string must not be NULL.
 /// This function can return any string, even one including NUL bytes or invalid UTF-8.  The
-/// returned buffer is valid until the TCString is freed or passed to another TC API function.
+/// returned buffer is valid until the TCString is freed or passed to another TaskChampio
+/// function.
 ///
 /// This function does _not_ take ownership of the TCString.
 #[no_mangle]
@@ -274,5 +262,5 @@ pub extern "C" fn tc_string_free(tcstring: *mut TCString) {
     // SAFETY:
     //  - tcstring is not NULL (promised by caller)
     //  - caller is exclusive owner of tcstring (promised by caller)
-    drop(unsafe { TCString::from_arg(tcstring) });
+    drop(unsafe { TCString::take_from_arg(tcstring) });
 }

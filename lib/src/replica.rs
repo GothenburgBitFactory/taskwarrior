@@ -1,3 +1,4 @@
+use crate::traits::*;
 use crate::util::err_to_tcstring;
 use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask, uuid::TCUuid};
 use taskchampion::{Replica, StorageConfig, Uuid};
@@ -5,10 +6,25 @@ use taskchampion::{Replica, StorageConfig, Uuid};
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
 ///
-/// TCReplicas are not threadsafe.
+/// # Error Handling
 ///
 /// When a `tc_replica_..` function that returns a TCResult returns TC_RESULT_ERROR, then
 /// `tc_replica_error` will return the error message.
+///
+/// # Safety
+///
+/// The `*TCReplica` returned from `tc_replica_new…` functions is owned by the caller and
+/// must later be freed to avoid a memory leak.
+///
+/// Any function taking a `*TCReplica` requires:
+///  - the pointer must not be NUL;
+///  - the pointer must be one previously returned from a tc_… function;
+///  - the memory referenced by the pointer must never be modified by C code; and
+///  - except for `tc_replica_free`, ownership of a `*TCReplica` remains with the caller.
+///
+/// Once passed to `tc_replica_free`, a `*TCReplica` becmes invalid and must not be used again.
+///
+/// TCReplicas are not threadsafe.
 pub struct TCReplica {
     /// The wrapped Replica
     inner: Replica,
@@ -20,37 +36,9 @@ pub struct TCReplica {
     error: Option<TCString<'static>>,
 }
 
+impl PassByPointer for TCReplica {}
+
 impl TCReplica {
-    /// Borrow a TCReplica from C as an argument.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
-    /// lifetime assigned to the reference and the lifetime of the TCReplica itself do not outlive
-    /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg_ref<'a>(tcreplica: *mut TCReplica) -> &'a mut Self {
-        debug_assert!(!tcreplica.is_null());
-        // SAFETY: see doc comment
-        unsafe { &mut *tcreplica }
-    }
-
-    /// Take a TCReplica from C as an argument.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must not be NULL and must point to a valid replica.  The pointer becomes
-    /// invalid before this function returns and must not be used afterward.
-    pub(crate) unsafe fn from_arg(tcreplica: *mut TCReplica) -> Self {
-        debug_assert!(!tcreplica.is_null());
-        // SAFETY: see doc comment
-        unsafe { *Box::from_raw(tcreplica) }
-    }
-
-    /// Convert this to a return value for handing off to C.
-    pub(crate) fn return_val(self) -> *mut TCReplica {
-        Box::into_raw(Box::new(self))
-    }
-
     /// Mutably borrow the inner Replica
     pub(crate) fn borrow_mut(&mut self) -> &mut Replica {
         if self.mut_borrowed {
@@ -85,10 +73,8 @@ fn wrap<'a, T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
 where
     F: FnOnce(&mut Replica) -> anyhow::Result<T>,
 {
-    // SAFETY:
-    //  - rep is not null (promised by caller)
-    //  - rep outlives 'a (promised by caller)
-    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
+    // SAFETY: see type docstring
+    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref_mut(rep) };
     if rep.mut_borrowed {
         panic!("replica is borrowed and cannot be used");
     }
@@ -109,21 +95,19 @@ pub extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
     let storage = StorageConfig::InMemory
         .into_storage()
         .expect("in-memory always succeeds");
-    TCReplica::from(Replica::new(storage)).return_val()
+    // SAFETY: see type docstring
+    unsafe { TCReplica::from(Replica::new(storage)).return_val() }
 }
 
-/// Create a new TCReplica with an on-disk database having the given filename. The filename must
-/// not be NULL. On error, a string is written to the `error_out` parameter (if it is not NULL) and
-/// NULL is returned.
+/// Create a new TCReplica with an on-disk database having the given filename. On error, a string
+/// is written to the `error_out` parameter (if it is not NULL) and NULL is returned.
 #[no_mangle]
 pub extern "C" fn tc_replica_new_on_disk<'a>(
     path: *mut TCString,
     error_out: *mut *mut TCString,
 ) -> *mut TCReplica {
-    // SAFETY:
-    //  - tcstring is not NULL (promised by caller)
-    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
-    let path = unsafe { TCString::from_arg(path) };
+    // SAFETY: see TCString docstring
+    let path = unsafe { TCString::take_from_arg(path) };
     let storage_res = StorageConfig::OnDisk {
         taskdb_dir: path.to_path_buf(),
     }
@@ -141,7 +125,8 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
         }
     };
 
-    TCReplica::from(Replica::new(storage)).return_val()
+    // SAFETY: see type docstring
+    unsafe { TCReplica::from(Replica::new(storage)).return_val() }
 }
 
 // TODO: tc_replica_all_tasks
@@ -153,11 +138,11 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
 /// Returns NULL when the task does not exist, and on error.  Consult tc_replica_error
 /// to distinguish the two conditions.
 #[no_mangle]
-pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, uuid: TCUuid) -> *mut TCTask {
+pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid) -> *mut TCTask {
     wrap(
         rep,
         |rep| {
-            let uuid: Uuid = uuid.into();
+            let uuid = Uuid::from_arg(tcuuid);
             if let Some(task) = rep.get_task(uuid)? {
                 Ok(TCTask::from(task).return_val())
             } else {
@@ -170,8 +155,6 @@ pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, uuid: TCUuid) -> *mut
 
 /// Create a new task.  The task must not already exist.
 ///
-/// The description must not be NULL.
-///
 /// Returns the task, or NULL on error.
 #[no_mangle]
 pub extern "C" fn tc_replica_new_task(
@@ -179,10 +162,8 @@ pub extern "C" fn tc_replica_new_task(
     status: TCStatus,
     description: *mut TCString,
 ) -> *mut TCTask {
-    // SAFETY:
-    //  - tcstring is not NULL (promised by caller)
-    //  - caller is exclusive owner of tcstring (implicitly promised by caller)
-    let description = unsafe { TCString::from_arg(description) };
+    // SAFETY: see TCString docstring
+    let description = unsafe { TCString::take_from_arg(description) };
     wrap(
         rep,
         |rep| {
@@ -199,12 +180,12 @@ pub extern "C" fn tc_replica_new_task(
 #[no_mangle]
 pub extern "C" fn tc_replica_import_task_with_uuid(
     rep: *mut TCReplica,
-    uuid: TCUuid,
+    tcuuid: TCUuid,
 ) -> *mut TCTask {
     wrap(
         rep,
         |rep| {
-            let uuid: Uuid = uuid.into();
+            let uuid = Uuid::from_arg(tcuuid);
             let task = rep.import_task_with_uuid(uuid)?;
             Ok(TCTask::from(task).return_val())
         },
@@ -241,12 +222,11 @@ pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica, undone_out: *mut i32)
 /// returned string.
 #[no_mangle]
 pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'static> {
-    // SAFETY:
-    //  - rep is not null (promised by caller)
-    //  - rep outlives 'a (promised by caller)
-    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref(rep) };
+    // SAFETY: see type docstring
+    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref_mut(rep) };
     if let Some(tcstring) = rep.error.take() {
-        tcstring.return_val()
+        // SAFETY: see TCString docstring
+        unsafe { tcstring.return_val() }
     } else {
         std::ptr::null_mut()
     }
@@ -256,10 +236,8 @@ pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'st
 /// more than once.
 #[no_mangle]
 pub extern "C" fn tc_replica_free(rep: *mut TCReplica) {
-    // SAFETY:
-    //  - rep is not NULL (promised by caller)
-    //  - caller will not use the TCReplica after this (promised by caller)
-    let replica = unsafe { TCReplica::from_arg(rep) };
+    // SAFETY: see type docstring
+    let replica = unsafe { TCReplica::take_from_arg(rep) };
     if replica.mut_borrowed {
         panic!("replica is borrowed and cannot be freed");
     }
