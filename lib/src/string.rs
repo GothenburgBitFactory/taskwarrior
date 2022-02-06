@@ -248,15 +248,14 @@ pub extern "C" fn tc_string_content_with_len(
     //  - lifetime of tcstring outlives the lifetime of this function
     //  - lifetime of tcstring outlives the lifetime of the returned pointer (promised by caller)
     let tcstring = unsafe { TCString::from_arg_ref(tcstring) };
-    debug_assert!(!len_out.is_null());
 
     let bytes = tcstring.as_bytes();
 
     // SAFETY:
-    //  - len_out is not NULL (checked by assertion, promised by caller)
+    //  - len_out is not NULL (promised by caller)
     //  - len_out points to valid memory (promised by caller)
     //  - len_out is properly aligned (C convention)
-    unsafe { *len_out = bytes.len() };
+    unsafe { bytes.len().to_arg_out(len_out) };
     bytes.as_ptr() as *const libc::c_char
 }
 

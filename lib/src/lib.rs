@@ -4,6 +4,7 @@ mod traits;
 mod util;
 
 pub mod arrays;
+pub mod atomic;
 pub mod replica;
 pub mod result;
 pub mod status;
