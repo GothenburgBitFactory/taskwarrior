@@ -2,29 +2,30 @@
 /// values are implicitly copyable, via C's struct assignment.
 ///
 /// The Rust and C types may differ, with from_ctype and as_ctype converting between them.
+/// Implement this trait for the C type.
 pub(crate) trait PassByValue: Sized {
-    type CType;
+    type RustType;
 
     /// Convert a C value to a Rust value.
     ///
     /// # Safety
     ///
-    /// `arg` must be a valid CType.
-    unsafe fn from_ctype(arg: Self::CType) -> Self;
+    /// `self` must be a valid CType.
+    unsafe fn from_ctype(self) -> Self::RustType;
 
     /// Convert a Rust value to a C value.
-    fn as_ctype(self) -> Self::CType;
+    fn as_ctype(arg: Self::RustType) -> Self;
 
     /// Take a value from C as an argument.
     ///
     /// # Safety
     ///
-    /// `arg` must be a valid CType.  This is typically ensured either by requiring that C
+    /// `self` must be a valid CType.  This is typically ensured either by requiring that C
     /// code not modify it, or by defining the valid values in C comments.
-    unsafe fn from_arg(arg: Self::CType) -> Self {
+    unsafe fn from_arg(arg: Self) -> Self::RustType {
         // SAFETY:
         //  - arg is a valid CType (promised by caller)
-        unsafe { Self::from_ctype(arg) }
+        unsafe { arg.from_ctype() }
     }
 
     /// Take a value from C as a pointer argument, replacing it with the given value.  This is used
@@ -33,7 +34,7 @@ pub(crate) trait PassByValue: Sized {
     /// # Safety
     ///
     /// `*arg` must be a valid CType, as with [`from_arg`].
-    unsafe fn take_from_arg(arg: *mut Self::CType, mut replacement: Self::CType) -> Self {
+    unsafe fn take_from_arg(arg: *mut Self, mut replacement: Self) -> Self::RustType {
         // SAFETY:
         //  - arg is valid (promised by caller)
         //  - replacement is valid (guaranteed by Rust)
@@ -44,8 +45,8 @@ pub(crate) trait PassByValue: Sized {
     }
 
     /// Return a value to C
-    fn return_val(self) -> Self::CType {
-        self.as_ctype()
+    fn return_val(arg: Self::RustType) -> Self {
+        Self::as_ctype(arg)
     }
 
     /// Return a value to C, via an "output parameter"
@@ -54,12 +55,12 @@ pub(crate) trait PassByValue: Sized {
     ///
     /// `arg_out` must not be NULL and must be properly aligned and pointing to valid memory
     /// of the size of CType.
-    unsafe fn to_arg_out(self, arg_out: *mut Self::CType) {
+    unsafe fn to_arg_out(val: Self::RustType, arg_out: *mut Self) {
         debug_assert!(!arg_out.is_null());
         // SAFETY:
         //  - arg_out is not NULL (promised by caller, asserted)
         //  - arg_out is properly aligned and points to valid memory (promised by caller)
-        unsafe { *arg_out = self.as_ctype() };
+        unsafe { *arg_out = Self::as_ctype(val) };
     }
 }
 

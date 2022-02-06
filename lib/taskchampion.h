@@ -127,16 +127,13 @@ typedef struct TCUuid {
 } TCUuid;
 
 /**
- * TCStrings represents a list of tags associated with a task.
+ * TCStrings represents a list of strings.
  *
  * The content of this struct must be treated as read-only.
- *
- * The lifetime of a TCStrings instance is independent of the task, and it
- * will remain valid even if the task is freed.
  */
 typedef struct TCStrings {
   /**
-   * number of tags in items
+   * number of strings in items
    */
   size_t len;
   /**
@@ -144,7 +141,7 @@ typedef struct TCStrings {
    */
   size_t _capacity;
   /**
-   * strings representing each tag. these remain owned by the TCStrings instance and will be freed
+   * strings representing each string. these remain owned by the TCStrings instance and will be freed
    * by tc_strings_free.
    */
   struct TCString *const *items;
@@ -276,7 +273,7 @@ void tc_string_free(struct TCString *tcstring);
  * Free a TCStrings instance.  The instance, and all TCStrings it contains, must not be used after
  * this call.
  */
-void tc_strings_free(struct TCStrings *tctags);
+void tc_strings_free(struct TCStrings *tcstrings);
 
 /**
  * Convert an immutable task into a mutable task.
@@ -349,13 +346,16 @@ bool tc_task_is_waiting(struct TCTask *task);
 bool tc_task_is_active(struct TCTask *task);
 
 /**
- * Check if a task has the given tag.  If the tag is invalid, this function will simply return
- * false, with no error from `tc_task_error`.
+ * Check if a task has the given tag.  If the tag is invalid, this function will return false, as
+ * that (invalid) tag is not present. No error will be reported via `tc_task_error`.
  */
 bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
 
 /**
- * Get the tags for the task.  The task must not be NULL.
+ * Get the tags for the task.
+ *
+ * The caller must free the returned TCStrings instance.  The TCStrings instance does not
+ * reference the task and the two may be freed in any order.
  */
 struct TCStrings tc_task_get_tags(struct TCTask *task);
 

@@ -10,30 +10,30 @@ use taskchampion::Uuid;
 #[repr(C)]
 pub struct TCUuid([u8; 16]);
 
-impl PassByValue for Uuid {
-    type CType = TCUuid;
+impl PassByValue for TCUuid {
+    type RustType = Uuid;
 
-    unsafe fn from_ctype(arg: TCUuid) -> Self {
+    unsafe fn from_ctype(self) -> Self::RustType {
         // SAFETY:
         //  - any 16-byte value is a valid Uuid
-        Uuid::from_bytes(arg.0)
+        Uuid::from_bytes(self.0)
     }
 
-    fn as_ctype(self) -> TCUuid {
-        TCUuid(*self.as_bytes())
+    fn as_ctype(arg: Uuid) -> Self {
+        TCUuid(*arg.as_bytes())
     }
 }
 
 /// Create a new, randomly-generated UUID.
 #[no_mangle]
 pub extern "C" fn tc_uuid_new_v4() -> TCUuid {
-    Uuid::new_v4().return_val()
+    TCUuid::return_val(Uuid::new_v4())
 }
 
 /// Create a new UUID with the nil value.
 #[no_mangle]
 pub extern "C" fn tc_uuid_nil() -> TCUuid {
-    Uuid::nil().return_val()
+    TCUuid::return_val(Uuid::nil())
 }
 
 // NOTE: this must be a simple constant so that cbindgen can evaluate it
@@ -56,7 +56,7 @@ pub extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
     };
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
-    let uuid: Uuid = unsafe { Uuid::from_arg(tcuuid) };
+    let uuid: Uuid = unsafe { TCUuid::from_arg(tcuuid) };
     uuid.to_hyphenated().encode_lower(buf);
 }
 
@@ -66,7 +66,7 @@ pub extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
 pub extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
-    let uuid: Uuid = unsafe { Uuid::from_arg(tcuuid) };
+    let uuid: Uuid = unsafe { TCUuid::from_arg(tcuuid) };
     let s = uuid.to_string();
     // SAFETY: see TCString docstring
     unsafe { TCString::from(s).return_val() }
@@ -85,7 +85,7 @@ pub extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) 
             // SAFETY:
             //  - uuid_out is not NULL (promised by caller)
             //  - alignment is not required
-            unsafe { u.to_arg_out(uuid_out) };
+            unsafe { TCUuid::to_arg_out(u, uuid_out) };
             return true;
         }
     }

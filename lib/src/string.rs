@@ -255,7 +255,7 @@ pub extern "C" fn tc_string_content_with_len(
     //  - len_out is not NULL (promised by caller)
     //  - len_out points to valid memory (promised by caller)
     //  - len_out is properly aligned (C convention)
-    unsafe { bytes.len().to_arg_out(len_out) };
+    unsafe { usize::to_arg_out(bytes.len(), len_out) };
     bytes.as_ptr() as *const libc::c_char
 }
 

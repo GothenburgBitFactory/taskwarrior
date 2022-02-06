@@ -247,7 +247,7 @@ pub extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask) {
 /// Get a task's UUID.
 #[no_mangle]
 pub extern "C" fn tc_task_get_uuid(task: *mut TCTask) -> TCUuid {
-    wrap(task, |task| task.get_uuid().return_val())
+    wrap(task, |task| TCUuid::return_val(task.get_uuid()))
 }
 
 /// Get a task's status.
@@ -331,7 +331,7 @@ pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStrings {
                 .expect("TCString::return_val() returned NULL")
             })
             .collect();
-        tcstrings.return_val()
+        TCStrings::return_val(tcstrings)
     })
 }
 

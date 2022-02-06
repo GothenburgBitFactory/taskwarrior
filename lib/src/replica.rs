@@ -1,7 +1,7 @@
 use crate::traits::*;
 use crate::util::err_to_tcstring;
 use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask, uuid::TCUuid};
-use taskchampion::{Replica, StorageConfig, Uuid};
+use taskchampion::{Replica, StorageConfig};
 
 /// A replica represents an instance of a user's task data, providing an easy interface
 /// for querying and modifying that data.
@@ -143,7 +143,7 @@ pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid) -> *m
         rep,
         |rep| {
             // SAFETY: see TCUuid docstring
-            let uuid = unsafe { Uuid::from_arg(tcuuid) };
+            let uuid = unsafe { TCUuid::from_arg(tcuuid) };
             if let Some(task) = rep.get_task(uuid)? {
                 Ok(TCTask::from(task).return_val())
             } else {
@@ -187,7 +187,7 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
         rep,
         |rep| {
             // SAFETY: see TCUuid docstring
-            let uuid = unsafe { Uuid::from_arg(tcuuid) };
+            let uuid = unsafe { TCUuid::from_arg(tcuuid) };
             let task = rep.import_task_with_uuid(uuid)?;
             Ok(TCTask::from(task).return_val())
         },
