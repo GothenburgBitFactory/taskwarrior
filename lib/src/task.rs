@@ -1,7 +1,7 @@
 use crate::traits::*;
 use crate::util::err_to_tcstring;
 use crate::{
-    arrays::TCTags, replica::TCReplica, result::TCResult, status::TCStatus, string::TCString,
+    replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, strings::TCStrings,
     uuid::TCUuid,
 };
 use chrono::{DateTime, TimeZone, Utc};
@@ -319,7 +319,7 @@ pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
 
 /// Get the tags for the task.  The task must not be NULL.
 #[no_mangle]
-pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCTags {
+pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStrings {
     wrap(task, |task| {
         let tcstrings: Vec<NonNull<TCString<'static>>> = task
             .get_tags()

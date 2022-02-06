@@ -118,14 +118,23 @@ typedef struct TCString TCString;
 typedef struct TCTask TCTask;
 
 /**
- * TCTags represents a list of tags associated with a task.
+ * TCUuid is used as a task identifier.  Uuids do not contain any pointers and need not be freed.
+ * Uuids are typically treated as opaque, but the bytes are available in big-endian format.
+ *
+ */
+typedef struct TCUuid {
+  uint8_t bytes[16];
+} TCUuid;
+
+/**
+ * TCStrings represents a list of tags associated with a task.
  *
  * The content of this struct must be treated as read-only.
  *
- * The lifetime of a TCTags instance is independent of the task, and it
+ * The lifetime of a TCStrings instance is independent of the task, and it
  * will remain valid even if the task is freed.
  */
-typedef struct TCTags {
+typedef struct TCStrings {
   /**
    * number of tags in items
    */
@@ -135,30 +144,15 @@ typedef struct TCTags {
    */
   size_t _capacity;
   /**
-   * strings representing each tag. these remain owned by the TCTags instance and will be freed
-   * by tc_tags_free.
+   * strings representing each tag. these remain owned by the TCStrings instance and will be freed
+   * by tc_strings_free.
    */
   struct TCString *const *items;
-} TCTags;
-
-/**
- * TCUuid is used as a task identifier.  Uuids do not contain any pointers and need not be freed.
- * Uuids are typically treated as opaque, but the bytes are available in big-endian format.
- *
- */
-typedef struct TCUuid {
-  uint8_t bytes[16];
-} TCUuid;
+} TCStrings;
 
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
-
-/**
- * Free a TCTags instance.  The instance, and all TCStrings it contains, must not be used after
- * this call.
- */
-void tc_tags_free(struct TCTags *tctags);
 
 /**
  * Create a new TCReplica with an in-memory database.  The contents of the database will be
@@ -279,6 +273,12 @@ const char *tc_string_content_with_len(struct TCString *tcstring, size_t *len_ou
 void tc_string_free(struct TCString *tcstring);
 
 /**
+ * Free a TCStrings instance.  The instance, and all TCStrings it contains, must not be used after
+ * this call.
+ */
+void tc_strings_free(struct TCStrings *tctags);
+
+/**
  * Convert an immutable task into a mutable task.
  *
  * The task must not be NULL. It is modified in-place, and becomes mutable.
@@ -357,7 +357,7 @@ bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
 /**
  * Get the tags for the task.  The task must not be NULL.
  */
-struct TCTags tc_task_get_tags(struct TCTask *task);
+struct TCStrings tc_task_get_tags(struct TCTask *task);
 
 /**
  * Set a mutable task's status.
