@@ -54,7 +54,9 @@ pub extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
     let buf: &'a mut [u8] = unsafe {
         std::slice::from_raw_parts_mut(buf as *mut u8, ::uuid::adapter::Hyphenated::LENGTH)
     };
-    let uuid: Uuid = Uuid::from_arg(tcuuid);
+    // SAFETY:
+    //  - tcuuid is a valid TCUuid (all byte patterns are valid)
+    let uuid: Uuid = unsafe { Uuid::from_arg(tcuuid) };
     uuid.to_hyphenated().encode_lower(buf);
 }
 
@@ -62,7 +64,9 @@ pub extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
 #[no_mangle]
 pub extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
-    let uuid: Uuid = Uuid::from_arg(tcuuid);
+    // SAFETY:
+    //  - tcuuid is a valid TCUuid (all byte patterns are valid)
+    let uuid: Uuid = unsafe { Uuid::from_arg(tcuuid) };
     let s = uuid.to_string();
     // SAFETY: see TCString docstring
     unsafe { TCString::from(s).return_val() }

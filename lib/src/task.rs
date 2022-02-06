@@ -324,13 +324,14 @@ pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCTags {
         let tcstrings: Vec<NonNull<TCString<'static>>> = task
             .get_tags()
             .map(|t| {
-                // SAFETY: see TCString docstring
-                let t_ptr = unsafe { TCString::from(t.as_ref()).return_val() };
-                // SAFETY: t_ptr was just created and is not NULL
-                unsafe { NonNull::new_unchecked(t_ptr) }
+                NonNull::new(
+                    // SAFETY: see TCString docstring
+                    unsafe { TCString::from(t.as_ref()).return_val() },
+                )
+                .expect("TCString::return_val() returned NULL")
             })
             .collect();
-        TCTags::new(tcstrings)
+        tcstrings.return_val()
     })
 }
 

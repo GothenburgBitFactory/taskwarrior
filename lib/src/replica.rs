@@ -142,7 +142,8 @@ pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid) -> *m
     wrap(
         rep,
         |rep| {
-            let uuid = Uuid::from_arg(tcuuid);
+            // SAFETY: see TCUuid docstring
+            let uuid = unsafe { Uuid::from_arg(tcuuid) };
             if let Some(task) = rep.get_task(uuid)? {
                 Ok(TCTask::from(task).return_val())
             } else {
@@ -185,7 +186,8 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
     wrap(
         rep,
         |rep| {
-            let uuid = Uuid::from_arg(tcuuid);
+            // SAFETY: see TCUuid docstring
+            let uuid = unsafe { Uuid::from_arg(tcuuid) };
             let task = rep.import_task_with_uuid(uuid)?;
             Ok(TCTask::from(task).return_val())
         },

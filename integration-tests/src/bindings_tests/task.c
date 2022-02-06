@@ -315,11 +315,11 @@ static void test_task_get_tags(void) {
     TCTags tags = tc_task_get_tags(task);
 
     int found_pending = false, found_next = false;
-    for (size_t i = 0; i < tags.num_tags; i++) {
-        if (strcmp("PENDING", tc_string_content(tags.tags[i])) == 0) {
+    for (size_t i = 0; i < tags.len; i++) {
+        if (strcmp("PENDING", tc_string_content(tags.items[i])) == 0) {
             found_pending = true;
         }
-        if (strcmp("next", tc_string_content(tags.tags[i])) == 0) {
+        if (strcmp("next", tc_string_content(tags.items[i])) == 0) {
             found_next = true;
         }
     }
@@ -327,7 +327,7 @@ static void test_task_get_tags(void) {
     TEST_ASSERT_TRUE(found_next);
 
     tc_tags_free(&tags);
-    TEST_ASSERT_NULL(tags.tags);
+    TEST_ASSERT_NULL(tags.items);
 
     tc_task_free(task);
     tc_replica_free(rep);

@@ -127,18 +127,18 @@ typedef struct TCTask TCTask;
  */
 typedef struct TCTags {
   /**
-   * strings representing each tag. these remain owned by the
-   * TCTags instance and will be freed by tc_tags_free.
+   * number of tags in items
    */
-  struct TCString *const *tags;
+  size_t len;
   /**
-   * number of tags in tags
-   */
-  size_t num_tags;
-  /**
-   * total size of tags (internal use only)
+   * total size of items (internal use only)
    */
   size_t _capacity;
+  /**
+   * strings representing each tag. these remain owned by the TCTags instance and will be freed
+   * by tc_tags_free.
+   */
+  struct TCString *const *items;
 } TCTags;
 
 /**
@@ -155,8 +155,8 @@ extern "C" {
 #endif // __cplusplus
 
 /**
- * Free a TCTags instance.  The given pointer must not be NULL.  The instance must not be used
- * after this call.
+ * Free a TCTags instance.  The instance, and all TCStrings it contains, must not be used after
+ * this call.
  */
 void tc_tags_free(struct TCTags *tctags);
 
