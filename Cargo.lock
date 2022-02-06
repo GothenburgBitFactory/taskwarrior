@@ -3038,6 +3038,7 @@ dependencies = [
  "cbindgen",
  "chrono",
  "libc",
+ "pretty_assertions",
  "taskchampion",
  "uuid",
 ]

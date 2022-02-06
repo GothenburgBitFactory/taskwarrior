@@ -15,5 +15,8 @@ taskchampion = { path = "../taskchampion" }
 uuid = { version = "^0.8.2", features = ["v4"] }
 anyhow = "1.0"
 
+[dev-dependencies]
+pretty_assertions = "1"
+
 [build-dependencies]
 cbindgen = "0.20.0"
