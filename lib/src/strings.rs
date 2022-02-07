@@ -1,6 +1,5 @@
 use crate::string::TCString;
 use crate::traits::*;
-use crate::util::{drop_pointer_array, vec_into_raw_parts};
 use std::ptr::NonNull;
 
 /// TCStrings represents a list of strings.
@@ -14,51 +13,59 @@ pub struct TCStrings {
     /// total size of items (internal use only)
     _capacity: libc::size_t,
 
-    /// strings representing each string. these remain owned by the TCStrings instance and will be freed
-    /// by tc_strings_free.
+    /// TCStrings representing each string. these remain owned by the TCStrings instance and will
+    /// be freed by tc_strings_free.  This pointer is never NULL for a valid TCStrings, and the
+    /// *TCStrings at indexes 0..len-1 are not NULL.
     items: *const NonNull<TCString<'static>>,
 }
 
-impl PassByValue for TCStrings {
-    type RustType = Vec<NonNull<TCString<'static>>>;
+impl PointerArray for TCStrings {
+    type Element = TCString<'static>;
 
-    unsafe fn from_ctype(self) -> Self::RustType {
-        // SAFETY:
-        //  - C treats TCStrings as read-only, so items, len, and _capacity all came
-        //    from a Vec originally.
-        unsafe { Vec::from_raw_parts(self.items as *mut _, self.len, self._capacity) }
-    }
-
-    fn as_ctype(arg: Self::RustType) -> Self {
-        // emulate Vec::into_raw_parts():
-        // - disable dropping the Vec with ManuallyDrop
-        // - extract ptr, len, and capacity using those methods
-        let (items, len, _capacity) = vec_into_raw_parts(arg);
+    unsafe fn from_raw_parts(items: *const NonNull<Self::Element>, len: usize, cap: usize) -> Self {
         TCStrings {
             len,
-            _capacity,
+            _capacity: cap,
             items,
         }
     }
-}
 
-impl Default for TCStrings {
-    fn default() -> Self {
-        Self {
-            len: 0,
-            _capacity: 0,
-            items: std::ptr::null(),
-        }
+    fn into_raw_parts(self) -> (*const NonNull<Self::Element>, usize, usize) {
+        (self.items, self.len, self._capacity)
     }
 }
 
 /// Free a TCStrings instance.  The instance, and all TCStrings it contains, must not be used after
 /// this call.
+///
+/// When this call returns, the `items` pointer will be NULL, signalling an invalid TCStrings.
 #[no_mangle]
-pub extern "C" fn tc_strings_free<'a>(tcstrings: *mut TCStrings) {
+pub extern "C" fn tc_strings_free(tcstrings: *mut TCStrings) {
     debug_assert!(!tcstrings.is_null());
     // SAFETY:
     //  - *tcstrings is a valid TCStrings (caller promises to treat it as read-only)
-    let strings = unsafe { TCStrings::take_from_arg(tcstrings, TCStrings::default()) };
-    drop_pointer_array(strings);
+    let strings = unsafe { TCStrings::take_from_arg(tcstrings, TCStrings::null_value()) };
+    TCStrings::drop_pointer_vector(strings);
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn empty_array_has_non_null_pointer() {
+        let tcstrings = TCStrings::return_val(Vec::new());
+        assert!(!tcstrings.items.is_null());
+        assert_eq!(tcstrings.len, 0);
+        assert_eq!(tcstrings._capacity, 0);
+    }
+
+    #[test]
+    fn free_sets_null_pointer() {
+        let mut tcstrings = TCStrings::return_val(Vec::new());
+        tc_strings_free(&mut tcstrings);
+        assert!(tcstrings.items.is_null());
+        assert_eq!(tcstrings.len, 0);
+        assert_eq!(tcstrings._capacity, 0);
+    }
 }

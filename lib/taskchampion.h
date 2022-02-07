@@ -141,8 +141,9 @@ typedef struct TCStrings {
    */
   size_t _capacity;
   /**
-   * strings representing each string. these remain owned by the TCStrings instance and will be freed
-   * by tc_strings_free.
+   * TCStrings representing each string. these remain owned by the TCStrings instance and will
+   * be freed by tc_strings_free.  This pointer is never NULL for a valid TCStrings, and the
+   * *TCStrings at indexes 0..len-1 are not NULL.
    */
   struct TCString *const *items;
 } TCStrings;
@@ -272,6 +273,8 @@ void tc_string_free(struct TCString *tcstring);
 /**
  * Free a TCStrings instance.  The instance, and all TCStrings it contains, must not be used after
  * this call.
+ *
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCStrings.
  */
 void tc_strings_free(struct TCStrings *tcstrings);
 

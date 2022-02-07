@@ -321,7 +321,7 @@ pub extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> 
 #[no_mangle]
 pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStrings {
     wrap(task, |task| {
-        let tcstrings: Vec<NonNull<TCString<'static>>> = task
+        let vec: Vec<NonNull<TCString<'static>>> = task
             .get_tags()
             .map(|t| {
                 NonNull::new(
@@ -331,7 +331,7 @@ pub extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStrings {
                 .expect("TCString::return_val() returned NULL")
             })
             .collect();
-        TCStrings::return_val(tcstrings)
+        TCStrings::return_val(vec)
     })
 }
 
