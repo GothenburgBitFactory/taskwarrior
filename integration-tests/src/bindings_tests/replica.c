@@ -79,7 +79,7 @@ static void test_replica_task_import(void) {
     TEST_ASSERT_NULL(tc_replica_error(rep));
 
     TCUuid uuid;
-    TEST_ASSERT_TRUE(tc_uuid_from_str(tc_string_borrow("23cb25e0-5d1a-4932-8131-594ac6d3a843"), &uuid));
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_uuid_from_str(tc_string_borrow("23cb25e0-5d1a-4932-8131-594ac6d3a843"), &uuid));
     TCTask *task = tc_replica_import_task_with_uuid(rep, uuid);
     TEST_ASSERT_NOT_NULL(task);
 
@@ -110,7 +110,7 @@ static void test_replica_get_task_not_found(void) {
     TEST_ASSERT_NULL(tc_replica_error(rep));
 
     TCUuid uuid;
-    TEST_ASSERT_TRUE(tc_uuid_from_str(tc_string_borrow("23cb25e0-5d1a-4932-8131-594ac6d3a843"), &uuid));
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_uuid_from_str(tc_string_borrow("23cb25e0-5d1a-4932-8131-594ac6d3a843"), &uuid));
     TCTask *task = tc_replica_get_task(rep, uuid);
     TEST_ASSERT_NULL(task);
     TEST_ASSERT_NULL(tc_replica_error(rep));

@@ -456,9 +456,10 @@ void tc_uuid_to_buf(struct TCUuid tcuuid, char *buf);
 struct TCString *tc_uuid_to_str(struct TCUuid tcuuid);
 
 /**
- * Parse the given string as a UUID.  Returns false on failure.
+ * Parse the given string as a UUID.  Returns TC_RESULT_ERROR on parse failure or if the given
+ * string is not valid.
  */
-bool tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
+TCResult tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
 
 #ifdef __cplusplus
 } // extern "C"

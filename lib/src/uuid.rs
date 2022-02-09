@@ -1,5 +1,5 @@
-use crate::string::TCString;
 use crate::traits::*;
+use crate::{result::TCResult, string::TCString};
 use libc;
 use taskchampion::Uuid;
 
@@ -72,10 +72,10 @@ pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static
     unsafe { TCString::from(s).return_val() }
 }
 
-/// Parse the given string as a UUID.  Returns false on failure.
+/// Parse the given string as a UUID.  Returns TC_RESULT_ERROR on parse failure or if the given
+/// string is not valid.
 #[no_mangle]
-pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> bool {
-    // TODO: TCResult instead
+pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> TCResult {
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
     // SAFETY: see TCString docstring
@@ -86,8 +86,8 @@ pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut T
             //  - uuid_out is not NULL (promised by caller)
             //  - alignment is not required
             unsafe { TCUuid::to_arg_out(u, uuid_out) };
-            return true;
+            return TCResult::Ok;
         }
     }
-    false
+    TCResult::Error
 }

@@ -33,7 +33,7 @@ static void test_uuid_to_str(void) {
 static void test_uuid_valid_from_str(void) {
     TCUuid u;
     char *ustr = "23cb25e0-5d1a-4932-8131-594ac6d3a843";
-    TEST_ASSERT_TRUE(tc_uuid_from_str(tc_string_borrow(ustr), &u));
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_uuid_from_str(tc_string_borrow(ustr), &u));
     TEST_ASSERT_EQUAL(0x23, u.bytes[0]);
     TEST_ASSERT_EQUAL(0x43, u.bytes[15]);
 }
@@ -42,20 +42,20 @@ static void test_uuid_valid_from_str(void) {
 static void test_uuid_invalid_string_fails(void) {
     TCUuid u;
     char *ustr = "not-a-valid-uuid";
-    TEST_ASSERT_FALSE(tc_uuid_from_str(tc_string_borrow(ustr), &u));
+    TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_uuid_from_str(tc_string_borrow(ustr), &u));
 }
 
 // converting invalid UTF-8 UUIDs from string fails as expected
 static void test_uuid_bad_utf8(void) {
     TCUuid u;
     char *ustr = "\xf0\x28\x8c\xbc";
-    TEST_ASSERT_FALSE(tc_uuid_from_str(tc_string_borrow(ustr), &u));
+    TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_uuid_from_str(tc_string_borrow(ustr), &u));
 }
 
 // converting a string with embedded NUL fails as expected
 static void test_uuid_embedded_nul(void) {
     TCUuid u;
-    TEST_ASSERT_FALSE(tc_uuid_from_str(tc_string_clone_with_len("ab\0de", 5), &u));
+    TEST_ASSERT_EQUAL(TC_RESULT_ERROR, tc_uuid_from_str(tc_string_clone_with_len("ab\0de", 5), &u));
 }
 
 int uuid_tests(void) {
