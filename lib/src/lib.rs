@@ -1,5 +1,6 @@
 #![warn(unsafe_op_in_unsafe_fn)]
-#![warn(clippy::undocumented_unsafe_blocks)]
+// Not working yet in stable - https://github.com/rust-lang/rust-clippy/issues/8020
+// #![warn(clippy::undocumented_unsafe_blocks)]
 
 mod traits;
 mod util;
