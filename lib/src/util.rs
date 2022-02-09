@@ -10,5 +10,5 @@ pub(crate) fn vec_into_raw_parts<T>(vec: Vec<T>) -> (*mut T, usize, usize) {
     // - disable dropping the Vec with ManuallyDrop
     // - extract ptr, len, and capacity using those methods
     let mut vec = std::mem::ManuallyDrop::new(vec);
-    return (vec.as_mut_ptr(), vec.len(), vec.capacity());
+    (vec.as_mut_ptr(), vec.len(), vec.capacity())
 }

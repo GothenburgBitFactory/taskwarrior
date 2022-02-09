@@ -1,4 +1,5 @@
 #![warn(unsafe_op_in_unsafe_fn)]
+#![warn(clippy::undocumented_unsafe_blocks)]
 
 mod traits;
 mod util;

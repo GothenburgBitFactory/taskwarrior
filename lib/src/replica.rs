@@ -69,12 +69,12 @@ impl From<Replica> for TCReplica {
 
 /// Utility function to allow using `?` notation to return an error value.  This makes
 /// a mutable borrow, because most Replica methods require a `&mut`.
-fn wrap<'a, T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
+fn wrap<T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
 where
     F: FnOnce(&mut Replica) -> anyhow::Result<T>,
 {
     // SAFETY: see type docstring
-    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref_mut(rep) };
+    let rep: &mut TCReplica = unsafe { TCReplica::from_arg_ref_mut(rep) };
     if rep.mut_borrowed {
         panic!("replica is borrowed and cannot be used");
     }
