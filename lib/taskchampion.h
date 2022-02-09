@@ -91,9 +91,9 @@ typedef struct TCReplica TCReplica;
  *
  * Unless specified otherwise, TaskChampion functions take ownership of a `*TCString` when it is
  * given as a function argument, and the pointer is invalid when the function returns.  Callers
- * must not use or free TCStrings after passing them to such API functions.
+ * must not use or free TCStringList after passing them to such API functions.
  *
- * TCStrings are not threadsafe.
+ * TCString is not threadsafe.
  */
 typedef struct TCString TCString;
 
@@ -127,11 +127,11 @@ typedef struct TCUuid {
 } TCUuid;
 
 /**
- * TCStrings represents a list of strings.
+ * TCStringList represents a list of strings.
  *
  * The content of this struct must be treated as read-only.
  */
-typedef struct TCStrings {
+typedef struct TCStringList {
   /**
    * number of strings in items
    */
@@ -141,12 +141,12 @@ typedef struct TCStrings {
    */
   size_t _capacity;
   /**
-   * TCStrings representing each string. these remain owned by the TCStrings instance and will
-   * be freed by tc_strings_free.  This pointer is never NULL for a valid TCStrings, and the
-   * *TCStrings at indexes 0..len-1 are not NULL.
+   * TCStringList representing each string. these remain owned by the TCStringList instance and will
+   * be freed by tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
+   * *TCStringList at indexes 0..len-1 are not NULL.
    */
   struct TCString *const *items;
-} TCStrings;
+} TCStringList;
 
 #ifdef __cplusplus
 extern "C" {
@@ -271,12 +271,12 @@ const char *tc_string_content_with_len(struct TCString *tcstring, size_t *len_ou
 void tc_string_free(struct TCString *tcstring);
 
 /**
- * Free a TCStrings instance.  The instance, and all TCStrings it contains, must not be used after
+ * Free a TCStringList instance.  The instance, and all TCStringList it contains, must not be used after
  * this call.
  *
- * When this call returns, the `items` pointer will be NULL, signalling an invalid TCStrings.
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCStringList.
  */
-void tc_strings_free(struct TCStrings *tcstrings);
+void tc_string_list_free(struct TCStringList *tcstrings);
 
 /**
  * Convert an immutable task into a mutable task.
@@ -357,10 +357,10 @@ bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
 /**
  * Get the tags for the task.
  *
- * The caller must free the returned TCStrings instance.  The TCStrings instance does not
+ * The caller must free the returned TCStringList instance.  The TCStringList instance does not
  * reference the task and the two may be freed in any order.
  */
-struct TCStrings tc_task_get_tags(struct TCTask *task);
+struct TCStringList tc_task_get_tags(struct TCTask *task);
 
 /**
  * Set a mutable task's status.

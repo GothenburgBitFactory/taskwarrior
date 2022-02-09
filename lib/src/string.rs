@@ -31,9 +31,9 @@ use std::str::Utf8Error;
 ///
 /// Unless specified otherwise, TaskChampion functions take ownership of a `*TCString` when it is
 /// given as a function argument, and the pointer is invalid when the function returns.  Callers
-/// must not use or free TCStrings after passing them to such API functions.
+/// must not use or free TCStringList after passing them to such API functions.
 ///
-/// TCStrings are not threadsafe.
+/// TCString is not threadsafe.
 #[derive(PartialEq, Debug)]
 pub enum TCString<'a> {
     CString(CString),

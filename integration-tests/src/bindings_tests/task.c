@@ -312,7 +312,7 @@ static void test_task_get_tags(void) {
 
     TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_add_tag(task, tc_string_borrow("next")));
 
-    TCStrings tags = tc_task_get_tags(task);
+    TCStringList tags = tc_task_get_tags(task);
 
     int found_pending = false, found_next = false;
     for (size_t i = 0; i < tags.len; i++) {
@@ -326,7 +326,7 @@ static void test_task_get_tags(void) {
     TEST_ASSERT_TRUE(found_pending);
     TEST_ASSERT_TRUE(found_next);
 
-    tc_strings_free(&tags);
+    tc_string_list_free(&tags);
     TEST_ASSERT_NULL(tags.items);
 
     tc_task_free(task);

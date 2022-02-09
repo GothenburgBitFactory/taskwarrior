@@ -1,8 +1,8 @@
 use crate::traits::*;
 use crate::util::err_to_tcstring;
 use crate::{
-    replica::TCReplica, result::TCResult, status::TCStatus, string::TCString, strings::TCStrings,
-    uuid::TCUuid,
+    replica::TCReplica, result::TCResult, status::TCStatus, string::TCString,
+    stringlist::TCStringList, uuid::TCUuid,
 };
 use chrono::{DateTime, TimeZone, Utc};
 use std::convert::TryFrom;
@@ -316,10 +316,10 @@ pub unsafe extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCStri
 
 /// Get the tags for the task.
 ///
-/// The caller must free the returned TCStrings instance.  The TCStrings instance does not
+/// The caller must free the returned TCStringList instance.  The TCStringList instance does not
 /// reference the task and the two may be freed in any order.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStrings {
+pub unsafe extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStringList {
     wrap(task, |task| {
         let vec: Vec<NonNull<TCString<'static>>> = task
             .get_tags()
@@ -331,7 +331,7 @@ pub unsafe extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStrings {
                 .expect("TCString::return_val() returned NULL")
             })
             .collect();
-        TCStrings::return_val(vec)
+        TCStringList::return_val(vec)
     })
 }
 
@@ -401,7 +401,10 @@ pub unsafe extern "C" fn tc_task_set_wait(task: *mut TCTask, wait: libc::time_t)
 
 /// Set a mutable task's modified timestamp.  The value cannot be zero.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_set_modified(task: *mut TCTask, modified: libc::time_t) -> TCResult {
+pub unsafe extern "C" fn tc_task_set_modified(
+    task: *mut TCTask,
+    modified: libc::time_t,
+) -> TCResult {
     wrap_mut(
         task,
         |task| {
