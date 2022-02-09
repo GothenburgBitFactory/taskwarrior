@@ -106,6 +106,7 @@ pub trait StorageTxn {
     fn clear_working_set(&mut self) -> Result<()>;
 
     /// Check whether this storage is entirely empty
+    #[allow(clippy::wrong_self_convention)] // mut is required here for storage access
     fn is_empty(&mut self) -> Result<bool> {
         let mut empty = true;
         empty = empty && self.all_tasks()?.is_empty();
