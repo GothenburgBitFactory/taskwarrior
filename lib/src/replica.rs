@@ -91,7 +91,7 @@ where
 /// Create a new TCReplica with an in-memory database.  The contents of the database will be
 /// lost when it is freed.
 #[no_mangle]
-pub extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
+pub unsafe extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
     let storage = StorageConfig::InMemory
         .into_storage()
         .expect("in-memory always succeeds");
@@ -102,7 +102,7 @@ pub extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
 /// Create a new TCReplica with an on-disk database having the given filename. On error, a string
 /// is written to the `error_out` parameter (if it is not NULL) and NULL is returned.
 #[no_mangle]
-pub extern "C" fn tc_replica_new_on_disk<'a>(
+pub unsafe extern "C" fn tc_replica_new_on_disk<'a>(
     path: *mut TCString,
     error_out: *mut *mut TCString,
 ) -> *mut TCReplica {
@@ -138,7 +138,7 @@ pub extern "C" fn tc_replica_new_on_disk<'a>(
 /// Returns NULL when the task does not exist, and on error.  Consult tc_replica_error
 /// to distinguish the two conditions.
 #[no_mangle]
-pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid) -> *mut TCTask {
+pub unsafe extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid) -> *mut TCTask {
     wrap(
         rep,
         |rep| {
@@ -158,7 +158,7 @@ pub extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid) -> *m
 ///
 /// Returns the task, or NULL on error.
 #[no_mangle]
-pub extern "C" fn tc_replica_new_task(
+pub unsafe extern "C" fn tc_replica_new_task(
     rep: *mut TCReplica,
     status: TCStatus,
     description: *mut TCString,
@@ -179,7 +179,7 @@ pub extern "C" fn tc_replica_new_task(
 ///
 /// Returns the task, or NULL on error.
 #[no_mangle]
-pub extern "C" fn tc_replica_import_task_with_uuid(
+pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
     rep: *mut TCReplica,
     tcuuid: TCUuid,
 ) -> *mut TCTask {
@@ -202,7 +202,7 @@ pub extern "C" fn tc_replica_import_task_with_uuid(
 /// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
 /// there are no operations that can be done.
 #[no_mangle]
-pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica, undone_out: *mut i32) -> TCResult {
+pub unsafe extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica, undone_out: *mut i32) -> TCResult {
     wrap(
         rep,
         |rep| {
@@ -223,7 +223,7 @@ pub extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica, undone_out: *mut i32)
 /// to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
 /// returned string.
 #[no_mangle]
-pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'static> {
     // SAFETY: see type docstring
     let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref_mut(rep) };
     if let Some(tcstring) = rep.error.take() {
@@ -237,7 +237,7 @@ pub extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'st
 /// Free a replica.  The replica may not be used after this function returns and must not be freed
 /// more than once.
 #[no_mangle]
-pub extern "C" fn tc_replica_free(rep: *mut TCReplica) {
+pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
     // SAFETY: see type docstring
     let replica = unsafe { TCReplica::take_from_arg(rep) };
     if replica.mut_borrowed {

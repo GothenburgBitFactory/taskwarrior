@@ -40,7 +40,7 @@ impl PointerArray for TCStrings {
 ///
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCStrings.
 #[no_mangle]
-pub extern "C" fn tc_strings_free(tcstrings: *mut TCStrings) {
+pub unsafe extern "C" fn tc_strings_free(tcstrings: *mut TCStrings) {
     debug_assert!(!tcstrings.is_null());
     // SAFETY:
     //  - *tcstrings is a valid TCStrings (caller promises to treat it as read-only)
@@ -63,7 +63,8 @@ mod test {
     #[test]
     fn free_sets_null_pointer() {
         let mut tcstrings = TCStrings::return_val(Vec::new());
-        tc_strings_free(&mut tcstrings);
+        // SAFETY: testing expected behavior
+        unsafe { tc_strings_free(&mut tcstrings) };
         assert!(tcstrings.items.is_null());
         assert_eq!(tcstrings.len, 0);
         assert_eq!(tcstrings._capacity, 0);

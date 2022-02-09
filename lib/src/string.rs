@@ -139,7 +139,7 @@ impl<'a> From<&str> for TCString<'static> {
 /// free(url); // string is no longer referenced and can be freed
 /// ```
 #[no_mangle]
-pub extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCString<'static> {
     debug_assert!(!cstr.is_null());
     // SAFETY:
     //  - cstr is not NULL (promised by caller, verified by assertion)
@@ -154,7 +154,7 @@ pub extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCString<'
 /// Create a new TCString by cloning the content of the given C string.  The resulting TCString
 /// is independent of the given string, which can be freed or overwritten immediately.
 #[no_mangle]
-pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'static> {
     debug_assert!(!cstr.is_null());
     // SAFETY:
     //  - cstr is not NULL (promised by caller, verified by assertion)
@@ -172,7 +172,7 @@ pub extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCString<'s
 ///
 /// The given length must be less than half the maximum value of usize.
 #[no_mangle]
-pub extern "C" fn tc_string_clone_with_len(
+pub unsafe extern "C" fn tc_string_clone_with_len(
     buf: *const libc::c_char,
     len: usize,
 ) -> *mut TCString<'static> {
@@ -212,7 +212,7 @@ pub extern "C" fn tc_string_clone_with_len(
 ///
 /// This function does _not_ take ownership of the TCString.
 #[no_mangle]
-pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_char {
+pub unsafe extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_char {
     // SAFETY:
     //  - tcstring is not NULL (promised by caller)
     //  - lifetime of tcstring outlives the lifetime of this function
@@ -239,7 +239,7 @@ pub extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const libc::c_c
 ///
 /// This function does _not_ take ownership of the TCString.
 #[no_mangle]
-pub extern "C" fn tc_string_content_with_len(
+pub unsafe extern "C" fn tc_string_content_with_len(
     tcstring: *mut TCString,
     len_out: *mut usize,
 ) -> *const libc::c_char {
@@ -262,7 +262,7 @@ pub extern "C" fn tc_string_content_with_len(
 /// Free a TCString.  The given string must not be NULL.  The string must not be used
 /// after this function returns, and must not be freed more than once.
 #[no_mangle]
-pub extern "C" fn tc_string_free(tcstring: *mut TCString) {
+pub unsafe extern "C" fn tc_string_free(tcstring: *mut TCString) {
     // SAFETY:
     //  - tcstring is not NULL (promised by caller)
     //  - caller is exclusive owner of tcstring (promised by caller)

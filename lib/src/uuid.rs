@@ -26,13 +26,13 @@ impl PassByValue for TCUuid {
 
 /// Create a new, randomly-generated UUID.
 #[no_mangle]
-pub extern "C" fn tc_uuid_new_v4() -> TCUuid {
+pub unsafe extern "C" fn tc_uuid_new_v4() -> TCUuid {
     TCUuid::return_val(Uuid::new_v4())
 }
 
 /// Create a new UUID with the nil value.
 #[no_mangle]
-pub extern "C" fn tc_uuid_nil() -> TCUuid {
+pub unsafe extern "C" fn tc_uuid_nil() -> TCUuid {
     TCUuid::return_val(Uuid::nil())
 }
 
@@ -43,7 +43,7 @@ pub const TC_UUID_STRING_BYTES: usize = 36;
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
 #[no_mangle]
-pub extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
+pub unsafe extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
     debug_assert!(!buf.is_null());
     // SAFETY:
     //  - buf is valid for len bytes (by C convention)
@@ -63,7 +63,7 @@ pub extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
 #[no_mangle]
-pub extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
     let uuid: Uuid = unsafe { TCUuid::from_arg(tcuuid) };
@@ -74,7 +74,7 @@ pub extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
 
 /// Parse the given string as a UUID.  Returns false on failure.
 #[no_mangle]
-pub extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> bool {
+pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> bool {
     // TODO: TCResult instead
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
