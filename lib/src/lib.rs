@@ -14,3 +14,4 @@ pub mod stringlist;
 pub mod task;
 pub mod tasklist;
 pub mod uuid;
+pub mod uuidlist;

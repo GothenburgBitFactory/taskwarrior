@@ -2,7 +2,7 @@ use crate::traits::*;
 use crate::util::err_to_tcstring;
 use crate::{
     result::TCResult, status::TCStatus, string::TCString, task::TCTask, tasklist::TCTaskList,
-    uuid::TCUuid,
+    uuid::TCUuid, uuidlist::TCUuidList,
 };
 use std::ptr::NonNull;
 use taskchampion::{Replica, StorageConfig};
@@ -161,7 +161,25 @@ pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList
     )
 }
 
-// TODO: tc_replica_all_task_uuids
+/// Get a list of all uuids for tasks in the replica.
+///
+/// Returns a TCUuidList with a NULL items field on error.
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_all_task_uuids(rep: *mut TCReplica) -> TCUuidList {
+    wrap(
+        rep,
+        |rep| {
+            let uuids: Vec<_> = rep
+                .all_task_uuids()?
+                .drain(..)
+                .map(|uuid| TCUuid::return_val(uuid))
+                .collect();
+            Ok(TCUuidList::return_val(uuids))
+        },
+        TCUuidList::null_value(),
+    )
+}
+
 // TODO: tc_replica_working_set
 
 /// Get an existing task by its UUID.

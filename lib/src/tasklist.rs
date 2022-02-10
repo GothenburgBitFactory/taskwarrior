@@ -19,10 +19,10 @@ pub struct TCTaskList {
     items: *const NonNull<TCTask>,
 }
 
-impl PointerArray for TCTaskList {
-    type Element = TCTask;
+impl ValueArray for TCTaskList {
+    type Element = NonNull<TCTask>;
 
-    unsafe fn from_raw_parts(items: *const NonNull<Self::Element>, len: usize, cap: usize) -> Self {
+    unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
         TCTaskList {
             len,
             _capacity: cap,
@@ -30,7 +30,7 @@ impl PointerArray for TCTaskList {
         }
     }
 
-    fn into_raw_parts(self) -> (*const NonNull<Self::Element>, usize, usize) {
+    fn into_raw_parts(self) -> (*const Self::Element, usize, usize) {
         (self.items, self.len, self._capacity)
     }
 }
@@ -45,7 +45,7 @@ pub unsafe extern "C" fn tc_task_list_free(tctasks: *mut TCTaskList) {
     // SAFETY:
     //  - *tctasks is a valid TCTaskList (caller promises to treat it as read-only)
     let tasks = unsafe { TCTaskList::take_from_arg(tctasks, TCTaskList::null_value()) };
-    TCTaskList::drop_pointer_vector(tasks);
+    TCTaskList::drop_vector(tasks);
 }
 
 #[cfg(test)]

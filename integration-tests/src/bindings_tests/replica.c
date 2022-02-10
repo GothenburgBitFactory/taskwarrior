@@ -73,45 +73,70 @@ static void test_replica_task_creation(void) {
     tc_replica_free(rep);
 }
 
-// a replica with tasks in it returns an appropriate list of tasks
+// a replica with tasks in it returns an appropriate list of tasks and list of uuids
 static void test_replica_all_tasks(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep));
 
-    TCTask *task = tc_replica_new_task(
+    TCTask *task1 = tc_replica_new_task(
             rep,
             TC_STATUS_PENDING,
             tc_string_borrow("task1"));
-    TEST_ASSERT_NOT_NULL(task);
-    tc_task_free(task);
+    TEST_ASSERT_NOT_NULL(task1);
+    TCUuid uuid1 = tc_task_get_uuid(task1);
+    tc_task_free(task1);
 
-    task = tc_replica_new_task(
+    TCTask *task2 = tc_replica_new_task(
             rep,
             TC_STATUS_PENDING,
             tc_string_borrow("task2"));
-    TEST_ASSERT_NOT_NULL(task);
-    tc_task_free(task);
+    TEST_ASSERT_NOT_NULL(task2);
+    TCUuid uuid2 = tc_task_get_uuid(task2);
+    tc_task_free(task2);
 
-    TCTaskList tasks = tc_replica_all_tasks(rep);
-    TEST_ASSERT_NOT_NULL(tasks.items);
-    TEST_ASSERT_EQUAL(2, tasks.len);
+    {
+        TCTaskList tasks = tc_replica_all_tasks(rep);
+        TEST_ASSERT_NOT_NULL(tasks.items);
+        TEST_ASSERT_EQUAL(2, tasks.len);
 
-    int seen1, seen2 = false;
-    for (size_t i = 0; i < tasks.len; i++) {
-        TCTask *task = tasks.items[i];
-        TCString *descr = tc_task_get_description(task);
-        if (0 == strcmp(tc_string_content(descr), "task1")) {
-            seen1 = true;
-        } else if (0 == strcmp(tc_string_content(descr), "task2")) {
-            seen2 = true;
+        bool seen1, seen2 = false;
+        for (size_t i = 0; i < tasks.len; i++) {
+            TCTask *task = tasks.items[i];
+            TCString *descr = tc_task_get_description(task);
+            if (0 == strcmp(tc_string_content(descr), "task1")) {
+                seen1 = true;
+            } else if (0 == strcmp(tc_string_content(descr), "task2")) {
+                seen2 = true;
+            }
+            tc_string_free(descr);
         }
-        tc_string_free(descr);
-    }
-    TEST_ASSERT_TRUE(seen1);
-    TEST_ASSERT_TRUE(seen2);
+        TEST_ASSERT_TRUE(seen1);
+        TEST_ASSERT_TRUE(seen2);
 
-    tc_task_list_free(&tasks);
-    TEST_ASSERT_NULL(tasks.items);
+        tc_task_list_free(&tasks);
+        TEST_ASSERT_NULL(tasks.items);
+    }
+
+    {
+        TCUuidList uuids = tc_replica_all_task_uuids(rep);
+        TEST_ASSERT_NOT_NULL(uuids.items);
+        TEST_ASSERT_EQUAL(2, uuids.len);
+
+        bool seen1, seen2 = false;
+        for (size_t i = 0; i < uuids.len; i++) {
+            TCUuid uuid = uuids.items[i];
+            if (0 == memcmp(&uuid1, &uuid, sizeof(TCUuid))) {
+                seen1 = true;
+            } else if (0 == memcmp(&uuid2, &uuid, sizeof(TCUuid))) {
+                seen2 = true;
+            }
+        }
+        TEST_ASSERT_TRUE(seen1);
+        TEST_ASSERT_TRUE(seen2);
+
+        tc_uuid_list_free(&uuids);
+        TEST_ASSERT_NULL(uuids.items);
+    }
 
     tc_replica_free(rep);
 }

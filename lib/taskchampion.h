@@ -149,6 +149,27 @@ typedef struct TCUuid {
 } TCUuid;
 
 /**
+ * TCUuidList represents a list of uuids.
+ *
+ * The content of this struct must be treated as read-only.
+ */
+typedef struct TCUuidList {
+  /**
+   * number of uuids in items
+   */
+  size_t len;
+  /**
+   * total size of items (internal use only)
+   */
+  size_t _capacity;
+  /**
+   * array of uuids. these remain owned by the TCUuidList instance and will be freed by
+   * tc_uuid_list_free.  This pointer is never NULL for a valid TCUuidList.
+   */
+  const struct TCUuid *items;
+} TCUuidList;
+
+/**
  * TCStringList represents a list of strings.
  *
  * The content of this struct must be treated as read-only.
@@ -192,6 +213,13 @@ struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString 
  * Returns a TCTaskList with a NULL items field on error.
  */
 struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
+
+/**
+ * Get a list of all uuids for tasks in the replica.
+ *
+ * Returns a TCUuidList with a NULL items field on error.
+ */
+struct TCUuidList tc_replica_all_task_uuids(struct TCReplica *rep);
 
 /**
  * Get an existing task by its UUID.
@@ -497,6 +525,14 @@ struct TCString *tc_uuid_to_str(struct TCUuid tcuuid);
  * string is not valid.
  */
 TCResult tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
+
+/**
+ * Free a TCUuidList instance.  The instance, and all TCUuids it contains, must not be used after
+ * this call.
+ *
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCUuidList.
+ */
+void tc_uuid_list_free(struct TCUuidList *tcuuids);
 
 #ifdef __cplusplus
 } // extern "C"

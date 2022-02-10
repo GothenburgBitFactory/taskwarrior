@@ -19,10 +19,10 @@ pub struct TCStringList {
     items: *const NonNull<TCString<'static>>,
 }
 
-impl PointerArray for TCStringList {
-    type Element = TCString<'static>;
+impl ValueArray for TCStringList {
+    type Element = NonNull<TCString<'static>>;
 
-    unsafe fn from_raw_parts(items: *const NonNull<Self::Element>, len: usize, cap: usize) -> Self {
+    unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
         TCStringList {
             len,
             _capacity: cap,
@@ -30,7 +30,7 @@ impl PointerArray for TCStringList {
         }
     }
 
-    fn into_raw_parts(self) -> (*const NonNull<Self::Element>, usize, usize) {
+    fn into_raw_parts(self) -> (*const Self::Element, usize, usize) {
         (self.items, self.len, self._capacity)
     }
 }
@@ -45,7 +45,7 @@ pub unsafe extern "C" fn tc_string_list_free(tcstrings: *mut TCStringList) {
     // SAFETY:
     //  - *tcstrings is a valid TCStringList (caller promises to treat it as read-only)
     let strings = unsafe { TCStringList::take_from_arg(tcstrings, TCStringList::null_value()) };
-    TCStringList::drop_pointer_vector(strings);
+    TCStringList::drop_vector(strings);
 }
 
 #[cfg(test)]
