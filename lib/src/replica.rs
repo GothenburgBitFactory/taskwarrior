@@ -271,6 +271,40 @@ pub unsafe extern "C" fn tc_replica_undo<'a>(
     )
 }
 
+/// Add an UndoPoint, if one has not already been added by this Replica.  This occurs automatically
+/// when a change is made.  The `force` flag allows forcing a new UndoPoint even if one has already
+/// been created by this Replica, and may be useful when a Replica instance is held for a long time
+/// and used to apply more than one user-visible change.
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_add_undo_point(rep: *mut TCReplica, force: bool) -> TCResult {
+    wrap(
+        rep,
+        |rep| {
+            rep.add_undo_point(force)?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Rebuild this replica's working set, based on whether tasks are pending or not.  If `renumber`
+/// is true, then existing tasks may be moved to new working-set indices; in any case, on
+/// completion all pending tasks are in the working set and all non- pending tasks are not.
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_rebuild_working_set(
+    rep: *mut TCReplica,
+    renumber: bool,
+) -> TCResult {
+    wrap(
+        rep,
+        |rep| {
+            rep.rebuild_working_set(renumber)?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
 /// Get the latest error for a replica, or NULL if the last operation succeeded.  Subsequent calls
 /// to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
 /// returned string.
@@ -297,6 +331,3 @@ pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
     }
     drop(replica);
 }
-
-// TODO: tc_replica_rebuild_working_set
-// TODO: tc_replica_add_undo_point

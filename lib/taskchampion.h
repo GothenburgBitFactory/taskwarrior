@@ -254,6 +254,21 @@ struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TC
 TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
 
 /**
+ * Add an UndoPoint, if one has not already been added by this Replica.  This occurs automatically
+ * when a change is made.  The `force` flag allows forcing a new UndoPoint even if one has already
+ * been created by this Replica, and may be useful when a Replica instance is held for a long time
+ * and used to apply more than one user-visible change.
+ */
+TCResult tc_replica_add_undo_point(struct TCReplica *rep, bool force);
+
+/**
+ * Rebuild this replica's working set, based on whether tasks are pending or not.  If `renumber`
+ * is true, then existing tasks may be moved to new working-set indices; in any case, on
+ * completion all pending tasks are in the working set and all non- pending tasks are not.
+ */
+TCResult tc_replica_rebuild_working_set(struct TCReplica *rep, bool renumber);
+
+/**
  * Get the latest error for a replica, or NULL if the last operation succeeded.  Subsequent calls
  * to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
  * returned string.

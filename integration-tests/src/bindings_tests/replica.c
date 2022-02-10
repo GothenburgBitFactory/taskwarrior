@@ -31,6 +31,24 @@ static void test_replica_undo_empty(void) {
     tc_replica_free(rep);
 }
 
+// adding an undo point succeeds
+static void test_replica_add_undo_point(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_replica_add_undo_point(rep, true));
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+    tc_replica_free(rep);
+}
+
+// rebuilding working set succeeds
+static void test_replica_rebuild_working_set(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_replica_rebuild_working_set(rep, true));
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+    tc_replica_free(rep);
+}
+
 // When tc_replica_undo is passed NULL for undone_out, it still succeeds
 static void test_replica_undo_empty_null_undone_out(void) {
     TCReplica *rep = tc_replica_new_in_memory();
@@ -190,6 +208,8 @@ int replica_tests(void) {
     RUN_TEST(test_replica_creation);
     RUN_TEST(test_replica_creation_disk);
     RUN_TEST(test_replica_undo_empty);
+    RUN_TEST(test_replica_add_undo_point);
+    RUN_TEST(test_replica_rebuild_working_set);
     RUN_TEST(test_replica_undo_empty_null_undone_out);
     RUN_TEST(test_replica_task_creation);
     RUN_TEST(test_replica_all_tasks);
