@@ -23,8 +23,8 @@ pub(crate) trait PassByValue: Sized {
     ///
     /// # Safety
     ///
-    /// `self` must be a valid CType.  This is typically ensured either by requiring that C
-    /// code not modify it, or by defining the valid values in C comments.
+    /// `self` must be a valid instance of Self.  This is typically ensured either by requiring
+    /// that C code not modify it, or by defining the valid values in C comments.
     unsafe fn from_arg(arg: Self) -> Self::RustType {
         // SAFETY:
         //  - arg is a valid CType (promised by caller)
@@ -146,7 +146,13 @@ pub(crate) trait PassByPointer: Sized {
     }
 }
 
-/// *mut P can be passed by value
+/// *mut P can be passed by value.
+///
+/// # Safety
+///
+/// The 'static bound means that the pointer is treated as an "owning" pointer,
+/// and must not be copied (leading to a double-free) or dropped without dropping
+/// its contents (a leak).
 impl<P> PassByValue for *mut P
 where
     P: PassByPointer + 'static,
@@ -154,9 +160,7 @@ where
     type RustType = &'static mut P;
 
     unsafe fn from_ctype(self) -> Self::RustType {
-        // SAFETY:
-        //  - self must be a valid *mut P (promised by caller)
-        //  - TODO for 'static
+        // SAFETY: self must be a valid *mut P (promised by caller)
         unsafe { &mut *self }
     }
 
@@ -166,7 +170,7 @@ where
     }
 }
 
-/// *const P can be passed by value
+/// *const P can be passed by value.  See the implementation for *mut P.
 impl<P> PassByValue for *const P
 where
     P: PassByPointer + 'static,
@@ -174,9 +178,7 @@ where
     type RustType = &'static P;
 
     unsafe fn from_ctype(self) -> Self::RustType {
-        // SAFETY:
-        //  - self must be a valid *mut P (promised by caller)
-        //  - TODO for 'static
+        // SAFETY: self must be a valid *const P (promised by caller)
         unsafe { &*self }
     }
 
@@ -186,7 +188,7 @@ where
     }
 }
 
-/// NonNull<P> can be passed by value
+/// NonNull<P> can be passed by value.  See the implementation for NonNull<P>.
 impl<P> PassByValue for NonNull<P>
 where
     P: PassByPointer + 'static,
@@ -194,9 +196,7 @@ where
     type RustType = &'static mut P;
 
     unsafe fn from_ctype(mut self) -> Self::RustType {
-        // SAFETY:
-        //  - self must be a valid *mut P (promised by caller)
-        //  - TODO for 'static
+        // SAFETY: self must be a valid NonNull<P> (promised by caller)
         unsafe { self.as_mut() }
     }
 
@@ -206,14 +206,14 @@ where
     }
 }
 
-/// Support for arrays of objects referenced by value.
+/// Support for C arrays of objects referenced by value.
 ///
 /// The underlying C type should have three fields, containing items, length, and capacity.  The
 /// required trait functions just fetch and set these fields.  The PassByValue trait will be
 /// implemented automatically, converting between the C type and `Vec<Element>`.  For most cases,
 /// it is only necessary to implement `tc_.._free` that first calls
-/// `PassByValue::take_from_arg(arg, ValueArray::null_value())` to take the existing value and
-/// replace it with the null value; then `ValueArray::drop_value_vector(..)` to drop the resulting
+/// `PassByValue::take_from_arg(arg, CArray::null_value())` to take the existing value and
+/// replace it with the null value; then `CArray::drop_value_vector(..)` to drop the resulting
 /// vector and all of the objects it points to.
 ///
 /// This can be used for objects referenced by pointer, too, with an Element type of `*const T`
@@ -224,11 +224,10 @@ where
 /// in the `items` array.
 ///
 /// This class guarantees that the items pointer is non-NULL for any valid array (even when len=0).
-// TODO: rename Array
-pub(crate) trait ValueArray: Sized {
+pub(crate) trait CArray: Sized {
     type Element: PassByValue;
 
-    /// Create a new ValueArray from the given items, len, and capacity.
+    /// Create a new CArray from the given items, len, and capacity.
     ///
     /// # Safety
     ///
@@ -254,8 +253,10 @@ pub(crate) trait ValueArray: Sized {
     fn drop_vector(mut vec: Vec<Self::Element>) {
         // first, drop each of the elements in turn
         for e in vec.drain(..) {
-            // SAFETY: e is a valid Element (caller promisd not to change it)
-            drop(unsafe { PassByValue::from_arg(e) });
+            // SAFETY:
+            //  - e is a valid Element (caller promisd not to change it)
+            //  - Vec::drain has invalidated this entry (value is owned)
+            drop(unsafe { PassByValue::from_ctype(e) });
         }
         // then drop the vector
         drop(vec);
@@ -264,7 +265,7 @@ pub(crate) trait ValueArray: Sized {
 
 impl<A> PassByValue for A
 where
-    A: ValueArray,
+    A: CArray,
 {
     type RustType = Vec<A::Element>;
 
@@ -272,9 +273,9 @@ where
         let (items, len, cap) = self.into_raw_parts();
         debug_assert!(!items.is_null());
         // SAFETY:
-        //  - ValueArray::from_raw_parts requires that items, len, and cap be valid for
+        //  - CArray::from_raw_parts requires that items, len, and cap be valid for
         //    Vec::from_raw_parts if not NULL, and they are not NULL (as promised by caller)
-        //  - ValueArray::into_raw_parts returns precisely the values passed to from_raw_parts.
+        //  - CArray::into_raw_parts returns precisely the values passed to from_raw_parts.
         //  - those parts are passed to Vec::from_raw_parts here.
         unsafe { Vec::from_raw_parts(items as *mut _, len, cap) }
     }

@@ -19,7 +19,7 @@ pub struct TCStringList {
     items: *const NonNull<TCString<'static>>,
 }
 
-impl ValueArray for TCStringList {
+impl CArray for TCStringList {
     type Element = NonNull<TCString<'static>>;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {

@@ -19,7 +19,7 @@ pub struct TCTaskList {
     items: *const NonNull<TCTask>,
 }
 
-impl ValueArray for TCTaskList {
+impl CArray for TCTaskList {
     type Element = NonNull<TCTask>;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {

@@ -17,7 +17,7 @@ pub struct TCUuidList {
     items: *const TCUuid,
 }
 
-impl ValueArray for TCUuidList {
+impl CArray for TCUuidList {
     type Element = TCUuid;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
