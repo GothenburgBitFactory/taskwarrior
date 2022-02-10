@@ -118,6 +118,28 @@ typedef struct TCString TCString;
 typedef struct TCTask TCTask;
 
 /**
+ * TCTaskList represents a list of tasks.
+ *
+ * The content of this struct must be treated as read-only.
+ */
+typedef struct TCTaskList {
+  /**
+   * number of tasks in items
+   */
+  size_t len;
+  /**
+   * total size of items (internal use only)
+   */
+  size_t _capacity;
+  /**
+   * array of pointers representing each task. these remain owned by the TCTaskList instance and
+   * will be freed by tc_task_list_free.  This pointer is never NULL for a valid TCTaskList,
+   * and the *TCTaskList at indexes 0..len-1 are not NULL.
+   */
+  struct TCTask *const *items;
+} TCTaskList;
+
+/**
  * TCUuid is used as a task identifier.  Uuids do not contain any pointers and need not be freed.
  * Uuids are typically treated as opaque, but the bytes are available in big-endian format.
  *
@@ -163,6 +185,13 @@ struct TCReplica *tc_replica_new_in_memory(void);
  * is written to the `error_out` parameter (if it is not NULL) and NULL is returned.
  */
 struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString **error_out);
+
+/**
+ * Get a list of all tasks in the replica.
+ *
+ * Returns a TCTaskList with a NULL items field on error.
+ */
+struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
 
 /**
  * Get an existing task by its UUID.
@@ -432,6 +461,14 @@ struct TCString *tc_task_error(struct TCTask *task);
  * If the task is currently mutable, it will first be made immutable.
  */
 void tc_task_free(struct TCTask *task);
+
+/**
+ * Free a TCTaskList instance.  The instance, and all TCTaskList it contains, must not be used after
+ * this call.
+ *
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCTaskList.
+ */
+void tc_task_list_free(struct TCTaskList *tctasks);
 
 /**
  * Create a new, randomly-generated UUID.

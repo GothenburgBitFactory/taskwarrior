@@ -49,7 +49,10 @@ enum Inner {
     Invalid,
 }
 
+impl PassByPointer for TCTask {}
+
 impl TCTask {
+    /*
     /// Borrow a TCTask from C as an argument.
     ///
     /// # Safety
@@ -78,6 +81,7 @@ impl TCTask {
     pub(crate) fn return_val(self) -> *mut TCTask {
         Box::into_raw(Box::new(self))
     }
+    */
 
     /// Make an immutable TCTask into a mutable TCTask.  Does nothing if the task
     /// is already mutable.
@@ -140,7 +144,7 @@ where
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
     let task: &'a Task = match &tctask.inner {
         Inner::Immutable(t) => t,
         Inner::Mutable(t, _) => t.deref(),
@@ -160,7 +164,7 @@ where
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
     let task: &'a mut TaskMut = match tctask.inner {
         Inner::Immutable(_) => panic!("Task is immutable"),
         Inner::Mutable(ref mut t, _) => t,
@@ -222,7 +226,7 @@ pub unsafe extern "C" fn tc_task_to_mut<'a>(task: *mut TCTask, tcreplica: *mut T
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
     // SAFETY:
     //  - tcreplica is not NULL (promised by caller)
     //  - tcreplica lives until later call to to_immut via tc_task_to_immut (promised by caller,
@@ -240,7 +244,7 @@ pub unsafe extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask) {
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
     tctask.to_immut();
 }
 
@@ -516,7 +520,7 @@ pub unsafe extern "C" fn tc_task_error<'a>(task: *mut TCTask) -> *mut TCString<'
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let task: &'a mut TCTask = unsafe { TCTask::from_arg_ref(task) };
+    let task: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
     if let Some(tcstring) = task.error.take() {
         unsafe { tcstring.return_val() }
     } else {
@@ -533,7 +537,7 @@ pub unsafe extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
     // SAFETY:
     //  - rep is not NULL (promised by caller)
     //  - caller will not use the TCTask after this (promised by caller)
-    let mut tctask = unsafe { TCTask::from_arg(task) };
+    let mut tctask = unsafe { TCTask::take_from_arg(task) };
 
     // convert to immut if it was mutable
     tctask.to_immut();

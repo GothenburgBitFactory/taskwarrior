@@ -12,4 +12,5 @@ pub mod status;
 pub mod string;
 pub mod stringlist;
 pub mod task;
+pub mod tasklist;
 pub mod uuid;

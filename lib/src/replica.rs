@@ -1,6 +1,10 @@
 use crate::traits::*;
 use crate::util::err_to_tcstring;
-use crate::{result::TCResult, status::TCStatus, string::TCString, task::TCTask, uuid::TCUuid};
+use crate::{
+    result::TCResult, status::TCStatus, string::TCString, task::TCTask, tasklist::TCTaskList,
+    uuid::TCUuid,
+};
+use std::ptr::NonNull;
 use taskchampion::{Replica, StorageConfig};
 
 /// A replica represents an instance of a user's task data, providing an easy interface
@@ -129,7 +133,34 @@ pub unsafe extern "C" fn tc_replica_new_on_disk<'a>(
     unsafe { TCReplica::from(Replica::new(storage)).return_val() }
 }
 
-// TODO: tc_replica_all_tasks
+/// Get a list of all tasks in the replica.
+///
+/// Returns a TCTaskList with a NULL items field on error.
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList {
+    wrap(
+        rep,
+        |rep| {
+            // note that the Replica API returns a hashmap here, but we discard
+            // the keys and return a simple array.  The task UUIDs are available
+            // from task.get_uuid(), so information is not lost.
+            let tasks: Vec<_> = rep
+                .all_tasks()?
+                .drain()
+                .map(|(_uuid, t)| {
+                    NonNull::new(
+                        // SAFETY: see TCTask docstring
+                        unsafe { TCTask::from(t).return_val() },
+                    )
+                    .expect("TCTask::return_val returned NULL")
+                })
+                .collect();
+            Ok(TCTaskList::return_val(tasks))
+        },
+        TCTaskList::null_value(),
+    )
+}
+
 // TODO: tc_replica_all_task_uuids
 // TODO: tc_replica_working_set
 
@@ -145,7 +176,8 @@ pub unsafe extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid
             // SAFETY: see TCUuid docstring
             let uuid = unsafe { TCUuid::from_arg(tcuuid) };
             if let Some(task) = rep.get_task(uuid)? {
-                Ok(TCTask::from(task).return_val())
+                // SAFETY: caller promises to free this task
+                Ok(unsafe { TCTask::from(task).return_val() })
             } else {
                 Ok(std::ptr::null_mut())
             }
@@ -169,7 +201,8 @@ pub unsafe extern "C" fn tc_replica_new_task(
         rep,
         |rep| {
             let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
-            Ok(TCTask::from(task).return_val())
+            // SAFETY: caller promises to free this task
+            Ok(unsafe { TCTask::from(task).return_val() })
         },
         std::ptr::null_mut(),
     )
@@ -189,7 +222,8 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
             // SAFETY: see TCUuid docstring
             let uuid = unsafe { TCUuid::from_arg(tcuuid) };
             let task = rep.import_task_with_uuid(uuid)?;
-            Ok(TCTask::from(task).return_val())
+            // SAFETY: caller promises to free this task
+            Ok(unsafe { TCTask::from(task).return_val() })
         },
         std::ptr::null_mut(),
     )
@@ -202,7 +236,10 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
 /// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
 /// there are no operations that can be done.
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_undo<'a>(rep: *mut TCReplica, undone_out: *mut i32) -> TCResult {
+pub unsafe extern "C" fn tc_replica_undo<'a>(
+    rep: *mut TCReplica,
+    undone_out: *mut i32,
+) -> TCResult {
     wrap(
         rep,
         |rep| {

@@ -73,6 +73,49 @@ static void test_replica_task_creation(void) {
     tc_replica_free(rep);
 }
 
+// a replica with tasks in it returns an appropriate list of tasks
+static void test_replica_all_tasks(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("task1"));
+    TEST_ASSERT_NOT_NULL(task);
+    tc_task_free(task);
+
+    task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("task2"));
+    TEST_ASSERT_NOT_NULL(task);
+    tc_task_free(task);
+
+    TCTaskList tasks = tc_replica_all_tasks(rep);
+    TEST_ASSERT_NOT_NULL(tasks.items);
+    TEST_ASSERT_EQUAL(2, tasks.len);
+
+    int seen1, seen2 = false;
+    for (size_t i = 0; i < tasks.len; i++) {
+        TCTask *task = tasks.items[i];
+        TCString *descr = tc_task_get_description(task);
+        if (0 == strcmp(tc_string_content(descr), "task1")) {
+            seen1 = true;
+        } else if (0 == strcmp(tc_string_content(descr), "task2")) {
+            seen2 = true;
+        }
+        tc_string_free(descr);
+    }
+    TEST_ASSERT_TRUE(seen1);
+    TEST_ASSERT_TRUE(seen2);
+
+    tc_task_list_free(&tasks);
+    TEST_ASSERT_NULL(tasks.items);
+
+    tc_replica_free(rep);
+}
+
 // importing a task succeeds and the resulting task looks good
 static void test_replica_task_import(void) {
     TCReplica *rep = tc_replica_new_in_memory();
@@ -124,6 +167,7 @@ int replica_tests(void) {
     RUN_TEST(test_replica_undo_empty);
     RUN_TEST(test_replica_undo_empty_null_undone_out);
     RUN_TEST(test_replica_task_creation);
+    RUN_TEST(test_replica_all_tasks);
     RUN_TEST(test_replica_task_import);
     RUN_TEST(test_replica_get_task_not_found);
     return UNITY_END();
