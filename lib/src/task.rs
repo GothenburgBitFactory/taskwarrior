@@ -52,37 +52,6 @@ enum Inner {
 impl PassByPointer for TCTask {}
 
 impl TCTask {
-    /*
-    /// Borrow a TCTask from C as an argument.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must not be NULL.  It is the caller's responsibility to ensure that the
-    /// lifetime assigned to the reference and the lifetime of the TCTask itself do not outlive
-    /// the lifetime promised by C.
-    pub(crate) unsafe fn from_arg_ref<'a>(tctask: *mut TCTask) -> &'a mut Self {
-        debug_assert!(!tctask.is_null());
-        // SAFETY: see docstring
-        unsafe { &mut *tctask }
-    }
-
-    /// Take a TCTask from C as an argument.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must not be NULL.  The pointer becomes invalid before this function returns.
-    pub(crate) unsafe fn from_arg<'a>(tctask: *mut TCTask) -> Self {
-        debug_assert!(!tctask.is_null());
-        // SAFETY: see docstring
-        unsafe { *Box::from_raw(tctask) }
-    }
-
-    /// Convert a TCTask to a return value for handing off to C.
-    pub(crate) fn return_val(self) -> *mut TCTask {
-        Box::into_raw(Box::new(self))
-    }
-    */
-
     /// Make an immutable TCTask into a mutable TCTask.  Does nothing if the task
     /// is already mutable.
     ///
