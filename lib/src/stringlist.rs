@@ -1,5 +1,5 @@
-use crate::string::TCString;
 use crate::traits::*;
+use crate::types::*;
 use std::ptr::NonNull;
 
 /// TCStringList represents a list of strings.

@@ -1,5 +1,5 @@
 use crate::traits::*;
-use crate::{result::TCResult, string::TCString};
+use crate::types::*;
 use libc;
 use taskchampion::Uuid;
 

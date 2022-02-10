@@ -1,5 +1,5 @@
 use crate::traits::*;
-use crate::uuid::TCUuid;
+use crate::types::*;
 
 /// TCUuidList represents a list of uuids.
 ///
