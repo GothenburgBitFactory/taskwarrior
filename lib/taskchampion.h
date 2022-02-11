@@ -118,6 +118,41 @@ typedef struct TCString TCString;
 typedef struct TCTask TCTask;
 
 /**
+ * TCAnnotation contains the details of an annotation.
+ */
+typedef struct TCAnnotation {
+  /**
+   * Time the annotation was made, as a UNIX epoch timestamp
+   */
+  int64_t entry;
+  /**
+   * Content of the annotation
+   */
+  struct TCString *description;
+} TCAnnotation;
+
+/**
+ * TCAnnotationList represents a list of annotations.
+ *
+ * The content of this struct must be treated as read-only.
+ */
+typedef struct TCAnnotationList {
+  /**
+   * number of annotations in items
+   */
+  size_t len;
+  /**
+   * total size of items (internal use only)
+   */
+  size_t _capacity;
+  /**
+   * array of annotations. these remain owned by the TCAnnotationList instance and will be freed by
+   * tc_annotation_list_free.  This pointer is never NULL for a valid TCAnnotationList.
+   */
+  const struct TCAnnotation *items;
+} TCAnnotationList;
+
+/**
  * TCTaskList represents a list of tasks.
  *
  * The content of this struct must be treated as read-only.
@@ -194,6 +229,20 @@ typedef struct TCStringList {
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
+
+/**
+ * Free a TCAnnotation instance.  The instance, and the TCString it contains, must not be used
+ * after this call.
+ */
+void tc_annotation_free(struct TCAnnotation *tcann);
+
+/**
+ * Free a TCAnnotationList instance.  The instance, and all TCAnnotations it contains, must not be used after
+ * this call.
+ *
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCAnnotationList.
+ */
+void tc_annotation_list_free(struct TCAnnotationList *tcanns);
 
 /**
  * Create a new TCReplica with an in-memory database.  The contents of the database will be
@@ -435,6 +484,14 @@ bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
 struct TCStringList tc_task_get_tags(struct TCTask *task);
 
 /**
+ * Get the annotations for the task.
+ *
+ * The caller must free the returned TCAnnotationList instance.  The TCStringList instance does not
+ * reference the task and the two may be freed in any order.
+ */
+struct TCAnnotationList tc_task_get_annotations(struct TCTask *task);
+
+/**
  * Set a mutable task's status.
  */
 TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
@@ -489,6 +546,16 @@ TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
  * Remove a tag from a mutable task.
  */
 TCResult tc_task_remove_tag(struct TCTask *task, struct TCString *tag);
+
+/**
+ * Add an annotation to a mutable task.
+ */
+TCResult tc_task_add_annotation(struct TCTask *task, struct TCAnnotation *annotation);
+
+/**
+ * Remove an annotation from a mutable task.
+ */
+TCResult tc_task_remove_annotation(struct TCTask *task, int64_t entry);
 
 /**
  * Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls

@@ -305,7 +305,21 @@ pub unsafe extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStringList
     })
 }
 
-// TODO: tc_task_get_annotations
+/// Get the annotations for the task.
+///
+/// The caller must free the returned TCAnnotationList instance.  The TCStringList instance does not
+/// reference the task and the two may be freed in any order.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_annotations<'a>(task: *mut TCTask) -> TCAnnotationList {
+    wrap(task, |task| {
+        let vec: Vec<TCAnnotation> = task
+            .get_annotations()
+            .map(|a| TCAnnotation::as_ctype(a))
+            .collect();
+        TCAnnotationList::return_val(vec)
+    })
+}
+
 // TODO: tc_task_get_uda
 // TODO: tc_task_get_udas
 // TODO: tc_task_get_legacy_uda
@@ -471,8 +485,37 @@ pub unsafe extern "C" fn tc_task_remove_tag(task: *mut TCTask, tag: *mut TCStrin
     )
 }
 
-// TODO: tc_task_add_annotation
-// TODO: tc_task_remove_annotation
+/// Add an annotation to a mutable task.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_add_annotation(
+    task: *mut TCTask,
+    annotation: *mut TCAnnotation,
+) -> TCResult {
+    // SAFETY: see TCAnnotation docstring
+    let ann = unsafe { TCAnnotation::take_from_arg(annotation, TCAnnotation::default()) };
+    wrap_mut(
+        task,
+        |task| {
+            task.add_annotation(ann)?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Remove an annotation from a mutable task.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_remove_annotation(task: *mut TCTask, entry: i64) -> TCResult {
+    wrap_mut(
+        task,
+        |task| {
+            task.remove_annotation(Utc.timestamp(entry, 0))?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
 // TODO: tc_task_set_uda
 // TODO: tc_task_remove_uda
 // TODO: tc_task_set_legacy_uda

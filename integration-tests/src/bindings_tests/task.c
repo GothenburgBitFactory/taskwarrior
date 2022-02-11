@@ -333,6 +333,59 @@ static void test_task_get_tags(void) {
     tc_replica_free(rep);
 }
 
+// annotation manipulation (add, remove, list, free)
+static void test_task_annotations(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    TCAnnotationList anns = tc_task_get_annotations(task);
+    TEST_ASSERT_EQUAL(0, anns.len);
+    TEST_ASSERT_NOT_NULL(anns.items);
+    tc_annotation_list_free(&anns);
+
+    tc_task_to_mut(task, rep);
+
+    TCAnnotation ann;
+
+    ann.entry = 1644623411;
+    ann.description = tc_string_borrow("ann1");
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_add_annotation(task, &ann));
+    TEST_ASSERT_NULL(ann.description);
+
+    ann.entry = 1644623422;
+    ann.description = tc_string_borrow("ann2");
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_add_annotation(task, &ann));
+    TEST_ASSERT_NULL(ann.description);
+
+    anns = tc_task_get_annotations(task);
+
+    int found1 = false, found2 = false;
+    for (size_t i = 0; i < anns.len; i++) {
+        if (0 == strcmp("ann1", tc_string_content(anns.items[i].description))) {
+            TEST_ASSERT_EQUAL(anns.items[i].entry, 1644623411);
+            found1 = true;
+        }
+        if (0 == strcmp("ann2", tc_string_content(anns.items[i].description))) {
+            TEST_ASSERT_EQUAL(anns.items[i].entry, 1644623422);
+            found2 = true;
+        }
+    }
+    TEST_ASSERT_TRUE(found1);
+    TEST_ASSERT_TRUE(found2);
+
+    tc_annotation_list_free(&anns);
+    TEST_ASSERT_NULL(anns.items);
+
+    tc_task_free(task);
+    tc_replica_free(rep);
+}
+
 int task_tests(void) {
     UNITY_BEGIN();
     // each test case above should be named here, in order.
@@ -347,5 +400,6 @@ int task_tests(void) {
     RUN_TEST(test_task_done_and_delete);
     RUN_TEST(test_task_add_remove_has_tag);
     RUN_TEST(test_task_get_tags);
+    RUN_TEST(test_task_annotations);
     return UNITY_END();
 }

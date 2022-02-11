@@ -5,6 +5,7 @@
 mod traits;
 mod util;
 
+pub mod annotation;
 pub mod atomic;
 pub mod replica;
 pub mod result;
@@ -17,6 +18,7 @@ pub mod uuid;
 pub mod uuidlist;
 
 pub(crate) mod types {
+    pub(crate) use crate::annotation::{TCAnnotation, TCAnnotationList};
     pub(crate) use crate::replica::TCReplica;
     pub(crate) use crate::result::TCResult;
     pub(crate) use crate::status::TCStatus;

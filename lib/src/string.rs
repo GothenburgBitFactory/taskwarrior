@@ -69,6 +69,18 @@ impl<'a> TCString<'a> {
         }
     }
 
+    /// Consume this TCString and return an equivalent String, or an error if not
+    /// valid UTF-8.  In the error condition, the original data is lost.
+    pub(crate) fn into_string(self) -> Result<String, std::str::Utf8Error> {
+        match self {
+            TCString::CString(cstring) => cstring.into_string().map_err(|e| e.utf8_error()),
+            TCString::CStr(cstr) => cstr.to_str().map(|s| s.to_string()),
+            TCString::String(string) => Ok(string),
+            TCString::InvalidUtf8(e, _) => Err(e),
+            TCString::None => unreachable!(),
+        }
+    }
+
     fn as_bytes(&self) -> &[u8] {
         match self {
             TCString::CString(cstring) => cstring.as_bytes(),
