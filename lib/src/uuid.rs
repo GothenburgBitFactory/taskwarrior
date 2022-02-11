@@ -3,6 +3,10 @@ use crate::types::*;
 use libc;
 use taskchampion::Uuid;
 
+// NOTE: this must be a simple constant so that cbindgen can evaluate it
+/// Length, in bytes, of the string representation of a UUID (without NUL terminator)
+pub const TC_UUID_STRING_BYTES: usize = 36;
+
 /// TCUuid is used as a task identifier.  Uuids do not contain any pointers and need not be freed.
 /// Uuids are typically treated as opaque, but the bytes are available in big-endian format.
 ///
@@ -36,9 +40,37 @@ pub unsafe extern "C" fn tc_uuid_nil() -> TCUuid {
     TCUuid::return_val(Uuid::nil())
 }
 
-// NOTE: this must be a simple constant so that cbindgen can evaluate it
-/// Length, in bytes, of the string representation of a UUID (without NUL terminator)
-pub const TC_UUID_STRING_BYTES: usize = 36;
+/// TCUuidList represents a list of uuids.
+///
+/// The content of this struct must be treated as read-only.
+#[repr(C)]
+pub struct TCUuidList {
+    /// number of uuids in items
+    len: libc::size_t,
+
+    /// total size of items (internal use only)
+    _capacity: libc::size_t,
+
+    /// array of uuids. these remain owned by the TCUuidList instance and will be freed by
+    /// tc_uuid_list_free.  This pointer is never NULL for a valid TCUuidList.
+    items: *const TCUuid,
+}
+
+impl CArray for TCUuidList {
+    type Element = TCUuid;
+
+    unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
+        TCUuidList {
+            len,
+            _capacity: cap,
+            items,
+        }
+    }
+
+    fn into_raw_parts(self) -> (*const Self::Element, usize, usize) {
+        (self.items, self.len, self._capacity)
+    }
+}
 
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
@@ -90,4 +122,40 @@ pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut T
         }
     }
     TCResult::Error
+}
+
+/// Free a TCUuidList instance.  The instance, and all TCUuids it contains, must not be used after
+/// this call.
+///
+/// When this call returns, the `items` pointer will be NULL, signalling an invalid TCUuidList.
+#[no_mangle]
+pub unsafe extern "C" fn tc_uuid_list_free(tcuuids: *mut TCUuidList) {
+    debug_assert!(!tcuuids.is_null());
+    // SAFETY:
+    //  - *tcuuids is a valid TCUuidList (caller promises to treat it as read-only)
+    let uuids = unsafe { TCUuidList::take_from_arg(tcuuids, TCUuidList::null_value()) };
+    TCUuidList::drop_vector(uuids);
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn empty_array_has_non_null_pointer() {
+        let tcuuids = TCUuidList::return_val(Vec::new());
+        assert!(!tcuuids.items.is_null());
+        assert_eq!(tcuuids.len, 0);
+        assert_eq!(tcuuids._capacity, 0);
+    }
+
+    #[test]
+    fn free_sets_null_pointer() {
+        let mut tcuuids = TCUuidList::return_val(Vec::new());
+        // SAFETY: testing expected behavior
+        unsafe { tc_uuid_list_free(&mut tcuuids) };
+        assert!(tcuuids.items.is_null());
+        assert_eq!(tcuuids.len, 0);
+        assert_eq!(tcuuids._capacity, 0);
+    }
 }
