@@ -172,7 +172,7 @@ pub struct TCTaskList {
     items: *const NonNull<TCTask>,
 }
 
-impl CArray for TCTaskList {
+impl CList for TCTaskList {
     type Element = NonNull<TCTask>;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
@@ -590,7 +590,7 @@ pub unsafe extern "C" fn tc_task_list_free(tctasks: *mut TCTaskList) {
     //  - tctasks is not NULL and points to a valid TCTaskList (caller is not allowed to
     //    modify the list)
     //  - caller promises not to use the value after return
-    unsafe { drop_pointer_array(tctasks) };
+    unsafe { drop_pointer_list(tctasks) };
 }
 
 #[cfg(test)]
@@ -598,7 +598,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn empty_array_has_non_null_pointer() {
+    fn empty_list_has_non_null_pointer() {
         let tctasks = TCTaskList::return_val(Vec::new());
         assert!(!tctasks.items.is_null());
         assert_eq!(tctasks.len, 0);

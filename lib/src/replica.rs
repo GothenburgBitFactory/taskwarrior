@@ -139,7 +139,7 @@ pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList
         rep,
         |rep| {
             // note that the Replica API returns a hashmap here, but we discard
-            // the keys and return a simple array.  The task UUIDs are available
+            // the keys and return a simple list.  The task UUIDs are available
             // from task.get_uuid(), so information is not lost.
             let tasks: Vec<_> = rep
                 .all_tasks()?

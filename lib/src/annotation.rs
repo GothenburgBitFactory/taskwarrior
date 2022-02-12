@@ -62,7 +62,7 @@ pub struct TCAnnotationList {
     items: *const TCAnnotation,
 }
 
-impl CArray for TCAnnotationList {
+impl CList for TCAnnotationList {
     type Element = TCAnnotation;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
@@ -99,7 +99,7 @@ pub unsafe extern "C" fn tc_annotation_list_free(tcanns: *mut TCAnnotationList) 
     //  - tcanns is not NULL and points to a valid TCAnnotationList (caller is not allowed to
     //    modify the list)
     //  - caller promises not to use the value after return
-    unsafe { drop_value_array(tcanns) }
+    unsafe { drop_value_list(tcanns) }
 }
 
 #[cfg(test)]
@@ -107,7 +107,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn empty_array_has_non_null_pointer() {
+    fn empty_list_has_non_null_pointer() {
         let tcanns = TCAnnotationList::return_val(Vec::new());
         assert!(!tcanns.items.is_null());
         assert_eq!(tcanns.len, 0);

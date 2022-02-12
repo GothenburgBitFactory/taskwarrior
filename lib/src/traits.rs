@@ -148,14 +148,14 @@ pub(crate) trait PassByPointer: Sized {
     }
 }
 
-/// Support for C arrays of objects referenced by value.
+/// Support for C lists of objects referenced by value.
 ///
 /// The underlying C type should have three fields, containing items, length, and capacity.  The
 /// required trait functions just fetch and set these fields.  The PassByValue trait will be
 /// implemented automatically, converting between the C type and `Vec<Element>`.  For most cases,
 /// it is only necessary to implement `tc_.._free` that first calls
-/// `PassByValue::take_from_arg(arg, CArray::null_value())` to take the existing value and
-/// replace it with the null value; then one of hte `drop_.._array(..)` functions to drop the resulting
+/// `PassByValue::take_from_arg(arg, CList::null_value())` to take the existing value and
+/// replace it with the null value; then one of hte `drop_.._list(..)` functions to drop the resulting
 /// vector and all of the objects it points to.
 ///
 /// This can be used for objects referenced by pointer, too, with an Element type of `NonNull<T>`
@@ -165,11 +165,11 @@ pub(crate) trait PassByPointer: Sized {
 /// The C type must be documented as read-only.  None of the fields may be modified, nor anything
 /// in the `items` array.
 ///
-/// This class guarantees that the items pointer is non-NULL for any valid array (even when len=0).
-pub(crate) trait CArray: Sized {
+/// This class guarantees that the items pointer is non-NULL for any valid list (even when len=0).
+pub(crate) trait CList: Sized {
     type Element;
 
-    /// Create a new CArray from the given items, len, and capacity.
+    /// Create a new CList from the given items, len, and capacity.
     ///
     /// # Safety
     ///
@@ -191,26 +191,26 @@ pub(crate) trait CArray: Sized {
     }
 }
 
-/// Given a CArray containing pass-by-value values, drop all of the values and
-/// the array.
+/// Given a CList containing pass-by-value values, drop all of the values and
+/// the list.
 ///
 /// This is a convenience function for `tc_.._list_free` functions.
 ///
 /// # Safety
 ///
-/// - Array must be non-NULL and point to a valid CA instance
+/// - List must be non-NULL and point to a valid CL instance
 /// - The caller must not use the value array points to after this function, as
 ///   it has been freed.  It will be replaced with the null value.
-pub(crate) unsafe fn drop_value_array<CA, T>(array: *mut CA)
+pub(crate) unsafe fn drop_value_list<CL, T>(list: *mut CL)
 where
-    CA: CArray<Element = T>,
+    CL: CList<Element = T>,
     T: PassByValue,
 {
-    debug_assert!(!array.is_null());
+    debug_assert!(!list.is_null());
 
     // SAFETY:
-    //  - *array is a valid CA (caller promises to treat it as read-only)
-    let mut vec = unsafe { CA::take_from_arg(array, CA::null_value()) };
+    //  - *list is a valid CL (caller promises to treat it as read-only)
+    let mut vec = unsafe { CL::take_from_arg(list, CL::null_value()) };
 
     // first, drop each of the elements in turn
     for e in vec.drain(..) {
@@ -223,24 +223,24 @@ where
     drop(vec);
 }
 
-/// Given a CArray containing NonNull pointers, drop all of the pointed-to values and the array.
+/// Given a CList containing NonNull pointers, drop all of the pointed-to values and the list.
 ///
 /// This is a convenience function for `tc_.._list_free` functions.
 ///
 /// # Safety
 ///
-/// - Array must be non-NULL and point to a valid CA instance
+/// - List must be non-NULL and point to a valid CL instance
 /// - The caller must not use the value array points to after this function, as
 ///   it has been freed.  It will be replaced with the null value.
-pub(crate) unsafe fn drop_pointer_array<CA, T>(array: *mut CA)
+pub(crate) unsafe fn drop_pointer_list<CL, T>(list: *mut CL)
 where
-    CA: CArray<Element = NonNull<T>>,
+    CL: CList<Element = NonNull<T>>,
     T: PassByPointer,
 {
-    debug_assert!(!array.is_null());
+    debug_assert!(!list.is_null());
     // SAFETY:
-    //  - *array is a valid CA (caller promises to treat it as read-only)
-    let mut vec = unsafe { CA::take_from_arg(array, CA::null_value()) };
+    //  - *list is a valid CL (caller promises to treat it as read-only)
+    let mut vec = unsafe { CL::take_from_arg(list, CL::null_value()) };
 
     // first, drop each of the elements in turn
     for e in vec.drain(..) {
@@ -255,7 +255,7 @@ where
 
 impl<A> PassByValue for A
 where
-    A: CArray,
+    A: CList,
 {
     type RustType = Vec<A::Element>;
 
@@ -263,9 +263,9 @@ where
         let (items, len, cap) = self.into_raw_parts();
         debug_assert!(!items.is_null());
         // SAFETY:
-        //  - CArray::from_raw_parts requires that items, len, and cap be valid for
+        //  - CList::from_raw_parts requires that items, len, and cap be valid for
         //    Vec::from_raw_parts if not NULL, and they are not NULL (as promised by caller)
-        //  - CArray::into_raw_parts returns precisely the values passed to from_raw_parts.
+        //  - CList::into_raw_parts returns precisely the values passed to from_raw_parts.
         //  - those parts are passed to Vec::from_raw_parts here.
         unsafe { Vec::from_raw_parts(items as *mut _, len, cap) }
     }

@@ -56,7 +56,7 @@ pub struct TCUuidList {
     items: *const TCUuid,
 }
 
-impl CArray for TCUuidList {
+impl CList for TCUuidList {
     type Element = TCUuid;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
@@ -134,7 +134,7 @@ pub unsafe extern "C" fn tc_uuid_list_free(tcuuids: *mut TCUuidList) {
     //  - tcuuids is not NULL and points to a valid TCUuidList (caller is not allowed to
     //    modify the list)
     //  - caller promises not to use the value after return
-    unsafe { drop_value_array(tcuuids) };
+    unsafe { drop_value_list(tcuuids) };
 }
 
 #[cfg(test)]
@@ -142,7 +142,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn empty_array_has_non_null_pointer() {
+    fn empty_list_has_non_null_pointer() {
         let tcuuids = TCUuidList::return_val(Vec::new());
         assert!(!tcuuids.items.is_null());
         assert_eq!(tcuuids.len, 0);

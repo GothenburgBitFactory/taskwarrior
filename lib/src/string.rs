@@ -154,7 +154,7 @@ pub struct TCStringList {
     items: *const NonNull<TCString<'static>>,
 }
 
-impl CArray for TCStringList {
+impl CList for TCStringList {
     type Element = NonNull<TCString<'static>>;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
@@ -325,7 +325,7 @@ pub unsafe extern "C" fn tc_string_list_free(tcstrings: *mut TCStringList) {
     //  - tcstrings is not NULL and points to a valid TCStringList (caller is not allowed to
     //    modify the list)
     //  - caller promises not to use the value after return
-    unsafe { drop_pointer_array(tcstrings) };
+    unsafe { drop_pointer_list(tcstrings) };
 }
 
 #[cfg(test)]
@@ -334,7 +334,7 @@ mod test {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn empty_array_has_non_null_pointer() {
+    fn empty_list_has_non_null_pointer() {
         let tcstrings = TCStringList::return_val(Vec::new());
         assert!(!tcstrings.items.is_null());
         assert_eq!(tcstrings.len, 0);
