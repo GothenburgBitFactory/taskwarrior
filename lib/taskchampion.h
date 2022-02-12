@@ -226,6 +226,45 @@ typedef struct TCStringList {
   struct TCString *const *items;
 } TCStringList;
 
+/**
+ * TCUDA contains the details of a UDA.
+ */
+typedef struct TCUDA {
+  /**
+   * Namespace of the UDA.  For legacy UDAs, this is NULL.
+   */
+  struct TCString *ns;
+  /**
+   * UDA key.  Must not be NULL.
+   */
+  struct TCString *key;
+  /**
+   * Content of the UDA.  Must not be NULL.
+   */
+  struct TCString *value;
+} TCUDA;
+
+/**
+ * TCUDAList represents a list of UDAs.
+ *
+ * The content of this struct must be treated as read-only.
+ */
+typedef struct TCUDAList {
+  /**
+   * number of UDAs in items
+   */
+  size_t len;
+  /**
+   * total size of items (internal use only)
+   */
+  size_t _capacity;
+  /**
+   * array of UDAs. These remain owned by the TCUDAList instance and will be freed by
+   * tc_uda_list_free.  This pointer is never NULL for a valid TCUDAList.
+   */
+  const struct TCUDA *items;
+} TCUDAList;
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
@@ -492,6 +531,35 @@ struct TCStringList tc_task_get_tags(struct TCTask *task);
 struct TCAnnotationList tc_task_get_annotations(struct TCTask *task);
 
 /**
+ * Get the named UDA from the task.
+ *
+ * Returns NULL if the UDA does not exist.
+ */
+struct TCString *tc_task_get_uda(struct TCTask *task, struct TCString *ns, struct TCString *key);
+
+/**
+ * Get the named legacy UDA from the task.
+ *
+ * Returns NULL if the UDA does not exist.
+ */
+struct TCString *tc_task_get_legacy_uda(struct TCTask *task, struct TCString *key);
+
+/**
+ * Get all UDAs for this task.
+ *
+ * Legacy UDAs are represented with an empty string in the ns field.
+ */
+struct TCUDAList tc_task_get_udas(struct TCTask *task);
+
+/**
+ * Get all UDAs for this task.
+ *
+ * All TCUDAs in this list have a NULL ns field.  The entire UDA key is
+ * included in the key field.
+ */
+struct TCUDAList tc_task_get_legacy_udas(struct TCTask *task);
+
+/**
  * Set a mutable task's status.
  */
 TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
@@ -558,6 +626,29 @@ TCResult tc_task_add_annotation(struct TCTask *task, struct TCAnnotation *annota
 TCResult tc_task_remove_annotation(struct TCTask *task, int64_t entry);
 
 /**
+ * Set a UDA on a mutable task.
+ */
+TCResult tc_task_set_uda(struct TCTask *task,
+                         struct TCString *ns,
+                         struct TCString *key,
+                         struct TCString *value);
+
+/**
+ * Remove a UDA fraom a mutable task.
+ */
+TCResult tc_task_remove_uda(struct TCTask *task, struct TCString *ns, struct TCString *key);
+
+/**
+ * Set a legacy UDA on a mutable task.
+ */
+TCResult tc_task_set_legacy_uda(struct TCTask *task, struct TCString *key, struct TCString *value);
+
+/**
+ * Remove a UDA fraom a mutable task.
+ */
+TCResult tc_task_remove_legacy_uda(struct TCTask *task, struct TCString *key);
+
+/**
  * Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls
  * to this function will return NULL.  The task pointer must not be NULL.  The caller must free the
  * returned string.
@@ -579,6 +670,20 @@ void tc_task_free(struct TCTask *task);
  * When this call returns, the `items` pointer will be NULL, signalling an invalid TCTaskList.
  */
 void tc_task_list_free(struct TCTaskList *tctasks);
+
+/**
+ * Free a TCUDA instance.  The instance, and the TCStrings it contains, must not be used
+ * after this call.
+ */
+void tc_uda_free(struct TCUDA *tcuda);
+
+/**
+ * Free a TCUDAList instance.  The instance, and all TCUDAs it contains, must not be used after
+ * this call.
+ *
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCUDAList.
+ */
+void tc_uda_list_free(struct TCUDAList *tcudas);
 
 /**
  * Create a new, randomly-generated UUID.

@@ -386,6 +386,140 @@ static void test_task_annotations(void) {
     tc_replica_free(rep);
 }
 
+// UDA manipulation (add, remove, list, free)
+static void test_task_udas(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    tc_task_to_mut(task, rep);
+
+    TCString *value;
+    TCUDAList udas;
+
+    TEST_ASSERT_NULL(tc_task_get_uda(task, tc_string_borrow("ns"), tc_string_borrow("u1")));
+    TEST_ASSERT_NULL(tc_task_get_legacy_uda(task, tc_string_borrow("leg1")));
+
+    udas = tc_task_get_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(0, udas.len);
+    tc_uda_list_free(&udas);
+
+    udas = tc_task_get_legacy_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(0, udas.len);
+    tc_uda_list_free(&udas);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_set_uda(task,
+                tc_string_borrow("ns"),
+                tc_string_borrow("u1"),
+                tc_string_borrow("vvv")));
+
+    value = tc_task_get_uda(task, tc_string_borrow("ns"), tc_string_borrow("u1"));
+    TEST_ASSERT_NOT_NULL(value);
+    TEST_ASSERT_EQUAL_STRING("vvv", tc_string_content(value));
+    tc_string_free(value);
+    TEST_ASSERT_NULL(tc_task_get_legacy_uda(task, tc_string_borrow("leg1")));
+
+    udas = tc_task_get_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(1, udas.len);
+    TEST_ASSERT_EQUAL_STRING("ns", tc_string_content(udas.items[0].ns));
+    TEST_ASSERT_EQUAL_STRING("u1", tc_string_content(udas.items[0].key));
+    TEST_ASSERT_EQUAL_STRING("vvv", tc_string_content(udas.items[0].value));
+    tc_uda_list_free(&udas);
+
+    udas = tc_task_get_legacy_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(1, udas.len);
+    TEST_ASSERT_NULL(udas.items[0].ns);
+    TEST_ASSERT_EQUAL_STRING("ns.u1", tc_string_content(udas.items[0].key));
+    TEST_ASSERT_EQUAL_STRING("vvv", tc_string_content(udas.items[0].value));
+    tc_uda_list_free(&udas);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_set_legacy_uda(task,
+                tc_string_borrow("leg1"),
+                tc_string_borrow("legv")));
+
+    value = tc_task_get_uda(task, tc_string_borrow("ns"), tc_string_borrow("u1"));
+    TEST_ASSERT_NOT_NULL(value);
+    TEST_ASSERT_EQUAL_STRING("vvv", tc_string_content(value));
+    tc_string_free(value);
+
+    value = tc_task_get_legacy_uda(task, tc_string_borrow("leg1"));
+    TEST_ASSERT_NOT_NULL(value);
+    TEST_ASSERT_EQUAL_STRING("legv", tc_string_content(value));
+    tc_string_free(value);
+
+    udas = tc_task_get_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(2, udas.len);
+    tc_uda_list_free(&udas);
+
+    udas = tc_task_get_legacy_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(2, udas.len);
+    tc_uda_list_free(&udas);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_remove_uda(task,
+                tc_string_borrow("ns"),
+                tc_string_borrow("u1")));
+
+    TEST_ASSERT_NULL(tc_task_get_uda(task, tc_string_borrow("ns"), tc_string_borrow("u1")));
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_remove_uda(task,
+                tc_string_borrow("ns"),
+                tc_string_borrow("u1")));
+
+    udas = tc_task_get_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(1, udas.len);
+    TEST_ASSERT_EQUAL_STRING("", tc_string_content(udas.items[0].ns));
+    TEST_ASSERT_EQUAL_STRING("leg1", tc_string_content(udas.items[0].key));
+    TEST_ASSERT_EQUAL_STRING("legv", tc_string_content(udas.items[0].value));
+    tc_uda_list_free(&udas);
+
+    udas = tc_task_get_legacy_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(1, udas.len);
+    TEST_ASSERT_NULL(udas.items[0].ns);
+    TEST_ASSERT_EQUAL_STRING("leg1", tc_string_content(udas.items[0].key));
+    TEST_ASSERT_EQUAL_STRING("legv", tc_string_content(udas.items[0].value));
+    tc_uda_list_free(&udas);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_remove_legacy_uda(task,
+                tc_string_borrow("leg1")));
+
+    TEST_ASSERT_NULL(tc_task_get_legacy_uda(task, tc_string_borrow("leg1")));
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_remove_legacy_uda(task,
+                tc_string_borrow("leg1")));
+
+    udas = tc_task_get_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(0, udas.len);
+    tc_uda_list_free(&udas);
+
+    udas = tc_task_get_legacy_udas(task);
+    TEST_ASSERT_NOT_NULL(udas.items);
+    TEST_ASSERT_EQUAL(0, udas.len);
+    tc_uda_list_free(&udas);
+
+    tc_task_free(task);
+    tc_replica_free(rep);
+}
+
 int task_tests(void) {
     UNITY_BEGIN();
     // each test case above should be named here, in order.
@@ -401,5 +535,6 @@ int task_tests(void) {
     RUN_TEST(test_task_add_remove_has_tag);
     RUN_TEST(test_task_get_tags);
     RUN_TEST(test_task_annotations);
+    RUN_TEST(test_task_udas);
     return UNITY_END();
 }

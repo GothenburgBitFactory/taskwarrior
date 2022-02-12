@@ -340,10 +340,89 @@ pub unsafe extern "C" fn tc_task_get_annotations<'a>(task: *mut TCTask) -> TCAnn
     })
 }
 
-// TODO: tc_task_get_uda
-// TODO: tc_task_get_udas
-// TODO: tc_task_get_legacy_uda
-// TODO: tc_task_get_legacy_udas
+/// Get the named UDA from the task.
+///
+/// Returns NULL if the UDA does not exist.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_uda<'a>(
+    task: *mut TCTask,
+    ns: *mut TCString<'a>,
+    key: *mut TCString<'a>,
+) -> *mut TCString<'static> {
+    wrap(task, |task| {
+        if let Ok(ns) = unsafe { TCString::take_from_arg(ns) }.as_str() {
+            if let Ok(key) = unsafe { TCString::take_from_arg(key) }.as_str() {
+                if let Some(value) = task.get_uda(ns, key) {
+                    // SAFETY:
+                    // - caller will free this string (caller promises)
+                    return unsafe { TCString::return_val(value.into()) };
+                }
+            }
+        }
+        std::ptr::null_mut()
+    })
+}
+
+/// Get the named legacy UDA from the task.
+///
+/// Returns NULL if the UDA does not exist.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_legacy_uda<'a>(
+    task: *mut TCTask,
+    key: *mut TCString<'a>,
+) -> *mut TCString<'static> {
+    wrap(task, |task| {
+        if let Ok(key) = unsafe { TCString::take_from_arg(key) }.as_str() {
+            if let Some(value) = task.get_legacy_uda(key) {
+                // SAFETY:
+                // - caller will free this string (caller promises)
+                return unsafe { TCString::return_val(value.into()) };
+            }
+        }
+        std::ptr::null_mut()
+    })
+}
+
+/// Get all UDAs for this task.
+///
+/// Legacy UDAs are represented with an empty string in the ns field.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_udas<'a>(task: *mut TCTask) -> TCUDAList {
+    wrap(task, |task| {
+        let vec: Vec<TCUDA> = task
+            .get_udas()
+            .map(|((ns, key), value)| {
+                TCUDA::return_val(UDA {
+                    ns: Some(ns.into()),
+                    key: key.into(),
+                    value: value.into(),
+                })
+            })
+            .collect();
+        TCUDAList::return_val(vec)
+    })
+}
+
+/// Get all UDAs for this task.
+///
+/// All TCUDAs in this list have a NULL ns field.  The entire UDA key is
+/// included in the key field.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_legacy_udas<'a>(task: *mut TCTask) -> TCUDAList {
+    wrap(task, |task| {
+        let vec: Vec<TCUDA> = task
+            .get_legacy_udas()
+            .map(|(key, value)| {
+                TCUDA::return_val(UDA {
+                    ns: None,
+                    key: key.into(),
+                    value: value.into(),
+                })
+            })
+            .collect();
+        TCUDAList::return_val(vec)
+    })
+}
 
 /// Set a mutable task's status.
 #[no_mangle]
@@ -542,10 +621,93 @@ pub unsafe extern "C" fn tc_task_remove_annotation(task: *mut TCTask, entry: i64
     )
 }
 
-// TODO: tc_task_set_uda
-// TODO: tc_task_remove_uda
-// TODO: tc_task_set_legacy_uda
-// TODO: tc_task_remove_legacy_uda
+/// Set a UDA on a mutable task.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_set_uda<'a>(
+    task: *mut TCTask,
+    ns: *mut TCString,
+    key: *mut TCString,
+    value: *mut TCString,
+) -> TCResult {
+    // SAFETY: see TCString docstring
+    let ns = unsafe { TCString::take_from_arg(ns) };
+    // SAFETY: see TCString docstring
+    let key = unsafe { TCString::take_from_arg(key) };
+    // SAFETY: see TCString docstring
+    let value = unsafe { TCString::take_from_arg(value) };
+    wrap_mut(
+        task,
+        |task| {
+            task.set_uda(
+                ns.as_str()?.to_string(),
+                key.as_str()?.to_string(),
+                value.as_str()?.to_string(),
+            )?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Remove a UDA fraom a mutable task.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_remove_uda<'a>(
+    task: *mut TCTask,
+    ns: *mut TCString,
+    key: *mut TCString,
+) -> TCResult {
+    // SAFETY: see TCString docstring
+    let ns = unsafe { TCString::take_from_arg(ns) };
+    // SAFETY: see TCString docstring
+    let key = unsafe { TCString::take_from_arg(key) };
+    wrap_mut(
+        task,
+        |task| {
+            task.remove_uda(ns.as_str()?.to_string(), key.as_str()?.to_string())?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Set a legacy UDA on a mutable task.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_set_legacy_uda<'a>(
+    task: *mut TCTask,
+    key: *mut TCString,
+    value: *mut TCString,
+) -> TCResult {
+    // SAFETY: see TCString docstring
+    let key = unsafe { TCString::take_from_arg(key) };
+    // SAFETY: see TCString docstring
+    let value = unsafe { TCString::take_from_arg(value) };
+    wrap_mut(
+        task,
+        |task| {
+            task.set_legacy_uda(key.as_str()?.to_string(), value.as_str()?.to_string())?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Remove a UDA fraom a mutable task.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_remove_legacy_uda<'a>(
+    task: *mut TCTask,
+    key: *mut TCString,
+) -> TCResult {
+    // SAFETY: see TCString docstring
+    let key = unsafe { TCString::take_from_arg(key) };
+    wrap_mut(
+        task,
+        |task| {
+            task.remove_legacy_uda(key.as_str()?.to_string())?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
 
 /// Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls
 /// to this function will return NULL.  The task pointer must not be NULL.  The caller must free the
