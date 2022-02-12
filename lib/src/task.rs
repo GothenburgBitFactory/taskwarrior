@@ -586,11 +586,11 @@ pub unsafe extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCTaskList.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_list_free(tctasks: *mut TCTaskList) {
-    debug_assert!(!tctasks.is_null());
     // SAFETY:
-    //  - *tctasks is a valid TCTaskList (caller promises to treat it as read-only)
-    let tasks = unsafe { TCTaskList::take_from_arg(tctasks, TCTaskList::null_value()) };
-    TCTaskList::drop_vector(tasks);
+    //  - tctasks is not NULL and points to a valid TCTaskList (caller is not allowed to
+    //    modify the list)
+    //  - caller promises not to use the value after return
+    unsafe { drop_pointer_array(tctasks) };
 }
 
 #[cfg(test)]

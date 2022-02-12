@@ -321,11 +321,11 @@ pub unsafe extern "C" fn tc_string_free(tcstring: *mut TCString) {
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCStringList.
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_list_free(tcstrings: *mut TCStringList) {
-    debug_assert!(!tcstrings.is_null());
     // SAFETY:
-    //  - *tcstrings is a valid TCStringList (caller promises to treat it as read-only)
-    let strings = unsafe { TCStringList::take_from_arg(tcstrings, TCStringList::null_value()) };
-    TCStringList::drop_vector(strings);
+    //  - tcstrings is not NULL and points to a valid TCStringList (caller is not allowed to
+    //    modify the list)
+    //  - caller promises not to use the value after return
+    unsafe { drop_pointer_array(tcstrings) };
 }
 
 #[cfg(test)]

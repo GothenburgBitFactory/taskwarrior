@@ -130,11 +130,11 @@ pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut T
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCUuidList.
 #[no_mangle]
 pub unsafe extern "C" fn tc_uuid_list_free(tcuuids: *mut TCUuidList) {
-    debug_assert!(!tcuuids.is_null());
     // SAFETY:
-    //  - *tcuuids is a valid TCUuidList (caller promises to treat it as read-only)
-    let uuids = unsafe { TCUuidList::take_from_arg(tcuuids, TCUuidList::null_value()) };
-    TCUuidList::drop_vector(uuids);
+    //  - tcuuids is not NULL and points to a valid TCUuidList (caller is not allowed to
+    //    modify the list)
+    //  - caller promises not to use the value after return
+    unsafe { drop_value_array(tcuuids) };
 }
 
 #[cfg(test)]

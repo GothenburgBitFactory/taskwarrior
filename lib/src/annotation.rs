@@ -95,12 +95,11 @@ pub unsafe extern "C" fn tc_annotation_free(tcann: *mut TCAnnotation) {
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCAnnotationList.
 #[no_mangle]
 pub unsafe extern "C" fn tc_annotation_list_free(tcanns: *mut TCAnnotationList) {
-    debug_assert!(!tcanns.is_null());
     // SAFETY:
-    //  - *tcanns is a valid TCAnnotationList (caller promises to treat it as read-only)
-    let annotations =
-        unsafe { TCAnnotationList::take_from_arg(tcanns, TCAnnotationList::null_value()) };
-    TCAnnotationList::drop_vector(annotations);
+    //  - tcanns is not NULL and points to a valid TCAnnotationList (caller is not allowed to
+    //    modify the list)
+    //  - caller promises not to use the value after return
+    unsafe { drop_value_array(tcanns) }
 }
 
 #[cfg(test)]

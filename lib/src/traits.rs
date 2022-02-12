@@ -6,6 +6,8 @@ use std::ptr::NonNull;
 ///
 /// The Rust and C types may differ, with from_ctype and as_ctype converting between them.
 /// Implement this trait for the C type.
+///
+/// The RustType must be droppable (not containing raw pointers).
 pub(crate) trait PassByValue: Sized {
     type RustType;
 
@@ -146,66 +148,6 @@ pub(crate) trait PassByPointer: Sized {
     }
 }
 
-/// *mut P can be passed by value.
-///
-/// # Safety
-///
-/// The 'static bound means that the pointer is treated as an "owning" pointer,
-/// and must not be copied (leading to a double-free) or dropped without dropping
-/// its contents (a leak).
-impl<P> PassByValue for *mut P
-where
-    P: PassByPointer + 'static,
-{
-    type RustType = &'static mut P;
-
-    unsafe fn from_ctype(self) -> Self::RustType {
-        // SAFETY: self must be a valid *mut P (promised by caller)
-        unsafe { &mut *self }
-    }
-
-    /// Convert a Rust value to a C value.
-    fn as_ctype(arg: Self::RustType) -> Self {
-        arg
-    }
-}
-
-/// *const P can be passed by value.  See the implementation for *mut P.
-impl<P> PassByValue for *const P
-where
-    P: PassByPointer + 'static,
-{
-    type RustType = &'static P;
-
-    unsafe fn from_ctype(self) -> Self::RustType {
-        // SAFETY: self must be a valid *const P (promised by caller)
-        unsafe { &*self }
-    }
-
-    /// Convert a Rust value to a C value.
-    fn as_ctype(arg: Self::RustType) -> Self {
-        arg
-    }
-}
-
-/// NonNull<P> can be passed by value.  See the implementation for NonNull<P>.
-impl<P> PassByValue for NonNull<P>
-where
-    P: PassByPointer + 'static,
-{
-    type RustType = &'static mut P;
-
-    unsafe fn from_ctype(mut self) -> Self::RustType {
-        // SAFETY: self must be a valid NonNull<P> (promised by caller)
-        unsafe { self.as_mut() }
-    }
-
-    /// Convert a Rust value to a C value.
-    fn as_ctype(arg: Self::RustType) -> Self {
-        NonNull::new(arg).expect("value must not be NULL")
-    }
-}
-
 /// Support for C arrays of objects referenced by value.
 ///
 /// The underlying C type should have three fields, containing items, length, and capacity.  The
@@ -213,10 +155,10 @@ where
 /// implemented automatically, converting between the C type and `Vec<Element>`.  For most cases,
 /// it is only necessary to implement `tc_.._free` that first calls
 /// `PassByValue::take_from_arg(arg, CArray::null_value())` to take the existing value and
-/// replace it with the null value; then `CArray::drop_value_vector(..)` to drop the resulting
+/// replace it with the null value; then one of hte `drop_.._array(..)` functions to drop the resulting
 /// vector and all of the objects it points to.
 ///
-/// This can be used for objects referenced by pointer, too, with an Element type of `*const T`
+/// This can be used for objects referenced by pointer, too, with an Element type of `NonNull<T>`
 ///
 /// # Safety
 ///
@@ -225,7 +167,7 @@ where
 ///
 /// This class guarantees that the items pointer is non-NULL for any valid array (even when len=0).
 pub(crate) trait CArray: Sized {
-    type Element: PassByValue;
+    type Element;
 
     /// Create a new CArray from the given items, len, and capacity.
     ///
@@ -247,20 +189,68 @@ pub(crate) trait CArray: Sized {
         //  - satisfies the first case in from_raw_parts' safety documentation
         unsafe { Self::from_raw_parts(std::ptr::null(), 0, 0) }
     }
+}
 
-    /// Drop a vector of elements.  This is a convenience function for implementing
-    /// tc_.._free functions.
-    fn drop_vector(mut vec: Vec<Self::Element>) {
-        // first, drop each of the elements in turn
-        for e in vec.drain(..) {
-            // SAFETY:
-            //  - e is a valid Element (caller promisd not to change it)
-            //  - Vec::drain has invalidated this entry (value is owned)
-            drop(unsafe { PassByValue::from_ctype(e) });
-        }
-        // then drop the vector
-        drop(vec);
+/// Given a CArray containing pass-by-value values, drop all of the values and
+/// the array.
+///
+/// This is a convenience function for `tc_.._list_free` functions.
+///
+/// # Safety
+///
+/// - Array must be non-NULL and point to a valid CA instance
+/// - The caller must not use the value array points to after this function, as
+///   it has been freed.  It will be replaced with the null value.
+pub(crate) unsafe fn drop_value_array<CA, T>(array: *mut CA)
+where
+    CA: CArray<Element = T>,
+    T: PassByValue,
+{
+    debug_assert!(!array.is_null());
+
+    // SAFETY:
+    //  - *array is a valid CA (caller promises to treat it as read-only)
+    let mut vec = unsafe { CA::take_from_arg(array, CA::null_value()) };
+
+    // first, drop each of the elements in turn
+    for e in vec.drain(..) {
+        // SAFETY:
+        //  - e is a valid Element (caller promisd not to change it)
+        //  - Vec::drain has invalidated this entry (value is owned)
+        drop(unsafe { PassByValue::from_arg(e) });
     }
+    // then drop the vector
+    drop(vec);
+}
+
+/// Given a CArray containing NonNull pointers, drop all of the pointed-to values and the array.
+///
+/// This is a convenience function for `tc_.._list_free` functions.
+///
+/// # Safety
+///
+/// - Array must be non-NULL and point to a valid CA instance
+/// - The caller must not use the value array points to after this function, as
+///   it has been freed.  It will be replaced with the null value.
+pub(crate) unsafe fn drop_pointer_array<CA, T>(array: *mut CA)
+where
+    CA: CArray<Element = NonNull<T>>,
+    T: PassByPointer,
+{
+    debug_assert!(!array.is_null());
+    // SAFETY:
+    //  - *array is a valid CA (caller promises to treat it as read-only)
+    let mut vec = unsafe { CA::take_from_arg(array, CA::null_value()) };
+
+    // first, drop each of the elements in turn
+    for e in vec.drain(..) {
+        // SAFETY:
+        //  - e is a valid Element (caller promised not to change it)
+        //  - Vec::drain has invalidated this entry (value is owned)
+        drop(unsafe { PassByPointer::take_from_arg(e.as_ptr()) });
+    }
+    // then drop the vector
+    drop(vec);
 }
 
 impl<A> PassByValue for A
