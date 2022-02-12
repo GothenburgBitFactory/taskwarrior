@@ -1,6 +1,6 @@
 use crate::traits::*;
 use crate::types::*;
-use taskchampion::Annotation;
+use chrono::prelude::*;
 
 /// TCAnnotation contains the details of an annotation.
 #[repr(C)]
@@ -12,9 +12,11 @@ pub struct TCAnnotation {
 }
 
 impl PassByValue for TCAnnotation {
-    type RustType = Annotation;
+    // NOTE: we cannot use `RustType = Annotation` here because conversion of the
+    // TCString to a String can fail.
+    type RustType = (DateTime<Utc>, TCString<'static>);
 
-    unsafe fn from_ctype(self) -> Annotation {
+    unsafe fn from_ctype(self) -> Self::RustType {
         // SAFETY:
         //  - any time_t value is valid
         //  - time_t is not zero, so unwrap is safe (see type docstring)
@@ -22,18 +24,14 @@ impl PassByValue for TCAnnotation {
         // SAFETY:
         //  - self is owned, so we can take ownership of this TCString
         //  - self.description is a valid, non-null TCString (see type docstring)
-        let description = unsafe { TCString::take_from_arg(self.description) }
-            .into_string()
-            // TODO: might not be valid utf-8
-            .unwrap();
-        Annotation { entry, description }
+        let description = unsafe { TCString::take_from_arg(self.description) };
+        (entry, description)
     }
 
-    fn as_ctype(arg: Annotation) -> Self {
-        let description: TCString = arg.description.into();
+    fn as_ctype((entry, description): Self::RustType) -> Self {
         TCAnnotation {
-            entry: libc::time_t::as_ctype(Some(arg.entry)),
-            // SAFETY: caller will later free this value via tc_annotation_free
+            entry: libc::time_t::as_ctype(Some(entry)),
+            // SAFETY: caller assumes ownership of this value
             description: unsafe { description.return_val() },
         }
     }

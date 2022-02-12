@@ -6,7 +6,7 @@ use std::convert::TryFrom;
 use std::ops::Deref;
 use std::ptr::NonNull;
 use std::str::FromStr;
-use taskchampion::{Tag, Task, TaskMut};
+use taskchampion::{Annotation, Tag, Task, TaskMut};
 
 /// A task, as publicly exposed by this library.
 ///
@@ -331,7 +331,10 @@ pub unsafe extern "C" fn tc_task_get_annotations<'a>(task: *mut TCTask) -> TCAnn
     wrap(task, |task| {
         let vec: Vec<TCAnnotation> = task
             .get_annotations()
-            .map(|a| TCAnnotation::as_ctype(a))
+            .map(|a| {
+                let description = TCString::from(a.description);
+                TCAnnotation::as_ctype((a.entry, description))
+            })
             .collect();
         TCAnnotationList::return_val(vec)
     })
@@ -513,11 +516,13 @@ pub unsafe extern "C" fn tc_task_add_annotation(
     annotation: *mut TCAnnotation,
 ) -> TCResult {
     // SAFETY: see TCAnnotation docstring
-    let ann = unsafe { TCAnnotation::take_from_arg(annotation, TCAnnotation::default()) };
+    let (entry, description) =
+        unsafe { TCAnnotation::take_from_arg(annotation, TCAnnotation::default()) };
     wrap_mut(
         task,
         |task| {
-            task.add_annotation(ann)?;
+            let description = description.into_string()?;
+            task.add_annotation(Annotation { entry, description })?;
             Ok(TCResult::Ok)
         },
         TCResult::Error,
