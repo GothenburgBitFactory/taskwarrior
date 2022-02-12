@@ -118,6 +118,15 @@ typedef struct TCString TCString;
 typedef struct TCTask TCTask;
 
 /**
+ * A TCWorkingSet represents a snapshot of the working set for a replica.  It is not automatically
+ * updated based on changes in the replica.  Its lifetime is independent of the replica and it can
+ * be freed at any time.
+ *
+ * To iterate over a working set, search indexes 1 through largest_index.
+ */
+typedef struct TCWorkingSet TCWorkingSet;
+
+/**
  * TCAnnotation contains the details of an annotation.
  */
 typedef struct TCAnnotation {
@@ -308,6 +317,13 @@ struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
  * Returns a TCUuidList with a NULL items field on error.
  */
 struct TCUuidList tc_replica_all_task_uuids(struct TCReplica *rep);
+
+/**
+ * Get the current working set for this replica.
+ *
+ * Returns NULL on error.
+ */
+struct TCWorkingSet *tc_replica_working_set(struct TCReplica *rep);
 
 /**
  * Get an existing task by its UUID.
@@ -720,6 +736,34 @@ TCResult tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
  * When this call returns, the `items` pointer will be NULL, signalling an invalid TCUuidList.
  */
 void tc_uuid_list_free(struct TCUuidList *tcuuids);
+
+/**
+ * Get the working set's length, or the number of UUIDs it contains.
+ */
+size_t tc_working_set_len(struct TCWorkingSet *ws);
+
+/**
+ * Get the working set's largest index.
+ */
+size_t tc_working_set_largest_index(struct TCWorkingSet *ws);
+
+/**
+ * Get the UUID for the task at the given index.  Returns true if the UUID exists in the working
+ * set.  If not, returns false and does not change uuid_out.
+ */
+bool tc_working_set_by_index(struct TCWorkingSet *ws, size_t index, struct TCUuid *uuid_out);
+
+/**
+ * Get the working set index for the task with the given UUID.  Returns 0 if the task is not in
+ * the working set.
+ */
+size_t tc_working_set_by_uuid(struct TCWorkingSet *ws, struct TCUuid uuid);
+
+/**
+ * Free a TCWorkingSet.  The given value must not be NULL.  The value must not be used after this
+ * function returns, and must not be freed more than once.
+ */
+void tc_working_set_free(struct TCWorkingSet *ws);
 
 #ifdef __cplusplus
 } // extern "C"

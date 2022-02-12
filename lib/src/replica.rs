@@ -177,7 +177,21 @@ pub unsafe extern "C" fn tc_replica_all_task_uuids(rep: *mut TCReplica) -> TCUui
     )
 }
 
-// TODO: tc_replica_working_set
+/// Get the current working set for this replica.
+///
+/// Returns NULL on error.
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_working_set(rep: *mut TCReplica) -> *mut TCWorkingSet {
+    wrap(
+        rep,
+        |rep| {
+            let ws = rep.working_set()?;
+            // SAFETY: caller promises to free this task
+            Ok(unsafe { TCWorkingSet::return_val(ws.into()) })
+        },
+        std::ptr::null_mut(),
+    )
+}
 
 /// Get an existing task by its UUID.
 ///

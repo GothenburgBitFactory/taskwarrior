@@ -14,6 +14,7 @@ pub mod string;
 pub mod task;
 pub mod uda;
 pub mod uuid;
+pub mod workingset;
 
 pub(crate) mod types {
     pub(crate) use crate::annotation::{TCAnnotation, TCAnnotationList};
@@ -24,4 +25,5 @@ pub(crate) mod types {
     pub(crate) use crate::task::{TCTask, TCTaskList};
     pub(crate) use crate::uda::{TCUDAList, TCUDA, UDA};
     pub(crate) use crate::uuid::{TCUuid, TCUuidList};
+    pub(crate) use crate::workingset::TCWorkingSet;
 }

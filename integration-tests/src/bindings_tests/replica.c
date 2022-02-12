@@ -40,12 +40,74 @@ static void test_replica_add_undo_point(void) {
     tc_replica_free(rep);
 }
 
-// rebuilding working set succeeds
-static void test_replica_rebuild_working_set(void) {
+// working set operations succeed
+static void test_replica_working_set(void) {
+    TCWorkingSet *ws;
+    TCTask *task1, *task2, *task3;
+    TCUuid uuid, uuid1, uuid2, uuid3;
+
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep));
+
     TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_replica_rebuild_working_set(rep, true));
     TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    ws = tc_replica_working_set(rep);
+    TEST_ASSERT_EQUAL(0, tc_working_set_len(ws));
+    tc_working_set_free(ws);
+
+    task1 = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("task1"));
+    TEST_ASSERT_NOT_NULL(task1);
+    uuid1 = tc_task_get_uuid(task1);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_replica_rebuild_working_set(rep, true));
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    task2 = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("task2"));
+    TEST_ASSERT_NOT_NULL(task2);
+    uuid2 = tc_task_get_uuid(task2);
+
+    task3 = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("task3"));
+    TEST_ASSERT_NOT_NULL(task3);
+    uuid3 = tc_task_get_uuid(task3);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_replica_rebuild_working_set(rep, false));
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    // finish task2 to leave a "hole"
+    tc_task_to_mut(task2, rep);
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_done(task2));
+    tc_task_to_immut(task2);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_replica_rebuild_working_set(rep, false));
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    tc_task_free(task1);
+    tc_task_free(task2);
+    tc_task_free(task3);
+
+    // working set should now be
+    //  0 -> None
+    //  1 -> uuid1
+    //  2 -> None
+    //  3 -> uuid3
+    ws = tc_replica_working_set(rep);
+    TEST_ASSERT_EQUAL(2, tc_working_set_len(ws));
+    TEST_ASSERT_EQUAL(3, tc_working_set_largest_index(ws));
+
+    TEST_ASSERT_FALSE(tc_working_set_by_index(ws, 0, &uuid));
+    TEST_ASSERT_TRUE(tc_working_set_by_index(ws, 1, &uuid));
+    TEST_ASSERT_EQUAL_MEMORY(uuid1.bytes, uuid.bytes, sizeof(uuid));
+    TEST_ASSERT_FALSE(tc_working_set_by_index(ws, 2, &uuid));
+    TEST_ASSERT_TRUE(tc_working_set_by_index(ws, 3, &uuid));
+    TEST_ASSERT_EQUAL_MEMORY(uuid3.bytes, uuid.bytes, sizeof(uuid));
+
+    TEST_ASSERT_EQUAL(1, tc_working_set_by_uuid(ws, uuid1));
+    TEST_ASSERT_EQUAL(0, tc_working_set_by_uuid(ws, uuid2));
+    TEST_ASSERT_EQUAL(3, tc_working_set_by_uuid(ws, uuid3));
+
+    tc_working_set_free(ws);
+
     tc_replica_free(rep);
 }
 
@@ -209,7 +271,7 @@ int replica_tests(void) {
     RUN_TEST(test_replica_creation_disk);
     RUN_TEST(test_replica_undo_empty);
     RUN_TEST(test_replica_add_undo_point);
-    RUN_TEST(test_replica_rebuild_working_set);
+    RUN_TEST(test_replica_working_set);
     RUN_TEST(test_replica_undo_empty_null_undone_out);
     RUN_TEST(test_replica_task_creation);
     RUN_TEST(test_replica_all_tasks);
