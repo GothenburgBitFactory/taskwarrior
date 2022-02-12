@@ -1,7 +1,7 @@
 use crate::traits::*;
 use crate::types::*;
 use crate::util::err_to_tcstring;
-use chrono::{DateTime, TimeZone, Utc};
+use chrono::{TimeZone, Utc};
 use std::convert::TryFrom;
 use std::ops::Deref;
 use std::ptr::NonNull;
@@ -155,22 +155,6 @@ impl TryFrom<TCString<'_>> for Tag {
     }
 }
 
-/// Convert a DateTime<Utc> to a libc::time_t, or zero if not set.
-fn to_time_t(timestamp: Option<DateTime<Utc>>) -> libc::time_t {
-    timestamp
-        .map(|ts| ts.timestamp() as libc::time_t)
-        .unwrap_or(0 as libc::time_t)
-}
-
-/// Convert a libc::time_t to Option<DateTime<Utc>>, treating time zero as None
-fn to_datetime(time: libc::time_t) -> Option<DateTime<Utc>> {
-    if time == 0 {
-        None
-    } else {
-        Some(Utc.timestamp(time as i64, 0))
-    }
-}
-
 /// TCTaskList represents a list of tasks.
 ///
 /// The content of this struct must be treated as read-only.
@@ -275,19 +259,19 @@ pub unsafe extern "C" fn tc_task_get_description<'a>(task: *mut TCTask) -> *mut 
 /// Get the entry timestamp for a task (when it was created), or 0 if not set.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_get_entry<'a>(task: *mut TCTask) -> libc::time_t {
-    wrap(task, |task| to_time_t(task.get_entry()))
+    wrap(task, |task| libc::time_t::as_ctype(task.get_entry()))
 }
 
 /// Get the wait timestamp for a task, or 0 if not set.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_get_wait<'a>(task: *mut TCTask) -> libc::time_t {
-    wrap(task, |task| to_time_t(task.get_wait()))
+    wrap(task, |task| libc::time_t::as_ctype(task.get_wait()))
 }
 
 /// Get the modified timestamp for a task, or 0 if not set.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_get_modified<'a>(task: *mut TCTask) -> libc::time_t {
-    wrap(task, |task| to_time_t(task.get_modified()))
+    wrap(task, |task| libc::time_t::as_ctype(task.get_modified()))
 }
 
 /// Check if a task is waiting.
@@ -396,7 +380,8 @@ pub unsafe extern "C" fn tc_task_set_entry(task: *mut TCTask, entry: libc::time_
     wrap_mut(
         task,
         |task| {
-            task.set_entry(to_datetime(entry))?;
+            // SAFETY: any time_t value is a valid timestamp
+            task.set_entry(unsafe { entry.from_ctype() })?;
             Ok(TCResult::Ok)
         },
         TCResult::Error,
@@ -409,7 +394,8 @@ pub unsafe extern "C" fn tc_task_set_wait(task: *mut TCTask, wait: libc::time_t)
     wrap_mut(
         task,
         |task| {
-            task.set_wait(to_datetime(wait))?;
+            // SAFETY: any time_t value is a valid timestamp
+            task.set_wait(unsafe { wait.from_ctype() })?;
             Ok(TCResult::Ok)
         },
         TCResult::Error,
@@ -426,7 +412,9 @@ pub unsafe extern "C" fn tc_task_set_modified(
         task,
         |task| {
             task.set_modified(
-                to_datetime(modified).ok_or_else(|| anyhow::anyhow!("modified cannot be zero"))?,
+                // SAFETY: any time_t value is a valid timestamp
+                unsafe { modified.from_ctype() }
+                    .ok_or_else(|| anyhow::anyhow!("modified cannot be zero"))?,
             )?;
             Ok(TCResult::Ok)
         },

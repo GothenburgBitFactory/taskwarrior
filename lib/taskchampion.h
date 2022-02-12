@@ -122,11 +122,11 @@ typedef struct TCTask TCTask;
  */
 typedef struct TCAnnotation {
   /**
-   * Time the annotation was made, as a UNIX epoch timestamp
+   * Time the annotation was made.  Must be nonzero.
    */
-  int64_t entry;
+  time_t entry;
   /**
-   * Content of the annotation
+   * Content of the annotation.  Must not be NULL.
    */
   struct TCString *description;
 } TCAnnotation;

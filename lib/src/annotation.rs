@@ -1,14 +1,13 @@
 use crate::traits::*;
 use crate::types::*;
-use chrono::prelude::*;
 use taskchampion::Annotation;
 
 /// TCAnnotation contains the details of an annotation.
 #[repr(C)]
 pub struct TCAnnotation {
-    /// Time the annotation was made, as a UNIX epoch timestamp
-    pub entry: i64,
-    /// Content of the annotation
+    /// Time the annotation was made.  Must be nonzero.
+    pub entry: libc::time_t,
+    /// Content of the annotation.  Must not be NULL.
     pub description: *mut TCString<'static>,
 }
 
@@ -16,13 +15,16 @@ impl PassByValue for TCAnnotation {
     type RustType = Annotation;
 
     unsafe fn from_ctype(self) -> Annotation {
-        let entry = Utc.timestamp(self.entry, 0);
+        // SAFETY:
+        //  - any time_t value is valid
+        //  - time_t is not zero, so unwrap is safe (see type docstring)
+        let entry = unsafe { self.entry.from_ctype() }.unwrap();
         // SAFETY:
         //  - self is owned, so we can take ownership of this TCString
-        //  - self.description was created from a String so has valid UTF-8
-        //  - caller did not change it (promised by caller)
+        //  - self.description is a valid, non-null TCString (see type docstring)
         let description = unsafe { TCString::take_from_arg(self.description) }
             .into_string()
+            // TODO: might not be valid utf-8
             .unwrap();
         Annotation { entry, description }
     }
@@ -30,7 +32,7 @@ impl PassByValue for TCAnnotation {
     fn as_ctype(arg: Annotation) -> Self {
         let description: TCString = arg.description.into();
         TCAnnotation {
-            entry: arg.entry.timestamp(),
+            entry: libc::time_t::as_ctype(Some(arg.entry)),
             // SAFETY: caller will later free this value via tc_annotation_free
             description: unsafe { description.return_val() },
         }
@@ -40,7 +42,7 @@ impl PassByValue for TCAnnotation {
 impl Default for TCAnnotation {
     fn default() -> Self {
         TCAnnotation {
-            entry: 0,
+            entry: 0 as libc::time_t,
             description: std::ptr::null_mut(),
         }
     }
