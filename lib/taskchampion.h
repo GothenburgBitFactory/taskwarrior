@@ -268,9 +268,9 @@ typedef struct TCStringList {
 } TCStringList;
 
 /**
- * TCUDA contains the details of a UDA.
+ * TCUda contains the details of a UDA.
  */
-typedef struct TCUDA {
+typedef struct TCUda {
   /**
    * Namespace of the UDA.  For legacy UDAs, this is NULL.
    */
@@ -283,14 +283,14 @@ typedef struct TCUDA {
    * Content of the UDA.  Must not be NULL.
    */
   struct TCString *value;
-} TCUDA;
+} TCUda;
 
 /**
- * TCUDAList represents a list of UDAs.
+ * TCUdaList represents a list of UDAs.
  *
  * The content of this struct must be treated as read-only.
  */
-typedef struct TCUDAList {
+typedef struct TCUdaList {
   /**
    * number of UDAs in items
    */
@@ -300,11 +300,11 @@ typedef struct TCUDAList {
    */
   size_t _capacity;
   /**
-   * array of UDAs. These remain owned by the TCUDAList instance and will be freed by
-   * tc_uda_list_free.  This pointer is never NULL for a valid TCUDAList.
+   * array of UDAs. These remain owned by the TCUdaList instance and will be freed by
+   * tc_uda_list_free.  This pointer is never NULL for a valid TCUdaList.
    */
-  const struct TCUDA *items;
-} TCUDAList;
+  const struct TCUda *items;
+} TCUdaList;
 
 #ifdef __cplusplus
 extern "C" {
@@ -612,15 +612,15 @@ struct TCString *tc_task_get_legacy_uda(struct TCTask *task, struct TCString *ke
  *
  * Legacy UDAs are represented with an empty string in the ns field.
  */
-struct TCUDAList tc_task_get_udas(struct TCTask *task);
+struct TCUdaList tc_task_get_udas(struct TCTask *task);
 
 /**
  * Get all UDAs for this task.
  *
- * All TCUDAs in this list have a NULL ns field.  The entire UDA key is
+ * All TCUdas in this list have a NULL ns field.  The entire UDA key is
  * included in the key field.
  */
-struct TCUDAList tc_task_get_legacy_udas(struct TCTask *task);
+struct TCUdaList tc_task_get_legacy_udas(struct TCTask *task);
 
 /**
  * Set a mutable task's status.
@@ -735,18 +735,18 @@ void tc_task_free(struct TCTask *task);
 void tc_task_list_free(struct TCTaskList *tctasks);
 
 /**
- * Free a TCUDA instance.  The instance, and the TCStrings it contains, must not be used
+ * Free a TCUda instance.  The instance, and the TCStrings it contains, must not be used
  * after this call.
  */
-void tc_uda_free(struct TCUDA *tcuda);
+void tc_uda_free(struct TCUda *tcuda);
 
 /**
- * Free a TCUDAList instance.  The instance, and all TCUDAs it contains, must not be used after
+ * Free a TCUdaList instance.  The instance, and all TCUdas it contains, must not be used after
  * this call.
  *
- * When this call returns, the `items` pointer will be NULL, signalling an invalid TCUDAList.
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCUdaList.
  */
-void tc_uda_list_free(struct TCUDAList *tcudas);
+void tc_uda_list_free(struct TCUdaList *tcudas);
 
 /**
  * Create a new, randomly-generated UUID.

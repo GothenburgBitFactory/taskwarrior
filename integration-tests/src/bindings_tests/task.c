@@ -400,7 +400,7 @@ static void test_task_udas(void) {
     tc_task_to_mut(task, rep);
 
     TCString *value;
-    TCUDAList udas;
+    TCUdaList udas;
 
     TEST_ASSERT_NULL(tc_task_get_uda(task, tc_string_borrow("ns"), tc_string_borrow("u1")));
     TEST_ASSERT_NULL(tc_task_get_legacy_uda(task, tc_string_borrow("leg1")));

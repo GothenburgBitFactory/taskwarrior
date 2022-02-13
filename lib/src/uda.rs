@@ -1,9 +1,9 @@
 use crate::traits::*;
 use crate::types::*;
 
-/// TCUDA contains the details of a UDA.
+/// TCUda contains the details of a UDA.
 #[repr(C)]
-pub struct TCUDA {
+pub struct TCUda {
     /// Namespace of the UDA.  For legacy UDAs, this is NULL.
     pub ns: *mut TCString<'static>,
     /// UDA key.  Must not be NULL.
@@ -12,17 +12,17 @@ pub struct TCUDA {
     pub value: *mut TCString<'static>,
 }
 
-pub(crate) struct UDA {
+pub(crate) struct Uda {
     pub ns: Option<TCString<'static>>,
     pub key: TCString<'static>,
     pub value: TCString<'static>,
 }
 
-impl PassByValue for TCUDA {
-    type RustType = UDA;
+impl PassByValue for TCUda {
+    type RustType = Uda;
 
     unsafe fn from_ctype(self) -> Self::RustType {
-        UDA {
+        Uda {
             ns: if self.ns.is_null() {
                 None
             } else {
@@ -42,8 +42,8 @@ impl PassByValue for TCUDA {
         }
     }
 
-    fn as_ctype(uda: UDA) -> Self {
-        TCUDA {
+    fn as_ctype(uda: Uda) -> Self {
+        TCUda {
             // SAFETY: caller assumes ownership of this value
             ns: if let Some(ns) = uda.ns {
                 unsafe { ns.return_ptr() }
@@ -58,9 +58,9 @@ impl PassByValue for TCUDA {
     }
 }
 
-impl Default for TCUDA {
+impl Default for TCUda {
     fn default() -> Self {
-        TCUDA {
+        TCUda {
             ns: std::ptr::null_mut(),
             key: std::ptr::null_mut(),
             value: std::ptr::null_mut(),
@@ -68,27 +68,27 @@ impl Default for TCUDA {
     }
 }
 
-/// TCUDAList represents a list of UDAs.
+/// TCUdaList represents a list of UDAs.
 ///
 /// The content of this struct must be treated as read-only.
 #[repr(C)]
-pub struct TCUDAList {
+pub struct TCUdaList {
     /// number of UDAs in items
     len: libc::size_t,
 
     /// total size of items (internal use only)
     _capacity: libc::size_t,
 
-    /// array of UDAs. These remain owned by the TCUDAList instance and will be freed by
-    /// tc_uda_list_free.  This pointer is never NULL for a valid TCUDAList.
-    items: *const TCUDA,
+    /// array of UDAs. These remain owned by the TCUdaList instance and will be freed by
+    /// tc_uda_list_free.  This pointer is never NULL for a valid TCUdaList.
+    items: *const TCUda,
 }
 
-impl CList for TCUDAList {
-    type Element = TCUDA;
+impl CList for TCUdaList {
+    type Element = TCUda;
 
     unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
-        TCUDAList {
+        TCUdaList {
             len,
             _capacity: cap,
             items,
@@ -100,25 +100,25 @@ impl CList for TCUDAList {
     }
 }
 
-/// Free a TCUDA instance.  The instance, and the TCStrings it contains, must not be used
+/// Free a TCUda instance.  The instance, and the TCStrings it contains, must not be used
 /// after this call.
 #[no_mangle]
-pub unsafe extern "C" fn tc_uda_free(tcuda: *mut TCUDA) {
+pub unsafe extern "C" fn tc_uda_free(tcuda: *mut TCUda) {
     debug_assert!(!tcuda.is_null());
     // SAFETY:
-    //  - *tcuda is a valid TCUDA (caller promises to treat it as read-only)
-    let uda = unsafe { TCUDA::take_val_from_arg(tcuda, TCUDA::default()) };
+    //  - *tcuda is a valid TCUda (caller promises to treat it as read-only)
+    let uda = unsafe { TCUda::take_val_from_arg(tcuda, TCUda::default()) };
     drop(uda);
 }
 
-/// Free a TCUDAList instance.  The instance, and all TCUDAs it contains, must not be used after
+/// Free a TCUdaList instance.  The instance, and all TCUdas it contains, must not be used after
 /// this call.
 ///
-/// When this call returns, the `items` pointer will be NULL, signalling an invalid TCUDAList.
+/// When this call returns, the `items` pointer will be NULL, signalling an invalid TCUdaList.
 #[no_mangle]
-pub unsafe extern "C" fn tc_uda_list_free(tcudas: *mut TCUDAList) {
+pub unsafe extern "C" fn tc_uda_list_free(tcudas: *mut TCUdaList) {
     // SAFETY:
-    //  - tcudas is not NULL and points to a valid TCUDAList (caller is not allowed to
+    //  - tcudas is not NULL and points to a valid TCUdaList (caller is not allowed to
     //    modify the list)
     //  - caller promises not to use the value after return
     unsafe { drop_value_list(tcudas) }
@@ -130,7 +130,7 @@ mod test {
 
     #[test]
     fn empty_list_has_non_null_pointer() {
-        let tcudas = TCUDAList::return_val(Vec::new());
+        let tcudas = TCUdaList::return_val(Vec::new());
         assert!(!tcudas.items.is_null());
         assert_eq!(tcudas.len, 0);
         assert_eq!(tcudas._capacity, 0);
@@ -138,7 +138,7 @@ mod test {
 
     #[test]
     fn free_sets_null_pointer() {
-        let mut tcudas = TCUDAList::return_val(Vec::new());
+        let mut tcudas = TCUdaList::return_val(Vec::new());
         // SAFETY: testing expected behavior
         unsafe { tc_uda_list_free(&mut tcudas) };
         assert!(tcudas.items.is_null());

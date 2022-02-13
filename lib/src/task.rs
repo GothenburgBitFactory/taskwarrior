@@ -404,40 +404,40 @@ pub unsafe extern "C" fn tc_task_get_legacy_uda<'a>(
 ///
 /// Legacy UDAs are represented with an empty string in the ns field.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_udas(task: *mut TCTask) -> TCUDAList {
+pub unsafe extern "C" fn tc_task_get_udas(task: *mut TCTask) -> TCUdaList {
     wrap(task, |task| {
-        let vec: Vec<TCUDA> = task
+        let vec: Vec<TCUda> = task
             .get_udas()
             .map(|((ns, key), value)| {
-                TCUDA::return_val(UDA {
+                TCUda::return_val(Uda {
                     ns: Some(ns.into()),
                     key: key.into(),
                     value: value.into(),
                 })
             })
             .collect();
-        TCUDAList::return_val(vec)
+        TCUdaList::return_val(vec)
     })
 }
 
 /// Get all UDAs for this task.
 ///
-/// All TCUDAs in this list have a NULL ns field.  The entire UDA key is
+/// All TCUdas in this list have a NULL ns field.  The entire UDA key is
 /// included in the key field.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_legacy_udas(task: *mut TCTask) -> TCUDAList {
+pub unsafe extern "C" fn tc_task_get_legacy_udas(task: *mut TCTask) -> TCUdaList {
     wrap(task, |task| {
-        let vec: Vec<TCUDA> = task
+        let vec: Vec<TCUda> = task
             .get_legacy_udas()
             .map(|(key, value)| {
-                TCUDA::return_val(UDA {
+                TCUda::return_val(Uda {
                     ns: None,
                     key: key.into(),
                     value: value.into(),
                 })
             })
             .collect();
-        TCUDAList::return_val(vec)
+        TCUdaList::return_val(vec)
     })
 }
 
