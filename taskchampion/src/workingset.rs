@@ -110,7 +110,10 @@ mod test {
 
     #[test]
     fn test_largest_index() {
-        let (uuid1, uuid2, ws) = make();
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        let ws = WorkingSet::new(vec![]);
         assert_eq!(ws.largest_index(), 0);
 
         let ws = WorkingSet::new(vec![None, Some(uuid1)]);
