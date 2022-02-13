@@ -16,8 +16,9 @@ impl PassByValue for TCKV {
 
     unsafe fn from_ctype(self) -> Self::RustType {
         // SAFETY:
+        //  - self.key is not NULL (field docstring)
+        //  - self.key came from return_ptr in as_ctype
         //  - self is owned, so we can take ownership of this TCString
-        //  - self.key is a valid, non-null TCString (see type docstring)
         let key = unsafe { TCString::take_from_ptr_arg(self.key) };
         // SAFETY: (same)
         let value = unsafe { TCString::take_from_ptr_arg(self.value) };
@@ -26,9 +27,11 @@ impl PassByValue for TCKV {
 
     fn as_ctype((key, value): Self::RustType) -> Self {
         TCKV {
-            // SAFETY: caller assumes ownership of this value
+            // SAFETY:
+            //  - ownership of the TCString tied to ownership of Self
             key: unsafe { key.return_ptr() },
-            // SAFETY: caller assumes ownership of this value
+            // SAFETY:
+            //  - ownership of the TCString tied to ownership of Self
             value: unsafe { value.return_ptr() },
         }
     }
