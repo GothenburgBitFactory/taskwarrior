@@ -2,6 +2,10 @@
 // Not working yet in stable - https://github.com/rust-lang/rust-clippy/issues/8020
 // #![warn(clippy::undocumented_unsafe_blocks)]
 
+// docstrings for extern "C" functions are reflected into C, and do not benefit
+// from safety docs.
+#![allow(clippy::missing_safety_doc)]
+
 mod traits;
 mod util;
 

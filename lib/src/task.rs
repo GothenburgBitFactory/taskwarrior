@@ -103,15 +103,15 @@ impl From<Task> for TCTask {
 
 /// Utility function to get a shared reference to the underlying Task.  All Task getters
 /// are error-free, so this does not handle errors.
-fn wrap<'a, T, F>(task: *mut TCTask, f: F) -> T
+fn wrap<T, F>(task: *mut TCTask, f: F) -> T
 where
     F: FnOnce(&Task) -> T,
 {
     // SAFETY:
     //  - task is not null (promised by caller)
-    //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
-    let task: &'a Task = match &tctask.inner {
+    //  - task outlives this function (promised by caller)
+    let tctask: &mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
+    let task: &Task = match &tctask.inner {
         Inner::Immutable(t) => t,
         Inner::Mutable(t, _) => t.deref(),
         Inner::Invalid => unreachable!(),
@@ -123,15 +123,15 @@ where
 /// Utility function to get a mutable reference to the underlying Task.  The
 /// TCTask must be mutable.  The inner function may use `?` syntax to return an
 /// error, which will be represented with the `err_value` returned to C.
-fn wrap_mut<'a, T, F>(task: *mut TCTask, f: F, err_value: T) -> T
+fn wrap_mut<T, F>(task: *mut TCTask, f: F, err_value: T) -> T
 where
     F: FnOnce(&mut TaskMut) -> anyhow::Result<T>,
 {
     // SAFETY:
     //  - task is not null (promised by caller)
-    //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
-    let task: &'a mut TaskMut = match tctask.inner {
+    //  - task outlives this function (promised by caller)
+    let tctask: &mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
+    let task: &mut TaskMut = match tctask.inner {
         Inner::Immutable(_) => panic!("Task is immutable"),
         Inner::Mutable(ref mut t, _) => t,
         Inner::Invalid => unreachable!(),
@@ -205,11 +205,11 @@ impl CList for TCTaskList {
 /// if (!success) { ... }
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_to_mut<'a>(task: *mut TCTask, tcreplica: *mut TCReplica) {
+pub unsafe extern "C" fn tc_task_to_mut(task: *mut TCTask, tcreplica: *mut TCReplica) {
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
+    let tctask: &mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     // SAFETY:
     //  - tcreplica is not NULL (promised by caller)
     //  - tcreplica lives until later call to to_immut via tc_task_to_immut (promised by caller,
@@ -223,11 +223,11 @@ pub unsafe extern "C" fn tc_task_to_mut<'a>(task: *mut TCTask, tcreplica: *mut T
 ///
 /// The replica passed to `tc_task_to_mut` may be used freely after this call.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask) {
+pub unsafe extern "C" fn tc_task_to_immut(task: *mut TCTask) {
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
+    let tctask: &mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     tctask.to_immut();
 }
 
@@ -239,7 +239,7 @@ pub unsafe extern "C" fn tc_task_get_uuid(task: *mut TCTask) -> TCUuid {
 
 /// Get a task's status.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_status<'a>(task: *mut TCTask) -> TCStatus {
+pub unsafe extern "C" fn tc_task_get_status(task: *mut TCTask) -> TCStatus {
     wrap(task, |task| task.get_status().into())
 }
 
@@ -265,7 +265,7 @@ pub unsafe extern "C" fn tc_task_get_taskmap(task: *mut TCTask) -> TCKVList {
 /// Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
 /// contains embedded NUL characters).
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_description<'a>(task: *mut TCTask) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_task_get_description(task: *mut TCTask) -> *mut TCString<'static> {
     wrap(task, |task| {
         let descr: TCString = task.get_description().into();
         // SAFETY: see TCString docstring
@@ -275,19 +275,19 @@ pub unsafe extern "C" fn tc_task_get_description<'a>(task: *mut TCTask) -> *mut 
 
 /// Get the entry timestamp for a task (when it was created), or 0 if not set.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_entry<'a>(task: *mut TCTask) -> libc::time_t {
+pub unsafe extern "C" fn tc_task_get_entry(task: *mut TCTask) -> libc::time_t {
     wrap(task, |task| libc::time_t::as_ctype(task.get_entry()))
 }
 
 /// Get the wait timestamp for a task, or 0 if not set.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_wait<'a>(task: *mut TCTask) -> libc::time_t {
+pub unsafe extern "C" fn tc_task_get_wait(task: *mut TCTask) -> libc::time_t {
     wrap(task, |task| libc::time_t::as_ctype(task.get_wait()))
 }
 
 /// Get the modified timestamp for a task, or 0 if not set.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_modified<'a>(task: *mut TCTask) -> libc::time_t {
+pub unsafe extern "C" fn tc_task_get_modified(task: *mut TCTask) -> libc::time_t {
     wrap(task, |task| libc::time_t::as_ctype(task.get_modified()))
 }
 
@@ -306,7 +306,7 @@ pub unsafe extern "C" fn tc_task_is_active(task: *mut TCTask) -> bool {
 /// Check if a task has the given tag.  If the tag is invalid, this function will return false, as
 /// that (invalid) tag is not present. No error will be reported via `tc_task_error`.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> bool {
+pub unsafe extern "C" fn tc_task_has_tag(task: *mut TCTask, tag: *mut TCString) -> bool {
     // SAFETY: see TCString docstring
     let tcstring = unsafe { TCString::take_from_ptr_arg(tag) };
     wrap(task, |task| {
@@ -323,7 +323,7 @@ pub unsafe extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCStri
 /// The caller must free the returned TCStringList instance.  The TCStringList instance does not
 /// reference the task and the two may be freed in any order.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStringList {
+pub unsafe extern "C" fn tc_task_get_tags(task: *mut TCTask) -> TCStringList {
     wrap(task, |task| {
         let vec: Vec<NonNull<TCString<'static>>> = task
             .get_tags()
@@ -344,7 +344,7 @@ pub unsafe extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStringList
 /// The caller must free the returned TCAnnotationList instance.  The TCStringList instance does not
 /// reference the task and the two may be freed in any order.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_annotations<'a>(task: *mut TCTask) -> TCAnnotationList {
+pub unsafe extern "C" fn tc_task_get_annotations(task: *mut TCTask) -> TCAnnotationList {
     wrap(task, |task| {
         let vec: Vec<TCAnnotation> = task
             .get_annotations()
@@ -404,7 +404,7 @@ pub unsafe extern "C" fn tc_task_get_legacy_uda<'a>(
 ///
 /// Legacy UDAs are represented with an empty string in the ns field.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_udas<'a>(task: *mut TCTask) -> TCUDAList {
+pub unsafe extern "C" fn tc_task_get_udas(task: *mut TCTask) -> TCUDAList {
     wrap(task, |task| {
         let vec: Vec<TCUDA> = task
             .get_udas()
@@ -425,7 +425,7 @@ pub unsafe extern "C" fn tc_task_get_udas<'a>(task: *mut TCTask) -> TCUDAList {
 /// All TCUDAs in this list have a NULL ns field.  The entire UDA key is
 /// included in the key field.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_legacy_udas<'a>(task: *mut TCTask) -> TCUDAList {
+pub unsafe extern "C" fn tc_task_get_legacy_udas(task: *mut TCTask) -> TCUDAList {
     wrap(task, |task| {
         let vec: Vec<TCUDA> = task
             .get_legacy_udas()
@@ -443,7 +443,7 @@ pub unsafe extern "C" fn tc_task_get_legacy_udas<'a>(task: *mut TCTask) -> TCUDA
 
 /// Set a mutable task's status.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_set_status<'a>(task: *mut TCTask, status: TCStatus) -> TCResult {
+pub unsafe extern "C" fn tc_task_set_status(task: *mut TCTask, status: TCStatus) -> TCResult {
     wrap_mut(
         task,
         |task| {
@@ -456,7 +456,7 @@ pub unsafe extern "C" fn tc_task_set_status<'a>(task: *mut TCTask, status: TCSta
 
 /// Set a mutable task's description.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_set_description<'a>(
+pub unsafe extern "C" fn tc_task_set_description(
     task: *mut TCTask,
     description: *mut TCString,
 ) -> TCResult {
@@ -640,7 +640,7 @@ pub unsafe extern "C" fn tc_task_remove_annotation(task: *mut TCTask, entry: i64
 
 /// Set a UDA on a mutable task.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_set_uda<'a>(
+pub unsafe extern "C" fn tc_task_set_uda(
     task: *mut TCTask,
     ns: *mut TCString,
     key: *mut TCString,
@@ -668,7 +668,7 @@ pub unsafe extern "C" fn tc_task_set_uda<'a>(
 
 /// Remove a UDA fraom a mutable task.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_remove_uda<'a>(
+pub unsafe extern "C" fn tc_task_remove_uda(
     task: *mut TCTask,
     ns: *mut TCString,
     key: *mut TCString,
@@ -689,7 +689,7 @@ pub unsafe extern "C" fn tc_task_remove_uda<'a>(
 
 /// Set a legacy UDA on a mutable task.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_set_legacy_uda<'a>(
+pub unsafe extern "C" fn tc_task_set_legacy_uda(
     task: *mut TCTask,
     key: *mut TCString,
     value: *mut TCString,
@@ -710,7 +710,7 @@ pub unsafe extern "C" fn tc_task_set_legacy_uda<'a>(
 
 /// Remove a UDA fraom a mutable task.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_remove_legacy_uda<'a>(
+pub unsafe extern "C" fn tc_task_remove_legacy_uda(
     task: *mut TCTask,
     key: *mut TCString,
 ) -> TCResult {
@@ -730,11 +730,11 @@ pub unsafe extern "C" fn tc_task_remove_legacy_uda<'a>(
 /// to this function will return NULL.  The task pointer must not be NULL.  The caller must free the
 /// returned string.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_error<'a>(task: *mut TCTask) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_task_error(task: *mut TCTask) -> *mut TCString<'static> {
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let task: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
+    let task: &mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     if let Some(tcstring) = task.error.take() {
         unsafe { tcstring.return_ptr() }
     } else {
@@ -747,7 +747,7 @@ pub unsafe extern "C" fn tc_task_error<'a>(task: *mut TCTask) -> *mut TCString<'
 ///
 /// If the task is currently mutable, it will first be made immutable.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
+pub unsafe extern "C" fn tc_task_free(task: *mut TCTask) {
     // SAFETY:
     //  - rep is not NULL (promised by caller)
     //  - caller will not use the TCTask after this (promised by caller)

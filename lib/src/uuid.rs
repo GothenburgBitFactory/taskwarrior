@@ -75,7 +75,7 @@ impl CList for TCUuidList {
 /// Write the string representation of a TCUuid into the given buffer, which must be
 /// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
 #[no_mangle]
-pub unsafe extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_char) {
+pub unsafe extern "C" fn tc_uuid_to_buf(tcuuid: TCUuid, buf: *mut libc::c_char) {
     debug_assert!(!buf.is_null());
     // SAFETY:
     //  - buf is valid for len bytes (by C convention)
@@ -83,7 +83,7 @@ pub unsafe extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_ch
     //  - content of buf will not be mutated during the lifetime of this slice (lifetime
     //    does not outlive this function call)
     //  - the length of the buffer is less than isize::MAX (promised by caller)
-    let buf: &'a mut [u8] = unsafe {
+    let buf: &mut [u8] = unsafe {
         std::slice::from_raw_parts_mut(buf as *mut u8, ::uuid::adapter::Hyphenated::LENGTH)
     };
     // SAFETY:
@@ -107,7 +107,7 @@ pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static
 /// Parse the given string as a UUID.  Returns TC_RESULT_ERROR on parse failure or if the given
 /// string is not valid.
 #[no_mangle]
-pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut TCUuid) -> TCResult {
+pub unsafe extern "C" fn tc_uuid_from_str(s: *mut TCString, uuid_out: *mut TCUuid) -> TCResult {
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
     // SAFETY: see TCString docstring

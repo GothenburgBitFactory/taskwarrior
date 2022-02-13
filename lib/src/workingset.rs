@@ -18,14 +18,14 @@ impl From<WorkingSet> for TCWorkingSet {
 }
 
 /// Utility function to get a shared reference to the underlying WorkingSet.
-fn wrap<'a, T, F>(ws: *mut TCWorkingSet, f: F) -> T
+fn wrap<T, F>(ws: *mut TCWorkingSet, f: F) -> T
 where
     F: FnOnce(&WorkingSet) -> T,
 {
     // SAFETY:
     //  - ws is not null (promised by caller)
     //  - ws outlives 'a (promised by caller)
-    let tcws: &'a TCWorkingSet = unsafe { TCWorkingSet::from_ptr_arg_ref(ws) };
+    let tcws: &TCWorkingSet = unsafe { TCWorkingSet::from_ptr_arg_ref(ws) };
     f(&tcws.0)
 }
 

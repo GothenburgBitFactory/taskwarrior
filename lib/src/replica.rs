@@ -103,7 +103,7 @@ pub unsafe extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
 /// Create a new TCReplica with an on-disk database having the given filename. On error, a string
 /// is written to the `error_out` parameter (if it is not NULL) and NULL is returned.
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_new_on_disk<'a>(
+pub unsafe extern "C" fn tc_replica_new_on_disk(
     path: *mut TCString,
     error_out: *mut *mut TCString,
 ) -> *mut TCReplica {
@@ -169,7 +169,7 @@ pub unsafe extern "C" fn tc_replica_all_task_uuids(rep: *mut TCReplica) -> TCUui
             let uuids: Vec<_> = rep
                 .all_task_uuids()?
                 .drain(..)
-                .map(|uuid| TCUuid::return_val(uuid))
+                .map(TCUuid::return_val)
                 .collect();
             Ok(TCUuidList::return_val(uuids))
         },
@@ -265,10 +265,7 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
 /// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
 /// there are no operations that can be done.
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_undo<'a>(
-    rep: *mut TCReplica,
-    undone_out: *mut i32,
-) -> TCResult {
+pub unsafe extern "C" fn tc_replica_undo(rep: *mut TCReplica, undone_out: *mut i32) -> TCResult {
     wrap(
         rep,
         |rep| {
@@ -323,9 +320,9 @@ pub unsafe extern "C" fn tc_replica_rebuild_working_set(
 /// to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
 /// returned string.
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_replica_error(rep: *mut TCReplica) -> *mut TCString<'static> {
     // SAFETY: see type docstring
-    let rep: &'a mut TCReplica = unsafe { TCReplica::from_ptr_arg_ref_mut(rep) };
+    let rep: &mut TCReplica = unsafe { TCReplica::from_ptr_arg_ref_mut(rep) };
     if let Some(tcstring) = rep.error.take() {
         // SAFETY: see TCString docstring
         unsafe { tcstring.return_ptr() }

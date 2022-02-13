@@ -20,7 +20,7 @@ impl PassByValue for TCAnnotation {
         // SAFETY:
         //  - any time_t value is valid
         //  - time_t is copy, so ownership is not important
-        let entry = unsafe { self.entry.val_from_arg() }.unwrap();
+        let entry = unsafe { libc::time_t::val_from_arg(self.entry) }.unwrap();
         // SAFETY:
         //  - self.description is not NULL (field docstring)
         //  - self.description came from return_ptr in as_ctype
