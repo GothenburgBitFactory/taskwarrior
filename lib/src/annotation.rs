@@ -24,7 +24,7 @@ impl PassByValue for TCAnnotation {
         // SAFETY:
         //  - self is owned, so we can take ownership of this TCString
         //  - self.description is a valid, non-null TCString (see type docstring)
-        let description = unsafe { TCString::take_from_arg(self.description) };
+        let description = unsafe { TCString::take_from_ptr_arg(self.description) };
         (entry, description)
     }
 
@@ -32,7 +32,7 @@ impl PassByValue for TCAnnotation {
         TCAnnotation {
             entry: libc::time_t::as_ctype(Some(entry)),
             // SAFETY: caller assumes ownership of this value
-            description: unsafe { description.return_val() },
+            description: unsafe { description.return_ptr() },
         }
     }
 }
@@ -85,7 +85,7 @@ pub unsafe extern "C" fn tc_annotation_free(tcann: *mut TCAnnotation) {
     debug_assert!(!tcann.is_null());
     // SAFETY:
     //  - *tcann is a valid TCAnnotation (caller promises to treat it as read-only)
-    let annotation = unsafe { TCAnnotation::take_from_arg(tcann, TCAnnotation::default()) };
+    let annotation = unsafe { TCAnnotation::take_val_from_arg(tcann, TCAnnotation::default()) };
     drop(annotation);
 }
 

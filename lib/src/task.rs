@@ -63,7 +63,7 @@ impl TCTask {
                 //  - tcreplica is not null (promised by caller)
                 //  - tcreplica outlives the pointer in this variant (promised by caller)
                 let tcreplica_ref: &mut TCReplica =
-                    unsafe { TCReplica::from_arg_ref_mut(tcreplica) };
+                    unsafe { TCReplica::from_ptr_arg_ref_mut(tcreplica) };
                 let rep_ref = tcreplica_ref.borrow_mut();
                 Inner::Mutable(task.into_mut(rep_ref), tcreplica)
             }
@@ -83,7 +83,7 @@ impl TCTask {
                 //    variant)
                 //  - tcreplica is still alive (promised by caller of to_mut)
                 let tcreplica_ref: &mut TCReplica =
-                    unsafe { TCReplica::from_arg_ref_mut(tcreplica) };
+                    unsafe { TCReplica::from_ptr_arg_ref_mut(tcreplica) };
                 tcreplica_ref.release_borrow();
                 Inner::Immutable(task.into_immut())
             }
@@ -110,7 +110,7 @@ where
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     let task: &'a Task = match &tctask.inner {
         Inner::Immutable(t) => t,
         Inner::Mutable(t, _) => t.deref(),
@@ -130,7 +130,7 @@ where
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     let task: &'a mut TaskMut = match tctask.inner {
         Inner::Immutable(_) => panic!("Task is immutable"),
         Inner::Mutable(ref mut t, _) => t,
@@ -209,7 +209,7 @@ pub unsafe extern "C" fn tc_task_to_mut<'a>(task: *mut TCTask, tcreplica: *mut T
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     // SAFETY:
     //  - tcreplica is not NULL (promised by caller)
     //  - tcreplica lives until later call to to_immut via tc_task_to_immut (promised by caller,
@@ -227,7 +227,7 @@ pub unsafe extern "C" fn tc_task_to_immut<'a>(task: *mut TCTask) {
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let tctask: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    let tctask: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     tctask.to_immut();
 }
 
@@ -269,7 +269,7 @@ pub unsafe extern "C" fn tc_task_get_description<'a>(task: *mut TCTask) -> *mut 
     wrap(task, |task| {
         let descr: TCString = task.get_description().into();
         // SAFETY: see TCString docstring
-        unsafe { descr.return_val() }
+        unsafe { descr.return_ptr() }
     })
 }
 
@@ -308,7 +308,7 @@ pub unsafe extern "C" fn tc_task_is_active(task: *mut TCTask) -> bool {
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_has_tag<'a>(task: *mut TCTask, tag: *mut TCString) -> bool {
     // SAFETY: see TCString docstring
-    let tcstring = unsafe { TCString::take_from_arg(tag) };
+    let tcstring = unsafe { TCString::take_from_ptr_arg(tag) };
     wrap(task, |task| {
         if let Ok(tag) = Tag::try_from(tcstring) {
             task.has_tag(&tag)
@@ -330,9 +330,9 @@ pub unsafe extern "C" fn tc_task_get_tags<'a>(task: *mut TCTask) -> TCStringList
             .map(|t| {
                 NonNull::new(
                     // SAFETY: see TCString docstring
-                    unsafe { TCString::from(t.as_ref()).return_val() },
+                    unsafe { TCString::from(t.as_ref()).return_ptr() },
                 )
-                .expect("TCString::return_val() returned NULL")
+                .expect("TCString::return_ptr() returned NULL")
             })
             .collect();
         TCStringList::return_val(vec)
@@ -367,12 +367,12 @@ pub unsafe extern "C" fn tc_task_get_uda<'a>(
     key: *mut TCString<'a>,
 ) -> *mut TCString<'static> {
     wrap(task, |task| {
-        if let Ok(ns) = unsafe { TCString::take_from_arg(ns) }.as_str() {
-            if let Ok(key) = unsafe { TCString::take_from_arg(key) }.as_str() {
+        if let Ok(ns) = unsafe { TCString::take_from_ptr_arg(ns) }.as_str() {
+            if let Ok(key) = unsafe { TCString::take_from_ptr_arg(key) }.as_str() {
                 if let Some(value) = task.get_uda(ns, key) {
                     // SAFETY:
                     // - caller will free this string (caller promises)
-                    return unsafe { TCString::return_val(value.into()) };
+                    return unsafe { TCString::return_ptr(value.into()) };
                 }
             }
         }
@@ -389,11 +389,11 @@ pub unsafe extern "C" fn tc_task_get_legacy_uda<'a>(
     key: *mut TCString<'a>,
 ) -> *mut TCString<'static> {
     wrap(task, |task| {
-        if let Ok(key) = unsafe { TCString::take_from_arg(key) }.as_str() {
+        if let Ok(key) = unsafe { TCString::take_from_ptr_arg(key) }.as_str() {
             if let Some(value) = task.get_legacy_uda(key) {
                 // SAFETY:
                 // - caller will free this string (caller promises)
-                return unsafe { TCString::return_val(value.into()) };
+                return unsafe { TCString::return_ptr(value.into()) };
             }
         }
         std::ptr::null_mut()
@@ -461,7 +461,7 @@ pub unsafe extern "C" fn tc_task_set_description<'a>(
     description: *mut TCString,
 ) -> TCResult {
     // SAFETY: see TCString docstring
-    let description = unsafe { TCString::take_from_arg(description) };
+    let description = unsafe { TCString::take_from_ptr_arg(description) };
     wrap_mut(
         task,
         |task| {
@@ -577,7 +577,7 @@ pub unsafe extern "C" fn tc_task_delete(task: *mut TCTask) -> TCResult {
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
     // SAFETY: see TCString docstring
-    let tcstring = unsafe { TCString::take_from_arg(tag) };
+    let tcstring = unsafe { TCString::take_from_ptr_arg(tag) };
     wrap_mut(
         task,
         |task| {
@@ -593,7 +593,7 @@ pub unsafe extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) 
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_remove_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
     // SAFETY: see TCString docstring
-    let tcstring = unsafe { TCString::take_from_arg(tag) };
+    let tcstring = unsafe { TCString::take_from_ptr_arg(tag) };
     wrap_mut(
         task,
         |task| {
@@ -613,7 +613,7 @@ pub unsafe extern "C" fn tc_task_add_annotation(
 ) -> TCResult {
     // SAFETY: see TCAnnotation docstring
     let (entry, description) =
-        unsafe { TCAnnotation::take_from_arg(annotation, TCAnnotation::default()) };
+        unsafe { TCAnnotation::take_val_from_arg(annotation, TCAnnotation::default()) };
     wrap_mut(
         task,
         |task| {
@@ -647,11 +647,11 @@ pub unsafe extern "C" fn tc_task_set_uda<'a>(
     value: *mut TCString,
 ) -> TCResult {
     // SAFETY: see TCString docstring
-    let ns = unsafe { TCString::take_from_arg(ns) };
+    let ns = unsafe { TCString::take_from_ptr_arg(ns) };
     // SAFETY: see TCString docstring
-    let key = unsafe { TCString::take_from_arg(key) };
+    let key = unsafe { TCString::take_from_ptr_arg(key) };
     // SAFETY: see TCString docstring
-    let value = unsafe { TCString::take_from_arg(value) };
+    let value = unsafe { TCString::take_from_ptr_arg(value) };
     wrap_mut(
         task,
         |task| {
@@ -674,9 +674,9 @@ pub unsafe extern "C" fn tc_task_remove_uda<'a>(
     key: *mut TCString,
 ) -> TCResult {
     // SAFETY: see TCString docstring
-    let ns = unsafe { TCString::take_from_arg(ns) };
+    let ns = unsafe { TCString::take_from_ptr_arg(ns) };
     // SAFETY: see TCString docstring
-    let key = unsafe { TCString::take_from_arg(key) };
+    let key = unsafe { TCString::take_from_ptr_arg(key) };
     wrap_mut(
         task,
         |task| {
@@ -695,9 +695,9 @@ pub unsafe extern "C" fn tc_task_set_legacy_uda<'a>(
     value: *mut TCString,
 ) -> TCResult {
     // SAFETY: see TCString docstring
-    let key = unsafe { TCString::take_from_arg(key) };
+    let key = unsafe { TCString::take_from_ptr_arg(key) };
     // SAFETY: see TCString docstring
-    let value = unsafe { TCString::take_from_arg(value) };
+    let value = unsafe { TCString::take_from_ptr_arg(value) };
     wrap_mut(
         task,
         |task| {
@@ -715,7 +715,7 @@ pub unsafe extern "C" fn tc_task_remove_legacy_uda<'a>(
     key: *mut TCString,
 ) -> TCResult {
     // SAFETY: see TCString docstring
-    let key = unsafe { TCString::take_from_arg(key) };
+    let key = unsafe { TCString::take_from_ptr_arg(key) };
     wrap_mut(
         task,
         |task| {
@@ -734,9 +734,9 @@ pub unsafe extern "C" fn tc_task_error<'a>(task: *mut TCTask) -> *mut TCString<'
     // SAFETY:
     //  - task is not null (promised by caller)
     //  - task outlives 'a (promised by caller)
-    let task: &'a mut TCTask = unsafe { TCTask::from_arg_ref_mut(task) };
+    let task: &'a mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     if let Some(tcstring) = task.error.take() {
-        unsafe { tcstring.return_val() }
+        unsafe { tcstring.return_ptr() }
     } else {
         std::ptr::null_mut()
     }
@@ -751,7 +751,7 @@ pub unsafe extern "C" fn tc_task_free<'a>(task: *mut TCTask) {
     // SAFETY:
     //  - rep is not NULL (promised by caller)
     //  - caller will not use the TCTask after this (promised by caller)
-    let mut tctask = unsafe { TCTask::take_from_arg(task) };
+    let mut tctask = unsafe { TCTask::take_from_ptr_arg(task) };
 
     // convert to immut if it was mutable
     tctask.to_immut();

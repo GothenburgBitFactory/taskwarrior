@@ -29,16 +29,16 @@ impl PassByValue for TCUDA {
                 // SAFETY:
                 //  - self is owned, so we can take ownership of this TCString
                 //  - self.ns is a valid, non-null TCString (NULL just checked)
-                Some(unsafe { TCString::take_from_arg(self.ns) })
+                Some(unsafe { TCString::take_from_ptr_arg(self.ns) })
             },
             // SAFETY:
             //  - self is owned, so we can take ownership of this TCString
             //  - self.key is a valid, non-null TCString (see type docstring)
-            key: unsafe { TCString::take_from_arg(self.key) },
+            key: unsafe { TCString::take_from_ptr_arg(self.key) },
             // SAFETY:
             //  - self is owned, so we can take ownership of this TCString
             //  - self.value is a valid, non-null TCString (see type docstring)
-            value: unsafe { TCString::take_from_arg(self.value) },
+            value: unsafe { TCString::take_from_ptr_arg(self.value) },
         }
     }
 
@@ -46,14 +46,14 @@ impl PassByValue for TCUDA {
         TCUDA {
             // SAFETY: caller assumes ownership of this value
             ns: if let Some(ns) = uda.ns {
-                unsafe { ns.return_val() }
+                unsafe { ns.return_ptr() }
             } else {
                 std::ptr::null_mut()
             },
             // SAFETY: caller assumes ownership of this value
-            key: unsafe { uda.key.return_val() },
+            key: unsafe { uda.key.return_ptr() },
             // SAFETY: caller assumes ownership of this value
-            value: unsafe { uda.value.return_val() },
+            value: unsafe { uda.value.return_ptr() },
         }
     }
 }
@@ -107,7 +107,7 @@ pub unsafe extern "C" fn tc_uda_free(tcuda: *mut TCUDA) {
     debug_assert!(!tcuda.is_null());
     // SAFETY:
     //  - *tcuda is a valid TCUDA (caller promises to treat it as read-only)
-    let uda = unsafe { TCUDA::take_from_arg(tcuda, TCUDA::default()) };
+    let uda = unsafe { TCUDA::take_val_from_arg(tcuda, TCUDA::default()) };
     drop(uda);
 }
 

@@ -88,7 +88,7 @@ pub unsafe extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_ch
     };
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
-    let uuid: Uuid = unsafe { TCUuid::from_arg(tcuuid) };
+    let uuid: Uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
     uuid.to_hyphenated().encode_lower(buf);
 }
 
@@ -98,10 +98,10 @@ pub unsafe extern "C" fn tc_uuid_to_buf<'a>(tcuuid: TCUuid, buf: *mut libc::c_ch
 pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
-    let uuid: Uuid = unsafe { TCUuid::from_arg(tcuuid) };
+    let uuid: Uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
     let s = uuid.to_string();
     // SAFETY: see TCString docstring
-    unsafe { TCString::from(s).return_val() }
+    unsafe { TCString::from(s).return_ptr() }
 }
 
 /// Parse the given string as a UUID.  Returns TC_RESULT_ERROR on parse failure or if the given
@@ -111,13 +111,13 @@ pub unsafe extern "C" fn tc_uuid_from_str<'a>(s: *mut TCString, uuid_out: *mut T
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
     // SAFETY: see TCString docstring
-    let s = unsafe { TCString::take_from_arg(s) };
+    let s = unsafe { TCString::take_from_ptr_arg(s) };
     if let Ok(s) = s.as_str() {
         if let Ok(u) = Uuid::parse_str(s) {
             // SAFETY:
             //  - uuid_out is not NULL (promised by caller)
             //  - alignment is not required
-            unsafe { TCUuid::to_arg_out(u, uuid_out) };
+            unsafe { TCUuid::val_to_arg_out(u, uuid_out) };
             return TCResult::Ok;
         }
     }

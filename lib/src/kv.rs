@@ -18,18 +18,18 @@ impl PassByValue for TCKV {
         // SAFETY:
         //  - self is owned, so we can take ownership of this TCString
         //  - self.key is a valid, non-null TCString (see type docstring)
-        let key = unsafe { TCString::take_from_arg(self.key) };
+        let key = unsafe { TCString::take_from_ptr_arg(self.key) };
         // SAFETY: (same)
-        let value = unsafe { TCString::take_from_arg(self.value) };
+        let value = unsafe { TCString::take_from_ptr_arg(self.value) };
         (key, value)
     }
 
     fn as_ctype((key, value): Self::RustType) -> Self {
         TCKV {
             // SAFETY: caller assumes ownership of this value
-            key: unsafe { key.return_val() },
+            key: unsafe { key.return_ptr() },
             // SAFETY: caller assumes ownership of this value
-            value: unsafe { value.return_val() },
+            value: unsafe { value.return_ptr() },
         }
     }
 }

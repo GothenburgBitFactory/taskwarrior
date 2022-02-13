@@ -194,7 +194,7 @@ pub unsafe extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCS
     //  - cstr's content will not change before it is destroyed (promised by caller)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
     // SAFETY: see docstring
-    unsafe { TCString::CStr(cstr).return_val() }
+    unsafe { TCString::CStr(cstr).return_ptr() }
 }
 
 /// Create a new TCString by cloning the content of the given C string.  The resulting TCString
@@ -209,7 +209,7 @@ pub unsafe extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCSt
     //  - cstr's content will not change before it is destroyed (by C convention)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
     // SAFETY: see docstring
-    unsafe { TCString::CString(cstr.into()).return_val() }
+    unsafe { TCString::CString(cstr.into()).return_ptr() }
 }
 
 /// Create a new TCString containing the given string with the given length. This allows creation
@@ -246,7 +246,7 @@ pub unsafe extern "C" fn tc_string_clone_with_len(
     };
 
     // SAFETY: see docstring
-    unsafe { tcstring.return_val() }
+    unsafe { tcstring.return_ptr() }
 }
 
 /// Get the content of the string as a regular C string.  The given string must not be NULL.  The
@@ -263,7 +263,7 @@ pub unsafe extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const li
     //  - tcstring is not NULL (promised by caller)
     //  - lifetime of tcstring outlives the lifetime of this function
     //  - lifetime of tcstring outlives the lifetime of the returned pointer (promised by caller)
-    let tcstring = unsafe { TCString::from_arg_ref_mut(tcstring) };
+    let tcstring = unsafe { TCString::from_ptr_arg_ref_mut(tcstring) };
 
     // if we have a String, we need to consume it and turn it into
     // a CString.
@@ -293,7 +293,7 @@ pub unsafe extern "C" fn tc_string_content_with_len(
     //  - tcstring is not NULL (promised by caller)
     //  - lifetime of tcstring outlives the lifetime of this function
     //  - lifetime of tcstring outlives the lifetime of the returned pointer (promised by caller)
-    let tcstring = unsafe { TCString::from_arg_ref(tcstring) };
+    let tcstring = unsafe { TCString::from_ptr_arg_ref(tcstring) };
 
     let bytes = tcstring.as_bytes();
 
@@ -301,7 +301,7 @@ pub unsafe extern "C" fn tc_string_content_with_len(
     //  - len_out is not NULL (promised by caller)
     //  - len_out points to valid memory (promised by caller)
     //  - len_out is properly aligned (C convention)
-    unsafe { usize::to_arg_out(bytes.len(), len_out) };
+    unsafe { usize::val_to_arg_out(bytes.len(), len_out) };
     bytes.as_ptr() as *const libc::c_char
 }
 
@@ -312,7 +312,7 @@ pub unsafe extern "C" fn tc_string_free(tcstring: *mut TCString) {
     // SAFETY:
     //  - tcstring is not NULL (promised by caller)
     //  - caller is exclusive owner of tcstring (promised by caller)
-    drop(unsafe { TCString::take_from_arg(tcstring) });
+    drop(unsafe { TCString::take_from_ptr_arg(tcstring) });
 }
 
 /// Free a TCStringList instance.  The instance, and all TCStringList it contains, must not be used after

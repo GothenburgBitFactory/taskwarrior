@@ -75,7 +75,7 @@ where
     F: FnOnce(&mut Replica) -> anyhow::Result<T>,
 {
     // SAFETY: see type docstring
-    let rep: &mut TCReplica = unsafe { TCReplica::from_arg_ref_mut(rep) };
+    let rep: &mut TCReplica = unsafe { TCReplica::from_ptr_arg_ref_mut(rep) };
     if rep.mut_borrowed {
         panic!("replica is borrowed and cannot be used");
     }
@@ -97,7 +97,7 @@ pub unsafe extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
         .into_storage()
         .expect("in-memory always succeeds");
     // SAFETY: see type docstring
-    unsafe { TCReplica::from(Replica::new(storage)).return_val() }
+    unsafe { TCReplica::from(Replica::new(storage)).return_ptr() }
 }
 
 /// Create a new TCReplica with an on-disk database having the given filename. On error, a string
@@ -108,7 +108,7 @@ pub unsafe extern "C" fn tc_replica_new_on_disk<'a>(
     error_out: *mut *mut TCString,
 ) -> *mut TCReplica {
     // SAFETY: see TCString docstring
-    let path = unsafe { TCString::take_from_arg(path) };
+    let path = unsafe { TCString::take_from_ptr_arg(path) };
     let storage_res = StorageConfig::OnDisk {
         taskdb_dir: path.to_path_buf(),
     }
@@ -119,7 +119,7 @@ pub unsafe extern "C" fn tc_replica_new_on_disk<'a>(
         Err(e) => {
             if !error_out.is_null() {
                 unsafe {
-                    *error_out = err_to_tcstring(e).return_val();
+                    *error_out = err_to_tcstring(e).return_ptr();
                 }
             }
             return std::ptr::null_mut();
@@ -127,7 +127,7 @@ pub unsafe extern "C" fn tc_replica_new_on_disk<'a>(
     };
 
     // SAFETY: see type docstring
-    unsafe { TCReplica::from(Replica::new(storage)).return_val() }
+    unsafe { TCReplica::from(Replica::new(storage)).return_ptr() }
 }
 
 /// Get a list of all tasks in the replica.
@@ -147,9 +147,9 @@ pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList
                 .map(|(_uuid, t)| {
                     NonNull::new(
                         // SAFETY: see TCTask docstring
-                        unsafe { TCTask::from(t).return_val() },
+                        unsafe { TCTask::from(t).return_ptr() },
                     )
-                    .expect("TCTask::return_val returned NULL")
+                    .expect("TCTask::return_ptr returned NULL")
                 })
                 .collect();
             Ok(TCTaskList::return_val(tasks))
@@ -187,7 +187,7 @@ pub unsafe extern "C" fn tc_replica_working_set(rep: *mut TCReplica) -> *mut TCW
         |rep| {
             let ws = rep.working_set()?;
             // SAFETY: caller promises to free this task
-            Ok(unsafe { TCWorkingSet::return_val(ws.into()) })
+            Ok(unsafe { TCWorkingSet::return_ptr(ws.into()) })
         },
         std::ptr::null_mut(),
     )
@@ -203,10 +203,10 @@ pub unsafe extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid
         rep,
         |rep| {
             // SAFETY: see TCUuid docstring
-            let uuid = unsafe { TCUuid::from_arg(tcuuid) };
+            let uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
             if let Some(task) = rep.get_task(uuid)? {
                 // SAFETY: caller promises to free this task
-                Ok(unsafe { TCTask::from(task).return_val() })
+                Ok(unsafe { TCTask::from(task).return_ptr() })
             } else {
                 Ok(std::ptr::null_mut())
             }
@@ -225,13 +225,13 @@ pub unsafe extern "C" fn tc_replica_new_task(
     description: *mut TCString,
 ) -> *mut TCTask {
     // SAFETY: see TCString docstring
-    let description = unsafe { TCString::take_from_arg(description) };
+    let description = unsafe { TCString::take_from_ptr_arg(description) };
     wrap(
         rep,
         |rep| {
             let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
             // SAFETY: caller promises to free this task
-            Ok(unsafe { TCTask::from(task).return_val() })
+            Ok(unsafe { TCTask::from(task).return_ptr() })
         },
         std::ptr::null_mut(),
     )
@@ -249,10 +249,10 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
         rep,
         |rep| {
             // SAFETY: see TCUuid docstring
-            let uuid = unsafe { TCUuid::from_arg(tcuuid) };
+            let uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
             let task = rep.import_task_with_uuid(uuid)?;
             // SAFETY: caller promises to free this task
-            Ok(unsafe { TCTask::from(task).return_val() })
+            Ok(unsafe { TCTask::from(task).return_ptr() })
         },
         std::ptr::null_mut(),
     )
@@ -325,10 +325,10 @@ pub unsafe extern "C" fn tc_replica_rebuild_working_set(
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCString<'static> {
     // SAFETY: see type docstring
-    let rep: &'a mut TCReplica = unsafe { TCReplica::from_arg_ref_mut(rep) };
+    let rep: &'a mut TCReplica = unsafe { TCReplica::from_ptr_arg_ref_mut(rep) };
     if let Some(tcstring) = rep.error.take() {
         // SAFETY: see TCString docstring
-        unsafe { tcstring.return_val() }
+        unsafe { tcstring.return_ptr() }
     } else {
         std::ptr::null_mut()
     }
@@ -339,7 +339,7 @@ pub unsafe extern "C" fn tc_replica_error<'a>(rep: *mut TCReplica) -> *mut TCStr
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
     // SAFETY: see type docstring
-    let replica = unsafe { TCReplica::take_from_arg(rep) };
+    let replica = unsafe { TCReplica::take_from_ptr_arg(rep) };
     if replica.mut_borrowed {
         panic!("replica is borrowed and cannot be freed");
     }

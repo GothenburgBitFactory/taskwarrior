@@ -25,7 +25,7 @@ where
     // SAFETY:
     //  - ws is not null (promised by caller)
     //  - ws outlives 'a (promised by caller)
-    let tcws: &'a TCWorkingSet = unsafe { TCWorkingSet::from_arg_ref(ws) };
+    let tcws: &'a TCWorkingSet = unsafe { TCWorkingSet::from_ptr_arg_ref(ws) };
     f(&tcws.0)
 }
 
@@ -55,7 +55,7 @@ pub unsafe extern "C" fn tc_working_set_by_index(
             // SAFETY:
             //  - uuid_out is not NULL (promised by caller)
             //  - alignment is not required
-            unsafe { TCUuid::to_arg_out(uuid, uuid_out) };
+            unsafe { TCUuid::val_to_arg_out(uuid, uuid_out) };
             true
         } else {
             false
@@ -70,7 +70,7 @@ pub unsafe extern "C" fn tc_working_set_by_uuid(ws: *mut TCWorkingSet, uuid: TCU
     wrap(ws, |ws| {
         // SAFETY:
         //  - tcuuid is a valid TCUuid (all byte patterns are valid)
-        let uuid: Uuid = unsafe { TCUuid::from_arg(uuid) };
+        let uuid: Uuid = unsafe { TCUuid::val_from_arg(uuid) };
         ws.by_uuid(uuid).unwrap_or(0)
     })
 }
@@ -82,6 +82,6 @@ pub unsafe extern "C" fn tc_working_set_free(ws: *mut TCWorkingSet) {
     // SAFETY:
     //  - rep is not NULL (promised by caller)
     //  - caller will not use the TCWorkingSet after this (promised by caller)
-    let ws = unsafe { TCWorkingSet::take_from_arg(ws) };
+    let ws = unsafe { TCWorkingSet::take_from_ptr_arg(ws) };
     drop(ws);
 }

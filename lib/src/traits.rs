@@ -27,7 +27,7 @@ pub(crate) trait PassByValue: Sized {
     ///
     /// `self` must be a valid instance of Self.  This is typically ensured either by requiring
     /// that C code not modify it, or by defining the valid values in C comments.
-    unsafe fn from_arg(arg: Self) -> Self::RustType {
+    unsafe fn val_from_arg(arg: Self) -> Self::RustType {
         // SAFETY:
         //  - arg is a valid CType (promised by caller)
         unsafe { arg.from_ctype() }
@@ -38,15 +38,15 @@ pub(crate) trait PassByValue: Sized {
     ///
     /// # Safety
     ///
-    /// `*arg` must be a valid CType, as with [`from_arg`].
-    unsafe fn take_from_arg(arg: *mut Self, mut replacement: Self) -> Self::RustType {
+    /// `*arg` must be a valid CType, as with [`val_from_arg`].
+    unsafe fn take_val_from_arg(arg: *mut Self, mut replacement: Self) -> Self::RustType {
         // SAFETY:
         //  - arg is valid (promised by caller)
         //  - replacement is valid (guaranteed by Rust)
         unsafe { std::ptr::swap(arg, &mut replacement) };
         // SAFETY:
         //  - replacement (formerly *arg) is a valid CType (promised by caller)
-        unsafe { PassByValue::from_arg(replacement) }
+        unsafe { PassByValue::val_from_arg(replacement) }
     }
 
     /// Return a value to C
@@ -60,7 +60,7 @@ pub(crate) trait PassByValue: Sized {
     ///
     /// `arg_out` must not be NULL and must be properly aligned and pointing to valid memory
     /// of the size of CType.
-    unsafe fn to_arg_out(val: Self::RustType, arg_out: *mut Self) {
+    unsafe fn val_to_arg_out(val: Self::RustType, arg_out: *mut Self) {
         debug_assert!(!arg_out.is_null());
         // SAFETY:
         //  - arg_out is not NULL (promised by caller, asserted)
@@ -81,13 +81,13 @@ pub(crate) trait PassByValue: Sized {
 ///    - the pointer must not be NULL;
 ///    - the pointer must be one previously returned from Rust; and
 ///    - the memory addressed by the pointer must never be modified by C code.
-///  - For `from_arg_ref`, the value must not be modified during the call to the Rust function
-///  - For `from_arg_ref_mut`, the value must not be accessed (read or write) during the call
+///  - For `from_ptr_arg_ref`, the value must not be modified during the call to the Rust function
+///  - For `from_ptr_arg_ref_mut`, the value must not be accessed (read or write) during the call
 ///    (these last two points are trivially ensured by all TC… types being non-threadsafe)
-///  - For `take_from_arg`, the pointer becomes invalid and must not be used in _any way_ after it
+///  - For `take_from_ptr_arg`, the pointer becomes invalid and must not be used in _any way_ after it
 ///    is passed to the Rust function.
-///  - For `return_val` and `to_arg_out`, it is the C caller's responsibility to later free the value.
-///  - For `to_arg_out`, `arg_out` must not be NULL and must be properly aligned and pointing to
+///  - For `return_ptr` and `ptr_to_arg_out`, it is the C caller's responsibility to later free the value.
+///  - For `ptr_to_arg_out`, `arg_out` must not be NULL and must be properly aligned and pointing to
 ///    valid memory.
 ///
 /// These requirements should be expressed in the C documentation for the type implementing this
@@ -98,7 +98,7 @@ pub(crate) trait PassByPointer: Sized {
     /// # Safety
     ///
     /// See trait documentation.
-    unsafe fn take_from_arg(arg: *mut Self) -> Self {
+    unsafe fn take_from_ptr_arg(arg: *mut Self) -> Self {
         debug_assert!(!arg.is_null());
         // SAFETY: see trait documentation
         unsafe { *(Box::from_raw(arg)) }
@@ -109,7 +109,7 @@ pub(crate) trait PassByPointer: Sized {
     /// # Safety
     ///
     /// See trait documentation.
-    unsafe fn from_arg_ref<'a>(arg: *const Self) -> &'a Self {
+    unsafe fn from_ptr_arg_ref<'a>(arg: *const Self) -> &'a Self {
         debug_assert!(!arg.is_null());
         // SAFETY: see trait documentation
         unsafe { &*arg }
@@ -120,7 +120,7 @@ pub(crate) trait PassByPointer: Sized {
     /// # Safety
     ///
     /// See trait documentation.
-    unsafe fn from_arg_ref_mut<'a>(arg: *mut Self) -> &'a mut Self {
+    unsafe fn from_ptr_arg_ref_mut<'a>(arg: *mut Self) -> &'a mut Self {
         debug_assert!(!arg.is_null());
         // SAFETY: see trait documentation
         unsafe { &mut *arg }
@@ -131,7 +131,7 @@ pub(crate) trait PassByPointer: Sized {
     /// # Safety
     ///
     /// See trait documentation.
-    unsafe fn return_val(self) -> *mut Self {
+    unsafe fn return_ptr(self) -> *mut Self {
         Box::into_raw(Box::new(self))
     }
 
@@ -140,10 +140,10 @@ pub(crate) trait PassByPointer: Sized {
     /// # Safety
     ///
     /// See trait documentation.
-    unsafe fn to_arg_out(self, arg_out: *mut *mut Self) {
+    unsafe fn ptr_to_arg_out(self, arg_out: *mut *mut Self) {
         // SAFETY: see trait documentation
         unsafe {
-            *arg_out = self.return_val();
+            *arg_out = self.return_ptr();
         }
     }
 }
@@ -154,7 +154,7 @@ pub(crate) trait PassByPointer: Sized {
 /// required trait functions just fetch and set these fields.  The PassByValue trait will be
 /// implemented automatically, converting between the C type and `Vec<Element>`.  For most cases,
 /// it is only necessary to implement `tc_.._free` that first calls
-/// `PassByValue::take_from_arg(arg, CList::null_value())` to take the existing value and
+/// `PassByValue::take_val_from_arg(arg, CList::null_value())` to take the existing value and
 /// replace it with the null value; then one of hte `drop_.._list(..)` functions to drop the resulting
 /// vector and all of the objects it points to.
 ///
@@ -210,14 +210,14 @@ where
 
     // SAFETY:
     //  - *list is a valid CL (caller promises to treat it as read-only)
-    let mut vec = unsafe { CL::take_from_arg(list, CL::null_value()) };
+    let mut vec = unsafe { CL::take_val_from_arg(list, CL::null_value()) };
 
     // first, drop each of the elements in turn
     for e in vec.drain(..) {
         // SAFETY:
         //  - e is a valid Element (caller promisd not to change it)
         //  - Vec::drain has invalidated this entry (value is owned)
-        drop(unsafe { PassByValue::from_arg(e) });
+        drop(unsafe { PassByValue::val_from_arg(e) });
     }
     // then drop the vector
     drop(vec);
@@ -240,14 +240,14 @@ where
     debug_assert!(!list.is_null());
     // SAFETY:
     //  - *list is a valid CL (caller promises to treat it as read-only)
-    let mut vec = unsafe { CL::take_from_arg(list, CL::null_value()) };
+    let mut vec = unsafe { CL::take_val_from_arg(list, CL::null_value()) };
 
     // first, drop each of the elements in turn
     for e in vec.drain(..) {
         // SAFETY:
         //  - e is a valid Element (caller promised not to change it)
         //  - Vec::drain has invalidated this entry (value is owned)
-        drop(unsafe { PassByPointer::take_from_arg(e.as_ptr()) });
+        drop(unsafe { PassByPointer::take_from_ptr_arg(e.as_ptr()) });
     }
     // then drop the vector
     drop(vec);
