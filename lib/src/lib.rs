@@ -14,6 +14,7 @@ pub mod atomic;
 pub mod kv;
 pub mod replica;
 pub mod result;
+pub mod server;
 pub mod status;
 pub mod string;
 pub mod task;
@@ -26,6 +27,7 @@ pub(crate) mod types {
     pub(crate) use crate::kv::{TCKVList, TCKV};
     pub(crate) use crate::replica::TCReplica;
     pub(crate) use crate::result::TCResult;
+    pub(crate) use crate::server::TCServer;
     pub(crate) use crate::status::TCStatus;
     pub(crate) use crate::string::{TCString, TCStringList};
     pub(crate) use crate::task::{TCTask, TCTaskList};

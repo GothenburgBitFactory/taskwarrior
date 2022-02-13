@@ -82,7 +82,7 @@ impl<'a> TCString<'a> {
         }
     }
 
-    fn as_bytes(&self) -> &[u8] {
+    pub(crate) fn as_bytes(&self) -> &[u8] {
         match self {
             TCString::CString(cstring) => cstring.as_bytes(),
             TCString::CStr(cstr) => cstr.to_bytes(),

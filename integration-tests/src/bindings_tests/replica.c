@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <string.h>
 #include "unity.h"
 #include "taskchampion.h"
@@ -153,6 +154,48 @@ static void test_replica_task_creation(void) {
     tc_replica_free(rep);
 }
 
+// When tc_replica_undo is passed NULL for undone_out, it still succeeds
+static void test_replica_sync_local(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    mkdir("test-sync-server", 0755); // ignore error, if dir already exists
+
+    TCString *err = NULL;
+    TCServer *server = tc_server_new_local(tc_string_borrow("test-sync-server"), &err);
+    TEST_ASSERT_NOT_NULL(server);
+    TEST_ASSERT_NULL(err);
+
+    int rv = tc_replica_sync(rep, server, false);
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, rv);
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    tc_server_free(server);
+    tc_replica_free(rep);
+
+    // test error handling
+    server = tc_server_new_local(tc_string_borrow("/no/such/directory"), &err);
+    TEST_ASSERT_NULL(server);
+    TEST_ASSERT_NOT_NULL(err);
+    tc_string_free(err);
+}
+
+// When tc_replica_undo is passed NULL for undone_out, it still succeeds
+static void test_replica_remote_server(void) {
+    TCString *err = NULL;
+    TCServer *server = tc_server_new_remote(
+        tc_string_borrow("tc.freecinc.com"),
+        tc_uuid_new_v4(),
+        tc_string_borrow("\xf0\x28\x8c\x28"), // NOTE: not utf-8
+        &err);
+    TEST_ASSERT_NOT_NULL(server);
+    TEST_ASSERT_NULL(err);
+
+    // can't actually do anything with this server!
+
+    tc_server_free(server);
+}
+
 // a replica with tasks in it returns an appropriate list of tasks and list of uuids
 static void test_replica_all_tasks(void) {
     TCReplica *rep = tc_replica_new_in_memory();
@@ -274,6 +317,8 @@ int replica_tests(void) {
     RUN_TEST(test_replica_working_set);
     RUN_TEST(test_replica_undo_empty_null_undone_out);
     RUN_TEST(test_replica_task_creation);
+    RUN_TEST(test_replica_sync_local);
+    RUN_TEST(test_replica_remote_server);
     RUN_TEST(test_replica_all_tasks);
     RUN_TEST(test_replica_task_import);
     RUN_TEST(test_replica_get_task_not_found);

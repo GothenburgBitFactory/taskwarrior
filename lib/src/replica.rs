@@ -100,8 +100,9 @@ pub unsafe extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
     unsafe { TCReplica::from(Replica::new(storage)).return_ptr() }
 }
 
-/// Create a new TCReplica with an on-disk database having the given filename. On error, a string
-/// is written to the `error_out` parameter (if it is not NULL) and NULL is returned.
+/// Create a new TCReplica with an on-disk database having the given filename.  On error, a string
+/// is written to the error_out parameter (if it is not NULL) and NULL is returned.  The caller
+/// must free this string.
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_new_on_disk(
     path: *mut TCString,
@@ -258,7 +259,31 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
     )
 }
 
-// TODO: tc_replica_sync
+/// Synchronize this replica with a server.
+///
+/// The `server` argument remains owned by the caller, and must be freed explicitly.
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_sync(
+    rep: *mut TCReplica,
+    server: *mut TCServer,
+    avoid_snapshots: bool,
+) -> TCResult {
+    wrap(
+        rep,
+        |rep| {
+            debug_assert!(!server.is_null());
+            // SAFETY:
+            //  - server is not NULL
+            //  - *server is a valid TCServer (promised by caller)
+            //  - server is valid for the lifetime of tc_replica_sync (not threadsafe)
+            //  - server will not be accessed simultaneously (not threadsafe)
+            let server = unsafe { TCServer::from_ptr_arg_ref_mut(server) };
+            rep.sync(server.as_mut(), avoid_snapshots)?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
 
 /// Undo local operations until the most recent UndoPoint.
 ///

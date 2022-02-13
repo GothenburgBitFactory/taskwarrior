@@ -64,6 +64,16 @@ typedef enum TCStatus {
 typedef struct TCReplica TCReplica;
 
 /**
+ * TCServer represents an interface to a sync server.  Aside from new and free, a server
+ * has no C-accessible API, but is designed to be passed to `tc_replica_sync`.
+ *
+ * ## Safety
+ *
+ * TCServer are not threadsafe, and must not be used with multiple replicas simultaneously.
+ */
+typedef struct TCServer TCServer;
+
+/**
  * TCString supports passing strings into and out of the TaskChampion API.
  *
  * # Rust Strings and C Strings
@@ -339,8 +349,9 @@ void tc_kv_list_free(struct TCKVList *tckvs);
 struct TCReplica *tc_replica_new_in_memory(void);
 
 /**
- * Create a new TCReplica with an on-disk database having the given filename. On error, a string
- * is written to the `error_out` parameter (if it is not NULL) and NULL is returned.
+ * Create a new TCReplica with an on-disk database having the given filename.  On error, a string
+ * is written to the error_out parameter (if it is not NULL) and NULL is returned.  The caller
+ * must free this string.
  */
 struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString **error_out);
 
@@ -390,6 +401,13 @@ struct TCTask *tc_replica_new_task(struct TCReplica *rep,
 struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid tcuuid);
 
 /**
+ * Synchronize this replica with a server.
+ *
+ * The `server` argument remains owned by the caller, and must be freed explicitly.
+ */
+TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool avoid_snapshots);
+
+/**
  * Undo local operations until the most recent UndoPoint.
  *
  * If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
@@ -424,6 +442,37 @@ struct TCString *tc_replica_error(struct TCReplica *rep);
  * more than once.
  */
 void tc_replica_free(struct TCReplica *rep);
+
+/**
+ * Create a new TCServer that operates locally (on-disk).  See the TaskChampion docs for the
+ * description of the arguments.
+ *
+ * On error, a string is written to the error_out parameter (if it is not NULL) and NULL is
+ * returned.  The caller must free this string.
+ *
+ * The server must be freed after it is used - tc_replica_sync does not automatically free it.
+ */
+struct TCServer *tc_server_new_local(struct TCString *server_dir, struct TCString **error_out);
+
+/**
+ * Create a new TCServer that connects to a remote server.  See the TaskChampion docs for the
+ * description of the arguments.
+ *
+ * On error, a string is written to the error_out parameter (if it is not NULL) and NULL is
+ * returned.  The caller must free this string.
+ *
+ * The server must be freed after it is used - tc_replica_sync does not automatically free it.
+ */
+struct TCServer *tc_server_new_remote(struct TCString *origin,
+                                      struct TCUuid client_key,
+                                      struct TCString *encryption_secret,
+                                      struct TCString **error_out);
+
+/**
+ * Free a server.  The server may not be used after this function returns and must not be freed
+ * more than once.
+ */
+void tc_server_free(struct TCServer *server);
 
 /**
  * Create a new TCString referencing the given C string.  The C string must remain valid and
