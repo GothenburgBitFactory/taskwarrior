@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
-#include "unity.h"
 #include "taskchampion.h"
+#include "unity.h"
 
 // creating an in-memory replica does not crash
 static void test_replica_creation(void) {

@@ -18,6 +18,11 @@ fn build_libtaskchampion(suites: &[&'static str]) {
     build.object(libtaskchampion);
     build.include("../lib");
     build.include("src/bindings_tests/unity");
+    build.define("UNITY_OUTPUT_CHAR", "test_output");
+    build.define(
+        "UNITY_OUTPUT_CHAR_HEADER_DECLARATION",
+        "test_output(char c)",
+    );
     build.file("src/bindings_tests/unity/unity.c");
 
     let mut files = vec!["src/bindings_tests/test.c".to_string()];
