@@ -16,6 +16,7 @@ pub(crate) trait PassByValue: Sized {
     /// # Safety
     ///
     /// `self` must be a valid CType.
+    #[allow(clippy::wrong_self_convention)]
     unsafe fn from_ctype(self) -> Self::RustType;
 
     /// Convert a Rust value to a C value.

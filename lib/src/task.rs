@@ -74,6 +74,7 @@ impl TCTask {
 
     /// Make an mutable TCTask into a immutable TCTask.  Does nothing if the task
     /// is already immutable.
+    #[allow(clippy::wrong_self_convention)] // to_immut_mut is not better!
     fn to_immut(&mut self) {
         self.inner = match std::mem::replace(&mut self.inner, Inner::Invalid) {
             Inner::Immutable(task) => Inner::Immutable(task),

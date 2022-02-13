@@ -95,7 +95,7 @@ impl<'a> TCString<'a> {
     /// Convert the TCString, in place, into one of the C variants.  If this is not
     /// possible, such as if the string contains an embedded NUL, then the string
     /// remains unchanged.
-    fn to_c_string(&mut self) {
+    fn to_c_string_mut(&mut self) {
         if matches!(self, TCString::String(_)) {
             // we must take ownership of the String in order to try converting it,
             // leaving the underlying TCString as its default (None)
@@ -267,11 +267,11 @@ pub unsafe extern "C" fn tc_string_content(tcstring: *mut TCString) -> *const li
 
     // if we have a String, we need to consume it and turn it into
     // a CString.
-    tcstring.to_c_string();
+    tcstring.to_c_string_mut();
 
     match tcstring {
         TCString::CString(cstring) => cstring.as_ptr(),
-        TCString::String(_) => std::ptr::null(), // to_c_string failed
+        TCString::String(_) => std::ptr::null(), // to_c_string_mut failed
         TCString::CStr(cstr) => cstr.as_ptr(),
         TCString::InvalidUtf8(_, _) => std::ptr::null(),
         TCString::None => unreachable!(),
@@ -427,37 +427,37 @@ mod test {
     }
 
     #[test]
-    fn cstring_to_c_string() {
+    fn cstring_to_c_string_mut() {
         let mut tcstring = make_cstring();
-        tcstring.to_c_string();
+        tcstring.to_c_string_mut();
         assert_eq!(tcstring, make_cstring()); // unchanged
     }
 
     #[test]
-    fn cstr_to_c_string() {
+    fn cstr_to_c_string_mut() {
         let mut tcstring = make_cstr();
-        tcstring.to_c_string();
+        tcstring.to_c_string_mut();
         assert_eq!(tcstring, make_cstr()); // unchanged
     }
 
     #[test]
-    fn string_to_c_string() {
+    fn string_to_c_string_mut() {
         let mut tcstring = make_string();
-        tcstring.to_c_string();
+        tcstring.to_c_string_mut();
         assert_eq!(tcstring, make_cstring()); // converted to CString, same content
     }
 
     #[test]
-    fn string_with_nul_to_c_string() {
+    fn string_with_nul_to_c_string_mut() {
         let mut tcstring = make_string_with_nul();
-        tcstring.to_c_string();
+        tcstring.to_c_string_mut();
         assert_eq!(tcstring, make_string_with_nul()); // unchanged
     }
 
     #[test]
-    fn invalid_to_c_string() {
+    fn invalid_to_c_string_mut() {
         let mut tcstring = make_invalid();
-        tcstring.to_c_string();
+        tcstring.to_c_string_mut();
         assert_eq!(tcstring, make_invalid()); // unchanged
     }
 }
