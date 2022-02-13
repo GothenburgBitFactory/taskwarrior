@@ -3,6 +3,20 @@ use crate::types::*;
 use chrono::prelude::*;
 
 /// TCAnnotation contains the details of an annotation.
+///
+/// # Safety
+///
+/// An annotation must be initialized from a tc_.. function, and later freed
+/// with `tc_annotation_free` or `tc_annotation_list_free`.
+///
+/// Any function taking a `*TCAnnotation` requires:
+///  - the pointer must not be NUL;
+///  - the pointer must be one previously returned from a tc_… function;
+///  - the memory referenced by the pointer must never be modified by C code; and
+///  - ownership transfers to the called function, and the value must not be used
+///    after the call returns.  In fact, the value will be zeroed out to ensure this.
+///
+/// TCAnnotations are not threadsafe.
 #[repr(C)]
 pub struct TCAnnotation {
     /// Time the annotation was made.  Must be nonzero.

@@ -57,7 +57,7 @@ typedef enum TCStatus {
  *  - the memory referenced by the pointer must never be modified by C code; and
  *  - except for `tc_replica_free`, ownership of a `*TCReplica` remains with the caller.
  *
- * Once passed to `tc_replica_free`, a `*TCReplica` becmes invalid and must not be used again.
+ * Once passed to `tc_replica_free`, a `*TCReplica` becomes invalid and must not be used again.
  *
  * TCReplicas are not threadsafe.
  */
@@ -92,7 +92,7 @@ typedef struct TCServer TCServer;
  * # Safety
  *
  * When a `*TCString` appears as a return value or output argument, ownership is passed to the
- * caller.  The caller must pass that ownerhsip back to another function or free the string.
+ * caller.  The caller must pass that ownership back to another function or free the string.
  *
  * Any function taking a `*TCReplica` requires:
  *  - the pointer must not be NUL;
@@ -101,7 +101,7 @@ typedef struct TCServer TCServer;
  *
  * Unless specified otherwise, TaskChampion functions take ownership of a `*TCString` when it is
  * given as a function argument, and the pointer is invalid when the function returns.  Callers
- * must not use or free TCStringList after passing them to such API functions.
+ * must not use or free TCStrings after passing them to such API functions.
  *
  * TCString is not threadsafe.
  */
@@ -123,6 +123,19 @@ typedef struct TCString TCString;
  * When a `tc_task_..` function that returns a TCResult returns TC_RESULT_ERROR, then
  * `tc_task_error` will return the error message.
  *
+ * # Safety
+ *
+ * A task is an owned object, and must be freed with tc_task_free (or, if part of a list,
+ * with tc_task_list_free).
+ *
+ * Any function taking a `*TCTask` requires:
+ *  - the pointer must not be NUL;
+ *  - the pointer must be one previously returned from a tc_… function;
+ *  - the memory referenced by the pointer must never be modified by C code; and
+ *  - except for `tc_{task,task_list}_free`, ownership of a `*TCTask` remains with the caller.
+ *
+ * Once passed to tc_task_free, a `*TCTask` becomes  invalid and must not be used again.
+ *
  * TCTasks are not threadsafe.
  */
 typedef struct TCTask TCTask;
@@ -138,6 +151,20 @@ typedef struct TCWorkingSet TCWorkingSet;
 
 /**
  * TCAnnotation contains the details of an annotation.
+ *
+ * # Safety
+ *
+ * An annotation must be initialized from a tc_.. function, and later freed
+ * with `tc_annotation_free` or `tc_annotation_list_free`.
+ *
+ * Any function taking a `*TCAnnotation` requires:
+ *  - the pointer must not be NUL;
+ *  - the pointer must be one previously returned from a tc_… function;
+ *  - the memory referenced by the pointer must never be modified by C code; and
+ *  - ownership transfers to the called function, and the value must not be used
+ *    after the call returns.  In fact, the value will be zeroed out to ensure this.
+ *
+ * TCAnnotations are not threadsafe.
  */
 typedef struct TCAnnotation {
   /**
@@ -344,7 +371,7 @@ void tc_kv_list_free(struct TCKVList *tckvs);
 
 /**
  * Create a new TCReplica with an in-memory database.  The contents of the database will be
- * lost when it is freed.
+ * lost when it is freed with tc_replica_free.
  */
 struct TCReplica *tc_replica_new_in_memory(void);
 
@@ -370,7 +397,8 @@ struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
 struct TCUuidList tc_replica_all_task_uuids(struct TCReplica *rep);
 
 /**
- * Get the current working set for this replica.
+ * Get the current working set for this replica.  The resulting value must be freed
+ * with tc_working_set_free.
  *
  * Returns NULL on error.
  */
@@ -728,7 +756,8 @@ TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
 TCResult tc_task_remove_tag(struct TCTask *task, struct TCString *tag);
 
 /**
- * Add an annotation to a mutable task.
+ * Add an annotation to a mutable task.  This call takes ownership of the
+ * passed annotation, which must not be used after the call returns.
  */
 TCResult tc_task_add_annotation(struct TCTask *task, struct TCAnnotation *annotation);
 
@@ -814,8 +843,8 @@ struct TCUuid tc_uuid_nil(void);
 void tc_uuid_to_buf(struct TCUuid tcuuid, char *buf);
 
 /**
- * Write the string representation of a TCUuid into the given buffer, which must be
- * at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
+ * Return the hyphenated string representation of a TCUuid.  The returned string
+ * must be freed with tc_string_free.
  */
 struct TCString *tc_uuid_to_str(struct TCUuid tcuuid);
 

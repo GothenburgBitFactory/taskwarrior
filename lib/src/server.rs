@@ -61,7 +61,10 @@ pub unsafe extern "C" fn tc_server_new_local(
 ) -> *mut TCServer {
     wrap(
         || {
-            // SAFETY: see TCString docstring
+            // SAFETY:
+            //  - server_dir is not NULL (promised by caller)
+            //  - server_dir is return from a tc_string_.. so is valid
+            //  - caller will not use server_dir after this call (convention)
             let server_dir = unsafe { TCString::take_from_ptr_arg(server_dir) };
             let server_config = ServerConfig::Local {
                 server_dir: server_dir.to_path_buf(),

@@ -23,7 +23,7 @@ use taskchampion::{Replica, StorageConfig};
 ///  - the memory referenced by the pointer must never be modified by C code; and
 ///  - except for `tc_replica_free`, ownership of a `*TCReplica` remains with the caller.
 ///
-/// Once passed to `tc_replica_free`, a `*TCReplica` becmes invalid and must not be used again.
+/// Once passed to `tc_replica_free`, a `*TCReplica` becomes invalid and must not be used again.
 ///
 /// TCReplicas are not threadsafe.
 pub struct TCReplica {
@@ -74,7 +74,12 @@ fn wrap<T, F>(rep: *mut TCReplica, f: F, err_value: T) -> T
 where
     F: FnOnce(&mut Replica) -> anyhow::Result<T>,
 {
-    // SAFETY: see type docstring
+    debug_assert!(!rep.is_null());
+    // SAFETY:
+    //  - rep is not NULL (promised by caller)
+    //  - *rep is a valid TCReplica (promised by caller)
+    //  - rep is valid for the duration of this function
+    //  - rep is not modified by anything else (not threadsafe)
     let rep: &mut TCReplica = unsafe { TCReplica::from_ptr_arg_ref_mut(rep) };
     if rep.mut_borrowed {
         panic!("replica is borrowed and cannot be used");
@@ -90,13 +95,14 @@ where
 }
 
 /// Create a new TCReplica with an in-memory database.  The contents of the database will be
-/// lost when it is freed.
+/// lost when it is freed with tc_replica_free.
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
     let storage = StorageConfig::InMemory
         .into_storage()
         .expect("in-memory always succeeds");
-    // SAFETY: see type docstring
+    // SAFETY:
+    // - caller promises to free this value
     unsafe { TCReplica::from(Replica::new(storage)).return_ptr() }
 }
 
@@ -108,7 +114,10 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
     path: *mut TCString,
     error_out: *mut *mut TCString,
 ) -> *mut TCReplica {
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - path is not NULL (promised by caller)
+    //  - path is return from a tc_string_.. so is valid
+    //  - caller will not use path after this call (convention)
     let path = unsafe { TCString::take_from_ptr_arg(path) };
     let storage_res = StorageConfig::OnDisk {
         taskdb_dir: path.to_path_buf(),
@@ -120,6 +129,11 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
         Err(e) => {
             if !error_out.is_null() {
                 unsafe {
+                    // SAFETY:
+                    //  - return_ptr: caller promises to free this string
+                    //  - *error_out:
+                    //    - error_out is not NULL (checked)
+                    //    - error_out points to a valid place for a pointer (caller promises)
                     *error_out = err_to_tcstring(e).return_ptr();
                 }
             }
@@ -127,7 +141,8 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
         }
     };
 
-    // SAFETY: see type docstring
+    // SAFETY:
+    // - caller promises to free this value
     unsafe { TCReplica::from(Replica::new(storage)).return_ptr() }
 }
 
@@ -147,7 +162,8 @@ pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList
                 .drain()
                 .map(|(_uuid, t)| {
                     NonNull::new(
-                        // SAFETY: see TCTask docstring
+                        // SAFETY:
+                        // - caller promises to free this value (via freeing the list)
                         unsafe { TCTask::from(t).return_ptr() },
                     )
                     .expect("TCTask::return_ptr returned NULL")
@@ -178,7 +194,8 @@ pub unsafe extern "C" fn tc_replica_all_task_uuids(rep: *mut TCReplica) -> TCUui
     )
 }
 
-/// Get the current working set for this replica.
+/// Get the current working set for this replica.  The resulting value must be freed
+/// with tc_working_set_free.
 ///
 /// Returns NULL on error.
 #[no_mangle]
@@ -187,7 +204,8 @@ pub unsafe extern "C" fn tc_replica_working_set(rep: *mut TCReplica) -> *mut TCW
         rep,
         |rep| {
             let ws = rep.working_set()?;
-            // SAFETY: caller promises to free this task
+            // SAFETY:
+            // - caller promises to free this value
             Ok(unsafe { TCWorkingSet::return_ptr(ws.into()) })
         },
         std::ptr::null_mut(),
@@ -203,10 +221,13 @@ pub unsafe extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid
     wrap(
         rep,
         |rep| {
-            // SAFETY: see TCUuid docstring
+            // SAFETY:
+            // - tcuuid is a valid TCUuid (all bytes are valid)
+            // - tcuuid is Copy so ownership doesn't matter
             let uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
             if let Some(task) = rep.get_task(uuid)? {
-                // SAFETY: caller promises to free this task
+                // SAFETY:
+                // - caller promises to free this task
                 Ok(unsafe { TCTask::from(task).return_ptr() })
             } else {
                 Ok(std::ptr::null_mut())
@@ -225,13 +246,17 @@ pub unsafe extern "C" fn tc_replica_new_task(
     status: TCStatus,
     description: *mut TCString,
 ) -> *mut TCTask {
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - description is not NULL (promised by caller)
+    //  - description is return from a tc_string_.. so is valid
+    //  - caller will not use description after this call (convention)
     let description = unsafe { TCString::take_from_ptr_arg(description) };
     wrap(
         rep,
         |rep| {
             let task = rep.new_task(status.into(), description.as_str()?.to_string())?;
-            // SAFETY: caller promises to free this task
+            // SAFETY:
+            // - caller promises to free this task
             Ok(unsafe { TCTask::from(task).return_ptr() })
         },
         std::ptr::null_mut(),
@@ -249,10 +274,13 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
     wrap(
         rep,
         |rep| {
-            // SAFETY: see TCUuid docstring
+            // SAFETY:
+            // - tcuuid is a valid TCUuid (all bytes are valid)
+            // - tcuuid is Copy so ownership doesn't matter
             let uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
             let task = rep.import_task_with_uuid(uuid)?;
-            // SAFETY: caller promises to free this task
+            // SAFETY:
+            // - caller promises to free this task
             Ok(unsafe { TCTask::from(task).return_ptr() })
         },
         std::ptr::null_mut(),
@@ -346,10 +374,15 @@ pub unsafe extern "C" fn tc_replica_rebuild_working_set(
 /// returned string.
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_error(rep: *mut TCReplica) -> *mut TCString<'static> {
-    // SAFETY: see type docstring
+    // SAFETY:
+    //  - rep is not NULL (promised by caller)
+    //  - *rep is a valid TCReplica (promised by caller)
+    //  - rep is valid for the duration of this function
+    //  - rep is not modified by anything else (not threadsafe)
     let rep: &mut TCReplica = unsafe { TCReplica::from_ptr_arg_ref_mut(rep) };
     if let Some(tcstring) = rep.error.take() {
-        // SAFETY: see TCString docstring
+        // SAFETY:
+        // - caller promises to free this string
         unsafe { tcstring.return_ptr() }
     } else {
         std::ptr::null_mut()
@@ -360,7 +393,10 @@ pub unsafe extern "C" fn tc_replica_error(rep: *mut TCReplica) -> *mut TCString<
 /// more than once.
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
-    // SAFETY: see type docstring
+    // SAFETY:
+    //  - replica is not NULL (promised by caller)
+    //  - replica is valid (promised by caller)
+    //  - caller will not use description after this call (promised by caller)
     let replica = unsafe { TCReplica::take_from_ptr_arg(rep) };
     if replica.mut_borrowed {
         panic!("replica is borrowed and cannot be freed");

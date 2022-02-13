@@ -23,7 +23,7 @@ use std::str::Utf8Error;
 /// # Safety
 ///
 /// When a `*TCString` appears as a return value or output argument, ownership is passed to the
-/// caller.  The caller must pass that ownerhsip back to another function or free the string.
+/// caller.  The caller must pass that ownership back to another function or free the string.
 ///
 /// Any function taking a `*TCReplica` requires:
 ///  - the pointer must not be NUL;
@@ -32,7 +32,7 @@ use std::str::Utf8Error;
 ///
 /// Unless specified otherwise, TaskChampion functions take ownership of a `*TCString` when it is
 /// given as a function argument, and the pointer is invalid when the function returns.  Callers
-/// must not use or free TCStringList after passing them to such API functions.
+/// must not use or free TCStrings after passing them to such API functions.
 ///
 /// TCString is not threadsafe.
 #[derive(PartialEq, Debug)]
@@ -193,7 +193,8 @@ pub unsafe extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> *mut TCS
     //  - cstr contains a valid NUL terminator (promised by caller)
     //  - cstr's content will not change before it is destroyed (promised by caller)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
-    // SAFETY: see docstring
+    // SAFETY:
+    //  - caller promises to free this string
     unsafe { TCString::CStr(cstr).return_ptr() }
 }
 
@@ -208,7 +209,8 @@ pub unsafe extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> *mut TCSt
     //  - cstr contains a valid NUL terminator (promised by caller)
     //  - cstr's content will not change before it is destroyed (by C convention)
     let cstr: &CStr = unsafe { CStr::from_ptr(cstr) };
-    // SAFETY: see docstring
+    // SAFETY:
+    //  - caller promises to free this string
     unsafe { TCString::CString(cstr.into()).return_ptr() }
 }
 
@@ -245,7 +247,8 @@ pub unsafe extern "C" fn tc_string_clone_with_len(
         }
     };
 
-    // SAFETY: see docstring
+    // SAFETY:
+    //  - caller promises to free this string
     unsafe { tcstring.return_ptr() }
 }
 

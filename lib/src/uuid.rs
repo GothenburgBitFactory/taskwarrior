@@ -92,15 +92,16 @@ pub unsafe extern "C" fn tc_uuid_to_buf(tcuuid: TCUuid, buf: *mut libc::c_char) 
     uuid.to_hyphenated().encode_lower(buf);
 }
 
-/// Write the string representation of a TCUuid into the given buffer, which must be
-/// at least TC_UUID_STRING_BYTES long.  No NUL terminator is added.
+/// Return the hyphenated string representation of a TCUuid.  The returned string
+/// must be freed with tc_string_free.
 #[no_mangle]
 pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
     let uuid: Uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
     let s = uuid.to_string();
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - caller promises to free this value.
     unsafe { TCString::from(s).return_ptr() }
 }
 
@@ -110,7 +111,10 @@ pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static
 pub unsafe extern "C" fn tc_uuid_from_str(s: *mut TCString, uuid_out: *mut TCUuid) -> TCResult {
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - s is not NULL (promised by caller)
+    //  - s is return from a tc_string_.. so is valid
+    //  - caller will not use s after this call (convention)
     let s = unsafe { TCString::take_from_ptr_arg(s) };
     if let Ok(s) = s.as_str() {
         if let Ok(u) = Uuid::parse_str(s) {

@@ -23,6 +23,19 @@ use taskchampion::{Annotation, Tag, Task, TaskMut};
 /// When a `tc_task_..` function that returns a TCResult returns TC_RESULT_ERROR, then
 /// `tc_task_error` will return the error message.
 ///
+/// # Safety
+///
+/// A task is an owned object, and must be freed with tc_task_free (or, if part of a list,
+/// with tc_task_list_free).
+///
+/// Any function taking a `*TCTask` requires:
+///  - the pointer must not be NUL;
+///  - the pointer must be one previously returned from a tc_… function;
+///  - the memory referenced by the pointer must never be modified by C code; and
+///  - except for `tc_{task,task_list}_free`, ownership of a `*TCTask` remains with the caller.
+///
+/// Once passed to tc_task_free, a `*TCTask` becomes  invalid and must not be used again.
+///
 /// TCTasks are not threadsafe.
 pub struct TCTask {
     /// The wrapped Task or TaskMut
@@ -269,7 +282,8 @@ pub unsafe extern "C" fn tc_task_get_taskmap(task: *mut TCTask) -> TCKVList {
 pub unsafe extern "C" fn tc_task_get_description(task: *mut TCTask) -> *mut TCString<'static> {
     wrap(task, |task| {
         let descr: TCString = task.get_description().into();
-        // SAFETY: see TCString docstring
+        // SAFETY:
+        //  - caller promises to free this string
         unsafe { descr.return_ptr() }
     })
 }
@@ -308,7 +322,10 @@ pub unsafe extern "C" fn tc_task_is_active(task: *mut TCTask) -> bool {
 /// that (invalid) tag is not present. No error will be reported via `tc_task_error`.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_has_tag(task: *mut TCTask, tag: *mut TCString) -> bool {
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - tag is not NULL (promised by caller)
+    //  - tag is return from a tc_string_.. so is valid
+    //  - caller will not use tag after this call (convention)
     let tcstring = unsafe { TCString::take_from_ptr_arg(tag) };
     wrap(task, |task| {
         if let Ok(tag) = Tag::try_from(tcstring) {
@@ -330,7 +347,8 @@ pub unsafe extern "C" fn tc_task_get_tags(task: *mut TCTask) -> TCStringList {
             .get_tags()
             .map(|t| {
                 NonNull::new(
-                    // SAFETY: see TCString docstring
+                    // SAFETY:
+                    //  - this TCString will be freed via tc_string_list_free.
                     unsafe { TCString::from(t.as_ref()).return_ptr() },
                 )
                 .expect("TCString::return_ptr() returned NULL")
@@ -368,7 +386,12 @@ pub unsafe extern "C" fn tc_task_get_uda<'a>(
     key: *mut TCString<'a>,
 ) -> *mut TCString<'static> {
     wrap(task, |task| {
+        // SAFETY:
+        //  - ns is not NULL (promised by caller)
+        //  - ns is return from a tc_string_.. so is valid
+        //  - caller will not use ns after this call (convention)
         if let Ok(ns) = unsafe { TCString::take_from_ptr_arg(ns) }.as_str() {
+            // SAFETY: same
             if let Ok(key) = unsafe { TCString::take_from_ptr_arg(key) }.as_str() {
                 if let Some(value) = task.get_uda(ns, key) {
                     // SAFETY:
@@ -390,6 +413,10 @@ pub unsafe extern "C" fn tc_task_get_legacy_uda<'a>(
     key: *mut TCString<'a>,
 ) -> *mut TCString<'static> {
     wrap(task, |task| {
+        // SAFETY:
+        //  - key is not NULL (promised by caller)
+        //  - key is return from a tc_string_.. so is valid
+        //  - caller will not use key after this call (convention)
         if let Ok(key) = unsafe { TCString::take_from_ptr_arg(key) }.as_str() {
             if let Some(value) = task.get_legacy_uda(key) {
                 // SAFETY:
@@ -461,7 +488,10 @@ pub unsafe extern "C" fn tc_task_set_description(
     task: *mut TCTask,
     description: *mut TCString,
 ) -> TCResult {
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - description is not NULL (promised by caller)
+    //  - description is return from a tc_string_.. so is valid
+    //  - caller will not use description after this call (convention)
     let description = unsafe { TCString::take_from_ptr_arg(description) };
     wrap_mut(
         task,
@@ -577,7 +607,10 @@ pub unsafe extern "C" fn tc_task_delete(task: *mut TCTask) -> TCResult {
 /// Add a tag to a mutable task.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - tag is not NULL (promised by caller)
+    //  - tag is return from a tc_string_.. so is valid
+    //  - caller will not use tag after this call (convention)
     let tcstring = unsafe { TCString::take_from_ptr_arg(tag) };
     wrap_mut(
         task,
@@ -593,7 +626,10 @@ pub unsafe extern "C" fn tc_task_add_tag(task: *mut TCTask, tag: *mut TCString) 
 /// Remove a tag from a mutable task.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_remove_tag(task: *mut TCTask, tag: *mut TCString) -> TCResult {
-    // SAFETY: see TCString docstring
+    // SAFETY:
+    //  - tag is not NULL (promised by caller)
+    //  - tag is return from a tc_string_.. so is valid
+    //  - caller will not use tag after this call (convention)
     let tcstring = unsafe { TCString::take_from_ptr_arg(tag) };
     wrap_mut(
         task,
@@ -606,13 +642,17 @@ pub unsafe extern "C" fn tc_task_remove_tag(task: *mut TCTask, tag: *mut TCStrin
     )
 }
 
-/// Add an annotation to a mutable task.
+/// Add an annotation to a mutable task.  This call takes ownership of the
+/// passed annotation, which must not be used after the call returns.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_add_annotation(
     task: *mut TCTask,
     annotation: *mut TCAnnotation,
 ) -> TCResult {
-    // SAFETY: see TCAnnotation docstring
+    // SAFETY:
+    //  - annotation is not NULL (promised by caller)
+    //  - annotation is return from a tc_string_.. so is valid
+    //  - caller will not use annotation after this call
     let (entry, description) =
         unsafe { TCAnnotation::take_val_from_arg(annotation, TCAnnotation::default()) };
     wrap_mut(
@@ -647,11 +687,14 @@ pub unsafe extern "C" fn tc_task_set_uda(
     key: *mut TCString,
     value: *mut TCString,
 ) -> TCResult {
-    // SAFETY: see TCString docstring
+    // safety:
+    //  - ns is not null (promised by caller)
+    //  - ns is return from a tc_string_.. so is valid
+    //  - caller will not use ns after this call (convention)
     let ns = unsafe { TCString::take_from_ptr_arg(ns) };
-    // SAFETY: see TCString docstring
+    // SAFETY: same
     let key = unsafe { TCString::take_from_ptr_arg(key) };
-    // SAFETY: see TCString docstring
+    // SAFETY: same
     let value = unsafe { TCString::take_from_ptr_arg(value) };
     wrap_mut(
         task,
@@ -674,9 +717,12 @@ pub unsafe extern "C" fn tc_task_remove_uda(
     ns: *mut TCString,
     key: *mut TCString,
 ) -> TCResult {
-    // SAFETY: see TCString docstring
+    // safety:
+    //  - ns is not null (promised by caller)
+    //  - ns is return from a tc_string_.. so is valid
+    //  - caller will not use ns after this call (convention)
     let ns = unsafe { TCString::take_from_ptr_arg(ns) };
-    // SAFETY: see TCString docstring
+    // SAFETY: same
     let key = unsafe { TCString::take_from_ptr_arg(key) };
     wrap_mut(
         task,
@@ -695,9 +741,12 @@ pub unsafe extern "C" fn tc_task_set_legacy_uda(
     key: *mut TCString,
     value: *mut TCString,
 ) -> TCResult {
-    // SAFETY: see TCString docstring
+    // safety:
+    //  - key is not null (promised by caller)
+    //  - key is return from a tc_string_.. so is valid
+    //  - caller will not use key after this call (convention)
     let key = unsafe { TCString::take_from_ptr_arg(key) };
-    // SAFETY: see TCString docstring
+    // SAFETY: same
     let value = unsafe { TCString::take_from_ptr_arg(value) };
     wrap_mut(
         task,
@@ -715,7 +764,10 @@ pub unsafe extern "C" fn tc_task_remove_legacy_uda(
     task: *mut TCTask,
     key: *mut TCString,
 ) -> TCResult {
-    // SAFETY: see TCString docstring
+    // safety:
+    //  - key is not null (promised by caller)
+    //  - key is return from a tc_string_.. so is valid
+    //  - caller will not use key after this call (convention)
     let key = unsafe { TCString::take_from_ptr_arg(key) };
     wrap_mut(
         task,
@@ -737,6 +789,8 @@ pub unsafe extern "C" fn tc_task_error(task: *mut TCTask) -> *mut TCString<'stat
     //  - task outlives 'a (promised by caller)
     let task: &mut TCTask = unsafe { TCTask::from_ptr_arg_ref_mut(task) };
     if let Some(tcstring) = task.error.take() {
+        // SAFETY:
+        //  - caller promises to free this value
         unsafe { tcstring.return_ptr() }
     } else {
         std::ptr::null_mut()
@@ -750,7 +804,7 @@ pub unsafe extern "C" fn tc_task_error(task: *mut TCTask) -> *mut TCString<'stat
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_free(task: *mut TCTask) {
     // SAFETY:
-    //  - rep is not NULL (promised by caller)
+    //  - task is not NULL (promised by caller)
     //  - caller will not use the TCTask after this (promised by caller)
     let mut tctask = unsafe { TCTask::take_from_ptr_arg(task) };
 
