@@ -162,6 +162,38 @@ typedef struct TCAnnotationList {
 } TCAnnotationList;
 
 /**
+ * TCKV contains a key/value pair that is part of a task.
+ *
+ * Neither key nor value are ever NULL.  They remain owned by the TCKV and
+ * will be freed when it is freed with tc_kv_list_free.
+ */
+typedef struct TCKV {
+  struct TCString *key;
+  struct TCString *value;
+} TCKV;
+
+/**
+ * TCKVList represents a list of key/value pairs.
+ *
+ * The content of this struct must be treated as read-only.
+ */
+typedef struct TCKVList {
+  /**
+   * number of key/value pairs in items
+   */
+  size_t len;
+  /**
+   * total size of items (internal use only)
+   */
+  size_t _capacity;
+  /**
+   * array of TCKV's. these remain owned by the TCKVList instance and will be freed by
+   * tc_kv_list_free.  This pointer is never NULL for a valid TCKVList.
+   */
+  const struct TCKV *items;
+} TCKVList;
+
+/**
  * TCTaskList represents a list of tasks.
  *
  * The content of this struct must be treated as read-only.
@@ -291,6 +323,14 @@ void tc_annotation_free(struct TCAnnotation *tcann);
  * When this call returns, the `items` pointer will be NULL, signalling an invalid TCAnnotationList.
  */
 void tc_annotation_list_free(struct TCAnnotationList *tcanns);
+
+/**
+ * Free a TCKVList instance.  The instance, and all TCKVs it contains, must not be used after
+ * this call.
+ *
+ * When this call returns, the `items` pointer will be NULL, signalling an invalid TCKVList.
+ */
+void tc_kv_list_free(struct TCKVList *tckvs);
 
 /**
  * Create a new TCReplica with an in-memory database.  The contents of the database will be
@@ -492,6 +532,13 @@ struct TCUuid tc_task_get_uuid(struct TCTask *task);
  * Get a task's status.
  */
 enum TCStatus tc_task_get_status(struct TCTask *task);
+
+/**
+ * Get the underlying key/value pairs for this task.  The returned TCKVList is
+ * a "snapshot" of the task and will not be updated if the task is subsequently
+ * modified.
+ */
+struct TCKVList tc_task_get_taskmap(struct TCTask *task);
 
 /**
  * Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it

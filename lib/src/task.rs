@@ -243,7 +243,24 @@ pub unsafe extern "C" fn tc_task_get_status<'a>(task: *mut TCTask) -> TCStatus {
     wrap(task, |task| task.get_status().into())
 }
 
-// TODO: tc_task_get_taskmap (?? then we have to wrap a map..)
+/// Get the underlying key/value pairs for this task.  The returned TCKVList is
+/// a "snapshot" of the task and will not be updated if the task is subsequently
+/// modified.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_taskmap(task: *mut TCTask) -> TCKVList {
+    wrap(task, |task| {
+        let vec: Vec<TCKV> = task
+            .get_taskmap()
+            .iter()
+            .map(|(k, v)| {
+                let key = TCString::from(k.as_ref());
+                let value = TCString::from(v.as_ref());
+                TCKV::as_ctype((key, value))
+            })
+            .collect();
+        TCKVList::return_val(vec)
+    })
+}
 
 /// Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
 /// contains embedded NUL characters).

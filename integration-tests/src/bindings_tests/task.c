@@ -520,6 +520,47 @@ static void test_task_udas(void) {
     tc_replica_free(rep);
 }
 
+static void tckvlist_assert_key(TCKVList *list, char *key, char *value) {
+    TEST_ASSERT_NOT_NULL(list);
+    for (size_t i = 0; i < list->len; i++) {
+        if (0 == strcmp(tc_string_content(list->items[i].key), key)) {
+            TEST_ASSERT_EQUAL_STRING(value, tc_string_content(list->items[i].value));
+            return;
+        }
+    }
+    TEST_FAIL_MESSAGE("key not found");
+}
+
+// get_tags returns the list of tags
+static void test_task_taskmap(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep));
+
+    TCTask *task = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    tc_task_to_mut(task, rep);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_add_tag(task, tc_string_borrow("next")));
+
+    TCAnnotation ann;
+    ann.entry = 1644623411;
+    ann.description = tc_string_borrow("ann1");
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_add_annotation(task, &ann));
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_wait(task, 3643679997)); // 2085
+
+    TCKVList taskmap = tc_task_get_taskmap(task);
+    tckvlist_assert_key(&taskmap, "annotation_1644623411", "ann1");
+    tckvlist_assert_key(&taskmap, "tag_next", "");
+    tckvlist_assert_key(&taskmap, "status", "pending");
+    tckvlist_assert_key(&taskmap, "description", "my task");
+    tc_kv_list_free(&taskmap);
+
+    tc_task_free(task);
+    tc_replica_free(rep);
+}
+
 int task_tests(void) {
     UNITY_BEGIN();
     // each test case above should be named here, in order.
@@ -536,5 +577,6 @@ int task_tests(void) {
     RUN_TEST(test_task_get_tags);
     RUN_TEST(test_task_annotations);
     RUN_TEST(test_task_udas);
+    RUN_TEST(test_task_taskmap);
     return UNITY_END();
 }
