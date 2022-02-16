@@ -6,4 +6,5 @@ members = [
     "sync-server",
     "lib",
     "integration-tests",
+    "xtask",
 ]

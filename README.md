@@ -17,12 +17,18 @@ But, if you just want to get some practice with Rust, we'd be happy to have you.
 
 ## Structure
 
-There are four crates here:
+There are five crates here:
 
  * [taskchampion](./taskchampion) - the core of the tool
  * [taskchampion-cli](./cli) - the command-line binary
  * [taskchampion-sync-server](./sync-server) - the server against which `task sync` operates
- * [replica-server-tests](./replica-server-tests) - integration tests covering both _taskchampion-cli_ and _taskchampion-sync-server_
+ * [taskchampion-lib](./lib) - glue code to use _taskchampion_ from C
+ * [integration-tests](./integration-tests) - integration tests covering _taskchampion-cli_, _taskchampion-sync-server_, and _taskchampion-lib_.
+
+## Code Generation
+
+The _taskchampion_lib_ crate uses a bit of code generation to create the `lib/taskchampion.h` header file.
+To regenerate this file, run `cargo xtask codegen`.
 
 ## Documentation Generation
 

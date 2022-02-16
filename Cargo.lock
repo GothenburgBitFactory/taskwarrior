@@ -3035,12 +3035,9 @@ name = "taskchampion-lib"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "cbindgen",
  "chrono",
  "libc",
- "pretty_assertions",
  "taskchampion",
- "uuid",
 ]
 
 [[package]]
@@ -3795,6 +3792,14 @@ dependencies = [
  "mac",
  "markup5ever",
  "time 0.1.43",
+]
+
+[[package]]
+name = "xtask"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "cbindgen",
 ]
 
 [[package]]
