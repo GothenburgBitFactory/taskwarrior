@@ -11,7 +11,11 @@ fn build_libtaskchampion(suites: &[&'static str]) {
     libtaskchampion.push("target");
     libtaskchampion.push(env::var("PROFILE").unwrap());
     libtaskchampion.push("deps");
-    libtaskchampion.push("libtaskchampion.so");
+    libtaskchampion.push(if cfg!(target_os = "macos") {
+        "libtaskchampion.dylib"
+    } else {
+        "libtaskchampion.so"
+    });
 
     let mut build = cc::Build::new();
     build.shared_flag(true);
