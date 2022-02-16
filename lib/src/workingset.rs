@@ -7,6 +7,22 @@ use taskchampion::{Uuid, WorkingSet};
 /// be freed at any time.
 ///
 /// To iterate over a working set, search indexes 1 through largest_index.
+///
+/// # Safety
+///
+/// The `*TCWorkingSet` returned from `tc_replica_working_set` is owned by the caller and
+/// must later be freed to avoid a memory leak.  Its lifetime is independent of the replica
+/// from which it was generated.
+///
+/// Any function taking a `*TCWorkingSet` requires:
+///  - the pointer must not be NUL;
+///  - the pointer must be one previously returned from `tc_replica_working_set`
+///  - the memory referenced by the pointer must never be accessed by C code; and
+///  - except for `tc_replica_free`, ownership of a `*TCWorkingSet` remains with the caller.
+///
+/// Once passed to `tc_replica_free`, a `*TCWorkingSet` becomes invalid and must not be used again.
+///
+/// TCWorkingSet is not threadsafe.
 pub struct TCWorkingSet(WorkingSet);
 
 impl PassByPointer for TCWorkingSet {}

@@ -27,6 +27,7 @@ fn codegen() -> anyhow::Result<()> {
     Builder::new()
         .with_crate(&lib_crate_dir)
         .with_config(Config {
+            header: Some(include_str!("../../lib/header-intro.h").into()),
             language: Language::C,
             cpp_compat: true,
             sys_includes: vec!["stdbool.h".into(), "stdint.h".into(), "time.h".into()],

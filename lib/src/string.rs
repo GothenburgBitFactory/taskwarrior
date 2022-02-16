@@ -25,7 +25,7 @@ use std::str::Utf8Error;
 /// When a `*TCString` appears as a return value or output argument, ownership is passed to the
 /// caller.  The caller must pass that ownership back to another function or free the string.
 ///
-/// Any function taking a `*TCReplica` requires:
+/// Any function taking a `*TCString` requires:
 ///  - the pointer must not be NUL;
 ///  - the pointer must be one previously returned from a tc_… function; and
 ///  - the memory referenced by the pointer must never be modified by C code.

@@ -3037,7 +3037,9 @@ dependencies = [
  "anyhow",
  "chrono",
  "libc",
+ "pretty_assertions",
  "taskchampion",
+ "uuid",
 ]
 
 [[package]]
