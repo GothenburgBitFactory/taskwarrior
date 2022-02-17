@@ -7,21 +7,21 @@ use crate::types::*;
 /// will be freed when it is freed with tc_kv_list_free.
 #[repr(C)]
 pub struct TCKV {
-    pub key: *mut TCString<'static>,
-    pub value: *mut TCString<'static>,
+    pub key: TCString,
+    pub value: TCString,
 }
 
 impl PassByValue for TCKV {
-    type RustType = (TCString<'static>, TCString<'static>);
+    type RustType = (RustString<'static>, RustString<'static>);
 
     unsafe fn from_ctype(self) -> Self::RustType {
         // SAFETY:
         //  - self.key is not NULL (field docstring)
         //  - self.key came from return_ptr in as_ctype
         //  - self is owned, so we can take ownership of this TCString
-        let key = unsafe { TCString::take_from_ptr_arg(self.key) };
+        let key = unsafe { TCString::val_from_arg(self.key) };
         // SAFETY: (same)
-        let value = unsafe { TCString::take_from_ptr_arg(self.value) };
+        let value = unsafe { TCString::val_from_arg(self.value) };
         (key, value)
     }
 
@@ -29,10 +29,10 @@ impl PassByValue for TCKV {
         TCKV {
             // SAFETY:
             //  - ownership of the TCString tied to ownership of Self
-            key: unsafe { key.return_ptr() },
+            key: unsafe { TCString::return_val(key) },
             // SAFETY:
             //  - ownership of the TCString tied to ownership of Self
-            value: unsafe { value.return_ptr() },
+            value: unsafe { TCString::return_val(value) },
         }
     }
 }
@@ -88,7 +88,7 @@ mod test {
 
     #[test]
     fn empty_list_has_non_null_pointer() {
-        let tckvs = TCKVList::return_val(Vec::new());
+        let tckvs = unsafe { TCKVList::return_val(Vec::new()) };
         assert!(!tckvs.items.is_null());
         assert_eq!(tckvs.len, 0);
         assert_eq!(tckvs._capacity, 0);
@@ -96,7 +96,7 @@ mod test {
 
     #[test]
     fn free_sets_null_pointer() {
-        let mut tckvs = TCKVList::return_val(Vec::new());
+        let mut tckvs = unsafe { TCKVList::return_val(Vec::new()) };
         // SAFETY: testing expected behavior
         unsafe { tc_kv_list_free(&mut tckvs) };
         assert!(tckvs.items.is_null());

@@ -22,24 +22,24 @@ pub struct TCAnnotation {
     /// Time the annotation was made.  Must be nonzero.
     pub entry: libc::time_t,
     /// Content of the annotation.  Must not be NULL.
-    pub description: *mut TCString<'static>,
+    pub description: TCString,
 }
 
 impl PassByValue for TCAnnotation {
     // NOTE: we cannot use `RustType = Annotation` here because conversion of the
-    // TCString to a String can fail.
-    type RustType = (DateTime<Utc>, TCString<'static>);
+    // Rust to a String can fail.
+    type RustType = (DateTime<Utc>, RustString<'static>);
 
-    unsafe fn from_ctype(self) -> Self::RustType {
+    unsafe fn from_ctype(mut self) -> Self::RustType {
         // SAFETY:
         //  - any time_t value is valid
         //  - time_t is copy, so ownership is not important
         let entry = unsafe { libc::time_t::val_from_arg(self.entry) }.unwrap();
         // SAFETY:
-        //  - self.description is not NULL (field docstring)
-        //  - self.description came from return_ptr in as_ctype
+        //  - self.description is valid (came from return_val in as_ctype)
         //  - self is owned, so we can take ownership of this TCString
-        let description = unsafe { TCString::take_from_ptr_arg(self.description) };
+        let description =
+            unsafe { TCString::take_val_from_arg(&mut self.description, TCString::default()) };
         (entry, description)
     }
 
@@ -48,7 +48,7 @@ impl PassByValue for TCAnnotation {
             entry: libc::time_t::as_ctype(Some(entry)),
             // SAFETY:
             //  - ownership of the TCString tied to ownership of Self
-            description: unsafe { description.return_ptr() },
+            description: unsafe { TCString::return_val(description) },
         }
     }
 }
@@ -57,7 +57,7 @@ impl Default for TCAnnotation {
     fn default() -> Self {
         TCAnnotation {
             entry: 0 as libc::time_t,
-            description: std::ptr::null_mut(),
+            description: TCString::default(),
         }
     }
 }
@@ -125,7 +125,7 @@ mod test {
 
     #[test]
     fn empty_list_has_non_null_pointer() {
-        let tcanns = TCAnnotationList::return_val(Vec::new());
+        let tcanns = unsafe { TCAnnotationList::return_val(Vec::new()) };
         assert!(!tcanns.items.is_null());
         assert_eq!(tcanns.len, 0);
         assert_eq!(tcanns._capacity, 0);
@@ -133,7 +133,7 @@ mod test {
 
     #[test]
     fn free_sets_null_pointer() {
-        let mut tcanns = TCAnnotationList::return_val(Vec::new());
+        let mut tcanns = unsafe { TCAnnotationList::return_val(Vec::new()) };
         // SAFETY: testing expected behavior
         unsafe { tc_annotation_list_free(&mut tcanns) };
         assert!(tcanns.items.is_null());

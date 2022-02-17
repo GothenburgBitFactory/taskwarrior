@@ -1,6 +1,6 @@
 use crate::traits::*;
 use crate::types::*;
-use crate::util::err_to_tcstring;
+use crate::util::err_to_ruststring;
 use taskchampion::{Server, ServerConfig};
 
 /// TCServer represents an interface to a sync server.  Aside from new and free, a server
@@ -26,20 +26,26 @@ impl AsMut<Box<dyn Server>> for TCServer {
 }
 
 /// Utility function to allow using `?` notation to return an error value.  
-fn wrap<T, F>(f: F, error_out: *mut *mut TCString, err_value: T) -> T
+fn wrap<T, F>(f: F, error_out: *mut TCString, err_value: T) -> T
 where
     F: FnOnce() -> anyhow::Result<T>,
 {
+    if !error_out.is_null() {
+        // SAFETY:
+        //  - error_out is not NULL (just checked)
+        //  - properly aligned and valid (promised by caller)
+        unsafe { *error_out = TCString::default() };
+    }
+
     match f() {
         Ok(v) => v,
         Err(e) => {
             if !error_out.is_null() {
                 // SAFETY:
-                // - error_out is not NULL (checked)
-                // - ..and points to a valid pointer (promised by caller)
-                // - caller will free this string (promised by caller)
+                //  - error_out is not NULL (just checked)
+                //  - properly aligned and valid (promised by caller)
                 unsafe {
-                    *error_out = err_to_tcstring(e).return_ptr();
+                    TCString::val_to_arg_out(err_to_ruststring(e), error_out);
                 }
             }
             err_value
@@ -56,16 +62,15 @@ where
 /// The server must be freed after it is used - tc_replica_sync does not automatically free it.
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_new_local(
-    server_dir: *mut TCString,
-    error_out: *mut *mut TCString,
+    server_dir: TCString,
+    error_out: *mut TCString,
 ) -> *mut TCServer {
     wrap(
         || {
             // SAFETY:
-            //  - server_dir is not NULL (promised by caller)
-            //  - server_dir is return from a tc_string_.. so is valid
+            //  - server_dir is valid (promised by caller)
             //  - caller will not use server_dir after this call (convention)
-            let server_dir = unsafe { TCString::take_from_ptr_arg(server_dir) };
+            let server_dir = unsafe { TCString::val_from_arg(server_dir) };
             let server_config = ServerConfig::Local {
                 server_dir: server_dir.to_path_buf(),
             };
@@ -87,30 +92,26 @@ pub unsafe extern "C" fn tc_server_new_local(
 /// The server must be freed after it is used - tc_replica_sync does not automatically free it.
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_new_remote(
-    origin: *mut TCString,
+    origin: TCString,
     client_key: TCUuid,
-    encryption_secret: *mut TCString,
-    error_out: *mut *mut TCString,
+    encryption_secret: TCString,
+    error_out: *mut TCString,
 ) -> *mut TCServer {
     wrap(
         || {
-            debug_assert!(!origin.is_null());
-            debug_assert!(!encryption_secret.is_null());
             // SAFETY:
-            //  - origin is not NULL
             //  - origin is valid (promised by caller)
             //  - origin ownership is transferred to this function
-            let origin = unsafe { TCString::take_from_ptr_arg(origin) }.into_string()?;
+            let origin = unsafe { TCString::val_from_arg(origin) }.into_string()?;
 
             // SAFETY:
             //  - client_key is a valid Uuid (any 8-byte sequence counts)
 
             let client_key = unsafe { TCUuid::val_from_arg(client_key) };
             // SAFETY:
-            //  - encryption_secret is not NULL
             //  - encryption_secret is valid (promised by caller)
             //  - encryption_secret ownership is transferred to this function
-            let encryption_secret = unsafe { TCString::take_from_ptr_arg(encryption_secret) }
+            let encryption_secret = unsafe { TCString::val_from_arg(encryption_secret) }
                 .as_bytes()
                 .to_vec();
 

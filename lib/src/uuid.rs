@@ -31,13 +31,17 @@ impl PassByValue for TCUuid {
 /// Create a new, randomly-generated UUID.
 #[no_mangle]
 pub unsafe extern "C" fn tc_uuid_new_v4() -> TCUuid {
-    TCUuid::return_val(Uuid::new_v4())
+    // SAFETY:
+    // - value is not allocated
+    unsafe { TCUuid::return_val(Uuid::new_v4()) }
 }
 
 /// Create a new UUID with the nil value.
 #[no_mangle]
 pub unsafe extern "C" fn tc_uuid_nil() -> TCUuid {
-    TCUuid::return_val(Uuid::nil())
+    // SAFETY:
+    // - value is not allocated
+    unsafe { TCUuid::return_val(Uuid::nil()) }
 }
 
 /// TCUuidList represents a list of uuids.
@@ -95,27 +99,26 @@ pub unsafe extern "C" fn tc_uuid_to_buf(tcuuid: TCUuid, buf: *mut libc::c_char) 
 /// Return the hyphenated string representation of a TCUuid.  The returned string
 /// must be freed with tc_string_free.
 #[no_mangle]
-pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_uuid_to_str(tcuuid: TCUuid) -> TCString {
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
     let uuid: Uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
     let s = uuid.to_string();
     // SAFETY:
     //  - caller promises to free this value.
-    unsafe { TCString::from(s).return_ptr() }
+    unsafe { TCString::return_val(s.into()) }
 }
 
 /// Parse the given string as a UUID.  Returns TC_RESULT_ERROR on parse failure or if the given
 /// string is not valid.
 #[no_mangle]
-pub unsafe extern "C" fn tc_uuid_from_str(s: *mut TCString, uuid_out: *mut TCUuid) -> TCResult {
+pub unsafe extern "C" fn tc_uuid_from_str(s: TCString, uuid_out: *mut TCUuid) -> TCResult {
     debug_assert!(!s.is_null());
     debug_assert!(!uuid_out.is_null());
     // SAFETY:
-    //  - s is not NULL (promised by caller)
-    //  - s is return from a tc_string_.. so is valid
+    //  - s is valid (promised by caller)
     //  - caller will not use s after this call (convention)
-    let s = unsafe { TCString::take_from_ptr_arg(s) };
+    let mut s = unsafe { TCString::val_from_arg(s) };
     if let Ok(s) = s.as_str() {
         if let Ok(u) = Uuid::parse_str(s) {
             // SAFETY:
@@ -147,7 +150,7 @@ mod test {
 
     #[test]
     fn empty_list_has_non_null_pointer() {
-        let tcuuids = TCUuidList::return_val(Vec::new());
+        let tcuuids = unsafe { TCUuidList::return_val(Vec::new()) };
         assert!(!tcuuids.items.is_null());
         assert_eq!(tcuuids.len, 0);
         assert_eq!(tcuuids._capacity, 0);
@@ -155,7 +158,7 @@ mod test {
 
     #[test]
     fn free_sets_null_pointer() {
-        let mut tcuuids = TCUuidList::return_val(Vec::new());
+        let mut tcuuids = unsafe { TCUuidList::return_val(Vec::new()) };
         // SAFETY: testing expected behavior
         unsafe { tc_uuid_list_free(&mut tcuuids) };
         assert!(tcuuids.items.is_null());

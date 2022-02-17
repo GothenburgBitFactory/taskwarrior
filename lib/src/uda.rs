@@ -4,18 +4,18 @@ use crate::types::*;
 /// TCUda contains the details of a UDA.
 #[repr(C)]
 pub struct TCUda {
-    /// Namespace of the UDA.  For legacy UDAs, this is NULL.
-    pub ns: *mut TCString<'static>,
+    /// Namespace of the UDA.  For legacy UDAs, this may have a NULL ptr field.
+    pub ns: TCString,
     /// UDA key.  Must not be NULL.
-    pub key: *mut TCString<'static>,
+    pub key: TCString,
     /// Content of the UDA.  Must not be NULL.
-    pub value: *mut TCString<'static>,
+    pub value: TCString,
 }
 
 pub(crate) struct Uda {
-    pub ns: Option<TCString<'static>>,
-    pub key: TCString<'static>,
-    pub value: TCString<'static>,
+    pub ns: Option<RustString<'static>>,
+    pub key: RustString<'static>,
+    pub value: RustString<'static>,
 }
 
 impl PassByValue for TCUda {
@@ -29,16 +29,16 @@ impl PassByValue for TCUda {
                 // SAFETY:
                 //  - self is owned, so we can take ownership of this TCString
                 //  - self.ns is a valid, non-null TCString (NULL just checked)
-                Some(unsafe { TCString::take_from_ptr_arg(self.ns) })
+                Some(unsafe { TCString::val_from_arg(self.ns) })
             },
             // SAFETY:
             //  - self is owned, so we can take ownership of this TCString
             //  - self.key is a valid, non-null TCString (see type docstring)
-            key: unsafe { TCString::take_from_ptr_arg(self.key) },
+            key: unsafe { TCString::val_from_arg(self.key) },
             // SAFETY:
             //  - self is owned, so we can take ownership of this TCString
             //  - self.value is a valid, non-null TCString (see type docstring)
-            value: unsafe { TCString::take_from_ptr_arg(self.value) },
+            value: unsafe { TCString::val_from_arg(self.value) },
         }
     }
 
@@ -46,14 +46,14 @@ impl PassByValue for TCUda {
         TCUda {
             // SAFETY: caller assumes ownership of this value
             ns: if let Some(ns) = uda.ns {
-                unsafe { ns.return_ptr() }
+                unsafe { TCString::return_val(ns) }
             } else {
-                std::ptr::null_mut()
+                TCString::default()
             },
             // SAFETY: caller assumes ownership of this value
-            key: unsafe { uda.key.return_ptr() },
+            key: unsafe { TCString::return_val(uda.key) },
             // SAFETY: caller assumes ownership of this value
-            value: unsafe { uda.value.return_ptr() },
+            value: unsafe { TCString::return_val(uda.value) },
         }
     }
 }
@@ -61,9 +61,9 @@ impl PassByValue for TCUda {
 impl Default for TCUda {
     fn default() -> Self {
         TCUda {
-            ns: std::ptr::null_mut(),
-            key: std::ptr::null_mut(),
-            value: std::ptr::null_mut(),
+            ns: TCString::default(),
+            key: TCString::default(),
+            value: TCString::default(),
         }
     }
 }
@@ -130,7 +130,7 @@ mod test {
 
     #[test]
     fn empty_list_has_non_null_pointer() {
-        let tcudas = TCUdaList::return_val(Vec::new());
+        let tcudas = unsafe { TCUdaList::return_val(Vec::new()) };
         assert!(!tcudas.items.is_null());
         assert_eq!(tcudas.len, 0);
         assert_eq!(tcudas._capacity, 0);
@@ -138,7 +138,7 @@ mod test {
 
     #[test]
     fn free_sets_null_pointer() {
-        let mut tcudas = TCUdaList::return_val(Vec::new());
+        let mut tcudas = unsafe { TCUdaList::return_val(Vec::new()) };
         // SAFETY: testing expected behavior
         unsafe { tc_uda_list_free(&mut tcudas) };
         assert!(tcudas.items.is_null());

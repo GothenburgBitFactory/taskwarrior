@@ -28,8 +28,6 @@ pub(crate) trait PassByValue: Sized {
     ///
     /// - `self` must be a valid instance of the C type.  This is typically ensured either by
     ///   requiring that C code not modify it, or by defining the valid values in C comments.
-    /// - if RustType is not Copy, then arg must not be used by the caller after calling this
-    ///   function
     unsafe fn val_from_arg(arg: Self) -> Self::RustType {
         // SAFETY:
         //  - arg is a valid CType (promised by caller)
@@ -54,7 +52,11 @@ pub(crate) trait PassByValue: Sized {
     }
 
     /// Return a value to C
-    fn return_val(arg: Self::RustType) -> Self {
+    ///
+    /// # Safety
+    ///
+    /// - if the value is allocated, the caller must ensure that the value is eventually freed
+    unsafe fn return_val(arg: Self::RustType) -> Self {
         Self::as_ctype(arg)
     }
 

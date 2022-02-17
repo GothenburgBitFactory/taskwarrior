@@ -152,40 +152,6 @@ typedef struct TCReplica TCReplica;
 typedef struct TCServer TCServer;
 
 /**
- * TCString supports passing strings into and out of the TaskChampion API.
- *
- * # Rust Strings and C Strings
- *
- * A Rust string can contain embedded NUL characters, while C considers such a character to mark
- * the end of a string.  Strings containing embedded NULs cannot be represented as a "C string"
- * and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.  In
- * general, these two functions should be used for handling arbitrary data, while more convenient
- * forms may be used where embedded NUL characters are impossible, such as in static strings.
- *
- * # UTF-8
- *
- * TaskChampion expects all strings to be valid UTF-8. `tc_string_…` functions will fail if given
- * a `*TCString` containing invalid UTF-8.
- *
- * # Safety
- *
- * When a `*TCString` appears as a return value or output argument, ownership is passed to the
- * caller.  The caller must pass that ownership back to another function or free the string.
- *
- * Any function taking a `*TCString` requires:
- *  - the pointer must not be NUL;
- *  - the pointer must be one previously returned from a tc_… function; and
- *  - the memory referenced by the pointer must never be modified by C code.
- *
- * Unless specified otherwise, TaskChampion functions take ownership of a `*TCString` when it is
- * given as a function argument, and the pointer is invalid when the function returns.  Callers
- * must not use or free TCStrings after passing them to such API functions.
- *
- * TCString is not threadsafe.
- */
-typedef struct TCString TCString;
-
-/**
  * A task, as publicly exposed by this library.
  *
  * A task begins in "immutable" mode.  It must be converted to "mutable" mode
@@ -244,6 +210,52 @@ typedef struct TCTask TCTask;
 typedef struct TCWorkingSet TCWorkingSet;
 
 /**
+ * TCString supports passing strings into and out of the TaskChampion API.
+ *
+ * # Rust Strings and C Strings
+ *
+ * A Rust string can contain embedded NUL characters, while C considers such a character to mark
+ * the end of a string.  Strings containing embedded NULs cannot be represented as a "C string"
+ * and must be accessed using `tc_string_content_and_len` and `tc_string_clone_with_len`.  In
+ * general, these two functions should be used for handling arbitrary data, while more convenient
+ * forms may be used where embedded NUL characters are impossible, such as in static strings.
+ *
+ * # UTF-8
+ *
+ * TaskChampion expects all strings to be valid UTF-8. `tc_string_…` functions will fail if given
+ * a `*TCString` containing invalid UTF-8.
+ *
+ * # Safety
+ *
+ * The `ptr` field may be checked for NULL, where documentation indicates this is possible.  All
+ * other fields in a TCString are private and must not be used from C.  They exist in the struct
+ * to ensure proper allocation and alignment.
+ *
+ * When a `TCString` appears as a return value or output argument, ownership is passed to the
+ * caller.  The caller must pass that ownership back to another function or free the string.
+ *
+ * Any function taking a `TCString` requires:
+ *  - the pointer must not be NUL;
+ *  - the pointer must be one previously returned from a tc_… function; and
+ *  - the memory referenced by the pointer must never be modified by C code.
+ *
+ * Unless specified otherwise, TaskChampion functions take ownership of a `TCString` when it is
+ * given as a function argument, and the caller must not use or free TCStrings after passing them
+ * to such API functions.
+ *
+ * A TCString with a NULL `ptr` field need not be freed, although tc_free_string will not fail
+ * for such a value.
+ *
+ * TCString is not threadsafe.
+ */
+typedef struct TCString {
+  void *ptr;
+  size_t _u1;
+  size_t _u2;
+  uint8_t _u3;
+} TCString;
+
+/**
  * TCAnnotation contains the details of an annotation.
  *
  * # Safety
@@ -268,7 +280,7 @@ typedef struct TCAnnotation {
   /**
    * Content of the annotation.  Must not be NULL.
    */
-  struct TCString *description;
+  struct TCString description;
 } TCAnnotation;
 
 /**
@@ -299,8 +311,8 @@ typedef struct TCAnnotationList {
  * will be freed when it is freed with tc_kv_list_free.
  */
 typedef struct TCKV {
-  struct TCString *key;
-  struct TCString *value;
+  struct TCString key;
+  struct TCString value;
 } TCKV;
 
 /**
@@ -395,7 +407,7 @@ typedef struct TCStringList {
    * be freed by tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
    * *TCStringList at indexes 0..len-1 are not NULL.
    */
-  struct TCString *const *items;
+  const struct TCString *items;
 } TCStringList;
 
 /**
@@ -403,17 +415,17 @@ typedef struct TCStringList {
  */
 typedef struct TCUda {
   /**
-   * Namespace of the UDA.  For legacy UDAs, this is NULL.
+   * Namespace of the UDA.  For legacy UDAs, this may have a NULL ptr field.
    */
-  struct TCString *ns;
+  struct TCString ns;
   /**
    * UDA key.  Must not be NULL.
    */
-  struct TCString *key;
+  struct TCString key;
   /**
    * Content of the UDA.  Must not be NULL.
    */
-  struct TCString *value;
+  struct TCString value;
 } TCUda;
 
 /**
@@ -474,7 +486,7 @@ struct TCReplica *tc_replica_new_in_memory(void);
  * is written to the error_out parameter (if it is not NULL) and NULL is returned.  The caller
  * must free this string.
  */
-struct TCReplica *tc_replica_new_on_disk(struct TCString *path, struct TCString **error_out);
+struct TCReplica *tc_replica_new_on_disk(struct TCString path, struct TCString *error_out);
 
 /**
  * Get a list of all tasks in the replica.
@@ -487,6 +499,8 @@ struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
  * Get a list of all uuids for tasks in the replica.
  *
  * Returns a TCUuidList with a NULL items field on error.
+ *
+ * The caller must free the UUID list with `tc_uuid_list_free`.
  */
 struct TCUuidList tc_replica_all_task_uuids(struct TCReplica *rep);
 
@@ -513,7 +527,7 @@ struct TCTask *tc_replica_get_task(struct TCReplica *rep, struct TCUuid tcuuid);
  */
 struct TCTask *tc_replica_new_task(struct TCReplica *rep,
                                    enum TCStatus status,
-                                   struct TCString *description);
+                                   struct TCString description);
 
 /**
  * Create a new task.  The task must not already exist.
@@ -553,11 +567,11 @@ TCResult tc_replica_add_undo_point(struct TCReplica *rep, bool force);
 TCResult tc_replica_rebuild_working_set(struct TCReplica *rep, bool renumber);
 
 /**
- * Get the latest error for a replica, or NULL if the last operation succeeded.  Subsequent calls
- * to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
- * returned string.
+ * Get the latest error for a replica, or a string with NULL ptr if no error exists.  Subsequent
+ * calls to this function will return NULL.  The rep pointer must not be NULL.  The caller must
+ * free the returned string.
  */
-struct TCString *tc_replica_error(struct TCReplica *rep);
+struct TCString tc_replica_error(struct TCReplica *rep);
 
 /**
  * Free a replica.  The replica may not be used after this function returns and must not be freed
@@ -574,7 +588,7 @@ void tc_replica_free(struct TCReplica *rep);
  *
  * The server must be freed after it is used - tc_replica_sync does not automatically free it.
  */
-struct TCServer *tc_server_new_local(struct TCString *server_dir, struct TCString **error_out);
+struct TCServer *tc_server_new_local(struct TCString server_dir, struct TCString *error_out);
 
 /**
  * Create a new TCServer that connects to a remote server.  See the TaskChampion docs for the
@@ -585,10 +599,10 @@ struct TCServer *tc_server_new_local(struct TCString *server_dir, struct TCStrin
  *
  * The server must be freed after it is used - tc_replica_sync does not automatically free it.
  */
-struct TCServer *tc_server_new_remote(struct TCString *origin,
+struct TCServer *tc_server_new_remote(struct TCString origin,
                                       struct TCUuid client_key,
-                                      struct TCString *encryption_secret,
-                                      struct TCString **error_out);
+                                      struct TCString encryption_secret,
+                                      struct TCString *error_out);
 
 /**
  * Free a server.  The server may not be used after this function returns and must not be freed
@@ -612,34 +626,39 @@ void tc_server_free(struct TCServer *server);
  * free(url); // string is no longer referenced and can be freed
  * ```
  */
-struct TCString *tc_string_borrow(const char *cstr);
+struct TCString tc_string_borrow(const char *cstr);
 
 /**
  * Create a new TCString by cloning the content of the given C string.  The resulting TCString
  * is independent of the given string, which can be freed or overwritten immediately.
  */
-struct TCString *tc_string_clone(const char *cstr);
+struct TCString tc_string_clone(const char *cstr);
 
 /**
  * Create a new TCString containing the given string with the given length. This allows creation
  * of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
  * TCString is independent of the passed buffer, which may be reused or freed immediately.
  *
+ * The length should _not_ include any trailing NUL.
+ *
  * The given length must be less than half the maximum value of usize.
  */
-struct TCString *tc_string_clone_with_len(const char *buf, size_t len);
+struct TCString tc_string_clone_with_len(const char *buf, size_t len);
 
 /**
- * Get the content of the string as a regular C string.  The given string must not be NULL.  The
+ * Get the content of the string as a regular C string.  The given string must be valid.  The
  * returned value is NULL if the string contains NUL bytes or (in some cases) invalid UTF-8.  The
  * returned C string is valid until the TCString is freed or passed to another TC API function.
  *
  * In general, prefer [`tc_string_content_with_len`] except when it's certain that the string is
  * valid and NUL-free.
  *
+ * This function takes the TCString by pointer because it may be modified in-place to add a NUL
+ * terminator.  The pointer must not be NULL.
+ *
  * This function does _not_ take ownership of the TCString.
  */
-const char *tc_string_content(struct TCString *tcstring);
+const char *tc_string_content(const struct TCString *tcstring);
 
 /**
  * Get the content of the string as a pointer and length.  The given string must not be NULL.
@@ -647,9 +666,12 @@ const char *tc_string_content(struct TCString *tcstring);
  * returned buffer is valid until the TCString is freed or passed to another TaskChampio
  * function.
  *
+ * This function takes the TCString by pointer because it may be modified in-place to add a NUL
+ * terminator.  The pointer must not be NULL.
+ *
  * This function does _not_ take ownership of the TCString.
  */
-const char *tc_string_content_with_len(struct TCString *tcstring, size_t *len_out);
+const char *tc_string_content_with_len(const struct TCString *tcstring, size_t *len_out);
 
 /**
  * Free a TCString.  The given string must not be NULL.  The string must not be used
@@ -707,7 +729,7 @@ enum TCStatus tc_task_get_status(struct TCTask *task);
 /**
  * Get the underlying key/value pairs for this task.  The returned TCKVList is
  * a "snapshot" of the task and will not be updated if the task is subsequently
- * modified.
+ * modified.  It is the caller's responsibility to free the TCKVList.
  */
 struct TCKVList tc_task_get_taskmap(struct TCTask *task);
 
@@ -715,7 +737,7 @@ struct TCKVList tc_task_get_taskmap(struct TCTask *task);
  * Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
  * contains embedded NUL characters).
  */
-struct TCString *tc_task_get_description(struct TCTask *task);
+struct TCString tc_task_get_description(struct TCTask *task);
 
 /**
  * Get the entry timestamp for a task (when it was created), or 0 if not set.
@@ -746,7 +768,7 @@ bool tc_task_is_active(struct TCTask *task);
  * Check if a task has the given tag.  If the tag is invalid, this function will return false, as
  * that (invalid) tag is not present. No error will be reported via `tc_task_error`.
  */
-bool tc_task_has_tag(struct TCTask *task, struct TCString *tag);
+bool tc_task_has_tag(struct TCTask *task, struct TCString tag);
 
 /**
  * Get the tags for the task.
@@ -767,16 +789,16 @@ struct TCAnnotationList tc_task_get_annotations(struct TCTask *task);
 /**
  * Get the named UDA from the task.
  *
- * Returns NULL if the UDA does not exist.
+ * Returns a TCString with NULL ptr field if the UDA does not exist.
  */
-struct TCString *tc_task_get_uda(struct TCTask *task, struct TCString *ns, struct TCString *key);
+struct TCString tc_task_get_uda(struct TCTask *task, struct TCString ns, struct TCString key);
 
 /**
  * Get the named legacy UDA from the task.
  *
  * Returns NULL if the UDA does not exist.
  */
-struct TCString *tc_task_get_legacy_uda(struct TCTask *task, struct TCString *key);
+struct TCString tc_task_get_legacy_uda(struct TCTask *task, struct TCString key);
 
 /**
  * Get all UDAs for this task.
@@ -789,7 +811,7 @@ struct TCUdaList tc_task_get_udas(struct TCTask *task);
  * Get all UDAs for this task.
  *
  * All TCUdas in this list have a NULL ns field.  The entire UDA key is
- * included in the key field.
+ * included in the key field.  The caller must free the returned list.
  */
 struct TCUdaList tc_task_get_legacy_udas(struct TCTask *task);
 
@@ -801,7 +823,7 @@ TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
 /**
  * Set a mutable task's description.
  */
-TCResult tc_task_set_description(struct TCTask *task, struct TCString *description);
+TCResult tc_task_set_description(struct TCTask *task, struct TCString description);
 
 /**
  * Set a mutable task's entry (creation time).  Pass entry=0 to unset
@@ -842,12 +864,12 @@ TCResult tc_task_delete(struct TCTask *task);
 /**
  * Add a tag to a mutable task.
  */
-TCResult tc_task_add_tag(struct TCTask *task, struct TCString *tag);
+TCResult tc_task_add_tag(struct TCTask *task, struct TCString tag);
 
 /**
  * Remove a tag from a mutable task.
  */
-TCResult tc_task_remove_tag(struct TCTask *task, struct TCString *tag);
+TCResult tc_task_remove_tag(struct TCTask *task, struct TCString tag);
 
 /**
  * Add an annotation to a mutable task.  This call takes ownership of the
@@ -864,31 +886,31 @@ TCResult tc_task_remove_annotation(struct TCTask *task, int64_t entry);
  * Set a UDA on a mutable task.
  */
 TCResult tc_task_set_uda(struct TCTask *task,
-                         struct TCString *ns,
-                         struct TCString *key,
-                         struct TCString *value);
+                         struct TCString ns,
+                         struct TCString key,
+                         struct TCString value);
 
 /**
  * Remove a UDA fraom a mutable task.
  */
-TCResult tc_task_remove_uda(struct TCTask *task, struct TCString *ns, struct TCString *key);
+TCResult tc_task_remove_uda(struct TCTask *task, struct TCString ns, struct TCString key);
 
 /**
  * Set a legacy UDA on a mutable task.
  */
-TCResult tc_task_set_legacy_uda(struct TCTask *task, struct TCString *key, struct TCString *value);
+TCResult tc_task_set_legacy_uda(struct TCTask *task, struct TCString key, struct TCString value);
 
 /**
  * Remove a UDA fraom a mutable task.
  */
-TCResult tc_task_remove_legacy_uda(struct TCTask *task, struct TCString *key);
+TCResult tc_task_remove_legacy_uda(struct TCTask *task, struct TCString key);
 
 /**
- * Get the latest error for a task, or NULL if the last operation succeeded.  Subsequent calls
- * to this function will return NULL.  The task pointer must not be NULL.  The caller must free the
- * returned string.
+ * Get the latest error for a task, or a string NULL ptr field if the last operation succeeded.
+ * Subsequent calls to this function will return NULL.  The task pointer must not be NULL.  The
+ * caller must free the returned string.
  */
-struct TCString *tc_task_error(struct TCTask *task);
+struct TCString tc_task_error(struct TCTask *task);
 
 /**
  * Free a task.  The given task must not be NULL.  The task must not be used after this function
@@ -940,13 +962,13 @@ void tc_uuid_to_buf(struct TCUuid tcuuid, char *buf);
  * Return the hyphenated string representation of a TCUuid.  The returned string
  * must be freed with tc_string_free.
  */
-struct TCString *tc_uuid_to_str(struct TCUuid tcuuid);
+struct TCString tc_uuid_to_str(struct TCUuid tcuuid);
 
 /**
  * Parse the given string as a UUID.  Returns TC_RESULT_ERROR on parse failure or if the given
  * string is not valid.
  */
-TCResult tc_uuid_from_str(struct TCString *s, struct TCUuid *uuid_out);
+TCResult tc_uuid_from_str(struct TCString s, struct TCUuid *uuid_out);
 
 /**
  * Free a TCUuidList instance.  The instance, and all TCUuids it contains, must not be used after

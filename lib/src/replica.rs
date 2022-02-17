@@ -1,6 +1,6 @@
 use crate::traits::*;
 use crate::types::*;
-use crate::util::err_to_tcstring;
+use crate::util::err_to_ruststring;
 use std::ptr::NonNull;
 use taskchampion::{Replica, StorageConfig};
 
@@ -34,7 +34,7 @@ pub struct TCReplica {
     mut_borrowed: bool,
 
     /// The error from the most recent operation, if any
-    error: Option<TCString<'static>>,
+    error: Option<RustString<'static>>,
 }
 
 impl PassByPointer for TCReplica {}
@@ -88,7 +88,7 @@ where
     match f(&mut rep.inner) {
         Ok(v) => v,
         Err(e) => {
-            rep.error = Some(err_to_tcstring(e));
+            rep.error = Some(err_to_ruststring(e));
             err_value
         }
     }
@@ -111,14 +111,20 @@ pub unsafe extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
 /// must free this string.
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_new_on_disk(
-    path: *mut TCString,
-    error_out: *mut *mut TCString,
+    path: TCString,
+    error_out: *mut TCString,
 ) -> *mut TCReplica {
+    if !error_out.is_null() {
+        // SAFETY:
+        //  - error_out is not NULL (just checked)
+        //  - properly aligned and valid (promised by caller)
+        unsafe { *error_out = TCString::default() };
+    }
+
     // SAFETY:
-    //  - path is not NULL (promised by caller)
-    //  - path is return from a tc_string_.. so is valid
+    //  - path is valid (promised by caller)
     //  - caller will not use path after this call (convention)
-    let path = unsafe { TCString::take_from_ptr_arg(path) };
+    let path = unsafe { TCString::val_from_arg(path) };
     let storage_res = StorageConfig::OnDisk {
         taskdb_dir: path.to_path_buf(),
     }
@@ -130,11 +136,9 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
             if !error_out.is_null() {
                 unsafe {
                     // SAFETY:
-                    //  - return_ptr: caller promises to free this string
-                    //  - *error_out:
-                    //    - error_out is not NULL (checked)
-                    //    - error_out points to a valid place for a pointer (caller promises)
-                    *error_out = err_to_tcstring(e).return_ptr();
+                    //  - error_out is not NULL (just checked)
+                    //  - properly aligned and valid (promised by caller)
+                    TCString::val_to_arg_out(err_to_ruststring(e), error_out);
                 }
             }
             return std::ptr::null_mut();
@@ -169,7 +173,9 @@ pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList
                     .expect("TCTask::return_ptr returned NULL")
                 })
                 .collect();
-            Ok(TCTaskList::return_val(tasks))
+            // SAFETY:
+            //  - value is not allocated and need not be freed
+            Ok(unsafe { TCTaskList::return_val(tasks) })
         },
         TCTaskList::null_value(),
     )
@@ -178,6 +184,8 @@ pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList
 /// Get a list of all uuids for tasks in the replica.
 ///
 /// Returns a TCUuidList with a NULL items field on error.
+///
+/// The caller must free the UUID list with `tc_uuid_list_free`.
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_all_task_uuids(rep: *mut TCReplica) -> TCUuidList {
     wrap(
@@ -186,9 +194,13 @@ pub unsafe extern "C" fn tc_replica_all_task_uuids(rep: *mut TCReplica) -> TCUui
             let uuids: Vec<_> = rep
                 .all_task_uuids()?
                 .drain(..)
-                .map(TCUuid::return_val)
+                // SAFETY:
+                //  - value is not allocated and need not be freed
+                .map(|uuid| unsafe { TCUuid::return_val(uuid) })
                 .collect();
-            Ok(TCUuidList::return_val(uuids))
+            // SAFETY:
+            //  - value will be freed (promised by caller)
+            Ok(unsafe { TCUuidList::return_val(uuids) })
         },
         TCUuidList::null_value(),
     )
@@ -244,13 +256,12 @@ pub unsafe extern "C" fn tc_replica_get_task(rep: *mut TCReplica, tcuuid: TCUuid
 pub unsafe extern "C" fn tc_replica_new_task(
     rep: *mut TCReplica,
     status: TCStatus,
-    description: *mut TCString,
+    description: TCString,
 ) -> *mut TCTask {
     // SAFETY:
-    //  - description is not NULL (promised by caller)
-    //  - description is return from a tc_string_.. so is valid
+    //  - description is valid (promised by caller)
     //  - caller will not use description after this call (convention)
-    let description = unsafe { TCString::take_from_ptr_arg(description) };
+    let mut description = unsafe { TCString::val_from_arg(description) };
     wrap(
         rep,
         |rep| {
@@ -369,23 +380,23 @@ pub unsafe extern "C" fn tc_replica_rebuild_working_set(
     )
 }
 
-/// Get the latest error for a replica, or NULL if the last operation succeeded.  Subsequent calls
-/// to this function will return NULL.  The rep pointer must not be NULL.  The caller must free the
-/// returned string.
+/// Get the latest error for a replica, or a string with NULL ptr if no error exists.  Subsequent
+/// calls to this function will return NULL.  The rep pointer must not be NULL.  The caller must
+/// free the returned string.
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_error(rep: *mut TCReplica) -> *mut TCString<'static> {
+pub unsafe extern "C" fn tc_replica_error(rep: *mut TCReplica) -> TCString {
     // SAFETY:
     //  - rep is not NULL (promised by caller)
     //  - *rep is a valid TCReplica (promised by caller)
     //  - rep is valid for the duration of this function
     //  - rep is not modified by anything else (not threadsafe)
     let rep: &mut TCReplica = unsafe { TCReplica::from_ptr_arg_ref_mut(rep) };
-    if let Some(tcstring) = rep.error.take() {
+    if let Some(rstring) = rep.error.take() {
         // SAFETY:
         // - caller promises to free this string
-        unsafe { tcstring.return_ptr() }
+        unsafe { TCString::return_val(rstring) }
     } else {
-        std::ptr::null_mut()
+        TCString::default()
     }
 }
 

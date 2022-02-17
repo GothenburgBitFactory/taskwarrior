@@ -22,11 +22,11 @@ static void test_uuid_to_buf(void) {
 // converting UUIDs to a buf works
 static void test_uuid_to_str(void) {
     TCUuid u = tc_uuid_nil();
-    TCString *s = tc_uuid_to_str(u);
+    TCString s = tc_uuid_to_str(u);
     TEST_ASSERT_EQUAL_STRING(
         "00000000-0000-0000-0000-000000000000",
-        tc_string_content(s));
-    tc_string_free(s);
+        tc_string_content(&s));
+    tc_string_free(&s);
 }
 
 // converting valid UUIDs from string works
