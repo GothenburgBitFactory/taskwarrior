@@ -1,4 +1,4 @@
-use super::args::{any, arg_matching, minus_tag, plus_tag, wait_colon};
+use super::args::{any, arg_matching, depends_colon, minus_tag, plus_tag, wait_colon, TaskId};
 use super::ArgList;
 use crate::usage;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
@@ -30,27 +30,33 @@ impl Default for DescriptionMod {
 /// A modification represents a change to a task: adding or removing tags, setting the
 /// description, and so on.
 #[derive(Debug, PartialEq, Clone, Default)]
-pub struct Modification {
+pub(crate) struct Modification {
     /// Change the description
-    pub description: DescriptionMod,
+    pub(crate) description: DescriptionMod,
 
     /// Set the status
-    pub status: Option<Status>,
+    pub(crate) status: Option<Status>,
 
     /// Set (or, with `Some(None)`, clear) the wait timestamp
-    pub wait: Option<Option<DateTime<Utc>>>,
+    pub(crate) wait: Option<Option<DateTime<Utc>>>,
 
     /// Set the "active" state, that is, start (true) or stop (false) the task.
-    pub active: Option<bool>,
+    pub(crate) active: Option<bool>,
 
     /// Add tags
-    pub add_tags: HashSet<Tag>,
+    pub(crate) add_tags: HashSet<Tag>,
 
     /// Remove tags
-    pub remove_tags: HashSet<Tag>,
+    pub(crate) remove_tags: HashSet<Tag>,
+
+    /// Add dependencies
+    pub(crate) add_dependencies: HashSet<TaskId>,
+
+    /// Remove dependencies
+    pub(crate) remove_dependencies: HashSet<TaskId>,
 
     /// Add annotation
-    pub annotate: Option<String>,
+    pub(crate) annotate: Option<String>,
 }
 
 /// A single argument that is part of a modification, used internally to this module
@@ -59,6 +65,8 @@ enum ModArg<'a> {
     PlusTag(Tag),
     MinusTag(Tag),
     Wait(Option<DateTime<Utc>>),
+    AddDependencies(Vec<TaskId>),
+    RemoveDependencies(Vec<TaskId>),
 }
 
 impl Modification {
@@ -82,6 +90,16 @@ impl Modification {
                 ModArg::Wait(wait) => {
                     acc.wait = Some(wait);
                 }
+                ModArg::AddDependencies(task_ids) => {
+                    for tid in task_ids {
+                        acc.add_dependencies.insert(tid);
+                    }
+                }
+                ModArg::RemoveDependencies(task_ids) => {
+                    for tid in task_ids {
+                        acc.remove_dependencies.insert(tid);
+                    }
+                }
             }
             acc
         }
@@ -90,6 +108,7 @@ impl Modification {
                 Self::plus_tag,
                 Self::minus_tag,
                 Self::wait,
+                Self::dependencies,
                 // this must come last
                 Self::description,
             )),
@@ -128,6 +147,17 @@ impl Modification {
         map_res(arg_matching(wait_colon), to_modarg)(input)
     }
 
+    fn dependencies(input: ArgList) -> IResult<ArgList, ModArg> {
+        fn to_modarg(input: (bool, Vec<TaskId>)) -> Result<ModArg<'static>, ()> {
+            Ok(if input.0 {
+                ModArg::AddDependencies(input.1)
+            } else {
+                ModArg::RemoveDependencies(input.1)
+            })
+        }
+        map_res(arg_matching(depends_colon), to_modarg)(input)
+    }
+
     pub(super) fn get_usage(u: &mut usage::Usage) {
         u.modifications.push(usage::Modification {
             syntax: "DESCRIPTION",
@@ -160,6 +190,19 @@ impl Modification {
                 Set the time before which the task is not actionable and should not be shown in
                 reports, e.g., `wait:3day` to wait for three days.  With `wait:`, the time is
                 un-set.  See the documentation for the timestamp syntax.",
+        });
+        u.modifications.push(usage::Modification {
+            syntax: "depends:<task-list>",
+            summary: "Add task dependencies",
+            description: "
+                Add a dependency of this task on the given tasks.  The tasks can be specified
+                in the same syntax as for filters, e.g., `depends:13,94500c95`.",
+        });
+        u.modifications.push(usage::Modification {
+            syntax: "depends:-<task-list>",
+            summary: "Remove task dependencies",
+            description: "
+                Remove the dependency of this task on the given tasks.",
         });
     }
 }
@@ -217,6 +260,39 @@ mod test {
             modification,
             Modification {
                 wait: Some(Some(*NOW + Duration::days(2))),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn test_add_deps() {
+        let (input, modification) = Modification::parse(argv!["depends:13,e72b73d1-9e88"]).unwrap();
+        assert_eq!(input.len(), 0);
+        let mut deps = HashSet::new();
+        deps.insert(TaskId::WorkingSetId(13));
+        deps.insert(TaskId::PartialUuid("e72b73d1-9e88".into()));
+        assert_eq!(
+            modification,
+            Modification {
+                add_dependencies: deps,
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn test_remove_deps() {
+        let (input, modification) =
+            Modification::parse(argv!["depends:-13,e72b73d1-9e88"]).unwrap();
+        assert_eq!(input.len(), 0);
+        let mut deps = HashSet::new();
+        deps.insert(TaskId::WorkingSetId(13));
+        deps.insert(TaskId::PartialUuid("e72b73d1-9e88".into()));
+        assert_eq!(
+            modification,
+            Modification {
+                remove_dependencies: deps,
                 ..Default::default()
             }
         );

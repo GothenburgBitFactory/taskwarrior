@@ -1,4 +1,4 @@
-use super::{any, timestamp};
+use super::{any, id_list, timestamp, TaskId};
 use crate::argparse::NOW;
 use nom::bytes::complete::tag as nomtag;
 use nom::{branch::*, character::complete::*, combinator::*, sequence::*, IResult};
@@ -45,6 +45,17 @@ pub(crate) fn wait_colon(input: &str) -> IResult<&str, Option<DateTime<Utc>>> {
             map_res(timestamp(*NOW, Local), to_wait),
             map_res(nomtag(""), to_none),
         )),
+    )(input)
+}
+
+/// Recognizes `depends:<task>` to `(true, <task>)` and `depends:-<task>` to `(false, <task>)`.
+pub(crate) fn depends_colon(input: &str) -> IResult<&str, (bool, Vec<TaskId>)> {
+    fn to_bool(maybe_minus: Option<char>) -> Result<bool, ()> {
+        Ok(maybe_minus.is_none()) // None -> true, Some -> false
+    }
+    preceded(
+        nomtag("depends:"),
+        pair(map_res(opt(char('-')), to_bool), id_list),
     )(input)
 }
 
