@@ -243,8 +243,25 @@ impl Task {
             .map(|(p, v)| (p.as_ref(), v.as_ref()))
     }
 
+    /// Get the modification time for this task.
     pub fn get_modified(&self) -> Option<DateTime<Utc>> {
         self.get_timestamp(Prop::Modified.as_ref())
+    }
+
+    /// Get the UUIDs of tasks on which this task depends.
+    ///
+    /// This includes all dependencies, regardless of their status.  In fact, it may include
+    /// dependencies that do not exist.
+    pub fn get_dependencies(&self) -> impl Iterator<Item = Uuid> + '_ {
+        self.taskmap.iter().filter_map(|(p, _)| {
+            if let Some(dep_str) = p.strip_prefix("dep_") {
+                if let Ok(u) = Uuid::parse_str(dep_str) {
+                    return Some(u);
+                }
+                // (un-parseable dep_.. properties are ignored)
+            }
+            None
+        })
     }
 
     // -- utility functions
@@ -420,6 +437,18 @@ impl<'r> TaskMut<'r> {
                 key
             );
         }
+        self.set_string(key, None)
+    }
+
+    /// Add a dependency.
+    pub fn add_dependency(&mut self, dep: Uuid) -> anyhow::Result<()> {
+        let key = format!("dep_{}", dep);
+        self.set_string(key, Some("".to_string()))
+    }
+
+    /// Remove a dependency.
+    pub fn remove_dependency(&mut self, dep: Uuid) -> anyhow::Result<()> {
+        let key = format!("dep_{}", dep);
         self.set_string(key, None)
     }
 
@@ -1009,6 +1038,27 @@ mod test {
             assert!(task.remove_uda("", "tag_abc").is_err());
             assert!(task.remove_legacy_uda("modified").is_err());
             assert!(task.remove_legacy_uda("tag_abc").is_err());
+        })
+    }
+
+    #[test]
+    fn test_dependencies() {
+        with_mut_task(|mut task| {
+            assert_eq!(task.get_dependencies().collect::<Vec<_>>(), vec![]);
+            let dep1 = Uuid::new_v4();
+            let dep2 = Uuid::new_v4();
+
+            task.add_dependency(dep1).unwrap();
+            assert_eq!(task.get_dependencies().collect::<Vec<_>>(), vec![dep1]);
+
+            task.add_dependency(dep1).unwrap(); // add twice is ok
+            task.add_dependency(dep2).unwrap();
+            let deps = task.get_dependencies().collect::<Vec<_>>();
+            assert!(deps.contains(&dep1));
+            assert!(deps.contains(&dep2));
+
+            task.remove_dependency(dep1).unwrap();
+            assert_eq!(task.get_dependencies().collect::<Vec<_>>(), vec![dep2]);
         })
     }
 }

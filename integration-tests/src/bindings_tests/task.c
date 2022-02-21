@@ -520,6 +520,43 @@ static void test_task_udas(void) {
     tc_replica_free(rep);
 }
 
+// dependency manipulation
+static void test_task_dependencies(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
+
+    TCTask *task1 = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("task 1"));
+    TEST_ASSERT_NOT_NULL(task1);
+    TCTask *task2 = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("task 2"));
+    TEST_ASSERT_NOT_NULL(task2);
+
+    TCUuidList deps;
+
+    deps = tc_task_get_dependencies(task1);
+    TEST_ASSERT_EQUAL(0, deps.len);
+    tc_uuid_list_free(&deps);
+
+    tc_task_to_mut(task1, rep);
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_add_dependency(task1, tc_task_get_uuid(task2)));
+
+    deps = tc_task_get_dependencies(task1);
+    TEST_ASSERT_EQUAL(1, deps.len);
+    TEST_ASSERT_EQUAL_MEMORY(tc_task_get_uuid(task2).bytes, deps.items[0].bytes, 16);
+    tc_uuid_list_free(&deps);
+
+    TEST_ASSERT_EQUAL(TC_RESULT_OK,
+            tc_task_remove_dependency(task1, tc_task_get_uuid(task2)));
+
+    deps = tc_task_get_dependencies(task1);
+    TEST_ASSERT_EQUAL(0, deps.len);
+    tc_uuid_list_free(&deps);
+
+    tc_task_free(task1);
+    tc_task_free(task2);
+    tc_replica_free(rep);
+}
+
 static void tckvlist_assert_key(TCKVList *list, char *key, char *value) {
     TEST_ASSERT_NOT_NULL(list);
     for (size_t i = 0; i < list->len; i++) {
@@ -624,6 +661,7 @@ int task_tests(void) {
     RUN_TEST(test_task_get_tags);
     RUN_TEST(test_task_annotations);
     RUN_TEST(test_task_udas);
+    RUN_TEST(test_task_dependencies);
     RUN_TEST(test_task_taskmap);
     RUN_TEST(test_task_list_take);
     return UNITY_END();
