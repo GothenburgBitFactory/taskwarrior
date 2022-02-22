@@ -12,6 +12,7 @@ macro_rules! argv {
 }
 
 /// Create a hashset, similar to vec!
+// NOTE: in Rust 1.56.0, this can be changed to HashSet::from([..])
 #[cfg(test)]
 macro_rules! set(
     { $($key:expr),+ } => {

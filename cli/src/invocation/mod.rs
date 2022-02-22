@@ -15,7 +15,7 @@ mod util;
 mod test;
 
 use filter::filtered_tasks;
-use modify::apply_modification;
+use modify::{apply_modification, resolve_modification, ResolvedModification};
 use report::display_report;
 
 /// Invoke the given Command in the context of the given settings
@@ -52,7 +52,10 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::
         Command {
             subcommand: Subcommand::Add { modification },
             ..
-        } => return cmd::add::execute(&mut w, &mut replica, modification),
+        } => {
+            let modification = resolve_modification(modification, &mut replica)?;
+            return cmd::add::execute(&mut w, &mut replica, modification);
+        }
 
         Command {
             subcommand:
@@ -61,7 +64,10 @@ pub(crate) fn invoke(command: Command, settings: Settings) -> Result<(), crate::
                     modification,
                 },
             ..
-        } => return cmd::modify::execute(&mut w, &mut replica, &settings, filter, modification),
+        } => {
+            let modification = resolve_modification(modification, &mut replica)?;
+            return cmd::modify::execute(&mut w, &mut replica, &settings, filter, modification);
+        }
 
         Command {
             subcommand:

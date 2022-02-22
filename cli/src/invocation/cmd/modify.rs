@@ -1,6 +1,6 @@
-use crate::argparse::{Filter, Modification};
+use crate::argparse::Filter;
 use crate::invocation::util::{confirm, summarize_task};
-use crate::invocation::{apply_modification, filtered_tasks};
+use crate::invocation::{apply_modification, filtered_tasks, ResolvedModification};
 use crate::settings::Settings;
 use taskchampion::Replica;
 use termcolor::WriteColor;
@@ -39,12 +39,12 @@ fn check_modification<W: WriteColor>(
     Ok(false)
 }
 
-pub(crate) fn execute<W: WriteColor>(
+pub(in crate::invocation) fn execute<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
     settings: &Settings,
     filter: Filter,
-    modification: Modification,
+    modification: ResolvedModification,
 ) -> Result<(), crate::Error> {
     let tasks = filtered_tasks(replica, &filter)?;
 
@@ -68,7 +68,7 @@ pub(crate) fn execute<W: WriteColor>(
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::argparse::DescriptionMod;
+    use crate::argparse::{DescriptionMod, Modification};
     use crate::invocation::test::test_replica;
     use crate::invocation::test::*;
     use pretty_assertions::assert_eq;
@@ -87,10 +87,10 @@ mod test {
         let filter = Filter {
             ..Default::default()
         };
-        let modification = Modification {
+        let modification = ResolvedModification(Modification {
             description: DescriptionMod::Set(s!("new description")),
             ..Default::default()
-        };
+        });
         execute(&mut w, &mut replica, &settings, filter, modification).unwrap();
 
         // check that the task appeared..
