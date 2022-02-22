@@ -134,6 +134,9 @@ pub(super) enum SyntheticTag {
     Pending,
     Completed,
     Deleted,
+    Blocked,
+    Unblocked,
+    Blocking,
 }
 
 #[cfg(test)]

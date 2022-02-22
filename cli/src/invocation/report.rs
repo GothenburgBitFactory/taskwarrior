@@ -406,9 +406,12 @@ mod test {
         let task = replica.get_task(uuids[0]).unwrap().unwrap();
         assert_eq!(
             task_column(&task, &column, &working_set),
-            s!("+PENDING +bar +foo")
+            s!("+PENDING +UNBLOCKED +bar +foo")
         );
         let task = replica.get_task(uuids[2]).unwrap().unwrap();
-        assert_eq!(task_column(&task, &column, &working_set), s!("+PENDING"));
+        assert_eq!(
+            task_column(&task, &column, &working_set),
+            s!("+PENDING +UNBLOCKED")
+        );
     }
 }

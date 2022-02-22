@@ -1,11 +1,13 @@
 use super::tag::{SyntheticTag, TagInner};
 use super::{Annotation, Priority, Status, Tag, Timestamp};
+use crate::depmap::DependencyMap;
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
 use log::trace;
 use std::convert::AsRef;
 use std::convert::TryInto;
+use std::rc::Rc;
 use std::str::FromStr;
 use uuid::Uuid;
 
@@ -29,10 +31,18 @@ use uuid::Uuid;
 /// This struct contains only getters for various values on the task. The
 /// [`into_mut`](Task::into_mut) method
 /// returns a TaskMut which can be used to modify the task.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Task {
     uuid: Uuid,
     taskmap: TaskMap,
+    depmap: Rc<DependencyMap>,
+}
+
+impl PartialEq for Task {
+    fn eq(&self, other: &Task) -> bool {
+        // compare only the taskmap and uuid; depmap is just present for reference
+        self.uuid == other.uuid && self.taskmap == other.taskmap
+    }
 }
 
 /// A mutable task, with setter methods.
@@ -84,8 +94,12 @@ fn uda_tuple_to_string(namespace: impl AsRef<str>, key: impl AsRef<str>) -> Stri
 }
 
 impl Task {
-    pub(crate) fn new(uuid: Uuid, taskmap: TaskMap) -> Task {
-        Task { uuid, taskmap }
+    pub(crate) fn new(uuid: Uuid, taskmap: TaskMap, depmap: Rc<DependencyMap>) -> Task {
+        Task {
+            uuid,
+            taskmap,
+            depmap,
+        }
     }
 
     pub fn get_uuid(&self) -> Uuid {
@@ -151,6 +165,16 @@ impl Task {
         self.taskmap.contains_key(Prop::Start.as_ref())
     }
 
+    /// Determine whether this task is blocked -- that is, has at least one unresolved dependency.
+    pub fn is_blocked(&self) -> bool {
+        self.depmap.dependencies(self.uuid).next().is_some()
+    }
+
+    /// Determine whether this task is blocking -- that is, has at least one unresolved dependent.
+    pub fn is_blocking(&self) -> bool {
+        self.depmap.dependents(self.uuid).next().is_some()
+    }
+
     /// Determine whether a given synthetic tag is present on this task.  All other
     /// synthetic tag calculations are based on this one.
     fn has_synthetic_tag(&self, synth: &SyntheticTag) -> bool {
@@ -160,6 +184,9 @@ impl Task {
             SyntheticTag::Pending => self.get_status() == Status::Pending,
             SyntheticTag::Completed => self.get_status() == Status::Completed,
             SyntheticTag::Deleted => self.get_status() == Status::Deleted,
+            SyntheticTag::Blocked => self.is_blocked(),
+            SyntheticTag::Unblocked => !self.is_blocked(),
+            SyntheticTag::Blocking => self.is_blocking(),
         }
     }
 
@@ -520,6 +547,11 @@ impl<'r> std::ops::Deref for TaskMut<'r> {
 mod test {
     use super::*;
     use pretty_assertions::assert_eq;
+    use std::collections::HashSet;
+
+    fn dm() -> Rc<DependencyMap> {
+        Rc::new(DependencyMap::new())
+    }
 
     fn with_mut_task<F: FnOnce(TaskMut)>(f: F) {
         let mut replica = Replica::new_inmemory();
@@ -540,7 +572,7 @@ mod test {
 
     #[test]
     fn test_is_active_never_started() {
-        let task = Task::new(Uuid::new_v4(), TaskMap::new());
+        let task = Task::new(Uuid::new_v4(), TaskMap::new(), dm());
         assert!(!task.is_active());
     }
 
@@ -551,6 +583,7 @@ mod test {
             vec![(String::from("start"), String::from("1234"))]
                 .drain(..)
                 .collect(),
+            dm(),
         );
 
         assert!(task.is_active());
@@ -558,13 +591,13 @@ mod test {
 
     #[test]
     fn test_is_active_inactive() {
-        let task = Task::new(Uuid::new_v4(), Default::default());
+        let task = Task::new(Uuid::new_v4(), Default::default(), dm());
         assert!(!task.is_active());
     }
 
     #[test]
     fn test_entry_not_set() {
-        let task = Task::new(Uuid::new_v4(), TaskMap::new());
+        let task = Task::new(Uuid::new_v4(), TaskMap::new(), dm());
         assert_eq!(task.get_entry(), None);
     }
 
@@ -576,13 +609,14 @@ mod test {
             vec![(String::from("entry"), format!("{}", ts.timestamp()))]
                 .drain(..)
                 .collect(),
+            dm(),
         );
         assert_eq!(task.get_entry(), Some(ts));
     }
 
     #[test]
     fn test_wait_not_set() {
-        let task = Task::new(Uuid::new_v4(), TaskMap::new());
+        let task = Task::new(Uuid::new_v4(), TaskMap::new(), dm());
 
         assert!(!task.is_waiting());
         assert_eq!(task.get_wait(), None);
@@ -596,6 +630,7 @@ mod test {
             vec![(String::from("wait"), format!("{}", ts.timestamp()))]
                 .drain(..)
                 .collect(),
+            dm(),
         );
 
         assert!(!task.is_waiting());
@@ -610,6 +645,7 @@ mod test {
             vec![(String::from("wait"), format!("{}", ts.timestamp()))]
                 .drain(..)
                 .collect(),
+            dm(),
         );
 
         assert!(task.is_waiting());
@@ -626,6 +662,7 @@ mod test {
             ]
             .drain(..)
             .collect(),
+            dm(),
         );
 
         assert!(task.has_tag(&utag("abc")));
@@ -647,17 +684,17 @@ mod test {
             ]
             .drain(..)
             .collect(),
+            dm(),
         );
 
-        let mut tags: Vec<_> = task.get_tags().collect();
-        tags.sort();
-        let mut exp = vec![
+        let tags: HashSet<_> = task.get_tags().collect();
+        let exp = set![
             utag("abc"),
             utag("def"),
             stag(SyntheticTag::Pending),
             stag(SyntheticTag::Waiting),
+            stag(SyntheticTag::Unblocked),
         ];
-        exp.sort();
         assert_eq!(tags, exp);
     }
 
@@ -673,11 +710,19 @@ mod test {
             ]
             .drain(..)
             .collect(),
+            dm(),
         );
 
         // only "ok" is OK
-        let tags: Vec<_> = task.get_tags().collect();
-        assert_eq!(tags, vec![utag("ok"), stag(SyntheticTag::Pending)]);
+        let tags: HashSet<_> = task.get_tags().collect();
+        assert_eq!(
+            tags,
+            set![
+                utag("ok"),
+                stag(SyntheticTag::Pending),
+                stag(SyntheticTag::Unblocked)
+            ]
+        );
     }
 
     #[test]
@@ -698,6 +743,7 @@ mod test {
             ]
             .drain(..)
             .collect(),
+            dm(),
         );
 
         let mut anns: Vec<_> = task.get_annotations().collect();
@@ -913,6 +959,7 @@ mod test {
             ]
             .drain(..)
             .collect(),
+            dm(),
         );
 
         let mut udas: Vec<_> = task.get_udas().collect();
@@ -934,6 +981,7 @@ mod test {
             ]
             .drain(..)
             .collect(),
+            dm(),
         );
 
         assert_eq!(task.get_uda("", "description"), None); // invalid UDA
@@ -954,6 +1002,7 @@ mod test {
             ]
             .drain(..)
             .collect(),
+            dm(),
         );
 
         assert_eq!(task.get_legacy_uda("description"), None); // invalid UDA
@@ -1060,5 +1109,33 @@ mod test {
             task.remove_dependency(dep1).unwrap();
             assert_eq!(task.get_dependencies().collect::<Vec<_>>(), vec![dep2]);
         })
+    }
+
+    #[test]
+    fn dependencies_tags() {
+        let mut rep = Replica::new_inmemory();
+        let uuid1;
+        let uuid2;
+        {
+            let t1 = rep.new_task(Status::Pending, "1".into()).unwrap();
+            uuid1 = t1.get_uuid();
+            let t2 = rep.new_task(Status::Pending, "2".into()).unwrap();
+            uuid2 = t2.get_uuid();
+
+            let mut t1 = t1.into_mut(&mut rep);
+            t1.add_dependency(t2.get_uuid()).unwrap();
+        }
+
+        // force-refresh depmap
+        rep.dependency_map(true).unwrap();
+
+        let t1 = rep.get_task(uuid1).unwrap().unwrap();
+        let t2 = rep.get_task(uuid2).unwrap().unwrap();
+        assert!(t1.has_tag(&stag(SyntheticTag::Blocked)));
+        assert!(!t1.has_tag(&stag(SyntheticTag::Unblocked)));
+        assert!(!t1.has_tag(&stag(SyntheticTag::Blocking)));
+        assert!(!t2.has_tag(&stag(SyntheticTag::Blocked)));
+        assert!(t2.has_tag(&stag(SyntheticTag::Unblocked)));
+        assert!(t2.has_tag(&stag(SyntheticTag::Blocking)));
     }
 }
