@@ -1,6 +1,6 @@
 use crate::traits::*;
 use crate::util::{string_into_raw_parts, vec_into_raw_parts};
-use std::ffi::{CStr, CString, OsStr, OsString};
+use std::ffi::{CStr, CString, OsString};
 use std::os::raw::c_char;
 use std::path::PathBuf;
 
@@ -298,6 +298,7 @@ impl<'a> RustString<'a> {
             // on UNIX, we can use the bytes directly, without requiring that they
             // be valid UTF-8.
             use std::os::unix::ffi::OsStrExt;
+            use std::ffi::OsStr;
             OsStr::from_bytes(self.as_bytes()).to_os_string()
         };
         #[cfg(windows)]
