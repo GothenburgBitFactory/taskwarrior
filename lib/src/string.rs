@@ -297,8 +297,8 @@ impl<'a> RustString<'a> {
         let path: OsString = {
             // on UNIX, we can use the bytes directly, without requiring that they
             // be valid UTF-8.
-            use std::os::unix::ffi::OsStrExt;
             use std::ffi::OsStr;
+            use std::os::unix::ffi::OsStrExt;
             OsStr::from_bytes(self.as_bytes()).to_os_string()
         };
         #[cfg(windows)]
