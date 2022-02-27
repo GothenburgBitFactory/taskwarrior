@@ -1,8 +1,7 @@
 use crate::traits::*;
 use crate::util::{string_into_raw_parts, vec_into_raw_parts};
-use std::ffi::{CStr, CString, OsStr};
+use std::ffi::{CStr, CString, OsStr, OsString};
 use std::os::raw::c_char;
-use std::os::unix::ffi::OsStrExt;
 use std::path::PathBuf;
 
 /// TCString supports passing strings into and out of the TaskChampion API.
@@ -293,10 +292,21 @@ impl<'a> RustString<'a> {
         }
     }
 
-    pub(crate) fn to_path_buf(&self) -> PathBuf {
-        // TODO: this is UNIX-specific.
-        let path: &OsStr = OsStr::from_bytes(self.as_bytes());
-        path.to_os_string().into()
+    pub(crate) fn to_path_buf(&mut self) -> Result<PathBuf, std::str::Utf8Error> {
+        #[cfg(unix)]
+        let path: OsString = {
+            // on UNIX, we can use the bytes directly, without requiring that they
+            // be valid UTF-8.
+            use std::os::unix::ffi::OsStrExt;
+            OsStr::from_bytes(self.as_bytes()).to_os_string()
+        };
+        #[cfg(windows)]
+        let path: OsString = {
+            // on Windows, we assume the filename is valid Unicode, so it can be
+            // represented as UTF-8.
+            OsString::from(self.as_str()?.to_string())
+        };
+        Ok(path.into())
     }
 }
 

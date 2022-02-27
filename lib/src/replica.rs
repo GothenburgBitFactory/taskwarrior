@@ -94,6 +94,34 @@ where
     }
 }
 
+/// Utility function to allow using `?` notation to return an error value in the constructor.
+fn wrap_constructor<T, F>(f: F, error_out: *mut TCString, err_value: T) -> T
+where
+    F: FnOnce() -> anyhow::Result<T>,
+{
+    if !error_out.is_null() {
+        // SAFETY:
+        //  - error_out is not NULL (just checked)
+        //  - properly aligned and valid (promised by caller)
+        unsafe { *error_out = TCString::default() };
+    }
+
+    match f() {
+        Ok(v) => v,
+        Err(e) => {
+            if !error_out.is_null() {
+                // SAFETY:
+                //  - error_out is not NULL (just checked)
+                //  - properly aligned and valid (promised by caller)
+                unsafe {
+                    TCString::val_to_arg_out(err_to_ruststring(e), error_out);
+                }
+            }
+            err_value
+        }
+    }
+}
+
 /// Create a new TCReplica with an in-memory database.  The contents of the database will be
 /// lost when it is freed with tc_replica_free.
 #[no_mangle]
@@ -114,40 +142,24 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
     path: TCString,
     error_out: *mut TCString,
 ) -> *mut TCReplica {
-    if !error_out.is_null() {
-        // SAFETY:
-        //  - error_out is not NULL (just checked)
-        //  - properly aligned and valid (promised by caller)
-        unsafe { *error_out = TCString::default() };
-    }
-
-    // SAFETY:
-    //  - path is valid (promised by caller)
-    //  - caller will not use path after this call (convention)
-    let path = unsafe { TCString::val_from_arg(path) };
-    let storage_res = StorageConfig::OnDisk {
-        taskdb_dir: path.to_path_buf(),
-    }
-    .into_storage();
-
-    let storage = match storage_res {
-        Ok(storage) => storage,
-        Err(e) => {
-            if !error_out.is_null() {
-                unsafe {
-                    // SAFETY:
-                    //  - error_out is not NULL (just checked)
-                    //  - properly aligned and valid (promised by caller)
-                    TCString::val_to_arg_out(err_to_ruststring(e), error_out);
-                }
+    wrap_constructor(
+        || {
+            // SAFETY:
+            //  - path is valid (promised by caller)
+            //  - caller will not use path after this call (convention)
+            let mut path = unsafe { TCString::val_from_arg(path) };
+            let storage = StorageConfig::OnDisk {
+                taskdb_dir: path.to_path_buf()?,
             }
-            return std::ptr::null_mut();
-        }
-    };
+            .into_storage()?;
 
-    // SAFETY:
-    // - caller promises to free this value
-    unsafe { TCReplica::from(Replica::new(storage)).return_ptr() }
+            // SAFETY:
+            // - caller promises to free this value
+            Ok(unsafe { TCReplica::from(Replica::new(storage)).return_ptr() })
+        },
+        error_out,
+        std::ptr::null_mut(),
+    )
 }
 
 /// Get a list of all tasks in the replica.

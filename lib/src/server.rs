@@ -70,9 +70,9 @@ pub unsafe extern "C" fn tc_server_new_local(
             // SAFETY:
             //  - server_dir is valid (promised by caller)
             //  - caller will not use server_dir after this call (convention)
-            let server_dir = unsafe { TCString::val_from_arg(server_dir) };
+            let mut server_dir = unsafe { TCString::val_from_arg(server_dir) };
             let server_config = ServerConfig::Local {
-                server_dir: server_dir.to_path_buf(),
+                server_dir: server_dir.to_path_buf()?,
             };
             let server = server_config.into_server()?;
             // SAFETY: caller promises to free this server.
