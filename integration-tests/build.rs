@@ -19,6 +19,11 @@ fn link_libtaskchampion() {
     let libtc_dir = libtc_dir.to_str().expect("path is valid utf-8");
     println!("cargo:rustc-link-search={}", libtc_dir);
     println!("cargo:rustc-link-lib=dylib=taskchampion");
+
+    // on windows, it appears that rust std requires BCrypt
+    if cfg!(target_os = "windows") {
+        println!("cargo:rustc-link-lib=dylib=bcrypt");
+    }
 }
 
 /// Build the Unity-based C test suite in `src/bindings_tests`, linking the result with this

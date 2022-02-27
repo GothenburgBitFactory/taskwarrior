@@ -42,6 +42,8 @@ The necessary bits are:
 
 Downstream consumers may use either the static or dynamic library, as they prefer.
 
+NOTE: on Windows, the "BCrypt" library must be included when linking to taskchampion.
+
 ## Documentation Generation
 
 The `mdbook` configuration contains a "preprocessor" implemented in the `taskchampion-cli` crate in order to reflect CLI usage information into the generated book.
