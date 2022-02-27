@@ -3,7 +3,8 @@ use std::fs;
 use std::path::Path;
 
 /// Link to the libtaskchampion library produced by the `taskchampion-lib` crate.  This is done as
-/// a build dependency, rather than a cargo dependency, for unclear reasons. TODO
+/// a build dependency, rather than a cargo dependency, so that the symbols are available to
+/// bindings-tests.
 fn link_libtaskchampion() {
     // This crate has taskchampion-lib in its build-dependencies, so libtaskchampion.so should be
     // built already.
