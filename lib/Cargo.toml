@@ -5,7 +5,7 @@ edition = "2018"
 
 [lib]
 name = "taskchampion"
-crate-type = ["cdylib"]
+crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
 libc = "0.2.113"
