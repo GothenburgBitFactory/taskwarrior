@@ -30,6 +30,18 @@ There are five crates here:
 The _taskchampion_lib_ crate uses a bit of code generation to create the `lib/taskchampion.h` header file.
 To regenerate this file, run `cargo xtask codegen`.
 
+## C libraries
+
+The `taskchampion-lib` crate generates libraries suitable for use from C (or any C-compatible language).
+
+The necessary bits are:
+
+* a shared object in `target/$PROFILE/deps` (e.g., `target/debug/deps/libtaskchampion.so`)
+* a static library in `target/$PROFILE` (e.g., `target/debug/libtaskchampion.a`)
+* a header file, `lib/taskchampion.h`.
+
+Downstream consumers may use either the static or dynamic library, as they prefer.
+
 ## Documentation Generation
 
 The `mdbook` configuration contains a "preprocessor" implemented in the `taskchampion-cli` crate in order to reflect CLI usage information into the generated book.
