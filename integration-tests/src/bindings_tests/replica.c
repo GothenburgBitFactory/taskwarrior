@@ -305,6 +305,8 @@ static void test_replica_get_task_not_found(void) {
     TCTask *task = tc_replica_get_task(rep, uuid);
     TEST_ASSERT_NULL(task);
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
+
+    tc_replica_free(rep);
 }
 
 int replica_tests(void) {
