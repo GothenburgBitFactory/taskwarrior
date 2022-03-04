@@ -1,0 +1,18 @@
+[package]
+name = "taskchampion-lib"
+version = "0.1.0"
+edition = "2018"
+
+[lib]
+name = "taskchampion"
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+libc = "0.2.113"
+chrono = "^0.4.10"
+taskchampion = { path = "../taskchampion" }
+uuid = { version = "^0.8.2", features = ["v4"] }
+anyhow = "1.0"
+
+[dev-dependencies]
+pretty_assertions = "1"

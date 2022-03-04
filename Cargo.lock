@@ -592,10 +592,29 @@ dependencies = [
 ]
 
 [[package]]
-name = "cc"
-version = "1.0.68"
+name = "cbindgen"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a72c244c1ff497a746a7e1fb3d14bd08420ecda70c8f25c7112f2781652d787"
+checksum = "51e3973b165dc0f435831a9e426de67e894de532754ff7a3f307c03ee5dec7dc"
+dependencies = [
+ "clap",
+ "heck",
+ "indexmap",
+ "log",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_json",
+ "syn",
+ "tempfile",
+ "toml",
+]
+
+[[package]]
+name = "cc"
+version = "1.0.73"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2fff2a6927b3bb87f9595d67196a70493f627687a71d87a0d692242c33f58c11"
 dependencies = [
  "jobserver",
 ]
@@ -1502,6 +1521,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "integration-tests"
+version = "0.4.1"
+dependencies = [
+ "actix-rt",
+ "actix-web",
+ "anyhow",
+ "cc",
+ "env_logger 0.8.4",
+ "lazy_static",
+ "log",
+ "pretty_assertions",
+ "taskchampion",
+ "taskchampion-lib",
+ "taskchampion-sync-server",
+ "tempfile",
+]
+
+[[package]]
 name = "iovec"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1598,9 +1635,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.97"
+version = "0.2.113"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12b8adadd720df158f4d70dfe7ccc6adb0472d7c55ca83445f6a5ab3e36f8fb6"
+checksum = "eef78b64d87775463c549fbd80e19249ef436ea3bf1de2a1eb7e717ec7fab1e9"
 
 [[package]]
 name = "libgit2-sys"
@@ -2461,21 +2498,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "replica-server-tests"
-version = "0.4.1"
-dependencies = [
- "actix-rt",
- "actix-web",
- "anyhow",
- "env_logger 0.8.4",
- "log",
- "pretty_assertions",
- "taskchampion",
- "taskchampion-sync-server",
- "tempfile",
-]
-
-[[package]]
 name = "resolv-conf"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3006,6 +3028,18 @@ dependencies = [
  "thiserror",
  "toml",
  "toml_edit",
+]
+
+[[package]]
+name = "taskchampion-lib"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "libc",
+ "pretty_assertions",
+ "taskchampion",
+ "uuid",
 ]
 
 [[package]]
@@ -3760,6 +3794,14 @@ dependencies = [
  "mac",
  "markup5ever",
  "time 0.1.43",
+]
+
+[[package]]
+name = "xtask"
+version = "0.4.1"
+dependencies = [
+ "anyhow",
+ "cbindgen",
 ]
 
 [[package]]

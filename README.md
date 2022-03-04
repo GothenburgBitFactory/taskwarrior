@@ -17,12 +17,32 @@ But, if you just want to get some practice with Rust, we'd be happy to have you.
 
 ## Structure
 
-There are four crates here:
+There are five crates here:
 
  * [taskchampion](./taskchampion) - the core of the tool
  * [taskchampion-cli](./cli) - the command-line binary
  * [taskchampion-sync-server](./sync-server) - the server against which `task sync` operates
- * [replica-server-tests](./replica-server-tests) - integration tests covering both _taskchampion-cli_ and _taskchampion-sync-server_
+ * [taskchampion-lib](./lib) - glue code to use _taskchampion_ from C
+ * [integration-tests](./integration-tests) - integration tests covering _taskchampion-cli_, _taskchampion-sync-server_, and _taskchampion-lib_.
+
+## Code Generation
+
+The _taskchampion_lib_ crate uses a bit of code generation to create the `lib/taskchampion.h` header file.
+To regenerate this file, run `cargo xtask codegen`.
+
+## C libraries
+
+The `taskchampion-lib` crate generates libraries suitable for use from C (or any C-compatible language).
+
+The necessary bits are:
+
+* a shared object in `target/$PROFILE/deps` (e.g., `target/debug/deps/libtaskchampion.so`)
+* a static library in `target/$PROFILE` (e.g., `target/debug/libtaskchampion.a`)
+* a header file, `lib/taskchampion.h`.
+
+Downstream consumers may use either the static or dynamic library, as they prefer.
+
+NOTE: on Windows, the "BCrypt" library must be included when linking to taskchampion.
 
 ## Documentation Generation
 

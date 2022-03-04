@@ -38,6 +38,11 @@ impl WorkingSet {
         self.by_index.iter().filter(|e| e.is_some()).count()
     }
 
+    /// Get the largest index in the working set, or zero if the set is empty.
+    pub fn largest_index(&self) -> usize {
+        self.by_index.len().saturating_sub(1)
+    }
+
     /// True if the length is zero
     pub fn is_empty(&self) -> bool {
         self.by_index.iter().all(|e| e.is_none())
@@ -101,6 +106,24 @@ mod test {
         let ws = WorkingSet::new(vec![None, None, None]);
         assert_eq!(ws.len(), 0);
         assert_eq!(ws.is_empty(), true);
+    }
+
+    #[test]
+    fn test_largest_index() {
+        let uuid1 = Uuid::new_v4();
+        let uuid2 = Uuid::new_v4();
+
+        let ws = WorkingSet::new(vec![]);
+        assert_eq!(ws.largest_index(), 0);
+
+        let ws = WorkingSet::new(vec![None, Some(uuid1)]);
+        assert_eq!(ws.largest_index(), 1);
+
+        let ws = WorkingSet::new(vec![None, Some(uuid1), None, Some(uuid2)]);
+        assert_eq!(ws.largest_index(), 3);
+
+        let ws = WorkingSet::new(vec![None, Some(uuid1), None, Some(uuid2), None]);
+        assert_eq!(ws.largest_index(), 4);
     }
 
     #[test]

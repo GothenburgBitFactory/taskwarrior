@@ -110,7 +110,7 @@ impl Replica {
         let mut task = Task::new(uuid, taskmap).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
-        task.set_entry(Utc::now())?;
+        task.set_entry(Some(Utc::now()))?;
         trace!("task {} created", uuid);
         Ok(task.into_immut())
     }
@@ -177,7 +177,7 @@ impl Replica {
 
     /// Add an UndoPoint, if one has not already been added by this Replica.  This occurs
     /// automatically when a change is made.  The `force` flag allows forcing a new UndoPoint
-    /// even if one has laready been created by this Replica, and may be useful when a Replica
+    /// even if one has already been created by this Replica, and may be useful when a Replica
     /// instance is held for a long time and used to apply more than one user-visible change.
     pub fn add_undo_point(&mut self, force: bool) -> anyhow::Result<()> {
         if force || !self.added_undo_point {
