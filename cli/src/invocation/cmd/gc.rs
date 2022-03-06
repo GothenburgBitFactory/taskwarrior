@@ -4,6 +4,8 @@ use termcolor::WriteColor;
 pub(crate) fn execute<W: WriteColor>(w: &mut W, replica: &mut Replica) -> Result<(), crate::Error> {
     log::debug!("rebuilding working set");
     replica.rebuild_working_set(true)?;
+    log::debug!("expiring old tasks");
+    replica.expire_tasks()?;
     writeln!(w, "garbage collected.")?;
     Ok(())
 }
