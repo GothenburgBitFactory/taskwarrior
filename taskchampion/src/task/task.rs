@@ -425,7 +425,7 @@ impl<'r> TaskMut<'r> {
 
     // -- utility functions
 
-    fn lastmod(&mut self) -> anyhow::Result<()> {
+    fn update_modified(&mut self) -> anyhow::Result<()> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
             trace!("task {}: set property modified={:?}", self.task.uuid, now);
@@ -443,7 +443,10 @@ impl<'r> TaskMut<'r> {
         value: Option<String>,
     ) -> anyhow::Result<()> {
         let property = property.into();
-        self.lastmod()?;
+        // updated the modified timestamp unless we are setting it explicitly
+        if &property != "modified" {
+            self.update_modified()?;
+        }
 
         if let Some(ref v) = value {
             trace!("task {}: set property {}={:?}", self.task.uuid, property, v);
