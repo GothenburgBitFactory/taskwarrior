@@ -25,4 +25,8 @@ Operations are described in [Replica Storage](./storage.md).
 Each operation is added to the list of operations in the storage, and simultaneously applied to the tasks in that storage.
 Operations are checked for validity as they are applied.
 
+## Deletion and Expiration
 
+Deletion of a task merely changes the task's status to "deleted", leaving it in the Task database.
+Actual removal of tasks from the task database takes place as part of _expiration_, triggered by the user as part of a garbage-collection process.
+Expiration removes tasks with a `modified` property more than 180 days in the past, by creating a `Delete(uuid)` operation.
