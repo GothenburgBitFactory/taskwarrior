@@ -4,7 +4,7 @@ use crate::task::{Status, Task};
 use crate::taskdb::TaskDb;
 use crate::workingset::WorkingSet;
 use anyhow::Context;
-use chrono::Utc;
+use chrono::{Duration, Utc};
 use log::trace;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -127,7 +127,6 @@ impl Replica {
     /// Delete a task.  The task must exist.  Note that this is different from setting status to
     /// Deleted; this is the final purge of the task.  This is not a public method as deletion
     /// should only occur through expiration.
-    #[allow(dead_code)]
     fn delete_task(&mut self, uuid: Uuid) -> anyhow::Result<()> {
         self.add_undo_point(false)?;
         self.taskdb.apply(SyncOp::Delete { uuid })?;
@@ -175,6 +174,29 @@ impl Replica {
         Ok(())
     }
 
+    /// Expire old, deleted tasks.
+    ///
+    /// Expiration entails removal of tasks from the replica. Any modifications that occur after
+    /// the deletion (such as operations synchronized from other replicas) will do nothing.
+    ///
+    /// Tasks are eligible for expiration when they have status Deleted and have not been modified
+    /// for 180 days (about six months). Note that completed tasks are not eligible.
+    pub fn expire_tasks(&mut self) -> anyhow::Result<()> {
+        let six_mos_ago = Utc::now() - Duration::days(180);
+        self.all_tasks()?
+            .iter()
+            .filter(|(_, t)| t.get_status() == Status::Deleted)
+            .filter(|(_, t)| {
+                if let Some(m) = t.get_modified() {
+                    m < six_mos_ago
+                } else {
+                    false
+                }
+            })
+            .try_for_each(|(u, _)| self.delete_task(*u))?;
+        Ok(())
+    }
+
     /// Add an UndoPoint, if one has not already been added by this Replica.  This occurs
     /// automatically when a change is made.  The `force` flag allows forcing a new UndoPoint
     /// even if one has already been created by this Replica, and may be useful when a Replica
@@ -193,6 +215,7 @@ mod tests {
     use super::*;
     use crate::storage::ReplicaOp;
     use crate::task::Status;
+    use chrono::TimeZone;
     use pretty_assertions::assert_eq;
     use uuid::Uuid;
 
@@ -391,5 +414,35 @@ mod tests {
         let mut rep = Replica::new_inmemory();
         let uuid = Uuid::new_v4();
         assert_eq!(rep.get_task(uuid).unwrap(), None);
+    }
+
+    #[test]
+    fn expire() {
+        let mut rep = Replica::new_inmemory();
+        let mut t;
+
+        rep.new_task(Status::Pending, "keeper 1".into()).unwrap();
+        rep.new_task(Status::Completed, "keeper 2".into()).unwrap();
+
+        t = rep.new_task(Status::Deleted, "keeper 3".into()).unwrap();
+        {
+            let mut t = t.into_mut(&mut rep);
+            // set entry, with modification set as a side-effect
+            t.set_entry(Some(Utc::now())).unwrap();
+        }
+
+        t = rep.new_task(Status::Deleted, "goner".into()).unwrap();
+        {
+            let mut t = t.into_mut(&mut rep);
+            t.set_modified(Utc.ymd(1980, 1, 1).and_hms(0, 0, 0))
+                .unwrap();
+        }
+
+        rep.expire_tasks().unwrap();
+
+        for (_, t) in rep.all_tasks().unwrap() {
+            println!("got task {}", t.get_description());
+            assert!(t.get_description().starts_with("keeper"));
+        }
     }
 }
