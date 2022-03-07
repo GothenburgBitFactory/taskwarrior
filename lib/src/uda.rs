@@ -3,6 +3,7 @@ use crate::types::*;
 
 /// TCUda contains the details of a UDA.
 #[repr(C)]
+#[derive(Default)]
 pub struct TCUda {
     /// Namespace of the UDA.  For legacy UDAs, this may have a NULL ptr field.
     pub ns: TCString,
@@ -54,16 +55,6 @@ impl PassByValue for TCUda {
             key: unsafe { TCString::return_val(uda.key) },
             // SAFETY: caller assumes ownership of this value
             value: unsafe { TCString::return_val(uda.value) },
-        }
-    }
-}
-
-impl Default for TCUda {
-    fn default() -> Self {
-        TCUda {
-            ns: TCString::default(),
-            key: TCString::default(),
-            value: TCString::default(),
         }
     }
 }

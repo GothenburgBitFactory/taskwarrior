@@ -9,7 +9,7 @@ use std::path::PathBuf;
 
 pub fn main() -> anyhow::Result<()> {
     let arg = env::args().nth(1);
-    match arg.as_ref().map(|arg| arg.as_str()) {
+    match arg.as_deref() {
         Some("codegen") => codegen(),
         Some(arg) => anyhow::bail!("unknown xtask {}", arg),
         _ => anyhow::bail!("unknown xtask"),

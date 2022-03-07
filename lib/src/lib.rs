@@ -7,6 +7,11 @@
 // docstrings for extern "C" functions are reflected into C, and do not benefit
 // from safety docs.
 #![allow(clippy::missing_safety_doc)]
+// deny some things that are typically warnings
+#![deny(clippy::derivable_impls)]
+#![deny(clippy::wrong_self_convention)]
+#![deny(clippy::extra_unused_lifetimes)]
+#![deny(clippy::unnecessary_to_owned)]
 
 mod traits;
 mod util;

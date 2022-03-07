@@ -292,7 +292,7 @@ impl<'a> RustString<'a> {
         }
     }
 
-    pub(crate) fn to_path_buf(&mut self) -> Result<PathBuf, std::str::Utf8Error> {
+    pub(crate) fn to_path_buf_mut(&mut self) -> Result<PathBuf, std::str::Utf8Error> {
         #[cfg(unix)]
         let path: OsString = {
             // on UNIX, we can use the bytes directly, without requiring that they
