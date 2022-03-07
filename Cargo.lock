@@ -3039,7 +3039,6 @@ dependencies = [
  "libc",
  "pretty_assertions",
  "taskchampion",
- "uuid",
 ]
 
 [[package]]

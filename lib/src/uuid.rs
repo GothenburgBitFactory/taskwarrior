@@ -87,9 +87,8 @@ pub unsafe extern "C" fn tc_uuid_to_buf(tcuuid: TCUuid, buf: *mut libc::c_char) 
     //  - content of buf will not be mutated during the lifetime of this slice (lifetime
     //    does not outlive this function call)
     //  - the length of the buffer is less than isize::MAX (promised by caller)
-    let buf: &mut [u8] = unsafe {
-        std::slice::from_raw_parts_mut(buf as *mut u8, ::uuid::adapter::Hyphenated::LENGTH)
-    };
+    let buf: &mut [u8] =
+        unsafe { std::slice::from_raw_parts_mut(buf as *mut u8, TC_UUID_STRING_BYTES) };
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
     let uuid: Uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
