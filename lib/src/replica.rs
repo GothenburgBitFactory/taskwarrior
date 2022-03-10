@@ -149,7 +149,7 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
             //  - caller will not use path after this call (convention)
             let mut path = unsafe { TCString::val_from_arg(path) };
             let storage = StorageConfig::OnDisk {
-                taskdb_dir: path.to_path_buf()?,
+                taskdb_dir: path.to_path_buf_mut()?,
             }
             .into_storage()?;
 

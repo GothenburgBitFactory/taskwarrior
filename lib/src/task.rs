@@ -386,7 +386,7 @@ pub unsafe extern "C" fn tc_task_get_annotations(task: *mut TCTask) -> TCAnnotat
 ///
 /// Returns a TCString with NULL ptr field if the UDA does not exist.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_uda<'a>(
+pub unsafe extern "C" fn tc_task_get_uda(
     task: *mut TCTask,
     ns: TCString,
     key: TCString,
@@ -413,7 +413,7 @@ pub unsafe extern "C" fn tc_task_get_uda<'a>(
 ///
 /// Returns NULL if the UDA does not exist.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_get_legacy_uda<'a>(task: *mut TCTask, key: TCString) -> TCString {
+pub unsafe extern "C" fn tc_task_get_legacy_uda(task: *mut TCTask, key: TCString) -> TCString {
     wrap(task, |task| {
         // SAFETY:
         //  - key is valid (promised by caller)
@@ -708,11 +708,7 @@ pub unsafe extern "C" fn tc_task_set_uda(
     wrap_mut(
         task,
         |task| {
-            task.set_uda(
-                ns.as_str()?.to_string(),
-                key.as_str()?.to_string(),
-                value.as_str()?.to_string(),
-            )?;
+            task.set_uda(ns.as_str()?, key.as_str()?, value.as_str()?.to_string())?;
             Ok(TCResult::Ok)
         },
         TCResult::Error,
@@ -735,7 +731,7 @@ pub unsafe extern "C" fn tc_task_remove_uda(
     wrap_mut(
         task,
         |task| {
-            task.remove_uda(ns.as_str()?.to_string(), key.as_str()?.to_string())?;
+            task.remove_uda(ns.as_str()?, key.as_str()?)?;
             Ok(TCResult::Ok)
         },
         TCResult::Error,
