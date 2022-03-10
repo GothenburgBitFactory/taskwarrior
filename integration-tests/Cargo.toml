@@ -7,6 +7,7 @@ publish = false
 build = "build.rs"
 
 [dependencies]
+chrono = { version = "^0.4.10", features = ["serde"] }
 taskchampion = { path = "../taskchampion" }
 taskchampion-sync-server = { path = "../sync-server" }
 
