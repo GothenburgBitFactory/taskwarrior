@@ -112,8 +112,9 @@ Then build:
 
 Your contributions are especially welcome.
 Whether it comes in the form of code patches, ideas, discussion, bug reports, encouragement or criticism, your input is needed.
-
 Visit [Github](https://github.com/GothenburgBitFactory/taskwarrior) and participate in the future of Taskwarrior.
+
+See further development documentation in [`docs/`](./docs).
 
 ## Sponsoring
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/GothenburgBitFactory?color=green)](https://github.com/sponsors/GothenburgBitFactory/)

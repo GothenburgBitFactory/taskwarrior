@@ -1,0 +1,9 @@
+[package]
+name = "tc-rust"
+version = "0.1.0"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+taskchampion-lib = {path = "../../../rust/lib"}

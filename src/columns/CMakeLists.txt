@@ -1,9 +1,11 @@
 cmake_minimum_required (VERSION 3.0)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
+                     ${CMAKE_SOURCE_DIR}/src/tc
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
+                     ${CMAKE_SOURCE_DIR}/rust/lib
                      ${TASK_INCLUDE_DIRS})
 
 set (columns_SRCS Column.cpp Column.h

@@ -5,6 +5,7 @@ src/task
 src/taskd
 src/libtask.a
 src/commands/libcommands.a
+src/tc/libtc.a
 src/columns/libcolumns.a
 *~
 .*.swp
