@@ -1,9 +1,9 @@
 use super::args::{any, arg_matching, minus_tag, plus_tag, wait_colon};
 use super::ArgList;
 use crate::usage;
-use chrono::prelude::*;
 use nom::{branch::alt, combinator::*, multi::fold_many0, IResult};
 use std::collections::HashSet;
+use taskchampion::chrono::prelude::*;
 use taskchampion::{Status, Tag};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -169,6 +169,7 @@ mod test {
     use super::*;
     use crate::argparse::NOW;
     use pretty_assertions::assert_eq;
+    use taskchampion::chrono::Duration;
 
     #[test]
     fn test_empty() {
@@ -215,7 +216,7 @@ mod test {
         assert_eq!(
             modification,
             Modification {
-                wait: Some(Some(*NOW + chrono::Duration::days(2))),
+                wait: Some(Some(*NOW + Duration::days(2))),
                 ..Default::default()
             }
         );

@@ -1,11 +1,11 @@
 use crate::traits::*;
 use crate::types::*;
 use crate::util::err_to_ruststring;
-use chrono::{TimeZone, Utc};
 use std::convert::TryFrom;
 use std::ops::Deref;
 use std::ptr::NonNull;
 use std::str::FromStr;
+use taskchampion::chrono::{TimeZone, Utc};
 use taskchampion::{Annotation, Tag, Task, TaskMut};
 
 /// A task, as publicly exposed by this library.

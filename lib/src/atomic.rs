@@ -1,7 +1,7 @@
 //! Trait implementations for a few atomic types
 
 use crate::traits::*;
-use chrono::prelude::*;
+use taskchampion::chrono::prelude::*;
 
 impl PassByValue for usize {
     type RustType = usize;

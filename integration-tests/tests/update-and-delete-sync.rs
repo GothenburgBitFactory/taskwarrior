@@ -1,4 +1,4 @@
-use chrono::{TimeZone, Utc};
+use taskchampion::chrono::{TimeZone, Utc};
 use taskchampion::{Replica, ServerConfig, Status, StorageConfig};
 use tempfile::TempDir;
 

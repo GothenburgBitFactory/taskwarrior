@@ -1,8 +1,8 @@
 use super::{any, timestamp};
 use crate::argparse::NOW;
-use chrono::prelude::*;
 use nom::bytes::complete::tag as nomtag;
 use nom::{branch::*, character::complete::*, combinator::*, sequence::*, IResult};
+use taskchampion::chrono::prelude::*;
 use taskchampion::Status;
 
 /// Recognizes up to the colon of the common `<prefix>:...` syntax
@@ -52,6 +52,7 @@ pub(crate) fn wait_colon(input: &str) -> IResult<&str, Option<DateTime<Utc>>> {
 mod test {
     use super::*;
     use pretty_assertions::assert_eq;
+    use taskchampion::chrono::Duration;
 
     #[test]
     fn test_colon_prefix() {
@@ -77,10 +78,10 @@ mod test {
     fn test_wait() {
         assert_eq!(wait_colon("wait:").unwrap(), ("", None));
 
-        let one_day = *NOW + chrono::Duration::days(1);
+        let one_day = *NOW + Duration::days(1);
         assert_eq!(wait_colon("wait:1d").unwrap(), ("", Some(one_day)));
 
-        let one_day = *NOW + chrono::Duration::days(1);
+        let one_day = *NOW + Duration::days(1);
         assert_eq!(wait_colon("wait:1d2").unwrap(), ("2", Some(one_day)));
     }
 }

@@ -132,9 +132,9 @@ mod test {
     use super::*;
     use crate::invocation::test::*;
     use crate::settings::Sort;
-    use chrono::prelude::*;
     use pretty_assertions::assert_eq;
     use std::convert::TryInto;
+    use taskchampion::chrono::{prelude::*, Duration};
     use taskchampion::{Status, Uuid};
 
     fn create_tasks(replica: &mut Replica) -> [Uuid; 3] {
@@ -237,7 +237,7 @@ mod test {
             .unwrap()
             .unwrap()
             .into_mut(&mut replica)
-            .set_wait(Some(Utc::now() + chrono::Duration::days(2)))
+            .set_wait(Some(Utc::now() + Duration::days(2)))
             .unwrap();
 
         replica
@@ -245,7 +245,7 @@ mod test {
             .unwrap()
             .unwrap()
             .into_mut(&mut replica)
-            .set_wait(Some(Utc::now() + chrono::Duration::days(3)))
+            .set_wait(Some(Utc::now() + Duration::days(3)))
             .unwrap();
 
         let working_set = replica.working_set().unwrap();

@@ -1,4 +1,3 @@
-use chrono::{prelude::*, Duration};
 use iso8601_duration::Duration as IsoDuration;
 use lazy_static::lazy_static;
 use nom::{
@@ -13,6 +12,7 @@ use nom::{
     Err, IResult,
 };
 use std::str::FromStr;
+use taskchampion::chrono::{self, prelude::*, Duration};
 
 // https://taskwarrior.org/docs/dates.html
 // https://taskwarrior.org/docs/named_dates.html

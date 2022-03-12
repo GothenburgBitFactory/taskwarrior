@@ -31,8 +31,8 @@ pub(crate) use modification::{DescriptionMod, Modification};
 pub(crate) use subcommand::Subcommand;
 
 use crate::usage::Usage;
-use chrono::prelude::*;
 use lazy_static::lazy_static;
+use taskchampion::chrono::prelude::*;
 
 lazy_static! {
     // A static value of NOW to make tests easier

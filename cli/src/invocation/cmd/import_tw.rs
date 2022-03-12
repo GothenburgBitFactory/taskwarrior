@@ -1,8 +1,8 @@
 use anyhow::{anyhow, bail};
-use chrono::{DateTime, TimeZone, Utc};
 use serde::{self, Deserialize, Deserializer};
 use serde_json::Value;
 use std::collections::HashMap;
+use taskchampion::chrono::{DateTime, TimeZone, Utc};
 use taskchampion::{Replica, Uuid};
 use termcolor::{Color, ColorSpec, WriteColor};
 
@@ -152,10 +152,10 @@ fn import_task<W: WriteColor>(
 mod test {
     use super::*;
     use crate::invocation::test::*;
-    use chrono::{TimeZone, Utc};
     use pretty_assertions::assert_eq;
     use serde_json::json;
     use std::convert::TryInto;
+    use taskchampion::chrono::{TimeZone, Utc};
     use taskchampion::{Priority, Status};
 
     #[test]

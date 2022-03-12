@@ -1,6 +1,6 @@
 use crate::traits::*;
 use crate::types::*;
-use chrono::prelude::*;
+use taskchampion::chrono::prelude::*;
 
 /// TCAnnotation contains the details of an annotation.
 ///
