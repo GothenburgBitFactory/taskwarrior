@@ -29,6 +29,7 @@ fn codegen() -> anyhow::Result<()> {
         .with_config(Config {
             header: Some(include_str!("../../lib/header-intro.h").into()),
             language: Language::C,
+            include_guard: Some("TASKCHAMPION_H".into()),
             cpp_compat: true,
             sys_includes: vec!["stdbool.h".into(), "stdint.h".into(), "time.h".into()],
             usize_is_size_t: true,
