@@ -34,6 +34,7 @@ variant_partial.t
 variant_subtract.t
 variant_xor.t
 view.t
+tc.t
 tw-2689.t
 
 json_test

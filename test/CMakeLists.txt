@@ -14,9 +14,10 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
                      ${CMAKE_SOURCE_DIR}/test
+                     ${CMAKE_SOURCE_DIR}/rust/lib
                      ${TASK_INCLUDE_DIRS})
 
-set (test_SRCS col.t dom.t eval.t lexer.t t.t tw-2689.t tdb2.t util.t variant_add.t variant_and.t variant_cast.t variant_divide.t variant_equal.t variant_exp.t variant_gt.t variant_gte.t variant_inequal.t variant_lt.t variant_lte.t variant_match.t variant_math.t variant_modulo.t variant_multiply.t variant_nomatch.t variant_not.t variant_or.t variant_partial.t variant_subtract.t variant_xor.t view.t)
+set (test_SRCS col.t dom.t eval.t lexer.t t.t tw-2689.t tdb2.t tc.t util.t variant_add.t variant_and.t variant_cast.t variant_divide.t variant_equal.t variant_exp.t variant_gt.t variant_gte.t variant_inequal.t variant_lt.t variant_lte.t variant_match.t variant_math.t variant_modulo.t variant_multiply.t variant_nomatch.t variant_not.t variant_or.t variant_partial.t variant_subtract.t variant_xor.t view.t)
 
 add_custom_target (test ./run_all --verbose
                         DEPENDS ${test_SRCS} task_executable
@@ -27,7 +28,7 @@ add_custom_target (build_tests DEPENDS ${test_SRCS}
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
-  target_link_libraries (${src_FILE} task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
+  target_link_libraries (${src_FILE} task tc commands columns libshared task tc tc-rust commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
 endforeach (src_FILE)
 
 configure_file(run_all run_all COPYONLY)

@@ -1,9 +1,11 @@
 cmake_minimum_required (VERSION 3.0)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
+                     ${CMAKE_SOURCE_DIR}/src/tc
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
+                     ${CMAKE_SOURCE_DIR}/rust/lib
                      ${TASK_INCLUDE_DIRS})
 
 add_library (task STATIC CLI2.cpp CLI2.h
@@ -50,9 +52,9 @@ add_executable (calc_executable calc.cpp)
 add_executable (lex_executable lex.cpp)
 
 # Yes, 'task' (and hence libshared) is included twice, otherwise linking fails on assorted OSes.
-target_link_libraries (task_executable task commands columns libshared task libshared ${TASK_LIBRARIES})
-target_link_libraries (calc_executable task commands columns libshared task libshared ${TASK_LIBRARIES})
-target_link_libraries (lex_executable  task commands columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (task_executable task tc tc-rust commands columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (calc_executable task tc tc-rust commands columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (lex_executable  task tc tc-rust commands columns libshared task libshared ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 

@@ -11,7 +11,7 @@ Taskwarrior and Taskserver use the same branching model.
 ## Git Branching
 
 Git allows arbitrary and low-cost branching, which means that any branching model can be used.
-A new Git repository has one branch, the default branch, named `master`, but even this is not required.
+A new Git repository has one branch, the default branch, named `stable`, but even this is not required.
 
 [![master](master.png)](master.png)
 

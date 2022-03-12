@@ -7,3 +7,6 @@ members = [
     "rust/integration-tests",
     "rust/xtask",
 ]
+
+# src/tc/rust is just part of the TW build and not a public crate
+exclude = [ "src/tc/rust" ]
