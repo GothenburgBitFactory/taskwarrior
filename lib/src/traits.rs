@@ -150,13 +150,17 @@ pub(crate) trait PassByPointer: Sized {
 /// The PassByValue trait will be implemented automatically, converting between the C type and
 /// `Vec<Element>`.
 ///
-/// For most cases, it is only necessary to implement `tc_.._free` that calls either
-/// drop_value_list (if Element is PassByValue) or drop_pointer_list (if element is PassByPointer).
+/// The element type can be PassByValue or PassByPointer.  If the latter, it should use either
+/// `NonNull<T>` or `Option<NonNull<T>>` to represent the element.  The latter is an "optional
+/// pointer list", where elements can be omitted.
+///
+/// For most cases, it is only necessary to implement `tc_.._free` that calls one of the
+/// drop_..._list functions.
 ///
 /// # Safety
 ///
 /// The C type must be documented as read-only.  None of the fields may be modified, nor anything
-/// accessible via the `items` array.
+/// accessible via the `items` array.  The exception is modification via "taking" elements.
 ///
 /// This class guarantees that the items pointer is non-NULL for any valid list (even when len=0).
 pub(crate) trait CList: Sized {
@@ -169,18 +173,21 @@ pub(crate) trait CList: Sized {
     /// The arguments must either:
     ///  - be NULL, 0, and 0, respectively; or
     ///  - be valid for Vec::from_raw_parts
-    unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self;
+    unsafe fn from_raw_parts(items: *mut Self::Element, len: usize, cap: usize) -> Self;
+
+    /// Return a mutable slice representing the elements in this list.
+    fn slice(&mut self) -> &mut [Self::Element];
 
     /// Get the items, len, and capacity (in that order) for this instance.  These must be
     /// precisely the same values passed tearlier to `from_raw_parts`.
-    fn into_raw_parts(self) -> (*const Self::Element, usize, usize);
+    fn into_raw_parts(self) -> (*mut Self::Element, usize, usize);
 
     /// Generate a NULL value.  By default this is a NULL items pointer with zero length and
     /// capacity.
     fn null_value() -> Self {
         // SAFETY:
         //  - satisfies the first case in from_raw_parts' safety documentation
-        unsafe { Self::from_raw_parts(std::ptr::null(), 0, 0) }
+        unsafe { Self::from_raw_parts(std::ptr::null_mut(), 0, 0) }
     }
 }
 
@@ -225,6 +232,7 @@ where
 /// - List must be non-NULL and point to a valid CL instance
 /// - The caller must not use the value array points to after this function, as
 ///   it has been freed.  It will be replaced with the null value.
+#[allow(dead_code)] // this was useful once, and might be again?
 pub(crate) unsafe fn drop_pointer_list<CL, T>(list: *mut CL)
 where
     CL: CList<Element = NonNull<T>>,
@@ -244,6 +252,79 @@ where
     }
     // then drop the vector
     drop(vec);
+}
+
+/// Given a CList containing optional pointers, drop all of the non-null pointed-to values and the
+/// list.
+///
+/// This is a convenience function for `tc_.._list_free` functions, for lists from which items
+/// can be taken.
+///
+/// # Safety
+///
+/// - List must be non-NULL and point to a valid CL instance
+/// - The caller must not use the value array points to after this function, as
+///   it has been freed.  It will be replaced with the null value.
+pub(crate) unsafe fn drop_optional_pointer_list<CL, T>(list: *mut CL)
+where
+    CL: CList<Element = Option<NonNull<T>>>,
+    T: PassByPointer,
+{
+    debug_assert!(!list.is_null());
+    // SAFETY:
+    //  - *list is a valid CL (promised by caller)
+    let mut vec = unsafe { CL::take_val_from_arg(list, CL::null_value()) };
+
+    // first, drop each of the elements in turn
+    for e in vec.drain(..) {
+        if let Some(e) = e {
+            // SAFETY:
+            //  - e is a valid Element (promised by caller)
+            //  - e is owned
+            drop(unsafe { PassByPointer::take_from_ptr_arg(e.as_ptr()) });
+        }
+    }
+    // then drop the vector
+    drop(vec);
+}
+
+/// Take a value from an optional pointer list, returning the value and replacing its array
+/// element with NULL.
+///
+/// This is a convenience function for `tc_.._list_take` functions, for lists from which items
+/// can be taken.
+///
+/// The returned value will be None if the element has already been taken, or if the index is
+/// out of bounds.
+///
+/// # Safety
+///
+/// - List must be non-NULL and point to a valid CL instance
+pub(crate) unsafe fn take_optional_pointer_list_item<CL, T>(
+    list: *mut CL,
+    index: usize,
+) -> Option<NonNull<T>>
+where
+    CL: CList<Element = Option<NonNull<T>>>,
+    T: PassByPointer,
+{
+    debug_assert!(!list.is_null());
+
+    // SAFETy:
+    //  - list is properly aligned, dereferencable, and points to an initialized CL, since it is valid
+    //  - the lifetime of the resulting reference is limited to this function, during which time
+    //    nothing else refers to this memory.
+    let slice = list.as_mut().unwrap().slice();
+    if let Some(elt_ref) = slice.get_mut(index) {
+        let mut rv = None;
+        if let Some(elt) = elt_ref.as_mut() {
+            rv = Some(*elt);
+            *elt_ref = None; // clear out the array element
+        }
+        rv
+    } else {
+        None // index out of bounds
+    }
 }
 
 impl<A> PassByValue for A

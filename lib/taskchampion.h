@@ -301,7 +301,7 @@ typedef struct TCAnnotationList {
    * array of annotations. these remain owned by the TCAnnotationList instance and will be freed by
    * tc_annotation_list_free.  This pointer is never NULL for a valid TCAnnotationList.
    */
-  const struct TCAnnotation *items;
+  struct TCAnnotation *items;
 } TCAnnotationList;
 
 /**
@@ -333,13 +333,16 @@ typedef struct TCKVList {
    * array of TCKV's. these remain owned by the TCKVList instance and will be freed by
    * tc_kv_list_free.  This pointer is never NULL for a valid TCKVList.
    */
-  const struct TCKV *items;
+  struct TCKV *items;
 } TCKVList;
 
 /**
  * TCTaskList represents a list of tasks.
  *
- * The content of this struct must be treated as read-only.
+ * The content of this struct must be treated as read-only: no fields or anything they reference
+ * should be modified directly by C code.
+ *
+ * When an item is taken from this list, its pointer in `items` is set to NULL.
  */
 typedef struct TCTaskList {
   /**
@@ -355,7 +358,7 @@ typedef struct TCTaskList {
    * will be freed by tc_task_list_free.  This pointer is never NULL for a valid TCTaskList,
    * and the *TCTaskList at indexes 0..len-1 are not NULL.
    */
-  struct TCTask *const *items;
+  struct TCTask **items;
 } TCTaskList;
 
 /**
@@ -385,7 +388,7 @@ typedef struct TCUuidList {
    * array of uuids. these remain owned by the TCUuidList instance and will be freed by
    * tc_uuid_list_free.  This pointer is never NULL for a valid TCUuidList.
    */
-  const struct TCUuid *items;
+  struct TCUuid *items;
 } TCUuidList;
 
 /**
@@ -407,7 +410,7 @@ typedef struct TCStringList {
    * be freed by tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
    * *TCStringList at indexes 0..len-1 are not NULL.
    */
-  const struct TCString *items;
+  struct TCString *items;
 } TCStringList;
 
 /**
@@ -446,7 +449,7 @@ typedef struct TCUdaList {
    * array of UDAs. These remain owned by the TCUdaList instance and will be freed by
    * tc_uda_list_free.  This pointer is never NULL for a valid TCUdaList.
    */
-  const struct TCUda *items;
+  struct TCUda *items;
 } TCUdaList;
 
 #ifdef __cplusplus
@@ -921,12 +924,25 @@ struct TCString tc_task_error(struct TCTask *task);
 void tc_task_free(struct TCTask *task);
 
 /**
+ * Take an item from a TCTaskList.  After this call, the indexed item is no longer associated
+ * with the list and becomes the caller's responsibility, just as if it had been returned from
+ * `tc_replica_get_task`.
+ *
+ * The corresponding element in the `items` array will be set to NULL.  If that field is already
+ * NULL (that is, if the item has already been taken), this function will return NULL.  If the
+ * index is out of bounds, this function will also return NULL.
+ *
+ * The passed TCTaskList remains owned by the caller.
+ */
+struct TCTask *tc_task_list_take(struct TCTaskList *tasks, size_t index);
+
+/**
  * Free a TCTaskList instance.  The instance, and all TCTaskList it contains, must not be used after
  * this call.
  *
  * When this call returns, the `items` pointer will be NULL, signalling an invalid TCTaskList.
  */
-void tc_task_list_free(struct TCTaskList *tctasks);
+void tc_task_list_free(struct TCTaskList *tasks);
 
 /**
  * Free a TCUda instance.  The instance, and the TCStrings it contains, must not be used
