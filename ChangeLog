@@ -11,6 +11,8 @@
            Thanks to bentwitthold for reporting.
 - TW #2671 The value of soww named date is incorrect
            Thanks to Lennart Kill for reporting.
+- TW #2748 Recurring report does not include parent tasks
+           Thanks to Klaus Ethgen for reporting.
 
 2.6.1 (2021-10-19) - a696b6b155f9c8af87a6a496c0d298c58e6fe369
 
