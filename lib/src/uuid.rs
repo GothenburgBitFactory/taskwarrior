@@ -57,13 +57,13 @@ pub struct TCUuidList {
 
     /// array of uuids. these remain owned by the TCUuidList instance and will be freed by
     /// tc_uuid_list_free.  This pointer is never NULL for a valid TCUuidList.
-    items: *const TCUuid,
+    items: *mut TCUuid,
 }
 
 impl CList for TCUuidList {
     type Element = TCUuid;
 
-    unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
+    unsafe fn from_raw_parts(items: *mut Self::Element, len: usize, cap: usize) -> Self {
         TCUuidList {
             len,
             _capacity: cap,
@@ -71,7 +71,16 @@ impl CList for TCUuidList {
         }
     }
 
-    fn into_raw_parts(self) -> (*const Self::Element, usize, usize) {
+    fn slice(&mut self) -> &mut [Self::Element] {
+        // SAFETY:
+        //  - because we have &mut self, we have read/write access to items[0..len]
+        //  - all items are properly initialized Element's
+        //  - return value lifetime is equal to &mmut self's, so access is exclusive
+        //  - items and len came from Vec, so total size is < isize::MAX
+        unsafe { std::slice::from_raw_parts_mut(self.items, self.len) }
+    }
+
+    fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
         (self.items, self.len, self._capacity)
     }
 }

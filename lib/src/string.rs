@@ -374,13 +374,13 @@ pub struct TCStringList {
     /// TCStringList representing each string. these remain owned by the TCStringList instance and will
     /// be freed by tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
     /// *TCStringList at indexes 0..len-1 are not NULL.
-    items: *const TCString,
+    items: *mut TCString,
 }
 
 impl CList for TCStringList {
     type Element = TCString;
 
-    unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
+    unsafe fn from_raw_parts(items: *mut Self::Element, len: usize, cap: usize) -> Self {
         TCStringList {
             len,
             _capacity: cap,
@@ -388,7 +388,16 @@ impl CList for TCStringList {
         }
     }
 
-    fn into_raw_parts(self) -> (*const Self::Element, usize, usize) {
+    fn slice(&mut self) -> &mut [Self::Element] {
+        // SAFETY:
+        //  - because we have &mut self, we have read/write access to items[0..len]
+        //  - all items are properly initialized Element's
+        //  - return value lifetime is equal to &mmut self's, so access is exclusive
+        //  - items and len came from Vec, so total size is < isize::MAX
+        unsafe { std::slice::from_raw_parts_mut(self.items, self.len) }
+    }
+
+    fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
         (self.items, self.len, self._capacity)
     }
 }

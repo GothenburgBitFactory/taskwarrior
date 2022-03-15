@@ -177,12 +177,14 @@ pub unsafe extern "C" fn tc_replica_all_tasks(rep: *mut TCReplica) -> TCTaskList
                 .all_tasks()?
                 .drain()
                 .map(|(_uuid, t)| {
-                    NonNull::new(
-                        // SAFETY:
-                        // - caller promises to free this value (via freeing the list)
-                        unsafe { TCTask::from(t).return_ptr() },
+                    Some(
+                        NonNull::new(
+                            // SAFETY:
+                            // - caller promises to free this value (via freeing the list)
+                            unsafe { TCTask::from(t).return_ptr() },
+                        )
+                        .expect("TCTask::return_ptr returned NULL"),
                     )
-                    .expect("TCTask::return_ptr returned NULL")
                 })
                 .collect();
             // SAFETY:

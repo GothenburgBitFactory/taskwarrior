@@ -561,6 +561,53 @@ static void test_task_taskmap(void) {
     tc_replica_free(rep);
 }
 
+// taking from a task list behaves correctly
+static void test_task_list_take(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
+
+    TCTask *task1 = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("t"));
+    TEST_ASSERT_NOT_NULL(task1);
+
+    TCTask *task2 = tc_replica_new_task(rep, TC_STATUS_PENDING, tc_string_borrow("t"));
+    TEST_ASSERT_NOT_NULL(task2);
+    tc_task_free(task2);
+
+    TCString desc;
+    TCTaskList tasks = tc_replica_all_tasks(rep);
+    TEST_ASSERT_NOT_NULL(tasks.items);
+    TEST_ASSERT_EQUAL(2, tasks.len);
+
+    task1 = tc_task_list_take(&tasks, 5); // out of bounds
+    TEST_ASSERT_NULL(task1);
+
+    task1 = tc_task_list_take(&tasks, 0);
+    TEST_ASSERT_NOT_NULL(task1);
+    desc = tc_task_get_description(task1);
+    TEST_ASSERT_EQUAL_STRING("t", tc_string_content(&desc));
+    tc_string_free(&desc);
+
+    task2 = tc_task_list_take(&tasks, 1);
+    TEST_ASSERT_NOT_NULL(task2);
+    desc = tc_task_get_description(task2);
+    TEST_ASSERT_EQUAL_STRING("t", tc_string_content(&desc));
+    tc_string_free(&desc);
+
+    tc_task_free(task1);
+    tc_task_free(task2);
+
+    task1 = tc_task_list_take(&tasks, 0); // already taken
+    TEST_ASSERT_NULL(task1);
+
+    task1 = tc_task_list_take(&tasks, 5); // out of bounds
+    TEST_ASSERT_NULL(task1);
+
+    tc_task_list_free(&tasks);
+    TEST_ASSERT_NULL(tasks.items);
+
+    tc_replica_free(rep);
+}
+
 int task_tests(void) {
     UNITY_BEGIN();
     // each test case above should be named here, in order.
@@ -578,5 +625,6 @@ int task_tests(void) {
     RUN_TEST(test_task_annotations);
     RUN_TEST(test_task_udas);
     RUN_TEST(test_task_taskmap);
+    RUN_TEST(test_task_list_take);
     return UNITY_END();
 }

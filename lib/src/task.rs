@@ -171,7 +171,10 @@ impl TryFrom<RustString<'static>> for Tag {
 
 /// TCTaskList represents a list of tasks.
 ///
-/// The content of this struct must be treated as read-only.
+/// The content of this struct must be treated as read-only: no fields or anything they reference
+/// should be modified directly by C code.
+///
+/// When an item is taken from this list, its pointer in `items` is set to NULL.
 #[repr(C)]
 pub struct TCTaskList {
     /// number of tasks in items
@@ -183,13 +186,13 @@ pub struct TCTaskList {
     /// array of pointers representing each task. these remain owned by the TCTaskList instance and
     /// will be freed by tc_task_list_free.  This pointer is never NULL for a valid TCTaskList,
     /// and the *TCTaskList at indexes 0..len-1 are not NULL.
-    items: *const NonNull<TCTask>,
+    items: *mut Option<NonNull<TCTask>>,
 }
 
 impl CList for TCTaskList {
-    type Element = NonNull<TCTask>;
+    type Element = Option<NonNull<TCTask>>;
 
-    unsafe fn from_raw_parts(items: *const Self::Element, len: usize, cap: usize) -> Self {
+    unsafe fn from_raw_parts(items: *mut Self::Element, len: usize, cap: usize) -> Self {
         TCTaskList {
             len,
             _capacity: cap,
@@ -197,7 +200,16 @@ impl CList for TCTaskList {
         }
     }
 
-    fn into_raw_parts(self) -> (*const Self::Element, usize, usize) {
+    fn slice(&mut self) -> &mut [Self::Element] {
+        // SAFETY:
+        //  - because we have &mut self, we have read/write access to items[0..len]
+        //  - all items are properly initialized Element's
+        //  - return value lifetime is equal to &mmut self's, so access is exclusive
+        //  - items and len came from Vec, so total size is < isize::MAX
+        unsafe { std::slice::from_raw_parts_mut(self.items, self.len) }
+    }
+
+    fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
         (self.items, self.len, self._capacity)
     }
 }
@@ -813,17 +825,39 @@ pub unsafe extern "C" fn tc_task_free(task: *mut TCTask) {
     drop(tctask);
 }
 
+/// Take an item from a TCTaskList.  After this call, the indexed item is no longer associated
+/// with the list and becomes the caller's responsibility, just as if it had been returned from
+/// `tc_replica_get_task`.
+///
+/// The corresponding element in the `items` array will be set to NULL.  If that field is already
+/// NULL (that is, if the item has already been taken), this function will return NULL.  If the
+/// index is out of bounds, this function will also return NULL.
+///
+/// The passed TCTaskList remains owned by the caller.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_list_take(tasks: *mut TCTaskList, index: usize) -> *mut TCTask {
+    // SAFETY:
+    //  - tasks is not NULL and points to a valid TCTaskList (caller is not allowed to
+    //    modify the list directly, and tc_task_list_take leaves the list valid)
+    let p = unsafe { take_optional_pointer_list_item(tasks, index) };
+    if let Some(p) = p {
+        p.as_ptr()
+    } else {
+        std::ptr::null_mut()
+    }
+}
+
 /// Free a TCTaskList instance.  The instance, and all TCTaskList it contains, must not be used after
 /// this call.
 ///
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCTaskList.
 #[no_mangle]
-pub unsafe extern "C" fn tc_task_list_free(tctasks: *mut TCTaskList) {
+pub unsafe extern "C" fn tc_task_list_free(tasks: *mut TCTaskList) {
     // SAFETY:
-    //  - tctasks is not NULL and points to a valid TCTaskList (caller is not allowed to
-    //    modify the list)
+    //  - tasks is not NULL and points to a valid TCTaskList (caller is not allowed to
+    //    modify the list directly, and tc_task_list_take leaves the list valid)
     //  - caller promises not to use the value after return
-    unsafe { drop_pointer_list(tctasks) };
+    unsafe { drop_optional_pointer_list(tasks) };
 }
 
 #[cfg(test)]
@@ -832,19 +866,19 @@ mod test {
 
     #[test]
     fn empty_list_has_non_null_pointer() {
-        let tctasks = unsafe { TCTaskList::return_val(Vec::new()) };
-        assert!(!tctasks.items.is_null());
-        assert_eq!(tctasks.len, 0);
-        assert_eq!(tctasks._capacity, 0);
+        let tasks = unsafe { TCTaskList::return_val(Vec::new()) };
+        assert!(!tasks.items.is_null());
+        assert_eq!(tasks.len, 0);
+        assert_eq!(tasks._capacity, 0);
     }
 
     #[test]
     fn free_sets_null_pointer() {
-        let mut tctasks = unsafe { TCTaskList::return_val(Vec::new()) };
+        let mut tasks = unsafe { TCTaskList::return_val(Vec::new()) };
         // SAFETY: testing expected behavior
-        unsafe { tc_task_list_free(&mut tctasks) };
-        assert!(tctasks.items.is_null());
-        assert_eq!(tctasks.len, 0);
-        assert_eq!(tctasks._capacity, 0);
+        unsafe { tc_task_list_free(&mut tasks) };
+        assert!(tasks.items.is_null());
+        assert_eq!(tasks.len, 0);
+        assert_eq!(tasks._capacity, 0);
     }
 }
