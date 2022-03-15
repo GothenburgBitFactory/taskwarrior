@@ -6,7 +6,7 @@ use std::ops::Deref;
 use std::ptr::NonNull;
 use std::str::FromStr;
 use taskchampion::chrono::{TimeZone, Utc};
-use taskchampion::{Annotation, Tag, Task, TaskMut};
+use taskchampion::{Annotation, Tag, Task, TaskMut, Uuid};
 
 /// A task, as publicly exposed by this library.
 ///
@@ -784,6 +784,56 @@ pub unsafe extern "C" fn tc_task_remove_legacy_uda(task: *mut TCTask, key: TCStr
         task,
         |task| {
             task.remove_legacy_uda(key.as_str()?.to_string())?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Get all dependencies for a task.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_dependencies(task: *mut TCTask) -> TCUuidList {
+    wrap(task, |task| {
+        let vec: Vec<TCUuid> = task
+            .get_dependencies()
+            .map(|u| {
+                // SAFETY:
+                //  - value is not allocated
+                unsafe { TCUuid::return_val(u) }
+            })
+            .collect();
+        // SAFETY:
+        //  - caller will free this list
+        unsafe { TCUuidList::return_val(vec) }
+    })
+}
+
+/// Add a dependency.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_add_dependency(task: *mut TCTask, dep: TCUuid) -> TCResult {
+    // SAFETY:
+    //  - tcuuid is a valid TCUuid (all byte patterns are valid)
+    let dep: Uuid = unsafe { TCUuid::val_from_arg(dep) };
+    wrap_mut(
+        task,
+        |task| {
+            task.add_dependency(dep)?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Remove a dependency.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_remove_dependency(task: *mut TCTask, dep: TCUuid) -> TCResult {
+    // SAFETY:
+    //  - tcuuid is a valid TCUuid (all byte patterns are valid)
+    let dep: Uuid = unsafe { TCUuid::val_from_arg(dep) };
+    wrap_mut(
+        task,
+        |task| {
+            task.remove_dependency(dep)?;
             Ok(TCResult::Ok)
         },
         TCResult::Error,

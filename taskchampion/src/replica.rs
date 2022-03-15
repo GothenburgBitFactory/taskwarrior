@@ -1,3 +1,4 @@
+use crate::depmap::DependencyMap;
 use crate::server::{Server, SyncOp};
 use crate::storage::{Storage, TaskMap};
 use crate::task::{Status, Task};
@@ -7,6 +8,7 @@ use anyhow::Context;
 use chrono::{Duration, Utc};
 use log::trace;
 use std::collections::HashMap;
+use std::rc::Rc;
 use uuid::Uuid;
 
 /// A replica represents an instance of a user's task data, providing an easy interface
@@ -28,7 +30,12 @@ use uuid::Uuid;
 /// during the garbage-collection process.
 pub struct Replica {
     taskdb: TaskDb,
+
+    /// If true, this replica has already added an undo point.
     added_undo_point: bool,
+
+    /// The dependency map for this replica, if it has been calculated.
+    depmap: Option<Rc<DependencyMap>>,
 }
 
 impl Replica {
@@ -36,6 +43,7 @@ impl Replica {
         Replica {
             taskdb: TaskDb::new(storage),
             added_undo_point: false,
+            depmap: None,
         }
     }
 
@@ -76,9 +84,10 @@ impl Replica {
 
     /// Get all tasks represented as a map keyed by UUID
     pub fn all_tasks(&mut self) -> anyhow::Result<HashMap<Uuid, Task>> {
+        let depmap = self.dependency_map(false)?;
         let mut res = HashMap::new();
         for (uuid, tm) in self.taskdb.all_tasks()?.drain(..) {
-            res.insert(uuid, Task::new(uuid, tm));
+            res.insert(uuid, Task::new(uuid, tm, depmap.clone()));
         }
         Ok(res)
     }
@@ -94,12 +103,47 @@ impl Replica {
         Ok(WorkingSet::new(self.taskdb.working_set()?))
     }
 
+    /// Get the dependency map for all pending tasks.
+    ///
+    /// The data in this map is cached when it is first requested and may not contain modifications
+    /// made locally in this Replica instance.  The result is reference-counted and may
+    /// outlive the Replica.
+    ///
+    /// If `force` is true, then the result is re-calculated from the current state of the replica,
+    /// although previously-returned dependency maps are not updated.
+    pub fn dependency_map(&mut self, force: bool) -> anyhow::Result<Rc<DependencyMap>> {
+        if force || self.depmap.is_none() {
+            let mut dm = DependencyMap::new();
+            let ws = self.working_set()?;
+            for i in 1..=ws.largest_index() {
+                if let Some(u) = ws.by_index(i) {
+                    // note: we can't use self.get_task here, as that depends on a
+                    // DependencyMap
+                    if let Some(taskmap) = self.taskdb.get_task(u)? {
+                        for p in taskmap.keys() {
+                            if let Some(dep_str) = p.strip_prefix("dep_") {
+                                if let Ok(dep) = Uuid::parse_str(dep_str) {
+                                    dm.add_dependency(u, dep);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            self.depmap = Some(Rc::new(dm));
+        }
+
+        // at this point self.depmap is guaranteed to be Some(_)
+        Ok(self.depmap.as_ref().unwrap().clone())
+    }
+
     /// Get an existing task by its UUID
     pub fn get_task(&mut self, uuid: Uuid) -> anyhow::Result<Option<Task>> {
+        let depmap = self.dependency_map(false)?;
         Ok(self
             .taskdb
             .get_task(uuid)?
-            .map(move |tm| Task::new(uuid, tm)))
+            .map(move |tm| Task::new(uuid, tm, depmap)))
     }
 
     /// Create a new task.
@@ -107,7 +151,8 @@ impl Replica {
         let uuid = Uuid::new_v4();
         self.add_undo_point(false)?;
         let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
-        let mut task = Task::new(uuid, taskmap).into_mut(self);
+        let depmap = self.dependency_map(false)?;
+        let mut task = Task::new(uuid, taskmap, depmap).into_mut(self);
         task.set_description(description)?;
         task.set_status(status)?;
         task.set_entry(Some(Utc::now()))?;
@@ -121,7 +166,8 @@ impl Replica {
     pub fn import_task_with_uuid(&mut self, uuid: Uuid) -> anyhow::Result<Task> {
         self.add_undo_point(false)?;
         let taskmap = self.taskdb.apply(SyncOp::Create { uuid })?;
-        Ok(Task::new(uuid, taskmap))
+        let depmap = self.dependency_map(false)?;
+        Ok(Task::new(uuid, taskmap, depmap))
     }
 
     /// Delete a task.  The task must exist.  Note that this is different from setting status to
@@ -217,6 +263,7 @@ mod tests {
     use crate::task::Status;
     use chrono::TimeZone;
     use pretty_assertions::assert_eq;
+    use std::collections::HashSet;
     use uuid::Uuid;
 
     #[test]
@@ -444,5 +491,68 @@ mod tests {
             println!("got task {}", t.get_description());
             assert!(t.get_description().starts_with("keeper"));
         }
+    }
+
+    #[test]
+    fn dependency_map() {
+        let mut rep = Replica::new_inmemory();
+
+        let mut tasks = vec![];
+        for _ in 0..4 {
+            tasks.push(rep.new_task(Status::Pending, "t".into()).unwrap());
+        }
+
+        let uuids: Vec<_> = tasks.iter().map(|t| t.get_uuid()).collect();
+
+        // t[3] depends on t[2], and t[1]
+        {
+            let mut t = tasks.pop().unwrap().into_mut(&mut rep);
+            t.add_dependency(uuids[2]).unwrap();
+            t.add_dependency(uuids[1]).unwrap();
+        }
+
+        // t[2] depends on t[0]
+        {
+            let mut t = tasks.pop().unwrap().into_mut(&mut rep);
+            t.add_dependency(uuids[0]).unwrap();
+        }
+
+        // t[1] depends on t[0]
+        {
+            let mut t = tasks.pop().unwrap().into_mut(&mut rep);
+            t.add_dependency(uuids[0]).unwrap();
+        }
+
+        // generate the dependency map, forcing an update based on the newly-added
+        // dependencies
+        let dm = rep.dependency_map(true).unwrap();
+
+        assert_eq!(
+            dm.dependencies(uuids[3]).collect::<HashSet<_>>(),
+            set![uuids[1], uuids[2]]
+        );
+        assert_eq!(
+            dm.dependencies(uuids[2]).collect::<HashSet<_>>(),
+            set![uuids[0]]
+        );
+        assert_eq!(
+            dm.dependencies(uuids[1]).collect::<HashSet<_>>(),
+            set![uuids[0]]
+        );
+        assert_eq!(dm.dependencies(uuids[0]).collect::<HashSet<_>>(), set![]);
+
+        assert_eq!(dm.dependents(uuids[3]).collect::<HashSet<_>>(), set![]);
+        assert_eq!(
+            dm.dependents(uuids[2]).collect::<HashSet<_>>(),
+            set![uuids[3]]
+        );
+        assert_eq!(
+            dm.dependents(uuids[1]).collect::<HashSet<_>>(),
+            set![uuids[3]]
+        );
+        assert_eq!(
+            dm.dependents(uuids[0]).collect::<HashSet<_>>(),
+            set![uuids[1], uuids[2]]
+        );
     }
 }

@@ -2,7 +2,7 @@ use crate::argparse::Filter;
 use crate::invocation::filtered_tasks;
 use crate::table;
 use prettytable::{cell, row, Table};
-use taskchampion::Replica;
+use taskchampion::{Replica, Status};
 use termcolor::WriteColor;
 
 pub(crate) fn execute<W: WriteColor>(
@@ -44,6 +44,25 @@ pub(crate) fn execute<W: WriteColor>(
             for ann in annotations {
                 t.add_row(row![b->"Annotation", format!("{}: {}", ann.entry, ann.description)]);
             }
+
+            let mut deps: Vec<_> = task.get_dependencies().collect();
+            deps.sort();
+            for dep in deps {
+                let mut descr = None;
+                if let Some(task) = replica.get_task(dep)? {
+                    if task.get_status() == Status::Pending {
+                        if let Some(i) = working_set.by_uuid(dep) {
+                            descr = Some(format!("{} - {}", i, task.get_description()))
+                        } else {
+                            descr = Some(format!("{} - {}", dep, task.get_description()))
+                        }
+                    }
+                }
+
+                if let Some(descr) = descr {
+                    t.add_row(row![b->"Depends On", descr]);
+                }
+            }
         }
         t.print(w)?;
     }
@@ -54,6 +73,7 @@ pub(crate) fn execute<W: WriteColor>(
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::argparse::{Condition, TaskId};
     use crate::invocation::test::*;
 
     use taskchampion::Status;
@@ -70,5 +90,28 @@ mod test {
         let debug = false;
         execute(&mut w, &mut replica, filter, debug).unwrap();
         assert!(w.into_string().contains("my task"));
+    }
+
+    #[test]
+    fn test_deps() {
+        let mut w = test_writer();
+        let mut replica = test_replica();
+        let t1 = replica.new_task(Status::Pending, s!("my task")).unwrap();
+        let t2 = replica
+            .new_task(Status::Pending, s!("dunno, depends"))
+            .unwrap();
+        let mut t2 = t2.into_mut(&mut replica);
+        t2.add_dependency(t1.get_uuid()).unwrap();
+        let t2 = t2.into_immut();
+
+        let filter = Filter {
+            conditions: vec![Condition::IdList(vec![TaskId::Uuid(t2.get_uuid())])],
+        };
+        let debug = false;
+        execute(&mut w, &mut replica, filter, debug).unwrap();
+        let s = w.into_string();
+        // length of whitespace between these two strings is not important
+        assert!(s.contains("Depends On"));
+        assert!(s.contains("1 - my task"));
     }
 }

@@ -912,6 +912,21 @@ TCResult tc_task_set_legacy_uda(struct TCTask *task, struct TCString key, struct
 TCResult tc_task_remove_legacy_uda(struct TCTask *task, struct TCString key);
 
 /**
+ * Get all dependencies for a task.
+ */
+struct TCUuidList tc_task_get_dependencies(struct TCTask *task);
+
+/**
+ * Add a dependency.
+ */
+TCResult tc_task_add_dependency(struct TCTask *task, struct TCUuid dep);
+
+/**
+ * Remove a dependency.
+ */
+TCResult tc_task_remove_dependency(struct TCTask *task, struct TCUuid dep);
+
+/**
  * Get the latest error for a task, or a string NULL ptr field if the last operation succeeded.
  * Subsequent calls to this function will return NULL.  The task pointer must not be NULL.  The
  * caller must free the returned string.

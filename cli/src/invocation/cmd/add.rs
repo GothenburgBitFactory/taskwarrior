@@ -1,19 +1,19 @@
-use crate::argparse::{DescriptionMod, Modification};
-use crate::invocation::apply_modification;
+use crate::argparse::DescriptionMod;
+use crate::invocation::{apply_modification, ResolvedModification};
 use taskchampion::{Replica, Status};
 use termcolor::WriteColor;
 
-pub(crate) fn execute<W: WriteColor>(
+pub(in crate::invocation) fn execute<W: WriteColor>(
     w: &mut W,
     replica: &mut Replica,
-    mut modification: Modification,
+    mut modification: ResolvedModification,
 ) -> Result<(), crate::Error> {
     // extract the description from the modification to handle it specially
-    let description = match modification.description {
+    let description = match modification.0.description {
         DescriptionMod::Set(ref s) => s.clone(),
         _ => "(no description)".to_owned(),
     };
-    modification.description = DescriptionMod::None;
+    modification.0.description = DescriptionMod::None;
 
     let task = replica.new_task(Status::Pending, description).unwrap();
     let mut task = task.into_mut(replica);
@@ -25,6 +25,7 @@ pub(crate) fn execute<W: WriteColor>(
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::argparse::Modification;
     use crate::invocation::test::*;
     use pretty_assertions::assert_eq;
 
@@ -32,10 +33,10 @@ mod test {
     fn test_add() {
         let mut w = test_writer();
         let mut replica = test_replica();
-        let modification = Modification {
+        let modification = ResolvedModification(Modification {
             description: DescriptionMod::Set(s!("my description")),
             ..Default::default()
-        };
+        });
         execute(&mut w, &mut replica, modification).unwrap();
 
         // check that the task appeared..
@@ -54,11 +55,11 @@ mod test {
     fn test_add_with_tags() {
         let mut w = test_writer();
         let mut replica = test_replica();
-        let modification = Modification {
+        let modification = ResolvedModification(Modification {
             description: DescriptionMod::Set(s!("my description")),
             add_tags: vec![tag!("tag1")].drain(..).collect(),
             ..Default::default()
-        };
+        });
         execute(&mut w, &mut replica, modification).unwrap();
 
         // check that the task appeared..

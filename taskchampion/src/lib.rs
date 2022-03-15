@@ -45,6 +45,10 @@ This crate supports Rust version 1.47 and higher.
 
  */
 
+// NOTE: it's important that this 'mod' comes first so that the macros can be used in other modules
+mod macros;
+
+mod depmap;
 mod errors;
 mod replica;
 pub mod server;
@@ -54,6 +58,7 @@ mod taskdb;
 mod utils;
 mod workingset;
 
+pub use depmap::DependencyMap;
 pub use errors::Error;
 pub use replica::Replica;
 pub use server::{Server, ServerConfig};

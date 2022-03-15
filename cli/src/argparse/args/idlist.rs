@@ -2,7 +2,7 @@ use nom::{branch::*, character::complete::*, combinator::*, multi::*, sequence::
 use taskchampion::Uuid;
 
 /// A task identifier, as given in a filter command-line expression
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub(crate) enum TaskId {
     /// A small integer identifying a working-set task
     WorkingSetId(usize),
