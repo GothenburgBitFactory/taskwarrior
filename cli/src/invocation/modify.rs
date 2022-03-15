@@ -1,5 +1,5 @@
 use crate::argparse::{DescriptionMod, Modification};
-use chrono::Utc;
+use taskchampion::chrono::Utc;
 use taskchampion::{Annotation, TaskMut};
 
 /// Apply the given modification

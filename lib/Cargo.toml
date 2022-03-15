@@ -9,7 +9,6 @@ crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
 libc = "0.2.113"
-chrono = "^0.4.10"
 taskchampion = { path = "../taskchampion" }
 anyhow = "1.0"
 

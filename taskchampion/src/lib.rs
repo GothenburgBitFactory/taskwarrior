@@ -63,3 +63,6 @@ pub use workingset::WorkingSet;
 
 /// Re-exported type from the `uuid` crate, for ease of compatibility for consumers of this crate.
 pub use uuid::Uuid;
+
+/// Re-exported chrono module.
+pub use chrono;
