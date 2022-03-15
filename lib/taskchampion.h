@@ -76,6 +76,9 @@
  */
 
 
+#ifndef TASKCHAMPION_H
+#define TASKCHAMPION_H
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
@@ -1009,3 +1012,5 @@ void tc_working_set_free(struct TCWorkingSet *ws);
 #ifdef __cplusplus
 } // extern "C"
 #endif // __cplusplus
+
+#endif /* TASKCHAMPION_H */
