@@ -86,9 +86,9 @@ There are many binary packages available, but to install from source requires:
 
 Download the tarball, and expand it:
 
-    $ curl -O https://taskwarrior.org/download/task-2.6.1.tar.gz
-    $ tar xzf task-2.6.1.tar.gz
-    $ cd task-2.6.1
+    $ curl -O https://taskwarrior.org/download/task-2.6.2.tar.gz
+    $ tar xzf task-2.6.2.tar.gz
+    $ cd task-2.6.2
 
 Or clone this repository:
 
