@@ -11,6 +11,8 @@
            Thanks to bentwitthold for reporting.
 - TW #2671 The value of soww named date is incorrect
            Thanks to Lennart Kill for reporting.
+- TW #2707 Assigning dependencies via ID ranges
+           Thanks to jaker-dotcom for reporting.
 - TW #2748 Recurring report does not include parent tasks
            Thanks to Klaus Ethgen for reporting.
 
