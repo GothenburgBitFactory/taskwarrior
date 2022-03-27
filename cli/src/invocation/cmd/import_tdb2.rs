@@ -87,7 +87,7 @@ mod test {
     use pretty_assertions::assert_eq;
     use std::convert::TryInto;
     use taskchampion::chrono::{TimeZone, Utc};
-    use taskchampion::{Priority, Status};
+    use taskchampion::Status;
     use tempfile::TempDir;
 
     #[test]
@@ -113,7 +113,7 @@ mod test {
             .unwrap();
         assert_eq!(task.get_description(), "snake 🐍");
         assert_eq!(task.get_status(), Status::Pending);
-        assert_eq!(task.get_priority(), Priority::M);
+        assert_eq!(task.get_priority(), "M");
         assert_eq!(task.get_wait(), None);
         assert_eq!(
             task.get_modified(),
@@ -128,7 +128,7 @@ mod test {
             .unwrap();
         assert_eq!(task.get_description(), "[TEST] foo");
         assert_eq!(task.get_status(), Status::Completed);
-        assert_eq!(task.get_priority(), Priority::M);
+        assert_eq!(task.get_priority(), "M".to_string());
         assert_eq!(task.get_wait(), None);
         assert_eq!(
             task.get_modified(),

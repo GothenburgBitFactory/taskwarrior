@@ -1,5 +1,5 @@
 use super::tag::{SyntheticTag, TagInner};
-use super::{Annotation, Priority, Status, Tag, Timestamp};
+use super::{Annotation, Status, Tag, Timestamp};
 use crate::depmap::DependencyMap;
 use crate::replica::Replica;
 use crate::storage::TaskMap;
@@ -66,6 +66,7 @@ enum Prop {
     Modified,
     Start,
     Status,
+    Priority,
     Wait,
     End,
     Entry,
@@ -138,11 +139,11 @@ impl Task {
         self.get_timestamp(Prop::Entry.as_ref())
     }
 
-    pub fn get_priority(&self) -> Priority {
+    pub fn get_priority(&self) -> &str {
         self.taskmap
-            .get(Prop::Status.as_ref())
-            .map(|s| Priority::from_taskmap(s))
-            .unwrap_or(Priority::M)
+            .get(Prop::Priority.as_ref())
+            .map(|s| s.as_ref())
+            .unwrap_or("")
     }
 
     /// Get the wait time.  If this value is set, it will be returned, even
@@ -345,6 +346,10 @@ impl<'r> TaskMut<'r> {
 
     pub fn set_description(&mut self, description: String) -> anyhow::Result<()> {
         self.set_string(Prop::Description.as_ref(), Some(description))
+    }
+
+    pub fn set_priority(&mut self, priority: String) -> anyhow::Result<()> {
+        self.set_string(Prop::Priority.as_ref(), Some(priority))
     }
 
     pub fn set_entry(&mut self, entry: Option<DateTime<Utc>>) -> anyhow::Result<()> {
@@ -726,6 +731,12 @@ mod test {
     }
 
     #[test]
+    fn test_get_priority_default() {
+        let task = Task::new(Uuid::new_v4(), TaskMap::new(), dm());
+        assert_eq!(task.get_priority(), "");
+    }
+
+    #[test]
     fn test_get_annotations() {
         let task = Task::new(
             Uuid::new_v4(),
@@ -807,6 +818,15 @@ mod test {
                     description: "left another message".into()
                 }]
             );
+        });
+    }
+
+    #[test]
+    fn test_set_get_priority() {
+        with_mut_task(|mut task| {
+            assert_eq!(task.get_priority(), "");
+            task.set_priority("H".into()).unwrap();
+            assert_eq!(task.get_priority(), "H");
         });
     }
 
