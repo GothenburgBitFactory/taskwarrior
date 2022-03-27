@@ -2141,7 +2141,7 @@ float Task::urgency ()
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_inherit () const
 {
-  float v = FLT_MIN;
+  float v = -FLT_MAX;
 #ifdef PRODUCT_TASKWARRIOR
   // Calling getBlockedTasks is rather expensive.
   // It is called recursively for each dependency in the chain here.
