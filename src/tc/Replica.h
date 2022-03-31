@@ -51,7 +51,7 @@ namespace tc {
   {
   public:
     Replica (); // tc_replica_new_in_memory
-    Replica (const std::string& dir); // tc_replica_new_on_disk
+    Replica (const std::string& dir, bool create_if_missing); // tc_replica_new_on_disk
 
     // This object "owns" inner, so copy is not allowed.
     Replica (const Replica &) = delete;
@@ -69,6 +69,8 @@ namespace tc {
 // TODO: struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid tcuuid);
 // TODO: TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool avoid_snapshots);
 // TODO: TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
+    int64_t num_local_operations ();
+    int64_t num_undo_points ();
 // TODO: TCResult tc_replica_add_undo_point(struct TCReplica *rep, bool force);
     void rebuild_working_set ();
   private:

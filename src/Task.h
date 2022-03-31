@@ -35,6 +35,7 @@
 #include <JSON.h>
 #include <Table.h>
 #include <Datetime.h>
+#include <tc/Task.h>
 
 class Task
 {
@@ -65,6 +66,7 @@ public:
   bool operator!= (const Task&);
   Task (const std::string&);
   Task (const json::object*);
+  Task (tc::Task);
 
   void parse (const std::string&);
   std::string composeF4 () const;
@@ -182,6 +184,7 @@ private:
   int determineVersion (const std::string&);
   void parseJSON (const std::string&);
   void parseJSON (const json::object*);
+  void parseTC (const tc::Task&);
   void parseLegacy (const std::string&);
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;

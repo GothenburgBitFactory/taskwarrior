@@ -145,6 +145,19 @@ Task::Task (const json::object* obj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Task::Task (tc::Task obj)
+{
+  id               = 0;
+  urgency_value    = 0.0;
+  recalc_urgency   = true;
+  is_blocked       = false;
+  is_blocking      = false;
+  annotation_count = 0;
+
+  parseTC (obj);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task::status Task::textToStatus (const std::string& input)
 {
        if (input[0] == 'p') return Task::pending;
@@ -893,6 +906,15 @@ void Task::parseJSON (const json::object* root_obj)
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Note that all fields undergo encode/decode.
+void Task::parseTC (const tc::Task& task)
+{
+  data = task.get_taskmap ();
+  data["uuid"] = task.get_uuid ();
+  id = Context::getContext ().tdb2.id (data["uuid"]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

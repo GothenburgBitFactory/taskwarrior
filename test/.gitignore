@@ -1,6 +1,7 @@
 *.o
 *.pyc
 *.data
+*.sqlite3
 *.log
 *.runlog
 col.t

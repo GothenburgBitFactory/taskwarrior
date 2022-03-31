@@ -63,11 +63,11 @@ tc::Replica& tc::Replica::operator= (Replica &&other) noexcept
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Replica::Replica (const std::string& dir)
+tc::Replica::Replica (const std::string& dir, bool create_if_missing)
 {
   TCString path = tc_string_borrow (dir.c_str ());
   TCString error;
-  auto tcreplica = tc_replica_new_on_disk (path, &error);
+  auto tcreplica = tc_replica_new_on_disk (path, create_if_missing, &error);
   if (!tcreplica) {
     auto errmsg = format ("Could not create replica at {1}: {2}", dir, tc_string_content (&error));
     tc_string_free (&error);
@@ -111,6 +111,26 @@ tc::Task tc::Replica::new_task (tc::Status status, const std::string &descriptio
     throw replica_error ();
   }
   return Task (tctask);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int64_t tc::Replica::num_local_operations ()
+{
+  auto num = tc_replica_num_local_operations (&*inner);
+  if (num < 0) {
+    throw replica_error ();
+  }
+  return num;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int64_t tc::Replica::num_undo_points ()
+{
+  auto num = tc_replica_num_undo_points (&*inner);
+  if (num < 0) {
+    throw replica_error ();
+  }
+  return num;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
