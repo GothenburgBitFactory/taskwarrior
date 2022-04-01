@@ -1267,6 +1267,13 @@ int TDB2::num_local_changes ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int TDB2::num_reverts_possible ()
+{
+  std::vector <std::string> lines = undo.get_lines ();
+  return std::count(lines.begin(), lines.end(), "---");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 size_t TDB2::data_size ()
 {
   return pending._file.size () + completed._file.size () + undo._file.size () + backlog._file.size ();
