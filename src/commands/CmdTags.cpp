@@ -58,10 +58,10 @@ int CmdTags::execute (std::string& output)
   std::stringstream out;
 
   // Get all the tasks.
-  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending_tasks ();
 
   if (Context::getContext ().config.getBoolean ("list.all.tags"))
-    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
+    for (auto& task : Context::getContext ().tdb2.completed_tasks ())
       tasks.push_back (task);
 
   int quantity = tasks.size ();
@@ -157,10 +157,10 @@ CmdCompletionTags::CmdCompletionTags ()
 int CmdCompletionTags::execute (std::string& output)
 {
   // Get all the tasks.
-  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending_tasks ();
 
   if (Context::getContext ().config.getBoolean ("complete.all.tags"))
-    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
+    for (auto& task : Context::getContext ().tdb2.completed_tasks ())
       tasks.push_back (task);
 
   // Apply filter.

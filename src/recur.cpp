@@ -56,7 +56,7 @@ void handleRecurrence ()
   if (! Context::getContext ().config.getBoolean ("recurrence"))
     return;
 
-  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending_tasks ();
   Datetime now;
 
   // Look at all tasks and find any recurring ones.
@@ -411,7 +411,7 @@ void updateRecurrenceMask (Task& task)
 void handleUntil ()
 {
   Datetime now;
-  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending_tasks ();
   for (auto& t : tasks)
   {
     // TODO What about expiring template tasks?
