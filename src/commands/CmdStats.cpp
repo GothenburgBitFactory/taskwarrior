@@ -65,9 +65,8 @@ int CmdStats::execute (std::string& output)
   // Go get the file sizes.
   size_t dataSize = Context::getContext ().tdb2.data_size ();
 
-  // Count the undo transactions.
-  std::vector <std::string> undoTxns = Context::getContext ().tdb2.undo.get_lines ();
-  int undoCount = std::count(undoTxns.begin(), undoTxns.end(), "---");
+  // Count the possible reverts.
+  int undoCount = Context::getContext ().tdb2.num_reverts_possible ();
 
   // Count the backlog transactions.
   int numLocalChanges = Context::getContext ().tdb2.num_local_changes ();

@@ -136,6 +136,7 @@ public:
   bool read_only ();
 
   int num_local_changes ();
+  int num_reverts_possible ();
   size_t data_size ();
 
   void clear ();
@@ -154,11 +155,12 @@ private:
 public:
   TF2 pending;
   TF2 completed;
-  TF2 undo;
 
 protected:
   friend class CmdSync; // CmdSync accesses the backlog directly
   TF2 backlog;
+  friend class CmdInfo; // CmdInfo uses undo data to give history
+  TF2 undo;
 
 private:
   std::string        _location;
