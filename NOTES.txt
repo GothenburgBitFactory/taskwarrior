@@ -1,0 +1,70 @@
+## WIP
+
+ * Filling in remaining modification-related functionality
+   * TDB2::siblings
+ * Fixing tests at each commit
+   * TC needs a flag to not create a DB if it doesn't exist (DONE, but TW
+     needs to use it)
+
+To Fix / File:
+ - task: /home/dustin/p/taskwarrior/src/Task.cpp:2305: float Task::urgency_age() const: Assertion `has ("entry")' failed.
+   when a task doesn't exist
+
+## Tricky Bit
+
+TW treats Tasks as k/v maps, without any ties to storage.  They can be
+created, copied, and modified at will, and the k/v map is exposed and deeply
+used by other parts of TW (rather than purpose-specific methods like
+get_description).  Tasks modifications involve creating a new task and diffing
+old and new to determine what to change.
+
+TC tasks are immutable, except by submitting an operation to a replica.  They
+cannot be (easily) copied.
+
+## PLAN
+
+Three phases, with intervening commits to `develop`
+
+### Phase 1
+
+Make TDB2 a wrapper around TC
+* With no attention to efficiency (lots of copying is OK)
+* For functionality that's difficult to support, disable it in a [BREAKING]
+  commit -- we can decide whether to file an issue or fix these immediately
+
+At the end of this phase, things mostly "work" with some well-enumerated
+[BROKEN] functionality.
+
+### Phase 2
+
+* Fix [BROKEN] functionality that still makes sense with TC and must be fixed
+  for release
+* Encourage others to work on fixing broken functionality, performing parts of
+  this phase in parallel.
+
+At the end of this phase, the [BROKEN] functionality that can be repaired, has
+been repaired.  Remaining [BROKEN] functionality is understood, agreed, and
+documented.  Aside from performance issues, the application is ready for
+relase.
+
+### Phase 3
+
+Remove some layers of abstraction
+* Replace TDB2 with direct access to a tc::Replica
+* Replace Task with tc::Task
+  * For modifications, switch to an imperative model (`set_xxx(..)`) instead
+    of diffing
+* Sort out more efficient ways to interface from C++ to Rust
+
+At the end of this phase, the application is ready for release and further
+addition of features and functionality.
+
+## Deferred Stuff
+
+### Recurrence
+
+TW uses a "Recurring" status for a task, which TC does not model.
+
+### Undo Details
+
+`task undo` shows a diff.  How can we provide that?
