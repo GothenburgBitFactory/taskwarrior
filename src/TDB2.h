@@ -135,6 +135,9 @@ public:
   // Read-only mode.
   bool read_only ();
 
+  int num_local_changes ();
+  size_t data_size ();
+
   void clear ();
   void dump ();
 
@@ -152,6 +155,9 @@ public:
   TF2 pending;
   TF2 completed;
   TF2 undo;
+
+protected:
+  friend class CmdSync; // CmdSync accesses the backlog directly
   TF2 backlog;
 
 private:
