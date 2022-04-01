@@ -202,7 +202,7 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     // Check if the value is a proper filter by filtering current pending.data
     Filter filter;
     std::vector <Task> filtered;
-    auto pending = Context::getContext ().tdb2.pending.get_tasks ();
+    auto pending = Context::getContext ().tdb2.pending_tasks ();
 
     try
     {

@@ -40,7 +40,7 @@ void nag (std::vector <Task>& tasks)
   if (msg == "")
       return;
 
-  auto pending = Context::getContext ().tdb2.pending.get_tasks ();
+  auto pending = Context::getContext ().tdb2.pending_tasks ();
   for (auto& t1 : tasks) {
     if (t1.hasTag ("nonag"))
       continue;

@@ -81,7 +81,7 @@ int CmdCalendar::execute (std::string& output)
   // Load the pending tasks.
   handleUntil ();
   handleRecurrence ();
-  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending_tasks ();
 
   Datetime today;
   auto getPendingDate = false;

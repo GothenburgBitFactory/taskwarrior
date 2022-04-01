@@ -122,6 +122,8 @@ public:
 
   // Generalized task accessors.
   const std::vector <Task> all_tasks ();
+  const std::vector <Task> pending_tasks ();
+  const std::vector <Task> completed_tasks ();
   bool get (int, Task&);
   bool get (const std::string&, Task&);
   bool has (const std::string&);
@@ -152,11 +154,11 @@ private:
   void revert_completed (std::vector <std::string>&, std::vector <std::string>&, const std::string&, const std::string&);
   void revert_backlog (std::vector <std::string>&, const std::string&, const std::string&, const std::string&);
 
-public:
+protected:
+  friend class TF2; // TF2 reaches into TDB2 internals for gc
   TF2 pending;
   TF2 completed;
 
-protected:
   friend class CmdSync; // CmdSync accesses the backlog directly
   TF2 backlog;
   friend class CmdInfo; // CmdInfo uses undo data to give history

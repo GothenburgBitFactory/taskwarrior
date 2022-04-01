@@ -1211,7 +1211,7 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
 void Task::addDependency (int depid)
 {
   // Check that id is resolvable.
-  std::string uuid = Context::getContext ().tdb2.pending.uuid (depid);
+  std::string uuid = Context::getContext ().tdb2.uuid (depid);
   if (uuid == "")
     throw format ("Could not create a dependency on task {1} - not found.", depid);
 
@@ -1259,7 +1259,7 @@ void Task::addDependency (const std::string& uuid)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeDependency (int id)
 {
-  std::string uuid = Context::getContext ().tdb2.pending.uuid (id);
+  std::string uuid = Context::getContext ().tdb2.uuid (id);
 
   // The removeDependency(std::string&) method will check this too, but here we
   // can give a more natural error message containing the id provided by the user
@@ -1296,7 +1296,7 @@ std::vector <int> Task::getDependencyIDs () const
     if (!isDepAttr (attr))
       continue;
     auto dep = attr2Dep (attr);
-    ids.push_back (Context::getContext ().tdb2.pending.id (dep));
+    ids.push_back (Context::getContext ().tdb2.id (dep));
   }
 
   return ids;
@@ -1326,7 +1326,7 @@ std::vector <Task> Task::getDependencyTasks () const
   // efficient.
   std::vector <Task> blocking;
   if (uuids.size() > 0)
-    for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
+    for (auto& it : Context::getContext ().tdb2.pending_tasks ())
       if (it.getStatus () != Task::completed &&
           it.getStatus () != Task::deleted   &&
           std::find (uuids.begin (), uuids.end (), it.get ("uuid")) != uuids.end ())
@@ -1341,7 +1341,7 @@ std::vector <Task> Task::getBlockedTasks () const
   auto uuid = get ("uuid");
 
   std::vector <Task> blocked;
-  for (auto& it : Context::getContext ().tdb2.pending.get_tasks ())
+  for (auto& it : Context::getContext ().tdb2.pending_tasks ())
     if (it.getStatus () != Task::completed &&
         it.getStatus () != Task::deleted   &&
         it.hasDependency (uuid))

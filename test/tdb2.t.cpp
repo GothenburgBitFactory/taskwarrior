@@ -58,8 +58,8 @@ int main (int, char**)
     context.tdb2.set_location (".");
 
     // Try reading an empty database.
-    std::vector <Task> pending          = context.tdb2.pending.get_tasks ();
-    std::vector <Task> completed        = context.tdb2.completed.get_tasks ();
+    std::vector <Task> pending          = context.tdb2.pending_tasks ();
+    std::vector <Task> completed        = context.tdb2.completed_tasks ();
     int num_reverts_possible            = context.tdb2.num_reverts_possible ();
     int num_local_changes               = context.tdb2.num_local_changes ();
 
@@ -72,8 +72,8 @@ int main (int, char**)
     Task task (R"([description:"description" name:"value"])");
     context.tdb2.add (task);
 
-    pending              = context.tdb2.pending.get_tasks ();
-    completed            = context.tdb2.completed.get_tasks ();
+    pending              = context.tdb2.pending_tasks ();
+    completed            = context.tdb2.completed_tasks ();
     num_reverts_possible = context.tdb2.num_reverts_possible ();
     num_local_changes    = context.tdb2.num_local_changes ();
 
@@ -85,8 +85,8 @@ int main (int, char**)
     task.set ("description", "This is a test");
     context.tdb2.modify (task);
 
-    pending              = context.tdb2.pending.get_tasks ();
-    completed            = context.tdb2.completed.get_tasks ();
+    pending              = context.tdb2.pending_tasks ();
+    completed            = context.tdb2.completed_tasks ();
     num_reverts_possible = context.tdb2.num_reverts_possible ();
     num_local_changes    = context.tdb2.num_local_changes ();
 
