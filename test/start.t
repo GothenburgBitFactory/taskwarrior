@@ -67,6 +67,7 @@ class TestStart(TestCase):
         code, out, err = self.t("list")
         self.assertNotIn("two", out)
 
+    @unittest.expectedFailure  # journal is not yet supported
     def test_journal_time(self):
         """Verify journal.time tracks state"""
         self.t.config("journal.time", "1")
@@ -80,6 +81,7 @@ class TestStart(TestCase):
         code, out, err = self.t("long")
         self.assertIn("Stopped task", out)
 
+    @unittest.expectedFailure  # journal is not yet supported
     def test_journal_annotations(self):
         """Verify journal start/stop annotations are used"""
         self.t.config("journal.time",                  "1")

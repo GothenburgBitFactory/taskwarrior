@@ -156,7 +156,6 @@ protected:
 
   friend class CmdSync; // CmdSync accesses the backlog directly
   TF2 backlog;
-  friend class CmdInfo; // CmdInfo uses undo data to give history
   TF2 undo;
 
 private:
