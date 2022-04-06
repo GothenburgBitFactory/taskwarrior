@@ -156,7 +156,7 @@ mod test {
     use serde_json::json;
     use std::convert::TryInto;
     use taskchampion::chrono::{TimeZone, Utc};
-    use taskchampion::{Priority, Status};
+    use taskchampion::Status;
 
     #[test]
     fn stringify_string() {
@@ -235,7 +235,7 @@ mod test {
             .unwrap();
         assert_eq!(task.get_description(), "repair window");
         assert_eq!(task.get_status(), Status::Completed);
-        assert_eq!(task.get_priority(), Priority::M);
+        assert_eq!(task.get_priority(), "M".to_string());
         assert_eq!(
             task.get_wait(),
             Some(Utc.ymd(2021, 12, 25).and_hms(00, 15, 23))
