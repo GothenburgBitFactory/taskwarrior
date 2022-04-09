@@ -17,17 +17,29 @@ mod traits;
 mod util;
 
 pub mod annotation;
+pub use annotation::*;
 pub mod atomic;
+pub use atomic::*;
 pub mod kv;
+pub use kv::*;
 pub mod replica;
+pub use replica::*;
 pub mod result;
+pub use result::*;
 pub mod server;
+pub use server::*;
 pub mod status;
+pub use status::*;
 pub mod string;
+pub use string::*;
 pub mod task;
+pub use task::*;
 pub mod uda;
+pub use uda::*;
 pub mod uuid;
+pub use uuid::*;
 pub mod workingset;
+pub use workingset::*;
 
 pub(crate) mod types {
     pub(crate) use crate::annotation::{TCAnnotation, TCAnnotationList};
