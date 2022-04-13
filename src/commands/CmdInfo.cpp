@@ -37,6 +37,7 @@
 #include <shared.h>
 #include <format.h>
 #include <util.h>
+#include <Lexer.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdInfo::CmdInfo ()
@@ -373,7 +374,7 @@ int CmdInfo::execute (std::string& output)
     // Task::urgency
     row = view.addRow ();
     view.set (row, 0, "Urgency");
-    view.set (row, 1, format (task.urgency (), 4, 4));
+    view.set (row, 1, Lexer::trimLeft (format (task.urgency (), 4, 4)));
 
     // Show any UDAs
     auto all = task.all ();
