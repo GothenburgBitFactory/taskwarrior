@@ -41,8 +41,9 @@ There are three varieties of tests:
     line, hooks and syncing. There is an example, 'template.t', that shows how
     to perform various high level tests.
 
-  * Bash unit tests, one test per file, using the bash_tap_tw.sh script. These
-    tests are small, quick tests, not intended to be permanent.
+  * Bash unit tests, one test per file, using the bash_tap_tw.sh script (must be
+    sourced at the start of the script). These tests are small, quick tests,
+    not intended to be permanent.
 
 All tests are named with the pattern '*.t', and any other forms are not run by
 the test harness. Additionally a test must be set executable (chmod +x) for it
