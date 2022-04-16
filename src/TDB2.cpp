@@ -181,6 +181,15 @@ void TF2::add_task (Task& task)
     task.id = Context::getContext ().tdb2.next_id ();
   }
 
+  if (Context::getContext ().config.getBoolean ("reverse_id"))
+  {
+    // Re-number tasks
+    size_t current_id = task.id;
+    for (auto& task_tmp : _tasks)
+      task_tmp.id = current_id--;
+    task.id = _tasks.back().id;
+  }
+
   _I2U[task.id] = task.get ("uuid");
   _U2I[task.get ("uuid")] = task.id;
 
@@ -387,18 +396,23 @@ void TF2::load_tasks (bool from_gc /* = false */)
   // Calling it on _tasks is the right thing to do even when from_gc is set.
   _tasks.reserve (_lines.size ());
 
-  int line_number = 0;  // Used for error message in catch block.
+  const bool reverse_id = Context::getContext ().config.getBoolean ("reverse_id");
+  size_t line_number = 0;  // Used for error message in catch block, and in case
+                           // of using the reverse_id option
   try
   {
+    const size_t lines_size = _lines.size();
     for (auto& line : _lines)
     {
       ++line_number;
       auto task = load_task (line);
+      if (reverse_id)
+        task.id = lines_size + 1 - line_number;
 
       if (from_gc)
         load_gc (task);
       else
-        _tasks.push_back (task);
+        _tasks.emplace_back (task);
 
       if (Context::getContext ().cli2.getCommand () == "import")  // For faster lookup only
         _tasks_map.emplace (task.get("uuid"), task);
@@ -413,6 +427,8 @@ void TF2::load_tasks (bool from_gc /* = false */)
 
   catch (const std::string& e)
   {
+    if (reverse_id)
+      line_number = _lines.size() - line_number;
     throw e + format (" in {1} at line {2}", _file._data, line_number);
   }
 
