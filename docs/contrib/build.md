@@ -2,9 +2,9 @@
 title: How To Build Taskwarrior
 ---
 
-This is for developers. Specifically those who know how to use tools, satisfy
-dependencies, and want to set up a development environment. It is not
-user-friendly.
+This is for developers.
+Specifically those who know how to use tools, satisfy dependencies, and want to set up a development environment.
+It is not user-friendly.
 
 You\'ll need these tools:
 
@@ -55,9 +55,8 @@ Build the debug type if you want symbols in the binary.
 
 # Running the Test Suite
 
-There are scripts to facilitate running the test suite. In particular, the
-[vramsteg](https://gothenburgbitfactory.org/projects/vramsteg) utility
-provides blinkenlights for test progress.
+There are scripts to facilitate running the test suite.
+In particular, the [vramsteg](https://gothenburgbitfactory.org/projects/vramsteg) utility provides blinkenlights for test progress.
 
     $ cd taskwarrior.git/test
     $ make VERBOSE=1     # Shows details
@@ -68,9 +67,10 @@ provides blinkenlights for test progress.
 # Submitting a Patch
 
 Talk to us first - make sure you are working on something that is wanted.
-Patches will not be applied simply because you did the work. Remember the
-various forms of documentation involved, and the test suite. Work on the dev
-branch, not `master`. When you are are ready to submit, do this:
+Patches will not be applied simply because you did the work.
+Remember the various forms of documentation involved, and the test suite.
+Work on the dev branch, not `master`.
+When you are are ready to submit, do this:
 
     $ git commit
 
@@ -94,11 +94,9 @@ Create the patch using this:
 
     $ git format-patch HEAD^
 
-Mail the patch to <taskwarrior-dev@googlegroups.com> or attach it to the
-appropriate ticket in the [bug
-tracker](https://github.com/GothenburgBitFactory/taskwarrior/issues). If you do
-the latter, make sure someone knows about it, or it could go unnoticed.
+Mail the patch to <taskwarrior-dev@googlegroups.com> or attach it to the appropriate ticket in the [bug tracker](https://github.com/GothenburgBitFactory/taskwarrior/issues).
+If you do the latter, make sure someone knows about it, or it could go unnoticed.
 
-Expect feedback. It is unlikely your patch will be accepted unmodified. Usually
-this is because you violated the coding style, worked in the wrong branch, or
-*forgot* about documentation and unit tests.
+Expect feedback.
+It is unlikely your patch will be accepted unmodified.
+Usually this is because you violated the coding style, worked in the wrong branch, or *forgot* about documentation and unit tests.
