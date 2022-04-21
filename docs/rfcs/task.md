@@ -176,96 +176,29 @@ no sense, but evaluates to \"3years\".
 
 Here are the standard attributes that may comprise a task:
 
-<table>
-<tr>
-  <th>Name</th>
-  <th>Type</th>
-</tr>
-<tr>
-  <td>status</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>uuid</td>
-  <td>UUID</td>
-</tr>
-<tr>
-  <td>entry</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>description</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>start</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>end</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>due</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>until</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>wait</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>modified</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>scheduled</td>
-  <td>Date</td>
-</tr>
-<tr>
-  <td>recur</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>mask</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>imask</td>
-  <td>Integer</td>
-</tr>
-<tr>
-  <td>parent</td>
-  <td>UUID</td>
-</tr>
-<tr>
-  <td>project</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>priority</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>depends</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>tags *</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>annotation *</td>
-  <td>String</td>
-</tr>
-<tr>
-  <td>(UDA)</td>
-  <td>?</td>
-</tr>
-</table>
+| Name         | Type    |
+|--------------|---------|
+| status       | String  |
+| uuid         | UUID    |
+| entry        | Date    |
+| description  | String  |
+| start        | Date    |
+| end          | Date    |
+| due          | Date    |
+| until        | Date    |
+| wait         | Date    |
+| modified     | Date    |
+| scheduled    | Date    |
+| recur        | String  |
+| mask         | String  |
+| imask        | Integer |
+| parent       | UUID    |
+| project      | String  |
+| priority     | String  |
+| depends      | String  |
+| tags *       | String  |
+| annotation * | String  |
+| (UDA)        | ?       |
 
 \* Both tags and annotations are lists of strings and objects.
 
@@ -273,206 +206,29 @@ Any UDA fields are assumed to be of type string.
 
 There are other forms, which are conditional upon the state of a task:
 
-<table>
-<tr>
-  <th>Status Value</th>
-  <th>Pending</th>
-  <th>Deleted</th>
-  <th>Completed</th>
-  <th>Waiting</th>
-  <th>Recurring Parent</th>
-  <th>Recurring Child</th>
-</tr>
-<tr>
-  <td>status</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-</tr>
-<tr>
-  <td>uuid</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-</tr>
-<tr>
-  <td>entry</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-</tr>
-<tr>
-  <td>description</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-</tr>
-<tr>
-  <td>start</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>end</td>
-  <td></td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-  <td></td>
-  <td></td>
-  <td></td>
-</tr>
-<tr>
-  <td>due</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td class="danger">Reqd</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>until</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>scheduled</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>wait</td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td class="danger">Reqd</td>
-  <td></td>
-  <td></td>
-</tr>
-<tr>
-  <td>recur</td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td class="danger">Reqd</td>
-  <td class="danger">Reqd</td>
-</tr>
-<tr>
-  <td>mask</td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td class="info">Intrn</td>
-  <td></td>
-</tr>
-<tr>
-  <td>imask</td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td class="info">Intrn</td>
-</tr>
-<tr>
-  <td>parent</td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td class="danger">Reqd</td>
-</tr>
-<tr>
-  <td>annotation</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>project</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>tags</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>priority</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>depends</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-<tr>
-  <td>modified</td>
-  <td class="info">Intrn</td>
-  <td class="info">Intrn</td>
-  <td class="info">Intrn</td>
-  <td class="info">Intrn</td>
-  <td class="info">Intrn</td>
-  <td class="info">Intrn</td>
-</tr>
-<tr>
-  <td>UDA</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-  <td>Opt</td>
-</tr>
-</table>
+| Status Value | Pending | Deleted | Completed | Waiting | Recurring Parent | Recurring Child |
+|--------------|---------|---------|-----------|---------|------------------|-----------------|
+| status       | Reqd    | Reqd    | Reqd      | Reqd    | Reqd             | Reqd            |
+| uuid         | Reqd    | Reqd    | Reqd      | Reqd    | Reqd             | Reqd            |
+| entry        | Reqd    | Reqd    | Reqd      | Reqd    | Reqd             | Reqd            |
+| description  | Reqd    | Reqd    | Reqd      | Reqd    | Reqd             | Reqd            |
+| start        | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| end          |         | Reqd    | Reqd      |         |                  |                 |
+| due          | Opt     | Opt     | Opt       | Opt     | Reqd             | Opt             |
+| until        | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| scheduled    | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| wait         |         |         |           | Reqd    |                  |                 |
+| recur        |         |         |           |         | Reqd             | Reqd            |
+| mask         |         |         |           |         | Intrn            |                 |
+| imask        |         |         |           |         |                  | Intrn           |
+| parent       |         |         |           |         |                  | Reqd            |
+| annotation   | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| project      | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| tags         | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| priority     | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| depends      | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
+| modified     | Intrn   | Intrn   | Intrn     | Intrn   | Intrn            | Intrn           |
+| UDA          | Opt     | Opt     | Opt       | Opt     | Opt              | Opt             |
 
 (Legend: Reqd = required, Opt = optional, Intrn = Internally generated)
 
