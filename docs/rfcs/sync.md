@@ -17,7 +17,7 @@ The algorithm used to achieve this is simple and effective, paralleling what SCM
 In this document, we adopt the convention discussed in Section 1.3.2 of
 [RFC1122](https://tools.ietf.org/html/rfc1122#page-16) of using the capitalized words MUST, REQUIRED, SHOULD, RECOMMENDED, MAY, and OPTIONAL to define the significance of each particular requirement specified in this document.
 
-In brief: \"MUST\" (or \"REQUIRED\") means that the item is an absolute requirement of the specification; \"SHOULD\" (or \"RECOMMENDED\") means there may exist valid reasons for ignoring this item, but the full implications should be understood before doing so; and \"MAY\" (or \"OPTIONAL\") means that this item is optional, and may be omitted without careful consideration.
+In brief: "MUST" (or "REQUIRED") means that the item is an absolute requirement of the specification; "SHOULD" (or "RECOMMENDED") means there may exist valid reasons for ignoring this item, but the full implications should be understood before doing so; and "MAY" (or "OPTIONAL") means that this item is optional, and may be omitted without careful consideration.
 
 
 ## Problem Definition

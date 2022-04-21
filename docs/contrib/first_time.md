@@ -4,7 +4,7 @@ title: How to become an Open Source Contributor
 
 Welcome, potential new Open Source contributor! This is a guide to show you exactly how to make a contribution, and will lead you through the entire process.
 
-There are many people who wish to start contributing, but don\'t know how or where to start.
+There are many people who wish to start contributing, but don't know how or where to start.
 If this might be the case, then please read on, this guide is for you.
 Because we want you to join in the fun with Open Source - it can be fun and rewarding, improve your skills, or just give you a way to contribute back to a project.
 
@@ -13,7 +13,7 @@ Where else can you combine the thrill of typing in a darkened room with the kind
 The goal of this document is to give you the ability to make your first contribution, and encourage you to make a second, by showing you how simple it is.
 Perhaps confidence and a little familiarity with the process are all you need to get started.
 
-We\'re going to pick the smallest contribution of all - a typo fix.
+We're going to pick the smallest contribution of all - a typo fix.
 While this may be a very small improvement, it is nevertheless a wanted improvement, and will be welcomed.
 Fixes such as this happen many times a day.
 Similar work on new features, new documents, rewriting help, refactoring code, fixing bugs and improving performance all combine to make a project grow and improve.
@@ -26,7 +26,7 @@ Get all the way to the end, and you will be an open source contributor.
 ## [1] Development Environment Setup
 
 In order to build and test software, you need a development environment.
-That\'s just a term that means you need certain tools installed before proceeding.
+That's just a term that means you need certain tools installed before proceeding.
 Here are the tools that Taskwarrior needs:
 
 -   Compiler: GCC 4.7 or newer, or Clang 3.4 or newer.
@@ -61,7 +61,7 @@ This involves cloning the repository using git and looking at the development br
 The URL for the repository was obtained from looking around on <https://github.com/GothenburgBitFactory> where several repositories are public, including the one for this web site.
 
 The clone command above puts you on the right branch, so no need to switch.
-But it\'s a good idea to check anyway, so do this:
+But it's a good idea to check anyway, so do this:
 
     $ cd taskwarrior.git
     $ git branch -a
@@ -76,13 +76,13 @@ If there were a higher numbered branch, you would want to use that by doing this
 
     $ git checkout 2.7.0
 
-Here\'s a thought - if this page does not show the latest branch names, then, you know, you could fix that\...
+Here's a thought - if this page does not show the latest branch names, then, you know, you could fix that\...
 
 
 ## [3] Fix Something
 
 Now that you have the code, find something to fix.
-This may be the hardest step, but knowing how many typos there are in the source code and docs, it shouldn\'t take long to find one.
+This may be the hardest step, but knowing how many typos there are in the source code and docs, it shouldn't take long to find one.
 Try looking in the files in these directories:
 
 -   `taskwarrior.git/doc/man`
@@ -90,8 +90,8 @@ Try looking in the files in these directories:
 -   `taskwarrior.git/src`
 -   `taskwarrior.git/test`
 
-It also doesn\'t need to be a typo, it can instead be a poorly-worded sentence, or one that could be more clear.
-You\'ll find something, whether it is jargon, mixed tenses, mistakes, or just plain wrong.
+It also doesn't need to be a typo, it can instead be a poorly-worded sentence, or one that could be more clear.
+You'll find something, whether it is jargon, mixed tenses, mistakes, or just plain wrong.
 
 Then fix it, using a text editor.
 Try to make the smallest possible change to achieve what you want, because smaller changeѕ are easier to verify and approve, and no reviewer wants to receive a large change to approve.
@@ -100,7 +100,7 @@ Try to make the smallest possible change to achieve what you want, because small
 ## [4] Run the Test Suite
 
 Taskwarrior has an extensive test suite to prove that things are still working as expected.
-You\'ll need to build the program and run this test suite in order to prove to yourself that your fix is good.
+You'll need to build the program and run this test suite in order to prove to yourself that your fix is good.
 It may seem like building the program is overkill, if you only make a small change, but no, it is not.
 The test suite is there to save you from submitting a bad change, and to save Taskwarrior from any mistakes you make.
 
@@ -176,7 +176,7 @@ This means all is well.
 
 ## [5] Commit the Change
 
-Now you\'ve made a change, built and tested the code.
+Now you've made a change, built and tested the code.
 The next step is to commit the change locally.
 This example assumes you fixed a typo in the man page.
 Check to see which file you changed, stage that file, then commit it:
@@ -216,7 +216,7 @@ Finally you just need to email that patch file to `taskwarrior-dev@googlegroups.
 You will need to attach it to an email, and not just paste it in, because the mail client will probably mess with the contents, wrapping lines etc, which can make it unusable.
 
 What happens next is that a developer will take your patch and study it, to ascertain whether it really does fix something that is broken.
-If there is a problem, you\'ll hear back with some gentle, constructive criticism.
+If there is a problem, you'll hear back with some gentle, constructive criticism.
 If the problem is small, it might just get fixed.
 Then your patch is applied, tested, and if all looks well, pushed to the public repository, and included in the the next release.
 Your name will go into the AUTHORS file, and you will be thanked.

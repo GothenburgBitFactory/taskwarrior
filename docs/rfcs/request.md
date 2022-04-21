@@ -15,7 +15,7 @@ This document describes the message format, and the supported message types.
 
 In this document, we adopt the convention discussed in Section 1.3.2 of [RFC1122](https://tools.ietf.org/html/rfc1122#page-16) of using the capitalized words MUST, REQUIRED, SHOULD, RECOMMENDED, MAY, and OPTIONAL to define the significance of each particular requirement specified in this document.
 
-In brief: \"MUST\" (or \"REQUIRED\") means that the item is an absolute requirement of the specification; \"SHOULD\" (or \"RECOMMENDED\") means there may exist valid reasons for ignoring this item, but the full implications should be understood before doing so; and \"MAY\" (or \"OPTIONAL\") means that this item is optional, and may be omitted without careful consideration.
+In brief: "MUST" (or "REQUIRED") means that the item is an absolute requirement of the specification; "SHOULD" (or "RECOMMENDED") means there may exist valid reasons for ignoring this item, but the full implications should be understood before doing so; and "MAY" (or "OPTIONAL") means that this item is optional, and may be omitted without careful consideration.
 
 ## Encoding
 
@@ -23,7 +23,7 @@ All messages are UTF8-encoded text.
 
 ## Message Format
 
-This format is based on [RFC2822](https://tools.ietf.org/html/rfc2822), \'Internet Message Format\'.
+This format is based on [RFC2822](https://tools.ietf.org/html/rfc2822), 'Internet Message Format'.
 Here is an example of the format:
 
     <SIZE>
@@ -36,7 +36,7 @@ There are three sections.
 The first is the size, which is a 4-byte, big- Endian, binary byte count of the length of the message, including the 4 bytes for the size.
 
 The header section is a set of name/value pairs separated by newline characters (U+000D).
-The name is separated from the value by \': \' (colon U+003A, space U+0020) The header section is terminated by two consecutive newline (U+000D) characters.
+The name is separated from the value by ': ' (colon U+003A, space U+0020) The header section is terminated by two consecutive newline (U+000D) characters.
 All text is UTF8-encoded.
 
 The payload section is arbitrary, and message type-specific.
@@ -52,13 +52,13 @@ Those are:
 -   protocol
 -   client
 
-The \'type\' value is what determines the interpretation of the payload.
+The 'type' value is what determines the interpretation of the payload.
 
-The \'protocol\' value should be \'v1\', or any subsequently published protocol version.
+The 'protocol' value should be 'v1', or any subsequently published protocol version.
 
-The \'client\' represent the client identifier, so that any special cases can be handled.
+The 'client' represent the client identifier, so that any special cases can be handled.
 For example, an emergency fix that is client version-specific could be released, to support users that have not updated their client, or perhaps the client has not released a fix.
-The form of the \'version\' value is:
+The form of the 'version' value is:
 
     <product identifier> <version number>
 
@@ -72,7 +72,7 @@ If another client is spoofed, then patches addressing protocol errors may break 
 
 ## Auth Data
 
-Every request from the client SHALL contain \"auth\" information, which involves these header entries:
+Every request from the client SHALL contain "auth" information, which involves these header entries:
 
     org: <organization>
     user: <user>
@@ -114,10 +114,10 @@ It is expected that the number of supported ticket types will increase over time
 
 ## Sync Message
 
-The \"sync\" message always originates from the client, but the response will contain data from the server.
+The "sync" message always originates from the client, but the response will contain data from the server.
 A sync is therefore a single request with a single response.
 
-The \"sync\" message type MUST contain the following headers:
+The "sync" message type MUST contain the following headers:
 
 -   type
 -   org
@@ -126,7 +126,7 @@ The \"sync\" message type MUST contain the following headers:
 -   client
 -   protocol
 
-The \"sync\" message payload has this format:
+The "sync" message payload has this format:
 
     <uuid>
     <JSON task 1>

@@ -48,7 +48,7 @@ To prepare for a Rules System, various subsystems must first be enhanced:
 -   The column objects will gain a more structured base class, and will serve as
     providers for DOM references
 
--   The \'exec\' command will be able to run a rule, if the reference is correct
+-   The 'exec' command will be able to run a rule, if the reference is correct
 
 -   Taskwarrior will store state data in a new `state.data` file
 

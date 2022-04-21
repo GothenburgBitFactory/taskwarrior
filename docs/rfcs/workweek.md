@@ -14,7 +14,7 @@ Taskwarrior supports the idea that a week starts on either a Sunday or a Monday,
 This was added eight years ago, simply for display purposes in the `calendar` report.
 Since then its use has propagated and it influences the `sow` date reference.0
 
-Further requests have been made to make this more flexible, so that the notion of \'weekend\' can be defined.
+Further requests have been made to make this more flexible, so that the notion of 'weekend' can be defined.
 Furthermore, the idea that every week has a weekend has also been questioned.
 
 It has become clear that a `weekstart` setting, and the notion of a weekend are no longer useful.
