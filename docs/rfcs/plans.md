@@ -2,13 +2,13 @@
 title: "Plans"
 ---
 
-There are many interconnected features and technologies in Taskwarrior,
-Taskserver, Tasksh and Timewarrior, each piece having it's own goals.
+There are many interconnected features and technologies in Taskwarrior, Taskserver, Tasksh and Timewarrior, each piece having it's own goals.
 
-This matrix allows a simple reading of where things are, and where they are
-going. This is a low-resolution time line. It is subject to change. It does not
-constitute a concrete plan. This is an all-volunteer effort, and scheduling is
-difficult.
+This matrix allows a simple reading of where things are, and where they are going.
+This is a low-resolution time line.
+It is subject to change.
+It does not constitute a concrete plan.
+This is an all-volunteer effort, and scheduling is difficult.
 
 [Last updated 2016-08-08.]
 

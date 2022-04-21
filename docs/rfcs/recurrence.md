@@ -4,8 +4,8 @@ title: "Taskwarrior - Recurrence"
 
 # Draft
 
-This is a draft design document. Your
-[feedback](mailto:support@taskwarrior.org?Subject=Feedback) is welcomed.
+This is a draft design document.
+Your [feedback](mailto:support@taskwarrior.org?Subject=Feedback) is welcomed.
 
 Recurrence
 ----------
@@ -15,54 +15,51 @@ Recurrence needs an overhaul to improve weaknesses and add new features.
 # Terminology
 
 -   The hidden 'parent' task is called the template.
--   Synthesis is the name for the generation of new recurring task instances
-    when necessary.
+-   Synthesis is the name for the generation of new recurring task instances when necessary.
 -   The synthesized tasks are called instances.
 -   The index is the zero-based monotonically increasing number of the instance.
--   Drift is the accumulated errors in time that cause a due date to slowly
-    change for each recurring task.
+-   Drift is the accumulated errors in time that cause a due date to slowly change for each recurring task.
 
 # Criticism of Current Implementation
 
 -   The `mask` attribute grows unbounded.
--   Only strict recurrence cycles are supported. The example of mowing the lawn
-    is that you want to mow the lawn every seven days, but when you are four
-    days late mowing the lawn, the next mowing should be in seven days, not in
-    three.
--   Intances generated on one machine and then synced, may collide with
-    equivalent unsynced instances tasks on another device, because the UUIDs are
-    different.
--   You cannot `wait` a recurring task and have that wait period propagate to
-    all other child tasks.
+-   Only strict recurrence cycles are supported.
+    The example of mowing the lawn is that you want to mow the lawn every seven days, but when you are four days late mowing the lawn, the next mowing should be in seven days, not in three.
+-   Intances generated on one machine and then synced, may collide with equivalent unsynced instances tasks on another device, because the UUIDs are different.
+-   You cannot `wait` a recurring task and have that wait period propagate to all other child tasks.
 -   Task instances cannot individually expire.
 
 # Proposals
 
 ## Proposal: Eliminate `mask`, `imaѕk` Attributes
 
-The `mask` attribute in the template is replaced by `last`, which indicates the
-most recent instance index synthesized. Because instances are never synthesized
-out of order, we only need to store the most recent index. The `imask` attribute
-in the instance is no longer needed.
+The `mask` attribute in the template is replaced by `last`, which indicates the most recent instance index synthesized.
+Because instances are never synthesized out of order, we only need to store the most recent index.
+The `imask` attribute in the instance is no longer needed.
 
 ## Proposal: Rename `parent` to `template`
 
-The name `parent` implies subtasks, and confuses those who inspect the
-internals. The value remains the UUID of the template. This frees up the
-namespace for future use with subtasks.
+The name `parent` implies subtasks, and confuses those who inspect the internals.
+The value remains the UUID of the template.
+This frees up the namespace for future use with subtasks.
 
 ## Proposal: New 'rtype' attribute
 
 To indicate the flavor of recurrence, support the following values:
 
-* `periodic`   - Instances are created on a regular schedule. Example: send birthday flowers. It must occur on a regular schedule, and doesn't matter if you were late last year. This is the default value.
-* `chained`    - Instances are created back to back, so when one instance ends, the next begins, with the same recurrence. Example: mow the lawn. If you mow two days late, the next instance is not two days early to compensate.
+* `periodic` - Instances are created on a regular schedule.
+  Example: send birthday flowers.
+  It must occur on a regular schedule, and doesn't matter if you were late last year.
+  This is the default value.
+
+* `chained` - Instances are created back to back, so when one instance ends, the next begins, with the same recurrence.
+  Example: mow the lawn.
+  If you mow two days late, the next instance is not two days early to compensate.
 
 ## Proposal: Use relative offsets
 
-The delta between `wait` and `due` date in the template should be reflected in
-the delta between `wait` and `due` date in the instance. Similarly,
-'scheduled' must be handled the same way.
+The delta between `wait` and `due` date in the template should be reflected in the delta between `wait` and `due` date in the instance.
+Similarly, 'scheduled' must be handled the same way.
 
 ## Proposal: On load, auto-upgrade legacy tasks
 
@@ -77,14 +74,12 @@ Upgrade instance:
 -   Rename `parent` to `template`
 -   Delete `imask`
 -   Update `wait` if not set to: `wait:due + (template.due - template.wait)`
--   Update `scheduled` if not set to:
-    `scheduled:due + (template.due - template.scheduled)`
+-   Update `scheduled` if not set to: `scheduled:due + (template.due - template.scheduled)`
 
 ## Proposal: Deleting a chained instance
 
-Deleting a `rtype:chained` instance causes the next chained instance to be
-synthesized. This gives the illusion that the due date is simply pushed out to
-`(now + template.recur)`.
+Deleting a `rtype:chained` instance causes the next chained instance to be synthesized.
+This gives the illusion that the due date is simply pushed out to `(now + template.recur)`.
 
 ## Proposal: Modification Propagation
 
@@ -189,14 +184,11 @@ Certain recurrence periods are inexact:
 -   P1Y
 -   P1D
 
-When the recurrence period is `P1M` the number of days in a month varies and
-causes drift.
+When the recurrence period is `P1M` the number of days in a month varies and causes drift.
 
-When the recurrence period is `P1Y` the number of days in a year varies and
-causes drift.
+When the recurrence period is `P1Y` the number of days in a year varies and causes drift.
 
-When the recurrence period is `P1D` the number of hours in a day varies due to
-daylight savings, and causes drift.
+When the recurrence period is `P1D` the number of hours in a day varies due to daylight savings, and causes drift.
 
 Drift should be avoided by carefully implementing:
 
