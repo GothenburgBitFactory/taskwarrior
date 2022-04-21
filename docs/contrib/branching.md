@@ -54,8 +54,8 @@ Because only releases are merged back, the `master` branch always represent the 
 ## New Development Branches
 
 Immediately after a release, one or more new branches are created.
-Typically after a major \'1.0.0\' release, there will be two branches created.
-First the \'1.0.1\' branch is a patch development branch, intended to be used if an emergency patch is required.
+Typically after a major '1.0.0' release, there will be two branches created.
+First the '1.0.1' branch is a patch development branch, intended to be used if an emergency patch is required.
 It therefore sits unused until an emergency arises.
 No work is performed on a patch development branch.
 

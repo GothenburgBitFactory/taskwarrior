@@ -151,4 +151,4 @@ Aside from the command line parser, there are other changes needed:
         hhmmss       # Bad
         hh:mm:ss     # Good
 
--   The tutorial videos will be even more out of date, and will be replaced by a large number of smaller demo \'movies\'.
+-   The tutorial videos will be even more out of date, and will be replaced by a large number of smaller demo 'movies'.

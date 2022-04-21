@@ -6,7 +6,7 @@ This is for developers.
 Specifically those who know how to use tools, satisfy dependencies, and want to set up a development environment.
 It is not user-friendly.
 
-You\'ll need these tools:
+You'll need these tools:
 
 -   [git](https://git-scm.com/)
 -   [cmake](https://cmake.org)
@@ -15,7 +15,7 @@ You\'ll need these tools:
 -   Python 2.7 or later (for tests)
 -   Bash (for tests)
 
-You\'ll need these libraries:
+You'll need these libraries:
 
 -   [GnuTLS](https://www.gnutls.org/)
 -   libuuid (unless on Darwin/BSD)

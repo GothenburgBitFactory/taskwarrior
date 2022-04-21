@@ -9,7 +9,7 @@ title: "Taskwarrior - Sync Protocol"
 ## Introduction
 
 Taskwarrior data has typically been shared in several ways.
-Those include SCM (source code management) systems, directory synchronizing software (such as DropBox), and by use of the \'push\', \'pull\' and \'merge\' commands introduced in version 1.9.3.
+Those include SCM (source code management) systems, directory synchronizing software (such as DropBox), and by use of the 'push', 'pull' and 'merge' commands introduced in version 1.9.3.
 
 While these methods work, they each have problems associated with the merging of data.
 In the case of directory synchronizing software, there is no merging at all - just simple file overwrite, despite many people believing that the data is somehow combined and preserved.
@@ -32,7 +32,7 @@ Other clients will follow.
 
 In this document, we adopt the convention discussed in Section 1.3.2 of [RFC1122](https://tools.ietf.org/html/rfc1122#page-16) of using the capitalized words MUST, REQUIRED, SHOULD, RECOMMENDED, MAY, and OPTIONAL to define the significance of each particular requirement specified in this document.
 
-In brief: \"MUST\" (or \"REQUIRED\") means that the item is an absolute requirement of the specification; \"SHOULD\" (or \"RECOMMENDED\") means there may exist valid reasons for ignoring this item, but the full implications should be understood before doing so; and \"MAY\" (or \"OPTIONAL\") means that this item is optional, and may be omitted without careful consideration.
+In brief: "MUST" (or "REQUIRED") means that the item is an absolute requirement of the specification; "SHOULD" (or "RECOMMENDED") means there may exist valid reasons for ignoring this item, but the full implications should be understood before doing so; and "MAY" (or "OPTIONAL") means that this item is optional, and may be omitted without careful consideration.
 
 
 ## Link Level
@@ -48,7 +48,7 @@ It does not perform any user interaction or presentation-level functions.
 ## Transactions
 
 Each transaction is a single incoming message, with a single response message.
-All communication therefore consists of a single \'send\', followed by a single \'receive\', then termination.
+All communication therefore consists of a single 'send', followed by a single 'receive', then termination.
 There are no sessions, and no continuously open connections.
 The message format is described in the [Taskserver Message Format](/docs/design/request) document.
 
@@ -70,17 +70,17 @@ This describes how Taskwarrior implements sync.
 All modifications to tasks (add, modify, done, delete \...) are recorded in the form of a fully-composed [JSON-formatted task](/docs/design/task).
 The formatted task is added to a local backlog.data file.
 If a task is modified a second time, it is added again to the backlog.data file - the lines are not combined.
-Each task SHALL have a \'modified\' date attribute that will help resolve conflicts.
+Each task SHALL have a 'modified' date attribute that will help resolve conflicts.
 
 On sync:
 
--   Send a \'sync\' type message with the entire contents of the backlog.data, unmodified, as the message payload.
+-   Send a 'sync' type message with the entire contents of the backlog.data, unmodified, as the message payload.
 
 -   Receive one of the following response codes:
 
-  -   201: This means \'no change\', and there is no further action to be taken.
+  -   201: This means 'no change', and there is no further action to be taken.
 
-  -   200: This means \'success\', and the message payload contains a set of tasks and a sync key:
+  -   200: This means 'success', and the message payload contains a set of tasks and a sync key:
 
     -   The formatted tasks are to be stored as-is.
         These tasks will either be appended to the client data or will overwrite existing client data, based on the UUID of the task.
@@ -88,9 +88,9 @@ On sync:
 
     -   The sync key will be written to the backlog.data file, overwriting the previous contents, such that it will now contain only one line.
 
-    -   301: Redirect to : found in the \'info\' response header, will force the client to resubmit the request to the new server.
+    -   301: Redirect to : found in the 'info' response header, will force the client to resubmit the request to the new server.
 
-    -   3xx, 4xx, 5xx: The \'status\' field contains an error message.
+    -   3xx, 4xx, 5xx: The 'status' field contains an error message.
 
 -   If the response contained any error or warning, the error should be shown to the user.
     This provides an opportunity for the server to announce downtime, or relocation.
@@ -98,7 +98,7 @@ On sync:
 If no sync key is sent, the server cannot provide an incremental delta, and so will send all task data, which should be stored as above.
 This should be the case for a client making its first sync call.
 
-If an unrecognized attribute is present in the task data, the client MUST preserve the attribute unmodified, and assume it is of type \'string\'.
+If an unrecognized attribute is present in the task data, the client MUST preserve the attribute unmodified, and assume it is of type 'string'.
 This permits individual clients to augment the task data without other clients stripping it meaningful data.
 This is how UDAs (user defined attributes) are handled.
 
@@ -110,7 +110,7 @@ This protocol was designed so that extensions to the protocol will take the form
 
 ## Summary of Response Codes
 
-Status responses indicate the server\'s response to the last command received from the client.
+Status responses indicate the server's response to the last command received from the client.
 The codes consist of a 3 digit numeric code.
 
 The first digit of the response broadly indicates the success, failure, or progress of the previous command (based generally on [RFC640](https://tools.ietf.org/html/rfc640) [RFC821](https://tools.ietf.org/html/rfc821)):
