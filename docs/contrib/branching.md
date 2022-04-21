@@ -13,7 +13,7 @@ Taskwarrior and Taskserver use the same branching model.
 Git allows arbitrary and low-cost branching, which means that any branching model can be used.
 A new Git repository has one branch, the default branch, named `master`, but even this is not required.
 
-[![master](/docs/images/master.png)](/docs/images/master.png)
+[![master](master.png)](master.png)
 
 No development occurs on the `master` branch.
 
@@ -24,7 +24,7 @@ A development branch is created from the `master` branch, and work proceeds on t
 Development branches are pushed to the server.
 Note that there are no changes on `master` - all work is done on dev branches.
 
-[![dev](/docs/images/dev.png)](/docs/images/dev.png)
+[![dev](dev.png)](dev.png)
 
 All work on dev branches is pushed to the server.
 
@@ -36,7 +36,7 @@ This can be a useful way to manage parallel efforts on a single development mach
 Topic branches are also useful for merging in submitted patches, because the patch can be merged, tested and corrected independently of other efforts before being merged and pushed.
 A topic branch is ideal for storage of changes before an eventual merge back to the development branch.
 
-[![topic](/docs/images/topic.png)](/docs/images/topic.png)
+[![topic](topic.png)](topic.png)
 
 No topic branches are pushed to the server, they are kept local to the development machine.
 They are private, and therefore hidden from the server.
@@ -46,7 +46,7 @@ They are private, and therefore hidden from the server.
 
 When a release is made, the development branch is merged back to the `master` branch, and a tag is applied that indicates which commit represents the release.
 
-[![release](/docs/images/release.png)](/docs/images/release.png)
+[![release](release.png)](release.png)
 
 Because only releases are merged back, the `master` branch always represent the stable release.
 
@@ -63,7 +63,7 @@ The second branch, with the higher release number is the development branch for 
 This is where all the work occurs.
 Any fix made on the development branch can be cherry-picked onto the patch branch, if necessary.
 
-[![dev2](/docs/images/dev2.png)](/docs/images/dev2.png)
+[![dev2](dev2.png)](dev2.png)
 
 To address the confusion around branching, namely determining which branch is active.
 the answer is that the highest numbered branch is the one that patches should be applied to.

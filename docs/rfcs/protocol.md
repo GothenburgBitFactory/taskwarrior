@@ -74,25 +74,25 @@ Each task SHALL have a 'modified' date attribute that will help resolve conflict
 
 On sync:
 
--   Send a 'sync' type message with the entire contents of the backlog.data, unmodified, as the message payload.
+*   Send a 'sync' type message with the entire contents of the backlog.data, unmodified, as the message payload.
 
--   Receive one of the following response codes:
+*   Receive one of the following response codes:
 
-  -   201: This means 'no change', and there is no further action to be taken.
+  *   201: This means 'no change', and there is no further action to be taken.
 
-  -   200: This means 'success', and the message payload contains a set of tasks and a sync key:
+  *   200: This means 'success', and the message payload contains a set of tasks and a sync key:
 
-    -   The formatted tasks are to be stored as-is.
+    *   The formatted tasks are to be stored as-is.
         These tasks will either be appended to the client data or will overwrite existing client data, based on the UUID of the task.
         No merge logic is necessary.
 
-    -   The sync key will be written to the backlog.data file, overwriting the previous contents, such that it will now contain only one line.
+    *   The sync key will be written to the backlog.data file, overwriting the previous contents, such that it will now contain only one line.
 
-    -   301: Redirect to : found in the 'info' response header, will force the client to resubmit the request to the new server.
+    *   301: Redirect to : found in the 'info' response header, will force the client to resubmit the request to the new server.
 
-    -   3xx, 4xx, 5xx: The 'status' field contains an error message.
+    *   3xx, 4xx, 5xx: The 'status' field contains an error message.
 
--   If the response contained any error or warning, the error should be shown to the user.
+*   If the response contained any error or warning, the error should be shown to the user.
     This provides an opportunity for the server to announce downtime, or relocation.
 
 If no sync key is sent, the server cannot provide an incremental delta, and so will send all task data, which should be stored as above.
