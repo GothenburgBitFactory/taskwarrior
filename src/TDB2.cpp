@@ -1262,16 +1262,6 @@ bool TDB2::verifyUniqueUUID (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB2::read_only ()
-{
-  return pending._read_only   ||
-         completed._read_only ||
-         undo._read_only      ||
-         backlog._read_only
-         ;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int TDB2::num_local_changes ()
 {
   std::vector <std::string> lines = backlog.get_lines ();

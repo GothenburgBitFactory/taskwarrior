@@ -134,9 +134,6 @@ public:
   std::string uuid (int);
   int id (const std::string&);
 
-  // Read-only mode.
-  bool read_only ();
-
   int num_local_changes ();
   int num_reverts_possible ();
 
