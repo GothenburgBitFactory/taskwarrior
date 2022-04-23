@@ -257,6 +257,12 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(ret)
     }
 
+    fn num_operations(&mut self) -> anyhow::Result<usize> {
+        let t = self.get_txn()?;
+        let count: usize = t.query_row("SELECT count(*) FROM operations", [], |x| x.get(0))?;
+        Ok(count)
+    }
+
     fn add_operation(&mut self, op: ReplicaOp) -> anyhow::Result<()> {
         let t = self.get_txn()?;
 
@@ -627,6 +633,8 @@ mod test {
                     ReplicaOp::Create { uuid: uuid2 },
                 ]
             );
+
+            assert_eq!(txn.num_operations()?, 2);
         }
 
         // set them to a different bunch
@@ -678,6 +686,7 @@ mod test {
                     },
                 ]
             );
+            assert_eq!(txn.num_operations()?, 4);
         }
         Ok(())
     }

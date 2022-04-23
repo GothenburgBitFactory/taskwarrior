@@ -82,6 +82,10 @@ pub trait StorageTxn {
     /// server yet)
     fn operations(&mut self) -> Result<Vec<ReplicaOp>>;
 
+    /// Get the current set of outstanding operations (operations that have not been sync'd to the
+    /// server yet)
+    fn num_operations(&mut self) -> Result<usize>;
+
     /// Add an operation to the end of the list of operations in the storage.  Note that this
     /// merely *stores* the operation; it is up to the TaskDb to apply it.
     fn add_operation(&mut self, op: ReplicaOp) -> Result<()>;

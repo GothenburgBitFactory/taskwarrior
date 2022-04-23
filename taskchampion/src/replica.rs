@@ -254,6 +254,11 @@ impl Replica {
         }
         Ok(())
     }
+
+    /// Get the number of operations local to this replica and not yet synchronized to the server.
+    pub fn num_local_operations(&mut self) -> anyhow::Result<usize> {
+        self.taskdb.num_operations()
+    }
 }
 
 #[cfg(test)]
@@ -399,6 +404,8 @@ mod tests {
                 },
             ]
         );
+
+        assert_eq!(rep.num_local_operations().unwrap(), 10);
     }
 
     #[test]
