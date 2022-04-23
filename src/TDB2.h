@@ -112,7 +112,6 @@ public:
   void set_location (const std::string&);
   void add (Task&, bool add_to_backlog = true);
   void modify (Task&, bool add_to_backlog = true);
-  void purge (Task&);
   void commit ();
   void get_changes (std::vector <Task>&);
   void revert ();
