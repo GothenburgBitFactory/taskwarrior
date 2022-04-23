@@ -141,7 +141,6 @@ public:
   int num_reverts_possible ();
   size_t data_size ();
 
-  void clear ();
   void dump ();
 
 private:

@@ -1292,18 +1292,6 @@ size_t TDB2::data_size ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::clear ()
-{
-  pending.clear ();
-  completed.clear ();
-  undo.clear ();
-  backlog.clear ();
-
-  _location = "";
-  _id = 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void TDB2::dump ()
 {
   if (Context::getContext ().config.getBoolean ("debug"))

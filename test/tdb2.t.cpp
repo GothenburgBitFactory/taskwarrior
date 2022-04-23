@@ -33,6 +33,16 @@
 
 Context context;
 
+void cleardb ()
+{
+    // Remove any residual test files.
+    rmdir ("./extensions");
+    unlink ("./pending.data");
+    unlink ("./completed.data");
+    unlink ("./undo.data");
+    unlink ("./backlog.data");
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
@@ -44,12 +54,7 @@ int main (int, char**)
 
   try
   {
-    // Remove any residual test files.
-    rmdir ("./extensions");
-    unlink ("./pending.data");
-    unlink ("./completed.data");
-    unlink ("./undo.data");
-    unlink ("./backlog.data");
+    cleardb ();
 
     // Set the context to allow GC.
     context.config.set ("gc", 1);
@@ -98,7 +103,7 @@ int main (int, char**)
     context.tdb2.commit ();
 
     // Reset for reuse.
-    context.tdb2.clear ();
+    cleardb ();
     context.tdb2.set_location (".");
 
     // TODO commit
