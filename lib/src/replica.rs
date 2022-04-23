@@ -360,6 +360,19 @@ pub unsafe extern "C" fn tc_replica_undo(rep: *mut TCReplica, undone_out: *mut i
     )
 }
 
+/// Get the number of local, un-synchronized operations, or -1 on error
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_num_local_operations(rep: *mut TCReplica) -> i64 {
+    wrap(
+        rep,
+        |rep| {
+            let count = rep.num_local_operations()? as i64;
+            Ok(count)
+        },
+        -1,
+    )
+}
+
 /// Add an UndoPoint, if one has not already been added by this Replica.  This occurs automatically
 /// when a change is made.  The `force` flag allows forcing a new UndoPoint even if one has already
 /// been created by this Replica, and may be useful when a Replica instance is held for a long time

@@ -558,6 +558,11 @@ TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool av
 TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
 
 /**
+ * Get the number of local, un-synchronized operations, or -1 on error
+ */
+int64_t tc_replica_num_local_operations(struct TCReplica *rep);
+
+/**
  * Add an UndoPoint, if one has not already been added by this Replica.  This occurs automatically
  * when a change is made.  The `force` flag allows forcing a new UndoPoint even if one has already
  * been created by this Replica, and may be useful when a Replica instance is held for a long time
