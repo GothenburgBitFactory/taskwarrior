@@ -139,7 +139,6 @@ public:
 
   int num_local_changes ();
   int num_reverts_possible ();
-  size_t data_size ();
 
   void dump ();
 
