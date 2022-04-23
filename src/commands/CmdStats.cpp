@@ -62,9 +62,6 @@ int CmdStats::execute (std::string& output)
 
   std::string dateformat = Context::getContext ().config.get ("dateformat");
 
-  // Go get the file sizes.
-  size_t dataSize = Context::getContext ().tdb2.data_size ();
-
   // Count the possible reverts.
   int undoCount = Context::getContext ().tdb2.num_reverts_possible ();
 
@@ -191,10 +188,6 @@ int CmdStats::execute (std::string& output)
   row = view.addRow ();
   view.set (row, 0, "Blocking tasks");
   view.set (row, 1, blockingT);
-
-  row = view.addRow ();
-  view.set (row, 0, "Data size");
-  view.set (row, 1, formatBytes (dataSize));
 
   row = view.addRow ();
   view.set (row, 0, "Undo transactions");

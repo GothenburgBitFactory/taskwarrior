@@ -1286,12 +1286,6 @@ int TDB2::num_reverts_possible ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-size_t TDB2::data_size ()
-{
-  return pending._file.size () + completed._file.size () + undo._file.size () + backlog._file.size ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void TDB2::dump ()
 {
   if (Context::getContext ().config.getBoolean ("debug"))
