@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2018"
 
 [lib]
-name = "taskchampion"
+name = "taskchampionlib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
