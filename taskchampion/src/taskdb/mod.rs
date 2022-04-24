@@ -128,6 +128,12 @@ impl TaskDb {
         undo::undo(txn.as_mut())
     }
 
+    /// Get the number of un-synchronized operations in storage.
+    pub fn num_operations(&mut self) -> anyhow::Result<usize> {
+        let mut txn = self.storage.txn().unwrap();
+        txn.num_operations()
+    }
+
     // functions for supporting tests
 
     #[cfg(test)]

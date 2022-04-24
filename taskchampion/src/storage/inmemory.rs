@@ -91,6 +91,10 @@ impl<'t> StorageTxn for Txn<'t> {
         Ok(self.data_ref().operations.clone())
     }
 
+    fn num_operations(&mut self) -> anyhow::Result<usize> {
+        Ok(self.data_ref().operations.len())
+    }
+
     fn add_operation(&mut self, op: ReplicaOp) -> anyhow::Result<()> {
         self.mut_data_ref().operations.push(op);
         Ok(())
