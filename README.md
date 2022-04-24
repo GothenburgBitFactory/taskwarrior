@@ -32,6 +32,9 @@ To regenerate this file, run `cargo xtask codegen`.
 
 ## C libraries
 
+NOTE: support for linking against taskchampion is a work in progress.
+Contributions and pointers to best practices are appreciated!
+
 The `taskchampion-lib` crate generates libraries suitable for use from C (or any C-compatible language).
 
 The necessary bits are:
@@ -44,8 +47,12 @@ Downstream consumers may use either the static or dynamic library, as they prefe
 
 NOTE: on Windows, the "BCrypt" library must be included when linking to taskchampion.
 
+### As a Rust dependency
+
+If you would prefer to build Taskchampion directly into your project, and have a build system capable of building Rust libraries (such as CMake), the `taskchampion-lib` crate can be referenced as an `rlib` dependency.
+
 ## Documentation Generation
 
 The `mdbook` configuration contains a "preprocessor" implemented in the `taskchampion-cli` crate in order to reflect CLI usage information into the generated book.
-Tihs preprocessor is not built by default.
+This preprocessor is not built by default.
 To (re)build it, run `cargo build -p taskchampion-cli --features usage-docs --bin usage-docs`.

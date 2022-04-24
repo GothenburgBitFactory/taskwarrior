@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2018"
 
 [lib]
-name = "taskchampion"
-crate-type = ["staticlib", "cdylib"]
+name = "taskchampionlib"
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
 libc = "0.2.113"
