@@ -89,7 +89,7 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
     else if (_style == "countdown")
     {
       Datetime now;
-      minimum = maximum = Duration (now - date).formatVague (true).length ();
+      minimum = maximum = Duration (date - now).formatVague (true).length ();
     }
     else if (_style == "julian")
     {
