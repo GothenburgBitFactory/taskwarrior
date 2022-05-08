@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+    "taskchampion",
+    "cli",
+    "sync-server",
+    "lib",
+    "integration-tests",
+    "xtask",
+]

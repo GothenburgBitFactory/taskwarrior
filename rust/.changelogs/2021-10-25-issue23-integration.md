@@ -1,0 +1,1 @@
+- The details of how task start/stop is represented have changed.  Any existing tasks will all be treated as inactive (stopped).
