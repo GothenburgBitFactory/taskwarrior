@@ -631,7 +631,7 @@ void tc_server_free(struct TCServer *server);
  *
  * For example:
  *
- * ```
+ * ```text
  * char *url = get_item_url(..); // dynamically allocate C string
  * tc_task_annotate(task, tc_string_borrow(url)); // TCString created, passed, and freed
  * free(url); // string is no longer referenced and can be freed
