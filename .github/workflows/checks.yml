@@ -1,4 +1,4 @@
-name: Checks
+name: checks
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 jobs:
   clippy:
     runs-on: ubuntu-latest
-    name: "Clippy"
+    name: "Check & Clippy"
 
     steps:
       - uses: actions/checkout@v2
@@ -79,8 +79,8 @@ jobs:
       - name: Create usage-docs plugin
         run: cargo build -p taskchampion-cli --features usage-docs --bin usage-docs
 
-      - run: mdbook test docs
-      - run: mdbook build docs
+      - run: mdbook test rust/docs
+      - run: mdbook build rust/docs
 
   fmt:
     runs-on: ubuntu-latest

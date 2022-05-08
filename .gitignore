@@ -20,3 +20,4 @@ patches
 *.exe
 tutorials
 .prove
+/target/
