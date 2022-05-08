@@ -58,6 +58,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // This string is parsed and used as default values for configuration.
+// Note: New configuration options should be added to the vim syntax file in scripts/vim/syntax/taskrc.vim
 std::string configurationDefaults =
   "# Taskwarrior program configuration file.\n"
   "# For more documentation, see https://taskwarrior.org or try 'man task', 'man task-color',\n"
