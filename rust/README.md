@@ -50,9 +50,3 @@ NOTE: on Windows, the "BCrypt" library must be included when linking to taskcham
 ### As a Rust dependency
 
 If you would prefer to build Taskchampion directly into your project, and have a build system capable of building Rust libraries (such as CMake), the `taskchampion-lib` crate can be referenced as an `rlib` dependency.
-
-## Documentation Generation
-
-The `mdbook` configuration contains a "preprocessor" implemented in the `taskchampion-cli` crate in order to reflect CLI usage information into the generated book.
-This preprocessor is not built by default.
-To (re)build it, run `cargo build -p taskchampion-cli --features usage-docs --bin usage-docs`.
