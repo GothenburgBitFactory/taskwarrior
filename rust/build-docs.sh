@@ -11,9 +11,6 @@ if ! [ -f "docs/src/SUMMARY.md" ]; then
     exit 1
 fi
 
-# build the latest version of the mdbook plugin
-cargo build -p taskchampion-cli --features usage-docs --bin usage-docs
-
 # create a worktree of this repo, with the `gh-pages` branch checked out
 git branch -f gh-pages $REMOTE/gh-pages
 if ! [ -d ./docs/tmp ]; then

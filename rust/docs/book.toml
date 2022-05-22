@@ -7,6 +7,3 @@ title = "TaskChampion"
 
 [output.html]
 default-theme = "ayu"
-
-[preprocessor.usage-docs]
-command = "target/debug/usage-docs"
