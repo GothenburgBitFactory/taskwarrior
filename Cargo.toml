@@ -2,7 +2,6 @@
 
 members = [
     "rust/taskchampion",
-    "rust/cli",
     "rust/sync-server",
     "rust/lib",
     "rust/integration-tests",
