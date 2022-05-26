@@ -1,5 +1,4 @@
-// Not compatible with the MSRV
-// #![warn(unsafe_op_in_unsafe_fn)]
+#![warn(unsafe_op_in_unsafe_fn)]
 #![allow(unused_unsafe)]
 // Not working yet in stable - https://github.com/rust-lang/rust-clippy/issues/8020
 // #![warn(clippy::undocumented_unsafe_blocks)]
