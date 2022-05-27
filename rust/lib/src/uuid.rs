@@ -101,7 +101,7 @@ pub unsafe extern "C" fn tc_uuid_to_buf(tcuuid: TCUuid, buf: *mut libc::c_char) 
     // SAFETY:
     //  - tcuuid is a valid TCUuid (all byte patterns are valid)
     let uuid: Uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
-    uuid.to_hyphenated().encode_lower(buf);
+    uuid.as_hyphenated().encode_lower(buf);
 }
 
 /// Return the hyphenated string representation of a TCUuid.  The returned string
