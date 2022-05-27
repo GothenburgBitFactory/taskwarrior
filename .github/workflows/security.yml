@@ -11,6 +11,7 @@ on:
 jobs:
   audit:
     runs-on: ubuntu-latest
+    permissions: write-all
     name: "Audit Dependencies"
     steps:
       - uses: actions/checkout@v2
