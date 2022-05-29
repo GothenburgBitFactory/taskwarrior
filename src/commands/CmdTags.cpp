@@ -166,7 +166,7 @@ int CmdCompletionTags::execute (std::string& output)
   // Apply filter.
   Filter filter;
   std::vector <Task> filtered;
-  filter.subset (filtered);
+  filter.subset (tasks, filtered);
 
   // Scan all the tasks for their tags, building a map using tag
   // names as keys.
