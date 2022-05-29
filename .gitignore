@@ -8,7 +8,9 @@ src/commands/libcommands.a
 src/columns/libcolumns.a
 *~
 .*.swp
+Session.vim
 package-config/osx/binary/task
+/build/
 CMakeFiles
 CMakeCache.txt
 cmake_install.cmake
