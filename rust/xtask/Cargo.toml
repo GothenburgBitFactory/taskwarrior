@@ -5,4 +5,4 @@ edition = "2018"
 
 [dependencies]
 anyhow = "1.0"
-cbindgen = "0.20.0"
+cbindgen = "0.23.0"
