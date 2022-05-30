@@ -621,7 +621,7 @@ version = "0.23.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b6d248e3ca02f3fbfabcb9284464c596baec223a26d91bbf44a5a62ddb0d900"
 dependencies = [
- "clap 3.1.18",
+ "clap",
  "heck",
  "indexmap",
  "log",
@@ -674,21 +674,6 @@ checksum = "fff857943da45f546682664a79488be82e69e43c1a7a2307679ab9afb3a66d2e"
 
 [[package]]
 name = "clap"
-version = "2.34.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a0610544180c38b88101fecf2dd634b174a62eef6946f84dfc6a7127512b381c"
-dependencies = [
- "ansi_term",
- "atty",
- "bitflags",
- "strsim 0.8.0",
- "textwrap 0.11.0",
- "unicode-width",
- "vec_map",
-]
-
-[[package]]
-name = "clap"
 version = "3.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2dbdf4bdacb33466e854ce889eee8dfd5729abf7ccd7664d0a2d60cd384440b"
@@ -697,9 +682,9 @@ dependencies = [
  "bitflags",
  "clap_lex",
  "indexmap",
- "strsim 0.10.0",
+ "strsim",
  "termcolor",
- "textwrap 0.15.0",
+ "textwrap",
 ]
 
 [[package]]
@@ -2136,12 +2121,6 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "strsim"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
-
-[[package]]
-name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
@@ -2218,7 +2197,7 @@ dependencies = [
  "actix-web",
  "anyhow",
  "chrono",
- "clap 2.34.0",
+ "clap",
  "env_logger",
  "futures",
  "log",
@@ -2252,15 +2231,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bab24d30b911b2376f3a13cc2cd443142f0c81dda04c118693e35b3835757755"
 dependencies = [
  "winapi-util",
-]
-
-[[package]]
-name = "textwrap"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
-dependencies = [
- "unicode-width",
 ]
 
 [[package]]
@@ -2502,12 +2472,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "unicode-width"
-version = "0.1.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ed742d4ea2bd1176e236172c8429aaf54486e7ac098db29ffe6529e0ce50973"
-
-[[package]]
 name = "untrusted"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2567,12 +2531,6 @@ name = "vcpkg"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
-
-[[package]]
-name = "vec_map"
-version = "0.8.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1bddf1187be692e79c5ffeab891132dfb0f236ed36a43c7ed39f1165ee20191"
 
 [[package]]
 name = "version_check"
