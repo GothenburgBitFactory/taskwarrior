@@ -1420,39 +1420,19 @@ bool Lexer::isDOM (const std::string& text)
          type == Lexer::Type::dom;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Full implementation of a quoted word.  Includes:
-//   '\''
-//   '"'
-//   "'"
-//   "\""
-//   'one two'
-// Result includes the quotes.
-bool Lexer::readWord (
-  const std::string& text,
-  const std::string& quotes,
-  std::string::size_type& cursor,
-  std::string& word)
+void Lexer::handleEscapes(std::string &word,
+								  std::string::size_type cursor)
 {
-  if (quotes.find (text[cursor]) == std::string::npos)
-    return false;
-
+  std::string text = word;
   std::string::size_type eos = text.length ();
-  int quote = text[cursor++];
-  word = quote;
+  word = "";
 
   int c;
   while ((c = text[cursor]))
   {
-    // Quoted word ends on a quote.
-    if (quote && quote == c)
-    {
-      word += utf8_character (utf8_next_char (text, cursor));
-      break;
-    }
 
     // Unicode U+XXXX or \uXXXX codepoint.
-    else if (eos - cursor >= 6 &&
+    if (eos - cursor >= 6 &&
              ((text[cursor + 0] == 'U'  && text[cursor + 1] == '+') ||
               (text[cursor + 0] == '\\' && text[cursor + 1] == 'u')) &&
              unicodeHexDigit (text[cursor + 2]) &&
@@ -1497,11 +1477,108 @@ bool Lexer::readWord (
     else
       word += utf8_character (utf8_next_char (text, cursor));
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::extractWord (
+  const std::string& text,
+  const std::string& quotes,
+  std::string::size_type& cursor,
+  std::string& word)
+{
+  if (quotes.find (text[cursor]) == std::string::npos)
+    return false;
+
+  int quote = text[cursor++];
+  word = quote;
+
+  int c;
+  while ((c = text[cursor]))
+  {
+    // Quoted word ends on a quote.
+    if (quote && quote == c)
+    {
+      word += utf8_character (utf8_next_char (text, cursor));
+      break;
+    }
+
+    // Skip escaped things.
+    else if (c == '\\')
+    {
+      word += '\\';
+		word += text[++cursor];
+		cursor ++;
+	 }
+
+    // Ordinary character.
+    else
+      word += utf8_character (utf8_next_char (text, cursor));
+  }
 
   // Verify termination.
   return word[0]                  == quote &&
          word[word.length () - 1] == quote &&
          word.length () >= 2;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::extractWord (
+  const std::string& text,
+  std::string::size_type& cursor,
+  std::string& word)
+{
+
+  word = "";
+  int c;
+  int prev = 0;
+  while ((c = text[cursor]))  // Handles EOS.
+  {
+    // Unquoted word ends on white space.
+    if (unicodeWhitespace (c))
+      break;
+
+    // Parentheses mostly.
+    if (prev && Lexer::isHardBoundary (prev, c))
+      break;
+
+	 // Skip escaped things.
+    else if (c == '\\')
+    {
+      word += '\\';
+		word += text[++cursor];
+		cursor++;
+	 }
+
+    // Ordinary character.
+    else
+      word += utf8_character (utf8_next_char (text, cursor));
+
+    prev = c;
+  }
+
+  return word.length () > 0 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Full implementation of a quoted word.  Includes:
+//   '\''
+//   '"'
+//   "'"
+//   "\""
+//   'one two'
+// Result includes the quotes.
+bool Lexer::readWord (
+  const std::string& text,
+  const std::string& quotes,
+  std::string::size_type& cursor,
+  std::string& word)
+{
+	if (extractWord (text, quotes, cursor, word))
+		{
+			handleEscapes (word, 0);
+			return true;
+		}
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1520,71 +1597,12 @@ bool Lexer::readWord (
   std::string::size_type& cursor,
   std::string& word)
 {
-  std::string::size_type eos = text.length ();
-
-  word = "";
-  int c;
-  int prev = 0;
-  while ((c = text[cursor]))  // Handles EOS.
-  {
-    // Unquoted word ends on white space.
-    if (unicodeWhitespace (c))
-      break;
-
-    // Parentheses mostly.
-    if (prev && Lexer::isHardBoundary (prev, c))
-      break;
-
-    // Unicode U+XXXX or \uXXXX codepoint.
-    else if (eos - cursor >= 6 &&
-             ((text[cursor + 0] == 'U'  && text[cursor + 1] == '+') ||
-              (text[cursor + 0] == '\\' && text[cursor + 1] == 'u')) &&
-             unicodeHexDigit (text[cursor + 2]) &&
-             unicodeHexDigit (text[cursor + 3]) &&
-             unicodeHexDigit (text[cursor + 4]) &&
-             unicodeHexDigit (text[cursor + 5]))
-    {
-      word += utf8_character (
-                hexToInt (
-                  text[cursor + 2],
-                  text[cursor + 3],
-                  text[cursor + 4],
-                  text[cursor + 5]));
-      cursor += 6;
-    }
-
-    // An escaped thing.
-    else if (c == '\\')
-    {
-      c = text[++cursor];
-
-      switch (c)
-      {
-      case '"':  word += (char) 0x22; ++cursor; break;
-      case '\'': word += (char) 0x27; ++cursor; break;
-      case '\\': word += (char) 0x5C; ++cursor; break;
-      case 'b':  word += (char) 0x08; ++cursor; break;
-      case 'f':  word += (char) 0x0C; ++cursor; break;
-      case 'n':  word += (char) 0x0A; ++cursor; break;
-      case 'r':  word += (char) 0x0D; ++cursor; break;
-      case 't':  word += (char) 0x09; ++cursor; break;
-      case 'v':  word += (char) 0x0B; ++cursor; break;
-
-      // This pass-through default case means that anything can be escaped
-      // harmlessly. In particular 'quote' is included, if it not one of the
-      // above characters.
-      default:   word += (char) c;    ++cursor; break;
-      }
-    }
-
-    // Ordinary character.
-    else
-      word += utf8_character (utf8_next_char (text, cursor));
-
-    prev = c;
-  }
-
-  return word.length () > 0 ? true : false;
+	if (extractWord (text, cursor, word))
+		{
+			handleEscapes(word, 0);
+			return true;
+		}
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

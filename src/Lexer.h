@@ -73,6 +73,9 @@ public:
   static bool isDOM                          (const std::string&);
   static void dequote                        (std::string&, const std::string& quotes = "'\"");
   static bool wasQuoted                      (const std::string&);
+  static void handleEscapes                  (std::string&, std::string::size_type);
+  static bool extractWord                    (const std::string&, const std::string&, std::string::size_type&, std::string&);
+  static bool extractWord                    (const std::string&, std::string::size_type&, std::string&);
   static bool readWord                       (const std::string&, const std::string&, std::string::size_type&, std::string&);
   static bool readWord                       (const std::string&, std::string::size_type&, std::string&);
   static bool decomposePair                  (const std::string&, std::string&, std::string&, std::string&, std::string&);
