@@ -1420,6 +1420,12 @@ bool Lexer::isDOM (const std::string& text)
          type == Lexer::Type::dom;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Replaces escaped character escapes with their unicode characters.  Includes:
+//   "U+XXXX"
+//   "\uXXXX"
+//   '"'
+//   '\''
 void Lexer::handleEscapes(std::string &word,
 								  std::string::size_type cursor)
 {
@@ -1480,6 +1486,13 @@ void Lexer::handleEscapes(std::string &word,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Extracts a quoted word from a longer string starting from cursor.  Includes:
+//   '\''
+//   '"'
+//   "'"
+//   "\""
+//   'one two'
+// Result includes the quotes.
 bool Lexer::extractWord (
   const std::string& text,
   const std::string& quotes,
@@ -1522,6 +1535,17 @@ bool Lexer::extractWord (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Extract an unquoted word from a longer string starting from cursor.
+// Includes:
+//   one\ two
+//   abcU+0020def
+//   abc\u0020def
+//   a\tb
+//
+// Ends at:
+//   Lexer::isEOS
+//   unicodeWhitespace
+//   Lexer::isHardBoundary
 bool Lexer::extractWord (
   const std::string& text,
   std::string::size_type& cursor,
