@@ -443,7 +443,7 @@ void CLI2::lexArguments ()
 
       cursor = 0;
       std::string word;
-      if (Lexer::readWord (quote + escaped + quote, quote, cursor, word))
+      if (Lexer::extractWord (quote + escaped + quote, quote, cursor, word))
       {
         Lexer::dequote (word);
         A2 unknown (word, Lexer::Type::word);
