@@ -406,7 +406,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  The support for Unicode character set was improved to support Unicode 12.\n"
     "  This means better support for various language-specific characters - and emojis!",
     "",
-    "  Extended unicode support for language-specific characters helps non-English users.\n"
+    "  Extended unicode support for language-specific characters helps non-English speakers.\n"
     "  While most users don't enter emojis as task metadata, automated task creation tools,\n"
     "  such as bugwarrior, might create tasks with exotic Unicode data.",
     "  You can try it out - 'task add Prepare for an 👽 invasion!'"
