@@ -8,7 +8,7 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-uuid = { version = "^1.1.1", features = ["serde", "v4"] }
+uuid = { version = "^1.1.2", features = ["serde", "v4"] }
 actix-web = "^3.3.2"
 anyhow = "1.0"
 thiserror = "1.0"
