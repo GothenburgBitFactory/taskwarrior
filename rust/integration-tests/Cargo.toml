@@ -13,7 +13,7 @@ taskchampion-sync-server = { path = "../sync-server" }
 [dev-dependencies]
 anyhow = "1.0"
 actix-web = "^3.3.2"
-actix-rt = "^1.1.1"
+actix-rt = "^2.7.0"
 tempfile = "3"
 pretty_assertions = "1"
 log = "^0.4.17"
