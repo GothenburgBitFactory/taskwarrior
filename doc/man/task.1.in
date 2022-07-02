@@ -1146,7 +1146,7 @@ of recurring tasks.
 
 .RS
 .TP
-daily, day, 1da, 2da, ...
+daily, day, 1day, 2day, ...
 Every day or a number of days.
 
 .TP
