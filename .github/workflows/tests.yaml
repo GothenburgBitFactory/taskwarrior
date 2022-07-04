@@ -1,3 +1,5 @@
+## Run the Taskwarrior tests, using stable rust to build TaskChampion.
+
 name: tests
 on: [push, pull_request]
 jobs:
@@ -46,6 +48,23 @@ jobs:
     continue-on-error: ${{ matrix.continue-on-error == true }}
     steps:
       - uses: actions/checkout@v2
+
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-stable-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v2
+        with:
+          path: target
+          key: ${{ runner.os }}-stable-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: "stable"
+          override: true
       - name: Build ${{ matrix.name }}
         env:
           DOCKER_REGISTRY: docker.pkg.github.com
