@@ -26,6 +26,9 @@
 
 #include <cmake.h>
 #include <Task.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
@@ -2411,7 +2414,17 @@ void Task::modify (modType type, bool text_required /* = false */)
   //  any.
   if (text != "")
   {
+
     Lexer::dequote (text);
+
+	 // For some reason, unicode escapes in the arguments were not processed yet.
+	 if (type == modReplace)
+	 {
+      std::string safe_text = '\'' + text + '\'';
+      Lexer::handleUnicode(safe_text, 0);
+      Lexer::dequote(safe_text);
+      text = safe_text;
+    }
 
     switch (type)
     {

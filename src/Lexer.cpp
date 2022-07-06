@@ -790,8 +790,8 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
     }
 
     // String, word or nothing are all valid.
-    if (readWord (_text, "'\"", _cursor, ignoredToken) ||
-        readWord (_text,        _cursor, ignoredToken) ||
+    if (extractWord (_text, "'\"", _cursor, ignoredToken) ||
+        extractWord (_text,        _cursor, ignoredToken) ||
         isEOS ()                                       ||
         unicodeWhitespace (_text[_cursor]))
     {
@@ -949,11 +949,11 @@ bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
   std::size_t marker = _cursor;
 
   std::string word;
-  if (readWord (_text, "/", _cursor, word))
+  if (extractWord (_text, "/", _cursor, word))
   {
     --_cursor;  // Step backwards over the '/'.
 
-    if (readWord (_text, "/", _cursor, word))
+    if (extractWord (_text, "/", _cursor, word))
     {
       if (_text[_cursor] == 'g')
         ++_cursor;
@@ -981,7 +981,7 @@ bool Lexer::isPattern (std::string& token, Lexer::Type& type)
   std::size_t marker = _cursor;
 
   std::string word;
-  if (readWord (_text, "/", _cursor, word) &&
+  if (extractWord (_text, "/", _cursor, word) &&
       (isEOS () ||
        unicodeWhitespace (_text[_cursor])))
   {
@@ -1421,12 +1421,52 @@ bool Lexer::isDOM (const std::string& text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Replaces escaped character escapes with their unicode characters.  Includes:
+// Replaces escape sequences with their unicode characters.
+void Lexer::handleEscapes(std::string &word,
+								  std::string::size_type cursor)
+{
+  std::string text = word;
+  word = "";
+
+  int c;
+  while ((c = text[cursor]))
+  {
+
+    // An escaped thing.
+    if (c == '\\')
+    {
+      c = text[++cursor];
+
+      switch (c)
+      {
+      case '"':  word += (char) 0x22; ++cursor; break;
+      case '\'': word += (char) 0x27; ++cursor; break;
+      case '\\': word += (char) 0x5C; ++cursor; break;
+      case 'b':  word += (char) 0x08; ++cursor; break;
+      case 'f':  word += (char) 0x0C; ++cursor; break;
+      case 'n':  word += (char) 0x0A; ++cursor; break;
+      case 'r':  word += (char) 0x0D; ++cursor; break;
+      case 't':  word += (char) 0x09; ++cursor; break;
+      case 'v':  word += (char) 0x0B; ++cursor; break;
+
+      // This pass-through default case means that anything can be escaped
+      // harmlessly. In particular 'quote' is included, if it not one of the
+      // above characters.
+      default:   word += (char) c;    ++cursor; break;
+      }
+    }
+
+    // Ordinary character.
+    else
+      word += utf8_character (utf8_next_char (text, cursor));
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Replaces unicode escape sequences with their unicode characters.  Includes:
 //   "U+XXXX"
 //   "\uXXXX"
-//   '"'
-//   '\''
-void Lexer::handleEscapes(std::string &word,
+void Lexer::handleUnicode(std::string &word,
 								  std::string::size_type cursor)
 {
   std::string text = word;
@@ -1453,30 +1493,6 @@ void Lexer::handleEscapes(std::string &word,
                   text[cursor + 4],
                   text[cursor + 5]));
       cursor += 6;
-    }
-
-    // An escaped thing.
-    else if (c == '\\')
-    {
-      c = text[++cursor];
-
-      switch (c)
-      {
-      case '"':  word += (char) 0x22; ++cursor; break;
-      case '\'': word += (char) 0x27; ++cursor; break;
-      case '\\': word += (char) 0x5C; ++cursor; break;
-      case 'b':  word += (char) 0x08; ++cursor; break;
-      case 'f':  word += (char) 0x0C; ++cursor; break;
-      case 'n':  word += (char) 0x0A; ++cursor; break;
-      case 'r':  word += (char) 0x0D; ++cursor; break;
-      case 't':  word += (char) 0x09; ++cursor; break;
-      case 'v':  word += (char) 0x0B; ++cursor; break;
-
-      // This pass-through default case means that anything can be escaped
-      // harmlessly. In particular 'quote' is included, if it not one of the
-      // above characters.
-      default:   word += (char) c;    ++cursor; break;
-      }
     }
 
     // Ordinary character.
@@ -1599,6 +1615,7 @@ bool Lexer::readWord (
 {
 	if (extractWord (text, quotes, cursor, word))
 		{
+			handleUnicode(word, 0);
 			handleEscapes (word, 0);
 			return true;
 		}
@@ -1623,6 +1640,7 @@ bool Lexer::readWord (
 {
 	if (extractWord (text, cursor, word))
 		{
+			handleUnicode(word, 0);
 			handleEscapes(word, 0);
 			return true;
 		}
@@ -1718,7 +1736,7 @@ bool Lexer::decomposeSubstitution (
 {
   std::string parsed_from;
   std::string::size_type cursor = 0;
-  if (readWord (text, "/", cursor, parsed_from) &&
+  if (extractWord (text, "/", cursor, parsed_from) &&
       parsed_from.length ())
   {
     --cursor;
@@ -1751,7 +1769,7 @@ bool Lexer::decomposePattern (
 {
   std::string ignored;
   std::string::size_type cursor = 0;
-  if (readWord (text, "/", cursor, ignored) &&
+  if (extractWord (text, "/", cursor, ignored) &&
       ignored.length ())
   {
     auto parsed_flags = text.substr (cursor);

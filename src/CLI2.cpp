@@ -433,12 +433,31 @@ void CLI2::lexArguments ()
         std::string character = utf8_character (num);
         if (!nextEscaped && (character == "\\"))
           nextEscaped = true;
-        else {
-          if (character == quote && !nextEscaped)
-            escaped += "\\";
+
+        else if (character == quote)
+        {
+          escaped += "U+0027";
+
+          if (nextEscaped)
+            nextEscaped = false;
+        }
+
+        else if (character == "\"" && nextEscaped)
+        {
+          escaped += "U+0022";
           nextEscaped = false;
         }
+
+        else
+        {
+          if (nextEscaped)
+          {
+            escaped += '\\';
+            nextEscaped = false;
+          }
+
         escaped += character;
+        }
       }
 
       cursor = 0;
