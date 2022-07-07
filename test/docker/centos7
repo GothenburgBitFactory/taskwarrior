@@ -3,7 +3,7 @@ FROM centos:7
 RUN yum update -y
 RUN yum install python3 git gcc gcc-c++ make gnutls-devel libuuid-devel -y
 RUN yum install epel-release centos-release-scl -y
-RUN yum install which cmake3 devtoolset-7-gcc* libfaketime -y
+RUN yum install which cmake3 devtoolset-7-gcc* libfaketime curl -y
 RUN source scl_source enable devtoolset-7; gcc --version; cmake3 --version
 RUN ln -s /usr/bin/cmake3 /usr/bin/cmake
 
@@ -12,9 +12,15 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-# Setup taskwarrior
+# Add source directory
 ADD . /root/code/
 WORKDIR /root/code/
+
+# Setup Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh && \
+    sh rustup.sh -y --profile minimal --default-toolchain stable --component rust-docs
+
+# Setup taskwarrior
 RUN git clean -dfx
 RUN git submodule init
 RUN git submodule update
