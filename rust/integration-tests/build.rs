@@ -12,13 +12,14 @@ fn link_libtaskchampion() {
     // Shared libraries (crate-type=cdylib) appear to be placed in target/$PROFILE/deps.
     let mut libtc_dir = env::current_dir().unwrap();
     libtc_dir.pop();
+    libtc_dir.pop();
     libtc_dir.push("target");
     libtc_dir.push(env::var("PROFILE").unwrap());
     libtc_dir.push("deps");
 
     let libtc_dir = libtc_dir.to_str().expect("path is valid utf-8");
     println!("cargo:rustc-link-search={}", libtc_dir);
-    println!("cargo:rustc-link-lib=dylib=taskchampionlib");
+    println!("cargo:rustc-link-lib=dylib=taskchampion_lib");
 
     // on windows, it appears that rust std requires BCrypt
     if cfg!(target_os = "windows") {

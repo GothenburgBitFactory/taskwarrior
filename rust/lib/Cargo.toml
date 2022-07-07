@@ -3,9 +3,9 @@ name = "taskchampion-lib"
 version = "0.1.0"
 edition = "2018"
 
-#[lib]
-#name = "taskchampionlib"
-#crate-type = ["staticlib", "cdylib", "rlib"]
+[lib]
+# staticlib is used for integration-tests, and is not exported.
+crate-type = ["cdylib", "lib"]
 
 [dependencies]
 libc = "0.2.126"
