@@ -2,16 +2,22 @@ FROM debian:stable
 
 RUN apt-get update
 RUN apt-get install -y build-essential cmake git uuid-dev libgnutls28-dev faketime
-RUN apt-get install -y python3
+RUN apt-get install -y python3 curl
 
 # Setup language environment
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-# Setup taskwarrior
+# Add source directory
 ADD . /root/code/
 WORKDIR /root/code/
+
+# Setup Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh && \
+    sh rustup.sh -y --profile minimal --default-toolchain stable --component rust-docs
+
+# Setup taskwarrior
 RUN git clean -dfx
 RUN git submodule init
 RUN git submodule update
