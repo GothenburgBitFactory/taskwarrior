@@ -4,6 +4,3 @@
 [submodule "cmake/CMakeRust"]
 	path = cmake/CMakeRust
 	url = https://github.com/Devolutions/CMakeRust
-[submodule "src/taskchampion"]
-	path = src/taskchampion
-	url = https://github.com/taskchampion/taskchampion
