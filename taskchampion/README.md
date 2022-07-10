@@ -1,52 +1,51 @@
 TaskChampion
 ------------
 
-TaskChampion is an open-source personal task-tracking application.
-Use it to keep track of what you need to do, with a quick command-line interface and flexible sorting and filtering.
-It is modeled on [TaskWarrior](https://taskwarrior.org), but not a drop-in replacement for that application.
+TaskChampion implements the task storage and synchronization behind Taskwarrior.
+It includes an implementation with Rust and C APIs, allowing any application to maintain and manipulate its own replica.
+It also includes a specification for tasks and how thye are synchronized, inviting alternative implementations of replicas or task servers.
 
 See the [documentation](https://taskchampion.github.io/taskchampion/) for more!
 
-## Status
-
-TaskChampion currently functions as a "testbed" for new functionality that may later be incorporated into TaskWarrior.
-It can be developed without the requirements of compatibliity, allowing us to explore and fix edge-cases in things like the replica-synchronization model.
-
-While you are welcome to [help out](https://github.com/taskchampion/taskchampion/blob/main/CONTRIBUTING.md), you should do so with the awareness that your work might never be used.
-But, if you just want to get some practice with Rust, we'd be happy to have you.
+NOTE: Taskwarrior is currently in the midst of a change to use TaskChampion as its storage.
+Until that is complete, the information here may be out-of-date.
 
 ## Structure
 
 There are five crates here:
 
  * [taskchampion](./taskchampion) - the core of the tool
- * [taskchampion-cli](./cli) - the command-line binary
  * [taskchampion-sync-server](./sync-server) - the server against which `task sync` operates
  * [taskchampion-lib](./lib) - glue code to use _taskchampion_ from C
- * [integration-tests](./integration-tests) - integration tests covering _taskchampion-cli_, _taskchampion-sync-server_, and _taskchampion-lib_.
+ * [integration-tests](./integration-tests) (private) - integration tests covering _taskchampion-cli_, _taskchampion-sync-server_, and _taskchampion-lib_.
+ * [xtask](./xtask) (private) - implementation of the `cargo xtask codegen` command
 
 ## Code Generation
 
 The _taskchampion_lib_ crate uses a bit of code generation to create the `lib/taskchampion.h` header file.
 To regenerate this file, run `cargo xtask codegen`.
 
-## C libraries
+## Rust API
 
-NOTE: support for linking against taskchampion is a work in progress.
-Contributions and pointers to best practices are appreciated!
+The Rust API, as defined in [the docs](https://docs.rs/taskchampion/latest/taskchampion/), supports simple creation and manipulation of of replicas and the tasks they contain.
+
+The Rust API follows semantic versioning.
+As this is still in the `0.x` phase, so breaking changes may occur but will be indicated with a change to the minor version.
+
+## C API
 
 The `taskchampion-lib` crate generates libraries suitable for use from C (or any C-compatible language).
+It is a "normal" Cargo crate that happens to export a number of `extern "C"` symbols, and also contains a `taskchampion.h` defining those symbols.
 
-The necessary bits are:
+*WARNING: the C API is not yet stable!*
 
-* a shared object in `target/$PROFILE/deps` (e.g., `target/debug/deps/libtaskchampion.so`)
-* a static library in `target/$PROFILE` (e.g., `target/debug/libtaskchampion.a`)
-* a header file, `lib/taskchampion.h`.
+It is your responsibility to link this into a form usable in your own build process.
+For example, in a typical CMake C++ project, CMakeRust can do this for you.
+In many cases, this is as simple as a rust crate with `src/lib.rs` containing
 
-Downstream consumers may use either the static or dynamic library, as they prefer.
+```rust
+pub use taskchampion_lib::*;
+```
 
-NOTE: on Windows, the "BCrypt" library must be included when linking to taskchampion.
-
-### As a Rust dependency
-
-If you would prefer to build Taskchampion directly into your project, and have a build system capable of building Rust libraries (such as CMake), the `taskchampion-lib` crate can be referenced as an `rlib` dependency.
+Arrange to use the header file, `lib/taskchampion.h`, by copying it or adding its directory to your include search path.
+[Future work](https://github.com/GothenburgBitFactory/taskwarrior/issues/2870) will provide better automation for tihs process.
