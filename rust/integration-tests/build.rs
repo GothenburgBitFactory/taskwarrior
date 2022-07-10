@@ -2,31 +2,6 @@ use std::env;
 use std::fs;
 use std::path::Path;
 
-/// Link to the libtaskchampion library produced by the `taskchampion-lib` crate.  This is done as
-/// a build dependency, rather than a cargo dependency, so that the symbols are available to
-/// bindings-tests.
-fn link_libtaskchampion() {
-    // This crate has taskchampion-lib in its build-dependencies, so libtaskchampion.so should be
-    // built already.
-    //
-    // Shared libraries (crate-type=cdylib) appear to be placed in target/$PROFILE/deps.
-    let mut libtc_dir = env::current_dir().unwrap();
-    libtc_dir.pop();
-    libtc_dir.pop();
-    libtc_dir.push("target");
-    libtc_dir.push(env::var("PROFILE").unwrap());
-    libtc_dir.push("deps");
-
-    let libtc_dir = libtc_dir.to_str().expect("path is valid utf-8");
-    println!("cargo:rustc-link-search={}", libtc_dir);
-    println!("cargo:rustc-link-lib=dylib=taskchampion_lib");
-
-    // on windows, it appears that rust std requires BCrypt
-    if cfg!(target_os = "windows") {
-        println!("cargo:rustc-link-lib=dylib=bcrypt");
-    }
-}
-
 /// Build the Unity-based C test suite in `src/bindings_tests`, linking the result with this
 /// package's library crate.
 fn build_bindings_tests(suites: &[&'static str]) {
@@ -68,7 +43,6 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
 
     let suites = &["uuid", "string", "task", "replica"];
-    link_libtaskchampion();
     build_bindings_tests(suites);
     make_suite_file(suites);
 }

@@ -8,6 +8,7 @@ build = "build.rs"
 
 [dependencies]
 taskchampion = { path = "../taskchampion" }
+taskchampion-lib = { path = "../lib" }
 taskchampion-sync-server = { path = "../sync-server" }
 
 [dev-dependencies]
@@ -22,4 +23,3 @@ lazy_static = "1"
 
 [build-dependencies]
 cc = "1.0.73"
-taskchampion-lib = { path = "../lib" }
