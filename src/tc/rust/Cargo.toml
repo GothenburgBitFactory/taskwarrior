@@ -6,4 +6,4 @@ version = "0.1.0"
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion-lib = {path = "../../../rust/lib"}
+taskchampion-lib = {path = "../../../taskchampion/lib"}

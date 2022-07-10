@@ -5,7 +5,7 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
-                     ${CMAKE_SOURCE_DIR}/rust/lib
+                     ${CMAKE_SOURCE_DIR}/taskchampion/lib
                      ${TASK_INCLUDE_DIRS})
 
 add_library (task STATIC CLI2.cpp CLI2.h

@@ -23,7 +23,7 @@ The implementation, including more documentation, is in the [`rust`](../../rust)
 Taskwarrior's interface to TaskChampion has a few laters:
 
 * The skeletal Rust crate in [`src/tc/rust`](../../src/tc/rust) brings the symbols from `taskchampion-lib` under CMake's management.
-  The corresponding header file is included from [`rust/lib`](../../rust/lib).
+  The corresponding header file is included from [`taskchampion/lib`](../../taskchampion/lib).
   All of these symbols are placed in the C++ namespace, `tc::ffi`.
 * C++ wrappers for the types from `taskchampion-lib` are defined in [`src/tc`](../../src/tc), ensuring memory safety (with `unique_ptr`) and adding methods corresponding to the Rust API's methods.
   The wrapper types are in the C++ namespace, `tc`.
