@@ -59,8 +59,8 @@ jobs:
           # if this changes, change it in cli/Cargo.toml and .github/workflows/publish-docs.yml as well
           mdbook-version: '0.4.10'
 
-      - run: mdbook test rust/docs
-      - run: mdbook build rust/docs
+      - run: mdbook test taskchampion/docs
+      - run: mdbook build taskchampion/docs
 
   fmt:
     runs-on: ubuntu-latest
