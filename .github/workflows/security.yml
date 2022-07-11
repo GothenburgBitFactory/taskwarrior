@@ -17,5 +17,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: GothenburgBitFactory/audit-check@master
         with:
-          ignore: RUSTSEC-2021-0124
+          ignore: RUSTSEC-2021-0124, RUSTSEC-2020-0071
           token: ${{ secrets.GITHUB_TOKEN }}
