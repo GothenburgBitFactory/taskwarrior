@@ -15,6 +15,7 @@ jobs:
     name: "Audit Dependencies"
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/audit-check@v1
+      - uses: GothenburgBitFactory/audit-check@master
         with:
+          ignore: RUSTSEC-2021-0124
           token: ${{ secrets.GITHUB_TOKEN }}
