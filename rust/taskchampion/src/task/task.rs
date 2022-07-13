@@ -292,6 +292,12 @@ impl Task {
         })
     }
 
+    /// Get task's property value by name.
+    pub fn get_value<S: Into<String>>(&self, property: S) -> Option<&str> {
+        let property = property.into();
+        self.taskmap.get(&property).map(|s| s.as_ref())
+    }
+
     // -- utility functions
 
     fn is_known_key(key: &str) -> bool {
@@ -362,6 +368,27 @@ impl<'r> TaskMut<'r> {
 
     pub fn set_modified(&mut self, modified: DateTime<Utc>) -> anyhow::Result<()> {
         self.set_timestamp(Prop::Modified.as_ref(), Some(modified))
+    }
+
+    /// Set a tasks's property by name.
+    pub fn set_value<S: Into<String>>(
+        &mut self,
+        property: S,
+        value: Option<String>,
+    ) -> anyhow::Result<()> {
+        let property = property.into();
+
+        if let Some(ref v) = value {
+            trace!("task {}: set property {}={:?}", self.task.uuid, property, v);
+        } else {
+            trace!("task {}: remove property {}", self.task.uuid, property);
+        }
+
+        self.task.taskmap = self
+            .replica
+            .update_task(self.task.uuid, &property, value.as_ref())?;
+
+        Ok(())
     }
 
     /// Start the task by creating "start": "<timestamp>", if the task is not already
@@ -509,17 +536,7 @@ impl<'r> TaskMut<'r> {
             self.update_modified()?;
         }
 
-        if let Some(ref v) = value {
-            trace!("task {}: set property {}={:?}", self.task.uuid, property, v);
-        } else {
-            trace!("task {}: remove property {}", self.task.uuid, property);
-        }
-
-        self.task.taskmap = self
-            .replica
-            .update_task(self.task.uuid, &property, value.as_ref())?;
-
-        Ok(())
+        self.set_value(property, value)
     }
 
     fn set_timestamp(
@@ -862,6 +879,17 @@ mod test {
             assert!(task.taskmap.contains_key("end"));
             assert!(!task.has_tag(&stag(SyntheticTag::Pending)));
             assert!(!task.has_tag(&stag(SyntheticTag::Completed)));
+        });
+    }
+
+    #[test]
+    fn test_set_get_value() {
+        with_mut_task(|mut task| {
+            let property = "property-name";
+            task.set_value(property, Some("value".into())).unwrap();
+            assert_eq!(task.get_value(property), Some("value".into()));
+            task.set_value(property, None).unwrap();
+            assert_eq!(task.get_value(property), None);
         });
     }
 
