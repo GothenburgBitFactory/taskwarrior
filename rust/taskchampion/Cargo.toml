@@ -19,7 +19,7 @@ anyhow = "1.0"
 thiserror = "1.0"
 ureq = "^2.5.0"
 log = "^0.4.17"
-rusqlite = { version = "0.27", features = ["bundled"] }
+rusqlite = { version = "0.28", features = ["bundled"] }
 strum = "0.24"
 strum_macros = "0.24"
 flate2 = "1"
