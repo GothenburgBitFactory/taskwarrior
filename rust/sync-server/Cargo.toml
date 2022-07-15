@@ -18,7 +18,7 @@ serde_json = "^1.0"
 clap = "^3.2.10"
 log = "^0.4.17"
 env_logger = "^0.9.0"
-rusqlite = { version = "0.27", features = ["bundled"] }
+rusqlite = { version = "0.28", features = ["bundled"] }
 chrono = { version = "^0.4.10", features = ["serde"] }
 
 [dev-dependencies]
