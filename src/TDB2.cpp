@@ -615,135 +615,30 @@ void TDB2::set_location (const std::string& location)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the appropriate file.
-void TDB2::add (Task& task, bool add_to_backlog /* = true */)
+void TDB2::add (Task&, bool/* = true */)
 {
-  // Ensure the task is consistent, and provide defaults if necessary.
-  // bool argument to validate() is "applyDefault". Pass add_to_backlog through
-  // in order to not apply defaults to synchronized tasks.
-  task.validate (add_to_backlog);
-  std::string uuid = task.get ("uuid");
-
-  // If the tasks are loaded, then verify that this uuid is not already in
-  // the file.
-  if (!verifyUniqueUUID (uuid))
-    throw format ("Cannot add task because the uuid '{1}' is not unique.", uuid);
-
-  // Only locally-added tasks trigger hooks.  This means that tasks introduced
-  // via 'sync' do not trigger hooks.
-  if (add_to_backlog)
-    Context::getContext ().hooks.onAdd (task);
-
-  update (task, add_to_backlog, true);
+  throw std::string("add not implemented");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
+void TDB2::modify (Task&, bool/* = true */)
 {
-  // Ensure the task is consistent.
-  task.validate (false);
-  std::string uuid = task.get ("uuid");
-
-  // Get the unmodified task as reference, so the hook can compare.
-  if (add_to_backlog)
-  {
-    Task original;
-    get (uuid, original);
-    Context::getContext ().hooks.onModify (original, task);
-  }
-
-  update (task, add_to_backlog);
+  throw std::string("modify not implemented");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::update (
-  Task& task,
-  const bool add_to_backlog,
-  const bool addition /* = false */)
+  Task&,
+  const bool,
+  const bool/* = false */)
 {
-  // Validate to add metadata.
-  task.validate (false);
-
-  // If the task already exists, it is a modification, else addition.
-  Task original;
-  if (not addition && get (task.get ("uuid"), original))
-  {
-    // Update only if the tasks differ
-    if (task == original)
-      return;
-
-    if (add_to_backlog)
-    {
-      // All locally modified tasks are timestamped, implicitly overwriting any
-      // changes the user or hooks tried to apply to the "modified" attribute.
-      task.setAsNow ("modified");
-    }
-
-    // Update the task, wherever it is.
-    if (!pending.modify_task (task))
-      completed.modify_task (task);
-
-    // time <time>
-    // old <task>
-    // new <task>
-    // ---
-    undo.add_line ("time " + Datetime ().toEpochString () + '\n');
-    undo.add_line ("old " + original.composeF4 () + '\n');
-    undo.add_line ("new " + task.composeF4 () + '\n');
-    undo.add_line ("---\n");
-  }
-  else
-  {
-    // Add new task to either pending or completed.
-    std::string status = task.get ("status");
-    if (status == "completed" ||
-        status == "deleted")
-      completed.add_task (task);
-    else
-      pending.add_task (task);
-
-    // Add undo data lines:
-    //   time <time>
-    //   new <task>
-    //   ---
-    undo.add_line ("time " + Datetime ().toEpochString () + '\n');
-    undo.add_line ("new " + task.composeF4 () + '\n');
-    undo.add_line ("---\n");
-  }
-
-  // Add task to backlog.
-  if (add_to_backlog)
-    backlog.add_line (task.composeJSON () + '\n');
+  throw std::string("update not implemented");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::commit ()
 {
-  Timer timer;
-
-  // Ignore harmful signals.
-  signal (SIGHUP,    SIG_IGN);
-  signal (SIGINT,    SIG_IGN);
-  signal (SIGPIPE,   SIG_IGN);
-  signal (SIGTERM,   SIG_IGN);
-  signal (SIGUSR1,   SIG_IGN);
-  signal (SIGUSR2,   SIG_IGN);
-
-  dump ();
-  gather_changes ();
-  pending.commit ();
-  completed.commit ();
-  undo.commit ();
-  backlog.commit ();
-
-  // Restore signal handling.
-  signal (SIGHUP,    SIG_DFL);
-  signal (SIGINT,    SIG_DFL);
-  signal (SIGPIPE,   SIG_DFL);
-  signal (SIGTERM,   SIG_DFL);
-  signal (SIGUSR1,   SIG_DFL);
-  signal (SIGUSR2,   SIG_DFL);
-
-  Context::getContext ().time_commit_us += timer.total_us ();
+  // does nothing; changes are committed as they are made
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -766,243 +661,14 @@ void TDB2::gather_changes ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::get_changes (std::vector <Task>& changes)
 {
-  changes = _changes;
+  // Modifications are not supported, therefore there are no changes
+  changes.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert ()
 {
-  // Extract the details of the last txn, and roll it back.
-  std::vector <std::string> u = undo.get_lines ();
-  std::string uuid;
-  std::string when;
-  std::string current;
-  std::string prior;
-  revert_undo (u, uuid, when, current, prior);
-
-  // Confirm.
-  if (! Context::getContext ().config.getBoolean ("confirmation") ||
-      confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
-  {
-    // There are six kinds of change possible.  Determine which one, and act
-    // accordingly.
-    //
-    // Revert: task add
-    // [1] 0 --> p
-    //   - erase from pending
-    //   - if in backlog, erase, else cannot undo
-    //
-    // Revert: task modify
-    // [2] p --> p'
-    //   - write prior over current in pending
-    //   - add prior to backlog
-    //
-    // Revert: task done/delete
-    // [3] p --> c
-    //   - add prior to pending
-    //   - erase from completed
-    //   - add prior to backlog
-    //
-    // Revert: task modify
-    // [4] c --> p
-    //   - add prior to completed
-    //   - erase from pending
-    //   - add prior to backlog
-    //
-    // Revert: task modify
-    // [5] c --> c'
-    //   - write prior over current in completed
-    //   - add prior to backlog
-    //
-    // Revert: task log
-    // [6] 0 --> c
-    //   - erase from completed
-    //   - if in backlog, erase, else cannot undo
-
-    Task old;
-    if (prior != "")
-      old = Task (prior);
-    Context::getContext ().hooks.onModify (Task (current), old);
-
-    // Modify other data files accordingly.
-    std::vector <std::string> p = pending.get_lines ();
-    revert_pending (p, uuid, prior);
-
-    std::vector <std::string> c = completed.get_lines ();
-    revert_completed (p, c, uuid, prior);
-
-    std::vector <std::string> b = backlog.get_lines ();
-    revert_backlog (b, uuid, current, prior);
-
-    // Commit.  If processing makes it this far with no exceptions, then we're
-    // done.
-    File::write (undo._file._data, u);
-    File::write (pending._file._data, p);
-    File::write (completed._file._data, c);
-    File::write (backlog._file._data, b);
-  }
-  else
-    std::cout << "No changes made.\n";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::revert_undo (
-  std::vector <std::string>& u,
-  std::string& uuid,
-  std::string& when,
-  std::string& current,
-  std::string& prior)
-{
-  if (u.size () < 3)
-    throw std::string ("There are no recorded transactions to undo.");
-
-  // pop last tx
-  u.pop_back (); // separator.
-
-  current = u.back ().substr (4);
-  u.pop_back ();
-
-  if (u.back ().substr (0, 5) == "time ")
-  {
-    when = u.back ().substr (5);
-    u.pop_back ();
-    prior = "";
-  }
-  else
-  {
-    prior = u.back ().substr (4);
-    u.pop_back ();
-    when = u.back ().substr (5);
-    u.pop_back ();
-  }
-
-  // Extract identifying uuid.
-  auto uuidAtt = current.find ("uuid:\"");
-  if (uuidAtt != std::string::npos)
-    uuid = current.substr (uuidAtt + 6, 36); // "uuid:"<uuid>" --> <uuid>
-  else
-    throw std::string ("Cannot locate UUID in task to undo.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::revert_pending (
-  std::vector <std::string>& p,
-  const std::string& uuid,
-  const std::string& prior)
-{
-  std::string uuid_att = "uuid:\"" + uuid + '"';
-
-  // is 'current' in pending?
-  for (auto task = p.begin (); task != p.end (); ++task)
-  {
-    if (task->find (uuid_att) != std::string::npos)
-    {
-      Context::getContext ().debug ("TDB::revert - task found in pending.data");
-
-      // Either revert if there was a prior state, or remove the task.
-      if (prior != "")
-      {
-        *task = prior;
-        std::cout << STRING_TDB2_REVERTED << '\n';
-      }
-      else
-      {
-        p.erase (task);
-        std::cout << "Task removed.\n";
-      }
-
-      break;
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::revert_completed (
-  std::vector <std::string>& p,
-  std::vector <std::string>& c,
-  const std::string& uuid,
-  const std::string& prior)
-{
-  std::string uuid_att = "uuid:\"" + uuid + '"';
-
-  // is 'current' in completed?
-  for (auto task = c.begin (); task != c.end (); ++task)
-  {
-    if (task->find (uuid_att) != std::string::npos)
-    {
-      Context::getContext ().debug ("TDB::revert_completed - task found in completed.data");
-
-      // Either revert if there was a prior state, or remove the task.
-      if (prior != "")
-      {
-        *task = prior;
-        if (task->find ("status:\"pending\"")   != std::string::npos ||
-            task->find ("status:\"waiting\"")   != std::string::npos ||
-            task->find ("status:\"recurring\"") != std::string::npos)
-        {
-          c.erase (task);
-          p.push_back (prior);
-          std::cout << STRING_TDB2_REVERTED << '\n';
-          Context::getContext ().debug ("TDB::revert_completed - task belongs in pending.data");
-        }
-        else
-        {
-          std::cout << STRING_TDB2_REVERTED << '\n';
-          Context::getContext ().debug ("TDB::revert_completed - task belongs in completed.data");
-        }
-      }
-      else
-      {
-        c.erase (task);
-
-        std::cout << STRING_TDB2_REVERTED << '\n';
-        Context::getContext ().debug ("TDB::revert_completed - task removed");
-      }
-
-      std::cout << "Undo complete.\n";
-      break;
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::revert_backlog (
-  std::vector <std::string>& b,
-  const std::string& uuid,
-  const std::string& current,
-  const std::string& prior)
-{
-  std::string uuid_att = R"("uuid":")" + uuid + '"';
-
-  bool found = false;
-  for (auto task = b.rbegin (); task != b.rend (); ++task)
-  {
-    if (task->find (uuid_att) != std::string::npos)
-    {
-      Context::getContext ().debug ("TDB::revert_backlog - task found in backlog.data");
-      found = true;
-
-      // If this is a new task (no prior), then just remove it from the backlog.
-      if (current != "" && prior == "")
-      {
-        // Yes, this is what is needed, when you want to erase using a reverse
-        // iterator.
-        b.erase ((++task).base ());
-      }
-
-      // If this is a modification of some kind, add the prior to the backlog.
-      else
-      {
-        Task t (prior);
-        b.push_back (t.composeJSON ());
-      }
-
-      break;
-    }
-  }
-
-  if (!found)
-    throw std::string ("Cannot undo change because the task was already synced.  Modify the task instead.");
+  throw std::string("revert not implemented");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1164,65 +830,15 @@ bool TDB2::has (const std::string& uuid)
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task> TDB2::siblings (Task& task)
 {
-  std::vector <Task> results;
-  if (task.has ("parent"))
-  {
-    std::string parent = task.get ("parent");
-
-    // First load and scan pending.
-    if (! pending._loaded_tasks)
-      pending.load_tasks ();
-
-    for (auto& i : pending._tasks)
-    {
-      // Do not include self in results.
-      if (i.id != task.id)
-      {
-        // Do not include completed or deleted tasks.
-        if (i.getStatus () != Task::completed &&
-            i.getStatus () != Task::deleted)
-        {
-          // If task has the same parent, it is a sibling.
-          if (i.has ("parent") &&
-              i.get ("parent") == parent)
-          {
-            results.push_back (i);
-          }
-        }
-      }
-    }
-  }
-
-  return results;
+  // siblings is only used in modification commands, which are not supported
+  throw std::string("siblings not implemented");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task> TDB2::children (Task& task)
 {
-  std::vector <Task> results;
-  std::string parent = task.get ("uuid");
-
-  // First load and scan pending.
-  if (! pending._loaded_tasks)
-    pending.load_tasks ();
-
-  for (auto& i : pending._tasks)
-  {
-    // Do not include self in results.
-    if (i.id != task.id)
-    {
-      // Do not include completed or deleted tasks.
-      if (i.getStatus () != Task::completed &&
-          i.getStatus () != Task::deleted)
-      {
-        // If task has the given task as a parent, it is a child task.
-        if (i.get ("parent") == parent)
-          results.push_back (i);
-      }
-    }
-  }
-
-  return results;
+  // children is only used in modification commands, which are not supported
+  throw std::string("children not implemented");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
