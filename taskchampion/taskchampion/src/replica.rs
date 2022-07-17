@@ -259,6 +259,11 @@ impl Replica {
     pub fn num_local_operations(&mut self) -> anyhow::Result<usize> {
         self.taskdb.num_operations()
     }
+
+    /// Get the number of undo points available (number of times `undo` will succeed).
+    pub fn num_undo_points(&mut self) -> anyhow::Result<usize> {
+        self.taskdb.num_undo_points()
+    }
 }
 
 #[cfg(test)]
@@ -405,7 +410,11 @@ mod tests {
             ]
         );
 
-        assert_eq!(rep.num_local_operations().unwrap(), 10);
+        // num_local_operations includes all but the undo point
+        assert_eq!(rep.num_local_operations().unwrap(), 9);
+
+        // num_undo_points includes only the undo point
+        assert_eq!(rep.num_undo_points().unwrap(), 1);
     }
 
     #[test]

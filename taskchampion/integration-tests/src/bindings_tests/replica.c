@@ -109,7 +109,7 @@ static void test_replica_working_set(void) {
 
     tc_working_set_free(ws);
 
-    TEST_ASSERT_EQUAL(19, tc_replica_num_local_operations(rep));
+    TEST_ASSERT_EQUAL(18, tc_replica_num_local_operations(rep));
 
     tc_replica_free(rep);
 }

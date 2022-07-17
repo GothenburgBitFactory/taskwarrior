@@ -558,9 +558,15 @@ TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool av
 TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
 
 /**
- * Get the number of local, un-synchronized operations, or -1 on error
+ * Get the number of local, un-synchronized operations (not including undo points), or -1 on
+ * error.
  */
 int64_t tc_replica_num_local_operations(struct TCReplica *rep);
+
+/**
+ * Get the number of undo points (number of undo calls possible), or -1 on error.
+ */
+int64_t tc_replica_num_undo_points(struct TCReplica *rep);
 
 /**
  * Add an UndoPoint, if one has not already been added by this Replica.  This occurs automatically
