@@ -59,6 +59,11 @@ impl ReplicaOp {
         }
     }
 
+    /// Determine whether this is an undo point.
+    pub fn is_undo_point(&self) -> bool {
+        self == &Self::UndoPoint
+    }
+
     /// Generate a sequence of SyncOp's to reverse the effects of this ReplicaOp.
     pub fn reverse_ops(self) -> Vec<SyncOp> {
         match self {

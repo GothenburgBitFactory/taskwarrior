@@ -360,13 +360,27 @@ pub unsafe extern "C" fn tc_replica_undo(rep: *mut TCReplica, undone_out: *mut i
     )
 }
 
-/// Get the number of local, un-synchronized operations, or -1 on error
+/// Get the number of local, un-synchronized operations (not including undo points), or -1 on
+/// error.
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_num_local_operations(rep: *mut TCReplica) -> i64 {
     wrap(
         rep,
         |rep| {
             let count = rep.num_local_operations()? as i64;
+            Ok(count)
+        },
+        -1,
+    )
+}
+
+/// Get the number of undo points (number of undo calls possible), or -1 on error.
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_num_undo_points(rep: *mut TCReplica) -> i64 {
+    wrap(
+        rep,
+        |rep| {
+            let count = rep.num_undo_points()? as i64;
             Ok(count)
         },
         -1,

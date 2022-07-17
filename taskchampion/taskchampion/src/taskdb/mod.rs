@@ -128,10 +128,25 @@ impl TaskDb {
         undo::undo(txn.as_mut())
     }
 
-    /// Get the number of un-synchronized operations in storage.
+    /// Get the number of un-synchronized operations in storage, excluding undo
+    /// operations.
     pub fn num_operations(&mut self) -> anyhow::Result<usize> {
         let mut txn = self.storage.txn().unwrap();
-        txn.num_operations()
+        Ok(txn
+            .operations()?
+            .iter()
+            .filter(|o| !o.is_undo_point())
+            .count())
+    }
+
+    /// Get the number of (un-synchronized) undo points in storage.
+    pub fn num_undo_points(&mut self) -> anyhow::Result<usize> {
+        let mut txn = self.storage.txn().unwrap();
+        Ok(txn
+            .operations()?
+            .iter()
+            .filter(|o| o.is_undo_point())
+            .count())
     }
 
     // functions for supporting tests
@@ -194,6 +209,30 @@ mod tests {
         let mut db = TaskDb::new_inmemory();
         db.add_undo_point().unwrap();
         assert_eq!(db.operations(), vec![ReplicaOp::UndoPoint]);
+    }
+
+    #[test]
+    fn test_num_operations() {
+        let mut db = TaskDb::new_inmemory();
+        db.apply(SyncOp::Create {
+            uuid: Uuid::new_v4(),
+        })
+        .unwrap();
+        db.add_undo_point().unwrap();
+        db.apply(SyncOp::Create {
+            uuid: Uuid::new_v4(),
+        })
+        .unwrap();
+        assert_eq!(db.num_operations().unwrap(), 2);
+    }
+
+    #[test]
+    fn test_num_undo_points() {
+        let mut db = TaskDb::new_inmemory();
+        db.add_undo_point().unwrap();
+        assert_eq!(db.num_undo_points().unwrap(), 1);
+        db.add_undo_point().unwrap();
+        assert_eq!(db.num_undo_points().unwrap(), 2);
     }
 
     fn newdb() -> TaskDb {
