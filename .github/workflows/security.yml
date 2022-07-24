@@ -12,7 +12,7 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     permissions: write-all
-    name: "Audit Dependencies"
+    name: "Audit Rust Dependencies"
     steps:
       - uses: actions/checkout@v2
       - uses: GothenburgBitFactory/audit-check@master
