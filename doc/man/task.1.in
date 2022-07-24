@@ -1142,11 +1142,11 @@ task ... due:juhannus
 .SS FREQUENCIES
 Recurrence periods. Taskwarrior supports several ways of specifying the
 .I frequency
-of recurring tasks.
+of recurring tasks. Note that frequencies can be abbreviated.
 
 .RS
 .TP
-daily, day, 1da, 2da, ...
+daily, day, 1day, 1days, 2day, 2days, 1da, 2da, ...
 Every day or a number of days.
 
 .TP
