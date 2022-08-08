@@ -751,10 +751,15 @@ enum TCStatus tc_task_get_status(struct TCTask *task);
 struct TCKVList tc_task_get_taskmap(struct TCTask *task);
 
 /**
- * Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
- * contains embedded NUL characters).
+ * Get a task's description.
  */
 struct TCString tc_task_get_description(struct TCTask *task);
+
+/**
+ * Get a task property's value, or NULL if the task has no such property, (including if the
+ * property name is not valid utf-8).
+ */
+struct TCString tc_task_get_value(struct TCTask *task, struct TCString property);
 
 /**
  * Get the entry timestamp for a task (when it was created), or 0 if not set.
@@ -836,6 +841,11 @@ struct TCUdaList tc_task_get_legacy_udas(struct TCTask *task);
  * Set a mutable task's status.
  */
 TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
+
+/**
+ * Set a mutable task's property value by name.  If value.ptr is NULL, the property is removed.
+ */
+TCResult tc_task_set_value(struct TCTask *task, struct TCString property, struct TCString value);
 
 /**
  * Set a mutable task's description.

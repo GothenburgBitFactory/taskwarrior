@@ -294,8 +294,7 @@ pub unsafe extern "C" fn tc_task_get_taskmap(task: *mut TCTask) -> TCKVList {
     })
 }
 
-/// Get a task's description, or NULL if the task cannot be represented as a C string (e.g., if it
-/// contains embedded NUL characters).
+/// Get a task's description.
 #[no_mangle]
 pub unsafe extern "C" fn tc_task_get_description(task: *mut TCTask) -> TCString {
     wrap(task, |task| {
@@ -303,6 +302,27 @@ pub unsafe extern "C" fn tc_task_get_description(task: *mut TCTask) -> TCString 
         // SAFETY:
         //  - caller promises to free this string
         unsafe { TCString::return_val(descr.into()) }
+    })
+}
+
+/// Get a task property's value, or NULL if the task has no such property, (including if the
+/// property name is not valid utf-8).
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_get_value(task: *mut TCTask, property: TCString) -> TCString {
+    // SAFETY:
+    //  - property is valid (promised by caller)
+    //  - caller will not use property after this call (convention)
+    let mut property = unsafe { TCString::val_from_arg(property) };
+    wrap(task, |task| {
+        if let Ok(property) = property.as_str() {
+            let value = task.get_value(property);
+            if let Some(value) = value {
+                // SAFETY:
+                //  - caller promises to free this string
+                return unsafe { TCString::return_val(value.into()) };
+            }
+        }
+        TCString::default() // null value
     })
 }
 
@@ -501,6 +521,40 @@ pub unsafe extern "C" fn tc_task_set_status(task: *mut TCTask, status: TCStatus)
         task,
         |task| {
             task.set_status(status.into())?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+/// Set a mutable task's property value by name.  If value.ptr is NULL, the property is removed.
+#[no_mangle]
+pub unsafe extern "C" fn tc_task_set_value(
+    task: *mut TCTask,
+    property: TCString,
+    value: TCString,
+) -> TCResult {
+    // SAFETY:
+    //  - property is valid (promised by caller)
+    //  - caller will not use property after this call (convention)
+    let mut property = unsafe { TCString::val_from_arg(property) };
+    let value = if value.is_null() {
+        None
+    } else {
+        // SAFETY:
+        //  - value is valid (promised by caller, after NULL check)
+        //  - caller will not use value after this call (convention)
+        Some(unsafe { TCString::val_from_arg(value) })
+    };
+    wrap_mut(
+        task,
+        |task| {
+            let value_str = if let Some(mut v) = value {
+                Some(v.as_str()?.to_string())
+            } else {
+                None
+            };
+            task.set_value(property.as_str()?.to_string(), value_str)?;
             Ok(TCResult::Ok)
         },
         TCResult::Error,
