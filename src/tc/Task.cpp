@@ -61,6 +61,18 @@ tc::Task& tc::Task::operator= (Task &&other) noexcept
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void tc::Task::to_mut (TCReplica *replica)
+{
+  tc_task_to_mut(&*inner, replica);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Task::to_immut ()
+{
+  tc_task_to_immut(&*inner);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string tc::Task::get_uuid () const
 {
   auto uuid = tc_task_get_uuid(&*inner);
@@ -97,6 +109,41 @@ std::string tc::Task::get_description () const
 {
   auto desc = tc_task_get_description(&*inner);
   return tc2string(desc);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::optional<std::string> tc::Task::get_value (std::string property) const
+{
+  auto maybe_desc = tc_task_get_value (&*inner, string2tc(property));
+  if (maybe_desc.ptr == NULL) {
+    return std::nullopt;
+  }
+  return std::make_optional(tc2string(maybe_desc));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Task::set_status (tc::Status status)
+{
+  TCResult res = tc_task_set_status (&*inner, (TCStatus)status);
+  if (res != TC_RESULT_OK) {
+    throw task_error ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Task::set_value (std::string property, std::optional<std::string> value)
+{
+  TCResult res;
+  if (value.has_value()) {
+    res = tc_task_set_value (&*inner, string2tc(property), string2tc(value.value()));
+  } else {
+    TCString nullstr;
+    nullstr.ptr = NULL;
+    res = tc_task_set_value (&*inner, string2tc(property), nullstr);
+  }
+  if (res != TC_RESULT_OK) {
+    throw task_error ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

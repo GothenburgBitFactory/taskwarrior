@@ -1961,6 +1961,31 @@ const std::string Task::decode (const std::string& value) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+tc::Status Task::status2tc (const Task::status status)
+{
+  switch (status) {
+    case Task::pending: return tc::Status::Pending;
+    case Task::completed: return tc::Status::Completed;
+    case Task::deleted: return tc::Status::Deleted;
+    case Task::waiting: return tc::Status::Pending; // waiting is no longer a status
+    case Task::recurring: return tc::Status::Recurring;
+    default: return tc::Status::Unknown;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Task::status Task::tc2status (const tc::Status status)
+{
+  switch (status) {
+    case tc::Status::Pending: return Task::pending;
+    case tc::Status::Completed: return Task::completed;
+    case tc::Status::Deleted: return Task::deleted;
+    case tc::Status::Recurring: return Task::recurring;
+    default: return Task::pending;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Task::determineVersion (const std::string& line)
 {
   // Version 2 looks like:

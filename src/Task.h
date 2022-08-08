@@ -89,6 +89,8 @@ public:
   // Series of helper functions.
   static status textToStatus (const std::string&);
   static std::string statusToText (status);
+  static tc::Status status2tc (const Task::status);
+  static Task::status tc2status (const tc::Status);
 
   void setAsNow (const std::string&);
   bool has (const std::string&) const;
@@ -179,6 +181,7 @@ public:
   std::string diffForInfo (const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp) const; 
   Table diffForUndoSide (const Task& after) const;
   Table diffForUndoPatch (const Task& after, const Datetime& lastChange) const;
+
 
 private:
   int determineVersion (const std::string&);

@@ -30,7 +30,7 @@
 #include <sstream>
 #include <algorithm>
 #include <list>
-#include <set>
+#include <unordered_set>
 #include <stdlib.h>
 #include <signal.h>
 #include <Context.h>
@@ -58,25 +58,97 @@ void TDB2::open_replica (const std::string& location, bool create_if_missing)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Add the new task to the appropriate file.
-void TDB2::add (Task&, bool/* = true */)
+// Add the new task to the replica.
+void TDB2::add (Task& task, bool/* = true */)
 {
-  throw std::string("add not implemented");
+  // Ensure the task is consistent, and provide defaults if necessary.
+  // bool argument to validate() is "applyDefault". Pass add_to_backlog through
+  // in order to not apply defaults to synchronized tasks.
+  // This also ensures that the `uuid` attribute is set.
+  task.validate (true);
+
+  std::string uuid = task.get ("uuid");
+  auto innertask = replica.import_task_with_uuid (uuid);
+
+  {
+    auto guard = replica.mutate_task(innertask);
+
+    // add the task attributes
+    for (auto& attr : task.all ()) {
+      // TaskChampion does not store uuid or id in the taskmap
+      if (attr == "uuid" || attr == "id") {
+        continue; 
+      }
+
+      // Use `set_status` for the task status, to get expected behavior
+      // with respect to the working set.
+      else if (attr == "status") {
+        innertask.set_status (Task::status2tc (Task::textToStatus (task.get (attr))));
+      }
+
+      // otherwise, just set the k/v map value
+      else {
+        innertask.set_value (attr, std::make_optional (task.get (attr)));
+      }
+    }
+  }
+
+  // get the ID that was assigned to this task
+  auto ws = replica.working_set ();
+  auto id = ws.by_uuid (uuid);
+  if (id.has_value ()) {
+    task.id = id.value();
+  }
+
+  // run hooks for this new task
+  Context::getContext ().hooks.onAdd (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::modify (Task&, bool/* = true */)
+// Modify the task in storage to match the given task.
+//
+// This exhibits a bit of a race condition: if the stored task has changed since
+// it was loaded, this will revert those changes.  In practice, this is not an
+// issue.
+void TDB2::modify (Task& task, bool/* = true */)
 {
-  throw std::string("modify not implemented");
-}
+  auto uuid = task.get ("uuid");
 
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::update (
-  Task&,
-  const bool,
-  const bool/* = false */)
-{
-  throw std::string("update not implemented");
+  auto maybe_tctask = replica.get_task (uuid);
+  if (!maybe_tctask.has_value ()) {
+    throw std::string ("task no longer exists");
+  }
+  auto tctask = std::move (maybe_tctask.value ());
+  auto guard = replica.mutate_task(tctask);
+  auto tctask_map = tctask.get_taskmap ();
+
+  std::unordered_set<std::string> seen;
+  for (auto k : task.all ()) {
+    // ignore task keys that aren't stored
+    if (k == "uuid") {
+      continue;
+    }
+    seen.insert(k);
+    bool update = false;
+    auto v_new = task.get(k);
+    try {
+      auto v_tctask = tctask_map.at(k);
+      update = v_tctask != v_new;
+    } catch (const std::out_of_range& oor) {
+      // tctask_map does not contain k, so update it
+      update = true;
+    }
+    if (update) {
+      tctask.set_value(k, make_optional (v_new));
+    }
+  }
+
+  // we've now added and updated properties; but must find any deleted properties
+  for (auto kv : tctask_map) {
+    if (seen.find (kv.first) == seen.end ()) {
+      tctask.set_value (kv.first, {});
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +176,7 @@ void TDB2::get_changes (std::vector <Task>& changes)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert ()
 {
-  throw std::string("revert not implemented");
+  replica.undo(NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,10 +330,45 @@ const std::vector <Task> TDB2::siblings (Task&)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <Task> TDB2::children (Task&)
+const std::vector <Task> TDB2::children (Task& parent)
 {
-  // children is only used in modification commands, which are not supported
-  throw std::string("children not implemented");
+  // scan _pending_ tasks for those with `parent` equal to this task
+	std::vector <Task> results;
+  std::string this_uuid = parent.get ("uuid");
+
+  const tc::WorkingSet &ws = working_set ();
+  size_t end_idx = ws.largest_index ();
+
+  for (size_t i = 0; i <= end_idx; i++) {
+    auto uuid_opt = ws.by_index (i);
+    if (!uuid_opt) {
+      continue;
+    }
+    auto uuid = uuid_opt.value ();
+
+    // skip self-references
+    if (uuid == this_uuid) {
+      continue;
+    }
+
+    auto task_opt = replica.get_task (uuid_opt.value ());
+    if (!task_opt) {
+      continue;
+    }
+    auto task = std::move (task_opt.value ());
+
+    auto parent_uuid_opt = task.get_value ("parent");
+    if (!parent_uuid_opt) {
+      continue;
+    }
+    auto parent_uuid = parent_uuid_opt.value ();
+
+    if (parent_uuid == this_uuid) {
+      results.push_back (Task (std::move (task)));
+    }
+  }
+
+  return results;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

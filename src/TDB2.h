@@ -79,7 +79,6 @@ private:
   std::optional<tc::WorkingSet> _working_set;
 
   const tc::WorkingSet &working_set ();
-  void update (Task&, const bool, const bool addition = false);
   void show_diff (const std::string&, const std::string&, const std::string&);
 };
 
