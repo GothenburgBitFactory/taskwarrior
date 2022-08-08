@@ -111,6 +111,54 @@ static void test_task_get_set_description(void) {
     tc_replica_free(rep);
 }
 
+// updating arbitrary attributes on a task works
+static void test_task_get_set_attribute(void) {
+    TCReplica *rep = tc_replica_new_in_memory();
+    TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
+
+    TCTask *task = tc_replica_new_task(
+            rep,
+            TC_STATUS_PENDING,
+            tc_string_borrow("my task"));
+    TEST_ASSERT_NOT_NULL(task);
+
+    TCString foo;
+
+    foo = tc_task_get_value(task, tc_string_borrow("foo"));
+    TEST_ASSERT_NULL(foo.ptr);
+
+    tc_task_to_mut(task, rep);
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_value(task,
+          tc_string_borrow("foo"),
+          tc_string_borrow("updated")));
+
+    foo = tc_task_get_value(task, tc_string_borrow("foo"));
+    TEST_ASSERT_NOT_NULL(foo.ptr);
+    TEST_ASSERT_EQUAL_STRING("updated", tc_string_content(&foo));
+    tc_string_free(&foo);
+
+    tc_task_to_immut(task);
+
+    foo = tc_task_get_value(task, tc_string_borrow("foo"));
+    TEST_ASSERT_NOT_NULL(foo.ptr);
+    TEST_ASSERT_EQUAL_STRING("updated", tc_string_content(&foo));
+    tc_string_free(&foo);
+
+    TCString null = { .ptr = NULL };
+
+    tc_task_to_mut(task, rep);
+    TEST_ASSERT_EQUAL(TC_RESULT_OK, tc_task_set_value(task,
+          tc_string_borrow("foo"),
+          null));
+
+    foo = tc_task_get_value(task, tc_string_borrow("foo"));
+    TEST_ASSERT_NULL(foo.ptr);
+
+    tc_task_free(task);
+
+    tc_replica_free(rep);
+}
+
 // updating entry on a task works
 static void test_task_get_set_entry(void) {
     TCReplica *rep = tc_replica_new_in_memory();
@@ -652,6 +700,7 @@ int task_tests(void) {
     RUN_TEST(test_task_free_mutable_task);
     RUN_TEST(test_task_get_set_status);
     RUN_TEST(test_task_get_set_description);
+    RUN_TEST(test_task_get_set_attribute);
     RUN_TEST(test_task_get_set_entry);
     RUN_TEST(test_task_get_set_modified);
     RUN_TEST(test_task_get_set_wait_and_is_waiting);
