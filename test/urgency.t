@@ -90,7 +90,7 @@ class TestUrgency(TestCase):
         cls.t("15 annotate C")
         cls.t("15 annotate D")
 
-        cls.t("add 7a wait:10s")                 # 16
+        cls.t("add 7a wait:10y")                 # 16
 
         cls.t("add 8a")                          # 17
         cls.t("add 8b depends:17")               # 18
