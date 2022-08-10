@@ -15,6 +15,6 @@ jobs:
     name: "Audit Rust Dependencies"
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/audit-check@master
+      - uses: rustsec/audit-check@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
