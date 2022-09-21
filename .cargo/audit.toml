@@ -1,0 +1,6 @@
+[advisories]
+ignore = [
+    "RUSTSEC-2021-0124", # see https://github.com/GothenburgBitFactory/taskwarrior/issues/2830
+    "RUSTSEC-2020-0159", # segfault in localtime_r - low risk to TC
+    "RUSTSEC-2020-0071", # same localtime_r bug as above
+]

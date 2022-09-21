@@ -60,10 +60,10 @@ int CmdProjects::execute (std::string& output)
   // Get all the tasks.
   handleUntil ();
   handleRecurrence ();
-  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending_tasks ();
 
   if (Context::getContext ().config.getBoolean ("list.all.projects"))
-    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
+    for (auto& task : Context::getContext ().tdb2.completed_tasks ())
       tasks.push_back (task);
 
   // Apply the filter.
@@ -172,10 +172,10 @@ int CmdCompletionProjects::execute (std::string& output)
   // Get all the tasks.
   handleUntil ();
   handleRecurrence ();
-  auto tasks = Context::getContext ().tdb2.pending.get_tasks ();
+  auto tasks = Context::getContext ().tdb2.pending_tasks ();
 
   if (Context::getContext ().config.getBoolean ("list.all.projects"))
-    for (auto& task : Context::getContext ().tdb2.completed.get_tasks ())
+    for (auto& task : Context::getContext ().tdb2.completed_tasks ())
       tasks.push_back (task);
 
   // Apply the filter.

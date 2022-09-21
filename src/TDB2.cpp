@@ -1134,6 +1134,18 @@ const std::vector <Task> TDB2::all_tasks ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task> TDB2::pending_tasks ()
+{
+  return pending.get_tasks ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task> TDB2::completed_tasks ()
+{
+  return completed.get_tasks ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Locate task by ID, wherever it is.
 bool TDB2::get (int id, Task& task)
 {
@@ -1250,25 +1262,17 @@ bool TDB2::verifyUniqueUUID (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB2::read_only ()
+int TDB2::num_local_changes ()
 {
-  return pending._read_only   ||
-         completed._read_only ||
-         undo._read_only      ||
-         backlog._read_only
-         ;
+  std::vector <std::string> lines = backlog.get_lines ();
+  return std::count_if(lines.begin(), lines.end(), [](const auto& line){ return line.front() == '{'; });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::clear ()
+int TDB2::num_reverts_possible ()
 {
-  pending.clear ();
-  completed.clear ();
-  undo.clear ();
-  backlog.clear ();
-
-  _location = "";
-  _id = 1;
+  std::vector <std::string> lines = undo.get_lines ();
+  return std::count(lines.begin(), lines.end(), "---");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

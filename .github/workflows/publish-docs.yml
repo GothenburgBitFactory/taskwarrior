@@ -1,0 +1,27 @@
+name: docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mdbook-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v1
+        with:
+          # if this changes, change it in cli/Cargo.toml and .github/workflows/publish-docs.yml as well
+          mdbook-version: '0.4.10'
+
+      - run: mdbook build docs
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/book

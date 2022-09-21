@@ -62,19 +62,11 @@ int CmdStats::execute (std::string& output)
 
   std::string dateformat = Context::getContext ().config.get ("dateformat");
 
-  // Go get the file sizes.
-  size_t dataSize = Context::getContext ().tdb2.pending._file.size ()
-                  + Context::getContext ().tdb2.completed._file.size ()
-                  + Context::getContext ().tdb2.undo._file.size ()
-                  + Context::getContext ().tdb2.backlog._file.size ();
-
-  // Count the undo transactions.
-  std::vector <std::string> undoTxns = Context::getContext ().tdb2.undo.get_lines ();
-  int undoCount = std::count(undoTxns.begin(), undoTxns.end(), "---");
+  // Count the possible reverts.
+  int undoCount = Context::getContext ().tdb2.num_reverts_possible ();
 
   // Count the backlog transactions.
-  std::vector <std::string> backlogTxns = Context::getContext ().tdb2.backlog.get_lines ();
-  int backlogCount = std::count_if(backlogTxns.begin(), backlogTxns.end(), [](const auto& tx){ return tx.front() == '{'; });
+  int numLocalChanges = Context::getContext ().tdb2.num_local_changes ();
 
   // Get all the tasks.
   Filter filter;
@@ -198,16 +190,12 @@ int CmdStats::execute (std::string& output)
   view.set (row, 1, blockingT);
 
   row = view.addRow ();
-  view.set (row, 0, "Data size");
-  view.set (row, 1, formatBytes (dataSize));
-
-  row = view.addRow ();
   view.set (row, 0, "Undo transactions");
   view.set (row, 1, undoCount);
 
   row = view.addRow ();
   view.set (row, 0, "Sync backlog transactions");
-  view.set (row, 1, backlogCount);
+  view.set (row, 1, numLocalChanges);
 
   if (totalT)
   {

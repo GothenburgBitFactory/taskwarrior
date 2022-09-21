@@ -385,7 +385,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  obtained from our website, holidata.net.",
     "  Instead of single-day holiday entries only, Taskwarrior now supports holidays\n"
     "  that span a range of days (i.e. vacation).\n",
-    "  Use a holday.<name>.start and holiday.<name>.end to configure a multi-day holiday:\n"
+    "  Use a holiday.<name>.start and holiday.<name>.end to configure a multi-day holiday:\n"
     "  \n"
     "      holiday.sysadmin.name=System Administrator Appreciation Week\n"
     "      holiday.sysadmin.start=20100730\n"
@@ -406,7 +406,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  The support for Unicode character set was improved to support Unicode 12.\n"
     "  This means better support for various language-specific characters - and emojis!",
     "",
-    "  Extended unicode support for language specific characters helps non-English users.\n"
+    "  Extended unicode support for language-specific characters helps non-English speakers.\n"
     "  While most users don't enter emojis as task metadata, automated task creation tools,\n"
     "  such as bugwarrior, might create tasks with exotic Unicode data.",
     "  You can try it out - 'task add Prepare for an 👽 invasion!'"

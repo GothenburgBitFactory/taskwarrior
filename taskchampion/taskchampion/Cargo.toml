@@ -1,0 +1,33 @@
+[package]
+name = "taskchampion"
+version = "0.4.1"
+authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
+description = "Personal task-tracking"
+homepage = "https://taskchampion.github.io/taskchampion/"
+documentation = "https://docs.rs/crate/taskchampion"
+repository = "https://github.com/taskchampion/taskchampion"
+readme = "../README.md"
+license = "MIT"
+edition = "2018"
+
+[dependencies]
+uuid = { version = "^1.1.2", features = ["serde", "v4"] }
+serde = { version = "^1.0.144", features = ["derive"] }
+serde_json = "^1.0"
+chrono = { version = "^0.4.22", features = ["serde"] }
+anyhow = "1.0"
+thiserror = "1.0"
+ureq = "^2.5.0"
+log = "^0.4.17"
+rusqlite = { version = "0.28", features = ["bundled"] }
+strum = "0.24"
+strum_macros = "0.24"
+flate2 = "1"
+byteorder = "1.0"
+ring = "0.16"
+
+[dev-dependencies]
+proptest = "^1.0.0"
+tempfile = "3"
+rstest = "0.15"
+pretty_assertions = "1"

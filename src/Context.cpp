@@ -58,6 +58,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // This string is parsed and used as default values for configuration.
+// Note: New configuration options should be added to the vim syntax file in scripts/vim/syntax/taskrc.vim
 std::string configurationDefaults =
   "# Taskwarrior program configuration file.\n"
   "# For more documentation, see https://taskwarrior.org or try 'man task', 'man task-color',\n"
@@ -850,8 +851,7 @@ int Context::dispatch (std::string &out)
     assert (c);
 
     // The command know whether they need a GC.
-    if (c->needs_gc () &&
-        ! tdb2.read_only ())
+    if (c->needs_gc ())
     {
       run_gc = config.getBoolean ("gc");
       tdb2.gc ();
@@ -860,13 +860,6 @@ int Context::dispatch (std::string &out)
     {
       run_gc = false;
     }
-
-/*
-    // Only read-only commands can be run when TDB2 is read-only.
-    // TODO Implement TDB2::read_only
-    if (tdb2.read_only () && !c->read_only ())
-      throw std::string ("");
-*/
 
     // This is something that is only needed for write commands with no other
     // filter processing.

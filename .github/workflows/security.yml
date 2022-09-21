@@ -1,0 +1,20 @@
+name: security
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    paths:
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    name: "Audit Rust Dependencies"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: rustsec/audit-check@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

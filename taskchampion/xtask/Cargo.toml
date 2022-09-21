@@ -1,0 +1,8 @@
+[package]
+name = "xtask"
+version = "0.4.1" 
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0"
+cbindgen = "0.24.3"

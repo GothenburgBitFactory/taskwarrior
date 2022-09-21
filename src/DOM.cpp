@@ -90,13 +90,8 @@ bool getDOM (const std::string& name, Variant& value)
     if (name == "tw.syncneeded")
     {
       value = Variant (0);
-      for (const auto& line : Context::getContext ().tdb2.backlog.get_lines ())
-      {
-        if (line[0] == '{')
-        {
-          value = Variant (1);
-          break;
-        }
+      if (Context::getContext ().tdb2.num_local_changes () > 0) {
+        value = Variant (1);
       }
 
       return true;

@@ -1,6 +1,37 @@
+## Run the Taskwarrior tests, using stable rust to build TaskChampion.
+
 name: tests
 on: [push, pull_request]
 jobs:
+  # OSX tests do not run in Docker, and use the actions-rs Rust installaction
+  tests-osx:
+    name: tests (Mac OS X latest)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-stable-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v2
+        with:
+          path: target
+          key: ${{ runner.os }}-stable-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: "stable"
+          override: true
+
+      - name: Test OSX
+        run: bash test/scripts/test_osx.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   tests:
     strategy:
       fail-fast: false
@@ -30,25 +61,20 @@ jobs:
           - name: "Ubuntu 20.04"
             runner: ubuntu-latest
             dockerfile: ubuntu2004
-          - name: "Ubuntu 21.04"
+          - name: "Ubuntu 22.04"
             runner: ubuntu-latest
-            dockerfile: ubuntu2104
-          - name: "Ubuntu 21.10"
-            runner: ubuntu-latest
-            dockerfile: ubuntu2110
+            dockerfile: ubuntu2204
           - name: "OpenSUSE 15"
             runner: ubuntu-latest
             dockerfile: opensuse15
           - name: "Archlinux Base (Rolling)"
             runner: ubuntu-latest
             dockerfile: arch
-          - name: "Mac OS X 10.13"
-            runner: macos-latest
-            dockerfile: osx
     runs-on: ${{ matrix.runner }}
     continue-on-error: ${{ matrix.continue-on-error == true }}
     steps:
       - uses: actions/checkout@v2
+
       - name: Build ${{ matrix.name }}
         env:
           DOCKER_REGISTRY: docker.pkg.github.com
@@ -56,9 +82,10 @@ jobs:
           GITHUB_USER: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.dockerfile }}
-        run: if [[ $CONTAINER != "osx" ]]; then docker-compose build test-$CONTAINER ; fi
+        run: docker-compose build test-$CONTAINER
+
       - name: Test ${{ matrix.name }}
-        run: if [[ $CONTAINER != "osx" ]]; then docker-compose run test-$CONTAINER; else bash test/scripts/test_osx.sh ; fi
+        run: docker-compose run test-$CONTAINER
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.dockerfile }}

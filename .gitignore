@@ -5,10 +5,13 @@ src/task
 src/taskd
 src/libtask.a
 src/commands/libcommands.a
+src/tc/libtc.a
 src/columns/libcolumns.a
 *~
 .*.swp
+Session.vim
 package-config/osx/binary/task
+/build/
 CMakeFiles
 CMakeCache.txt
 cmake_install.cmake
@@ -20,3 +23,4 @@ patches
 *.exe
 tutorials
 .prove
+/target/

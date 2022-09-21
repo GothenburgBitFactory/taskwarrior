@@ -1,0 +1,12 @@
+[package]
+name = "taskchampion-lib"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+libc = "0.2.133"
+taskchampion = { path = "../taskchampion" }
+anyhow = "1.0"
+
+[dev-dependencies]
+pretty_assertions = "1"
