@@ -1,7 +1,8 @@
 #![deny(clippy::all)]
 
 use actix_web::{middleware::Logger, App, HttpServer};
-use clap::{arg, Command};
+use clap::{arg, builder::ValueParser, value_parser, Command};
+use std::ffi::OsString;
 use taskchampion_sync_server::storage::SqliteStorage;
 use taskchampion_sync_server::{Server, ServerConfig};
 
@@ -17,30 +18,30 @@ async fn main() -> anyhow::Result<()> {
         .arg(
             arg!(-p --port <PORT> "Port on which to serve")
                 .help("Port on which to serve")
-                .default_value("8080")
-                .required(true),
+                .value_parser(value_parser!(usize))
+                .default_value("8080"),
         )
         .arg(
-            arg!(-d --data-dir <DIR> "Directory in which to store data")
-                .default_value("/var/lib/taskchampion-sync-server")
-                .allow_invalid_utf8(true)
-                .required(true),
+            arg!(-d --"data-dir" <DIR> "Directory in which to store data")
+                .value_parser(ValueParser::os_string())
+                .default_value("/var/lib/taskchampion-sync-server"),
         )
         .arg(
-            arg!(--snapshot-versions [NUM] "Target number of versions between snapshots")
-                .default_value(&default_snapshot_versions),
+            arg!(--"snapshot-versions" <NUM> "Target number of versions between snapshots")
+                .value_parser(value_parser!(u32))
+                .default_value(default_snapshot_versions),
         )
         .arg(
-            arg!(--snapshot-days [NUM] "Target number of days between snapshots")
-                .default_value(&default_snapshot_days)
-                .required(false),
+            arg!(--"snapshot-days" <NUM> "Target number of days between snapshots")
+                .value_parser(value_parser!(i64))
+                .default_value(default_snapshot_days),
         )
         .get_matches();
 
-    let data_dir = matches.value_of("data-dir").unwrap();
-    let port = matches.value_of("port").unwrap();
-    let snapshot_versions = matches.value_of("snapshot-versions").unwrap();
-    let snapshot_days = matches.value_of("snapshot-versions").unwrap();
+    let data_dir: &OsString = matches.get_one("data-dir").unwrap();
+    let port: usize = *matches.get_one("port").unwrap();
+    let snapshot_versions: u32 = *matches.get_one("snapshot-versions").unwrap();
+    let snapshot_days: i64 = *matches.get_one("snapshot-days").unwrap();
 
     let config = ServerConfig::from_args(snapshot_days, snapshot_versions)?;
     let server = Server::new(config, Box::new(SqliteStorage::new(data_dir)?));
