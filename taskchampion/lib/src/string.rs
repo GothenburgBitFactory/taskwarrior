@@ -104,7 +104,7 @@ impl TCString {
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Eq, Debug)]
 pub enum RustString<'a> {
     Null,
     CString(CString),
@@ -600,7 +600,7 @@ mod test {
 
     fn make_cstr() -> RustString<'static> {
         let cstr = CStr::from_bytes_with_nul(b"a string\0").unwrap();
-        RustString::CStr(&cstr)
+        RustString::CStr(cstr)
     }
 
     fn make_string() -> RustString<'static> {

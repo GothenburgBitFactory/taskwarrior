@@ -532,14 +532,14 @@ mod test {
         let uuid2 = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
-            assert!(txn.create_task(uuid1.clone())?);
+            assert!(txn.create_task(uuid1)?);
             txn.set_task(
-                uuid1.clone(),
+                uuid1,
                 taskmap_with(vec![("num".to_string(), "1".to_string())]),
             )?;
-            assert!(txn.create_task(uuid2.clone())?);
+            assert!(txn.create_task(uuid2)?);
             txn.set_task(
-                uuid2.clone(),
+                uuid2,
                 taskmap_with(vec![("num".to_string(), "2".to_string())]),
             )?;
             txn.commit()?;
@@ -553,11 +553,11 @@ mod test {
 
             let mut exp = vec![
                 (
-                    uuid1.clone(),
+                    uuid1,
                     taskmap_with(vec![("num".to_string(), "1".to_string())]),
                 ),
                 (
-                    uuid2.clone(),
+                    uuid2,
                     taskmap_with(vec![("num".to_string(), "2".to_string())]),
                 ),
             ];
@@ -570,7 +570,7 @@ mod test {
             let mut uuids = txn.all_task_uuids()?;
             uuids.sort();
 
-            let mut exp = vec![uuid1.clone(), uuid2.clone()];
+            let mut exp = vec![uuid1, uuid2];
             exp.sort();
 
             assert_eq!(uuids, exp);

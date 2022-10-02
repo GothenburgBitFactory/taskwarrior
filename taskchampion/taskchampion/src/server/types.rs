@@ -15,7 +15,7 @@ pub type HistorySegment = Vec<u8>;
 pub type Snapshot = Vec<u8>;
 
 /// AddVersionResult is the response type from [`crate::server::Server::add_version`].
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum AddVersionResult {
     /// OK, version added with the given ID
     Ok(VersionId),
@@ -35,7 +35,7 @@ pub enum SnapshotUrgency {
 }
 
 /// A version as downloaded from the server
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum GetVersionResult {
     /// No such version exists
     NoSuchVersion,

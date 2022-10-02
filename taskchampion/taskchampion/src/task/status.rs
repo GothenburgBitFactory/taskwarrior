@@ -1,5 +1,5 @@
 /// The status of a task, as defined by the task data model.
-#[derive(Debug, PartialEq, Clone, strum_macros::Display)]
+#[derive(Debug, PartialEq, Eq, Clone, strum_macros::Display)]
 #[repr(C)]
 pub enum Status {
     Pending,

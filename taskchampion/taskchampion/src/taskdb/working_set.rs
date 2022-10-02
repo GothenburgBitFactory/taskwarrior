@@ -98,7 +98,7 @@ mod test {
         }
         for i in &[0usize, 1, 4] {
             db.apply(SyncOp::Update {
-                uuid: uuids[*i].clone(),
+                uuid: uuids[*i],
                 property: String::from("status"),
                 value: Some("pending".into()),
                 timestamp: Utc::now(),
@@ -121,9 +121,9 @@ mod test {
             db.working_set()?,
             vec![
                 None,
-                Some(uuids[1].clone()),
-                Some(uuids[3].clone()),
-                Some(uuids[4].clone())
+                Some(uuids[1]),
+                Some(uuids[3]),
+                Some(uuids[4])
             ]
         );
 
@@ -144,19 +144,19 @@ mod test {
             // to the top, and then uuids[0] is added.
             vec![
                 None,
-                Some(uuids[1].clone()),
-                Some(uuids[4].clone()),
-                Some(uuids[0].clone()),
+                Some(uuids[1]),
+                Some(uuids[4]),
+                Some(uuids[0]),
             ]
         } else {
             // uuids[1] and uuids[4] are already in the working set, at indexes 1 and 3,
             // and then uuids[0] is added.
             vec![
                 None,
-                Some(uuids[1].clone()),
+                Some(uuids[1]),
                 None,
-                Some(uuids[4].clone()),
-                Some(uuids[0].clone()),
+                Some(uuids[4]),
+                Some(uuids[0]),
             ]
         };
 

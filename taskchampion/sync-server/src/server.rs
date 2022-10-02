@@ -38,8 +38,8 @@ impl Default for ServerConfig {
 impl ServerConfig {
     pub fn from_args(snapshot_days: i64, snapshot_versions: u32) -> anyhow::Result<ServerConfig> {
         Ok(ServerConfig {
-            snapshot_days: snapshot_days,
-            snapshot_versions: snapshot_versions,
+            snapshot_days,
+            snapshot_versions,
         })
     }
 }
@@ -1021,7 +1021,7 @@ mod test {
         let client = txn.get_client(client_key)?.unwrap();
         assert_eq!(
             get_snapshot(txn, &ServerConfig::default(), client_key, client)?,
-            Some((snapshot_version_id, data.clone()))
+            Some((snapshot_version_id, data))
         );
 
         Ok(())
