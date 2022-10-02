@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 /// A ReplicaOp defines a single change to the task database, as stored locally in the replica.
 /// This contains additional information not included in SyncOp.
-#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Clone, Debug, Serialize, Deserialize)]
 pub enum ReplicaOp {
     /// Create a new task.
     ///

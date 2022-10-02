@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 /// A SyncOp defines a single change to the task database, that can be synchronized
 /// via a server.
-#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Clone, Debug, Serialize, Deserialize)]
 pub enum SyncOp {
     /// Create a new task.
     ///

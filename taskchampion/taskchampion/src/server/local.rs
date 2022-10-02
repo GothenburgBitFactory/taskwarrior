@@ -250,7 +250,7 @@ mod test {
 
         // then add another, not based on that one
         if let (AddVersionResult::Ok(_), SnapshotUrgency::None) =
-            server.add_version(parent_version_id, history.clone())?
+            server.add_version(parent_version_id, history)?
         {
             panic!("should not have accepted the version")
         }

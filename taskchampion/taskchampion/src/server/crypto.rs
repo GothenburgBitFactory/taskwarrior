@@ -271,7 +271,7 @@ mod test {
 
         let unsealed = Unsealed {
             version_id,
-            payload: payload.clone(),
+            payload: payload,
         };
         let sealed = cryptor.seal(unsealed).unwrap();
 
@@ -291,7 +291,7 @@ mod test {
 
         let unsealed = Unsealed {
             version_id,
-            payload: payload.clone(),
+            payload: payload,
         };
         let mut sealed = cryptor.seal(unsealed).unwrap();
         sealed.version_id = Uuid::new_v4(); // change the version_id
@@ -309,7 +309,7 @@ mod test {
 
         let unsealed = Unsealed {
             version_id,
-            payload: payload.clone(),
+            payload: payload,
         };
         let sealed = cryptor.seal(unsealed).unwrap();
 

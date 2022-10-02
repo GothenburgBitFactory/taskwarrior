@@ -148,7 +148,7 @@ mod tests {
         let op = SyncOp::Create { uuid };
         {
             let mut txn = db.storage.txn()?;
-            let taskmap = apply_and_record(txn.as_mut(), op.clone())?;
+            let taskmap = apply_and_record(txn.as_mut(), op)?;
 
             assert_eq!(taskmap.len(), 1);
             assert_eq!(taskmap.get("foo").unwrap(), "bar");

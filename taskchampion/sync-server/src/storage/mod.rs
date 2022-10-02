@@ -10,7 +10,7 @@ pub use inmemory::InMemoryStorage;
 mod sqlite;
 pub use self::sqlite::SqliteStorage;
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Client {
     /// The latest version for this client (may be the nil version)
     pub latest_version_id: Uuid,
@@ -18,7 +18,7 @@ pub struct Client {
     pub snapshot: Option<Snapshot>,
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Snapshot {
     /// ID of the version at which this snapshot was made
     pub version_id: Uuid,
@@ -30,7 +30,7 @@ pub struct Snapshot {
     pub versions_since: u32,
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Version {
     pub version_id: Uuid,
     pub parent_version_id: Uuid,

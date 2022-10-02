@@ -163,7 +163,7 @@ impl TaskDb {
                     .map(|(p, v)| (p.clone(), v.clone()))
                     .collect::<Vec<(String, String)>>();
                 t.sort();
-                (u.clone(), t)
+                (*u, t)
             })
             .collect();
         res.sort();
@@ -175,8 +175,7 @@ impl TaskDb {
         let mut txn = self.storage.txn().unwrap();
         txn.operations()
             .unwrap()
-            .iter()
-            .map(|o| o.clone())
+            .iter().cloned()
             .collect()
     }
 }
@@ -198,7 +197,7 @@ mod tests {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = SyncOp::Create { uuid };
-        db.apply(op.clone()).unwrap();
+        db.apply(op).unwrap();
 
         assert_eq!(db.sorted_tasks(), vec![(uuid, vec![]),]);
         assert_eq!(db.operations(), vec![ReplicaOp::Create { uuid }]);

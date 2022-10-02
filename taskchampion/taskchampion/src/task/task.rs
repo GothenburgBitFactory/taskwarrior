@@ -887,7 +887,7 @@ mod test {
         with_mut_task(|mut task| {
             let property = "property-name";
             task.set_value(property, Some("value".into())).unwrap();
-            assert_eq!(task.get_value(property), Some("value".into()));
+            assert_eq!(task.get_value(property), Some("value"));
             task.set_value(property, None).unwrap();
             assert_eq!(task.get_value(property), None);
         });
