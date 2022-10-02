@@ -173,10 +173,7 @@ impl TaskDb {
     #[cfg(test)]
     pub(crate) fn operations(&mut self) -> Vec<ReplicaOp> {
         let mut txn = self.storage.txn().unwrap();
-        txn.operations()
-            .unwrap()
-            .iter().cloned()
-            .collect()
+        txn.operations().unwrap().to_vec()
     }
 }
 
