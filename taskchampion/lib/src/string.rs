@@ -317,7 +317,7 @@ impl<'a> From<String> for RustString<'a> {
     }
 }
 
-impl<'a> From<&str> for RustString<'static> {
+impl From<&str> for RustString<'static> {
     fn from(string: &str) -> RustString<'static> {
         RustString::String(string.to_string())
     }

@@ -276,13 +276,11 @@ where
     let mut vec = unsafe { CL::take_val_from_arg(list, CL::null_value()) };
 
     // first, drop each of the elements in turn
-    for e in vec.drain(..) {
-        if let Some(e) = e {
-            // SAFETY:
-            //  - e is a valid Element (promised by caller)
-            //  - e is owned
-            drop(unsafe { PassByPointer::take_from_ptr_arg(e.as_ptr()) });
-        }
+    for e in vec.drain(..).flatten() {
+        // SAFETY:
+        //  - e is a valid Element (promised by caller)
+        //  - e is owned
+        drop(unsafe { PassByPointer::take_from_ptr_arg(e.as_ptr()) });
     }
     // then drop the vector
     drop(vec);

@@ -119,12 +119,7 @@ mod test {
 
         assert_eq!(
             db.working_set()?,
-            vec![
-                None,
-                Some(uuids[1]),
-                Some(uuids[3]),
-                Some(uuids[4])
-            ]
+            vec![None, Some(uuids[1]), Some(uuids[3]), Some(uuids[4])]
         );
 
         rebuild(
@@ -142,22 +137,11 @@ mod test {
         let exp = if renumber {
             // uuids[1] and uuids[4] are already in the working set, so are compressed
             // to the top, and then uuids[0] is added.
-            vec![
-                None,
-                Some(uuids[1]),
-                Some(uuids[4]),
-                Some(uuids[0]),
-            ]
+            vec![None, Some(uuids[1]), Some(uuids[4]), Some(uuids[0])]
         } else {
             // uuids[1] and uuids[4] are already in the working set, at indexes 1 and 3,
             // and then uuids[0] is added.
-            vec![
-                None,
-                Some(uuids[1]),
-                None,
-                Some(uuids[4]),
-                Some(uuids[0]),
-            ]
+            vec![None, Some(uuids[1]), None, Some(uuids[4]), Some(uuids[0])]
         };
 
         assert_eq!(db.working_set()?, exp);
