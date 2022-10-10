@@ -7,6 +7,8 @@
      needs to use it)
 
 To Fix / File:
+ - "journal.time" appears to be about annotations, not undo history? are those
+   working?
  - task: /home/dustin/p/taskwarrior/src/Task.cpp:2305: float Task::urgency_age() const: Assertion `has ("entry")' failed.
    when a task doesn't exist
 
