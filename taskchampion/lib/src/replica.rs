@@ -140,6 +140,7 @@ pub unsafe extern "C" fn tc_replica_new_in_memory() -> *mut TCReplica {
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_new_on_disk(
     path: TCString,
+    create_if_missing: bool,
     error_out: *mut TCString,
 ) -> *mut TCReplica {
     wrap_constructor(
@@ -150,6 +151,7 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
             let mut path = unsafe { TCString::val_from_arg(path) };
             let storage = StorageConfig::OnDisk {
                 taskdb_dir: path.to_path_buf_mut()?,
+                create_if_missing,
             }
             .into_storage()?;
 

@@ -14,7 +14,7 @@ static void test_replica_creation(void) {
 
 // creating an on-disk replica does not crash
 static void test_replica_creation_disk(void) {
-    TCReplica *rep = tc_replica_new_on_disk(tc_string_borrow("test-db"), NULL);
+    TCReplica *rep = tc_replica_new_on_disk(tc_string_borrow("test-db"), true, NULL);
     TEST_ASSERT_NOT_NULL(rep);
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
     tc_replica_free(rep);
