@@ -9,3 +9,11 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:
+      # a few dependencies get a lot of patch updates that become pretty noisy
+      - dependency-name: "libc"
+        update-types: ["version-update:semver-patch"]
+      - dependency-name: "clap"
+        update-types: ["version-update:semver-patch"]
+
+
