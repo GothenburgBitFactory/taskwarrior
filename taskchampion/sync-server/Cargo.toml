@@ -15,7 +15,7 @@ thiserror = "1.0"
 futures = "^0.3.24"
 serde = "^1.0.145"
 serde_json = "^1.0"
-clap = { version = "^4.0.15", features = ["string"] }
+clap = { version = "^4.0.16", features = ["string"] }
 log = "^0.4.17"
 env_logger = "^0.9.1"
 rusqlite = { version = "0.28", features = ["bundled"] }
