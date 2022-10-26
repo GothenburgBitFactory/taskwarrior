@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-libc = "0.2.136"
+libc = "0.2.137"
 taskchampion = { path = "../taskchampion" }
 anyhow = "1.0"
 
