@@ -155,7 +155,7 @@ The supported units are:
 
 Note that some values lack precision, for example "2q" means two quarters, or half a year.
 
-Note that not all combinations of and make sense, for example "3annual" makes no sense, but evaluates to "3years".
+Note that not all combinations of number and unit make sense, for example "3annual" makes no sense, but evaluates to "3years".
 
 
 ## The Attributes
