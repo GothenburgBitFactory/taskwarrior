@@ -1363,6 +1363,28 @@ int Task::getTagCount () const
   return count;
 }
 
+
+bool Task::customVirtualTagApplies (const std::string& tag) const
+{
+
+  auto tagFilter = Context::getContext ().config.get("virtualtag." + tag + ".filter");
+
+  if (tagFilter != "")
+    Context::getContext ().cli2.addFilter (tagFilter);
+  else
+    return false;
+
+  Filter filter;
+  std::vector <Task> filtered;
+  filter.subset (filtered, {tag});
+
+  if (std::find (filtered.begin (), filtered.end (), *this) != filtered.end ()) {
+    return true;
+  }
+
+  return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 //              OVERDUE YESTERDAY DUE TODAY TOMORROW WEEK MONTH YEAR
@@ -1420,6 +1442,9 @@ bool Task::hasTag (const std::string& tag) const
 #endif
     if (tag == "PROJECT")   return has ("project");
     if (tag == "PRIORITY")  return has ("priority");
+
+    if (customVirtualTagApplies (tag))
+      return true;
   }
 
   // Concrete tags.

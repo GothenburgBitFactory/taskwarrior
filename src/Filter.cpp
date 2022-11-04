@@ -37,7 +37,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
-void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
+void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output, std::vector <std::string> ignore)
 {
   Timer timer;
   _startCount = (int) input.size ();
@@ -53,11 +53,17 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   {
     Eval eval;
     eval.addSource (domSource);
+    
+    for (auto tag : ignore)
+    {
+      eval.ignoreTag(tag);
+    }
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
     eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
     eval.compileExpression (precompiled);
+    
 
     for (auto& task : input)
     {
@@ -69,6 +75,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
       if (var.get_bool ())
         output.push_back (task);
     }
+    
 
     eval.debug (false);
   }
@@ -82,11 +89,11 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
-void Filter::subset (std::vector <Task>& output)
+void Filter::subset (std::vector <Task>& output, std::vector <std::string> ignore)
 {
   Timer timer;
   Context::getContext ().cli2.prepareFilter ();
-
+  
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext ().cli2._args)
     if (a.hasTag ("FILTER"))
@@ -104,6 +111,11 @@ void Filter::subset (std::vector <Task>& output)
 
     Eval eval;
     eval.addSource (domSource);
+    
+    for (auto tag : ignore)
+    {
+      eval.ignoreTag(tag);
+    }
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.

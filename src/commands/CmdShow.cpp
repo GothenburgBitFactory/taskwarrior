@@ -244,6 +244,7 @@ int CmdShow::execute (std::string& output)
           i.first.substr (0,  6) != "alias."                &&
           i.first.substr (0,  5) != "hook."                 &&
           i.first.substr (0,  4) != "uda."                  &&
+          i.first.substr (0, 11) != "virtualtag."           &&
           i.first.substr (0,  8) != "default."              &&
           i.first.substr (0, 21) != "urgency.user.project." &&
           i.first.substr (0, 17) != "urgency.user.tag."     &&
