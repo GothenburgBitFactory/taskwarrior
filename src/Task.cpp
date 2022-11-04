@@ -32,7 +32,6 @@
 #include <string>
 #ifdef PRODUCT_TASKWARRIOR
 #include <math.h>
-#include <map>
 #include <ctype.h>
 #endif
 #include <cfloat>
@@ -1367,23 +1366,14 @@ int Task::getTagCount () const
 
 bool Task::customVirtualTagApplies (const std::string& tag) const
 {
-  
-  // if (custom_virtual_tag_processing.count (tag)) {
-  //   // custom_virtual_tag_processing.at(tag) = true;
-  //   auto it = custom_virtual_tag_processing.find (tag);
-  //   if (it != custom_virtual_tag_processing.end ())
-  //     it->second = true;
-  // } else {
-  //   custom_virtual_tag_processing.insert ({tag, true});
-  // }
 
   auto tagFilter = Context::getContext ().config.get("virtualtag." + tag + ".filter");
-  
+
   if (tagFilter != "")
     Context::getContext ().cli2.addFilter (tagFilter);
   else
     return false;
-  
+
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered, {tag});
@@ -1452,13 +1442,11 @@ bool Task::hasTag (const std::string& tag) const
 #endif
     if (tag == "PROJECT")   return has ("project");
     if (tag == "PRIORITY")  return has ("priority");
-    
-    // if (Context::getContext ().config.get("virtualtag." + tag + ".filter") != "")
-      // if (custom_virtual_tag_processing.count(tag) && custom_virtual_tag_processing.at(tag))
+
     if (customVirtualTagApplies (tag))
       return true;
   }
-  
+
   // Concrete tags.
   if (has (tag2Attr (tag)))
     return true;

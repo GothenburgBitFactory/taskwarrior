@@ -196,7 +196,6 @@ private:
 
 protected:
   std::map <std::string, std::string> data {};
-  std::map <std::string, bool> custom_virtual_tag_processing {};
 
 public:
   float urgency_project     () const;
