@@ -212,6 +212,19 @@ int CmdCompletionTags::execute (std::string& output)
   unique["WEEK"]      = 0;
   unique["YEAR"]      = 0;
   unique["YESTERDAY"] = 0;
+  
+  for (auto i : Context::getContext ().config)
+  {
+    if (i.first.substr (0, 11) == "virtualtag.")
+    {
+      auto end = i.first.find (".filter");
+      if (end != std::string::npos)
+      {
+        const std::string tagname = i.first.substr (11, end - 11);
+        unique[tagname] = 0;
+      }
+    }
+  }
 
   // If you update the above list, update src/commands/CmdInfo.cpp and src/Task.cpp as well.
 

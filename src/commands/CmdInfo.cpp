@@ -358,6 +358,19 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("WEEK"))      virtualTags += "WEEK ";
       if (task.hasTag ("YEAR"))      virtualTags += "YEAR ";
       if (task.hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
+      
+      for (auto i : Context::getContext ().config)
+      {
+        if (i.first.substr (0, 11) == "virtualtag.")
+        {
+          auto end = i.first.find (".filter");
+          if (end != std::string::npos)
+          {
+            const std::string tagname = i.first.substr (11, end - 11);
+            if (task.hasTag (tagname)) virtualTags += tagname + " ";
+          }
+        }
+      }
       // If you update the above list, update src/Task.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
