@@ -203,6 +203,12 @@ void Eval::debug (bool value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Eval::ignoreTag(std::string tag)
+{
+  ignoreTags.push_back(tag);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static.
 std::vector <std::string> Eval::getOperators ()
 {
@@ -316,7 +322,12 @@ void Eval::evaluatePostfixStack (
       else if (contextTask) {
              if (token.first == "~")        result = left.operator_match (right, *contextTask);
         else if (token.first == "!~")       result = left.operator_nomatch (right, *contextTask);
-        else if (token.first == "_hastag_") result = left.operator_hastag (right, *contextTask);
+        else if (token.first == "_hastag_") {
+          if (std::find (ignoreTags.begin (), ignoreTags.end (), right.get_string ()) == ignoreTags.end ())
+            result = left.operator_hastag (right, *contextTask);
+          else
+            result = true;
+        }
         else if (token.first == "_notag_")  result = left.operator_notag (right, *contextTask);
         else
           throw format ("Unsupported operator '{1}'.", token.first);

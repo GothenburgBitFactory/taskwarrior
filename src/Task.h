@@ -133,6 +133,7 @@ public:
 
   int getTagCount () const;
   bool hasTag (const std::string&) const;
+  bool customVirtualTagApplies(const std::string&) const;
   void addTag (const std::string&);
   void setTags (const std::vector <std::string>&);
   std::vector <std::string> getTags () const;
@@ -195,6 +196,7 @@ private:
 
 protected:
   std::map <std::string, std::string> data {};
+  std::map <std::string, bool> custom_virtual_tag_processing {};
 
 public:
   float urgency_project     () const;
@@ -209,6 +211,7 @@ public:
   float urgency_blocking    () const;
   float urgency_age         () const;
 };
+
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

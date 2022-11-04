@@ -37,8 +37,8 @@ class Filter
 public:
   Filter () = default;
 
-  void subset (const std::vector <Task>&, std::vector <Task>&);
-  void subset (std::vector <Task>&);
+  void subset (const std::vector <Task>&, std::vector <Task>&, std::vector <std::string> = {});
+  void subset (std::vector <Task>&, std::vector <std::string> = {});
   bool hasFilter () const;
   bool pendingOnly () const;
   void safety () const;

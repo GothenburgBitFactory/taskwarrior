@@ -45,10 +45,11 @@ public:
   void compileExpression (const std::vector <std::pair <std::string, Lexer::Type>>&);
   void evaluateCompiledExpression (Variant&);
   void debug (bool);
+  void ignoreTag (std::string);
 
   static std::vector <std::string> getOperators ();
   static std::vector <std::string> getBinaryOperators ();
-
+  
 private:
   void evaluatePostfixStack (const std::vector <std::pair <std::string, Lexer::Type>>&, Variant&) const;
   void infixToPostfix (std::vector <std::pair <std::string, Lexer::Type>>&) const;
@@ -71,6 +72,8 @@ private:
   std::vector <bool (*)(const std::string&, Variant&)> _sources {};
   bool _debug                                                   {false};
   std::vector <std::pair <std::string, Lexer::Type>> _compiled  {};
+  
+  std::vector <std::string> ignoreTags {};
 };
 
 #endif
