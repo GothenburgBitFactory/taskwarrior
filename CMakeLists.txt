@@ -184,6 +184,11 @@ add_custom_command(OUTPUT run-reproduce
 )
 add_custom_target(reproduce DEPENDS run-reproduce)
 
+add_custom_command(OUTPUT show-problems
+    COMMAND cd test && ./problems
+)
+add_custom_target(problems DEPENDS show-problems)
+
 # ---
 
 set (CPACK_SOURCE_GENERATOR "TGZ")

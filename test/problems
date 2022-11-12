@@ -121,6 +121,7 @@ if __name__ == "__main__":
     expected_int = v.format(sum(expected.values()))
     runtime_str = "Runtime:" + pad(20)
     runtime_int = "{0:>8.2f} seconds".format(stop - start)
+    details_str = "For details run 'make problems'"
 
     if cmd_args.summary:
         print(color(passed_str, "green"), passed_int)
@@ -129,6 +130,7 @@ if __name__ == "__main__":
         print(color(skipped_str, "yellow"), skipped_int)
         print(color(expected_str, "yellow"), expected_int)
         print(runtime_str, runtime_int)
+        print(details_str)
 
     else:
         print(color(error_str, "red"))
