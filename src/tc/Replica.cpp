@@ -63,11 +63,11 @@ tc::Replica& tc::Replica::operator= (Replica &&other) noexcept
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Replica::Replica (const std::string& dir)
+tc::Replica::Replica (const std::string& dir, bool create_if_missing)
 {
   TCString path = tc_string_borrow (dir.c_str ());
   TCString error;
-  auto tcreplica = tc_replica_new_on_disk (path, &error);
+  auto tcreplica = tc_replica_new_on_disk (path, create_if_missing, &error);
   if (!tcreplica) {
     auto errmsg = format ("Could not create replica at {1}: {2}", dir, tc_string_content (&error));
     tc_string_free (&error);
