@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <iostream>
 #include <Task.h>
 #include <sstream>
 #include <stdlib.h>
@@ -1363,26 +1364,62 @@ int Task::getTagCount () const
   return count;
 }
 
+bool Task::filterApplies (const std::string& filter, std::vector <std::string> ignore) const
+{
+  CLI2 localCli2;
+
+  // std::cout << "begin" << std::endl;
+  // Context* currentContext = &Context::getContext ();
+  // std::cout << "After copy" << std::endl;
+
+  // Context localContext;
+  // Context::setContext(&localContext);
+  // std::cout << "After setContext" << std::endl;
+  // // Context::getContext ();// .cli2.addFilter (filter);
+  // std::cout << "After addFilter" << std::endl;
+  
+  // Filter filter_obj;
+  // std::vector <Task> filtered;
+  // filter_obj.subset (filtered, ignore);
+  // std::cout << "After subset" << std::endl;
+
+  // Context::setContext(currentContext);
+  // std::cout << "After setContext currentContext" << std::endl;
+
+  // if (std::find (filtered.begin (), filtered.end (), *this) != filtered.end ()) {
+  //   return true;
+  // }
+
+  // return false;
+}
 
 bool Task::customVirtualTagApplies (const std::string& tag) const
 {
-
   auto tagFilter = Context::getContext ().config.get("virtualtag." + tag + ".filter");
+  
+  return filterApplies (tagFilter, {tag});
 
-  if (tagFilter != "")
-    Context::getContext ().cli2.addFilter (tagFilter);
-  else
-    return false;
+  // if (tagFilter != "")
+  //   Context::getContext ().cli2.addFilter (tagFilter);
+  // else if (tag == "SCHEDULEDSOON") {
+  //   std::cout << "(" << id << ") tagFilter is '': returning false" << std::endl;
+  //   return false;
+  // }
+  
+  // Filter filter;
+  // std::vector <Task> filtered;
+  // filter.subset (filtered, {tag});
 
-  Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered, {tag});
+  // if (std::find (filtered.begin (), filtered.end (), *this) != filtered.end ()) {
+  //   return true;
+  // }
 
-  if (std::find (filtered.begin (), filtered.end (), *this) != filtered.end ()) {
-    return true;
-  }
+  // for (auto arg : Context::getContext ().cli2._args) {
+  //   std::cout << "dump: " << arg.dump() << std::endl;
+  // }
 
-  return false;
+  // std::cout << "(" << id << ") Could not find this in filtered" << std::endl;
+  // return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1444,7 +1481,13 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "PRIORITY")  return has ("priority");
 
     if (customVirtualTagApplies (tag))
+    {
+      if (tag == "SCHEDULEDSOON")
+        std::cout << "(" << id << ") Virtual Tag applies: " << tag << std::endl;
       return true;
+    }
+    else if (tag == "SCHEDULEDSOON")
+      std::cout << "(" << id << ") Virtual tag does not apply: " << tag << std::endl;
   }
 
   // Concrete tags.
@@ -2094,6 +2137,8 @@ float Task::urgency_c () const
         {
           std::string tag = var.first.substr (17, end - 17);
 
+          if (tag == "SCHEDULEDSOON")
+            std::cout << "(" << id << ") Before hastag: " << tag << std::endl;
           if (hasTag (tag))
             value += var.second;
         }
