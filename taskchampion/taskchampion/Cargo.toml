@@ -29,5 +29,5 @@ ring = "0.16"
 [dev-dependencies]
 proptest = "^1.0.0"
 tempfile = "3"
-rstest = "0.15"
+rstest = "0.16"
 pretty_assertions = "1"
