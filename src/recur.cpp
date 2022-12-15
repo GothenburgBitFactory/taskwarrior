@@ -90,7 +90,6 @@ void handleRecurrence ()
 
           Task rec (t);                          // Clone the parent.
           rec.setStatus (Task::pending);         // Change the status.
-          rec.id = Context::getContext ().tdb2.next_id ();      // New ID.
           rec.set ("uuid", uuid ());             // New UUID.
           rec.set ("parent", t.get ("uuid"));    // Remember mom.
           rec.setAsNow ("entry");                // New entry date.

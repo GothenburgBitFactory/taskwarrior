@@ -35,6 +35,7 @@
 #include <JSON.h>
 #include <Table.h>
 #include <Datetime.h>
+#include <tc/Task.h>
 
 class Task
 {
@@ -65,6 +66,7 @@ public:
   bool operator!= (const Task&);
   Task (const std::string&);
   Task (const json::object*);
+  Task (tc::Task);
 
   void parse (const std::string&);
   std::string composeF4 () const;
@@ -87,6 +89,8 @@ public:
   // Series of helper functions.
   static status textToStatus (const std::string&);
   static std::string statusToText (status);
+  static tc::Status status2tc (const Task::status);
+  static Task::status tc2status (const tc::Status);
 
   void setAsNow (const std::string&);
   bool has (const std::string&) const;
@@ -178,10 +182,12 @@ public:
   Table diffForUndoSide (const Task& after) const;
   Table diffForUndoPatch (const Task& after, const Datetime& lastChange) const;
 
+
 private:
   int determineVersion (const std::string&);
   void parseJSON (const std::string&);
   void parseJSON (const json::object*);
+  void parseTC (const tc::Task&);
   void parseLegacy (const std::string&);
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;

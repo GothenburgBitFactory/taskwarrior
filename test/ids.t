@@ -128,7 +128,8 @@ class TestIDRangeParsing(TestCase):
         with tempfile.NamedTemporaryFile(mode='w') as f:
             f.write('\n'.join([f'{{"description": "test task {i+1}"}}' for i in range(n)]))
             f.flush()
-            code, out, err = self.t(f'import {f.name}')
+            # use a long timeout here, because import is quite slow
+            code, out, err = self.t(f'import {f.name}', timeout=100)
 
     def test_single_digit_range(self):
         """Test that parsing single digit ID range works"""

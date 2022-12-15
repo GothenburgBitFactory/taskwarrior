@@ -34,6 +34,25 @@
 using namespace tc::ffi;
 
 ////////////////////////////////////////////////////////////////////////////////
+tc::ReplicaGuard::ReplicaGuard (Replica &replica, Task &task) :
+  replica(replica),
+  task(task)
+{
+  // "steal" the reference from the Replica and store it locally, so that any
+  // attempt to use the Replica will fail
+  tcreplica = replica.inner.release();
+  task.to_mut(tcreplica);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+tc::ReplicaGuard::~ReplicaGuard ()
+{
+  task.to_immut();
+  // return the reference to the Replica.
+  replica.inner.reset(tcreplica);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 tc::Replica::Replica ()
 {
   inner = unique_tcreplica_ptr (
@@ -114,6 +133,45 @@ tc::Task tc::Replica::new_task (tc::Status status, const std::string &descriptio
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+tc::Task tc::Replica::import_task_with_uuid (const std::string &uuid)
+{
+  TCTask *tctask = tc_replica_import_task_with_uuid (&*inner, uuid2tc (uuid));
+  if (!tctask) {
+    throw replica_error ();
+  }
+  return Task (tctask);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Replica::undo (int32_t *undone_out)
+{
+  auto res = tc_replica_undo (&*inner, undone_out);
+  if (res != TC_RESULT_OK) {
+    throw replica_error ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int64_t tc::Replica::num_local_operations ()
+{
+  auto num = tc_replica_num_local_operations (&*inner);
+  if (num < 0) {
+    throw replica_error ();
+  }
+  return num;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int64_t tc::Replica::num_undo_points ()
+{
+  auto num = tc_replica_num_undo_points (&*inner);
+  if (num < 0) {
+    throw replica_error ();
+  }
+  return num;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::vector<tc::Task> tc::Replica::all_tasks ()
 {
   TCTaskList tasks = tc_replica_all_tasks (&*inner);
@@ -134,12 +192,17 @@ std::vector<tc::Task> tc::Replica::all_tasks ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::rebuild_working_set ()
+void tc::Replica::rebuild_working_set (bool force)
 {
-  auto res = tc_replica_rebuild_working_set (&*inner, true);
+  auto res = tc_replica_rebuild_working_set (&*inner, force);
   if (res != TC_RESULT_OK) {
     throw replica_error ();
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+tc::ReplicaGuard tc::Replica::mutate_task (tc::Task &task) {
+  return ReplicaGuard(*this, task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

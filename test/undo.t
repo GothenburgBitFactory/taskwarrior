@@ -102,7 +102,8 @@ class TestBug634(TestCase):
 
         # If a prompt happens, the test will timeout on input (exitcode != 0)
         code, out, err = self.t("rc.confirmation=off undo")
-        self.assertIn("Task removed", out)
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual(out.strip(), '') # task is gone
 
 
 if __name__ == "__main__":

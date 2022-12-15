@@ -560,8 +560,8 @@ int Context::initialize (int argc, const char** argv)
     if (taskdata_overridden && verbose ("override"))
       header (format ("TASKDATA override: {1}", data_dir._data));
 
-    tdb2.set_location (data_dir);
-    createDefaultConfig ();
+    bool create_if_missing = !config.getBoolean ("exit.on.missing.db");
+    tdb2.open_replica (data_dir, create_if_missing);
 
     ////////////////////////////////////////////////////////////////////////////
     //
@@ -1253,23 +1253,6 @@ void Context::createDefaultConfig ()
     // Write out the new file.
     if (! File::write (rc_file._data, contents.str ()))
       throw format ("Could not write to '{1}'.", rc_file._data);
-  }
-
-  // Create data location, if necessary.
-  Directory d (data_dir);
-  if (! d.exists ())
-  {
-    if (config.getBoolean ("exit.on.missing.db"))
-      throw std::string ("Error: rc.data.location does not exist - exiting according to rc.exit.on.missing.db setting.");
-
-    d.create ();
-
-    if (config.has ("hooks.location"))
-      d = Directory (config.get ("hooks.location"));
-    else
-      d += "hooks";
-
-    d.create ();
   }
 }
 
