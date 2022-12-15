@@ -328,13 +328,13 @@ impl<'r> TaskMut<'r> {
     /// new status puts it in that set.
     pub fn set_status(&mut self, status: Status) -> anyhow::Result<()> {
         match status {
-            Status::Pending => {
-                // clear "end" when a task becomes "pending"
+            Status::Pending | Status::Recurring => {
+                // clear "end" when a task becomes "pending" or "recurring"
                 if self.taskmap.contains_key(Prop::End.as_ref()) {
                     self.set_timestamp(Prop::End.as_ref(), None)?;
                 }
-                let uuid = self.uuid;
-                self.replica.add_to_working_set(uuid)?;
+                // ..and add to working set
+                self.replica.add_to_working_set(self.uuid)?;
             }
             Status::Completed | Status::Deleted => {
                 // set "end" when a task is deleted or completed
@@ -856,6 +856,19 @@ mod test {
             assert_eq!(task.get_status(), Status::Pending);
             assert!(!task.taskmap.contains_key("end"));
             assert!(task.has_tag(&stag(SyntheticTag::Pending)));
+            assert!(!task.has_tag(&stag(SyntheticTag::Completed)));
+        });
+    }
+
+    #[test]
+    fn test_set_status_recurring() {
+        with_mut_task(|mut task| {
+            task.done().unwrap();
+
+            task.set_status(Status::Recurring).unwrap();
+            assert_eq!(task.get_status(), Status::Recurring);
+            assert!(!task.taskmap.contains_key("end"));
+            assert!(!task.has_tag(&stag(SyntheticTag::Pending))); // recurring is not +PENDING
             assert!(!task.has_tag(&stag(SyntheticTag::Completed)));
         });
     }

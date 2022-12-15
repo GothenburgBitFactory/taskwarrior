@@ -211,12 +211,21 @@ impl Replica {
 
     /// Rebuild this replica's working set, based on whether tasks are pending or not.  If
     /// `renumber` is true, then existing tasks may be moved to new working-set indices; in any
-    /// case, on completion all pending tasks are in the working set and all non- pending tasks are
-    /// not.
+    /// case, on completion all pending and recurring tasks are in the working set and all tasks
+    /// with other statuses are not.
     pub fn rebuild_working_set(&mut self, renumber: bool) -> anyhow::Result<()> {
         let pending = String::from(Status::Pending.to_taskmap());
-        self.taskdb
-            .rebuild_working_set(|t| t.get("status") == Some(&pending), renumber)?;
+        let recurring = String::from(Status::Recurring.to_taskmap());
+        self.taskdb.rebuild_working_set(
+            |t| {
+                if let Some(st) = t.get("status") {
+                    st == &pending || st == &recurring
+                } else {
+                    false
+                }
+            },
+            renumber,
+        )?;
         Ok(())
     }
 
@@ -455,11 +464,50 @@ mod tests {
     }
 
     #[test]
+    fn rebuild_working_set_includes_recurring() {
+        let mut rep = Replica::new_inmemory();
+
+        let t = rep
+            .new_task(Status::Completed, "another task".into())
+            .unwrap();
+        let uuid = t.get_uuid();
+
+        let t = rep.get_task(uuid).unwrap().unwrap();
+        {
+            let mut t = t.into_mut(&mut rep);
+            t.set_status(Status::Recurring).unwrap();
+        }
+
+        rep.rebuild_working_set(true).unwrap();
+
+        let ws = rep.working_set().unwrap();
+        assert!(ws.by_uuid(uuid).is_some());
+    }
+
+    #[test]
     fn new_pending_adds_to_working_set() {
         let mut rep = Replica::new_inmemory();
 
         let t = rep
             .new_task(Status::Pending, "to-be-pending".into())
+            .unwrap();
+        let uuid = t.get_uuid();
+
+        let ws = rep.working_set().unwrap();
+        assert_eq!(ws.len(), 1); // only one non-none value
+        assert!(ws.by_index(0).is_none());
+        assert_eq!(ws.by_index(1), Some(uuid));
+
+        let ws = rep.working_set().unwrap();
+        assert_eq!(ws.by_uuid(t.get_uuid()), Some(1));
+    }
+
+    #[test]
+    fn new_recurring_adds_to_working_set() {
+        let mut rep = Replica::new_inmemory();
+
+        let t = rep
+            .new_task(Status::Recurring, "to-be-recurring".into())
             .unwrap();
         let uuid = t.get_uuid();
 
