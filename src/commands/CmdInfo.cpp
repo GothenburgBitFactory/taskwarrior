@@ -77,11 +77,6 @@ int CmdInfo::execute (std::string& output)
     rc = 1;
   }
 
-  // Get the undo data.
-  std::vector <std::string> undo;
-  if (Context::getContext ().config.getBoolean ("journal.info"))
-    undo = Context::getContext ().tdb2.undo.get_lines ();
-
   // Determine the output date format, which uses a hierarchy of definitions.
   //   rc.dateformat.info
   //   rc.dateformat
@@ -530,64 +525,12 @@ int CmdInfo::execute (std::string& output)
       urgencyDetails.set (row, 5, rightJustify (format (task.urgency (), 4, 4), 6));
     }
 
-    // Create a third table, containing undo log change details.
-    Table journal;
-    setHeaderUnderline (journal);
-
-    if (Context::getContext ().config.getBoolean ("obfuscate"))
-      journal.obfuscate ();
-    if (Context::getContext ().config.getBoolean ("color"))
-      journal.forceColor ();
-
-    journal.width (Context::getContext ().getWidth ());
-    journal.add ("Date");
-    journal.add ("Modification");
-
-    if (Context::getContext ().config.getBoolean ("journal.info") &&
-        undo.size () > 3)
-    {
-      // Scan the undo data for entries matching this task, without making
-      // copies.
-      unsigned int i = 0;
-      long last_timestamp = 0;
-      while (i < undo.size ())
-      {
-        int when = i++;
-        int previous = -1;
-
-        if (! undo[i].compare (0, 3, "old", 3))
-          previous = i++;
-
-        int current = i++;
-        i++; // Separator
-
-        if (undo[current].find ("uuid:\"" + uuid) != std::string::npos)
-        {
-          if (previous != -1)
-          {
-            int row = journal.addRow ();
-
-            Datetime timestamp (strtol (undo[when].substr (5).c_str (), nullptr, 10));
-            journal.set (row, 0, timestamp.toString (dateformat));
-
-            Task before (undo[previous].substr (4));
-            Task after (undo[current].substr (4));
-            journal.set (row, 1, before.diffForInfo (after, dateformat, last_timestamp, Datetime(after.get("modified")).toEpoch()));
-          }
-        }
-      }
-    }
-
     out << optionalBlankLine ()
         << view.render ()
         << '\n';
 
     if (urgencyDetails.rows () > 0)
       out << urgencyDetails.render ()
-          << '\n';
-
-    if (journal.rows () > 0)
-      out << journal.render ()
           << '\n';
   }
 
