@@ -29,6 +29,7 @@
 import sys
 import os
 import re
+import time
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -508,7 +509,9 @@ class TestBug839(TestCase):
 
     def test_recurrence_value_mapping(self):
         """839: Verify that importing a legacy recurrence value is ok"""
-        json = '{"description":"one","due":"1437579505","recur":"1m","status":"recurring","uuid":"ebeeab00-ccf8-464b-8b58-f7f2d606edfb"}'
+        # use a recent timestamp to avoid slowly iterating over thousands of minutes
+        justnow = int(time.time()) - 120
+        json = '{"description":"one","due":"%s","recur":"1m","status":"recurring","uuid":"ebeeab00-ccf8-464b-8b58-f7f2d606edfb"}' % justnow
         self.t("import -", input=json)
 
         code, out, err = self.t("list")
