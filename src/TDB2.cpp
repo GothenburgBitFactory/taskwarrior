@@ -655,13 +655,6 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::purge (Task& task)
-{
-  // Delete the task from completed.data
-  completed.purge_task (task);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void TDB2::update (
   Task& task,
   const bool add_to_backlog,
