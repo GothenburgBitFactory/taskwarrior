@@ -21,7 +21,7 @@ impl From<TCStatus> for Status {
             TCStatus::Completed => Status::Completed,
             TCStatus::Deleted => Status::Deleted,
             TCStatus::Recurring => Status::Recurring,
-            TCStatus::Unknown => Status::Unknown("unknown".to_string()),
+            _ => Status::Unknown(format!("unknown TCStatus {}", status as u32)),
         }
     }
 }

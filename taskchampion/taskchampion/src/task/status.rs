@@ -14,8 +14,7 @@ pub enum Status {
 }
 
 impl Status {
-    /// Get a Status from the 1-character value in a TaskMap,
-    /// defaulting to Pending
+    /// Get a Status from the string value in a TaskMap
     pub(crate) fn from_taskmap(s: &str) -> Status {
         match s {
             "pending" => Status::Pending,
