@@ -377,6 +377,7 @@ class TestUpgradeToRecurring(TestCase):
 
     def test_upgrade(self):
         """Upgrade task to recurring"""
+        # note that this functionality is implemented in Task::validate
         self.t("add foo")
         self.t("1 modify due:tomorrow recur:weekly")
         code, out, err = self.t("_get 1.status")

@@ -14,5 +14,5 @@ task log two depends:1
 
 task /two/ export > JSON
 
-rm pending.data completed.data
+rm taskchampion.sqlite3
 task import JSON

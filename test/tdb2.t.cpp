@@ -60,7 +60,7 @@ int main (int, char**)
     context.config.set ("gc", 1);
     context.config.set ("debug", 1);
 
-    context.tdb2.set_location (".");
+    context.tdb2.open_replica (".", true);
 
     // Try reading an empty database.
     std::vector <Task> pending          = context.tdb2.pending_tasks ();
@@ -104,7 +104,7 @@ int main (int, char**)
 
     // Reset for reuse.
     cleardb ();
-    context.tdb2.set_location (".");
+    context.tdb2.open_replica (".", true);
 
     // TODO commit
     // TODO complete a task

@@ -77,7 +77,7 @@ int main (int, char**)
   t.ok(maybe_task2.has_value(), "task lookup by uuid finds task");
   t.is ((*maybe_task2).get_description (), std::string ("a test"), "task description round-trip");
 
-  rep.rebuild_working_set ();
+  rep.rebuild_working_set (true);
   t.pass ("rebuild_working_set");
 
   auto tasks = rep.all_tasks ();

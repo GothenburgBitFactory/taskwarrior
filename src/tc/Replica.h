@@ -45,6 +45,28 @@ namespace tc {
     tc::ffi::TCReplica,
     std::function<void(tc::ffi::TCReplica*)>>;
 
+  // ReplicaGuard uses RAII to ensure that a Replica is not accessed while it
+  // is mutably borrowed (specifically, to make a task mutable).
+  class ReplicaGuard {
+  protected:
+    friend class Replica;
+    explicit ReplicaGuard (Replica &, Task &);
+
+  public:
+    ~ReplicaGuard();
+
+    // No moving or copying allowed
+    ReplicaGuard (const ReplicaGuard &) = delete;
+    ReplicaGuard &operator=(const ReplicaGuard &) = delete;
+    ReplicaGuard (ReplicaGuard &&) = delete;
+    ReplicaGuard &operator=(Replica &&) = delete;
+
+  private:
+    Replica &replica;
+    tc::ffi::TCReplica *tcreplica;
+    Task &task;
+  };
+
   // Replica wraps the TCReplica type, managing its memory, errors, and so on.
   //
   // Except as noted, method names match the suffix to `tc_replica_..`.
@@ -67,12 +89,20 @@ namespace tc {
     tc::WorkingSet working_set ();
     std::optional<tc::Task> get_task (const std::string &uuid);
     tc::Task new_task (Status status, const std::string &description);
+    tc::Task import_task_with_uuid (const std::string &uuid);
 // TODO: struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid tcuuid);
 // TODO: TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool avoid_snapshots);
-// TODO: TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
+    void undo (int32_t *undone_out);
+    int64_t num_local_operations ();
+    int64_t num_undo_points ();
 // TODO: TCResult tc_replica_add_undo_point(struct TCReplica *rep, bool force);
-    void rebuild_working_set ();
-  private:
+    void rebuild_working_set (bool force);
+
+    ReplicaGuard mutate_task(tc::Task &);
+    void immut_task(tc::Task &);
+
+  protected:
+    friend class ReplicaGuard;
     unique_tcreplica_ptr inner;
 
     // construct an error message from tc_replica_error, or from the given
@@ -81,6 +111,7 @@ namespace tc {
     std::string replica_error (tc::ffi::TCString string);
   };
 }
+
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

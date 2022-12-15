@@ -112,15 +112,17 @@ int CmdExport::execute (std::string& output)
   }
   else
   {
-    // There is a sortOrder, so sorting will take place, which means the initial
-    // order of sequence is ascending.
+    // sort_tasks requires the order array initially be identity
     for (unsigned int i = 0; i < filtered.size (); ++i)
       sequence.push_back (i);
 
-    // Sort the tasks.
-    if (sortOrder.size ()) {
-      sort_tasks (filtered, sequence, reportSort);
+    // if no sort order, sort by id
+    if (!sortOrder.size ()) {
+      reportSort = "id";
     }
+
+    // Sort the tasks.
+    sort_tasks (filtered, sequence, reportSort);
   }
 
   // Export == render.

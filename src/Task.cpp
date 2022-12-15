@@ -145,6 +145,19 @@ Task::Task (const json::object* obj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Task::Task (tc::Task obj)
+{
+  id               = 0;
+  urgency_value    = 0.0;
+  recalc_urgency   = true;
+  is_blocked       = false;
+  is_blocking      = false;
+  annotation_count = 0;
+
+  parseTC (obj);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task::status Task::textToStatus (const std::string& input)
 {
        if (input[0] == 'p') return Task::pending;
@@ -893,6 +906,29 @@ void Task::parseJSON (const json::object* root_obj)
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Note that all fields undergo encode/decode.
+void Task::parseTC (const tc::Task& task)
+{
+  data = task.get_taskmap ();
+
+  // count annotations
+  annotation_count = 0;
+  for (auto i : data)
+  {
+    if (isAnnotationAttr (i.first))
+    {
+      ++annotation_count;
+    }
+  }
+
+  data["uuid"] = task.get_uuid ();
+  id = Context::getContext ().tdb2.id (data["uuid"]);
+
+  is_blocking = task.is_blocking();
+  is_blocked = task.is_blocked();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1711,6 +1747,9 @@ void Task::substitute (
 //   1) To provide missing attributes where possible
 //   2) To provide suitable warnings about odd states
 //   3) To generate errors when the inconsistencies are not fixable
+//   4) To update status depending on other attributes
+//
+// Critically, note that despite the name this is not a read-only function.
 //
 void Task::validate (bool applyDefault /* = true */)
 {
@@ -1936,6 +1975,31 @@ const std::string Task::decode (const std::string& value) const
 
   auto modified = str_replace (value,    "&open;",  "[");
   return          str_replace (modified, "&close;", "]");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+tc::Status Task::status2tc (const Task::status status)
+{
+  switch (status) {
+    case Task::pending: return tc::Status::Pending;
+    case Task::completed: return tc::Status::Completed;
+    case Task::deleted: return tc::Status::Deleted;
+    case Task::waiting: return tc::Status::Pending; // waiting is no longer a status
+    case Task::recurring: return tc::Status::Recurring;
+    default: return tc::Status::Unknown;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Task::status Task::tc2status (const tc::Status status)
+{
+  switch (status) {
+    case tc::Status::Pending: return Task::pending;
+    case tc::Status::Completed: return Task::completed;
+    case tc::Status::Deleted: return Task::deleted;
+    case tc::Status::Recurring: return Task::recurring;
+    default: return Task::pending;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

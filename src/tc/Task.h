@@ -31,10 +31,12 @@
 #include <functional>
 #include <memory>
 #include <map>
+#include <optional>
 #include "tc/ffi.h"
 
 namespace tc {
   class Replica;
+  class ReplicaGuard;
 
   enum Status {
     Pending = tc::ffi::TC_STATUS_PENDING,
@@ -57,9 +59,15 @@ namespace tc {
   class Task
   {
   protected:
-    // Tasks may only be created by tc::Replica
+    // Tasks may only be created and made mutable/immutable
+    // by tc::Replica
     friend class tc::Replica;
     explicit Task (tc::ffi::TCTask *);
+
+    // RplicaGuard handles mut/immut
+    friend class tc::ReplicaGuard;
+    void to_mut(tc::ffi::TCReplica *);
+    void to_immut();
 
   public:
     // This object "owns" inner, so copy is not allowed.
@@ -70,12 +78,11 @@ namespace tc {
     Task (Task &&) noexcept;
     Task &operator=(Task &&) noexcept;
 
-// TODO: void tc_task_to_mut(struct TCTask *task, struct TCReplica *tcreplica);
-// TODO: void tc_task_to_immut(struct TCTask *task);
     std::string get_uuid () const;
     Status get_status () const;
     std::map <std::string, std::string> get_taskmap() const;
     std::string get_description() const;
+    std::optional<std::string> get_value(std::string property) const;
 // TODO: time_t tc_task_get_entry(struct TCTask *task);
 // TODO: time_t tc_task_get_wait(struct TCTask *task);
 // TODO: time_t tc_task_get_modified(struct TCTask *task);
@@ -90,11 +97,12 @@ namespace tc {
 // TODO: struct TCString tc_task_get_legacy_uda(struct TCTask *task, struct TCString key);
 // TODO: struct TCUdaList tc_task_get_udas(struct TCTask *task);
 // TODO: struct TCUdaList tc_task_get_legacy_udas(struct TCTask *task);
-// TODO: TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
+    void set_status(Status status);
 // TODO: TCResult tc_task_set_description(struct TCTask *task, struct TCString description);
+    void set_value(std::string property, std::optional<std::string> value);
 // TODO: TCResult tc_task_set_entry(struct TCTask *task, time_t entry);
 // TODO: TCResult tc_task_set_wait(struct TCTask *task, time_t wait);
-// TODO: TCResult tc_task_set_modified(struct TCTask *task, time_t modified);
+    void set_modified(time_t modified);
 // TODO: TCResult tc_task_start(struct TCTask *task);
 // TODO: TCResult tc_task_stop(struct TCTask *task);
 // TODO: TCResult tc_task_done(struct TCTask *task);
