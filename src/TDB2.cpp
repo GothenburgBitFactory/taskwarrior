@@ -780,8 +780,7 @@ void TDB2::revert ()
   std::string prior;
   revert_undo (u, uuid, when, current, prior);
 
-  // Display diff and confirm.
-  show_diff (current, prior, when);
+  // Confirm.
   if (! Context::getContext ().config.getBoolean ("confirmation") ||
       confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
   {

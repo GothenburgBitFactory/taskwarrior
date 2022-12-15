@@ -74,6 +74,7 @@ class TestUndoStyle(TestCase):
         self.t("add one project:foo priority:H")
         self.t("1 modify +tag project:bar priority:")
 
+    @unittest.expectedFailure  # undo diffs are not supported
     def test_undo_side_style(self):
         """Test that 'rc.undo.style:side' generates the right output"""
         self.t.config("undo.style", "side")
@@ -81,6 +82,7 @@ class TestUndoStyle(TestCase):
         self.assertNotRegex(out, "-tags:\s*\n\+tags:\s+tag")
         self.assertRegex(out, "tags\s+tag\s*")
 
+    @unittest.expectedFailure  # undo diffs are not supported
     def test_undo_diff_style(self):
         """Test that 'rc.undo.style:diff' generates the right output"""
         self.t.config("undo.style", "diff")
