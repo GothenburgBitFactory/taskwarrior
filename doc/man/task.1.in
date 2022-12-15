@@ -402,15 +402,6 @@ Modifies the existing task with provided information.
 Prepends description text to an existing task. Is affected by the context.
 
 .TP
-.B task <filter> purge
-Permanently removes the specified tasks from the data files. Only
-tasks that are already deleted can be purged. This command has a
-local-only effect and changes introduced by it are not synced.
-Is affected by the context.
-
-Warning: causes permanent, non-revertible loss of data.
-
-.TP
 .B task <filter> start <mods>
 Marks the specified tasks as started. Is affected by the context.
 
@@ -1200,7 +1191,6 @@ active context.  Here is a list of the commands that are affected:
     log
     prepend
     projects
-    purge
     start
     stats
     stop

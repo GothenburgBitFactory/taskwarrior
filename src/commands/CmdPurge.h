@@ -32,10 +32,6 @@
 
 class CmdPurge : public Command
 {
-private:
-  void purgeTask (Task& task, int& count);
-  void handleChildren (Task& task, int& count);
-  void handleDeps (Task& task);
 public:
   CmdPurge ();
   int execute (std::string&);
