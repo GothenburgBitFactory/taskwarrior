@@ -79,7 +79,7 @@ class TestBug880(TestCase):
         self.assertEqual("one\\\n", out)
 
         self.t(r"1 annotate 'two\\'")
-        code, out, err = self.t("long rc.verbose:nothing")
+        code, out, err = self.t("info rc.verbose:nothing")
         self.assertIn("one\\\n", out)
         self.assertIn("two\\\n", out)
 
