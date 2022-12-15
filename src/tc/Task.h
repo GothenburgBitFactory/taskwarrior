@@ -40,6 +40,7 @@ namespace tc {
     Pending = tc::ffi::TC_STATUS_PENDING,
     Completed = tc::ffi::TC_STATUS_COMPLETED,
     Deleted = tc::ffi::TC_STATUS_DELETED,
+    Recurring = tc::ffi::TC_STATUS_RECURRING,
     Unknown = tc::ffi::TC_STATUS_UNKNOWN,
   };
 
