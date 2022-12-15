@@ -111,6 +111,7 @@ typedef enum TCStatus {
   TC_STATUS_PENDING,
   TC_STATUS_COMPLETED,
   TC_STATUS_DELETED,
+  TC_STATUS_RECURRING,
   /**
    * Unknown signifies a status in the task DB that was not
    * recognized.

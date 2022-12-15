@@ -33,7 +33,7 @@ Timestamps are stored as UNIX epoch timestamps, in the form of an integer.
 
 The following keys, and key formats, are defined:
 
-* `status` - one of `P` for a pending task (the default), `C` for completed or `D` for deleted
+* `status` - one of `P` for a pending task (the default), `C` for completed, `D` for deleted, or `R` for recurring
 * `description` - the one-line summary of the task
 * `modified` - the time of the last modification of this task
 * `start` - the most recent time at which this task was started (a task with no `start` key is not active)
@@ -43,9 +43,7 @@ The following keys, and key formats, are defined:
 * `entry` - the time at which the task was created
 * `annotation_<timestamp>` - value is an annotation created at the given time
 
-The following are not yet implemented:
-
-* `dep_<uuid>` - indicates this task depends on `<uuid>` (value is an empty string)
+Note that while TaskChampion recognizes "recurring" as a status, it does not implement recurrence directly.
 
 ### UDAs
 
