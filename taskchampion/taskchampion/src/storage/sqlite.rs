@@ -87,11 +87,11 @@ impl SqliteStorage {
 
         // Open (or create) database
         let db_file = directory.as_ref().join("taskchampion.sqlite3");
-        let mut flags = OpenFlags::SQLITE_OPEN_READ_WRITE
-            | OpenFlags::SQLITE_OPEN_NO_MUTEX
-            | OpenFlags::SQLITE_OPEN_URI;
-        if create_if_missing {
-            flags |= OpenFlags::SQLITE_OPEN_CREATE;
+        let mut flags = OpenFlags::default();
+        // default contains SQLITE_OPEN_CREATE, so remove it if we are not to
+        // create a DB when missing.
+        if !create_if_missing {
+            flags.remove(OpenFlags::SQLITE_OPEN_CREATE);
         }
         let con = Connection::open_with_flags(db_file, flags)?;
 
