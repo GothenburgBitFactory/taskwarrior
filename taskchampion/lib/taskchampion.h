@@ -790,6 +790,16 @@ bool tc_task_is_waiting(struct TCTask *task);
 bool tc_task_is_active(struct TCTask *task);
 
 /**
+ * Check if a task is blocked (depends on at least one other task).
+ */
+bool tc_task_is_blocked(struct TCTask *task);
+
+/**
+ * Check if a task is blocking (at least one other task depends on it).
+ */
+bool tc_task_is_blocking(struct TCTask *task);
+
+/**
  * Check if a task has the given tag.  If the tag is invalid, this function will return false, as
  * that (invalid) tag is not present. No error will be reported via `tc_task_error`.
  */

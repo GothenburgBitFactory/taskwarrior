@@ -79,8 +79,10 @@ namespace tc {
 // TODO: time_t tc_task_get_entry(struct TCTask *task);
 // TODO: time_t tc_task_get_wait(struct TCTask *task);
 // TODO: time_t tc_task_get_modified(struct TCTask *task);
-// TODO: bool tc_task_is_waiting(struct TCTask *task);
-// TODO: bool tc_task_is_active(struct TCTask *task);
+    bool is_waiting() const;
+    bool is_active() const;
+    bool is_blocked() const;
+    bool is_blocking() const;
 // TODO: bool tc_task_has_tag(struct TCTask *task, struct TCString tag);
 // TODO: struct TCStringList tc_task_get_tags(struct TCTask *task);
 // TODO: struct TCAnnotationList tc_task_get_annotations(struct TCTask *task);
