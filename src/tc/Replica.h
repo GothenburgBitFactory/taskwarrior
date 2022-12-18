@@ -31,6 +31,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <vector>
 #include "tc/ffi.h"
 #include "tc/Task.h"
 
