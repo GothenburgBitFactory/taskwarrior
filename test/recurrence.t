@@ -509,7 +509,7 @@ class TestBug839(TestCase):
 
     def test_recurrence_value_mapping(self):
         """839: Verify that importing a legacy recurrence value is ok"""
-        # use a recent timestamp to avoid slowly iterating over thousands of minutes
+        # use a recent timestamp to avoid slowly iterating over large number of tasks
         justnow = int(time.time()) - 120
         json = '{"description":"one","due":"%s","recur":"1m","status":"recurring","uuid":"ebeeab00-ccf8-464b-8b58-f7f2d606edfb"}' % justnow
         self.t("import -", input=json)
