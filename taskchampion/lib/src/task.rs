@@ -5,7 +5,7 @@ use std::convert::TryFrom;
 use std::ops::Deref;
 use std::ptr::NonNull;
 use std::str::FromStr;
-use taskchampion::chrono::{TimeZone, Utc};
+use taskchampion::chrono::{offset::LocalResult, TimeZone, Utc};
 use taskchampion::{Annotation, Tag, Task, TaskMut, Uuid};
 
 /// A task, as publicly exposed by this library.
@@ -760,7 +760,9 @@ pub unsafe extern "C" fn tc_task_remove_annotation(task: *mut TCTask, entry: i64
     wrap_mut(
         task,
         |task| {
-            task.remove_annotation(Utc.timestamp(entry, 0))?;
+            if let LocalResult::Single(ts) = Utc.timestamp_opt(entry, 0) {
+                task.remove_annotation(ts)?;
+            }
             Ok(TCResult::Ok)
         },
         TCResult::Error,
