@@ -1,7 +1,7 @@
 //! Trait implementations for a few atomic types
 
 use crate::traits::*;
-use taskchampion::chrono::prelude::*;
+use taskchampion::chrono::{offset::LocalResult, prelude::*};
 
 impl PassByValue for usize {
     type RustType = usize;
@@ -20,11 +20,12 @@ impl PassByValue for libc::time_t {
     type RustType = Option<DateTime<Utc>>;
 
     unsafe fn from_ctype(self) -> Option<DateTime<Utc>> {
-        if self == 0 {
-            None
-        } else {
-            Some(Utc.timestamp(self, 0))
+        if self != 0 {
+            if let LocalResult::Single(ts) = Utc.timestamp_opt(self, 0) {
+                return Some(ts);
+            }
         }
+        None
     }
 
     fn as_ctype(arg: Option<DateTime<Utc>>) -> libc::time_t {

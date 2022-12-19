@@ -4,7 +4,7 @@ use crate::depmap::DependencyMap;
 use crate::errors::{Error, Result};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
-use chrono::prelude::*;
+use chrono::{offset::LocalResult, prelude::*};
 use log::trace;
 use std::convert::AsRef;
 use std::convert::TryInto;
@@ -227,10 +227,15 @@ impl Task {
         self.taskmap.iter().filter_map(|(k, v)| {
             if let Some(ts) = k.strip_prefix("annotation_") {
                 if let Ok(ts) = ts.parse::<i64>() {
-                    return Some(Annotation {
-                        entry: Utc.timestamp(ts, 0),
-                        description: v.to_owned(),
-                    });
+                    if let LocalResult::Single(entry) = Utc.timestamp_opt(ts, 0) {
+                        return Some(Annotation {
+                            entry,
+                            description: v.to_owned(),
+                        });
+                    } else {
+                        // ignore an invalid timestamp
+                        return None;
+                    }
                 }
                 // note that invalid "annotation_*" are ignored
             }
@@ -311,7 +316,9 @@ impl Task {
     fn get_timestamp(&self, property: &str) -> Option<DateTime<Utc>> {
         if let Some(ts) = self.taskmap.get(property) {
             if let Ok(ts) = ts.parse() {
-                return Some(Utc.timestamp(ts, 0));
+                if let LocalResult::Single(entry) = Utc.timestamp_opt(ts, 0) {
+                    return Some(entry);
+                }
             }
             // if the value does not parse as an integer, default to None
         }
