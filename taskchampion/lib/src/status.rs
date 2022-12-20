@@ -8,6 +8,7 @@ pub enum TCStatus {
     Pending,
     Completed,
     Deleted,
+    Recurring,
     /// Unknown signifies a status in the task DB that was not
     /// recognized.
     Unknown,
@@ -19,7 +20,8 @@ impl From<TCStatus> for Status {
             TCStatus::Pending => Status::Pending,
             TCStatus::Completed => Status::Completed,
             TCStatus::Deleted => Status::Deleted,
-            TCStatus::Unknown => Status::Unknown("unknown".to_string()),
+            TCStatus::Recurring => Status::Recurring,
+            _ => Status::Unknown(format!("unknown TCStatus {}", status as u32)),
         }
     }
 }
@@ -30,6 +32,7 @@ impl From<Status> for TCStatus {
             Status::Pending => TCStatus::Pending,
             Status::Completed => TCStatus::Completed,
             Status::Deleted => TCStatus::Deleted,
+            Status::Recurring => TCStatus::Recurring,
             Status::Unknown(_) => TCStatus::Unknown,
         }
     }

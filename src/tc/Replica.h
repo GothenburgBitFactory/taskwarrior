@@ -31,6 +31,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <vector>
 #include "tc/ffi.h"
 #include "tc/Task.h"
 
@@ -51,7 +52,7 @@ namespace tc {
   {
   public:
     Replica (); // tc_replica_new_in_memory
-    Replica (const std::string& dir); // tc_replica_new_on_disk
+    Replica (const std::string& dir, bool create_if_missing); // tc_replica_new_on_disk
 
     // This object "owns" inner, so copy is not allowed.
     Replica (const Replica &) = delete;

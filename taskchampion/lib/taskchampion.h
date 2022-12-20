@@ -111,6 +111,7 @@ typedef enum TCStatus {
   TC_STATUS_PENDING,
   TC_STATUS_COMPLETED,
   TC_STATUS_DELETED,
+  TC_STATUS_RECURRING,
   /**
    * Unknown signifies a status in the task DB that was not
    * recognized.
@@ -492,7 +493,9 @@ struct TCReplica *tc_replica_new_in_memory(void);
  * is written to the error_out parameter (if it is not NULL) and NULL is returned.  The caller
  * must free this string.
  */
-struct TCReplica *tc_replica_new_on_disk(struct TCString path, struct TCString *error_out);
+struct TCReplica *tc_replica_new_on_disk(struct TCString path,
+                                         bool create_if_missing,
+                                         struct TCString *error_out);
 
 /**
  * Get a list of all tasks in the replica.

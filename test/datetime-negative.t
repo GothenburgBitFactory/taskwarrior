@@ -61,6 +61,7 @@ class TestIncorrectDate(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_randomstring(self):
         self.assertInvalidDatetimeFormat('random')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_in_YYYY_MM_DD(self):
         self.assertInvalidDatetimeFormat('-2014-07-07')
 
@@ -141,6 +142,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mm(self):
         self.assertInvalidDatetimeFormat('ab:cd')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm(self):
         self.assertInvalidDatetimeFormat('-12:12')
 
@@ -168,6 +170,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mmZ(self):
         self.assertInvalidDatetimeFormat('ab:cdZ')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mmZ(self):
         self.assertInvalidDatetimeFormat('-12:12Z')
 
@@ -195,6 +198,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_plus_hh_mm(self):
         self.assertInvalidDatetimeFormat('ab:cd+01:00')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_plus_hh_mm(self):
         self.assertInvalidDatetimeFormat('-12:12+01:00')
 
@@ -222,6 +226,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_minus_hh_mm(self):
         self.assertInvalidDatetimeFormat('ab:cd-01:00')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_minus_hh_mm(self):
         self.assertInvalidDatetimeFormat('-12:12-01:00')
 
@@ -258,6 +263,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss(self):
         self.assertInvalidDatetimeFormat('ab:cd:ef')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss(self):
         self.assertInvalidDatetimeFormat('-12:12:12')
 
@@ -297,6 +303,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ssZ(self):
         self.assertInvalidDatetimeFormat('ab:cd:efZ')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ssZ(self):
         self.assertInvalidDatetimeFormat('-12:12:12Z')
 
@@ -336,6 +343,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss_plus_hh_mm(self):
         self.assertInvalidDatetimeFormat('ab:cd:ef+01:00')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss_plus_hh_mm(self):
         self.assertInvalidDatetimeFormat('-12:12:12+01:00')
 
@@ -375,6 +383,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss_minus_hh_mm(self):
         self.assertInvalidDatetimeFormat('ab:cd:ef-01:00')
 
+    @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss_minus_hh_mm(self):
         self.assertInvalidDatetimeFormat('-12:12:12-01:00')
 
