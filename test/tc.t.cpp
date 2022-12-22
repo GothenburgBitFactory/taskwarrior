@@ -37,7 +37,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (21);
+  UnitTest t (23);
 
   // This function contains unit tests for the various bits of the wrappers for
   // taskchampion-lib (that is, for `src/tc/*.cpp`).
@@ -92,6 +92,8 @@ int main (int, char**)
   auto map = task.get_taskmap ();
   t.is (map["description"], "a test", "task description in taskmap");
   t.is (task.get_description(), "a test", "returned task has correct description");
+  t.is (task.is_waiting(), false, "task is not waiting");
+  t.is (task.is_active(), false, "task is not active");
 
   //// WorkingSet
 
