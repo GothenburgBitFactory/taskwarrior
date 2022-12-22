@@ -106,6 +106,9 @@ impl Replica {
 
     /// Get the dependency map for all pending tasks.
     ///
+    /// A task dependency is recognized when a task in the working set depends on a task with
+    /// status equal to Pending.
+    ///
     /// The data in this map is cached when it is first requested and may not contain modifications
     /// made locally in this Replica instance.  The result is reference-counted and may
     /// outlive the Replica.
@@ -114,17 +117,40 @@ impl Replica {
     /// although previously-returned dependency maps are not updated.
     pub fn dependency_map(&mut self, force: bool) -> Result<Rc<DependencyMap>> {
         if force || self.depmap.is_none() {
+            // note: we can't use self.get_task here, as that depends on a
+            // DependencyMap
+
             let mut dm = DependencyMap::new();
+            // temporary cache tracking whether tasks are considered Pending or not.
+            let mut is_pending = HashMap::new();
             let ws = self.working_set()?;
             for i in 1..=ws.largest_index() {
                 if let Some(u) = ws.by_index(i) {
-                    // note: we can't use self.get_task here, as that depends on a
-                    // DependencyMap
                     if let Some(taskmap) = self.taskdb.get_task(u)? {
                         for p in taskmap.keys() {
                             if let Some(dep_str) = p.strip_prefix("dep_") {
                                 if let Ok(dep) = Uuid::parse_str(dep_str) {
-                                    dm.add_dependency(u, dep);
+                                    let dep_pending = {
+                                        if let Some(dep_pending) = is_pending.get(&dep) {
+                                            *dep_pending
+                                        } else if let Some(dep_taskmap) =
+                                            self.taskdb.get_task(dep)?
+                                        {
+                                            let dep_pending = matches!(
+                                                dep_taskmap
+                                                    .get("status")
+                                                    .map(|tm| Status::from_taskmap(tm)),
+                                                Some(Status::Pending)
+                                            );
+                                            is_pending.insert(dep, dep_pending);
+                                            dep_pending
+                                        } else {
+                                            false
+                                        }
+                                    };
+                                    if dep_pending {
+                                        dm.add_dependency(u, dep);
+                                    }
                                 }
                             }
                         }
@@ -615,5 +641,22 @@ mod tests {
             dm.dependents(uuids[0]).collect::<HashSet<_>>(),
             set![uuids[1], uuids[2]]
         );
+
+        // mark t[0] as done, removing it from the working set
+        rep.get_task(uuids[0])
+            .unwrap()
+            .unwrap()
+            .into_mut(&mut rep)
+            .done()
+            .unwrap();
+        let dm = rep.dependency_map(true).unwrap();
+
+        assert_eq!(
+            dm.dependencies(uuids[3]).collect::<HashSet<_>>(),
+            set![uuids[1], uuids[2]]
+        );
+        assert_eq!(dm.dependencies(uuids[2]).collect::<HashSet<_>>(), set![]);
+        assert_eq!(dm.dependencies(uuids[1]).collect::<HashSet<_>>(), set![]);
+        assert_eq!(dm.dependents(uuids[0]).collect::<HashSet<_>>(), set![]);
     }
 }
