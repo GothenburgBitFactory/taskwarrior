@@ -349,7 +349,7 @@ pub unsafe extern "C" fn tc_replica_undo(rep: *mut TCReplica, undone_out: *mut i
     wrap(
         rep,
         |rep| {
-            let undone = if rep.undo()? { 1 } else { 0 };
+            let undone = i32::from(rep.undo()?);
             if !undone_out.is_null() {
                 // SAFETY:
                 //  - undone_out is not NULL (just checked)

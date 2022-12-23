@@ -36,7 +36,7 @@ fn make_suite_file(suites: &[&'static str]) {
     for suite in suites {
         content.push_str(format!("suite!({}_tests);\n", suite).as_ref());
     }
-    fs::write(&dest_path, content).unwrap();
+    fs::write(dest_path, content).unwrap();
 }
 
 fn main() {

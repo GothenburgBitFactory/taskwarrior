@@ -317,7 +317,7 @@ impl<'t> StorageTxn for Txn<'t> {
         }
         for r in rows {
             let (id, uuid) = r?;
-            res[id as usize] = Some(uuid);
+            res[id] = Some(uuid);
         }
 
         Ok(res)
@@ -380,7 +380,7 @@ mod test {
     fn test_empty_dir() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
         let non_existant = tmp_dir.path().join("subdir");
-        let mut storage = SqliteStorage::new(&non_existant, true)?;
+        let mut storage = SqliteStorage::new(non_existant, true)?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -398,7 +398,7 @@ mod test {
     #[test]
     fn drop_transaction() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
 
@@ -427,7 +427,7 @@ mod test {
     #[test]
     fn test_create() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -445,7 +445,7 @@ mod test {
     #[test]
     fn test_create_exists() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -463,7 +463,7 @@ mod test {
     #[test]
     fn test_get_missing() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -476,7 +476,7 @@ mod test {
     #[test]
     fn test_set_task() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -497,7 +497,7 @@ mod test {
     #[test]
     fn test_delete_task_missing() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -509,7 +509,7 @@ mod test {
     #[test]
     fn test_delete_task_exists() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -526,7 +526,7 @@ mod test {
     #[test]
     fn test_all_tasks_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         {
             let mut txn = storage.txn()?;
             let tasks = txn.all_tasks()?;
@@ -538,7 +538,7 @@ mod test {
     #[test]
     fn test_all_tasks_and_uuids() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
         {
@@ -592,7 +592,7 @@ mod test {
     #[test]
     fn test_base_version_default() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         {
             let mut txn = storage.txn()?;
             assert_eq!(txn.base_version()?, DEFAULT_BASE_VERSION);
@@ -603,7 +603,7 @@ mod test {
     #[test]
     fn test_base_version_setting() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let u = Uuid::new_v4();
         {
             let mut txn = storage.txn()?;
@@ -620,7 +620,7 @@ mod test {
     #[test]
     fn test_operations() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
         let uuid3 = Uuid::new_v4();
@@ -705,7 +705,7 @@ mod test {
     #[test]
     fn get_working_set_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
 
         {
             let mut txn = storage.txn()?;
@@ -719,7 +719,7 @@ mod test {
     #[test]
     fn add_to_working_set() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
 
@@ -742,7 +742,7 @@ mod test {
     #[test]
     fn clear_working_set() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
 
@@ -773,7 +773,7 @@ mod test {
     #[test]
     fn set_working_set_item() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut storage = SqliteStorage::new(&tmp_dir.path(), true)?;
+        let mut storage = SqliteStorage::new(tmp_dir.path(), true)?;
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();
 
