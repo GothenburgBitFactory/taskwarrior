@@ -23,7 +23,7 @@ impl PassByValue for libc::time_t {
         if self == 0 {
             None
         } else {
-            Some(Utc.timestamp(self as i64, 0))
+            Some(Utc.timestamp(self, 0))
         }
     }
 

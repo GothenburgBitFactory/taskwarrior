@@ -310,7 +310,7 @@ mod test {
     fn test_emtpy_dir() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
         let non_existant = tmp_dir.path().join("subdir");
-        let storage = SqliteStorage::new(&non_existant)?;
+        let storage = SqliteStorage::new(non_existant)?;
         let mut txn = storage.txn()?;
         let maybe_client = txn.get_client(Uuid::new_v4())?;
         assert!(maybe_client.is_none());
@@ -320,7 +320,7 @@ mod test {
     #[test]
     fn test_get_client_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let storage = SqliteStorage::new(&tmp_dir.path())?;
+        let storage = SqliteStorage::new(tmp_dir.path())?;
         let mut txn = storage.txn()?;
         let maybe_client = txn.get_client(Uuid::new_v4())?;
         assert!(maybe_client.is_none());
@@ -330,7 +330,7 @@ mod test {
     #[test]
     fn test_client_storage() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let storage = SqliteStorage::new(&tmp_dir.path())?;
+        let storage = SqliteStorage::new(tmp_dir.path())?;
         let mut txn = storage.txn()?;
 
         let client_key = Uuid::new_v4();
@@ -365,7 +365,7 @@ mod test {
     #[test]
     fn test_gvbp_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let storage = SqliteStorage::new(&tmp_dir.path())?;
+        let storage = SqliteStorage::new(tmp_dir.path())?;
         let mut txn = storage.txn()?;
         let maybe_version = txn.get_version_by_parent(Uuid::new_v4(), Uuid::new_v4())?;
         assert!(maybe_version.is_none());
@@ -375,7 +375,7 @@ mod test {
     #[test]
     fn test_add_version_and_get_version() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let storage = SqliteStorage::new(&tmp_dir.path())?;
+        let storage = SqliteStorage::new(tmp_dir.path())?;
         let mut txn = storage.txn()?;
 
         let client_key = Uuid::new_v4();
@@ -409,7 +409,7 @@ mod test {
     #[test]
     fn test_snapshots() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let storage = SqliteStorage::new(&tmp_dir.path())?;
+        let storage = SqliteStorage::new(tmp_dir.path())?;
         let mut txn = storage.txn()?;
 
         let client_key = Uuid::new_v4();

@@ -32,7 +32,7 @@ impl LocalServer {
         let db_file = directory
             .as_ref()
             .join("taskchampion-local-sync-server.sqlite3");
-        let con = rusqlite::Connection::open(&db_file)?;
+        let con = rusqlite::Connection::open(db_file)?;
 
         let queries = vec![
             "CREATE TABLE IF NOT EXISTS data (key STRING PRIMARY KEY, value STRING);",
@@ -175,7 +175,7 @@ mod test {
     #[test]
     fn test_empty() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut server = LocalServer::new(&tmp_dir.path())?;
+        let mut server = LocalServer::new(tmp_dir.path())?;
         let child_version = server.get_child_version(NIL_VERSION_ID)?;
         assert_eq!(child_version, GetVersionResult::NoSuchVersion);
         Ok(())
@@ -184,7 +184,7 @@ mod test {
     #[test]
     fn test_add_zero_base() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut server = LocalServer::new(&tmp_dir.path())?;
+        let mut server = LocalServer::new(tmp_dir.path())?;
         let history = b"1234".to_vec();
         match server.add_version(NIL_VERSION_ID, history.clone())?.0 {
             AddVersionResult::ExpectedParentVersion(_) => {
@@ -209,7 +209,7 @@ mod test {
     #[test]
     fn test_add_nonzero_base() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut server = LocalServer::new(&tmp_dir.path())?;
+        let mut server = LocalServer::new(tmp_dir.path())?;
         let history = b"1234".to_vec();
         let parent_version_id = Uuid::new_v4() as VersionId;
 
@@ -237,7 +237,7 @@ mod test {
     #[test]
     fn test_add_nonzero_base_forbidden() -> anyhow::Result<()> {
         let tmp_dir = TempDir::new()?;
-        let mut server = LocalServer::new(&tmp_dir.path())?;
+        let mut server = LocalServer::new(tmp_dir.path())?;
         let history = b"1234".to_vec();
         let parent_version_id = Uuid::new_v4() as VersionId;
 
