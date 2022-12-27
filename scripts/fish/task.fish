@@ -123,6 +123,10 @@ function __fish.task.need_to_complete.config
   contains (__fish.task.current.command) 'config' 'show'
 end
 
+function __fish.task.need_to_complete.context
+  contains (__fish.task.current.command) 'context'
+end
+
 function __fish.task.need_to_complete.filter
   __fish.task.before_command
 end
@@ -215,6 +219,10 @@ end
 
 function __fish.task.list.config
   task _config
+end
+
+function __fish.task.list.context
+  task _context
 end
 
 function __fish.task.list.depends
@@ -429,6 +437,7 @@ set  __fish_task_static_attr_desc_vals 'Task description text' 'Status of task -
 
 # fish's auto-completion when multiple `complete` have supplied with '-k' flag, the last will be displayed first
 __fish.task.complete config
+__fish.task.complete context
 __fish.task.complete attr_value
 __fish.task.complete attr_name
 __fish.task.complete tag
