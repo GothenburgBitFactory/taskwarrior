@@ -257,7 +257,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
     "  The currently active context definition is now applied as default modifications\n"
     "  when creating new tasks using 'task add' and 'task log'.",
     "  \n"
-    "  Consider following example, using contex 'work' defined as 'project:Work' above:\n"
+    "  Consider following example, using context 'work' defined as 'project:Work' above:\n"
     "  \n"
     "    $ task context work\n"
     "    $ task add Talk to Jeff\n"
