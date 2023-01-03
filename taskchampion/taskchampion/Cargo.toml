@@ -17,7 +17,7 @@ serde_json = "^1.0"
 chrono = { version = "^0.4.22", features = ["serde"] }
 anyhow = "1.0"
 thiserror = "1.0"
-ureq = "^2.5.0"
+ureq = "^2.6.1"
 log = "^0.4.17"
 rusqlite = { version = "0.28", features = ["bundled"] }
 strum = "0.24"
