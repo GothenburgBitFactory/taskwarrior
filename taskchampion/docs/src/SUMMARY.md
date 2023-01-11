@@ -1,7 +1,6 @@
 # Summary
 
-- [Welcome to TaskChampion](./welcome.md)
-  * [Installation](./installation.md)
+- [Installation](./installation.md)
   * [Running the Sync Server](./running-sync-server.md)
 - [Internal Details](./internals.md)
   * [Data Model](./data-model.md)
