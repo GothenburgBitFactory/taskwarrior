@@ -3,9 +3,9 @@ TaskChampion
 
 TaskChampion implements the task storage and synchronization behind Taskwarrior.
 It includes an implementation with Rust and C APIs, allowing any application to maintain and manipulate its own replica.
-It also includes a specification for tasks and how thye are synchronized, inviting alternative implementations of replicas or task servers.
+It also includes a specification for tasks and how they are synchronized, inviting alternative implementations of replicas or task servers.
 
-See the [documentation](https://taskchampion.github.io/taskchampion/) for more!
+See the [documentation](https://gothenburgbitfactory.github.io/taskwarrior/taskchampion/) for more!
 
 NOTE: Taskwarrior is currently in the midst of a change to use TaskChampion as its storage.
 Until that is complete, the information here may be out-of-date.
@@ -27,7 +27,7 @@ To regenerate this file, run `cargo xtask codegen`.
 
 ## Rust API
 
-The Rust API, as defined in [the docs](https://docs.rs/taskchampion/latest/taskchampion/), supports simple creation and manipulation of of replicas and the tasks they contain.
+The Rust API, as defined in [the docs](https://docs.rs/taskchampion/latest/taskchampion/), supports simple creation and manipulation of replicas and the tasks they contain.
 
 The Rust API follows semantic versioning.
 As this is still in the `0.x` phase, so breaking changes may occur but will be indicated with a change to the minor version.
@@ -48,4 +48,4 @@ pub use taskchampion_lib::*;
 ```
 
 Arrange to use the header file, `lib/taskchampion.h`, by copying it or adding its directory to your include search path.
-[Future work](https://github.com/GothenburgBitFactory/taskwarrior/issues/2870) will provide better automation for tihs process.
+[Future work](https://github.com/GothenburgBitFactory/taskwarrior/issues/2870) will provide better automation for this process.

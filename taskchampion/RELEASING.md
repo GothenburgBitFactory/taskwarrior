@@ -11,7 +11,6 @@
 1. Run `git tag vX.Y.Z`
 1. Run `git push upstream`
 1. Run `git push --tags upstream`
-1. Run `( ./build-docs.sh )`
 1. Run `(cd taskchampion; cargo publish)` (note that the other crates do not get published)
 1. Navigate to the tag in the GitHub releases UI and create a release with general comments about the changes in the release
 1. Upload `./target/release/task` and `./target/release/task-sync-server` to the release

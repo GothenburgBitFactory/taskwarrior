@@ -3,7 +3,10 @@ name: docs
 on:
   push:
     branches:
-      - main
+      - develop
+
+permissions:
+  contents: write
 
 jobs:
   mdbook-deploy:
@@ -18,10 +21,11 @@ jobs:
           # if this changes, change it in cli/Cargo.toml and .github/workflows/publish-docs.yml as well
           mdbook-version: '0.4.10'
 
-      - run: mdbook build docs
+      - run: mdbook build taskchampion/docs
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/book
+          publish_dir: ./taskchampion/docs/book
+          destination_dir: taskchampion
