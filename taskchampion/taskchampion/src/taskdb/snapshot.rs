@@ -1,3 +1,4 @@
+use crate::errors::{Error, Result};
 use crate::storage::{StorageTxn, TaskMap, VersionId};
 use flate2::{read::ZlibDecoder, write::ZlibEncoder, Compression};
 use serde::de::{Deserialize, Deserializer, MapAccess, Visitor};
@@ -9,7 +10,7 @@ use uuid::Uuid;
 pub(super) struct SnapshotTasks(Vec<(Uuid, TaskMap)>);
 
 impl Serialize for SnapshotTasks {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<'a, S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
@@ -30,7 +31,7 @@ impl<'de> Visitor<'de> for TaskDbVisitor {
         formatter.write_str("a map representing a task snapshot")
     }
 
-    fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
+    fn visit_map<M>(self, mut access: M) -> core::result::Result<Self::Value, M::Error>
     where
         M: MapAccess<'de>,
     {
@@ -45,7 +46,7 @@ impl<'de> Visitor<'de> for TaskDbVisitor {
 }
 
 impl<'de> Deserialize<'de> for SnapshotTasks {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -54,13 +55,13 @@ impl<'de> Deserialize<'de> for SnapshotTasks {
 }
 
 impl SnapshotTasks {
-    pub(super) fn encode(&self) -> anyhow::Result<Vec<u8>> {
+    pub(super) fn encode(&self) -> Result<Vec<u8>> {
         let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
         serde_json::to_writer(&mut encoder, &self)?;
         Ok(encoder.finish()?)
     }
 
-    pub(super) fn decode(snapshot: &[u8]) -> anyhow::Result<Self> {
+    pub(super) fn decode(snapshot: &[u8]) -> Result<Self> {
         let decoder = ZlibDecoder::new(snapshot);
         Ok(serde_json::from_reader(decoder)?)
     }
@@ -72,7 +73,7 @@ impl SnapshotTasks {
 
 /// Generate a snapshot (compressed, unencrypted) for the current state of the taskdb in the given
 /// storage.
-pub(super) fn make_snapshot(txn: &mut dyn StorageTxn) -> anyhow::Result<Vec<u8>> {
+pub(super) fn make_snapshot(txn: &mut dyn StorageTxn) -> Result<Vec<u8>> {
     let all_tasks = SnapshotTasks(txn.all_tasks()?);
     all_tasks.encode()
 }
@@ -82,12 +83,14 @@ pub(super) fn apply_snapshot(
     txn: &mut dyn StorageTxn,
     version: VersionId,
     snapshot: &[u8],
-) -> anyhow::Result<()> {
+) -> Result<()> {
     let all_tasks = SnapshotTasks::decode(snapshot)?;
 
     // double-check emptiness
     if !txn.is_empty()? {
-        anyhow::bail!("Cannot apply snapshot to a non-empty task database");
+        return Err(Error::Database(String::from(
+            "Cannot apply snapshot to a non-empty task database",
+        )));
     }
 
     for (uuid, task) in all_tasks.into_inner().drain(..) {
@@ -105,14 +108,14 @@ mod test {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn test_serialize_empty() -> anyhow::Result<()> {
+    fn test_serialize_empty() -> Result<()> {
         let empty = SnapshotTasks(vec![]);
         assert_eq!(serde_json::to_vec(&empty)?, b"{}".to_owned());
         Ok(())
     }
 
     #[test]
-    fn test_serialize_tasks() -> anyhow::Result<()> {
+    fn test_serialize_tasks() -> Result<()> {
         let u = Uuid::new_v4();
         let m: TaskMap = vec![("description".to_owned(), "my task".to_owned())]
             .drain(..)
@@ -126,7 +129,7 @@ mod test {
     }
 
     #[test]
-    fn test_round_trip() -> anyhow::Result<()> {
+    fn test_round_trip() -> Result<()> {
         let mut storage = InMemoryStorage::new();
         let version = Uuid::new_v4();
 

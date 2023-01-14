@@ -1,6 +1,7 @@
 use super::tag::{SyntheticTag, TagInner};
 use super::{Annotation, Status, Tag, Timestamp};
 use crate::depmap::DependencyMap;
+use crate::errors::{Error, Result};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
 use chrono::prelude::*;
@@ -326,7 +327,7 @@ impl<'r> TaskMut<'r> {
 
     /// Set the task's status.  This also adds the task to the working set if the
     /// new status puts it in that set.
-    pub fn set_status(&mut self, status: Status) -> anyhow::Result<()> {
+    pub fn set_status(&mut self, status: Status) -> Result<()> {
         match status {
             Status::Pending | Status::Recurring => {
                 // clear "end" when a task becomes "pending" or "recurring"
@@ -350,32 +351,28 @@ impl<'r> TaskMut<'r> {
         )
     }
 
-    pub fn set_description(&mut self, description: String) -> anyhow::Result<()> {
+    pub fn set_description(&mut self, description: String) -> Result<()> {
         self.set_string(Prop::Description.as_ref(), Some(description))
     }
 
-    pub fn set_priority(&mut self, priority: String) -> anyhow::Result<()> {
+    pub fn set_priority(&mut self, priority: String) -> Result<()> {
         self.set_string(Prop::Priority.as_ref(), Some(priority))
     }
 
-    pub fn set_entry(&mut self, entry: Option<DateTime<Utc>>) -> anyhow::Result<()> {
+    pub fn set_entry(&mut self, entry: Option<DateTime<Utc>>) -> Result<()> {
         self.set_timestamp(Prop::Entry.as_ref(), entry)
     }
 
-    pub fn set_wait(&mut self, wait: Option<DateTime<Utc>>) -> anyhow::Result<()> {
+    pub fn set_wait(&mut self, wait: Option<DateTime<Utc>>) -> Result<()> {
         self.set_timestamp(Prop::Wait.as_ref(), wait)
     }
 
-    pub fn set_modified(&mut self, modified: DateTime<Utc>) -> anyhow::Result<()> {
+    pub fn set_modified(&mut self, modified: DateTime<Utc>) -> Result<()> {
         self.set_timestamp(Prop::Modified.as_ref(), Some(modified))
     }
 
     /// Set a tasks's property by name.
-    pub fn set_value<S: Into<String>>(
-        &mut self,
-        property: S,
-        value: Option<String>,
-    ) -> anyhow::Result<()> {
+    pub fn set_value<S: Into<String>>(&mut self, property: S, value: Option<String>) -> Result<()> {
         let property = property.into();
 
         if let Some(ref v) = value {
@@ -393,7 +390,7 @@ impl<'r> TaskMut<'r> {
 
     /// Start the task by creating "start": "<timestamp>", if the task is not already
     /// active.
-    pub fn start(&mut self) -> anyhow::Result<()> {
+    pub fn start(&mut self) -> Result<()> {
         if self.is_active() {
             return Ok(());
         }
@@ -401,12 +398,12 @@ impl<'r> TaskMut<'r> {
     }
 
     /// Stop the task by removing the `start` key
-    pub fn stop(&mut self) -> anyhow::Result<()> {
+    pub fn stop(&mut self) -> Result<()> {
         self.set_timestamp(Prop::Start.as_ref(), None)
     }
 
     /// Mark this task as complete
-    pub fn done(&mut self) -> anyhow::Result<()> {
+    pub fn done(&mut self) -> Result<()> {
         self.set_status(Status::Completed)
     }
 
@@ -414,29 +411,33 @@ impl<'r> TaskMut<'r> {
     ///
     /// Note that this does not delete the task.  It merely marks the task as
     /// deleted.
-    pub fn delete(&mut self) -> anyhow::Result<()> {
+    pub fn delete(&mut self) -> Result<()> {
         self.set_status(Status::Deleted)
     }
 
     /// Add a tag to this task.  Does nothing if the tag is already present.
-    pub fn add_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
+    pub fn add_tag(&mut self, tag: &Tag) -> Result<()> {
         if tag.is_synthetic() {
-            anyhow::bail!("Synthetic tags cannot be modified");
+            return Err(Error::UserError(String::from(
+                "Synthetic tags cannot be modified",
+            )));
         }
         self.set_string(format!("tag_{}", tag), Some("".to_owned()))
     }
 
     /// Remove a tag from this task.  Does nothing if the tag is not present.
-    pub fn remove_tag(&mut self, tag: &Tag) -> anyhow::Result<()> {
+    pub fn remove_tag(&mut self, tag: &Tag) -> Result<()> {
         if tag.is_synthetic() {
-            anyhow::bail!("Synthetic tags cannot be modified");
+            return Err(Error::UserError(String::from(
+                "Synthetic tags cannot be modified",
+            )));
         }
         self.set_string(format!("tag_{}", tag), None)
     }
 
     /// Add a new annotation.  Note that annotations with the same entry time
     /// will overwrite one another.
-    pub fn add_annotation(&mut self, ann: Annotation) -> anyhow::Result<()> {
+    pub fn add_annotation(&mut self, ann: Annotation) -> Result<()> {
         self.set_string(
             format!("annotation_{}", ann.entry.timestamp()),
             Some(ann.description),
@@ -444,7 +445,7 @@ impl<'r> TaskMut<'r> {
     }
 
     /// Remove an annotation, based on its entry time.
-    pub fn remove_annotation(&mut self, entry: Timestamp) -> anyhow::Result<()> {
+    pub fn remove_annotation(&mut self, entry: Timestamp) -> Result<()> {
         self.set_string(format!("annotation_{}", entry.timestamp()), None)
     }
 
@@ -455,18 +456,14 @@ impl<'r> TaskMut<'r> {
         namespace: impl AsRef<str>,
         key: impl AsRef<str>,
         value: impl Into<String>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         let key = uda_tuple_to_string(namespace, key);
         self.set_legacy_uda(key, value)
     }
 
     /// Remove a user-defined attribute (UDA).  This will fail if the key is defined by the data
     /// model.
-    pub fn remove_uda(
-        &mut self,
-        namespace: impl AsRef<str>,
-        key: impl AsRef<str>,
-    ) -> anyhow::Result<()> {
+    pub fn remove_uda(&mut self, namespace: impl AsRef<str>, key: impl AsRef<str>) -> Result<()> {
         let key = uda_tuple_to_string(namespace, key);
         self.remove_legacy_uda(key)
     }
@@ -476,44 +473,44 @@ impl<'r> TaskMut<'r> {
         &mut self,
         key: impl Into<String>,
         value: impl Into<String>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         let key = key.into();
         if Task::is_known_key(&key) {
-            anyhow::bail!(
+            return Err(Error::UserError(format!(
                 "Property name {} as special meaning in a task and cannot be used as a UDA",
                 key
-            );
+            )));
         }
         self.set_string(key, Some(value.into()))
     }
 
     /// Remove a user-defined attribute (UDA), where the key is a legacy key.
-    pub fn remove_legacy_uda(&mut self, key: impl Into<String>) -> anyhow::Result<()> {
+    pub fn remove_legacy_uda(&mut self, key: impl Into<String>) -> Result<()> {
         let key = key.into();
         if Task::is_known_key(&key) {
-            anyhow::bail!(
+            return Err(Error::UserError(format!(
                 "Property name {} as special meaning in a task and cannot be used as a UDA",
                 key
-            );
+            )));
         }
         self.set_string(key, None)
     }
 
     /// Add a dependency.
-    pub fn add_dependency(&mut self, dep: Uuid) -> anyhow::Result<()> {
+    pub fn add_dependency(&mut self, dep: Uuid) -> Result<()> {
         let key = format!("dep_{}", dep);
         self.set_string(key, Some("".to_string()))
     }
 
     /// Remove a dependency.
-    pub fn remove_dependency(&mut self, dep: Uuid) -> anyhow::Result<()> {
+    pub fn remove_dependency(&mut self, dep: Uuid) -> Result<()> {
         let key = format!("dep_{}", dep);
         self.set_string(key, None)
     }
 
     // -- utility functions
 
-    fn update_modified(&mut self) -> anyhow::Result<()> {
+    fn update_modified(&mut self) -> Result<()> {
         if !self.updated_modified {
             let now = format!("{}", Utc::now().timestamp());
             trace!("task {}: set property modified={:?}", self.task.uuid, now);
@@ -525,11 +522,7 @@ impl<'r> TaskMut<'r> {
         Ok(())
     }
 
-    fn set_string<S: Into<String>>(
-        &mut self,
-        property: S,
-        value: Option<String>,
-    ) -> anyhow::Result<()> {
+    fn set_string<S: Into<String>>(&mut self, property: S, value: Option<String>) -> Result<()> {
         let property = property.into();
         // updated the modified timestamp unless we are setting it explicitly
         if &property != "modified" {
@@ -539,17 +532,13 @@ impl<'r> TaskMut<'r> {
         self.set_value(property, value)
     }
 
-    fn set_timestamp(
-        &mut self,
-        property: &str,
-        value: Option<DateTime<Utc>>,
-    ) -> anyhow::Result<()> {
+    fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> Result<()> {
         self.set_string(property, value.map(|v| v.timestamp().to_string()))
     }
 
     /// Used by tests to ensure that updates are properly written
     #[cfg(test)]
-    fn reload(&mut self) -> anyhow::Result<()> {
+    fn reload(&mut self) -> Result<()> {
         let uuid = self.uuid;
         let task = self.replica.get_task(uuid)?.unwrap();
         self.task.taskmap = task.taskmap;
