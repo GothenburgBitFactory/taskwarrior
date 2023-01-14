@@ -1,5 +1,6 @@
 /// This module implements the encryption specified in the sync-protocol
 /// document.
+use crate::errors::{Error, Result};
 use ring::{aead, digest, pbkdf2, rand, rand::SecureRandom};
 use std::io::Read;
 use uuid::Uuid;
@@ -18,7 +19,7 @@ pub(super) struct Cryptor {
 }
 
 impl Cryptor {
-    pub(super) fn new(client_key: Uuid, secret: &Secret) -> anyhow::Result<Self> {
+    pub(super) fn new(client_key: Uuid, secret: &Secret) -> Result<Self> {
         Ok(Cryptor {
             key: Self::derive_key(client_key, secret)?,
             rng: rand::SystemRandom::new(),
@@ -26,7 +27,7 @@ impl Cryptor {
     }
 
     /// Derive a key as specified for version 1.  Note that this may take 10s of ms.
-    fn derive_key(client_key: Uuid, secret: &Secret) -> anyhow::Result<aead::LessSafeKey> {
+    fn derive_key(client_key: Uuid, secret: &Secret) -> Result<aead::LessSafeKey> {
         let salt = digest::digest(&digest::SHA256, client_key.as_bytes());
 
         let mut key_bytes = vec![0u8; aead::CHACHA20_POLY1305.key_len()];
@@ -44,7 +45,7 @@ impl Cryptor {
     }
 
     /// Encrypt the given payload.
-    pub(super) fn seal(&self, payload: Unsealed) -> anyhow::Result<Sealed> {
+    pub(super) fn seal(&self, payload: Unsealed) -> Result<Sealed> {
         let Unsealed {
             version_id,
             mut payload,
@@ -76,7 +77,7 @@ impl Cryptor {
     }
 
     /// Decrypt the given payload, verifying it was created for the given version_id
-    pub(super) fn unseal(&self, payload: Sealed) -> anyhow::Result<Unsealed> {
+    pub(super) fn unseal(&self, payload: Sealed) -> Result<Unsealed> {
         let Sealed {
             version_id,
             payload,
@@ -133,14 +134,17 @@ struct Envelope<'a> {
 }
 
 impl<'a> Envelope<'a> {
-    fn from_bytes(buf: &'a [u8]) -> anyhow::Result<Envelope<'a>> {
+    fn from_bytes(buf: &'a [u8]) -> Result<Envelope<'a>> {
         if buf.len() <= 1 + aead::NONCE_LEN {
-            anyhow::bail!("envelope is too small");
+            return Err(Error::Crypto(String::from("envelope is too small")));
         }
 
         let version = buf[0];
         if version != ENVELOPE_VERSION {
-            anyhow::bail!("unrecognized encryption envelope version {}", version);
+            return Err(Error::Crypto(format!(
+                "unrecognized encryption envelope version {}",
+                version
+            )));
         }
 
         Ok(Envelope {
@@ -177,7 +181,7 @@ impl Sealed {
         resp: ureq::Response,
         version_id: Uuid,
         content_type: &str,
-    ) -> Result<Sealed, anyhow::Error> {
+    ) -> Result<Sealed> {
         if resp.header("Content-Type") == Some(content_type) {
             let mut reader = resp.into_reader();
             let mut payload = vec![];
@@ -187,9 +191,9 @@ impl Sealed {
                 payload,
             })
         } else {
-            Err(anyhow::anyhow!(
-                "Response did not have expected content-type"
-            ))
+            Err(Error::Crypto(String::from(
+                "Response did not have expected content-type",
+            )))
         }
     }
 }

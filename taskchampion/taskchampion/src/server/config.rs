@@ -1,5 +1,6 @@
 use super::types::Server;
 use super::{LocalServer, RemoteServer};
+use crate::errors::Result;
 use std::path::PathBuf;
 use uuid::Uuid;
 
@@ -26,7 +27,7 @@ pub enum ServerConfig {
 
 impl ServerConfig {
     /// Get a server based on this configuration
-    pub fn into_server(self) -> anyhow::Result<Box<dyn Server>> {
+    pub fn into_server(self) -> Result<Box<dyn Server>> {
         Ok(match self {
             ServerConfig::Local { server_dir } => Box::new(LocalServer::new(server_dir)?),
             ServerConfig::Remote {

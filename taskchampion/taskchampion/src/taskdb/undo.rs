@@ -1,9 +1,10 @@
 use super::apply;
+use crate::errors::Result;
 use crate::storage::{ReplicaOp, StorageTxn};
 use log::{debug, trace};
 
 /// Undo local operations until an UndoPoint.
-pub(super) fn undo(txn: &mut dyn StorageTxn) -> anyhow::Result<bool> {
+pub(super) fn undo(txn: &mut dyn StorageTxn) -> Result<bool> {
     let mut applied = false;
     let mut popped = false;
     let mut local_ops = txn.operations()?;
@@ -40,7 +41,7 @@ mod tests {
     use uuid::Uuid;
 
     #[test]
-    fn test_apply_create() -> anyhow::Result<()> {
+    fn test_apply_create() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid1 = Uuid::new_v4();
         let uuid2 = Uuid::new_v4();

@@ -123,6 +123,7 @@ impl SyncOp {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::errors::Result;
     use crate::storage::InMemoryStorage;
     use crate::taskdb::TaskDb;
     use chrono::{Duration, Utc};
@@ -130,7 +131,7 @@ mod test {
     use proptest::prelude::*;
 
     #[test]
-    fn test_json_create() -> anyhow::Result<()> {
+    fn test_json_create() -> Result<()> {
         let uuid = Uuid::new_v4();
         let op = Create { uuid };
         let json = serde_json::to_string(&op)?;
@@ -141,7 +142,7 @@ mod test {
     }
 
     #[test]
-    fn test_json_delete() -> anyhow::Result<()> {
+    fn test_json_delete() -> Result<()> {
         let uuid = Uuid::new_v4();
         let op = Delete { uuid };
         let json = serde_json::to_string(&op)?;
@@ -152,7 +153,7 @@ mod test {
     }
 
     #[test]
-    fn test_json_update() -> anyhow::Result<()> {
+    fn test_json_update() -> Result<()> {
         let uuid = Uuid::new_v4();
         let timestamp = Utc::now();
 
@@ -177,7 +178,7 @@ mod test {
     }
 
     #[test]
-    fn test_json_update_none() -> anyhow::Result<()> {
+    fn test_json_update_none() -> Result<()> {
         let uuid = Uuid::new_v4();
         let timestamp = Utc::now();
 

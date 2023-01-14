@@ -1,3 +1,4 @@
+use crate::errors::Result;
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, Snapshot, SnapshotUrgency,
     VersionId, NIL_VERSION_ID,
@@ -66,7 +67,7 @@ impl Server for TestServer {
         &mut self,
         parent_version_id: VersionId,
         history_segment: HistorySegment,
-    ) -> anyhow::Result<(AddVersionResult, SnapshotUrgency)> {
+    ) -> Result<(AddVersionResult, SnapshotUrgency)> {
         let mut inner = self.0.lock().unwrap();
 
         // no client lookup
@@ -101,10 +102,7 @@ impl Server for TestServer {
     }
 
     /// Get a vector of all versions after `since_version`
-    fn get_child_version(
-        &mut self,
-        parent_version_id: VersionId,
-    ) -> anyhow::Result<GetVersionResult> {
+    fn get_child_version(&mut self, parent_version_id: VersionId) -> Result<GetVersionResult> {
         let inner = self.0.lock().unwrap();
 
         if let Some(version) = inner.versions.get(&parent_version_id) {
@@ -118,7 +116,7 @@ impl Server for TestServer {
         }
     }
 
-    fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> anyhow::Result<()> {
+    fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> Result<()> {
         let mut inner = self.0.lock().unwrap();
 
         // test implementation -- does not perform any validation
@@ -126,7 +124,7 @@ impl Server for TestServer {
         Ok(())
     }
 
-    fn get_snapshot(&mut self) -> anyhow::Result<Option<(VersionId, Snapshot)>> {
+    fn get_snapshot(&mut self) -> Result<Option<(VersionId, Snapshot)>> {
         let inner = self.0.lock().unwrap();
         Ok(inner.snapshot.clone())
     }

@@ -1,4 +1,4 @@
-use crate::errors::Error;
+use crate::errors::{Error, Result};
 use crate::server::SyncOp;
 use crate::storage::{ReplicaOp, StorageTxn, TaskMap};
 
@@ -6,7 +6,7 @@ use crate::storage::{ReplicaOp, StorageTxn, TaskMap};
 /// ReplicaOp to the list of operations.  Returns the TaskMap of the task after the
 /// operation has been applied (or an empty TaskMap for Delete).  It is not an error
 /// to create an existing task, nor to delete a nonexistent task.
-pub(super) fn apply_and_record(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::Result<TaskMap> {
+pub(super) fn apply_and_record(txn: &mut dyn StorageTxn, op: SyncOp) -> Result<TaskMap> {
     match op {
         SyncOp::Create { uuid } => {
             let created = txn.create_task(uuid)?;
@@ -59,14 +59,14 @@ pub(super) fn apply_and_record(txn: &mut dyn StorageTxn, op: SyncOp) -> anyhow::
                 txn.commit()?;
                 Ok(task)
             } else {
-                Err(Error::Database(format!("Task {} does not exist", uuid)).into())
+                Err(Error::Database(format!("Task {} does not exist", uuid)))
             }
         }
     }
 }
 
 /// Apply an op to the TaskDb's set of tasks (without recording it in the list of operations)
-pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &SyncOp) -> anyhow::Result<()> {
+pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &SyncOp) -> Result<()> {
     // TODO: test
     // TODO: it'd be nice if this was integrated into apply() somehow, but that clones TaskMaps
     // unnecessariliy
@@ -74,12 +74,12 @@ pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &SyncOp) -> anyhow::Result<
         SyncOp::Create { uuid } => {
             // insert if the task does not already exist
             if !txn.create_task(*uuid)? {
-                return Err(Error::Database(format!("Task {} already exists", uuid)).into());
+                return Err(Error::Database(format!("Task {} already exists", uuid)));
             }
         }
         SyncOp::Delete { ref uuid } => {
             if !txn.delete_task(*uuid)? {
-                return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
+                return Err(Error::Database(format!("Task {} does not exist", uuid)));
             }
         }
         SyncOp::Update {
@@ -96,7 +96,7 @@ pub(super) fn apply_op(txn: &mut dyn StorageTxn, op: &SyncOp) -> anyhow::Result<
                 };
                 txn.set_task(*uuid, task)?;
             } else {
-                return Err(Error::Database(format!("Task {} does not exist", uuid)).into());
+                return Err(Error::Database(format!("Task {} does not exist", uuid)));
             }
         }
     }
@@ -115,7 +115,7 @@ mod tests {
     use uuid::Uuid;
 
     #[test]
-    fn test_apply_create() -> anyhow::Result<()> {
+    fn test_apply_create() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = SyncOp::Create { uuid };
@@ -133,7 +133,7 @@ mod tests {
     }
 
     #[test]
-    fn test_apply_create_exists() -> anyhow::Result<()> {
+    fn test_apply_create_exists() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         {
@@ -167,7 +167,7 @@ mod tests {
     }
 
     #[test]
-    fn test_apply_create_update() -> anyhow::Result<()> {
+    fn test_apply_create_update() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let now = Utc::now();
@@ -218,7 +218,7 @@ mod tests {
     }
 
     #[test]
-    fn test_apply_create_update_delete_prop() -> anyhow::Result<()> {
+    fn test_apply_create_update_delete_prop() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let now = Utc::now();
@@ -310,7 +310,7 @@ mod tests {
     }
 
     #[test]
-    fn test_apply_update_does_not_exist() -> anyhow::Result<()> {
+    fn test_apply_update_does_not_exist() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = SyncOp::Update {
@@ -335,7 +335,7 @@ mod tests {
     }
 
     #[test]
-    fn test_apply_create_delete() -> anyhow::Result<()> {
+    fn test_apply_create_delete() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let now = Utc::now();
@@ -390,7 +390,7 @@ mod tests {
     }
 
     #[test]
-    fn test_apply_delete_not_present() -> anyhow::Result<()> {
+    fn test_apply_delete_not_present() -> Result<()> {
         let mut db = TaskDb::new_inmemory();
         let uuid = Uuid::new_v4();
         let op = SyncOp::Delete { uuid };
