@@ -1,0 +1,381 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Server-Replica Protocol - TaskChampion</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="favicon.svg">
+                        <link rel="shortcut icon" href="favicon.png">
+                <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+                <link rel="stylesheet" href="css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="running-sync-server.html"><strong aria-hidden="true">1.1.</strong> Running the Sync Server</a></li></ol></li><li class="chapter-item expanded "><a href="internals.html"><strong aria-hidden="true">2.</strong> Internal Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="data-model.html"><strong aria-hidden="true">2.1.</strong> Data Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="storage.html"><strong aria-hidden="true">2.1.1.</strong> Replica Storage</a></li><li class="chapter-item expanded "><a href="taskdb.html"><strong aria-hidden="true">2.1.2.</strong> Task Database</a></li><li class="chapter-item expanded "><a href="tasks.html"><strong aria-hidden="true">2.1.3.</strong> Tasks</a></li></ol></li><li class="chapter-item expanded "><a href="sync.html"><strong aria-hidden="true">2.2.</strong> Synchronization and the Sync Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="sync-model.html"><strong aria-hidden="true">2.2.1.</strong> Synchronization Model</a></li><li class="chapter-item expanded "><a href="snapshots.html"><strong aria-hidden="true">2.2.2.</strong> Snapshots</a></li><li class="chapter-item expanded "><a href="sync-protocol.html" class="active"><strong aria-hidden="true">2.2.3.</strong> Server-Replica Protocol</a></li><li class="chapter-item expanded "><a href="plans.html"><strong aria-hidden="true">2.2.4.</strong> Planned Functionality</a></li></ol></li></ol></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">TaskChampion</h1>
+
+                    <div class="right-buttons">
+                                                <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="server-replica-protocol"><a class="header" href="#server-replica-protocol">Server-Replica Protocol</a></h1>
+<p>The server-replica protocol is defined abstractly in terms of request/response transactions from the replica to the server.
+This is made concrete in an HTTP representation.</p>
+<p>The protocol builds on the model presented in the previous chapter, and in particular on the synchronization process.</p>
+<h2 id="clients"><a class="header" href="#clients">Clients</a></h2>
+<p>From the server's perspective, replicas accessing the same task history are indistinguishable, so this protocol uses the term &quot;client&quot; to refer generically to all replicas replicating a single task history.</p>
+<p>Each client is identified and authenticated with a &quot;client key&quot;, known only to the server and to the replicas replicating the task history.</p>
+<h2 id="server"><a class="header" href="#server">Server</a></h2>
+<p>For each client, the server is responsible for storing the task history, in the form of a branch-free sequence of versions.
+It also stores the latest snapshot, if any exists.</p>
+<ul>
+<li>versions: a set of {versionId: UUID, parentVersionId: UUID, historySegment: bytes}</li>
+<li>latestVersionId: UUID</li>
+<li>snapshotVersionId: UUID</li>
+<li>snapshot: bytes</li>
+</ul>
+<p>For each client, it stores a set of versions as well as the latest version ID, defaulting to the nil UUID.
+Each version has a version ID, a parent version ID, and a history segment (opaque data containing the operations for that version).
+The server should maintain the following invariants for each client:</p>
+<ol>
+<li>latestVersionId is nil or exists in the set of versions.</li>
+<li>Given versions v1 and v2 for a client, with v1.versionId != v2.versionId and v1.parentVersionId != nil, v1.parentVersionId != v2.parentVersionId.
+In other words, versions do not branch.</li>
+<li>If snapshotVersionId is nil, then there is a version with parentVersionId == nil.</li>
+<li>If snapshotVersionId is not nil, then there is a version with parentVersionId = snapshotVersionId.</li>
+</ol>
+<p>Note that versions form a linked list beginning with the latestVersionId stored for the client. 
+This linked list need not continue back to a version with v.parentVersionId = nil.
+It may end at any point when v.parentVersionId is not found in the set of Versions.
+This observation allows the server to discard older versions.
+The third invariant prevents the server from discarding versions if there is no snapshot.
+The fourth invariant prevents the server from discarding versions newer than the snapshot.</p>
+<h2 id="data-formats"><a class="header" href="#data-formats">Data Formats</a></h2>
+<h3 id="encryption"><a class="header" href="#encryption">Encryption</a></h3>
+<p>The client configuration includes an encryption secret of arbitrary length and a clientId to identify itself.
+This section describes how that information is used to encrypt and decrypt data sent to the server (versions and snapshots).</p>
+<h4 id="key-derivation"><a class="header" href="#key-derivation">Key Derivation</a></h4>
+<p>The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 100,000 iterations.
+The salt is the SHA256 hash of the 16-byte form of the client key.</p>
+<h4 id="encryption-1"><a class="header" href="#encryption-1">Encryption</a></h4>
+<p>The client uses <a href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/aead.h.html">AEAD</a>, with algorithm CHACHA20_POLY1305.
+The client should generate a random nonce, noting that AEAD is <em>not secure</em> if a nonce is used repeatedly for the same key.</p>
+<p>AEAD supports additional authenticated data (AAD) which must be provided for both open and seal operations.
+In this protocol, the AAD is always 17 bytes of the form:</p>
+<ul>
+<li><code>app_id</code> (byte) - always 1</li>
+<li><code>version_id</code> (16 bytes) - 16-byte form of the version ID associated with this data
+<ul>
+<li>for versions (AddVersion, GetChildVersion), the <em>parent</em> version_id</li>
+<li>for snapshots (AddSnapshot, GetSnapshot), the snapshot version_id</li>
+</ul>
+</li>
+</ul>
+<p>The <code>app_id</code> field is for future expansion to handle other, non-task data using this protocol.
+Including it in the AAD ensures that such data cannot be confused with task data.</p>
+<p>Although the AEAD specification distinguishes ciphertext and tags, for purposes of this specification they are considered concatenated into a single bytestring as in BoringSSL's <code>EVP_AEAD_CTX_seal</code>.</p>
+<h4 id="representation"><a class="header" href="#representation">Representation</a></h4>
+<p>The final byte-stream is comprised of the following structure:</p>
+<ul>
+<li><code>version</code> (byte) - format version (always 1)</li>
+<li><code>nonce</code> (12 bytes) - encryption nonce</li>
+<li><code>ciphertext</code> (remaining bytes) - ciphertext from sealing operation</li>
+</ul>
+<p>The <code>version</code> field identifies this data format, and future formats will have a value other than 1 in this position.</p>
+<h3 id="version"><a class="header" href="#version">Version</a></h3>
+<p>The decrypted form of a version is a JSON array containing operations in the order they should be applied.
+Each operation has the form <code>{TYPE: DATA}</code>, for example:</p>
+<ul>
+<li><code>{&quot;Create&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;}}</code></li>
+<li><code>{&quot;Delete&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;}}</code></li>
+<li><code>{&quot;Update&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;,&quot;property&quot;:&quot;prop&quot;,&quot;value&quot;:&quot;v&quot;,&quot;timestamp&quot;:&quot;2021-10-11T12:47:07.188090948Z&quot;}}</code></li>
+<li><code>{&quot;Update&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;,&quot;property&quot;:&quot;prop&quot;,&quot;value&quot;:null,&quot;timestamp&quot;:&quot;2021-10-11T12:47:07.188090948Z&quot;}}</code> (to delete a property)</li>
+</ul>
+<p>Timestamps are in RFC3339 format with a <code>Z</code> suffix.</p>
+<h3 id="snapshot"><a class="header" href="#snapshot">Snapshot</a></h3>
+<p>The decrypted form of a snapshot is a JSON object mapping task IDs to task properties.
+For example (pretty-printed for clarity):</p>
+<pre><code class="language-json">{
+ &quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;: {
+   &quot;description&quot;: &quot;a task&quot;,
+   &quot;priority&quot;: &quot;H&quot;
+ },
+ &quot;4b7ed904-f7b0-4293-8a10-ad452422c7b3&quot;: {
+   &quot;description&quot;: &quot;another task&quot;
+ }
+}
+</code></pre>
+<h2 id="transactions"><a class="header" href="#transactions">Transactions</a></h2>
+<h3 id="addversion"><a class="header" href="#addversion">AddVersion</a></h3>
+<p>The AddVersion transaction requests that the server add a new version to the client's task history.
+The request contains the following;</p>
+<ul>
+<li>parent version ID</li>
+<li>history segment</li>
+</ul>
+<p>The server determines whether the new version is acceptable, atomically with respect to other requests for the same client.
+If it has no versions for the client, it accepts the version.
+If it already has one or more versions for the client, then it accepts the version only if the given parent version ID matches its stored latest parent ID.</p>
+<p>If the version is accepted, the server generates a new version ID for it.
+The version is added to the set of versions for the client, the client's latest version ID is set to the new version ID.
+The new version ID is returned in the response to the client.
+The response may also include a request for a snapshot, with associated urgency.</p>
+<p>If the version is not accepted, the server makes no changes, but responds to the client with a conflict indication containing the latest version ID.
+The client may then &quot;rebase&quot; its operations and try again.
+Note that if a client receives two conflict responses with the same parent version ID, it is an indication that the client's version history has diverged from that on the server.</p>
+<h3 id="getchildversion"><a class="header" href="#getchildversion">GetChildVersion</a></h3>
+<p>The GetChildVersion transaction is a read-only request for a version.
+The request consists of a parent version ID.
+The server searches its set of versions for a version with the given parent ID.
+If found, it returns the version's</p>
+<ul>
+<li>version ID,</li>
+<li>parent version ID (matching that in the request), and</li>
+<li>history segment.</li>
+</ul>
+<p>The response is either a version (success, <em>not-found</em>, or <em>gone</em>, as determined by the first of the following to apply:</p>
+<ul>
+<li>If a version with parentVersionId equal to the requested parentVersionId exists, it is returned.</li>
+<li>If the requested parentVersionId is the nil UUID ..
+<ul>
+<li>..and snapshotVersionId is nil, the response is <em>not-found</em> (the client has no versions).</li>
+<li>..and snapshotVersionId is not nil, the response is <em>gone</em> (the first version has been deleted).</li>
+</ul>
+</li>
+<li>If a version with versionId equal to the requested parentVersionId exists, the response is <em>not-found</em> (the client is up-to-date)</li>
+<li>Otherwise, the response is <em>gone</em> (the requested version has been deleted).</li>
+</ul>
+<h3 id="addsnapshot"><a class="header" href="#addsnapshot">AddSnapshot</a></h3>
+<p>The AddSnapshot transaction requests that the server store a new snapshot, generated by the client.
+The request contains the following:</p>
+<ul>
+<li>version ID at which the snapshot was made</li>
+<li>snapshot data (opaque to the server)</li>
+</ul>
+<p>The server should validate that the snapshot is for an existing version and is newer than any existing snapshot.
+It may also validate that the snapshot is for a &quot;recent&quot; version (e.g., one of the last 5 versions).
+If a snapshot already exists for the given version, the server may keep or discard the new snapshot but should return a success indication to the client.</p>
+<p>The server response is empty.</p>
+<h3 id="getsnapshot"><a class="header" href="#getsnapshot">GetSnapshot</a></h3>
+<p>The GetSnapshot transaction requests that the server provide the latest snapshot.
+The response contains the snapshot version ID and the snapshot data, if those exist.</p>
+<h2 id="http-representation"><a class="header" href="#http-representation">HTTP Representation</a></h2>
+<p>The transactions above are realized for an HTTP server at <code>&lt;origin&gt;</code> using the HTTP requests and responses described here.
+The <code>origin</code> <em>should</em> be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.</p>
+<p>The replica identifies itself to the server using a <code>clientKey</code> in the form of a UUID.
+This value is passed with every request in the <code>X-Client-Id</code> header, in its dashed-hex format.</p>
+<h3 id="addversion-1"><a class="header" href="#addversion-1">AddVersion</a></h3>
+<p>The request is a <code>POST</code> to <code>&lt;origin&gt;/v1/client/add-version/&lt;parentVersionId&gt;</code>.
+The request body contains the history segment, optionally encoded using any encoding supported by actix-web.
+The content-type must be <code>application/vnd.taskchampion.history-segment</code>.</p>
+<p>The success response is a 200 OK with an empty body.
+The new version ID appears in the <code>X-Version-Id</code> header.
+If included, a snapshot request appears in the <code>X-Snapshot-Request</code> header with value <code>urgency=low</code> or <code>urgency=high</code>.</p>
+<p>On conflict, the response is a 409 CONFLICT with an empty body.
+The expected parent version ID appears in the <code>X-Parent-Version-Id</code> header.</p>
+<p>Other error responses (4xx or 5xx) may be returned and should be treated appropriately to their meanings in the HTTP specification.</p>
+<h3 id="getchildversion-1"><a class="header" href="#getchildversion-1">GetChildVersion</a></h3>
+<p>The request is a <code>GET</code> to <code>&lt;origin&gt;/v1/client/get-child-version/&lt;parentVersionId&gt;</code>.</p>
+<p>The response is determined as described above.
+The <em>not-found</em> response is 404 NOT FOUND.
+The <em>gone</em> response is 410 GONE.
+Neither has a response body.</p>
+<p>On success, the response is a 200 OK.
+The version's history segment is returned in the response body, with content-type <code>application/vnd.taskchampion.history-segment</code>.
+The version ID appears in the <code>X-Version-Id</code> header.
+The response body may be encoded, in accordance with any <code>Accept-Encoding</code> header in the request.</p>
+<p>On failure, a client should treat a 404 NOT FOUND as indicating that it is up-to-date.
+Clients should treat a 410 GONE as a synchronization error.
+If the client has pending changes to send to the server, based on a now-removed version, then those changes cannot be reconciled and will be lost.
+The client should, optionally after consulting the user, download and apply the latest snapshot.</p>
+<h3 id="addsnapshot-1"><a class="header" href="#addsnapshot-1">AddSnapshot</a></h3>
+<p>The request is a <code>POST</code> to <code>&lt;origin&gt;/v1/client/add-snapshot/&lt;versionId&gt;</code>.
+The request body contains the snapshot data, optionally encoded using any encoding supported by actix-web.
+The content-type must be <code>application/vnd.taskchampion.snapshot</code>.</p>
+<p>If the version is invalid, as described above, the response should be 400 BAD REQUEST.
+The server response should be 200 OK on success.</p>
+<h3 id="getsnapshot-1"><a class="header" href="#getsnapshot-1">GetSnapshot</a></h3>
+<p>The request is a <code>GET</code> to <code>&lt;origin&gt;/v1/client/snapshot</code>.</p>
+<p>The response is a 200 OK.
+The snapshot is returned in the response body, with content-type <code>application/vnd.taskchampion.snapshot</code>.
+The version ID appears in the <code>X-Version-Id</code> header.
+The response body may be encoded, in accordance with any <code>Accept-Encoding</code> header in the request.</p>
+<p>After downloading and decrypting a snapshot, a client must replace its entire local task database with the content of the snapshot.
+Any local operations that had not yet been synchronized must be discarded.
+After the snapshot is applied, the client should begin the synchronization process again, starting from the snapshot version.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="snapshots.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="plans.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="snapshots.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="plans.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

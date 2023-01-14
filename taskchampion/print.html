@@ -1,0 +1,701 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>TaskChampion</title>
+                <meta name="robots" content="noindex" />
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="favicon.svg">
+                        <link rel="shortcut icon" href="favicon.png">
+                <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+                <link rel="stylesheet" href="css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="running-sync-server.html"><strong aria-hidden="true">1.1.</strong> Running the Sync Server</a></li></ol></li><li class="chapter-item expanded "><a href="internals.html"><strong aria-hidden="true">2.</strong> Internal Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="data-model.html"><strong aria-hidden="true">2.1.</strong> Data Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="storage.html"><strong aria-hidden="true">2.1.1.</strong> Replica Storage</a></li><li class="chapter-item expanded "><a href="taskdb.html"><strong aria-hidden="true">2.1.2.</strong> Task Database</a></li><li class="chapter-item expanded "><a href="tasks.html"><strong aria-hidden="true">2.1.3.</strong> Tasks</a></li></ol></li><li class="chapter-item expanded "><a href="sync.html"><strong aria-hidden="true">2.2.</strong> Synchronization and the Sync Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="sync-model.html"><strong aria-hidden="true">2.2.1.</strong> Synchronization Model</a></li><li class="chapter-item expanded "><a href="snapshots.html"><strong aria-hidden="true">2.2.2.</strong> Snapshots</a></li><li class="chapter-item expanded "><a href="sync-protocol.html"><strong aria-hidden="true">2.2.3.</strong> Server-Replica Protocol</a></li><li class="chapter-item expanded "><a href="plans.html"><strong aria-hidden="true">2.2.4.</strong> Planned Functionality</a></li></ol></li></ol></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">TaskChampion</h1>
+
+                    <div class="right-buttons">
+                                                <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+<p>As this is currently in development, installation is by cloning the repository and running &quot;cargo build&quot;.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="running-the-sync-server"><a class="header" href="#running-the-sync-server">Running the Sync Server</a></h1>
+<blockquote>
+<p>NOTE: TaskChampion is still in development and not yet feature-complete.
+The server is functional, but lacks any administrative features.</p>
+</blockquote>
+<p>Run <code>taskchampion-sync-server</code> to start the sync server.
+Use <code>--port</code> to specify the port it should listen on, and <code>--data-dir</code> to specify the directory which it should store its data.
+It only serves HTTP; the expectation is that a frontend proxy will be used for HTTPS support.</p>
+<p>The server has optional parameters <code>--snapshot-days</code> and <code>--snapshot-version</code>, giving the target number of days and versions, respectively, between snapshots of the client state.
+The default values for these parameters are generally adequate.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="internal-details"><a class="header" href="#internal-details">Internal Details</a></h1>
+<p>The following sections get into the details of how TaskChampion works.
+None of this information is necessary to use TaskChampion, but might be helpful in understanding its behavior.
+Developers of TaskChampion and of tools that integrate with TaskChampion should be familiar with this information.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="data-model"><a class="header" href="#data-model">Data Model</a></h1>
+<p>A client manages a single offline instance of a single user's task list, called a replica.
+This section covers the structure of that data.
+Note that this data model is visible only on the client; the server does not have access to client data.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="replica-storage"><a class="header" href="#replica-storage">Replica Storage</a></h1>
+<p>Each replica has a storage backend.
+The interface for this backend is given in <code>crate::taskstorage::Storage</code> and <code>StorageTxn</code>.</p>
+<p>The storage is transaction-protected, with the expectation of a serializable isolation level.
+The storage contains the following information:</p>
+<ul>
+<li><code>tasks</code>: a set of tasks, indexed by UUID</li>
+<li><code>base_version</code>: the number of the last version sync'd from the server (a single integer)</li>
+<li><code>operations</code>: all operations performed since base_version</li>
+<li><code>working_set</code>: a mapping from integer -&gt; UUID, used to keep stable small-integer indexes into the tasks for users' convenience.  This data is not synchronized with the server and does not affect any consistency guarantees.</li>
+</ul>
+<h2 id="tasks"><a class="header" href="#tasks">Tasks</a></h2>
+<p>The tasks are stored as an un-ordered collection, keyed by task UUID.
+Each task in the database has represented by a key-value map.
+See <a href="./tasks.html">Tasks</a> for details on the content of that map.</p>
+<h2 id="operations"><a class="header" href="#operations">Operations</a></h2>
+<p>Every change to the task database is captured as an operation.
+In other words, operations act as deltas between database states.
+Operations are crucial to synchronization of replicas, described in <a href="./sync-model.html">Synchronization Model</a>.</p>
+<p>Operations are entirely managed by the replica, and some combinations of operations are described as &quot;invalid&quot; here.
+A replica must not create invalid operations, but should be resilient to receiving invalid operations during a synchronization operation.</p>
+<p>Each operation has one of the forms </p>
+<ul>
+<li><code>Create(uuid)</code></li>
+<li><code>Delete(uuid, oldTask)</code></li>
+<li><code>Update(uuid, property, oldValue, newValue, timestamp)</code></li>
+<li><code>UndoPoint()</code></li>
+</ul>
+<p>The Create form creates a new task.
+It is invalid to create a task that already exists.</p>
+<p>Similarly, the Delete form deletes an existing task.
+It is invalid to delete a task that does not exist.
+The <code>oldTask</code> property contains the task data from before it was deleted.</p>
+<p>The Update form updates the given property of the given task, where the property and values are strings.
+The <code>oldValue</code> gives the old value of the property (or None to create a new property), while <code>newValue</code> gives the new value (or None to delete a property).
+It is invalid to update a task that does not exist.
+The timestamp on updates serves as additional metadata and is used to resolve conflicts.</p>
+<h3 id="application"><a class="header" href="#application">Application</a></h3>
+<p>Each operation can be &quot;applied&quot; to a task database in a natural way:</p>
+<ul>
+<li>Applying <code>Create</code> creates a new, empty task in the task database.</li>
+<li>Applying <code>Delete</code> deletes a task, including all of its properties, from the task database.</li>
+<li>Applying <code>Update</code> modifies the properties of a task.</li>
+<li>Applying <code>UndoPoint</code> does nothing.</li>
+</ul>
+<h3 id="undo"><a class="header" href="#undo">Undo</a></h3>
+<p>Each operation also contains enough information to reverse its application:</p>
+<ul>
+<li>Undoing <code>Create</code> deletes a task.</li>
+<li>Undoing <code>Delete</code> creates a task, including all of the properties in <code>oldTask</code>.</li>
+<li>Undoing <code>Update</code> modifies the properties of a task, reverting to <code>oldValue</code>.</li>
+<li>Undoing <code>UndoPoint</code> does nothing.</li>
+</ul>
+<p>The <code>UndoPoint</code> operation serves as a marker of points in the operation sequence to which the user might wish to undo.
+For example, creation of a new task with several properities involves several operations, but is a single step from the user's perspective.
+An &quot;undo&quot; command reverses operations, removing them from the operations sequence, until it reaches an <code>UndoPoint</code> operation.</p>
+<h3 id="synchronizing-operations"><a class="header" href="#synchronizing-operations">Synchronizing Operations</a></h3>
+<p>After operations are synchronized to the server, they can no longer be undone.
+As such, the <a href="./sync-model.html">synchronization model</a> uses simpler operations.
+Replica operations are converted to sync operations as follows:</p>
+<ul>
+<li><code>Create(uuid)</code> -&gt; <code>Create(uuid)</code> (no change)</li>
+<li><code>Delete(uuid, oldTask)</code> -&gt; <code>Delete(uuid)</code></li>
+<li><code>Update(uuid, property, oldValue, newValue, timestamp)</code> -&gt; <code>Update(uuid, property, newValue, timestamp)</code></li>
+<li><code>UndoPoint()</code> -&gt; Ø (dropped from operation sequence)</li>
+</ul>
+<p>Once a sequence of operations has been synchronized, there is no need to store those operations on the replica.
+The current implementation deletes operations at that time.
+An alternative approach is to keep operations for existing tasks, and provide access to those operations as a &quot;history&quot; of modifications to the task.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="task-database"><a class="header" href="#task-database">Task Database</a></h1>
+<p>The task database is a layer of abstraction above the replica storage layer, responsible for maintaining some important invariants.
+While the storage is pluggable, there is only one implementation of the task database.</p>
+<h2 id="reading-data"><a class="header" href="#reading-data">Reading Data</a></h2>
+<p>The task database provides read access to the data in the replica's storage through a variety of methods on the struct.
+Each read operation is executed in a transaction, so data may not be consistent between read operations.
+In practice, this is not an issue for TaskChampion's purposes.</p>
+<h2 id="working-set"><a class="header" href="#working-set">Working Set</a></h2>
+<p>The task database maintains the working set.
+The working set maps small integers to current tasks, for easy reference by command-line users.
+This is done in such a way that the task numbers remain stable until the working set is rebuilt, at which point gaps in the numbering, such as for completed tasks, are removed by shifting all higher-numbered tasks downward.</p>
+<p>The working set is not replicated, and is not considered a part of any consistency guarantees in the task database.</p>
+<h2 id="modifying-data"><a class="header" href="#modifying-data">Modifying Data</a></h2>
+<p>Modifications to the data set are made by applying operations.
+Operations are described in <a href="./storage.html">Replica Storage</a>.</p>
+<p>Each operation is added to the list of operations in the storage, and simultaneously applied to the tasks in that storage.
+Operations are checked for validity as they are applied.</p>
+<h2 id="deletion-and-expiration"><a class="header" href="#deletion-and-expiration">Deletion and Expiration</a></h2>
+<p>Deletion of a task merely changes the task's status to &quot;deleted&quot;, leaving it in the Task database.
+Actual removal of tasks from the task database takes place as part of <em>expiration</em>, triggered by the user as part of a garbage-collection process.
+Expiration removes tasks with a <code>modified</code> property more than 180 days in the past, by creating a <code>Delete(uuid)</code> operation.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tasks-1"><a class="header" href="#tasks-1">Tasks</a></h1>
+<p>Tasks are stored internally as a key/value map with string keys and values.
+All fields are optional: the <code>Create</code> operation creates an empty task.
+Display layers should apply appropriate defaults where necessary.</p>
+<h2 id="atomicity"><a class="header" href="#atomicity">Atomicity</a></h2>
+<p>The synchronization process does not support read-modify-write operations.
+For example, suppose tags are updated by reading a list of tags, adding a tag, and writing the result back.
+This would be captured as an <code>Update</code> operation containing the amended list of tags.
+Suppose two such <code>Update</code> operations are made in different replicas and must be reconciled:</p>
+<ul>
+<li><code>Update(&quot;d394be59-60e6-499e-b7e7-ca0142648409&quot;, &quot;tags&quot;, &quot;oldtag,newtag1&quot;, &quot;2020-11-23T14:21:22Z&quot;)</code></li>
+<li><code>Update(&quot;d394be59-60e6-499e-b7e7-ca0142648409&quot;, &quot;tags&quot;, &quot;oldtag,newtag2&quot;, &quot;2020-11-23T15:08:57Z&quot;)</code></li>
+</ul>
+<p>The result of this reconciliation will be <code>oldtag,newtag2</code>, while the user almost certainly intended <code>oldtag,newtag1,newtag2</code>.</p>
+<p>The key names given below avoid this issue, allowing user updates such as adding a tag or deleting a dependency to be represented in a single <code>Update</code> operation.</p>
+<h2 id="validity"><a class="header" href="#validity">Validity</a></h2>
+<p><em>Any</em> key/value map is a valid task.
+Consumers of task data must make a best effort to interpret any map, even if it contains apparently contradictory information.
+For example, a task with status &quot;completed&quot; but no &quot;end&quot; key present should be interpreted as completed at an unknown time.</p>
+<h2 id="representations"><a class="header" href="#representations">Representations</a></h2>
+<p>Integers are stored in decimal notation.</p>
+<p>Timestamps are stored as UNIX epoch timestamps, in the form of an integer.</p>
+<h2 id="keys"><a class="header" href="#keys">Keys</a></h2>
+<p>The following keys, and key formats, are defined:</p>
+<ul>
+<li><code>status</code> - one of <code>P</code> for a pending task (the default), <code>C</code> for completed, <code>D</code> for deleted, or <code>R</code> for recurring</li>
+<li><code>description</code> - the one-line summary of the task</li>
+<li><code>modified</code> - the time of the last modification of this task</li>
+<li><code>start</code> - the most recent time at which this task was started (a task with no <code>start</code> key is not active)</li>
+<li><code>end</code> - if present, the time at which this task was completed or deleted (note that this key may not agree with <code>status</code>: it may be present for a pending task, or absent for a deleted or completed task)</li>
+<li><code>tag_&lt;tag&gt;</code> - indicates this task has tag <code>&lt;tag&gt;</code> (value is an empty string)</li>
+<li><code>wait</code> - indicates the time before which this task should be hidden, as it is not actionable</li>
+<li><code>entry</code> - the time at which the task was created</li>
+<li><code>annotation_&lt;timestamp&gt;</code> - value is an annotation created at the given time</li>
+</ul>
+<p>Note that while TaskChampion recognizes &quot;recurring&quot; as a status, it does not implement recurrence directly.</p>
+<h3 id="udas"><a class="header" href="#udas">UDAs</a></h3>
+<p>Any unrecognized keys are treated as &quot;user-defined attributes&quot; (UDAs).
+These attributes can be used to store additional data associated with a task.
+For example, applications that synchronize tasks with other systems such as calendars or team planning services might store unique identifiers for those systems as UDAs.
+The application defining a UDA defines the format of the value.</p>
+<p>UDAs <em>should</em> have a namespaced structure of the form <code>&lt;namespace&gt;.&lt;key&gt;</code>, where <code>&lt;namespace&gt;</code> identifies the application defining the UDA.
+For example, a service named &quot;DevSync&quot; synchronizing tasks from GitHub might use UDAs like <code>devsync.github.issue-id</code>.
+Note that many existing UDAs for Taskwarrior integrations do not follow this pattern; these are referred to as legacy UDAs.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="synchronization-and-the-sync-server"><a class="header" href="#synchronization-and-the-sync-server">Synchronization and the Sync Server</a></h1>
+<p>This section covers <em>synchronization</em> of <em>replicas</em> containing the same set of tasks.
+A replica is can perform all operations locally without connecting to a sync server, then share those operations with other replicas when it connects.
+Sync is a critical feature of TaskChampion, allowing users to consult and update the same task list on multiple devices, without requiring constant connection.</p>
+<p>This is a complex topic, and the section is broken into several chapters, beginning at the lower levels of the implementation and working up.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="synchronization-model"><a class="header" href="#synchronization-model">Synchronization Model</a></h1>
+<p>The <a href="./taskdb.html">task database</a> also implements synchronization.
+Synchronization occurs between disconnected replicas, mediated by a server.
+The replicas never communicate directly with one another.
+The server does not have access to the task data; it sees only opaque blobs of data with a small amount of metadata.</p>
+<p>The synchronization process is a critical part of the task database's functionality, and it cannot function efficiently without occasional synchronization operations</p>
+<h2 id="operational-transforms"><a class="header" href="#operational-transforms">Operational Transforms</a></h2>
+<p>Synchronization is based on <a href="https://en.wikipedia.org/wiki/Operational_transformation">operational transformation</a>.
+This section will assume some familiarity with the concept.</p>
+<h2 id="state-and-operations"><a class="header" href="#state-and-operations">State and Operations</a></h2>
+<p>At a given time, the set of tasks in a replica's storage is the essential &quot;state&quot; of that replica.
+All modifications to that state occur via operations, as defined in <a href="./storage.html">Replica Storage</a>.
+We can draw a network, or graph, with the nodes representing states and the edges representing operations.
+For example:</p>
+<pre><code class="language-text">  o -- State: {abc-d123: 'get groceries', priority L}
+  |
+  | -- Operation: set abc-d123 priority to H
+  |
+  o -- State: {abc-d123: 'get groceries', priority H}
+</code></pre>
+<p>For those familiar with distributed version control systems, a state is analogous to a revision, while an operation is analogous to a commit.</p>
+<p>Fundamentally, synchronization involves all replicas agreeing on a single, linear sequence of operations and the state that those operations create.
+Since the replicas are not connected, each may have additional operations that have been applied locally, but which have not yet been agreed on.
+The synchronization process uses operational transformation to &quot;linearize&quot; those operations.
+This process is analogous (vaguely) to rebasing a sequence of Git commits.</p>
+<h3 id="sync-operations"><a class="header" href="#sync-operations">Sync Operations</a></h3>
+<p>The <a href="./storage.html">Replica Storage</a> model contains additional information in its operations that is not included in operations synchronized to other replicas.
+In this document, we will be discussing &quot;sync operations&quot; of the form</p>
+<ul>
+<li><code>Create(uuid)</code></li>
+<li><code>Delete(uuid)</code></li>
+<li><code>Update(uuid, property, value, timestamp)</code></li>
+</ul>
+<h3 id="versions"><a class="header" href="#versions">Versions</a></h3>
+<p>Occasionally, database states are given a name (that takes the form of a UUID).
+The system as a whole (all replicas) constructs a branch-free sequence of versions and the operations that separate each version from the next.
+The version with the nil UUID is implicitly the empty database.</p>
+<p>The server stores the operations to change a state from a &quot;parent&quot; version to a &quot;child&quot; version, and provides that information as needed to replicas.
+Replicas use this information to update their local task databases, and to generate new versions to send to the server.</p>
+<p>Replicas generate a new version to transmit local changes to the server.
+The changes are represented as a sequence of operations with the state resulting from the final operation corresponding to the version.
+In order to keep the versions in a single sequence, the server will only accept a proposed version from a replica if its parent version matches the latest version on the server.</p>
+<p>In the non-conflict case (such as with a single replica), then, a replica's synchronization process involves gathering up the operations it has accumulated since its last synchronization; bundling those operations into a version; and sending that version to the server.</p>
+<h3 id="replica-invariant"><a class="header" href="#replica-invariant">Replica Invariant</a></h3>
+<p>The replica's <a href="./storage.html">storage</a> contains the current state in <code>tasks</code>, the as-yet un-synchronized operations in <code>operations</code>, and the last version at which synchronization occurred in <code>base_version</code>.</p>
+<p>The replica's un-synchronized operations are already reflected in its local <code>tasks</code>, so the following invariant holds:</p>
+<blockquote>
+<p>Applying <code>operations</code> to the set of tasks at <code>base_version</code> gives a set of tasks identical
+to <code>tasks</code>.</p>
+</blockquote>
+<h3 id="transformation"><a class="header" href="#transformation">Transformation</a></h3>
+<p>When the latest version on the server contains operations that are not present in the replica, then the states have diverged.
+For example:</p>
+<pre><code class="language-text">  o  -- version N
+ w|\a
+  o o
+ x|  \b
+  o   o
+ y|    \c
+  o     o -- replica's local state
+ z|
+  o -- version N+1
+</code></pre>
+<p>(diagram notation: <code>o</code> designates a state, lower-case letters designate operations, and versions are presented as if they were numbered sequentially)</p>
+<p>In this situation, the replica must &quot;rebase&quot; the local operations onto the latest version from the server and try again.
+This process is performed using operational transformation (OT).
+The result of this transformation is a sequence of operations based on the latest version, and a sequence of operations the replica can apply to its local task database to reach the same state
+Continuing the example above, the resulting operations are shown with <code>'</code>:</p>
+<pre><code class="language-text">  o  -- version N
+ w|\a
+  o o
+ x|  \b
+  o   o
+ y|    \c
+  o     o -- replica's intermediate local state
+ z|     |w'
+  o-N+1 o
+ a'\    |x'
+    o   o
+   b'\  |y'
+      o o
+     c'\|z'
+        o  -- version N+2
+</code></pre>
+<p>The replica applies w' through z' locally, and sends a' through c' to the server as the operations to generate version N+2.
+Either path through this graph, a-b-c-w'-x'-y'-z' or a'-b'-c'-w-x-y-z, must generate <em>precisely</em> the same final state at version N+2.
+Careful selection of the operations and the transformation function ensure this.</p>
+<p>See the comments in the source code for the details of how this transformation process is implemented.</p>
+<h2 id="synchronization-process"><a class="header" href="#synchronization-process">Synchronization Process</a></h2>
+<p>To perform a synchronization, the replica first requests the child version of <code>base_version</code> from the server (GetChildVersion).
+It applies that version to its local <code>tasks</code>, rebases its local <code>operations</code> as described above, and updates <code>base_version</code>.
+The replica repeats this process until the server indicates no additional child versions exist.
+If there are no un-synchronized local operations, the process is complete.</p>
+<p>Otherwise, the replica creates a new version containing its local operations, giving its <code>base_version</code> as the parent version, and transmits that to the server (AddVersion).
+In most cases, this will succeed, but if another replica has created a new version in the interim, then the new version will conflict with that other replica's new version and the server will respond with the new expected parent version.
+In this case, the process repeats.
+If the server indicates a conflict twice with the same expected base version, that is an indication that the replica has diverged (something serious has gone wrong).</p>
+<h2 id="servers"><a class="header" href="#servers">Servers</a></h2>
+<p>A replica depends on periodic synchronization for performant operation.
+Without synchronization, its list of pending operations would grow indefinitely, and tasks could never be expired.
+So all replicas, even &quot;singleton&quot; replicas which do not replicate task data with any other replica, must synchronize periodically.</p>
+<p>TaskChampion provides a <code>LocalServer</code> for this purpose.
+It implements the <code>get_child_version</code> and <code>add_version</code> operations as described, storing data on-disk locally, all within the <code>ta</code> binary.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="snapshots"><a class="header" href="#snapshots">Snapshots</a></h1>
+<p>The basic synchronization model described in the previous page has a few shortcomings:</p>
+<ul>
+<li>servers must store an ever-increasing quantity of versions</li>
+<li>a new replica must download all versions since the beginning in order to derive the current state</li>
+</ul>
+<p>Snapshots allow TaskChampion to avoid both of these issues.
+A snapshot is a copy of the task database at a specific version.
+It is created by a replica, encrypted, and stored on the server.
+A new replica can simply download a recent snapshot and apply any additional versions synchronized since that snapshot was made.
+Servers can delete and reclaim space used by older versions, as long as newer snapshots are available.</p>
+<h2 id="snapshot-heuristics"><a class="header" href="#snapshot-heuristics">Snapshot Heuristics</a></h2>
+<p>A server implementation must answer a few questions:</p>
+<ul>
+<li>How often should snapshots be made?</li>
+<li>When can versions be deleted?</li>
+<li>When can snapshots be deleted?</li>
+</ul>
+<p>A critical invariant is that at least one snapshot must exist for any database that does not have a child of the nil version.
+This ensures that a new replica can always derive the latest state.</p>
+<p>Aside from that invariant, the server implementation can vary in its answers to these questions, with the following considerations:</p>
+<p>Snapshots should be made frequently enough that a new replica can initialize quickly.</p>
+<p>Existing replicas will fail to synchronize if they request a child version that has been deleted.
+This failure can cause data loss if the replica had local changes.
+It's conceivable that replicas may not sync for weeks or months if, for example, they are located on a home computer while the user is on holiday.</p>
+<h2 id="requesting-new-snapshots"><a class="header" href="#requesting-new-snapshots">Requesting New Snapshots</a></h2>
+<p>The server requests snapshots from replicas, indicating an urgency for the request.
+Some replicas, such as those running on PCs or servers, can produce a snapshot even at low urgency.
+Other replicas, in more restricted environments such as mobile devices, will only produce a snapshot at high urgency.
+This saves resources in these restricted environments.</p>
+<p>A snapshot must be made on a replica with no unsynchronized operations.
+As such, it only makes sense to request a snapshot in response to a successful AddVersion request.</p>
+<h2 id="handling-deleted-versions"><a class="header" href="#handling-deleted-versions">Handling Deleted Versions</a></h2>
+<p>When a replica requests a child version, the response must distinguish two cases:</p>
+<ol>
+<li>No such child version exists because the replica is up-to-date.</li>
+<li>No such child version exists because it has been deleted, and the replica must re-initialize itself.</li>
+</ol>
+<p>The details of this logic are covered in the <a href="./sync-protocol.html">Server-Replica Protocol</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="server-replica-protocol"><a class="header" href="#server-replica-protocol">Server-Replica Protocol</a></h1>
+<p>The server-replica protocol is defined abstractly in terms of request/response transactions from the replica to the server.
+This is made concrete in an HTTP representation.</p>
+<p>The protocol builds on the model presented in the previous chapter, and in particular on the synchronization process.</p>
+<h2 id="clients"><a class="header" href="#clients">Clients</a></h2>
+<p>From the server's perspective, replicas accessing the same task history are indistinguishable, so this protocol uses the term &quot;client&quot; to refer generically to all replicas replicating a single task history.</p>
+<p>Each client is identified and authenticated with a &quot;client key&quot;, known only to the server and to the replicas replicating the task history.</p>
+<h2 id="server"><a class="header" href="#server">Server</a></h2>
+<p>For each client, the server is responsible for storing the task history, in the form of a branch-free sequence of versions.
+It also stores the latest snapshot, if any exists.</p>
+<ul>
+<li>versions: a set of {versionId: UUID, parentVersionId: UUID, historySegment: bytes}</li>
+<li>latestVersionId: UUID</li>
+<li>snapshotVersionId: UUID</li>
+<li>snapshot: bytes</li>
+</ul>
+<p>For each client, it stores a set of versions as well as the latest version ID, defaulting to the nil UUID.
+Each version has a version ID, a parent version ID, and a history segment (opaque data containing the operations for that version).
+The server should maintain the following invariants for each client:</p>
+<ol>
+<li>latestVersionId is nil or exists in the set of versions.</li>
+<li>Given versions v1 and v2 for a client, with v1.versionId != v2.versionId and v1.parentVersionId != nil, v1.parentVersionId != v2.parentVersionId.
+In other words, versions do not branch.</li>
+<li>If snapshotVersionId is nil, then there is a version with parentVersionId == nil.</li>
+<li>If snapshotVersionId is not nil, then there is a version with parentVersionId = snapshotVersionId.</li>
+</ol>
+<p>Note that versions form a linked list beginning with the latestVersionId stored for the client. 
+This linked list need not continue back to a version with v.parentVersionId = nil.
+It may end at any point when v.parentVersionId is not found in the set of Versions.
+This observation allows the server to discard older versions.
+The third invariant prevents the server from discarding versions if there is no snapshot.
+The fourth invariant prevents the server from discarding versions newer than the snapshot.</p>
+<h2 id="data-formats"><a class="header" href="#data-formats">Data Formats</a></h2>
+<h3 id="encryption"><a class="header" href="#encryption">Encryption</a></h3>
+<p>The client configuration includes an encryption secret of arbitrary length and a clientId to identify itself.
+This section describes how that information is used to encrypt and decrypt data sent to the server (versions and snapshots).</p>
+<h4 id="key-derivation"><a class="header" href="#key-derivation">Key Derivation</a></h4>
+<p>The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 100,000 iterations.
+The salt is the SHA256 hash of the 16-byte form of the client key.</p>
+<h4 id="encryption-1"><a class="header" href="#encryption-1">Encryption</a></h4>
+<p>The client uses <a href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/aead.h.html">AEAD</a>, with algorithm CHACHA20_POLY1305.
+The client should generate a random nonce, noting that AEAD is <em>not secure</em> if a nonce is used repeatedly for the same key.</p>
+<p>AEAD supports additional authenticated data (AAD) which must be provided for both open and seal operations.
+In this protocol, the AAD is always 17 bytes of the form:</p>
+<ul>
+<li><code>app_id</code> (byte) - always 1</li>
+<li><code>version_id</code> (16 bytes) - 16-byte form of the version ID associated with this data
+<ul>
+<li>for versions (AddVersion, GetChildVersion), the <em>parent</em> version_id</li>
+<li>for snapshots (AddSnapshot, GetSnapshot), the snapshot version_id</li>
+</ul>
+</li>
+</ul>
+<p>The <code>app_id</code> field is for future expansion to handle other, non-task data using this protocol.
+Including it in the AAD ensures that such data cannot be confused with task data.</p>
+<p>Although the AEAD specification distinguishes ciphertext and tags, for purposes of this specification they are considered concatenated into a single bytestring as in BoringSSL's <code>EVP_AEAD_CTX_seal</code>.</p>
+<h4 id="representation"><a class="header" href="#representation">Representation</a></h4>
+<p>The final byte-stream is comprised of the following structure:</p>
+<ul>
+<li><code>version</code> (byte) - format version (always 1)</li>
+<li><code>nonce</code> (12 bytes) - encryption nonce</li>
+<li><code>ciphertext</code> (remaining bytes) - ciphertext from sealing operation</li>
+</ul>
+<p>The <code>version</code> field identifies this data format, and future formats will have a value other than 1 in this position.</p>
+<h3 id="version"><a class="header" href="#version">Version</a></h3>
+<p>The decrypted form of a version is a JSON array containing operations in the order they should be applied.
+Each operation has the form <code>{TYPE: DATA}</code>, for example:</p>
+<ul>
+<li><code>{&quot;Create&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;}}</code></li>
+<li><code>{&quot;Delete&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;}}</code></li>
+<li><code>{&quot;Update&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;,&quot;property&quot;:&quot;prop&quot;,&quot;value&quot;:&quot;v&quot;,&quot;timestamp&quot;:&quot;2021-10-11T12:47:07.188090948Z&quot;}}</code></li>
+<li><code>{&quot;Update&quot;:{&quot;uuid&quot;:&quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;,&quot;property&quot;:&quot;prop&quot;,&quot;value&quot;:null,&quot;timestamp&quot;:&quot;2021-10-11T12:47:07.188090948Z&quot;}}</code> (to delete a property)</li>
+</ul>
+<p>Timestamps are in RFC3339 format with a <code>Z</code> suffix.</p>
+<h3 id="snapshot"><a class="header" href="#snapshot">Snapshot</a></h3>
+<p>The decrypted form of a snapshot is a JSON object mapping task IDs to task properties.
+For example (pretty-printed for clarity):</p>
+<pre><code class="language-json">{
+ &quot;56e0be07-c61f-494c-a54c-bdcfdd52d2a7&quot;: {
+   &quot;description&quot;: &quot;a task&quot;,
+   &quot;priority&quot;: &quot;H&quot;
+ },
+ &quot;4b7ed904-f7b0-4293-8a10-ad452422c7b3&quot;: {
+   &quot;description&quot;: &quot;another task&quot;
+ }
+}
+</code></pre>
+<h2 id="transactions"><a class="header" href="#transactions">Transactions</a></h2>
+<h3 id="addversion"><a class="header" href="#addversion">AddVersion</a></h3>
+<p>The AddVersion transaction requests that the server add a new version to the client's task history.
+The request contains the following;</p>
+<ul>
+<li>parent version ID</li>
+<li>history segment</li>
+</ul>
+<p>The server determines whether the new version is acceptable, atomically with respect to other requests for the same client.
+If it has no versions for the client, it accepts the version.
+If it already has one or more versions for the client, then it accepts the version only if the given parent version ID matches its stored latest parent ID.</p>
+<p>If the version is accepted, the server generates a new version ID for it.
+The version is added to the set of versions for the client, the client's latest version ID is set to the new version ID.
+The new version ID is returned in the response to the client.
+The response may also include a request for a snapshot, with associated urgency.</p>
+<p>If the version is not accepted, the server makes no changes, but responds to the client with a conflict indication containing the latest version ID.
+The client may then &quot;rebase&quot; its operations and try again.
+Note that if a client receives two conflict responses with the same parent version ID, it is an indication that the client's version history has diverged from that on the server.</p>
+<h3 id="getchildversion"><a class="header" href="#getchildversion">GetChildVersion</a></h3>
+<p>The GetChildVersion transaction is a read-only request for a version.
+The request consists of a parent version ID.
+The server searches its set of versions for a version with the given parent ID.
+If found, it returns the version's</p>
+<ul>
+<li>version ID,</li>
+<li>parent version ID (matching that in the request), and</li>
+<li>history segment.</li>
+</ul>
+<p>The response is either a version (success, <em>not-found</em>, or <em>gone</em>, as determined by the first of the following to apply:</p>
+<ul>
+<li>If a version with parentVersionId equal to the requested parentVersionId exists, it is returned.</li>
+<li>If the requested parentVersionId is the nil UUID ..
+<ul>
+<li>..and snapshotVersionId is nil, the response is <em>not-found</em> (the client has no versions).</li>
+<li>..and snapshotVersionId is not nil, the response is <em>gone</em> (the first version has been deleted).</li>
+</ul>
+</li>
+<li>If a version with versionId equal to the requested parentVersionId exists, the response is <em>not-found</em> (the client is up-to-date)</li>
+<li>Otherwise, the response is <em>gone</em> (the requested version has been deleted).</li>
+</ul>
+<h3 id="addsnapshot"><a class="header" href="#addsnapshot">AddSnapshot</a></h3>
+<p>The AddSnapshot transaction requests that the server store a new snapshot, generated by the client.
+The request contains the following:</p>
+<ul>
+<li>version ID at which the snapshot was made</li>
+<li>snapshot data (opaque to the server)</li>
+</ul>
+<p>The server should validate that the snapshot is for an existing version and is newer than any existing snapshot.
+It may also validate that the snapshot is for a &quot;recent&quot; version (e.g., one of the last 5 versions).
+If a snapshot already exists for the given version, the server may keep or discard the new snapshot but should return a success indication to the client.</p>
+<p>The server response is empty.</p>
+<h3 id="getsnapshot"><a class="header" href="#getsnapshot">GetSnapshot</a></h3>
+<p>The GetSnapshot transaction requests that the server provide the latest snapshot.
+The response contains the snapshot version ID and the snapshot data, if those exist.</p>
+<h2 id="http-representation"><a class="header" href="#http-representation">HTTP Representation</a></h2>
+<p>The transactions above are realized for an HTTP server at <code>&lt;origin&gt;</code> using the HTTP requests and responses described here.
+The <code>origin</code> <em>should</em> be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.</p>
+<p>The replica identifies itself to the server using a <code>clientKey</code> in the form of a UUID.
+This value is passed with every request in the <code>X-Client-Id</code> header, in its dashed-hex format.</p>
+<h3 id="addversion-1"><a class="header" href="#addversion-1">AddVersion</a></h3>
+<p>The request is a <code>POST</code> to <code>&lt;origin&gt;/v1/client/add-version/&lt;parentVersionId&gt;</code>.
+The request body contains the history segment, optionally encoded using any encoding supported by actix-web.
+The content-type must be <code>application/vnd.taskchampion.history-segment</code>.</p>
+<p>The success response is a 200 OK with an empty body.
+The new version ID appears in the <code>X-Version-Id</code> header.
+If included, a snapshot request appears in the <code>X-Snapshot-Request</code> header with value <code>urgency=low</code> or <code>urgency=high</code>.</p>
+<p>On conflict, the response is a 409 CONFLICT with an empty body.
+The expected parent version ID appears in the <code>X-Parent-Version-Id</code> header.</p>
+<p>Other error responses (4xx or 5xx) may be returned and should be treated appropriately to their meanings in the HTTP specification.</p>
+<h3 id="getchildversion-1"><a class="header" href="#getchildversion-1">GetChildVersion</a></h3>
+<p>The request is a <code>GET</code> to <code>&lt;origin&gt;/v1/client/get-child-version/&lt;parentVersionId&gt;</code>.</p>
+<p>The response is determined as described above.
+The <em>not-found</em> response is 404 NOT FOUND.
+The <em>gone</em> response is 410 GONE.
+Neither has a response body.</p>
+<p>On success, the response is a 200 OK.
+The version's history segment is returned in the response body, with content-type <code>application/vnd.taskchampion.history-segment</code>.
+The version ID appears in the <code>X-Version-Id</code> header.
+The response body may be encoded, in accordance with any <code>Accept-Encoding</code> header in the request.</p>
+<p>On failure, a client should treat a 404 NOT FOUND as indicating that it is up-to-date.
+Clients should treat a 410 GONE as a synchronization error.
+If the client has pending changes to send to the server, based on a now-removed version, then those changes cannot be reconciled and will be lost.
+The client should, optionally after consulting the user, download and apply the latest snapshot.</p>
+<h3 id="addsnapshot-1"><a class="header" href="#addsnapshot-1">AddSnapshot</a></h3>
+<p>The request is a <code>POST</code> to <code>&lt;origin&gt;/v1/client/add-snapshot/&lt;versionId&gt;</code>.
+The request body contains the snapshot data, optionally encoded using any encoding supported by actix-web.
+The content-type must be <code>application/vnd.taskchampion.snapshot</code>.</p>
+<p>If the version is invalid, as described above, the response should be 400 BAD REQUEST.
+The server response should be 200 OK on success.</p>
+<h3 id="getsnapshot-1"><a class="header" href="#getsnapshot-1">GetSnapshot</a></h3>
+<p>The request is a <code>GET</code> to <code>&lt;origin&gt;/v1/client/snapshot</code>.</p>
+<p>The response is a 200 OK.
+The snapshot is returned in the response body, with content-type <code>application/vnd.taskchampion.snapshot</code>.
+The version ID appears in the <code>X-Version-Id</code> header.
+The response body may be encoded, in accordance with any <code>Accept-Encoding</code> header in the request.</p>
+<p>After downloading and decrypting a snapshot, a client must replace its entire local task database with the content of the snapshot.
+Any local operations that had not yet been synchronized must be discarded.
+After the snapshot is applied, the client should begin the synchronization process again, starting from the snapshot version.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="planned-functionality"><a class="header" href="#planned-functionality">Planned Functionality</a></h1>
+<p>This section is a bit of a to-do list for additional functionality to add to the synchronzation system.
+Each feature has some discussion of how it might be implemented.</p>
+<h2 id="snapshots-1"><a class="header" href="#snapshots-1">Snapshots</a></h2>
+<p>As designed, storage required on the server would grow with time, as would the time required for new clients to update to the latest version.
+As an optimization, the server also stores &quot;snapshots&quot; containing a full copy of the task database at a given version.
+Based on configurable heuristics, it may delete older operations and snapshots, as long as enough data remains for active clients to synchronize and for new clients to initialize.</p>
+<p>Since snapshots must be computed by clients, the server may &quot;request&quot; a snapshot when providing the latest version to a client.
+This request comes with a number indicating how much it 'wants&quot; the snapshot.
+Clients which can easily generate and transmit a snapshot should be generous to the server, while clients with more limited resources can wait until the server's requests are more desperate.
+The intent is, where possible, to request snapshots created on well-connected desktop clients over mobile and low-power clients.</p>
+<h2 id="encryption-and-signing"><a class="header" href="#encryption-and-signing">Encryption and Signing</a></h2>
+<p>From the server's perspective, all data except for version numbers are opaque binary blobs.
+Clients encrypt and sign these blobs using a symmetric key known only to the clients.
+This secures the data at-rest on the server.
+Note that privacy is not complete, as the server still has some information about users, including source and frequency of synchronization transactions and size of those transactions.</p>
+<h2 id="backups"><a class="header" href="#backups">Backups</a></h2>
+<p>In this design, the server is little more than an authenticated storage for encrypted blobs provided by the client.
+To allow for failure or data loss on the server, clients are expected to cache these blobs locally for a short time (a week), along with a server-provided HMAC signature.
+When data loss is detected -- such as when a client expects the server to have a version N or higher, and the server only has N-1, the client can send those blobs to the server.
+The server can validate the HMAC and, if successful, add the blobs to its datastore.</p>
+<h2 id="expiration"><a class="header" href="#expiration">Expiration</a></h2>
+<p>Deleted tasks remain in the task database, and are simply hidden in most views.
+All tasks have an expiration time after which they may be flushed, preventing unbounded increase in task database size.
+However, purging of a task does not satisfy the necessary OT guarantees, so some further formal design work is required before this is implemented.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+                        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+                
+    </body>
+</html>
