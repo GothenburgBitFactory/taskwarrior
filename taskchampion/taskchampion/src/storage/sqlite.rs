@@ -113,7 +113,7 @@ struct Txn<'t> {
 }
 
 impl<'t> Txn<'t> {
-    fn get_txn(&self) -> core::result::Result<&rusqlite::Transaction<'t>, SqliteError> {
+    fn get_txn(&self) -> std::result::Result<&rusqlite::Transaction<'t>, SqliteError> {
         self.txn
             .as_ref()
             .ok_or(SqliteError::TransactionAlreadyCommitted)
@@ -305,7 +305,7 @@ impl<'t> StorageTxn for Txn<'t> {
             })
             .context("Get working set query")?;
 
-        let rows: Vec<core::result::Result<(usize, Uuid), _>> = rows.collect();
+        let rows: Vec<std::result::Result<(usize, Uuid), _>> = rows.collect();
         let mut res = Vec::with_capacity(rows.len());
         for _ in 0..self
             .get_next_working_set_number()

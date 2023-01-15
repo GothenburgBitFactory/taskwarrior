@@ -7,7 +7,7 @@ use thiserror::Error;
 pub enum Error {
     /// A crypto-related error
     #[error("Crypto Error: {0}")]
-    Crypto(String),
+    Server(String),
     /// A task-database-related error
     #[error("Task Database Error: {0}")]
     Database(String),
@@ -18,7 +18,7 @@ pub enum Error {
     OutOfSync,
     /// A usage error
     #[error("User Error: {0}")]
-    UserError(String),
+    Usage(String),
 
     /// Error conversions.
     #[error(transparent)]
@@ -35,4 +35,4 @@ pub enum Error {
     Sqlite(#[from] crate::storage::sqlite::SqliteError),
 }
 
-pub type Result<T> = core::result::Result<T, Error>;
+pub type Result<T> = std::result::Result<T, Error>;

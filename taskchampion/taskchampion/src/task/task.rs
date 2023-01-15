@@ -418,7 +418,7 @@ impl<'r> TaskMut<'r> {
     /// Add a tag to this task.  Does nothing if the tag is already present.
     pub fn add_tag(&mut self, tag: &Tag) -> Result<()> {
         if tag.is_synthetic() {
-            return Err(Error::UserError(String::from(
+            return Err(Error::Usage(String::from(
                 "Synthetic tags cannot be modified",
             )));
         }
@@ -428,7 +428,7 @@ impl<'r> TaskMut<'r> {
     /// Remove a tag from this task.  Does nothing if the tag is not present.
     pub fn remove_tag(&mut self, tag: &Tag) -> Result<()> {
         if tag.is_synthetic() {
-            return Err(Error::UserError(String::from(
+            return Err(Error::Usage(String::from(
                 "Synthetic tags cannot be modified",
             )));
         }
@@ -476,7 +476,7 @@ impl<'r> TaskMut<'r> {
     ) -> Result<()> {
         let key = key.into();
         if Task::is_known_key(&key) {
-            return Err(Error::UserError(format!(
+            return Err(Error::Usage(format!(
                 "Property name {} as special meaning in a task and cannot be used as a UDA",
                 key
             )));
@@ -488,7 +488,7 @@ impl<'r> TaskMut<'r> {
     pub fn remove_legacy_uda(&mut self, key: impl Into<String>) -> Result<()> {
         let key = key.into();
         if Task::is_known_key(&key) {
-            return Err(Error::UserError(format!(
+            return Err(Error::Usage(format!(
                 "Property name {} as special meaning in a task and cannot be used as a UDA",
                 key
             )));

@@ -10,7 +10,7 @@ use uuid::Uuid;
 pub(super) struct SnapshotTasks(Vec<(Uuid, TaskMap)>);
 
 impl Serialize for SnapshotTasks {
-    fn serialize<'a, S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
+    fn serialize<'a, S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
@@ -31,7 +31,7 @@ impl<'de> Visitor<'de> for TaskDbVisitor {
         formatter.write_str("a map representing a task snapshot")
     }
 
-    fn visit_map<M>(self, mut access: M) -> core::result::Result<Self::Value, M::Error>
+    fn visit_map<M>(self, mut access: M) -> std::result::Result<Self::Value, M::Error>
     where
         M: MapAccess<'de>,
     {
@@ -46,7 +46,7 @@ impl<'de> Visitor<'de> for TaskDbVisitor {
 }
 
 impl<'de> Deserialize<'de> for SnapshotTasks {
-    fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
