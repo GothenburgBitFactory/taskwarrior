@@ -136,12 +136,12 @@ struct Envelope<'a> {
 impl<'a> Envelope<'a> {
     fn from_bytes(buf: &'a [u8]) -> Result<Envelope<'a>> {
         if buf.len() <= 1 + aead::NONCE_LEN {
-            return Err(Error::Crypto(String::from("envelope is too small")));
+            return Err(Error::Server(String::from("envelope is too small")));
         }
 
         let version = buf[0];
         if version != ENVELOPE_VERSION {
-            return Err(Error::Crypto(format!(
+            return Err(Error::Server(format!(
                 "unrecognized encryption envelope version {}",
                 version
             )));
@@ -191,7 +191,7 @@ impl Sealed {
                 payload,
             })
         } else {
-            Err(Error::Crypto(String::from(
+            Err(Error::Server(String::from(
                 "Response did not have expected content-type",
             )))
         }
