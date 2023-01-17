@@ -4,6 +4,10 @@ use std::ffi::{CStr, CString, OsString};
 use std::os::raw::c_char;
 use std::path::PathBuf;
 
+#[ffizz_header::item]
+#[ffizz(order = 200)]
+/// ***** TCString *****
+///
 /// TCString supports passing strings into and out of the TaskChampion API.
 ///
 /// # Rust Strings and C Strings
@@ -41,7 +45,15 @@ use std::path::PathBuf;
 /// for such a value.
 ///
 /// TCString is not threadsafe.
-/// cbindgen:field-names=[ptr, _u1, _u2, _u3]
+///
+/// ```c
+/// typedef struct TCString {
+///   void *ptr;   // opaque, but may be checked for NULL
+///   size_t _u1;  // reserved
+///   size_t _u2;  // reserved
+///   uint8_t _u3; // reserved
+/// } TCString;
+/// ```
 #[repr(C)]
 pub struct TCString {
     // defined based on the type
@@ -360,19 +372,36 @@ where
     rv
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 210)]
+/// ***** TCStringList *****
+///
 /// TCStringList represents a list of strings.
 ///
 /// The content of this struct must be treated as read-only.
+///
+/// ```c
+/// typedef struct TCStringList {
+///   // number of strings in items
+///   size_t len;
+///   // reserved
+///   size_t _u1;
+///   // TCStringList representing each string. These remain owned by the TCStringList instance and will
+///   // be freed by tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
+///   // *TCStringList at indexes 0..len-1 are not NULL.
+///   struct TCString *items;
+/// } TCStringList;
+/// ```
 #[repr(C)]
 pub struct TCStringList {
     /// number of strings in items
     len: libc::size_t,
 
     /// total size of items (internal use only)
-    _capacity: libc::size_t,
+    capacity: libc::size_t,
 
-    /// TCStringList representing each string. these remain owned by the TCStringList instance and will
-    /// be freed by tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
+    /// Array of strings. These remain owned by the TCStringList instance and will be freed by
+    /// tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
     /// *TCStringList at indexes 0..len-1 are not NULL.
     items: *mut TCString,
 }
@@ -383,7 +412,7 @@ impl CList for TCStringList {
     unsafe fn from_raw_parts(items: *mut Self::Element, len: usize, cap: usize) -> Self {
         TCStringList {
             len,
-            _capacity: cap,
+            capacity: cap,
             items,
         }
     }
@@ -398,10 +427,12 @@ impl CList for TCStringList {
     }
 
     fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
-        (self.items, self.len, self._capacity)
+        (self.items, self.len, self.capacity)
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 201)]
 /// Create a new TCString referencing the given C string.  The C string must remain valid and
 /// unchanged until after the TCString is freed.  It's typically easiest to ensure this by using a
 /// static string.
@@ -415,6 +446,10 @@ impl CList for TCStringList {
 /// char *url = get_item_url(..); // dynamically allocate C string
 /// tc_task_annotate(task, tc_string_borrow(url)); // TCString created, passed, and freed
 /// free(url); // string is no longer referenced and can be freed
+/// ```
+///
+/// ```c
+/// EXTERN_C struct TCString tc_string_borrow(const char *cstr);
 /// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> TCString {
@@ -430,8 +465,14 @@ pub unsafe extern "C" fn tc_string_borrow(cstr: *const libc::c_char) -> TCString
     unsafe { TCString::return_val(RustString::CStr(cstr)) }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 201)]
 /// Create a new TCString by cloning the content of the given C string.  The resulting TCString
 /// is independent of the given string, which can be freed or overwritten immediately.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_string_clone(const char *cstr);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> TCString {
     debug_assert!(!cstr.is_null());
@@ -447,6 +488,8 @@ pub unsafe extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> TCString 
     unsafe { TCString::return_val(RustString::CString(cstring)) }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 201)]
 /// Create a new TCString containing the given string with the given length. This allows creation
 /// of strings containing embedded NUL characters.  As with `tc_string_clone`, the resulting
 /// TCString is independent of the passed buffer, which may be reused or freed immediately.
@@ -454,6 +497,10 @@ pub unsafe extern "C" fn tc_string_clone(cstr: *const libc::c_char) -> TCString 
 /// The length should _not_ include any trailing NUL.
 ///
 /// The given length must be less than half the maximum value of usize.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_string_clone_with_len(const char *buf, size_t len);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_clone_with_len(
     buf: *const libc::c_char,
@@ -477,6 +524,8 @@ pub unsafe extern "C" fn tc_string_clone_with_len(
     unsafe { TCString::return_val(RustString::Bytes(vec)) }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 201)]
 /// Get the content of the string as a regular C string.  The given string must be valid.  The
 /// returned value is NULL if the string contains NUL bytes or (in some cases) invalid UTF-8.  The
 /// returned C string is valid until the TCString is freed or passed to another TC API function.
@@ -488,6 +537,10 @@ pub unsafe extern "C" fn tc_string_clone_with_len(
 /// terminator.  The pointer must not be NULL.
 ///
 /// This function does _not_ take ownership of the TCString.
+///
+/// ```c
+/// EXTERN_C const char *tc_string_content(const struct TCString *tcstring);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_content(tcstring: *const TCString) -> *const libc::c_char {
     // SAFETY;
@@ -514,6 +567,8 @@ pub unsafe extern "C" fn tc_string_content(tcstring: *const TCString) -> *const 
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 201)]
 /// Get the content of the string as a pointer and length.  The given string must not be NULL.
 /// This function can return any string, even one including NUL bytes or invalid UTF-8.  The
 /// returned buffer is valid until the TCString is freed or passed to another TaskChampio
@@ -523,6 +578,10 @@ pub unsafe extern "C" fn tc_string_content(tcstring: *const TCString) -> *const 
 /// terminator.  The pointer must not be NULL.
 ///
 /// This function does _not_ take ownership of the TCString.
+///
+/// ```c
+/// EXTERN_C const char *tc_string_content_with_len(const struct TCString *tcstring, size_t *len_out);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_content_with_len(
     tcstring: *const TCString,
@@ -546,8 +605,14 @@ pub unsafe extern "C" fn tc_string_content_with_len(
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 201)]
 /// Free a TCString.  The given string must not be NULL.  The string must not be used
 /// after this function returns, and must not be freed more than once.
+///
+/// ```c
+/// EXTERN_C void tc_string_free(struct TCString *tcstring);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_free(tcstring: *mut TCString) {
     // SAFETY:
@@ -556,10 +621,16 @@ pub unsafe extern "C" fn tc_string_free(tcstring: *mut TCString) {
     drop(unsafe { TCString::take_val_from_arg(tcstring, TCString::default()) });
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 211)]
 /// Free a TCStringList instance.  The instance, and all TCStringList it contains, must not be used after
 /// this call.
 ///
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCStringList.
+///
+/// ```c
+/// EXTERN_C void tc_string_list_free(struct TCStringList *tcstrings);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_string_list_free(tcstrings: *mut TCStringList) {
     // SAFETY:
@@ -579,7 +650,7 @@ mod test {
         let tcstrings = unsafe { TCStringList::return_val(Vec::new()) };
         assert!(!tcstrings.items.is_null());
         assert_eq!(tcstrings.len, 0);
-        assert_eq!(tcstrings._capacity, 0);
+        assert_eq!(tcstrings.capacity, 0);
     }
 
     #[test]
@@ -589,7 +660,7 @@ mod test {
         unsafe { tc_string_list_free(&mut tcstrings) };
         assert!(tcstrings.items.is_null());
         assert_eq!(tcstrings.len, 0);
-        assert_eq!(tcstrings._capacity, 0);
+        assert_eq!(tcstrings.capacity, 0);
     }
 
     const INVALID_UTF8: &[u8] = b"abc\xf0\x28\x8c\x28";

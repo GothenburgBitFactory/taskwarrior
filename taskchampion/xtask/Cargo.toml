@@ -5,4 +5,4 @@ edition = "2018"
 
 [dependencies]
 anyhow = "1.0"
-cbindgen = "0.24.3"
+taskchampion-lib = { path = "../lib" }

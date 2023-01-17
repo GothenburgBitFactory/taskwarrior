@@ -2,6 +2,10 @@ use crate::traits::*;
 use crate::types::*;
 use taskchampion::{Uuid, WorkingSet};
 
+#[ffizz_header::item]
+#[ffizz(order = 1100)]
+/// ***** TCWorkingSet *****
+///
 /// A TCWorkingSet represents a snapshot of the working set for a replica.  It is not automatically
 /// updated based on changes in the replica.  Its lifetime is independent of the replica and it can
 /// be freed at any time.
@@ -23,6 +27,10 @@ use taskchampion::{Uuid, WorkingSet};
 /// Once passed to `tc_replica_free`, a `*TCWorkingSet` becomes invalid and must not be used again.
 ///
 /// TCWorkingSet is not threadsafe.
+///
+/// ```c
+/// typedef struct TCWorkingSet TCWorkingSet;
+/// ```
 pub struct TCWorkingSet(WorkingSet);
 
 impl PassByPointer for TCWorkingSet {}
@@ -45,20 +53,38 @@ where
     f(&tcws.0)
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 1101)]
 /// Get the working set's length, or the number of UUIDs it contains.
+///
+/// ```c
+/// EXTERN_C size_t tc_working_set_len(struct TCWorkingSet *ws);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_working_set_len(ws: *mut TCWorkingSet) -> usize {
     wrap(ws, |ws| ws.len())
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 1101)]
 /// Get the working set's largest index.
+///
+/// ```c
+/// EXTERN_C size_t tc_working_set_largest_index(struct TCWorkingSet *ws);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_working_set_largest_index(ws: *mut TCWorkingSet) -> usize {
     wrap(ws, |ws| ws.largest_index())
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 1101)]
 /// Get the UUID for the task at the given index.  Returns true if the UUID exists in the working
 /// set.  If not, returns false and does not change uuid_out.
+///
+/// ```c
+/// EXTERN_C bool tc_working_set_by_index(struct TCWorkingSet *ws, size_t index, struct TCUuid *uuid_out);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_working_set_by_index(
     ws: *mut TCWorkingSet,
@@ -79,8 +105,14 @@ pub unsafe extern "C" fn tc_working_set_by_index(
     })
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 1101)]
 /// Get the working set index for the task with the given UUID.  Returns 0 if the task is not in
 /// the working set.
+///
+/// ```c
+/// EXTERN_C size_t tc_working_set_by_uuid(struct TCWorkingSet *ws, struct TCUuid uuid);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_working_set_by_uuid(ws: *mut TCWorkingSet, uuid: TCUuid) -> usize {
     wrap(ws, |ws| {
@@ -91,8 +123,14 @@ pub unsafe extern "C" fn tc_working_set_by_uuid(ws: *mut TCWorkingSet, uuid: TCU
     })
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 1102)]
 /// Free a TCWorkingSet.  The given value must not be NULL.  The value must not be used after this
 /// function returns, and must not be freed more than once.
+///
+/// ```c
+/// EXTERN_C void tc_working_set_free(struct TCWorkingSet *ws);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_working_set_free(ws: *mut TCWorkingSet) {
     // SAFETY:

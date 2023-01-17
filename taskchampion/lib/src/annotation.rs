@@ -2,6 +2,10 @@ use crate::traits::*;
 use crate::types::*;
 use taskchampion::chrono::prelude::*;
 
+#[ffizz_header::item]
+#[ffizz(order = 400)]
+/// ***** TCAnnotation *****
+///
 /// TCAnnotation contains the details of an annotation.
 ///
 /// # Safety
@@ -17,6 +21,15 @@ use taskchampion::chrono::prelude::*;
 ///    after the call returns.  In fact, the value will be zeroed out to ensure this.
 ///
 /// TCAnnotations are not threadsafe.
+///
+/// ```c
+/// typedef struct TCAnnotation {
+///   // Time the annotation was made.  Must be nonzero.
+///   time_t entry;
+///   // Content of the annotation.  Must not be NULL.
+///   TCString description;
+/// } TCAnnotation;
+/// ```
 #[repr(C)]
 pub struct TCAnnotation {
     /// Time the annotation was made.  Must be nonzero.
@@ -62,18 +75,34 @@ impl Default for TCAnnotation {
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 410)]
+/// ***** TCAnnotationList *****
+///
 /// TCAnnotationList represents a list of annotations.
 ///
 /// The content of this struct must be treated as read-only.
+///
+/// ```c
+/// typedef struct TCAnnotationList {
+///   // number of annotations in items
+///   size_t len;
+///   // reserved
+///   size_t _u1;
+///   // Array of annotations. These remain owned by the TCAnnotationList instance and will be freed by
+///   // tc_annotation_list_free.  This pointer is never NULL for a valid TCAnnotationList.
+///   struct TCAnnotation *items;
+/// } TCAnnotationList;
+/// ```
 #[repr(C)]
 pub struct TCAnnotationList {
     /// number of annotations in items
     len: libc::size_t,
 
     /// total size of items (internal use only)
-    _capacity: libc::size_t,
+    capacity: libc::size_t,
 
-    /// array of annotations. these remain owned by the TCAnnotationList instance and will be freed by
+    /// Array of annotations. These remain owned by the TCAnnotationList instance and will be freed by
     /// tc_annotation_list_free.  This pointer is never NULL for a valid TCAnnotationList.
     items: *mut TCAnnotation,
 }
@@ -84,7 +113,7 @@ impl CList for TCAnnotationList {
     unsafe fn from_raw_parts(items: *mut Self::Element, len: usize, cap: usize) -> Self {
         TCAnnotationList {
             len,
-            _capacity: cap,
+            capacity: cap,
             items,
         }
     }
@@ -99,12 +128,18 @@ impl CList for TCAnnotationList {
     }
 
     fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
-        (self.items, self.len, self._capacity)
+        (self.items, self.len, self.capacity)
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 401)]
 /// Free a TCAnnotation instance.  The instance, and the TCString it contains, must not be used
 /// after this call.
+///
+/// ```c
+/// EXTERN_C void tc_annotation_free(struct TCAnnotation *tcann);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_annotation_free(tcann: *mut TCAnnotation) {
     debug_assert!(!tcann.is_null());
@@ -115,10 +150,16 @@ pub unsafe extern "C" fn tc_annotation_free(tcann: *mut TCAnnotation) {
     drop(annotation);
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 411)]
 /// Free a TCAnnotationList instance.  The instance, and all TCAnnotations it contains, must not be used after
 /// this call.
 ///
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCAnnotationList.
+///
+/// ```c
+/// EXTERN_C void tc_annotation_list_free(struct TCAnnotationList *tcanns);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_annotation_list_free(tcanns: *mut TCAnnotationList) {
     // SAFETY:
@@ -137,7 +178,7 @@ mod test {
         let tcanns = unsafe { TCAnnotationList::return_val(Vec::new()) };
         assert!(!tcanns.items.is_null());
         assert_eq!(tcanns.len, 0);
-        assert_eq!(tcanns._capacity, 0);
+        assert_eq!(tcanns.capacity, 0);
     }
 
     #[test]
@@ -147,6 +188,6 @@ mod test {
         unsafe { tc_annotation_list_free(&mut tcanns) };
         assert!(tcanns.items.is_null());
         assert_eq!(tcanns.len, 0);
-        assert_eq!(tcanns._capacity, 0);
+        assert_eq!(tcanns.capacity, 0);
     }
 }
