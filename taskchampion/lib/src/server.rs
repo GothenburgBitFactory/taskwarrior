@@ -3,12 +3,20 @@ use crate::types::*;
 use crate::util::err_to_ruststring;
 use taskchampion::{Server, ServerConfig};
 
+#[ffizz_header::item]
+#[ffizz(order = 800)]
+/// ***** TCServer *****
+///
 /// TCServer represents an interface to a sync server.  Aside from new and free, a server
 /// has no C-accessible API, but is designed to be passed to `tc_replica_sync`.
 ///
 /// ## Safety
 ///
 /// TCServer are not threadsafe, and must not be used with multiple replicas simultaneously.
+///
+/// ```c
+/// typedef struct TCServer TCServer;
+/// ```
 pub struct TCServer(Box<dyn Server>);
 
 impl PassByPointer for TCServer {}
@@ -53,6 +61,8 @@ where
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 801)]
 /// Create a new TCServer that operates locally (on-disk).  See the TaskChampion docs for the
 /// description of the arguments.
 ///
@@ -60,6 +70,10 @@ where
 /// returned.  The caller must free this string.
 ///
 /// The server must be freed after it is used - tc_replica_sync does not automatically free it.
+///
+/// ```c
+/// EXTERN_C struct TCServer *tc_server_new_local(struct TCString server_dir, struct TCString *error_out);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_new_local(
     server_dir: TCString,
@@ -83,6 +97,8 @@ pub unsafe extern "C" fn tc_server_new_local(
     )
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 801)]
 /// Create a new TCServer that connects to a remote server.  See the TaskChampion docs for the
 /// description of the arguments.
 ///
@@ -90,6 +106,13 @@ pub unsafe extern "C" fn tc_server_new_local(
 /// returned.  The caller must free this string.
 ///
 /// The server must be freed after it is used - tc_replica_sync does not automatically free it.
+///
+/// ```c
+/// EXTERN_C struct TCServer *tc_server_new_remote(struct TCString origin,
+///                                       struct TCUuid client_key,
+///                                       struct TCString encryption_secret,
+///                                       struct TCString *error_out);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_new_remote(
     origin: TCString,
@@ -129,8 +152,14 @@ pub unsafe extern "C" fn tc_server_new_remote(
     )
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 802)]
 /// Free a server.  The server may not be used after this function returns and must not be freed
 /// more than once.
+///
+/// ```c
+/// EXTERN_C void tc_server_free(struct TCServer *server);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_free(server: *mut TCServer) {
     debug_assert!(!server.is_null());
