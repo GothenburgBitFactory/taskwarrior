@@ -1,10 +1,21 @@
 use crate::traits::*;
 use crate::types::*;
 
+#[ffizz_header::item]
+#[ffizz(order = 600)]
+/// ***** TCKV *****
+///
 /// TCKV contains a key/value pair that is part of a task.
 ///
 /// Neither key nor value are ever NULL.  They remain owned by the TCKV and
 /// will be freed when it is freed with tc_kv_list_free.
+///
+/// ```c
+/// typedef struct TCKV {
+///   struct TCString key;
+///   struct TCString value;
+/// } TCKV;
+/// ```
 #[repr(C)]
 pub struct TCKV {
     pub key: TCString,
@@ -37,9 +48,25 @@ impl PassByValue for TCKV {
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 610)]
+/// ***** TCKVList *****
+///
 /// TCKVList represents a list of key/value pairs.
 ///
 /// The content of this struct must be treated as read-only.
+///
+/// ```c
+/// typedef struct TCKVList {
+///   // number of key/value pairs in items
+///   size_t len;
+///   // reserved
+///   size_t _u1;
+///   // Array of TCKV's. These remain owned by the TCKVList instance and will be freed by
+///   // tc_kv_list_free.  This pointer is never NULL for a valid TCKVList.
+///   struct TCKV *items;
+/// } TCKVList;
+/// ```
 #[repr(C)]
 pub struct TCKVList {
     /// number of key/value pairs in items
@@ -48,7 +75,7 @@ pub struct TCKVList {
     /// total size of items (internal use only)
     _capacity: libc::size_t,
 
-    /// array of TCKV's. these remain owned by the TCKVList instance and will be freed by
+    /// Array of TCKV's. These remain owned by the TCKVList instance and will be freed by
     /// tc_kv_list_free.  This pointer is never NULL for a valid TCKVList.
     items: *mut TCKV,
 }
@@ -78,10 +105,18 @@ impl CList for TCKVList {
     }
 }
 
+// NOTE: callers never have a TCKV that is not in a list, so there is no tc_kv_free.
+
+#[ffizz_header::item]
+#[ffizz(order = 611)]
 /// Free a TCKVList instance.  The instance, and all TCKVs it contains, must not be used after
 /// this call.
 ///
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCKVList.
+///
+/// ```c
+/// EXTERN_C void tc_kv_list_free(struct TCKVList *tckvs);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_kv_list_free(tckvs: *mut TCKVList) {
     // SAFETY:

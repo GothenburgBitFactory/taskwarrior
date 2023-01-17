@@ -13,9 +13,11 @@ fn build_bindings_tests(suites: &[&'static str]) {
         "UNITY_OUTPUT_CHAR_HEADER_DECLARATION",
         "test_output(char c)",
     );
-    build.file("src/bindings_tests/unity/unity.c");
 
-    let mut files = vec!["src/bindings_tests/test.c".to_string()];
+    let mut files = vec![
+        "src/bindings_tests/test.c".into(),
+        "src/bindings_tests/unity/unity.c".into(),
+    ];
     for suite in suites {
         files.push(format!("src/bindings_tests/{}.c", suite));
     }
@@ -23,6 +25,7 @@ fn build_bindings_tests(suites: &[&'static str]) {
         build.file(&file);
         println!("cargo:rerun-if-changed={}", file);
     }
+    println!("cargo:rerun-if-changed=../lib/taskchampion.h");
 
     build.compile("bindings-tests");
 }

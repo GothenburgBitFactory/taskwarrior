@@ -1,7 +1,22 @@
 use crate::traits::*;
 use crate::types::*;
 
+#[ffizz_header::item]
+#[ffizz(order = 500)]
+/// ***** TCUda *****
+///
 /// TCUda contains the details of a UDA.
+///
+/// ```c
+/// typedef struct TCUda {
+///   // Namespace of the UDA.  For legacy UDAs, this may have a NULL ptr field.
+///   struct TCString ns;
+///   // UDA key.  Must not be NULL.
+///   struct TCString key;
+///   // Content of the UDA.  Must not be NULL.
+///   struct TCString value;
+/// } TCUda;
+/// ```
 #[repr(C)]
 #[derive(Default)]
 pub struct TCUda {
@@ -59,9 +74,25 @@ impl PassByValue for TCUda {
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 510)]
+/// ***** TCUdaList *****
+///
 /// TCUdaList represents a list of UDAs.
 ///
 /// The content of this struct must be treated as read-only.
+///
+/// ```c
+/// typedef struct TCUdaList {
+///   // number of UDAs in items
+///   size_t len;
+///   // reserved
+///   size_t _u1;
+///   // Array of UDAs. These remain owned by the TCUdaList instance and will be freed by
+///   // tc_uda_list_free.  This pointer is never NULL for a valid TCUdaList.
+///   struct TCUda *items;
+/// } TCUdaList;
+/// ```
 #[repr(C)]
 pub struct TCUdaList {
     /// number of UDAs in items
@@ -70,7 +101,7 @@ pub struct TCUdaList {
     /// total size of items (internal use only)
     _capacity: libc::size_t,
 
-    /// array of UDAs. These remain owned by the TCUdaList instance and will be freed by
+    /// Array of UDAs. These remain owned by the TCUdaList instance and will be freed by
     /// tc_uda_list_free.  This pointer is never NULL for a valid TCUdaList.
     items: *mut TCUda,
 }
@@ -100,8 +131,14 @@ impl CList for TCUdaList {
     }
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 501)]
 /// Free a TCUda instance.  The instance, and the TCStrings it contains, must not be used
 /// after this call.
+///
+/// ```c
+/// EXTERN_C void tc_uda_free(struct TCUda *tcuda);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_uda_free(tcuda: *mut TCUda) {
     debug_assert!(!tcuda.is_null());
@@ -111,10 +148,16 @@ pub unsafe extern "C" fn tc_uda_free(tcuda: *mut TCUda) {
     drop(uda);
 }
 
+#[ffizz_header::item]
+#[ffizz(order = 511)]
 /// Free a TCUdaList instance.  The instance, and all TCUdas it contains, must not be used after
 /// this call.
 ///
 /// When this call returns, the `items` pointer will be NULL, signalling an invalid TCUdaList.
+///
+/// ```c
+/// EXTERN_C void tc_uda_list_free(struct TCUdaList *tcudas);
+/// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_uda_list_free(tcudas: *mut TCUdaList) {
     // SAFETY:
