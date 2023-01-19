@@ -199,8 +199,8 @@ const std::string Task::identifier (bool shortened /* = false */) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setAsNow (const std::string& att)
 {
-  char now[16];
-  snprintf (now, 16, "%u", (unsigned int) time (nullptr));
+  char now[22];
+  snprintf (now, 22, "%lli", (long long int) time (nullptr));
   set (att, now);
 
   recalc_urgency = true;

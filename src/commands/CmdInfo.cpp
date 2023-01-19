@@ -240,7 +240,7 @@ int CmdInfo::execute (std::string& output)
     auto created = task.get ("entry");
     if (created.length ())
     {
-      Datetime dt (strtol (created.c_str (), nullptr, 10));
+      Datetime dt (strtoll (created.c_str (), nullptr, 10));
       age = Duration (now - dt).formatVague ();
     }
 

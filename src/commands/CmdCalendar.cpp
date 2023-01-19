@@ -631,7 +631,7 @@ std::string CmdCalendar::renderMonths (
             {
               if(task.has("scheduled") && !coloredWithDue) {
                 std::string scheduled = task.get ("scheduled");
-                Datetime scheduleddmy (strtol (scheduled.c_str(), nullptr, 10));
+                Datetime scheduleddmy (strtoll (scheduled.c_str(), nullptr, 10));
 
                 if (scheduleddmy.sameDay (date))
                 {
@@ -640,7 +640,7 @@ std::string CmdCalendar::renderMonths (
               }
               if(task.has("due")) {
                 std::string due = task.get ("due");
-                Datetime duedmy (strtol (due.c_str(), nullptr, 10));
+                Datetime duedmy (strtoll (due.c_str(), nullptr, 10));
 
                 if (duedmy.sameDay (date))
                 {
