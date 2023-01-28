@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 . bash_tap_tw.sh
 
 task add "foo \' bar"

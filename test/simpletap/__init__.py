@@ -30,7 +30,6 @@
 import os
 import sys
 import unittest
-import warnings
 import traceback
 import inspect
 
@@ -226,37 +225,7 @@ class TAPTestRunner(unittest.runner.TextTestRunner):
     """
     resultclass = TAPTestResult
 
-    def run(self, test):
-        result = self._makeResult()
-        unittest.signals.registerResult(result)
-        result.failfast = self.failfast
-
-        # TAP requires output is on STDOUT.
-        # TODO: Define this at __init__ time
-        result.stream = unittest.runner._WritelnDecorator(sys.stdout)
-
-        with warnings.catch_warnings():
-            if getattr(self, "warnings", None):
-                # if self.warnings is set, use it to filter all the warnings
-                warnings.simplefilter(self.warnings)
-                # if the filter is 'default' or 'always', special-case the
-                # warnings from the deprecated unittest methods to show them
-                # no more than once per module, because they can be fairly
-                # noisy.  The -Wd and -Wa flags can be used to bypass this
-                # only when self.warnings is None.
-                if self.warnings in ['default', 'always']:
-                    warnings.filterwarnings(
-                        'module',
-                        category=DeprecationWarning,
-                        message='Please use assert\w+ instead.')
-            startTestRun = getattr(result, 'startTestRun', None)
-            if startTestRun is not None:
-                startTestRun(test.countTestCases())
-            try:
-                test(result)
-            finally:
-                stopTestRun = getattr(result, 'stopTestRun', None)
-                if stopTestRun is not None:
-                    stopTestRun()
-
-        return result
+    def __init__(self, stream=sys.stdout, *args, **kwargs):
+        if stream != sys.stdout:
+            raise ValueError("TAP requires output is on STDOUT.")
+        super().__init__(stream=stream, *args, **kwargs)
