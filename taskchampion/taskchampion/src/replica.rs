@@ -121,27 +121,37 @@ impl Replica {
 
             let mut dm = DependencyMap::new();
             // temporary cache tracking whether tasks are considered Pending or not.
-            let mut is_pending = HashMap::new();
+            let mut is_pending_cache = HashMap::new();
             let ws = self.working_set()?;
+            // for each task in the working set
             for i in 1..=ws.largest_index() {
+                // get the task UUID
                 if let Some(u) = ws.by_index(i) {
+                    // get the task
                     if let Some(taskmap) = self.taskdb.get_task(u)? {
+                        // search the task's keys
                         for p in taskmap.keys() {
+                            // for one matching `dep_..`
                             if let Some(dep_str) = p.strip_prefix("dep_") {
+                                // and extract the UUID from the key
                                 if let Ok(dep) = Uuid::parse_str(dep_str) {
+                                    // the dependency is pending if
                                     let dep_pending = {
-                                        if let Some(dep_pending) = is_pending.get(&dep) {
+                                        // we've determined this before and cached the result
+                                        if let Some(dep_pending) = is_pending_cache.get(&dep) {
                                             *dep_pending
                                         } else if let Some(dep_taskmap) =
+                                            // or if we get the task
                                             self.taskdb.get_task(dep)?
                                         {
+                                            // and its status is "pending"
                                             let dep_pending = matches!(
                                                 dep_taskmap
                                                     .get("status")
                                                     .map(|tm| Status::from_taskmap(tm)),
                                                 Some(Status::Pending)
                                             );
-                                            is_pending.insert(dep, dep_pending);
+                                            is_pending_cache.insert(dep, dep_pending);
                                             dep_pending
                                         } else {
                                             false
