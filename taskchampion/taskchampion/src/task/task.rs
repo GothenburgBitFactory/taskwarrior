@@ -1206,7 +1206,7 @@ mod test {
     }
 
     #[test]
-    fn set_value_modiifed() {
+    fn set_value_modified() {
         with_mut_task(|mut task| {
             // set the modified property to something in the past..
             task.set_value("modified", Some("1671820000".into()))
