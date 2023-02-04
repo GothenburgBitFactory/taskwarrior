@@ -121,7 +121,7 @@ impl Replica {
 
             let mut dm = DependencyMap::new();
             // temporary cache tracking whether tasks are considered Pending or not.
-            let mut is_pending_cache = HashMap::new();
+            let mut is_pending_cache: HashMap<Uuid, bool> = HashMap::new();
             let ws = self.working_set()?;
             // for each task in the working set
             for i in 1..=ws.largest_index() {
