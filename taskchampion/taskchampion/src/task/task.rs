@@ -1,10 +1,10 @@
 use super::tag::{SyntheticTag, TagInner};
-use super::{Annotation, Status, Tag, Timestamp};
+use super::{utc_timestamp, Annotation, Status, Tag, Timestamp};
 use crate::depmap::DependencyMap;
 use crate::errors::{Error, Result};
 use crate::replica::Replica;
 use crate::storage::TaskMap;
-use chrono::{offset::LocalResult, prelude::*};
+use chrono::prelude::*;
 use log::trace;
 use std::convert::AsRef;
 use std::convert::TryInto;
@@ -136,7 +136,7 @@ impl Task {
             .unwrap_or("")
     }
 
-    pub fn get_entry(&self) -> Option<DateTime<Utc>> {
+    pub fn get_entry(&self) -> Option<Timestamp> {
         self.get_timestamp(Prop::Entry.as_ref())
     }
 
@@ -149,7 +149,7 @@ impl Task {
 
     /// Get the wait time.  If this value is set, it will be returned, even
     /// if it is in the past.
-    pub fn get_wait(&self) -> Option<DateTime<Utc>> {
+    pub fn get_wait(&self) -> Option<Timestamp> {
         self.get_timestamp(Prop::Wait.as_ref())
     }
 
@@ -227,15 +227,10 @@ impl Task {
         self.taskmap.iter().filter_map(|(k, v)| {
             if let Some(ts) = k.strip_prefix("annotation_") {
                 if let Ok(ts) = ts.parse::<i64>() {
-                    if let LocalResult::Single(entry) = Utc.timestamp_opt(ts, 0) {
-                        return Some(Annotation {
-                            entry,
-                            description: v.to_owned(),
-                        });
-                    } else {
-                        // ignore an invalid timestamp
-                        return None;
-                    }
+                    return Some(Annotation {
+                        entry: utc_timestamp(ts),
+                        description: v.to_owned(),
+                    });
                 }
                 // note that invalid "annotation_*" are ignored
             }
@@ -278,7 +273,7 @@ impl Task {
     }
 
     /// Get the modification time for this task.
-    pub fn get_modified(&self) -> Option<DateTime<Utc>> {
+    pub fn get_modified(&self) -> Option<Timestamp> {
         self.get_timestamp(Prop::Modified.as_ref())
     }
 
@@ -313,12 +308,10 @@ impl Task {
             || key.starts_with("dep_")
     }
 
-    fn get_timestamp(&self, property: &str) -> Option<DateTime<Utc>> {
+    fn get_timestamp(&self, property: &str) -> Option<Timestamp> {
         if let Some(ts) = self.taskmap.get(property) {
             if let Ok(ts) = ts.parse() {
-                if let LocalResult::Single(entry) = Utc.timestamp_opt(ts, 0) {
-                    return Some(entry);
-                }
+                return Some(utc_timestamp(ts));
             }
             // if the value does not parse as an integer, default to None
         }
@@ -366,15 +359,15 @@ impl<'r> TaskMut<'r> {
         self.set_string(Prop::Priority.as_ref(), Some(priority))
     }
 
-    pub fn set_entry(&mut self, entry: Option<DateTime<Utc>>) -> Result<()> {
+    pub fn set_entry(&mut self, entry: Option<Timestamp>) -> Result<()> {
         self.set_timestamp(Prop::Entry.as_ref(), entry)
     }
 
-    pub fn set_wait(&mut self, wait: Option<DateTime<Utc>>) -> Result<()> {
+    pub fn set_wait(&mut self, wait: Option<Timestamp>) -> Result<()> {
         self.set_timestamp(Prop::Wait.as_ref(), wait)
     }
 
-    pub fn set_modified(&mut self, modified: DateTime<Utc>) -> Result<()> {
+    pub fn set_modified(&mut self, modified: Timestamp) -> Result<()> {
         self.set_timestamp(Prop::Modified.as_ref(), Some(modified))
     }
 
@@ -548,7 +541,7 @@ impl<'r> TaskMut<'r> {
         self.set_value(property, value)
     }
 
-    fn set_timestamp(&mut self, property: &str, value: Option<DateTime<Utc>>) -> Result<()> {
+    fn set_timestamp(&mut self, property: &str, value: Option<Timestamp>) -> Result<()> {
         self.set_string(property, value.map(|v| v.timestamp().to_string()))
     }
 
