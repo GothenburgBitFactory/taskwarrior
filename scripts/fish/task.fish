@@ -296,7 +296,8 @@ end
 function __fish.task.list.tag
   set -l tags (task _tags)
   printf '+%s\n' $tags
-  printf '-%s\n' $tags
+  # compatibility, older fish won't allow - in format
+  printf ' %s\n' $tags | tr ' ' '-'
 end
 
 function __fish.task.list.task
