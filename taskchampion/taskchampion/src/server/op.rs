@@ -88,17 +88,17 @@ impl SyncOp {
 
             // Two updates to the same property of the same task might conflict.
             (
-                &Update {
-                    uuid: ref uuid1,
-                    property: ref property1,
-                    value: ref value1,
-                    timestamp: ref timestamp1,
+                Update {
+                    uuid: uuid1,
+                    property: property1,
+                    value: value1,
+                    timestamp: timestamp1,
                 },
-                &Update {
-                    uuid: ref uuid2,
-                    property: ref property2,
-                    value: ref value2,
-                    timestamp: ref timestamp2,
+                Update {
+                    uuid: uuid2,
+                    property: property2,
+                    value: value2,
+                    timestamp: timestamp2,
                 },
             ) if uuid1 == uuid2 && property1 == property2 => {
                 // if the value is the same, there's no conflict
