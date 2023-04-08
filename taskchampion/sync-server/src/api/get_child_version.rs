@@ -18,8 +18,10 @@ use std::sync::Arc;
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<Arc<ServerState>>,
-    web::Path((parent_version_id,)): web::Path<(VersionId,)>,
+    path: web::Path<VersionId>,
 ) -> Result<HttpResponse> {
+    let parent_version_id = path.into_inner();
+
     let mut txn = server_state.storage.txn().map_err(failure_to_ise)?;
 
     let client_key = client_key_header(&req)?;
@@ -44,8 +46,8 @@ pub(crate) async fn service(
             history_segment,
         } => Ok(HttpResponse::Ok()
             .content_type(HISTORY_SEGMENT_CONTENT_TYPE)
-            .header(VERSION_ID_HEADER, version_id.to_string())
-            .header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string())
+            .append_header((VERSION_ID_HEADER, version_id.to_string()))
+            .append_header((PARENT_VERSION_ID_HEADER, parent_version_id.to_string()))
             .body(history_segment)),
         GetVersionResult::NotFound => Err(error::ErrorNotFound("no such version")),
         GetVersionResult::Gone => Err(error::ErrorGone("version has been deleted")),
@@ -83,9 +85,9 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
-        let mut resp = test::call_service(&mut app, req).await;
+        let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::OK);
         assert_eq!(
             resp.headers().get("X-Version-Id").unwrap(),
@@ -100,9 +102,9 @@ mod test {
             &"application/vnd.taskchampion.history-segment".to_string()
         );
 
-        use futures::StreamExt;
-        let (bytes, _) = resp.take_body().into_future().await;
-        assert_eq!(bytes.unwrap().unwrap().as_ref(), b"abcd");
+        use actix_web::body::MessageBody;
+        let bytes = resp.into_body().try_into_bytes().unwrap();
+        assert_eq!(bytes.as_ref(), b"abcd");
     }
 
     #[actix_rt::test]
@@ -117,7 +119,7 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -144,7 +146,7 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::GONE);
@@ -157,7 +159,7 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", NIL_VERSION_ID);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);

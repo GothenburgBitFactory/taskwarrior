@@ -27,9 +27,11 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<Arc<ServerState>>,
-    web::Path((parent_version_id,)): web::Path<(VersionId,)>,
+    path: web::Path<VersionId>,
     mut payload: web::Payload,
 ) -> Result<HttpResponse> {
+    let parent_version_id = path.into_inner();
+
     // check content-type
     if req.content_type() != HISTORY_SEGMENT_CONTENT_TYPE {
         return Err(error::ErrorBadRequest("Bad content-type"));
@@ -80,21 +82,21 @@ pub(crate) async fn service(
     Ok(match result {
         AddVersionResult::Ok(version_id) => {
             let mut rb = HttpResponse::Ok();
-            rb.header(VERSION_ID_HEADER, version_id.to_string());
+            rb.append_header((VERSION_ID_HEADER, version_id.to_string()));
             match snap_urgency {
                 SnapshotUrgency::None => {}
                 SnapshotUrgency::Low => {
-                    rb.header(SNAPSHOT_REQUEST_HEADER, "urgency=low");
+                    rb.append_header((SNAPSHOT_REQUEST_HEADER, "urgency=low"));
                 }
                 SnapshotUrgency::High => {
-                    rb.header(SNAPSHOT_REQUEST_HEADER, "urgency=high");
+                    rb.append_header((SNAPSHOT_REQUEST_HEADER, "urgency=high"));
                 }
             };
             rb.finish()
         }
         AddVersionResult::ExpectedParentVersion(parent_version_id) => {
             let mut rb = HttpResponse::Conflict();
-            rb.header(PARENT_VERSION_ID_HEADER, parent_version_id.to_string());
+            rb.append_header((PARENT_VERSION_ID_HEADER, parent_version_id.to_string()));
             rb.finish()
         }
     })
@@ -128,11 +130,11 @@ mod test {
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header(
+            .append_header((
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
-            )
-            .header("X-Client-Key", client_key.to_string())
+            ))
+            .append_header(("X-Client-Key", client_key.to_string()))
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -170,11 +172,11 @@ mod test {
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header(
+            .append_header((
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
-            )
-            .header("X-Client-Key", client_key.to_string())
+            ))
+            .append_header(("X-Client-Key", client_key.to_string()))
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -198,8 +200,8 @@ mod test {
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header("Content-Type", "not/correct")
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("Content-Type", "not/correct"))
+            .append_header(("X-Client-Key", client_key.to_string()))
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -218,11 +220,11 @@ mod test {
         let uri = format!("/v1/client/add-version/{}", parent_version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header(
+            .append_header((
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
-            )
-            .header("X-Client-Key", client_key.to_string())
+            ))
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
