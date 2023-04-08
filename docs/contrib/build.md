@@ -28,23 +28,24 @@ Specifically the development versions, `uuid-dev` on Debian, for example.
     $ git clone https://github.com/GothenburgBitFactory/taskwarrior.git taskwarrior.git
 
 
-# Building the Stable Version
+# Building the Development Version
 
-The master always represents the more recently released version, and should be
-your preferred choice.
+The `develop` branch always represents the latest, unreleased version.
 
     $ cd taskwarrior.git
-    $ git checkout master                # Master is the stable branch.
+    $ git checkout develop
+    $ git submodule init                 # Register submodule
+    $ git submodule update               # Get the submodule
     $ cmake -DCMAKE_BUILD_TYPE=release . # 'release' for performance.
     $ make                               # Just build it.
 
 
-# Building the Dev Branch
+# Building the Stable Version
 
-The dev branch is always the highest numbered branch, in this example, `2.6.0`.
+Releases are tagged. Choose the latest release version, instead of 2.6.0 below.
 
     $ cd taskwarrior.git
-    $ git checkout 2.6.0                 # Dev branch
+    $ git checkout v2.6.0                # Release tag
     $ git submodule init                 # Register submodule
     $ git submodule update               # Get the submodule
     $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release, default: neither
@@ -69,7 +70,7 @@ In particular, the [vramsteg](https://gothenburgbitfactory.org/projects/vramsteg
 Talk to us first - make sure you are working on something that is wanted.
 Patches will not be applied simply because you did the work.
 Remember the various forms of documentation involved, and the test suite.
-Work on the dev branch, not `master`.
+Work on the `develop` branch, not `master`.
 When you are are ready to submit, do this:
 
     $ git commit
