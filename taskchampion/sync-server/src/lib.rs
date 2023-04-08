@@ -34,10 +34,9 @@ impl Server {
     pub fn config(&self, cfg: &mut web::ServiceConfig) {
         cfg.service(
             web::scope("")
-                .data(self.server_state.clone())
+                .app_data(web::Data::new(self.server_state.clone()))
                 .wrap(
-                    middleware::DefaultHeaders::new()
-                        .header("Cache-Control", "no-store, max-age=0"),
+                    middleware::DefaultHeaders::new().add(("Cache-Control", "no-store, max-age=0")),
                 )
                 .service(index)
                 .service(api_scope()),

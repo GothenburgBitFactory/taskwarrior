@@ -32,7 +32,7 @@ pub(crate) async fn service(
     {
         Ok(HttpResponse::Ok()
             .content_type(SNAPSHOT_CONTENT_TYPE)
-            .header(VERSION_ID_HEADER, version_id.to_string())
+            .append_header((VERSION_ID_HEADER, version_id.to_string()))
             .body(data))
     } else {
         Err(error::ErrorNotFound("no snapshot"))
@@ -66,7 +66,7 @@ mod test {
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
             .uri(uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -102,13 +102,13 @@ mod test {
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
             .uri(uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
-        let mut resp = test::call_service(&mut app, req).await;
+        let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::OK);
 
-        use futures::StreamExt;
-        let (bytes, _) = resp.take_body().into_future().await;
-        assert_eq!(bytes.unwrap().unwrap().as_ref(), snapshot_data);
+        use actix_web::body::MessageBody;
+        let bytes = resp.into_body().try_into_bytes().unwrap();
+        assert_eq!(bytes.as_ref(), snapshot_data);
     }
 }

@@ -19,9 +19,11 @@ const MAX_SIZE: usize = 100 * 1024 * 1024;
 pub(crate) async fn service(
     req: HttpRequest,
     server_state: web::Data<Arc<ServerState>>,
-    web::Path((version_id,)): web::Path<(VersionId,)>,
+    path: web::Path<VersionId>,
     mut payload: web::Payload,
 ) -> Result<HttpResponse> {
+    let version_id = path.into_inner();
+
     // check content-type
     if req.content_type() != SNAPSHOT_CONTENT_TYPE {
         return Err(error::ErrorBadRequest("Bad content-type"));
@@ -100,8 +102,8 @@ mod test {
         let uri = format!("/v1/client/add-snapshot/{}", version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header("Content-Type", "application/vnd.taskchampion.snapshot")
-            .header("X-Client-Key", client_key.to_string())
+            .insert_header(("Content-Type", "application/vnd.taskchampion.snapshot"))
+            .insert_header(("X-Client-Key", client_key.to_string()))
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -111,14 +113,14 @@ mod test {
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
             .uri(uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
-        let mut resp = test::call_service(&mut app, req).await;
+        let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::OK);
 
-        use futures::StreamExt;
-        let (bytes, _) = resp.take_body().into_future().await;
-        assert_eq!(bytes.unwrap().unwrap().as_ref(), b"abcd");
+        use actix_web::body::MessageBody;
+        let bytes = resp.into_body().try_into_bytes().unwrap();
+        assert_eq!(bytes.as_ref(), b"abcd");
 
         Ok(())
     }
@@ -143,8 +145,8 @@ mod test {
         let uri = format!("/v1/client/add-snapshot/{}", version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header("Content-Type", "application/vnd.taskchampion.snapshot")
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("Content-Type", "application/vnd.taskchampion.snapshot"))
+            .append_header(("X-Client-Key", client_key.to_string()))
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -154,7 +156,7 @@ mod test {
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
             .uri(uri)
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -172,8 +174,8 @@ mod test {
         let uri = format!("/v1/client/add-snapshot/{}", version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header("Content-Type", "not/correct")
-            .header("X-Client-Key", client_key.to_string())
+            .append_header(("Content-Type", "not/correct"))
+            .append_header(("X-Client-Key", client_key.to_string()))
             .set_payload(b"abcd".to_vec())
             .to_request();
         let resp = test::call_service(&mut app, req).await;
@@ -192,11 +194,11 @@ mod test {
         let uri = format!("/v1/client/add-snapshot/{}", version_id);
         let req = test::TestRequest::post()
             .uri(&uri)
-            .header(
+            .append_header((
                 "Content-Type",
                 "application/vnd.taskchampion.history-segment",
-            )
-            .header("X-Client-Key", client_key.to_string())
+            ))
+            .append_header(("X-Client-Key", client_key.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
