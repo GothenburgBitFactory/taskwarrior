@@ -16,7 +16,7 @@ jobs:
       matrix:
         rust:
           # MSRV; must not be higher than the clippy rust version in checks.yml
-          - "1.63"
+          - "1.64"
           - "stable"
         os:
           - ubuntu-latest
