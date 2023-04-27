@@ -43,12 +43,10 @@ DEFAULT_HOOK_PATH = os.path.abspath(
 )
 
 
-# Environment flags to control skipping of task and taskd tests
+# Environment flags to control skipping of task tests
 TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
-TASKD_SKIP = os.environ.get("TASKD_SKIP", False)
 # Environment flags to control use of PATH or in-tree binaries
 TASK_USE_PATH = os.environ.get("TASK_USE_PATH", False)
-TASKD_USE_PATH = os.environ.get("TASKD_USE_PATH", False)
 
 UUID_REGEXP = ("[0-9A-Fa-f]{8}-" + ("[0-9A-Fa-f]{4}-" * 3) + "[0-9A-Fa-f]{12}")
 
@@ -60,15 +58,8 @@ def task_binary_location(cmd="task"):
     return binary_location(cmd, TASK_USE_PATH)
 
 
-def taskd_binary_location(cmd="taskd"):
-    """If TASKD_USE_PATH is set rely on PATH to look for taskd binaries.
-    Otherwise ../src/ is used by default.
-    """
-    return binary_location(cmd, TASKD_USE_PATH)
-
-
 def binary_location(cmd, USE_PATH=False):
-    """If USE_PATH is True rely on PATH to look for taskd binaries.
+    """If USE_PATH is True rely on PATH to look for binaries.
     Otherwise ../src/ is used by default.
     """
     if USE_PATH:
@@ -135,8 +126,8 @@ def _queue_output(arguments, pidq, outputq):
         outputq.put((
             "",
             ("Unexpected exception caught during execution of taskw: '{0}' . "
-             "If you are running out-of-tree tests set TASK_USE_PATH=1 or "
-             "TASKD_USE_PATH=1 in shell env before execution and add the "
+             "If you are running out-of-tree tests set TASK_USE_PATH=1 "
+             "in shell env before execution and add the "
              "location of the task(d) binary to the PATH".format(e)),
             255))  # false exitcode
 
@@ -274,80 +265,6 @@ def run_cmd_wait_nofail(*args, **kwargs):
         return run_cmd_wait(*args, **kwargs)
     except CommandError as e:
         return e.code, e.out, e.err
-
-
-def get_IPs(hostname):
-    output = {}
-    addrs = socket.getaddrinfo(hostname, 0, 0, 0, socket.IPPROTO_TCP)
-
-    for family, socktype, proto, canonname, sockaddr in addrs:
-        addr = sockaddr[0]
-        output[family] = addr
-
-    return output
-
-
-def port_used(addr="localhost", port=None):
-    "Return True if port is in use, False otherwise"
-    if port is None:
-        raise TypeError("Argument 'port' may not be None")
-
-    # If we got an address name, resolve it both to IPv6 and IPv4.
-    IPs = get_IPs(addr)
-
-    # Taskd seems to prefer IPv6 so we do it first
-    for family in (socket.AF_INET6, socket.AF_INET):
-        try:
-            addr = IPs[family]
-        except KeyError:
-            continue
-
-        s = socket.socket(family, socket.SOCK_STREAM)
-        result = s.connect_ex((addr, port))
-        s.close()
-        if result == 0:
-            # connection was successful
-            return True
-    else:
-        return False
-
-
-def find_unused_port(addr="localhost", start=53589, track=True):
-    """Find an unused port starting at `start` port
-
-    If track=False the returned port will not be marked as in-use and the code
-    will rely entirely on the ability to connect to addr:port as detection
-    mechanism. Note this may cause problems if ports are assigned but not used
-    immediately
-    """
-    maxport = 65535
-    unused = None
-
-    for port in xrange(start, maxport):
-        if not port_used(addr, port):
-            if track and port in USED_PORTS:
-                continue
-
-            unused = port
-            break
-
-    if unused is None:
-        raise ValueError("No available port in the range {0}-{1}".format(
-            start, maxport))
-
-    if track:
-        USED_PORTS.add(unused)
-
-    return unused
-
-
-def release_port(port):
-    """Forget that given port was marked as'in-use
-    """
-    try:
-        USED_PORTS.remove(port)
-    except KeyError:
-        pass
 
 
 def memoize(obj):

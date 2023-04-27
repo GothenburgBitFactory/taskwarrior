@@ -20,15 +20,6 @@ if (ENABLE_WASM)
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
 endif (ENABLE_WASM)
 
-OPTION (ENABLE_SYNC "Enable 'task sync' support" ON)
-
-if (ENABLE_SYNC)
-  set (USE_GNUTLS ON CACHE BOOL "Build gnutls support." FORCE)
-else (ENABLE_SYNC)
-  set (USE_GNUTLS OFF CACHE BOOL "Build gnutls support." FORCE)
-  message (WARNING "ENABLE_SYNC=OFF. Not building sync support.")
-endif (ENABLE_SYNC)
-
 message ("-- Looking for libshared")
 if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
   message ("-- Found libshared")
@@ -70,20 +61,6 @@ SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the bi
 
 # rust libs require these
 set (TASK_LIBRARIES dl pthread)
-
-if (USE_GNUTLS)
-   message ("-- Looking for GnuTLS")
-   find_package (GnuTLS)
-   if (GNUTLS_FOUND)
-     set (HAVE_LIBGNUTLS true)
-     set (TASK_INCLUDE_DIRS ${TASK_INCLUDE_DIRS} ${GNUTLS_INCLUDE_DIR})
-     set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${GNUTLS_LIBRARIES})
-   endif (GNUTLS_FOUND)
-endif (USE_GNUTLS)
-
-if (ENABLE_SYNC AND NOT GNUTLS_FOUND)
-  message (FATAL_ERROR "Cannot find GnuTLS. Use -DENABLE_SYNC=OFF to build Taskwarrior without sync support. See INSTALL for more information.")
-endif (ENABLE_SYNC AND NOT GNUTLS_FOUND)
 
 check_function_exists (timegm  HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)

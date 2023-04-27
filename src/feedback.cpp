@@ -207,8 +207,7 @@ void feedback_unblocked (const Task& task)
 ///////////////////////////////////////////////////////////////////////////////
 void feedback_backlog ()
 {
-  if (Context::getContext ().config.get ("taskd.server") != "" &&
-      Context::getContext ().verbose ("sync"))
+  if (Context::getContext ().verbose ("sync"))
   {
     int count = Context::getContext ().tdb2.num_local_changes ();
     if (count)

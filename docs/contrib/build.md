@@ -17,7 +17,6 @@ You'll need these tools:
 
 You'll need these libraries:
 
--   [GnuTLS](https://www.gnutls.org/)
 -   libuuid (unless on Darwin/BSD)
 
 Specifically the development versions, `uuid-dev` on Debian, for example.

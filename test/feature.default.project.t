@@ -32,7 +32,7 @@ import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task, TestCase, Taskd, ServerTestCase
+from basetest import Task, TestCase
 
 
 class TestDefaultProject(TestCase):
@@ -224,51 +224,6 @@ class TestDefaultProject(TestCase):
         self.assertIn("foobar", out)
         self.assertIn("HELLO", out)
         self.assertNotIn(self.default_project, out)
-
-
-class ServerTestDefaultProject(ServerTestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.taskd = Taskd()
-        # This takes a while...
-        cls.taskd.start()
-
-    def setUp(self):
-        self.t1 = Task(taskd=self.taskd)
-        self.t2 = Task(taskd=self.taskd)
-        self.t3 = Task(taskd=self.taskd)
-
-    def test_default_project_sync(self):
-        """default.project is not applied to projectless tasks during sync"""
-        # NOTE - reported on TW-1287
-        desc = "Testing task"
-        self.t1(("add", desc))
-        self.t1("sync")
-
-        code, out, err = self.t1()
-
-        self.assertIn(desc, out)
-
-        # Testing scenario - default.project is applied on task arrival
-        proj2 = "Client2"
-        self.t2.config("default.project", proj2)
-        self.t2("sync")
-
-        code, out, err = self.t2()
-        self.assertIn(desc, out)
-        self.assertNotIn(proj2, out)
-
-        self.t2("sync")
-
-        # Testing scenario - default.project is applied on task delivery
-        proj3 = "Client3"
-        self.t3.config("default.project", proj3)
-        self.t3("sync")
-
-        code, out, err = self.t3()
-        self.assertIn(desc, out)
-        self.assertNotIn(proj2, out)
-        self.assertNotIn(proj3, out)
 
 
 if __name__ == "__main__":

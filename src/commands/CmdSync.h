@@ -30,18 +30,12 @@
 #include <string>
 #include <Command.h>
 #include <Msg.h>
-#include <TLSClient.h>
 
 class CmdSync : public Command
 {
 public:
   CmdSync ();
   int execute (std::string&);
-
-#ifdef HAVE_LIBGNUTLS
-private:
-  bool send (const std::string&, const std::string&, const std::string&, const std::string&, const enum TLSClient::trust_level, const Msg&, Msg&);
-#endif
 };
 
 #endif

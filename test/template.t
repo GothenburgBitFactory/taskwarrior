@@ -34,7 +34,6 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest import Taskd, ServerTestCase
 
 
 # Test methods available:
@@ -224,25 +223,6 @@ sys.exit(0)
         # This is what taskwarrior would have used if hook finished cleanly
         self.assertEqual(logs["output"]["json"][0]["description"],
                          "This is an example modify hook")
-
-
-class ServerTestBugNumber(ServerTestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.taskd = Taskd()
-        # This takes a while...
-        cls.taskd.start()
-
-    def setUp(self):
-        """Executed before each test in the class"""
-        self.t = Task(taskd=self.taskd)
-        # Or if Task() is already available
-        # self.t.bind_taskd_server(self.taskd)
-
-    def test_server_sync(self):
-        """Testing if client and server can speak to each other"""
-        self.t("add Something to sync")
-        self.t("sync")
 
 
 if __name__ == "__main__":

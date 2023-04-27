@@ -30,13 +30,11 @@ That's just a term that means you need certain tools installed before proceeding
 Here are the tools that Taskwarrior needs:
 
 -   Compiler: GCC 4.7 or newer, or Clang 3.4 or newer.
--   Libraries: GnuTLS, and libuuid
 -   Tools: Git, CMake, make, Python
 
 The procedure for installing this software is OS-dependent, but here are the commands you would use on Debian:
 
     $ sudo apt-get install gcc
-    $ sudo apt-get install libgnutls28-dev
     $ sudo apt-get install uuid-dev
     $ sudo apt-get install git
     $ sudo apt-get install cmake

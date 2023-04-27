@@ -41,6 +41,7 @@
 #include <format.h>
 #include <main.h>
 #include <util.h>
+#include "tc/Server.h"
 
 bool TDB2::debug_mode = false;
 static void dependency_scan (std::vector<Task> &);
@@ -467,6 +468,12 @@ int TDB2::num_local_changes ()
 int TDB2::num_reverts_possible ()
 {
   return (int)replica.num_undo_points ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::sync (tc::Server server, bool avoid_snapshots)
+{
+  replica.sync(std::move(server), avoid_snapshots);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
