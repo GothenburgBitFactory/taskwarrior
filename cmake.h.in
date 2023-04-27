@@ -38,9 +38,6 @@
 #cmakedefine GNUHURD
 #cmakedefine UNKNOWN
 
-/* Found the GnuTLS library */
-#cmakedefine HAVE_LIBGNUTLS
-
 /* Found tm_gmtoff */
 #cmakedefine HAVE_TM_GMTOFF
 

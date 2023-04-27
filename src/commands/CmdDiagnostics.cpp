@@ -39,10 +39,6 @@
 #include <commit.h>
 #endif
 
-#ifdef HAVE_LIBGNUTLS
-#include <gnutls/gnutls.h>
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 CmdDiagnostics::CmdDiagnostics ()
 {
@@ -135,18 +131,6 @@ int CmdDiagnostics::execute (std::string& output)
 #endif
       << '\n';
 
-  out << "  libgnutls: "
-#ifdef HAVE_LIBGNUTLS
-#ifdef GNUTLS_VERSION
-      << GNUTLS_VERSION
-#elif defined LIBGNUTLS_VERSION
-      << LIBGNUTLS_VERSION
-#endif
-#else
-      << "n/a"
-#endif
-      << '\n';
-
   out << " Build type: "
 #ifdef CMAKE_BUILD_TYPE
       << CMAKE_BUILD_TYPE
@@ -213,82 +197,6 @@ int CmdDiagnostics::execute (std::string& output)
     out << "    $VISUAL: " << peditor << '\n';
   else if ((peditor = getenv ("EDITOR")) != nullptr)
     out << "    $EDITOR: " << peditor << '\n';
-
-  out << "     Server: "
-      << Context::getContext ().config.get ("taskd.server")
-      << '\n';
-
-  auto ca_pem = Context::getContext ().config.get ("taskd.ca");
-  out << "         CA: ";
-  if (ca_pem != "")
-  {
-    File file_ca (ca_pem);
-    if (file_ca.exists ())
-      out << ca_pem
-          << (file_ca.readable () ? ", readable, " : ", not readable, ")
-          << file_ca.size ()
-          << " bytes\n";
-    else
-      out << "not found\n";
-  }
-  else
-    out << "-\n";
-
-  auto cert_pem = Context::getContext ().config.get ("taskd.certificate");
-  out << "Certificate: ";
-  if (cert_pem != "")
-  {
-    File file_cert (cert_pem);
-    if (file_cert.exists ())
-      out << cert_pem
-          << (file_cert.readable () ? ", readable, " : ", not readable, ")
-          << file_cert.size ()
-          << " bytes\n";
-    else
-      out << "not found\n";
-  }
-  else
-    out << "-\n";
-
-  auto key_pem = Context::getContext ().config.get ("taskd.key");
-  out << "        Key: ";
-  if (key_pem != "")
-  {
-    File file_key (key_pem);
-    if (file_key.exists ())
-      out << key_pem
-          << (file_key.readable () ? ", readable, " : ", not readable, ")
-          << file_key.size ()
-          << " bytes\n";
-    else
-      out << "not found\n";
-  }
-  else
-    out << "-\n";
-
-  auto trust_value = Context::getContext ().config.get ("taskd.trust");
-  if (trust_value == "strict" ||
-      trust_value == "ignore hostname" ||
-      trust_value == "allow all")
-    out << "      Trust: " << trust_value << '\n';
-  else
-    out << "      Trust: Bad value - see 'man taskrc'\n";
-
-  out << "    Ciphers: "
-      << Context::getContext ().config.get ("taskd.ciphers")
-      << '\n';
-
-  // Get credentials, but mask out the key.
-  auto credentials = Context::getContext ().config.get ("taskd.credentials");
-  auto last_slash = credentials.rfind ('/');
-  if (last_slash != std::string::npos)
-    credentials = credentials.substr (0, last_slash)
-                + '/'
-                + std::string (credentials.length () - last_slash - 1, '*');
-
-  out << "      Creds: "
-      << credentials
-      << "\n\n";
 
   // Display hook status.
   Path hookLocation;

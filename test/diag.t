@@ -40,9 +40,6 @@ class TestDiagnostics(TestCase):
     def setUp(self):
         self.t = Task()
         self.t.config("editor",            "edlin")
-        self.t.config("taskd.ca",          "/tmp/ca")
-        self.t.config("taskd.trust",       "strict")
-        self.t.config("taskd.credentials", "us/me/xxx")
 
     @unittest.skipIf(
         getattr(platform, 'dist', None) == None or 'xenial' == platform.dist()[-1],
@@ -54,7 +51,6 @@ class TestDiagnostics(TestCase):
         code, out, err = self.t.diag()
         self.tap(out)
         self.assertRegex(out, "Compliance:\s+C\+\+17")
-        self.assertRegex(out, "libgnutls:\s+\d+\.\d+\.\d+")
         self.assertIn("edlin", out)
         self.assertIn("strict", out)
 

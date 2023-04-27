@@ -17,7 +17,6 @@ add_library (task STATIC CLI2.cpp CLI2.h
                   Lexer.cpp Lexer.h
                   TDB2.cpp TDB2.h
                   Task.cpp Task.h
-                  TLSClient.cpp TLSClient.h
                   Variant.cpp Variant.h
                   ViewTask.cpp ViewTask.h
                   dependency.cpp
@@ -52,9 +51,10 @@ add_executable (calc_executable calc.cpp)
 add_executable (lex_executable lex.cpp)
 
 # Yes, 'task' (and hence libshared) is included twice, otherwise linking fails on assorted OSes.
-target_link_libraries (task_executable task tc tc-rust commands columns libshared task libshared ${TASK_LIBRARIES})
-target_link_libraries (calc_executable task tc tc-rust commands columns libshared task libshared ${TASK_LIBRARIES})
-target_link_libraries (lex_executable  task tc tc-rust commands columns libshared task libshared ${TASK_LIBRARIES})
+# Similarly for `tc`.
+target_link_libraries (task_executable task tc tc-rust commands tc columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (calc_executable task tc tc-rust commands tc columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (lex_executable  task tc tc-rust commands tc columns libshared task libshared ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 

@@ -1,7 +1,7 @@
 FROM centos:7
 
 RUN yum update -y
-RUN yum install python3 git gcc gcc-c++ make gnutls-devel libuuid-devel -y
+RUN yum install python3 git gcc gcc-c++ make libuuid-devel -y
 RUN yum install epel-release centos-release-scl -y
 RUN yum install which cmake3 devtoolset-7-gcc* libfaketime curl -y
 RUN source scl_source enable devtoolset-7; gcc --version; cmake3 --version

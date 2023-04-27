@@ -28,6 +28,7 @@
 #include <format.h>
 #include "tc/Replica.h"
 #include "tc/Task.h"
+#include "tc/Server.h"
 #include "tc/WorkingSet.h"
 #include "tc/util.h"
 
@@ -140,6 +141,16 @@ tc::Task tc::Replica::import_task_with_uuid (const std::string &uuid)
     throw replica_error ();
   }
   return Task (tctask);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Replica::sync (Server server, bool avoid_snapshots)
+{
+  // The server remains owned by this function, per tc_replica_sync docs.
+  auto res = tc_replica_sync (&*inner, server.inner.get(), avoid_snapshots);
+  if (res != TC_RESULT_OK) {
+    throw replica_error ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

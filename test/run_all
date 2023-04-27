@@ -22,9 +22,6 @@ except ImportError:
     # python 3
     from queue import Queue, Empty
 
-# Look for taskd in $PATH instead of task/src/
-os.environ["TASKD_USE_PATH"] = "1"
-
 TIMEOUT = .2
 
 

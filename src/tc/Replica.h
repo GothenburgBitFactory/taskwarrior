@@ -38,6 +38,7 @@
 namespace tc {
   class Task;
   class WorkingSet;
+  class Server;
 
   // a unique_ptr to a TCReplica which will automatically free the value when
   // it goes out of scope.
@@ -91,7 +92,7 @@ namespace tc {
     tc::Task new_task (Status status, const std::string &description);
     tc::Task import_task_with_uuid (const std::string &uuid);
 // TODO: struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid tcuuid);
-// TODO: TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool avoid_snapshots);
+    void sync(Server server, bool avoid_snapshots);
     void undo (int32_t *undone_out);
     int64_t num_local_operations ();
     int64_t num_undo_points ();

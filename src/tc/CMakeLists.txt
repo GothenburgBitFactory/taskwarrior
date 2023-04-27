@@ -10,6 +10,7 @@ set (tc_SRCS
   ffi.h
   util.cpp util.h
   Replica.cpp Replica.h
+  Server.cpp Server.h
   WorkingSet.cpp WorkingSet.h
   Task.cpp Task.h)
 

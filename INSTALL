@@ -20,7 +20,6 @@ You will need a C++ compiler that supports full C++17, which includes:
 
 You will need the following libraries:
   - libuuid (not needed for OSX)
-  - gnutls  (can be optional - see '"sync" command' below)
 
 
 Basic Installation
@@ -89,20 +88,6 @@ get absolute installation directories:
   CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
 
 
-"sync" command
---------------
-
-By default, GnuTLS support is required, which enables the "sync" command.
-For Debian based distributions, installing "libgnutls-dev" is sufficient.
-
-In order to build Taskwarrior without "sync" support, call cmake with the
-"-DENABLE_SYNC=OFF" flag:
-
-   $ cmake . -DENABLE_SYNC=OFF
-
-and proceed as described in "Basic Installation".
-
-
 Uninstallation
 --------------
 
@@ -161,7 +146,7 @@ OpenBSD
 WASM
   Using the Emscripten compiler, you can achieve it like this:
 
-    cmake -DCMAKE_CXX_COMPILER=emcc -DENABLE_SYNC=OFF -DCMAKE_BUILD_TYPE=release -DENABLE_WASM=ON \
+    cmake -DCMAKE_CXX_COMPILER=emcc -DCMAKE_BUILD_TYPE=release -DENABLE_WASM=ON \
           -DCMAKE_EXE_LINKER_FLAGS="-m32 -s NO_DYNAMIC_EXECUTION=1 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s INVOKE_RUN=0" \
           -DCMAKE_CXX_FLAGS_RELEASE="-O2 -m32"
 

@@ -538,12 +538,8 @@ Shows statistics of the tasks defined by the filter. Is affected by the context.
 Shows a report of aggregated task status by project. Is affected by the context.
 
 .TP
-.B task sync [init]
+.B task sync
 The sync command synchronizes data with the Taskserver, if configured.
-
-The init subcommand should only ever be run once, and only on one client, because
-it sends all data to the Taskserver. This allows all the subsequent sync commands
-to only send small deltas.
 
 Note: If you use multiple sync clients, make sure this setting (which is the default)
 is on your primary client:

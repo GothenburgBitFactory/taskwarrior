@@ -6,7 +6,6 @@ title: How to Build Taskwarrior
  * CMake 3.0 or later
  * gcc 7.0 or later, clang 6.0 or later, or a compiler with full C++17 support
  * libuuid (if not on macOS)
- * gnutls (optional)
  * python 3 (optional, for running the test suite)
 
 ## Obtain and build code:

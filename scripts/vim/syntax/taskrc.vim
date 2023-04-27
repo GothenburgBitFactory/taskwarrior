@@ -112,7 +112,6 @@ syn match taskrcGoodKey '^\s*\Vdateformat.report='he=e-1
 syn match taskrcGoodKey '^\s*\Vdebug='he=e-1
 syn match taskrcGoodKey '^\s*\Vdebug.hooks='he=e-1
 syn match taskrcGoodKey '^\s*\Vdebug.parser='he=e-1
-syn match taskrcGoodKey '^\s*\Vdebug.tls='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.command='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.due='he=e-1
 syn match taskrcGoodKey '^\s*\Vdefault.priority='he=e-1
