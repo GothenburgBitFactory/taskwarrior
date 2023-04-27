@@ -1,0 +1,6 @@
+[package]
+name = "test-bin"
+version = "0.1.0"
+authors = ["Marc-André Moreau <marcandre.moreau@gmail.com>"]
+
+[dependencies]

@@ -1,0 +1,9 @@
+[package]
+name = "test-lib"
+version = "0.1.0"
+authors = ["Marc-André Moreau <marcandre.moreau@gmail.com>"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
