@@ -24,3 +24,4 @@ patches
 tutorials
 .prove
 /target/
+/.idea/
