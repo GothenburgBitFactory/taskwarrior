@@ -181,7 +181,8 @@ const tc::WorkingSet &TDB2::working_set ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::get_changes (std::vector <Task>& changes)
 {
-  // Modifications are not supported, therefore there are no changes
+  // TODO: changes in an invocation of `task` are not currently tracked, so this
+  // list is always empty.
   changes.clear();
 }
 
