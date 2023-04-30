@@ -735,7 +735,6 @@ int Context::run ()
   {
     hooks.onLaunch ();
     rc = dispatch (output);
-    tdb2.commit ();           // Harmless if called when nothing changed.
     hooks.onExit ();          // No chance to update data.
 
     timer_total.stop ();
