@@ -60,12 +60,11 @@ void TDB2::open_replica (const std::string& location, bool create_if_missing)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the replica.
-void TDB2::add (Task& task, bool/* = true */)
+void TDB2::add (Task& task)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
-  // bool argument to validate() is "applyDefault". Pass add_to_backlog through
-  // in order to not apply defaults to synchronized tasks.
-  // This also ensures that the `uuid` attribute is set.
+  // bool argument to validate() is "applyDefault", to apply default values for
+  // properties not otherwise given.
   task.validate (true);
 
   std::string uuid = task.get ("uuid");
@@ -123,7 +122,7 @@ void TDB2::add (Task& task, bool/* = true */)
 // This exhibits a bit of a race condition: if the stored task has changed since
 // it was loaded, this will revert those changes.  In practice, this is not an
 // issue.
-void TDB2::modify (Task& task, bool/* = true */)
+void TDB2::modify (Task& task)
 {
   task.validate (false);
   auto uuid = task.get ("uuid");

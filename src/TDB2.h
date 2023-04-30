@@ -47,8 +47,8 @@ public:
   TDB2 ();
 
   void open_replica (const std::string&, bool create_if_missing);
-  void add (Task&, bool add_to_backlog = true);
-  void modify (Task&, bool add_to_backlog = true);
+  void add (Task&);
+  void modify (Task&);
   void commit ();
   void get_changes (std::vector <Task>&);
   void revert ();
