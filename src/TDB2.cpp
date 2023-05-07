@@ -119,9 +119,18 @@ void TDB2::add (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 // Modify the task in storage to match the given task.
 //
-// This exhibits a bit of a race condition: if the stored task has changed since
-// it was loaded, this will revert those changes.  In practice, this is not an
-// issue.
+// Note that there are a few race conditions to consider here.  Taskwarrior
+// loads the enitre task into memory and this method then essentially writes
+// the entire task back to the database. So, if the task in the database
+// changes between loading the task and this method being called, this method
+// will "revert" those changes. In practice this would only occur when multiple
+// `task` invocatoins run at the same time and try to modify the same task.
+//
+// There is also the possibility that another task process has deleted the task
+// from the database between the time this process loaded the tsak and called
+// this method. In this case, this method throws an error that will make sense
+// to the user. This is especially unlikely since tasks are only deleted when
+// they have been unmodified for a long time.
 void TDB2::modify (Task& task)
 {
   task.validate (false);
