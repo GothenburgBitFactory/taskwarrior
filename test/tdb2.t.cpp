@@ -100,13 +100,10 @@ int main (int, char**)
     t.is ((int) num_reverts_possible, 7, "TDB2 after add, 7 undo lines");
     t.is ((int) num_local_changes,    2, "TDB2 after add, 2 backlog task");
 
-    context.tdb2.commit ();
-
     // Reset for reuse.
     cleardb ();
     context.tdb2.open_replica (".", true);
 
-    // TODO commit
     // TODO complete a task
     // TODO gc
   }
