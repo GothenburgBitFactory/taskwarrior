@@ -49,6 +49,7 @@ CmdPurge::CmdPurge ()
 int CmdPurge::execute (std::string&)
 {
   Context::getContext ().footnote ("As of version 3.0, this command has no effect.");
+  Context::getContext ().footnote ("Deleted tasks are removed from the task list automatically after they expire.");
   return 0;
 }
 
