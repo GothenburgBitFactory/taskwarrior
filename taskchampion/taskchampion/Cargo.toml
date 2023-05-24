@@ -27,7 +27,7 @@ byteorder = "1.0"
 ring = "0.16"
 
 [dev-dependencies]
-proptest = "^1.1.0"
+proptest = "^1.2.0"
 tempfile = "3"
 rstest = "0.17"
 pretty_assertions = "1"
