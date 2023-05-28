@@ -169,7 +169,12 @@ void TDB2::modify (Task& task)
       update = true;
     }
     if (update) {
-      tctask.set_value(k, make_optional (v_new));
+      // An empty string indicates the value should be removed.
+      if (v_new == "") {
+        tctask.set_value(k, {});
+      } else {
+        tctask.set_value(k, make_optional (v_new));
+      }
     }
   }
 
