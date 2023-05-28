@@ -133,6 +133,9 @@ void TDB2::add (Task& task)
 // they have been unmodified for a long time.
 void TDB2::modify (Task& task)
 {
+  // All locally modified tasks are timestamped, implicitly overwriting any
+  // changes the user or hooks tried to apply to the "modified" attribute.
+  task.setAsNow ("modified");
   task.validate (false);
   auto uuid = task.get ("uuid");
 
