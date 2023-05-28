@@ -12,14 +12,14 @@ taskchampion-lib = { path = "../lib" }
 taskchampion-sync-server = { path = "../sync-server" }
 
 [dev-dependencies]
-anyhow = "1.0"
-actix-web = "^4.3.1"
-actix-rt = "2"
-tempfile = "3"
-pretty_assertions = "1"
-log = "^0.4.17"
-env_logger = "^0.10.0"
-lazy_static = "1"
+anyhow.workspace = true
+actix-web.workspace = true
+actix-rt.workspace = true
+tempfile.workspace = true
+pretty_assertions.workspace = true
+log.workspace = true
+env_logger.workspace = true
+lazy_static.workspace = true
 
 [build-dependencies]
-cc = "1.0.73"
+cc.workspace = true

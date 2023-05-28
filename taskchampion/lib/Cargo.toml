@@ -4,10 +4,11 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-libc = "0.2.136"
+libc.workspace = true
+anyhow.workspace = true
+ffizz-header.workspace = true
+
 taskchampion = { path = "../taskchampion" }
-anyhow = "1.0"
-ffizz-header = "0.3"
 
 [dev-dependencies]
-pretty_assertions = "1"
+pretty_assertions.workspace = true
