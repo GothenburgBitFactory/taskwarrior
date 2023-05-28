@@ -1826,7 +1826,7 @@ void Task::validate (bool applyDefault /* = true */)
   if ((status == Task::pending) && (get ("end") != ""))
     remove ("end");
 
-  // Provide an entry date unless user already specified one.
+  // Provide a modified date unless user already specified one.
   if (! has ("modified") || get ("modified") == "")
     setAsNow ("modified");
 
