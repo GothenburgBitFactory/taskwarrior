@@ -655,12 +655,14 @@ pub unsafe extern "C" fn tc_task_get_dependencies(task: *mut TCTask) -> TCUuidLi
 /// until this task is made immutable again.  This implies that it is not allowed for more than one
 /// task associated with a replica to be mutable at any time.
 ///
-/// Typical mutation of tasks is bracketed with `tc_task_to_mut` and `tc_task_to_immut`:
+/// Typically mutation of tasks is bracketed with `tc_task_to_mut` and `tc_task_to_immut`:
 ///
+/// ```text
 ///     tc_task_to_mut(task, rep);
 ///     success = tc_task_done(task);
 ///     tc_task_to_immut(task, rep);
 ///     if (!success) { ... }
+/// ```
 ///
 /// ```c
 /// EXTERN_C void tc_task_to_mut(struct TCTask *task, struct TCReplica *tcreplica);
