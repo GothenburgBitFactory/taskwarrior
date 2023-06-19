@@ -21,7 +21,7 @@ ureq = "^2.7.0"
 log = "^0.4.17"
 rusqlite = { version = "0.29", features = ["bundled"] }
 strum = "0.25"
-strum_macros = "0.24"
+strum_macros = "0.25"
 flate2 = "1"
 byteorder = "1.0"
 ring = "0.16"
