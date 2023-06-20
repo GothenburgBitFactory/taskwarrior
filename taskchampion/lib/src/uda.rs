@@ -20,11 +20,8 @@ use crate::types::*;
 #[repr(C)]
 #[derive(Default)]
 pub struct TCUda {
-    /// Namespace of the UDA.  For legacy UDAs, this may have a NULL ptr field.
     pub ns: TCString,
-    /// UDA key.  Must not be NULL.
     pub key: TCString,
-    /// Content of the UDA.  Must not be NULL.
     pub value: TCString,
 }
 

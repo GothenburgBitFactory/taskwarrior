@@ -69,14 +69,9 @@ impl PassByValue for TCKV {
 /// ```
 #[repr(C)]
 pub struct TCKVList {
-    /// number of key/value pairs in items
     len: libc::size_t,
-
     /// total size of items (internal use only)
     _capacity: libc::size_t,
-
-    /// Array of TCKV's. These remain owned by the TCKVList instance and will be freed by
-    /// tc_kv_list_free.  This pointer is never NULL for a valid TCKVList.
     items: *mut TCKV,
 }
 

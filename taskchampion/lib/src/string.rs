@@ -394,15 +394,9 @@ where
 /// ```
 #[repr(C)]
 pub struct TCStringList {
-    /// number of strings in items
     len: libc::size_t,
-
     /// total size of items (internal use only)
     capacity: libc::size_t,
-
-    /// Array of strings. These remain owned by the TCStringList instance and will be freed by
-    /// tc_string_list_free.  This pointer is never NULL for a valid TCStringList, and the
-    /// *TCStringList at indexes 0..len-1 are not NULL.
     items: *mut TCString,
 }
 
