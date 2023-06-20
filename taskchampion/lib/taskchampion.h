@@ -672,12 +672,14 @@ EXTERN_C bool tc_task_is_waiting(struct TCTask *task);
 // until this task is made immutable again.  This implies that it is not allowed for more than one
 // task associated with a replica to be mutable at any time.
 //
-// Typical mutation of tasks is bracketed with `tc_task_to_mut` and `tc_task_to_immut`:
+// Typically mutation of tasks is bracketed with `tc_task_to_mut` and `tc_task_to_immut`:
 //
+// ```text
 //     tc_task_to_mut(task, rep);
 //     success = tc_task_done(task);
 //     tc_task_to_immut(task, rep);
 //     if (!success) { ... }
+// ```
 EXTERN_C void tc_task_to_mut(struct TCTask *task, struct TCReplica *tcreplica);
 
 // Add an annotation to a mutable task.  This call takes ownership of the

@@ -32,9 +32,7 @@ use taskchampion::chrono::prelude::*;
 /// ```
 #[repr(C)]
 pub struct TCAnnotation {
-    /// Time the annotation was made.  Must be nonzero.
     pub entry: libc::time_t,
-    /// Content of the annotation.  Must not be NULL.
     pub description: TCString,
 }
 
@@ -96,14 +94,9 @@ impl Default for TCAnnotation {
 /// ```
 #[repr(C)]
 pub struct TCAnnotationList {
-    /// number of annotations in items
     len: libc::size_t,
-
     /// total size of items (internal use only)
     capacity: libc::size_t,
-
-    /// Array of annotations. These remain owned by the TCAnnotationList instance and will be freed by
-    /// tc_annotation_list_free.  This pointer is never NULL for a valid TCAnnotationList.
     items: *mut TCAnnotation,
 }
 
