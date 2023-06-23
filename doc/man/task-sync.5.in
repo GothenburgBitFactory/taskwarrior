@@ -19,10 +19,12 @@ For example, you might want a replica of your tasks on your laptop and on your p
 .SH TERMINOLOGY
 
 .SH LOCAL SYNCHRONIZATION
+
 Taskwarrior can sync your tasks locally. While this setup does not make your
-tasks accessible from multiple systems, it does provide a convenient backup
-and allow internal storage to be reused. If you later decide to sync to a
-server, the transition is easy.
+tasks accessible from multiple systems, it does provide a convenient backup and
+allow internal storage to be reused. If you later decide to sync to a server,
+the transition is as simple as changing all replicas to use the server
+synchronization settings explained in the next section.
 
 Set 'sync.local.server_dir' to the directory where the synchronized data should
 be stored:
@@ -56,9 +58,8 @@ Configure Taskwarrior with these details:
 
 Then run 'task sync' to synchronize the tasks to the server.
 
-To add a new, empty Taskwarrior installation to the set of replicas, such as
-when setting up a new system, run 'task sync' in that installation before
-adding any tasks.
+To add a new replica, such as when setting up a new system, run 'task sync' in
+that installation. This must be done in an empty replica.
 
 It is easy to transition from local to server synchronization: simply change
 all replicas to use the same "sync.server.*" configuration.
@@ -81,13 +82,12 @@ For example:
 
     $ taskclient-sync-server --port 8443 --data-dir /storage/taskdata
 
-To add a new user, invent a new client key with a tool like `uuidgen` or an
-online UUID generator. There is no need to configure the server for this new
-client key: the sync server will automatically create a new user whenever
-presented with a new client key.
-
-Supply the key, along with the origin, to the user for inclusion in their
-Taskwarrior config. The user should invent their own "encryption_secret".
+To add a new user to the server, invent a new client key with a tool like
+`uuidgen` or an online UUID generator. There is no need to configure the server
+for this new client key: the sync server will automatically create a new user
+whenever presented with a new client key.  Supply the key, along with the
+origin, to the user for inclusion in their Taskwarrior config. The user should
+invent their own "encryption_secret".
 
 .SH AVOIDING DUPLICATE RECURRING TASKS
 
