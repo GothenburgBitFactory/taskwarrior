@@ -6,13 +6,17 @@ synchronization capabilities.
 
 .SH INTRODUCTION
 
-Taskwarrior can "synchronize" your tasks to a server. This has a few benefits:
+Taskwarrior can synchronize your tasks to a server. This has a few benefits:
 .br
-  - Makes your tasks accessible from multiple systems.
+  - Makes your tasks accessible from multiple systems, called "replicas".
 .br
   - Provides a backup of your tasks.
 .br
   - Allows internal storage to be reused.
+
+For example, you might want a replica of your tasks on your laptop and on your phone.
+
+.SH TERMINOLOGY
 
 .SH LOCAL SYNCHRONIZATION
 Taskwarrior can sync your tasks locally. While this setup does not make your
@@ -28,16 +32,21 @@ be stored:
 Then run 'task sync' to synchronize to this local "server".
 
 .SH SERVER SYNCHRONIZATION
-Configure each instance of Taskwarrior which you would like to keep in sync
+
+Configure each replica which you would like to keep in sync
 with the same settings.  You will need the following information from the
 adminisrator of the server:
+
 .br
   - The server's URL ("origin", such as "https://tw.example.com")
 .br
   - A client key ("client_key") identifying your tasks
 .br
-  - An encryption secret ("encryption_secret") used to encrypt and decrypt your
-    tasks.
+  - An encryption secret ("encryption_secret") used to encrypt and decrypt your tasks. This can be any secret string, and must match for all replicas using the same client key.
+
+Tools such as
+.BR pwgen (1)
+can generate suitable secret values.
 
 Configure Taskwarrior with these details:
 
@@ -59,7 +68,7 @@ all replicas to use the same "sync.server.*" configuration.
 The taskchampion sync server is an HTTP server supporting multiple users.
 Users are identified by a client key, and users with different client keys are
 entirely independent.  Task data is encrypted by Taskwarrior, and the sync
-server never seens un-encrypted data.
+server never sees un-encrypted data.
 
 To start the server, run it in your preferred HTTP hosting environment, using
 `--port` to set the TCP port on which it should listen.  It is recommended to
@@ -68,11 +77,17 @@ use TLS to protect communications with the server, but this is not required.
 The server stores its data in a database, the path to which is given by the
 `--data-dir` argument, defaulting to "/var/lib/taskchampion-sync-server".
 
-The sync server will automatically create a new user whenever presented with a
-new client key. To add a new user, create a new client key with a tool like
-`uuidgen` or an online UUID generator. Supply this, along with the origin, for
-the user's Taskwarrior config. The user should invent their own
-"encryption_secret".
+For example:
+
+    $ taskclient-sync-server --port 8443 --data-dir /storage/taskdata
+
+To add a new user, invent a new client key with a tool like `uuidgen` or an
+online UUID generator. There is no need to configure the server for this new
+client key: the sync server will automatically create a new user whenever
+presented with a new client key.
+
+Supply the key, along with the origin, to the user for inclusion in their
+Taskwarrior config. The user should invent their own "encryption_secret".
 
 .SH AVOIDING DUPLICATE RECURRING TASKS
 
@@ -87,43 +102,8 @@ And on the other clients, run:
 
 This protects you against the effects of a sync/duplication bug.
 
-.SH ALTERNATIVES
-There are two alternatives to using a synchronization server:
+.SH ALTERNATIVE: FILE SHARING SERVICES
 
-1) Version control systems, such as git, hg, svn
-.br
-2) File sharing systems, such as DropBox, Google Drive
-
-
-.SH ALTERNATIVE 1: VERSION CONTROL SYSTEMS
-There are several good, distributed VCS systems (git, hg, ...) and centralized
-VCS systems (svn, cvs ...), and they all function in a similar fashion for our
-purposes.
-
-Setup is straightforward.  You place your .task directory under revision
-control.  You then need to perform a regular commit/push/pull/update to make
-sure that the data is propagated when needed.  You can even do this using shell
-scripts so that every task command is preceded by a 'pull' and followed by
-a 'push'.
-
-Strengths:
-.br
-  - Good data transport mechanisms
-.br
-  - Secure transport options
-
-Weaknesses:
-.br
-  - You need proficiency with VCS tools
-.br
-  - You will need to manually resolve conflicts frequently
-.br
-  - You need to provide the mechanism for making sure copies are up to date
-.br
-  - Data is stored in a binary format, so the version-control repository will grow quickly.
-
-
-.SH ALTERNATIVE 2: FILE SHARING SERVICES
 There are many file sharing services, such as DropBox, Amazon S3, Google Drive,
 SkyDrive and more.  This technique involves storing your .task directory in a
 shared directory under the control of the file hosting services.

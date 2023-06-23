@@ -9,6 +9,8 @@
   - `taskd.server`
   - `taskd.trust`
 
+The Taskwarrior build no longer requires GnuTLS.
+
 ------ current release ---------------------------
 2.6.2 -
 
