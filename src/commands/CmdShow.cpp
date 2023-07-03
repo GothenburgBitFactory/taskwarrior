@@ -163,6 +163,7 @@ int CmdShow::execute (std::string& output)
     " expressions"
     " fontunderline"
     " gc"
+    " gc.sync"
     " hooks"
     " hooks.location"
     " hyphenate"
