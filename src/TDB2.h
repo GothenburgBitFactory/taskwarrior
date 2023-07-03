@@ -77,7 +77,7 @@ public:
 
   void dump ();
 
-  void sync (tc::Server server, bool avoid_snapshots);
+  void sync (std::string &verbose_output);
 
 private:
   tc::Replica replica;

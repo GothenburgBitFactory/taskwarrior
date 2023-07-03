@@ -471,9 +471,31 @@ int TDB2::num_reverts_possible ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::sync (tc::Server server, bool avoid_snapshots)
+void TDB2::sync (std::string &verbose_output)
 {
-  replica.sync(std::move(server), avoid_snapshots);
+  tc::Server server;
+  std::stringstream out;
+
+  std::string origin = Context::getContext ().config.get ("sync.server.origin");
+  std::string client_key = Context::getContext ().config.get ("sync.server.client_key");
+  std::string encryption_secret = Context::getContext ().config.get ("sync.server.encryption_secret");
+  std::string server_dir = Context::getContext ().config.get ("sync.local.server_dir");
+  std::string data_dir = Context::getContext ().config.get ("data.location");
+  if (server_dir != "") {
+    // Prefer sync.local.server_dir, if given.
+    server = tc::Server (server_dir);
+    out << "Syncing locally to " << server_dir << "\n";
+  } else if (origin != "" && client_key != "" && encryption_secret != "") {
+    // Or a remote server, if given.
+    server = tc::Server (origin, client_key, encryption_secret);
+    out << "Syncing to server " << origin << "\n";
+  } else {
+    // Fall back to a local server in the `data.location`.
+    server = tc::Server (data_dir);
+    out << "Syncing locally to " << data_dir << " (default location)\n";
+  }
+  replica.sync(std::move(server), /* avoid_snapshots */false);
+  verbose_output = out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

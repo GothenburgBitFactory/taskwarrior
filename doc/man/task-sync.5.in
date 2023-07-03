@@ -1,8 +1,9 @@
 .TH task-sync 5 2016-02-24 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
-task-sync \- A discussion and tutorial for the various task(1) data
-synchronization capabilities.
+task-sync \- A discussion and tutorial for the various
+.BR task (1)
+data synchronization capabilities.
 
 .SH INTRODUCTION
 
@@ -16,28 +17,10 @@ Taskwarrior can synchronize your tasks to a server. This has a few benefits:
 
 For example, you might want a replica of your tasks on your laptop and on your phone.
 
-.SH TERMINOLOGY
+.SH CONFIGURATION
 
-.SH LOCAL SYNCHRONIZATION
-
-Taskwarrior can sync your tasks locally. While this setup does not make your
-tasks accessible from multiple systems, it does provide a convenient backup and
-allow internal storage to be reused. If you later decide to sync to a server,
-the transition is as simple as changing all replicas to use the server
-synchronization settings explained in the next section.
-
-Set 'sync.local.server_dir' to the directory where the synchronized data should
-be stored:
-
-    $ task config sync.local.server_dir /path/to/sync
-
-Then run 'task sync' to synchronize to this local "server".
-
-.SH SERVER SYNCHRONIZATION
-
-Configure each replica which you would like to keep in sync
-with the same settings.  You will need the following information from the
-adminisrator of the server:
+To synchronize your tasks to a sync server, you will need the following
+information from the server administrator:
 
 .br
   - The server's URL ("origin", such as "https://tw.example.com")
@@ -56,17 +39,36 @@ Configure Taskwarrior with these details:
     $ task config sync.server.client_key        <client_key>
     $ task config sync.server.encryption_secret <encryption_secret>
 
-Then run 'task sync' to synchronize the tasks to the server.
+.SS Local Synchronization
 
-To add a new replica, such as when setting up a new system, run 'task sync' in
-that installation. This must be done in an empty replica.
+It is possible to sync tasks locally, if you do not need a remote server.  To
+configure local sync:
 
-It is easy to transition from local to server synchronization: simply change
-all replicas to use the same "sync.server.*" configuration.
+    $ task config sync.local.server_dir /path/to/sync
+
+The default configuration is to sync to a database in the task directory
+("data.location").
+
+.SS Adding a Replica
+
+To add a new replica, configure a new, empty replica identically to
+the existing replica, and run `task sync`.
+
+.SS When to Synchronize
+
+Taskwarrior can perform a sync operation at every garbage collection (gc) run.
+This is the default, and is appropriate for local synchronization.
+
+For synchronization to a server, a better solution is to run
+
+    $ task sync
+
+periodically, such as via
+.BR cron (8) .
 
 .SH RUNNING TASKCHAMPION-SYNC-SERVER
 
-The taskchampion sync server is an HTTP server supporting multiple users.
+The Taskchampion sync server is an HTTP server supporting multiple users.
 Users are identified by a client key, and users with different client keys are
 entirely independent.  Task data is encrypted by Taskwarrior, and the sync
 server never sees un-encrypted data.
@@ -80,7 +82,9 @@ The server stores its data in a database, the path to which is given by the
 
 For example:
 
-    $ taskclient-sync-server --port 8443 --data-dir /storage/taskdata
+    $ taskchampion-sync-server --port 8443 --data-dir /storage/taskdata
+
+.SS Adding a New User
 
 To add a new user to the server, invent a new client key with a tool like
 `uuidgen` or an online UUID generator. There is no need to configure the server

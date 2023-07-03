@@ -98,7 +98,6 @@ public:
   Hooks                               hooks               {};
   bool                                determine_color_use {true};
   bool                                use_color           {true};
-  bool                                run_gc              {true};
   bool                                verbosity_legacy    {false};
   std::set <std::string>              verbosity           {};
   std::vector <std::string>           headers             {};

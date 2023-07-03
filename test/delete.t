@@ -42,6 +42,7 @@ class TestDelete(TestCase):
 
     def test_add_delete_undo(self):
         """Verify that add/delete/undo yields a Pending task"""
+        self.t.config("gc.sync", "off")
         self.t("add one")
         code, out, err = self.t("_get 1.uuid")
         uuid = out.strip()

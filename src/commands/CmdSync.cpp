@@ -56,35 +56,12 @@ CmdSync::CmdSync ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdSync::execute (std::string& output)
 {
-  int status = 0;
-
-  tc::Server server;
-  std::string server_ident;
-
-  // If no server is set up, quit.
-  std::string origin = Context::getContext ().config.get ("sync.server.origin");
-  std::string client_key = Context::getContext ().config.get ("sync.server.client_key");
-  std::string encryption_secret = Context::getContext ().config.get ("sync.server.encryption_secret");
-  std::string server_dir = Context::getContext ().config.get ("sync.local.server_dir");
-  if (server_dir != "") {
-    server = tc::Server (server_dir);
-    server_ident = server_dir;
-  } else if (origin != "" && client_key != "" && encryption_secret != "") {
-    server = tc::Server (origin, client_key, encryption_secret);
-    server_ident = origin;
-  } else {
-    throw std::string ("Neither sync.server nor sync.local are configured.");
+  std::string verbose_output;
+  Context::getContext ().tdb2.sync(verbose_output);
+  if (Context::getContext ().verbose ("sync")) {
+    output = verbose_output;
   }
-
-  std::stringstream out;
-  if (Context::getContext ().verbose ("sync"))
-    out << format ("Syncing with {1}", server_ident)
-        << '\n';
-
-  Context::getContext ().tdb2.sync(std::move(server), false);
-
-  output = out.str ();
-  return status;
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

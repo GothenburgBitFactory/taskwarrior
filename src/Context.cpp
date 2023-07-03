@@ -79,6 +79,7 @@ std::string configurationDefaults =
   "data.location=~/.task\n"
   "locking=1                                      # Use file-level locking\n"
   "gc=1                                           # Garbage-collect data files - DO NOT CHANGE unless you are sure\n"
+  "gc.sync=1                                      # Sync during garbage collcetion"
   "exit.on.missing.db=0                           # Whether to exit if ~/.task is not found\n"
   "hooks=1                                        # Master control switch for hooks\n"
   "\n"
@@ -843,12 +844,16 @@ int Context::dispatch (std::string &out)
     // The command know whether they need a GC.
     if (c->needs_gc ())
     {
-      run_gc = config.getBoolean ("gc");
       tdb2.gc ();
-    }
-    else
-    {
-      run_gc = false;
+
+      // TODO: default true
+      if (config.getBoolean ("gc.sync")) {
+        std::string verbose_output;
+        tdb2.sync (verbose_output);
+        if (Context::getContext ().verbose ("sync")) {
+          std::cerr << verbose_output;
+        }
+      }
     }
 
     // This is something that is only needed for write commands with no other
