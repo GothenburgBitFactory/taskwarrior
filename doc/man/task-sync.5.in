@@ -13,9 +13,13 @@ Taskwarrior can synchronize your tasks to a server. This has a few benefits:
 .br
   - Provides a backup of your tasks.
 .br
-  - Allows internal storage to be reused.
+  - Saves disk space.
 
 For example, you might want a replica of your tasks on your laptop and on your phone.
+
+NOTE: A side-effect of synchronization is that once changes have been
+synchronized, they cannot be undone. This means that each time synchronization
+is run, it is no longer possible to undo previous operations.
 
 .SH CONFIGURATION
 
@@ -39,16 +43,6 @@ Configure Taskwarrior with these details:
     $ task config sync.server.client_key        <client_key>
     $ task config sync.server.encryption_secret <encryption_secret>
 
-.SS Local Synchronization
-
-It is possible to sync tasks locally, if you do not need a remote server.  To
-configure local sync:
-
-    $ task config sync.local.server_dir /path/to/sync
-
-The default configuration is to sync to a database in the task directory
-("data.location").
-
 .SS Adding a Replica
 
 To add a new replica, configure a new, empty replica identically to
@@ -65,6 +59,17 @@ For synchronization to a server, a better solution is to run
 
 periodically, such as via
 .BR cron (8) .
+
+.SS Local Synchronization
+
+In order to take advantage of synchronization's side effect of saving disk
+space without setting up a remote server, it is possible to sync tasks locally.
+To configure local sync:
+
+    $ task config sync.local.server_dir /path/to/sync
+
+The default configuration is to sync to a database in the task directory
+("data.location").
 
 .SH RUNNING TASKCHAMPION-SYNC-SERVER
 
