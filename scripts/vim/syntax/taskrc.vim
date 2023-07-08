@@ -132,7 +132,6 @@ syn match taskrcGoodKey '^\s*\Vexpressions='he=e-1
 syn match taskrcGoodKey '^\s*\Vextensions='he=e-1
 syn match taskrcGoodKey '^\s*\Vfontunderline='he=e-1
 syn match taskrcGoodKey '^\s*\Vgc='he=e-1
-syn match taskrcGoodKey '^\s*\Vgc.sync='he=e-1
 syn match taskrcGoodKey '^\s*\Vhooks='he=e-1
 syn match taskrcGoodKey '^\s*\Vhooks.location='he=e-1
 syn match taskrcGoodKey '^\s*\Vhyphenate='he=e-1
