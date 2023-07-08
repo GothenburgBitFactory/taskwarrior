@@ -5,7 +5,7 @@ RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
 RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 
 RUN dnf update -y
-RUN dnf install python3 git gcc gcc-c++ make gnutls-devel libuuid-devel glibc-langpack-en -y
+RUN dnf install python3 git gcc gcc-c++ make libuuid-devel glibc-langpack-en -y
 RUN dnf install epel-release -y
 RUN dnf install which cmake libfaketime curl -y
 RUN gcc --version; cmake --version

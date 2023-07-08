@@ -1,51 +1,118 @@
 .TH task-sync 5 2016-02-24 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
-task-sync \- A discussion and tutorial for the various task(1) data
-synchronization capabilities.
+task-sync \- A discussion and tutorial for the various
+.BR task (1)
+data synchronization capabilities.
 
 .SH INTRODUCTION
-Taskwarrior has several sync options, both external and built in.  If you wish
-to sync your data, choose one method only; mixing methods is going to lead to
-problems.  Each of the methods discussed have their own strengths.
 
-.SH ALTERNATIVES
-There are three alternatives for syncing data, which are:
-
-1) Version control systems, such as git, hg, svn
+Taskwarrior can synchronize your tasks to a server. This has a few benefits:
 .br
-2) File sharing systems, such as DropBox, Google Drive
+  - Makes your tasks accessible from multiple systems, called "replicas".
 .br
-3) Using the Taskserver and the 'sync' command
-
-
-.SH OPTION 1: VERSION CONTROL SYSTEMS
-There are several good, distributed VCS systems (git, hg, ...) and centralized
-VCS systems (svn, cvs ...), and they all function in a similar fashion for our
-purposes.
-
-Setup is straightforward.  You place your .task directory under revision
-control.  You then need to perform a regular commit/push/pull/update to make
-sure that the data is propagated when needed.  You can even do this using shell
-scripts so that every task command is preceded by a 'pull' and followed by
-a 'push'.
-
-Strengths:
+  - Provides a backup of your tasks.
 .br
-  - Good data transport mechanisms
-.br
-  - Secure transport options
+  - Saves disk space.
 
-Weaknesses:
-.br
-  - You need proficiency with VCS tools
-.br
-  - You will need to manually resolve conflicts frequently
-.br
-  - You need to provide the mechanism for making sure copies are up to date
+For example, you might want a replica of your tasks on your laptop and on your phone.
 
+NOTE: A side-effect of synchronization is that once changes have been
+synchronized, they cannot be undone. This means that each time synchronization
+is run, it is no longer possible to undo previous operations.
 
-.SH OPTION 2: FILE SHARING SERVICES
+.SH CONFIGURATION
+
+To synchronize your tasks to a sync server, you will need the following
+information from the server administrator:
+
+.br
+  - The server's URL ("origin", such as "https://tw.example.com")
+.br
+  - A client key ("client_key") identifying your tasks
+.br
+  - An encryption secret ("encryption_secret") used to encrypt and decrypt your tasks. This can be any secret string, and must match for all replicas using the same client key.
+
+Tools such as
+.BR pwgen (1)
+can generate suitable secret values.
+
+Configure Taskwarrior with these details:
+
+    $ task config sync.server.origin            <origin>
+    $ task config sync.server.client_key        <client_key>
+    $ task config sync.server.encryption_secret <encryption_secret>
+
+.SS Adding a Replica
+
+To add a new replica, configure a new, empty replica identically to
+the existing replica, and run `task sync`.
+
+.SS When to Synchronize
+
+Taskwarrior can perform a sync operation at every garbage collection (gc) run.
+This is the default, and is appropriate for local synchronization.
+
+For synchronization to a server, a better solution is to run
+
+    $ task sync
+
+periodically, such as via
+.BR cron (8) .
+
+.SS Local Synchronization
+
+In order to take advantage of synchronization's side effect of saving disk
+space without setting up a remote server, it is possible to sync tasks locally.
+To configure local sync:
+
+    $ task config sync.local.server_dir /path/to/sync
+
+The default configuration is to sync to a database in the task directory
+("data.location").
+
+.SH RUNNING TASKCHAMPION-SYNC-SERVER
+
+The Taskchampion sync server is an HTTP server supporting multiple users.
+Users are identified by a client key, and users with different client keys are
+entirely independent.  Task data is encrypted by Taskwarrior, and the sync
+server never sees un-encrypted data.
+
+To start the server, run it in your preferred HTTP hosting environment, using
+`--port` to set the TCP port on which it should listen.  It is recommended to
+use TLS to protect communications with the server, but this is not required.
+
+The server stores its data in a database, the path to which is given by the
+`--data-dir` argument, defaulting to "/var/lib/taskchampion-sync-server".
+
+For example:
+
+    $ taskchampion-sync-server --port 8443 --data-dir /storage/taskdata
+
+.SS Adding a New User
+
+To add a new user to the server, invent a new client key with a tool like
+`uuidgen` or an online UUID generator. There is no need to configure the server
+for this new client key: the sync server will automatically create a new user
+whenever presented with a new client key.  Supply the key, along with the
+origin, to the user for inclusion in their Taskwarrior config. The user should
+invent their own "encryption_secret".
+
+.SH AVOIDING DUPLICATE RECURRING TASKS
+
+If you run multiple clients that sync to the same server, you will need to run
+this command on your primary client (the one you use most often):
+
+    $ task config recurrence on
+
+And on the other clients, run:
+
+    $ task config recurrence off
+
+This protects you against the effects of a sync/duplication bug.
+
+.SH ALTERNATIVE: FILE SHARING SERVICES
+
 There are many file sharing services, such as DropBox, Amazon S3, Google Drive,
 SkyDrive and more.  This technique involves storing your .task directory in a
 shared directory under the control of the file hosting services.
@@ -73,78 +140,6 @@ Weaknesses:
 .br
   - Tasks are not properly merged
 
-
-.SH OPTION 3: TASKSERVER
-The Taskserver was designed for this purpose to be secure, fast and conflict-
-free, allowing data interchange between assorted Taskwarrior clients, and
-tolerant of network connectivity problems.
-
-There is a 'sync' command built in to Taskwarrior (provided the GnuTLS library
-is installed), and with a server account and client configuration, syncing is
-done on demand.
-
-Setup is a matter of creating an account on a Taskserver (see your Taskserver
-provider or operate your own - see
-https://taskwarrior.org/docs/taskserver/setup.html)
-
-Once you have an account, you'll receive a certificate, key, and credentials.
-You'll need to put the certificate and key somewhere like this:
-
-    $ cp <name>.cert.pem ~/.task
-    $ cp <name>.key.pem ~/.task
-
-Then you configure Taskwarrior, using the provided details:
-
-    $ task config taskd.certificate ~/.task/<name>.cert.pem
-    $ task config taskd.key         ~/.task/<name>.key.pem
-    $ task config taskd.credentials <organization>/<name>/<UUID>
-    $ task config taskd.server      <server domain>:<port>
-
-If you are using a private server, you are likely also using a self-signed
-certificate, which means you will need one of the following additional entries:
-
-    $ task config taskd.ca          ~/.task/ca.cert.pem
-
-The CA (Certificate Authority) will be used to verify the server certificate.
-
-After setup, you run a one-time sync initialization, like this:
-
-    $ task sync init
-
-This will make sure your client and the server are properly in sync to begin
-with.  From this point on, you never run the 'initialize' command again, just
-go about your business, and when you want to sync, run this:
-
-    $ task sync
-
-You'll see a summary of how many tasks were uploaded and downloaded.  You can
-safely run the command as often as you like.  When there are no changes to sync,
-nothing happens.  If you do not have connectivity, your task changes accumulate
-so that when you next run 'sync' with proper connectivity, the changes are
-properly handled, in the right order.
-
-If you run multiple clients that sync to the same server, you will need to run
-this command on your primary client (the one you use most often):
-
-    $ task config recurrence on
-
-And on the other clients, run:
-
-    $ task config recurrence off
-
-This protects you against the effects of a sync/duplication bug.
-
-Strengths:
-.br
-  - Secure communication
-.br
-  - Minimal bandwidth
-.br
-  - Tolerates connectivity outage
-
-Weaknesses:
-.br
-  - You need to manage your own server, or gain access to a hosted server.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2021 T. Babej, P. Beckingham, F. Hernandez.

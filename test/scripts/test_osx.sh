@@ -1,7 +1,6 @@
 set -ex
 
 export LDFLAGS="-framework Foundation -framework Security"
-brew install gnutls
 brew install cmake
 brew install libfaketime
 git clean -dfx

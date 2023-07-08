@@ -9,7 +9,7 @@ RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|
 
 RUN dnf update -y
 RUN yum install epel-release -y
-RUN dnf install python38 git gcc gcc-c++ cmake make gnutls-devel libuuid-devel libfaketime sudo man -y
+RUN dnf install python38 git gcc gcc-c++ cmake make libuuid-devel libfaketime sudo man -y
 
 RUN useradd warrior
 RUN echo warrior ALL=NOPASSWD:ALL > /etc/sudoers.d/warrior

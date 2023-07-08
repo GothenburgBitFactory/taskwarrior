@@ -272,21 +272,17 @@ std::string configurationDefaults =
   "list.all.tags=0                                # Include old tag names in 'tags' command\n"
   "print.empty.columns=0                          # Print columns which have no data for any task\n"
   "debug=0                                        # Display diagnostics\n"
-  "debug.tls=0                                    # Sync diagnostics\n"
   "sugar=1                                        # Syntactic sugar\n"
   "obfuscate=0                                    # Obfuscate data for error reporting\n"
   "fontunderline=1                                # Uses underlines rather than -------\n"
   "\n"
   "# WARNING: Please read the documentation (man task-sync) before setting up\n"
   "#          Taskwarrior for Taskserver synchronization.\n"
-  "#taskd.ca=<certificate file>\n"
-  "#taskd.certificate=<certificate file>\n"
-  "#taskd.credentials=<organization>/<name>/<password>\n"
-  "#taskd.server=<server>:<port>\n"
-  "taskd.trust=strict\n"
-  "#taskd.trust=ignore hostname\n"
-  "#taskd.trust=allow all\n"
-  "taskd.ciphers=NORMAL\n"
+  "\n"
+  "#sync.server.client_key                        # Client key for sync to a server\n"
+  "#sync.server.encryption_secret                 # Encryption secret for sync to a server\n"
+  "#sync.server.origin                            # Origin of the sync server\n"
+  "#sync.local.server_dir                         # Directory for local sync\n"
   "\n"
   "# Aliases - alternate names for commands\n"
   "alias.rm=delete                                # Alias for the delete command\n"
@@ -1354,16 +1350,13 @@ void Context::loadAliases ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Using the general rc.debug setting automaticalls sets debug.tls, debug.hooks
+// Using the general rc.debug setting automaticalls sets debug.hooks
 // and debug.parser, unless they already have values, which by default they do
 // not.
 void Context::propagateDebug ()
 {
   if (config.getBoolean ("debug"))
   {
-    if (! config.has ("debug.tls"))
-      config.set ("debug.tls", 2);
-
     if (! config.has ("debug.hooks"))
       config.set ("debug.hooks", 1);
 

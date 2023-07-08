@@ -38,6 +38,10 @@
 #include <tc/WorkingSet.h>
 #include <tc/Replica.h>
 
+namespace tc {
+class Server;
+}
+
 // TDB2 Class represents all the files in the task database.
 class TDB2
 {
@@ -72,6 +76,8 @@ public:
   int num_reverts_possible ();
 
   void dump ();
+
+  void sync (tc::Server server, bool avoid_snapshots);
 
 private:
   tc::Replica replica;

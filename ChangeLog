@@ -1,3 +1,16 @@
+- [BREAKING CHANGE] sync is now performed against taskchampion-sync-server,
+  instead of taskd. The following config options are no longer supported:
+  - `debug.tls`
+  - `taskd.ca`
+  - `taskd.certificate`
+  - `taskd.ciphers`
+  - `taskd.credentials`
+  - `taskd.key`
+  - `taskd.server`
+  - `taskd.trust`
+
+The Taskwarrior build no longer requires GnuTLS.
+
 ------ current release ---------------------------
 2.6.2 -
 

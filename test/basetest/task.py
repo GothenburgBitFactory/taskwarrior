@@ -21,21 +21,16 @@ class Task(object):
     This class can be instanciated multiple times if multiple taskw clients are
     needed.
 
-    This class can be given a Taskd instance for simplified configuration.
-
     A taskw client should not be used after being destroyed.
     """
     DEFAULT_TASK = task_binary_location()
 
-    def __init__(self, taskd=None, taskw=DEFAULT_TASK):
-        """Initialize a Task warrior (client) that can interact with a taskd
-        server. The task client runs in a temporary folder.
+    def __init__(self, taskw=DEFAULT_TASK):
+        """Initialize a Task warrior (client).  The task client runs in a temporary folder.
 
-        :arg taskd: Taskd instance for client-server configuration
         :arg taskw: Task binary to use as client (defaults: task in PATH)
         """
         self.taskw = taskw
-        self.taskd = taskd
 
         # Used to specify what command to launch (and to inject faketime)
         self._command = [self.taskw]
@@ -55,10 +50,6 @@ class Task(object):
                      "hooks=off\n"
                      "news.version=2.6.0\n"
                      "".format(self.datadir))
-
-        # Setup configuration to talk to taskd automatically
-        if self.taskd is not None:
-            self.bind_taskd_server(self.taskd)
 
         # Hooks disabled until requested
         self.hooks = None
@@ -87,49 +78,6 @@ class Task(object):
         self.env["TASKDATA"] = self.datadir
         # As well as TASKRC
         self.env["TASKRC"] = self.taskrc
-
-    def bind_taskd_server(self, taskd):
-        """Configure the present task client to talk to given taskd server
-
-        Note that this can be performed automatically by passing taskd when
-        creating an instance of the current class.
-        """
-        self.taskd = taskd
-
-        cert = os.path.join(self.taskd.certpath, "test_client.cert.pem")
-        key = os.path.join(self.taskd.certpath, "test_client.key.pem")
-        self.config("taskd.certificate", cert)
-        self.config("taskd.key", key)
-        self.config("taskd.ca", self.taskd.ca_cert)
-
-        address = ":".join((self.taskd.address, str(self.taskd.port)))
-        self.config("taskd.server", address)
-
-        # Also configure the default user for given taskd server
-        self.set_taskd_user()
-
-    def set_taskd_user(self, taskd_user=None, default=True):
-        """Assign a new user user to the present task client
-
-        If default==False, a new user will be assigned instead of reusing the
-        default taskd user for the corresponding instance.
-        """
-        if taskd_user is None:
-            if default:
-                user, org, userkey = self.taskd.default_user
-            else:
-                user, org, userkey = self.taskd.create_user()
-        else:
-            user, org, userkey = taskd_user
-
-        credentials = "/".join((org, user, userkey))
-        self.config("taskd.credentials", credentials)
-
-        self.credentials = {
-            "user": user,
-            "org": org,
-            "userkey": userkey,
-        }
 
     def config(self, var, value):
         """Run setup `var` as `value` in taskd config
