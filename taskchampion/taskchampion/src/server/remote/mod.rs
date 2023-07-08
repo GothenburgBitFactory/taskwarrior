@@ -10,7 +10,7 @@ use super::crypto::{Cryptor, Sealed, Secret, Unsealed};
 
 pub struct RemoteServer {
     origin: String,
-    client_key: Uuid,
+    client_id: Uuid,
     cryptor: Cryptor,
     agent: ureq::Agent,
 }
@@ -25,18 +25,18 @@ const SNAPSHOT_CONTENT_TYPE: &str = "application/vnd.taskchampion.snapshot";
 /// taskchampion-sync-server).
 impl RemoteServer {
     /// Construct a new RemoteServer.  The `origin` is the sync server's protocol and hostname
-    /// without a trailing slash, such as `https://tcsync.example.com`.  Pass a client_key to
+    /// without a trailing slash, such as `https://tcsync.example.com`.  Pass a client_id to
     /// identify this client to the server.  Multiple replicas synchronizing the same task history
-    /// should use the same client_key.
+    /// should use the same client_id.
     pub fn new(
         origin: String,
-        client_key: Uuid,
+        client_id: Uuid,
         encryption_secret: Vec<u8>,
     ) -> Result<RemoteServer> {
         Ok(RemoteServer {
             origin,
-            client_key,
-            cryptor: Cryptor::new(client_key, &Secret(encryption_secret.to_vec()))?,
+            client_id,
+            cryptor: Cryptor::new(client_id, &Secret(encryption_secret.to_vec()))?,
             agent: ureq::AgentBuilder::new()
                 .timeout_connect(Duration::from_secs(10))
                 .timeout_read(Duration::from_secs(60))
@@ -86,7 +86,7 @@ impl Server for RemoteServer {
             .agent
             .post(&url)
             .set("Content-Type", HISTORY_SEGMENT_CONTENT_TYPE)
-            .set("X-Client-Key", &self.client_key.to_string())
+            .set("X-Client-Id", &self.client_id.to_string())
             .send_bytes(sealed.as_ref())
         {
             Ok(resp) => {
@@ -115,7 +115,7 @@ impl Server for RemoteServer {
         match self
             .agent
             .get(&url)
-            .set("X-Client-Key", &self.client_key.to_string())
+            .set("X-Client-Id", &self.client_id.to_string())
             .call()
         {
             Ok(resp) => {
@@ -148,7 +148,7 @@ impl Server for RemoteServer {
             .agent
             .post(&url)
             .set("Content-Type", SNAPSHOT_CONTENT_TYPE)
-            .set("X-Client-Key", &self.client_key.to_string())
+            .set("X-Client-Id", &self.client_id.to_string())
             .send_bytes(sealed.as_ref())
             .map(|_| ())?)
     }
@@ -158,7 +158,7 @@ impl Server for RemoteServer {
         match self
             .agent
             .get(&url)
-            .set("X-Client-Key", &self.client_key.to_string())
+            .set("X-Client-Id", &self.client_id.to_string())
             .call()
         {
             Ok(resp) => {

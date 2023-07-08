@@ -193,7 +193,7 @@ int CmdShow::execute (std::string& output)
     " sugar"
     " summary.all.projects"
     " sync.local.server_dir"
-    " sync.server.client_key"
+    " sync.server.client_id"
     " sync.server.encryption_secret"
     " sync.server.origin"
     " tag.indicator"

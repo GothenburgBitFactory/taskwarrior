@@ -109,14 +109,14 @@ pub unsafe extern "C" fn tc_server_new_local(
 ///
 /// ```c
 /// EXTERN_C struct TCServer *tc_server_new_remote(struct TCString origin,
-///                                       struct TCUuid client_key,
+///                                       struct TCUuid client_id,
 ///                                       struct TCString encryption_secret,
 ///                                       struct TCString *error_out);
 /// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_new_remote(
     origin: TCString,
-    client_key: TCUuid,
+    client_id: TCUuid,
     encryption_secret: TCString,
     error_out: *mut TCString,
 ) -> *mut TCServer {
@@ -128,9 +128,9 @@ pub unsafe extern "C" fn tc_server_new_remote(
             let origin = unsafe { TCString::val_from_arg(origin) }.into_string()?;
 
             // SAFETY:
-            //  - client_key is a valid Uuid (any 8-byte sequence counts)
+            //  - client_id is a valid Uuid (any 8-byte sequence counts)
 
-            let client_key = unsafe { TCUuid::val_from_arg(client_key) };
+            let client_id = unsafe { TCUuid::val_from_arg(client_id) };
             // SAFETY:
             //  - encryption_secret is valid (promised by caller)
             //  - encryption_secret ownership is transferred to this function
@@ -140,7 +140,7 @@ pub unsafe extern "C" fn tc_server_new_remote(
 
             let server_config = ServerConfig::Remote {
                 origin,
-                client_key,
+                client_id,
                 encryption_secret,
             };
             let server = server_config.into_server()?;

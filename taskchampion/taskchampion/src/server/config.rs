@@ -16,8 +16,8 @@ pub enum ServerConfig {
         /// Sync server "origin"; a URL with schema and hostname but no path or trailing `/`
         origin: String,
 
-        /// Client Key to identify and authenticate this replica to the server
-        client_key: Uuid,
+        /// Client ID to identify and authenticate this replica to the server
+        client_id: Uuid,
 
         /// Private encryption secret used to encrypt all data sent to the server.  This can
         /// be any suitably un-guessable string of bytes.
@@ -32,9 +32,9 @@ impl ServerConfig {
             ServerConfig::Local { server_dir } => Box::new(LocalServer::new(server_dir)?),
             ServerConfig::Remote {
                 origin,
-                client_key,
+                client_id,
                 encryption_secret,
-            } => Box::new(RemoteServer::new(origin, client_key, encryption_secret)?),
+            } => Box::new(RemoteServer::new(origin, client_id, encryption_secret)?),
         })
     }
 }

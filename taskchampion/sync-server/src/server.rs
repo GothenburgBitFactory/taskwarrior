@@ -14,7 +14,7 @@ pub const NIL_VERSION_ID: VersionId = Uuid::nil();
 const SNAPSHOT_SEARCH_LEN: i32 = 5;
 
 pub(crate) type HistorySegment = Vec<u8>;
-pub(crate) type ClientKey = Uuid;
+pub(crate) type ClientId = Uuid;
 pub(crate) type VersionId = Uuid;
 
 /// ServerConfig contains configuration parameters for the server.
@@ -60,12 +60,12 @@ pub(crate) enum GetVersionResult {
 pub(crate) fn get_child_version<'a>(
     mut txn: Box<dyn StorageTxn + 'a>,
     _config: &ServerConfig,
-    client_key: ClientKey,
+    client_id: ClientId,
     client: Client,
     parent_version_id: VersionId,
 ) -> anyhow::Result<GetVersionResult> {
     // If a version with parentVersionId equal to the requested parentVersionId exists, it is returned.
-    if let Some(version) = txn.get_version_by_parent(client_key, parent_version_id)? {
+    if let Some(version) = txn.get_version_by_parent(client_id, parent_version_id)? {
         return Ok(GetVersionResult::Success {
             version_id: version.version_id,
             parent_version_id: version.parent_version_id,
@@ -86,7 +86,7 @@ pub(crate) fn get_child_version<'a>(
     }
 
     // If a version with versionId equal to the requested parentVersionId exists, the response is _not-found_ (the client is up-to-date)
-    if txn.get_version(client_key, parent_version_id)?.is_some() {
+    if txn.get_version(client_id, parent_version_id)?.is_some() {
         return Ok(GetVersionResult::NotFound);
     }
 
@@ -144,14 +144,14 @@ impl SnapshotUrgency {
 pub(crate) fn add_version<'a>(
     mut txn: Box<dyn StorageTxn + 'a>,
     config: &ServerConfig,
-    client_key: ClientKey,
+    client_id: ClientId,
     client: Client,
     parent_version_id: VersionId,
     history_segment: HistorySegment,
 ) -> anyhow::Result<(AddVersionResult, SnapshotUrgency)> {
     log::debug!(
-        "add_version(client_key: {}, parent_version_id: {})",
-        client_key,
+        "add_version(client_id: {}, parent_version_id: {})",
+        client_id,
         parent_version_id,
     );
 
@@ -172,7 +172,7 @@ pub(crate) fn add_version<'a>(
     );
 
     // update the DB
-    txn.add_version(client_key, version_id, parent_version_id, history_segment)?;
+    txn.add_version(client_id, version_id, parent_version_id, history_segment)?;
     txn.commit()?;
 
     // calculate the urgency
@@ -200,14 +200,14 @@ pub(crate) fn add_version<'a>(
 pub(crate) fn add_snapshot<'a>(
     mut txn: Box<dyn StorageTxn + 'a>,
     _config: &ServerConfig,
-    client_key: ClientKey,
+    client_id: ClientId,
     client: Client,
     version_id: VersionId,
     data: Vec<u8>,
 ) -> anyhow::Result<()> {
     log::debug!(
-        "add_snapshot(client_key: {}, version_id: {})",
-        client_key,
+        "add_snapshot(client_id: {}, version_id: {})",
+        client_id,
         version_id,
     );
 
@@ -254,7 +254,7 @@ pub(crate) fn add_snapshot<'a>(
         }
 
         // get the parent version ID
-        if let Some(parent) = txn.get_version(client_key, vid)? {
+        if let Some(parent) = txn.get_version(client_id, vid)? {
             vid = parent.parent_version_id;
         } else {
             // this version does not exist; "this should not happen" but if it does,
@@ -269,7 +269,7 @@ pub(crate) fn add_snapshot<'a>(
 
     log::warn!("accepting snapshot for version {}", version_id);
     txn.set_snapshot(
-        client_key,
+        client_id,
         Snapshot {
             version_id,
             timestamp: Utc::now(),
@@ -285,11 +285,11 @@ pub(crate) fn add_snapshot<'a>(
 pub(crate) fn get_snapshot<'a>(
     mut txn: Box<dyn StorageTxn + 'a>,
     _config: &ServerConfig,
-    client_key: ClientKey,
+    client_id: ClientId,
     client: Client,
 ) -> anyhow::Result<Option<(Uuid, Vec<u8>)>> {
     Ok(if let Some(snap) = client.snapshot {
-        txn.get_snapshot_data(client_key, snap.version_id)?
+        txn.get_snapshot_data(client_id, snap.version_id)?
             .map(|data| (snap.version_id, data))
     } else {
         None
@@ -354,16 +354,16 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
-        txn.new_client(client_key, NIL_VERSION_ID)?;
+        let client_id = Uuid::new_v4();
+        txn.new_client(client_id, NIL_VERSION_ID)?;
 
         // when no snapshot exists, the first version is NotFound
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert_eq!(
             get_child_version(
                 txn,
                 &ServerConfig::default(),
-                client_key,
+                client_id,
                 client,
                 NIL_VERSION_ID
             )?,
@@ -378,11 +378,11 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
-        txn.new_client(client_key, Uuid::new_v4())?;
+        txn.new_client(client_id, Uuid::new_v4())?;
         txn.set_snapshot(
-            client_key,
+            client_id,
             Snapshot {
                 version_id: Uuid::new_v4(),
                 versions_since: 0,
@@ -392,12 +392,12 @@ mod test {
         )?;
 
         // when a snapshot exists, the first version is GONE
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert_eq!(
             get_child_version(
                 txn,
                 &ServerConfig::default(),
-                client_key,
+                client_id,
                 client,
                 NIL_VERSION_ID
             )?,
@@ -412,19 +412,19 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
         // add a parent version, but not the requested child version
         let parent_version_id = Uuid::new_v4();
-        txn.new_client(client_key, parent_version_id)?;
-        txn.add_version(client_key, parent_version_id, NIL_VERSION_ID, vec![])?;
+        txn.new_client(client_id, parent_version_id)?;
+        txn.add_version(client_id, parent_version_id, NIL_VERSION_ID, vec![])?;
 
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert_eq!(
             get_child_version(
                 txn,
                 &ServerConfig::default(),
-                client_key,
+                client_id,
                 client,
                 parent_version_id
             )?,
@@ -439,19 +439,19 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
         // make up a parent version id, but neither that version
         // nor its child exists (presumed to have been deleted)
         let parent_version_id = Uuid::new_v4();
-        txn.new_client(client_key, Uuid::new_v4())?;
+        txn.new_client(client_id, Uuid::new_v4())?;
 
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert_eq!(
             get_child_version(
                 txn,
                 &ServerConfig::default(),
-                client_key,
+                client_id,
                 client,
                 parent_version_id
             )?,
@@ -466,25 +466,25 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let history_segment = b"abcd".to_vec();
 
-        txn.new_client(client_key, version_id)?;
+        txn.new_client(client_id, version_id)?;
         txn.add_version(
-            client_key,
+            client_id,
             version_id,
             parent_version_id,
             history_segment.clone(),
         )?;
 
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert_eq!(
             get_child_version(
                 txn,
                 &ServerConfig::default(),
-                client_key,
+                client_id,
                 client,
                 parent_version_id
             )?,
@@ -506,24 +506,24 @@ mod test {
     ) -> anyhow::Result<(Uuid, Vec<Uuid>)> {
         init_logging();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let mut versions = vec![];
 
         let mut version_id = Uuid::nil();
-        txn.new_client(client_key, Uuid::nil())?;
+        txn.new_client(client_id, Uuid::nil())?;
         for vnum in 0..num_versions {
             let parent_version_id = version_id;
             version_id = Uuid::new_v4();
             versions.push(version_id);
             txn.add_version(
-                client_key,
+                client_id,
                 version_id,
                 parent_version_id,
                 vec![0, 0, vnum as u8],
             )?;
             if Some(vnum) == snapshot_version {
                 txn.set_snapshot(
-                    client_key,
+                    client_id,
                     Snapshot {
                         version_id,
                         versions_since: 0,
@@ -534,13 +534,13 @@ mod test {
             }
         }
 
-        Ok((client_key, versions))
+        Ok((client_id, versions))
     }
 
     /// Utility function to check the results of an add_version call
     fn av_success_check(
         storage: &InMemoryStorage,
-        client_key: Uuid,
+        client_id: Uuid,
         existing_versions: &[Uuid],
         result: (AddVersionResult, SnapshotUrgency),
         expected_history: Vec<u8>,
@@ -554,11 +554,11 @@ mod test {
 
             // verify that the storage was updated
             let mut txn = storage.txn()?;
-            let client = txn.get_client(client_key)?.unwrap();
+            let client = txn.get_client(client_id)?.unwrap();
             assert_eq!(client.latest_version_id, new_version_id);
 
             let parent_version_id = existing_versions.last().cloned().unwrap_or_else(Uuid::nil);
-            let version = txn.get_version(client_key, new_version_id)?.unwrap();
+            let version = txn.get_version(client_id, new_version_id)?.unwrap();
             assert_eq!(version.version_id, new_version_id);
             assert_eq!(version.parent_version_id, parent_version_id);
             assert_eq!(version.history_segment, expected_history);
@@ -574,17 +574,17 @@ mod test {
     #[test]
     fn add_version_conflict() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
-        let (client_key, versions) = av_setup(&storage, 3, None, None)?;
+        let (client_id, versions) = av_setup(&storage, 3, None, None)?;
 
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
 
         // try to add a child of a version other than the latest
         assert_eq!(
             add_version(
                 txn,
                 &ServerConfig::default(),
-                client_key,
+                client_id,
                 client,
                 versions[1],
                 vec![3, 6, 9]
@@ -596,10 +596,10 @@ mod test {
         // verify that the storage wasn't updated
         txn = storage.txn()?;
         assert_eq!(
-            txn.get_client(client_key)?.unwrap().latest_version_id,
+            txn.get_client(client_id)?.unwrap().latest_version_id,
             versions[2]
         );
-        assert_eq!(txn.get_version_by_parent(client_key, versions[2])?, None);
+        assert_eq!(txn.get_version_by_parent(client_id, versions[2])?, None);
 
         Ok(())
     }
@@ -607,15 +607,15 @@ mod test {
     #[test]
     fn add_version_with_existing_history() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
-        let (client_key, versions) = av_setup(&storage, 1, None, None)?;
+        let (client_id, versions) = av_setup(&storage, 1, None, None)?;
 
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
 
         let result = add_version(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             versions[0],
             vec![3, 6, 9],
@@ -623,7 +623,7 @@ mod test {
 
         av_success_check(
             &storage,
-            client_key,
+            client_id,
             &versions,
             result,
             vec![3, 6, 9],
@@ -637,16 +637,16 @@ mod test {
     #[test]
     fn add_version_with_no_history() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
-        let (client_key, versions) = av_setup(&storage, 0, None, None)?;
+        let (client_id, versions) = av_setup(&storage, 0, None, None)?;
 
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
 
         let parent_version_id = Uuid::nil();
         let result = add_version(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             parent_version_id,
             vec![3, 6, 9],
@@ -654,7 +654,7 @@ mod test {
 
         av_success_check(
             &storage,
-            client_key,
+            client_id,
             &versions,
             result,
             vec![3, 6, 9],
@@ -668,15 +668,15 @@ mod test {
     #[test]
     fn add_version_success_recent_snapshot() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
-        let (client_key, versions) = av_setup(&storage, 1, Some(0), None)?;
+        let (client_id, versions) = av_setup(&storage, 1, Some(0), None)?;
 
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
 
         let result = add_version(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             versions[0],
             vec![1, 2, 3],
@@ -684,7 +684,7 @@ mod test {
 
         av_success_check(
             &storage,
-            client_key,
+            client_id,
             &versions,
             result,
             vec![1, 2, 3],
@@ -699,15 +699,15 @@ mod test {
     fn add_version_success_aged_snapshot() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
         // one snapshot, but it was 50 days ago
-        let (client_key, versions) = av_setup(&storage, 1, Some(0), Some(50))?;
+        let (client_id, versions) = av_setup(&storage, 1, Some(0), Some(50))?;
 
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
 
         let result = add_version(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             versions[0],
             vec![1, 2, 3],
@@ -715,7 +715,7 @@ mod test {
 
         av_success_check(
             &storage,
-            client_key,
+            client_id,
             &versions,
             result,
             vec![1, 2, 3],
@@ -730,10 +730,10 @@ mod test {
     fn add_version_success_snapshot_many_versions_ago() -> anyhow::Result<()> {
         let storage = InMemoryStorage::new();
         // one snapshot, but it was 50 versions ago
-        let (client_key, versions) = av_setup(&storage, 50, Some(0), None)?;
+        let (client_id, versions) = av_setup(&storage, 50, Some(0), None)?;
 
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
 
         let result = add_version(
             txn,
@@ -741,7 +741,7 @@ mod test {
                 snapshot_versions: 30,
                 ..ServerConfig::default()
             },
-            client_key,
+            client_id,
             client,
             versions[49],
             vec![1, 2, 3],
@@ -749,7 +749,7 @@ mod test {
 
         av_success_check(
             &storage,
-            client_key,
+            client_id,
             &versions,
             result,
             vec![1, 2, 3],
@@ -766,19 +766,19 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let version_id = Uuid::new_v4();
 
         // set up a task DB with one version in it
-        txn.new_client(client_key, version_id)?;
-        txn.add_version(client_key, version_id, NIL_VERSION_ID, vec![])?;
+        txn.new_client(client_id, version_id)?;
+        txn.add_version(client_id, version_id, NIL_VERSION_ID, vec![])?;
 
         // add a snapshot for that version
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         add_snapshot(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             version_id,
             vec![1, 2, 3],
@@ -786,12 +786,12 @@ mod test {
 
         // verify the snapshot
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         let snapshot = client.snapshot.unwrap();
         assert_eq!(snapshot.version_id, version_id);
         assert_eq!(snapshot.versions_since, 0);
         assert_eq!(
-            txn.get_snapshot_data(client_key, version_id).unwrap(),
+            txn.get_snapshot_data(client_id, version_id).unwrap(),
             Some(vec![1, 2, 3])
         );
 
@@ -804,21 +804,21 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let version_id_1 = Uuid::new_v4();
         let version_id_2 = Uuid::new_v4();
 
         // set up a task DB with two versions in it
-        txn.new_client(client_key, version_id_2)?;
-        txn.add_version(client_key, version_id_1, NIL_VERSION_ID, vec![])?;
-        txn.add_version(client_key, version_id_2, version_id_1, vec![])?;
+        txn.new_client(client_id, version_id_2)?;
+        txn.add_version(client_id, version_id_1, NIL_VERSION_ID, vec![])?;
+        txn.add_version(client_id, version_id_2, version_id_1, vec![])?;
 
         // add a snapshot for version 1
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         add_snapshot(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             version_id_1,
             vec![1, 2, 3],
@@ -826,12 +826,12 @@ mod test {
 
         // verify the snapshot
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         let snapshot = client.snapshot.unwrap();
         assert_eq!(snapshot.version_id, version_id_1);
         assert_eq!(snapshot.versions_since, 0);
         assert_eq!(
-            txn.get_snapshot_data(client_key, version_id_1).unwrap(),
+            txn.get_snapshot_data(client_id, version_id_1).unwrap(),
             Some(vec![1, 2, 3])
         );
 
@@ -844,22 +844,22 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let version_id_1 = Uuid::new_v4();
         let version_id_2 = Uuid::new_v4();
 
         // set up a task DB with two versions in it
-        txn.new_client(client_key, version_id_2)?;
-        txn.add_version(client_key, version_id_1, NIL_VERSION_ID, vec![])?;
-        txn.add_version(client_key, version_id_2, version_id_1, vec![])?;
+        txn.new_client(client_id, version_id_2)?;
+        txn.add_version(client_id, version_id_1, NIL_VERSION_ID, vec![])?;
+        txn.add_version(client_id, version_id_2, version_id_1, vec![])?;
 
         // add a snapshot for unknown version
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         let version_id_unk = Uuid::new_v4();
         add_snapshot(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             version_id_unk,
             vec![1, 2, 3],
@@ -867,7 +867,7 @@ mod test {
 
         // verify the snapshot does not exist
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert!(client.snapshot.is_none());
 
         Ok(())
@@ -879,26 +879,26 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let mut version_id = Uuid::new_v4();
         let mut parent_version_id = Uuid::nil();
         let mut version_ids = vec![];
 
         // set up a task DB with 10 versions in it (oldest to newest)
-        txn.new_client(client_key, Uuid::nil())?;
+        txn.new_client(client_id, Uuid::nil())?;
         for _ in 0..10 {
-            txn.add_version(client_key, version_id, parent_version_id, vec![])?;
+            txn.add_version(client_id, version_id, parent_version_id, vec![])?;
             version_ids.push(version_id);
             parent_version_id = version_id;
             version_id = Uuid::new_v4();
         }
 
         // add a snapshot for the earliest of those
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         add_snapshot(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             version_ids[0],
             vec![1, 2, 3],
@@ -906,7 +906,7 @@ mod test {
 
         // verify the snapshot does not exist
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert!(client.snapshot.is_none());
 
         Ok(())
@@ -918,22 +918,22 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let mut version_id = Uuid::new_v4();
         let mut parent_version_id = Uuid::nil();
         let mut version_ids = vec![];
 
         // set up a task DB with 5 versions in it (oldest to newest) and a snapshot of the middle
         // one
-        txn.new_client(client_key, Uuid::nil())?;
+        txn.new_client(client_id, Uuid::nil())?;
         for _ in 0..5 {
-            txn.add_version(client_key, version_id, parent_version_id, vec![])?;
+            txn.add_version(client_id, version_id, parent_version_id, vec![])?;
             version_ids.push(version_id);
             parent_version_id = version_id;
             version_id = Uuid::new_v4();
         }
         txn.set_snapshot(
-            client_key,
+            client_id,
             Snapshot {
                 version_id: version_ids[2],
                 versions_since: 2,
@@ -943,11 +943,11 @@ mod test {
         )?;
 
         // add a snapshot for the earliest of those
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         add_snapshot(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             version_ids[0],
             vec![9, 9, 9],
@@ -955,12 +955,12 @@ mod test {
 
         // verify the snapshot was not replaced
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         let snapshot = client.snapshot.unwrap();
         assert_eq!(snapshot.version_id, version_ids[2]);
         assert_eq!(snapshot.versions_since, 2);
         assert_eq!(
-            txn.get_snapshot_data(client_key, version_ids[2]).unwrap(),
+            txn.get_snapshot_data(client_id, version_ids[2]).unwrap(),
             Some(vec![1, 2, 3])
         );
 
@@ -973,17 +973,17 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
         // just set up the client
-        txn.new_client(client_key, NIL_VERSION_ID)?;
+        txn.new_client(client_id, NIL_VERSION_ID)?;
 
         // add a snapshot for the nil version
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         add_snapshot(
             txn,
             &ServerConfig::default(),
-            client_key,
+            client_id,
             client,
             NIL_VERSION_ID,
             vec![9, 9, 9],
@@ -991,7 +991,7 @@ mod test {
 
         // verify the snapshot does not exist
         let mut txn = storage.txn()?;
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert!(client.snapshot.is_none());
 
         Ok(())
@@ -1003,13 +1003,13 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let data = vec![1, 2, 3];
         let snapshot_version_id = Uuid::new_v4();
 
-        txn.new_client(client_key, snapshot_version_id)?;
+        txn.new_client(client_id, snapshot_version_id)?;
         txn.set_snapshot(
-            client_key,
+            client_id,
             Snapshot {
                 version_id: snapshot_version_id,
                 versions_since: 3,
@@ -1018,9 +1018,9 @@ mod test {
             data.clone(),
         )?;
 
-        let client = txn.get_client(client_key)?.unwrap();
+        let client = txn.get_client(client_id)?.unwrap();
         assert_eq!(
-            get_snapshot(txn, &ServerConfig::default(), client_key, client)?,
+            get_snapshot(txn, &ServerConfig::default(), client_id, client)?,
             Some((snapshot_version_id, data))
         );
 
@@ -1033,13 +1033,13 @@ mod test {
 
         let storage = InMemoryStorage::new();
         let mut txn = storage.txn()?;
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
-        txn.new_client(client_key, NIL_VERSION_ID)?;
-        let client = txn.get_client(client_key)?.unwrap();
+        txn.new_client(client_id, NIL_VERSION_ID)?;
+        let client = txn.get_client(client_id)?.unwrap();
 
         assert_eq!(
-            get_snapshot(txn, &ServerConfig::default(), client_key, client)?,
+            get_snapshot(txn, &ServerConfig::default(), client_id, client)?,
             None
         );
 
