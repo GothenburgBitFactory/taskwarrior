@@ -163,7 +163,7 @@ syn match taskrcGoodKey '^\s*\Vrule.precedence.color='he=e-1
 syn match taskrcGoodKey '^\s*\Vsearch.case.sensitive='he=e-1
 syn match taskrcGoodKey '^\s*\Vsummary.all.projects='he=e-1
 syn match taskrcGoodKey '^\s*\Vsugar='he=e-1
-syn match taskrcGoodKey '^\s*\Vsync.\(server.\(origin\|client_key\|encryption_secret\)\|local.server_dir\)='he=e-1
+syn match taskrcGoodKey '^\s*\Vsync.\(server.\(origin\|client_id\|encryption_secret\)\|local.server_dir\)='he=e-1
 syn match taskrcGoodKey '^\s*\Vtag.indicator='he=e-1
 syn match taskrcGoodKey '^\s*\Vuda.\S\{-}.\(default\|type\|label\|values\|indicator\)='he=e-1
 syn match taskrcGoodKey '^\s*\Vundo.style='he=e-1

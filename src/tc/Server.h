@@ -54,7 +54,7 @@ namespace tc {
     Server (const std::string& server_dir);
 
     // Construct a remote server (tc_server_new_remote).
-    Server (const std::string &origin, const std::string &client_key, const std::string &encryption_secret);
+    Server (const std::string &origin, const std::string &client_id, const std::string &encryption_secret);
 
     // This object "owns" inner, so copy is not allowed.
     Server (const Server &) = delete;

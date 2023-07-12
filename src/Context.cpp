@@ -279,7 +279,7 @@ std::string configurationDefaults =
   "# WARNING: Please read the documentation (man task-sync) before setting up\n"
   "#          Taskwarrior for Taskserver synchronization.\n"
   "\n"
-  "#sync.server.client_key                        # Client key for sync to a server\n"
+  "#sync.server.client_id                         # Client ID for sync to a server\n"
   "#sync.server.encryption_secret                 # Encryption secret for sync to a server\n"
   "#sync.server.origin                            # Origin of the sync server\n"
   "#sync.local.server_dir                         # Directory for local sync\n"

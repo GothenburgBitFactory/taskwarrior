@@ -1,5 +1,5 @@
 use crate::api::{
-    client_key_header, failure_to_ise, ServerState, SNAPSHOT_CONTENT_TYPE, VERSION_ID_HEADER,
+    client_id_header, failure_to_ise, ServerState, SNAPSHOT_CONTENT_TYPE, VERSION_ID_HEADER,
 };
 use crate::server::get_snapshot;
 use actix_web::{error, get, web, HttpRequest, HttpResponse, Result};
@@ -20,15 +20,15 @@ pub(crate) async fn service(
 ) -> Result<HttpResponse> {
     let mut txn = server_state.storage.txn().map_err(failure_to_ise)?;
 
-    let client_key = client_key_header(&req)?;
+    let client_id = client_id_header(&req)?;
 
     let client = txn
-        .get_client(client_key)
+        .get_client(client_id)
         .map_err(failure_to_ise)?
         .ok_or_else(|| error::ErrorNotFound("no such client"))?;
 
     if let Some((version_id, data)) =
-        get_snapshot(txn, &server_state.config, client_key, client).map_err(failure_to_ise)?
+        get_snapshot(txn, &server_state.config, client_id, client).map_err(failure_to_ise)?
     {
         Ok(HttpResponse::Ok()
             .content_type(SNAPSHOT_CONTENT_TYPE)
@@ -41,6 +41,7 @@ pub(crate) async fn service(
 
 #[cfg(test)]
 mod test {
+    use crate::api::CLIENT_ID_HEADER;
     use crate::storage::{InMemoryStorage, Snapshot, Storage};
     use crate::Server;
     use actix_web::{http::StatusCode, test, App};
@@ -50,13 +51,13 @@ mod test {
 
     #[actix_rt::test]
     async fn test_not_found() {
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
 
         // set up the storage contents..
         {
             let mut txn = storage.txn().unwrap();
-            txn.new_client(client_key, Uuid::new_v4()).unwrap();
+            txn.new_client(client_id, Uuid::new_v4()).unwrap();
         }
 
         let server = Server::new(Default::default(), storage);
@@ -66,7 +67,7 @@ mod test {
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
             .uri(uri)
-            .append_header(("X-Client-Key", client_key.to_string()))
+            .append_header((CLIENT_ID_HEADER, client_id.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -74,7 +75,7 @@ mod test {
 
     #[actix_rt::test]
     async fn test_success() {
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let snapshot_data = vec![1, 2, 3, 4];
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
@@ -82,9 +83,9 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = storage.txn().unwrap();
-            txn.new_client(client_key, Uuid::new_v4()).unwrap();
+            txn.new_client(client_id, Uuid::new_v4()).unwrap();
             txn.set_snapshot(
-                client_key,
+                client_id,
                 Snapshot {
                     version_id,
                     versions_since: 3,
@@ -102,7 +103,7 @@ mod test {
         let uri = "/v1/client/snapshot";
         let req = test::TestRequest::get()
             .uri(uri)
-            .append_header(("X-Client-Key", client_key.to_string()))
+            .append_header((CLIENT_ID_HEADER, client_id.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::OK);

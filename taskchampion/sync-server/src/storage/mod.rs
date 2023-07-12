@@ -39,15 +39,15 @@ pub struct Version {
 
 pub trait StorageTxn {
     /// Get information about the given client
-    fn get_client(&mut self, client_key: Uuid) -> anyhow::Result<Option<Client>>;
+    fn get_client(&mut self, client_id: Uuid) -> anyhow::Result<Option<Client>>;
 
     /// Create a new client with the given latest_version_id
-    fn new_client(&mut self, client_key: Uuid, latest_version_id: Uuid) -> anyhow::Result<()>;
+    fn new_client(&mut self, client_id: Uuid, latest_version_id: Uuid) -> anyhow::Result<()>;
 
     /// Set the client's most recent snapshot.
     fn set_snapshot(
         &mut self,
-        client_key: Uuid,
+        client_id: Uuid,
         snapshot: Snapshot,
         data: Vec<u8>,
     ) -> anyhow::Result<()>;
@@ -56,30 +56,27 @@ pub trait StorageTxn {
     /// is used to verify that the snapshot is for the correct version.
     fn get_snapshot_data(
         &mut self,
-        client_key: Uuid,
+        client_id: Uuid,
         version_id: Uuid,
     ) -> anyhow::Result<Option<Vec<u8>>>;
 
     /// Get a version, indexed by parent version id
     fn get_version_by_parent(
         &mut self,
-        client_key: Uuid,
+        client_id: Uuid,
         parent_version_id: Uuid,
     ) -> anyhow::Result<Option<Version>>;
 
     /// Get a version, indexed by its own version id
-    fn get_version(
-        &mut self,
-        client_key: Uuid,
-        version_id: Uuid,
-    ) -> anyhow::Result<Option<Version>>;
+    fn get_version(&mut self, client_id: Uuid, version_id: Uuid)
+        -> anyhow::Result<Option<Version>>;
 
     /// Add a version (that must not already exist), and
     ///  - update latest_version_id
     ///  - increment snapshot.versions_since
     fn add_version(
         &mut self,
-        client_key: Uuid,
+        client_id: Uuid,
         version_id: Uuid,
         parent_version_id: Uuid,
         history_segment: Vec<u8>,

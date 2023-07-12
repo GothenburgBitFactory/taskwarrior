@@ -12,23 +12,23 @@ const TASK_APP_ID: u8 = 1;
 
 /// An Cryptor stores a secret and allows sealing and unsealing.  It derives a key from the secret,
 /// which takes a nontrivial amount of time, so it should be created once and re-used for the given
-/// client_key.
+/// client_id.
 pub(super) struct Cryptor {
     key: aead::LessSafeKey,
     rng: rand::SystemRandom,
 }
 
 impl Cryptor {
-    pub(super) fn new(client_key: Uuid, secret: &Secret) -> Result<Self> {
+    pub(super) fn new(client_id: Uuid, secret: &Secret) -> Result<Self> {
         Ok(Cryptor {
-            key: Self::derive_key(client_key, secret)?,
+            key: Self::derive_key(client_id, secret)?,
             rng: rand::SystemRandom::new(),
         })
     }
 
     /// Derive a key as specified for version 1.  Note that this may take 10s of ms.
-    fn derive_key(client_key: Uuid, secret: &Secret) -> Result<aead::LessSafeKey> {
-        let salt = digest::digest(&digest::SHA256, client_key.as_bytes());
+    fn derive_key(client_id: Uuid, secret: &Secret) -> Result<aead::LessSafeKey> {
+        let salt = digest::digest(&digest::SHA256, client_id.as_bytes());
 
         let mut key_bytes = vec![0u8; aead::CHACHA20_POLY1305.key_len()];
         pbkdf2::derive(
@@ -268,10 +268,10 @@ mod test {
     fn round_trip_bad_key() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(client_key, &secret).unwrap();
+        let cryptor = Cryptor::new(client_id, &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -280,7 +280,7 @@ mod test {
         let sealed = cryptor.seal(unsealed).unwrap();
 
         let secret = Secret(b"DIFFERENT_SECRET".to_vec());
-        let cryptor = Cryptor::new(client_key, &secret).unwrap();
+        let cryptor = Cryptor::new(client_id, &secret).unwrap();
         assert!(cryptor.unseal(sealed).is_err());
     }
 
@@ -288,10 +288,10 @@ mod test {
     fn round_trip_bad_version() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(client_key, &secret).unwrap();
+        let cryptor = Cryptor::new(client_id, &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -303,13 +303,13 @@ mod test {
     }
 
     #[test]
-    fn round_trip_bad_client_key() {
+    fn round_trip_bad_client_id() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(client_key, &secret).unwrap();
+        let cryptor = Cryptor::new(client_id, &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -317,8 +317,8 @@ mod test {
         };
         let sealed = cryptor.seal(unsealed).unwrap();
 
-        let client_key = Uuid::new_v4();
-        let cryptor = Cryptor::new(client_key, &secret).unwrap();
+        let client_id = Uuid::new_v4();
+        let cryptor = Cryptor::new(client_id, &secret).unwrap();
         assert!(cryptor.unseal(sealed).is_err());
     }
 
@@ -340,13 +340,13 @@ mod test {
 
         #[test]
         fn good() {
-            let (version_id, client_key, encryption_secret) = defaults();
+            let (version_id, client_id, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-good.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_key, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
             let unsealed = cryptor.unseal(sealed).unwrap();
 
             assert_eq!(unsealed.payload, b"SUCCESS");
@@ -355,61 +355,61 @@ mod test {
 
         #[test]
         fn bad_version_id() {
-            let (version_id, client_key, encryption_secret) = defaults();
+            let (version_id, client_id, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-version-id.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_key, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
-        fn bad_client_key() {
-            let (version_id, client_key, encryption_secret) = defaults();
+        fn bad_client_id() {
+            let (version_id, client_id, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
-                payload: include_bytes!("test-bad-client-key.data").to_vec(),
+                payload: include_bytes!("test-bad-client-id.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_key, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
         fn bad_secret() {
-            let (version_id, client_key, encryption_secret) = defaults();
+            let (version_id, client_id, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-secret.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_key, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
         fn bad_version() {
-            let (version_id, client_key, encryption_secret) = defaults();
+            let (version_id, client_id, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-version.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_key, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
         fn bad_app_id() {
-            let (version_id, client_key, encryption_secret) = defaults();
+            let (version_id, client_id, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-app-id.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_key, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
     }

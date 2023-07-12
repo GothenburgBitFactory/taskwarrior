@@ -63,14 +63,14 @@ int CmdSync::execute (std::string& output)
 
   // If no server is set up, quit.
   std::string origin = Context::getContext ().config.get ("sync.server.origin");
-  std::string client_key = Context::getContext ().config.get ("sync.server.client_key");
+  std::string client_id = Context::getContext ().config.get ("sync.server.client_id");
   std::string encryption_secret = Context::getContext ().config.get ("sync.server.encryption_secret");
   std::string server_dir = Context::getContext ().config.get ("sync.local.server_dir");
   if (server_dir != "") {
     server = tc::Server (server_dir);
     server_ident = server_dir;
-  } else if (origin != "" && client_key != "" && encryption_secret != "") {
-    server = tc::Server (origin, client_key, encryption_secret);
+  } else if (origin != "" && client_id != "" && encryption_secret != "") {
+    server = tc::Server (origin, client_id, encryption_secret);
     server_ident = origin;
   } else {
     throw std::string ("Neither sync.server nor sync.local are configured.");

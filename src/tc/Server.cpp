@@ -49,23 +49,23 @@ tc::Server::Server (const std::string &server_dir)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Server::Server (const std::string &origin, const std::string &client_key, const std::string &encryption_secret)
+tc::Server::Server (const std::string &origin, const std::string &client_id, const std::string &encryption_secret)
 {
   TCString tc_origin = tc_string_borrow (origin.c_str ());
 
-  TCString tc_client_key_str = tc_string_borrow (client_key.c_str ());
+  TCString tc_client_id = tc_string_borrow (client_id.c_str ());
 
   TCString tc_encryption_secret = tc_string_borrow (encryption_secret.c_str ());
 
-  TCUuid tc_client_key;
-  if (tc_uuid_from_str(tc_client_key_str, &tc_client_key) != TC_RESULT_OK) {
+  TCUuid tc_client_uuid;
+  if (tc_uuid_from_str(tc_client_id, &tc_client_uuid) != TC_RESULT_OK) {
     tc_string_free(&tc_origin);
     tc_string_free(&tc_encryption_secret);
-    throw "client_key must be a valid UUID";
+    throw "client_id must be a valid UUID";
   }
 
   TCString error;
-  auto tcserver = tc_server_new_remote (tc_origin, tc_client_key, tc_encryption_secret, &error);
+  auto tcserver = tc_server_new_remote (tc_origin, tc_client_uuid, tc_encryption_secret, &error);
   if (!tcserver) {
     auto errmsg = format ("Could not configure connection to server at {1}: {2}",
         origin, tc_string_content (&error));

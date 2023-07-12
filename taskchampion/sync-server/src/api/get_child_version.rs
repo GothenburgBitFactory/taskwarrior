@@ -1,5 +1,5 @@
 use crate::api::{
-    client_key_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
+    client_id_header, failure_to_ise, ServerState, HISTORY_SEGMENT_CONTENT_TYPE,
     PARENT_VERSION_ID_HEADER, VERSION_ID_HEADER,
 };
 use crate::server::{get_child_version, GetVersionResult, VersionId};
@@ -24,17 +24,17 @@ pub(crate) async fn service(
 
     let mut txn = server_state.storage.txn().map_err(failure_to_ise)?;
 
-    let client_key = client_key_header(&req)?;
+    let client_id = client_id_header(&req)?;
 
     let client = txn
-        .get_client(client_key)
+        .get_client(client_id)
         .map_err(failure_to_ise)?
         .ok_or_else(|| error::ErrorNotFound("no such client"))?;
 
     return match get_child_version(
         txn,
         &server_state.config,
-        client_key,
+        client_id,
         client,
         parent_version_id,
     )
@@ -56,6 +56,7 @@ pub(crate) async fn service(
 
 #[cfg(test)]
 mod test {
+    use crate::api::CLIENT_ID_HEADER;
     use crate::server::NIL_VERSION_ID;
     use crate::storage::{InMemoryStorage, Storage};
     use crate::Server;
@@ -65,7 +66,7 @@ mod test {
 
     #[actix_rt::test]
     async fn test_success() {
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let version_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
@@ -73,8 +74,8 @@ mod test {
         // set up the storage contents..
         {
             let mut txn = storage.txn().unwrap();
-            txn.new_client(client_key, Uuid::new_v4()).unwrap();
-            txn.add_version(client_key, version_id, parent_version_id, b"abcd".to_vec())
+            txn.new_client(client_id, Uuid::new_v4()).unwrap();
+            txn.add_version(client_id, version_id, parent_version_id, b"abcd".to_vec())
                 .unwrap();
         }
 
@@ -85,7 +86,7 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .append_header(("X-Client-Key", client_key.to_string()))
+            .append_header((CLIENT_ID_HEADER, client_id.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::OK);
@@ -109,7 +110,7 @@ mod test {
 
     #[actix_rt::test]
     async fn test_client_not_found() {
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
         let server = Server::new(Default::default(), storage);
@@ -119,7 +120,7 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .append_header(("X-Client-Key", client_key.to_string()))
+            .append_header((CLIENT_ID_HEADER, client_id.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -129,14 +130,14 @@ mod test {
 
     #[actix_rt::test]
     async fn test_version_not_found_and_gone() {
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let parent_version_id = Uuid::new_v4();
         let storage: Box<dyn Storage> = Box::new(InMemoryStorage::new());
 
         // create the client, but not the version
         {
             let mut txn = storage.txn().unwrap();
-            txn.new_client(client_key, Uuid::new_v4()).unwrap();
+            txn.new_client(client_id, Uuid::new_v4()).unwrap();
         }
         let server = Server::new(Default::default(), storage);
         let app = App::new().configure(|sc| server.config(sc));
@@ -146,7 +147,7 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", parent_version_id);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .append_header(("X-Client-Key", client_key.to_string()))
+            .append_header((CLIENT_ID_HEADER, client_id.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::GONE);
@@ -159,7 +160,7 @@ mod test {
         let uri = format!("/v1/client/get-child-version/{}", NIL_VERSION_ID);
         let req = test::TestRequest::get()
             .uri(&uri)
-            .append_header(("X-Client-Key", client_key.to_string()))
+            .append_header((CLIENT_ID_HEADER, client_id.to_string()))
             .to_request();
         let resp = test::call_service(&mut app, req).await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);

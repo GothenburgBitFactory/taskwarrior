@@ -26,12 +26,12 @@ async fn cross_sync() -> anyhow::Result<()> {
         let mut rep1 = Replica::new(StorageConfig::InMemory.into_storage()?);
         let mut rep2 = Replica::new(StorageConfig::InMemory.into_storage()?);
 
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let encryption_secret = b"abc123".to_vec();
         let make_server = || {
             ServerConfig::Remote {
                 origin: format!("http://127.0.0.1:{}", port),
-                client_key,
+                client_id,
                 encryption_secret: encryption_secret.clone(),
             }
             .into_server()

@@ -30,12 +30,12 @@ async fn sync_with_snapshots() -> anyhow::Result<()> {
     }
 
     fn client(port: u16) -> anyhow::Result<()> {
-        let client_key = Uuid::new_v4();
+        let client_id = Uuid::new_v4();
         let encryption_secret = b"abc123".to_vec();
         let make_server = || {
             ServerConfig::Remote {
                 origin: format!("http://127.0.0.1:{}", port),
-                client_key,
+                client_id,
                 encryption_secret: encryption_secret.clone(),
             }
             .into_server()

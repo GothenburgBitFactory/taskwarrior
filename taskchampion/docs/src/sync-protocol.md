@@ -9,7 +9,7 @@ The protocol builds on the model presented in the previous chapter, and in parti
 
 From the server's perspective, replicas accessing the same task history are indistinguishable, so this protocol uses the term "client" to refer generically to all replicas replicating a single task history.
 
-Each client is identified and authenticated with a "client key", known only to the server and to the replicas replicating the task history.
+Each client is identified and authenticated with a "client_id key", known only to the server and to the replicas replicating the task history.
 
 ## Server
 
@@ -48,7 +48,7 @@ This section describes how that information is used to encrypt and decrypt data 
 #### Key Derivation
 
 The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 100,000 iterations.
-The salt is the SHA256 hash of the 16-byte form of the client key.
+The salt is the SHA256 hash of the 16-byte form of the client ID.
 
 #### Encryption
 
@@ -172,7 +172,7 @@ The response contains the snapshot version ID and the snapshot data, if those ex
 The transactions above are realized for an HTTP server at `<origin>` using the HTTP requests and responses described here.
 The `origin` *should* be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.
 
-The replica identifies itself to the server using a `clientKey` in the form of a UUID.
+The replica identifies itself to the server using a `client_id` in the form of a UUID.
 This value is passed with every request in the `X-Client-Id` header, in its dashed-hex format.
 
 ### AddVersion
