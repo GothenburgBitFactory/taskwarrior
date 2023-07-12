@@ -451,7 +451,7 @@ This is made concrete in an HTTP representation.</p>
 <p>The protocol builds on the model presented in the previous chapter, and in particular on the synchronization process.</p>
 <h2 id="clients"><a class="header" href="#clients">Clients</a></h2>
 <p>From the server's perspective, replicas accessing the same task history are indistinguishable, so this protocol uses the term &quot;client&quot; to refer generically to all replicas replicating a single task history.</p>
-<p>Each client is identified and authenticated with a &quot;client key&quot;, known only to the server and to the replicas replicating the task history.</p>
+<p>Each client is identified and authenticated with a &quot;client_id key&quot;, known only to the server and to the replicas replicating the task history.</p>
 <h2 id="server"><a class="header" href="#server">Server</a></h2>
 <p>For each client, the server is responsible for storing the task history, in the form of a branch-free sequence of versions.
 It also stores the latest snapshot, if any exists.</p>
@@ -483,7 +483,7 @@ The fourth invariant prevents the server from discarding versions newer than the
 This section describes how that information is used to encrypt and decrypt data sent to the server (versions and snapshots).</p>
 <h4 id="key-derivation"><a class="header" href="#key-derivation">Key Derivation</a></h4>
 <p>The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 100,000 iterations.
-The salt is the SHA256 hash of the 16-byte form of the client key.</p>
+The salt is the SHA256 hash of the 16-byte form of the client ID.</p>
 <h4 id="encryption-1"><a class="header" href="#encryption-1">Encryption</a></h4>
 <p>The client uses <a href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/aead.h.html">AEAD</a>, with algorithm CHACHA20_POLY1305.
 The client should generate a random nonce, noting that AEAD is <em>not secure</em> if a nonce is used repeatedly for the same key.</p>
@@ -589,7 +589,7 @@ The response contains the snapshot version ID and the snapshot data, if those ex
 <h2 id="http-representation"><a class="header" href="#http-representation">HTTP Representation</a></h2>
 <p>The transactions above are realized for an HTTP server at <code>&lt;origin&gt;</code> using the HTTP requests and responses described here.
 The <code>origin</code> <em>should</em> be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.</p>
-<p>The replica identifies itself to the server using a <code>clientKey</code> in the form of a UUID.
+<p>The replica identifies itself to the server using a <code>client_id</code> in the form of a UUID.
 This value is passed with every request in the <code>X-Client-Id</code> header, in its dashed-hex format.</p>
 <h3 id="addversion-1"><a class="header" href="#addversion-1">AddVersion</a></h3>
 <p>The request is a <code>POST</code> to <code>&lt;origin&gt;/v1/client/add-version/&lt;parentVersionId&gt;</code>.
