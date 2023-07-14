@@ -63,7 +63,7 @@ endif (DARWIN)
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
-install (TARGETS task_executable DESTINATION ${TASK_BINDIR})
+install (TARGETS task_executable DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 set_property (TARGET calc_executable PROPERTY OUTPUT_NAME "calc")
 set_property (TARGET lex_executable PROPERTY OUTPUT_NAME "lex")
