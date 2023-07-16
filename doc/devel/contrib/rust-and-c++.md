@@ -20,7 +20,7 @@ The implementation, including more documentation, is in the [`rust`](../../rust)
 
 ## Taskwarrior's use of TaskChampion
 
-Taskwarrior's interface to TaskChampion has a few laters:
+Taskwarrior's interface to TaskChampion has a few layers:
 
 * The skeletal Rust crate in [`src/tc/rust`](../../src/tc/rust) brings the symbols from `taskchampion-lib` under CMake's management.
   The corresponding header file is included from [`taskchampion/lib`](../../taskchampion/lib).

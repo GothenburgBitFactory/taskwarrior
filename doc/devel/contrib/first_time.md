@@ -1,11 +1,16 @@
----
-title: Contributing to Taskwarrior
----
+# Welcome, Open Source Contributor
+
+Welcome, potential new Open Source contributor! This is a guide to show you exactly how to make a contribution, and will lead you through the entire process.
+
+There are many people who wish to start contributing, but don't know how or where to start.
+If this might be the case for you, then please read on, this guide is for you.
+Because we want you to join in the fun with Open Source - it can be fun and rewarding, improve your skills, or just give you a way to contribute back to a project.
+
+## How to Help
 
 Help is needed in all areas of Taskwarrior development - design, coding, testing, support and marketing.
 Applicants must be friendly.
 Perhaps you are looking to help, but don't know where to start.
-You can of course [email us](mailto:taskwarrior-dev@googlegroups.com) but take a look at this list.
 Perhaps you have skills we are looking for, here are ways you may be able to help:
 
 -   Use Taskwarrior, become familiar with it, and make suggestions.
@@ -21,12 +26,6 @@ Perhaps you have skills we are looking for, here are ways you may be able to hel
     Sure, some are out of scope, or plain crazy, but the stream of suggestions is fascinating to think about.
 
 -   Participate in the [bug tracking](https://github.com/GothenburgBitFactory/taskwarrior/issues) database, to help others and maybe learn something yourself.
-
--   Help [triage](/docs/triage) the issues list.
-
--   Join the IRC channel \#taskwarrior on freenode.net and help answer some questions.
-
--   Join either the [developer-mailinglist](https://groups.google.com/forum/#!forum/taskwarrior-dev) or [user-mailinglist](https://groups.google.com/forum/#!forum/taskwarrior-user) (or both) and participate.
 
 -   Proofread the documentation and man pages.
 
@@ -45,10 +44,15 @@ Perhaps you have skills we are looking for, here are ways you may be able to hel
 
 -   Fix a bug.
     Send a patch.
-    You'll need C++ skills for this.
+    For this you'll need to know some C++ or Rust, and understand the [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow).
+    See [Developing Taskwarrior](./development.md) for more information.
+    We welcome all bug fixes, provided the work is done well and doesn't create other problems or introduce new dependencies.
+    We recommend talking to us before starting: we are happy to help you out!
 
 -   Write a unit test.
-    Improve an existing unit test.
+    Unit tests are possibly the most useful contributions of all, because they not only improve the quality of the code, but prevent future regressions, therefore maintaining quality of subsequent releases.
+    Plus, broken tests are a great motivator for us to fix the causal defect.
+    You'll need Python skills.
 
 -   Spread the word.
     Help others become more effective at managing tasks.
