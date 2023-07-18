@@ -3,9 +3,9 @@
 name: tests
 on: [push, pull_request]
 jobs:
-  # OSX tests do not run in Docker, and use the actions-rs Rust installaction
-  tests-osx:
-    name: tests (Mac OS X latest)
+  # MacOS tests do not run in Docker, and use the actions-rs Rust installaction
+  tests-macos-12:
+    name: tests (Mac OS 12.latest)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,8 +27,35 @@ jobs:
           toolchain: "stable"
           override: true
 
-      - name: Test OSX
-        run: bash test/scripts/test_osx.sh
+      - name: Test MacOS
+        run: bash test/scripts/test_macos.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  tests-macos-13:
+    name: tests (Mac OS 13.latest)
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-stable-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-stable-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: "stable"
+          override: true
+
+      - name: Test MacOS
+        run: bash test/scripts/test_macos.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
