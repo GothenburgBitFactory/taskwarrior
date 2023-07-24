@@ -463,7 +463,7 @@ impl<'r> TaskMut<'r> {
     pub fn remove_annotation(&mut self, entry: Timestamp) -> Result<()> {
         self.set_string(format!("annotation_{}", entry.timestamp()), None)
     }
-    
+
     pub fn set_due(&mut self, due: Option<Timestamp>) -> Result<()> {
         self.set_timestamp(Prop::Due.as_ref(), due)
     }
