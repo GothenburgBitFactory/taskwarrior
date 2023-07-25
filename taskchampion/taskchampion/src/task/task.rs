@@ -64,6 +64,7 @@ pub struct TaskMut<'r> {
 #[strum(serialize_all = "kebab-case")]
 enum Prop {
     Description,
+    Due,
     Modified,
     Start,
     Status,
@@ -277,6 +278,11 @@ impl Task {
         self.get_timestamp(Prop::Modified.as_ref())
     }
 
+    /// Get the due time for this task.
+    pub fn get_due(&self) -> Option<Timestamp> {
+        self.get_timestamp(Prop::Due.as_ref())
+    }
+
     /// Get the UUIDs of tasks on which this task depends.
     ///
     /// This includes all dependencies, regardless of their status.  In fact, it may include
@@ -456,6 +462,10 @@ impl<'r> TaskMut<'r> {
     /// Remove an annotation, based on its entry time.
     pub fn remove_annotation(&mut self, entry: Timestamp) -> Result<()> {
         self.set_string(format!("annotation_{}", entry.timestamp()), None)
+    }
+
+    pub fn set_due(&mut self, due: Option<Timestamp>) -> Result<()> {
+        self.set_timestamp(Prop::Due.as_ref(), due)
     }
 
     /// Set a user-defined attribute (UDA).  This will fail if the key is defined by the data
@@ -743,6 +753,53 @@ mod test {
                 stag(SyntheticTag::Unblocked)
             ]
         );
+    }
+
+    #[test]
+    fn test_get_due() {
+        let test_time = Utc.ymd(2033, 1, 1).and_hms(0, 0, 0);
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("due"), format!("{}", test_time.timestamp()))]
+                .drain(..)
+                .collect(),
+            dm(),
+        );
+        assert_eq!(task.get_due(), Some(test_time))
+    }
+
+    #[test]
+    fn test_get_invalid_due() {
+        let task = Task::new(
+            Uuid::new_v4(),
+            vec![(String::from("due"), String::from("invalid"))]
+                .drain(..)
+                .collect(),
+            dm(),
+        );
+        assert_eq!(task.get_due(), None);
+    }
+
+    #[test]
+    fn test_add_due() {
+        let test_time = Utc.ymd(2033, 1, 1).and_hms(0, 0, 0);
+        with_mut_task(|mut task| {
+            assert_eq!(task.get_due(), None);
+            task.set_due(Some(test_time)).unwrap();
+            assert_eq!(task.get_due(), Some(test_time))
+        });
+    }
+
+    #[test]
+    fn test_remove_due() {
+        let test_time = Utc.ymd(2033, 1, 1).and_hms(0, 0, 0);
+        with_mut_task(|mut task| {
+            task.set_due(Some(test_time)).unwrap();
+            task.reload().unwrap();
+            assert!(task.taskmap.contains_key("due"));
+            task.set_due(None).unwrap();
+            assert!(!task.taskmap.contains_key("due"));
+        });
     }
 
     #[test]
