@@ -295,8 +295,9 @@ end
 
 function __fish.task.list.tag
   set -l tags (task _tags)
-  printf -- '+%s\n' $tags
-  printf -- '-%s\n' $tags
+  printf '+%s\n' $tags
+  # compatibility, older fish won't allow - in format
+  printf ' %s\n' $tags | tr ' ' '-'
 end
 
 function __fish.task.list.task
@@ -354,10 +355,10 @@ end
 # static variables that won't changes even when taskw's data is modified
 set __fish_task_static_commands_with_desc (__fish.task.zsh commands | sort | string collect)
 set __fish_task_static_commands (echo -e $__fish_task_static_commands_with_desc | cut -d '	' -f 1 | string collect)
-set __fish_task_static_command_mods (printf -- '%s\n' 'add' 'annotate' 'append' 'delete' 'done' 'duplicate' 'log' 'modify' 'prepend' 'start' 'stop' | string collect)
-set __fish_task_static_mod (printf -- '%s\n' 'before' 'after' 'over' 'under' 'none' 'is' 'isnt' 'has' 'hasnt' 'startswith' 'endswith' 'word' 'noword' | string collect)
-set __fish_task_static_status (printf -- '%s\tstatus\n' 'pending' 'completed' 'deleted' 'waiting' | string collect)
-set __fish_task_static_priority (printf -- '%s\n' 'H\tHigh' 'M\tMiddle' 'L\tLow' | string collect)
+set __fish_task_static_command_mods (printf '%s\n' 'add' 'annotate' 'append' 'delete' 'done' 'duplicate' 'log' 'modify' 'prepend' 'start' 'stop' | string collect)
+set __fish_task_static_mod (printf '%s\n' 'before' 'after' 'over' 'under' 'none' 'is' 'isnt' 'has' 'hasnt' 'startswith' 'endswith' 'word' 'noword' | string collect)
+set __fish_task_static_status (printf '%s\tstatus\n' 'pending' 'completed' 'deleted' 'waiting' | string collect)
+set __fish_task_static_priority (printf '%s\n' 'H\tHigh' 'M\tMiddle' 'L\tLow' | string collect)
 
 set __fish_task_static_freq 'daily:Every day' \
                             'day:Every day' \
@@ -372,17 +373,17 @@ set __fish_task_static_freq 'daily:Every day' \
                             'yearly:Every year' \
                             'biannual:Every two years' \
                             'biyearly:Every two years'
-set __fish_task_static_freq (printf -- '%s\n' $__fish_task_static_freq | sed 's/:/\t/' | string collect)
+set __fish_task_static_freq (printf '%s\n' $__fish_task_static_freq | sed 's/:/\t/' | string collect)
 set __fish_task_static_freq_numeric 'd:days' \
                                     'w:weeks' \
                                     'q:quarters' \
                                     'y:years'
-set __fish_task_static_freq_numeric (printf -- '%s\n' $__fish_task_static_freq_numeric | sed 's/:/\t/' | string collect)
+set __fish_task_static_freq_numeric (printf '%s\n' $__fish_task_static_freq_numeric | sed 's/:/\t/' | string collect)
 set __fish_task_static_freq_numeric 'd:days' \
                                     'w:weeks' \
                                     'q:quarters' \
                                     'y:years'
-set __fish_task_static_freq_numeric (printf -- '%s\n' $__fish_task_static_freq_numeric | sed 's/:/\t/' | string collect)
+set __fish_task_static_freq_numeric (printf '%s\n' $__fish_task_static_freq_numeric | sed 's/:/\t/' | string collect)
 set __fish_task_static_dates 'today:Today' \
                              'yesterday:Yesterday' \
                              'tomorrow:Tomorrow' \
@@ -414,7 +415,7 @@ set __fish_task_static_dates 'today:Today' \
                              'midsommarafton:Midsommarafton' \
                              'later:Later' \
                              'someday:Some Day'
-set __fish_task_static_dates (printf -- '%s\n' $__fish_task_static_dates | sed 's/:/\t/' | string collect)
+set __fish_task_static_dates (printf '%s\n' $__fish_task_static_dates | sed 's/:/\t/' | string collect)
 set __fish_task_static_reldates 'hrs:n hours' \
                                 'day:n days' \
                                 # '1st:first' \
@@ -422,7 +423,7 @@ set __fish_task_static_reldates 'hrs:n hours' \
                                 # '3rd:third' \
                                 # 'th:4th, 5th, etc.' \
                                 'wks:weeks'
-set __fish_task_static_reldates (printf -- '%s\n' $__fish_task_static_reldates | sed 's/:/\t/' | string collect)
+set __fish_task_static_reldates (printf '%s\n' $__fish_task_static_reldates | sed 's/:/\t/' | string collect)
 # the followings are actually not used for autocomplete, but to retrieve friendly description that aren't present in internal command
 set  __fish_task_static_attr_desc_keys 'description' 'status' 'project' \
                                           'priority' 'due' 'recur' \
