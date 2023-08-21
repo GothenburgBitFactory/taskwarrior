@@ -1,1 +1,1 @@
-See [Developing Taskwarrior](./docs/contrib).
+See [Developing Taskwarrior](./doc/devel/contrib/README.md).
