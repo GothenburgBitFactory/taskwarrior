@@ -20,7 +20,7 @@ anyhow = "1.0"
 byteorder = "1.0"
 cc = "1.0.73"
 chrono = { version = "^0.4.22", features = ["serde"] }
-clap = { version = "^4.3.0", features = ["string"] }
+clap = { version = "^4.4.0", features = ["string"] }
 env_logger = "^0.10.0"
 ffizz-header = "0.5"
 flate2 = "1"
