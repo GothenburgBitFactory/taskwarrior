@@ -261,7 +261,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   for (auto& anno : task.getAnnotations ())
   {
-    Datetime dt (strtol (anno.first.substr (11).c_str (), nullptr, 10));
+    Datetime dt (strtoll (anno.first.substr (11).c_str (), nullptr, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
            << " -- "                  << str_replace (anno.second, "\n", ANNOTATION_EDIT_MARKER) << '\n';
   }
