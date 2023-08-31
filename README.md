@@ -19,7 +19,7 @@ with an active and quite vast [ecosystem of tools, hooks and
 extensions](https://taskwarrior.org/tools/).
 
 ## Install
-[![Arch](https://img.shields.io/archlinux/v/community/x86_64/task)](https://archlinux.org/packages/community/x86_64/task/)
+[![Arch](https://img.shields.io/archlinux/v/extra/x86_64/task)](https://archlinux.org/packages/extra/x86_64/task/)
 [![Debian](https://img.shields.io/debian/v/task/testing)](https://packages.debian.org/search?keywords=task&searchon=names&suite=all&section=all)
 [![Fedora](https://img.shields.io/fedora/v/task)](https://bodhi.fedoraproject.org/updates/?packages=task)
 [![Homebrew](https://img.shields.io/homebrew/v/task)](https://formulae.brew.sh/formula/task#default)
