@@ -8,7 +8,7 @@ jobs:
     name: tests (Mac OS 12.latest)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache cargo registry
         uses: actions/cache@v3
@@ -35,7 +35,7 @@ jobs:
     name: tests (Mac OS 13.latest)
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache cargo registry
         uses: actions/cache@v3
@@ -100,7 +100,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     continue-on-error: ${{ matrix.continue-on-error == true }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build ${{ matrix.name }}
         env:

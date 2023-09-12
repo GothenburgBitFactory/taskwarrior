@@ -13,7 +13,7 @@ jobs:
     name: "Check & Clippy"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache cargo registry
         uses: actions/cache@v3
@@ -51,7 +51,7 @@ jobs:
     name: "Documentation"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Formatting"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "codegen"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache cargo registry
         uses: actions/cache@v3
