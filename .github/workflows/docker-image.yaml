@@ -23,6 +23,10 @@ jobs:
       id-token: write
 
     steps:
+      - name: Create lowercase repository name
+        run: |
+          GHCR_REPOSITORY="${{ github.repository_owner }}"
+          echo "REPOSITORY=${GHCR_REPOSITORY,,}" >> ${GITHUB_ENV}
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -35,7 +39,7 @@ jobs:
         uses: docker/login-action@v3.3.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Taskwarrior Docker image
@@ -45,9 +49,9 @@ jobs:
           context: .
           file: "./docker/task.dockerfile"
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/task:${{ github.ref_name }}
+          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY }}/task:${{ github.ref_name }}
 
       - name: Sign the published Docker image
         env:
           COSIGN_EXPERIMENTAL: "true"
-        run: cosign sign ${{ env.REGISTRY }}/${{ github.actor }}/task@${{ steps.build-and-push.outputs.digest }}
+        run: cosign sign ${{ env.REGISTRY }}/${{ env.REPOSITORY }}/task@${{ steps.build-and-push.outputs.digest }}
