@@ -7,7 +7,7 @@ on:
     branches:
       - develop
       - stable
-      - feature/gh-actions-docker-image
+      - gh-actions-docker-image
     types:
       - completed
 
