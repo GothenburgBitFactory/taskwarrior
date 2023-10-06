@@ -17,7 +17,7 @@ exclude = [ "src/tc/rust" ]
 actix-rt = "2"
 actix-web = "^4.3.1"
 anyhow = "1.0"
-byteorder = "1.0"
+byteorder = "1.5"
 cc = "1.0.73"
 chrono = { version = "^0.4.22", features = ["serde"] }
 clap = { version = "^4.3.0", features = ["string"] }
