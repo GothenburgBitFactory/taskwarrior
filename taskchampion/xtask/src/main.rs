@@ -12,6 +12,7 @@ pub fn main() -> anyhow::Result<()> {
     let arg = env::args().nth(1);
     match arg.as_deref() {
         Some("codegen") => codegen(),
+        Some("msrv") => msrv(&env::args().nth(2).unwrap(), &env::args().nth(3).unwrap()),
         Some(arg) => anyhow::bail!("unknown xtask {}", arg),
         _ => anyhow::bail!("unknown xtask"),
     }
@@ -26,6 +27,17 @@ fn codegen() -> anyhow::Result<()> {
     let lib_crate_dir = workspace_dir.join("lib");
     let mut file = File::create(lib_crate_dir.join("taskchampion.h")).unwrap();
     write!(&mut file, "{}", ::taskchampion_lib::generate_header()).unwrap();
+
+    Ok(())
+}
+
+/// `cargo xtask msrv (X.Y)`
+/// 
+/// This updates all of the places in the repo where the MSRV occurs to (X.Y)
+/// Currently a placeholder with 'hello world'
+fn msrv(x: &String, y: &String) -> anyhow::Result<()> {
+    println!("Hello World");
+    println!("Parameters are X: {}, Y: {}", x, y);
 
     Ok(())
 }
