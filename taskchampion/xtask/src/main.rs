@@ -9,11 +9,16 @@ use std::io::Write;
 use std::path::PathBuf;
 
 pub fn main() -> anyhow::Result<()> {
-    let arg = env::args().nth(1);
-    match arg.as_deref() {
-        Some("codegen") => codegen(),
-        Some("msrv") => msrv(&env::args().nth(2).unwrap(), &env::args().nth(3).unwrap()),
-        Some(arg) => anyhow::bail!("unknown xtask {}", arg),
+    let arguments: Vec<String> = env::args().collect();
+    if arguments.len() < 2 {
+        println!("Valid arguments are `codegen`, `msrv <arg1> <arg2>`");
+        return Ok(());
+    }
+
+    match arguments[1].as_str() {
+        "codegen" => codegen(),
+        "msrv" => msrv(arguments),
+        arg => anyhow::bail!("unknown xtask {}", arg),
         _ => anyhow::bail!("unknown xtask"),
     }
 }
@@ -32,12 +37,16 @@ fn codegen() -> anyhow::Result<()> {
 }
 
 /// `cargo xtask msrv (X.Y)`
-/// 
-/// This updates all of the places in the repo where the MSRV occurs to (X.Y)
-/// Currently a placeholder with 'hello world'
-fn msrv(x: &String, y: &String) -> anyhow::Result<()> {
+///
+/// This updates all of the places in the repo where the MSRV occurs to (X.Y) (Currently a Placeholder).
+fn msrv(args: Vec<String>) -> anyhow::Result<()> {
     println!("Hello World");
-    println!("Parameters are X: {}, Y: {}", x, y);
+
+    if args.len() > 3 {
+        println!("Arguments are X: {}, Y: {}", args[2], args[3]);
+    } else {
+        println!("Command `msrv` expects two arguments");
+    }
 
     Ok(())
 }
