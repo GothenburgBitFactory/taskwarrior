@@ -6,15 +6,17 @@
 //! const MSRV_FILE_PATHS in /xtask/main.rs is a list of relative file paths that the
 //! Minimum Supported Rust Version should be commented into
 
-/// Xtask Auto-Generated Comments:
-///  Minimum Supported Rust Version for this crate:
-///  MSRV = "1.63"
 use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::io::{BufRead, BufReader};
-use std::os::unix::prelude::FileExt;
 use std::path::{Path, PathBuf};
+
+//#[cfg(target_os = "unix")]
+//use std::os::unix::prelude::FileExt;
+
+//#[cfg(target_os = "windows")]
+//use std::os::windows::fs::FileExt;
 
 // Increment length of array when adding more paths.
 const MSRV_FILE_PATHS: [&str; 2] = [r"main.rs", r"src/main.rs"];
@@ -52,7 +54,7 @@ fn codegen() -> anyhow::Result<()> {
 /// If no pre-existing Xtask-formatted MSRV is found, inserts the MSRV as first comment block after the last `//!` library-doc comments.
 fn msrv(args: Vec<String>) -> anyhow::Result<()> {
     match args.len(){
-        0 ..= 2 => println!("Error: xtask: Command `caro run xtask msrv` expects at least one argument, none detected."),
+        0 ..= 2 => anyhow::bail!("Error: xtask: Command `caro run xtask msrv` expects at least one argument, none detected."),
         3 => {
 
                 // check that (X.Y) argument is (mostly) valid:
@@ -72,7 +74,7 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
                         continue;
                     }
 
-                    let file : File = File::options().read(true).write(true).open(path).unwrap();
+                    let mut file : File = File::options().read(true).write(true).open(path).unwrap();
                     let reader = BufReader::new(&file);
 
                     // set pattern to search for and the replacement string
@@ -81,7 +83,7 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
 
                     // for each line in file
                     let mut file_string = String::new();
-                    let mut msrv_pattern_found = false; //should change this to an int and update with the line# when found
+                    let mut msrv_pattern_found = false;
                     let mut comment_pattern_last_offset : usize = 0;
                     for line in reader.lines() {
                         let pattern_offset = & line.as_ref().unwrap().find(msrv_pattern);
@@ -127,11 +129,12 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
                     }
 
                     // write the updated file to disk
-                    let file_write_result = file.write_at(file_string.as_bytes(),0);
+                    //let file_write_result = file.write_at(file_string.as_bytes(),0);
+                    let file_write_result = file.write(file_string.as_bytes()); // appends file instead of replacing contents. 
 
                     // if error, print error messege and exit
                     if file_write_result.is_err() {
-                        anyhow::bail!("xtask: unable to write to file to disk: {}", & path.display());
+                        anyhow::bail!("xtask: unable to write file to disk: {}", & path.display());
                     }
                 }
 
