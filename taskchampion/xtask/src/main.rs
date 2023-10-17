@@ -6,17 +6,18 @@
 //! const MSRV_FILE_PATHS in /xtask/main.rs is a list of relative file paths that the
 //! Minimum Supported Rust Version should be commented into
 
-/// Xtask Auto-Generated Comments:
-/// Minimum Supported Rust Version for this crate:
-/// MSRV = "0.04"
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::io::{Seek, Write};
 use std::path::{Path, PathBuf};
+use regex::Regex;
 
 // Increment length of array when adding more paths.
 const MSRV_FILE_PATHS: [&str; 2] = [r"main.rs", r"src/main.rs"];
+// TODO: Per @djmitche : Cargo sets $CARGO_MANIFEST_DIR to the taskchampion/xtask directory,
+//  so you might be able to build paths relative to there, and then use that environment variable to make xtask msrv
+//  independent of the current directory.
 
 pub fn main() -> anyhow::Result<()> {
     let arguments: Vec<String> = env::args().collect();
@@ -46,8 +47,8 @@ fn codegen() -> anyhow::Result<()> {
 
 /// `cargo xtask msrv (X.Y)`
 ///
-/// This updates all of the places in the repo where the MSRV occurs to <arg2> for the list of file paths defined as const in Xtask main.rs.
-/// If no pre-existing Xtask-formatted MSRV is found, inserts the MSRV as first comment block after the last `//!` library-doc comments.
+/// This checks and updates the Minimum Supported Rust Version for all files specified in the `MSRV_FILE_PATHS` const in `xtask/src/main.rs` where the pattern `MSRV = "X.Y"` is found in the file. 
+/// The argument "X.Y" will replace the text any place the MSRV is found.
 fn msrv(args: Vec<String>) -> anyhow::Result<()> {
     if args.len() != 2 {
         // check that (X.Y) argument is (mostly) valid:
@@ -70,31 +71,29 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
 
             let mut file: File = File::options().read(true).write(true).open(path).unwrap();
             let reader = BufReader::new(&file);
-
+            
             // set specify the comment glyph (#, //, --) pattern to search for based on file type
             let file_extension = path.extension().unwrap().to_str().unwrap();
             let mut comment_glyph = String::new();
             match file_extension {
-                "rs" => comment_glyph = "///".to_string(),
+                "rs" => comment_glyph = "//".to_string(),
                 "toml" | "yaml" => comment_glyph = "#".to_string(),
                 _ => anyhow::bail!("xtask: Support for file extension {} is not yet implemented in `cargo xtask msrv` command.", file_extension)
             }
 
             // set search string and the replacement string
-            let msrv_pattern = format!("{} MSRV = \"", comment_glyph);
+            // set regex
+            let re = Regex::new(r#"(#|/{2,}) *MSRV *= *"*([0-9]+\.*)+"*.*"#).unwrap();
             let replacement_string = format!("{} MSRV = \"{}\"\n", comment_glyph, args[2]);
 
             // for each line in file
             let mut file_string = String::new();
-            let mut msrv_pattern_found = false;
-            let mut comment_pattern_last_offset: usize = 0;
             for line in reader.lines() {
                 let line_ref = &line.as_ref().unwrap();
-                let pattern_offset = line_ref.find(msrv_pattern.as_str());
+                let pattern_offset = re.find(line_ref);
 
                 // if a pre-existing MSRV pattern is found, update it.
                 if pattern_offset.is_some() {
-                    msrv_pattern_found = true;
                     file_string += &replacement_string;
                     println!(
                         "xtask: MSRV pattern found in {:#?}; updating MSRV to {}",
@@ -106,50 +105,15 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
 
                 file_string += line_ref;
                 file_string += "\n";
-
-                // used iff MSRV is not found in .rs files:
-                // if the line starts with a library-doc comments (which must precede regular comments), update the comment pattern offset
-                if line_ref.starts_with("//!") {
-                    comment_pattern_last_offset = file_string.len();
-                }
             }
-
-            // // insert MSRV block if no pre-existing block is found
-            // if !msrv_pattern_found {
-            //     println!(
-            //         "xtask: MSRV pattern not found in {:#?}; inserting MSRV: {}",
-            //         &path.display(),
-            //         &replacement_string
-            //     );
-            //     let mut insert_string = format!(
-            //         "
-            //         {} Xtask Auto-Generated Comments:\n
-            //         {}  Minimum Supported Rust Version for this crate:\n
-            //         {}",
-            //         comment_glyph, comment_glyph, &replacement_string
-            //     );
-
-            //     // if inserting at beginning of file, no need for new line, else need new line before inserting
-            //     if comment_pattern_last_offset > 0 {
-            //         insert_string = format!("\n{}", &insert_string);
-            //     }
-
-            //     // if there is not a new line after a comment block already, then insert one with the new block comment
-            //     if !file_string
-            //         .chars()
-            //         .nth(comment_pattern_last_offset)
-            //         .unwrap()
-            //         .is_ascii_whitespace()
-            //     {
-            //         insert_string = format!("{}\n", &insert_string);
-            //     }
-
-            //     file_string.insert_str(comment_pattern_last_offset, &insert_string);
-            // }
 
             // write the updated file to disk
             let _ = file.seek(std::io::SeekFrom::Start(0));
             let file_write_result = file.write(file_string.as_bytes());
+
+            // TODO: solve for case where updating the MSRV to a different length version number (eg `1.0` -> `1.1.1` or vice versa)
+            //  results in a longer or shorter file. Can be problematic for the latter case resulting in the inclusion of an
+            //  extra closing bracket.
 
             // if error, print error messege and exit
             if file_write_result.is_err() {

@@ -7,3 +7,5 @@ edition = "2018"
 anyhow.workspace = true
 
 taskchampion-lib = { path = "../lib" }
+
+regex = "1.10"
