@@ -8,4 +8,4 @@ anyhow.workspace = true
 
 taskchampion-lib = { path = "../lib" }
 
-regex = "1.9.6"
+regex = "^1.5.6"
