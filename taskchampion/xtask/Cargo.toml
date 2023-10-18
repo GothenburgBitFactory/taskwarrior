@@ -8,4 +8,4 @@ anyhow.workspace = true
 
 taskchampion-lib = { path = "../lib" }
 
-regex = "1.10"
+regex = "1.9"

@@ -6,18 +6,15 @@
 //! const MSRV_FILE_PATHS in /xtask/main.rs is a list of relative file paths that the
 //! Minimum Supported Rust Version should be commented into
 
+use regex::Regex;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::io::{Seek, Write};
 use std::path::{Path, PathBuf};
-use regex::Regex;
 
 // Increment length of array when adding more paths.
-const MSRV_FILE_PATHS: [&str; 2] = [r"main.rs", r"src/main.rs"];
-// TODO: Per @djmitche : Cargo sets $CARGO_MANIFEST_DIR to the taskchampion/xtask directory,
-//  so you might be able to build paths relative to there, and then use that environment variable to make xtask msrv
-//  independent of the current directory.
+const MSRV_FILE_PATHS: [&str; 4] = [r"main.rs", r"src/main.rs", r"Cargo.toml", r"src/test"];
 
 pub fn main() -> anyhow::Result<()> {
     let arguments: Vec<String> = env::args().collect();
@@ -47,7 +44,7 @@ fn codegen() -> anyhow::Result<()> {
 
 /// `cargo xtask msrv (X.Y)`
 ///
-/// This checks and updates the Minimum Supported Rust Version for all files specified in the `MSRV_FILE_PATHS` const in `xtask/src/main.rs` where the pattern `MSRV = "X.Y"` is found in the file. 
+/// This checks and updates the Minimum Supported Rust Version for all files specified in the `MSRV_FILE_PATHS` const in `xtask/src/main.rs` where the pattern `MSRV = "X.Y"` is found in the file.
 /// The argument "X.Y" will replace the text any place the MSRV is found.
 fn msrv(args: Vec<String>) -> anyhow::Result<()> {
     if args.len() != 2 {
@@ -59,32 +56,42 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
         // for each file in const paths vector
         for path in MSRV_FILE_PATHS {
             let path: &Path = Path::new(&path);
+            let mut is_pattern_in_file = false;
 
             // check if path exists, if not, skip then continue
             if !path.exists() {
                 println!(
-                    "xtask: Warning: xtask: Path `{}` not found. Skipping.",
+                    "xtask: Warning: xtask: Path \"{}\" not found. Skipping.",
                     path.display()
                 );
                 continue;
             }
 
-            let mut file: File = File::options().read(true).write(true).open(path).unwrap();
+            let mut file: File = File::options().read(true).write(true).open(path)?;
             let reader = BufReader::new(&file);
-            
-            // set specify the comment glyph (#, //, --) pattern to search for based on file type
-            let file_extension = path.extension().unwrap().to_str().unwrap();
+
+            // set the file_extension if it exists and is valid UTF-8
+            let mut file_extension = String::new();
+            if path.extension().is_some() && path.extension().unwrap().to_str().is_some() {
+                file_extension = path.extension().unwrap().to_str().unwrap().to_string();
+            } else {
+                anyhow::bail!(
+                    "xtask: {} does not have a valid extension and cannot be processed.",
+                    format!("{:#?}", path.as_os_str())
+                );
+            }
+
+            // set the comment glyph (#, //, --) pattern to search for based on file type
             let mut comment_glyph = String::new();
-            match file_extension {
+            match file_extension.as_str() {
                 "rs" => comment_glyph = "//".to_string(),
-                "toml" | "yaml" => comment_glyph = "#".to_string(),
+                "toml" | "yaml" | "yml" => comment_glyph = "#".to_string(),
                 _ => anyhow::bail!("xtask: Support for file extension {} is not yet implemented in `cargo xtask msrv` command.", file_extension)
             }
 
             // set search string and the replacement string
-            // set regex
             let re = Regex::new(r#"(#|/{2,}) *MSRV *= *"*([0-9]+\.*)+"*.*"#).unwrap();
-            let replacement_string = format!("{} MSRV = \"{}\"\n", comment_glyph, args[2]);
+            let replacement_string = format!("{} MSRV = \"{}\"", comment_glyph, args[2]);
 
             // for each line in file
             let mut file_string = String::new();
@@ -92,32 +99,43 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
                 let line_ref = &line.as_ref().unwrap();
                 let pattern_offset = re.find(line_ref);
 
-                // if a pre-existing MSRV pattern is found, update it.
+                // if a pre-existing MSRV pattern is found and is different, update it.
                 if pattern_offset.is_some() {
-                    file_string += &replacement_string;
-                    println!(
-                        "xtask: MSRV pattern found in {:#?}; updating MSRV to {}",
-                        path.as_os_str(),
-                        args[2]
-                    );
-                    continue;
+                    if pattern_offset.unwrap().as_str() != replacement_string {
+                        file_string += format!("{}\n", &replacement_string).as_str();
+                        is_pattern_in_file = true;
+                        println!(
+                            "xtask: MSRV pattern found in {:#?}; updating MSRV to {}",
+                            path.as_os_str(),
+                            args[2]
+                        );
+                        continue;
+                    } else {
+                        println!("xtask: MSRV pattern found in {:#?} and is same as specified version in xtask argument.", path.as_os_str());
+                    }
                 }
 
                 file_string += line_ref;
                 file_string += "\n";
             }
 
-            // write the updated file to disk
-            let _ = file.seek(std::io::SeekFrom::Start(0));
-            let file_write_result = file.write(file_string.as_bytes());
+            // if pattern was found and updated, write to disk
+            if is_pattern_in_file {
+                // Prepare to write the file to disk
 
-            // TODO: solve for case where updating the MSRV to a different length version number (eg `1.0` -> `1.1.1` or vice versa)
-            //  results in a longer or shorter file. Can be problematic for the latter case resulting in the inclusion of an
-            //  extra closing bracket.
+                //  Set the file length to the file_string length
+                let _ = file.set_len(file_string.len() as u64);
 
-            // if error, print error messege and exit
-            if file_write_result.is_err() {
-                anyhow::bail!("xtask: unable to write file to disk: {}", &path.display());
+                //  set the cursor to the beginning of the file and write
+                let _ = file.seek(std::io::SeekFrom::Start(0));
+                let file_write_result = file.write(file_string.as_bytes());
+
+                // if error, print error messege and exit
+                if file_write_result.is_err() {
+                    anyhow::bail!("xtask: unable to write file to disk: {}", &path.display());
+                }
+            } else {
+                println!("xtask: No changes to file: \"{}\"", &path.display());
             }
         }
     } else {
