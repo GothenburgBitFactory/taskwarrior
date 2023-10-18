@@ -14,7 +14,7 @@ use std::io::{Seek, Write};
 use std::path::{Path, PathBuf};
 
 // Increment length of array when adding more paths.
-const MSRV_FILE_PATHS: [&str; 4] = [r"main.rs", r"src/main.rs", r"Cargo.toml", r"src/test"];
+const MSRV_FILE_PATHS: [&str; 0] = [];
 
 pub fn main() -> anyhow::Result<()> {
     let arguments: Vec<String> = env::args().collect();
