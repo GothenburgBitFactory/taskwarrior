@@ -14,7 +14,8 @@ use std::io::{Seek, Write};
 use std::path::{Path, PathBuf};
 
 // Increment length of array when adding more paths.
-const MSRV_FILE_PATHS: [&str; 0] = [];
+const MSRV_FILE_PATHS: [&str; 1] =
+    ["/home/ike/projects/taskwarrior.git/taskchampion/xtask/src/main.rs"];
 
 pub fn main() -> anyhow::Result<()> {
     let arguments: Vec<String> = env::args().collect();
@@ -71,23 +72,19 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
             let reader = BufReader::new(&file);
 
             // set the file_extension if it exists and is valid UTF-8
-            let mut file_extension = String::new();
-            if path.extension().is_some() && path.extension().unwrap().to_str().is_some() {
-                file_extension = path.extension().unwrap().to_str().unwrap().to_string();
-            } else {
-                anyhow::bail!(
-                    "xtask: {} does not have a valid extension and cannot be processed.",
-                    format!("{:#?}", path.as_os_str())
-                );
-            }
+            let file_extension = path
+                .extension()
+                .unwrap_or_default()
+                .to_str()
+                .unwrap()
+                .to_string();
 
             // set the comment glyph (#, //, --) pattern to search for based on file type
-            let mut comment_glyph = String::new();
-            match file_extension.as_str() {
-                "rs" => comment_glyph = "//".to_string(),
-                "toml" | "yaml" | "yml" => comment_glyph = "#".to_string(),
+            let comment_glyph: String = match file_extension.as_str() {
+                "rs" => "//".to_string(),
+                "toml" | "yaml" | "yml" => "#".to_string(),
                 _ => anyhow::bail!("xtask: Support for file extension {} is not yet implemented in `cargo xtask msrv` command.", file_extension)
-            }
+            };
 
             // set search string and the replacement string
             let re = Regex::new(r#"(#|/{2,}) *MSRV *= *"*([0-9]+\.*)+"*.*"#).unwrap();
@@ -97,11 +94,10 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
             let mut file_string = String::new();
             for line in reader.lines() {
                 let line_ref = &line.as_ref().unwrap();
-                let pattern_offset = re.find(line_ref);
 
                 // if a pre-existing MSRV pattern is found and is different, update it.
-                if pattern_offset.is_some() {
-                    if pattern_offset.unwrap().as_str() != replacement_string {
+                if let Some(pattern_offset) = re.find(line_ref) {
+                    if pattern_offset.as_str() != replacement_string {
                         file_string += format!("{}\n", &replacement_string).as_str();
                         is_pattern_in_file = true;
                         println!(
