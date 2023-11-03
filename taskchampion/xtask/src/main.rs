@@ -3,8 +3,10 @@
 //! At the moment it is very simple, but if this grows more subcommands then
 //! it will be sensible to use `clap` or another similar library.
 
-//! const MSRV_FILE_PATHS in /xtask/main.rs is a list of relative file paths that the
-//! Minimum Supported Rust Version should be commented into
+//! The const MSRV_FILE_PATHS_REGEX in /xtask/main.rs is an array of tuples
+//!  of the form (PATH, REGEX) where PATH and REGEX are literals where
+//!  PATH is a file that updates the Minimum Supported Rust Version
+//!  and REGEX is the pattern to find the appropriate line in the file
 
 use regex::Regex;
 use std::env;
@@ -13,15 +15,25 @@ use std::io::{BufRead, BufReader};
 use std::io::{Seek, Write};
 use std::path::{Path, PathBuf};
 
-// Increment length of array when adding more paths.
-const MSRV_FILE_PATHS: [&str; 1] =
-    ["/home/ike/projects/taskwarrior.git/taskchampion/xtask/src/main.rs"];
+// Increment length of array when adding tuples of (PATH, REGEX).
+const MSRV_PATH_REGEX: [(&str, &str); 2] = [
+    (
+        "../../.github/workflows/rust-tests.yml",
+        r#"- "[0-9]+("|\.|[0-9])+"#,
+    ),
+    (
+        "../../.github/workflows/checks.yml",
+        r#"toolchain: "[0-9]+("|\.|[0-9])+"#,
+    ),
+];
 
 pub fn main() -> anyhow::Result<()> {
     let arguments: Vec<String> = env::args().collect();
     if arguments.len() < 2 {
         anyhow::bail!("xtask: Valid arguments are: `codegen`, `msrv <version x.y>`");
     }
+
+    println!("{:#?}", env::current_dir());
 
     match arguments[1].as_str() {
         "codegen" => codegen(),
@@ -45,8 +57,8 @@ fn codegen() -> anyhow::Result<()> {
 
 /// `cargo xtask msrv (X.Y)`
 ///
-/// This checks and updates the Minimum Supported Rust Version for all files specified in the `MSRV_FILE_PATHS` const in `xtask/src/main.rs` where the pattern `MSRV = "X.Y"` is found in the file.
-/// The argument "X.Y" will replace the text any place the MSRV is found.
+/// This checks and updates the Minimum Supported Rust Version for all files specified in the tuple list `MSRV_PATH_REGEX` const in `xtask/src/main.rs` where the regex pattern specified is found in the file.
+/// The argument "X.Y" will replace existing X.Y any place the regex pattern specified in the tuple list `MSRV_PATH_REGEX` is found.
 fn msrv(args: Vec<String>) -> anyhow::Result<()> {
     if args.len() != 2 {
         // check that (X.Y) argument is (mostly) valid:
@@ -54,9 +66,12 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
             anyhow::bail!("xtask: Invalid argument format. Xtask MSRV argument takes the form \"X.Y(y)\", where XYy are numbers. eg: `cargo run xtask MSRV 1.68`");
         }
 
+        // set regex for replacing version number only within the pattern found within a line
+        let re_msrv_version = Regex::new(r"([0-9]+(\.|[0-9]+|))+").unwrap();
+
         // for each file in const paths vector
-        for path in MSRV_FILE_PATHS {
-            let path: &Path = Path::new(&path);
+        for msrv_file in MSRV_PATH_REGEX {
+            let path: &Path = Path::new(&msrv_file.0);
             let mut is_pattern_in_file = false;
 
             // check if path exists, if not, skip then continue
@@ -71,40 +86,46 @@ fn msrv(args: Vec<String>) -> anyhow::Result<()> {
             let mut file: File = File::options().read(true).write(true).open(path)?;
             let reader = BufReader::new(&file);
 
-            // set the file_extension if it exists and is valid UTF-8
-            let file_extension = path
-                .extension()
-                .unwrap_or_default()
-                .to_str()
-                .unwrap()
-                .to_string();
-
-            // set the comment glyph (#, //, --) pattern to search for based on file type
-            let comment_glyph: String = match file_extension.as_str() {
-                "rs" => "//".to_string(),
-                "toml" | "yaml" | "yml" => "#".to_string(),
-                _ => anyhow::bail!("xtask: Support for file extension {} is not yet implemented in `cargo xtask msrv` command.", file_extension)
-            };
-
-            // set search string and the replacement string
-            let re = Regex::new(r#"(#|/{2,}) *MSRV *= *"*([0-9]+\.*)+"*.*"#).unwrap();
-            let replacement_string = format!("{} MSRV = \"{}\"", comment_glyph, args[2]);
+            // set search string and the replacement string for version number content
+            let re_msrv_pattern = Regex::new(msrv_file.1).unwrap();
+            let version_replacement_string = &args[2];
 
             // for each line in file
             let mut file_string = String::new();
             for line in reader.lines() {
                 let line_ref = &line.as_ref().unwrap();
 
-                // if a pre-existing MSRV pattern is found and is different, update it.
-                if let Some(pattern_offset) = re.find(line_ref) {
-                    if pattern_offset.as_str() != replacement_string {
-                        file_string += format!("{}\n", &replacement_string).as_str();
+                // if rust version pattern is found and is different, update it
+                if let Some(pattern_offset) = re_msrv_pattern.find(line_ref) {
+                    if pattern_offset.as_str() != version_replacement_string {
+                        println!(
+                            "{}",
+                            format!(
+                                "{}\n",
+                                re_msrv_version
+                                    .replace(line_ref, version_replacement_string)
+                                    .to_string()
+                                    .as_str()
+                            )
+                            .as_str()
+                        );
+
+                        file_string += format!(
+                            "{}\n",
+                            re_msrv_version
+                                .replace(line_ref, version_replacement_string)
+                                .to_string()
+                                .as_str()
+                        )
+                        .as_str();
+
                         is_pattern_in_file = true;
                         println!(
                             "xtask: MSRV pattern found in {:#?}; updating MSRV to {}",
                             path.as_os_str(),
                             args[2]
                         );
+
                         continue;
                     } else {
                         println!("xtask: MSRV pattern found in {:#?} and is same as specified version in xtask argument.", path.as_os_str());
