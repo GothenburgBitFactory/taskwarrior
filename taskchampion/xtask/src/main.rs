@@ -57,8 +57,8 @@ fn codegen() -> anyhow::Result<()> {
 
 /// `cargo xtask msrv (X.Y)`
 ///
-/// This checks and updates the Minimum Supported Rust Version for all files specified in the tuple list `MSRV_PATH_REGEX` const in `xtask/src/main.rs` where the regex pattern specified is found in the file.
-/// The argument "X.Y" will replace existing X.Y any place the regex pattern specified in the tuple list `MSRV_PATH_REGEX` is found.
+/// This checks and updates the Minimum Supported Rust Version for all files specified in MSRV_PATH_REGEX`.
+/// Each line where the regex matches will have all values of the form `#.##` replaced with the given MSRV.
 fn msrv(args: Vec<String>) -> anyhow::Result<()> {
     if args.len() != 2 {
         // check that (X.Y) argument is (mostly) valid:
