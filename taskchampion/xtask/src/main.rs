@@ -15,19 +15,14 @@ use std::path::{Path, PathBuf};
 ///  PATH is a file that updates the Minimum Supported Rust Version
 ///  and REGEX is the pattern to find the appropriate line in the file
 
-// MSRV - "2.0"
-
 // Increment length of array when adding tuples of (PATH, REGEX).
-const MSRV_PATH_REGEX: [(&str, &str); 2] = [
-    ("xtask/src/main.rs", r#"- "[0-9]+("|\.|[0-9])+"#),
-    (
-        ".github/workflows/checks.yml",
-        r#"toolchain: "[0-9]+("|\.|[0-9])+"#,
-    ),
-];
+const MSRV_PATH_REGEX: [(&str, &str); 1] = [(
+    "xtask/Cargo.toml",
+    r#"rust-version = "[0-9]+("|\.|[0-9])+""#,
+)];
 
 pub fn main() -> anyhow::Result<()> {
-    let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR")?);
     let workspace_dir = manifest_dir.parent().unwrap();
     let arguments: Vec<String> = env::args().collect();
 
@@ -64,7 +59,7 @@ fn msrv(args: Vec<String>, workspace_dir: &Path) -> anyhow::Result<()> {
     }
 
     // set regex for replacing version number only within the pattern found within a line
-    let re_msrv_version = Regex::new(r"([0-9]+(\.|[0-9]+|))+").unwrap();
+    let re_msrv_version = Regex::new(r"([0-9]+(\.|[0-9]+|))+")?;
 
     // for each file in const paths tuple
     for msrv_file in MSRV_PATH_REGEX {
@@ -80,25 +75,21 @@ fn msrv(args: Vec<String>, workspace_dir: &Path) -> anyhow::Result<()> {
         let reader = BufReader::new(&file);
 
         // set search string and the replacement string for version number content
-        let re_msrv_pattern = Regex::new(msrv_file.1).unwrap();
+        let re_msrv_pattern = Regex::new(msrv_file.1)?;
         let version_replacement_string = &args[2];
 
         // for each line in file
         let mut file_string = String::new();
         for line in reader.lines() {
-            let line_ref = &line.unwrap();
+            let line_ref = &line?;
 
             // if rust version pattern is found and is different, update it
             if let Some(pattern_offset) = re_msrv_pattern.find(line_ref) {
-                if pattern_offset.as_str() != version_replacement_string {
-                    file_string += format!(
-                        "{}\n",
-                        re_msrv_version
-                            .replace(line_ref, version_replacement_string)
-                            .to_string()
-                            .as_str()
-                    )
-                    .as_str();  
+                if !pattern_offset.as_str().contains(version_replacement_string) {
+                    file_string += &re_msrv_version.replace(line_ref, version_replacement_string);
+
+                    file_string += "\n";
+
                     is_pattern_in_file = true;
                     continue;
                 }
