@@ -2189,6 +2189,7 @@ name = "xtask"
 version = "0.4.1"
 dependencies = [
  "anyhow",
+ "regex",
  "taskchampion-lib",
 ]
 

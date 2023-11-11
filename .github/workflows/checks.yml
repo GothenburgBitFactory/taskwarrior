@@ -29,9 +29,7 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          # Fixed version for clippy lints.  Bump this as necesary.  It must not
-          # be older than the MSRV in tests.yml.
-          toolchain: "1.64"
+          toolchain: "1.64" # MSRV
           override: true
 
       - uses: actions-rs/cargo@v1.0.3
@@ -100,8 +98,7 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          # Same as the MSRV in rust-tests.yml
-          toolchain: "1.64"
+          toolchain: "1.64" # MSRV
           override: true
 
       - uses: actions-rs/cargo@v1.0.3
