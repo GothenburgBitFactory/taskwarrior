@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         rust:
-          - "1.64" # MSRV
+          - "1.65" # MSRV
           - "stable"
         os:
           - ubuntu-latest
