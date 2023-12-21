@@ -2,6 +2,7 @@ use crate::traits::*;
 use crate::types::*;
 use crate::util::err_to_ruststring;
 use std::ptr::NonNull;
+use taskchampion::taskdb::undo;
 use taskchampion::{Replica, StorageConfig};
 
 #[ffizz_header::item]
@@ -184,6 +185,29 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
         error_out,
         std::ptr::null_mut(),
     )
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 901)]
+/// ***** TCUndoDiff *****
+///
+/// ```c
+/// struct TCUndoDiff {
+///     char *current;
+///     char *prior;
+///     char *when;
+/// };
+///
+/// typedef struct TCUndoDiff TCUndoDiff;
+/// ```
+pub struct TCUndoDiff(undo::UndoDiff);
+
+impl PassByPointer for TCUndoDiff {}
+
+impl From<undo::UndoDiff> for TCUndoDiff {
+    fn from(ud: undo::UndoDiff) -> TCUndoDiff {
+        TCUndoDiff(ud)
+    }
 }
 
 #[ffizz_header::item]
@@ -414,14 +438,20 @@ pub unsafe extern "C" fn tc_replica_sync(
 /// there are no operations that can be done.
 ///
 /// ```c
-/// EXTERN_C TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
+/// EXTERN_C TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out, bool(*condition)(struct TCUndoDiff));
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_undo(rep: *mut TCReplica, undone_out: *mut i32) -> TCResult {
+pub unsafe extern "C" fn tc_replica_undo(
+    rep: *mut TCReplica,
+    undone_out: *mut i32,
+    condition: extern "C" fn(undo::UndoDiff) -> bool,
+) -> TCResult {
     wrap(
         rep,
         |rep| {
-            let undone = i32::from(rep.undo()?);
+            let wrapped_condition =  // Convert C function into Rust closure.
+                |undo_ops: undo::UndoDiff| condition(undo_ops);
+            let undone = i32::from(rep.undo(wrapped_condition)?);
             if !undone_out.is_null() {
                 // SAFETY:
                 //  - undone_out is not NULL (just checked)

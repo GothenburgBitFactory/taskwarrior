@@ -1,31 +1,147 @@
 use super::apply;
 use crate::errors::Result;
-use crate::storage::{ReplicaOp, StorageTxn};
+use crate::server::SyncOp;
+use crate::storage::{ReplicaOp, StorageTxn, TaskMap};
+use chrono::{DateTime, Utc};
 use log::{debug, trace};
 
-/// Undo local operations until an UndoPoint.
-pub(super) fn undo(txn: &mut dyn StorageTxn) -> Result<bool> {
-    let mut applied = false;
-    let mut popped = false;
-    let mut local_ops = txn.operations()?;
+/// A representation of the current set of operations which has been split on the UndoPoint, with the newest operations assigned to undo_ops and the remainder of the set assigned to reverted_ops.
+/// Undo instances should be short-lived because hold ownership, which is effectively a lock, on the TaskDb. This is a feature though, because if we wrote another change to the database and then applied our reverted_ops, those other changes would be clobbered.
+struct Undo<'a> {
+    /// The transaction with which to execute the undo.
+    txn: &'a mut dyn StorageTxn,
 
-    while let Some(op) = local_ops.pop() {
-        popped = true;
-        if op == ReplicaOp::UndoPoint {
-            break;
+    /// The operations which would be reversed by an undo.
+    undo_ops: Vec<ReplicaOp>,
+
+    /// The reverse operations to be applied.
+    rev_ops: Vec<SyncOp>,
+
+    /// The set of operations after reversing undo_ops.
+    reverted_ops: Vec<ReplicaOp>,
+}
+
+/// Undo local operations until the most recent UndoPoint, returning false if there are no
+/// local operations to undo.
+impl Undo<'_> {
+    pub fn new(txn: &mut dyn StorageTxn) -> Undo {
+        let mut local_ops = txn.operations().unwrap();
+        let mut undo_ops: Vec<ReplicaOp> = Vec::new();
+        let mut rev_ops: Vec<SyncOp> = Vec::new();
+
+        while let Some(op) = local_ops.pop() {
+            if op == ReplicaOp::UndoPoint {
+                break;
+            }
+            undo_ops.push(op);
         }
-        debug!("Reversing operation {:?}", op);
-        let rev_ops = op.reverse_ops();
-        for op in rev_ops {
-            trace!("Applying reversed operation {:?}", op);
-            apply::apply_op(txn, &op)?;
-            applied = true;
+
+        for op in &undo_ops {
+            debug!("Reversing operation {:?}", op);
+            rev_ops.append(&mut op.clone().reverse_ops());
+        }
+
+        Undo {
+            txn,
+            undo_ops,
+            rev_ops,
+            reverted_ops: local_ops,
         }
     }
 
-    if popped {
-        txn.set_operations(local_ops)?;
-        txn.commit()?;
+    /// Commit to storage.
+    pub fn commit(self) -> Result<bool> {
+        let mut applied = false;
+
+        for op in self.rev_ops {
+            trace!("Applying reversed operation {:?}", op);
+            apply::apply_op(&mut *self.txn, &op)?;
+            applied = true;
+        }
+
+        if !self.undo_ops.is_empty() {
+            self.txn.set_operations(self.reverted_ops)?;
+            self.txn.commit()?;
+        }
+
+        Ok(applied)
+    }
+}
+
+#[repr(C)]
+pub struct UndoDiff {
+    current: TaskMap,
+    prior: TaskMap,
+    when: DateTime<Utc>,
+}
+
+impl UndoDiff {
+    fn new(undo: &Undo) -> UndoDiff {
+        let mut current = TaskMap::new();
+        let mut prior = TaskMap::new();
+        let mut when: Option<DateTime<Utc>> = None;
+
+        for op in &undo.undo_ops {
+            let sync_op = op.clone().into_sync().unwrap();
+            let timestamp = UndoDiff::apply_op(&mut current, &sync_op);
+            if when == None {
+                when = timestamp;
+            }
+        }
+
+        for sync_op in &undo.rev_ops {
+            UndoDiff::apply_op(&mut prior, sync_op);
+        }
+
+        UndoDiff {
+            current,
+            prior,
+            when: when.unwrap(),
+        }
+    }
+
+    fn apply_op(task: &mut TaskMap, op: &SyncOp) -> Option<DateTime<Utc>> {
+        match op {
+            SyncOp::Create { uuid } => {
+                task.insert("uuid".to_string(), uuid.to_string());
+                None
+            }
+            SyncOp::Delete { .. } => {
+                task.clear();
+                None
+            }
+            SyncOp::Update {
+                property,
+                value: Some(value),
+                timestamp,
+                ..
+            } => {
+                task.insert(property.to_string(), value.to_string());
+                Some(*timestamp)
+            }
+            SyncOp::Update {
+                property,
+                value: None,
+                timestamp,
+                ..
+            } => {
+                task.remove(property);
+                Some(*timestamp)
+            }
+        }
+    }
+}
+
+pub fn undo<F>(txn: &mut dyn StorageTxn, condition: F) -> Result<bool>
+where
+    F: Fn(UndoDiff) -> bool,
+{
+    let mut applied = false;
+    let proposed_undo = Undo::new(txn);
+    let undo_diff = UndoDiff::new(&proposed_undo);
+
+    if condition(undo_diff) {
+        applied = proposed_undo.commit()?;
     }
 
     Ok(applied)

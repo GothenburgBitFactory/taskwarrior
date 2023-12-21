@@ -3,6 +3,7 @@ use crate::errors::Result;
 use crate::server::{Server, SyncOp};
 use crate::storage::{Storage, TaskMap};
 use crate::task::{Status, Task};
+use crate::taskdb::undo;
 use crate::taskdb::TaskDb;
 use crate::workingset::WorkingSet;
 use anyhow::Context;
@@ -238,8 +239,11 @@ impl Replica {
 
     /// Undo local operations until the most recent UndoPoint, returning false if there are no
     /// local operations to undo.
-    pub fn undo(&mut self) -> Result<bool> {
-        self.taskdb.undo()
+    pub fn undo<F>(&mut self, condition: F) -> Result<bool>
+    where
+        F: Fn(undo::UndoDiff) -> bool,
+    {
+        self.taskdb.undo(condition)
     }
 
     /// Rebuild this replica's working set, based on whether tasks are pending or not.  If

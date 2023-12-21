@@ -20,12 +20,20 @@ static void test_replica_creation_disk(void) {
     tc_replica_free(rep);
 }
 
+static bool always_confirm(void* undo_ops_ptr , size_t undo_ops_len) {
+  // silence unused variable warnings
+  (void) undo_ops_ptr;
+  (void) undo_ops_len;
+
+  return true;
+}
+
 // undo on an empty in-memory TCReplica does nothing
 static void test_replica_undo_empty(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
     int undone;
-    int rv = tc_replica_undo(rep, &undone);
+    int rv = tc_replica_undo(rep, &undone, always_confirm);
     TEST_ASSERT_EQUAL(TC_RESULT_OK, rv);
     TEST_ASSERT_EQUAL(0, undone);
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
@@ -118,7 +126,7 @@ static void test_replica_working_set(void) {
 static void test_replica_undo_empty_null_undone_out(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
-    int rv = tc_replica_undo(rep, NULL);
+    int rv = tc_replica_undo(rep, NULL, always_confirm);
     TEST_ASSERT_EQUAL(TC_RESULT_OK, rv);
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
     tc_replica_free(rep);

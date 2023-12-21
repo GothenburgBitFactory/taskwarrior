@@ -6,7 +6,7 @@ use uuid::Uuid;
 mod apply;
 mod snapshot;
 mod sync;
-mod undo;
+pub mod undo;
 mod working_set;
 
 /// A TaskDb is the backend for a replica.  It manages the storage, operations, synchronization,
@@ -116,9 +116,12 @@ impl TaskDb {
 
     /// Undo local operations until the most recent UndoPoint, returning false if there are no
     /// local operations to undo.
-    pub fn undo(&mut self) -> Result<bool> {
+    pub fn undo<F>(&mut self, condition: F) -> Result<bool>
+    where
+        F: Fn(undo::UndoDiff) -> bool,
+    {
         let mut txn = self.storage.txn()?;
-        undo::undo(txn.as_mut())
+        undo::undo(txn.as_mut(), condition)
     }
 
     /// Get the number of un-synchronized operations in storage, excluding undo

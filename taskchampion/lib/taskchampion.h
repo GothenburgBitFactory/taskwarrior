@@ -480,6 +480,15 @@ EXTERN_C void tc_server_free(struct TCServer *server);
 // TCReplicas are not threadsafe.
 typedef struct TCReplica TCReplica;
 
+// ***** TCUndoDiff *****
+struct TCUndoDiff {
+    char *current;
+    char *prior;
+    char *when;
+};
+
+typedef struct TCUndoDiff TCUndoDiff;
+
 // Create a new TCReplica with an in-memory database.  The contents of the database will be
 // lost when it is freed with tc_replica_free.
 EXTERN_C struct TCReplica *tc_replica_new_in_memory(void);
@@ -553,7 +562,7 @@ EXTERN_C TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server
 //
 // If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
 // there are no operations that can be done.
-EXTERN_C TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
+EXTERN_C TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out, bool(*condition)(struct TCUndoDiff));
 
 // Get the current working set for this replica.  The resulting value must be freed
 // with tc_working_set_free.

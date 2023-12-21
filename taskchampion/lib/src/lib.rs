@@ -154,7 +154,7 @@ pub use workingset::*;
 pub(crate) mod types {
     pub(crate) use crate::annotation::{TCAnnotation, TCAnnotationList};
     pub(crate) use crate::kv::{TCKVList, TCKV};
-    pub(crate) use crate::replica::TCReplica;
+    pub(crate) use crate::replica::{TCReplica, TCUndoDiff};
     pub(crate) use crate::result::TCResult;
     pub(crate) use crate::server::TCServer;
     pub(crate) use crate::status::TCStatus;

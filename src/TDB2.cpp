@@ -207,10 +207,17 @@ void TDB2::get_changes (std::vector <Task>& changes)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert ()
 {
-  replica.undo (NULL);
+  replica.undo (NULL, confirm_revert);
   replica.rebuild_working_set (false);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool TDB2::confirm_revert (struct tc::ffi::TCUndoDiff undo)
+{
+  show_diff (undo.current, undo.prior, undo.when);
+  return ! Context::getContext ().config.getBoolean ("confirmation") ||
+        confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?");
+}
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::show_diff (
   const std::string& current,
