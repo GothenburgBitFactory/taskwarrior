@@ -12,15 +12,17 @@ However, users who wish to implement their own server interfaces can implement t
 pub(crate) mod test;
 
 mod config;
-mod crypto;
 mod local;
 mod op;
-mod remote;
 mod types;
 
+#[cfg(feature = "crypto")]
+mod crypto;
+
+#[cfg(feature = "server-sync")]
+mod sync;
+
 pub use config::ServerConfig;
-pub use local::LocalServer;
-pub use remote::RemoteServer;
 pub use types::*;
 
 pub(crate) use op::SyncOp;

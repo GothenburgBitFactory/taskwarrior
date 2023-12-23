@@ -7,7 +7,7 @@ publish = false
 build = "build.rs"
 
 [dependencies]
-taskchampion = { path = "../taskchampion" }
+taskchampion = { path = "../taskchampion", features = ["server-sync"] }
 taskchampion-lib = { path = "../lib" }
 taskchampion-sync-server = { path = "../sync-server" }
 

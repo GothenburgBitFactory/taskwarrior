@@ -10,6 +10,14 @@ readme = "../README.md"
 license = "MIT"
 edition = "2018"
 
+[features]
+default = ["server-sync" ]
+server-sync = ["crypto", "dep:ureq"]
+crypto = ["dep:ring"]
+
+[package.metadata.docs.rs]
+all-features = true
+
 [dependencies]
 uuid.workspace = true
 serde.workspace = true
@@ -25,6 +33,9 @@ strum_macros.workspace = true
 flate2.workspace = true
 byteorder.workspace = true
 ring.workspace = true
+
+ureq.optional = true
+ring.optional = true
 
 [dev-dependencies]
 proptest.workspace = true

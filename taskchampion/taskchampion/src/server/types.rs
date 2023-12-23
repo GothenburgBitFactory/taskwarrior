@@ -1,7 +1,7 @@
 use crate::errors::Result;
 use uuid::Uuid;
 
-/// Versions are referred to with sha2 hashes.
+/// Versions are referred to with UUIDs.
 pub type VersionId = Uuid;
 
 /// The distinguished value for "no version"
@@ -52,6 +52,11 @@ pub enum GetVersionResult {
 /// A value implementing this trait can act as a server against which a replica can sync.
 pub trait Server {
     /// Add a new version.
+    ///
+    /// This must ensure that the new version is the only version with the given
+    /// `parent_version_id`, and that all versions form a single parent-child chain. Inductively,
+    /// this means that if there are any versions on the server, then `parent_version_id` must be
+    /// the only version that does not already have a child.
     fn add_version(
         &mut self,
         parent_version_id: VersionId,

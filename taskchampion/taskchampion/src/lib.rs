@@ -34,6 +34,14 @@ Create a server with [`ServerConfig`](crate::ServerConfig).
 The [`server`](crate::server) module defines the interface a server must meet.
 Users can define their own server impelementations.
 
+# Feature Flags
+
+Support for some optional functionality is controlled by feature flags.
+
+Sync server client support:
+
+ * `server-sync` - sync to the taskchampion-sync-server
+
 # See Also
 
 See the [TaskChampion Book](http://taskchampion.github.com/taskchampion)

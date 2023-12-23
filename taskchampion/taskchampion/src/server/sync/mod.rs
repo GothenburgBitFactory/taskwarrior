@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 use super::crypto::{Cryptor, Sealed, Secret, Unsealed};
 
-pub struct RemoteServer {
+pub struct SyncServer {
     origin: String,
     client_id: Uuid,
     cryptor: Cryptor,
@@ -21,19 +21,14 @@ const HISTORY_SEGMENT_CONTENT_TYPE: &str = "application/vnd.taskchampion.history
 /// The content-type for snapshots (opaque blobs of bytes)
 const SNAPSHOT_CONTENT_TYPE: &str = "application/vnd.taskchampion.snapshot";
 
-/// A RemoeServer communicates with a remote server over HTTP (such as with
-/// taskchampion-sync-server).
-impl RemoteServer {
-    /// Construct a new RemoteServer.  The `origin` is the sync server's protocol and hostname
+/// A RemoeServer communicates with a taskchampion-sync-server over HTTP .
+impl SyncServer {
+    /// Construct a new SyncServer.  The `origin` is the sync server's protocol and hostname
     /// without a trailing slash, such as `https://tcsync.example.com`.  Pass a client_id to
     /// identify this client to the server.  Multiple replicas synchronizing the same task history
     /// should use the same client_id.
-    pub fn new(
-        origin: String,
-        client_id: Uuid,
-        encryption_secret: Vec<u8>,
-    ) -> Result<RemoteServer> {
-        Ok(RemoteServer {
+    pub fn new(origin: String, client_id: Uuid, encryption_secret: Vec<u8>) -> Result<SyncServer> {
+        Ok(SyncServer {
             origin,
             client_id,
             cryptor: Cryptor::new(client_id, &Secret(encryption_secret.to_vec()))?,
@@ -67,7 +62,7 @@ fn get_snapshot_urgency(resp: &ureq::Response) -> SnapshotUrgency {
     }
 }
 
-impl Server for RemoteServer {
+impl Server for SyncServer {
     fn add_version(
         &mut self,
         parent_version_id: VersionId,
