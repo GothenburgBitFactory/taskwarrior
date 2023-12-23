@@ -1,8 +1,7 @@
 [package]
 name = "xtask"
 version = "0.4.1" 
-edition = "2018"
-# rust-version = "1.65" # Used for testing xtask MSRV functionality
+edition = "2021"
 
 [dependencies]
 anyhow.workspace = true

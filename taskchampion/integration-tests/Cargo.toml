@@ -2,7 +2,7 @@
 name = "integration-tests"
 version = "0.4.1"
 authors = ["Dustin J. Mitchell <dustin@mozilla.com>"]
-edition = "2018"
+edition = "2021"
 publish = false
 build = "build.rs"
 

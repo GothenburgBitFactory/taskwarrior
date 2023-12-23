@@ -8,6 +8,8 @@ members = [
     "taskchampion/xtask",
 ]
 
+resolver = "2"
+
 # src/tc/rust is just part of the TW build and not a public crate
 exclude = [ "src/tc/rust" ]
 
