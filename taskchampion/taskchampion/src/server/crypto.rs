@@ -1,4 +1,3 @@
-#![allow(dead_code)] // temporary
 /// This module implements the encryption specified in the sync-protocol
 /// document.
 use crate::errors::{Error, Result};

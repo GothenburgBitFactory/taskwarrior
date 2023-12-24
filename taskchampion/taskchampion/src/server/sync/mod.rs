@@ -21,7 +21,7 @@ const HISTORY_SEGMENT_CONTENT_TYPE: &str = "application/vnd.taskchampion.history
 /// The content-type for snapshots (opaque blobs of bytes)
 const SNAPSHOT_CONTENT_TYPE: &str = "application/vnd.taskchampion.snapshot";
 
-/// A RemoeServer communicates with a taskchampion-sync-server over HTTP .
+/// A SyncServer communicates with a sync server over HTTP.
 impl SyncServer {
     /// Construct a new SyncServer.  The `origin` is the sync server's protocol and hostname
     /// without a trailing slash, such as `https://tcsync.example.com`.  Pass a client_id to
