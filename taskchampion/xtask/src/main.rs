@@ -22,6 +22,7 @@ const MSRV_PATH_REGEX: &[(&str, &str)] = &[
         "taskchampion/src/lib.rs",
         r#"Rust version [0-9.]* and higher"#,
     ),
+    ("taskchampion/Cargo.toml", r#"^rust-version = "[0-9.]"#),
 ];
 
 pub fn main() -> anyhow::Result<()> {

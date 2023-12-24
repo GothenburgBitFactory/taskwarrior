@@ -8,7 +8,8 @@ documentation = "https://docs.rs/crate/taskchampion"
 repository = "https://github.com/GothenburgBitFactory/taskwarrior"
 readme = "../README.md"
 license = "MIT"
-edition = "2018"
+edition = "2021"
+rust-version = "1.65"
 
 [features]
 default = ["server-sync" ]
