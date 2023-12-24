@@ -16,11 +16,14 @@ mod local;
 mod op;
 mod types;
 
-#[cfg(feature = "crypto")]
+#[cfg(feature = "encryption")]
 mod crypto;
 
 #[cfg(feature = "server-sync")]
 mod sync;
+
+#[cfg(feature = "cloud")]
+mod cloud;
 
 pub use config::ServerConfig;
 pub use types::*;

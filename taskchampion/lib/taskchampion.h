@@ -433,8 +433,19 @@ EXTERN_C struct TCServer *tc_server_new_local(struct TCString server_dir, struct
 // returned.  The caller must free this string.
 //
 // The server must be freed after it is used - tc_replica_sync does not automatically free it.
-EXTERN_C struct TCServer *tc_server_new_remote(struct TCString origin,
+EXTERN_C struct TCServer *tc_server_new_sync(struct TCString origin,
                                       struct TCUuid client_id,
+                                      struct TCString encryption_secret,
+                                      struct TCString *error_out);
+
+// Create a new TCServer that connects to the Google Cloud Platform.  See the TaskChampion docs
+// for the description of the arguments.
+//
+// On error, a string is written to the error_out parameter (if it is not NULL) and NULL is
+// returned.  The caller must free this string.
+//
+// The server must be freed after it is used - tc_replica_sync does not automatically free it.
+EXTERN_C struct TCServer *tc_server_new_gcp(struct TCString bucket,
                                       struct TCString encryption_secret,
                                       struct TCString *error_out);
 

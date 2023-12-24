@@ -1,4 +1,4 @@
-use crate::errors::Result;
+use crate::errors::{Error, Result};
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, Snapshot, SnapshotUrgency,
     VersionId,
@@ -62,6 +62,23 @@ fn get_snapshot_urgency(resp: &ureq::Response) -> SnapshotUrgency {
     }
 }
 
+fn sealed_from_resp(resp: ureq::Response, version_id: Uuid, content_type: &str) -> Result<Sealed> {
+    use std::io::Read;
+    if resp.header("Content-Type") == Some(content_type) {
+        let mut reader = resp.into_reader();
+        let mut payload = vec![];
+        reader.read_to_end(&mut payload)?;
+        Ok(Sealed {
+            version_id,
+            payload,
+        })
+    } else {
+        Err(Error::Server(String::from(
+            "Response did not have expected content-type",
+        )))
+    }
+}
+
 impl Server for SyncServer {
     fn add_version(
         &mut self,
@@ -117,7 +134,7 @@ impl Server for SyncServer {
                 let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
                 let sealed =
-                    Sealed::from_resp(resp, parent_version_id, HISTORY_SEGMENT_CONTENT_TYPE)?;
+                    sealed_from_resp(resp, parent_version_id, HISTORY_SEGMENT_CONTENT_TYPE)?;
                 let history_segment = self.cryptor.unseal(sealed)?.payload;
                 Ok(GetVersionResult::Version {
                     version_id,
@@ -158,7 +175,7 @@ impl Server for SyncServer {
         {
             Ok(resp) => {
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-                let sealed = Sealed::from_resp(resp, version_id, SNAPSHOT_CONTENT_TYPE)?;
+                let sealed = sealed_from_resp(resp, version_id, SNAPSHOT_CONTENT_TYPE)?;
                 let snapshot = self.cryptor.unseal(sealed)?.payload;
                 Ok(Some((version_id, snapshot)))
             }

@@ -21,7 +21,34 @@ NOTE: A side-effect of synchronization is that once changes have been
 synchronized, they cannot be undone. This means that each time synchronization
 is run, it is no longer possible to undo previous operations.
 
+.SH MANAGING SYNCHRONIZATION
+
+.SS Adding a Replica
+
+To add a new replica, configure a new, empty replica identically to
+the existing replica, and run `task sync`.
+
+.SS When to Synchronize
+
+Taskwarrior can perform a sync operation at every garbage collection (gc) run.
+This is the default, and is appropriate for local synchronization.
+
+For synchronization to a server, a better solution is to run
+
+    $ task sync
+
+periodically, such as via
+.BR cron (8) .
+
 .SH CONFIGURATION
+
+Taskwarrior provides several options for synchronizing your tasks:
+
+ - To a server specifically designed to handle Taskwarrior data.
+ - To a cloud service such as GCP or AWS.
+ - To a local, on-disk file.
+
+.SS Sync Server
 
 To synchronize your tasks to a sync server, you will need the following
 information from the server administrator:
@@ -43,22 +70,20 @@ Configure Taskwarrior with these details:
     $ task config sync.server.client_id         <client_id>
     $ task config sync.server.encryption_secret <encryption_secret>
 
-.SS Adding a Replica
+.SS Google Cloud Platform
 
-To add a new replica, configure a new, empty replica identically to
-the existing replica, and run `task sync`.
+To synchronize your tasks to GCP, use the GCP Console to create a new project,
+and within that project a new Cloud Storage bucket. The default settings for
+the bucket are adequete.
 
-.SS When to Synchronize
+Authenticate to the project with
 
-Taskwarrior can perform a sync operation at every garbage collection (gc) run.
-This is the default, and is appropriate for local synchronization.
+    gcloud config set project $PROJECT_NAME
+    gcloud auth application-default login
 
-For synchronization to a server, a better solution is to run
+Then configure Taskwarrior with:
 
-    $ task sync
-
-periodically, such as via
-.BR cron (8) .
+    $ task config sync.gcp.bucket               <bucket-name>
 
 .SS Local Synchronization
 

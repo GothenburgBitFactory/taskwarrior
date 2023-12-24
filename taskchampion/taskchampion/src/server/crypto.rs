@@ -11,23 +11,24 @@ const TASK_APP_ID: u8 = 1;
 
 /// An Cryptor stores a secret and allows sealing and unsealing.  It derives a key from the secret,
 /// which takes a nontrivial amount of time, so it should be created once and re-used for the given
-/// client_id.
+/// context.
+#[derive(Clone)]
 pub(super) struct Cryptor {
     key: aead::LessSafeKey,
     rng: rand::SystemRandom,
 }
 
 impl Cryptor {
-    pub(super) fn new(client_id: Uuid, secret: &Secret) -> Result<Self> {
+    pub(super) fn new(salt: impl AsRef<[u8]>, secret: &Secret) -> Result<Self> {
         Ok(Cryptor {
-            key: Self::derive_key(client_id, secret)?,
+            key: Self::derive_key(salt, secret)?,
             rng: rand::SystemRandom::new(),
         })
     }
 
     /// Derive a key as specified for version 1.  Note that this may take 10s of ms.
-    fn derive_key(client_id: Uuid, secret: &Secret) -> Result<aead::LessSafeKey> {
-        let salt = digest::digest(&digest::SHA256, client_id.as_bytes());
+    fn derive_key(salt: impl AsRef<[u8]>, secret: &Secret) -> Result<aead::LessSafeKey> {
+        let salt = digest::digest(&digest::SHA256, salt.as_ref());
 
         let mut key_bytes = vec![0u8; aead::CHACHA20_POLY1305.key_len()];
         pbkdf2::derive(
@@ -169,39 +170,27 @@ pub(super) struct Unsealed {
     pub(super) payload: Vec<u8>,
 }
 
+impl From<Unsealed> for Vec<u8> {
+    fn from(val: Unsealed) -> Self {
+        val.payload
+    }
+}
+
 /// An encrypted payload
 pub(super) struct Sealed {
     pub(super) version_id: Uuid,
     pub(super) payload: Vec<u8>,
 }
 
-impl Sealed {
-    #[cfg(feature = "server-sync")]
-    pub(super) fn from_resp(
-        resp: ureq::Response,
-        version_id: Uuid,
-        content_type: &str,
-    ) -> Result<Sealed> {
-        use std::io::Read;
-        if resp.header("Content-Type") == Some(content_type) {
-            let mut reader = resp.into_reader();
-            let mut payload = vec![];
-            reader.read_to_end(&mut payload)?;
-            Ok(Self {
-                version_id,
-                payload,
-            })
-        } else {
-            Err(Error::Server(String::from(
-                "Response did not have expected content-type",
-            )))
-        }
-    }
-}
-
 impl AsRef<[u8]> for Sealed {
     fn as_ref(&self) -> &[u8] {
         self.payload.as_ref()
+    }
+}
+
+impl From<Sealed> for Vec<u8> {
+    fn from(val: Sealed) -> Self {
+        val.payload
     }
 }
 
@@ -269,10 +258,10 @@ mod test {
     fn round_trip_bad_key() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let client_id = Uuid::new_v4();
+        let salt = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(client_id, &secret).unwrap();
+        let cryptor = Cryptor::new(salt, &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -281,7 +270,7 @@ mod test {
         let sealed = cryptor.seal(unsealed).unwrap();
 
         let secret = Secret(b"DIFFERENT_SECRET".to_vec());
-        let cryptor = Cryptor::new(client_id, &secret).unwrap();
+        let cryptor = Cryptor::new(salt, &secret).unwrap();
         assert!(cryptor.unseal(sealed).is_err());
     }
 
@@ -289,10 +278,10 @@ mod test {
     fn round_trip_bad_version() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let client_id = Uuid::new_v4();
+        let salt = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(client_id, &secret).unwrap();
+        let cryptor = Cryptor::new(salt, &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -304,13 +293,13 @@ mod test {
     }
 
     #[test]
-    fn round_trip_bad_client_id() {
+    fn round_trip_bad_salt() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let client_id = Uuid::new_v4();
+        let salt = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(client_id, &secret).unwrap();
+        let cryptor = Cryptor::new(salt, &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -318,8 +307,8 @@ mod test {
         };
         let sealed = cryptor.seal(unsealed).unwrap();
 
-        let client_id = Uuid::new_v4();
-        let cryptor = Cryptor::new(client_id, &secret).unwrap();
+        let salt = Uuid::new_v4();
+        let cryptor = Cryptor::new(salt, &secret).unwrap();
         assert!(cryptor.unseal(sealed).is_err());
     }
 
@@ -341,13 +330,13 @@ mod test {
 
         #[test]
         fn good() {
-            let (version_id, client_id, encryption_secret) = defaults();
+            let (version_id, salt, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-good.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(salt, &Secret(encryption_secret)).unwrap();
             let unsealed = cryptor.unseal(sealed).unwrap();
 
             assert_eq!(unsealed.payload, b"SUCCESS");
@@ -356,61 +345,61 @@ mod test {
 
         #[test]
         fn bad_version_id() {
-            let (version_id, client_id, encryption_secret) = defaults();
+            let (version_id, salt, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-version-id.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(salt, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
-        fn bad_client_id() {
-            let (version_id, client_id, encryption_secret) = defaults();
+        fn bad_salt() {
+            let (version_id, salt, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-client-id.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(salt, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
         fn bad_secret() {
-            let (version_id, client_id, encryption_secret) = defaults();
+            let (version_id, salt, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-secret.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(salt, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
         fn bad_version() {
-            let (version_id, client_id, encryption_secret) = defaults();
+            let (version_id, salt, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-version.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(salt, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
 
         #[test]
         fn bad_app_id() {
-            let (version_id, client_id, encryption_secret) = defaults();
+            let (version_id, salt, encryption_secret) = defaults();
             let sealed = Sealed {
                 version_id,
                 payload: include_bytes!("test-bad-app-id.data").to_vec(),
             };
 
-            let cryptor = Cryptor::new(client_id, &Secret(encryption_secret)).unwrap();
+            let cryptor = Cryptor::new(salt, &Secret(encryption_secret)).unwrap();
             assert!(cryptor.unseal(sealed).is_err());
         }
     }

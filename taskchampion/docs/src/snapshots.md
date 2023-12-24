@@ -2,7 +2,7 @@
 
 The basic synchronization model described in the previous page has a few shortcomings:
  * servers must store an ever-increasing quantity of versions
- * a new replica must download all versions since the beginning in order to derive the current state
+ * a new replica must download all versions since the beginning (the nil UUID) in order to derive the current state
 
 Snapshots allow TaskChampion to avoid both of these issues.
 A snapshot is a copy of the task database at a specific version.
@@ -37,12 +37,3 @@ This saves resources in these restricted environments.
 
 A snapshot must be made on a replica with no unsynchronized operations.
 As such, it only makes sense to request a snapshot in response to a successful AddVersion request.
-
-## Handling Deleted Versions
-
-When a replica requests a child version, the response must distinguish two cases:
-
- 1. No such child version exists because the replica is up-to-date.
- 1. No such child version exists because it has been deleted, and the replica must re-initialize itself.
-
-The details of this logic are covered in the [Server-Replica Protocol](./sync-protocol.md).

@@ -185,7 +185,7 @@ static void test_replica_sync_local(void) {
 // When tc_replica_undo is passed NULL for undone_out, it still succeeds
 static void test_replica_remote_server(void) {
     TCString err;
-    TCServer *server = tc_server_new_remote(
+    TCServer *server = tc_server_new_sync(
         tc_string_borrow("tc.freecinc.com"),
         tc_uuid_new_v4(),
         tc_string_borrow("\xf0\x28\x8c\x28"), // NOTE: not utf-8
