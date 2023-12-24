@@ -34,6 +34,7 @@ macro_rules! other_error {
         }
     };
 }
+#[cfg(feature = "server-sync")]
 other_error!(ureq::Error);
 other_error!(io::Error);
 other_error!(serde_json::Error);

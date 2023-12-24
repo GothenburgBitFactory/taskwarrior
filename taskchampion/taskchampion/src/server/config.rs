@@ -1,7 +1,10 @@
 use super::types::Server;
-use super::{LocalServer, RemoteServer};
 use crate::errors::Result;
+use crate::server::local::LocalServer;
+#[cfg(feature = "server-sync")]
+use crate::server::sync::SyncServer;
 use std::path::PathBuf;
+#[cfg(feature = "server-sync")]
 use uuid::Uuid;
 
 /// The configuration for a replica's access to a sync server.
@@ -12,6 +15,7 @@ pub enum ServerConfig {
         server_dir: PathBuf,
     },
     /// A remote taskchampion-sync-server instance
+    #[cfg(feature = "server-sync")]
     Remote {
         /// Sync server "origin"; a URL with schema and hostname but no path or trailing `/`
         origin: String,
@@ -30,11 +34,12 @@ impl ServerConfig {
     pub fn into_server(self) -> Result<Box<dyn Server>> {
         Ok(match self {
             ServerConfig::Local { server_dir } => Box::new(LocalServer::new(server_dir)?),
+            #[cfg(feature = "server-sync")]
             ServerConfig::Remote {
                 origin,
                 client_id,
                 encryption_secret,
-            } => Box::new(RemoteServer::new(origin, client_id, encryption_secret)?),
+            } => Box::new(SyncServer::new(origin, client_id, encryption_secret)?),
         })
     }
 }

@@ -1,5 +1,3 @@
-## Run the TaskChampion tests, using both the minimum supported rust version
-## and the latest stable Rust.
 
 name: tests - rust
 
@@ -11,6 +9,42 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
+  ## Run the `taskchampion` crate's tests with various combinations of features.
+  features:
+    strategy:
+      matrix:
+        features:
+          - ""
+          - "server-sync"
+
+    name: "taskchampion ${{ matrix.features == '' && 'with no features' || format('with features {0}', matrix.features) }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ubuntu-latest-stable-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ubuntu-latest-stable-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: test
+        run: cargo test -p taskchampion --no-default-features --features "${{ matrix.features }}"
+
+  ## Run all TaskChampion crate tests, using both the minimum supported rust version
+  ## and the latest stable Rust.
   test:
     strategy:
       matrix:

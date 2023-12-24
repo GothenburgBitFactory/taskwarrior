@@ -2,7 +2,6 @@
 /// document.
 use crate::errors::{Error, Result};
 use ring::{aead, digest, pbkdf2, rand, rand::SecureRandom};
-use std::io::Read;
 use uuid::Uuid;
 
 const PBKDF2_ITERATIONS: u32 = 100000;
@@ -177,11 +176,13 @@ pub(super) struct Sealed {
 }
 
 impl Sealed {
+    #[cfg(feature = "server-sync")]
     pub(super) fn from_resp(
         resp: ureq::Response,
         version_id: Uuid,
         content_type: &str,
     ) -> Result<Sealed> {
+        use std::io::Read;
         if resp.header("Content-Type") == Some(content_type) {
             let mut reader = resp.into_reader();
             let mut payload = vec![];
