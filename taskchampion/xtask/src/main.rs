@@ -58,7 +58,7 @@ fn codegen(workspace_dir: &Path) -> anyhow::Result<()> {
 fn msrv(args: Vec<String>, workspace_dir: &Path) -> anyhow::Result<()> {
     // check that (X.Y) argument is (mostly) valid:
     if args.len() < 3 || !args[2].chars().all(|c| c.is_numeric() || c == '.') {
-        anyhow::bail!("xtask: Invalid argument format. Xtask MSRV argument takes the form \"X.Y(y)\", where XYy are numbers. eg: `cargo run xtask MSRV 1.68`");
+        anyhow::bail!("xtask: Invalid argument format. Xtask msrv argument takes the form \"X.Y(y)\", where XYy are numbers. eg: `cargo run xtask msrv 1.68`");
     }
     let version_replacement_string = &args[2];
 
