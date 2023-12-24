@@ -40,12 +40,14 @@ public:
   void onLaunch () const;
   void onExit () const;
   void onAdd (Task&) const;
+  float onUrgencyCalc (Task& task, float urgency) const;
   void onModify (const Task&, Task&) const;
   std::vector <std::string> list () const;
 
 private:
   std::vector <std::string> scripts (const std::string&) const;
   void separateOutput (const std::vector <std::string>&, std::vector <std::string>&, std::vector <std::string>&) const;
+  float separateOutputFloat (const std::vector <std::string>&, std::vector <std::string>&, float) const;
   bool isJSON (const std::string&) const;
   void assertValidJSON (const std::vector <std::string>&, const std::string&) const;
   void assertNTasks (const std::vector <std::string>&, unsigned int, const std::string&) const;

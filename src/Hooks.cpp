@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <Hooks.h>
 #include <algorithm>
+#include <string>
 // If <iostream> is included, put it after <stdio.h>, because it includes
 // <stdio.h>, and therefore would ignore the _WITH_GETLINE.
 #ifdef FREEBSD
@@ -93,7 +94,8 @@ void Hooks::initialize ()
           if (name.substr (0, 6) == "on-add"    ||
               name.substr (0, 9) == "on-modify" ||
               name.substr (0, 9) == "on-launch" ||
-              name.substr (0, 7) == "on-exit")
+              name.substr (0, 7) == "on-exit"  ||
+              name.substr (0, 15) == "on-urgency-calc")
             Context::getContext ().debug ("Found hook script " + i);
           else
             Context::getContext ().debug ("Found misnamed hook script " + i);
@@ -296,6 +298,72 @@ void Hooks::onAdd (Task& task) const
   Context::getContext ().time_hooks_us += timer.total_us ();
 }
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// The on-urgency-calc event is triggered separately for each task at the time of calculating its urgency
+//
+// Input:
+// - float with the urgency of the task
+// - line of JSON for the task
+//
+// Output:
+// - float with the new urgency, if the exit code is zero,
+//   otherwise ignored.
+// - all other emitted lines are considered feedback or error messages
+//   depending on the status code.
+//
+float Hooks::onUrgencyCalc (Task& task, float urgency) const
+{
+  if (! _enabled)
+    return urgency;
+        
+  Timer timer;
+
+  std::vector <std::string> matchingScripts = scripts ("on-urgency-calc");
+  if (matchingScripts.size ())
+  {
+    std::vector <std::string> input;
+    
+    input.push_back (std::to_string (urgency));
+    input.push_back (task.composeJSON ());
+
+    // Call the hook scripts.
+    for (auto& script : matchingScripts)
+    {
+      std::vector <std::string> output;
+      int status = callHookScript (script, input, output);
+
+      std::vector <std::string> outputFeedback;
+
+      float new_urgency = separateOutputFloat (output, outputFeedback, new_urgency);
+      
+      if (status == 0)
+      {
+        urgency = new_urgency;
+        
+        // Propagate forward to the next script.
+        input[0] = std::to_string(new_urgency);
+        
+        for (auto& message : outputFeedback)
+          Context::getContext ().footnote (message);
+      }
+      else
+      {
+        assertFeedback (outputFeedback, script);
+        for (auto& message : outputFeedback)
+          Context::getContext ().error (message);
+
+        throw 0;  // This is how hooks silently terminate processing.
+      }
+    }
+  }
+
+  Context::getContext ().time_hooks_us += timer.total_us ();
+
+  return urgency;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // The on-modify event is triggered separately for each task added or modified
 //
@@ -383,6 +451,26 @@ std::vector <std::string> Hooks::scripts (const std::string& event) const
   }
 
   return matching;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Hooks::separateOutputFloat (
+  const std::vector <std::string>& output,
+  std::vector <std::string>& feedback,
+  float default_value = 0) const
+{
+  float value = default_value; 
+  
+  for (auto& i : output)
+  {
+    try {
+      value = std::stof (i);
+    }catch(...){
+      feedback.push_back (i);
+    }
+  }
+  
+  return value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -2198,7 +2198,9 @@ float Task::urgency ()
     // Return the sum of all terms.
     recalc_urgency = false;
   }
-
+  
+  urgency_value = Context::getContext ().hooks.onUrgencyCalc (*this, urgency_value);
+  
   return urgency_value;
 }
 
