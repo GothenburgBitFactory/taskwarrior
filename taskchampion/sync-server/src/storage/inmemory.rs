@@ -66,7 +66,7 @@ impl<'a> StorageTxn for InnerTxn<'a> {
         snapshot: Snapshot,
         data: Vec<u8>,
     ) -> anyhow::Result<()> {
-        let mut client = self
+        let client = self
             .0
             .clients
             .get_mut(&client_id)
