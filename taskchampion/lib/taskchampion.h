@@ -7,18 +7,19 @@
 //
 // # Overview
 //
-// This library defines two major types used to interact with the API, that map directly to Rust
+// This library defines four major types used to interact with the API, that map directly to Rust
 // types.
 //
-//  * TCReplica - see https://docs.rs/taskchampion/latest/taskchampion/struct.Replica.html * TCTask
-//  - see https://docs.rs/taskchampion/latest/taskchampion/struct.Task.html * TCServer - see
-//  https://docs.rs/taskchampion/latest/taskchampion/trait.Server.html * TCWorkingSet - see
-//  https://docs.rs/taskchampion/latest/taskchampion/struct.WorkingSet.html
+//  * TCReplica - see https://docs.rs/taskchampion/latest/taskchampion/struct.Replica.html
+//  * TCTask - see https://docs.rs/taskchampion/latest/taskchampion/struct.Task.html
+//  * TCServer - see https://docs.rs/taskchampion/latest/taskchampion/trait.Server.html
+//  * TCWorkingSet - see https://docs.rs/taskchampion/latest/taskchampion/struct.WorkingSet.html
 //
 // It also defines a few utility types:
 //
-//  * TCString - a wrapper around both C (NUL-terminated) and Rust (always utf-8) strings.  *
-//  TC…List - a list of objects represented as a C array * see below for the remainder
+//  * TCString - a wrapper around both C (NUL-terminated) and Rust (always utf-8) strings.
+//  * TC…List - a list of objects represented as a C array
+//  * see below for the remainder
 //
 // # Safety
 //
