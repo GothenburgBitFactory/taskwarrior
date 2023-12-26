@@ -125,6 +125,9 @@ if (SOLARIS)
   endif (NSL_LIBRARY)
 endif (SOLARIS)
 
+# Disable the Clang return-type-c-linkage warning globally. See #3225.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-Wno-return-type-c-linkage>")
+
 message ("-- Configuring cmake.h")
 configure_file (
   ${CMAKE_SOURCE_DIR}/cmake.h.in
