@@ -195,7 +195,7 @@ int CmdShow::execute (std::string& output)
     " sync.local.server_dir"
     " sync.gcp.bucket"
     " sync.server.client_id"
-    " sync.server.encryption_secret"
+    " sync.encryption_secret"
     " sync.server.origin"
     " tag.indicator"
     " undo.style"
