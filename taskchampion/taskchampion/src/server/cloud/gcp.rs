@@ -285,11 +285,12 @@ mod tests {
 
     #[test]
     fn del_missing() {
+        // Deleting an object that does not exist is not an error.
         let Some((mut svc, pfx)) = make_service() else {
             return;
         };
 
-        svc.del(&pfx("testy")).unwrap();
+        assert!(svc.del(&pfx("testy")).is_ok());
     }
 
     #[test]
