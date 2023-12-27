@@ -21,7 +21,7 @@ From the server's perspective, snapshots and versions are opaque byte sequences.
 
 The following invariant must always hold:
 
-> All versions accessible from the server, when linked by parent-child relationships, must form a single chain.
+> All versions are linked by parent-child relationships to form a single chain.
 > That is, each version must have no more than one parent and one child, and no more than one version may have zero parents or zero children.
 
 ## Data Formats
