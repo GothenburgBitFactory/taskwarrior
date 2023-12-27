@@ -107,6 +107,7 @@ impl Service for GcpService {
                 object: name.clone(),
                 ..Default::default()
             }));
+        // Determine the object's generation. See https://cloud.google.com/storage/docs/metadata#generation-number
         let generation = if is_http_error(404, &get_res) {
             // If a value was expected, that expectation has not been met.
             if existing_value.is_some() {
@@ -204,6 +205,8 @@ impl<'a> Iterator for ObjectIterator<'a> {
                     // Return a result from the existing response.
                     let obj = &items[self.next_index];
                     self.next_index += 1;
+                    // It's unclear when `time_created` would be None, so default to 0 in that case
+                    // or when the timestamp is not a valid u64 (before 1970).
                     let creation = obj.time_created.map(|t| t.unix_timestamp()).unwrap_or(0);
                     let creation: u64 = creation.try_into().unwrap_or(0);
                     return Some(Ok(ObjectInfo {
