@@ -65,6 +65,9 @@ pub(in crate::server) struct CloudServer<SVC: Service> {
     /// The probability (0..255) that this run will perform cleanup.
     cleanup_probability: u8,
 
+    /// The last version added locally with the `add_version` method.
+    last_version_added: Option<VersionId>,
+
     /// For testing, a function that is called in the middle of `add_version` to simulate
     /// a concurrent change in the service.
     #[cfg(test)]
@@ -89,6 +92,7 @@ impl<SVC: Service> CloudServer<SVC> {
             service,
             cryptor,
             cleanup_probability: DEFAULT_CLEANUP_PROBABILITY,
+            last_version_added: None,
             #[cfg(test)]
             add_version_intercept: None,
         })
@@ -388,6 +392,9 @@ impl<SVC: Service> Server for CloudServer<SVC> {
         // Attempt a cleanup, but ignore errors.
         let _ = self.maybe_cleanup();
 
+        // Record the newly returned `version_id`, to verify that this is the snapshot we may get.
+        self.last_version_added = Some(version_id);
+
         Ok((AddVersionResult::Ok(version_id), self.snapshot_urgency()?))
     }
 
@@ -445,6 +452,12 @@ impl<SVC: Service> Server for CloudServer<SVC> {
     }
 
     fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> Result<()> {
+        // The protocol says to verify that this is more recent than any other snapshot, and
+        // corresponds to an existing version. In practice, this will always be the version
+        // just returned from add_version, so just check that.
+        if Some(version_id) != self.last_version_added {
+            return Err(Error::Server("Snapshot is not for most recently added version".into()));
+        }
         let name = Self::snapshot_name(&version_id);
         let sealed = self.cryptor.seal(Unsealed {
             version_id,
@@ -600,6 +613,7 @@ mod tests {
             Self {
                 cryptor: self.cryptor.clone(),
                 cleanup_probability: 0,
+                last_version_added: None,
                 service: MockService::new(),
                 add_version_intercept: None,
             }
@@ -643,6 +657,7 @@ mod tests {
             Self {
                 cryptor: self.cryptor.clone(),
                 cleanup_probability: self.cleanup_probability,
+                last_version_added: self.last_version_added,
                 service: self.service.clone(),
                 add_version_intercept: None,
             }
@@ -1163,8 +1178,17 @@ mod tests {
         expected.mock_add_snapshot(v, INSERTION_TIME, b"SNAP");
 
         assert_ne!(server.unencrypted(), expected.unencrypted());
+        server.last_version_added = Some(v);
         server.add_snapshot(v, b"SNAP".to_vec()).unwrap();
         assert_eq!(server.unencrypted(), expected.unencrypted());
+    }
+
+    #[test]
+    fn add_snapshot_wrong_version() {
+        let mut server = make_server();
+        let v = Uuid::new_v4();
+        server.last_version_added = Some(Uuid::new_v4());
+        assert!(server.add_snapshot(v, b"SNAP".to_vec()).is_err());
     }
 
     #[test]
