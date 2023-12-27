@@ -226,13 +226,11 @@ impl<SVC: Service> CloudServer<SVC> {
 
         // Create chains mapping forward (parent -> child) and backward (child -> parent), starting
         // at "latest".
-        let mut fwd_chain = HashMap::new();
         let mut rev_chain = HashMap::new();
         let mut iterations = versions.len() + 1; // For cycle detection.
         let latest = self.get_latest()?;
         if let Some(mut c) = latest {
             while let Some(p) = parent_of(c) {
-                fwd_chain.insert(p, c);
                 rev_chain.insert(c, p);
                 c = p;
                 iterations -= 1;
@@ -271,7 +269,7 @@ impl<SVC: Service> CloudServer<SVC> {
         // may be in the state where it has uploaded a version but not changed "latest" yet,
         // so any pair with parent equal to latest is allowed to stay.
         for (c, p, _) in versions {
-            if fwd_chain.get(&p) != Some(&c) && Some(p) != latest {
+            if rev_chain.get(&c) != Some(&p) && Some(p) != latest {
                 self.service.del(&Self::version_name(&p, &c))?;
             }
         }
