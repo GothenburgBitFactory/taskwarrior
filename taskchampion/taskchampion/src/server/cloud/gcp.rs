@@ -113,8 +113,7 @@ impl Service for GcpService {
             if existing_value.is_some() {
                 return Ok(false);
             }
-            // Generation 0 indicates that the upload should succeed only if the object does not
-            // exist.
+            // Generation 0 indicates that the object does not yet exist.
             0
         } else {
             get_res?.generation
@@ -290,7 +289,6 @@ mod tests {
             return;
         };
 
-        // Clean up.
         svc.del(&pfx("testy")).unwrap();
     }
 
@@ -308,8 +306,8 @@ mod tests {
         // And another object that should not be included in the list.
         svc.put(&pfx("xxx"), b"data").unwrap();
 
-        let got_names: Vec<_> = svc.list(&pfx("pp-")).collect::<Result<_>>().unwrap();
-        let mut got_names: Vec<_> = got_names.into_iter().map(|oi| oi.name).collect();
+        let got_objects: Vec<_> = svc.list(&pfx("pp-")).collect::<Result<_>>().unwrap();
+        let mut got_names: Vec<_> = got_objects.into_iter().map(|oi| oi.name).collect();
         got_names.sort();
         assert_eq!(got_names, names);
 
@@ -361,7 +359,6 @@ mod tests {
             return;
         };
 
-        // Create the existing file, with two generations.
         svc.put(&pfx("testy"), b"foo1").unwrap();
         assert!(!svc
             .compare_and_swap(&pfx("testy"), None, b"bar".to_vec())

@@ -176,7 +176,7 @@ impl<SVC: Service> CloudServer<SVC> {
 
     /// Determine the snapshot urgency. This is done probabalistically:
     ///  - High urgency approximately 1% of the time.
-    ///  - Low urgecny approximately 10% of the time.
+    ///  - Low urgency approximately 10% of the time.
     fn snapshot_urgency(&self) -> Result<SnapshotUrgency> {
         let r = self.randint()?;
         if r < 2 {
