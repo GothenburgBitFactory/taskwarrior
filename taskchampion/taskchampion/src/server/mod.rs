@@ -17,7 +17,7 @@ mod op;
 mod types;
 
 #[cfg(feature = "encryption")]
-mod crypto;
+mod encryption;
 
 #[cfg(feature = "server-sync")]
 mod sync;

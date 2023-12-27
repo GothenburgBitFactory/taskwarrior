@@ -6,7 +6,7 @@ use crate::server::{
 use std::time::Duration;
 use uuid::Uuid;
 
-use super::crypto::{Cryptor, Sealed, Secret, Unsealed};
+use super::encryption::{Cryptor, Sealed, Secret, Unsealed};
 
 pub struct SyncServer {
     origin: String,

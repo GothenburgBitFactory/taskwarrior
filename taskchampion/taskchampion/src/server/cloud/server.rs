@@ -1,6 +1,6 @@
 use super::service::{ObjectInfo, Service};
 use crate::errors::{Error, Result};
-use crate::server::crypto::{Cryptor, Sealed, Unsealed};
+use crate::server::encryption::{Cryptor, Sealed, Unsealed};
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, Snapshot, SnapshotUrgency,
     VersionId,
