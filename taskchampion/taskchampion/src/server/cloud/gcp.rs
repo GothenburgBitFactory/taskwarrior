@@ -1,4 +1,3 @@
-#![allow(unused_variables, dead_code)]
 use super::service::{ObjectInfo, Service};
 use crate::errors::Result;
 use google_cloud_storage::client::{Client, ClientConfig};
