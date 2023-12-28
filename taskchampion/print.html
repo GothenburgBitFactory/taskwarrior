@@ -284,10 +284,11 @@ For example, a task with status &quot;completed&quot; but no &quot;end&quot; key
 <li><code>modified</code> - the time of the last modification of this task</li>
 <li><code>start</code> - the most recent time at which this task was started (a task with no <code>start</code> key is not active)</li>
 <li><code>end</code> - if present, the time at which this task was completed or deleted (note that this key may not agree with <code>status</code>: it may be present for a pending task, or absent for a deleted or completed task)</li>
-<li><code>tag_&lt;tag&gt;</code> - indicates this task has tag <code>&lt;tag&gt;</code> (value is an empty string)</li>
+<li><code>tag_&lt;tag&gt;</code> - indicates this task has tag <code>&lt;tag&gt;</code> (value is ignored)</li>
 <li><code>wait</code> - indicates the time before which this task should be hidden, as it is not actionable</li>
 <li><code>entry</code> - the time at which the task was created</li>
-<li><code>annotation_&lt;timestamp&gt;</code> - value is an annotation created at the given time</li>
+<li><code>annotation_&lt;timestamp&gt;</code> - value is an annotation created at the given time; for example, <code>annotation_1693329505</code>.</li>
+<li><code>dep_&lt;uuid&gt;</code> - indicates this task depends on another task identified by <code>&lt;uuid&gt;</code>; the value is ignored; for example, <code>dep_8c4fed9c-c0d2-40c2-936d-36fc44e084a0</code></li>
 </ul>
 <p>Note that while TaskChampion recognizes &quot;recurring&quot; as a status, it does not implement recurrence directly.</p>
 <h3 id="udas"><a class="header" href="#udas">UDAs</a></h3>
