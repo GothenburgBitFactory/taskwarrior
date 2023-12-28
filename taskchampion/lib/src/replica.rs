@@ -373,6 +373,7 @@ impl From<TCReplicaOp> for ReplicaOp {
 ///
 /// typedef struct TCReplicaOpList TCReplicaOpList;
 /// ```
+#[repr(C)]
 pub struct TCReplicaOpList {
     ptr: *mut TCReplicaOp,
     len: usize,
