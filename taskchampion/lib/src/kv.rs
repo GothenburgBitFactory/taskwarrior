@@ -1,5 +1,6 @@
 use crate::traits::*;
 use crate::types::*;
+use taskchampion::storage::TaskMap;
 
 #[ffizz_header::item]
 #[ffizz(order = 600)]
@@ -69,10 +70,26 @@ impl PassByValue for TCKV {
 /// ```
 #[repr(C)]
 pub struct TCKVList {
-    len: libc::size_t,
+    pub len: libc::size_t,
     /// total size of items (internal use only)
-    _capacity: libc::size_t,
-    items: *mut TCKV,
+    pub _capacity: libc::size_t,
+    pub items: *mut TCKV,
+}
+
+impl From<TaskMap> for TCKVList {
+    fn from(taskmap: TaskMap) -> TCKVList {
+        let vec = taskmap
+            .iter()
+            .map(|(k, v)| {
+                let key = RustString::from(k.as_ref());
+                let value = RustString::from(v.as_ref());
+                TCKV::as_ctype((key, value))
+            })
+            .collect();
+        // SAFETY:
+        //  - caller will free this list
+        unsafe { TCKVList::return_val(vec) }
+    }
 }
 
 impl CList for TCKVList {

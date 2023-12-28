@@ -114,14 +114,17 @@ impl TaskDb {
         sync::sync(server, txn.as_mut(), avoid_snapshots)
     }
 
-    /// Undo local operations until the most recent UndoPoint, returning false if there are no
+    /// Return undo local operations until the most recent UndoPoint, returning false if there are no
     /// local operations to undo.
-    pub fn undo<F>(&mut self, condition: F) -> Result<bool>
-    where
-        F: Fn(undo::UndoDiff) -> bool,
-    {
+    pub fn get_undo_ops(&mut self) -> Result<Vec<ReplicaOp>> {
         let mut txn = self.storage.txn()?;
-        undo::undo(txn.as_mut(), condition)
+        undo::get_undo_ops(txn.as_mut())
+    }
+
+    /// Undo local operations in storage.
+    pub fn commit_undo_ops(&mut self, undo_ops: Vec<ReplicaOp>) -> Result<bool> {
+        let mut txn = self.storage.txn()?;
+        undo::commit_undo_ops(txn.as_mut(), undo_ops)
     }
 
     /// Get the number of un-synchronized operations in storage, excluding undo

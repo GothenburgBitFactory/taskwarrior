@@ -2,7 +2,8 @@ use crate::traits::*;
 use crate::types::*;
 use crate::util::err_to_ruststring;
 use std::ptr::NonNull;
-use taskchampion::taskdb::undo;
+use taskchampion::chrono::{DateTime, Utc};
+use taskchampion::storage::{ReplicaOp, TaskMap};
 use taskchampion::{Replica, StorageConfig};
 
 #[ffizz_header::item]
@@ -187,26 +188,227 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
     )
 }
 
+impl From<TCKVList> for TaskMap {
+    fn from(kvlist: TCKVList) -> TaskMap {
+        // SAFETY:
+        //  - because we have &mut self, we have read/write access to items[0..len]
+        //  - all items are properly initialized Element's
+        //  - return value lifetime is equal to &mmut self's, so access is exclusive
+        //  - items and len came from Vec, so total size is < isize::MAX
+        let slice = unsafe { std::slice::from_raw_parts(kvlist.items, kvlist.len) };
+
+        let mut taskmap = TaskMap::new();
+        slice.into_iter().for_each(|kv| {
+            // SAFETY:
+            //  - key is valid (promised by caller)
+            //  - caller will not use key after this call (convention)
+            let key_ruststring = unsafe { TCString::val_from_arg(kv.key) };
+            // SAFETY:
+            //  - value is valid (promised by caller)
+            //  - caller will not use value after this call (convention)
+            let value_ruststring = unsafe { TCString::val_from_arg(kv.value) };
+
+            taskmap.insert(
+                key_ruststring.into_string().unwrap(),
+                value_ruststring.into_string().unwrap(),
+            );
+        });
+        taskmap
+    }
+}
+
 #[ffizz_header::item]
 #[ffizz(order = 901)]
-/// ***** TCUndoDiff *****
+/// ***** TCReplicaOp *****
 ///
 /// ```c
-/// struct TCUndoDiff {
-///     char *current;
-///     char *prior;
-///     char *when;
-/// };
+/// enum TCReplicaOp {
+///    Create { struct TCUuid uuid },
+///    Delete { struct TCUuid uuid, TCKVList old_task },
+///    Update {
+///        struct TCUuid uuid,
+///        struct TCString property,
+///        struct TCString old_value,
+///        struct TCString value,
+///        struct TCString timestamp,
+///    },
+///    UndoPoint,
+/// }
 ///
-/// typedef struct TCUndoDiff TCUndoDiff;
+/// typedef struct TCReplicaOp TCReplicaOp;
 /// ```
-pub struct TCUndoDiff(undo::UndoDiff);
+pub enum TCReplicaOp {
+    Create {
+        uuid: TCUuid,
+    },
+    Delete {
+        uuid: TCUuid,
+        old_task: TCKVList,
+    },
+    Update {
+        uuid: TCUuid,
+        property: TCString,
+        old_value: TCString,
+        value: TCString,
+        timestamp: TCString,
+    },
+    UndoPoint,
+}
 
-impl PassByPointer for TCUndoDiff {}
+impl PassByPointer for TCReplicaOp {}
 
-impl From<undo::UndoDiff> for TCUndoDiff {
-    fn from(ud: undo::UndoDiff) -> TCUndoDiff {
-        TCUndoDiff(ud)
+impl From<ReplicaOp> for TCReplicaOp {
+    fn from(replica_op: ReplicaOp) -> TCReplicaOp {
+        match replica_op {
+            ReplicaOp::Create { uuid } => TCReplicaOp::Create {
+                // SAFETY:
+                //  - caller promises to free this value.
+                uuid: unsafe { TCUuid::return_val(uuid) },
+            },
+            ReplicaOp::Delete { uuid, old_task } => TCReplicaOp::Delete {
+                // SAFETY:
+                //  - caller promises to free this value.
+                uuid: unsafe { TCUuid::return_val(uuid) },
+                old_task: TCKVList::from(old_task),
+            },
+            ReplicaOp::Update {
+                uuid,
+                property,
+                old_value,
+                value,
+                timestamp,
+            } => {
+                let property_ruststring = RustString::String(property);
+                let old_value_ruststring = RustString::String(old_value.unwrap_or_default());
+                let value_ruststring = RustString::String(value.unwrap_or_default());
+                let timestamp_ruststring = RustString::String(timestamp.to_string());
+
+                TCReplicaOp::Update {
+                    // SAFETY:
+                    //  - caller promises to free this value.
+                    uuid: unsafe { TCUuid::return_val(uuid) },
+                    // SAFETY:
+                    //  - caller promises to free this value.
+                    property: unsafe { TCString::return_val(property_ruststring) },
+                    // SAFETY:
+                    //  - caller promises to free this value.
+                    old_value: unsafe { TCString::return_val(old_value_ruststring) },
+                    // SAFETY:
+                    //  - caller promises to free this value.
+                    value: unsafe { TCString::return_val(value_ruststring) },
+                    // SAFETY:
+                    //  - caller promises to free this value.
+                    timestamp: unsafe { TCString::return_val(timestamp_ruststring) },
+                }
+            }
+            ReplicaOp::UndoPoint => TCReplicaOp::UndoPoint,
+        }
+    }
+}
+
+impl From<TCReplicaOp> for ReplicaOp {
+    fn from(tc_replica_op: TCReplicaOp) -> ReplicaOp {
+        match tc_replica_op {
+            TCReplicaOp::Create { uuid } => ReplicaOp::Create {
+                // SAFETY:
+                //  - uuid is a valid TCUuid (all byte patterns are valid)
+                uuid: unsafe { TCUuid::val_from_arg(uuid) },
+            },
+            TCReplicaOp::Delete { uuid, old_task } => ReplicaOp::Delete {
+                // SAFETY:
+                //  - uuid is a valid TCUuid (all byte patterns are valid)
+                uuid: unsafe { TCUuid::val_from_arg(uuid) },
+                old_task: TaskMap::from(old_task),
+            },
+            TCReplicaOp::Update {
+                uuid,
+                property,
+                old_value,
+                value,
+                timestamp,
+            } => {
+                // SAFETY:
+                //  - uuid is a valid TCUuid (all byte patterns are valid)
+                let uuid_ruststring = unsafe { TCUuid::val_from_arg(uuid) };
+                // SAFETY:
+                //  - property is valid (promised by caller)
+                //  - caller will not use property after this call (convention)
+                let property_ruststring = unsafe { TCString::val_from_arg(property) };
+                // SAFETY:
+                //  - old_value is valid (promised by caller)
+                //  - caller will not use old_value after this call (convention)
+                let old_value_ruststring = unsafe { TCString::val_from_arg(old_value) };
+                // SAFETY:
+                //  - value is valid (promised by caller)
+                //  - caller will not use value after this call (convention)
+                let value_ruststring = unsafe { TCString::val_from_arg(value) };
+                // SAFETY:
+                //  - timestamp is valid (promised by caller)
+                //  - caller will not use timestamp after this call (convention)
+                let timestamp_ruststring = unsafe { TCString::val_from_arg(timestamp) };
+
+                ReplicaOp::Update {
+                    uuid: uuid_ruststring,
+                    property: property_ruststring.into_string().unwrap(),
+                    old_value: Some(old_value_ruststring.into_string().unwrap()),
+                    value: Some(value_ruststring.into_string().unwrap()),
+                    timestamp: timestamp_ruststring
+                        .into_string()
+                        .unwrap()
+                        .parse::<DateTime<Utc>>()
+                        .unwrap(),
+                }
+            }
+            TCReplicaOp::UndoPoint => ReplicaOp::UndoPoint,
+        }
+    }
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 901)]
+/// ***** TCReplicaOpList *****
+///
+/// ```c
+/// struct TCReplicaOpList {
+///     void* ptr
+///     size_t len
+///     size_t capacity
+/// }
+///
+/// typedef struct TCReplicaOpList TCReplicaOpList;
+/// ```
+pub struct TCReplicaOpList {
+    ptr: *mut TCReplicaOp,
+    len: usize,
+    capacity: usize,
+}
+
+impl PassByPointer for TCReplicaOpList {}
+
+impl From<Vec<ReplicaOp>> for TCReplicaOpList {
+    fn from(replica_op_list: Vec<ReplicaOp>) -> TCReplicaOpList {
+        TCReplicaOpList {
+            ptr: replica_op_list.as_ptr() as *mut TCReplicaOp,
+            len: replica_op_list.len(),
+            capacity: replica_op_list.capacity(),
+        }
+    }
+}
+
+impl From<TCReplicaOpList> for Vec<ReplicaOp> {
+    fn from(tc_replica_op_list: TCReplicaOpList) -> Vec<ReplicaOp> {
+        // SAFETY:
+        //  - because we have &mut self, we have read/write access to items[0..len]
+        //  - all items are properly initialized Element's
+        //  - return value lifetime is equal to &mmut self's, so access is exclusive
+        //  - items and len came from Vec, so total size is < isize::MAX
+        let tc_replica_op_slice =
+            unsafe { std::slice::from_raw_parts(tc_replica_op_list.ptr, tc_replica_op_list.len) };
+
+        tc_replica_op_slice
+            .iter()
+            .map(|&tc_op| ReplicaOp::from(tc_op))
+            .collect()
     }
 }
 
@@ -432,26 +634,41 @@ pub unsafe extern "C" fn tc_replica_sync(
 
 #[ffizz_header::item]
 #[ffizz(order = 902)]
-/// Undo local operations until the most recent UndoPoint.
+/// Return undo local operations until the most recent UndoPoint.
+///
+/// ```c
+/// EXTERN_C TCReplicaOpList tc_replica_get_undo_ops(struct TCReplica *rep);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_get_undo_ops(rep: *mut TCReplica) -> TCReplicaOpList {
+    wrap(
+        rep,
+        |rep| Ok(TCReplicaOpList::from(rep.get_undo_ops()?)),
+        TCReplicaOpList::from(Vec::new()),
+    )
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 902)]
+/// Undo local operations in storage.
 ///
 /// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
 /// there are no operations that can be done.
 ///
 /// ```c
-/// EXTERN_C TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out, bool(*condition)(struct TCUndoDiff));
+/// EXTERN_C TCResult tc_replica_commit_undo_ops(struct TCReplica *rep, TCReplicaOpList tc_undo_ops, int32_t *undone_out);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_undo(
+pub unsafe extern "C" fn tc_replica_commit_undo_ops(
     rep: *mut TCReplica,
+    tc_undo_ops: TCReplicaOpList,
     undone_out: *mut i32,
-    condition: extern "C" fn(undo::UndoDiff) -> bool,
 ) -> TCResult {
     wrap(
         rep,
         |rep| {
-            let wrapped_condition =  // Convert C function into Rust closure.
-                |undo_ops: undo::UndoDiff| condition(undo_ops);
-            let undone = i32::from(rep.undo(wrapped_condition)?);
+            let undo_ops: Vec<ReplicaOp> = Vec::from(tc_undo_ops);
+            let undone = i32::from(rep.commit_undo_ops(undo_ops)?);
             if !undone_out.is_null() {
                 // SAFETY:
                 //  - undone_out is not NULL (just checked)
