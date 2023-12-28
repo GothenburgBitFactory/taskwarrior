@@ -480,14 +480,30 @@ EXTERN_C void tc_server_free(struct TCServer *server);
 // TCReplicas are not threadsafe.
 typedef struct TCReplica TCReplica;
 
-// ***** TCUndoDiff *****
-struct TCUndoDiff {
-    char *current;
-    char *prior;
-    char *when;
-};
+// ***** TCReplicaOp *****
+enum TCReplicaOp {
+   Create { struct TCUuid uuid },
+   Delete { struct TCUuid uuid, TCKVList old_task },
+   Update {
+       struct TCUuid uuid,
+       struct TCString property,
+       struct TCString old_value,
+       struct TCString value,
+       struct TCString timestamp,
+   },
+   UndoPoint,
+}
 
-typedef struct TCUndoDiff TCUndoDiff;
+typedef struct TCReplicaOp TCReplicaOp;
+
+// ***** TCReplicaOpList *****
+struct TCReplicaOpList {
+    void* ptr
+    size_t len
+    size_t capacity
+}
+
+typedef struct TCReplicaOpList TCReplicaOpList;
 
 // Create a new TCReplica with an in-memory database.  The contents of the database will be
 // lost when it is freed with tc_replica_free.
@@ -518,6 +534,12 @@ EXTERN_C struct TCUuidList tc_replica_all_task_uuids(struct TCReplica *rep);
 // Returns a TCTaskList with a NULL items field on error.
 EXTERN_C struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
 
+// Undo local operations in storage.
+//
+// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
+// there are no operations that can be done.
+EXTERN_C TCResult tc_replica_commit_undo_ops(struct TCReplica *rep, TCReplicaOpList tc_undo_ops, int32_t *undone_out);
+
 // Get the latest error for a replica, or a string with NULL ptr if no error exists.  Subsequent
 // calls to this function will return NULL.  The rep pointer must not be NULL.  The caller must
 // free the returned string.
@@ -528,6 +550,9 @@ EXTERN_C struct TCString tc_replica_error(struct TCReplica *rep);
 // Returns NULL when the task does not exist, and on error.  Consult tc_replica_error
 // to distinguish the two conditions.
 EXTERN_C struct TCTask *tc_replica_get_task(struct TCReplica *rep, struct TCUuid tcuuid);
+
+// Return undo local operations until the most recent UndoPoint.
+EXTERN_C TCReplicaOpList tc_replica_get_undo_ops(struct TCReplica *rep);
 
 // Create a new task.  The task must not already exist.
 //
@@ -557,12 +582,6 @@ EXTERN_C TCResult tc_replica_rebuild_working_set(struct TCReplica *rep, bool ren
 //
 // The `server` argument remains owned by the caller, and must be freed explicitly.
 EXTERN_C TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool avoid_snapshots);
-
-// Undo local operations until the most recent UndoPoint.
-//
-// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
-// there are no operations that can be done.
-EXTERN_C TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out, bool(*condition)(struct TCUndoDiff));
 
 // Get the current working set for this replica.  The resulting value must be freed
 // with tc_working_set_free.

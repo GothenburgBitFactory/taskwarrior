@@ -190,15 +190,11 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
 
 impl From<TCKVList> for TaskMap {
     fn from(kvlist: TCKVList) -> TaskMap {
-        // SAFETY:
-        //  - because we have &mut self, we have read/write access to items[0..len]
-        //  - all items are properly initialized Element's
-        //  - return value lifetime is equal to &mmut self's, so access is exclusive
-        //  - items and len came from Vec, so total size is < isize::MAX
-        let slice = unsafe { std::slice::from_raw_parts(kvlist.items, kvlist.len) };
+        // TODO SAFETY:
+        let vec = unsafe { Vec::from_raw_parts(kvlist.items, kvlist.len, kvlist._capacity) };
 
         let mut taskmap = TaskMap::new();
-        slice.into_iter().for_each(|kv| {
+        vec.into_iter().for_each(|kv| {
             // SAFETY:
             //  - key is valid (promised by caller)
             //  - caller will not use key after this call (convention)
@@ -397,17 +393,18 @@ impl From<Vec<ReplicaOp>> for TCReplicaOpList {
 
 impl From<TCReplicaOpList> for Vec<ReplicaOp> {
     fn from(tc_replica_op_list: TCReplicaOpList) -> Vec<ReplicaOp> {
-        // SAFETY:
-        //  - because we have &mut self, we have read/write access to items[0..len]
-        //  - all items are properly initialized Element's
-        //  - return value lifetime is equal to &mmut self's, so access is exclusive
-        //  - items and len came from Vec, so total size is < isize::MAX
-        let tc_replica_op_slice =
-            unsafe { std::slice::from_raw_parts(tc_replica_op_list.ptr, tc_replica_op_list.len) };
+        // TODO SAFETY:
+        let tc_replica_op_vec = unsafe {
+            Vec::from_raw_parts(
+                tc_replica_op_list.ptr,
+                tc_replica_op_list.len,
+                tc_replica_op_list.capacity,
+            )
+        };
 
-        tc_replica_op_slice
-            .iter()
-            .map(|&tc_op| ReplicaOp::from(tc_op))
+        tc_replica_op_vec
+            .into_iter()
+            .map(|tc_op| ReplicaOp::from(tc_op))
             .collect()
     }
 }
