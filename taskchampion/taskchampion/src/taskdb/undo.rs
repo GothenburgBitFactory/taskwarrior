@@ -27,7 +27,8 @@ pub fn commit_undo_ops(txn: &mut dyn StorageTxn, mut undo_ops: Vec<ReplicaOp>) -
     // TODO Support concurrent undo by adding the reverse of undo_ops rather than popping from operations.
     let old_len = local_ops.len();
     let undo_len = undo_ops.len();
-    let new_len = old_len - undo_len;
+    let mut new_len = old_len - undo_len;
+    new_len = new_len.saturating_sub(1); // remove UndoPoint if there is one
     let local_undo_ops = &local_ops[new_len..old_len];
     undo_ops.reverse();
     if local_undo_ops != undo_ops {
@@ -111,29 +112,28 @@ mod tests {
             timestamp,
         })?;
 
-        assert_eq!(db.operations().len(), 9);
+        assert_eq!(db.operations().len(), 9, "{:#?}", db.operations());
 
         let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
-        assert_eq!(undo_ops.len(), 3);
+        assert_eq!(undo_ops.len(), 3, "{:#?}", undo_ops);
 
         assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
-        // undo took db back to the snapshot
         // note that we've subtracted the length of undo_ops plus one for the UndoPoint
-        assert_eq!(db.operations().len(), 5);
-        assert_eq!(db.sorted_tasks(), db_state);
+        assert_eq!(db.operations().len(), 5, "{:#?}", db.operations());
+        assert_eq!(db.sorted_tasks(), db_state, "{:#?}", db.sorted_tasks());
 
         let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
-        assert_eq!(undo_ops.len(), 4);
+        assert_eq!(undo_ops.len(), 4, "{:#?}", undo_ops);
 
         assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         // empty db
-        assert_eq!(db.operations().len(), 0);
-        assert_eq!(db.sorted_tasks(), vec![]);
+        assert_eq!(db.operations().len(), 0, "{:#?}", db.operations());
+        assert_eq!(db.sorted_tasks(), vec![], "{:#?}", db.sorted_tasks());
 
         let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
-        assert_eq!(undo_ops.len(), 0);
+        assert_eq!(undo_ops.len(), 0, "{:#?}", undo_ops);
 
         // nothing left to undo, so commit_undo_ops() returns false
         assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
