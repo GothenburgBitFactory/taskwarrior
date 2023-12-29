@@ -114,16 +114,17 @@ mod tests {
         assert_eq!(db.operations().len(), 9);
 
         let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
-        assert_eq!(undo_ops.len(), 4);
+        assert_eq!(undo_ops.len(), 3);
 
         assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         // undo took db back to the snapshot
+        // note that we've subtracted the length of undo_ops plus one for the UndoPoint
         assert_eq!(db.operations().len(), 5);
         assert_eq!(db.sorted_tasks(), db_state);
 
         let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
-        assert_eq!(undo_ops.len(), 5);
+        assert_eq!(undo_ops.len(), 4);
 
         assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 

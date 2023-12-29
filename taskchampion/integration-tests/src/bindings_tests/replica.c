@@ -20,20 +20,13 @@ static void test_replica_creation_disk(void) {
     tc_replica_free(rep);
 }
 
-static bool always_confirm(void* undo_ops_ptr , size_t undo_ops_len) {
-  // silence unused variable warnings
-  (void) undo_ops_ptr;
-  (void) undo_ops_len;
-
-  return true;
-}
-
 // undo on an empty in-memory TCReplica does nothing
 static void test_replica_undo_empty(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
     int undone;
-    int rv = tc_replica_undo(rep, &undone, always_confirm);
+    TCReplicaOpList undo_ops = tc_replica_get_undo_ops(rep);
+    int rv  = tc_replica_commit_undo_ops(rep, undo_ops, &undone);
     TEST_ASSERT_EQUAL(TC_RESULT_OK, rv);
     TEST_ASSERT_EQUAL(0, undone);
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
@@ -122,11 +115,12 @@ static void test_replica_working_set(void) {
     tc_replica_free(rep);
 }
 
-// When tc_replica_undo is passed NULL for undone_out, it still succeeds
+// When tc_replica_commit_undo_ops is passed NULL for undone_out, it still succeeds
 static void test_replica_undo_empty_null_undone_out(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
-    int rv = tc_replica_undo(rep, NULL, always_confirm);
+    TCReplicaOpList undo_ops = tc_replica_get_undo_ops(rep);
+    int rv  = tc_replica_commit_undo_ops(rep, undo_ops, NULL);
     TEST_ASSERT_EQUAL(TC_RESULT_OK, rv);
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
     tc_replica_free(rep);
@@ -164,7 +158,6 @@ static void test_replica_task_creation(void) {
     tc_replica_free(rep);
 }
 
-// When tc_replica_undo is passed NULL for undone_out, it still succeeds
 static void test_replica_sync_local(void) {
     TCReplica *rep = tc_replica_new_in_memory();
     TEST_ASSERT_NULL(tc_replica_error(rep).ptr);
@@ -190,7 +183,6 @@ static void test_replica_sync_local(void) {
     tc_string_free(&err);
 }
 
-// When tc_replica_undo is passed NULL for undone_out, it still succeeds
 static void test_replica_remote_server(void) {
     TCString err;
     TCServer *server = tc_server_new_sync(
