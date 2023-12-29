@@ -480,28 +480,33 @@ EXTERN_C void tc_server_free(struct TCServer *server);
 // TCReplicas are not threadsafe.
 typedef struct TCReplica TCReplica;
 
+// ***** TCReplicaOpType *****
+typedef enum TCReplicaOpType {
+    Create,
+    Delete,
+    Update,
+    Undopoint,
+} TCReplicaOpType;
+
 // ***** TCReplicaOp *****
-enum TCReplicaOp {
-   Create { struct TCUuid uuid },
-   Delete { struct TCUuid uuid, TCKVList old_task },
-   Update {
-       struct TCUuid uuid,
-       struct TCString property,
-       struct TCString old_value,
-       struct TCString value,
-       struct TCString timestamp,
-   },
-   UndoPoint,
-}
+struct TCReplicaOp {
+    TCReplicaOpType operation_type;
+    TCUuid uuid;
+    TCKVList old_task;
+    TCString property;
+    TCString old_value;
+    TCString value;
+    TCString timestamp;
+};
 
 typedef struct TCReplicaOp TCReplicaOp;
 
 // ***** TCReplicaOpList *****
 struct TCReplicaOpList {
-    void* ptr
-    size_t len
-    size_t capacity
-}
+    void* ptr;
+    size_t len;
+    size_t capacity;
+};
 
 typedef struct TCReplicaOpList TCReplicaOpList;
 

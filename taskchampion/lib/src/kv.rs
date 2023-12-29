@@ -1,5 +1,6 @@
 use crate::traits::*;
 use crate::types::*;
+use std::ptr::null_mut;
 use taskchampion::storage::TaskMap;
 
 #[ffizz_header::item]
@@ -114,6 +115,16 @@ impl CList for TCKVList {
 
     fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
         (self.items, self.len, self._capacity)
+    }
+}
+
+impl Default for TCKVList {
+    fn default() -> Self {
+        Self {
+            len: libc::size_t::default(),
+            _capacity: libc::size_t::default(),
+            items: null_mut(),
+        }
     }
 }
 

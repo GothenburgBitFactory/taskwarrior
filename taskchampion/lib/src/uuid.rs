@@ -16,6 +16,7 @@ use taskchampion::Uuid;
 /// } TCUuid;
 /// ```
 #[repr(C)]
+#[derive(Default)]
 pub struct TCUuid([u8; 16]);
 
 impl PassByValue for TCUuid {

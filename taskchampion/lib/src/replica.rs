@@ -133,6 +133,30 @@ where
 }
 
 #[ffizz_header::item]
+#[ffizz(order = 900)]
+/// ***** TCReplicaOpType *****
+///
+/// ```c
+/// typedef enum TCReplicaOpType {
+///     Create,
+///     Delete,
+///     Update,
+///     Undopoint,
+/// } TCReplicaOpType;
+/// ```
+#[derive(Default)]
+pub enum TCReplicaOpType {
+    Create,
+    Delete,
+    Update,
+    UndoPoint,
+    #[default]
+    Error,
+}
+
+impl PassByPointer for TCReplicaOpType {}
+
+#[ffizz_header::item]
 #[ffizz(order = 901)]
 /// Create a new TCReplica with an in-memory database.  The contents of the database will be
 /// lost when it is freed with tc_replica_free.
@@ -218,37 +242,27 @@ impl From<TCKVList> for TaskMap {
 /// ***** TCReplicaOp *****
 ///
 /// ```c
-/// enum TCReplicaOp {
-///    Create { struct TCUuid uuid },
-///    Delete { struct TCUuid uuid, TCKVList old_task },
-///    Update {
-///        struct TCUuid uuid,
-///        struct TCString property,
-///        struct TCString old_value,
-///        struct TCString value,
-///        struct TCString timestamp,
-///    },
-///    UndoPoint,
-/// }
+/// struct TCReplicaOp {
+///     TCReplicaOpType operation_type;
+///     TCUuid uuid;
+///     TCKVList old_task;
+///     TCString property;
+///     TCString old_value;
+///     TCString value;
+///     TCString timestamp;
+/// };
 ///
 /// typedef struct TCReplicaOp TCReplicaOp;
 /// ```
-pub enum TCReplicaOp {
-    Create {
-        uuid: TCUuid,
-    },
-    Delete {
-        uuid: TCUuid,
-        old_task: TCKVList,
-    },
-    Update {
-        uuid: TCUuid,
-        property: TCString,
-        old_value: TCString,
-        value: TCString,
-        timestamp: TCString,
-    },
-    UndoPoint,
+#[derive(Default)]
+pub struct TCReplicaOp {
+    operation_type: TCReplicaOpType,
+    uuid: TCUuid,
+    old_task: TCKVList,
+    property: TCString,
+    old_value: TCString,
+    value: TCString,
+    timestamp: TCString,
 }
 
 impl PassByPointer for TCReplicaOp {}
@@ -256,16 +270,20 @@ impl PassByPointer for TCReplicaOp {}
 impl From<ReplicaOp> for TCReplicaOp {
     fn from(replica_op: ReplicaOp) -> TCReplicaOp {
         match replica_op {
-            ReplicaOp::Create { uuid } => TCReplicaOp::Create {
+            ReplicaOp::Create { uuid } => TCReplicaOp {
+                operation_type: TCReplicaOpType::Create,
                 // SAFETY:
                 //  - caller promises to free this value.
                 uuid: unsafe { TCUuid::return_val(uuid) },
+                ..Default::default()
             },
-            ReplicaOp::Delete { uuid, old_task } => TCReplicaOp::Delete {
+            ReplicaOp::Delete { uuid, old_task } => TCReplicaOp {
+                operation_type: TCReplicaOpType::Delete,
                 // SAFETY:
                 //  - caller promises to free this value.
                 uuid: unsafe { TCUuid::return_val(uuid) },
                 old_task: TCKVList::from(old_task),
+                ..Default::default()
             },
             ReplicaOp::Update {
                 uuid,
@@ -279,7 +297,8 @@ impl From<ReplicaOp> for TCReplicaOp {
                 let value_ruststring = RustString::String(value.unwrap_or_default());
                 let timestamp_ruststring = RustString::String(timestamp.to_string());
 
-                TCReplicaOp::Update {
+                TCReplicaOp {
+                    operation_type: TCReplicaOpType::Update,
                     // SAFETY:
                     //  - caller promises to free this value.
                     uuid: unsafe { TCUuid::return_val(uuid) },
@@ -295,9 +314,13 @@ impl From<ReplicaOp> for TCReplicaOp {
                     // SAFETY:
                     //  - caller promises to free this value.
                     timestamp: unsafe { TCString::return_val(timestamp_ruststring) },
+                    ..Default::default()
                 }
             }
-            ReplicaOp::UndoPoint => TCReplicaOp::UndoPoint,
+            ReplicaOp::UndoPoint => TCReplicaOp {
+                operation_type: TCReplicaOpType::UndoPoint,
+                ..Default::default()
+            },
         }
     }
 }
@@ -305,23 +328,34 @@ impl From<ReplicaOp> for TCReplicaOp {
 impl From<TCReplicaOp> for ReplicaOp {
     fn from(tc_replica_op: TCReplicaOp) -> ReplicaOp {
         match tc_replica_op {
-            TCReplicaOp::Create { uuid } => ReplicaOp::Create {
+            TCReplicaOp {
+                operation_type: TCReplicaOpType::Create,
+                uuid,
+                ..
+            } => ReplicaOp::Create {
                 // SAFETY:
                 //  - uuid is a valid TCUuid (all byte patterns are valid)
                 uuid: unsafe { TCUuid::val_from_arg(uuid) },
             },
-            TCReplicaOp::Delete { uuid, old_task } => ReplicaOp::Delete {
+            TCReplicaOp {
+                operation_type: TCReplicaOpType::Delete,
+                uuid,
+                old_task,
+                ..
+            } => ReplicaOp::Delete {
                 // SAFETY:
                 //  - uuid is a valid TCUuid (all byte patterns are valid)
                 uuid: unsafe { TCUuid::val_from_arg(uuid) },
                 old_task: TaskMap::from(old_task),
             },
-            TCReplicaOp::Update {
+            TCReplicaOp {
+                operation_type: TCReplicaOpType::Update,
                 uuid,
                 property,
                 old_value,
                 value,
                 timestamp,
+                ..
             } => {
                 // SAFETY:
                 //  - uuid is a valid TCUuid (all byte patterns are valid)
@@ -355,7 +389,14 @@ impl From<TCReplicaOp> for ReplicaOp {
                         .unwrap(),
                 }
             }
-            TCReplicaOp::UndoPoint => ReplicaOp::UndoPoint,
+            TCReplicaOp {
+                operation_type: TCReplicaOpType::UndoPoint,
+                ..
+            } => ReplicaOp::UndoPoint,
+            TCReplicaOp {
+                operation_type: TCReplicaOpType::Error,
+                ..
+            } => panic!("This shouldn't be possible."),
         }
     }
 }
@@ -366,10 +407,10 @@ impl From<TCReplicaOp> for ReplicaOp {
 ///
 /// ```c
 /// struct TCReplicaOpList {
-///     void* ptr
-///     size_t len
-///     size_t capacity
-/// }
+///     void* ptr;
+///     size_t len;
+///     size_t capacity;
+/// };
 ///
 /// typedef struct TCReplicaOpList TCReplicaOpList;
 /// ```
