@@ -113,29 +113,29 @@ mod tests {
 
         assert_eq!(db.operations().len(), 9);
 
-        {
-            let mut txn = db.storage.txn()?;
-            assert!(undo(txn.as_mut())?);
-        }
+        let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
+        assert_eq!(undo_ops.len(), 4);
+
+        assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         // undo took db back to the snapshot
         assert_eq!(db.operations().len(), 5);
         assert_eq!(db.sorted_tasks(), db_state);
 
-        {
-            let mut txn = db.storage.txn()?;
-            assert!(undo(txn.as_mut())?);
-        }
+        let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
+        assert_eq!(undo_ops.len(), 5);
+
+        assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         // empty db
         assert_eq!(db.operations().len(), 0);
         assert_eq!(db.sorted_tasks(), vec![]);
 
-        {
-            let mut txn = db.storage.txn()?;
-            // nothing left to undo, so undo() returns false
-            assert!(!undo(txn.as_mut())?);
-        }
+        let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
+        assert_eq!(undo_ops.len(), 0);
+
+        // nothing left to undo, so commit_undo_ops() returns false
+        assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         Ok(())
     }
