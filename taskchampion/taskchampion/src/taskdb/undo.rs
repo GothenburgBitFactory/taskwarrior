@@ -1,7 +1,12 @@
 use super::apply;
 use crate::errors::Result;
 use crate::storage::{ReplicaOp, StorageTxn};
-use log::{debug, info, trace};
+
+// Adapted from https://stackoverflow.com/a/67105052/1938621
+#[cfg(not(test))]
+use log::{debug, info, trace}; // Use log crate when building application
+#[cfg(test)]
+use std::{println as debug, println as info, println as trace}; // Workaround to use prinltn! for logs.
 
 /// Local operations until the most recent UndoPoint.
 pub fn get_undo_ops(txn: &mut dyn StorageTxn) -> Result<Vec<ReplicaOp>> {
@@ -23,16 +28,25 @@ pub fn commit_undo_ops(txn: &mut dyn StorageTxn, mut undo_ops: Vec<ReplicaOp>) -
     let mut applied = false;
     let mut local_ops = txn.operations().unwrap();
 
+    // Add UndoPoint to undo_ops unless this undo will empty the operations database, in which case
+    // there is no UndoPoint.
+    if local_ops.len() > undo_ops.len() {
+        undo_ops.push(ReplicaOp::UndoPoint);
+    }
+
     // Drop undo_ops iff they're the latest operations.
     // TODO Support concurrent undo by adding the reverse of undo_ops rather than popping from operations.
     let old_len = local_ops.len();
     let undo_len = undo_ops.len();
-    let mut new_len = old_len - undo_len;
-    new_len = new_len.saturating_sub(1); // remove UndoPoint if there is one
+    let new_len = old_len - undo_len;
     let local_undo_ops = &local_ops[new_len..old_len];
     undo_ops.reverse();
     if local_undo_ops != undo_ops {
         info!("Undo failed: concurrent changes to the database occurred.");
+        debug!(
+            "local_undo_ops={:#?}\nundo_ops={:#?}",
+            local_undo_ops, undo_ops
+        );
         return Ok(applied);
     }
     undo_ops.reverse();
@@ -119,12 +133,14 @@ mod tests {
 
         assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
-        // note that we've subtracted the length of undo_ops plus one for the UndoPoint
+        // Note that we've subtracted the length of undo_ops plus one for the UndoPoint.
         assert_eq!(db.operations().len(), 5, "{:#?}", db.operations());
         assert_eq!(db.sorted_tasks(), db_state, "{:#?}", db.sorted_tasks());
 
+        // Note that the number of undo operations is equal to the number of operations in the
+        // database here because there are no UndoPoints.
         let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
-        assert_eq!(undo_ops.len(), 4, "{:#?}", undo_ops);
+        assert_eq!(undo_ops.len(), 5, "{:#?}", undo_ops);
 
         assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
@@ -136,7 +152,7 @@ mod tests {
         assert_eq!(undo_ops.len(), 0, "{:#?}", undo_ops);
 
         // nothing left to undo, so commit_undo_ops() returns false
-        assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
+        assert!(!commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         Ok(())
     }
