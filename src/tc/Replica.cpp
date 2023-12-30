@@ -154,9 +154,15 @@ void tc::Replica::sync (Server server, bool avoid_snapshots)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::undo (int32_t *undone_out, bool(*condition)(struct tc::ffi::TCUndoDiff))
+TCReplicaOpList tc::Replica::get_undo_ops ()
 {
-  auto res = tc_replica_undo (&*inner, undone_out, condition);
+  return tc_replica_get_undo_ops(&*inner);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Replica::commit_undo_ops (TCReplicaOpList tc_undo_ops, int32_t *undone_out)
+{
+  auto res = tc_replica_commit_undo_ops (&*inner, tc_undo_ops, undone_out);
   if (res != TC_RESULT_OK) {
     throw replica_error ();
   }

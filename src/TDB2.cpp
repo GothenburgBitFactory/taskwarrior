@@ -207,14 +207,17 @@ void TDB2::get_changes (std::vector <Task>& changes)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert ()
 {
-  replica.undo (NULL, confirm_revert);
+  auto undo_ops = replica.get_undo_ops();
+  if (confirm_revert(undo_ops)) {
+    replica.commit_undo_ops(undo_ops, NULL);
+  }
   replica.rebuild_working_set (false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB2::confirm_revert (struct tc::ffi::TCUndoDiff undo)
+bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
 {
-  show_diff (undo.current, undo.prior, undo.when);
+  // TODO show_diff
   return ! Context::getContext ().config.getBoolean ("confirmation") ||
         confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?");
 }
