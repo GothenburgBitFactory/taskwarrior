@@ -407,7 +407,7 @@ impl From<TCReplicaOp> for ReplicaOp {
 ///
 /// ```c
 /// struct TCReplicaOpList {
-///     void* ptr;
+///     void* items;
 ///     size_t len;
 ///     size_t capacity;
 /// };
@@ -416,17 +416,40 @@ impl From<TCReplicaOp> for ReplicaOp {
 /// ```
 #[repr(C)]
 pub struct TCReplicaOpList {
-    ptr: *mut TCReplicaOp,
+    items: *mut TCReplicaOp,
     len: usize,
     capacity: usize,
 }
 
-impl PassByPointer for TCReplicaOpList {}
+impl CList for TCReplicaOpList {
+    type Element = TCReplicaOp;
+
+    unsafe fn from_raw_parts(items: *mut Self::Element, len: usize, cap: usize) -> Self {
+        TCReplicaOpList {
+            len,
+            capacity: cap,
+            items,
+        }
+    }
+
+    fn slice(&mut self) -> &mut [Self::Element] {
+        // SAFETY:
+        //  - because we have &mut self, we have read/write access to items[0..len]
+        //  - all items are properly initialized Element's
+        //  - return value lifetime is equal to &mmut self's, so access is exclusive
+        //  - items and len came from Vec, so total size is < isize::MAX
+        unsafe { std::slice::from_raw_parts_mut(self.items, self.len) }
+    }
+
+    fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
+        (self.items, self.len, self.capacity)
+    }
+}
 
 impl From<Vec<ReplicaOp>> for TCReplicaOpList {
     fn from(replica_op_list: Vec<ReplicaOp>) -> TCReplicaOpList {
         TCReplicaOpList {
-            ptr: replica_op_list.as_ptr() as *mut TCReplicaOp,
+            items: replica_op_list.as_ptr() as *mut TCReplicaOp,
             len: replica_op_list.len(),
             capacity: replica_op_list.capacity(),
         }
@@ -438,7 +461,7 @@ impl From<TCReplicaOpList> for Vec<ReplicaOp> {
         // TODO SAFETY:
         let tc_replica_op_vec = unsafe {
             Vec::from_raw_parts(
-                tc_replica_op_list.ptr,
+                tc_replica_op_list.items,
                 tc_replica_op_list.len,
                 tc_replica_op_list.capacity,
             )

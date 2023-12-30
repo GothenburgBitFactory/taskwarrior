@@ -503,7 +503,7 @@ typedef struct TCReplicaOp TCReplicaOp;
 
 // ***** TCReplicaOpList *****
 struct TCReplicaOpList {
-    void* ptr;
+    void* items;
     size_t len;
     size_t capacity;
 };
