@@ -217,6 +217,11 @@ void TDB2::revert ()
 ////////////////////////////////////////////////////////////////////////////////
 bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
 {
+  std::cout << "The following " << undo_ops.len << " operations would be reverted:\n";
+  for (size_t i = 0; i < undo_ops.len; i++) {
+    tc::ffi::TCReplicaOp op = undo_ops.items[i];
+    std::cout << "- " << op.operation_type << "\n";
+  }
   // TODO show_diff
   return ! Context::getContext ().config.getBoolean ("confirmation") ||
         confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?");

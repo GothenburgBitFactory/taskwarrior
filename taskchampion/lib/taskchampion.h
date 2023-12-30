@@ -485,7 +485,7 @@ typedef enum TCReplicaOpType {
     Create,
     Delete,
     Update,
-    Undopoint,
+    UndoPoint,
 } TCReplicaOpType;
 
 // ***** TCReplicaOp *****
@@ -503,7 +503,7 @@ typedef struct TCReplicaOp TCReplicaOp;
 
 // ***** TCReplicaOpList *****
 struct TCReplicaOpList {
-    void* items;
+    struct TCReplicaOp *items;
     size_t len;
     size_t capacity;
 };

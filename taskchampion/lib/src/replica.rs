@@ -141,7 +141,7 @@ where
 ///     Create,
 ///     Delete,
 ///     Update,
-///     Undopoint,
+///     UndoPoint,
 /// } TCReplicaOpType;
 /// ```
 #[derive(Default)]
@@ -407,7 +407,7 @@ impl From<TCReplicaOp> for ReplicaOp {
 ///
 /// ```c
 /// struct TCReplicaOpList {
-///     void* items;
+///     struct TCReplicaOp *items;
 ///     size_t len;
 ///     size_t capacity;
 /// };
