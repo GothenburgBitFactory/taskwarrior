@@ -19,6 +19,7 @@ use taskchampion::storage::TaskMap;
 /// } TCKV;
 /// ```
 #[repr(C)]
+#[derive(Debug)]
 pub struct TCKV {
     pub key: TCString,
     pub value: TCString,
@@ -70,6 +71,7 @@ impl PassByValue for TCKV {
 /// } TCKVList;
 /// ```
 #[repr(C)]
+#[derive(Debug)]
 pub struct TCKVList {
     pub len: libc::size_t,
     /// total size of items (internal use only)

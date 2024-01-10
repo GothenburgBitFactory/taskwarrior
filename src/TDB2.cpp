@@ -222,7 +222,7 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
   std::cout << "The following " << undo_ops.len << " operations would be reverted:\n";
   for (size_t i = 0; i < undo_ops.len; i++) {
     tc::ffi::TCReplicaOp op = undo_ops.items[i];
-    auto opstr = "";
+    std::string opstr = "";
     switch(op.operation_type) {
       case tc::ffi::TCReplicaOpType::Create:
         opstr = "Create";
@@ -237,7 +237,9 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
         throw std::string ("Can't undo UndoPoint.");
         break;
       default:
-        throw std::string ("Can't undo non-operation.");
+        // XXX throw
+        opstr = format("NON-OPERATION: {1}", std::to_string(op.operation_type).c_str());
+        // throw std::string ("Can't undo non-operation.");
         break;
     }
     std::cout << "- " << opstr << "\n";

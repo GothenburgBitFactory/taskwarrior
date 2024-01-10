@@ -151,6 +151,7 @@ where
 /// typedef uint32_t TCReplicaOpType;
 /// #endif // __cplusplus
 /// ```
+#[derive(Debug)]
 #[derive(Default)]
 #[repr(u32)]
 pub enum TCReplicaOpType {
@@ -279,6 +280,7 @@ impl From<TCKVList> for TaskMap {
 ///
 /// typedef struct TCReplicaOp TCReplicaOp;
 /// ```
+#[derive(Debug)]
 #[derive(Default)]
 #[repr(C)]
 pub struct TCReplicaOp {
@@ -290,8 +292,6 @@ pub struct TCReplicaOp {
     value: TCString,
     timestamp: TCString,
 }
-
-impl PassByPointer for TCReplicaOp {}
 
 impl From<ReplicaOp> for TCReplicaOp {
     fn from(replica_op: ReplicaOp) -> TCReplicaOp {
@@ -474,10 +474,14 @@ impl CList for TCReplicaOpList {
 
 impl From<Vec<ReplicaOp>> for TCReplicaOpList {
     fn from(replica_op_list: Vec<ReplicaOp>) -> TCReplicaOpList {
+        // XXX Remove prints
+        println!("{:#?}", replica_op_list);
+        let tc_replica_op_list: Vec<TCReplicaOp> = replica_op_list.into_iter().map(|op| TCReplicaOp::from(op)).collect();
+        println!("{:#?}", tc_replica_op_list);
         TCReplicaOpList {
-            items: replica_op_list.as_ptr() as *mut TCReplicaOp,
-            len: replica_op_list.len(),
-            capacity: replica_op_list.capacity(),
+            items: tc_replica_op_list.as_ptr() as *mut TCReplicaOp,
+            len: tc_replica_op_list.len(),
+            capacity: tc_replica_op_list.capacity(),
         }
     }
 }
