@@ -33,7 +33,7 @@
 // ## Pass by Pointer
 //
 // Several types such as TCReplica and TCString are "opaque" types and always handled as pointers
-// in C. The bytes these pointers address are private to the Rust implemetation and must not be
+// in C. The bytes these pointers address are private to the Rust implementation and must not be
 // accessed from C.
 //
 // Pass-by-pointer values have exactly one owner, and that owner is responsible for freeing the
@@ -481,12 +481,19 @@ EXTERN_C void tc_server_free(struct TCServer *server);
 typedef struct TCReplica TCReplica;
 
 // ***** TCReplicaOpType *****
-typedef enum TCReplicaOpType {
-    Create,
-    Delete,
-    Update,
-    UndoPoint,
-} TCReplicaOpType;
+enum TCReplicaOpType
+#ifdef __cplusplus
+  : uint32_t
+#endif // __cplusplus
+{
+    Create = 0,
+    Delete = 1,
+    Update = 2,
+    UndoPoint = 3,
+};
+#ifndef __cplusplus
+typedef uint32_t TCReplicaOpType;
+#endif // __cplusplus
 
 // ***** TCReplicaOp *****
 struct TCReplicaOp {

@@ -137,24 +137,49 @@ where
 /// ***** TCReplicaOpType *****
 ///
 /// ```c
-/// typedef enum TCReplicaOpType {
-///     Create,
-///     Delete,
-///     Update,
-///     UndoPoint,
-/// } TCReplicaOpType;
+/// enum TCReplicaOpType
+/// #ifdef __cplusplus
+///   : uint32_t
+/// #endif // __cplusplus
+/// {
+///     Create = 0,
+///     Delete = 1,
+///     Update = 2,
+///     UndoPoint = 3,
+/// };
+/// #ifndef __cplusplus
+/// typedef uint32_t TCReplicaOpType;
+/// #endif // __cplusplus
 /// ```
 #[derive(Default)]
+#[repr(u32)]
 pub enum TCReplicaOpType {
-    Create,
-    Delete,
-    Update,
-    UndoPoint,
+    Create = 0,
+    Delete = 1,
+    Update = 2,
+    UndoPoint = 3,
     #[default]
-    Error,
+    Error = 4,
 }
 
-impl PassByPointer for TCReplicaOpType {}
+impl PassByValue for TCReplicaOpType {
+    type RustType = u32;
+
+    unsafe fn from_ctype(self) -> Self::RustType {
+        self as u32
+    }
+
+    fn as_ctype(arg: u32) -> Self {
+        match arg {
+            0 => TCReplicaOpType::Create,
+            1 => TCReplicaOpType::Delete,
+            2 => TCReplicaOpType::Update,
+            3 => TCReplicaOpType::UndoPoint,
+            _ => panic!("Bad TCReplicaOpType."),
+        }
+    }
+
+}
 
 #[ffizz_header::item]
 #[ffizz(order = 901)]
@@ -255,6 +280,7 @@ impl From<TCKVList> for TaskMap {
 /// typedef struct TCReplicaOp TCReplicaOp;
 /// ```
 #[derive(Default)]
+#[repr(C)]
 pub struct TCReplicaOp {
     operation_type: TCReplicaOpType,
     uuid: TCUuid,

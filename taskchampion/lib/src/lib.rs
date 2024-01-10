@@ -65,7 +65,7 @@ ffizz_header::snippet! {
 /// ## Pass by Pointer
 ///
 /// Several types such as TCReplica and TCString are "opaque" types and always handled as pointers
-/// in C. The bytes these pointers address are private to the Rust implemetation and must not be
+/// in C. The bytes these pointers address are private to the Rust implementation and must not be
 /// accessed from C.
 ///
 /// Pass-by-pointer values have exactly one owner, and that owner is responsible for freeing the
