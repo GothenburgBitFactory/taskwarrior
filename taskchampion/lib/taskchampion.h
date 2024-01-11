@@ -605,6 +605,10 @@ EXTERN_C struct TCWorkingSet *tc_replica_working_set(struct TCReplica *rep);
 // more than once.
 EXTERN_C void tc_replica_free(struct TCReplica *rep);
 
+// Free a vector of ReplicaOp.  The vector may not be used after this function returns and must not be freed
+// more than once.
+EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList oplist);
+
 // ***** TCTask *****
 //
 // A task, as publicly exposed by this library.

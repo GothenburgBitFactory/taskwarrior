@@ -169,6 +169,12 @@ void tc::Replica::commit_undo_ops (TCReplicaOpList tc_undo_ops, int32_t *undone_
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void tc::Replica::free_replica_ops (TCReplicaOpList tc_undo_ops)
+{
+  tc_replica_op_list_free(tc_undo_ops);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int64_t tc::Replica::num_local_operations ()
 {
   auto num = tc_replica_num_local_operations (&*inner);

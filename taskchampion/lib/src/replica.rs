@@ -473,16 +473,16 @@ impl CList for TCReplicaOpList {
 }
 
 impl From<Vec<ReplicaOp>> for TCReplicaOpList {
-    fn from(replica_op_list: Vec<ReplicaOp>) -> TCReplicaOpList {
-        // XXX Remove prints
-        println!("{:#?}", replica_op_list);
-        let tc_replica_op_list: Vec<TCReplicaOp> = replica_op_list.into_iter().map(|op| TCReplicaOp::from(op)).collect();
-        println!("{:#?}", tc_replica_op_list);
-        TCReplicaOpList {
-            items: tc_replica_op_list.as_ptr() as *mut TCReplicaOp,
-            len: tc_replica_op_list.len(),
-            capacity: tc_replica_op_list.capacity(),
-        }
+    fn from(replica_op_vec: Vec<ReplicaOp>) -> TCReplicaOpList {
+        let tc_replica_op_vec: Box<Vec<TCReplicaOp>> = Box::new(replica_op_vec.into_iter().map(|op| TCReplicaOp::from(op)).collect());
+        let tc_replica_op_list = TCReplicaOpList {
+            items: tc_replica_op_vec.as_ptr() as *mut TCReplicaOp,
+            len: tc_replica_op_vec.len(),
+            capacity: tc_replica_op_vec.capacity(),
+        };
+        let tc_replica_op_vec_leak = Box::new(tc_replica_op_vec);
+        Box::leak(tc_replica_op_vec_leak);
+        tc_replica_op_list
     }
 }
 
@@ -903,4 +903,17 @@ pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
         panic!("replica is borrowed and cannot be freed");
     }
     drop(replica);
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 903)]
+/// Free a vector of ReplicaOp.  The vector may not be used after this function returns and must not be freed
+/// more than once.
+///
+/// ```c
+/// EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList oplist);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {
+    let _ = unsafe {Box::from_raw(oplist)};
 }

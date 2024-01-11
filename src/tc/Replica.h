@@ -95,6 +95,7 @@ namespace tc {
     void sync(Server server, bool avoid_snapshots);
     tc::ffi::TCReplicaOpList get_undo_ops ();
     void commit_undo_ops (tc::ffi::TCReplicaOpList tc_undo_ops, int32_t *undone_out);
+    void free_replica_ops (tc::ffi::TCReplicaOpList tc_undo_ops);
     int64_t num_local_operations ();
     int64_t num_undo_points ();
 // TODO: TCResult tc_replica_add_undo_point(struct TCReplica *rep, bool force);

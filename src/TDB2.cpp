@@ -211,6 +211,7 @@ void TDB2::revert ()
   if (confirm_revert(undo_ops)) {
     replica.commit_undo_ops(undo_ops, NULL);
   }
+  replica.free_replica_ops(undo_ops);
   replica.rebuild_working_set (false);
 }
 
@@ -237,9 +238,7 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
         throw std::string ("Can't undo UndoPoint.");
         break;
       default:
-        // XXX throw
-        opstr = format("NON-OPERATION: {1}", std::to_string(op.operation_type).c_str());
-        // throw std::string ("Can't undo non-operation.");
+        throw std::string ("Can't undo non-operation.");
         break;
     }
     std::cout << "- " << opstr << "\n";
