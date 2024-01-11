@@ -1,6 +1,6 @@
 use crate::traits::*;
 use crate::types::*;
-use crate::util::err_to_ruststring;
+use crate::util::{err_to_ruststring, vec_into_raw_parts};
 use std::ptr::NonNull;
 use taskchampion::chrono::{DateTime, Utc};
 use taskchampion::storage::{ReplicaOp, TaskMap};
@@ -151,8 +151,7 @@ where
 /// typedef uint32_t TCReplicaOpType;
 /// #endif // __cplusplus
 /// ```
-#[derive(Debug)]
-#[derive(Default)]
+#[derive(Debug, Default)]
 #[repr(u32)]
 pub enum TCReplicaOpType {
     Create = 0,
@@ -179,7 +178,6 @@ impl PassByValue for TCReplicaOpType {
             _ => panic!("Bad TCReplicaOpType."),
         }
     }
-
 }
 
 #[ffizz_header::item]
@@ -280,8 +278,7 @@ impl From<TCKVList> for TaskMap {
 ///
 /// typedef struct TCReplicaOp TCReplicaOp;
 /// ```
-#[derive(Debug)]
-#[derive(Default)]
+#[derive(Debug, Default)]
 #[repr(C)]
 pub struct TCReplicaOp {
     operation_type: TCReplicaOpType,
@@ -473,16 +470,17 @@ impl CList for TCReplicaOpList {
 }
 
 impl From<Vec<ReplicaOp>> for TCReplicaOpList {
-    fn from(replica_op_vec: Vec<ReplicaOp>) -> TCReplicaOpList {
-        let tc_replica_op_vec: Box<Vec<TCReplicaOp>> = Box::new(replica_op_vec.into_iter().map(|op| TCReplicaOp::from(op)).collect());
-        let tc_replica_op_list = TCReplicaOpList {
-            items: tc_replica_op_vec.as_ptr() as *mut TCReplicaOp,
-            len: tc_replica_op_vec.len(),
-            capacity: tc_replica_op_vec.capacity(),
-        };
-        let tc_replica_op_vec_leak = Box::new(tc_replica_op_vec);
-        Box::leak(tc_replica_op_vec_leak);
-        tc_replica_op_list
+    fn from(replica_op_list: Vec<ReplicaOp>) -> TCReplicaOpList {
+        let tc_replica_op_list: Vec<TCReplicaOp> = replica_op_list
+            .into_iter()
+            .map(|op| TCReplicaOp::from(op))
+            .collect();
+        let (ptr, len, capacity) = vec_into_raw_parts(tc_replica_op_list);
+        TCReplicaOpList {
+            items: ptr as *mut TCReplicaOp,
+            len,
+            capacity,
+        }
     }
 }
 
@@ -915,5 +913,5 @@ pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
 /// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {
-    let _ = unsafe {Box::from_raw(oplist)};
+    Vec::from_raw_parts((*oplist).items, (*oplist).len, (*oplist).capacity);
 }
