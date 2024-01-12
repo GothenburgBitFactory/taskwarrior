@@ -498,12 +498,7 @@ typedef uint32_t TCReplicaOpType;
 // ***** TCReplicaOp *****
 struct TCReplicaOp {
     TCReplicaOpType operation_type;
-    TCUuid uuid;
-    TCKVList old_task;
-    TCString property;
-    TCString old_value;
-    TCString value;
-    TCString timestamp;
+    void* inner;
 };
 
 typedef struct TCReplicaOp TCReplicaOp;
@@ -604,6 +599,24 @@ EXTERN_C struct TCWorkingSet *tc_replica_working_set(struct TCReplica *rep);
 // Free a replica.  The replica may not be used after this function returns and must not be freed
 // more than once.
 EXTERN_C void tc_replica_free(struct TCReplica *rep);
+
+// Return description field of old task field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_old_task_description(struct TCReplicaOp *op);
+
+// Return old value field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_old_value(struct TCReplicaOp *op);
+
+// Return property field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_property(struct TCReplicaOp *op);
+
+// Return timestamp field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_timestamp(struct TCReplicaOp *op);
+
+// Return uuid field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_uuid(struct TCReplicaOp *op);
+
+// Return value field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_value(struct TCReplicaOp *op);
 
 // Free a vector of ReplicaOp.  The vector may not be used after this function returns and must not be freed
 // more than once.

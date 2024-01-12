@@ -96,6 +96,12 @@ namespace tc {
     tc::ffi::TCReplicaOpList get_undo_ops ();
     void commit_undo_ops (tc::ffi::TCReplicaOpList tc_undo_ops, int32_t *undone_out);
     void free_replica_ops (tc::ffi::TCReplicaOpList tc_undo_ops);
+    std::string get_op_uuid(tc::ffi::TCReplicaOp &tc_replica_op) const;
+    std::string get_op_property(tc::ffi::TCReplicaOp &tc_replica_op) const;
+    std::string get_op_value(tc::ffi::TCReplicaOp &tc_replica_op) const;
+    std::string get_op_old_value(tc::ffi::TCReplicaOp &tc_replica_op) const;
+    std::string get_op_timestamp(tc::ffi::TCReplicaOp &tc_replica_op) const;
+    std::string get_op_old_task_description(tc::ffi::TCReplicaOp &tc_replica_op) const;
     int64_t num_local_operations ();
     int64_t num_undo_points ();
 // TODO: TCResult tc_replica_add_undo_point(struct TCReplica *rep, bool force);

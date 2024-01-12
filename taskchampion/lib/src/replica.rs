@@ -2,7 +2,6 @@ use crate::traits::*;
 use crate::types::*;
 use crate::util::{err_to_ruststring, vec_into_raw_parts};
 use std::ptr::NonNull;
-use taskchampion::chrono::{DateTime, Utc};
 use taskchampion::storage::{ReplicaOp, TaskMap};
 use taskchampion::{Replica, StorageConfig};
 
@@ -268,158 +267,37 @@ impl From<TCKVList> for TaskMap {
 /// ```c
 /// struct TCReplicaOp {
 ///     TCReplicaOpType operation_type;
-///     TCUuid uuid;
-///     TCKVList old_task;
-///     TCString property;
-///     TCString old_value;
-///     TCString value;
-///     TCString timestamp;
+///     void* inner;
 /// };
 ///
 /// typedef struct TCReplicaOp TCReplicaOp;
 /// ```
-#[derive(Debug, Default)]
+#[derive(Debug)]
 #[repr(C)]
 pub struct TCReplicaOp {
     operation_type: TCReplicaOpType,
-    uuid: TCUuid,
-    old_task: TCKVList,
-    property: TCString,
-    old_value: TCString,
-    value: TCString,
-    timestamp: TCString,
+    inner: Box<ReplicaOp>,
 }
 
 impl From<ReplicaOp> for TCReplicaOp {
     fn from(replica_op: ReplicaOp) -> TCReplicaOp {
         match replica_op {
-            ReplicaOp::Create { uuid } => TCReplicaOp {
+            ReplicaOp::Create { .. } => TCReplicaOp {
                 operation_type: TCReplicaOpType::Create,
-                // SAFETY:
-                //  - caller promises to free this value.
-                uuid: unsafe { TCUuid::return_val(uuid) },
-                ..Default::default()
+                inner: Box::new(replica_op),
             },
-            ReplicaOp::Delete { uuid, old_task } => TCReplicaOp {
+            ReplicaOp::Delete { .. } => TCReplicaOp {
                 operation_type: TCReplicaOpType::Delete,
-                // SAFETY:
-                //  - caller promises to free this value.
-                uuid: unsafe { TCUuid::return_val(uuid) },
-                old_task: TCKVList::from(old_task),
-                ..Default::default()
+                inner: Box::new(replica_op),
             },
-            ReplicaOp::Update {
-                uuid,
-                property,
-                old_value,
-                value,
-                timestamp,
-            } => {
-                let property_ruststring = RustString::String(property);
-                let old_value_ruststring = RustString::String(old_value.unwrap_or_default());
-                let value_ruststring = RustString::String(value.unwrap_or_default());
-                let timestamp_ruststring = RustString::String(timestamp.to_string());
-
-                TCReplicaOp {
-                    operation_type: TCReplicaOpType::Update,
-                    // SAFETY:
-                    //  - caller promises to free this value.
-                    uuid: unsafe { TCUuid::return_val(uuid) },
-                    // SAFETY:
-                    //  - caller promises to free this value.
-                    property: unsafe { TCString::return_val(property_ruststring) },
-                    // SAFETY:
-                    //  - caller promises to free this value.
-                    old_value: unsafe { TCString::return_val(old_value_ruststring) },
-                    // SAFETY:
-                    //  - caller promises to free this value.
-                    value: unsafe { TCString::return_val(value_ruststring) },
-                    // SAFETY:
-                    //  - caller promises to free this value.
-                    timestamp: unsafe { TCString::return_val(timestamp_ruststring) },
-                    ..Default::default()
-                }
-            }
+            ReplicaOp::Update { .. } => TCReplicaOp {
+                operation_type: TCReplicaOpType::Update,
+                inner: Box::new(replica_op),
+            },
             ReplicaOp::UndoPoint => TCReplicaOp {
                 operation_type: TCReplicaOpType::UndoPoint,
-                ..Default::default()
+                inner: Box::new(replica_op),
             },
-        }
-    }
-}
-
-impl From<TCReplicaOp> for ReplicaOp {
-    fn from(tc_replica_op: TCReplicaOp) -> ReplicaOp {
-        match tc_replica_op {
-            TCReplicaOp {
-                operation_type: TCReplicaOpType::Create,
-                uuid,
-                ..
-            } => ReplicaOp::Create {
-                // SAFETY:
-                //  - uuid is a valid TCUuid (all byte patterns are valid)
-                uuid: unsafe { TCUuid::val_from_arg(uuid) },
-            },
-            TCReplicaOp {
-                operation_type: TCReplicaOpType::Delete,
-                uuid,
-                old_task,
-                ..
-            } => ReplicaOp::Delete {
-                // SAFETY:
-                //  - uuid is a valid TCUuid (all byte patterns are valid)
-                uuid: unsafe { TCUuid::val_from_arg(uuid) },
-                old_task: TaskMap::from(old_task),
-            },
-            TCReplicaOp {
-                operation_type: TCReplicaOpType::Update,
-                uuid,
-                property,
-                old_value,
-                value,
-                timestamp,
-                ..
-            } => {
-                // SAFETY:
-                //  - uuid is a valid TCUuid (all byte patterns are valid)
-                let uuid_ruststring = unsafe { TCUuid::val_from_arg(uuid) };
-                // SAFETY:
-                //  - property is valid (promised by caller)
-                //  - caller will not use property after this call (convention)
-                let property_ruststring = unsafe { TCString::val_from_arg(property) };
-                // SAFETY:
-                //  - old_value is valid (promised by caller)
-                //  - caller will not use old_value after this call (convention)
-                let old_value_ruststring = unsafe { TCString::val_from_arg(old_value) };
-                // SAFETY:
-                //  - value is valid (promised by caller)
-                //  - caller will not use value after this call (convention)
-                let value_ruststring = unsafe { TCString::val_from_arg(value) };
-                // SAFETY:
-                //  - timestamp is valid (promised by caller)
-                //  - caller will not use timestamp after this call (convention)
-                let timestamp_ruststring = unsafe { TCString::val_from_arg(timestamp) };
-
-                ReplicaOp::Update {
-                    uuid: uuid_ruststring,
-                    property: property_ruststring.into_string().unwrap(),
-                    old_value: Some(old_value_ruststring.into_string().unwrap()),
-                    value: Some(value_ruststring.into_string().unwrap()),
-                    timestamp: timestamp_ruststring
-                        .into_string()
-                        .unwrap()
-                        .parse::<DateTime<Utc>>()
-                        .unwrap(),
-                }
-            }
-            TCReplicaOp {
-                operation_type: TCReplicaOpType::UndoPoint,
-                ..
-            } => ReplicaOp::UndoPoint,
-            TCReplicaOp {
-                operation_type: TCReplicaOpType::Error,
-                ..
-            } => panic!("This shouldn't be possible."),
         }
     }
 }
@@ -438,6 +316,7 @@ impl From<TCReplicaOp> for ReplicaOp {
 /// typedef struct TCReplicaOpList TCReplicaOpList;
 /// ```
 #[repr(C)]
+#[derive(Debug)]
 pub struct TCReplicaOpList {
     items: *mut TCReplicaOp,
     len: usize,
@@ -471,11 +350,11 @@ impl CList for TCReplicaOpList {
 
 impl From<Vec<ReplicaOp>> for TCReplicaOpList {
     fn from(replica_op_list: Vec<ReplicaOp>) -> TCReplicaOpList {
-        let tc_replica_op_list: Vec<TCReplicaOp> = replica_op_list
+        let tc_replica_op_vec: Vec<TCReplicaOp> = replica_op_list
             .into_iter()
             .map(|op| TCReplicaOp::from(op))
             .collect();
-        let (ptr, len, capacity) = vec_into_raw_parts(tc_replica_op_list);
+        let (ptr, len, capacity) = vec_into_raw_parts(tc_replica_op_vec);
         TCReplicaOpList {
             items: ptr as *mut TCReplicaOp,
             len,
@@ -497,7 +376,7 @@ impl From<TCReplicaOpList> for Vec<ReplicaOp> {
 
         tc_replica_op_vec
             .into_iter()
-            .map(|tc_op| ReplicaOp::from(tc_op))
+            .map(|tc_op| *tc_op.inner)
             .collect()
     }
 }
@@ -914,4 +793,103 @@ pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {
     Vec::from_raw_parts((*oplist).items, (*oplist).len, (*oplist).capacity);
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 903)]
+/// Return uuid field of ReplicaOp.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_replica_op_get_uuid(struct TCReplicaOp *op);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_op_get_uuid(op: &TCReplicaOp) -> TCString {
+    if let ReplicaOp::Create { uuid }
+    | ReplicaOp::Delete { uuid, .. }
+    | ReplicaOp::Update { uuid, .. } = *op.inner
+    {
+        TCString::return_val(uuid.to_string().into())
+    } else {
+        panic!("Operation has no uuid: {:#?}", op);
+    }
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 903)]
+/// Return property field of ReplicaOp.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_replica_op_get_property(struct TCReplicaOp *op);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_op_get_property(op: &TCReplicaOp) -> TCString {
+    if let ReplicaOp::Update { property, .. } = *op.inner.clone() {
+        TCString::return_val(property.into())
+    } else {
+        panic!("Operation has no property: {:#?}", op);
+    }
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 903)]
+/// Return value field of ReplicaOp.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_replica_op_get_value(struct TCReplicaOp *op);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_op_get_value(op: &TCReplicaOp) -> TCString {
+    if let ReplicaOp::Update { value, .. } = *op.inner.clone() {
+        TCString::return_val(value.unwrap_or(String::new()).into())
+    } else {
+        panic!("Operation has no value: {:#?}", op);
+    }
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 903)]
+/// Return old value field of ReplicaOp.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_replica_op_get_old_value(struct TCReplicaOp *op);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_op_get_old_value(op: &TCReplicaOp) -> TCString {
+    if let ReplicaOp::Update { old_value, .. } = *op.inner.clone() {
+        TCString::return_val(old_value.unwrap_or(String::new()).into())
+    } else {
+        panic!("Operation has no old value: {:#?}", op);
+    }
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 903)]
+/// Return timestamp field of ReplicaOp.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_replica_op_get_timestamp(struct TCReplicaOp *op);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_op_get_timestamp(op: &TCReplicaOp) -> TCString {
+    if let ReplicaOp::Update { timestamp, .. } = *op.inner {
+        TCString::return_val(timestamp.to_string().into())
+    } else {
+        panic!("Operation has no timestamp: {:#?}", op);
+    }
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 903)]
+/// Return description field of old task field of ReplicaOp.
+///
+/// ```c
+/// EXTERN_C struct TCString tc_replica_op_get_old_task_description(struct TCReplicaOp *op);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_op_get_old_task_description(op: &TCReplicaOp) -> TCString {
+    if let ReplicaOp::Delete { old_task, .. } = *op.inner.clone() {
+        TCString::return_val(old_task["description"].clone().into())
+    } else {
+        panic!("Operation has no timestamp: {:#?}", op);
+    }
 }

@@ -227,50 +227,18 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
   // this might be a worthy undo.style itself.
   std::cout << "The following " << undo_ops.len << " operations would be reverted:\n";
   for (size_t i = 0; i < undo_ops.len; i++) {
-    tc::ffi::TCReplicaOp op = undo_ops.items[i];
     std::cout << "- ";
+    tc::ffi::TCReplicaOp op = undo_ops.items[i];
     switch(op.operation_type) {
       case tc::ffi::TCReplicaOpType::Create:
-        std::cout << "Create ";
-        {
-          tc::ffi::TCString uuid = tc_uuid_to_str(op.uuid);
-          std::cout << tc::tc2string_clone(uuid);
-        }
+        std::cout << "Create " << replica.get_op_uuid(op);
         break;
       case tc::ffi::TCReplicaOpType::Delete:
-        std::cout << "Delete ";
-        {
-          for (size_t i = 0; i < op.old_task.len; i++) {
-            tc::ffi::TCString key = op.old_task.items[i].key;
-            if (tc::tc2string_clone(key) == "description") {
-              tc::ffi::TCString description = op.old_task.items[i].value;
-              std::cout << tc::tc2string_clone(description);
-            }
-          }
-        }
+        std::cout << "Delete " << replica.get_op_old_task_description(op);
         break;
       case tc::ffi::TCReplicaOpType::Update:
-        std::cout << "Update ";
-        {
-          tc::ffi::TCString uuid = tc_uuid_to_str(op.uuid);
-          std::cout << tc::tc2string_clone(uuid);
-        }
-        std::cout << "\n    ";
-        {
-          std::cout << tc::tc2string_clone(op.property);
-        }
-        std::cout << ": ";
-        {
-          tc::ffi::TCString old_value = op.old_value;
-          std::string old_value_str = tc::tc2string_clone(old_value);
-          if (old_value_str == "") {
-            std::cout << "<empty>";
-          } else {
-            std::cout << old_value_str;
-          }
-        }
-        std::cout << " -> ";
-        std::cout << tc::tc2string_clone(op.value);
+        std::cout << "Update " << replica.get_op_uuid(op) << "\n";
+        std::cout << "    " << replica.get_op_property(op) << ": " << replica.get_op_old_value(op) << " -> " << replica.get_op_value(op);
         break;
       case tc::ffi::TCReplicaOpType::UndoPoint:
         throw std::string ("Can't undo UndoPoint.");

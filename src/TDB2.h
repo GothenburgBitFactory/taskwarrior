@@ -78,7 +78,7 @@ public:
   void dump ();
 
   void sync (tc::Server server, bool avoid_snapshots);
-  static bool confirm_revert(struct tc::ffi::TCReplicaOpList);
+  bool confirm_revert(struct tc::ffi::TCReplicaOpList);
 
 private:
   tc::Replica replica;
