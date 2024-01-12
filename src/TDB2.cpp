@@ -42,6 +42,7 @@
 #include <main.h>
 #include <util.h>
 #include "tc/Server.h"
+#include "tc/util.h"
 
 bool TDB2::debug_mode = false;
 static void dependency_scan (std::vector<Task> &);
@@ -227,16 +228,49 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
   std::cout << "The following " << undo_ops.len << " operations would be reverted:\n";
   for (size_t i = 0; i < undo_ops.len; i++) {
     tc::ffi::TCReplicaOp op = undo_ops.items[i];
-    std::string opstr = "";
+    std::cout << "- ";
     switch(op.operation_type) {
       case tc::ffi::TCReplicaOpType::Create:
-        opstr = "Create";
+        std::cout << "Create ";
+        {
+          tc::ffi::TCString uuid = tc_uuid_to_str(op.uuid);
+          std::cout << tc::tc2string_clone(uuid);
+        }
         break;
       case tc::ffi::TCReplicaOpType::Delete:
-        opstr = "Delete";
+        std::cout << "Delete ";
+        {
+          for (size_t i = 0; i < op.old_task.len; i++) {
+            tc::ffi::TCString key = op.old_task.items[i].key;
+            if (tc::tc2string_clone(key) == "description") {
+              tc::ffi::TCString description = op.old_task.items[i].value;
+              std::cout << tc::tc2string_clone(description);
+            }
+          }
+        }
         break;
       case tc::ffi::TCReplicaOpType::Update:
-        opstr = "Update";
+        std::cout << "Update ";
+        {
+          tc::ffi::TCString uuid = tc_uuid_to_str(op.uuid);
+          std::cout << tc::tc2string_clone(uuid);
+        }
+        std::cout << "\n    ";
+        {
+          std::cout << tc::tc2string_clone(op.property);
+        }
+        std::cout << ": ";
+        {
+          tc::ffi::TCString old_value = op.old_value;
+          std::string old_value_str = tc::tc2string_clone(old_value);
+          if (old_value_str == "") {
+            std::cout << "<empty>";
+          } else {
+            std::cout << old_value_str;
+          }
+        }
+        std::cout << " -> ";
+        std::cout << tc::tc2string_clone(op.value);
         break;
       case tc::ffi::TCReplicaOpType::UndoPoint:
         throw std::string ("Can't undo UndoPoint.");
@@ -245,7 +279,7 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
         throw std::string ("Can't undo non-operation.");
         break;
     }
-    std::cout << "- " << opstr << "\n";
+    std::cout << "\n";
   }
   return ! Context::getContext ().config.getBoolean ("confirmation") ||
         confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?");
