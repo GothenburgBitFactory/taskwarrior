@@ -208,6 +208,10 @@ void TDB2::get_changes (std::vector <Task>& changes)
 void TDB2::revert ()
 {
   auto undo_ops = replica.get_undo_ops();
+  if (undo_ops.len == 0) {
+    std::cout << "No operations to undo.";
+    return;
+  }
   if (confirm_revert(undo_ops)) {
     replica.commit_undo_ops(undo_ops, NULL);
   }
