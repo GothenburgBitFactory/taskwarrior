@@ -90,6 +90,14 @@ class TestUndoStyle(TestCase):
         self.assertRegex(out, "-tags:\s*\n\+tags:\s+tag")
         self.assertNotRegex(out, "tags\s+tag\s*")
 
+    def test_undo_diff_operations(self):
+        code, out, err = self.t("undo", input="n\n")
+        self.assertIn("The following 4 operations would be reverted:", out)
+        self.assertIn("tags_tag: <empty> -> x", out)
+        self.assertIn("tags: <empty> -> tag", out)
+        self.assertIn("project: foo -> bar", out)
+        self.assertIn("priority: H -> <empty>", out)
+
 
 class TestBug634(TestCase):
     def setUp(self):

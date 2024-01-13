@@ -238,7 +238,7 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
         break;
       case tc::ffi::TCReplicaOpType::Update:
         std::cout << "Update " << replica.get_op_uuid(op) << "\n";
-        std::cout << "    " << replica.get_op_property(op) << ": " << replica.get_op_old_value(op) << " -> " << replica.get_op_value(op);
+        std::cout << "    " << replica.get_op_property(op) << ": " << option_string(replica.get_op_old_value(op)) << " -> " << option_string(replica.get_op_value(op));
         break;
       case tc::ffi::TCReplicaOpType::UndoPoint:
         throw std::string ("Can't undo UndoPoint.");
@@ -252,6 +252,12 @@ bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
   return ! Context::getContext ().config.getBoolean ("confirmation") ||
         confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?");
 }
+
+////////////////////////////////////////////////////////////////////////////////
+std::string TDB2::option_string(std::string input) {
+  return input == "" ? "<empty>" : input;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::show_diff (
   const std::string& current,

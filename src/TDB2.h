@@ -85,6 +85,7 @@ private:
   std::optional<tc::WorkingSet> _working_set;
 
   const tc::WorkingSet &working_set ();
+  static std::string option_string (std::string input);
   static void show_diff (const std::string&, const std::string&, const std::string&);
 };
 
