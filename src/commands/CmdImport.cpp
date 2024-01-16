@@ -142,18 +142,25 @@ int CmdImport::import (const std::string& input)
   //   { ... }
   catch (std::string& e)
   {
+    // Read the entire file, so that errors do not result in a partial import.
+    std::vector<std::unique_ptr<json::object>> objects;
     for (auto& line : split (input, '\n'))
     {
       if (line.length ())
       {
         json::value* root = json::parse (line);
-        if (root)
-        {
-          importSingleTask ((json::object*) root);
-          ++count;
-          delete root;
-        }
+        if (root && root->type () == json::j_object)
+          objects.push_back (std::unique_ptr<json::object> ((json::object *)root));
+        else
+          // Throw the existing error, as it's likely more accurate.
+          throw e;
       }
+    }
+
+    // Import the tasks.
+    for (auto& root : objects) {
+      importSingleTask (root.get());
+      ++count;
     }
   }
 
