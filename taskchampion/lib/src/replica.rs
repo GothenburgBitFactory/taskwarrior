@@ -792,7 +792,20 @@ pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
 /// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {
-    Vec::from_raw_parts((*oplist).items, (*oplist).len, (*oplist).capacity);
+    // SAFETY:
+    //  - items is not NULL
+    //  - items is properly aligned (promised by caller)
+    let items = unsafe { (*oplist).items };
+    // SAFETY:
+    //  - len is not NULL
+    //  - len is properly aligned (promised by caller)
+    let len = unsafe { (*oplist).len };
+    // SAFETY:
+    //  - capacity is not NULL
+    //  - capacity is properly aligned (promised by caller)
+    let capacity = unsafe { (*oplist).capacity };
+    // TODO SAFETY:
+    unsafe { Vec::from_raw_parts(items, len, capacity) };
 }
 
 #[ffizz_header::item]
@@ -808,7 +821,10 @@ pub unsafe extern "C" fn tc_replica_op_get_uuid(op: &TCReplicaOp) -> TCString {
     | ReplicaOp::Delete { uuid, .. }
     | ReplicaOp::Update { uuid, .. } = *op.inner
     {
-        TCString::return_val(uuid.to_string().into())
+        let uuid_rstr: RustString = uuid.to_string().into();
+        // SAFETY:
+        //  - caller promises to free this string
+        unsafe { TCString::return_val(uuid_rstr) }
     } else {
         panic!("Operation has no uuid: {:#?}", op);
     }
@@ -824,7 +840,9 @@ pub unsafe extern "C" fn tc_replica_op_get_uuid(op: &TCReplicaOp) -> TCString {
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_get_property(op: &TCReplicaOp) -> TCString {
     if let ReplicaOp::Update { property, .. } = *op.inner.clone() {
-        TCString::return_val(property.into())
+        // SAFETY:
+        //  - caller promises to free this string
+        unsafe { TCString::return_val(property.into()) }
     } else {
         panic!("Operation has no property: {:#?}", op);
     }
@@ -840,7 +858,10 @@ pub unsafe extern "C" fn tc_replica_op_get_property(op: &TCReplicaOp) -> TCStrin
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_get_value(op: &TCReplicaOp) -> TCString {
     if let ReplicaOp::Update { value, .. } = *op.inner.clone() {
-        TCString::return_val(value.unwrap_or(String::new()).into())
+        let value_rstr: RustString = value.unwrap_or(String::new()).into();
+        // SAFETY:
+        //  - caller promises to free this string
+        unsafe { TCString::return_val(value_rstr) }
     } else {
         panic!("Operation has no value: {:#?}", op);
     }
@@ -856,7 +877,10 @@ pub unsafe extern "C" fn tc_replica_op_get_value(op: &TCReplicaOp) -> TCString {
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_get_old_value(op: &TCReplicaOp) -> TCString {
     if let ReplicaOp::Update { old_value, .. } = *op.inner.clone() {
-        TCString::return_val(old_value.unwrap_or(String::new()).into())
+        let old_value_rstr: RustString = old_value.unwrap_or(String::new()).into();
+        // SAFETY:
+        //  - caller promises to free this string
+        unsafe { TCString::return_val(old_value_rstr) }
     } else {
         panic!("Operation has no old value: {:#?}", op);
     }
@@ -872,7 +896,10 @@ pub unsafe extern "C" fn tc_replica_op_get_old_value(op: &TCReplicaOp) -> TCStri
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_get_timestamp(op: &TCReplicaOp) -> TCString {
     if let ReplicaOp::Update { timestamp, .. } = *op.inner {
-        TCString::return_val(timestamp.to_string().into())
+        let timestamp_rstr: RustString = timestamp.to_string().into();
+        // SAFETY:
+        //  - caller promises to free this string
+        unsafe { TCString::return_val(timestamp_rstr) }
     } else {
         panic!("Operation has no timestamp: {:#?}", op);
     }
@@ -888,7 +915,10 @@ pub unsafe extern "C" fn tc_replica_op_get_timestamp(op: &TCReplicaOp) -> TCStri
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_get_old_task_description(op: &TCReplicaOp) -> TCString {
     if let ReplicaOp::Delete { old_task, .. } = *op.inner.clone() {
-        TCString::return_val(old_task["description"].clone().into())
+        let description_rstr: RustString = old_task["description"].clone().into();
+        // SAFETY:
+        //  - caller promises to free this string
+        unsafe { TCString::return_val(description_rstr) }
     } else {
         panic!("Operation has no timestamp: {:#?}", op);
     }
