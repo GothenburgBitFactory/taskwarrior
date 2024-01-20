@@ -20,9 +20,9 @@ use uuid::Uuid;
 /// ## Encryption
 ///
 /// The encryption scheme is described in `sync-protocol.md`. The salt value used for key
-/// derivation is the SHA256 hash of the string "TaskChampion". Object names are not encrypted,
-/// by the nature of key/value stores. Since the content of the "latest" object can usually be
-/// inferred from object names, it, too, is not encrypted.
+/// derivation is stored in "salt", which is created if it does not exist. Object names are not
+/// encrypted, by the nature of key/value stores. Since the content of the "latest" object can
+/// usually be inferred from object names, it, too, is not encrypted.
 ///
 /// ## Object Organization
 ///
@@ -82,8 +82,9 @@ fn version_to_bytes(v: VersionId) -> Vec<u8> {
 }
 
 impl<SVC: Service> CloudServer<SVC> {
-    pub(in crate::server) fn new(service: SVC, encryption_secret: Vec<u8>) -> Result<Self> {
-        let cryptor = Cryptor::new(b"Taskchampion", &encryption_secret.into())?;
+    pub(in crate::server) fn new(mut service: SVC, encryption_secret: Vec<u8>) -> Result<Self> {
+        let salt = Self::get_salt(&mut service)?;
+        let cryptor = Cryptor::new(salt, &encryption_secret.into())?;
         Ok(Self {
             service,
             cryptor,
@@ -91,6 +92,17 @@ impl<SVC: Service> CloudServer<SVC> {
             #[cfg(test)]
             add_version_intercept: None,
         })
+    }
+
+    /// Get the salt value stored in the service, creating a new random one if necessary.
+    fn get_salt(service: &mut SVC) -> Result<Vec<u8>> {
+        const SALT_NAME: &[u8] = b"salt";
+        loop {
+            if let Some(salt) = service.get(SALT_NAME)? {
+                return Ok(salt);
+            }
+            service.compare_and_swap(SALT_NAME, None, Cryptor::gen_salt()?)?;
+        }
     }
 
     /// Generate an object name for the given parent and child versions.
@@ -469,10 +481,19 @@ mod tests {
 
     /// A simple in-memory service for testing. All insertions via Service methods occur at time
     /// `INSERTION_TIME`. All versions older that 1000 are considered "old".
-    #[derive(Default, Clone)]
+    #[derive(Clone)]
     struct MockService(HashMap<Vec<u8>, (u64, Vec<u8>)>);
 
     const INSERTION_TIME: u64 = 9999999999;
+
+    impl MockService {
+        fn new() -> Self {
+            let mut map = HashMap::new();
+            // Use a fixed salt for consistent results
+            map.insert(b"salt".to_vec(), (0, b"abcdefghabcdefgh".to_vec()));
+            Self(map)
+        }
+    }
 
     impl Service for MockService {
         fn put(&mut self, name: &[u8], value: &[u8]) -> Result<()> {
@@ -579,7 +600,7 @@ mod tests {
             Self {
                 cryptor: self.cryptor.clone(),
                 cleanup_probability: 0,
-                service: MockService::default(),
+                service: MockService::new(),
                 add_version_intercept: None,
             }
         }
@@ -631,7 +652,7 @@ mod tests {
     const SECRET: &[u8] = b"testing";
 
     fn make_server() -> CloudServer<MockService> {
-        let mut server = CloudServer::new(MockService::default(), SECRET.into()).unwrap();
+        let mut server = CloudServer::new(MockService::new(), SECRET.into()).unwrap();
         // Prevent cleanup during tests.
         server.cleanup_probability = 0;
         server
@@ -742,6 +763,24 @@ mod tests {
             ),
             None
         );
+    }
+
+    #[test]
+    fn get_salt_existing() {
+        let mut service = MockService::new();
+        assert_eq!(
+            CloudServer::<MockService>::get_salt(&mut service).unwrap(),
+            b"abcdefghabcdefgh".to_vec()
+        );
+    }
+
+    #[test]
+    fn get_salt_create() {
+        let mut service = MockService::new();
+        service.del(b"salt").unwrap();
+        let got_salt = CloudServer::<MockService>::get_salt(&mut service).unwrap();
+        let salt_obj = service.get(b"salt").unwrap().unwrap();
+        assert_eq!(got_salt, salt_obj);
     }
 
     #[test]

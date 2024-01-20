@@ -1,7 +1,7 @@
 /// This module implements the encryption specified in the sync-protocol
 /// document.
 use crate::errors::{Error, Result};
-use ring::{aead, digest, pbkdf2, rand, rand::SecureRandom};
+use ring::{aead, pbkdf2, rand, rand::SecureRandom};
 use uuid::Uuid;
 
 const PBKDF2_ITERATIONS: u32 = 100000;
@@ -26,10 +26,17 @@ impl Cryptor {
         })
     }
 
+    /// Generate a suitable random salt.
+    pub(super) fn gen_salt() -> Result<Vec<u8>> {
+        let rng = rand::SystemRandom::new();
+        let mut salt = [0u8; 16];
+        rng.fill(&mut salt)
+            .map_err(|_| anyhow::anyhow!("error generating random salt"))?;
+        Ok(salt.to_vec())
+    }
+
     /// Derive a key as specified for version 1.  Note that this may take 10s of ms.
     fn derive_key(salt: impl AsRef<[u8]>, secret: &Secret) -> Result<aead::LessSafeKey> {
-        let salt = digest::digest(&digest::SHA256, salt.as_ref());
-
         let mut key_bytes = vec![0u8; aead::CHACHA20_POLY1305.key_len()];
         pbkdf2::derive(
             pbkdf2::PBKDF2_HMAC_SHA256,
@@ -94,7 +101,7 @@ impl Cryptor {
         let plaintext = self
             .key
             .open_in_place(nonce, aad, payload.as_mut())
-            .map_err(|_| anyhow::anyhow!("error while creating AEAD key"))?;
+            .map_err(|_| anyhow::anyhow!("error while unsealing encrypted value"))?;
 
         Ok(Unsealed {
             version_id,
@@ -198,6 +205,7 @@ impl From<Sealed> for Vec<u8> {
 mod test {
     use super::*;
     use pretty_assertions::assert_eq;
+    use ring::digest;
 
     #[test]
     fn envelope_round_trip() {
@@ -320,10 +328,12 @@ mod test {
         use pretty_assertions::assert_eq;
 
         /// The values in generate-test-data.py
-        fn defaults() -> (Uuid, Uuid, Vec<u8>) {
+        fn defaults() -> (Uuid, Vec<u8>, Vec<u8>) {
+            let client_id = Uuid::parse_str("0666d464-418a-4a08-ad53-6f15c78270cd").unwrap();
+            let salt = dbg!(digest::digest(&digest::SHA256, client_id.as_ref()));
             (
                 Uuid::parse_str("b0517957-f912-4d49-8330-f612e73030c4").unwrap(),
-                Uuid::parse_str("0666d464-418a-4a08-ad53-6f15c78270cd").unwrap(),
+                salt.as_ref().to_vec(),
                 b"b4a4e6b7b811eda1dc1a2693ded".to_vec(),
             )
         }

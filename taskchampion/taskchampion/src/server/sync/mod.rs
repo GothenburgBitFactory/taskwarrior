@@ -3,6 +3,7 @@ use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, Snapshot, SnapshotUrgency,
     VersionId,
 };
+use ring::digest;
 use std::time::Duration;
 use uuid::Uuid;
 
@@ -28,10 +29,11 @@ impl SyncServer {
     /// identify this client to the server.  Multiple replicas synchronizing the same task history
     /// should use the same client_id.
     pub fn new(origin: String, client_id: Uuid, encryption_secret: Vec<u8>) -> Result<SyncServer> {
+        let salt = dbg!(digest::digest(&digest::SHA256, client_id.as_ref()));
         Ok(SyncServer {
             origin,
             client_id,
-            cryptor: Cryptor::new(client_id, &Secret(encryption_secret.to_vec()))?,
+            cryptor: Cryptor::new(salt, &Secret(encryption_secret.to_vec()))?,
             agent: ureq::AgentBuilder::new()
                 .timeout_connect(Duration::from_secs(10))
                 .timeout_read(Duration::from_secs(60))
