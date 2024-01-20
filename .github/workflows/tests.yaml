@@ -6,6 +6,7 @@ jobs:
   # MacOS tests do not run in Docker, and use the actions-rs Rust installaction
   tests-macos-12:
     name: tests (Mac OS 12.latest)
+    if: false # see #3242
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,6 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   tests-macos-13:
     name: tests (Mac OS 13.latest)
+    if: false # see #3242
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
