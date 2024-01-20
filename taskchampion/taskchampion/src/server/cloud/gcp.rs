@@ -4,6 +4,7 @@ use google_cloud_storage::client::{Client, ClientConfig};
 use google_cloud_storage::http::error::ErrorResponse;
 use google_cloud_storage::http::Error as GcsError;
 use google_cloud_storage::http::{self, objects};
+use google_cloud_storage::client::google_cloud_auth::credentials::CredentialsFile;
 use tokio::runtime::Runtime;
 
 /// A [`Service`] implementation based on the Google Cloud Storage service.
@@ -25,9 +26,10 @@ fn is_http_error<T>(query: u16, res: &std::result::Result<T, http::Error>) -> bo
 }
 
 impl GcpService {
-    pub(in crate::server) fn new(bucket: String) -> Result<Self> {
+    pub(in crate::server) fn new(bucket: String, credentialpath:String) -> Result<Self> {
         let rt = Runtime::new()?;
-        let config = rt.block_on(ClientConfig::default().with_auth())?;
+        let credentials = rt.block_on(CredentialsFile::new_from_file(credentialpath))?;
+        let config = rt.block_on(ClientConfig::default().with_credentials(credentials))?;
         Ok(Self {
             client: Client::new(config),
             rt,
@@ -241,13 +243,21 @@ mod tests {
     /// Note that the Rust test runner will still show "ok" for the test, as there is no way to
     /// indicate anything else.
     fn make_service() -> Option<(GcpService, impl Fn(&str) -> Vec<u8>)> {
-        let Ok(bucket) = std::env::var("GCP_TEST_BUCKET") else {
-            return None;
+        let bucket = match std::env::var("GCP_TEST_BUCKET") {
+            Ok(val) => val,
+            Err(_) => return None,
+        };
+        let credentialpath = match std::env::var("GCP_CREDENTIAL_PATH") {
+            Ok(val) => val,
+            Err(_) => return None,
         };
         let prefix = Uuid::new_v4();
-        Some((GcpService::new(bucket).unwrap(), move |n: &_| {
-            format!("{}-{}", prefix.as_simple(), n).into_bytes()
-        }))
+        Some((
+            GcpService::new(bucket, credentialpath).unwrap(), 
+            move |n: &_| {
+                format!("{}-{}", prefix.as_simple(), n).into_bytes()
+            }
+        ))
     }
 
     #[test]

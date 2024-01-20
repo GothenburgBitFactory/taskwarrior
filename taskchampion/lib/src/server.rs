@@ -170,6 +170,7 @@ pub unsafe extern "C" fn tc_server_new_sync(
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_new_gcp(
     bucket: TCString,
+    credentialpath: TCString,
     encryption_secret: TCString,
     error_out: *mut TCString,
 ) -> *mut TCServer {
@@ -179,7 +180,12 @@ pub unsafe extern "C" fn tc_server_new_gcp(
             //  - bucket is valid (promised by caller)
             //  - bucket ownership is transferred to this function
             let bucket = unsafe { TCString::val_from_arg(bucket) }.into_string()?;
-
+            
+            // SAFETY:
+            //  - credentialpath is valid (promised by caller)
+            //  - credentialpath ownership is transferred to this function
+            let credentialpath = unsafe { TCString::val_from_arg(credentialpath) }.into_string()?;
+            
             // SAFETY:
             //  - encryption_secret is valid (promised by caller)
             //  - encryption_secret ownership is transferred to this function
@@ -189,6 +195,7 @@ pub unsafe extern "C" fn tc_server_new_gcp(
 
             let server_config = ServerConfig::Gcp {
                 bucket,
+                credentialpath,
                 encryption_secret,
             };
             let server = server_config.into_server()?;

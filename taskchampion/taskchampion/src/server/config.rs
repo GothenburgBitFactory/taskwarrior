@@ -37,7 +37,7 @@ pub enum ServerConfig {
         /// Bucket in which to store the task data. This bucket must not be used for any other
         /// purpose.
         bucket: String,
-
+        credentialpath: String,
         /// Private encryption secret used to encrypt all data sent to the server.  This can
         /// be any suitably un-guessable string of bytes.
         encryption_secret: Vec<u8>,
@@ -58,9 +58,10 @@ impl ServerConfig {
             #[cfg(feature = "server-gcp")]
             ServerConfig::Gcp {
                 bucket,
+                credentialpath,
                 encryption_secret,
             } => Box::new(CloudServer::new(
-                GcpService::new(bucket)?,
+                GcpService::new(bucket, credentialpath)?,
                 encryption_secret,
             )?),
         })
