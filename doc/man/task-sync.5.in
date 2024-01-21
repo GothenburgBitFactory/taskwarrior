@@ -98,7 +98,7 @@ The default configuration is to sync to a database in the task directory
 
 .SH RUNNING TASKCHAMPION-SYNC-SERVER
 
-The Taskchampion sync server is an HTTP server supporting multiple users.
+The TaskChampion sync server is an HTTP server supporting multiple users.
 Users are identified by a client ID, and users with different client IDs are
 entirely independent.  Task data is encrypted by Taskwarrior, and the sync
 server never sees un-encrypted data.

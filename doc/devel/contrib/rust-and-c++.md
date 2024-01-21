@@ -15,7 +15,7 @@ Other applications, besides Taskwarrior, can use TaskChampion to manage tasks.
 Applications written in Rust can use the `taskchampion` crate, while those in other languages may use the `taskchampion-lib` crate.
 Taskwarrior is just one application using the TaskChampion interface.
 
-You can build Taskchampion locally by simply running `cargo build` in the root of this repository.
+You can build TaskChampion locally by simply running `cargo build` in the root of this repository.
 The implementation, including more documentation, is in the [`rust`](../../rust) subdirectory.
 
 ## Taskwarrior's use of TaskChampion
