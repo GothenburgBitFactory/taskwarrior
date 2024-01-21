@@ -531,7 +531,7 @@ The response contains the snapshot version ID and the snapshot data, if those ex
 This section describes how that information is used to encrypt and decrypt data sent to the server (versions and snapshots).</p>
 <p>Encryption is not used for local (on-disk) sync, but is used for all cases where data is sent from the local host.</p>
 <h2 id="key-derivation"><a class="header" href="#key-derivation">Key Derivation</a></h2>
-<p>The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 100,000 iterations.
+<p>The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 600,000 iterations.
 The salt value depends on the implementation of the protocol, as described in subsequent chapters.</p>
 <h2 id="encryption-1"><a class="header" href="#encryption-1">Encryption</a></h2>
 <p>The client uses <a href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/aead.h.html">AEAD</a>, with algorithm CHACHA20_POLY1305.
