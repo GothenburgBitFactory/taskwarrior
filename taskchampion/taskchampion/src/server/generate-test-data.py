@@ -25,7 +25,7 @@ def gen(
         encryption_secret,
         salt,
         digestmodule=hashlib.sha256,
-        iterations=100000,
+        iterations=600000,
     ).read(32)
 
     # create a nonce

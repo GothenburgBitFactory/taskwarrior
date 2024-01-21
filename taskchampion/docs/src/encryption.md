@@ -7,7 +7,7 @@ Encryption is not used for local (on-disk) sync, but is used for all cases where
 
 ## Key Derivation
 
-The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 100,000 iterations.
+The client derives the 32-byte encryption key from the configured encryption secret using PBKDF2 with HMAC-SHA256 and 600,000 iterations.
 The salt value depends on the implementation of the protocol, as described in subsequent chapters.
 
 ## Encryption

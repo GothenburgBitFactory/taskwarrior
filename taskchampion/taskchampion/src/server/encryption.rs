@@ -4,7 +4,7 @@ use crate::errors::{Error, Result};
 use ring::{aead, pbkdf2, rand, rand::SecureRandom};
 use uuid::Uuid;
 
-const PBKDF2_ITERATIONS: u32 = 100000;
+const PBKDF2_ITERATIONS: u32 = 600000;
 const ENVELOPE_VERSION: u8 = 1;
 const AAD_LEN: usize = 17;
 const TASK_APP_ID: u8 = 1;
