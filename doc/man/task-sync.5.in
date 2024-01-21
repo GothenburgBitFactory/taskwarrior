@@ -54,6 +54,10 @@ replicas sharing tasks.
 
     $ task config sync.encryption_secret <encryption_secret>
 
+Tools such as
+.BR pwgen (1)
+can generate suitable secret values.
+
 .SS Sync Server
 
 To synchronize your tasks to a sync server, you will need the following
@@ -63,10 +67,6 @@ information from the server administrator:
   - The server's URL ("origin", such as "https://tw.example.com")
 .br
   - A client ID ("client_id") identifying your tasks
-
-Tools such as
-.BR pwgen (1)
-can generate suitable secret values.
 
 Configure Taskwarrior with these details:
 
