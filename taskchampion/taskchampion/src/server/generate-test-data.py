@@ -20,7 +20,7 @@ def gen(
     version_id=version_id, client_id=client_id, encryption_secret=encryption_secret,
     app_id=1, version=1):
     # first, generate the encryption key
-    salt = hashlib.sha256(uuid.UUID(client_id).bytes).digest()
+    salt = uuid.UUID(client_id).bytes
     key = pbkdf2.PBKDF2(
         encryption_secret,
         salt,
