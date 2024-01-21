@@ -130,7 +130,6 @@ mod util;
 pub mod annotation;
 pub use annotation::*;
 pub mod atomic;
-pub use atomic::*;
 pub mod kv;
 pub use kv::*;
 pub mod replica;
