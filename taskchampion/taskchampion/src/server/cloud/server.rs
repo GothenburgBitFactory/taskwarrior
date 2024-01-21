@@ -456,7 +456,9 @@ impl<SVC: Service> Server for CloudServer<SVC> {
         // corresponds to an existing version. In practice, this will always be the version
         // just returned from add_version, so just check that.
         if Some(version_id) != self.last_version_added {
-            return Err(Error::Server("Snapshot is not for most recently added version".into()));
+            return Err(Error::Server(
+                "Snapshot is not for most recently added version".into(),
+            ));
         }
         let name = Self::snapshot_name(&version_id);
         let sealed = self.cryptor.seal(Unsealed {
