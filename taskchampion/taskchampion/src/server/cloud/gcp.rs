@@ -243,14 +243,12 @@ mod tests {
     /// Note that the Rust test runner will still show "ok" for the test, as there is no way to
     /// indicate anything else.
     fn make_service() -> Option<(GcpService, impl Fn(&str) -> Vec<u8>)> {
-        let bucket = match std::env::var("GCP_TEST_BUCKET") {
-            Ok(val) => val,
-            Err(_) => return None,
-        };
-        let credentialpath = match std::env::var("GCP_CREDENTIAL_PATH") {
-            Ok(val) => val,
-            Err(_) => return None,
-        };
+        let Ok(bucket) = std::env::var("GCP_TEST_BUCKET") else {
+            return None;};
+        
+        let Ok(credentialpath) = std::env::var("GCP_CREDENTIAL_PATH") else {
+            return None;};
+            
         let prefix = Uuid::new_v4();
         Some((
             GcpService::new(bucket, credentialpath).unwrap(), 
