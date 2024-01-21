@@ -6,7 +6,7 @@ The `origin` *should* be an HTTPS endpoint on general principle, but nothing in 
 The replica identifies itself to the server using a `client_id` in the form of a UUID.
 This value is passed with every request in the `X-Client-Id` header, in its dashed-hex format.
 
-The salt used in key derivation is the SHA256 hash of the 16-byte form of the client ID.
+The salt used in key derivation is the 16-byte client ID.
 
 ## AddVersion
 
