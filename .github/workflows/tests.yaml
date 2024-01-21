@@ -66,27 +66,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "Centos 8"
+          - name: "Fedora 38"
             runner: ubuntu-latest
-            dockerfile: centos8
-          - name: "Fedora 32"
+            dockerfile: fedora38
+          - name: "Fedora 39"
             runner: ubuntu-latest
-            dockerfile: fedora32
-          - name: "Fedora 33"
-            runner: ubuntu-latest
-            dockerfile: fedora33
-          - name: "Fedora 34"
-            runner: ubuntu-latest
-            dockerfile: fedora34
-          - name: "Fedora 35"
-            runner: ubuntu-latest
-            dockerfile: fedora35
+            dockerfile: fedora39
           - name: "Debian Testing"
             runner: ubuntu-latest
             dockerfile: debiantesting
-          - name: "Ubuntu 18.04"
-            runner: ubuntu-latest
-            dockerfile: ubuntu1804
           - name: "Ubuntu 20.04"
             runner: ubuntu-latest
             dockerfile: ubuntu2004
