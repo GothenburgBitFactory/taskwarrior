@@ -1,57 +1,17 @@
 version: '3'
 services:
-  test-centos7:
+  test-fedora38:
     build:
         context: .
-        dockerfile: test/docker/centos7
+        dockerfile: test/docker/fedora38
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-centos8:
+  test-fedora39:
     build:
         context: .
-        dockerfile: test/docker/centos8
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
-  test-fedora32:
-    build:
-        context: .
-        dockerfile: test/docker/fedora32
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
-  test-fedora33:
-    build:
-        context: .
-        dockerfile: test/docker/fedora33
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
-  test-fedora34:
-    build:
-        context: .
-        dockerfile: test/docker/fedora34
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
-  test-fedora35:
-    build:
-        context: .
-        dockerfile: test/docker/fedora35
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
-  test-ubuntu1804:
-    build:
-        context: .
-        dockerfile: test/docker/ubuntu1804
+        dockerfile: test/docker/fedora39
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
@@ -72,26 +32,10 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-debianstable:
-    build:
-        context: .
-        dockerfile: test/docker/debianstable
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
   test-debiantesting:
     build:
         context: .
         dockerfile: test/docker/debiantesting
-    network_mode: "host"
-    security_opt:
-      - label=type:container_runtime_t
-    tty: true
-  test-gentoo:
-    build:
-        context: .
-        dockerfile: test/docker/gentoo
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
