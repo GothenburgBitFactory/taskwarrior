@@ -1,4 +1,4 @@
-# Integration Tests for Taskchampion
+# Integration Tests for TaskChampion
 
 ## "Regular" Tests
 

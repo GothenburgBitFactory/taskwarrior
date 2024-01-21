@@ -1,6 +1,6 @@
 # Documentation
 
-This directory contains Taskwarrior that is built and installed along with the executable:
+This directory contains Taskwarrior documentation that is built and installed along with the executable:
 
 * [`man`](man/) contains the source for the Taskwarrior manual pages.
 * [`rc`](rc/) contains rcfiles that will be installed in `/usr/share/doc/task/rc` or equivalent.
