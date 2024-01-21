@@ -88,6 +88,42 @@ Then configure Taskwarrior with:
 
     $ task config sync.gcp.bucket               <bucket-name>
 
+However you can bring your own service account credentials if your 
+`application-default` is already being used by some other application
+
+To begin, navigate to the "IAM and Admin" section in the Navigation Menu, then select "Roles."
+
+On the top menu bar within the "Roles" section, click "CREATE ROLE."
+Provide an appropriate name and description for the new role.
+
+Add permissions to your new role using the filter "Service:storage" (not the "Filter permissions by role" input box).
+Select the following permissions:
+
+    - storage.buckets.create    
+    - storage.buckets.get    
+    - storage.buckets.update
+    - storage.objects.create
+    - storage.objects.get
+    - storage.objects.list
+    - storage.objects.update
+
+ Create your new role.
+
+ On the left sidebar, navigate to "Service accounts."
+
+ On the top menu bar within the "Service accounts" section, click "CREATE SERVICE ACCOUNT."
+ Provide an appropriate name and description for the new service account.
+ Select the role you just created and complete the service account creation process.
+
+ Now, in the Service Account dashboard, click into the new service account and select "keys" on the top menu bar.
+ Click on "ADD KEY" to create a new key or upload an existing key (a JSON key).
+
+
+Then configure Taskwarrior with:
+
+    $ task config sync.gcp.bucket               <bucket-name>
+    $ task config sync.gcp.credentialpath       <absolute-path-to-downloaded-credentials>
+
 .SS Local Synchronization
 
 In order to take advantage of synchronization's side effect of saving disk
