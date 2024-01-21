@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="running-sync-server.html"><strong aria-hidden="true">1.1.</strong> Running the Sync Server</a></li></ol></li><li class="chapter-item expanded "><a href="internals.html"><strong aria-hidden="true">2.</strong> Internal Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="data-model.html"><strong aria-hidden="true">2.1.</strong> Data Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="storage.html"><strong aria-hidden="true">2.1.1.</strong> Replica Storage</a></li><li class="chapter-item expanded "><a href="taskdb.html"><strong aria-hidden="true">2.1.2.</strong> Task Database</a></li><li class="chapter-item expanded "><a href="tasks.html"><strong aria-hidden="true">2.1.3.</strong> Tasks</a></li></ol></li><li class="chapter-item expanded "><a href="sync.html"><strong aria-hidden="true">2.2.</strong> Synchronization and the Sync Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="sync-model.html"><strong aria-hidden="true">2.2.1.</strong> Synchronization Model</a></li><li class="chapter-item expanded "><a href="snapshots.html" class="active"><strong aria-hidden="true">2.2.2.</strong> Snapshots</a></li><li class="chapter-item expanded "><a href="sync-protocol.html"><strong aria-hidden="true">2.2.3.</strong> Server-Replica Protocol</a></li><li class="chapter-item expanded "><a href="plans.html"><strong aria-hidden="true">2.2.4.</strong> Planned Functionality</a></li></ol></li></ol></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="running-sync-server.html"><strong aria-hidden="true">1.1.</strong> Running the Sync Server</a></li></ol></li><li class="chapter-item expanded "><a href="internals.html"><strong aria-hidden="true">2.</strong> Internal Details</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="data-model.html"><strong aria-hidden="true">2.1.</strong> Data Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="storage.html"><strong aria-hidden="true">2.1.1.</strong> Replica Storage</a></li><li class="chapter-item expanded "><a href="taskdb.html"><strong aria-hidden="true">2.1.2.</strong> Task Database</a></li><li class="chapter-item expanded "><a href="tasks.html"><strong aria-hidden="true">2.1.3.</strong> Tasks</a></li></ol></li><li class="chapter-item expanded "><a href="sync.html"><strong aria-hidden="true">2.2.</strong> Synchronization and the Sync Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="sync-model.html"><strong aria-hidden="true">2.2.1.</strong> Synchronization Model</a></li><li class="chapter-item expanded "><a href="snapshots.html" class="active"><strong aria-hidden="true">2.2.2.</strong> Snapshots</a></li><li class="chapter-item expanded "><a href="sync-protocol.html"><strong aria-hidden="true">2.2.3.</strong> Server-Replica Protocol</a></li><li class="chapter-item expanded "><a href="encryption.html"><strong aria-hidden="true">2.2.4.</strong> Encryption</a></li><li class="chapter-item expanded "><a href="http.html"><strong aria-hidden="true">2.2.5.</strong> HTTP Implementation</a></li><li class="chapter-item expanded "><a href="object-store.html"><strong aria-hidden="true">2.2.6.</strong> Object-Store Implementation</a></li><li class="chapter-item expanded "><a href="plans.html"><strong aria-hidden="true">2.2.7.</strong> Planned Functionality</a></li></ol></li></ol></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -147,7 +147,7 @@
 <p>The basic synchronization model described in the previous page has a few shortcomings:</p>
 <ul>
 <li>servers must store an ever-increasing quantity of versions</li>
-<li>a new replica must download all versions since the beginning in order to derive the current state</li>
+<li>a new replica must download all versions since the beginning (the nil UUID) in order to derive the current state</li>
 </ul>
 <p>Snapshots allow TaskChampion to avoid both of these issues.
 A snapshot is a copy of the task database at a specific version.
@@ -175,13 +175,6 @@ Other replicas, in more restricted environments such as mobile devices, will onl
 This saves resources in these restricted environments.</p>
 <p>A snapshot must be made on a replica with no unsynchronized operations.
 As such, it only makes sense to request a snapshot in response to a successful AddVersion request.</p>
-<h2 id="handling-deleted-versions"><a class="header" href="#handling-deleted-versions">Handling Deleted Versions</a></h2>
-<p>When a replica requests a child version, the response must distinguish two cases:</p>
-<ol>
-<li>No such child version exists because the replica is up-to-date.</li>
-<li>No such child version exists because it has been deleted, and the replica must re-initialize itself.</li>
-</ol>
-<p>The details of this logic are covered in the <a href="./sync-protocol.html">Server-Replica Protocol</a>.</p>
 
                     </main>
 
