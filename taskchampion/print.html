@@ -563,7 +563,7 @@ Including it in the AAD ensures that such data cannot be confused with task data
 The <code>origin</code> <em>should</em> be an HTTPS endpoint on general principle, but nothing in the functonality or security of the protocol depends on connection encryption.</p>
 <p>The replica identifies itself to the server using a <code>client_id</code> in the form of a UUID.
 This value is passed with every request in the <code>X-Client-Id</code> header, in its dashed-hex format.</p>
-<p>The salt used in key derivation is the SHA256 hash of the 16-byte form of the client ID.</p>
+<p>The salt used in key derivation is the 16-byte client ID.</p>
 <h2 id="addversion-1"><a class="header" href="#addversion-1">AddVersion</a></h2>
 <p>The request is a <code>POST</code> to <code>&lt;origin&gt;/v1/client/add-version/&lt;parentVersionId&gt;</code>.
 The request body contains the history segment, optionally encoded using any encoding supported by actix-web.
