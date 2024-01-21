@@ -32,7 +32,8 @@
 using namespace tc::ffi;
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Server::Server (const std::string &server_dir)
+tc::Server
+tc::Server::new_local (const std::string &server_dir)
 {
   TCString tc_server_dir = tc_string_borrow (server_dir.c_str ());
   TCString error;
@@ -43,18 +44,17 @@ tc::Server::Server (const std::string &server_dir)
     tc_string_free (&error);
     throw errmsg;
   }
-  inner = unique_tcserver_ptr (
+  return Server (unique_tcserver_ptr (
       tcserver,
-      [](TCServer* rep) { tc_server_free (rep); });
+      [](TCServer* rep) { tc_server_free (rep); }));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Server::Server (const std::string &origin, const std::string &client_id, const std::string &encryption_secret)
+tc::Server
+tc::Server::new_sync (const std::string &origin, const std::string &client_id, const std::string &encryption_secret)
 {
   TCString tc_origin = tc_string_borrow (origin.c_str ());
-
   TCString tc_client_id = tc_string_borrow (client_id.c_str ());
-
   TCString tc_encryption_secret = tc_string_borrow (encryption_secret.c_str ());
 
   TCUuid tc_client_uuid;
@@ -65,16 +65,36 @@ tc::Server::Server (const std::string &origin, const std::string &client_id, con
   }
 
   TCString error;
-  auto tcserver = tc_server_new_remote (tc_origin, tc_client_uuid, tc_encryption_secret, &error);
+  auto tcserver = tc_server_new_sync (tc_origin, tc_client_uuid, tc_encryption_secret, &error);
   if (!tcserver) {
     auto errmsg = format ("Could not configure connection to server at {1}: {2}",
         origin, tc_string_content (&error));
     tc_string_free (&error);
     throw errmsg;
   }
-  inner = unique_tcserver_ptr (
+  return Server (unique_tcserver_ptr (
       tcserver,
-      [](TCServer* rep) { tc_server_free (rep); });
+      [](TCServer* rep) { tc_server_free (rep); }));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+tc::Server
+tc::Server::new_gcp (const std::string &bucket, const std::string &encryption_secret)
+{
+  TCString tc_bucket = tc_string_borrow (bucket.c_str ());
+  TCString tc_encryption_secret = tc_string_borrow (encryption_secret.c_str ());
+
+  TCString error;
+  auto tcserver = tc_server_new_gcp (tc_bucket, tc_encryption_secret, &error);
+  if (!tcserver) {
+    auto errmsg = format ("Could not configure connection to GCP bucket {1}: {2}",
+        bucket, tc_string_content (&error));
+    tc_string_free (&error);
+    throw errmsg;
+  }
+  return Server (unique_tcserver_ptr (
+      tcserver,
+      [](TCServer* rep) { tc_server_free (rep); }));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -32,7 +32,10 @@ For those familiar with distributed version control systems, a state is analogou
 Fundamentally, synchronization involves all replicas agreeing on a single, linear sequence of operations and the state that those operations create.
 Since the replicas are not connected, each may have additional operations that have been applied locally, but which have not yet been agreed on.
 The synchronization process uses operational transformation to "linearize" those operations.
+
 This process is analogous (vaguely) to rebasing a sequence of Git commits.
+Critically, though, operations cannot merge; in effect, the only option is rebasing.
+Furthermore, once an operation has been sent to the server it cannot be changed; in effect, the server does not permit "force push".
 
 ### Sync Operations
 
@@ -135,4 +138,4 @@ Without synchronization, its list of pending operations would grow indefinitely,
 So all replicas, even "singleton" replicas which do not replicate task data with any other replica, must synchronize periodically.
 
 TaskChampion provides a `LocalServer` for this purpose.
-It implements the `get_child_version` and `add_version` operations as described, storing data on-disk locally, all within the `ta` binary.
+It implements the `get_child_version` and `add_version` operations as described, storing data on-disk locally.

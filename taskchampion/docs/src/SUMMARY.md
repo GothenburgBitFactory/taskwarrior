@@ -11,4 +11,7 @@
     * [Synchronization Model](./sync-model.md)
     * [Snapshots](./snapshots.md)
     * [Server-Replica Protocol](./sync-protocol.md)
+    * [Encryption](./encryption.md)
+    * [HTTP Implementation](./http.md)
+    * [Object-Store Implementation](./object-store.md)
     * [Planned Functionality](./plans.md)

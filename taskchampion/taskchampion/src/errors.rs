@@ -40,5 +40,9 @@ other_error!(io::Error);
 other_error!(serde_json::Error);
 other_error!(rusqlite::Error);
 other_error!(crate::storage::sqlite::SqliteError);
+#[cfg(feature = "server-gcp")]
+other_error!(google_cloud_storage::http::Error);
+#[cfg(feature = "server-gcp")]
+other_error!(google_cloud_storage::client::google_cloud_auth::error::Error);
 
 pub type Result<T> = std::result::Result<T, Error>;

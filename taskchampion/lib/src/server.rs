@@ -108,13 +108,13 @@ pub unsafe extern "C" fn tc_server_new_local(
 /// The server must be freed after it is used - tc_replica_sync does not automatically free it.
 ///
 /// ```c
-/// EXTERN_C struct TCServer *tc_server_new_remote(struct TCString origin,
+/// EXTERN_C struct TCServer *tc_server_new_sync(struct TCString origin,
 ///                                       struct TCUuid client_id,
 ///                                       struct TCString encryption_secret,
 ///                                       struct TCString *error_out);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_server_new_remote(
+pub unsafe extern "C" fn tc_server_new_sync(
     origin: TCString,
     client_id: TCUuid,
     encryption_secret: TCString,
@@ -129,8 +129,8 @@ pub unsafe extern "C" fn tc_server_new_remote(
 
             // SAFETY:
             //  - client_id is a valid Uuid (any 8-byte sequence counts)
-
             let client_id = unsafe { TCUuid::val_from_arg(client_id) };
+
             // SAFETY:
             //  - encryption_secret is valid (promised by caller)
             //  - encryption_secret ownership is transferred to this function
@@ -154,6 +154,54 @@ pub unsafe extern "C" fn tc_server_new_remote(
 
 #[ffizz_header::item]
 #[ffizz(order = 802)]
+/// Create a new TCServer that connects to the Google Cloud Platform.  See the TaskChampion docs
+/// for the description of the arguments.
+///
+/// On error, a string is written to the error_out parameter (if it is not NULL) and NULL is
+/// returned.  The caller must free this string.
+///
+/// The server must be freed after it is used - tc_replica_sync does not automatically free it.
+///
+/// ```c
+/// EXTERN_C struct TCServer *tc_server_new_gcp(struct TCString bucket,
+///                                       struct TCString encryption_secret,
+///                                       struct TCString *error_out);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_server_new_gcp(
+    bucket: TCString,
+    encryption_secret: TCString,
+    error_out: *mut TCString,
+) -> *mut TCServer {
+    wrap(
+        || {
+            // SAFETY:
+            //  - bucket is valid (promised by caller)
+            //  - bucket ownership is transferred to this function
+            let bucket = unsafe { TCString::val_from_arg(bucket) }.into_string()?;
+
+            // SAFETY:
+            //  - encryption_secret is valid (promised by caller)
+            //  - encryption_secret ownership is transferred to this function
+            let encryption_secret = unsafe { TCString::val_from_arg(encryption_secret) }
+                .as_bytes()
+                .to_vec();
+
+            let server_config = ServerConfig::Gcp {
+                bucket,
+                encryption_secret,
+            };
+            let server = server_config.into_server()?;
+            // SAFETY: caller promises to free this server.
+            Ok(unsafe { TCServer::return_ptr(server.into()) })
+        },
+        error_out,
+        std::ptr::null_mut(),
+    )
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 899)]
 /// Free a server.  The server may not be used after this function returns and must not be freed
 /// more than once.
 ///

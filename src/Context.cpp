@@ -283,6 +283,7 @@ std::string configurationDefaults =
   "#sync.server.encryption_secret                 # Encryption secret for sync to a server\n"
   "#sync.server.origin                            # Origin of the sync server\n"
   "#sync.local.server_dir                         # Directory for local sync\n"
+  "#sync.gcp.bucket                               # Bucket for sync to GCP\n"
   "\n"
   "# Aliases - alternate names for commands\n"
   "alias.rm=delete                                # Alias for the delete command\n"

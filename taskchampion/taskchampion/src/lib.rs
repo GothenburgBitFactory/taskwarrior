@@ -40,6 +40,7 @@ Support for some optional functionality is controlled by feature flags.
 
 Sync server client support:
 
+ * `server-gcp` - sync to Google Cloud Platform
  * `server-sync` - sync to the taskchampion-sync-server
 
 # See Also
@@ -49,7 +50,7 @@ for more information about the design and usage of the tool.
 
 # Minimum Supported Rust Version (MSRV)
 
-This crate supports Rust version 1.65 and higher.
+This crate supports Rust version 1.70.0 and higher.
 
  */
 

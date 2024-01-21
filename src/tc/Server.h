@@ -43,7 +43,7 @@ namespace tc {
 
   // Server wraps the TCServer type, managing its memory, errors, and so on.
   //
-  // Except as noted, method names match the suffix to `tc_replica_..`.
+  // Except as noted, method names match the suffix to `tc_server_..`.
   class Server
   {
   public:
@@ -51,10 +51,13 @@ namespace tc {
     Server () = default;
 
     // Construct a local server (tc_server_new_local).
-    Server (const std::string& server_dir);
+    static Server new_local (const std::string& server_dir);
 
-    // Construct a remote server (tc_server_new_remote).
-    Server (const std::string &origin, const std::string &client_id, const std::string &encryption_secret);
+    // Construct a remote server (tc_server_new_sync).
+    static Server new_sync (const std::string &origin, const std::string &client_id, const std::string &encryption_secret);
+
+    // Construct a GCP server (tc_server_new_gcp).
+    static Server new_gcp (const std::string &bucket, const std::string &encryption_secret);
 
     // This object "owns" inner, so copy is not allowed.
     Server (const Server &) = delete;
@@ -65,6 +68,8 @@ namespace tc {
     Server &operator=(Server &&) noexcept;
 
   protected:
+    Server (unique_tcserver_ptr inner) : inner(std::move(inner)) {};
+
     unique_tcserver_ptr inner;
 
     // Replica accesses the inner pointer to call tc_replica_sync

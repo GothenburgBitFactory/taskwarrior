@@ -1,12 +1,13 @@
-use crate::errors::Result;
+use crate::errors::{Error, Result};
 use crate::server::{
     AddVersionResult, GetVersionResult, HistorySegment, Server, Snapshot, SnapshotUrgency,
     VersionId,
 };
+use ring::digest;
 use std::time::Duration;
 use uuid::Uuid;
 
-use super::crypto::{Cryptor, Sealed, Secret, Unsealed};
+use super::encryption::{Cryptor, Sealed, Secret, Unsealed};
 
 pub struct SyncServer {
     origin: String,
@@ -28,10 +29,11 @@ impl SyncServer {
     /// identify this client to the server.  Multiple replicas synchronizing the same task history
     /// should use the same client_id.
     pub fn new(origin: String, client_id: Uuid, encryption_secret: Vec<u8>) -> Result<SyncServer> {
+        let salt = dbg!(digest::digest(&digest::SHA256, client_id.as_ref()));
         Ok(SyncServer {
             origin,
             client_id,
-            cryptor: Cryptor::new(client_id, &Secret(encryption_secret.to_vec()))?,
+            cryptor: Cryptor::new(salt, &Secret(encryption_secret.to_vec()))?,
             agent: ureq::AgentBuilder::new()
                 .timeout_connect(Duration::from_secs(10))
                 .timeout_read(Duration::from_secs(60))
@@ -59,6 +61,23 @@ fn get_snapshot_urgency(resp: &ureq::Response) -> SnapshotUrgency {
             "urgency=high" => SnapshotUrgency::High,
             _ => SnapshotUrgency::None,
         },
+    }
+}
+
+fn sealed_from_resp(resp: ureq::Response, version_id: Uuid, content_type: &str) -> Result<Sealed> {
+    use std::io::Read;
+    if resp.header("Content-Type") == Some(content_type) {
+        let mut reader = resp.into_reader();
+        let mut payload = vec![];
+        reader.read_to_end(&mut payload)?;
+        Ok(Sealed {
+            version_id,
+            payload,
+        })
+    } else {
+        Err(Error::Server(String::from(
+            "Response did not have expected content-type",
+        )))
     }
 }
 
@@ -117,7 +136,7 @@ impl Server for SyncServer {
                 let parent_version_id = get_uuid_header(&resp, "X-Parent-Version-Id")?;
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
                 let sealed =
-                    Sealed::from_resp(resp, parent_version_id, HISTORY_SEGMENT_CONTENT_TYPE)?;
+                    sealed_from_resp(resp, parent_version_id, HISTORY_SEGMENT_CONTENT_TYPE)?;
                 let history_segment = self.cryptor.unseal(sealed)?.payload;
                 Ok(GetVersionResult::Version {
                     version_id,
@@ -158,7 +177,7 @@ impl Server for SyncServer {
         {
             Ok(resp) => {
                 let version_id = get_uuid_header(&resp, "X-Version-Id")?;
-                let sealed = Sealed::from_resp(resp, version_id, SNAPSHOT_CONTENT_TYPE)?;
+                let sealed = sealed_from_resp(resp, version_id, SNAPSHOT_CONTENT_TYPE)?;
                 let snapshot = self.cryptor.unseal(sealed)?.payload;
                 Ok(Some((version_id, snapshot)))
             }

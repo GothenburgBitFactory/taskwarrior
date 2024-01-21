@@ -1,5 +1,9 @@
 use super::types::Server;
 use crate::errors::Result;
+#[cfg(feature = "server-gcp")]
+use crate::server::cloud::gcp::GcpService;
+#[cfg(feature = "cloud")]
+use crate::server::cloud::CloudServer;
 use crate::server::local::LocalServer;
 #[cfg(feature = "server-sync")]
 use crate::server::sync::SyncServer;
@@ -27,6 +31,17 @@ pub enum ServerConfig {
         /// be any suitably un-guessable string of bytes.
         encryption_secret: Vec<u8>,
     },
+    /// A remote taskchampion-sync-server instance
+    #[cfg(feature = "server-gcp")]
+    Gcp {
+        /// Bucket in which to store the task data. This bucket must not be used for any other
+        /// purpose.
+        bucket: String,
+
+        /// Private encryption secret used to encrypt all data sent to the server.  This can
+        /// be any suitably un-guessable string of bytes.
+        encryption_secret: Vec<u8>,
+    },
 }
 
 impl ServerConfig {
@@ -40,6 +55,14 @@ impl ServerConfig {
                 client_id,
                 encryption_secret,
             } => Box::new(SyncServer::new(origin, client_id, encryption_secret)?),
+            #[cfg(feature = "server-gcp")]
+            ServerConfig::Gcp {
+                bucket,
+                encryption_secret,
+            } => Box::new(CloudServer::new(
+                GcpService::new(bucket)?,
+                encryption_secret,
+            )?),
         })
     }
 }

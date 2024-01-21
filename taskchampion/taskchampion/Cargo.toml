@@ -9,12 +9,19 @@ repository = "https://github.com/GothenburgBitFactory/taskwarrior"
 readme = "../README.md"
 license = "MIT"
 edition = "2021"
-rust-version = "1.65"
+rust-version = "1.70.0"
 
 [features]
-default = ["server-sync" ]
-server-sync = ["crypto", "dep:ureq"]
-crypto = ["dep:ring"]
+default = ["server-sync", "server-gcp"]
+
+# Support for sync to a server
+server-sync = ["encryption", "dep:ureq"]
+# Support for sync to GCP
+server-gcp = ["cloud", "encryption", "dep:google-cloud-storage", "dep:tokio"]
+# (private) Support for sync protocol encryption
+encryption = ["dep:ring"]
+# (private) Generic support for cloud sync
+cloud = []
 
 [package.metadata.docs.rs]
 all-features = true
@@ -34,7 +41,11 @@ strum_macros.workspace = true
 flate2.workspace = true
 byteorder.workspace = true
 ring.workspace = true
+google-cloud-storage.workspace = true
+tokio.workspace = true
 
+google-cloud-storage.optional = true
+tokio.optional = true
 ureq.optional = true
 ring.optional = true
 

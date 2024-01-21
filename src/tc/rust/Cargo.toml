@@ -6,4 +6,5 @@ version = "0.1.0"
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion-lib = {path = "../../../taskchampion/lib"}
+taskchampion = { path = "../../../taskchampion/taskchampion", features = ["server-gcp", "server-sync"] }
+taskchampion-lib = { path = "../../../taskchampion/lib" }

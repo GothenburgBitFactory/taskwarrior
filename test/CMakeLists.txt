@@ -31,7 +31,7 @@ foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
   target_link_libraries (${src_FILE} task tc commands columns libshared task tc tc-rust commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
   if (DARWIN)
-    target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security")
+    target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security -framework SystemConfiguration")
   endif (DARWIN)
 endforeach (src_FILE)
 

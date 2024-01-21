@@ -116,19 +116,14 @@ impl TCString {
     }
 }
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Default)]
 pub enum RustString<'a> {
+    #[default]
     Null,
     CString(CString),
     CStr(&'a CStr),
     String(String),
     Bytes(Vec<u8>),
-}
-
-impl<'a> Default for RustString<'a> {
-    fn default() -> Self {
-        RustString::Null
-    }
 }
 
 impl PassByValue for TCString {

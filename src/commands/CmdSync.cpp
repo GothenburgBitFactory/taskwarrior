@@ -63,17 +63,32 @@ int CmdSync::execute (std::string& output)
 
   // If no server is set up, quit.
   std::string origin = Context::getContext ().config.get ("sync.server.origin");
-  std::string client_id = Context::getContext ().config.get ("sync.server.client_id");
-  std::string encryption_secret = Context::getContext ().config.get ("sync.server.encryption_secret");
   std::string server_dir = Context::getContext ().config.get ("sync.local.server_dir");
+  std::string gcp_bucket = Context::getContext ().config.get ("sync.gcp.bucket");
   if (server_dir != "") {
-    server = tc::Server (server_dir);
+    server = tc::Server::new_local (server_dir);
     server_ident = server_dir;
-  } else if (origin != "" && client_id != "" && encryption_secret != "") {
-    server = tc::Server (origin, client_id, encryption_secret);
-    server_ident = origin;
+  } else if (gcp_bucket != "") {
+    std::string encryption_secret = Context::getContext ().config.get ("sync.gcp.encryption_secret");
+    if (encryption_secret == "") {
+      throw std::string ("sync.gcp.encryption_secret is required");
+    }
+    server = tc::Server::new_gcp (gcp_bucket, encryption_secret);
+    std::ostringstream os;
+    os << "GCP bucket " << gcp_bucket;
+    server_ident = os.str();
+  } else if (origin != "") {
+    std::string client_id = Context::getContext ().config.get ("sync.server.client_id");
+    std::string encryption_secret = Context::getContext ().config.get ("sync.server.encryption_secret");
+    if (client_id == "" || encryption_secret == "") {
+      throw std::string ("sync.server.client_id and encryption_secret are required");
+    }
+    server = tc::Server::new_sync (origin, client_id, encryption_secret);
+    std::ostringstream os;
+    os << "Sync server at " << origin;
+    server_ident = os.str();
   } else {
-    throw std::string ("Neither sync.server nor sync.local are configured.");
+    throw std::string ("No sync.* settings are configured.");
   }
 
   std::stringstream out;

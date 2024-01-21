@@ -56,9 +56,10 @@ target_link_libraries (task_executable task tc tc-rust commands tc columns libsh
 target_link_libraries (calc_executable task tc tc-rust commands tc columns libshared task libshared ${TASK_LIBRARIES})
 target_link_libraries (lex_executable  task tc tc-rust commands tc columns libshared task libshared ${TASK_LIBRARIES})
 if (DARWIN)
-    target_link_libraries (task_executable "-framework CoreFoundation -framework Security")
-    target_link_libraries (calc_executable "-framework CoreFoundation -framework Security")
-    target_link_libraries (lex_executable  "-framework CoreFoundation -framework Security")
+    # SystemConfiguration is required by Rust libraries like reqwest, to get proxy configuration.
+    target_link_libraries (task_executable "-framework CoreFoundation -framework Security -framework SystemConfiguration")
+    target_link_libraries (calc_executable "-framework CoreFoundation -framework Security -framework SystemConfiguration")
+    target_link_libraries (lex_executable  "-framework CoreFoundation -framework Security -framework SystemConfiguration")
 endif (DARWIN)
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
