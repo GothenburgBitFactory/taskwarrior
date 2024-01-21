@@ -207,6 +207,10 @@ mod test {
     use pretty_assertions::assert_eq;
     use ring::digest;
 
+    fn make_salt() -> Vec<u8> {
+        Cryptor::gen_salt().unwrap()
+    }
+
     #[test]
     fn envelope_round_trip() {
         let env = Envelope {
@@ -249,7 +253,7 @@ mod test {
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(Uuid::new_v4(), &secret).unwrap();
+        let cryptor = Cryptor::new(make_salt(), &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -266,10 +270,10 @@ mod test {
     fn round_trip_bad_key() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let salt = Uuid::new_v4();
+        let salt = make_salt();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(salt, &secret).unwrap();
+        let cryptor = Cryptor::new(&salt, &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -278,7 +282,7 @@ mod test {
         let sealed = cryptor.seal(unsealed).unwrap();
 
         let secret = Secret(b"DIFFERENT_SECRET".to_vec());
-        let cryptor = Cryptor::new(salt, &secret).unwrap();
+        let cryptor = Cryptor::new(&salt, &secret).unwrap();
         assert!(cryptor.unseal(sealed).is_err());
     }
 
@@ -286,10 +290,9 @@ mod test {
     fn round_trip_bad_version() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let salt = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(salt, &secret).unwrap();
+        let cryptor = Cryptor::new(make_salt(), &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -304,10 +307,9 @@ mod test {
     fn round_trip_bad_salt() {
         let version_id = Uuid::new_v4();
         let payload = b"HISTORY REPEATS ITSELF".to_vec();
-        let salt = Uuid::new_v4();
 
         let secret = Secret(b"SEKRIT".to_vec());
-        let cryptor = Cryptor::new(salt, &secret).unwrap();
+        let cryptor = Cryptor::new(make_salt(), &secret).unwrap();
 
         let unsealed = Unsealed {
             version_id,
@@ -315,8 +317,7 @@ mod test {
         };
         let sealed = cryptor.seal(unsealed).unwrap();
 
-        let salt = Uuid::new_v4();
-        let cryptor = Cryptor::new(salt, &secret).unwrap();
+        let cryptor = Cryptor::new(make_salt(), &secret).unwrap();
         assert!(cryptor.unseal(sealed).is_err());
     }
 
@@ -329,13 +330,13 @@ mod test {
 
         /// The values in generate-test-data.py
         fn defaults() -> (Uuid, Vec<u8>, Vec<u8>) {
+            let version_id = Uuid::parse_str("b0517957-f912-4d49-8330-f612e73030c4").unwrap();
+            let encryption_secret = b"b4a4e6b7b811eda1dc1a2693ded".to_vec();
             let client_id = Uuid::parse_str("0666d464-418a-4a08-ad53-6f15c78270cd").unwrap();
-            let salt = dbg!(digest::digest(&digest::SHA256, client_id.as_ref()));
-            (
-                Uuid::parse_str("b0517957-f912-4d49-8330-f612e73030c4").unwrap(),
-                salt.as_ref().to_vec(),
-                b"b4a4e6b7b811eda1dc1a2693ded".to_vec(),
-            )
+            let salt = dbg!(digest::digest(&digest::SHA256, client_id.as_ref()))
+                .as_ref()
+                .to_vec();
+            (version_id, salt, encryption_secret)
         }
 
         #[test]

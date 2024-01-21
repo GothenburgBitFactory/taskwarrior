@@ -26,7 +26,7 @@ The following invariant must always hold:
 
 ## Data Formats
 
-All data sent to the server is encrypted by the client, using the scheme described in the "Encryption" chapter.
+Task data sent to the server is encrypted by the client, using the scheme described in the "Encryption" chapter.
 
 ### Version
 
