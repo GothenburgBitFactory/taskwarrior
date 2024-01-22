@@ -102,7 +102,7 @@ The request contains the following:
  * version ID at which the snapshot was made, and
  * encrypted snapshot data.
 
-The server should validate that the snapshot is for an existing version and is newer than any existing snapshot.
+The server may validate that the snapshot is for an existing version and is newer than any existing snapshot.
 It may also validate that the snapshot is for a "recent" version (e.g., one of the last 5 versions).
 If a snapshot already exists for the given version, the server may keep or discard the new snapshot but should return a success indication to the client.
 
