@@ -48,6 +48,16 @@ Taskwarrior provides several options for synchronizing your tasks:
  + To a cloud storage provider. Currently only GCP is supported.
  - To a local, on-disk file.
 
+For most of these, you will need an encryption secret used to encrypt and
+decrypt your tasks. This can be any secret string, and must match for all
+replicas sharing tasks.
+
+    $ task config sync.encryption_secret <encryption_secret>
+
+Tools such as
+.BR pwgen (1)
+can generate suitable secret values.
+
 .SS Sync Server
 
 To synchronize your tasks to a sync server, you will need the following
@@ -57,18 +67,11 @@ information from the server administrator:
   - The server's URL ("origin", such as "https://tw.example.com")
 .br
   - A client ID ("client_id") identifying your tasks
-.br
-  - An encryption secret ("encryption_secret") used to encrypt and decrypt your tasks. This can be any secret string, and must match for all replicas using the same client ID.
-
-Tools such as
-.BR pwgen (1)
-can generate suitable secret values.
 
 Configure Taskwarrior with these details:
 
     $ task config sync.server.origin            <origin>
     $ task config sync.server.client_id         <client_id>
-    $ task config sync.server.encryption_secret <encryption_secret>
 
 .SS Google Cloud Platform
 
