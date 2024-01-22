@@ -27,3 +27,16 @@ Taskwarrior's interface to TaskChampion has a few layers:
   All of these symbols are placed in the C++ namespace, `tc::ffi`.
 * C++ wrappers for the types from `taskchampion-lib` are defined in [`src/tc`](../../src/tc), ensuring memory safety (with `unique_ptr`) and adding methods corresponding to the Rust API's methods.
   The wrapper types are in the C++ namespace, `tc`.
+
+## WARNING About Dependency Tracking
+
+CMake cannot detect changes to Rust files in under the `taskchampion/` directory.
+Running `make` after these files are changed will not incorporate the changes into the resulting executables.
+To force re-compilation of the Rust dependencies:
+
+```
+rm -rf src/tc/rust/x86_64-unknown-linux-gnu/debug/libtc_rust.a
+make
+```
+
+You may need to adjust the `x86_64-unknown-linux-gnu` part of that command depending on what system you are using for development.
