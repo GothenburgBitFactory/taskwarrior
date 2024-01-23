@@ -26,14 +26,15 @@ fn is_http_error<T>(query: u16, res: &std::result::Result<T, http::Error>) -> bo
 }
 
 impl GcpService {
-    pub(in crate::server) fn new(bucket: String, credentialpath:String) -> Result<Self> {
+    pub(in crate::server) fn new(bucket: String, credential_path:Option<String>) -> Result<Self> {
         let rt = Runtime::new()?;
         let config: ClientConfig;
         
-        if credentialpath == "" {
+        let credentialpathstring = credential_path.clone().unwrap();
+        if credential_path.unwrap() == "" {
             config = rt.block_on(ClientConfig::default().with_auth())?;
         } else {
-            let credentials = rt.block_on(CredentialsFile::new_from_file(credentialpath))?;
+            let credentials = rt.block_on(CredentialsFile::new_from_file(credentialpathstring))?;
             config = rt.block_on(ClientConfig::default().with_credentials(credentials))?;
         }
         
@@ -253,12 +254,12 @@ mod tests {
         let Ok(bucket) = std::env::var("GCP_TEST_BUCKET") else {
             return None;};
         
-        let Ok(credentialpath) = std::env::var("GCP_CREDENTIAL_PATH") else {
+        let Ok(credential_path) = std::env::var("GCP_CREDENTIAL_PATH") else {
             return None;};
             
         let prefix = Uuid::new_v4();
         Some((
-            GcpService::new(bucket, credentialpath).unwrap(), 
+            GcpService::new(bucket, Some(credential_path)).unwrap(), 
             move |n: &_| {
                 format!("{}-{}", prefix.as_simple(), n).into_bytes()
             }
