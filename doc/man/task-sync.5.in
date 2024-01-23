@@ -116,7 +116,7 @@ Select the following permissions:
  Select the role you just created and complete the service account creation process.
 
  Now, in the Service Account dashboard, click into the new service account and select "keys" on the top menu bar.
- Click on "ADD KEY" to create a new key or upload an existing key (a JSON key).
+ Click on "ADD KEY" to create and download a new key (a JSON key).
 
 
 Then configure Taskwarrior with:
