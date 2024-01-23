@@ -1537,7 +1537,7 @@ void Task::removeTag (const std::string& tag)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::fixTagsAttribute ()
 {
-  // Fix up the old `tags` attribute to match the `tags_..` attributes (or
+  // Fix up the old `tags` attribute to match the `tag_..` attributes (or
   // remove it if there are no tags)
   auto tags = getTags ();
   if (tags.size () > 0) {
@@ -1550,14 +1550,14 @@ void Task::fixTagsAttribute ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::isTagAttr(const std::string& attr)
 {
-  return attr.compare(0, 5, "tags_") == 0;
+  return attr.compare(0, 4, "tag_") == 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Task::tag2Attr (const std::string& tag) const
 {
   std::stringstream tag_attr;
-  tag_attr << "tags_" << tag;
+  tag_attr << "tag_" << tag;
   return tag_attr.str();
 }
 
@@ -1565,7 +1565,7 @@ const std::string Task::tag2Attr (const std::string& tag) const
 const std::string Task::attr2Tag (const std::string& attr) const
 {
   assert (isTagAttr (attr));
-  return attr.substr(5);
+  return attr.substr(4);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
