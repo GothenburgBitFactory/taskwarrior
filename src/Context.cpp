@@ -283,7 +283,7 @@ std::string configurationDefaults =
   "#sync.server.client_id                         # Client ID for sync to a server\n"
   "#sync.server.origin                            # Origin of the sync server\n"
   "#sync.local.server_dir                         # Directory for local sync\n"
-  "#sync.gcp.credentialpath                       # Path to JSON file containing credentials to authenticate GCP Sync\n"
+  "#sync.gcp.credential_path                       # Path to JSON file containing credentials to authenticate GCP Sync\n"
   "#sync.gcp.bucket                               # Bucket for sync to GCP\n"
   "\n"
   "# Aliases - alternate names for commands\n"
