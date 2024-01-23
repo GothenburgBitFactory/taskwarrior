@@ -169,7 +169,7 @@ pub unsafe extern "C" fn tc_server_new_sync(
 ///                                       struct TCString *error_out);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_server_new_gcp( 
+pub unsafe extern "C" fn tc_server_new_gcp(
     bucket: TCString,
     credential_path_argument: TCString,
     encryption_secret: TCString,
@@ -185,16 +185,17 @@ pub unsafe extern "C" fn tc_server_new_gcp(
             // SAFETY:
             //  - credential_path is valid (promised by caller)
             //  - credential_path ownership is transferred to this function
-            
-            let credential_path:String;
+
+            let credential_path: String;
 
             if credential_path_argument.is_null() {
                 credential_path = String::from("");
             } else {
-                credential_path = unsafe { TCString::val_from_arg(credential_path_argument) }.into_string()?;
+                credential_path =
+                    unsafe { TCString::val_from_arg(credential_path_argument) }.into_string()?;
             }
 
-            // SAFETY:  
+            // SAFETY:
             //  - encryption_secret is valid (promised by caller)
             //  - encryption_secret ownership is transferred to this function
             let encryption_secret = unsafe { TCString::val_from_arg(encryption_secret) }
