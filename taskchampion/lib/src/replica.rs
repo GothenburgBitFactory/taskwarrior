@@ -237,7 +237,9 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
 
 impl From<TCKVList> for TaskMap {
     fn from(kvlist: TCKVList) -> TaskMap {
-        // TODO SAFETY:
+        // SAFETY:
+        //  - items, len, and capacity are the unmodified values returned by vec_into_raw_parts
+        //  (promised by caller)
         let vec = unsafe { Vec::from_raw_parts(kvlist.items, kvlist.len, kvlist._capacity) };
 
         let mut taskmap = TaskMap::new();
@@ -365,7 +367,9 @@ impl From<Vec<ReplicaOp>> for TCReplicaOpList {
 
 impl From<TCReplicaOpList> for Vec<ReplicaOp> {
     fn from(tc_replica_op_list: TCReplicaOpList) -> Vec<ReplicaOp> {
-        // TODO SAFETY:
+        // SAFETY:
+        //  - items, len, and capacity are the unmodified values returned by vec_into_raw_parts
+        //  (promised by caller)
         let tc_replica_op_vec = unsafe {
             Vec::from_raw_parts(
                 tc_replica_op_list.items,
@@ -804,7 +808,9 @@ pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {
     //  - capacity is not NULL
     //  - capacity is properly aligned (promised by caller)
     let capacity = unsafe { (*oplist).capacity };
-    // TODO SAFETY:
+    // SAFETY:
+    //  - items, len, and capacity are the unmodified values returned by vec_into_raw_parts
+    //  (promised by caller)
     unsafe { Vec::from_raw_parts(items, len, capacity) };
 }
 
