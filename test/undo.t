@@ -92,7 +92,11 @@ class TestUndoStyle(TestCase):
 
     def test_undo_diff_operations(self):
         code, out, err = self.t("undo", input="n\n")
-        self.assertIn("The following 4 operations would be reverted:", out)
+
+        # If the clock ticks a second between `add` and `modify` there is a
+        # fifth operation setting the `modified` property.
+        self.assertRegex(out, "The following [4|5] operations would be reverted:")
+
         self.assertIn("tags_tag: <empty> -> x", out)
         self.assertIn("tags: <empty> -> tag", out)
         self.assertIn("project: foo -> bar", out)
