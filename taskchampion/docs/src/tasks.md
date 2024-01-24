@@ -38,7 +38,7 @@ The following keys, and key formats, are defined:
 * `modified` - the time of the last modification of this task
 * `start` - the most recent time at which this task was started (a task with no `start` key is not active)
 * `end` - if present, the time at which this task was completed or deleted (note that this key may not agree with `status`: it may be present for a pending task, or absent for a deleted or completed task)
-* `tag_<tag>` - indicates this task has tag `<tag>` (value is ignored)
+* `tags_<tag>` - indicates this task has tag `<tag>` (value is ignored)
 * `wait` - indicates the time before which this task should be hidden, as it is not actionable
 * `entry` - the time at which the task was created
 * `annotation_<timestamp>` - value is an annotation created at the given time; for example, `annotation_1693329505`.

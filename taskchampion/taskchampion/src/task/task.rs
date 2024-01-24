@@ -59,7 +59,7 @@ pub struct TaskMut<'r> {
 }
 
 /// An enum containing all of the key names defined in the data model, with the exception
-/// of the properties containing data (`tag_..`, etc.)
+/// of the properties containing data (`tags_..`, etc.)
 #[derive(strum_macros::AsRefStr, strum_macros::EnumString)]
 #[strum(serialize_all = "kebab-case")]
 enum Prop {
@@ -196,7 +196,7 @@ impl Task {
     /// Check if this task has the given tag
     pub fn has_tag(&self, tag: &Tag) -> bool {
         match tag.inner() {
-            TagInner::User(s) => self.taskmap.contains_key(&format!("tag_{}", s)),
+            TagInner::User(s) => self.taskmap.contains_key(&format!("tags_{}", s)),
             TagInner::Synthetic(st) => self.has_synthetic_tag(st),
         }
     }
@@ -208,11 +208,11 @@ impl Task {
         self.taskmap
             .iter()
             .filter_map(|(k, _)| {
-                if let Some(tag) = k.strip_prefix("tag_") {
+                if let Some(tag) = k.strip_prefix("tags_") {
                     if let Ok(tag) = tag.try_into() {
                         return Some(tag);
                     }
-                    // note that invalid "tag_*" are ignored
+                    // note that invalid "tags_*" are ignored
                 }
                 None
             })
@@ -309,7 +309,7 @@ impl Task {
 
     fn is_known_key(key: &str) -> bool {
         Prop::from_str(key).is_ok()
-            || key.starts_with("tag_")
+            || key.starts_with("tags_")
             || key.starts_with("annotation_")
             || key.starts_with("dep_")
     }
@@ -437,7 +437,7 @@ impl<'r> TaskMut<'r> {
                 "Synthetic tags cannot be modified",
             )));
         }
-        self.set_string(format!("tag_{}", tag), Some("".to_owned()))
+        self.set_string(format!("tags_{}", tag), Some("".to_owned()))
     }
 
     /// Remove a tag from this task.  Does nothing if the tag is not present.
@@ -447,7 +447,7 @@ impl<'r> TaskMut<'r> {
                 "Synthetic tags cannot be modified",
             )));
         }
-        self.set_string(format!("tag_{}", tag), None)
+        self.set_string(format!("tags_{}", tag), None)
     }
 
     /// Add a new annotation.  Note that annotations with the same entry time
@@ -687,7 +687,7 @@ mod test {
         let task = Task::new(
             Uuid::new_v4(),
             vec![
-                (String::from("tag_abc"), String::from("")),
+                (String::from("tags_abc"), String::from("")),
                 (String::from("start"), String::from("1234")),
             ]
             .drain(..)
@@ -707,8 +707,8 @@ mod test {
         let task = Task::new(
             Uuid::new_v4(),
             vec![
-                (String::from("tag_abc"), String::from("")),
-                (String::from("tag_def"), String::from("")),
+                (String::from("tags_abc"), String::from("")),
+                (String::from("tags_def"), String::from("")),
                 // set `wait` so the synthetic tag WAITING is present
                 (String::from("wait"), String::from("33158909732")),
             ]
@@ -733,10 +733,10 @@ mod test {
         let task = Task::new(
             Uuid::new_v4(),
             vec![
-                (String::from("tag_ok"), String::from("")),
-                (String::from("tag_"), String::from("")),
-                (String::from("tag_123"), String::from("")),
-                (String::from("tag_a!!"), String::from("")),
+                (String::from("tags_ok"), String::from("")),
+                (String::from("tags_"), String::from("")),
+                (String::from("tags_123"), String::from("")),
+                (String::from("tags_a!!"), String::from("")),
             ]
             .drain(..)
             .collect(),
@@ -1032,12 +1032,12 @@ mod test {
     fn test_add_tags() {
         with_mut_task(|mut task| {
             task.add_tag(&utag("abc")).unwrap();
-            assert!(task.taskmap.contains_key("tag_abc"));
+            assert!(task.taskmap.contains_key("tags_abc"));
             task.reload().unwrap();
-            assert!(task.taskmap.contains_key("tag_abc"));
+            assert!(task.taskmap.contains_key("tags_abc"));
             // redundant add has no effect..
             task.add_tag(&utag("abc")).unwrap();
-            assert!(task.taskmap.contains_key("tag_abc"));
+            assert!(task.taskmap.contains_key("tags_abc"));
         });
     }
 
@@ -1046,13 +1046,13 @@ mod test {
         with_mut_task(|mut task| {
             task.add_tag(&utag("abc")).unwrap();
             task.reload().unwrap();
-            assert!(task.taskmap.contains_key("tag_abc"));
+            assert!(task.taskmap.contains_key("tags_abc"));
 
             task.remove_tag(&utag("abc")).unwrap();
-            assert!(!task.taskmap.contains_key("tag_abc"));
+            assert!(!task.taskmap.contains_key("tags_abc"));
             // redundant remove has no effect..
             task.remove_tag(&utag("abc")).unwrap();
-            assert!(!task.taskmap.contains_key("tag_abc"));
+            assert!(!task.taskmap.contains_key("tags_abc"));
         });
     }
 
@@ -1067,7 +1067,7 @@ mod test {
                 ("status".into(), "not a uda".into()),
                 ("wait".into(), "not a uda".into()),
                 ("start".into(), "not a uda".into()),
-                ("tag_abc".into(), "not a uda".into()),
+                ("tags_abc".into(), "not a uda".into()),
                 ("dep_1234".into(), "not a uda".into()),
                 ("annotation_1234".into(), "not a uda".into()),
                 ("githubid".into(), "123".into()),
@@ -1168,9 +1168,9 @@ mod test {
     fn test_set_uda_invalid() {
         with_mut_task(|mut task| {
             assert!(task.set_uda("", "modified", "123").is_err());
-            assert!(task.set_uda("", "tag_abc", "123").is_err());
+            assert!(task.set_uda("", "tags_abc", "123").is_err());
             assert!(task.set_legacy_uda("modified", "123").is_err());
-            assert!(task.set_legacy_uda("tag_abc", "123").is_err());
+            assert!(task.set_legacy_uda("tags_abc", "123").is_err());
         })
     }
 
@@ -1200,9 +1200,9 @@ mod test {
     fn test_remove_uda_invalid() {
         with_mut_task(|mut task| {
             assert!(task.remove_uda("", "modified").is_err());
-            assert!(task.remove_uda("", "tag_abc").is_err());
+            assert!(task.remove_uda("", "tags_abc").is_err());
             assert!(task.remove_legacy_uda("modified").is_err());
-            assert!(task.remove_legacy_uda("tag_abc").is_err());
+            assert!(task.remove_legacy_uda("tags_abc").is_err());
         })
     }
 

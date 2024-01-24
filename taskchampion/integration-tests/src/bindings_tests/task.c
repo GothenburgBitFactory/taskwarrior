@@ -637,7 +637,7 @@ static void test_task_taskmap(void) {
 
     TCKVList taskmap = tc_task_get_taskmap(task);
     tckvlist_assert_key(&taskmap, "annotation_1644623411", "ann1");
-    tckvlist_assert_key(&taskmap, "tag_next", "");
+    tckvlist_assert_key(&taskmap, "tags_next", "");
     tckvlist_assert_key(&taskmap, "status", "pending");
     tckvlist_assert_key(&taskmap, "description", "my task");
     tc_kv_list_free(&taskmap);
