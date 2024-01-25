@@ -187,7 +187,7 @@ pub unsafe extern "C" fn tc_server_new_gcp(
             //  - credential_path ownership is transferred to this function
 
             let credential_path =
-                    unsafe { TCString::val_from_arg(credential_path_argument) }.into_string()?;
+                unsafe { TCString::val_from_arg(credential_path_argument) }.into_string()?;
             let credential_path = if credential_path == "" {
                 None
             } else {
@@ -202,7 +202,7 @@ pub unsafe extern "C" fn tc_server_new_gcp(
                 .to_vec();
             let server_config = ServerConfig::Gcp {
                 bucket,
-                credential_path: Some(credential_path),
+                credential_path: credential_path.map(|cp| cp.to_string()),
                 encryption_secret,
             };
             let server = server_config.into_server()?;
