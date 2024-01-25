@@ -133,7 +133,7 @@ int CmdImport::import (const std::string& input)
   }
 
   // If an exception is caught, then it is because the free-form JSON
-  // objects/array above failed to parse. This is an indication that the input
+  // objects/array above failed to parse. This may be an indication that the input
   // is an old-style line-by-line set of JSON objects, because both an array of
   // objects, and a single object have failed to parse..
   //
@@ -142,18 +142,29 @@ int CmdImport::import (const std::string& input)
   //   { ... }
   catch (std::string& e)
   {
+    // Make a very cursory check for the old-style format.
+    if (input[0] != '{') {
+      throw e;
+    }
+
+    // Read the entire file, so that errors do not result in a partial import.
+    std::vector<std::unique_ptr<json::object>> objects;
     for (auto& line : split (input, '\n'))
     {
       if (line.length ())
       {
         json::value* root = json::parse (line);
-        if (root)
-        {
-          importSingleTask ((json::object*) root);
-          ++count;
-          delete root;
-        }
+        if (root && root->type () == json::j_object)
+          objects.push_back (std::unique_ptr<json::object> ((json::object *)root));
+        else
+          throw format ("Invalid JSON: {1}", line);
       }
+    }
+
+    // Import the tasks.
+    for (auto& root : objects) {
+      importSingleTask (root.get());
+      ++count;
     }
   }
 

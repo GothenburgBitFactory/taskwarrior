@@ -279,6 +279,12 @@ class TestImportValidate(TestCase):
         code, out, err = self.t.runError("import", input=j)
         self.assertIn("Not a valid UUID", err)
 
+    def test_import_invalid_uuid_array(self):
+        """Verify invalid UUID is caught in array form"""
+        j = '[{"uuid":"1", "description":"bad"}]'
+        code, out, err = self.t.runError("import", input=j)
+        self.assertIn("Not a valid UUID", err)
+
     def test_import_invalid_uuid2(self):
         """Verify invalid UUID is caught, part two"""
         # UUID is the right length, but with s/-/0/.
