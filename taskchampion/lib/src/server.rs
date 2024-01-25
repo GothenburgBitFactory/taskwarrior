@@ -186,14 +186,13 @@ pub unsafe extern "C" fn tc_server_new_gcp(
             //  - credential_path is valid (promised by caller)
             //  - credential_path ownership is transferred to this function
 
-            let credential_path: String;
-
-            if credential_path_argument.is_null() {
-                credential_path = String::from("");
-            } else {
-                credential_path =
+            let credential_path =
                     unsafe { TCString::val_from_arg(credential_path_argument) }.into_string()?;
-            }
+            let credential_path = if credential_path == "" {
+                None
+            } else {
+                Some(credential_path)
+            };
 
             // SAFETY:
             //  - encryption_secret is valid (promised by caller)
