@@ -157,8 +157,7 @@ int CmdImport::import (const std::string& input)
         if (root && root->type () == json::j_object)
           objects.push_back (std::unique_ptr<json::object> ((json::object *)root));
         else
-          // Throw the existing error, as it's likely more accurate.
-          throw e;
+          throw format ("Invalid JSON: {1}", line);
       }
     }
 
