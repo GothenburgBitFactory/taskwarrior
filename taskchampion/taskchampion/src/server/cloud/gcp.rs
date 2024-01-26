@@ -28,15 +28,14 @@ fn is_http_error<T>(query: u16, res: &std::result::Result<T, http::Error>) -> bo
 impl GcpService {
     pub(in crate::server) fn new(bucket: String, credential_path: Option<String>) -> Result<Self> {
         let rt = Runtime::new()?;
-        let config: ClientConfig;
 
         let credentialpathstring = credential_path.clone().unwrap();
-        if credential_path.unwrap() == "" {
-            config = rt.block_on(ClientConfig::default().with_auth())?;
+        let config: ClientConfig = if credential_path.unwrap() == "" {
+            rt.block_on(ClientConfig::default().with_auth())?
         } else {
             let credentials = rt.block_on(CredentialsFile::new_from_file(credentialpathstring))?;
-            config = rt.block_on(ClientConfig::default().with_credentials(credentials))?;
-        }
+            rt.block_on(ClientConfig::default().with_credentials(credentials))?
+        };
 
         Ok(Self {
             client: Client::new(config),
