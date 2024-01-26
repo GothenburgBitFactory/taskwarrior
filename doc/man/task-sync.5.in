@@ -122,7 +122,7 @@ Select the following permissions:
 Then configure Taskwarrior with:
 
     $ task config sync.gcp.bucket               <bucket-name>
-    $ task config sync.gcp.credentialpath       <absolute-path-to-downloaded-credentials>
+    $ task config sync.gcp.credential_path       <absolute-path-to-downloaded-credentials>
 
 .SS Local Synchronization
 
