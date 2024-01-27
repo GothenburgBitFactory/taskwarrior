@@ -188,7 +188,7 @@ pub unsafe extern "C" fn tc_server_new_gcp(
 
             let credential_path =
                 unsafe { TCString::val_from_arg(credential_path_argument) }.into_string()?;
-            let credential_path = if credential_path == "" {
+            let credential_path = if credential_path.is_empty() {
                 None
             } else {
                 Some(credential_path)
