@@ -1,5 +1,6 @@
 use super::service::{ObjectInfo, Service};
 use crate::errors::Result;
+use google_cloud_storage::client::google_cloud_auth::credentials::CredentialsFile;
 use google_cloud_storage::client::{Client, ClientConfig};
 use google_cloud_storage::http::error::ErrorResponse;
 use google_cloud_storage::http::Error as GcsError;
@@ -25,9 +26,17 @@ fn is_http_error<T>(query: u16, res: &std::result::Result<T, http::Error>) -> bo
 }
 
 impl GcpService {
-    pub(in crate::server) fn new(bucket: String) -> Result<Self> {
+    pub(in crate::server) fn new(bucket: String, credential_path: Option<String>) -> Result<Self> {
         let rt = Runtime::new()?;
-        let config = rt.block_on(ClientConfig::default().with_auth())?;
+
+        let credentialpathstring = credential_path.clone().unwrap();
+        let config: ClientConfig = if credential_path.unwrap() == "" {
+            rt.block_on(ClientConfig::default().with_auth())?
+        } else {
+            let credentials = rt.block_on(CredentialsFile::new_from_file(credentialpathstring))?;
+            rt.block_on(ClientConfig::default().with_credentials(credentials))?
+        };
+
         Ok(Self {
             client: Client::new(config),
             rt,
@@ -244,10 +253,16 @@ mod tests {
         let Ok(bucket) = std::env::var("GCP_TEST_BUCKET") else {
             return None;
         };
+
+        let Ok(credential_path) = std::env::var("GCP_TEST_CREDENTIAL_PATH") else {
+            return None;
+        };
+
         let prefix = Uuid::new_v4();
-        Some((GcpService::new(bucket).unwrap(), move |n: &_| {
-            format!("{}-{}", prefix.as_simple(), n).into_bytes()
-        }))
+        Some((
+            GcpService::new(bucket, Some(credential_path)).unwrap(),
+            move |n: &_| format!("{}-{}", prefix.as_simple(), n).into_bytes(),
+        ))
     }
 
     #[test]

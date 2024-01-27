@@ -446,6 +446,7 @@ EXTERN_C struct TCServer *tc_server_new_sync(struct TCString origin,
 //
 // The server must be freed after it is used - tc_replica_sync does not automatically free it.
 EXTERN_C struct TCServer *tc_server_new_gcp(struct TCString bucket,
+                                      struct TCString credential_path,
                                       struct TCString encryption_secret,
                                       struct TCString *error_out);
 

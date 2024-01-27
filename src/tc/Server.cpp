@@ -79,13 +79,14 @@ tc::Server::new_sync (const std::string &origin, const std::string &client_id, c
 
 ////////////////////////////////////////////////////////////////////////////////
 tc::Server
-tc::Server::new_gcp (const std::string &bucket, const std::string &encryption_secret)
+tc::Server::new_gcp (const std::string &bucket, const std::string &credential_path, const std::string &encryption_secret)
 {
   TCString tc_bucket = tc_string_borrow (bucket.c_str ());
   TCString tc_encryption_secret = tc_string_borrow (encryption_secret.c_str ());
+  TCString tc_credential_path = tc_string_borrow (credential_path.c_str ());
 
   TCString error;
-  auto tcserver = tc_server_new_gcp (tc_bucket, tc_encryption_secret, &error);
+  auto tcserver = tc_server_new_gcp (tc_bucket, tc_credential_path, tc_encryption_secret, &error);
   if (!tcserver) {
     auto errmsg = format ("Could not configure connection to GCP bucket {1}: {2}",
         bucket, tc_string_content (&error));
