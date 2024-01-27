@@ -254,7 +254,7 @@ mod tests {
             return None;
         };
 
-        let Ok(credential_path) = std::env::var("GCP_CREDENTIAL_PATH") else {
+        let Ok(credential_path) = std::env::var("GCP_TEST_CREDENTIAL_PATH") else {
             return None;
         };
 
