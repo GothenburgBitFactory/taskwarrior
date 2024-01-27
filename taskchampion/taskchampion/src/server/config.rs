@@ -37,6 +37,11 @@ pub enum ServerConfig {
         /// Bucket in which to store the task data. This bucket must not be used for any other
         /// purpose.
         bucket: String,
+        /// Path to a GCP credential file, in JSON format. This is required for GCP access incase 
+        /// some other application already makes use of Application Default Credentials.
+        /// See https://cloud.google.com/docs/authentication#service-accounts for more details.
+        /// See https://cloud.google.com/iam/docs/keys-create-delete for instructions on how to
+        /// create a service account key.
         credential_path: Option<String>,
         /// Private encryption secret used to encrypt all data sent to the server.  This can
         /// be any suitably un-guessable string of bytes.
