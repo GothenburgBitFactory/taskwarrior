@@ -97,7 +97,7 @@ class TestUndoStyle(TestCase):
         # fifth operation setting the `modified` property.
         self.assertRegex(out, "The following [4|5] operations would be reverted:")
 
-        self.assertIn("tags_tag: <empty> -> x", out)
+        self.assertIn("tag_tag: <empty> -> x", out)
         self.assertIn("tags: <empty> -> tag", out)
         self.assertIn("project: foo -> bar", out)
         self.assertIn("priority: H -> <empty>", out)
