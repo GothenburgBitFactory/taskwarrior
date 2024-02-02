@@ -822,17 +822,22 @@ pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {
 /// EXTERN_C struct TCString tc_replica_op_get_uuid(struct TCReplicaOp *op);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_op_get_uuid(op: &TCReplicaOp) -> TCString {
+pub unsafe extern "C" fn tc_replica_op_get_uuid(op: *const TCReplicaOp) -> TCString {
+    // SAFETY:
+    //   - inner is not null
+    //   - inner is a living object
+    let rop: &ReplicaOp = unsafe { (*op).inner.as_ref() };
+
     if let ReplicaOp::Create { uuid }
     | ReplicaOp::Delete { uuid, .. }
-    | ReplicaOp::Update { uuid, .. } = *op.inner
+    | ReplicaOp::Update { uuid, .. } = rop
     {
         let uuid_rstr: RustString = uuid.to_string().into();
         // SAFETY:
         //  - caller promises to free this string
         unsafe { TCString::return_val(uuid_rstr) }
     } else {
-        panic!("Operation has no uuid: {:#?}", op);
+        panic!("Operation has no uuid: {:#?}", rop);
     }
 }
 
@@ -844,13 +849,18 @@ pub unsafe extern "C" fn tc_replica_op_get_uuid(op: &TCReplicaOp) -> TCString {
 /// EXTERN_C struct TCString tc_replica_op_get_property(struct TCReplicaOp *op);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_op_get_property(op: &TCReplicaOp) -> TCString {
-    if let ReplicaOp::Update { property, .. } = *op.inner.clone() {
+pub unsafe extern "C" fn tc_replica_op_get_property(op: *const TCReplicaOp) -> TCString {
+    // SAFETY:
+    //   - inner is not null
+    //   - inner is a living object
+    let rop: &ReplicaOp = unsafe { (*op).inner.as_ref() };
+
+    if let ReplicaOp::Update { property, .. } = rop {
         // SAFETY:
         //  - caller promises to free this string
-        unsafe { TCString::return_val(property.into()) }
+        unsafe { TCString::return_val(property.clone().into()) }
     } else {
-        panic!("Operation has no property: {:#?}", op);
+        panic!("Operation has no property: {:#?}", rop);
     }
 }
 
@@ -862,14 +872,19 @@ pub unsafe extern "C" fn tc_replica_op_get_property(op: &TCReplicaOp) -> TCStrin
 /// EXTERN_C struct TCString tc_replica_op_get_value(struct TCReplicaOp *op);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_op_get_value(op: &TCReplicaOp) -> TCString {
-    if let ReplicaOp::Update { value, .. } = *op.inner.clone() {
-        let value_rstr: RustString = value.unwrap_or(String::new()).into();
+pub unsafe extern "C" fn tc_replica_op_get_value(op: *const TCReplicaOp) -> TCString {
+    // SAFETY:
+    //   - inner is not null
+    //   - inner is a living object
+    let rop: &ReplicaOp = unsafe { (*op).inner.as_ref() };
+
+    if let ReplicaOp::Update { value, .. } = rop {
+        let value_rstr: RustString = value.clone().unwrap_or(String::new()).into();
         // SAFETY:
         //  - caller promises to free this string
         unsafe { TCString::return_val(value_rstr) }
     } else {
-        panic!("Operation has no value: {:#?}", op);
+        panic!("Operation has no value: {:#?}", rop);
     }
 }
 
@@ -881,14 +896,19 @@ pub unsafe extern "C" fn tc_replica_op_get_value(op: &TCReplicaOp) -> TCString {
 /// EXTERN_C struct TCString tc_replica_op_get_old_value(struct TCReplicaOp *op);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_op_get_old_value(op: &TCReplicaOp) -> TCString {
-    if let ReplicaOp::Update { old_value, .. } = *op.inner.clone() {
-        let old_value_rstr: RustString = old_value.unwrap_or(String::new()).into();
+pub unsafe extern "C" fn tc_replica_op_get_old_value(op: *const TCReplicaOp) -> TCString {
+    // SAFETY:
+    //   - inner is not null
+    //   - inner is a living object
+    let rop: &ReplicaOp = unsafe { (*op).inner.as_ref() };
+
+    if let ReplicaOp::Update { old_value, .. } = rop {
+        let old_value_rstr: RustString = old_value.clone().unwrap_or(String::new()).into();
         // SAFETY:
         //  - caller promises to free this string
         unsafe { TCString::return_val(old_value_rstr) }
     } else {
-        panic!("Operation has no old value: {:#?}", op);
+        panic!("Operation has no old value: {:#?}", rop);
     }
 }
 
@@ -900,14 +920,19 @@ pub unsafe extern "C" fn tc_replica_op_get_old_value(op: &TCReplicaOp) -> TCStri
 /// EXTERN_C struct TCString tc_replica_op_get_timestamp(struct TCReplicaOp *op);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_op_get_timestamp(op: &TCReplicaOp) -> TCString {
-    if let ReplicaOp::Update { timestamp, .. } = *op.inner {
+pub unsafe extern "C" fn tc_replica_op_get_timestamp(op: *const TCReplicaOp) -> TCString {
+    // SAFETY:
+    //   - inner is not null
+    //   - inner is a living object
+    let rop: &ReplicaOp = unsafe { (*op).inner.as_ref() };
+
+    if let ReplicaOp::Update { timestamp, .. } = rop {
         let timestamp_rstr: RustString = timestamp.to_string().into();
         // SAFETY:
         //  - caller promises to free this string
         unsafe { TCString::return_val(timestamp_rstr) }
     } else {
-        panic!("Operation has no timestamp: {:#?}", op);
+        panic!("Operation has no timestamp: {:#?}", rop);
     }
 }
 
@@ -919,13 +944,20 @@ pub unsafe extern "C" fn tc_replica_op_get_timestamp(op: &TCReplicaOp) -> TCStri
 /// EXTERN_C struct TCString tc_replica_op_get_old_task_description(struct TCReplicaOp *op);
 /// ```
 #[no_mangle]
-pub unsafe extern "C" fn tc_replica_op_get_old_task_description(op: &TCReplicaOp) -> TCString {
-    if let ReplicaOp::Delete { old_task, .. } = *op.inner.clone() {
+pub unsafe extern "C" fn tc_replica_op_get_old_task_description(
+    op: *const TCReplicaOp,
+) -> TCString {
+    // SAFETY:
+    //   - inner is not null
+    //   - inner is a living object
+    let rop: &ReplicaOp = unsafe { (*op).inner.as_ref() };
+
+    if let ReplicaOp::Delete { old_task, .. } = rop {
         let description_rstr: RustString = old_task["description"].clone().into();
         // SAFETY:
         //  - caller promises to free this string
         unsafe { TCString::return_val(description_rstr) }
     } else {
-        panic!("Operation has no timestamp: {:#?}", op);
+        panic!("Operation has no timestamp: {:#?}", rop);
     }
 }
