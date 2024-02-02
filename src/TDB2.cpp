@@ -214,9 +214,11 @@ void TDB2::revert ()
     return;
   }
   if (confirm_revert(undo_ops)) {
+    // Has the side-effect of freeing undo_ops.
     replica.commit_undo_ops(undo_ops, NULL);
+  } else {
+    replica.free_replica_ops(undo_ops);
   }
-  replica.free_replica_ops(undo_ops);
   replica.rebuild_working_set (false);
 }
 
