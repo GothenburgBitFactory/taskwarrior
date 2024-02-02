@@ -792,7 +792,7 @@ pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
 /// more than once.
 ///
 /// ```c
-/// EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList oplist);
+/// EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList *oplist);
 /// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {

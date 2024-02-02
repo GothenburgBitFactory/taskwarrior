@@ -620,7 +620,7 @@ EXTERN_C struct TCString tc_replica_op_get_value(struct TCReplicaOp *op);
 
 // Free a vector of ReplicaOp.  The vector may not be used after this function returns and must not be freed
 // more than once.
-EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList oplist);
+EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList *oplist);
 
 // ***** TCTask *****
 //
