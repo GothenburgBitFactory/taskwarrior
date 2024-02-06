@@ -122,12 +122,9 @@ impl CList for TCKVList {
 
 impl Default for TCKVList {
     fn default() -> Self {
-        let (ptr, len, capacity) = vec_into_raw_parts(Vec::default());
-        Self {
-            items: ptr,
-            len,
-            _capacity: capacity,
-        }
+        // SAFETY:
+        //  - caller will free this list
+        unsafe { TCKVList::return_val(Vec::new()) }
     }
 }
 

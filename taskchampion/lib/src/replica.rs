@@ -616,8 +616,23 @@ pub unsafe extern "C" fn tc_replica_sync(
 pub unsafe extern "C" fn tc_replica_get_undo_ops(rep: *mut TCReplica) -> TCReplicaOpList {
     wrap(
         rep,
-        |rep| Ok(TCReplicaOpList::from(rep.get_undo_ops()?)),
-        TCReplicaOpList::from(Vec::new()),
+        |rep| {
+            // SAFETY:
+            //  - caller will free this value, either with tc_replica_commit_undo_ops or
+            //  tc_replica_op_list_free.
+            Ok(unsafe {
+                TCReplicaOpList::return_val(
+                    rep.get_undo_ops()?
+                        .into_iter()
+                        .map(TCReplicaOp::from)
+                        .collect(),
+                )
+            })
+        },
+        // SAFETY:
+        //  - caller will free this value, either with tc_replica_commit_undo_ops or
+        //  tc_replica_op_list_free.
+        unsafe { TCReplicaOpList::return_val(Vec::new()) },
     )
 }
 
@@ -640,7 +655,12 @@ pub unsafe extern "C" fn tc_replica_commit_undo_ops(
     wrap(
         rep,
         |rep| {
-            let undo_ops: Vec<ReplicaOp> = Vec::from(tc_undo_ops);
+            // SAFETY:
+            // - `tc_undo_ops` is a valid value, as it was acquired from `tc_replica_get_undo_ops`.
+            let undo_ops: Vec<ReplicaOp> = unsafe { TCReplicaOpList::val_from_arg(tc_undo_ops) }
+                .into_iter()
+                .map(|op| *op.inner)
+                .collect();
             let undone = i32::from(rep.commit_undo_ops(undo_ops)?);
             if !undone_out.is_null() {
                 // SAFETY:
@@ -796,22 +816,18 @@ pub unsafe extern "C" fn tc_replica_free(rep: *mut TCReplica) {
 /// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_replica_op_list_free(oplist: *mut TCReplicaOpList) {
+    debug_assert!(!oplist.is_null());
     // SAFETY:
-    //  - items is not NULL
-    //  - items is properly aligned (promised by caller)
-    let items = unsafe { (*oplist).items };
-    // SAFETY:
-    //  - len is not NULL
-    //  - len is properly aligned (promised by caller)
-    let len = unsafe { (*oplist).len };
-    // SAFETY:
-    //  - capacity is not NULL
-    //  - capacity is properly aligned (promised by caller)
-    let capacity = unsafe { (*oplist).capacity };
-    // SAFETY:
-    //  - items, len, and capacity are the unmodified values returned by vec_into_raw_parts
-    //  (promised by caller)
-    unsafe { Vec::from_raw_parts(items, len, capacity) };
+    // - arg is not NULL (just checked)
+    // - `*oplist` is valid (guaranteed by caller not double-freeing this value)
+    unsafe {
+        TCReplicaOpList::take_val_from_arg(
+            oplist,
+            // SAFETY:
+            //  - value is empty, so the caller need not free it.
+            TCReplicaOpList::return_val(Vec::new()),
+        )
+    };
 }
 
 #[ffizz_header::item]

@@ -114,7 +114,7 @@ impl TaskDb {
         sync::sync(server, txn.as_mut(), avoid_snapshots)
     }
 
-    /// Return undo local operations until the most recent UndoPoint, returning false if there are no
+    /// Return undo local operations until the most recent UndoPoint, returning an empty Vec if there are no
     /// local operations to undo.
     pub fn get_undo_ops(&mut self) -> Result<Vec<ReplicaOp>> {
         let mut txn = self.storage.txn()?;
