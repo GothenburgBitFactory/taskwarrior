@@ -1,7 +1,5 @@
 use crate::traits::*;
 use crate::types::*;
-use crate::util::vec_into_raw_parts;
-use taskchampion::storage::TaskMap;
 
 #[ffizz_header::item]
 #[ffizz(order = 600)]
@@ -77,22 +75,6 @@ pub struct TCKVList {
     /// total size of items (internal use only)
     pub _capacity: libc::size_t,
     pub items: *mut TCKV,
-}
-
-impl From<TaskMap> for TCKVList {
-    fn from(taskmap: TaskMap) -> TCKVList {
-        let vec = taskmap
-            .iter()
-            .map(|(k, v)| {
-                let key = RustString::from(k.as_ref());
-                let value = RustString::from(v.as_ref());
-                TCKV::as_ctype((key, value))
-            })
-            .collect();
-        // SAFETY:
-        //  - caller will free this list
-        unsafe { TCKVList::return_val(vec) }
-    }
 }
 
 impl CList for TCKVList {

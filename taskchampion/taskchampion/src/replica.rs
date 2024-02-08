@@ -242,7 +242,7 @@ impl Replica {
         self.taskdb.get_undo_ops()
     }
 
-    /// Undo local operations in storage.
+    /// Undo local operations in storage, returning a boolean indicating success.
     pub fn commit_undo_ops(&mut self, undo_ops: Vec<ReplicaOp>) -> Result<bool> {
         self.taskdb.commit_undo_ops(undo_ops)
     }

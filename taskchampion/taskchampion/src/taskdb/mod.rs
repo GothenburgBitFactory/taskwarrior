@@ -121,7 +121,7 @@ impl TaskDb {
         undo::get_undo_ops(txn.as_mut())
     }
 
-    /// Undo local operations in storage.
+    /// Undo local operations in storage, returning a boolean indicating success.
     pub fn commit_undo_ops(&mut self, undo_ops: Vec<ReplicaOp>) -> Result<bool> {
         let mut txn = self.storage.txn()?;
         undo::commit_undo_ops(txn.as_mut(), undo_ops)

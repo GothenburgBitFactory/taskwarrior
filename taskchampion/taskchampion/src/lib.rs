@@ -63,7 +63,7 @@ mod replica;
 pub mod server;
 pub mod storage;
 mod task;
-pub mod taskdb;
+mod taskdb;
 mod utils;
 mod workingset;
 

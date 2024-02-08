@@ -1,12 +1,7 @@
 use super::apply;
 use crate::errors::Result;
 use crate::storage::{ReplicaOp, StorageTxn};
-
-// Adapted from https://stackoverflow.com/a/67105052/1938621
-#[cfg(not(test))]
-use log::{debug, info, trace}; // Use log crate when building application
-#[cfg(test)]
-use std::{println as debug, println as info, println as trace}; // Workaround to use prinltn! for logs.
+use log::{debug, info, trace};
 
 /// Local operations until the most recent UndoPoint.
 pub fn get_undo_ops(txn: &mut dyn StorageTxn) -> Result<Vec<ReplicaOp>> {
@@ -23,7 +18,7 @@ pub fn get_undo_ops(txn: &mut dyn StorageTxn) -> Result<Vec<ReplicaOp>> {
     Ok(undo_ops)
 }
 
-/// Commit operations to storage.
+/// Commit operations to storage, returning a boolean indicating success.
 pub fn commit_undo_ops(txn: &mut dyn StorageTxn, mut undo_ops: Vec<ReplicaOp>) -> Result<bool> {
     let mut applied = false;
     let mut local_ops = txn.operations().unwrap();

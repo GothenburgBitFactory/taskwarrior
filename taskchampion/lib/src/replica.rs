@@ -1,8 +1,8 @@
 use crate::traits::*;
 use crate::types::*;
-use crate::util::{err_to_ruststring, vec_into_raw_parts};
+use crate::util::err_to_ruststring;
 use std::ptr::NonNull;
-use taskchampion::storage::{ReplicaOp, TaskMap};
+use taskchampion::storage::ReplicaOp;
 use taskchampion::{Replica, StorageConfig};
 
 #[ffizz_header::item]
@@ -161,24 +161,6 @@ pub enum TCReplicaOpType {
     Error = 4,
 }
 
-impl PassByValue for TCReplicaOpType {
-    type RustType = u32;
-
-    unsafe fn from_ctype(self) -> Self::RustType {
-        self as u32
-    }
-
-    fn as_ctype(arg: u32) -> Self {
-        match arg {
-            0 => TCReplicaOpType::Create,
-            1 => TCReplicaOpType::Delete,
-            2 => TCReplicaOpType::Update,
-            3 => TCReplicaOpType::UndoPoint,
-            _ => panic!("Bad TCReplicaOpType."),
-        }
-    }
-}
-
 #[ffizz_header::item]
 #[ffizz(order = 901)]
 /// Create a new TCReplica with an in-memory database.  The contents of the database will be
@@ -233,33 +215,6 @@ pub unsafe extern "C" fn tc_replica_new_on_disk(
         error_out,
         std::ptr::null_mut(),
     )
-}
-
-impl From<TCKVList> for TaskMap {
-    fn from(kvlist: TCKVList) -> TaskMap {
-        // SAFETY:
-        //  - items, len, and capacity are the unmodified values returned by vec_into_raw_parts
-        //  (promised by caller)
-        let vec = unsafe { Vec::from_raw_parts(kvlist.items, kvlist.len, kvlist._capacity) };
-
-        let mut taskmap = TaskMap::new();
-        vec.into_iter().for_each(|kv| {
-            // SAFETY:
-            //  - key is valid (promised by caller)
-            //  - caller will not use key after this call (convention)
-            let key_ruststring = unsafe { TCString::val_from_arg(kv.key) };
-            // SAFETY:
-            //  - value is valid (promised by caller)
-            //  - caller will not use value after this call (convention)
-            let value_ruststring = unsafe { TCString::val_from_arg(kv.value) };
-
-            taskmap.insert(
-                key_ruststring.into_string().unwrap(),
-                value_ruststring.into_string().unwrap(),
-            );
-        });
-        taskmap
-    }
 }
 
 #[ffizz_header::item]
@@ -325,6 +280,14 @@ pub struct TCReplicaOpList {
     capacity: usize,
 }
 
+impl Default for TCReplicaOpList {
+    fn default() -> Self {
+        // SAFETY:
+        //  - caller will free this value
+        unsafe { TCReplicaOpList::return_val(Vec::new()) }
+    }
+}
+
 impl CList for TCReplicaOpList {
     type Element = TCReplicaOp;
 
@@ -347,41 +310,6 @@ impl CList for TCReplicaOpList {
 
     fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
         (self.items, self.len, self.capacity)
-    }
-}
-
-impl From<Vec<ReplicaOp>> for TCReplicaOpList {
-    fn from(replica_op_list: Vec<ReplicaOp>) -> TCReplicaOpList {
-        let tc_replica_op_vec: Vec<TCReplicaOp> = replica_op_list
-            .into_iter()
-            .map(|op| TCReplicaOp::from(op))
-            .collect();
-        let (ptr, len, capacity) = vec_into_raw_parts(tc_replica_op_vec);
-        TCReplicaOpList {
-            items: ptr as *mut TCReplicaOp,
-            len,
-            capacity,
-        }
-    }
-}
-
-impl From<TCReplicaOpList> for Vec<ReplicaOp> {
-    fn from(tc_replica_op_list: TCReplicaOpList) -> Vec<ReplicaOp> {
-        // SAFETY:
-        //  - items, len, and capacity are the unmodified values returned by vec_into_raw_parts
-        //  (promised by caller)
-        let tc_replica_op_vec = unsafe {
-            Vec::from_raw_parts(
-                tc_replica_op_list.items,
-                tc_replica_op_list.len,
-                tc_replica_op_list.capacity,
-            )
-        };
-
-        tc_replica_op_vec
-            .into_iter()
-            .map(|tc_op| *tc_op.inner)
-            .collect()
     }
 }
 
@@ -629,10 +557,7 @@ pub unsafe extern "C" fn tc_replica_get_undo_ops(rep: *mut TCReplica) -> TCRepli
                 )
             })
         },
-        // SAFETY:
-        //  - caller will free this value, either with tc_replica_commit_undo_ops or
-        //  tc_replica_op_list_free.
-        unsafe { TCReplicaOpList::return_val(Vec::new()) },
+        TCReplicaOpList::default(),
     )
 }
 
