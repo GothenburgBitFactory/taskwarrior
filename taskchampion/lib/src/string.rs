@@ -55,6 +55,7 @@ use std::path::PathBuf;
 /// } TCString;
 /// ```
 #[repr(C)]
+#[derive(Debug)]
 pub struct TCString {
     // defined based on the type
     ptr: *mut libc::c_void,

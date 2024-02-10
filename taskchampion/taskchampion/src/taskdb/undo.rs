@@ -1,19 +1,53 @@
 use super::apply;
 use crate::errors::Result;
 use crate::storage::{ReplicaOp, StorageTxn};
-use log::{debug, trace};
+use log::{debug, info, trace};
 
-/// Undo local operations until an UndoPoint.
-pub(super) fn undo(txn: &mut dyn StorageTxn) -> Result<bool> {
-    let mut applied = false;
-    let mut popped = false;
-    let mut local_ops = txn.operations()?;
+/// Local operations until the most recent UndoPoint.
+pub fn get_undo_ops(txn: &mut dyn StorageTxn) -> Result<Vec<ReplicaOp>> {
+    let mut local_ops = txn.operations().unwrap();
+    let mut undo_ops: Vec<ReplicaOp> = Vec::new();
 
     while let Some(op) = local_ops.pop() {
-        popped = true;
         if op == ReplicaOp::UndoPoint {
             break;
         }
+        undo_ops.push(op);
+    }
+
+    Ok(undo_ops)
+}
+
+/// Commit operations to storage, returning a boolean indicating success.
+pub fn commit_undo_ops(txn: &mut dyn StorageTxn, mut undo_ops: Vec<ReplicaOp>) -> Result<bool> {
+    let mut applied = false;
+    let mut local_ops = txn.operations().unwrap();
+
+    // Add UndoPoint to undo_ops unless this undo will empty the operations database, in which case
+    // there is no UndoPoint.
+    if local_ops.len() > undo_ops.len() {
+        undo_ops.push(ReplicaOp::UndoPoint);
+    }
+
+    // Drop undo_ops iff they're the latest operations.
+    // TODO Support concurrent undo by adding the reverse of undo_ops rather than popping from operations.
+    let old_len = local_ops.len();
+    let undo_len = undo_ops.len();
+    let new_len = old_len - undo_len;
+    let local_undo_ops = &local_ops[new_len..old_len];
+    undo_ops.reverse();
+    if local_undo_ops != undo_ops {
+        info!("Undo failed: concurrent changes to the database occurred.");
+        debug!(
+            "local_undo_ops={:#?}\nundo_ops={:#?}",
+            local_undo_ops, undo_ops
+        );
+        return Ok(applied);
+    }
+    undo_ops.reverse();
+    local_ops.truncate(new_len);
+
+    for op in undo_ops {
         debug!("Reversing operation {:?}", op);
         let rev_ops = op.reverse_ops();
         for op in rev_ops {
@@ -23,7 +57,7 @@ pub(super) fn undo(txn: &mut dyn StorageTxn) -> Result<bool> {
         }
     }
 
-    if popped {
+    if undo_len != 0 {
         txn.set_operations(local_ops)?;
         txn.commit()?;
     }
@@ -87,31 +121,33 @@ mod tests {
             timestamp,
         })?;
 
-        assert_eq!(db.operations().len(), 9);
+        assert_eq!(db.operations().len(), 9, "{:#?}", db.operations());
 
-        {
-            let mut txn = db.storage.txn()?;
-            assert!(undo(txn.as_mut())?);
-        }
+        let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
+        assert_eq!(undo_ops.len(), 3, "{:#?}", undo_ops);
 
-        // undo took db back to the snapshot
-        assert_eq!(db.operations().len(), 5);
-        assert_eq!(db.sorted_tasks(), db_state);
+        assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
-        {
-            let mut txn = db.storage.txn()?;
-            assert!(undo(txn.as_mut())?);
-        }
+        // Note that we've subtracted the length of undo_ops plus one for the UndoPoint.
+        assert_eq!(db.operations().len(), 5, "{:#?}", db.operations());
+        assert_eq!(db.sorted_tasks(), db_state, "{:#?}", db.sorted_tasks());
+
+        // Note that the number of undo operations is equal to the number of operations in the
+        // database here because there are no UndoPoints.
+        let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
+        assert_eq!(undo_ops.len(), 5, "{:#?}", undo_ops);
+
+        assert!(commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         // empty db
-        assert_eq!(db.operations().len(), 0);
-        assert_eq!(db.sorted_tasks(), vec![]);
+        assert_eq!(db.operations().len(), 0, "{:#?}", db.operations());
+        assert_eq!(db.sorted_tasks(), vec![], "{:#?}", db.sorted_tasks());
 
-        {
-            let mut txn = db.storage.txn()?;
-            // nothing left to undo, so undo() returns false
-            assert!(!undo(txn.as_mut())?);
-        }
+        let undo_ops = get_undo_ops(db.storage.txn()?.as_mut())?;
+        assert_eq!(undo_ops.len(), 0, "{:#?}", undo_ops);
+
+        // nothing left to undo, so commit_undo_ops() returns false
+        assert!(!commit_undo_ops(db.storage.txn()?.as_mut(), undo_ops)?);
 
         Ok(())
     }

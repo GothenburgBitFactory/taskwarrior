@@ -31,6 +31,7 @@
 #include "tc/Server.h"
 #include "tc/WorkingSet.h"
 #include "tc/util.h"
+#include <iostream>
 
 using namespace tc::ffi;
 
@@ -154,12 +155,66 @@ void tc::Replica::sync (Server server, bool avoid_snapshots)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::undo (int32_t *undone_out)
+TCReplicaOpList tc::Replica::get_undo_ops ()
 {
-  auto res = tc_replica_undo (&*inner, undone_out);
+  return tc_replica_get_undo_ops(&*inner);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Replica::commit_undo_ops (TCReplicaOpList tc_undo_ops, int32_t *undone_out)
+{
+  auto res = tc_replica_commit_undo_ops (&*inner, tc_undo_ops, undone_out);
   if (res != TC_RESULT_OK) {
     throw replica_error ();
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void tc::Replica::free_replica_ops (TCReplicaOpList tc_undo_ops)
+{
+  tc_replica_op_list_free(&tc_undo_ops);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string tc::Replica::get_op_uuid(TCReplicaOp &tc_replica_op) const
+{
+  TCString uuid = tc_replica_op_get_uuid(&tc_replica_op);
+  return tc2string(uuid);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string tc::Replica::get_op_property(TCReplicaOp &tc_replica_op) const
+{
+  TCString property = tc_replica_op_get_property(&tc_replica_op);
+  return tc2string(property);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string tc::Replica::get_op_value(TCReplicaOp &tc_replica_op) const
+{
+  TCString value = tc_replica_op_get_value(&tc_replica_op);
+  return tc2string(value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string tc::Replica::get_op_old_value(TCReplicaOp &tc_replica_op) const
+{
+  TCString old_value = tc_replica_op_get_old_value(&tc_replica_op);
+  return tc2string(old_value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string tc::Replica::get_op_timestamp(TCReplicaOp &tc_replica_op) const
+{
+  TCString timestamp = tc_replica_op_get_timestamp(&tc_replica_op);
+  return tc2string(timestamp);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string tc::Replica::get_op_old_task_description(TCReplicaOp &tc_replica_op) const
+{
+  TCString description = tc_replica_op_get_old_task_description(&tc_replica_op);
+  return tc2string(description);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

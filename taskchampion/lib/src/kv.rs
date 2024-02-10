@@ -17,6 +17,7 @@ use crate::types::*;
 /// } TCKV;
 /// ```
 #[repr(C)]
+#[derive(Debug)]
 pub struct TCKV {
     pub key: TCString,
     pub value: TCString,
@@ -68,11 +69,12 @@ impl PassByValue for TCKV {
 /// } TCKVList;
 /// ```
 #[repr(C)]
+#[derive(Debug)]
 pub struct TCKVList {
-    len: libc::size_t,
+    pub len: libc::size_t,
     /// total size of items (internal use only)
-    _capacity: libc::size_t,
-    items: *mut TCKV,
+    pub _capacity: libc::size_t,
+    pub items: *mut TCKV,
 }
 
 impl CList for TCKVList {
@@ -97,6 +99,14 @@ impl CList for TCKVList {
 
     fn into_raw_parts(self) -> (*mut Self::Element, usize, usize) {
         (self.items, self.len, self._capacity)
+    }
+}
+
+impl Default for TCKVList {
+    fn default() -> Self {
+        // SAFETY:
+        //  - caller will free this list
+        unsafe { TCKVList::return_val(Vec::new()) }
     }
 }
 

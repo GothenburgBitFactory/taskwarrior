@@ -33,7 +33,7 @@
 // ## Pass by Pointer
 //
 // Several types such as TCReplica and TCString are "opaque" types and always handled as pointers
-// in C. The bytes these pointers address are private to the Rust implemetation and must not be
+// in C. The bytes these pointers address are private to the Rust implementation and must not be
 // accessed from C.
 //
 // Pass-by-pointer values have exactly one owner, and that owner is responsible for freeing the
@@ -480,6 +480,38 @@ EXTERN_C void tc_server_free(struct TCServer *server);
 // TCReplicas are not threadsafe.
 typedef struct TCReplica TCReplica;
 
+// ***** TCReplicaOpType *****
+enum TCReplicaOpType
+#ifdef __cplusplus
+  : uint32_t
+#endif // __cplusplus
+{
+    Create = 0,
+    Delete = 1,
+    Update = 2,
+    UndoPoint = 3,
+};
+#ifndef __cplusplus
+typedef uint32_t TCReplicaOpType;
+#endif // __cplusplus
+
+// ***** TCReplicaOp *****
+struct TCReplicaOp {
+    TCReplicaOpType operation_type;
+    void* inner;
+};
+
+typedef struct TCReplicaOp TCReplicaOp;
+
+// ***** TCReplicaOpList *****
+struct TCReplicaOpList {
+    struct TCReplicaOp *items;
+    size_t len;
+    size_t capacity;
+};
+
+typedef struct TCReplicaOpList TCReplicaOpList;
+
 // Create a new TCReplica with an in-memory database.  The contents of the database will be
 // lost when it is freed with tc_replica_free.
 EXTERN_C struct TCReplica *tc_replica_new_in_memory(void);
@@ -509,6 +541,12 @@ EXTERN_C struct TCUuidList tc_replica_all_task_uuids(struct TCReplica *rep);
 // Returns a TCTaskList with a NULL items field on error.
 EXTERN_C struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
 
+// Undo local operations in storage.
+//
+// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
+// there are no operations that can be done.
+EXTERN_C TCResult tc_replica_commit_undo_ops(struct TCReplica *rep, TCReplicaOpList tc_undo_ops, int32_t *undone_out);
+
 // Get the latest error for a replica, or a string with NULL ptr if no error exists.  Subsequent
 // calls to this function will return NULL.  The rep pointer must not be NULL.  The caller must
 // free the returned string.
@@ -519,6 +557,9 @@ EXTERN_C struct TCString tc_replica_error(struct TCReplica *rep);
 // Returns NULL when the task does not exist, and on error.  Consult tc_replica_error
 // to distinguish the two conditions.
 EXTERN_C struct TCTask *tc_replica_get_task(struct TCReplica *rep, struct TCUuid tcuuid);
+
+// Return undo local operations until the most recent UndoPoint.
+EXTERN_C TCReplicaOpList tc_replica_get_undo_ops(struct TCReplica *rep);
 
 // Create a new task.  The task must not already exist.
 //
@@ -549,12 +590,6 @@ EXTERN_C TCResult tc_replica_rebuild_working_set(struct TCReplica *rep, bool ren
 // The `server` argument remains owned by the caller, and must be freed explicitly.
 EXTERN_C TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool avoid_snapshots);
 
-// Undo local operations until the most recent UndoPoint.
-//
-// If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
-// there are no operations that can be done.
-EXTERN_C TCResult tc_replica_undo(struct TCReplica *rep, int32_t *undone_out);
-
 // Get the current working set for this replica.  The resulting value must be freed
 // with tc_working_set_free.
 //
@@ -564,6 +599,28 @@ EXTERN_C struct TCWorkingSet *tc_replica_working_set(struct TCReplica *rep);
 // Free a replica.  The replica may not be used after this function returns and must not be freed
 // more than once.
 EXTERN_C void tc_replica_free(struct TCReplica *rep);
+
+// Return description field of old task field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_old_task_description(struct TCReplicaOp *op);
+
+// Return old value field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_old_value(struct TCReplicaOp *op);
+
+// Return property field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_property(struct TCReplicaOp *op);
+
+// Return timestamp field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_timestamp(struct TCReplicaOp *op);
+
+// Return uuid field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_uuid(struct TCReplicaOp *op);
+
+// Return value field of ReplicaOp.
+EXTERN_C struct TCString tc_replica_op_get_value(struct TCReplicaOp *op);
+
+// Free a vector of ReplicaOp.  The vector may not be used after this function returns and must not be freed
+// more than once.
+EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList *oplist);
 
 // ***** TCTask *****
 //

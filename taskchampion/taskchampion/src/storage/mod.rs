@@ -1,3 +1,4 @@
+use crate::errors::Result;
 /**
 This module defines the backend storage used by [`Replica`](crate::Replica).
 It defines a [trait](crate::storage::Storage) for storage implementations, and provides a default on-disk implementation as well as an in-memory implementation for testing.
@@ -5,7 +6,6 @@ It defines a [trait](crate::storage::Storage) for storage implementations, and p
 Typical uses of this crate do not interact directly with this module; [`StorageConfig`](crate::StorageConfig) is sufficient.
 However, users who wish to implement their own storage backends can implement the traits defined here and pass the result to [`Replica`](crate::Replica).
 */
-use crate::errors::Result;
 use std::collections::HashMap;
 use uuid::Uuid;
 

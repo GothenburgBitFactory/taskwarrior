@@ -1,6 +1,7 @@
 use crate::traits::*;
 use crate::types::*;
 use crate::util::err_to_ruststring;
+use crate::TCKV;
 use std::convert::TryFrom;
 use std::ops::Deref;
 use std::ptr::NonNull;

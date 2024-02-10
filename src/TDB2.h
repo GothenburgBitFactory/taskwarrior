@@ -78,13 +78,15 @@ public:
   void dump ();
 
   void sync (tc::Server server, bool avoid_snapshots);
+  bool confirm_revert(struct tc::ffi::TCReplicaOpList);
 
 private:
   tc::Replica replica;
   std::optional<tc::WorkingSet> _working_set;
 
   const tc::WorkingSet &working_set ();
-  void show_diff (const std::string&, const std::string&, const std::string&);
+  static std::string option_string (std::string input);
+  static void show_diff (const std::string&, const std::string&, const std::string&);
 };
 
 #endif

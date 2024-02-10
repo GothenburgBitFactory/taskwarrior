@@ -42,6 +42,7 @@
 #include <main.h>
 #include <util.h>
 #include "tc/Server.h"
+#include "tc/util.h"
 
 bool TDB2::debug_mode = false;
 static void dependency_scan (std::vector<Task> &);
@@ -207,8 +208,56 @@ void TDB2::get_changes (std::vector <Task>& changes)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert ()
 {
-  replica.undo (NULL);
+  auto undo_ops = replica.get_undo_ops();
+  if (undo_ops.len == 0) {
+    std::cout << "No operations to undo.";
+    return;
+  }
+  if (confirm_revert(undo_ops)) {
+    // Has the side-effect of freeing undo_ops.
+    replica.commit_undo_ops(undo_ops, NULL);
+  } else {
+    replica.free_replica_ops(undo_ops);
+  }
   replica.rebuild_working_set (false);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool TDB2::confirm_revert (struct tc::ffi::TCReplicaOpList undo_ops)
+{
+  // TODO Use show_diff rather than this basic listing of operations, though
+  // this might be a worthy undo.style itself.
+  std::cout << "The following " << undo_ops.len << " operations would be reverted:\n";
+  for (size_t i = 0; i < undo_ops.len; i++) {
+    std::cout << "- ";
+    tc::ffi::TCReplicaOp op = undo_ops.items[i];
+    switch(op.operation_type) {
+      case tc::ffi::TCReplicaOpType::Create:
+        std::cout << "Create " << replica.get_op_uuid(op);
+        break;
+      case tc::ffi::TCReplicaOpType::Delete:
+        std::cout << "Delete " << replica.get_op_old_task_description(op);
+        break;
+      case tc::ffi::TCReplicaOpType::Update:
+        std::cout << "Update " << replica.get_op_uuid(op) << "\n";
+        std::cout << "    " << replica.get_op_property(op) << ": " << option_string(replica.get_op_old_value(op)) << " -> " << option_string(replica.get_op_value(op));
+        break;
+      case tc::ffi::TCReplicaOpType::UndoPoint:
+        throw std::string ("Can't undo UndoPoint.");
+        break;
+      default:
+        throw std::string ("Can't undo non-operation.");
+        break;
+    }
+    std::cout << "\n";
+  }
+  return ! Context::getContext ().config.getBoolean ("confirmation") ||
+        confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string TDB2::option_string(std::string input) {
+  return input == "" ? "<empty>" : input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

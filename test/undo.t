@@ -74,7 +74,7 @@ class TestUndoStyle(TestCase):
         self.t("add one project:foo priority:H")
         self.t("1 modify +tag project:bar priority:")
 
-    @unittest.expectedFailure  # undo diffs are not supported
+    @unittest.expectedFailure # undo diffs are not supported
     def test_undo_side_style(self):
         """Test that 'rc.undo.style:side' generates the right output"""
         self.t.config("undo.style", "side")
@@ -82,13 +82,25 @@ class TestUndoStyle(TestCase):
         self.assertNotRegex(out, "-tags:\s*\n\+tags:\s+tag")
         self.assertRegex(out, "tags\s+tag\s*")
 
-    @unittest.expectedFailure  # undo diffs are not supported
+    @unittest.expectedFailure # undo diffs are not supported
     def test_undo_diff_style(self):
         """Test that 'rc.undo.style:diff' generates the right output"""
         self.t.config("undo.style", "diff")
         code, out, err = self.t("undo", input="n\n")
         self.assertRegex(out, "-tags:\s*\n\+tags:\s+tag")
         self.assertNotRegex(out, "tags\s+tag\s*")
+
+    def test_undo_diff_operations(self):
+        code, out, err = self.t("undo", input="n\n")
+
+        # If the clock ticks a second between `add` and `modify` there is a
+        # fifth operation setting the `modified` property.
+        self.assertRegex(out, "The following [4|5] operations would be reverted:")
+
+        self.assertIn("tag_tag: <empty> -> x", out)
+        self.assertIn("tags: <empty> -> tag", out)
+        self.assertIn("project: foo -> bar", out)
+        self.assertIn("priority: H -> <empty>", out)
 
 
 class TestBug634(TestCase):
