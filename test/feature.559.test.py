@@ -69,7 +69,11 @@ class TestFeature559(TestCase):
         self.assertNotIn("footask", out)
         self.assertNotIn("Error", out)
         self.assertRegex(
-            err, re.compile("Could not.+unable to open database file", re.DOTALL)
+            err,
+            re.compile(
+                "unable to open database file:.*Unable to open the database file",
+                re.DOTALL,
+            ),
         )
 
 

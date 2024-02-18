@@ -37,9 +37,11 @@
 #include <assert.h>
 #include <format.h>
 #include <main.h>
+#include <rust/cxx.h>
 #include <shared.h>
 #include <stdlib.h>
 #include <string.h>
+#include <taskchampion-cpp/lib.h>
 #include <unistd.h>
 
 #include <algorithm>
@@ -681,6 +683,11 @@ int Context::initialize(int argc, const char** argv) {
     rc = 2;
   }
 
+  catch (rust::Error& err) {
+    error(err.what());
+    rc = 2;
+  }
+
   catch (int) {
     // Hooks can terminate processing by throwing integers.
     rc = 4;
@@ -689,7 +696,7 @@ int Context::initialize(int argc, const char** argv) {
   catch (const std::regex_error& e) {
     std::cout << "regex_error caught: " << e.what() << '\n';
   } catch (...) {
-    error("knknown error. Please report.");
+    error("Unknown error. Please report.");
     rc = 3;
   }
 
@@ -769,6 +776,11 @@ int Context::run() {
 
   catch (const std::string& message) {
     error(message);
+    rc = 2;
+  }
+
+  catch (rust::Error& err) {
+    error(err.what());
     rc = 2;
   }
 

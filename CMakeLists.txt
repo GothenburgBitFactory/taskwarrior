@@ -26,13 +26,13 @@ if (ENABLE_WASM)
 endif (ENABLE_WASM)
 
 message ("-- Looking for git submodules")
-if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src AND EXISTS ${CMAKE_SOURCE_DIR}/src/tc/corrosion)
+if (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src AND EXISTS ${CMAKE_SOURCE_DIR}/src/taskchampion-cpp/corrosion)
   message ("-- Found git submodules")
 else (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src)
   message ("-- Cloning git submodules")
   execute_process (COMMAND git submodule update --init
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endif (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src AND EXISTS ${CMAKE_SOURCE_DIR}/src/tc/corrosion)
+endif (EXISTS ${CMAKE_SOURCE_DIR}/src/libshared/src AND EXISTS ${CMAKE_SOURCE_DIR}/src/taskchampion-cpp/corrosion)
 
 message ("-- Looking for SHA1 references")
 if (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
@@ -142,7 +142,7 @@ configure_file (
 
 add_subdirectory (src)
 add_subdirectory (src/commands)
-add_subdirectory (src/tc)
+add_subdirectory (src/taskchampion-cpp)
 add_subdirectory (src/columns)
 add_subdirectory (doc)
 add_subdirectory (scripts)

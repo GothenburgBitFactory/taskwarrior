@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 3.22)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
-                     ${CMAKE_SOURCE_DIR}/src/tc
-                     ${CMAKE_SOURCE_DIR}/src/tc/lib
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
@@ -39,6 +37,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColWait.cpp ColWait.h)
 
 add_library (columns STATIC ${columns_SRCS})
+target_link_libraries(columns taskchampion-cpp)
 
 #SET(CMAKE_BUILD_TYPE gcov)
 #SET(CMAKE_CXX_FLAGS_GCOV "--coverage")

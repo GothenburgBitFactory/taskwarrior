@@ -1,6 +1,6 @@
 [submodule "src/libshared"]
 	path = src/libshared
 	url = https://github.com/GothenburgBitFactory/libshared.git
-[submodule "src/tc/corrosion"]
-	path = src/tc/corrosion
+[submodule "src/taskchampion-cpp/corrosion"]
+	path = src/taskchampion-cpp/corrosion
 	url = https://github.com/corrosion-rs/corrosion.git

@@ -27,88 +27,129 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
+#include <rust/cxx.h>
 #include <stdlib.h>
+#include <taskchampion-cpp/lib.h>
+#include <test.h>
 #include <unistd.h>
 
 #include <iostream>
 
-#include "tc/Replica.h"
-#include "tc/Task.h"
-#include "tc/WorkingSet.h"
-#include "tc/util.h"
-#include "test.h"
+std::string uuid2str(tc::Uuid uuid) { return static_cast<std::string>(uuid.to_string()); }
 
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
-  UnitTest t(23);
+// Tests for the basic cxxbridge functionality. This focuses on the methods with
+// complex cxxbridge implementations, rather than those with complex Rust
+// implementations but simple APIs, like sync.
+int main(int, char **) {
+  UnitTest t;
+  std::string str;
 
-  // This function contains unit tests for the various bits of the wrappers for
-  // taskchampion-lib (that is, for `src/tc/*.cpp`).
+  auto replica = tc::new_replica_in_memory();
+  auto uuid = tc::uuid_v4();
+  auto uuid2 = tc::uuid_v4();
+  t.is(uuid2str(uuid).size(), (size_t)36, "uuid string is the right length");
 
-  //// util
+  rust::Vec<tc::Operation> ops;
+  auto task = tc::create_task(uuid, ops);
+  t.is(uuid2str(task->get_uuid()), uuid2str(uuid), "new task has correct uuid");
+  task->update("status", "pending", ops);
+  task->update("description", "a task", ops);
+  task->update("description", "a cool task", ops);
+  tc::add_undo_point(ops);
+  task->delete_task(ops);
 
-  {
-    auto s1 = std::string("a\0string!");
-    auto stc = tc::string2tc(s1);
-    auto s2 = tc::tc2string(stc);
-    t.is(s1, s2, "round-trip to tc string and back (containing an embedded NUL)");
+  t.is(ops[0].is_create(), true, "ops[0] is create");
+  t.is(uuid2str(ops[0].get_uuid()), uuid2str(uuid), "ops[0] has correct uuid");
+
+  t.is(ops[1].is_update(), true, "ops[1] is update");
+  t.is(uuid2str(ops[1].get_uuid()), uuid2str(uuid), "ops[1] has correct uuid");
+  ops[1].get_property(str);
+  t.is(str, "status", "ops[1] property is 'status'");
+  t.ok(ops[1].get_value(str), "get_value succeeds");
+  t.is(str, "pending", "ops[1] value is 'pending'");
+  t.ok(!ops[1].get_old_value(str), "get_old_value has no old value");
+
+  t.is(ops[2].is_update(), true, "ops[2] is update");
+  t.is(uuid2str(ops[2].get_uuid()), uuid2str(uuid), "ops[2] has correct uuid");
+  ops[2].get_property(str);
+  t.is(str, "description", "ops[2] property is 'description'");
+  t.ok(ops[2].get_value(str), "get_value succeeds");
+  t.is(str, "a task", "ops[2] value is 'a task'");
+  t.ok(!ops[2].get_old_value(str), "get_old_value has no old value");
+
+  t.is(ops[3].is_update(), true, "ops[3] is update");
+  t.is(uuid2str(ops[3].get_uuid()), uuid2str(uuid), "ops[3] has correct uuid");
+  ops[3].get_property(str);
+  t.is(str, "description", "ops[3] property is 'description'");
+  t.ok(ops[3].get_value(str), "get_value succeeds");
+  t.is(str, "a cool task", "ops[3] value is 'a cool task'");
+  t.ok(ops[3].get_old_value(str), "get_old_value succeeds");
+  t.is(str, "a task", "ops[3] old value is 'a task'");
+
+  t.is(ops[4].is_undo_point(), true, "ops[4] is undo_point");
+
+  t.is(ops[5].is_delete(), true, "ops[5] is delete");
+  t.is(uuid2str(ops[5].get_uuid()), uuid2str(uuid), "ops[5] has correct uuid");
+  auto old_task = ops[5].get_old_task();
+  // old_task is in arbitrary order, so just check that status is in there.
+  bool found = false;
+  for (auto &pv : old_task) {
+    std::string p = static_cast<std::string>(pv.prop);
+    if (p == "status") {
+      std::string v = static_cast<std::string>(pv.value);
+      t.is(v, "pending", "old_task has status:pending");
+      found = true;
+    }
+  }
+  t.ok(found, "found the status property in ops[5].old_task");
+
+  replica->commit_operations(std::move(ops));
+  auto maybe_task2 = replica->get_task_data(tc::uuid_v4());
+  t.ok(maybe_task2.is_none(), "looking up a random uuid gets nothing");
+
+  // The last operation deleted the task, but we want to see the task, so undo it..
+  auto undo_ops = replica->get_undo_operations();
+  t.ok(replica->commit_reversed_operations(std::move(undo_ops)), "undo committed successfully");
+
+  auto maybe_task3 = replica->get_task_data(uuid);
+  t.ok(maybe_task3.is_some(), "looking up the original uuid get TaskData");
+  rust::Box<tc::TaskData> task3 = maybe_task3.take();
+  t.is(uuid2str(task3->get_uuid()), uuid2str(uuid), "reloaded task has correct uuid");
+  t.ok(task3->get("description", str), "reloaded task has a description");
+  t.is(str, "a cool task", "reloaded task has correct description");
+  t.ok(task3->get("status", str), "reloaded task has a status");
+  t.is(str, "pending", "reloaded task has correct status");
+
+  t.is(task3->properties().size(), (size_t)2, "task has 2 properties");
+  t.is(task3->items().size(), (size_t)2, "task has 2 items");
+
+  rust::Vec<tc::Operation> ops2;
+  auto task4 = tc::create_task(uuid2, ops2);
+  task4->update("description", "another", ops2);
+  replica->commit_operations(std::move(ops2));
+
+  auto all_tasks = replica->all_task_data();
+  t.is(all_tasks.size(), (size_t)2, "now there are 2 tasks");
+  for (auto &maybe_task : all_tasks) {
+    t.ok(maybe_task.is_some(), "all_tasks is fully populated");
+    auto task = maybe_task.take();
+    if (task->get_uuid() == uuid) {
+      t.ok(task->get("description", str), "get_value succeeds");
+      t.is(str, "a cool task", "description is 'a cool task'");
+    }
   }
 
-  {
-    auto s1 = std::string("62123ec9-c443-4f7e-919a-35362a8bef8d");
-    auto tcuuid = tc::uuid2tc(s1);
-    auto s2 = tc::tc2uuid(tcuuid);
-    t.is(s1, s2, "round-trip to TCUuid and back");
+  // Check exception formatting.
+  try {
+    replica->sync_to_local("/does/not/exist", false);
+    // tc::new_replica_on_disk("/does/not/exist", false);
+  } catch (rust::Error &err) {
+    t.is(err.what(),
+         "unable to open database file: /does/not/exist/taskchampion-local-sync-server.sqlite3: "
+         "Error code 14: Unable to open the database file",
+         "error message has full context");
   }
-
-  //// Replica
-
-  auto rep = tc::Replica();
-  t.pass("replica constructed");
-
-  auto maybe_task = rep.get_task("24478a28-4609-4257-bc19-44ec51391431");
-  t.notok(maybe_task.has_value(), "task with fixed uuid does not exist");
-
-  auto task = rep.new_task(tc::Status::Pending, "a test");
-  t.pass("new task constructed");
-  t.is(task.get_description(), std::string("a test"), "task description round-trip");
-  t.is(task.get_status(), tc::Status::Pending, "task status round-trip");
-
-  auto uuid = task.get_uuid();
-
-  auto maybe_task2 = rep.get_task(uuid);
-  t.ok(maybe_task2.has_value(), "task lookup by uuid finds task");
-  t.is((*maybe_task2).get_description(), std::string("a test"), "task description round-trip");
-
-  rep.rebuild_working_set(true);
-  t.pass("rebuild_working_set");
-
-  auto tasks = rep.all_tasks();
-  t.is((int)tasks.size(), 1, "all_tasks returns one task");
-
-  //// Task
-
-  task = std::move(tasks[0]);
-
-  t.is(task.get_uuid(), uuid, "returned task has correct uuid");
-  t.is(task.get_status(), tc::Status::Pending, "returned task is pending");
-  auto map = task.get_taskmap();
-  t.is(map["description"], "a test", "task description in taskmap");
-  t.is(task.get_description(), "a test", "returned task has correct description");
-  t.is(task.is_waiting(), false, "task is not waiting");
-  t.is(task.is_active(), false, "task is not active");
-
-  //// WorkingSet
-
-  auto ws = rep.working_set();
-
-  t.is(ws.len(), (size_t)1, "WorkingSet::len");
-  t.is(ws.largest_index(), (size_t)1, "WorkingSet::largest_index");
-  t.is(ws.by_index(1).value(), uuid, "WorkingSet::by_index");
-  t.is(ws.by_index(2).has_value(), false, "WorkingSet::by_index for unknown index");
-  t.is(ws.by_uuid(uuid).value(), (size_t)1, "WorkingSet::by_uuid");
-  t.is(ws.by_uuid("3e18a306-e3a8-4a53-a85c-fa7c057759a2").has_value(), false,
-       "WorkingSet::by_uuid for unknown uuid");
 
   return 0;
 }

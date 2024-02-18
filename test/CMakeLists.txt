@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 3.22)
 
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
-                     ${CMAKE_SOURCE_DIR}/src/tc/lib
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
@@ -48,7 +47,7 @@ add_custom_target (build_tests DEPENDS ${test_SRCS}
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} ${src_FILE} test.cpp)
-  target_link_libraries (${src_FILE} task tc commands columns libshared task tc commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
+  target_link_libraries (${src_FILE} task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
   add_dependencies (${src_FILE} task_executable)
   if (DARWIN)
     target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security -framework SystemConfiguration")

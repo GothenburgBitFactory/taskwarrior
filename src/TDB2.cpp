@@ -46,21 +46,12 @@
 #include <unordered_set>
 #include <vector>
 
-#include "tc/Server.h"
-#include "tc/util.h"
-
 bool TDB2::debug_mode = false;
 static void dependency_scan(std::vector<Task>&);
 
 ////////////////////////////////////////////////////////////////////////////////
-TDB2::TDB2()
-    : replica{tc::Replica()}  // in-memory Replica
-      ,
-      _working_set{} {}
-
-////////////////////////////////////////////////////////////////////////////////
 void TDB2::open_replica(const std::string& location, bool create_if_missing) {
-  replica = tc::Replica(location, create_if_missing);
+  _replica = tc::new_replica_on_disk(location, create_if_missing);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,54 +62,35 @@ void TDB2::add(Task& task) {
   // properties not otherwise given.
   task.validate(true);
 
-  std::string uuid = task.get("uuid");
+  rust::Vec<tc::Operation> ops;
+  maybe_add_undo_point(ops);
+
+  auto uuid = task.get("uuid");
   changes[uuid] = task;
+  tc::Uuid tcuuid = tc::uuid_from_string(uuid);
 
   // run hooks for this new task
   Context::getContext().hooks.onAdd(task);
 
-  auto innertask = replica.import_task_with_uuid(uuid);
+  auto taskdata = tc::create_task(tcuuid, ops);
 
-  {
-    auto guard = replica.mutate_task(innertask);
-
-    // add the task attributes
-    for (auto& attr : task.all()) {
-      // TaskChampion does not store uuid or id in the taskmap
-      if (attr == "uuid" || attr == "id") {
-        continue;
-      }
-
-      // Use `set_status` for the task status, to get expected behavior
-      // with respect to the working set.
-      else if (attr == "status") {
-        innertask.set_status(Task::status2tc(Task::textToStatus(task.get(attr))));
-      }
-
-      // use `set_modified` to set the modified timestamp, avoiding automatic
-      // updates to this field by TaskChampion.
-      else if (attr == "modified") {
-        auto mod = (time_t)std::stoi(task.get(attr));
-        innertask.set_modified(mod);
-      }
-
-      // otherwise, just set the k/v map value
-      else {
-        innertask.set_value(attr, std::make_optional(task.get(attr)));
-      }
+  // add the task attributes
+  for (auto& attr : task.all()) {
+    // TaskChampion does not store uuid or id in the task data
+    if (attr == "uuid" || attr == "id") {
+      continue;
     }
-  }
 
-  auto ws = replica.working_set();
+    taskdata->update(attr, task.get(attr), ops);
+  }
+  replica()->commit_operations(std::move(ops));
+
+  invalidate_cached_info();
 
   // get the ID that was assigned to this task
-  auto id = ws.by_uuid(uuid);
-
-  // update the cached working set with the new information
-  _working_set = std::make_optional(std::move(ws));
-
-  if (id.has_value()) {
-    task.id = id.value();
+  auto id = working_set()->by_uuid(tcuuid);
+  if (id > 0) {
+    task.id = id;
   }
 }
 
@@ -144,6 +116,9 @@ void TDB2::modify(Task& task) {
   task.validate(false);
   auto uuid = task.get("uuid");
 
+  rust::Vec<tc::Operation> ops;
+  maybe_add_undo_point(ops);
+
   changes[uuid] = task;
 
   // invoke the hook and allow it to modify the task before updating
@@ -151,14 +126,15 @@ void TDB2::modify(Task& task) {
   get(uuid, original);
   Context::getContext().hooks.onModify(original, task);
 
-  auto maybe_tctask = replica.get_task(uuid);
-  if (!maybe_tctask.has_value()) {
+  tc::Uuid tcuuid = tc::uuid_from_string(uuid);
+  auto maybe_tctask = replica()->get_task_data(tcuuid);
+  if (maybe_tctask.is_none()) {
     throw std::string("task no longer exists");
   }
-  auto tctask = std::move(maybe_tctask.value());
-  auto guard = replica.mutate_task(tctask);
-  auto tctask_map = tctask.get_taskmap();
+  auto tctask = maybe_tctask.take();
 
+  // Perform the necessary `update` operations to set all keys in `tctask`
+  // equal to those in `task`.
   std::unordered_set<std::string> seen;
   for (auto k : task.all()) {
     // ignore task keys that aren't stored
@@ -168,43 +144,74 @@ void TDB2::modify(Task& task) {
     seen.insert(k);
     bool update = false;
     auto v_new = task.get(k);
-    try {
-      auto v_tctask = tctask_map.at(k);
+    std::string v_tctask;
+    if (tctask->get(k, v_tctask)) {
       update = v_tctask != v_new;
-    } catch (const std::out_of_range& oor) {
-      // tctask_map does not contain k, so update it
+    } else {
+      // tctask does not contain k, so update it
       update = true;
     }
     if (update) {
       // An empty string indicates the value should be removed.
       if (v_new == "") {
-        tctask.set_value(k, {});
+        tctask->update_remove(k, ops);
       } else {
-        tctask.set_value(k, make_optional(v_new));
+        tctask->update(k, v_new, ops);
       }
     }
   }
 
   // we've now added and updated properties; but must find any deleted properties
-  for (auto kv : tctask_map) {
-    if (seen.find(kv.first) == seen.end()) {
-      tctask.set_value(kv.first, {});
+  for (auto k : tctask->properties()) {
+    auto kstr = static_cast<std::string>(k);
+    if (seen.find(kstr) == seen.end()) {
+      tctask->update_remove(kstr, ops);
     }
   }
+
+  replica()->commit_operations(std::move(ops));
+
+  invalidate_cached_info();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::purge(Task& task) {
-  auto uuid = task.get("uuid");
-  replica.delete_task(uuid);
+  auto uuid = tc::uuid_from_string(task.get("uuid"));
+  rust::Vec<tc::Operation> ops;
+  auto maybe_tctask = replica()->get_task_data(uuid);
+  if (maybe_tctask.is_some()) {
+    auto tctask = maybe_tctask.take();
+    tctask->delete_task(ops);
+    replica()->commit_operations(std::move(ops));
+  }
+
+  invalidate_cached_info();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const tc::WorkingSet& TDB2::working_set() {
+rust::Box<tc::Replica>& TDB2::replica() {
+  // Create a replica in-memory if `open_replica` has not been called. This
+  // occurs in tests.
+  if (!_replica) {
+    _replica = tc::new_replica_in_memory();
+  }
+  return _replica.value();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const rust::Box<tc::WorkingSet>& TDB2::working_set() {
   if (!_working_set.has_value()) {
-    _working_set = std::make_optional(replica.working_set());
+    _working_set = replica()->working_set();
   }
   return _working_set.value();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::maybe_add_undo_point(rust::Vec<tc::Operation>& ops) {
+  // Only add an UndoPoint if there are not yet any changes.
+  if (changes.size() == 0) {
+    tc::add_undo_point(ops);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,47 +224,46 @@ void TDB2::get_changes(std::vector<Task>& changes) {
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert() {
-  auto undo_ops = replica.get_undo_ops();
-  if (undo_ops.len == 0) {
+  rust::Vec<tc::Operation> undo_ops = replica()->get_undo_operations();
+  if (undo_ops.size() == 0) {
     std::cout << "No operations to undo.";
     return;
   }
   if (confirm_revert(undo_ops)) {
-    // Has the side-effect of freeing undo_ops.
-    replica.commit_undo_ops(undo_ops, NULL);
-  } else {
-    replica.free_replica_ops(undo_ops);
+    if (!replica()->commit_reversed_operations(std::move(undo_ops))) {
+      std::cout << "Could not undo: other operations have occurred.";
+    }
   }
-  replica.rebuild_working_set(false);
+  // Note that commit_reversed_operations rebuilds the working set.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB2::confirm_revert(struct tc::ffi::TCReplicaOpList undo_ops) {
+bool TDB2::confirm_revert(rust::Vec<tc::Operation>& undo_ops) {
   // TODO Use show_diff rather than this basic listing of operations, though
   // this might be a worthy undo.style itself.
-  std::cout << "The following " << undo_ops.len << " operations would be reverted:\n";
-  for (size_t i = 0; i < undo_ops.len; i++) {
+  std::cout << "The following " << undo_ops.size() << " operations would be reverted:\n";
+  for (auto& op : undo_ops) {
+    if (op.is_undo_point()) {
+      continue;
+    }
+
     std::cout << "- ";
-    tc::ffi::TCReplicaOp op = undo_ops.items[i];
-    switch (op.operation_type) {
-      case tc::ffi::TCReplicaOpType::Create:
-        std::cout << "Create " << replica.get_op_uuid(op);
-        break;
-      case tc::ffi::TCReplicaOpType::Delete:
-        std::cout << "Delete " << replica.get_op_old_task_description(op);
-        break;
-      case tc::ffi::TCReplicaOpType::Update:
-        std::cout << "Update " << replica.get_op_uuid(op) << "\n";
-        std::cout << "    " << replica.get_op_property(op) << ": "
-                  << option_string(replica.get_op_old_value(op)) << " -> "
-                  << option_string(replica.get_op_value(op));
-        break;
-      case tc::ffi::TCReplicaOpType::UndoPoint:
-        throw std::string("Can't undo UndoPoint.");
-        break;
-      default:
-        throw std::string("Can't undo non-operation.");
-        break;
+    std::string uuid = static_cast<std::string>(op.get_uuid().to_string());
+    if (op.is_create()) {
+      std::cout << "Create " << uuid;
+    } else if (op.is_delete()) {
+      std::cout << "Delete " << uuid;
+    } else if (op.is_update()) {
+      std::cout << "Update " << uuid << "\n";
+      std::string property;
+      op.get_property(property);
+      std::string value;
+      bool have_value = op.get_value(value);
+      std::string old_value;
+      bool have_old_value = op.get_old_value(old_value);
+      std::cout << "    " << property << ": ";
+      std::cout << (have_old_value ? old_value : "<empty>") << " -> ";
+      std::cout << (have_value ? value : "<empty>");
     }
     std::cout << "\n";
   }
@@ -265,10 +271,8 @@ bool TDB2::confirm_revert(struct tc::ffi::TCReplicaOpList undo_ops) {
          confirm(
              "The undo command is not reversible.  Are you sure you want to revert to the previous "
              "state?");
+  return true;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-std::string TDB2::option_string(std::string input) { return input == "" ? "<empty>" : input; }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::show_diff(const std::string& current, const std::string& prior,
@@ -305,78 +309,102 @@ void TDB2::gc() {
 
   // Allowed as an override, but not recommended.
   if (Context::getContext().config.getBoolean("gc")) {
-    replica.rebuild_working_set(true);
+    replica()->rebuild_working_set(true);
   }
 
   Context::getContext().time_gc_us += timer.total_us();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::expire_tasks() { replica.expire_tasks(); }
+void TDB2::expire_tasks() { replica()->expire_tasks(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Latest ID is that of the last pending task.
 int TDB2::latest_id() {
-  const tc::WorkingSet& ws = working_set();
-  return (int)ws.largest_index();
+  auto& ws = working_set();
+  return (int)ws->largest_index();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector<Task> TDB2::all_tasks() {
-  auto all_tctasks = replica.all_tasks();
+  auto all_tctasks = replica()->all_task_data();
   std::vector<Task> all;
-  for (auto& tctask : all_tctasks) all.push_back(Task(std::move(tctask)));
+  for (auto& maybe_tctask : all_tctasks) {
+    auto tctask = maybe_tctask.take();
+    all.push_back(Task(std::move(tctask)));
+  }
+
+  dependency_scan(all);
 
   return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector<Task> TDB2::pending_tasks() {
-  const tc::WorkingSet& ws = working_set();
-  auto largest_index = ws.largest_index();
+  if (!_pending_tasks) {
+    auto& ws = working_set();
+    auto largest_index = ws->largest_index();
 
-  std::vector<Task> result;
-  for (size_t i = 0; i <= largest_index; i++) {
-    auto maybe_uuid = ws.by_index(i);
-    if (maybe_uuid.has_value()) {
-      auto maybe_task = replica.get_task(maybe_uuid.value());
-      if (maybe_task.has_value()) {
-        result.push_back(Task(std::move(maybe_task.value())));
+    std::vector<Task> result;
+    for (size_t i = 0; i <= largest_index; i++) {
+      auto uuid = ws->by_index(i);
+      if (!uuid.is_nil()) {
+        auto maybe_task = replica()->get_task_data(uuid);
+        if (maybe_task.is_some()) {
+          result.push_back(Task(maybe_task.take()));
+        }
       }
     }
+
+    dependency_scan(result);
+
+    _pending_tasks = result;
   }
 
-  dependency_scan(result);
-
-  return result;
+  return *_pending_tasks;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector<Task> TDB2::completed_tasks() {
-  auto all_tctasks = replica.all_tasks();
-  const tc::WorkingSet& ws = working_set();
+  if (!_completed_tasks) {
+    auto all_tctasks = replica()->all_task_data();
+    auto& ws = working_set();
 
-  std::vector<Task> result;
-  for (auto& tctask : all_tctasks) {
-    // if this task is _not_ in the working set, return it.
-    if (!ws.by_uuid(tctask.get_uuid())) {
-      result.push_back(Task(std::move(tctask)));
+    std::vector<Task> result;
+    for (auto& maybe_tctask : all_tctasks) {
+      auto tctask = maybe_tctask.take();
+      // if this task is _not_ in the working set, return it.
+      if (ws->by_uuid(tctask->get_uuid()) == 0) {
+        result.push_back(Task(std::move(tctask)));
+      }
     }
+    _completed_tasks = result;
   }
+  return *_completed_tasks;
+}
 
-  return result;
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::invalidate_cached_info() {
+  _pending_tasks = std::nullopt;
+  _completed_tasks = std::nullopt;
+  _working_set = std::nullopt;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Locate task by ID, wherever it is.
 bool TDB2::get(int id, Task& task) {
-  const tc::WorkingSet& ws = working_set();
-  const auto maybe_uuid = ws.by_index(id);
-  if (maybe_uuid) {
-    auto maybe_task = replica.get_task(*maybe_uuid);
-    if (maybe_task) {
-      task = Task{std::move(*maybe_task)};
-      return true;
+  auto& ws = working_set();
+  const auto tcuuid = ws->by_index(id);
+  if (!tcuuid.is_nil()) {
+    std::string uuid = static_cast<std::string>(tcuuid.to_string());
+    // Load all pending tasks in order to get dependency data, and in particular
+    // `task.is_blocking` and `task.is_blocked`, set correctly.
+    std::vector<Task> pending = pending_tasks();
+    for (auto& pending_task : pending) {
+      if (pending_task.get("uuid") == uuid) {
+        task = pending_task;
+        return true;
+      }
     }
   }
 
@@ -386,22 +414,23 @@ bool TDB2::get(int id, Task& task) {
 ////////////////////////////////////////////////////////////////////////////////
 // Locate task by UUID, including by partial ID, wherever it is.
 bool TDB2::get(const std::string& uuid, Task& task) {
+  // Load all pending tasks in order to get dependency data, and in particular
+  // `task.is_blocking` and `task.is_blocked`, set correctly.
+  std::vector<Task> pending = pending_tasks();
+
   // try by raw uuid, if the length is right
-  if (uuid.size() == 36) {
-    try {
-      auto maybe_task = replica.get_task(uuid);
-      if (maybe_task) {
-        task = Task{std::move(*maybe_task)};
-        return true;
-      }
-    } catch (const std::string& err) {
-      return false;
+  for (auto& pending_task : pending) {
+    if (closeEnough(pending_task.get("uuid"), uuid, uuid.length())) {
+      task = pending_task;
+      return true;
     }
   }
 
-  // Nothing to do but iterate over all tasks and check whether it's closeEnough
-  for (auto& tctask : replica.all_tasks()) {
-    if (closeEnough(tctask.get_uuid(), uuid, uuid.length())) {
+  // Nothing to do but iterate over all tasks and check whether it's closeEnough.
+  for (auto& maybe_tctask : replica()->all_task_data()) {
+    auto tctask = maybe_tctask.take();
+    auto tctask_uuid = static_cast<std::string>(tctask->get_uuid().to_string());
+    if (closeEnough(tctask_uuid, uuid, uuid.length())) {
       task = Task{std::move(tctask)};
       return true;
     }
@@ -446,63 +475,59 @@ const std::vector<Task> TDB2::children(Task& parent) {
   std::vector<Task> results;
   std::string this_uuid = parent.get("uuid");
 
-  const tc::WorkingSet& ws = working_set();
-  size_t end_idx = ws.largest_index();
+  auto& ws = working_set();
+  size_t end_idx = ws->largest_index();
 
   for (size_t i = 0; i <= end_idx; i++) {
-    auto uuid_opt = ws.by_index(i);
-    if (!uuid_opt) {
+    auto uuid = ws->by_index(i);
+    if (uuid.is_nil()) {
       continue;
     }
-    auto uuid = uuid_opt.value();
 
     // skip self-references
-    if (uuid == this_uuid) {
+    if (uuid.to_string() == this_uuid) {
       continue;
     }
 
-    auto task_opt = replica.get_task(uuid_opt.value());
-    if (!task_opt) {
+    auto task_opt = replica()->get_task_data(uuid);
+    if (task_opt.is_none()) {
       continue;
     }
-    auto task = std::move(task_opt.value());
+    auto task = task_opt.take();
 
-    auto parent_uuid_opt = task.get_value("parent");
-    if (!parent_uuid_opt) {
+    std::string parent_uuid;
+    if (!task->get("parent", parent_uuid)) {
       continue;
     }
-    auto parent_uuid = parent_uuid_opt.value();
 
     if (parent_uuid == this_uuid) {
       results.push_back(Task(std::move(task)));
     }
   }
-
   return results;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string TDB2::uuid(int id) {
-  const tc::WorkingSet& ws = working_set();
-  return ws.by_index((size_t)id).value_or("");
+  auto& ws = working_set();
+  auto uuid = ws->by_index(id);
+  if (uuid.is_nil()) {
+    return "";
+  }
+  return static_cast<std::string>(uuid.to_string());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int TDB2::id(const std::string& uuid) {
-  const tc::WorkingSet& ws = working_set();
-  return (int)ws.by_uuid(uuid).value_or(0);
+  auto& ws = working_set();
+  return ws->by_uuid(tc::uuid_from_string(uuid));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int TDB2::num_local_changes() { return (int)replica.num_local_operations(); }
+int TDB2::num_local_changes() { return (int)replica()->num_local_operations(); }
 
 ////////////////////////////////////////////////////////////////////////////////
-int TDB2::num_reverts_possible() { return (int)replica.num_undo_points(); }
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::sync(tc::Server server, bool avoid_snapshots) {
-  replica.sync(std::move(server), avoid_snapshots);
-}
+int TDB2::num_reverts_possible() { return (int)replica()->num_undo_points(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::dump() {

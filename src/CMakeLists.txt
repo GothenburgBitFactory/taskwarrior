@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 3.22)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
-                     ${CMAKE_SOURCE_DIR}/src/tc
-                     ${CMAKE_SOURCE_DIR}/src/tc/lib
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
@@ -28,6 +26,7 @@ add_library (task STATIC CLI2.cpp CLI2.h
                   rules.cpp
                   sort.cpp
                   util.cpp util.h)
+target_link_libraries(task taskchampion-cpp)
 
 add_library (libshared STATIC libshared/src/Color.cpp         libshared/src/Color.h
                        libshared/src/Configuration.cpp libshared/src/Configuration.h
@@ -52,10 +51,9 @@ add_executable (calc_executable calc.cpp)
 add_executable (lex_executable lex.cpp)
 
 # Yes, 'task' (and hence libshared) is included twice, otherwise linking fails on assorted OSes.
-# Similarly for `tc`.
-target_link_libraries (task_executable task tc commands tc columns libshared task libshared ${TASK_LIBRARIES})
-target_link_libraries (calc_executable task tc commands tc columns libshared task libshared ${TASK_LIBRARIES})
-target_link_libraries (lex_executable  task tc commands tc columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (task_executable task commands columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (calc_executable task commands columns libshared task libshared ${TASK_LIBRARIES})
+target_link_libraries (lex_executable  task commands columns libshared task libshared ${TASK_LIBRARIES})
 if (DARWIN)
     # SystemConfiguration is required by Rust libraries like reqwest, to get proxy configuration.
     target_link_libraries (task_executable "-framework CoreFoundation -framework Security -framework SystemConfiguration")

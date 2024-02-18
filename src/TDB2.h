@@ -30,25 +30,21 @@
 #include <FS.h>
 #include <Task.h>
 #include <stdio.h>
-#include <tc/Replica.h>
-#include <tc/WorkingSet.h>
+#include <taskchampion-cpp/lib.h>
 
 #include <map>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-
-namespace tc {
-class Server;
-}
 
 // TDB2 Class represents all the files in the task database.
 class TDB2 {
  public:
   static bool debug_mode;
 
-  TDB2();
+  TDB2() = default;
 
   void open_replica(const std::string &, bool create_if_missing);
   void add(Task &);
@@ -79,18 +75,24 @@ class TDB2 {
 
   void dump();
 
-  void sync(tc::Server server, bool avoid_snapshots);
-  bool confirm_revert(struct tc::ffi::TCReplicaOpList);
+  bool confirm_revert(rust::Vec<tc::Operation> &);
+
+  rust::Box<tc::Replica> &replica();
 
  private:
-  tc::Replica replica;
-  std::optional<tc::WorkingSet> _working_set;
+  std::optional<rust::Box<tc::Replica>> _replica;
+
+  // Cached information from the replica
+  std::optional<rust::Box<tc::WorkingSet>> _working_set;
+  std::optional<std::vector<Task>> _pending_tasks;
+  std::optional<std::vector<Task>> _completed_tasks;
+  void invalidate_cached_info();
 
   // UUID -> Task containing all tasks modified in this invocation.
   std::map<std::string, Task> changes;
 
-  const tc::WorkingSet &working_set();
-  static std::string option_string(std::string input);
+  const rust::Box<tc::WorkingSet> &working_set();
+  void maybe_add_undo_point(rust::Vec<tc::Operation> &);
   static void show_diff(const std::string &, const std::string &, const std::string &);
 };
 

@@ -31,7 +31,7 @@
 #include <JSON.h>
 #include <Table.h>
 #include <stdio.h>
-#include <tc/Task.h>
+#include <taskchampion-cpp/lib.h>
 #include <time.h>
 
 #include <map>
@@ -66,7 +66,7 @@ class Task {
   bool operator!=(const Task&);
   Task(const std::string&);
   Task(const json::object*);
-  Task(tc::Task);
+  Task(rust::Box<tc::TaskData>);
 
   void parse(const std::string&);
   std::string composeJSON(bool decorate = false) const;
@@ -88,8 +88,6 @@ class Task {
   // Series of helper functions.
   static status textToStatus(const std::string&);
   static std::string statusToText(status);
-  static tc::Status status2tc(const Task::status);
-  static Task::status tc2status(const tc::Status);
 
   void setAsNow(const std::string&);
   bool has(const std::string&) const;
@@ -186,7 +184,7 @@ class Task {
   int determineVersion(const std::string&);
   void parseJSON(const std::string&);
   void parseJSON(const json::object*);
-  void parseTC(const tc::Task&);
+  void parseTC(rust::Box<tc::TaskData>);
   void parseLegacy(const std::string&);
   void validate_before(const std::string&, const std::string&);
   const std::string encode(const std::string&) const;
