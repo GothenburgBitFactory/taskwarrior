@@ -16,22 +16,41 @@ See the [TaskChampion CONTRIBUTING guide](../../../taskchampion/CONTRIBUTING.md)
  * Rust 1.64.0 or higher (hint: use https://rustup.rs/ instead of using your system's package manager)
 
 ## Obtain and Build Code:
+General documentation about CMake can be seen always over the man pages from CMake or in the [cmake-documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html), following documentation works with CMake 3.14 and later.
+Here are the minimal steps to get started, using an out of source build directory and calling the underlaying build tool over the CMake interface.
+
+## Basic Building
+```sh
+git clone https://github.com/GothenburgBitFactory/taskwarrior
+cd taskwarrior
+cmake -S . -B cmake-build\
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo\
+cmake --build cmake-build
 ```
-    $ git clone --recursive https://github.com/GothenburgBitFactory/taskwarrior taskwarrior.git
-    $ cd taskwarrior.git
-    $ git checkout develop               # Latest dev branch
-    $ git submodule init                 # This is now done by cmake as a test
-    $ git submodule update               # Update the libhsared.git submodule
-    $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither
-    $ make VERBOSE=1 -j4                 # Shows details, builds using 4 jobs
-                                         # Alternately 'export MAKEFLAGS=-j 4'
+Other possible build types can be `Release`and `Debug`.
+This will build several executables, but the one you want is probably `src/task`.
+
+### Building a specific target
+For **only** building the `task` executable, use
+```sh
+cmake --build cmake-build --target task
 ```
 
-This will build several executables, but the one you want is probably `src/task`.
-When you make changes, just run the last line again.
+### Building in parallel
+If a parallel build is wanted use
+```sh
+cmake --build cmake-build -j <number-of-jobs>
+```
+
+### Building with clang as compiler
+```sh
+cmake -S . -B cmake-build\
+    -DCMAKE_C_COMPILER=clang\
+    -DCMAKE_CXX_COMPILER=clang++
+cmake --build cmake-build
+```
 
 ## Run the Test Suite:
-
 First switch to the test directory:
 
 ```
