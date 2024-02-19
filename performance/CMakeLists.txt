@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.5)
+cmake_minimum_required (VERSION 3.22)
 
 add_custom_target (performance ./run_perf
                                DEPENDS task_executable
