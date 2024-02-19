@@ -1,4 +1,4 @@
-FROM opensuse/leap:15
+FROM opensuse/tumbleweed
 
 RUN zypper install -y python3 awk coreutils git gcc gcc-c++ cmake make libuuid-devel libfaketime curl
 
