@@ -1,7 +1,15 @@
 cmake_minimum_required (VERSION 3.22)
 
+FetchContent_Declare (
+    Corrosion
+    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+    GIT_TAG v0.4.7
+)
+FetchContent_MakeAvailable(Corrosion)
+
+# Import taskchampion-lib as a CMake library.
 corrosion_import_crate(
-  MANIFEST_PATH "../../Cargo.toml"
+  MANIFEST_PATH "${CMAKE_SOURCE_DIR}/Cargo.toml"
   CRATES "taskchampion-lib")
 
 include_directories (${CMAKE_SOURCE_DIR}
