@@ -13,3 +13,4 @@ tutorials
 .prove
 /target/
 /.idea/
+cargo

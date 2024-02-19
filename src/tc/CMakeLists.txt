@@ -1,4 +1,9 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.5)
+
+corrosion_import_crate(
+  MANIFEST_PATH "../../Cargo.toml"
+  CRATES "taskchampion-lib")
+
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/tc
@@ -15,3 +20,4 @@ set (tc_SRCS
   Task.cpp Task.h)
 
 add_library (tc STATIC ${tc_SRCS})
+target_link_libraries(tc taskchampion-lib)
