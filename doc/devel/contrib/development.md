@@ -27,7 +27,7 @@ cmake -S . -B cmake-build\
     -DCMAKE_BUILD_TYPE=RelWithDebInfo\
 cmake --build cmake-build
 ```
-Other possible build types can be `Release`and `Debug`.
+Other possible build types can be `Release` and `Debug`.
 This will build several executables, but the one you want is probably `src/task`.
 When you make changes, just run the last line again.
 
