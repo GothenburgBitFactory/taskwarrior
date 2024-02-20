@@ -16,15 +16,15 @@ See the [TaskChampion CONTRIBUTING guide](../../../taskchampion/CONTRIBUTING.md)
  * Rust 1.64.0 or higher (hint: use https://rustup.rs/ instead of using your system's package manager)
 
 ## Obtain and Build Code:
-General documentation about CMake can be seen always over the man pages from CMake or in the [cmake-documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html), following documentation works with CMake 3.14 and later.
-Here are the minimal steps to get started, using an out of source build directory and calling the underlaying build tool over the CMake interface.
+The following documentation works with CMake 3.14 and later.
+Here are the minimal steps to get started, using an out of source build directory and calling the underlying build tool over the CMake interface.
+See the general CMake man pages or the [cmake-documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html) for more,
 
 ## Basic Building
 ```sh
 git clone https://github.com/GothenburgBitFactory/taskwarrior
 cd taskwarrior
-cmake -S . -B cmake-build\
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo\
+cmake -S . -B cmake-build  -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build cmake-build
 ```
 Other possible build types can be `Release` and `Debug`.
@@ -34,7 +34,7 @@ When you make changes, just run the last line again.
 ### Building a specific target
 For **only** building the `task` executable, use
 ```sh
-cmake --build cmake-build --target task
+cmake --build cmake-build --target task_executable
 ```
 
 ### Building in parallel
