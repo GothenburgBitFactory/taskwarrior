@@ -24,38 +24,38 @@ See the general CMake man pages or the [cmake-documentation](https://cmake.org/c
 ```sh
 git clone https://github.com/GothenburgBitFactory/taskwarrior
 cd taskwarrior
-cmake -S . -B cmake-build  -DCMAKE_BUILD_TYPE=RelWithDebInfo
-cmake --build cmake-build
+cmake -S . -B build  -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --build build
 ```
 Other possible build types can be `Release` and `Debug`.
-This will build several executables, but the one you want is probably `src/task`.
+This will build several executables, but the one you want is probably `src/task`, located in the `build` directory.
 When you make changes, just run the last line again.
 
 ### Building a specific target
 For **only** building the `task` executable, use
 ```sh
-cmake --build cmake-build --target task_executable
+cmake --build build --target task_executable
 ```
 
 ### Building in parallel
 If a parallel build is wanted use
 ```sh
-cmake --build cmake-build -j <number-of-jobs>
+cmake --build build -j <number-of-jobs>
 ```
 
 ### Building with clang as compiler
 ```sh
-cmake -S . -B cmake-build\
+cmake -S . -B build-clang\
     -DCMAKE_C_COMPILER=clang\
     -DCMAKE_CXX_COMPILER=clang++
-cmake --build cmake-build
+cmake --build build-clang
 ```
 
 ## Run the Test Suite:
 First switch to the test directory:
 
 ```
-    $ cd test
+    $ cd build/test
 ```
 Then you can run all tests, showing details, with
 ```

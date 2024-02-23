@@ -31,18 +31,18 @@ while (my $line = <$fh>)
   if ($. % 20 == 19)
   {
     my $anno_id = $id - 1;
-    qx{../src/task rc:perf.rc rc.gc=off $anno_id annotate $line};
+    qx{../build/src/task rc:perf.rc rc.gc=off $anno_id annotate $line};
     print "[$.] task rc:perf.rc rc.gc=off $anno_id annotate $line\n" if $?;
   }
   elsif ($. % 4 == 1)
   {
-    qx{../src/task rc:perf.rc rc.gc=off add $line};
+    qx{../build/src/task rc:perf.rc rc.gc=off add $line};
     print "[$.] task rc:perf.rc rc.gc=off add $line\n" if $?;
     ++$id;
   }
   else
   {
-    qx{../src/task rc:perf.rc rc.gc=off log $line};
+    qx{../build/src/task rc:perf.rc rc.gc=off log $line};
     print "[$.] task rc:perf.rc rc.gc=off log $line\n" if $?;
   }
 }
