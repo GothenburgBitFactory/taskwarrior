@@ -26,7 +26,7 @@ RUN cmake --install build
 RUN task --version
 
 # Setup tests
-WORKDIR /root/code/test/
+WORKDIR /root/code/build/test/
 RUN make -j8
 
 CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]
