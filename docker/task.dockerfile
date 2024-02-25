@@ -30,13 +30,13 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh && \
 RUN git clean -dfx && \
     git submodule init && \
     git submodule update && \
-    cmake -DCMAKE_BUILD_TYPE=release . && \
-    make -j8
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release . && \
+    cmake --build build -j 8
 
 FROM base AS runner
 
 # Install Taskwarrior
-COPY --from=builder /root/code/src/task /usr/local/bin
+COPY --from=builder /root/code/build/src/task /usr/local/bin
 
 # Initialize Taskwarrior
 RUN ( echo "yes" | task ) || true

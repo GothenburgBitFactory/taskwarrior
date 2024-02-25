@@ -16,7 +16,7 @@ fi
 # Allow override.
 if [[ -z $TASK ]]
 then
-  TASK=../src/task
+  TASK=../build/src/task
 fi
 
 # Run benchmarks.

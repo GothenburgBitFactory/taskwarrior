@@ -20,13 +20,13 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh && \
 RUN git clean -dfx
 RUN git submodule init
 RUN git submodule update
-RUN cmake -DCMAKE_BUILD_TYPE=debug .
-RUN make -j8
-RUN make install
+RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug .
+RUN cmake --build build -j 8
+RUN cmake --install build
 RUN task --version
 
 # Setup tests
-WORKDIR /root/code/test/
+WORKDIR /root/code/build/test/
 RUN make -j8
 
 CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]
