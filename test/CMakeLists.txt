@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.22)
 
 # This is a work-around for the following CMake issue:
 # https://gitlab.kitware.com/cmake/cmake/issues/16062
@@ -29,7 +29,7 @@ add_custom_target (build_tests DEPENDS ${test_SRCS}
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
-  target_link_libraries (${src_FILE} task tc commands columns libshared task tc tc-rust commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
+  target_link_libraries (${src_FILE} task tc commands columns libshared task tc commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
   if (DARWIN)
     target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security -framework SystemConfiguration")
   endif (DARWIN)

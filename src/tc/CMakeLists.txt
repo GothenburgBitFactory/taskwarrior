@@ -1,4 +1,18 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.22)
+
+FetchContent_Declare (
+    Corrosion
+    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+    GIT_TAG v0.4.7
+)
+FetchContent_MakeAvailable(Corrosion)
+
+# Import taskchampion-lib as a CMake library.
+corrosion_import_crate(
+  MANIFEST_PATH "${CMAKE_SOURCE_DIR}/Cargo.toml"
+  LOCKED
+  CRATES "taskchampion-lib")
+
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/tc
@@ -15,3 +29,4 @@ set (tc_SRCS
   Task.cpp Task.h)
 
 add_library (tc STATIC ${tc_SRCS})
+target_link_libraries(tc taskchampion-lib)

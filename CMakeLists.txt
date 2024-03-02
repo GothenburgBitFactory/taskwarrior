@@ -1,8 +1,7 @@
-cmake_minimum_required (VERSION 3.0)
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_SOURCE_DIR}/cmake/CMakeRust/cmake")
+cmake_minimum_required (VERSION 3.22)
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
-enable_language (Rust)
-include (CMakeCargo)
+include (FetchContent)
 include (CheckFunctionExists)
 include (CheckStructHasMember)
 
@@ -138,7 +137,6 @@ configure_file (
 add_subdirectory (src)
 add_subdirectory (src/commands)
 add_subdirectory (src/tc)
-add_subdirectory (src/tc/rust)
 add_subdirectory (src/columns)
 add_subdirectory (doc)
 add_subdirectory (scripts)

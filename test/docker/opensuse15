@@ -1,4 +1,7 @@
-FROM opensuse/leap:15
+FROM opensuse/tumbleweed
+
+# NOTE: this isn't opensuse15 anymore, but this allows PRs to be merged by
+# matching the GitHub configuration.
 
 RUN zypper install -y python3 awk coreutils git gcc gcc-c++ cmake make libuuid-devel libfaketime curl
 
