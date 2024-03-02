@@ -40,10 +40,10 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-opensuse:
+  test-opensuse15:
     build:
         context: .
-        dockerfile: test/docker/opensuse
+        dockerfile: test/docker/opensuse15
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
