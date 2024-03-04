@@ -81,10 +81,9 @@ jobs:
           - name: "Ubuntu 22.04"
             runner: ubuntu-latest
             dockerfile: ubuntu2204
-          # This is actually "OpenSUSE Tumbleweed (Rolling)" but GitHub requires the "OpenSUSE 15" check, so keep that name
-          - name: "OpenSUSE 15"
+          - name: "OpenSUSE Tumbleweed (Rolling)"
             runner: ubuntu-latest
-            dockerfile: opensuse15
+            dockerfile: opensuse
           - name: "Archlinux Base (Rolling)"
             runner: ubuntu-latest
             dockerfile: arch
