@@ -1,5 +1,15 @@
-- [BREAKING CHANGE] sync is now performed against taskchampion-sync-server,
-  instead of taskd. The following config options are no longer supported:
+------ current release ---------------------------
+3.0.0 -
+
+- [BREAKING CHANGE] the sync functionality has been rewritten entirely, and
+  no longer supports taskserver/taskd. Instead, the recommended solution is
+  a cloud-storage backend, although `taskchampion-sync-server` is also
+  available.
+
+  See https://taskwarrior.org/docs/upgrade-3/ for information on upgrading to
+  Taskwarrior 3.0.
+
+  The following config options are no longer supported:
   - `debug.tls`
   - `taskd.ca`
   - `taskd.certificate`
@@ -9,9 +19,40 @@
   - `taskd.server`
   - `taskd.trust`
 
-The Taskwarrior build no longer requires GnuTLS.
+  The Taskwarrior build no longer requires GnuTLS.
 
------- current release ---------------------------
+  Deep thanks to the following for contributions to this work:
+
+  - Akash Shanmugaraj
+  - Andrew Savchenko
+  - Dathan Bennett 
+  - Dustin Mitchell
+  - dbr/Ben
+  - Felix Schurk
+  - Isaac Wyatt
+  - Nathan Luong
+  - Nikos Koukis
+  - Pablo Baeyens
+  - Ravi Sawlani
+  - ryneeverett
+  - Simon Fraser
+
+- TW #2732 Fix urgency inheritance for negative-urgency tasks.
+          Thanks to Jackson Abascal for contributing.
+- TW #2763 `task show` now shows `hooks.location.
+           Thanks to rollniak for reporting and sec65 for contributing.
+- TW #2765 Fix leading space before urgency value in `task info`.
+           Thanks to Dominik Rehák for contributing.
+- TW #2780 Fix formatting of countdown-style dates
+           Thanks to Dominik Rehák for contributing.
+- TW #2826 Fix issue with filter not applied correctly during `task _tags` command
+           Thanks to Nikos Koukis for contributing.
+- TW #3052 Parsing of timestamp values now uses 64-bit integers, avoiding
+           issues in the year 2032.
+           Thanks to Bernhard M. Wiedemann for contributing.
+- TW #3068 Fix fish completion.
+           Thanks to Michal Koutný for contributing.
+
 2.6.2 -
 
 - TW #502  Sequence of IDs doesn't work with attribute "depends"

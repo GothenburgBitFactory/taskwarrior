@@ -10,7 +10,7 @@ set (HAVE_CMAKE true)
 project (task)
 include (CXXSniffer)
 
-set (PROJECT_VERSION "2.6.2")
+set (PROJECT_VERSION "3.0.0")
 
 OPTION (ENABLE_WASM "Enable 'wasm' support" OFF)
 
