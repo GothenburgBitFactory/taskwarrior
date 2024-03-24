@@ -5,3 +5,4 @@
  * [Coding Style](coding_style.md)
  * [Branching Model](branching.md)
  * [Rust and C++](rust-and-c++.md)
+ * [Releasing Taskwarrior](releasing.md)
