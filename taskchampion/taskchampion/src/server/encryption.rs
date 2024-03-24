@@ -332,7 +332,7 @@ mod test {
             let version_id = Uuid::parse_str("b0517957-f912-4d49-8330-f612e73030c4").unwrap();
             let encryption_secret = b"b4a4e6b7b811eda1dc1a2693ded".to_vec();
             let client_id = Uuid::parse_str("0666d464-418a-4a08-ad53-6f15c78270cd").unwrap();
-            let salt = client_id.as_ref().to_vec();
+            let salt = client_id.as_bytes().to_vec();
             (version_id, salt, encryption_secret)
         }
 

@@ -44,4 +44,4 @@ tempfile = "3"
 tokio = { version = "1", features = ["rt-multi-thread"] }
 thiserror = "1.0"
 ureq = { version = "^2.9.0", features = ["tls"] }
-uuid = { version = "^1.7.0", features = ["serde", "v4"] }
+uuid = { version = "^1.8.0", features = ["serde", "v4"] }
