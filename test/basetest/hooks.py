@@ -92,6 +92,7 @@ class Hooks(object):
             - on-add
             - on-exit
             - on-modify
+            - on-urgency-calc
 
         :arg content: Content of the file as a (multi-line) string
         :arg log: If we require checking input/output of the hook
@@ -248,7 +249,7 @@ class Hook(object):
         """Check if the hookname is valid and if another hook with the same
         name was already created.
         """
-        for hooktype in ("on-launch", "on-add", "on-exit", "on-modify"):
+        for hooktype in ("on-launch", "on-add", "on-exit", "on-modify", "on-urgency-calc")
             if self.hookname.startswith(hooktype):
                 break
         else:
