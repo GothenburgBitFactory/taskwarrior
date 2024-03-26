@@ -31,7 +31,7 @@ _task_filter() {
   local word=$'[^\0]#\0'
 
   # projects
-  local _task_projects=($(task _projects))
+  local _task_projects=($(task rc.hooks=0 _projects))
   local task_projects=(
     /"$word"/
     ":values:task projects:compadd -a _task_projects"
@@ -157,7 +157,7 @@ _task_filter() {
   local uda_name uda_label uda_values
   local -a udas_spec
   task _udas | while read uda_name; do
-    uda_label="$(task _get rc.uda."$uda_name".label)"
+    uda_label="$(task rc.hooks=0 _get rc.uda."$uda_name".label)"
     # TODO: we could have got the values of every uda and try to complete that
     # but that can become extremly slow with a lot of udas
     #uda_values=(${(@s:,:)"$(task _get rc.uda."$uda_name".values)"})
@@ -167,8 +167,8 @@ _task_filter() {
   _regex_words -t ':' default 'task attributes' "${_task_all_attributes[@]}"
   local task_attributes=("$reply[@]")
 
-  local _task_tags=($(task _tags))
-  local _task_config=($(task _config))
+  local _task_tags=($(task rc.hooks=0 _tags))
+  local _task_config=($(task rc.hooks=0 _config))
   local _task_modifiers=(
     'before'
     'after'
@@ -213,12 +213,12 @@ _task_filter() {
 # id-only completion
 (( $+functions[_task_ids] )) ||
 _task_ids() {
-  local _ids=( ${(f)"$(task _zshids)"} )
+  local _ids=( ${(f)"$(task rc.hooks=0 _zshids)"} )
   _describe 'task ids' _ids
 }
 (( $+functions[_task_aliases] )) ||
 _task_aliases() {
-  local _aliases=( ${(f)"$(task _aliases)"} )
+  local _aliases=( ${(f)"$(task rc.hooks=0 _aliases)"} )
   _describe 'task aliases' _aliases
 }
 
@@ -230,7 +230,7 @@ _task_subcommands() {
   local cmd category desc
   local lastcategory=''
   # The list is sorted by category, in the right order.
-  local _task_zshcmds=( ${(f)"$(task _zshcommands)"} sentinel:sentinel:sentinel )
+  local _task_zshcmds=( ${(f)"$(task rc.hooks=0 _zshcommands)"} sentinel:sentinel:sentinel )
   for _zshcmd in "$_task_zshcmds[@]"; do
     # Parse out the three fields
     cmd=${_zshcmd%%:*}
@@ -254,7 +254,7 @@ _task_subcommands() {
 ## contexts
 (( $+functions[_task_context] )) ||
 _task_context() {
-  local _contexts=(${(f)"$(task _context)"})
+  local _contexts=(${(f)"$(task rc.hooks=0 _context)"})
   _describe 'task contexts' _contexts
 }
 
@@ -264,7 +264,7 @@ _task_default() {
   local cmd ret=1
 
   integer i=1
-  local _task_cmds=($(task _commands; task _aliases))
+  local _task_cmds=($(task rc.hooks=0 _commands; task _aliases))
   while (( i < $#words ))
   do
     cmd="${_task_cmds[(r)$words[$i]]}"
