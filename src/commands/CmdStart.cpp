@@ -83,7 +83,6 @@ int CmdStart::execute (std::string&)
       std::string question = format ("Start task {1} '{2}'?",
                                      task.identifier (true),
                                      task.get ("description"));
-      task.modify (Task::modAnnotate);
       task.setAsNow ("start");
 
       Task::status status = task.getStatus ();
@@ -93,6 +92,7 @@ int CmdStart::execute (std::string&)
         task.setStatus (Task::pending);
       }
 
+      task.modify (Task::modAnnotate);
       if (Context::getContext ().config.getBoolean ("journal.time"))
         task.addAnnotation (Context::getContext ().config.get ("journal.time.start.annotation"));
 
