@@ -9,6 +9,7 @@ set (HAVE_CMAKE true)
 
 project (task)
 include (CXXSniffer)
+include (GNUInstallDirs)
 
 set (PROJECT_VERSION "3.0.0")
 
@@ -47,16 +48,7 @@ set (PACKAGE_TARNAME "${PACKAGE}")
 set (PACKAGE_VERSION "${VERSION}")
 set (PACKAGE_STRING "${PACKAGE} ${VERSION}")
 
-if (FREEBSD OR DRAGONFLY)
-SET (TASK_MAN1DIR man/man1 CACHE STRING "Installation directory for man pages, section 1")
-SET (TASK_MAN5DIR man/man5 CACHE STRING "Installation directory for man pages, section 5")
-else (FREEBSD OR DRAGONFLY)
-SET (TASK_MAN1DIR share/man/man1 CACHE STRING "Installation directory for man pages, section 1")
-SET (TASK_MAN5DIR share/man/man5 CACHE STRING "Installation directory for man pages, section 5")
-endif (FREEBSD OR DRAGONFLY)
-SET (TASK_DOCDIR  share/doc/task CACHE STRING "Installation directory for doc files")
-SET (TASK_RCDIR "${TASK_DOCDIR}/rc" CACHE STRING "Installation directory for configuration files")
-SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the binary")
+SET (TASK_RCDIR "${CMAKE_INSTALL_DOCDIR}/rc" CACHE STRING "Installation directory for configuration files")
 
 # rust libs require these
 set (TASK_LIBRARIES dl pthread)
@@ -149,7 +141,7 @@ endif (EXISTS performance)
 
 set (doc_FILES NEWS ChangeLog README.md INSTALL AUTHORS COPYING LICENSE)
 foreach (doc_FILE ${doc_FILES})
-  install (FILES ${doc_FILE}  DESTINATION ${TASK_DOCDIR})
+  install (FILES ${doc_FILE}  DESTINATION ${CMAKE_INSTALL_DOCDIR})
 endforeach (doc_FILE)
 
 add_custom_command(OUTPUT run-review
