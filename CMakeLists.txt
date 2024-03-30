@@ -1,4 +1,10 @@
 cmake_minimum_required (VERSION 3.22)
+
+project (task
+  VERSION 3.0.0
+  DESCRIPTION "Taskwarrior - a command-line TODO list manager"
+  HOMEPAGE_URL https://taskwarrior.org/)
+
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 include (FetchContent)
@@ -7,10 +13,7 @@ include (CheckStructHasMember)
 
 set (HAVE_CMAKE true)
 
-project (task)
 include (CXXSniffer)
-
-set (PROJECT_VERSION "3.0.0")
 
 OPTION (ENABLE_WASM "Enable 'wasm' support" OFF)
 
