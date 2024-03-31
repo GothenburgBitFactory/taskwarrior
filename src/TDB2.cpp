@@ -62,9 +62,8 @@ void TDB2::open_replica (const std::string& location, bool create_if_missing)
     Color warning = Color (Context::getContext ().config.get ("color.warning"));
     std::cout << warning.colorize (
       format ("Found existing '.data' files in {1}", location)) << "\n";
-    std::cout << "  Taskwarrior's storage format changed in 3.0.\n";
+    std::cout << "  Taskwarrior's storage format changed in 3.0, requiring a manual migration.\n";
     std::cout << "  See https://github.com/GothenburgBitFactory/taskwarrior/releases.\n";
-    std::cout << "  Remove the files to silence this warning.\n\n";
   }
   replica = tc::Replica(location, create_if_missing);
 }
