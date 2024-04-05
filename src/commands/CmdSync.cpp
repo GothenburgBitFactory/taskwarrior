@@ -88,7 +88,7 @@ int CmdSync::execute (std::string& output)
     os << "Sync server at " << origin;
     server_ident = os.str();
   } else {
-    throw std::string ("No sync.* settings are configured.");
+    throw std::string ("No sync.* settings are configured. See task-sync(5).");
   }
 
   std::stringstream out;
