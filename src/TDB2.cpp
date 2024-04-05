@@ -87,7 +87,7 @@ void TDB2::add (Task& task)
     for (auto& attr : task.all ()) {
       // TaskChampion does not store uuid or id in the taskmap
       if (attr == "uuid" || attr == "id") {
-        continue; 
+        continue;
       }
 
       // Use `set_status` for the task status, to get expected behavior
@@ -118,12 +118,13 @@ void TDB2::add (Task& task)
   // update the cached working set with the new information
   _working_set = std::make_optional (std::move (ws));
 
-  if (id.has_value ()) {
-    task.id = id.value();
-  }
-
   // run hooks for this new task
   Context::getContext ().hooks.onAdd (task);
+
+  if (id.has_value ()) {
+      task.id = id.value();
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
