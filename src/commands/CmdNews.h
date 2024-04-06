@@ -31,9 +31,11 @@
 #include <Command.h>
 #include <CmdConfig.h>
 #include <CmdContext.h>
+#include <Version.h>
 
 class NewsItem {
 public:
+  Version _version;
   bool _major = false;
   std::string _title;
   std::string _bg_title;
@@ -42,7 +44,16 @@ public:
   std::string _update;
   std::string _reasoning;
   std::string _actions;
+
+  void render ();
+
+  static std::vector<NewsItem> all();
+  static void version2_6_0 (std::vector<NewsItem>&);
+  static void version3_0_0 (std::vector<NewsItem>&);
+
+private:
   NewsItem (
+    Version,
     bool,
     const std::string&,
     const std::string& = "",
@@ -52,7 +63,6 @@ public:
     const std::string& = "",
     const std::string& = ""
   );
-  void render ();
 };
 
 class CmdNews : public Command
@@ -60,7 +70,6 @@ class CmdNews : public Command
 public:
   CmdNews ();
   int execute (std::string&);
-  void version2_6_0 (std::vector<NewsItem>&);
 };
 
 #endif

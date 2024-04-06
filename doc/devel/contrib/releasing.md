@@ -2,6 +2,8 @@
 
 To release Taskwarrior, follow this process:
 
+- Examine the changes since the last version, and update `src/commands/CmdNews.cpp` accordingly.
+  There are instructions at the top of the file.
 - Create a release PR
     - Update version in CMakeLists.txt
     - Update Changelog
