@@ -18,6 +18,7 @@ add_library (task STATIC CLI2.cpp CLI2.h
                   TDB2.cpp TDB2.h
                   Task.cpp Task.h
                   Variant.cpp Variant.h
+                  Version.cpp Version.h
                   ViewTask.cpp ViewTask.h
                   dependency.cpp
                   feedback.cpp
