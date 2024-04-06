@@ -35,6 +35,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 from basetest.utils import mkstemp
+from basetest.exceptions import CommandError
 
 
 class TestImport(TestCase):
@@ -169,6 +170,16 @@ class TestImport(TestCase):
         code, out, err = self.t("import", input=self.data1.replace("\n", ""))
         self.assertIn("Imported 3 tasks", err)
         self.assertData1()
+
+    def test_import_bad_utf8(self):
+        """JSON array containing bad utf8 in a string"""
+        data = b'[\n{"id":0,"description":"unicode","githubbody":"a surrogate pair: `\xed\xa0\xbe\xed\xb0\x89`","priority":"M","status":"completed"}\n]'
+        try:
+            code, out, err = self.t("import", input=data)
+        except CommandError as e:
+            self.assertIn("invalid utf-8 sequence", e.err)
+        else:
+            self.assertTrue(false) # no failure
 
     def test_import_newlines(self):
         """JSON array with newlines after each value"""

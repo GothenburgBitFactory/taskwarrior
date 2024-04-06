@@ -27,9 +27,9 @@ ON_POSIX = 'posix' in sys.builtin_module_names
 # Directory relative to basetest module location
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Location of binary files (usually the src/ folder)
+# Location of binary files (usually the build/src/ folder)
 BIN_PREFIX = os.path.abspath(
-    os.path.join(CURRENT_DIR, "..", "..", "src")
+    os.path.join(CURRENT_DIR, "..", "..", "build", "src")
 )
 
 # Default location of test certificates
@@ -115,7 +115,12 @@ def _queue_output(arguments, pidq, outputq):
     This function is meant to be executed in a thread as it may block
     """
     kwargs = arguments["process"]
-    input_data = arguments["input"].encode("utf-8") if arguments["input"] else None
+    input_data = None
+    if arguments["input"]:
+        if type(arguments["input"]) == type(""):
+            input_data = arguments["input"].encode("utf-8")
+        else:
+            input_data = arguments["input"]
 
     try:
         proc = Popen(**kwargs)
