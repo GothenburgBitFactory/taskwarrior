@@ -84,6 +84,9 @@ private:
   tc::Replica replica;
   std::optional<tc::WorkingSet> _working_set;
 
+  // UUID -> Task containing all tasks modified in this invocation.
+  std::map<std::string, Task> changes;
+
   const tc::WorkingSet &working_set ();
   static std::string option_string (std::string input);
   static void show_diff (const std::string&, const std::string&, const std::string&);
