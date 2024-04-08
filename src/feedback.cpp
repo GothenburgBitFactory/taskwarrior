@@ -207,6 +207,11 @@ void feedback_unblocked (const Task& task)
 ///////////////////////////////////////////////////////////////////////////////
 void feedback_backlog ()
 {
+  // If non-local sync is not set up, do not provide this feedback.
+  if (Context::getContext ().config.get ("sync.encryption_secret") == "") {
+    return;
+  }
+
   if (Context::getContext ().verbose ("sync"))
   {
     int count = Context::getContext ().tdb2.num_local_changes ();
