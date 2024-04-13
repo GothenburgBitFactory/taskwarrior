@@ -15,7 +15,7 @@ rust-version = "1.70.0"
 default = ["server-sync", "server-gcp"]
 
 # Support for sync to a server
-server-sync = ["encryption", "dep:ureq"]
+server-sync = ["encryption", "dep:ureq", "dep:url"]
 # Support for sync to GCP
 server-gcp = ["cloud", "encryption", "dep:google-cloud-storage", "dep:tokio"]
 # (private) Support for sync protocol encryption
@@ -43,10 +43,12 @@ byteorder.workspace = true
 ring.workspace = true
 google-cloud-storage.workspace = true
 tokio.workspace = true
+url.workspace = true
 
 google-cloud-storage.optional = true
 tokio.optional = true
 ureq.optional = true
+url.optional = true
 ring.optional = true
 
 [dev-dependencies]
