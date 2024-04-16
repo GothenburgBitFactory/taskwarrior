@@ -186,7 +186,7 @@ static void test_replica_sync_local(void) {
 static void test_replica_remote_server(void) {
     TCString err;
     TCServer *server = tc_server_new_sync(
-        tc_string_borrow("tc.freecinc.com"),
+        tc_string_borrow("http://tc.freecinc.com"),
         tc_uuid_new_v4(),
         tc_string_borrow("\xf0\x28\x8c\x28"), // NOTE: not utf-8
         &err);

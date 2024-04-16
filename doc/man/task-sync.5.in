@@ -73,6 +73,8 @@ Configure Taskwarrior with these details:
     $ task config sync.server.origin            <origin>
     $ task config sync.server.client_id         <client_id>
 
+Note that the origin must include the scheme, such as 'http://' or 'https://'.
+
 .SS Google Cloud Platform
 
 To synchronize your tasks to GCP, use the GCP Console to create a new project,
