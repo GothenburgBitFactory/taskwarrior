@@ -56,6 +56,22 @@ class TestHooksOnExit(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
+    def test_onexit_builtin_good_gets_changed_tasks(self):
+        """on-exit-good - a well-behaved, successful, on-exit hook."""
+        hookname = 'on-exit-good'
+        self.t.hooks.add_default(hookname, log=True)
+
+        code, out, err = self.t("add foo")
+        self.assertIn("Created task", out)
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "CHANGED TASK")
+        self.assertEqual(logs["output"]["msgs"][1], "FEEDBACK")
+
     def test_onexit_builtin_bad(self):
         """on-exit-bad - a well-behaved, failing, on-exit hook."""
         hookname = 'on-exit-bad'

@@ -29,6 +29,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <vector>
 #include <list>
 #include <unordered_set>
 #include <stdlib.h>
@@ -78,6 +79,8 @@ void TDB2::add (Task& task)
   task.validate (true);
 
   std::string uuid = task.get ("uuid");
+  changes[uuid] = task;
+
   auto innertask = replica.import_task_with_uuid (uuid);
 
   {
@@ -150,6 +153,8 @@ void TDB2::modify (Task& task)
   task.validate (false);
   auto uuid = task.get ("uuid");
 
+  changes[uuid] = task;
+
 	// invoke the hook and allow it to modify the task before updating
   Task original;
   get (uuid, original);
@@ -209,9 +214,10 @@ const tc::WorkingSet &TDB2::working_set ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::get_changes (std::vector <Task>& changes)
 {
-  // TODO: changes in an invocation of `task` are not currently tracked, so this
-  // list is always empty.
+  std::map<std::string, Task>& changes_map = this->changes;
   changes.clear();
+  std::transform(changes_map.begin(), changes_map.end(), std::back_inserter(changes),
+                 [](const auto& kv) { return kv.second; });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
