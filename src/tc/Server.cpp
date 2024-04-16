@@ -39,7 +39,7 @@ tc::Server::new_local (const std::string &server_dir)
   TCString error;
   auto tcserver = tc_server_new_local (tc_server_dir, &error);
   if (!tcserver) {
-    auto errmsg = format ("Could not configure local server at {1}: {2}",
+    std::string errmsg = format ("Could not configure local server at {1}: {2}",
         server_dir, tc_string_content (&error));
     tc_string_free (&error);
     throw errmsg;
@@ -61,13 +61,13 @@ tc::Server::new_sync (const std::string &origin, const std::string &client_id, c
   if (tc_uuid_from_str(tc_client_id, &tc_client_uuid) != TC_RESULT_OK) {
     tc_string_free(&tc_origin);
     tc_string_free(&tc_encryption_secret);
-    throw "client_id must be a valid UUID";
+    throw format ("client_id '{1}' is not a valid UUID", client_id);
   }
 
   TCString error;
   auto tcserver = tc_server_new_sync (tc_origin, tc_client_uuid, tc_encryption_secret, &error);
   if (!tcserver) {
-    auto errmsg = format ("Could not configure connection to server at {1}: {2}",
+    std::string errmsg = format ("Could not configure connection to server at {1}: {2}",
         origin, tc_string_content (&error));
     tc_string_free (&error);
     throw errmsg;
@@ -88,7 +88,7 @@ tc::Server::new_gcp (const std::string &bucket, const std::string &credential_pa
   TCString error;
   auto tcserver = tc_server_new_gcp (tc_bucket, tc_credential_path, tc_encryption_secret, &error);
   if (!tcserver) {
-    auto errmsg = format ("Could not configure connection to GCP bucket {1}: {2}",
+    std::string errmsg = format ("Could not configure connection to GCP bucket {1}: {2}",
         bucket, tc_string_content (&error));
     tc_string_free (&error);
     throw errmsg;
