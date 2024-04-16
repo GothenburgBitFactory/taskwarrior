@@ -12,8 +12,12 @@ See the [TaskChampion CONTRIBUTING guide](../../../taskchampion/CONTRIBUTING.md)
  * CMake 3.0 or later
  * gcc 7.0 or later, clang 6.0 or later, or a compiler with full C++17 support
  * libuuid (if not on macOS)
- * python 3 (optional, for running the test suite)
  * Rust 1.64.0 or higher (hint: use https://rustup.rs/ instead of using your system's package manager)
+
+## Install Optional Dependencies:
+ * python 3 (for running the test suite)
+ * clangd or ccls (for C++ integration in many editors)
+ * rust-analyzer (for Rust integration in many editors)
 
 ## Obtain and Build Code:
 The following documentation works with CMake 3.14 and later.
@@ -24,7 +28,7 @@ See the general CMake man pages or the [cmake-documentation](https://cmake.org/c
 ```sh
 git clone https://github.com/GothenburgBitFactory/taskwarrior
 cd taskwarrior
-cmake -S . -B build  -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build
 ```
 Other possible build types can be `Release` and `Debug`.
