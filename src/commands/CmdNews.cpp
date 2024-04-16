@@ -540,9 +540,9 @@ void NewsItem::version3_0_0 (std::vector<NewsItem>& items) {
     /*background=*/"",
     /*punchline=*/
     "The sync functionality for Taskwarrior has been rewritten entirely, and no longer\n"
-    "supports taskserver/taskd. Instead, the recommended solution is a cloud-storage backend,\n"
-    "although taskchampion-sync-server is also available. As part of this change, the\n"
-    "on-disk storage format has also changed.\n",
+    "supports taskserver/taskd. The most robust solution is a cloud-storage backend,\n"
+    "although a less-mature taskchampion-sync-server is also available. See `task-sync(5)`\n"
+    "For details. As part of this change, the on-disk storage format has also changed.\n",
     /*update=*/
     "This is a breaking upgrade: you must export your task database from 2.x and re-import\n"
     "it into 3.x. Hooks run during task import, so if you have any hooks defined,\n"
@@ -613,13 +613,11 @@ int CmdNews::execute (std::string& output)
     // Print release notes
     std::cout << bold.colorize (format (
       "\n"
-      "============================================\n"
-      "Taskwarrior {1} - {2} Release highlights\n"
-      "============================================\n",
+      "================================================\n"
+      "Taskwarrior {1} through {2} Release Highlights\n"
+      "================================================\n",
       news_version,
-      current_version,
-      (full_summary ? "All" : (major_items ? "Major" : "Minor"))
-     ));
+      current_version));
 
     for (unsigned short i=0; i < items.size (); i++) {
       std::cout << format ("\n({1}/{2}) ", i+1, items.size ());
