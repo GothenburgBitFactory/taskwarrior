@@ -35,6 +35,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <Lexer.h>
+#include <Version.h>
 #include <ViewTask.h>
 #include <format.h>
 #include <shared.h>
@@ -250,24 +251,24 @@ int CmdCustom::execute (std::string& output)
   }
 
   // Inform user about the new release highlights if not presented yet
-  if (Context::getContext ().config.get ("news.version") != "2.6.0")
+  Version news_version(Context::getContext ().config.get ("news.version"));
+  Version current_version = Version::Current();
+  if (news_version != current_version)
   {
     std::random_device device;
     std::mt19937 random_generator(device());
     std::uniform_int_distribution<std::mt19937::result_type> twentyfive_percent(1, 4);
 
-    std::string NEWS_NOTICE = (
-      "Recently upgraded to 2.6.0. "
-      "Please run 'task news' to read highlights about the new release."
-    );
-
     // 1 in 10 chance to display the message.
     if (twentyfive_percent(random_generator) == 4)
     {
+      std::ostringstream notice;
+      notice << "Recently upgraded to " << current_version << ". "
+        "Please run 'task news' to read highlights about the new release.";
       if (Context::getContext ().verbose ("footnote"))
-        Context::getContext ().footnote (NEWS_NOTICE);
+        Context::getContext ().footnote (notice.str());
       else if (Context::getContext ().verbose ("header"))
-        Context::getContext ().header (NEWS_NOTICE);
+        Context::getContext ().header (notice.str());
     }
   }
 

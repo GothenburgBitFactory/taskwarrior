@@ -38,6 +38,14 @@
 #include <util.h>
 #include <main.h>
 
+/* Adding a new version:
+ * 
+ * - Add a new `versionX_Y_Z` method to `NewsItem`, and add news items for the new
+ *   release.
+ * - Call the new method in `NewsItem.all()`. Calls should be in version order.
+ * - Test with `task news`.
+ */
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdNews::CmdNews ()
 {
@@ -91,6 +99,7 @@ void wait_for_enter ()
 // Holds information about single improvement / bug.
 //
 NewsItem::NewsItem (
+  Version version,
   bool major,
   const std::string& title,
   const std::string& bg_title,
@@ -100,6 +109,7 @@ NewsItem::NewsItem (
   const std::string& reasoning,
   const std::string& actions
 ) {
+  _version = version;
   _major = major;
   _title = title;
   _bg_title = bg_title;
@@ -127,7 +137,7 @@ void NewsItem::render () {
 
   // TODO: For some reason, bold cannot be blended in 256-color terminals
   // Apply this workaround of colorizing twice.
-  std::cout << bold.colorize (header.colorize (format ("{1}\n", _title)));
+  std::cout << bold.colorize (header.colorize (format ("{1} ({2})\n", _title, _version)));
   if (_background.size ()) {
     if (_bg_title.empty ())
       _bg_title = "Background";
@@ -138,7 +148,7 @@ void NewsItem::render () {
 
   wait_for_enter ();
 
-  std::cout << "  " << underline.colorize ("What changed in 2.6.0?\n");
+  std::cout << "  " << underline.colorize (format ("What changed in {1}?\n", _version));
   if (_punchline.size ())
     std::cout << footnote.colorize (format ("{1}\n", _punchline));
 
@@ -160,6 +170,13 @@ void NewsItem::render () {
   }
 }
 
+std::vector<NewsItem> NewsItem::all () {
+  std::vector<NewsItem> items;
+  version2_6_0(items);
+  version3_0_0(items);
+  return items;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Generate the highlights for the 2.6.0 version.
 //
@@ -174,7 +191,8 @@ void NewsItem::render () {
 // - The .by attribute modifier
 // - Exporting a report
 // - Multi-day holidays
-void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
+void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
+  Version version("2.6.0");
   /////////////////////////////////////////////////////////////////////////////
   // - Writeable context (major)
 
@@ -234,6 +252,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
               "  Read more about how to use contexts in CONTEXT section of 'man task'.";
 
   NewsItem writeable_context (
+    version,
     true,
     "'Writeable' context",
     "Background - what is context?",
@@ -277,6 +296,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - 64-bit datetime support (major)
 
   NewsItem uint64_support (
+    version,
     false,
     "Support for 64-bit timestamps and numeric values",
     "",
@@ -294,6 +314,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Waiting is a virtual status
 
   NewsItem waiting_status (
+    version,
     true,
     "Deprecation of the status:waiting",
     "",
@@ -315,6 +336,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Support for environment variables in the taskrc
 
   NewsItem env_vars (
+    version,
     true,
     "Environment variables in the taskrc",
     "",
@@ -333,6 +355,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Reports outside of context
 
   NewsItem contextless_reports (
+    version,
     true,
     "Context-less reports",
     "",
@@ -354,6 +377,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Exporting a particular report
 
   NewsItem exportable_reports (
+    version,
     false,
     "Exporting a particular report",
     "",
@@ -377,6 +401,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Multi-day holidays
 
   NewsItem multi_holidays (
+    version,
     false,
     "Multi-day holidays",
     "",
@@ -399,6 +424,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Unicode 12
 
   NewsItem unicode_12 (
+    version,
     false,
     "Extended Unicode support (Unicode 12)",
     "",
@@ -417,6 +443,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - The .by attribute modifier
 
   NewsItem by_modifier (
+    version,
     false,
     "The .by attribute modifier",
     "",
@@ -435,6 +462,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Context-specific configuration overrides
 
   NewsItem context_config (
+    version,
     false,
     "Context-specific configuration overrides",
     "",
@@ -459,6 +487,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - XDG config home support
 
   NewsItem xdg_support (
+    version,
     true,
     "Support for XDG Base Directory Specification",
     "",
@@ -487,6 +516,7 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   // - Update holiday data
 
   NewsItem holidata_2022 (
+    version,
     false,
     "Updated holiday data for 2022",
     "",
@@ -500,6 +530,28 @@ void CmdNews::version2_6_0 (std::vector<NewsItem>& items) {
   items.push_back(holidata_2022);
 }
 
+void NewsItem::version3_0_0 (std::vector<NewsItem>& items) {
+  Version version("3.0.0");
+  NewsItem sync {
+    version,
+    /*major=*/true,
+    /*title=*/"New data model and sync backend",
+    /*bg_title=*/"",
+    /*background=*/"",
+    /*punchline=*/
+    "The sync functionality for Taskwarrior has been rewritten entirely, and no longer\n"
+    "supports taskserver/taskd. The most robust solution is a cloud-storage backend,\n"
+    "although a less-mature taskchampion-sync-server is also available. See `task-sync(5)`\n"
+    "For details. As part of this change, the on-disk storage format has also changed.\n",
+    /*update=*/
+    "This is a breaking upgrade: you must export your task database from 2.x and re-import\n"
+    "it into 3.x. Hooks run during task import, so if you have any hooks defined,\n"
+    "temporarily disable them for this operation.\n\n"
+    "See https://taskwarrior.org/docs/upgrade-3/ for information on upgrading to Taskwarrior 3.0.",
+  };
+  items.push_back(sync);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 int CmdNews::execute (std::string& output)
 {
@@ -509,11 +561,13 @@ int CmdNews::execute (std::string& output)
   // Supress compiler warning about unused argument
   output = "";
 
-  // TODO: 2.6.0 is the only version with explicit release notes, but in the
-  // future we need to only execute yet unread release notes
-  std::vector<NewsItem> items;
-  std::string version = "2.6.0";
-  version2_6_0 (items);
+  std::vector<NewsItem> items = NewsItem::all();
+  Version news_version(Context::getContext ().config.get ("news.version"));
+  Version current_version = Version::Current();
+
+  // 2.6.0 is the earliest version with news support.
+  if (!news_version.is_valid())
+    news_version = Version("2.6.0");
 
   bool full_summary = false;
   bool major_items = true;
@@ -538,6 +592,12 @@ int CmdNews::execute (std::string& output)
 
   signal (SIGINT, signal_handler);
 
+  // Remove items that have already been shown
+    items.erase (
+      std::remove_if (items.begin (), items.end (), [&](const NewsItem& n){return n._version <= news_version;}),
+      items.end ()
+    );
+
   // Remove non-major items if displaying a non-full (abbreviated) summary
   int total_highlights = items.size ();
   if (! full_summary)
@@ -546,23 +606,25 @@ int CmdNews::execute (std::string& output)
       items.end ()
     );
 
-  // Print release notes
   Color bold = Color ("bold");
-  std::cout << bold.colorize (format (
-    "\n"
-    "==========================================\n"
-    "Taskwarrior {1} {2} Release highlights\n"
-    "==========================================\n",
-    version,
-    (full_summary ? "All" : (major_items ? "Major" : "Minor"))
-   ));
+  if (items.empty ()) {
+    std::cout << bold.colorize ("You are up to date!\n");
+  } else {
+    // Print release notes
+    std::cout << bold.colorize (format (
+      "\n"
+      "================================================\n"
+      "Taskwarrior {1} through {2} Release Highlights\n"
+      "================================================\n",
+      news_version,
+      current_version));
 
-  for (unsigned short i=0; i < items.size (); i++) {
-    std::cout << format ("\n({1}/{2}) ", i+1, items.size ());
-    items[i].render ();
+    for (unsigned short i=0; i < items.size (); i++) {
+      std::cout << format ("\n({1}/{2}) ", i+1, items.size ());
+      items[i].render ();
+    }
+    std::cout << "Thank you for catching up on the new features!\n";
   }
-
-  std::cout << "Thank you for catching up on the new features!\n";
   wait_for_enter ();
 
   // Display outro
@@ -588,9 +650,9 @@ int CmdNews::execute (std::string& output)
   std::cout << outro.str ();
 
   // Set a mark in the config to remember which version's release notes were displayed
-  if (config.get ("news.version") != "2.6.0")
+  if (full_summary && news_version != current_version)
   {
-    CmdConfig::setConfigVariable ("news.version", "2.6.0", false);
+    CmdConfig::setConfigVariable ("news.version", std::string(current_version), false);
 
     // Revert back to default signal handling after displaying the outro
     signal (SIGINT, SIG_DFL);
@@ -627,14 +689,15 @@ int CmdNews::execute (std::string& output)
   else
     wait_for_enter ();  // Do not display the outro and footnote at once
 
-  if (! full_summary && major_items)
+  if (! items.empty() && ! full_summary && major_items) {
     Context::getContext ().footnote (format (
       "Only major highlights were displayed ({1} out of {2} total).\n"
       "If you're interested in more release highlights, run 'task news {3} minor'.",
       items.size (),
       total_highlights,
-      version
+      current_version
     ));
+  }
 
   return 0;
 }

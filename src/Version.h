@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
+// Copyright 2024, Dustin Mitchell.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,52 +24,48 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CMDNEWS
-#define INCLUDED_CMDNEWS
+#ifndef INCLUDED_VERSION
+#define INCLUDED_VERSION
 
 #include <string>
-#include <Command.h>
-#include <CmdConfig.h>
-#include <CmdContext.h>
-#include <Version.h>
 
-class NewsItem {
+// A utility class for handling Taskwarrior versions.
+class Version {
 public:
-  Version _version;
-  bool _major = false;
-  std::string _title;
-  std::string _bg_title;
-  std::string _background;
-  std::string _punchline;
-  std::string _update;
-  std::string _reasoning;
-  std::string _actions;
+  // Parse a version from a string. This must be of the format
+  // digits.digits.digits.
+  explicit Version(std::string version);
 
-  void render ();
+  // Create an invalid version.
+  Version() = default;
 
-  static std::vector<NewsItem> all();
-  static void version2_6_0 (std::vector<NewsItem>&);
-  static void version3_0_0 (std::vector<NewsItem>&);
+  Version(const Version &other) = default;
+  Version(Version &&other) = default;
+  Version &operator=(const Version &) = default;
+  Version &operator=(Version &&) = default;
+
+  // Return a version representing the release being built.
+  static Version Current();
+
+  bool is_valid() const;
+
+  // Compare versions.
+  bool operator<(const Version &) const;
+  bool operator<=(const Version &) const;
+  bool operator>(const Version &) const;
+  bool operator>=(const Version &) const;
+  bool operator==(const Version &) const;
+  bool operator!=(const Version &) const;
+
+  // Convert back to a string.
+  operator std::string() const;
+
+  friend std::ostream& operator<<(std::ostream& os, const Version& version);
 
 private:
-  NewsItem (
-    Version,
-    bool,
-    const std::string&,
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = ""
-  );
-};
-
-class CmdNews : public Command
-{
-public:
-  CmdNews ();
-  int execute (std::string&);
+  int major = -1;
+  int minor = -1;
+  int patch = -1;
 };
 
 #endif
