@@ -28,7 +28,7 @@ See the general CMake man pages or the [cmake-documentation](https://cmake.org/c
 ```sh
 git clone https://github.com/GothenburgBitFactory/taskwarrior
 cd taskwarrior
-cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build
 ```
 Other possible build types can be `Release` and `Debug`.
