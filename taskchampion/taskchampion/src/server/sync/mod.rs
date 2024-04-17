@@ -94,10 +94,7 @@ impl Server for SyncServer {
         parent_version_id: VersionId,
         history_segment: HistorySegment,
     ) -> Result<(AddVersionResult, SnapshotUrgency)> {
-        let url = format!(
-            "{}/v1/client/add-version/{}",
-            self.origin, parent_version_id
-        );
+        let url = format!("{}v1/client/add-version/{}", self.origin, parent_version_id);
         let unsealed = Unsealed {
             version_id: parent_version_id,
             payload: history_segment,
@@ -130,7 +127,7 @@ impl Server for SyncServer {
 
     fn get_child_version(&mut self, parent_version_id: VersionId) -> Result<GetVersionResult> {
         let url = format!(
-            "{}/v1/client/get-child-version/{}",
+            "{}v1/client/get-child-version/{}",
             self.origin, parent_version_id
         );
         match self
@@ -159,7 +156,7 @@ impl Server for SyncServer {
     }
 
     fn add_snapshot(&mut self, version_id: VersionId, snapshot: Snapshot) -> Result<()> {
-        let url = format!("{}/v1/client/add-snapshot/{}", self.origin, version_id);
+        let url = format!("{}v1/client/add-snapshot/{}", self.origin, version_id);
         let unsealed = Unsealed {
             version_id,
             payload: snapshot,
@@ -175,7 +172,7 @@ impl Server for SyncServer {
     }
 
     fn get_snapshot(&mut self) -> Result<Option<(VersionId, Snapshot)>> {
-        let url = format!("{}/v1/client/snapshot", self.origin);
+        let url = format!("{}v1/client/snapshot", self.origin);
         match self
             .agent
             .get(&url)
