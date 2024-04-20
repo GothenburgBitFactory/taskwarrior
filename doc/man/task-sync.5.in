@@ -144,6 +144,9 @@ Users are identified by a client ID, and users with different client IDs are
 entirely independent.  Task data is encrypted by Taskwarrior, and the sync
 server never sees un-encrypted data.
 
+The server is developed in
+https://github.com/GothenburgBitFactory/taskchampion-sync-server.
+
 To start the server, run it in your preferred HTTP hosting environment, using
 `--port` to set the TCP port on which it should listen.  It is recommended to
 use TLS to protect communications with the server, but this is not required.
