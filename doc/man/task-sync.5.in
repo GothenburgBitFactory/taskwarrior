@@ -147,17 +147,6 @@ server never sees un-encrypted data.
 The server is developed in
 https://github.com/GothenburgBitFactory/taskchampion-sync-server.
 
-To start the server, run it in your preferred HTTP hosting environment, using
-`--port` to set the TCP port on which it should listen.  It is recommended to
-use TLS to protect communications with the server, but this is not required.
-
-The server stores its data in a database, the path to which is given by the
-`--data-dir` argument, defaulting to "/var/lib/taskchampion-sync-server".
-
-For example:
-
-    $ taskchampion-sync-server --port 8443 --data-dir /storage/taskdata
-
 .SS Adding a New User
 
 To add a new user to the server, invent a new client ID with a tool like

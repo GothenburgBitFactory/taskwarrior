@@ -40,7 +40,7 @@ There are three important crates in this repository.
 You may be able to limit the scope of what you need to understand to just one crate.
  * `taskchampion` is the core functionality of the application, implemented as a library
  * `taskchampion-lib` implements a C API for `taskchampion`, used by Taskwarrior
- * `integration-tests` contains some tests for integrations between multiple crtes.
+ * `integration-tests` contains some tests for integrations between multiple crates.
  
 You can generate the documentation for the `taskchampion` crate with `cargo doc --release --open -p taskchampion`.
  
