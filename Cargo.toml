@@ -2,7 +2,6 @@
 
 members = [
     "taskchampion/taskchampion",
-    "taskchampion/sync-server",
     "taskchampion/lib",
     "taskchampion/integration-tests",
     "taskchampion/xtask",
@@ -16,17 +15,12 @@ exclude = [ "src/tc/rust" ]
 # All Rust dependencies are defined here, and then referenced by the
 # Cargo.toml's in the members with `foo.workspace = true`.
 [workspace.dependencies]
-actix-rt = "2"
-actix-web = "^4.3.1"
 anyhow = "1.0"
 byteorder = "1.5"
 cc = "1.0.73"
 chrono = { version = "^0.4.22", features = ["serde"] }
-clap = { version = "^4.3.0", features = ["string"] }
-env_logger = "^0.10.2"
 ffizz-header = "0.5"
 flate2 = "1"
-futures = "^0.3.25"
 google-cloud-storage = { version = "0.15.0", default-features = false, features = ["rustls-tls", "auth"] }
 lazy_static = "1"
 libc = "0.2.136"

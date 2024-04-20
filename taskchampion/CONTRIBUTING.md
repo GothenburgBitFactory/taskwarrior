@@ -24,11 +24,8 @@ Other ideas;
 
 TaskChampion is a typical Rust application.
 To work on TaskChampion, you'll need to [install the latest version of Rust](https://www.rust-lang.org/tools/install).
-Once you've done that, run `cargo build` at the top level of this repository to build the binaries.
-This will build `task` and `taskchampion-sync-server` executables in the `./target/debug` directory.
-You can build optimized versions of these binaries with `cargo build --release`, but the performance difference in the resulting binaries is not noticeable, and the build process will take a long time, so this is not recommended.
 
-## Running Test
+## Running Tests
 
 It's always a good idea to make sure tests run before you start hacking on a project.
 Run `cargo test` from the top-level of this repository to run the tests.
@@ -39,13 +36,13 @@ Aside from that, start reading the docs and the source to learn more!
 The book documentation explains lots of the concepts in the design of TaskChampion.
 It is linked from the README.
 
-There are three crates in this repository.
+There are three important crates in this repository.
 You may be able to limit the scope of what you need to understand to just one crate.
  * `taskchampion` is the core functionality of the application, implemented as a library
- * `taskchampion-cli` implements the command-line interface (in `cli/`)
- * `taskchampion-sync-server` implements the synchronization server (in `sync-server/`)
+ * `taskchampion-lib` implements a C API for `taskchampion`, used by Taskwarrior
+ * `integration-tests` contains some tests for integrations between multiple crates.
  
- You can generate the documentation for the `taskchampion` crate with `cargo doc --release --open -p taskchampion`.
+You can generate the documentation for the `taskchampion` crate with `cargo doc --release --open -p taskchampion`.
  
 ## Making a Pull Request
  

@@ -12,12 +12,11 @@ Until that is complete, the information here may be out-of-date.
 
 ## Structure
 
-There are five crates here:
+There are four crates here:
 
  * [taskchampion](./taskchampion) - the core of the tool
- * [taskchampion-sync-server](./sync-server) - the server against which `task sync` operates
  * [taskchampion-lib](./lib) - glue code to use _taskchampion_ from C
- * [integration-tests](./integration-tests) (private) - integration tests covering _taskchampion-cli_, _taskchampion-sync-server_, and _taskchampion-lib_.
+ * [integration-tests](./integration-tests) (private) - integration tests covering _taskchampion_ and _taskchampion-lib_.
  * [xtask](./xtask) (private) - implementation of the `cargo xtask codegen` command
 
 ## Code Generation

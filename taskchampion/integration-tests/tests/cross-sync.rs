@@ -1,97 +1,66 @@
-use actix_web::{App, HttpServer};
 use pretty_assertions::assert_eq;
-use taskchampion::{Replica, ServerConfig, Status, StorageConfig, Uuid};
-use taskchampion_sync_server::{storage::InMemoryStorage, Server};
+use taskchampion::{Replica, ServerConfig, Status, StorageConfig};
+use tempfile::TempDir;
 
-#[actix_rt::test]
-async fn cross_sync() -> anyhow::Result<()> {
-    async fn server() -> anyhow::Result<u16> {
-        let _ = env_logger::builder()
-            .is_test(true)
-            .filter_level(log::LevelFilter::Trace)
-            .try_init();
+#[test]
+fn cross_sync() -> anyhow::Result<()> {
+    // set up two replicas, and demonstrate replication between them
+    let mut rep1 = Replica::new(StorageConfig::InMemory.into_storage()?);
+    let mut rep2 = Replica::new(StorageConfig::InMemory.into_storage()?);
 
-        let server = Server::new(Default::default(), Box::new(InMemoryStorage::new()));
-        let httpserver = HttpServer::new(move || App::new().configure(|sc| server.config(sc)))
-            .bind("0.0.0.0:0")?;
+    let tmp_dir = TempDir::new().expect("TempDir failed");
+    let server_config = ServerConfig::Local {
+        server_dir: tmp_dir.path().to_path_buf(),
+    };
+    let mut server = server_config.into_server()?;
 
-        // bind was to :0, so the kernel will have selected an unused port
-        let port = httpserver.addrs()[0].port();
-        actix_rt::spawn(httpserver.run());
-        Ok(port)
-    }
+    // add some tasks on rep1
+    let t1 = rep1.new_task(Status::Pending, "test 1".into())?;
+    let t2 = rep1.new_task(Status::Pending, "test 2".into())?;
 
-    fn client(port: u16) -> anyhow::Result<()> {
-        // set up two replicas, and demonstrate replication between them
-        let mut rep1 = Replica::new(StorageConfig::InMemory.into_storage()?);
-        let mut rep2 = Replica::new(StorageConfig::InMemory.into_storage()?);
+    // modify t1
+    let mut t1 = t1.into_mut(&mut rep1);
+    t1.start()?;
+    let t1 = t1.into_immut();
 
-        let client_id = Uuid::new_v4();
-        let encryption_secret = b"abc123".to_vec();
-        let make_server = || {
-            ServerConfig::Remote {
-                origin: format!("http://127.0.0.1:{}", port),
-                client_id,
-                encryption_secret: encryption_secret.clone(),
-            }
-            .into_server()
-        };
+    rep1.sync(&mut server, false)?;
+    rep2.sync(&mut server, false)?;
 
-        let mut serv1 = make_server()?;
-        let mut serv2 = make_server()?;
+    // those tasks should exist on rep2 now
+    let t12 = rep2
+        .get_task(t1.get_uuid())?
+        .expect("expected task 1 on rep2");
+    let t22 = rep2
+        .get_task(t2.get_uuid())?
+        .expect("expected task 2 on rep2");
 
-        // add some tasks on rep1
-        let t1 = rep1.new_task(Status::Pending, "test 1".into())?;
-        let t2 = rep1.new_task(Status::Pending, "test 2".into())?;
+    assert_eq!(t12.get_description(), "test 1");
+    assert_eq!(t12.is_active(), true);
+    assert_eq!(t22.get_description(), "test 2");
+    assert_eq!(t22.is_active(), false);
 
-        // modify t1
-        let mut t1 = t1.into_mut(&mut rep1);
-        t1.start()?;
-        let t1 = t1.into_immut();
+    // make non-conflicting changes on the two replicas
+    let mut t2 = t2.into_mut(&mut rep1);
+    t2.set_status(Status::Completed)?;
+    let t2 = t2.into_immut();
 
-        rep1.sync(&mut serv1, false)?;
-        rep2.sync(&mut serv2, false)?;
+    let mut t12 = t12.into_mut(&mut rep2);
+    t12.set_status(Status::Completed)?;
 
-        // those tasks should exist on rep2 now
-        let t12 = rep2
-            .get_task(t1.get_uuid())?
-            .expect("expected task 1 on rep2");
-        let t22 = rep2
-            .get_task(t2.get_uuid())?
-            .expect("expected task 2 on rep2");
+    // sync those changes back and forth
+    rep1.sync(&mut server, false)?; // rep1 -> server
+    rep2.sync(&mut server, false)?; // server -> rep2, rep2 -> server
+    rep1.sync(&mut server, false)?; // server -> rep1
 
-        assert_eq!(t12.get_description(), "test 1");
-        assert_eq!(t12.is_active(), true);
-        assert_eq!(t22.get_description(), "test 2");
-        assert_eq!(t22.is_active(), false);
+    let t1 = rep1
+        .get_task(t1.get_uuid())?
+        .expect("expected task 1 on rep1");
+    assert_eq!(t1.get_status(), Status::Completed);
 
-        // make non-conflicting changes on the two replicas
-        let mut t2 = t2.into_mut(&mut rep1);
-        t2.set_status(Status::Completed)?;
-        let t2 = t2.into_immut();
+    let t22 = rep2
+        .get_task(t2.get_uuid())?
+        .expect("expected task 2 on rep2");
+    assert_eq!(t22.get_status(), Status::Completed);
 
-        let mut t12 = t12.into_mut(&mut rep2);
-        t12.set_status(Status::Completed)?;
-
-        // sync those changes back and forth
-        rep1.sync(&mut serv1, false)?; // rep1 -> server
-        rep2.sync(&mut serv2, false)?; // server -> rep2, rep2 -> server
-        rep1.sync(&mut serv1, false)?; // server -> rep1
-
-        let t1 = rep1
-            .get_task(t1.get_uuid())?
-            .expect("expected task 1 on rep1");
-        assert_eq!(t1.get_status(), Status::Completed);
-
-        let t22 = rep2
-            .get_task(t2.get_uuid())?
-            .expect("expected task 2 on rep2");
-        assert_eq!(t22.get_status(), Status::Completed);
-
-        Ok(())
-    }
-
-    let port = server().await?;
-    actix_rt::task::spawn_blocking(move || client(port)).await??;
     Ok(())
 }
