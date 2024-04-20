@@ -1,4 +1,15 @@
 ------ current release ---------------------------
+
+3.0.1 -
+
+- Fix an error in creation of the 3.0.0 tarball which caused builds to fail (#3302)
+- Improvements to `task news`, including notes for the 3.0.0 release
+- Minor improvements to documentation and error handling
+- Fix incorrect task ID of 0 when using hooks (#3339)
+- Issue a warning if .data files remain (#3321)
+
+------ old releases ------------------------------
+
 3.0.0 -
 
 - [BREAKING CHANGE] the sync functionality has been rewritten entirely, and
@@ -230,8 +241,6 @@
 - TW #2580 Importing malformed JSON task crashes TW
            Thanks to bharatvaj for contributing.
 - TW #2581 Config entry with a trailing comment cannot be modified
-
------- old releases ------------------------------
 
 2.5.3 (2021-01-05) - 2f47226f91f0b02f7617912175274d9eed85924f
 

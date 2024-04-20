@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.22)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project (task
-  VERSION 3.0.0
+  VERSION 3.0.1
   DESCRIPTION "Taskwarrior - a command-line TODO list manager"
   HOMEPAGE_URL https://taskwarrior.org/)
 
