@@ -95,7 +95,6 @@ bool Version::operator==(const Version &other) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Version::operator!=(const Version &other) const {
-  std::cout << other;
   return std::tie(major, minor, patch) !=
          std::tie(other.major, other.minor, other.patch);
 }
