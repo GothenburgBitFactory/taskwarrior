@@ -70,7 +70,7 @@ class TestRunner(object):
         self._outputq = Queue()
 
     def _find_tests(self):
-        for test in glob.glob("*.t") + glob.glob("*.t.exe"):
+        for test in glob.glob("*.t") + glob.glob("*.t.py"):
             if os.access(test, os.X_OK):
                 # Executables only
                 if self._is_parallelizable(test):
@@ -123,7 +123,7 @@ class TestRunner(object):
         with open(test, 'rb') as fh:
             header = fh.read(100).split(b"\n")
             if len(header) >= 2 and \
-                ((b"/usr/bin/env python3" in header[0]) or \
+                ((b"!#/usr/bin/env python3" in header[0]) or \
                 (header[1][-14:] == b"bash_tap_tw.sh")):
                 return True
             else:
