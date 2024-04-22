@@ -1,0 +1,8 @@
+configure_file(__init__.py __init__.py COPYONLY)
+configure_file(compat.py compat.py COPYONLY)
+configure_file(exceptions.py exceptions.py COPYONLY)
+configure_file(hooks.py hooks.py COPYONLY)
+configure_file(meta.py meta.py COPYONLY)
+configure_file(task.py task.py COPYONLY)
+configure_file(testing.py testing.py COPYONLY)
+configure_file(utils.py utils.py)
