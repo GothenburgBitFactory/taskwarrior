@@ -1,5 +1,13 @@
 ------ current release ---------------------------
 
+3.0.2 -
+
+- Fix an accidentally-included debug print which polluted output of
+  reports with the Taskwarrior version (#3389)
+
+------ old releases ------------------------------
+
+
 3.0.1 -
 
 - Fix an error in creation of the 3.0.0 tarball which caused builds to fail (#3302)
@@ -7,8 +15,6 @@
 - Minor improvements to documentation and error handling
 - Fix incorrect task ID of 0 when using hooks (#3339)
 - Issue a warning if .data files remain (#3321)
-
------- old releases ------------------------------
 
 3.0.0 -
 
