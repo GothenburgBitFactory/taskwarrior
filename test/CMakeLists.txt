@@ -1,13 +1,5 @@
 cmake_minimum_required (VERSION 3.22)
 
-# This is a work-around for the following CMake issue:
-# https://gitlab.kitware.com/cmake/cmake/issues/16062
-# The issue has been fixed in CMake 3.11.0; the policy is set
-# to OLD for compatibility with older versions of CMake only.
-if(POLICY CMP0037 AND ${CMAKE_VERSION} VERSION_LESS "3.11.0")
-  cmake_policy(SET CMP0037 OLD)
-endif()
-
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/tc/lib
@@ -51,30 +43,23 @@ set (test_SRCS
   view.test.cpp
   )
 
-add_custom_target (test ./run_all --verbose
-                        DEPENDS ${test_SRCS} task_executable
-                        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
-
 add_custom_target (build_tests DEPENDS ${test_SRCS}
                                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} ${src_FILE} test.cpp)
   target_link_libraries (${src_FILE} task tc commands columns libshared task tc commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
+  add_dependencies (${src_FILE} task_executable)
   if (DARWIN)
     target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security -framework SystemConfiguration")
   endif (DARWIN)
 
-  # Add a custom `foo.test` target.
-  string(REGEX REPLACE "\\.[^.]*$" "" test_target ${src_FILE})
-  add_custom_target (${test_target}
-                     ./${src_FILE}
-                     DEPENDS ${src_FILE}
-                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
+  add_test(NAME ${src_FILE}
+    COMMAND ${src_FILE}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
 endforeach (src_FILE)
 
-configure_file(run_all run_all COPYONLY)
-configure_file(problems problems COPYONLY)
 configure_file(bash_tap.sh bash_tap.sh COPYONLY)
 configure_file(bash_tap_tw.sh bash_tap_tw.sh COPYONLY)
 
@@ -205,15 +190,8 @@ set (pythonTests
 foreach (python_Test ${pythonTests})
   configure_file(${python_Test} ${python_Test} COPYONLY)
 
-  # Add a custom `foo.test` target.
-  string(REGEX REPLACE "\\.[^.]*$" "" test_target ${python_Test})
-  add_custom_target (${test_target}
-                     ./${python_Test}
-                     DEPENDS ${python_Test}
-                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
+  add_test(NAME ${python_Test}
+    COMMAND ${Python_EXECUTABLE} ${python_Test}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
 endforeach(python_Test)
-
-#SET(CMAKE_BUILD_TYPE gcov)
-#SET(CMAKE_CXX_FLAGS_GCOV "--coverage")
-#SET(CMAKE_C_FLAGS_GCOV "--coverage")
-#SET(CMAKE_EXE_LINKER_FLAGS_GCOV "--coverage")
