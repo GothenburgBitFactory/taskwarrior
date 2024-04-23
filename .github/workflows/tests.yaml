@@ -66,9 +66,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "Fedora 38"
+          - name: "Fedora 40"
             runner: ubuntu-latest
-            dockerfile: fedora38
+            dockerfile: fedora40
           - name: "Fedora 39"
             runner: ubuntu-latest
             dockerfile: fedora39
