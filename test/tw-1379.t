@@ -41,7 +41,7 @@ class TestBug1379(TestCase):
         self.t = Task()
         # Themes are a special case that cannot be set via "task config"
         with open(self.t.taskrc, 'a') as fh:
-            fh.write("include " + REPO_DIR + "/doc/rc/no-color.theme\n")
+            fh.write("include " + REPO_DIR + "/../doc/rc/no-color.theme\n")
 
         self.t.config("color.alternate", "")
         self.t.config("_forcecolor", "1")

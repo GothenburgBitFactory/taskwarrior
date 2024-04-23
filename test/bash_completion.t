@@ -36,7 +36,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 from basetest.utils import BIN_PREFIX
 
-TASKSH = os.path.abspath(os.path.join(BIN_PREFIX, "..", "scripts/bash/task.sh"))
+TASKSH = os.path.abspath(os.path.join(BIN_PREFIX, "..", "..", "scripts/bash/task.sh"))
 
 
 @contextmanager
