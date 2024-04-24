@@ -1,4 +1,4 @@
-FROM fedora:38
+FROM fedora:40
 
 RUN dnf update -y
 RUN dnf install python3 git gcc gcc-c++ cmake make libuuid-devel libfaketime glibc-langpack-en curl -y

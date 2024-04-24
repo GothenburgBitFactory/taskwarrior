@@ -1,9 +1,9 @@
 version: '3'
 services:
-  test-fedora38:
+  test-fedora40:
     build:
         context: .
-        dockerfile: test/docker/fedora38
+        dockerfile: test/docker/fedora40
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
