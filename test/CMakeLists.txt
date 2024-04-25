@@ -197,7 +197,7 @@ set (pythonTests
   )
 
 foreach (python_Test ${pythonTests})
-  configure_file(${python_Test} "${python_Test}.py" COPYONLY)
+  configure_file(${python_Test} ${python_Test} COPYONLY)
 endforeach(python_Test)
 
 #SET(CMAKE_BUILD_TYPE gcov)
