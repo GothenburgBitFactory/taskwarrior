@@ -70,7 +70,8 @@ class TestRunner(object):
         self._outputq = Queue()
 
     def _find_tests(self):
-        for test in glob.glob("*.t"):
+        for test in glob.glob("*.t") + glob.glob("*.t.exe") \
+                + glob.glob("*.t.sh") + glob.glob("*.t.py"):
             if os.access(test, os.X_OK):
                 # Executables only
                 if self._is_parallelizable(test):
