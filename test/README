@@ -38,19 +38,19 @@ There are three varieties of tests:
     very fast tests, and are exhaustive in nature.
 
   * Python unit tests that are at the highest level, exercising the command
-    line, hooks and syncing. There is an example, 'template.t', that shows how
-    to perform various high level tests.
+    line, hooks and syncing. There is an example, 'template.t.py', that shows
+    how to perform various high level tests.
 
   * Bash unit tests, one test per file, using the bash_tap_tw.sh script. These
     tests are small, quick tests, not intended to be permanent.
 
-All tests are named with the pattern '*.t', and any other forms are not run by
-the test harness. Additionally a test must be set executable (chmod +x) for it
-to be run. In the case of Python tests one can still run them manually by
-launching them with 'python test.t' or simply './test.t'. It also allows us to
-keep tests submitted for bugs that are not scheduled to be fixed in the
-upcoming release, and we don't want the failing tests to prevent us from seeing
-100% pass rate for the bugs we *have* fixed.
+All tests are named with the pattern '*.t.py', '*.t.sh', or '*.t.cpp', and any
+other forms are not run by the test harness. Additionally a test must be set
+executable (chmod +x) for it to be run. In the case of Python tests one can
+still run them manually by launching them with 'python test.t.py' or simply
+'./test.t.py'. It also allows us to keep tests submitted for bugs that are not
+scheduled to be fixed in the upcoming release, and we don't want the failing
+tests to prevent us from seeing 100% pass rate for the bugs we *have* fixed.
 
 
 Goals
