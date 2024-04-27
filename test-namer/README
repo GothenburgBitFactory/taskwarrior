@@ -1,0 +1,10 @@
+Test Namer
+
+The utility functions in this directory were intended for one-time use: to rename test files according to their language.
+Originally, the python and bash test files had the form test.t.
+
+- `namer.py` was used to rename these test files according to the convention already being used for the cpp tests:
+    test.t  --> test.t.sh  (shell files)
+    test.t  --> test.t.py  (python files)
+
+- `first_lines.py` was used as an aid to identify the types of files in the test directory.

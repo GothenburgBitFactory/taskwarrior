@@ -1,0 +1,558 @@
+{
+    "#!/usr/bin/env python3\n": 122,  (python test files)
+    "#!/usr/bin/env bash\n": 24,  (shell test files)
+    "////////////////////////////////////////////////////////////////////////////////\n": 33,   (cpp test files, already correctly named)
+    "cmake_minimum_required (VERSION 3.22)\n": 1,   (Cmakelists)
+    "#!/bin/sh\n": 1,   (conversion)
+    "README\n": 1,    (readme)
+    "*.o\n": 1    (gitignore)
+}
+
+tw-1837.t:
+   #!/usr/bin/env python3
+
+urgency_inherit.t:
+   #!/usr/bin/env python3
+
+context.t:
+   #!/usr/bin/env python3
+
+bash_tap.sh:
+   #!/usr/bin/env bash
+
+tw-2124.t:
+   #!/usr/bin/env bash
+
+uuid.t:
+   #!/usr/bin/env python3
+
+variant_or.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+tw-1804.t:
+   #!/usr/bin/env bash
+
+variant_equal.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+tdb2.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+dom.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+show.t:
+   #!/usr/bin/env python3
+
+variant_not.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+bulk.t:
+   #!/usr/bin/env python3
+
+dom2.t:
+   #!/usr/bin/env python3
+
+operators.t:
+   #!/usr/bin/env python3
+
+version.t:
+   #!/usr/bin/env python3
+
+tw-2257.t:
+   #!/usr/bin/env bash
+
+variant_gt.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+t.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+variant_math.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+logo.t:
+   #!/usr/bin/env python3
+
+special.t:
+   #!/usr/bin/env python3
+
+diag_color.t:
+   #!/usr/bin/env python3
+
+tw-1637.t:
+   #!/usr/bin/env bash
+
+exec.t:
+   #!/usr/bin/env python3
+
+debug.t:
+   #!/usr/bin/env python3
+
+color.cmd.t:
+   #!/usr/bin/env python3
+
+sugar.t:
+   #!/usr/bin/env python3
+
+project.t:
+   #!/usr/bin/env python3
+
+custom.tag_ind.t:
+   #!/usr/bin/env python3
+
+wait.t:
+   #!/usr/bin/env python3
+
+variant_nomatch.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+dependencies.t:
+   #!/usr/bin/env python3
+
+upgrade.t:
+   #!/usr/bin/env python3
+
+tw-20.t:
+   #!/usr/bin/env python3
+
+stress_test:
+   #!/usr/bin/env python3
+
+tw-295.t:
+   #!/usr/bin/env python3
+
+variant_xor.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+uda_report.t:
+   #!/usr/bin/env python3
+
+quotes.t:
+   #!/usr/bin/env python3
+
+start.t:
+   #!/usr/bin/env python3
+
+tw-2392.t:
+   #!/usr/bin/env bash
+
+unique.t:
+   #!/usr/bin/env python3
+
+sorting.t:
+   #!/usr/bin/env python3
+
+variant_multiply.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+tw-1938.t:
+   #!/usr/bin/env bash
+
+delete.t:
+   #!/usr/bin/env python3
+
+default.t:
+   #!/usr/bin/env python3
+
+prepend.t:
+   #!/usr/bin/env python3
+
+problems:
+   #!/usr/bin/env python3
+
+modify.t:
+   #!/usr/bin/env python3
+
+custom.t:
+   #!/usr/bin/env python3
+
+hooks.on-modify.t:
+   #!/usr/bin/env python3
+
+template.t:
+   #!/usr/bin/env python3
+
+variant_subtract.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+edit.t:
+   #!/usr/bin/env python3
+
+urgency.t:
+   #!/usr/bin/env python3
+
+encoding.t:
+   #!/usr/bin/env python3
+
+taskrc.t:
+   #!/usr/bin/env python3
+
+variant_add.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+obfuscate.t:
+   #!/usr/bin/env python3
+
+math.t:
+   #!/usr/bin/env python3
+
+lexer.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+run_all:
+   #!/usr/bin/env python3
+
+uda.t:
+   #!/usr/bin/env python3
+
+variant_and.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+datesort.t:
+   #!/usr/bin/env python3
+
+eval.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+duplicate.t:
+   #!/usr/bin/env python3
+
+substitute.t:
+   #!/usr/bin/env python3
+
+filter.t:
+   #!/usr/bin/env python3
+
+overdue.t:
+   #!/usr/bin/env python3
+
+limit.t:
+   #!/usr/bin/env python3
+
+alias.t:
+   #!/usr/bin/env python3
+
+verbose.t:
+   #!/usr/bin/env python3
+
+commands.t:
+   #!/usr/bin/env python3
+
+export.t:
+   #!/usr/bin/env python3
+
+variant_modulo.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+feature.print.empty.columns.t:
+   #!/usr/bin/env python3
+
+history.t:
+   #!/usr/bin/env python3
+
+tw-2575.t:
+   #!/usr/bin/env python3
+
+hooks.on-launch.t:
+   #!/usr/bin/env python3
+
+tw-262.t:
+   #!/usr/bin/env python3
+
+custom.recur_ind.t:
+   #!/usr/bin/env python3
+
+test.h:
+   ////////////////////////////////////////////////////////////////////////////////
+
+variant_lt.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+summary.t:
+   #!/usr/bin/env python3
+
+tw-1688.t:
+   #!/usr/bin/env bash
+
+variant_cast.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+variant_divide.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+hooks.on-exit.t:
+   #!/usr/bin/env python3
+
+util.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+variant_lte.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+tw-1718.t:
+   #!/usr/bin/env bash
+
+tw-2689.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+reports.t:
+   #!/usr/bin/env python3
+
+annotate.t:
+   #!/usr/bin/env python3
+
+tw-1883.t:
+   #!/usr/bin/env bash
+
+stats.t:
+   #!/usr/bin/env python3
+
+tag.t:
+   #!/usr/bin/env python3
+
+completed.t:
+   #!/usr/bin/env python3
+
+test.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+bash_completion.t:
+   #!/usr/bin/env python3
+
+variant_gte.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+columns.t:
+   #!/usr/bin/env python3
+
+calc.t:
+   #!/usr/bin/env python3
+
+CMakeLists.txt:
+   cmake_minimum_required (VERSION 3.22)
+
+custom.config.t:
+   #!/usr/bin/env python3
+
+add.t:
+   #!/usr/bin/env python3
+
+fontunderline.t:
+   #!/usr/bin/env python3
+
+helpers.t:
+   #!/usr/bin/env python3
+
+count.t:
+   #!/usr/bin/env python3
+
+hooks.on-add.t:
+   #!/usr/bin/env python3
+
+undo.t:
+   #!/usr/bin/env python3
+
+nag.t:
+   #!/usr/bin/env python3
+
+shell.t:
+   #!/usr/bin/env python3
+
+gc.t:
+   #!/usr/bin/env python3
+
+burndown.t:
+   #!/usr/bin/env python3
+
+tw-2451.t:
+   #!/usr/bin/env bash
+
+tw-1895.t:
+   #!/usr/bin/env bash
+
+blocked.t:
+   #!/usr/bin/env python3
+
+tw-2189.t:
+   #!/usr/bin/env bash
+
+diag.t:
+   #!/usr/bin/env python3
+
+conversion:
+   #!/bin/sh
+
+list.all.projects.t:
+   #!/usr/bin/env python3
+
+enpassant.t:
+   #!/usr/bin/env python3
+
+README:
+   README
+
+ids.t:
+   #!/usr/bin/env python3
+
+tw-2581.t:
+   #!/usr/bin/env bash
+
+tw-2530.t:
+   #!/usr/bin/env bash
+
+tw-1715.t:
+   #!/usr/bin/env bash
+
+tw-2514.t:
+   #!/usr/bin/env bash
+
+.gitignore:
+   *.o
+
+caseless.t:
+   #!/usr/bin/env python3
+
+variant_match.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+oldest.t:
+   #!/usr/bin/env python3
+
+configuration.t:
+   #!/usr/bin/env python3
+
+calendar.t:
+   #!/usr/bin/env python3
+
+args.t:
+   #!/usr/bin/env python3
+
+dateformat.t:
+   #!/usr/bin/env python3
+
+tw-1379.t:
+   #!/usr/bin/env python3
+
+partial.t:
+   #!/usr/bin/env python3
+
+tw-1643.t:
+   #!/usr/bin/env bash
+
+uda_orphan.t:
+   #!/usr/bin/env python3
+
+info.t:
+   #!/usr/bin/env python3
+
+uda_sort.t:
+   #!/usr/bin/env python3
+
+due.t:
+   #!/usr/bin/env python3
+
+feedback.t:
+   #!/usr/bin/env python3
+
+rc.override.t:
+   #!/usr/bin/env python3
+
+bash_tap_tw.sh:
+   #!/usr/bin/env bash
+
+confirmation.t:
+   #!/usr/bin/env python3
+
+tw-2429.t:
+   #!/usr/bin/env bash
+
+variant_partial.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+search.t:
+   #!/usr/bin/env python3
+
+color.rules.t:
+   #!/usr/bin/env python3
+
+datetime-negative.t:
+   #!/usr/bin/env python3
+
+tw-3109.t:
+   #!/usr/bin/env bash
+
+recurrence.t:
+   #!/usr/bin/env python3
+
+import.t:
+   #!/usr/bin/env python3
+
+append.t:
+   #!/usr/bin/env python3
+
+feature.default.project.t:
+   #!/usr/bin/env python3
+
+denotate.t:
+   #!/usr/bin/env python3
+
+feature.559.t:
+   #!/usr/bin/env python3
+
+tw-3102.t:
+   #!/usr/bin/env bash
+
+hyphenate.t:
+   #!/usr/bin/env python3
+
+abbreviation.t:
+   #!/usr/bin/env python3
+
+pri_sort.t:
+   #!/usr/bin/env python3
+
+hooks.env.t:
+   #!/usr/bin/env python3
+
+feature.recurrence.t:
+   #!/usr/bin/env python3
+
+unicode.t:
+   #!/usr/bin/env python3
+
+tw-2386.t:
+   #!/usr/bin/env bash
+
+variant_exp.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+timesheet.t:
+   #!/usr/bin/env python3
+
+sequence.t:
+   #!/usr/bin/env python3
+
+variant_inequal.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+log.t:
+   #!/usr/bin/env python3
+
+date.iso.t:
+   #!/usr/bin/env python3
+
+col.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+view.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
+
+tw-2550.t:
+   #!/usr/bin/env bash
+
+format.t:
+   #!/usr/bin/env python3
+
+tc.t.cpp:
+   ////////////////////////////////////////////////////////////////////////////////
