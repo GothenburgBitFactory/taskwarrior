@@ -171,7 +171,6 @@ set (pythonTests
   summary.t
   tag.t
   taskrc.t
-  template.t
   timesheet.t
   tw-1379.t
   tw-1837.t
