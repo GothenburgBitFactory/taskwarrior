@@ -29,17 +29,17 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Location of binary files (usually the src/ folder)
 BIN_PREFIX = os.path.abspath(
-    os.path.join(CURRENT_DIR, "..", "..", "src")
+    os.path.join("${CMAKE_BINARY_DIR}","src")
 )
 
 # Default location of test certificates
 DEFAULT_CERT_PATH = os.path.abspath(
-    os.path.join(CURRENT_DIR, "..", "test_certs")
+    os.path.join("${CMAKE_SOURCE_DIR}", "test", "test_certs")
 )
 
 # Default location of test hooks
 DEFAULT_HOOK_PATH = os.path.abspath(
-    os.path.join(CURRENT_DIR, "..", "test_hooks")
+    os.path.join("${CMAKE_SOURCE_DIR}", "test", "test_hooks")
 )
 
 
