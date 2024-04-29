@@ -1,26 +1,22 @@
+""" To use this test namer, navigate to the directory that contains the tests,
+    and run it using
+        > python3 /path/to/taskwarrior/test-namer/namer.py
+"""
 import os
+import re
 
 
 def namer():
-    """ One-time use function to rename test files to include .sh or .py """
+    """ One-time use function to rename test files from *.t.* to *.test.*,
+        affecting files with cpp, py, and sh extensions. """
 
     for filename in os.listdir():
-        # If filename doesn't end with .t, do not change it
-        if filename[-2:] != '.t':
+        # If filename doesn't match pattern *.t.*, do not change it
+        if not re.match(r'.*\.t\.(cpp|py|sh)', filename):
             continue
 
-        with open(filename, "r") as file:
-            first_line = str(file.readline())
-            new_filename = filename
-
-            # Identify test file types based on their shebangs
-            if first_line == "#!/usr/bin/env python3\n":
-                new_filename += '.py'
-
-            if first_line == "#!/usr/bin/env bash\n":
-                new_filename += '.sh'
-
-            os.rename(filename, new_filename)
+        new_filename = re.sub(r'\.t\.', '.test.', filename)
+        os.rename(filename, new_filename)
 
 
 if __name__ == "__main__":
