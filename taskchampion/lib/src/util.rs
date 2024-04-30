@@ -1,7 +1,15 @@
 use crate::string::RustString;
 
-pub(crate) fn err_to_ruststring(e: impl std::string::ToString) -> RustString<'static> {
-    RustString::from(e.to_string())
+pub(crate) fn err_to_ruststring(e: anyhow::Error) -> RustString<'static> {
+    // The default `to_string` representation of `anyhow::Error` only shows the "outermost"
+    // context, e.g., "Could not connect to server", and omits the juicy details about what
+    // actually went wrong. So, join all of those contexts with `: ` for presentation to the C++
+    // layer.
+    let entire_msg = e
+        .chain()
+        .skip(1)
+        .fold(e.to_string(), |a, b| format!("{}: {}", a, b));
+    RustString::from(entire_msg)
 }
 
 /// An implementation of Vec::into_raw_parts, which is still unstable.  Returns ptr, len, cap.
