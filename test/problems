@@ -52,7 +52,7 @@ if __name__ == "__main__":
     unexpected = defaultdict(int)
     passed = defaultdict(int)
 
-    file = re.compile(r"^# (?:./)?(\S+\.t)(?:\.exe)?$")
+    file = re.compile(r"^# (?:./)?(\S+\.test)(?:\.py|\.cpp)?$")
     timestamp = re.compile(r"^# (\d+(?:\.\d+)?) ==>.*$")
 
     expected_fail = re.compile(r"^not ok.*?#\s*TODO", re.I)
