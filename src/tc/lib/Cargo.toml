@@ -1,0 +1,17 @@
+[package]
+name = "taskchampion-lib"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+
+[dependencies]
+libc = "0.2.136"
+anyhow = "1.0"
+ffizz-header = "0.5"
+taskchampion = "0.5"
+
+[dev-dependencies]
+pretty_assertions = "1"
