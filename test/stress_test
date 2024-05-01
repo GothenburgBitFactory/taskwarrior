@@ -13,7 +13,7 @@ import sys
 def find_tests():
     tests = []
 
-    for test in glob.glob("*.t") + glob.glob("*.t.exe"):
+    for test in glob.glob("*.test.sh") + glob.glob("*.test.py"):
         if os.access(test, os.X_OK):
             # Executables only
             tests.append(test)
