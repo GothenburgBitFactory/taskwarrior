@@ -89,7 +89,7 @@ class TestVersion(TestCase):
         if os.path.exists("../.git"):
           if 2 >= len(version) > 0:
               git = version[1]
-              self.assertRegex(git, r'\([a-f0-9]*\)'))
+              self.assertRegex(git, r'\([a-f0-9]*\)')
           else:
               raise ValueError("Unexpected output from _version '{0}'".format(
                   out))
