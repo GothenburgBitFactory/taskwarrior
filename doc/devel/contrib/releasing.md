@@ -11,7 +11,6 @@ To release Taskwarrior, follow this process:
 - On `develop` after that PR merges, create a release tarball:
   - `git clone . release-tarball`
   - `cd release-tarball/`
-  - edit `Cargo.toml` to contain only `taskchampion` and `taskchampion-lib` in `members` (see https://github.com/GothenburgBitFactory/taskwarrior/issues/3294).
   - `cmake -S. -Bbuild`
   - `make -Cbuild package_source`
   - copy build/task-*.tar.gz elsewhere and delete the `release-tarball` dir

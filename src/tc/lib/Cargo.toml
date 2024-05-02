@@ -2,6 +2,7 @@
 name = "taskchampion-lib"
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 [lib]
 crate-type = ["staticlib", "rlib"]
@@ -10,8 +11,7 @@ crate-type = ["staticlib", "rlib"]
 libc.workspace = true
 anyhow.workspace = true
 ffizz-header.workspace = true
-
-taskchampion = { path = "../taskchampion" }
+taskchampion.workspace = true
 
 [dev-dependencies]
 pretty_assertions.workspace = true

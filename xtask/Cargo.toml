@@ -4,6 +4,6 @@ version = "0.4.1"
 edition = "2021"
 
 [dependencies]
-anyhow.workspace = true
-taskchampion-lib = { path = "../lib" }
+anyhow = "1.0"
+taskchampion-lib = { path = "../src/tc/lib" }
 regex = "^1.10.2"

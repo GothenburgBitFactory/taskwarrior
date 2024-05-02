@@ -1,16 +1,11 @@
 [workspace]
 
 members = [
-    "taskchampion/taskchampion",
-    "taskchampion/lib",
-    "taskchampion/integration-tests",
-    "taskchampion/xtask",
+    "src/tc/lib",
+    "xtask",
 ]
 
 resolver = "2"
-
-# src/tc/rust is just part of the TW build and not a public crate
-exclude = [ "src/tc/rust" ]
 
 # All Rust dependencies are defined here, and then referenced by the
 # Cargo.toml's in the members with `foo.workspace = true`.
@@ -40,3 +35,4 @@ thiserror = "1.0"
 ureq = { version = "^2.9.0", features = ["tls"] }
 uuid = { version = "^1.8.0", features = ["serde", "v4"] }
 url = { version = "2" }
+taskchampion = "0.5"

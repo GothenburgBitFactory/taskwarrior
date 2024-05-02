@@ -8,15 +8,18 @@ corrosion_import_crate(
   LOCKED
   CRATES "taskchampion-lib")
 
+# TODO(#3425): figure out how to create taskchampion.h
+
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/tc
+                     ${CMAKE_SOURCE_DIR}/src/tc/lib
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
-                     ${CMAKE_SOURCE_DIR}/taskchampion/lib
                      ${TASK_INCLUDE_DIRS})
 
 set (tc_SRCS
   ffi.h
+  lib/taskchampion.h
   util.cpp util.h
   Replica.cpp Replica.h
   Server.cpp Server.h

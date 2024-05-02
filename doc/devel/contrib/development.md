@@ -1,12 +1,5 @@
 # Developing Taskwarrior
 
-The following describes the process for developing Taskwarrior. If you are only
-changing TaskChampion (Rust code), you can simply treat it like any other Rust
-project: modify the source under `taskchampion/` and use `cargo test` to run
-the TaskChampion tests.
-
-See the [TaskChampion CONTRIBUTING guide](../../../taskchampion/CONTRIBUTING.md) for more.
-
 ## Satisfy the Requirements:
 
  * CMake 3.0 or later
