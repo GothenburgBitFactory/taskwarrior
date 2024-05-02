@@ -64,6 +64,13 @@ foreach (src_FILE ${test_SRCS})
   if (DARWIN)
     target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security -framework SystemConfiguration")
   endif (DARWIN)
+
+  # Add a custom `foo.test` target.
+  string(REGEX REPLACE "\\.[^.]*$" "" test_target ${src_FILE})
+  add_custom_target (${test_target}
+                     ./${src_FILE}
+                     DEPENDS ${src_FILE}
+                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
 endforeach (src_FILE)
 
 configure_file(run_all run_all COPYONLY)
@@ -197,6 +204,13 @@ set (pythonTests
 
 foreach (python_Test ${pythonTests})
   configure_file(${python_Test} ${python_Test} COPYONLY)
+
+  # Add a custom `foo.test` target.
+  string(REGEX REPLACE "\\.[^.]*$" "" test_target ${python_Test})
+  add_custom_target (${test_target}
+                     ./${python_Test}
+                     DEPENDS ${python_Test}
+                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
 endforeach(python_Test)
 
 #SET(CMAKE_BUILD_TYPE gcov)
