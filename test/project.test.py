@@ -39,8 +39,8 @@ class TestProjects(TestCase):
     def setUp(self):
         self.t = Task()
 
-        self.STATUS = ("The project '{0}' has changed\.  "
-                       "Project '{0}' is {1} complete \({2} remaining\)\.")
+        self.STATUS = (r"The project '{0}' has changed\.  "
+                       r"Project '{0}' is {1} complete \({2} remaining\)\.")
 
     def test_project_summary_count(self):
         """'task projects' shouldn't consider deleted tasks in summary.
@@ -52,7 +52,7 @@ class TestProjects(TestCase):
         self.t("3 delete", input="y\n")
         code, out, err = self.t("project:B projects")
 
-        expected = "1 project \(1 task\)"
+        expected = r"1 project \(1 task\)"
         self.assertRegex(out, expected)
 
     def test_project_progress(self):
@@ -415,16 +415,16 @@ class TestBug899(TestCase):
     def test_log_project(self):
         """899: Verify task log behaves correctly when logging into a project"""
         code, out, err = self.t("add one pro:A")
-        self.assertRegex(err, " 0% complete \(1 task ")
+        self.assertRegex(err, r" 0% complete \(1 task ")
 
         code, out, err = self.t("add two pro:A")
-        self.assertRegex(err, " 0% complete \(2 of 2 ")
+        self.assertRegex(err, r" 0% complete \(2 of 2 ")
 
         code, out, err = self.t("1 done")
-        self.assertRegex(err, " 50% complete \(1 of 2 ")
+        self.assertRegex(err, r" 50% complete \(1 of 2 ")
 
         code, out, err = self.t("log three pro:A")
-        self.assertRegex(err, " 66% complete \(1 of 3 ")
+        self.assertRegex(err, r" 66% complete \(1 of 3 ")
 
 
 class TestBug1267(TestCase):

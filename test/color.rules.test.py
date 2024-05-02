@@ -127,7 +127,7 @@ class TestColorRules(TestCase):
         """Overdue color rule from an hour ago."""
         code, out, err = self.t('/anhourago/ info')
         # Match 4-bit or 8-bit blue color code
-        self.assertRegex(out, '\x1b\[(38;5;4|34)m')
+        self.assertRegex(out, '\x1b\\[(38;5;4|34)m')
 
     def test_due_tomorrow(self):
         """Due tomorrow color rule."""

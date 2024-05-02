@@ -29,7 +29,7 @@ def parse_perf(input):
         tests[command] = []
 
         # Parse concatenated run_perf output
-        for i in re.findall("^  - task %s\.\.\.\n"
+        for i in re.findall("^  - task %s\\.\\.\\.\n"
                             "Perf task ([^ ]+) ([^ ]+) ([^ ]+) (.+)$"
                             % command, input, re.MULTILINE):
             info = i[0:3] + ({k:v for k, v in (i.split(":") for i in i[-1].split())},)

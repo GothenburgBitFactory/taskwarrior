@@ -118,12 +118,12 @@ class TestFormatDepends(TestCase):
     def test_depends_default(self):
         self.t.config("report.formatdep.columns", "description,depends")
         code, out, err = self.t("formatdep")
-        self.assertRegex(out, "one\s+1")
+        self.assertRegex(out, r"one\s+1")
 
     def test_depends_count(self):
         self.t.config("report.formatdep.columns", "description,depends.count")
         code, out, err = self.t("formatdep")
-        self.assertRegex(out, "one\s+\[1\]")
+        self.assertRegex(out, r"one\s+\[1\]")
 
 
 class TestBug101(TestCase):

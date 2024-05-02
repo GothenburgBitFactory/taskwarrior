@@ -70,9 +70,9 @@ class TestUtf8(TestCase):
 
         code, out, err = self.t("ls")
 
-        expected = re.compile("\S\s{4}abc", re.MULTILINE)
+        expected = re.compile(r"\S\s{4}abc", re.MULTILINE)
         self.assertRegex(out, expected)
-        expected = re.compile("\S\s{5}def", re.MULTILINE)
+        expected = re.compile(r"\S\s{5}def", re.MULTILINE)
         self.assertRegex(out, expected)
 
 

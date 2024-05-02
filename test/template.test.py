@@ -72,7 +72,7 @@ class TestBugNumber(TestCase):
         """Copyright is current"""
         code, out, err = self.t("version")
 
-        expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
+        expected = r"Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegex(out.decode("utf8"), expected)
 
         # TAP diagnostics on the bas

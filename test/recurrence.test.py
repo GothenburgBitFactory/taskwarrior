@@ -59,12 +59,12 @@ class TestRecurrenceSorting(TestCase):
     def test_sort_ascending(self):
         """Verify sorting by 'recur+' is correct"""
         code, out, err = self.t("asc rc.verbose:nothing")
-        self.assertRegex(out, "4\s+P1D\s+one\s+6\s+P3D\s+three\s+5\s+P7D\s+two")
+        self.assertRegex(out, r"4\s+P1D\s+one\s+6\s+P3D\s+three\s+5\s+P7D\s+two")
 
     def test_sort_descending(self):
         """Verify sorting by 'recur-' is correct"""
         code, out, err = self.t("desc rc.verbose:nothing")
-        self.assertRegex(out, "5\s+P7D\s+two\s+6\s+P3D\s+three\s+4\s+P1D\s+one")
+        self.assertRegex(out, r"5\s+P7D\s+two\s+6\s+P3D\s+three\s+4\s+P1D\s+one")
 
 
 class TestRecurrenceDisabled(TestCase):
@@ -179,9 +179,9 @@ class TestRecurrenceTasks(TestCase):
         #   3 complex
         #   4 complex
         code, out, err = self.t("minimal rc.verbose:nothing")
-        self.assertRegex(out, "1\s+simple")
-        self.assertRegex(out, "3\s+complex")
-        self.assertRegex(out, "4\s+complex")
+        self.assertRegex(out, r"1\s+simple")
+        self.assertRegex(out, r"3\s+complex")
+        self.assertRegex(out, r"4\s+complex")
 
         # Modify a child task and do not propagate the change.
         self.t("3 modify complex2", input="n\n")

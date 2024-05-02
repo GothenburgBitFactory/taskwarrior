@@ -64,21 +64,21 @@ class TestInfoCommand(TestCase):
         self.t("1 annotate bar", input="n\n")
         code, out, err = self.t("1 info")
 
-        self.assertRegex(out, "ID\s+1")
-        self.assertRegex(out, "Description\s+foo")
-        self.assertRegex(out, "\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s+bar")
-        self.assertRegex(out, "Status\s+Recurring")
-        self.assertRegex(out, "Project\s+P")
-        self.assertRegex(out, "Recurrence\s+P1M")
-        self.assertRegex(out, "Entered\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
-        self.assertRegex(out, "Waiting until\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
-        self.assertRegex(out, "Scheduled\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
-        self.assertRegex(out, "Start\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
-        self.assertRegex(out, "Due\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
-        self.assertRegex(out, "Until\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
-        self.assertRegex(out, "Last modified\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"ID\s+1")
+        self.assertRegex(out, r"Description\s+foo")
+        self.assertRegex(out, r"\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s+bar")
+        self.assertRegex(out, r"Status\s+Recurring")
+        self.assertRegex(out, r"Project\s+P")
+        self.assertRegex(out, r"Recurrence\s+P1M")
+        self.assertRegex(out, r"Entered\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"Waiting until\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"Scheduled\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"Start\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"Due\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"Until\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
+        self.assertRegex(out, r"Last modified\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}")
 
-        self.assertRegex(out, "Tags\s+tag")
+        self.assertRegex(out, r"Tags\s+tag")
         self.assertIn("ACTIVE", out)
         self.assertIn("ANNOTATED", out)
         self.assertIn("MONTH", out)
@@ -89,9 +89,9 @@ class TestInfoCommand(TestCase):
         self.assertIn("YEAR", out)
         self.assertIn("UDA", out)
 
-        self.assertRegex(out, "UUID\s+[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
-        self.assertRegex(out, "Urgency\s+\d+(\.\d+)?")
-        self.assertRegex(out, "Priority\s+H")
+        self.assertRegex(out, r"UUID\s+[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+        self.assertRegex(out, r"Urgency\s+\d+(\.\d+)?")
+        self.assertRegex(out, r"Priority\s+H")
 
         self.assertIn("project", out)
         self.assertIn("active", out)
@@ -116,7 +116,7 @@ class TestBug425(TestCase):
         self.t("1 modify Bar in Bar")
 
         code, out, err = self.t("1 ls")
-        self.assertRegex(out, "1\s+Bar in Bar")
+        self.assertRegex(out, r"1\s+Bar in Bar")
 
 
 if __name__ == "__main__":

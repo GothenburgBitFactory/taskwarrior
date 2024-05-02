@@ -243,14 +243,14 @@ class TestRecurringAttributeFormats(TestCase):
     def test_recurrence_formats_short(self):
         """Verify formatting of assorted short recurrence columns"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status,due,recur.indicator,mask,imask,parent.short")
-        self.assertRegex(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+R\s+-")
-        self.assertRegex(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+R\s+0\s+[0-9a-fA-F]{8}")
+        self.assertRegex(out, r"1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+R\s+-")
+        self.assertRegex(out, r"2\sPending\s+\d{4}-\d{2}-\d{2}\s+R\s+0\s+[0-9a-fA-F]{8}")
 
     def test_recurrence_formats_long(self):
         """Verify formatting of assorted long recurrence columns"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status,due,recur.duration,mask,imask,parent.long")
-        self.assertRegex(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+P30D\s+-")
-        self.assertRegex(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+P30D\s+0\s+[0-9a-fA-F-]{36}")
+        self.assertRegex(out, r"1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+P30D\s+-")
+        self.assertRegex(out, r"2\sPending\s+\d{4}-\d{2}-\d{2}\s+P30D\s+0\s+[0-9a-fA-F-]{36}")
 
     def test_recurrence_format_unrecognized(self):
         """Verify *.donkey formatting fails"""

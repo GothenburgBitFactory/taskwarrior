@@ -90,7 +90,7 @@ class TestCalc(TestCase):
         """version"""
         code, out, err = run_cmd_wait_nofail((CALC, "--version"))
 
-        self.assertRegex(out, "calc \d\.\d+\.\d+")
+        self.assertRegex(out, r"calc \d\.\d+\.\d+")
         self.assertIn("Copyright", out)
         self.assertGreaterEqual(code, 1)
 
