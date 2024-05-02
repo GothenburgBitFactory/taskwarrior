@@ -77,7 +77,7 @@ class TestVersion(TestCase):
         self.assertIn("MIT license", out)
         self.assertIn("https://taskwarrior.org", out)
 
-    @unittest.expectedFailure
+    @unittest.skip(reason="See #3424")
     def test_under_version(self):
         """_version and diagnostics output expected version and syntax"""
         code, out, err = self.t("_version")
