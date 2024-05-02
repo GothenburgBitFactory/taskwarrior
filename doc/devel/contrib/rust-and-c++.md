@@ -1,8 +1,6 @@
 # Rust and C++
 
-Taskwarrior has historically been a C++ project, but as part of an [effort to replace its storage backend](https://github.com/GothenburgBitFactory/taskwarrior/issues/2770) it now includes a Rust library called TaskChampion.
-To develop Taskwarrior, you will need both a [C++ compiler and tools](./development.md), and a [Rust toolchain](https://www.rust-lang.org/tools/install).
-However, most tasks will only require you to be familiar with one of the two languages.
+Taskwarrior has historically been a C++ project, but as of taskwarrior-3.0.0, the storage backend is now provided by a Rust library called TaskChampion.
 
 ## TaskChampion
 
@@ -13,9 +11,6 @@ TaskChampion provides a C interface via the `taskchampion-lib` crate, at `src/tc
 
 Other applications, besides Taskwarrior, can use TaskChampion to manage tasks.
 Taskwarrior is just one application using the TaskChampion interface.
-
-You can build TaskChampion locally by simply running `cargo build` in the root of this repository.
-The implementation, including more documentation, is in the [`rust`](../../rust) subdirectory.
 
 ## Taskwarrior's use of TaskChampion
 
