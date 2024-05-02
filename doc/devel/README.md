@@ -11,10 +11,6 @@ For all other documenation, see https://taskwarrior.org.
 As of the 3.0 release, Taskwarrior uses TaskChampion to manage task data.
 Find documentation of TaskChampion here:
 
- * [TaskChampion README](../../taskchampion)
- * [TaskChampion CONTRIBUTING guide](../../taskchampion/CONTRIBUTING.md)
- * [TaskChampion Book](../../taskchampion/docs/src/SUMMARY.md)
+ * [TaskChampion Repository](https://github.com/GothenburgBitFactory/taskchampion/)
+ * [TaskChampion Book](https://gothenburgbitfactory.github.io/taskchampion/)
  * [TaskChampion API Documentation](https://docs.rs/taskchampion)
-
-TaskChampion will [become its own
-project](https://github.com/GothenburgBitFactory/taskwarrior/issues/3209) soon.

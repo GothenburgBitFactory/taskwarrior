@@ -1,0 +1,12 @@
+[workspace]
+
+# Note that the CMake infrastructure does not use this workspace. It points
+# directly to the manifest in src/tc/lib. This manifest is merely a convenience
+# for running `cargo` commands from the root of the repository directory.
+
+members = [
+    "src/tc/lib",
+    "xtask",
+]
+
+resolver = "2"
