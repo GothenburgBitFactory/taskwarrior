@@ -4,7 +4,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/tc/corrosion)
 
 # Import taskchampion-lib as a CMake library.
 corrosion_import_crate(
-  MANIFEST_PATH "${CMAKE_SOURCE_DIR}/src/tc/lib/Cargo.toml"
+  MANIFEST_PATH "${CMAKE_SOURCE_DIR}/Cargo.toml"
   LOCKED
   CRATES "taskchampion-lib")
 
