@@ -25,9 +25,12 @@ RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug .
 RUN cmake --build build -j 8
 RUN cmake --install build
 RUN task --version
+RUN cd /root/code/build && python3 -m pip install pytest && pytest test/*.test.py || true
 
 # Setup tests
 WORKDIR /root/code/build/test
 RUN make -j8
+RUN python3 -m pip install pytest && pytest *.test.py || true
+RUN python3 -m pip install pytest && pytest test/*.test.py
 
 CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]
