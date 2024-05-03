@@ -33,6 +33,8 @@
 int main (int, char**)
 {
   UnitTest test (49);
+  Context context;
+  Context::setContext(&context);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -152,6 +154,9 @@ TODO Task::decode
   ////////////////////////////////////////////////////////////////////////////////
   Task task;
 
+  // F4 parsing and composition is no longer required, so the tests are marked
+  // as expfail; see #3436.
+
   // (blank)
   good = true;
   try {task = Task ("");}
@@ -160,9 +165,10 @@ TODO Task::decode
 
   // []
   good = true;
+  task = Task ("[]");
   try {task = Task ("[]");}
   catch (const std::string& e){test.diag (e); good = false;}
-  test.notok (good, "Task::Task ('[]')");
+  test.notok (good, "Task::Task ('[]')", true);
 
   // [name:"value"]
   good = true;
@@ -235,11 +241,11 @@ TODO Task::decode
   t6.set ("entry", "20130602T224000Z");
   t6.set ("description", "DESC");
   t6.addTag ("tag1");
-  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1"])", "F4 good");
+  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1"])", "F4 good", true);
   test.is (t6.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1"]})", "JSON good");
 
   t6.addTag ("tag2");
-  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1,tag2"])", "F4 good");
+  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1,tag2"])", "F4 good", true);
   test.is (t6.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})", "JSON good");
 
   good = true;
@@ -247,7 +253,7 @@ TODO Task::decode
   try {t7 = Task (R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})");}
   catch (const std::string& e){test.diag (e); good = false;}
   test.ok (good, "Task::Task ('{two tags}')");
-  test.is (t7.composeF4 (), R"([description:"DESC" entry:"1370212800" tags:"tag1,tag2"])", "F4 good");
+  test.is (t7.composeF4 (), R"([description:"DESC" entry:"1370212800" tags:"tag1,tag2"])", "F4 good", true);
   test.is (t7.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})", "JSON good");
 
   return 0;
