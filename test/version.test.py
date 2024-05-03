@@ -35,7 +35,7 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest.utils import run_cmd_wait
+from basetest.utils import run_cmd_wait, SOURCE_DIR
 
 
 class TestVersion(TestCase):
@@ -50,7 +50,6 @@ class TestVersion(TestCase):
 
         self.assertIn("You must specify a command or a task to modify", err)
 
-    @unittest.skip(reason="See #3424")
     def test_copyright_up_to_date(self):
         """Copyright is current"""
         code, out, err = self.t("version")
@@ -58,18 +57,16 @@ class TestVersion(TestCase):
         expected = r"Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegex(out, expected)
 
-    def slurp(self, file="../CMakeLists.txt"):
-        number = r"\.".join(["[0-9]+"] * 3)
-        ver = re.compile("^set \\(PROJECT_VERSION \"({0}[^\"]*)\"\\)$".format(number))
+    def slurp(self, file=os.path.join(SOURCE_DIR, "CMakeLists.txt")):
+        number = "\.".join(["[0-9]+"] * 3)
+        ver = re.compile("^ *VERSION ({0}[^\"]*)$".format(number))
         with open(file) as fh:
             for line in fh:
-                if "PROJECT_VERSION" in line:
-                    match = ver.match(line)
-                    if match:
-                        return match.group(1)
+                match = ver.match(line)
+                if match:
+                    return match.group(1).strip()
         raise ValueError("Couldn't find matching version in {0}".format(file))
 
-    @unittest.skip(reason="See #3424")
     def test_version(self):
         """version command outputs expected version and license"""
         code, out, err = self.t("version")
@@ -79,7 +76,6 @@ class TestVersion(TestCase):
         self.assertIn("MIT license", out)
         self.assertIn("https://taskwarrior.org", out)
 
-    @unittest.skip(reason="See #3424")
     def test_under_version(self):
         """_version and diagnostics output expected version and syntax"""
         code, out, err = self.t("_version")

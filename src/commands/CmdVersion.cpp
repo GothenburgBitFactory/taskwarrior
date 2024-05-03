@@ -28,6 +28,7 @@
 #include <CmdVersion.h>
 #include <sstream>
 #include <stdlib.h>
+#include <Datetime.h>
 #include <Context.h>
 #include <Table.h>
 #ifdef HAVE_COMMIT
@@ -70,6 +71,8 @@ int CmdVersion::execute (std::string& output)
   link.add ("");
   link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at https://taskwarrior.org");
 
+  Datetime now;
+
   Color bold;
   if (Context::getContext ().color ())
     bold = Color ("bold");
@@ -78,7 +81,7 @@ int CmdVersion::execute (std::string& output)
       << format ("{1} {2} built for ", bold.colorize (PACKAGE), bold.colorize (VERSION))
       << osName ()
       << '\n'
-      << "Copyright (C) 2006 - 2021 T. Babej, P. Beckingham, F. Hernandez."
+      << "Copyright (C) 2006 - " << now.year () << " T. Babej, P. Beckingham, F. Hernandez."
       << '\n'
       << '\n'
       << disclaimer.render ()

@@ -42,6 +42,9 @@ DEFAULT_HOOK_PATH = os.path.abspath(
     os.path.join("${CMAKE_SOURCE_DIR}", "test", "test_hooks")
 )
 
+# Source directory
+SOURCE_DIR = os.path.abspath("${CMAKE_SOURCE_DIR}")
+
 
 # Environment flags to control skipping of task tests
 TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
