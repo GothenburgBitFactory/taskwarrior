@@ -125,7 +125,7 @@ class TestBug1436(TestCase):
 
     def test_backslashes(self):
         """1436: Prove to the reader that backslashes are eaten twice (which means
-           \\ --> \\) once by Python, and once more by some mystery process
+           two backslashes to one) once by Python, and once more by some mystery process
            launch thing.
 
            This problem is entirely testing artifact, and not Taskwarrior.
