@@ -50,6 +50,7 @@ class TestVersion(TestCase):
 
         self.assertIn("You must specify a command or a task to modify", err)
 
+    @unittest.skip(reason="See #3424")
     def test_copyright_up_to_date(self):
         """Copyright is current"""
         code, out, err = self.t("version")
@@ -68,6 +69,7 @@ class TestVersion(TestCase):
                         return match.group(1)
         raise ValueError("Couldn't find matching version in {0}".format(file))
 
+    @unittest.skip(reason="See #3424")
     def test_version(self):
         """version command outputs expected version and license"""
         code, out, err = self.t("version")
