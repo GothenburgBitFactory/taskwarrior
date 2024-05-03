@@ -50,7 +50,7 @@ class TestDiagnostics(TestCase):
         self.t.activate_hooks()
         code, out, err = self.t.diag()
         self.tap(out)
-        self.assertRegex(out, "Compliance:\s+C\+\+17")
+        self.assertRegex(out, r"Compliance:\s+C\+\+17")
         self.assertIn("edlin", out)
         self.assertIn("Locking", out)
 

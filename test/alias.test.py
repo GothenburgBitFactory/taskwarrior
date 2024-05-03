@@ -171,7 +171,7 @@ class TestBug1031(TestCase):
         self.t("add from")
         code, out, err = self.t("1 info")
 
-        expected = "Description\s+to"
+        expected = r"Description\s+to"
         self.assertRegex(out, expected)
 
     def test_alias_to_to(self):
@@ -179,7 +179,7 @@ class TestBug1031(TestCase):
         self.t("add from -- to")
         code, out, err = self.t("1 info")
 
-        expected = "Description\s+to to"
+        expected = r"Description\s+to to"
         self.assertRegex(out, expected)
 
     def test_alias_to_from(self):
@@ -187,7 +187,7 @@ class TestBug1031(TestCase):
         self.t("add to -- from")
         code, out, err = self.t("1 info")
 
-        expected = "Description\s+to from"
+        expected = r"Description\s+to from"
         self.assertRegex(out, expected)
 
 

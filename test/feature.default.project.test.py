@@ -55,7 +55,7 @@ class TestDefaultProject(TestCase):
 
         self.assertIn("foobar", out)
 
-        expected = "Project\s+garden"
+        expected = r"Project\s+garden"
         self.assertRegex(out, expected)
 
         self.t("1 modify project:")
@@ -64,7 +64,7 @@ class TestDefaultProject(TestCase):
         self.assertIn("foobar", out)
         self.assertNotRegex(out, expected)
 
-        notexpected = "Project\s+" + self.default_project
+        notexpected = r"Project\s+" + self.default_project
         self.assertNotRegex(out, notexpected)
 
     def test_without_project(self):
@@ -76,7 +76,7 @@ class TestDefaultProject(TestCase):
 
         self.assertIn("foobar", out)
 
-        expected = "Project\s+" + self.default_project
+        expected = r"Project\s+" + self.default_project
         self.assertRegex(out, expected)
 
     def test_default_project_inline_override(self):
@@ -124,7 +124,7 @@ class TestDefaultProject(TestCase):
         self.t("1 annotate Hello")
         code, out, err = self.t("1 info")
 
-        expected = "Description\s+foobar\n[0-9-: ]+ Hello"
+        expected = "Description\\s+foobar\n[0-9-: ]+ Hello"
         self.assertRegex(out, expected)
         self.assertNotIn("Project", out)
 
@@ -158,7 +158,7 @@ class TestDefaultProject(TestCase):
         code, out, err = self.t("1 info")
 
         self.assertIn(DESC, out)
-        self.assertRegex(out, "Status\s+Recurring")  # is a parent task
+        self.assertRegex(out, r"Status\s+Recurring")  # is a parent task
         self.assertIn(self.default_project, out)
 
         self.t.faketime("+1d")

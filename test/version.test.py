@@ -54,12 +54,12 @@ class TestVersion(TestCase):
         """Copyright is current"""
         code, out, err = self.t("version")
 
-        expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
+        expected = r"Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegex(out, expected)
 
     def slurp(self, file="../CMakeLists.txt"):
-        number = "\.".join(["[0-9]+"] * 3)
-        ver = re.compile("^set \(PROJECT_VERSION \"({0}[^\"]*)\"\)$".format(number))
+        number = r"\.".join(["[0-9]+"] * 3)
+        ver = re.compile("^set \\(PROJECT_VERSION \"({0}[^\"]*)\"\\)$".format(number))
         with open(file) as fh:
             for line in fh:
                 if "PROJECT_VERSION" in line:

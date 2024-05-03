@@ -53,7 +53,7 @@ class TestCMD(TestCase):
     def test_info_command(self):
         """info command"""
         code, out, err = self.t('1')
-        self.assertRegex(out, 'Description\s+one')
+        self.assertRegex(out, r'Description\s+one')
 
 
 class TestDefaults(TestCase):

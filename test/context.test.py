@@ -204,7 +204,7 @@ class ContextManagementTest(TestCase):
         """Test that context is unset if its definition has been removed."""
         self.t('context define work project:Work', input='y\ny\n')
         self.t('context work')
-        code, out, err = self.t('context delete work', input='y\n\y\n')
+        code, out, err = self.t('context delete work', input='y\ny\n')
         self.assertIn("Context 'work' deleted.", out)
 
         # Assert that taskrc does not countain context work definition

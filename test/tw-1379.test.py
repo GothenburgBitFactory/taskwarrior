@@ -49,8 +49,8 @@ class TestBug1379(TestCase):
         self.t.config("color.label.sort", "")
 
         # For use with regex
-        self.RED = "\033\[31m"
-        self.CLEAR = "\033\[0m"
+        self.RED = "\033\\[31m"
+        self.CLEAR = "\033\\[0m"
 
     def test_color_BLOCKED(self):
         """color.tag.BLOCKED changes color of BLOCKED tasks"""

@@ -61,7 +61,7 @@ class TestBug268(TestCase):
         """escaped backslashes do not work with 'modify'"""
 
         self.t("add a b or c")
-        self.t('1 modify "/a b/a\/b/"')
+        self.t(r'1 modify "/a b/a\/b/"')
 
         code, out, err = self.t("1 info")
         self.assertIn("a/b or c", out)
@@ -125,7 +125,7 @@ class TestBug1436(TestCase):
 
     def test_backslashes(self):
         """1436: Prove to the reader that backslashes are eaten twice (which means
-           \\ --> \) once by Python, and once more by some mystery process
+           two backslashes to one) once by Python, and once more by some mystery process
            launch thing.
 
            This problem is entirely testing artifact, and not Taskwarrior.
