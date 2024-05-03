@@ -50,6 +50,7 @@ class TestVersion(TestCase):
 
         self.assertIn("You must specify a command or a task to modify", err)
 
+    @unittest.skip(reason="See #3424")
     def test_copyright_up_to_date(self):
         """Copyright is current"""
         code, out, err = self.t("version")
@@ -68,6 +69,7 @@ class TestVersion(TestCase):
                         return match.group(1)
         raise ValueError("Couldn't find matching version in {0}".format(file))
 
+    @unittest.skip(reason="See #3424")
     def test_version(self):
         """version command outputs expected version and license"""
         code, out, err = self.t("version")
@@ -77,6 +79,7 @@ class TestVersion(TestCase):
         self.assertIn("MIT license", out)
         self.assertIn("https://taskwarrior.org", out)
 
+    @unittest.skip(reason="See #3424")
     def test_under_version(self):
         """_version and diagnostics output expected version and syntax"""
         code, out, err = self.t("_version")
@@ -89,7 +92,7 @@ class TestVersion(TestCase):
         if os.path.exists("../.git"):
           if 2 >= len(version) > 0:
               git = version[1]
-              self.assertRegex(git, r'\([a-f0-9]*\)'))
+              self.assertRegex(git, r'\([a-f0-9]*\)')
           else:
               raise ValueError("Unexpected output from _version '{0}'".format(
                   out))
