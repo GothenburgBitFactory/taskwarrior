@@ -154,48 +154,10 @@ TODO Task::decode
   ////////////////////////////////////////////////////////////////////////////////
   Task task;
 
-  // F4 parsing and composition is no longer required, so the tests are marked
-  // as expfail; see #3436.
-
-  // (blank)
-  good = true;
-  try {task = Task ("");}
-  catch (const std::string& e){test.diag (e); good = false;}
-  test.notok (good, "Task::Task ('')");
-
-  // []
-  good = true;
-  task = Task ("[]");
-  try {task = Task ("[]");}
-  catch (const std::string& e){test.diag (e); good = false;}
-  test.notok (good, "Task::Task ('[]')", true);
-
-  // [name:"value"]
-  good = true;
-  try {task = Task ("[name:\"value\"]");}
-  catch (const std::string& e){test.diag (e); good = false;}
-  test.ok (good, "Task::Task ('[name:\"value\"]')");
-  test.is (task.get ("name"), "value", "name=value");
-
-  // [name:"one two"]
-  good = true;
-  try {task = Task ("[name:\"one two\"]");}
-  catch (const std::string& e){test.diag (e); good = false;}
-  test.ok (good, "Task::Task ('[name:\"one two\"]')");
-  test.is (task.get ("name"), "one two", "name=one two");
-
-  // [one:two three:four]
-  good = true;
-  try {task = Task (R"([one:"two" three:"four"])");}
-  catch (const std::string& e){test.diag (e); good = false;}
-  test.ok (good, R"(Task::Task ('[one:"two" three:"four"]'))");
-  test.is (task.get ("one"), "two", "one=two");
-  test.is (task.get ("three"), "four", "three=four");
-
   // Task::set
   task = Task();
   task.set ("name", "value");
-  test.is (task.composeF4 (), "[name:\"value\"]", "Task::set");
+  test.is (task.composeJSON (), "{\"name\":\"value\"}", "Task::set");
 
   // Task::has
   test.ok    (task.has ("name"), "Task::has");
@@ -203,18 +165,18 @@ TODO Task::decode
 
   // Task::get_int
   task.set ("one", 1);
-  test.is (task.composeF4 (), R"([name:"value" one:"1"])", "Task::set");
+  test.is (task.composeJSON (), R"({"name":"value","one":"1"})", "Task::set");
   test.is (task.get_int ("one"), 1, "Task::get_int");
 
   // Task::get_ulong
   task.set ("two", "4294967295");
-  test.is (task.composeF4 (), R"([name:"value" one:"1" two:"4294967295"])", "Task::set");
+  test.is (task.composeJSON (), R"({"name":"value","one":"1","two":"4294967295"})", "Task::set");
   test.is ((size_t)task.get_ulong ("two"), (size_t)4294967295UL, "Task::get_ulong");
 
   // Task::remove
   task.remove ("one");
   task.remove ("two");
-  test.is (task.composeF4 (), "[name:\"value\"]", "Task::remove");
+  test.is (task.composeJSON (), "{\"name\":\"value\"}", "Task::remove");
 
   // Task::all
   test.is (task.all ().size (), (size_t)1, "Task::all size");
@@ -236,16 +198,14 @@ TODO Task::decode
   catch (const std::string& e){test.diag (e); good = false;}
   test.ok (good, "Task::Task ('{<minimal>}')");
 
-  // Verify tag handling is correct between F4 and JSON.
+  // Verify tag handling is correct
   Task t6;
   t6.set ("entry", "20130602T224000Z");
   t6.set ("description", "DESC");
   t6.addTag ("tag1");
-  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1"])", "F4 good", true);
   test.is (t6.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1"]})", "JSON good");
 
   t6.addTag ("tag2");
-  test.is (t6.composeF4 (), R"([description:"DESC" entry:"20130602T224000Z" tags:"tag1,tag2"])", "F4 good", true);
   test.is (t6.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})", "JSON good");
 
   good = true;
@@ -253,7 +213,6 @@ TODO Task::decode
   try {t7 = Task (R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})");}
   catch (const std::string& e){test.diag (e); good = false;}
   test.ok (good, "Task::Task ('{two tags}')");
-  test.is (t7.composeF4 (), R"([description:"DESC" entry:"1370212800" tags:"tag1,tag2"])", "F4 good", true);
   test.is (t7.composeJSON (), R"({"description":"DESC","entry":"20130602T224000Z","tags":["tag1","tag2"]})", "JSON good");
 
   return 0;
