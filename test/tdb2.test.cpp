@@ -37,16 +37,15 @@ void cleardb ()
 {
     // Remove any residual test files.
     rmdir ("./extensions");
-    unlink ("./pending.data");
-    unlink ("./completed.data");
-    unlink ("./undo.data");
-    unlink ("./backlog.data");
+    unlink ("./taskchampion.sqlite3");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
   UnitTest t (12);
+  Context context;
+  Context::setContext(&context);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -84,8 +83,8 @@ int main (int, char**)
 
     t.is ((int) pending.size (),      1, "TDB2 after add, 1 pending task");
     t.is ((int) completed.size (),    0, "TDB2 after add, 0 completed tasks");
-    t.is ((int) num_reverts_possible, 3, "TDB2 after add, 3 undo lines");
-    t.is ((int) num_local_changes,    1, "TDB2 after add, 1 backlog task");
+    t.is ((int) num_reverts_possible, 1, "TDB2 after add, 1 revert possible");
+    t.is ((int) num_local_changes,    6, "TDB2 after add, 6 local changes");
 
     task.set ("description", "This is a test");
     context.tdb2.modify (task);
@@ -95,10 +94,10 @@ int main (int, char**)
     num_reverts_possible = context.tdb2.num_reverts_possible ();
     num_local_changes    = context.tdb2.num_local_changes ();
 
-    t.is ((int) pending.size (),      1, "TDB2 after add, 1 pending task");
-    t.is ((int) completed.size (),    0, "TDB2 after add, 0 completed tasks");
-    t.is ((int) num_reverts_possible, 7, "TDB2 after add, 7 undo lines");
-    t.is ((int) num_local_changes,    2, "TDB2 after add, 2 backlog task");
+    t.is ((int) pending.size (),      1, "TDB2 after set, 1 pending task");
+    t.is ((int) completed.size (),    0, "TDB2 after set, 0 completed tasks");
+    t.is ((int) num_reverts_possible, 1, "TDB2 after set, 1 revert possible");
+    t.is ((int) num_local_changes,    7, "TDB2 after set, 7 local changes");
 
     // Reset for reuse.
     cleardb ();
