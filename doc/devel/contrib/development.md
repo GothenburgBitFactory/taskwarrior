@@ -56,7 +56,7 @@ First switch to the test directory:
 ```
 Then you can run all tests, showing details, with
 ```
-    $ make VERBOSE=1
+    $ make VERBOSE=1 test
 ```
 Alternately, run the tests with the details hidden in `all.log`:
 ```
@@ -65,6 +65,10 @@ Alternately, run the tests with the details hidden in `all.log`:
 Either way, you can get a summary of any test failures with:
 ```
     $ ./problems
+```
+You can run a single test suite, with source file `foo.test.cpp` or `foo.test.py`, with
+```
+    $ make foo.test
 ```
 
 Note that any development should be performed using a git clone, and the current development branch.
