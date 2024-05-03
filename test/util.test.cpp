@@ -35,6 +35,8 @@
 int main (int, char**)
 {
   UnitTest t (19);
+  Context context;
+  Context::setContext(&context);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
