@@ -128,7 +128,8 @@ void UnitTest::ok (bool expression, const std::string& name, bool expfail /* = f
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -158,7 +159,8 @@ void UnitTest::notok (bool expression, const std::string& name, bool expfail /* 
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -187,7 +189,8 @@ void UnitTest::is (bool actual, bool expected, const std::string& name, bool exp
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -220,7 +223,8 @@ void UnitTest::is (size_t actual, size_t expected, const std::string& name, bool
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -253,7 +257,8 @@ void UnitTest::is (int actual, int expected, const std::string& name, bool expfa
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -286,7 +291,8 @@ void UnitTest::is (double actual, double expected, const std::string& name, bool
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -319,7 +325,8 @@ void UnitTest::is (double actual, double expected, double tolerance, const std::
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -352,7 +359,8 @@ void UnitTest::is (unsigned char actual, unsigned char expected, const std::stri
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -389,7 +397,8 @@ void UnitTest::is (
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter
@@ -427,7 +436,8 @@ void UnitTest::is (
   }
   else
   {
-    ++_failed;
+    if (success == expfail)
+      ++_failed;
     std::cout << red ("not ok")
               << " "
               << _counter

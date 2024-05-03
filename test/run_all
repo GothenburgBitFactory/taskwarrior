@@ -47,6 +47,9 @@ def run_test(testqueue, outqueue, threadname):
         if sys.version_info > (3,):
             out, err = out.decode('utf-8'), err.decode('utf-8')
 
+        if p.returncode != 0:
+            out = out + "\nnot ok - test executable failed\n"
+
         output = ("# {0}\n".format(os.path.basename(test)), out, err)
         log.debug("Collected output %s", output)
         outqueue.put(output)

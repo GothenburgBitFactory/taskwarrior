@@ -43,6 +43,8 @@ extern std::string configurationDefaults;
 int main (int, char**)
 {
   UnitTest t (1);
+  Context context;
+  Context::setContext(&context);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");

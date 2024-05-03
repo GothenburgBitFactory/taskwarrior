@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <test.h>
+#include <Context.h>
 #include <Eval.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,8 @@ bool get (const std::string& name, Variant& value)
 int main (int, char**)
 {
   UnitTest t (52);
+  Context context;
+  Context::setContext(&context);
 
   // Test the source independently.
   Variant v;
