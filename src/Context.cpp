@@ -439,6 +439,7 @@ Context* Context::context;
 ////////////////////////////////////////////////////////////////////////////////
 Context& Context::getContext ()
 {
+  assert (Context::context);
   return *Context::context;
 }
 
