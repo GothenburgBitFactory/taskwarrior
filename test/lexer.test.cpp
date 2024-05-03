@@ -37,7 +37,7 @@
 int main (int, char**)
 {
 #ifdef PRODUCT_TASKWARRIOR
-  UnitTest t (1259);
+  UnitTest t (1255);
 #else
   UnitTest t (1235);
 #endif
