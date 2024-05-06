@@ -108,6 +108,7 @@ Select the following permissions:
     - storage.objects.get
     - storage.objects.list
     - storage.objects.update
+    - storage.objects.delete
 
  Create your new role.
 
