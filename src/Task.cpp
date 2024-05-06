@@ -2180,7 +2180,7 @@ float Task::urgency_c () const
 
     // This is a hackish way of making sure parent tasks are sorted above
     // child tasks.  For reports that hide blocked tasks, this is not needed.
-    if (prev < value)
+    if (prev <= value)
       value += 0.01;
   }
 #endif
