@@ -60,7 +60,7 @@ class TestHooksOnAdd(TestCase):
 
     def test_onadd_builtin_accept_modify(self):
         """on-add-accept-modify - a well-behaved, successful, on-add hook, that modifies the added task."""
-        hookname = 'on-add.the'
+        hookname = 'on-add-modify'
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add teh foo")
