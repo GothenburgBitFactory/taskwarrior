@@ -26,7 +26,7 @@ RUN cmake --install build
 RUN task --version
 
 # Setup tests
-WORKDIR /root/code/build/test/
-RUN make -j8
-
-CMD ["bash", "-c", "./run_all -v ; cat all.log | grep 'not ok' ; ./problems"]
+WORKDIR /root/code/
+RUN cmake --build build --target build_tests -j 8
+ENTRYPOINT ["ctest"]
+CMD ["--test-dir build/test -j 8 --rerun-failed --output-on-failure"]
