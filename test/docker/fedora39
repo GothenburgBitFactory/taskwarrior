@@ -29,5 +29,5 @@ RUN task --version
 WORKDIR /root/code/
 RUN cmake --build build --target build_tests -j 8
 
-## runs all tests in parallel
-RUN ctest --test-dir build/test -j 8 --rerun-failed --output-on-failure
+# CMD for docker run command
+CMD ["ctest --test-dir build/test -j 8 --rerun-failed --output-on-failure"]
