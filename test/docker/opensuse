@@ -25,8 +25,5 @@ RUN cmake --install build
 RUN task --version
 
 # Setup tests
-WORKDIR /root/code/
 RUN cmake --build build --target build_tests -j 8
-
-# CMD for docker run command
-CMD ["ctest --test-dir build/test -j 8 --rerun-failed --output-on-failure"]
+CMD ctest --test-dir build -j 8 --output-on-failure --rerun-failed

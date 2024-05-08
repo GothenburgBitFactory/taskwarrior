@@ -99,10 +99,10 @@ jobs:
           GITHUB_USER: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.dockerfile }}
-        run: docker-compose build test-$CONTAINER
+        run: docker-compose build test-${{ env.CONTAINER }}
 
       - name: Test ${{ matrix.name }}
-        run: docker-compose run test-$CONTAINER
+        run: docker-compose run test-${{ env.CONTAINER }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.dockerfile }}
