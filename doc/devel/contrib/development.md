@@ -2,7 +2,7 @@
 
 ## Satisfy the Requirements:
 
- * CMake 3.0 or later
+ * CMake 3.22 or later
  * gcc 7.0 or later, clang 6.0 or later, or a compiler with full C++17 support
  * libuuid (if not on macOS)
  * Rust 1.64.0 or higher (hint: use https://rustup.rs/ instead of using your system's package manager)
@@ -49,27 +49,46 @@ cmake --build build-clang
 ```
 
 ## Run the Test Suite:
-First switch to the test directory:
+For running the test suite [ctest](https://cmake.org/cmake/help/latest/manual/ctest.1.html) is used.
+Before one can run the test suite the `task_executable` must be built.
+After that also the `build_tests` executable must be build, which can be done over:
+```sh
+cmake --build build --target build_tests
+```
+Again you may also use the `-j <number-of-jobs>` option for parallel builds.
 
+Now one can invoke `ctest` to run the tests.
+```sh
+ctest --test-dir build
 ```
-    $ cd build/test
+This would run all the test in serial and might take some time.
+
+### Running tests in parallel
+```sh
+ctest --test-dir build -j <number-of-jobs>
 ```
-Then you can run all tests, showing details, with
+
+Further it is adviced to add the `--output-on-failure` option to `ctest`, to recieve a verbose output if a test is failing as well as the `--rerun-failed` flag, to invoke in subsequent runs only the failed ones.
+
+### Running specific tests
+For this case one can use the `-R <regex>` or `--tests-regex <regex>`  option to run only the tests matching the regular expression.
+Running only the `cpp` tests can then be achieved over
+```sh
+ctest --test-dir build -R cpp
 ```
-    $ make VERBOSE=1 test
+or running the `variant_*` tests
+```sh
+ctest --test-dir build -R variant
 ```
-Alternately, run the tests with the details hidden in `all.log`:
+
+### Repeating a test case
+In order to find sporadic test failures the `--repeat` flag can be used.
+```sh
+ctest --test-dir build -R cpp --repeat-until-fail 10
 ```
-    $ ./run_all
-```
-Either way, you can get a summary of any test failures with:
-```
-    $ ./problems
-```
-You can run a single test suite, with source file `foo.test.cpp` or `foo.test.py`, with
-```
-    $ make foo.test
-```
+
+There are more options to `ctest` such as `--progress`, allowing to have a less verbose output.
+They can be found in the [ctest](https://cmake.org/cmake/help/latest/manual/ctest.1.html) man page.
 
 Note that any development should be performed using a git clone, and the current development branch.
 The source tarballs do not reflect HEAD, and do not contain the test suite.
