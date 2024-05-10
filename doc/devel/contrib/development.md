@@ -51,7 +51,7 @@ cmake --build build-clang
 ## Run the Test Suite:
 For running the test suite [ctest](https://cmake.org/cmake/help/latest/manual/ctest.1.html) is used.
 Before one can run the test suite the `task_executable` must be built.
-After that also the `build_tests` executable must be build, which can be done over:
+After that also the `build_tests` target must be build, which can be done over:
 ```sh
 cmake --build build --target build_tests
 ```
