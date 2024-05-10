@@ -81,6 +81,9 @@ void TDB2::add (Task& task)
   std::string uuid = task.get ("uuid");
   changes[uuid] = task;
 
+  // run hooks for this new task
+  Context::getContext ().hooks.onAdd (task);
+
   auto innertask = replica.import_task_with_uuid (uuid);
 
   {
@@ -120,9 +123,6 @@ void TDB2::add (Task& task)
 
   // update the cached working set with the new information
   _working_set = std::make_optional (std::move (ws));
-
-  // run hooks for this new task
-  Context::getContext ().hooks.onAdd (task);
 
   if (id.has_value ()) {
       task.id = id.value();
