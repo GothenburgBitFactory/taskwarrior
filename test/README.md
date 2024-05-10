@@ -1,36 +1,18 @@
-README
-======
-
-This is the task.git/test/README file, and contains notes about the Taskwarrior
-test suite.
-
-
-Running Tests
--------------
-
+## Running Tests
 Do this to run all tests:
+```shell
+cmake --build build --target build_tests
+ctest --test-dir build
+```
 
-  $ cd test && make && ./run_all && ./problems
+All tests produce TAP (Test Anything Protocol) output.
+In order to run the tests in parallel add the `--parallel <# of threads>` or shortly `-j <# of threads>` option to `ctest`.
+Depending on your IDE, all tests might also be available under the `All CTest` target.
+Keep in mind that the tests are not automatically rebuild if a source file is changes, it requires a manual rebuild.
 
-All unit tests produce TAP (Test Anything Protocol) output, and are run by the
-'run_all' test harness.
+Please also have a look at [development.md](../doc/devel/contrib/development.md) for more information on how to run tests as well as some information about `ctest`.
 
-The 'run_all' script produces an 'all.log' file which is the accumulated output
-of all tests. Before executing 'run_all' you need to compile the C++ unit
-tests, by running 'make' in the 'test' directory.
-
-The script 'problems' will list all the tests that fail, with a count of the
-failing tests, once you have run all the tests and produced an 'all.log' file.
-
-Any TAP harness may be used.
-
-Note that adding the '--serial' option to ./run_all, all tests are executed
-serially.  The default runs Python, C++ and Bash tests in parallel. Using
-'--serial' will make for a slower test run.
-
-
-Architecture
-------------
+## Architecture
 
 There are three varieties of tests:
 
@@ -45,17 +27,18 @@ There are three varieties of tests:
     tests are small, quick tests, not intended to be permanent.
 
 All tests are named with the pattern '*.test.py', '*.test.sh', or '*.test.cpp',
-and any other forms are not run by the test harness. Additionally a test must
-be set executable (chmod +x) for it to be run. In the case of Python tests one
-can still run them manually by launching them with 'python testname.test.py' or
-simply './testname.test.py'. It also allows us to keep tests submitted for bugs
-that are not scheduled to be fixed in the upcoming release, and we don't want
-the failing tests to prevent us from seeing 100% pass rate for the bugs we
-*have* fixed.
+and any other forms are not run by the test harness.
+In the case of Python tests one can still run them manually by launching them with 'python testname.test.py' or simply './testname.test.py'.
+
+If a test is failing and can not be fixed, it can be marked as `WILL_FAIL` in the `CMakeLists.txt` file.
+See the [WILL_FAIL](https://cmake.org/cmake/help/latest/prop_test/WILL_FAIL.html) documentation for more information.
+However, please keep in mind that such tests should be fixed as soon as possible as well as proper documentation should be added to the issue tracker.
+
+It also allows us to keep tests submitted for bugs that are not scheduled to be fixed in the upcoming release, and we don't want
+the failing tests to prevent us from seeing 100% pass rate for the bugs we *have* fixed.
 
 
-Goals
------
+## Goals
 
 The test suite is evolving, and becoming a better tool for determining whether
 code is ready for release. There are goals that shape these changes, and they
@@ -71,16 +54,14 @@ are:
     There is simply no point in testing a feature twice, in the same manner.
 
 
-What Makes a Good Test
-----------------------
+## What Makes a Good Test
 
 A good test ensures that a feature is functioning as expected, and contains
 both positive and negative aspects, or in other words looks for expected
 behavior as well as looking for the absence of unexpected behavior.
 
 
-Conventions for writing a test
-------------------------------
+## Conventions for writing a test
 
 If you wish to contribute tests, please consider the following guidelines:
 
@@ -109,14 +90,12 @@ If you wish to contribute tests, please consider the following guidelines:
     a live test that is skipped, than no test.
 
 
-How to Submit a Test Change/Addition
-------------------------------------
+## How to Submit a Test Change/Addition
 
 Mail it to support@gothenburgbitfactory.org, or attach it to an open bug.
 
 
-Wisdom
-------
+## Wisdom
 
 Here are some guildelines that may help:
 
@@ -146,8 +125,7 @@ Here are some guildelines that may help:
     are reported.
 
 
-TODO
-----
+## TODO
 
 For anyone looking for test-related tasks to take on, here are some suggestions:
 
@@ -162,5 +140,3 @@ For anyone looking for test-related tasks to take on, here are some suggestions:
   * All the attribute modifiers need to be tested, only a few are.
 
   * Aliases are not well tested, and fragile.
-
----
