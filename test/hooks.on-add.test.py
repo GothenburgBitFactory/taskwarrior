@@ -58,6 +58,23 @@ class TestHooksOnAdd(TestCase):
         code, out, err = self.t("1 info")
         self.assertIn("Description   foo", out)
 
+    def test_onadd_builtin_accept_modify(self):
+        """on-add-accept-modify - a well-behaved, successful, on-add hook, that modifies the added task."""
+        hookname = 'on-add-modify'
+        self.t.hooks.add_default(hookname, log=True)
+
+        code, out, err = self.t("add teh foo")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
+
+        code, out, err = self.t("1 info")
+        self.assertIn("Description   the foo", out)
+
     def test_onadd_builtin_reject(self):
         """on-add-reject - a well-behaved, failing, on-add hook."""
         hookname = 'on-add-reject'
