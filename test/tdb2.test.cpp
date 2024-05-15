@@ -97,7 +97,13 @@ int main (int, char**)
     t.is ((int) pending.size (),      1, "TDB2 after set, 1 pending task");
     t.is ((int) completed.size (),    0, "TDB2 after set, 0 completed tasks");
     t.is ((int) num_reverts_possible, 1, "TDB2 after set, 1 revert possible");
-    t.is ((int) num_local_changes,    7, "TDB2 after set, 7 local changes");
+
+    // At this point, there may be 7 or 8 local changes, depending on whether
+    // the `modified` property changed between the `add` and `modify`
+    // invocation. That only happens if the clock ticks over to the next second
+    // between those invocations.
+    t.ok (num_local_changes == 7 || num_local_changes == 8,
+          "TDB2 after set, 7 or 8 local changes");
 
     // Reset for reuse.
     cleardb ();
