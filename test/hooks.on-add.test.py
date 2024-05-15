@@ -89,6 +89,10 @@ class TestHooksOnAdd(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
+        # task was not added
+        code, out, err = self.t.runError("1 info")
+        self.assertIn("No matches", err)
+
     def test_onadd_builtin_misbehave1(self):
         """on-add-misbehave1 - does not consume input."""
         hookname = 'on-add-misbehave1'
