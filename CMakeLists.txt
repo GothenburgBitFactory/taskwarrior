@@ -158,23 +158,6 @@ foreach (doc_FILE ${doc_FILES})
   install (FILES ${doc_FILE}  DESTINATION ${TASK_DOCDIR})
 endforeach (doc_FILE)
 
-add_custom_command(OUTPUT run-review
-    COMMAND docker build -q --build-arg PR=$(PR) --build-arg LIBPR=$(LIBPR) -t taskwarrior-review:$(PR)s$(LIBPR) - < scripts/review-dockerfile
-    COMMAND docker run --rm --memory 1g --hostname pr-$(PR)s$(LIBPR) -it taskwarrior-review:$(PR)s$(LIBPR) bash || :
-)
-add_custom_target(review DEPENDS run-review)
-
-add_custom_command(OUTPUT run-reproduce
-    COMMAND docker build -q --build-arg RELEASE=$(RELEASE) -t taskwarrior-reproduce:$(RELEASE) - < scripts/reproduce-dockerfile
-    COMMAND docker run --rm --memory 1g --hostname tw-$(RELEASE) -it taskwarrior-reproduce:$(RELEASE) bash || :
-)
-add_custom_target(reproduce DEPENDS run-reproduce)
-
-add_custom_command(OUTPUT show-problems
-    COMMAND cd test && ./problems
-)
-add_custom_target(problems DEPENDS show-problems)
-
 # ---
 
 set (CPACK_SOURCE_GENERATOR "TGZ")
