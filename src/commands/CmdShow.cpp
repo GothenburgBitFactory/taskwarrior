@@ -173,6 +173,7 @@ int CmdShow::execute (std::string& output)
     " journal.time.start.annotation"
     " journal.time.stop.annotation"
     " json.array"
+    " limit"
     " list.all.projects"
     " list.all.tags"
     " locking"

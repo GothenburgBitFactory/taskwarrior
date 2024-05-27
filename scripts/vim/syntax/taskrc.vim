@@ -142,6 +142,7 @@ syn match taskrcGoodKey '^\s*\Vjournal.time='he=e-1
 syn match taskrcGoodKey '^\s*\Vjournal.time.start.annotation='he=e-1
 syn match taskrcGoodKey '^\s*\Vjournal.time.stop.annotation='he=e-1
 syn match taskrcGoodKey '^\s*\Vjson.array='he=e-1
+syn match taskrcGoodKey '^\s*\Vlimit='he=e-1
 syn match taskrcGoodKey '^\s*\Vlist.all.projects='he=e-1
 syn match taskrcGoodKey '^\s*\Vlist.all.tags='he=e-1
 syn match taskrcGoodKey '^\s*\Vlocale='he=e-1
