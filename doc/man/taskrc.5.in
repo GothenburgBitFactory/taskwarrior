@@ -242,6 +242,13 @@ Determines whether to use ioctl to establish the size of the window you are
 using, for text wrapping.
 
 .TP
+.B limit:25
+Specifies the desired number of tasks a report should show, if a positive
+integer is given.  The value 'page' may also be used, and will limit the
+report output to as many lines of text as will fit on screen. Default value
+is '25'.
+
+.TP
 .B defaultwidth=80
 The width of output used when auto-detection support is not available. Defaults
 to 80. If set to 0, it is interpreted as infinite width, therefore with no
