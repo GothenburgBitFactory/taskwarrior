@@ -86,9 +86,12 @@ Authenticate to the project with:
     $ gcloud config set project $PROJECT_NAME
     $ gcloud auth application-default login
 
+This will download a file named "application_default_credentials.json" (the
+location will be shown in the output of the gcloud login command)
 Then configure Taskwarrior with:
 
     $ task config sync.gcp.bucket               <bucket-name>
+    $ task config sync.gcp.credential_path      <absolute-path-to-downloaded-credentials>
 
 However you can bring your own service account credentials if your 
 `application-default` is already being used by some other application
