@@ -1,0 +1,28 @@
+name: release-tests
+on: [push, pull_request]
+jobs:
+  check-tarball:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: "stable"
+          override: true
+
+      - name: make a release tarball and build from it
+        run: |
+          cmake -S. -Bbuild &&
+          make -Cbuild package_source &&
+          tar -xf build/task-*.tar.gz &&
+          cd task-*.*.* &&
+          cmake -S. -Bbuild &&
+          cmake --build build --target task_executable
+
