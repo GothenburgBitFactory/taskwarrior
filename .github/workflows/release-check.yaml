@@ -2,6 +2,7 @@ name: release-tests
 on: [push, pull_request]
 jobs:
   check-tarball:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
