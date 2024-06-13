@@ -2319,7 +2319,8 @@ float Task::urgency_due () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_age () const
 {
-  assert (has ("entry"));
+  if (!has ("entry"))
+    return 1.0;
 
   Datetime now;
   Datetime entry (get_date ("entry"));
