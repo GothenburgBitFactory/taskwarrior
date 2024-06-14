@@ -18,12 +18,12 @@ jobs:
 
       - name: Build and test this project
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage
+          cmake -S . -B build -G Ninja K-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage
           cmake --build build --target build_tests
           ctest --test-dir build -j 8 --output-on-failure --rerun-failed
 
       - name: Generate a code coverage report
-        uses: threeal/gcovr-action@v1.0.0
+        uses: threeal/gcovr-action@xml-out
         with:
           xml-out: coverage.cobertura.xml
 
