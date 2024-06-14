@@ -1,0 +1,33 @@
+name: Coverage Report
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install apt packages
+        run: sudo apt-get install -y build-essential cmake git uuid-dev faketime locales python3 curl gcovr ninja-build
+
+      - name: Check out this repository
+        uses: actions/checkout@v4.1.6
+
+      - name: Build and test this project
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage
+          cmake --build build --target build_tests
+          ctest --test-dir build -j 8 --output-on-failure --rerun-failed
+
+      - name: Generate a code coverage report
+        uses: threeal/gcovr-action@v1.0.0
+        with:
+          xml-out: coverage.cobertura.xml
+
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage.cobertura.xml
