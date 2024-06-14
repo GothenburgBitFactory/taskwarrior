@@ -27,4 +27,4 @@ set (tc_SRCS
   Task.cpp Task.h)
 
 add_library (tc STATIC ${tc_SRCS})
-target_link_libraries(tc taskchampion-lib)
+target_link_libraries(tc taskchampion_lib)
