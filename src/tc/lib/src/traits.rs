@@ -83,7 +83,7 @@ pub(crate) trait PassByPointer: Sized {
     /// # Safety
     ///
     /// - arg must not be NULL
-    /// - arg must be a value returned from Box::into_raw (via return_ptr or ptr_to_arg_out)
+    /// - arg must be a value returned from Box::into_raw (via return_ptr)
     /// - arg becomes invalid and must not be used after this call
     unsafe fn take_from_ptr_arg(arg: *mut Self) -> Self {
         debug_assert!(!arg.is_null());
@@ -126,19 +126,6 @@ pub(crate) trait PassByPointer: Sized {
     /// - the caller must ensure that the value is eventually freed
     unsafe fn return_ptr(self) -> *mut Self {
         Box::into_raw(Box::new(self))
-    }
-
-    /// Return a value to C, transferring ownership, via an "output parameter".
-    ///
-    /// # Safety
-    ///
-    /// - the caller must ensure that the value is eventually freed
-    /// - arg_out must not be NULL
-    /// - arg_out must point to valid, properly aligned memory for a pointer value
-    unsafe fn ptr_to_arg_out(self, arg_out: *mut *mut Self) {
-        debug_assert!(!arg_out.is_null());
-        // SAFETY: see docstring
-        unsafe { *arg_out = self.return_ptr() };
     }
 }
 
