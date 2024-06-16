@@ -63,10 +63,15 @@ int CmdSync::execute (std::string& output)
 
   // If no server is set up, quit.
   std::string origin = Context::getContext ().config.get ("sync.server.origin");
+  std::string url = Context::getContext ().config.get ("sync.server.url");
   std::string server_dir = Context::getContext ().config.get ("sync.local.server_dir");
   std::string gcp_credential_path = Context::getContext ().config.get ("sync.gcp.credential_path");
   std::string gcp_bucket = Context::getContext ().config.get ("sync.gcp.bucket");
   std::string encryption_secret = Context::getContext ().config.get ("sync.encryption_secret");
+
+  // sync.server.origin is a deprecated synonym for sync.server.url
+  std::string server_url = url == "" ? origin : url;
+
   if (server_dir != "") {
     server = tc::Server::new_local (server_dir);
     server_ident = server_dir;
@@ -78,23 +83,28 @@ int CmdSync::execute (std::string& output)
     std::ostringstream os;
     os << "GCP bucket " << gcp_bucket;
     server_ident = os.str();
-  } else if (origin != "") {
+  } else if (server_url != "") {
     std::string client_id = Context::getContext ().config.get ("sync.server.client_id");
     if (client_id == "" || encryption_secret == "") {
       throw std::string ("sync.server.client_id and sync.encryption_secret are required");
     }
-    server = tc::Server::new_sync (origin, client_id, encryption_secret);
+    server = tc::Server::new_sync (server_url, client_id, encryption_secret);
     std::ostringstream os;
-    os << "Sync server at " << origin;
+    os << "Sync server at " << server_url;
     server_ident = os.str();
   } else {
     throw std::string ("No sync.* settings are configured. See task-sync(5).");
   }
 
   std::stringstream out;
-  if (Context::getContext ().verbose ("sync"))
+  if (origin != "") {
+    out << "sync.server.origin is deprecated use sync.server.url instead.\n";
+  }
+
+  if (Context::getContext ().verbose ("sync")) {
     out << format ("Syncing with {1}", server_ident)
         << '\n';
+  }
 
   Context::getContext ().tdb2.sync(std::move(server), false);
 

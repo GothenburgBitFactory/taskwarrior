@@ -433,7 +433,7 @@ EXTERN_C struct TCServer *tc_server_new_local(struct TCString server_dir, struct
 // returned.  The caller must free this string.
 //
 // The server must be freed after it is used - tc_replica_sync does not automatically free it.
-EXTERN_C struct TCServer *tc_server_new_sync(struct TCString origin,
+EXTERN_C struct TCServer *tc_server_new_sync(struct TCString url,
                                       struct TCUuid client_id,
                                       struct TCString encryption_secret,
                                       struct TCString *error_out);
