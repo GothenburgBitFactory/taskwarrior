@@ -1,7 +1,11 @@
 ## Run the Taskwarrior tests, using stable rust to build TaskChampion.
 
 name: tests
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["Coveralls Report"]
+    types:
+      - completed
 jobs:
   # MacOS tests do not run in Docker, and use the actions-rs Rust installaction
   tests-macos-12:
