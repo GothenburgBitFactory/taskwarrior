@@ -5,6 +5,7 @@ edition = "2021"
 publish = false
 
 [lib]
+name = "taskchampion_lib"
 crate-type = ["staticlib", "rlib"]
 
 [dependencies]
