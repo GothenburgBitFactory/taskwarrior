@@ -1,6 +1,12 @@
 name: Coverage Report
 
-on: ["push", "pull_request"]
+on: 
+  pull_request:
+    branches: [ "develop" ]
+  workflow_run:
+    workflows: ["tests"]
+    types:
+      - completed
 
 jobs:
   test-coverage:
