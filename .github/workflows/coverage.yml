@@ -21,7 +21,7 @@ jobs:
       - name: Generate a code coverage report
         uses: threeal/gcovr-action@xml-out
         with:
-          coveralls-out: coverage.coveralls.xml
+          coveralls-out: coverage.coveralls.json
           excludes: |
             build
             
