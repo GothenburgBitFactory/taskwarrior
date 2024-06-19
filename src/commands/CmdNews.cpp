@@ -58,7 +58,7 @@ CmdNews::CmdNews ()
   _uses_context          = false;
   _accepts_filter        = false;
   _accepts_modifications = false;
-  _accepts_miscellaneous = true;
+  _accepts_miscellaneous = false;
   _category              = Command::Category::misc;
 }
 
@@ -100,7 +100,6 @@ void wait_for_enter ()
 //
 NewsItem::NewsItem (
   Version version,
-  bool major,
   const std::string& title,
   const std::string& bg_title,
   const std::string& background,
@@ -110,7 +109,6 @@ NewsItem::NewsItem (
   const std::string& actions
 ) {
   _version = version;
-  _major = major;
   _title = title;
   _bg_title = bg_title;
   _background = background;
@@ -194,7 +192,7 @@ std::vector<NewsItem> NewsItem::all () {
 void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
   Version version("2.6.0");
   /////////////////////////////////////////////////////////////////////////////
-  // - Writeable context (major)
+  // - Writeable context
 
   // Detect whether user uses any contexts
   auto config = Context::getContext ().config;
@@ -253,7 +251,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem writeable_context (
     version,
-    true,
     "'Writeable' context",
     "Background - what is context?",
     "  The 'context' is a feature (introduced in 2.5.0) that allows users to apply a\n"
@@ -293,11 +290,10 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
   items.push_back(writeable_context);
 
   /////////////////////////////////////////////////////////////////////////////
-  // - 64-bit datetime support (major)
+  // - 64-bit datetime support
 
   NewsItem uint64_support (
     version,
-    false,
     "Support for 64-bit timestamps and numeric values",
     "",
     "",
@@ -315,7 +311,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem waiting_status (
     version,
-    true,
     "Deprecation of the status:waiting",
     "",
     "  If a task has a 'wait' attribute set to a date in the future, it is modified\n"
@@ -337,7 +332,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem env_vars (
     version,
-    true,
     "Environment variables in the taskrc",
     "",
     "",
@@ -356,7 +350,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem contextless_reports (
     version,
-    true,
     "Context-less reports",
     "",
     "  By default, every report is affected by currently active context.",
@@ -378,7 +371,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem exportable_reports (
     version,
-    false,
     "Exporting a particular report",
     "",
     "",
@@ -402,7 +394,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem multi_holidays (
     version,
-    false,
     "Multi-day holidays",
     "",
     "  Holidays are currently used in 'task calendar' to visualize the workload during\n"
@@ -425,7 +416,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem unicode_12 (
     version,
-    false,
     "Extended Unicode support (Unicode 12)",
     "",
     "",
@@ -444,7 +434,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem by_modifier (
     version,
-    false,
     "The .by attribute modifier",
     "",
     "",
@@ -463,7 +452,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem context_config (
     version,
-    false,
     "Context-specific configuration overrides",
     "",
     "",
@@ -488,7 +476,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem xdg_support (
     version,
-    true,
     "Support for XDG Base Directory Specification",
     "",
     "  The XDG Base Directory specification provides standard locations to store\n"
@@ -517,7 +504,6 @@ void NewsItem::version2_6_0 (std::vector<NewsItem>& items) {
 
   NewsItem holidata_2022 (
     version,
-    false,
     "Updated holiday data for 2022",
     "",
     "",
@@ -534,7 +520,6 @@ void NewsItem::version3_0_0 (std::vector<NewsItem>& items) {
   Version version("3.0.0");
   NewsItem sync {
     version,
-    /*major=*/true,
     /*title=*/"New data model and sync backend",
     /*bg_title=*/"",
     /*background=*/"",
@@ -569,27 +554,6 @@ int CmdNews::execute (std::string& output)
   if (!news_version.is_valid())
     news_version = Version("2.6.0");
 
-  bool full_summary = false;
-  bool major_items = true;
-
-  for (auto word: words)
-  {
-    if (word == "major") {
-        major_items = true;
-        break;
-    }
-
-    if (word == "minor") {
-        major_items = false;
-        break;
-    }
-
-    if (word == "all") {
-        full_summary = true;
-        break;
-    }
-  }
-
   signal (SIGINT, signal_handler);
 
   // Remove items that have already been shown
@@ -598,13 +562,6 @@ int CmdNews::execute (std::string& output)
       items.end ()
     );
 
-  // Remove non-major items if displaying a non-full (abbreviated) summary
-  int total_highlights = items.size ();
-  if (! full_summary)
-    items.erase (
-      std::remove_if (items.begin (), items.end (), [&](const NewsItem& n){return n._major != major_items;}),
-      items.end ()
-    );
 
   Color bold = Color ("bold");
   if (items.empty ()) {
@@ -650,8 +607,9 @@ int CmdNews::execute (std::string& output)
   std::cout << outro.str ();
 
   // Set a mark in the config to remember which version's release notes were displayed
-  if (full_summary && news_version != current_version)
+  if (news_version != current_version)
   {
+    std::cout << "UPDATING\n";
     CmdConfig::setConfigVariable ("news.version", std::string(current_version), false);
 
     // Revert back to default signal handling after displaying the outro
@@ -688,16 +646,6 @@ int CmdNews::execute (std::string& output)
   }
   else
     wait_for_enter ();  // Do not display the outro and footnote at once
-
-  if (! items.empty() && ! full_summary && major_items) {
-    Context::getContext ().footnote (format (
-      "Only major highlights were displayed ({1} out of {2} total).\n"
-      "If you're interested in more release highlights, run 'task news {3} minor'.",
-      items.size (),
-      total_highlights,
-      current_version
-    ));
-  }
 
   return 0;
 }
