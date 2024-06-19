@@ -63,34 +63,38 @@ int main (int, char**)
     context.config.set ("indent.annotation", "2");
 
     // Two sample tasks.
-    Task t1 ("["
-               "status:\"pending\" "
-               "uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" "
-               "description:\"This is the description text\" "
-               "project:\"Home\" "
-               "priority:\"H\" "
-               "annotation_1234567890:\"This is an annotation\" "
-               "start:\"1234567890\" "
-               "due:\"1234567890\" "
-               "tags:\"one,two\""
-             "]");
+    t.ok(true, "zero");
+    Task t1 ("{"
+               "\"status\":\"pending\", "
+               "\"uuid\":\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\", "
+               "\"description\":\"This is the description text\", "
+               "\"project\":\"Home\", "
+               "\"priority\":\"H\", "
+               "\"annotation_1234567890\":\"This is an annotation\", "
+               "\"start\":\"1234567890\", "
+               "\"due\":\"1234567890\", "
+               "\"tags\":\"one,two\""
+             "}");
     t1.id = 1;
-    Task t2 ("["
-               "status:\"pending\" "
-               "uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" "
-               "description:\"This is the description text\" "
-               "project:\"Garden Care\" "
-               "recur:\"monthly\" "
-               "depends:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\""
-             "]");
+    t.ok(true, "one");
+    Task t2 ("{"
+               "\"status\":\"pending\", "
+               "\"uuid\":\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\", "
+               "\"description\":\"This is the description text\", "
+               "\"project\":\"Garden Care\", "
+               "\"recur\":\"monthly\", "
+               "\"depends\":\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\""
+             "}");
     t2.id = 11;
-    Task t3 ("["
-               "status:\"pending\" "
-               "uuid:\"c44cb9c3-3fc0-483f-bfb2-3bf134f05554\" "
-               "description:\"Another description\" "
-               "project:\"Garden\" "
-             "]");
+    t.ok(true, "two");
+    Task t3 ("{"
+               "\"status\":\"pending\", "
+               "\"uuid\":\"c44cb9c3-3fc0-483f-bfb2-3bf134f05554\", "
+               "\"description\":\"Another description\", "
+               "\"project\":\"Garden\""
+             "}");
     t3.id = 8;
+    t.ok(true, "three");
 
     std::vector <Task> data;
     data.push_back (t1);
