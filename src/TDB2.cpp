@@ -58,14 +58,6 @@ TDB2::TDB2 ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::open_replica (const std::string& location, bool create_if_missing)
 {
-  File pending_data = File (location + "/pending.data");
-  if (pending_data.exists()) {
-    Color warning = Color (Context::getContext ().config.get ("color.warning"));
-    std::cerr << warning.colorize (
-      format ("Found existing '*.data' files in {1}", location)) << "\n";
-    std::cerr << "  Taskwarrior's storage format changed in 3.0, requiring a manual migration.\n";
-    std::cerr << "  See https://github.com/GothenburgBitFactory/taskwarrior/releases.\n";
-  }
   replica = tc::Replica(location, create_if_missing);
 }
 
