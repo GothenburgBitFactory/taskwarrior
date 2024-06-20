@@ -177,7 +177,6 @@ int CmdCalendar::execute (std::string& output)
     yFrom = argYear;
 
   // Now begin the data subset and rendering.
-  auto countDueDates = 0;
   if (getPendingDate == true)
   {
     // Find the oldest pending due date.
@@ -190,7 +189,6 @@ int CmdCalendar::execute (std::string& output)
         if (task.has ("due") &&
             !task.hasTag ("nocal"))
         {
-          ++countDueDates;
           Datetime d (task.get ("due"));
           if (d < oldest) oldest = d;
         }
