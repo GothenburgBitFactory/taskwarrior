@@ -34,7 +34,7 @@ class CmdTimesheet : public Command
 {
 public:
   CmdTimesheet ();
-  int execute (std::string&);
+  int execute (std::string&) override;
   bool uses_context () const override;
 };
 
