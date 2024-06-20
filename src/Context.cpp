@@ -40,6 +40,7 @@
 #include <Variant.h>
 #include <Datetime.h>
 #include <Duration.h>
+#include <Version.h>
 #include <shared.h>
 #include <format.h>
 #include <main.h>
@@ -1216,10 +1217,6 @@ void Context::createDefaultConfig ()
         ! confirm ( format ("A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so Taskwarrior can proceed?", home_dir, rc_file._data)))
       throw std::string ("Cannot proceed without rc file.");
 
-    // Override data.location in the defaults.
-    auto loc = configurationDefaults.find ("data.location=~/.task");
-    //                                 loc+0^          +14^   +21^
-
     Datetime now;
     std::stringstream contents;
     contents << "# [Created by "
@@ -1227,10 +1224,10 @@ void Context::createDefaultConfig ()
              << ' '
              << now.toString ("m/d/Y H:N:S")
              << "]\n"
-             << configurationDefaults.substr (0, loc + 14)
-             << data_dir._original
-             << "\n\n# To use the default location of the XDG directories,\n"
-             << "# move this configuration file from ~/.taskrc to ~/.config/task/taskrc and uncomment below\n"
+             << "data.location=" << data_dir._original << "\n"
+             << "news.version=" << Version::Current() << "\n"
+             << "\n# To use the default location of the XDG directories,\n"
+             << "# move this configuration file from ~/.taskrc to ~/.config/task/taskrc and update location config as follows:\n"
              << "\n#data.location=~/.local/share/task\n"
              << "#hooks.location=~/.config/task/hooks\n"
              << "\n# Color theme (uncomment one to use)\n"
@@ -1253,6 +1250,9 @@ void Context::createDefaultConfig ()
     // Write out the new file.
     if (! File::write (rc_file._data, contents.str ()))
       throw format ("Could not write to '{1}'.", rc_file._data);
+
+    // Load it so that it takes effect for this run.
+    config.load(rc_file);
   }
 }
 
