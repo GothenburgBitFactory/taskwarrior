@@ -87,8 +87,8 @@ jobs:
 
       - uses: actions-rs/cargo@v1.0.3
         with:
-          command: run
-          args: --package xtask -- codegen
+          command: xtask
+          args: codegen
 
       - name: check for changes
         run: |
