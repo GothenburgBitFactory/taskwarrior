@@ -1,10 +1,42 @@
 ## Run the Taskwarrior tests, using stable rust to build TaskChampion.
-
 name: tests
+
 on: [push, pull_request]
+
 jobs:
+  coverage:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install apt packages
+        run: sudo apt-get install -y build-essential cmake git uuid-dev faketime locales python3 curl gcovr ninja-build
+
+      - name: Check out this repository
+        uses: actions/checkout@v4.1.6
+
+      - name: Configure project
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage
+
+      - name: Build project
+        run: cmake --build build --target build_tests
+
+      - name: Test project
+        run: ctest --test-dir build -j 8 --output-on-failure
+
+      - name: Generate a code coverage report
+        uses: threeal/gcovr-action@v1.0.0
+        with:
+          coveralls-out: coverage.coveralls.json
+          excludes: |
+            build
+
+      - name: Sent to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          file: coverage.coveralls.json
+
   # MacOS tests do not run in Docker, and use the actions-rs Rust installaction
   tests-macos-12:
+    needs: coverage
     name: tests (Mac OS 12.latest)
     if: false # see #3242
     runs-on: macos-latest
@@ -33,6 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   tests-macos-13:
+    needs: coverage
     name: tests (Mac OS 13.latest)
     if: false # see #3242
     runs-on: macos-13
@@ -62,6 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   tests:
+    needs: coverage
     strategy:
       fail-fast: false
       matrix:
