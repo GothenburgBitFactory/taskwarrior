@@ -19,7 +19,7 @@ jobs:
 
       - name: First test run
         run: |
-          ctest --test-dir build -j 8 --output-on-failure --rerun-failed
+          ctest --test-dir build -j 8 --output-on-failure
         continue-on-error: true
 
       - name: Second test run repeating failed tests

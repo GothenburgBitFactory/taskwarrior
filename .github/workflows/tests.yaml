@@ -3,9 +3,9 @@
 name: tests
 on:
   workflow_run:
-    workflows: ["Coveralls Report"]
-    types:
-      - completed
+    workflows: [Coveralls Report]
+    types: [completed]
+
 jobs:
   # MacOS tests do not run in Docker, and use the actions-rs Rust installaction
   tests-macos-12:
