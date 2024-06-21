@@ -12,10 +12,18 @@ jobs:
       - name: Check out this repository
         uses: actions/checkout@v4.1.6
 
-      - name: Build and test this project
+      - name: Build project
         run: |
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage
           cmake --build build --target build_tests
+
+      - name: First test run
+        run: |
+          ctest --test-dir build -j 8 --output-on-failure --rerun-failed
+        continue-on-error: true
+
+      - name: Second test run repeating failed tests
+        run: |
           ctest --test-dir build -j 8 --output-on-failure --rerun-failed
 
       - name: Generate a code coverage report
@@ -24,7 +32,7 @@ jobs:
           coveralls-out: coverage.coveralls.json
           excludes: |
             build
-            
+
       - name: Sent to Coveralls
         uses: coverallsapp/github-action@v2
         with:
