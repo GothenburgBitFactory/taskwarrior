@@ -17,7 +17,7 @@ jobs:
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage
 
       - name: Build project
-        run: cmake --build build -j 8 --target build_tests
+        run: cmake --build build --target build_tests
 
       - name: Test project
         # NOTE: running these in parallel (`-j N`) can result in spurious failures
