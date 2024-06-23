@@ -761,6 +761,10 @@ add or remove a virtual tag.
 Specifies the project to which a task is related to.
 
 .TP
+.B status:pending|deleted|completed|waiting|recurring
+Specifies the state of the task.
+
+.TP
 .B priority:H|M|L or priority:
 Specifies High, Medium, Low and no priority for a task.
 
