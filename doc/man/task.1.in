@@ -806,6 +806,10 @@ by '-', the specified tasks are removed from the dependency list.
 .B entry:<entry-date>
 For report purposes, specifies the date that a task was created.
 
+.TP
+.B modified:<modified-date>
+Specifies the most recent modification date.
+
 .SH ATTRIBUTE MODIFIERS
 Attribute modifiers improve filters.  Supported modifiers are:
 
