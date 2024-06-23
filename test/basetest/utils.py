@@ -3,6 +3,7 @@ from __future__ import division
 import errno
 import os
 import sys
+import time
 import socket
 import signal
 import functools
@@ -80,6 +81,7 @@ def wait_condition(cond, timeout=1, sleeptime=.01):
 
     # Max number of attempts until giving up
     tries = int(timeout / sleeptime)
+    _log(f"wait_condition tries={tries} timeout={timeout} sleeptime={sleeptime}")
 
     for i in range(tries):
         val = cond()
@@ -89,12 +91,14 @@ def wait_condition(cond, timeout=1, sleeptime=.01):
 
         sleep(sleeptime)
 
+    _log(f"stopped after {i} iterations")
     return val
 
 
 def wait_process(pid, timeout=None):
     """Wait for process to finish
     """
+    _log(f"wait_process({pid}, {timeout})")
     def process():
         try:
             os.kill(pid, 0)
@@ -161,6 +165,11 @@ def _retrieve_output(thread, timeout, queue, thread_error):
         data = TimeoutWaitingFor("streams from TaskWarrior")
 
     return data
+
+
+def _log(msg):
+    timestamp = time.asctime(time.gmtime(time.time()))
+    print(f"{timestamp} {msg}")
 
 
 def _get_output(arguments, timeout=None):
