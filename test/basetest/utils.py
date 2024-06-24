@@ -168,7 +168,7 @@ def _retrieve_output(thread, timeout, queue, thread_error):
 
 
 def _log(msg):
-    timestamp = time.asctime(time.gmtime(time.time()))
+    timestamp = time.time()
     print(f"{timestamp} {msg}")
 
 
