@@ -136,10 +136,13 @@ def _queue_output(arguments, pidq, outputq):
         return
 
     # Put the PID in the queue for main process to know.
+    _log(f"got pid {proc.pid}")
     pidq.put(proc.pid)
 
     # Send input and wait for finish
+    _log(f"communicating")
     out, err = proc.communicate(input_data)
+    _log(f"communicated")
 
     if sys.version_info > (3,):
         out, err = out.decode('utf-8'), err.decode('utf-8')
