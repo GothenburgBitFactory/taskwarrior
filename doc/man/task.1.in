@@ -24,18 +24,24 @@ descriptors), project groups, etc.
 The <filter> consists of zero or more search criteria that select tasks.  For
 example, to list all pending tasks belonging to the 'Home' project:
 
+.nf
   task project:Home list
+.fi
 
 You can specify multiple filter terms, each of which further restricts the
 result:
 
+.nf
   task project:Home +weekend garden list
+.fi
 
 This example applies three filters: the 'Home' project, the 'weekend' tag, and
 the description or annotations must contain the character sequence 'garden'.
 In this example, 'garden' is translated internally to:
 
+.nf
   description.contains:garden
+.fi
 
 as a convenient shortcut.  The 'contains' here is an attribute modifier, which
 is used to exert more control over the filter than simply absence or presence.
@@ -45,24 +51,30 @@ Note that a filter may have zero terms, which means that all tasks apply to the
 command.  This can be dangerous, and this special case is confirmed, and
 cannot be overridden.  For example, this command:
 
+.nf
   task modify +work
   This command has no filter, and will modify all tasks.  Are you sure? (yes/no)
+.fi
 
 will add the 'work' tag to all tasks, but only after confirmation.
 
 More filter examples:
 
+.nf
   task                                      <command> <mods>
   task 28                                   <command> <mods>
   task +weekend                             <command> <mods>
   task +bills due.by:eom                    <command> <mods>
   task project:Home due.before:today        <command> <mods>
   task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <mods>
+.fi
 
 By default filter elements are combined with an implicit 'and' operator,
 but 'or' and 'xor' may also be used, provided parentheses are included:
 
+.nf
   task '( /[Cc]at|[Dd]og/ or /[0-9]+/ )'      <command> <mods>
+.fi
 
 The parentheses isolate the logical term from any default command filter or
 implicit report filter which would be combined with an implicit 'and'.
@@ -71,10 +83,12 @@ A filter may target specific tasks using ID or UUID numbers.  To specify
 multiple tasks use one of these forms (space-separated list of ID numbers,
 UUID numbers or ID ranges):
 
+.nf
   task 1 2 3                                    delete
   task 1-3                                      info
   task 1 2-5 19                                 modify pri:H
   task 4-7 ebeeab00-ccf8-464b-8b58-f7f2d606edfb info
+.fi
 
 Note that it may be necessary to properly escape special characters as well as
 quotes in order to avoid their special meanings in the shell. See also the
@@ -85,11 +99,13 @@ section 'SPECIFYING DESCRIPTIONS' for more information.
 The <mods> consist of zero or more changes to apply to the selected tasks, such
 as:
 
+.nf
   task <filter> <command> project:Home
   task <filter> <command> +weekend +garden due:tomorrow
   task <filter> <command> Description/annotation text
   task <filter> <command> /from/to/     <- replace first match
   task <filter> <command> /from/to/g    <- replace all matches
+.fi
 
 .SH SUBCOMMANDS
 
@@ -188,6 +204,7 @@ wish to save it, or pipe it to another command or script to convert it to
 another format. You'll find these example scripts online at
 <https://taskwarrior.org/tools/>:
 
+.nf
   export-csv.pl
   export-sql.py
   export-xml.py
@@ -198,6 +215,7 @@ another format. You'll find these example scripts online at
   export-ical.pl
   export-xml.pl
   export-yad.pl
+.fi
 
 .TP
 .B task <filter> ghistory.annual
@@ -243,12 +261,16 @@ Applies the filter then extracts only the task IDs and presents them as
 a space-separated list.  This is useful as input to a task command, to achieve
 this:
 
+.nf
   task $(task project:Home ids) modify priority:H
+.fi
 
 This example first gets the IDs for the project:Home filter, then sets
 the priority to H for each of those tasks.  This can also be achieved directly:
 
+.nf
   task project:Home modify priority:H
+.fi
 
 This command is mainly of use to external scripts.
 
@@ -258,7 +280,9 @@ Applies the filter on all tasks (even deleted and completed tasks)
 then extracts only the task UUIDs and presents them as a space-separated list.
 This is useful as input to a task command, to achieve this:
 
+.nf
   task $(task project:Home status:completed uuids) modify status:pending
+.fi
 
 This example first gets the UUIDs for the project:Home and status:completed
 filters, then makes each of those tasks pending again.
@@ -385,8 +409,10 @@ if import is to be used in automated workflows.  See taskrc(5).
 For importing other file formats, the standard task release comes with a
 few example scripts, such as:
 
+.nf
   import-todo.sh.pl
   import-yaml.pl
+.fi
 
 .TP
 .B task log <mods>
@@ -423,14 +449,20 @@ parses and evaluates the expression given on the command line.
 
 Examples:
 
+.nf
     task calc 1 + 1
     2
+.fi
 
+.nf
     task calc now + 8d
     2015-03-26T18:06:57
+.fi
 
+.nf
     task calc eom
     2015-03-31T23:59:59
+.fi
 
 .TP
 .B task config [<name> [<value> | '']]
@@ -438,16 +470,22 @@ Add, modify and remove settings directly in the Taskwarrior configuration.
 This command either modifies the 'name' setting with a new value of 'value',
 or adds a new entry that is equivalent to 'name=value':
 
+.nf
     task config name value
+.fi
 
 This command sets a blank value.  This has the effect of suppressing any
 default value:
 
+.nf
     task config name ''
+.fi
 
 Finally, this command removes any 'name=...' entry from the .taskrc file:
 
+.nf
     task config name
+.fi
 
 .TP
 .B task context <name>
@@ -455,7 +493,9 @@ Sets the currently active context. See the CONTEXT section.
 
 Example:
 
+.nf
     task context work
+.fi
 
 .TP
 .B task context delete <name>
@@ -464,7 +504,9 @@ set as active, it will be unset.
 
 Example:
 
+.nf
     task context delete work
+.fi
 
 .TP
 .B task context define <name> <filter>
@@ -473,9 +515,11 @@ does not affect the currently set context, just adds a new context definition.
 
 Examples:
 
+.nf
     task context define work project:Work
     task context define home project:Home or +home
     task context define superurgent due:today and +urgent
+.fi
 
 .TP
 .B task context list
@@ -543,11 +587,15 @@ The sync command synchronizes data with the Taskserver, if configured.
 Note: If you use multiple sync clients, make sure this setting (which is the default)
 is on your primary client:
 
+.nf
   recurrence=on
+.fi
 
 and on all other clients (this is not the default):
 
+.nf
   recurrence=off
+.fi
 
 This is a workaround to avoid a recurrence bug that duplicates recurring tasks.
 
@@ -607,7 +655,9 @@ by third-party applications.
 Reports a unique set of attribute values. For example, to see all the active
 projects:
 
+.nf
   task +PENDING _unique project
+.fi
 
 .TP
 .B task <filter> _uuids
@@ -654,6 +704,7 @@ Shows the UUIDs and descriptions of matching tasks.
 Accesses and displays the DOM reference(s).  Used to extract individual values
 from tasks, or the system.  Supported DOM references are:
 
+.nf
   rc.<name>
   tw.syncneeded
   tw.program
@@ -669,6 +720,7 @@ from tasks, or the system.  Supported DOM references are:
   system.os
   <id>.<attribute>
   <uuid>.<attribute>
+.fi
 
 Note that the 'rc.<name>' reference may need to be escaped using '--' to prevent
 the reference from being interpreted as an override.
@@ -679,8 +731,10 @@ missing value, the command exits with 1.
 Additionally, some components of the attributes of particular types may be
 extracted by DOM references.
 
+.nf
   $ task _get 2.due.year
   2015
+.fi
 
 For a full list of supported attribute-specific DOM references, consult
 the online documentation at:
@@ -694,10 +748,11 @@ Tasks can be specified uniquely by IDs, which are simply the indexes of the
 tasks in the database.  The ID of a task may therefore change, but only when
 a command is run that displays IDs.  When modifying tasks, it is safe to
 rely on the last displayed ID.  Always run a report to check you have the right
-ID for a task. IDs can be given to task as a sequence, for example,
-.br
-.B
+ID for a task. IDs can be given to task as a sequence, for example:
+
+.nf
 task 1,4-10,19 delete
+.fi
 
 .TP
 .B +tag|-tag
@@ -708,15 +763,18 @@ Certain tags (called 'special tags'), can be used to affect the way tasks are
 treated.  For example, if a task has the special tag 'nocolor', then it is
 exempt from all color rules.  The supported special tags are:
 
+.nf
     +nocolor     Disable color rules processing for this task
     +nonag       Completion of this task suppresses all nag messages
     +nocal       This task will not appear on the calendar
     +next        Elevates task so it appears on 'next' report
+.fi
 
 There are also virtual tags, which represent task metadata in tag form.  These
 tags do not exist, but can be used to filter tasks.  The supported virtual tags
 are:
 
+.nf
     ACTIVE       Matches if the task is started
     ANNOTATED    Matches if the task has annotations
     BLOCKED      Matches if the task is blocked
@@ -748,6 +806,7 @@ are:
     WEEK         Matches if the task is due this week
     YEAR         Matches if the task is due this year
     YESTERDAY    Matches if the task was due sometime yesterday
+.fi
 
 .\" If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
@@ -853,9 +912,9 @@ calculated attributes:
 
 For example:
 
-.RS
-task due.before:eom priority.not:L list
-.RE
+.nf
+    task due.before:eom priority.not:L list
+.fi
 
 The
 .I before
@@ -875,15 +934,21 @@ The
 modifier is the same as 'before', except it also includes the moment in
 question.  For example:
 
+.nf
     task add test due:eoy
+.fi
 
 will be found when using the inclusive filter 'by':
 
+.nf
     task due.by:eoy
+.fi
 
 but not when the non-inclusive filter 'before' is used:
 
+.nf
     task due.before:eoy
+.fi
 
 this applies equally to other named dates such as 'eom', 'eod', etc; the
 modifier compares using '<=' rather than '<' like 'before' does.
@@ -892,8 +957,10 @@ The
 .I none
 modifier requires that the attribute does not have a value.  For example:
 
+.nf
     task priority:      list
     task priority.none: list
+.fi
 
 are equivalent, and list tasks that do not have a priority.
 
@@ -915,8 +982,10 @@ The
 .I has
 modifier is used to search for a substring, such as:
 
+.nf
     task description.has:foo list
     task foo                 list
+.fi
 
 These are equivalent and will return any task that has 'foo' in the description
 or annotations.
@@ -931,13 +1000,17 @@ The
 .I startswith
 modifier matches against the left, or beginning of an attribute, such that:
 
+.nf
     task project.startswith:H list
     task project:H            list
+.fi
 
 are equivalent and will match any project starting with 'H'.  Matching all
 projects not starting with 'H' is done with:
 
+.nf
     task project.not:H         list
+.fi
 
 The
 .I endswith
@@ -948,7 +1021,9 @@ The
 modifier requires that the attribute contain the whole word specified, such
 that this:
 
+.nf
     task description.word:bar list
+.fi
 
 Will match the description 'foo bar baz' but does not match 'dog food'.
 
@@ -962,15 +1037,19 @@ modifier.
 
 You can use the following operators in filter expressions:
 
+.nf
   and  or  xor  !               Logical operators
   <  <=  =  ==  !=  !==  >=  >  Relational operators
   (  )                          Precedence
+.fi
 
 For example:
 
+.nf
   task due.before:eom priority.not:L list
   task '( due < eom or priority != L )' list
   task '! ( project:Home or project:Garden )' list
+.fi
 
 The
 .I =
@@ -994,32 +1073,44 @@ Note that the parentheses are required when using a logical operator other than
 the 'and' operator.  The reason is that some reports contain filters that must
 be combined with the command line.  Consider this example:
 
+.nf
   task project:Home or project:Garden list
+.fi
 
 While this looks correct, it is not.  The 'list' report contains a filter of:
 
+.nf
   task show report.list.filter
 
   Config Variable    Value
   -----------------  --------------
   report.list.filter status:pending
+.fi
 
 Which means the example is really:
 
+.nf
   task status:pending project:Home or project:Garden list
+.fi
 
 The implied 'and' operator makes it:
 
+.nf
   task status:pending and project:Home or project:Garden list
+.fi
 
 This is a precedence error - the 'and' and 'or' need to be grouped using
 parentheses, like this:
 
+.nf
   task status:pending and ( project:Home or project:Garden ) list
+.fi
 
 The original example therefore must be entered as:
 
+.nf
   task '( project:Home or project:Garden )' list
+.fi
 
 This includes quotes to escape the parentheses, so that the shell doesn't
 interpret them and hide them from Taskwarrior.
@@ -1027,11 +1118,13 @@ interpret them and hide them from Taskwarrior.
 There is redundancy between operators, attribute modifiers and other syntactic
 sugar.  For example, the following are all equivalent:
 
+.nf
   task foo                      list
   task /foo/                    list
   task description.contains:foo list
   task description.has:foo      list
   task 'description ~ foo'      list
+.fi
 
 .SH SPECIFYING DATES AND FREQUENCIES
 
@@ -1045,92 +1138,83 @@ configuration variable
 .RS
 .TP
 Exact specification
-task ... due:7/14/2008
+.nf
+  task ... due:7/14/2008
+.fi
 
 .TP
 ISO-8601
-task ... due:2013-03-14T22:30:00Z
+.nf
+  task ... due:2013-03-14T22:30:00Z
+.fi
 
 .TP
 Relative wording
-task ... due:now
-.br
-task ... due:today
-.br
-task ... due:yesterday
-.br
-task ... due:tomorrow
+.nf
+  task ... due:now
+  task ... due:today
+  task ... due:yesterday
+  task ... due:tomorrow
+.fi
 
 .TP
 Day number with ordinal
-task ... due:23rd
-.br
-task ... due:3wks
-.br
-task ... due:1day
-.br
-task ... due:9hrs
+.nf
+  task ... due:23rd
+  task ... due:3wks
+  task ... due:1day
+  task ... due:9hrs
+.fi
 
 .TP
 Start of next (work) week (Monday), calendar week (Sunday or Monday), month, quarter and year
-.br
-task ... due:sow
-.br
-task ... due:soww
-.br
-task ... due:socw
-.br
-task ... due:som
-.br
-task ... due:soq
-.br
-task ... due:soy
+.nf
+  task ... due:sow
+  task ... due:soww
+  task ... due:socw
+  task ... due:som
+  task ... due:soq
+  task ... due:soy
+.fi
 
 .TP
 End of current (work) week (Friday), calendar week (Saturday or Sunday), month, quarter and year
-.br
-task ... due:eow
-.br
-task ... due:eoww
-.br
-task ... due:eocw
-.br
-task ... due:eom
-.br
-task ... due:eoq
-.br
-task ... due:eoy
+.nf
+  task ... due:eow
+  task ... due:eoww
+  task ... due:eocw
+  task ... due:eom
+  task ... due:eoq
+  task ... due:eoy
+.fi
 
 .TP
 At some point or later
-.br
-task ... wait:later
-.br
-task ... wait:someday
+.nf
+  task ... wait:later
+  task ... wait:someday
+.fi
 
 This sets the wait date to 12/30/9999.
 
 .TP
 Next occurring weekday
-task ... due:fri
+.nf
+  task ... due:fri
+.fi
 
 .TP
 Predictable holidays
-task ... due:goodfriday
-.br
-task ... due:easter
-.br
-task ... due:eastermonday
-.br
-task ... due:ascension
-.br
-task ... due:pentecost
-.br
-task ... due:midsommar
-.br
-task ... due:midsommarafton
-.br
-task ... due:juhannus
+.nf
+  task ... due:goodfriday
+  task ... due:easter
+  task ... due:eastermonday
+  task ... due:ascension
+  task ... due:pentecost
+  task ... due:midsommar
+  task ... due:midsommarafton
+  task ... due:juhannus
+.fi
 .RE
 
 .SS FREQUENCIES
@@ -1181,7 +1265,8 @@ Context is a user-defined query, which is automatically applied to all commands
 that filter the task list and to commands that create new tasks (add, log). For
 example, any report command will have its result affected by the current
 active context.  Here is a list of the commands that are affected:
-.IP
+
+.nf
     add
     burndown
     count
@@ -1199,33 +1284,44 @@ active context.  Here is a list of the commands that are affected:
     stop
     summary
     tags
+.fi
 
 All other commands are NOT affected by the context.
 
+.nf
     $ task list
     ID Age Project  Description        Urg
     1  2d  Sport    Run 5 miles        1.42
     2  1d  Home     Clean the dishes   1.14
+.fi
 
+.nf
     $ task context home
     Context 'home' set. Use 'task context none' to remove.
+.fi
 
+.nf
     $ task list
     ID Age Project  Description        Urg
     2  1d  Home     Clean the dishes   1.14
     Context 'home' set. Use 'task context none' to remove.
+.fi
 
 Task list got automatically filtered for project:Home.
 
+.nf
     $ task add Vaccuum the carpet
     Created task 3.
     Context 'home' set. Use 'task context none' to remove.
+.fi
 
+.nf
     $ task list
     ID Age Project  Description         Urg
     2  1d  Home     Clean the dishes    1.14
     3  5s  Home     Vaccuum the carpet  1.14
     Context 'home' set. Use 'task context none' to remove.
+.fi
 
 Note that the newly added task "Vaccuum the carpet" has "project:Home" set
 automatically.
@@ -1236,22 +1332,28 @@ new context's name to the 'context' command.
 
 To unset any context, use the 'none' subcommand.
 
+.nf
     $ task context none
     Context unset.
+.fi
 
+.nf
     $ task list
     ID Age Project  Description         Urg
     1  2d  Sport    Run 5 miles         1.42
     2  1d  Home     Clean the dishes    1.14
     3  7s  Home     Vaccuum the carpet  1.14
+.fi
 
 Context can be defined using the 'define' subcommand, specifying both the name
 of the new context, and it's assigned filter.
 
+.nf
     $ task context define home project:Home
     Are you sure you want to add 'context.home.read' with a value of 'project:Home'? (yes/no) yes
     Are you sure you want to add 'context.home.write' with a value of 'project:Home'? (yes/no) yes
     Context 'home' successfully defined.
+.fi
 
 Note that you were separately prompted to set the 'read' and 'write' context.
 This allows you to specify contexts that only work for reporting commands or
@@ -1259,13 +1361,16 @@ only for commands that create tasks.
 
 To remove the definition, use the 'delete' subcommand.
 
+.nf
     $ task context delete home
     Are you sure you want to remove 'context.home.read'? (yes/no) yes
     Are you sure you want to remove 'context.home.write'? (yes/no) yes
     Context 'home' deleted.
+.fi
 
 To check what is the currently active context, use the 'show' subcommand.
 
+.nf
     $ task context show
     Context 'home' with
 
@@ -1273,13 +1378,16 @@ To check what is the currently active context, use the 'show' subcommand.
     * write filter: '+home'
 
     is currently applied.
+.fi
 
 Contexts can store arbitrarily complex filters.
 
+.nf
     $ task context define family project:Family or +paul or +nancy
     Are you sure you want to add 'context.family.read' with a value of 'project:Family or +paul or +nancy'? (yes/no) yes
     Are you sure you want to add 'context.family.write' with a value of 'project:Family or +paul or +nancy'? (yes/no) no
     Context 'family' successfully defined.
+.fi
 
 Contexts are permanent, and the currently set context name is stored in the
 "context" configuration variable. The context definition is stored in the
@@ -1292,13 +1400,17 @@ filter as writeable context. The reason for this decision is that the complex
 filter in the example does not directly translate to a modification. In fact,
 if such a context is used as a writeable context, the following happens:
 
+.nf
     $ task add Call Paul
     Created task 4.
     Context 'family' set. Use 'task context none' to remove.
+.fi
 
+.nf
     $ task 4 list
     ID Age  Project Tags       Description      Urg
      4 9min Family  nancy paul or or Call Paul    0
+.fi
 
 
 There is no clear mapping between the complex filter used and the modifications
@@ -1307,16 +1419,20 @@ operators being present in the description. Taskwarrior does not try to guess
 the user intention here, and instead, the user is expected to set the
 "context.<name>.write" variable to make their intention explicit, for example:
 
+.nf
     $ task config context.family.write project:Family
     Are you sure you want to change the value of 'context.family.write' from 'project:Family or +paul or +nancy' to 'project:Family'? (yes/no) yes
     Config file /home/tbabej/.config/task/taskrc modified.
+.fi
 
+.nf
     $ task context
     Name   Type  Definition                        Active
     family read  project:Family or +paul or +nancy yes
            write project:Family                    yes
     home   read  +home                             no
            write +home                             no
+.fi
 
 Note how read and write contexts differ for context "family", while for context
 "home" they stay the same.
@@ -1325,74 +1441,75 @@ In addition, every configuration parameter can be overridden for the current
 context, by specifying context.<name>.rc.<parameter>. For example, if the default
 command for the family context should be displaying the family_report:
 
+.nf
     $ task config context.family.rc.default.command family_report
+.fi
 
 .SH COMMAND ABBREVIATION
 All Taskwarrior commands may be abbreviated as long as a unique prefix is used,
 for example:
 
-.RS
-$ task li
-.RE
+.nf
+  $ task li
+.fi
 
 is an unambiguous abbreviation for
 
-.RS
-$ task list
-.RE
+.nf
+  $ task list
+.fi
 
 but
 
-.RS
-$ task l
-.RE
+.nf
+  $ task l
+.fi
 
 could be list, ls or long.
 
 Note that you can restrict the minimum abbreviation size using the configuration
 setting:
 
-.RS
-abbreviation.minimum=3
-.RE
+.nf
+  abbreviation.minimum=3
+.fi
 
 .SH SPECIFYING DESCRIPTIONS
 Some task descriptions need to be escaped because of the shell and the special
 meaning of some characters to the shell. This can be done either by adding
 quotes to the description or escaping the special character:
 
-.RS
-$ task add "quoted ' quote"
-.br
-$ task add escaped \\' quote
-.RE
+.nf
+  $ task add "quoted ' quote"
+  $ task add escaped \\' quote
+.fi
 
 The argument \-\- (a double dash) tells Taskwarrior to treat all other args
 as description:
 
-.RS
-$ task add -- project:Home needs scheduling
-.RE
+.nf
+  $ task add -- project:Home needs scheduling
+.fi
 
 In other situations, the shell sees spaces and breaks up arguments.  For
 example, this command:
 
-.RS
-$ task 123 modify /from this/to that/
-.RE
+.nf
+  $ task 123 modify /from this/to that/
+.fi
 
 is broken up into several arguments, which is corrected with quotes:
 
-.RS
-$ task 123 modify "/from this/to that/"
-.RE
+.nf
+  $ task 123 modify "/from this/to that/"
+.fi
 
 It is sometimes necessary to force the shell to pass quotes to Taskwarrior
 intact, so you can use:
 
-.RS
-$ task add project:\\'Three Word Project\\' description
-.RE
+.nf
+  $ task add project:\\'Three Word Project\\' description
+.fi
 
 Taskwarrior supports Unicode using only the UTF8 encoding.
 

@@ -18,43 +18,43 @@ obtains its configuration data from a file called
 .I .taskrc
 \&. This file is normally located in the user's home directory:
 
-.RS
-$HOME/.taskrc
-.RE
+.nf
+    $HOME/.taskrc
+.fi
 
 The default location can be overridden using the
 .I rc:
 attribute when running task:
 
-.RS
-$ task rc:<directory-path>/.taskrc ...
-.RE
+.nf
+    $ task rc:<directory-path>/.taskrc ...
+.fi
 
 or using the TASKRC environment variable:
 
-.RS
-$ TASKRC=/tmp/.taskrc task ...
-.RE
+.nf
+    $ TASKRC=/tmp/.taskrc task ...
+.fi
 
 Additionally, if no ~/.taskrc exists, taskwarrior will check if the XDG_CONFIG_HOME environment variable is defined:
 
-.RS
-$ XDG_CONFIG_HOME=~/.config task ...
-.RE
+.nf
+    $ XDG_CONFIG_HOME=~/.config task ...
+.fi
 
 Individual options can be overridden by using the
 .I rc.<name>:
 attribute when running task:
 
-.RS
-$ task rc.<name>:<value> ...
-.RE
+.nf
+    $ task rc.<name>:<value> ...
+.fi
 
 or
 
-.RS
-$ task rc.<name>=<value> ...
-.RE
+.nf
+    $ task rc.<name>=<value> ...
+.fi
 
 If
 .B Taskwarrior
@@ -65,9 +65,9 @@ file in the user's home directory.
 
 The .taskrc file follows a very simple syntax defining name/value pairs:
 
-.RS
-<name> = <value>
-.RE
+.nf
+    <name> = <value>
+.fi
 
 There may be whitespace around <name>, '=' and <value>, and it is ignored.
 Whitespace within the <value> is left intact.
@@ -79,9 +79,9 @@ Note that Taskwarrior is flexible about the values used to represent Boolean
 items. You can use "1" to enable, anything else is interpreted as disabled.
 The values "on", "yes", "y" and "true" are currently supported but deprecated.
 
-.RS
-include <file>
-.RE
+.nf
+    include <file>
+.fi
 
 There may be whitespace around 'include' and <file>. The file may be an
 absolute or relative path, and the special character '~' is expanded to mean
@@ -95,9 +95,9 @@ respect to the following directories (listed in order of precedence):
 Note that environment variables are also expanded in paths (and any other
 taskrc variables).
 
-.RS
-# <comment>
-.RE
+.nf
+    # <comment>
+.fi
 
 A comment consists of the character '#', and extends from the '#' to the end
 of the line. There is no way to comment a multi-line block. There may be
@@ -108,9 +108,9 @@ that makes use of every default. The contents of the .taskrc file therefore
 represent overrides of the default values. To remove a default value completely
 there must be an entry like this:
 
-.RS
-<name> =
-.RE
+.nf
+    <name> =
+.fi
 
 This entry overrides the default value with a blank value.
 
@@ -118,28 +118,28 @@ This entry overrides the default value with a blank value.
 You can edit your .taskrc file by hand if you wish, or you can use the 'config'
 command. To permanently set a value in your .taskrc file, use this command:
 
-.RS
-$ task config nag "You have more urgent tasks."
-.RE
+.nf
+    $ task config nag "You have more urgent tasks."
+.fi
 
 To delete an entry, use this command:
 
-.RS
-$ task config nag
-.RE
+.nf
+    $ task config nag
+.fi
 
 Taskwarrior will then use the default value. To explicitly set a value to
 blank, and therefore avoid using the default value, use this command:
 
-.RS
-$ task config nag ""
-.RE
+.nf
+    $ task config nag ""
+.fi
 
 Taskwarrior will also display all your settings with this command:
 
-.RS
-$ task show
-.RE
+.nf
+    $ task show
+.fi
 
 and in addition, will also perform a check of all the values in the file,
 warning you of anything it finds amiss.
@@ -149,20 +149,19 @@ The .taskrc can include other files containing configuration settings by using t
 .B include
 statement:
 
-.RS
-include <path/to/the/configuration/file/to/be/included>
-.RE
+.nf
+    include <path/to/the/configuration/file/to/be/included>
+.fi
 
 By using include files you can divide your main configuration file into several
 ones containing just the relevant configuration data like colors, etc.
 
 There are two excellent uses of includes in your .taskrc, shown here:
 
-.RS
-include holidays.en-US.rc
-.br
-include dark-16.theme
-.RE
+.nf
+    include holidays.en-US.rc
+    include dark-16.theme
+.fi
 
 This includes two standard files that are distributed with Taskwarrior, which
 define a set of US holidays, and set up a 16-color theme to use, to color the
@@ -299,6 +298,7 @@ is most readily parsed and used by shell scripts.
 Alternatively, you can specify a comma-separated list of verbosity tokens that
 control specific occasions when output is generated. This list may contain:
 
+.nf
     blank      Inserts extra blank lines in output, for clarity
     header     Messages that appear before report output (this includes .taskrc/.task overrides and the "[task next]" message)
     footnote   Messages that appear after report output (mostly status messages and change descriptions)
@@ -315,6 +315,7 @@ control specific occasions when output is generated. This list may contain:
     override   Notification when configuration options are overridden
     recur      Notification when a new recurring task instance is created
     default    Notifications about taskwarrior choosing to perform a default action.
+.fi
 
 The tokens "affected", "new-id", "new-uuid", "project", "override" and "recur"
 imply "footnote".
@@ -326,14 +327,20 @@ and the "nothing" setting is equivalent to none of the tokens being specified.
 
 Here are the shortcut equivalents:
 
+.nf
     verbose=on
     verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,override,recur
+.fi
 
+.nf
     verbose=0
     verbose=blank,label,new-id,edit
+.fi
 
+.nf
     verbose=nothing
     verbose=
+.fi
 
 Those additional comments are sent to the standard error for header, footnote
 and project. The others are sent to standard output.
@@ -584,51 +591,29 @@ are formatted according to dateformat.
 The default value is the ISO-8601 standard: Y-M-D. The string can contain the
 characters:
 
-.RS
-.RS
-m  minimal-digit month,    for example 1 or 12
-.br
-d  minimal-digit day,      for example 1 or 30
-.br
-y  two-digit year,         for example 09 or 12
-.br
-D  two-digit day,          for example 01 or 30
-.br
-M  two-digit month,        for example 01 or 12
-.br
-Y  four-digit year,        for example 2009 or 2015
-.br
-a  short name of weekday,  for example Mon or Wed
-.br
-A  long name of weekday,   for example Monday or Wednesday
-.br
-b  short name of month,    for example Jan or Aug
-.br
-B  long name of month,     for example January or August
-.br
-v  minimal-digit week,     for example 3 or 37
-.br
-V  two-digit week,         for example 03 or 37
-.br
-h  minimal-digit hour,     for example 3 or 21
-.br
-n  minimal-digit minutes,  for example 5 or 42
-.br
-s  minimal-digit seconds,  for example 7 or 47
-.br
-H  two-digit hour,         for example 03 or 21
-.br
-N  two-digit minutes,      for example 05 or 42
-.br
-S  two-digit seconds,      for example 07 or 47
-.br
-J  three-digit Julian day, for example 023 or 365
-.br
-j  Julian day,             for example 23 or 365
-.br
-w  Week day,               for example 0 for Monday, 5 for Friday
-.RE
-.RE
+.nf
+    m  minimal-digit month,    for example 1 or 12
+    d  minimal-digit day,      for example 1 or 30
+    y  two-digit year,         for example 09 or 12
+    D  two-digit day,          for example 01 or 30
+    M  two-digit month,        for example 01 or 12
+    Y  four-digit year,        for example 2009 or 2015
+    a  short name of weekday,  for example Mon or Wed
+    A  long name of weekday,   for example Monday or Wednesday
+    b  short name of month,    for example Jan or Aug
+    B  long name of month,     for example January or August
+    v  minimal-digit week,     for example 3 or 37
+    V  two-digit week,         for example 03 or 37
+    h  minimal-digit hour,     for example 3 or 21
+    n  minimal-digit minutes,  for example 5 or 42
+    s  minimal-digit seconds,  for example 7 or 47
+    H  two-digit hour,         for example 03 or 21
+    N  two-digit minutes,      for example 05 or 42
+    S  two-digit seconds,      for example 07 or 47
+    J  three-digit Julian day, for example 023 or 365
+    j  Julian day,             for example 23 or 365
+    w  Week day,               for example 0 for Monday, 5 for Friday
+.fi
 
 .RS
 The characters 'v', 'V', 'a' and 'A' can only be used for formatting printed
@@ -640,37 +625,24 @@ The string may also contain other characters to act as spacers, or formatting.
 Examples for other values of dateformat:
 .RE
 
-.RS
-.RS
-.br
-d/m/Y  would use for input and output 24/7/2009
-.br
-yMD    would use for input and output 090724
-.br
-M-D-Y  would use for input and output 07-24-2009
-.RE
-.RE
+.nf
+    d/m/Y  would use for input and output 24/7/2009
+    yMD    would use for input and output 090724
+    M-D-Y  would use for input and output 07-24-2009
+.fi
 
 .RS
 Examples for other values of dateformat.report:
 .RE
 
-.RS
-.RS
-.br
-a D b Y (V)   would emit "Fri 24 Jul 2009 (30)"
-.br
-A, B D, Y     would emit "Friday, July 24, 2009"
-.br
-wV a Y-M-D    would emit "w30 Fri 2009-07-24"
-.br
-yMD.HN        would emit "110124.2342"
-.br
-m/d/Y H:N     would emit "1/24/2011 10:42"
-.br
-a D b Y H:N:S would emit "Mon 24 Jan 2011 11:19:42"
-.RE
-.RE
+.nf
+    a D b Y (V)   would emit "Fri 24 Jul 2009 (30)"
+    A, B D, Y     would emit "Friday, July 24, 2009"
+    wV a Y-M-D    would emit "w30 Fri 2009-07-24"
+    yMD.HN        would emit "110124.2342"
+    m/d/Y H:N     would emit "1/24/2011 10:42"
+    a D b Y H:N:S would emit "Mon 24 Jan 2011 11:19:42"
+.fi
 
 .RS
 Undefined fields are put to their minimal valid values (1 for month and day and
@@ -679,14 +651,10 @@ field that is set. Otherwise, they are set to the corresponding values of
 "now". For example:
 .RE
 
-.RS
-.RS
-.br
-8/1/2013  with m/d/Y   implies August 1, 2013 at midnight (inferred)
-.br
-8/1 20:40 with m/d H:N implies August 1, 2013 (inferred) at 20:40
-.RE
-.RE
+.nf
+    8/1/2013  with m/d/Y   implies August 1, 2013 at midnight (inferred)
+    8/1 20:40 with m/d H:N implies August 1, 2013 (inferred) at 20:40
+.fi
 
 .TP
 .B date.iso=1
@@ -780,28 +748,19 @@ Holidays are entered either directly in the .taskrc file or via an include file
 that is specified in .taskrc. For single-day holidays the name and the date is
 required to be given:
 
-.RS
-.RS
-.br
-holiday.towel.name=Day of the towel
-.br
-holiday.towel.date=20100525
-.RE
-.RE
+.nf
+    holiday.towel.name=Day of the towel
+    holiday.towel.date=20100525
+.fi
 
 For holidays that span a range of days (i.e. vacation), you can use a start date
 and an end date:
 
-.RS
-.RS
-.br
-holiday.sysadmin.name=System Administrator Appreciation Week
-.br
-holiday.sysadmin.start=20100730
-.br
-holiday.sysadmin.end=20100805
-.RE
-.RE
+.nf
+    holiday.sysadmin.name=System Administrator Appreciation Week
+    holiday.sysadmin.start=20100730
+    holiday.sysadmin.end=20100805
+.fi
 
 .RS
 Dates are to be entered according to the setting in the dateformat.holiday
@@ -814,24 +773,17 @@ Easter (easter), Easter Monday (eastermonday), Ascension (ascension), Pentecost
 (pentecost). The date for these holidays is the given keyword:
 .RE
 
-.RS
-.RS
-.br
-holiday.eastersunday.name=Easter
-.br
-holiday.eastersunday.date=easter
-.RE
-.RE
+.nf
+    holiday.eastersunday.name=Easter
+    holiday.eastersunday.date=easter
+.fi
 
 Note that the Taskwarrior distribution contains example holiday files that can
 be included like this:
 
-.RS
-.RS
-.br
-include holidays.en-US.rc
-.RE
-.RE
+.nf
+    include holidays.en-US.rc
+.fi
 
 .SS DEPENDENCIES
 
@@ -919,10 +871,9 @@ Task is deleted.
 .RS
 To disable a coloration rule for which there is a default, set the value to
 nothing, for example:
-.RS
-.B color.tagged=
-.RE
-.RE
+.nf
+    color.tagged=
+.fi
 
 .RS
 By default, colors produced by rules blend. This has the advantage of
@@ -1257,30 +1208,23 @@ default.command=next
 Provides a default command that is run every time Taskwarrior is invoked with no
 arguments. For example, if set to:
 
-.RS
-.RS
-default.command=project:foo list
-.RE
-.RE
+.nf
+    default.command=project:foo list
+.fi
 
 .RS
 then Taskwarrior will run the "project:foo list" command if no command is
 specified. This means that by merely typing
 .RE
 
-.RS
-.RS
-$ task
-.br
-[task project:foo list]
-.br
-\&
-.br
-ID Project Pri Description
- 1 foo     H   Design foo
- 2 foo         Build foo
-.RE
-.RE
+.nf
+    $ task
+    [task project:foo list]
+
+    ID Project Pri Description
+     1 foo     H   Design foo
+     2 foo         Build foo
+.fi
 
 .SS REPORTS
 
@@ -1319,12 +1263,16 @@ specified by using the column ids post-fixed by a "+" for ascending sort order
 or a "-" for descending sort order. The sort IDs are separated by commas.
 For example:
 
+.nf
     report.list.sort=due+,priority-,start.active-,project+
+.fi
 
 Additionally, after the "+" or "-", there can be a solidus "/" which indicates
 that there are breaks after the column values change. For example:
 
+.nf
     report.minimal.sort=project+/,description+
+.fi
 
 This sort order now specifies that there is a listing break between each
 project. A listing break is simply a blank line, which provides a visual
