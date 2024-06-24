@@ -173,7 +173,7 @@ These environment variables override defaults, but not command-line arguments.
 
 .TP
 .B TASKDATA=~/.task
-This overrides the default path for the Taskwarrior data files.
+This overrides the default path for the Taskwarrior data.
 
 .TP
 .B TASKRC=~/.taskrc
@@ -197,7 +197,7 @@ Valid variable names and their default values are:
 
 .TP
 .B data.location=$HOME/.task
-This is a path to the directory containing all the Taskwarrior files. By
+This is a path to the directory containing all the Taskwarrior data. By
 default, it is set up to be ~/.task, for example: /home/paul/.task
 
 Note that you can use the
@@ -212,11 +212,11 @@ This is a path to the hook scripts directory. By default it is ~/.task/hooks.
 
 .TP
 .B locking=1
-Determines whether to use file locking when accessing the pending.data and
-completed.data files. Defaults to "1". Solaris users who store the data
-files on an NFS mount may need to set locking to "0". Note that there is
-danger in setting this value to "0" - another program (or another instance of
-task) may write to the task.pending file at the same time.
+Determines whether to use file locking when accessing the database. Defaults to
+"1". Solaris users who store the database on an NFS mount may need to set
+locking to "0". Note that there is danger in setting this value to "0" -
+another program (or another instance of task) may write to the database at the
+same time.
 
 .TP
 .B gc=1

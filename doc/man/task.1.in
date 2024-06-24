@@ -497,11 +497,10 @@ are important.  Running this command generates a summary of similar information
 that should accompany a bug report.
 
 It includes compiler, library and software information.  It does not include
-any personal information, other than the location and size of your task data
-files.
+any personal information, other than the location of your task data.
 
-This command also performs a diagnostic scan of your data files looking for
-common problems, such as duplicate UUIDs.
+This command also performs a diagnostic scan of your data looking for common
+problems, such as duplicate UUIDs.
 
 .TP
 .B task execute <external command>
@@ -692,7 +691,7 @@ the online documentation at:
 .TP
 .B ID
 Tasks can be specified uniquely by IDs, which are simply the indexes of the
-tasks in the data file.  The ID of a task may therefore change, but only when
+tasks in the database.  The ID of a task may therefore change, but only when
 a command is run that displays IDs.  When modifying tasks, it is safe to
 rely on the last displayed ID.  Always run a report to check you have the right
 ID for a task. IDs can be given to task as a sequence, for example,
@@ -1395,8 +1394,7 @@ intact, so you can use:
 $ task add project:\\'Three Word Project\\' description
 .RE
 
-Taskwarrior supports Unicode using only the UTF8 encoding, with no Byte Order
-Marks in the data files.
+Taskwarrior supports Unicode using only the UTF8 encoding.
 
 .SH CONFIGURATION FILE AND OVERRIDE OPTIONS
 Taskwarrior stores its configuration in a file in the user's home directory:
@@ -1447,21 +1445,13 @@ will check if $XDG_CONFIG_HOME/task/taskrc exists and attempt to read it
 
 .TP
 ~/.task
-The default directory where task stores its data files. The location
-can be configured in the configuration variable 'data.location', or
-overridden with the TASKDATA environment variable..
+The default directory where task stores its data. The location can be
+configured in the configuration variable 'data.location', or overridden with
+the TASKDATA environment variable.
 
 .TP
-~/.task/pending.data
-The file that contains the tasks that are not yet done.
-
-.TP
-~/.task/completed.data
-The file that contains the completed ("done") tasks.
-
-.TP
-~/.task/undo.data
-The file that contains information needed by the "undo" command.
+~/.task/taskchampion.sqlite3
+The database file.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2021 T. Babej, P. Beckingham, F. Hernandez.
