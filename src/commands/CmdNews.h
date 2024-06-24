@@ -36,7 +36,6 @@
 class NewsItem {
 public:
   Version _version;
-  bool _major = false;
   std::string _title;
   std::string _bg_title;
   std::string _background;
@@ -54,7 +53,6 @@ public:
 private:
   NewsItem (
     Version,
-    bool,
     const std::string&,
     const std::string& = "",
     const std::string& = "",
