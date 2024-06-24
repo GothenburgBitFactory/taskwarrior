@@ -22,9 +22,8 @@ SHADOW_FILE=$(task _get rc.shadow.file)
 #   rc.detection=off       Disables terminal size detection
 #   rc.gc=off              Disables GC, thus not changing IDs unexpectedly
 #   rc.color=off           Disable color in the shadow file
-#   rc.locking=off         Disable file locking, to prevent race condition
 #   rc.hooks=off           Disable hooks, to prevent race condition
-task $SHADOW_COMMAND rc.detection=off rc.gc=off rc.color=off rc.locking=off rc.hooks=off > $SHADOW_FILE 2>/dev/null
+task $SHADOW_COMMAND rc.detection=off rc.gc=off rc.color=off rc.hooks=off > $SHADOW_FILE 2>/dev/null
 if [[ $? != 0 ]]
 then
   echo Could not create $SHADOW_FILE

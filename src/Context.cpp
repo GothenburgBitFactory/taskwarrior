@@ -78,7 +78,6 @@ std::string configurationDefaults =
   "\n"
   "# Files\n"
   "data.location=~/.task\n"
-  "locking=1                                      # Use file-level locking\n"
   "gc=1                                           # Garbage-collect data files - DO NOT CHANGE unless you are sure\n"
   "exit.on.missing.db=0                           # Whether to exit if ~/.task is not found\n"
   "hooks=1                                        # Master control switch for hooks\n"

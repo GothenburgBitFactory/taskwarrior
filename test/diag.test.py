@@ -52,7 +52,6 @@ class TestDiagnostics(TestCase):
         self.tap(out)
         self.assertRegex(out, r"Compliance:\s+C\+\+17")
         self.assertIn("edlin", out)
-        self.assertIn("Locking", out)
 
     def test_64bit_time_t(self):
         """Test that time_t has size of 64 bits"""
