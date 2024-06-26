@@ -32,7 +32,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest test (49);
+  UnitTest test (48);
   Context context;
   Context::setContext(&context);
 
@@ -49,77 +49,6 @@ int main (int, char**)
   test.is (Task::statusToText (Task::completed), "completed", "statusToText completed");
   test.is (Task::statusToText (Task::deleted),   "deleted",   "statusToText deleted");
   test.is (Task::statusToText (Task::recurring), "recurring", "statusToText recurring");
-
-  // Round-trip testing.
-  Task t3;
-  t3.set ("name", "value");
-  std::string before = t3.composeF4 ();
-  t3.parse (before);
-  std::string after = t3.composeF4 ();
-  t3.parse (after);
-  after = t3.composeF4 ();
-  t3.parse (after);
-  after = t3.composeF4 ();
-  test.is (before, after, "Task::composeF4 -> parse round trip 4 iterations");
-
-  // Legacy Format 1 (no longer supported)
-  //   [tags] [attributes] description\n
-  //   X [tags] [attributes] description\n
-  std::string sample = "[tag1 tag2] [att1:value1 att2:value2] Description";
-  sample = "X "
-           "[one two] "
-           "[att1:value1 att2:value2] "
-           "Description";
-  bool good = true;
-  try { Task ff1 (sample); } catch (...) { good = false; }
-  test.notok (good, "Support for ff1 removed");
-
-  // Legacy Format 2 (no longer supported)
-  //   uuid status [tags] [attributes] description\n
-  sample = "00000000-0000-0000-0000-000000000000 "
-           "- "
-           "[tag1 tag2] "
-           "[att1:value1 att2:value2] "
-           "Description";
-  good = true;
-  try { Task ff2 (sample); } catch (...) { good = false; }
-  test.notok (good, "Support for ff2 removed");
-
-  // Legacy Format 3
-  //   uuid status [tags] [attributes] [annotations] description\n
-  sample = "00000000-0000-0000-0000-000000000000 "
-           "- "
-           "[tag1 tag2] "
-           "[att1:value1 att2:value2] "
-           "[123:ann1 456:ann2] Description";
-  good = true;
-  try { Task ff3 (sample); } catch (...) { good = false; }
-  test.notok (good, "Support for ff3 removed");
-
-  // Current Format 4
-  //   [name:"value" ...]\n
-  sample = "["
-           "uuid:\"00000000-0000-0000-0000-000000000000\" "
-           "status:\"pending\" "
-           "tags:\"tag1,tag2\" "
-           "att1:\"value1\" "
-           "att2:\"value2\" "
-           "description:\"Description\""
-           "]";
-  Task ff4 (sample);
-  std::string value = ff4.get ("uuid");
-  test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
-  value = ff4.get ("status");
-  test.is (value, "pending", "ff4 status");
-  test.ok (ff4.hasTag ("tag1"), "ff4 tag1");
-  test.ok (ff4.hasTag ("tag2"), "ff4 tag2");
-  test.is (ff4.getTagCount (), 2, "ff4 # tags");
-  value = ff4.get ("att1");
-  test.is (value, "value1", "ff4 att1");
-  value = ff4.get ("att2");
-  test.is (value, "value2", "ff4 att2");
-  value = ff4.get ("description");
-  test.is (value, "Description", "ff4 description");
 
 /*
 
@@ -145,7 +74,7 @@ TODO Task::decode
 */
 
   // Task::operator==
-  Task left ("[one:1 two:2 three:3]");
+  Task left ("{\"one\":\"1\", \"two\":\"2\", \"three\":\"3\"}");
   Task right (left);
   test.ok (left == right, "left == right -> true");
   left.set ("one", "1.0");
@@ -188,7 +117,7 @@ TODO Task::decode
   Task::attributes["tags"] = "string";
   Task::attributes["uuid"] = "string";
 
-  good = true;
+  bool good = true;
   try {Task t4 ("{}");}
   catch (const std::string& e){test.diag (e); good = false;}
   test.ok (good, "Task::Task ('{}')");

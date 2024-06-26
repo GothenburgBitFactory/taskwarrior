@@ -622,75 +622,10 @@ bool Task::is_waiting () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Attempt an FF4 parse first, using Task::parse, and in the event of an error
-// try a JSON parse, otherwise a legacy parse (currently no legacy formats are
-// supported).
-//
-// Note that FF1, FF2 and FF3 are no longer supported.
-//
-// start --> [ --> Att --> ] --> end
-//              ^       |
-//              +-------+
-//
+// Try a JSON parse.
 void Task::parse (const std::string& input)
 {
-  try
-  {
-    // File format version 4, from 2009-5-16 - now, v1.7.1+
-    // This is the parse format tried first, because it is most used.
-    data.clear ();
-
-    if (input[0] == '[')
-    {
-      // Not using Pig to parse here (which would be idiomatic), because we
-      // don't need to differentiate betwen utf-8 and normal characters.
-      // Pig's scanning the string can be expensive.
-      auto ending_bracket = input.find_last_of (']');
-      if (ending_bracket != std::string::npos)
-      {
-        std::string line = input.substr(1, ending_bracket);
-
-        if (line.length () == 0)
-          throw std::string ("Empty record in input.");
-
-        Pig attLine (line);
-        std::string name;
-        std::string value;
-        while (!attLine.eos ())
-        {
-          if (attLine.getUntilAscii (':', name) &&
-              attLine.skip (':')                &&
-              attLine.getQuoted ('"', value))
-          {
-#ifdef PRODUCT_TASKWARRIOR
-            legacyAttributeMap (name);
-#endif
-
-            if (isAnnotationAttr (name))
-              ++annotation_count;
-
-            data[name] = decode (json::decode (value));
-          }
-
-          attLine.skip (' ');
-        }
-
-        std::string remainder;
-        attLine.getRemainder (remainder);
-        if (remainder.length ())
-          throw std::string ("Unrecognized characters at end of line.");
-      }
-    }
-    else if (input[0] == '{')
-      parseJSON (input);
-    else
-      throw std::string ("Record not recognized as format 4.");
-  }
-
-  catch (const std::string&)
-  {
-    parseLegacy (input);
-  }
+  parseJSON (input);
 
   // for compatibility, include all tags in `tags` as `tag_..` attributes
   if (data.find ("tags") != data.end ()) {
@@ -963,43 +898,6 @@ void Task::parseLegacy (const std::string& line)
   }
 
   recalc_urgency = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// The format is:
-//
-//   [ <name>:<value> ... ]
-//
-std::string Task::composeF4 () const
-{
-  std::string ff4 = "[";
-
-  bool first = true;
-  for (const auto& it : data)
-  {
-    // Orphans have no type, treat as string.
-    std::string type = Task::attributes[it.first];
-    if (type == "")
-      type = "string";
-
-    // If there is a value.
-    if (it.second != "")
-    {
-      ff4 += (first ? "" : " ");
-      ff4 += it.first;
-      ff4 += ":\"";
-      if (type == "string")
-        ff4 += encode (json::encode (it.second));
-      else
-        ff4 += it.second;
-      ff4 += '"';
-
-      first = false;
-    }
-  }
-
-  ff4 += ']';
-  return ff4;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

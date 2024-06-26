@@ -69,7 +69,6 @@ public:
   Task (tc::Task);
 
   void parse (const std::string&);
-  std::string composeF4 () const;
   std::string composeJSON (bool decorate = false) const;
 
   // Status values.
