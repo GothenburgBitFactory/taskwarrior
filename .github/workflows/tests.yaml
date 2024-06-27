@@ -5,7 +5,7 @@ on: [push, pull_request]
 
 jobs:
   coverage:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Install apt packages
         run: sudo apt-get install -y build-essential cmake git uuid-dev faketime locales python3 curl gcovr ninja-build
