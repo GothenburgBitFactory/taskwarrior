@@ -77,7 +77,7 @@ Values support UTF8 as well as JSON encoding, such as \\uNNNN.
 
 Note that Taskwarrior is flexible about the values used to represent Boolean
 items. You can use "1" to enable, anything else is interpreted as disabled.
-The values "on", "yes", "y" and "true" are currently supported but deprecated.
+The values "on", "yes", "y" and "true" are also supported.
 
 .nf
     include <file>
