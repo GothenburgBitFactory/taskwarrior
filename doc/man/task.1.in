@@ -782,7 +782,7 @@ are:
     CHILD        Matches if the task has a parent (deprecated in 2.6.0)
     COMPLETED    Matches if the task has completed status
     DELETED      Matches if the task has deleted status
-    DUE          Matches if the task is due
+    DUE          Matches if the task is due within the next 7 days (See rc.due)
     INSTANCE     Matches if the task is a recurrent instance
     LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
