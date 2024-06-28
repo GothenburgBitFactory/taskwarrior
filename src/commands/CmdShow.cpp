@@ -176,7 +176,6 @@ int CmdShow::execute (std::string& output)
     " limit"
     " list.all.projects"
     " list.all.tags"
-    " locking"
     " nag"
     " news.version"
     " obfuscate"

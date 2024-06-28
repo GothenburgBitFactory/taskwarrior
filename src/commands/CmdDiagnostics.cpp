@@ -177,12 +177,6 @@ int CmdDiagnostics::execute (std::string& output)
         << env
         << '\n';
 
-  out << "    Locking: "
-      << (Context::getContext ().config.getBoolean ("locking")
-           ? "Enabled"
-           : "Disabled")
-      << '\n';
-
   out << "         GC: "
       << (Context::getContext ().config.getBoolean ("gc")
            ? "Enabled"
