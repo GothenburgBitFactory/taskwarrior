@@ -14,7 +14,7 @@ if (open my $fh, '>', 'perf.rc')
   close $fh;
 }
 
-my $filename = 'sample-text.txt';
+my $filename = '${CMAKE_SOURCE_DIR}/performance/sample-text.txt';
 open(my $fh, '<:encoding(UTF-8)', $filename)
   or die "Could not open file '$filename' $!";
 
@@ -31,18 +31,18 @@ while (my $line = <$fh>)
   if ($. % 20 == 19)
   {
     my $anno_id = $id - 1;
-    qx{../build/src/task rc:perf.rc rc.gc=off $anno_id annotate $line};
+    qx{${CMAKE_BINARY_DIR}/src/task rc:perf.rc rc.gc=off $anno_id annotate $line};
     print "[$.] task rc:perf.rc rc.gc=off $anno_id annotate $line\n" if $?;
   }
   elsif ($. % 4 == 1)
   {
-    qx{../build/src/task rc:perf.rc rc.gc=off add $line};
+    qx{${CMAKE_BINARY_DIR}/src/task rc:perf.rc rc.gc=off add $line};
     print "[$.] task rc:perf.rc rc.gc=off add $line\n" if $?;
     ++$id;
   }
   else
   {
-    qx{../build/src/task rc:perf.rc rc.gc=off log $line};
+    qx{${CMAKE_BINARY_DIR}/src/task rc:perf.rc rc.gc=off log $line};
     print "[$.] task rc:perf.rc rc.gc=off log $line\n" if $?;
   }
 }
