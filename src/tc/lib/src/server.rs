@@ -33,7 +33,7 @@ impl AsMut<Box<dyn Server>> for TCServer {
     }
 }
 
-/// Utility function to allow using `?` notation to return an error value.  
+/// Utility function to allow using `?` notation to return an error value.
 fn wrap<T, F>(f: F, error_out: *mut TCString, err_value: T) -> T
 where
     F: FnOnce() -> anyhow::Result<T>,
@@ -125,7 +125,7 @@ pub unsafe extern "C" fn tc_server_new_sync(
             // SAFETY:
             //  - origin is valid (promised by caller)
             //  - origin ownership is transferred to this function
-            let origin = unsafe { TCString::val_from_arg(origin) }.into_string()?;
+            let url = unsafe { TCString::val_from_arg(origin) }.into_string()?;
 
             // SAFETY:
             //  - client_id is a valid Uuid (any 8-byte sequence counts)
@@ -139,7 +139,7 @@ pub unsafe extern "C" fn tc_server_new_sync(
                 .to_vec();
 
             let server_config = ServerConfig::Remote {
-                origin,
+                url,
                 client_id,
                 encryption_secret,
             };
