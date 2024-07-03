@@ -4,10 +4,10 @@ echo 'Performance: setup'
 rm -f ./taskchampion.sqlite3
 if [[ -e ./data/taskchampion.sqlite3 ]]
 then
-  echo '  - Using existing data'
+  echo '  - Using existing data.'
   cp data/* .
 else
-  echo '  - This step will take several minutes'
+  echo '  - Loading data. This step will take several minutes.'
   ./load
   mkdir -p data
   cp taskchampion.sqlite3 perf.rc data
