@@ -98,7 +98,7 @@ int CmdSync::execute (std::string& output)
 
   std::stringstream out;
   if (origin != "") {
-    out << "sync.server.origin is deprecated use sync.server.url instead.\n";
+    out << "sync.server.origin is deprecated. Use sync.server.url instead.\n";
   }
 
   if (Context::getContext ().verbose ("sync")) {
