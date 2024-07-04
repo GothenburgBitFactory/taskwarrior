@@ -54,7 +54,7 @@ namespace tc {
     static Server new_local (const std::string& server_dir);
 
     // Construct a remote server (tc_server_new_sync).
-    static Server new_sync (const std::string &origin, const std::string &client_id, const std::string &encryption_secret);
+    static Server new_sync (const std::string &url, const std::string &client_id, const std::string &encryption_secret);
 
     // Construct a GCP server (tc_server_new_gcp).
     static Server new_gcp (const std::string &bucket, const std::string &credential_path, const std::string &encryption_secret);

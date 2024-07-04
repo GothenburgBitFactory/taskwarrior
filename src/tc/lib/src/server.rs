@@ -108,14 +108,14 @@ pub unsafe extern "C" fn tc_server_new_local(
 /// The server must be freed after it is used - tc_replica_sync does not automatically free it.
 ///
 /// ```c
-/// EXTERN_C struct TCServer *tc_server_new_sync(struct TCString origin,
+/// EXTERN_C struct TCServer *tc_server_new_sync(struct TCString url,
 ///                                       struct TCUuid client_id,
 ///                                       struct TCString encryption_secret,
 ///                                       struct TCString *error_out);
 /// ```
 #[no_mangle]
 pub unsafe extern "C" fn tc_server_new_sync(
-    origin: TCString,
+    url: TCString,
     client_id: TCUuid,
     encryption_secret: TCString,
     error_out: *mut TCString,
@@ -123,9 +123,9 @@ pub unsafe extern "C" fn tc_server_new_sync(
     wrap(
         || {
             // SAFETY:
-            //  - origin is valid (promised by caller)
-            //  - origin ownership is transferred to this function
-            let url = unsafe { TCString::val_from_arg(origin) }.into_string()?;
+            //  - url is valid (promised by caller)
+            //  - url ownership is transferred to this function
+            let url = unsafe { TCString::val_from_arg(url) }.into_string()?;
 
             // SAFETY:
             //  - client_id is a valid Uuid (any 8-byte sequence counts)

@@ -51,24 +51,24 @@ tc::Server::new_local (const std::string &server_dir)
 
 ////////////////////////////////////////////////////////////////////////////////
 tc::Server
-tc::Server::new_sync (const std::string &origin, const std::string &client_id, const std::string &encryption_secret)
+tc::Server::new_sync (const std::string &url, const std::string &client_id, const std::string &encryption_secret)
 {
-  TCString tc_origin = tc_string_borrow (origin.c_str ());
+  TCString tc_url = tc_string_borrow (url.c_str ());
   TCString tc_client_id = tc_string_borrow (client_id.c_str ());
   TCString tc_encryption_secret = tc_string_borrow (encryption_secret.c_str ());
 
   TCUuid tc_client_uuid;
   if (tc_uuid_from_str(tc_client_id, &tc_client_uuid) != TC_RESULT_OK) {
-    tc_string_free(&tc_origin);
+    tc_string_free(&tc_url);
     tc_string_free(&tc_encryption_secret);
     throw format ("client_id '{1}' is not a valid UUID", client_id);
   }
 
   TCString error;
-  auto tcserver = tc_server_new_sync (tc_origin, tc_client_uuid, tc_encryption_secret, &error);
+  auto tcserver = tc_server_new_sync (tc_url, tc_client_uuid, tc_encryption_secret, &error);
   if (!tcserver) {
     std::string errmsg = format ("Could not configure connection to server at {1}: {2}",
-        origin, tc_string_content (&error));
+        url, tc_string_content (&error));
     tc_string_free (&error);
     throw errmsg;
   }
