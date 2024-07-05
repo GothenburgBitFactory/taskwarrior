@@ -170,6 +170,7 @@ set (pythonTests
   tw-2575.test.py
   tw-262.test.py
   tw-295.test.py
+  tw-3527.test.py
   uda.test.py
   uda_orphan.test.py
   uda_report.test.py
