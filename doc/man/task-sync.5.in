@@ -115,28 +115,27 @@ Select the following permissions:
     - storage.buckets.get    
     - storage.buckets.update
     - storage.objects.create
+    - storage.objects.delete
     - storage.objects.get
     - storage.objects.list
     - storage.objects.update
-    - storage.objects.delete
 
- Create your new role.
+Create your new role.
 
- On the left sidebar, navigate to "Service accounts."
+On the left sidebar, navigate to "Service accounts."
 
- On the top menu bar within the "Service accounts" section, click "CREATE SERVICE ACCOUNT."
- Provide an appropriate name and description for the new service account.
- Select the role you just created and complete the service account creation process.
+On the top menu bar within the "Service accounts" section, click "CREATE SERVICE ACCOUNT."
+Provide an appropriate name and description for the new service account.
+Select the role you just created and complete the service account creation process.
 
- Now, in the Service Account dashboard, click into the new service account and select "keys" on the top menu bar.
- Click on "ADD KEY" to create and download a new key (a JSON key).
-
+Now, in the Service Account dashboard, click into the new service account and select "keys" on the top menu bar.
+Click on "ADD KEY" to create and download a new key (a JSON key).
 
 Then configure Taskwarrior with:
 
 .nf
     $ task config sync.gcp.bucket               <bucket-name>
-    $ task config sync.gcp.credential_path       <absolute-path-to-downloaded-credentials>
+    $ task config sync.gcp.credential_path      <absolute-path-to-downloaded-credentials>
 .fi
 
 .SS Local Synchronization
