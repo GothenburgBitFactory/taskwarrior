@@ -744,11 +744,12 @@ the online documentation at:
 
 .TP
 .B ID
-Tasks can be specified uniquely by IDs, which are simply the indexes of the
-tasks in the database.  The ID of a task may therefore change, but only when
-a command is run that displays IDs.  When modifying tasks, it is safe to
-rely on the last displayed ID.  Always run a report to check you have the right
-ID for a task. IDs can be given to task as a sequence, for example:
+Tasks can be specified uniquely by IDs, which are the indexes of the "working
+set" of tasks (mostly pending and recurrent tasks).  The ID of a task may
+therefore change, but only when a report that displays IDs is run.  When
+modifying tasks, it is safe to rely on the last displayed ID.  Always run a
+report to check you have the right ID for a task. IDs can be given to task as a
+sequence, for example:
 
 .nf
 task 1,4-10,19 delete
