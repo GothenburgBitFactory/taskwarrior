@@ -503,6 +503,35 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
 
 #[ffizz_header::item]
 #[ffizz(order = 902)]
+/// Delete a task.  The task must exist.  Note that this is different from setting status to
+/// Deleted; this is the final purge of the task.
+///
+/// Deletion may interact poorly with modifications to the same task on other replicas. For
+/// example, if a task is deleted on replica 1 and its description modified on replica 1, then
+/// after both replicas have fully synced, the resulting task will only have a `description`
+/// property.
+///
+/// ```c
+/// EXTERN_C TCResult tc_replica_delete_task(struct TCReplica *rep, struct TCUuid tcuuid);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_delete_task(rep: *mut TCReplica, tcuuid: TCUuid) -> TCResult {
+    wrap(
+        rep,
+        |rep| {
+            // SAFETY:
+            // - tcuuid is a valid TCUuid (all bytes are valid)
+            // - tcuuid is Copy so ownership doesn't matter
+            let uuid = unsafe { TCUuid::val_from_arg(tcuuid) };
+            rep.delete_task(uuid)?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 902)]
 /// Synchronize this replica with a server.
 ///
 /// The `server` argument remains owned by the caller, and must be freed explicitly.

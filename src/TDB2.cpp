@@ -195,6 +195,13 @@ void TDB2::modify (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void TDB2::purge (Task& task)
+{
+  auto uuid = task.get ("uuid");
+  replica.delete_task (uuid);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const tc::WorkingSet &TDB2::working_set ()
 {
   if (!_working_set.has_value ()) {

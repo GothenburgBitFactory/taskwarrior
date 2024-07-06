@@ -146,6 +146,7 @@ set (pythonTests
   prepend.test.py
   pri_sort.test.py
   project.test.py
+  purge.test.py
   quotes.test.py
   rc.override.test.py
   recurrence.test.py
