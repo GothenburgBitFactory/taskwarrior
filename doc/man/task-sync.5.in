@@ -30,7 +30,6 @@ the existing replica, and run `task sync`.
 
 .SS When to Synchronize
 
-Taskwarrior performs a sync operation when you run `task sync`.
 For synchronization to a server, a common solution is to run
 
 .nf
