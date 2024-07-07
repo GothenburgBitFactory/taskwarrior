@@ -217,6 +217,12 @@ rc.gc=0 ...), and not permanently used in the .taskrc file, as this
 significantly affects performance in the long term.
 
 .TP
+.B expiration.on-sync=0
+If set, old tasks will be deleted automatically after each synchronization.
+Tasks are identified as "old" when they have status "Deleted" and have not
+been modified for 180 days.
+
+.TP
 .B hooks=1
 This master control switch enables hook script processing. The default value
 is '1', but certain extensions and environments may need to disable hooks.

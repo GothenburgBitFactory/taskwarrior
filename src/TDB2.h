@@ -56,6 +56,7 @@ public:
   void get_changes (std::vector <Task>&);
   void revert ();
   void gc ();
+  void expire_tasks ();
   int  latest_id ();
 
   // Generalized task accessors.
