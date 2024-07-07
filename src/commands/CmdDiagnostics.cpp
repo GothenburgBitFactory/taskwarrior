@@ -300,34 +300,6 @@ int CmdDiagnostics::execute (std::string& output)
       << Context::getContext ().getHeight ()
       << '\n';
 
-  // Scan tasks for duplicate UUIDs.
-  auto all = Context::getContext ().tdb2.all_tasks ();
-  std::map <std::string, int> seen;
-  std::vector <std::string> dups;
-  std::string uuid;
-  for (auto& i : all)
-  {
-    uuid = i.get ("uuid");
-    if (seen.find (uuid) != seen.end ())
-      dups.push_back (uuid);
-    else
-       seen[uuid] = 0;
-  }
-
-  out << "       Dups: "
-      << format ("Scanned {1} tasks for duplicate UUIDs:", all.size ())
-      << '\n';
-
-  if (dups.size ())
-  {
-    for (auto& d : dups)
-      out << "             " << format ("Found duplicate {1}", d) << '\n';
-  }
-  else
-  {
-    out << "             No duplicates found\n";
-  }
-
   // Check all the UUID references
 
   bool noBrokenRefs = true;
