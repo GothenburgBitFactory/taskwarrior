@@ -172,6 +172,7 @@ std::vector<NewsItem> NewsItem::all () {
   std::vector<NewsItem> items;
   version2_6_0(items);
   version3_0_0(items);
+  version3_1_0(items);
   return items;
 }
 
@@ -533,6 +534,27 @@ void NewsItem::version3_0_0 (std::vector<NewsItem>& items) {
     "it into 3.x. Hooks run during task import, so if you have any hooks defined,\n"
     "temporarily disable them for this operation.\n\n"
     "See https://taskwarrior.org/docs/upgrade-3/ for information on upgrading to Taskwarrior 3.0.",
+  };
+  items.push_back(sync);
+}
+
+void NewsItem::version3_1_0 (std::vector<NewsItem>& items) {
+  Version version("3.1.0");
+  NewsItem sync {
+    version,
+    /*title=*/"Purging and Expiring Tasks",
+    /*bg_title=*/"",
+    /*background=*/"",
+    /*punchline=*/
+    "Support for `task purge` has been restored, and new support added for automatically expiring\n"
+    "old tasks.\n\n"
+    /*update=*/
+    "The `task purge` command removes tasks entirely, in contrast to `task delete` which merely sets\n"
+    "the task status to 'Deleted'. This functionality existed in versions 2.x but was temporarily\n"
+    "removed in 3.0.\n\n"
+    "The new `expiration.on-sync` configuration parameter controls automatic expiration of old tasks.\n"
+    "An old task is one with status 'Deleted' that has not been modified in 180 days. This\n"
+    "functionality is optional and not enabled by default."
   };
   items.push_back(sync);
 }
