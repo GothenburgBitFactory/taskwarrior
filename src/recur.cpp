@@ -135,9 +135,10 @@ void handleRecurrence ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Determine a start date (due), an optional end date (until), and an increment
-// period (recur).  Then generate a set of corresponding dates.
+// period (recur).  Then generate a set of corresponding dates. Only recurrences
+// in the future are returned; see #3501.
 //
-// Returns false if the parent recurring task is depleted.
+// Returns false if the parent recurring task is deleted.
 bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
 {
   // Determine due date, recur period and until date.
@@ -158,9 +159,12 @@ bool generateDueDates (Task& parent, std::vector <Datetime>& allDue)
   auto recurrence_limit = Context::getContext ().config.getInteger ("recurrence.limit");
   int recurrence_counter = 0;
   Datetime now;
+  Datetime today = now.startOfDay();
   for (Datetime i = due; ; i = getNextRecurrence (i, recur))
   {
-    allDue.push_back (i);
+    // Do not add tasks before today (but allow today for the common `due:today` form).
+    if (i >= today)
+      allDue.push_back (i);
 
     if (specificEnd && i > until)
     {
