@@ -853,12 +853,7 @@ int Context::dispatch (std::string &out)
     // The command know whether they need a GC.
     if (c->needs_gc ())
     {
-      run_gc = config.getBoolean ("gc");
       tdb2.gc ();
-    }
-    else
-    {
-      run_gc = false;
     }
 
     // This is something that is only needed for write commands with no other
