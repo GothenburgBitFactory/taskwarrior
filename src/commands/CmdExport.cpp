@@ -118,7 +118,7 @@ int CmdExport::execute (std::string& output)
 
     // if no sort order, sort by id
     if (!sortOrder.size ()) {
-      reportSort = "id";
+      reportSort = "id,uuid";
     }
 
     // Sort the tasks.
