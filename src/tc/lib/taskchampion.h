@@ -552,6 +552,15 @@ EXTERN_C TCResult tc_replica_commit_undo_ops(struct TCReplica *rep, TCReplicaOpL
 // free the returned string.
 EXTERN_C struct TCString tc_replica_error(struct TCReplica *rep);
 
+// Expire old, deleted tasks.
+//
+// Expiration entails removal of tasks from the replica. Any modifications that occur after
+// the deletion (such as operations synchronized from other replicas) will do nothing.
+//
+// Tasks are eligible for expiration when they have status Deleted and have not been modified
+// for 180 days (about six months). Note that completed tasks are not eligible.
+EXTERN_C TCResult tc_replica_expire_tasks(struct TCReplica *rep);
+
 // Get an existing task by its UUID.
 //
 // Returns NULL when the task does not exist, and on error.  Consult tc_replica_error

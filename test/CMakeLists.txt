@@ -111,6 +111,7 @@ set (pythonTests
   encoding.test.py
   enpassant.test.py
   exec.test.py
+  expiration.test.py
   export.test.py
   feature.559.test.py
   feature.default.project.test.py

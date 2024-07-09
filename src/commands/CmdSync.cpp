@@ -106,7 +106,12 @@ int CmdSync::execute (std::string& output)
         << '\n';
   }
 
-  Context::getContext ().tdb2.sync(std::move(server), false);
+  Context &context = Context::getContext ();
+  context.tdb2.sync(std::move(server), false);
+
+  if (context.config.getBoolean ("expiration.on-sync")) {
+    context.tdb2.expire_tasks ();
+  }
 
   output = out.str ();
   return status;
