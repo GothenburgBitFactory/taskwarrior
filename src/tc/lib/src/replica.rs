@@ -507,7 +507,7 @@ pub unsafe extern "C" fn tc_replica_import_task_with_uuid(
 /// Deleted; this is the final purge of the task.
 ///
 /// Deletion may interact poorly with modifications to the same task on other replicas. For
-/// example, if a task is deleted on replica 1 and its description modified on replica 1, then
+/// example, if a task is deleted on replica 1 and its description modified on replica 2, then
 /// after both replicas have fully synced, the resulting task will only have a `description`
 /// property.
 ///
