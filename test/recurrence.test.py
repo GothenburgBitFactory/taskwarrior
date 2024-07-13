@@ -284,7 +284,6 @@ class TestBug932(TestCase):
         self.t = Task()
         self.t.config("report.id_pri_proj.columns", "id,priority,project")
         self.t.config("report.id_pri_proj.labels", "ID,P,Proj")
-        self.t.config("recurrence.limit", "3")
 
     def test_modify_due_propagate(self):
         """932: Verify due date modifications propagate"""
@@ -292,7 +291,7 @@ class TestBug932(TestCase):
         # add a recurring task with multiple child tasks
         # - modify a child task and test for propagation
         # - modify the parent task and test for propagation
-        self.t("add R due:tomorrow recur:daily")
+        self.t("add R due:yesterday recur:daily")
         self.t("list")  # GC/handleRecurrence
 
         self.t("2 modify project:P", input="y\n")
@@ -312,8 +311,7 @@ class TestBug955(TestCase):
     def setUp(self):
         self.t = Task()
 
-        self.t.config("recurrence.limit", "2")
-        self.t("add foo due:tomorrow recur:1day")
+        self.t("add foo due:now recur:1day")
         code, out, err = self.t("ls")
         self.assertRegex(out, re.compile("^2 tasks", re.MULTILINE))
 
@@ -599,52 +597,47 @@ class TestBugAnnual(TestCase):
 
     def test_annual_creep(self):
         """Verify 'annual' recurring tasks don't creep"""
-        self.t.config("recurrence.limit", "17")
         self.t.config("dateformat",            "YMD")
         self.t.config("report.annual.labels",  "ID,Due")
         self.t.config("report.annual.columns", "id,due")
         self.t.config("report.annual.filter",  "status:pending")
         self.t.config("report.annual.sort",    "due+")
 
-        this_year = time.gmtime(time.time())[0]
-        def jan1(year_offset):
-            return f"{this_year+year_offset}0101"
-
         # If a task is added with a due date ten years ago, with an annual recurrence,
         # then the synthetic tasks in between then and now have a due date that creeps.
         #
         # ID Due        Description
         # -- ---------- -----------
-        #  4 1/1/2102   foo
-        #  5 1/1/2103   foo
-        #  6 1/1/2104   foo
-        #  7 1/1/2105   foo
-        #  8 1/1/2106   foo
-        #  9 1/1/2107   foo
-        # 10 1/1/2108   foo
-        # 11 1/1/2109   foo
-        # 12 1/1/2110   foo
-        #  2 1/1/2100   foo
-        #  3 1/1/2101   foo
+        #  4 1/1/2002   foo
+        #  5 1/1/2003   foo
+        #  6 1/1/2004   foo
+        #  7 1/1/2005   foo
+        #  8 1/1/2006   foo
+        #  9 1/1/2007   foo
+        # 10 1/1/2008   foo
+        # 11 1/1/2009   foo
+        # 12 1/1/2010   foo
+        #  2 1/1/2000   foo
+        #  3 1/1/2001   foo
 
-        self.t(f"add foo due:{jan1(1)} recur:annual until:{jan1(16)}")
+        self.t("add foo due:20000101 recur:annual until:20150101")
         code, out, err = self.t("annual")
-        self.assertIn(f" 2 {jan1(1)}", out)
-        self.assertIn(f" 3 {jan1(2)}", out)
-        self.assertIn(f" 4 {jan1(3)}", out)
-        self.assertIn(f" 5 {jan1(4)}", out)
-        self.assertIn(f" 6 {jan1(5)}", out)
-        self.assertIn(f" 7 {jan1(6)}", out)
-        self.assertIn(f" 8 {jan1(7)}", out)
-        self.assertIn(f" 9 {jan1(8)}", out)
-        self.assertIn(f"10 {jan1(9)}", out)
-        self.assertIn(f"11 {jan1(10)}", out)
-        self.assertIn(f"12 {jan1(11)}", out)
-        self.assertIn(f"13 {jan1(12)}", out)
-        self.assertIn(f"14 {jan1(13)}", out)
-        self.assertIn(f"15 {jan1(14)}", out)
-        self.assertIn(f"16 {jan1(15)}", out)
-        self.assertIn(f"17 {jan1(16)}", out)
+        self.assertIn(" 2 20000101", out)
+        self.assertIn(" 3 20010101", out)
+        self.assertIn(" 4 20020101", out)
+        self.assertIn(" 5 20030101", out)
+        self.assertIn(" 6 20040101", out)
+        self.assertIn(" 7 20050101", out)
+        self.assertIn(" 8 20060101", out)
+        self.assertIn(" 9 20070101", out)
+        self.assertIn("10 20080101", out)
+        self.assertIn("11 20090101", out)
+        self.assertIn("12 20100101", out)
+        self.assertIn("13 20110101", out)
+        self.assertIn("14 20120101", out)
+        self.assertIn("15 20130101", out)
+        self.assertIn("16 20140101", out)
+        self.assertIn("17 20150101", out)
 
 
 # TODO Wait a recurring task
