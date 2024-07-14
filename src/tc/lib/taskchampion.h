@@ -547,6 +547,15 @@ EXTERN_C struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
 // there are no operations that can be done.
 EXTERN_C TCResult tc_replica_commit_undo_ops(struct TCReplica *rep, TCReplicaOpList tc_undo_ops, int32_t *undone_out);
 
+// Delete a task.  The task must exist.  Note that this is different from setting status to
+// Deleted; this is the final purge of the task.
+//
+// Deletion may interact poorly with modifications to the same task on other replicas. For
+// example, if a task is deleted on replica 1 and its description modified on replica 1, then
+// after both replicas have fully synced, the resulting task will only have a `description`
+// property.
+EXTERN_C TCResult tc_replica_delete_task(struct TCReplica *rep, struct TCUuid tcuuid);
+
 // Get the latest error for a replica, or a string with NULL ptr if no error exists.  Subsequent
 // calls to this function will return NULL.  The rep pointer must not be NULL.  The caller must
 // free the returned string.
