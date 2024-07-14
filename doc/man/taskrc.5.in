@@ -514,6 +514,8 @@ comparison of the data. This can be in either the 'side' style, which compares
 values side-by-side in a table, or 'diff' style, which uses a format similar to
 the 'diff' command.
 
+Currently not supported.
+
 .TP
 .B abbreviation.minimum=2
 Minimum length of any abbreviated command/value. This means that "ve", "ver",
@@ -1048,6 +1050,9 @@ yellow bars.
 .RS
 Colors used by the undo command, to indicate the values both before and after
 a change that is to be reverted.
+
+Currently not supported.
+
 .RE
 
 .TP
