@@ -66,16 +66,16 @@ class TestAutoPurge(TestCase):
         code, out, err = self.t("import -", input=task_data)
         self.assertIn("Imported 4 tasks", err)
 
-        # By default, auto-purge does not occur.
+        # By default, purge does not occur.
         code, out, err = self.t("sync")
         self.assertTrue(self.exists(old_pending))
         self.assertTrue(self.exists(old_completed))
         self.assertTrue(self.exists(new_deleted))
         self.assertTrue(self.exists(old_deleted))
 
-        # Configure auto-purge on sync. The old_deleted task
+        # Configure purge on sync. The old_deleted task
         # should be removed.
-        self.t.config("auto-purge.on-sync", "1")
+        self.t.config("purge.on-sync", "1")
         code, out, err = self.t("sync")
         self.assertTrue(self.exists(old_pending))
         self.assertTrue(self.exists(old_completed))

@@ -73,7 +73,6 @@ set (pythonTests
   annotate.test.py
   append.test.py
   args.test.py
-  auto-purge.test.py
   bash_completion.test.py
   blocked.test.py
   bulk.test.py
@@ -147,6 +146,7 @@ set (pythonTests
   prepend.test.py
   pri_sort.test.py
   project.test.py
+  purge.test.py
   quotes.test.py
   rc.override.test.py
   recurrence.test.py
