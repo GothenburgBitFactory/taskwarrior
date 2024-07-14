@@ -53,7 +53,7 @@ CmdPurge::CmdPurge ()
 // Purges the task, while taking care of:
 // - dependencies on this task
 // - child tasks
-void CmdPurge::purgeTask (Task& task, std::vector<Task>& tasks)
+void CmdPurge::handleRelations (Task& task, std::vector<Task>& tasks)
 {
   handleDeps (task);
   handleChildren (task, tasks);
@@ -121,7 +121,7 @@ void CmdPurge::handleChildren (Task& task, std::vector<Task>& tasks)
        && confirm (question)))
   {
     for (auto& child: children)
-      purgeTask (child, tasks);
+      handleRelations (child, tasks);
   }
   else
     throw std::string ("Purge operation aborted.");
@@ -164,7 +164,7 @@ int CmdPurge::execute (std::string&)
                          task.get ("description"));
 
       if (permission (question, filtered.size ()))
-        purgeTask (task, tasks);
+        handleRelations (task, tasks);
     }
   }
 

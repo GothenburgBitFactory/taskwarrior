@@ -34,7 +34,7 @@
 class CmdPurge : public Command
 {
 private:
-  void purgeTask (Task& task, std::vector<Task>& tasks);
+  void handleRelations (Task& task, std::vector<Task>& tasks);
   void handleChildren (Task& task, std::vector<Task>& tasks);
   void handleDeps (Task& task);
 public:
