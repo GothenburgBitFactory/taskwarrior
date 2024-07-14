@@ -93,6 +93,7 @@ namespace tc {
     tc::Task import_task_with_uuid (const std::string &uuid);
     void delete_task (const std::string &uuid);
 // TODO: struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid tcuuid);
+    void expire_tasks();
     void sync(Server server, bool avoid_snapshots);
     tc::ffi::TCReplicaOpList get_undo_ops ();
     void commit_undo_ops (tc::ffi::TCReplicaOpList tc_undo_ops, int32_t *undone_out);

@@ -118,6 +118,7 @@ std::string configurationDefaults =
   "json.array=1                                   # Enclose JSON output in [ ]\n"
   "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
   "news.version=                                  # Latest version highlights read by the user\n"
+  "expiration.on-sync=0                           # Expire old tasks on sync\n"
   "\n"
   "# Dates\n"
   "dateformat=Y-M-D                               # Preferred input and display date format\n"
@@ -853,12 +854,7 @@ int Context::dispatch (std::string &out)
     // The command know whether they need a GC.
     if (c->needs_gc ())
     {
-      run_gc = config.getBoolean ("gc");
       tdb2.gc ();
-    }
-    else
-    {
-      run_gc = false;
     }
 
     // This is something that is only needed for write commands with no other

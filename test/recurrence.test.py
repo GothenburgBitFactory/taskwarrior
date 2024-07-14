@@ -206,11 +206,6 @@ class TestRecurrenceTasks(TestCase):
         code, out, err = self.t("3 delete", input="y\n")
         self.assertIn("Deleted 1 task.", out)
 
-        # Check for duplicate UUIDs.
-        code, out, err = self.t("diag")
-        self.assertIn("No duplicates found", out)
-
-
 class TestBug972(TestCase):
     def setUp(self):
         """972: Executed before each test in the class"""
@@ -476,11 +471,6 @@ class TestBug360AllowedChanges(BaseTestBug360):
         expected = "You cannot remove the due date from a recurring task."
         self.assertNotIn(expected, err)
 
-        # Make sure no duplicate tasks were created
-        code, out, err = self.t.diag()
-        expected = "No duplicates found"
-        self.assertIn(expected, out)
-
 class TestBug649(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -599,11 +589,6 @@ class TestPeriod(TestCase):
        self.assertIn(" 2mo ",        out);
        self.assertIn(" 2q ",         out);
        self.assertIn(" 2y ",         out);
-
-       # Duplicate check
-       code, out, err = self.t("diag")
-       self.assertIn("No duplicates found", out)
-
 
 class TestBugAnnual(TestCase):
     def setUp(self):

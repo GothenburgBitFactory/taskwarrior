@@ -217,6 +217,12 @@ rc.gc=0 ...), and not permanently used in the .taskrc file, as this
 significantly affects performance in the long term.
 
 .TP
+.B expiration.on-sync=0
+If set, old tasks will be deleted automatically after each synchronization.
+Tasks are identified as "old" when they have status "Deleted" and have not
+been modified for 180 days.
+
+.TP
 .B hooks=1
 This master control switch enables hook script processing. The default value
 is '1', but certain extensions and environments may need to disable hooks.
@@ -507,6 +513,8 @@ When the 'undo' command is run, Taskwarrior presents a before and after
 comparison of the data. This can be in either the 'side' style, which compares
 values side-by-side in a table, or 'diff' style, which uses a format similar to
 the 'diff' command.
+
+Currently not supported.
 
 .TP
 .B abbreviation.minimum=2
@@ -1042,6 +1050,9 @@ yellow bars.
 .RS
 Colors used by the undo command, to indicate the values both before and after
 a change that is to be reverted.
+
+Currently not supported.
+
 .RE
 
 .TP

@@ -49,6 +49,7 @@ public:
   static std::vector<NewsItem> all();
   static void version2_6_0 (std::vector<NewsItem>&);
   static void version3_0_0 (std::vector<NewsItem>&);
+  static void version3_1_0 (std::vector<NewsItem>&);
 
 private:
   NewsItem (

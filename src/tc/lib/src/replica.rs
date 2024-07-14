@@ -564,6 +564,31 @@ pub unsafe extern "C" fn tc_replica_sync(
 
 #[ffizz_header::item]
 #[ffizz(order = 902)]
+/// Expire old, deleted tasks.
+///
+/// Expiration entails removal of tasks from the replica. Any modifications that occur after
+/// the deletion (such as operations synchronized from other replicas) will do nothing.
+///
+/// Tasks are eligible for expiration when they have status Deleted and have not been modified
+/// for 180 days (about six months). Note that completed tasks are not eligible.
+///
+/// ```c
+/// EXTERN_C TCResult tc_replica_expire_tasks(struct TCReplica *rep);
+/// ```
+#[no_mangle]
+pub unsafe extern "C" fn tc_replica_expire_tasks(rep: *mut TCReplica) -> TCResult {
+    wrap(
+        rep,
+        |rep| {
+            rep.expire_tasks()?;
+            Ok(TCResult::Ok)
+        },
+        TCResult::Error,
+    )
+}
+
+#[ffizz_header::item]
+#[ffizz(order = 902)]
 /// Return undo local operations until the most recent UndoPoint.
 ///
 /// ```c
