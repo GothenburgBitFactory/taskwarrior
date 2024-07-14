@@ -118,7 +118,7 @@ std::string configurationDefaults =
   "json.array=1                                   # Enclose JSON output in [ ]\n"
   "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
   "news.version=                                  # Latest version highlights read by the user\n"
-  "expiration.on-sync=0                           # Expire old tasks on sync\n"
+  "auto-purge.on-sync=0                           # Purge old tasks on sync\n"
   "\n"
   "# Dates\n"
   "dateformat=Y-M-D                               # Preferred input and display date format\n"

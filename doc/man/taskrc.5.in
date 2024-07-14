@@ -217,8 +217,8 @@ rc.gc=0 ...), and not permanently used in the .taskrc file, as this
 significantly affects performance in the long term.
 
 .TP
-.B expiration.on-sync=0
-If set, old tasks will be deleted automatically after each synchronization.
+.B auto-purge.on-sync=0
+If set, old tasks will be purged automatically after each synchronization.
 Tasks are identified as "old" when they have status "Deleted" and have not
 been modified for 180 days.
 

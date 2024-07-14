@@ -73,6 +73,7 @@ set (pythonTests
   annotate.test.py
   append.test.py
   args.test.py
+  auto-purge.test.py
   bash_completion.test.py
   blocked.test.py
   bulk.test.py
@@ -111,7 +112,6 @@ set (pythonTests
   encoding.test.py
   enpassant.test.py
   exec.test.py
-  expiration.test.py
   export.test.py
   feature.559.test.py
   feature.default.project.test.py

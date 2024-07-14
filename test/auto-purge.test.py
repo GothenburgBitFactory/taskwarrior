@@ -37,7 +37,7 @@ from basetest import Task, TestCase
 from basetest.utils import mkstemp
 
 
-class TestImport(TestCase):
+class TestAutoPurge(TestCase):
     def setUp(self):
         self.t = Task()
         # Set up local sync within the TASKDATA directory, so that it will be
@@ -48,8 +48,8 @@ class TestImport(TestCase):
         code, out, err = self.t(f"_get {uuid}.status")
         return out.strip() != ""
 
-    def test_expiration(self):
-        """Only tasks that are deleted and have a modification in the past are expired."""
+    def test_auto_purge(self):
+        """Only tasks that are deleted and have a modification in the past are purged."""
         yesterday = int(time.time()) - 3600 * 24
         last_year = int(time.time()) - 265 * 3600 * 24
         old_pending = "a1111111-a111-a111-a111-a11111111111"
@@ -66,16 +66,16 @@ class TestImport(TestCase):
         code, out, err = self.t("import -", input=task_data)
         self.assertIn("Imported 4 tasks", err)
 
-        # By default, expiration does not occur.
+        # By default, auto-purge does not occur.
         code, out, err = self.t("sync")
         self.assertTrue(self.exists(old_pending))
         self.assertTrue(self.exists(old_completed))
         self.assertTrue(self.exists(new_deleted))
         self.assertTrue(self.exists(old_deleted))
 
-        # Configure expiration on sync. The old_deleted task
+        # Configure auto-purge on sync. The old_deleted task
         # should be removed.
-        self.t.config("expiration.on-sync", "1")
+        self.t.config("auto-purge.on-sync", "1")
         code, out, err = self.t("sync")
         self.assertTrue(self.exists(old_pending))
         self.assertTrue(self.exists(old_completed))
