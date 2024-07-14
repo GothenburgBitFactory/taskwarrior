@@ -28,10 +28,15 @@
 #define INCLUDED_CMDPURGE
 
 #include <string>
+#include <vector>
 #include <Command.h>
 
 class CmdPurge : public Command
 {
+private:
+  void handleRelations (Task& task, std::vector<Task>& tasks);
+  void handleChildren (Task& task, std::vector<Task>& tasks);
+  void handleDeps (Task& task);
 public:
   CmdPurge ();
   int execute (std::string&);

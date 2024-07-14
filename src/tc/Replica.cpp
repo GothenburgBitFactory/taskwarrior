@@ -145,6 +145,15 @@ tc::Task tc::Replica::import_task_with_uuid (const std::string &uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void tc::Replica::delete_task (const std::string &uuid)
+{
+  auto res = tc_replica_delete_task (&*inner, uuid2tc (uuid));
+  if (res != TC_RESULT_OK) {
+    throw replica_error ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void tc::Replica::expire_tasks ()
 {
   auto res = tc_replica_expire_tasks (&*inner);

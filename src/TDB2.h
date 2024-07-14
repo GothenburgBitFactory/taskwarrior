@@ -53,6 +53,7 @@ public:
   void open_replica (const std::string&, bool create_if_missing);
   void add (Task&);
   void modify (Task&);
+  void purge (Task&);
   void get_changes (std::vector <Task>&);
   void revert ();
   void gc ();
