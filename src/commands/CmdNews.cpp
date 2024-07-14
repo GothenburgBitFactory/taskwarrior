@@ -542,7 +542,7 @@ void NewsItem::version3_1_0 (std::vector<NewsItem>& items) {
   Version version("3.1.0");
   NewsItem sync {
     version,
-    /*title=*/"Purging and Expiring Tasks",
+    /*title=*/"Purging Tasks, Manually or Automatically",
     /*bg_title=*/"",
     /*background=*/"",
     /*punchline=*/
@@ -552,7 +552,7 @@ void NewsItem::version3_1_0 (std::vector<NewsItem>& items) {
     "The `task purge` command removes tasks entirely, in contrast to `task delete` which merely sets\n"
     "the task status to 'Deleted'. This functionality existed in versions 2.x but was temporarily\n"
     "removed in 3.0.\n\n"
-    "The new `expiration.on-sync` configuration parameter controls automatic expiration of old tasks.\n"
+    "The new `purge.on-sync` configuration parameter controls automatic purging of old tasks.\n"
     "An old task is one with status 'Deleted' that has not been modified in 180 days. This\n"
     "functionality is optional and not enabled by default."
   };

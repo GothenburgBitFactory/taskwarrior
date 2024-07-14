@@ -160,7 +160,7 @@ int CmdShow::execute (std::string& output)
     " due"
     " editor"
     " exit.on.missing.db"
-    " expiration.on-sync"
+    " purge.on-sync"
     " expressions"
     " fontunderline"
     " gc"
