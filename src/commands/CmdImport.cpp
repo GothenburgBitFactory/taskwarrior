@@ -32,6 +32,7 @@
 #include <format.h>
 #include <shared.h>
 #include <util.h>
+#include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdImport::CmdImport ()
@@ -90,6 +91,20 @@ int CmdImport::execute (std::string&)
   }
 
   Context::getContext ().footnote (format ("Imported {1} tasks.", count));
+
+  // Warn the user about multiple occurrences of the same UUID.
+  auto duplicates = false;
+  for (const auto& [uuid, occurrences] : uuid_occurrences)
+  {
+    if (occurrences > 1)
+    {
+      duplicates = true;
+      Context::getContext ().footnote (format ("Input contains UUID '{1}' {2} times.", uuid, occurrences));
+    }
+  }
+  if (duplicates)
+    Context::getContext ().footnote ("Tasks with the same UUID have been merged. Please check the results.");
+
   return rc;
 }
 
@@ -186,7 +201,9 @@ void CmdImport::importSingleTask (json::object* obj)
 
   // Check whether the imported task is new or a modified existing task.
   Task before;
-  if (Context::getContext ().tdb2.get (task.get ("uuid"), before))
+  auto uuid = task.get("uuid");
+  uuid_occurrences[uuid]++;
+  if (Context::getContext ().tdb2.get (uuid, before))
   {
     // We need to neglect updates from attributes with dynamic defaults
     // unless they have been explicitly specified on import.

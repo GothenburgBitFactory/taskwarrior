@@ -38,6 +38,7 @@ public:
   int execute (std::string&);
 
 private:
+  std::unordered_map<std::string, unsigned int> uuid_occurrences;
   int import (const std::string&);
   void importSingleTask (json::object*);
 };

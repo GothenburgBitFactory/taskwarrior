@@ -224,6 +224,15 @@ class TestImport(TestCase):
         code, out2, err = self.t("export")
         self.assertEqual(out1, out2)
 
+    def test_import_duplicate_uuid_in_input(self):
+        """Test import warns if input contains the same UUID twice."""
+        _data = """[
+{"uuid":"a0000000-a000-a000-a000-a00000000000","description":"first description"},
+{"uuid":"a0000000-a000-a000-a000-a00000000000","description":"second description"}
+]"""
+        _, _, err = self.t("import", input=_data)
+        self.assertIn("Input contains UUID 'a0000000-a000-a000-a000-a00000000000' 2 times", err)
+
 
 class TestImportExportRoundtrip(TestCase):
     def setUp(self):
