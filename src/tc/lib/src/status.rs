@@ -42,7 +42,7 @@ impl From<TCStatus> for Status {
             TCStatus::Completed => Status::Completed,
             TCStatus::Deleted => Status::Deleted,
             TCStatus::Recurring => Status::Recurring,
-            _ => Status::Unknown(format!("unknown TCStatus {}", status as u32)),
+            _ => Status::Unknown(format!("unknown TCStatus {}", status as i32)),
         }
     }
 }
@@ -56,5 +56,18 @@ impl From<Status> for TCStatus {
             Status::Recurring => TCStatus::Recurring,
             Status::Unknown(_) => TCStatus::Unknown,
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn conversion_from_unknown_tc_status_provides_discriminant_in_message() {
+        let tc_status = TCStatus::Unknown;
+        let status = Status::from(tc_status);
+
+        assert!(matches!(status, Status::Unknown(msg) if msg == "unknown TCStatus -1"));
     }
 }
