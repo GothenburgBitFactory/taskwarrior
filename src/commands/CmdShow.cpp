@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdShow.h>
 #include <vector>
 #include <sstream>
@@ -284,7 +286,7 @@ int CmdShow::execute (std::string& output)
 
   std::string section;
 
-  // Look for the first plausible argument which could be a pattern 
+  // Look for the first plausible argument which could be a pattern
   if (words.size ())
     section = words[0];
 

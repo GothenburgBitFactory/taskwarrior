@@ -28,6 +28,8 @@
 #define INCLUDED_UTIL
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <string>
 #include <vector>
 #include <map>

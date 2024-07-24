@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdNews.h>
 #include <iostream>
 #include <cmath>
@@ -39,7 +41,7 @@
 #include <main.h>
 
 /* Adding a new version:
- * 
+ *
  * - Add a new `versionX_Y_Z` method to `NewsItem`, and add news items for the new
  *   release.
  * - Call the new method in `NewsItem.all()`. Calls should be in version order.

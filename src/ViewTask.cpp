@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ViewTask.h>
 #include <numeric>
 #include <Context.h>
@@ -188,7 +190,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
   // Calculate final column widths.
   int overage = _width - sum_minimal - all_extra;
-  Context::getContext ().debug (format ("ViewTask::render min={1} ideal={2} overage={3} width={4}", 
+  Context::getContext ().debug (format ("ViewTask::render min={1} ideal={2} overage={3} width={4}",
                                         sum_minimal + all_extra,
                                         sum_ideal + all_extra,
                                         overage,

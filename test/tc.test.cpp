@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -84,7 +86,7 @@ int main (int, char**)
   t.is ((int)tasks.size(), 1, "all_tasks returns one task");
 
   //// Task
-  
+
   task = std::move(tasks[0]);
 
   t.is (task.get_uuid(), uuid, "returned task has correct uuid");

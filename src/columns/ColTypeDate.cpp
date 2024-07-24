@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColTypeDate.h>
 #include <Context.h>
 #include <Datetime.h>
@@ -43,7 +45,7 @@ ColumnTypeDate::ColumnTypeDate ()
   _label     = "";
   _styles    = {"formatted",
                 "julian",
-                "epoch", 
+                "epoch",
                 "iso",
                 "age",
                 "relative",

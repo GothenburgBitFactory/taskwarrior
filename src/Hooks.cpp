@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <Hooks.h>
 #include <algorithm>
 // If <iostream> is included, put it after <stdio.h>, because it includes

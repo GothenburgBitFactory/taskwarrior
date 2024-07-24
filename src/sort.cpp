@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <algorithm>
 #include <vector>
 #include <list>
@@ -76,12 +78,12 @@ void sort_projects (
       {
         parent_pos = std::find_if (sorted.begin (), sorted.end (),
             [&parent](const std::pair <std::string, int>& item) { return item.first == parent; });
-        
+
         // if parent does not exist yet: insert into sorted view
         if (parent_pos == sorted.end ())
           sorted.emplace_back (parent, 1);
       }
-      
+
       // insert new element below latest parent
       sorted.insert ((parent_pos == sorted.end ()) ? parent_pos : ++parent_pos, project);
     }
@@ -100,7 +102,7 @@ void sort_projects (
   std::map <std::string, int> allProjectsInt;
   for (auto& p : allProjects)
     allProjectsInt[p.first] = (int) p.second;
-  
+
   sort_projects (sorted, allProjectsInt);
 }
 

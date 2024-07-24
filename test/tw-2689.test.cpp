@@ -26,6 +26,8 @@
 
 #include <iostream>
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <stdlib.h>
 #include <main.h>
 #include <test.h>

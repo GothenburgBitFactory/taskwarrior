@@ -26,6 +26,8 @@
 
 #include <algorithm>
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <Context.h>
 #include <iterator>
 #include <unordered_set>

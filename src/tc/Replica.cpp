@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <format.h>
 #include "tc/Replica.h"
 #include "tc/Task.h"

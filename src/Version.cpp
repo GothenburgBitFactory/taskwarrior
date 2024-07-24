@@ -26,6 +26,8 @@
 
 #include <Version.h>
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <iostream>
 #include <sstream>
 #include <string>

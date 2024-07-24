@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdDone.h>
 #include <iostream>
 #include <Context.h>
@@ -129,9 +131,9 @@ int CmdDone::execute (std::string&)
       rc = 1;
     }
   }
-  
+
   nag (modified);
-  
+
   // Now list the project changes.
   for (const auto& change : projectChanges)
     if (change.first != "")
