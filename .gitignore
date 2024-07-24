@@ -1,5 +1,6 @@
 cmake.h
 commit.h
+.cache
 *~
 .*.swp
 Session.vim
