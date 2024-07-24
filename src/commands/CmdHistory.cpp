@@ -97,19 +97,11 @@ void CmdHistoryBase<HistoryStrategy>::outputGraphical (std::string& output)
   {
     unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
 
-    auto totalAdded     = 0;
-    auto totalCompleted = 0;
-    auto totalDeleted   = 0;
-
     time_t priorTime = 0;
     auto row = 0;
     for (auto& i : groups)
     {
       row = view.addRow ();
-
-      totalAdded     += addedGroup[i.first];
-      totalCompleted += completedGroup[i.first];
-      totalDeleted   += deletedGroup[i.first];
 
       HistoryStrategy::insertRowDate (view, row, i.first, priorTime);
       priorTime = i.first;
