@@ -260,7 +260,7 @@ int CmdCustom::execute (std::string& output)
     std::mt19937 random_generator(device());
     std::uniform_int_distribution<std::mt19937::result_type> twentyfive_percent(1, 4);
 
-    // 1 in 10 chance to display the message.
+    // 25% chance to display the message.
     if (twentyfive_percent(random_generator) == 4)
     {
       std::ostringstream notice;
