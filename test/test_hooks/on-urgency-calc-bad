@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# The on-urgency-calc event is triggered separately for each task, when calculating urgency.
+
+# Input:
+# Urgency value
+read urgency
+# - Line of JSON for task.
+read task
+
+# Output:
+# - New urgency value
+# - Optional feedback/error.
+echo 'ERROR'
+
+# Status:
+# - 0:     float is new urgency, non-float is feedback.
+# - non-0: non-float is error.
+exit 1
