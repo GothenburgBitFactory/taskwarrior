@@ -40,7 +40,7 @@ jobs:
 
       - name: Build and push Taskwarrior Docker image
         id: build-and-push
-        uses: docker/build-push-action@v6.3.0
+        uses: docker/build-push-action@v6.4.1
         with:
           context: .
           file: "./docker/task.dockerfile"
