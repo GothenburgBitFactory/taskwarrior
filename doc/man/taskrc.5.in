@@ -303,6 +303,7 @@ control specific occasions when output is generated. This list may contain:
     label      Column labels on tabular reports
     new-id     Provides feedback on any new task with IDs (and UUIDs for new tasks with ID 0, such as new completed tasks).
     new-uuid   Provides feedback on any new task with UUIDs. Overrides new-id. Useful for automation.
+    news       Reminds to read new release highlights until the user runs "task news".
     affected   Reports 'N tasks affected' and similar
     edit       Used the verbose template for the 'edit' command
     special    Feedback when applying special tags
@@ -327,7 +328,7 @@ Here are the shortcut equivalents:
 
 .nf
     verbose=on
-    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,override,recur
+    verbose=blank,header,footnote,label,new-id,news,affected,edit,special,project,sync,filter,override,recur
 .fi
 
 .nf

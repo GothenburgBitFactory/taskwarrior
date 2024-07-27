@@ -93,8 +93,8 @@ std::string configurationDefaults =
   "\n"
   "# Miscellaneous\n"
   "# verbose=                                     # Comma-separated list.  May contain any subset of:\n"
-  "# affected,blank,context,default,edit,filter,footnote,header,label,new-id,new-uuid,override,project,recur,special,sync\n"
-  "verbose=affected,blank,context,edit,header,footnote,label,new-id,project,special,sync,override,recur\n"
+  "# affected,blank,context,default,edit,filter,footnote,header,label,new-id,new-uuid,news,override,project,recur,special,sync\n"
+  "verbose=affected,blank,context,edit,header,footnote,label,new-id,news,project,special,sync,override,recur\n"
   "confirmation=1                                 # Confirmation on delete, big changes\n"
   "recurrence=1                                   # Enable recurrence\n"
   "recurrence.confirmation=prompt                 # Confirmation for propagating changes among recurring tasks (yes/no/prompt)\n"
@@ -1050,6 +1050,7 @@ bool Context::verbose (const std::string& token)
           v != "label"    &&  //
           v != "new-id"   &&  //
           v != "new-uuid" &&  //
+          v != "news"     &&  //
           v != "override" &&  //
           v != "project"  &&  //
           v != "recur"    &&  //

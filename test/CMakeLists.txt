@@ -138,6 +138,7 @@ set (pythonTests
   math.test.py
   modify.test.py
   nag.test.py
+  news.test.py
   obfuscate.test.py
   oldest.test.py
   operators.test.py
