@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 try:
     STRING_TYPE = basestring
 except NameError:
