@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import signal
 
 sig_names = dict((k, v) for v, k in reversed(sorted(signal.__dict__.items()))
