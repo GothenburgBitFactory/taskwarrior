@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 import datetime
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -353,7 +354,7 @@ class TestFilterDue(TestCase):
     def setUp(self):
         self.t = Task()
 
-        self.t.config("due",        "4")
+        self.t.config("due", "4")
         self.t.config("dateformat", "m/d/Y")
 
         just = datetime.datetime.now() + datetime.timedelta(days=3)
@@ -441,7 +442,9 @@ class TestEmptyFilter(TestCase):
         self.t("add foo")
         self.t("add bar")
 
-        code, out, err = self.t.runError("modify rc.allow.empty.filter=yes rc.confirmation=no priority:H")
+        code, out, err = self.t.runError(
+            "modify rc.allow.empty.filter=yes rc.confirmation=no priority:H"
+        )
         self.assertIn("Command prevented from running.", err)
 
     def test_empty_filter_error(self):
@@ -451,7 +454,10 @@ class TestEmptyFilter(TestCase):
         self.t("add bar")
 
         code, out, err = self.t.runError("modify rc.allow.empty.filter=no priority:H")
-        self.assertIn("You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken.", err)
+        self.assertIn(
+            "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken.",
+            err,
+        )
 
 
 class TestFilterPrefix(TestCase):
@@ -461,86 +467,86 @@ class TestFilterPrefix(TestCase):
         cls.t = Task()
         cls.t.config("verbose", "nothing")
 
-        cls.t('add project:foo.uno  priority:H +tag "one foo"'      )
-        cls.t('add project:foo.dos  priority:H      "two"'          )
-        cls.t('add project:foo.tres                 "three"'        )
-        cls.t('add project:bar.uno  priority:H      "four"'         )
-        cls.t('add project:bar.dos             +tag "five"'         )
-        cls.t('add project:bar.tres                 "six foo"'      )
+        cls.t('add project:foo.uno  priority:H +tag "one foo"')
+        cls.t('add project:foo.dos  priority:H      "two"')
+        cls.t('add project:foo.tres                 "three"')
+        cls.t('add project:bar.uno  priority:H      "four"')
+        cls.t('add project:bar.dos             +tag "five"')
+        cls.t('add project:bar.tres                 "six foo"')
         cls.t('add project:bazuno                   "seven bar foo"')
         cls.t('add project:bazdos                   "eight bar foo"')
 
     def test_list_all(self):
         """No filter shows all tasks."""
-        code, out, err = self.t('list')
-        self.assertIn('one', out)
-        self.assertIn('two', out)
-        self.assertIn('three', out)
-        self.assertIn('four', out)
-        self.assertIn('five', out)
-        self.assertIn('six', out)
-        self.assertIn('seven', out)
-        self.assertIn('eight', out)
+        code, out, err = self.t("list")
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("three", out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
+        self.assertIn("six", out)
+        self.assertIn("seven", out)
+        self.assertIn("eight", out)
 
     def test_list_project_foo(self):
         """Filter on project name."""
-        code, out, err = self.t('list project:foo')
-        self.assertIn('one', out)
-        self.assertIn('two', out)
-        self.assertIn('three', out)
-        self.assertNotIn('four', out)
-        self.assertNotIn('five', out)
-        self.assertNotIn('six', out)
-        self.assertNotIn('seven', out)
-        self.assertNotIn('eight', out)
+        code, out, err = self.t("list project:foo")
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("three", out)
+        self.assertNotIn("four", out)
+        self.assertNotIn("five", out)
+        self.assertNotIn("six", out)
+        self.assertNotIn("seven", out)
+        self.assertNotIn("eight", out)
 
     def test_list_project_not_foo(self):
         """Filter on not project name."""
-        code, out, err = self.t('list project.not:foo')
-        self.assertNotIn('one', out)
-        self.assertNotIn('two', out)
-        self.assertNotIn('three', out)
-        self.assertIn('four', out)
-        self.assertIn('five', out)
-        self.assertIn('six', out)
-        self.assertIn('seven', out)
-        self.assertIn('eight', out)
+        code, out, err = self.t("list project.not:foo")
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
+        self.assertIn("six", out)
+        self.assertIn("seven", out)
+        self.assertIn("eight", out)
 
     def test_list_project_startswith_bar(self):
         """Filter on project name start."""
-        code, out, err = self.t('list project.startswith:bar')
-        self.assertNotIn('one', out)
-        self.assertNotIn('two', out)
-        self.assertNotIn('three', out)
-        self.assertIn('four', out)
-        self.assertIn('five', out)
-        self.assertIn('six', out)
-        self.assertNotIn('seven', out)
-        self.assertNotIn('eight', out)
+        code, out, err = self.t("list project.startswith:bar")
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
+        self.assertIn("six", out)
+        self.assertNotIn("seven", out)
+        self.assertNotIn("eight", out)
 
     def test_list_project_ba(self):
         """Filter on project partial match."""
-        code, out, err = self.t('list project:ba')
-        self.assertNotIn('one', out)
-        self.assertNotIn('two', out)
-        self.assertNotIn('three', out)
-        self.assertIn('four', out)
-        self.assertIn('five', out)
-        self.assertIn('six', out)
-        self.assertIn('seven', out)
-        self.assertIn('eight', out)
+        code, out, err = self.t("list project:ba")
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
+        self.assertIn("six", out)
+        self.assertIn("seven", out)
+        self.assertIn("eight", out)
 
     def test_list_description_has_foo(self):
         """Filter on description pattern."""
-        code, out, err = self.t('list description.has:foo')
-        self.assertIn('one', out)
-        self.assertNotIn('two', out)
-        self.assertNotIn('three', out)
-        self.assertNotIn('four', out)
-        self.assertNotIn('five', out)
-        self.assertIn('six', out)
-        self.assertIn('seven', out)
-        self.assertIn('eight', out)
+        code, out, err = self.t("list description.has:foo")
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+        self.assertNotIn("four", out)
+        self.assertNotIn("five", out)
+        self.assertIn("six", out)
+        self.assertIn("seven", out)
+        self.assertIn("eight", out)
 
 
 class TestBug480B(TestCase):
@@ -675,7 +681,7 @@ class TestBug1600(TestCase):
         self.assertNotIn("foobar2", out)
 
     def test_filter_question_in_descriptions(self):
-        """filter - description contains ? """
+        """filter - description contains ?"""
         self.t("add foobar1")
         self.t("add foo?bar")
 
@@ -688,7 +694,7 @@ class TestBug1600(TestCase):
         self.assertNotIn("foobar1", out)
 
     def test_filter_brackets_in_descriptions(self):
-        """filter - description contains [] """
+        """filter - description contains []"""
         self.t("add [foobar1]")
         self.t("add [foobar2]")
 
@@ -707,9 +713,9 @@ class TestBug1656(TestCase):
 
     def test_report_filter_parenthesized(self):
         """default report filter parenthesized"""
-        self.t('add task1 +work')
-        self.t('add task2 +work')
-        self.t('1 done')
+        self.t("add task1 +work")
+        self.t("add task2 +work")
+        self.t("1 done")
 
         # Sanity check, next does not display completed tasks
         code, out, err = self.t("next")
@@ -747,19 +753,19 @@ class TestHasHasnt(TestCase):
 
     def test_has_hasnt(self):
         """Verify the 'has' and 'hasnt' attribute modifiers"""
-        self.t("add foo")              # 1
-        self.t("add foo")              # 2
+        self.t("add foo")  # 1
+        self.t("add foo")  # 2
         self.t("2 annotate bar")
-        self.t("add foo")              # 3
+        self.t("add foo")  # 3
         self.t("3 annotate bar")
         self.t("3 annotate baz")
-        self.t("add bar")              # 4
-        self.t("add bar")              # 5
+        self.t("add bar")  # 4
+        self.t("add bar")  # 5
         self.t("5 annotate foo")
-        self.t("add bar")              # 6
+        self.t("add bar")  # 6
         self.t("6 annotate foo")
         self.t("6 annotate baz")
-        self.t("add one")              # 7
+        self.t("add one")  # 7
         self.t("7 annotate two")
         self.t("7 annotate three")
 
@@ -787,8 +793,8 @@ class TestBefore(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t('add foo entry:2008-12-22 start:2008-12-22')
-        cls.t('add bar entry:2009-04-17 start:2009-04-17')
+        cls.t("add foo entry:2008-12-22 start:2008-12-22")
+        cls.t("add bar entry:2009-04-17 start:2009-04-17")
 
     def test_correctly_recorded_start(self):
         """Verify start dates properly recorded"""
@@ -840,14 +846,14 @@ class TestBy(TestCase):
         self.t = Task()
 
     def test_by_eoy_includes_eoy(self):
-        """ Verify by-end-of-year includes task due *at* end-of-year """
+        """Verify by-end-of-year includes task due *at* end-of-year"""
         self.t("add zero due:eoy")
 
         code, out, err = self.t("due.by:eoy")
         self.assertIn("zero", out)
 
     def test_by_tomorrow_includes_tomorrow(self):
-        """ Verify that by-tomorrow also includes tomorrow itself """
+        """Verify that by-tomorrow also includes tomorrow itself"""
         self.t.faketime("2021-07-16 21:00:00")
         self.t("add zero due:2021-07-17")
 
@@ -855,7 +861,7 @@ class TestBy(TestCase):
         self.assertIn("zero", out)
 
     def test_by_yesterday_does_not_include_today(self):
-        """ Verify that by-yesterday does not include today """
+        """Verify that by-yesterday does not include today"""
         self.t("add zero")
 
         code, out, err = self.t.runError("entry.by:yesterday")
@@ -869,8 +875,8 @@ class Test1424(TestCase):
 
     def test_1824_days(self):
         """1424: Check that due:1824d works"""
-        self.t('add foo due:1824d')
-        code, out, err = self.t('_get 1.due.year')
+        self.t("add foo due:1824d")
+        code, out, err = self.t("_get 1.due.year")
         # NOTE This test has a possible race condition when run "during" EOY.
         # If Taskwarrior is executed at 23:59:59 on new year's eve and the
         # python code below runs at 00:00:00 on new year's day, the two will
@@ -881,8 +887,8 @@ class Test1424(TestCase):
 
     def test_3648_days(self):
         """1424: Check that due:3648d works"""
-        self.t('add foo due:3648d')
-        code, out, err = self.t('_get 1.due.year')
+        self.t("add foo due:3648d")
+        code, out, err = self.t("_get 1.due.year")
         # NOTE This test has a possible race condition when run "during" EOY.
         # If Taskwarrior is executed at 23:59:59 on new year's eve and the
         # python code below runs at 00:00:00 on new year's day, the two will
@@ -897,22 +903,22 @@ class Test1424(TestCase):
 class Test1452(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t('add task')
-        self.task_uuid = self.t.export_one()['uuid']
+        self.t("add task")
+        self.task_uuid = self.t.export_one()["uuid"]
 
     def test_get_task_by_uuid_with_prefix(self):
         """1452: Tries to filter task simply by its uuid, using uuid: prefix."""
-        output = self.t.export_one('uuid:%s' % self.task_uuid)
+        output = self.t.export_one("uuid:%s" % self.task_uuid)
 
         # Sanity check it is the correct one
-        self.assertEqual(output['uuid'], self.task_uuid)
+        self.assertEqual(output["uuid"], self.task_uuid)
 
     def test_get_task_by_uuid_without_prefix(self):
         """1452: Tries to filter task simply by its uuid, without using uuid: prefix."""
         output = self.t.export_one(self.task_uuid)
 
         # Sanity check it is the correct one
-        self.assertEqual(output['uuid'], self.task_uuid)
+        self.assertEqual(output["uuid"], self.task_uuid)
 
 
 class TestBug1456(TestCase):
@@ -935,22 +941,22 @@ class TestBug1456(TestCase):
 class Test1468(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t('add project:home buy milk')
-        self.t('add project:home mow the lawn')
+        self.t("add project:home buy milk")
+        self.t("add project:home mow the lawn")
 
     def test_single_attribute_filter(self):
         """1468: Single attribute filter (project:home)"""
-        code, out, err = self.t('list project:home')
+        code, out, err = self.t("list project:home")
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
-        self.assertIn('buy milk', out)
-        self.assertIn('mow the lawn', out)
+        self.assertIn("buy milk", out)
+        self.assertIn("mow the lawn", out)
 
     def test_attribute_and_search_filter(self):
         """1468: Attribute and implicit search filter (project:home /lawn/)"""
-        code, out, err = self.t('list project:home /lawn/')
+        code, out, err = self.t("list project:home /lawn/")
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
-        self.assertNotIn('buy milk', out)
-        self.assertIn('mow the lawn', out)
+        self.assertNotIn("buy milk", out)
+        self.assertIn("mow the lawn", out)
 
 
 class TestBug1521(TestCase):
@@ -1021,19 +1027,19 @@ class Test1634(TestCase):
         self.t = Task()
 
         # Setup some tasks due on 2015-07-07
-        self.t('add due:2015-07-07T00:00:00 ON1')
-        self.t('add due:2015-07-07T14:34:56 ON2')
-        self.t('add due:2015-07-07T23:59:59 ON3')
+        self.t("add due:2015-07-07T00:00:00 ON1")
+        self.t("add due:2015-07-07T14:34:56 ON2")
+        self.t("add due:2015-07-07T23:59:59 ON3")
 
         # Setup some tasks not due on 2015-07-07
-        self.t('add due:2015-07-06T23:59:59 OFF4')
-        self.t('add due:2015-07-08T00:00:00 OFF5')
-        self.t('add due:2015-07-08T00:00:01 OFF6')
-        self.t('add due:2015-07-06T00:00:00 OFF7')
+        self.t("add due:2015-07-06T23:59:59 OFF4")
+        self.t("add due:2015-07-08T00:00:00 OFF5")
+        self.t("add due:2015-07-08T00:00:01 OFF6")
+        self.t("add due:2015-07-06T00:00:00 OFF7")
 
     def test_due_match_not_exact(self):
         """1634: Test that due:<date> matches any task that date."""
-        code, out, err = self.t('due:2015-07-07 minimal')
+        code, out, err = self.t("due:2015-07-07 minimal")
 
         # Asswer that only tasks ON the date are listed.
         self.assertIn("ON1", out)
@@ -1048,7 +1054,7 @@ class Test1634(TestCase):
 
     def test_due_not_match_not_exact(self):
         """1634: Test that due.not:<date> does not match any task that date."""
-        code, out, err = self.t('due.not:2015-07-07 minimal')
+        code, out, err = self.t("due.not:2015-07-07 minimal")
 
         # Assert that task ON the date are not listed.
         self.assertNotIn("ON1", out)
@@ -1072,14 +1078,18 @@ class TestBug1915(TestCase):
 
     def test_complex_and_or_query_variant_one(self):
         """1915: Make sure parser handles complex and-or queries correctly (1)"""
-        code, out, err = self.t("rc.verbose:nothing '(project:A or project:B) and status:pending' all")
+        code, out, err = self.t(
+            "rc.verbose:nothing '(project:A or project:B) and status:pending' all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
     def test_complex_and_or_query_variant_two(self):
         """1915: Make sure parser handles complex and-or queries correctly (2)"""
-        code, out, err = self.t("rc.verbose:nothing '( project:A or project:B ) and status:pending' all")
+        code, out, err = self.t(
+            "rc.verbose:nothing '( project:A or project:B ) and status:pending' all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
@@ -1087,7 +1097,9 @@ class TestBug1915(TestCase):
     @unittest.expectedFailure
     def test_complex_and_or_query_variant_three(self):
         """1915: Make sure parser handles complex and-or queries correctly (3)"""
-        code, out, err = self.t("rc.verbose:nothing 'status:pending and (project:A or project:B)' all")
+        code, out, err = self.t(
+            "rc.verbose:nothing 'status:pending and (project:A or project:B)' all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
@@ -1095,28 +1107,36 @@ class TestBug1915(TestCase):
     @unittest.expectedFailure
     def test_complex_and_or_query_variant_four(self):
         """1915: Make sure parser handles complex and-or queries correctly (4)"""
-        code, out, err = self.t("rc.verbose:nothing 'status:pending and ( project:A or project:B )' all")
+        code, out, err = self.t(
+            "rc.verbose:nothing 'status:pending and ( project:A or project:B )' all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
     def test_complex_and_or_query_variant_five(self):
         """1915: Make sure parser handles complex and-or queries correctly (5)"""
-        code, out, err = self.t("rc.verbose:nothing status:pending and '(project:A or project:B)' all")
+        code, out, err = self.t(
+            "rc.verbose:nothing status:pending and '(project:A or project:B)' all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
     def test_complex_and_or_query_variant_six(self):
         """1915: Make sure parser handles complex and-or queries correctly (6)"""
-        code, out, err = self.t("rc.verbose:nothing status:pending and '( project:A or project:B )' all")
+        code, out, err = self.t(
+            "rc.verbose:nothing status:pending and '( project:A or project:B )' all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
 
     def test_complex_and_or_query_variant_seven(self):
         """1915: Make sure parser handles complex and-or queries correctly (7)"""
-        code, out, err = self.t("rc.verbose:nothing status:pending and \\( project:A or project:B \\) all")
+        code, out, err = self.t(
+            "rc.verbose:nothing status:pending and \\( project:A or project:B \\) all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
@@ -1124,7 +1144,9 @@ class TestBug1915(TestCase):
     @unittest.expectedFailure
     def test_complex_and_or_query_variant_eight(self):
         """1915: Make sure parser handles complex and-or queries correctly (8)"""
-        code, out, err = self.t("rc.verbose:nothing status:pending and \\(project:A or project:B\\) all")
+        code, out, err = self.t(
+            "rc.verbose:nothing status:pending and \\(project:A or project:B\\) all"
+        )
         self.assertIn("thingA", out)
         self.assertIn("thingB", out)
         self.assertNotIn("thingC", out)
@@ -1136,11 +1158,11 @@ class Test2577(TestCase):
 
     def test_filtering_for_datetime_like(self):
         """2577: Check that filtering for datetime-like project names works"""
-        self.t('add one pro:sat')  # looks like "saturday"
-        self.t('add two pro:whatever')
+        self.t("add one pro:sat")  # looks like "saturday"
+        self.t("add two pro:whatever")
 
         # This should not fail (fails on 2.5.3)
-        code, out, err = self.t('pro:sat')
+        code, out, err = self.t("pro:sat")
 
         # Assert expected output, but the crucial part of this test is success
         # of the call above
@@ -1149,6 +1171,7 @@ class Test2577(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

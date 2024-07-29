@@ -25,56 +25,54 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdUrgency.h>
-#include <sstream>
-#include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
 #include <Lexer.h>
-#include <main.h>
 #include <format.h>
+#include <main.h>
+#include <stdlib.h>
+
+#include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdUrgency::CmdUrgency ()
-{
-  _keyword               = "_urgency";
-  _usage                 = "task <filter> _urgency";
-  _description           = "Displays the urgency measure of a task";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdUrgency::CmdUrgency() {
+  _keyword = "_urgency";
+  _usage = "task <filter> _urgency";
+  _description = "Displays the urgency measure of a task";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdUrgency::execute (std::string& output)
-{
+int CmdUrgency::execute(std::string& output) {
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
-  if (filtered.size () == 0)
-  {
-    Context::getContext ().footnote ("No tasks specified.");
+  if (filtered.size() == 0) {
+    Context::getContext().footnote("No tasks specified.");
     return 1;
   }
 
   // Display urgency for the selected tasks.
   std::stringstream out;
-  for (auto& task : filtered)
-  {
-    out << format ("task {1} urgency {2}",
-                   task.identifier (),
-                   Lexer::trim (format (task.urgency (), 6, 3)))
+  for (auto& task : filtered) {
+    out << format("task {1} urgency {2}", task.identifier(),
+                  Lexer::trim(format(task.urgency(), 6, 3)))
         << '\n';
   }
 
-  output = out.str ();
+  output = out.str();
   return 0;
 }
 

@@ -25,19 +25,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <stdlib.h>
+// cmake.h include header must come first
+
 #include <columns/ColID.h>
 #include <main.h>
+#include <stdlib.h>
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int, char**)
-{
-  UnitTest test (12);
+int main(int, char**) {
+  UnitTest test(12);
 
   // Ensure environment has no influence.
-  unsetenv ("TASKDATA");
-  unsetenv ("TASKRC");
+  unsetenv("TASKDATA");
+  unsetenv("TASKRC");
 
   ColumnID columnID;
   unsigned int minimum = 0;
@@ -45,37 +46,36 @@ int main (int, char**)
 
   Task t1;
   t1.id = 3;
-  columnID.measure (t1, minimum, maximum);
-  test.is ((int)minimum, 1, "id:3 --> ColID::measure minimum 1");
-  test.is ((int)maximum, 1, "id:3 --> ColID::measure maximum 1");
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 1, "id:3 --> ColID::measure minimum 1");
+  test.is((int)maximum, 1, "id:3 --> ColID::measure maximum 1");
 
   t1.id = 33;
-  columnID.measure (t1, minimum, maximum);
-  test.is ((int)minimum, 2, "id:33 --> ColID::measure minimum 2");
-  test.is ((int)maximum, 2, "id:33 --> ColID::measure maximum 2");
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 2, "id:33 --> ColID::measure minimum 2");
+  test.is((int)maximum, 2, "id:33 --> ColID::measure maximum 2");
 
   t1.id = 333;
-  columnID.measure (t1, minimum, maximum);
-  test.is ((int)minimum, 3, "id:333 --> ColID::measure minimum 3");
-  test.is ((int)maximum, 3, "id:333 --> ColID::measure maximum 3");
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 3, "id:333 --> ColID::measure minimum 3");
+  test.is((int)maximum, 3, "id:333 --> ColID::measure maximum 3");
 
   t1.id = 3333;
-  columnID.measure (t1, minimum, maximum);
-  test.is ((int)minimum, 4, "id:3333 --> ColID::measure minimum 4");
-  test.is ((int)maximum, 4, "id:3333 --> ColID::measure maximum 4");
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 4, "id:3333 --> ColID::measure minimum 4");
+  test.is((int)maximum, 4, "id:3333 --> ColID::measure maximum 4");
 
   t1.id = 33333;
-  columnID.measure (t1, minimum, maximum);
-  test.is ((int)minimum, 5, "id:33333 --> ColID::measure minimum 5");
-  test.is ((int)maximum, 5, "id:33333 --> ColID::measure maximum 5");
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 5, "id:33333 --> ColID::measure minimum 5");
+  test.is((int)maximum, 5, "id:33333 --> ColID::measure maximum 5");
 
   t1.id = 333333;
-  columnID.measure (t1, minimum, maximum);
-  test.is ((int)minimum, 6, "id:333333 --> ColID::measure minimum 6");
-  test.is ((int)maximum, 6, "id:333333 --> ColID::measure maximum 6");
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 6, "id:333333 --> ColID::measure minimum 6");
+  test.is((int)maximum, 6, "id:333333 --> ColID::measure maximum 6");
 
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

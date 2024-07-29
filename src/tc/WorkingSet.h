@@ -27,49 +27,48 @@
 #ifndef INCLUDED_TC_WORKINGSET
 #define INCLUDED_TC_WORKINGSET
 
-#include <string>
 #include <functional>
 #include <memory>
 #include <optional>
-#include "tc/ffi.h"
+#include <string>
+
 #include "tc/Task.h"
+#include "tc/ffi.h"
 
 namespace tc {
-  class Task;
+class Task;
 
-  // a unique_ptr to a TCWorkingSet which will automatically free the value when
-  // it goes out of scope.
-  using unique_tcws_ptr = std::unique_ptr<
-    tc::ffi::TCWorkingSet,
-    std::function<void(tc::ffi::TCWorkingSet*)>>;
+// a unique_ptr to a TCWorkingSet which will automatically free the value when
+// it goes out of scope.
+using unique_tcws_ptr =
+    std::unique_ptr<tc::ffi::TCWorkingSet, std::function<void(tc::ffi::TCWorkingSet *)>>;
 
-  // WorkingSet wraps the TCWorkingSet type, managing its memory, errors, and so on.
-  //
-  // Except as noted, method names match the suffix to `tc_working_set_..`.
-  class WorkingSet
-  {
-  protected:
-    friend class tc::Replica;
-    WorkingSet (tc::ffi::TCWorkingSet*); // via tc_replica_working_set
+// WorkingSet wraps the TCWorkingSet type, managing its memory, errors, and so on.
+//
+// Except as noted, method names match the suffix to `tc_working_set_..`.
+class WorkingSet {
+ protected:
+  friend class tc::Replica;
+  WorkingSet(tc::ffi::TCWorkingSet *);  // via tc_replica_working_set
 
-  public:
-    // This object "owns" inner, so copy is not allowed.
-    WorkingSet (const WorkingSet &) = delete;
-    WorkingSet &operator=(const WorkingSet &) = delete;
+ public:
+  // This object "owns" inner, so copy is not allowed.
+  WorkingSet(const WorkingSet &) = delete;
+  WorkingSet &operator=(const WorkingSet &) = delete;
 
-    // Explicit move constructor and assignment
-    WorkingSet (WorkingSet &&) noexcept;
-    WorkingSet &operator=(WorkingSet &&) noexcept;
+  // Explicit move constructor and assignment
+  WorkingSet(WorkingSet &&) noexcept;
+  WorkingSet &operator=(WorkingSet &&) noexcept;
 
-    size_t len () const noexcept; // tc_working_set_len
-    size_t largest_index () const noexcept; // tc_working_set_largest_index
-    std::optional<std::string> by_index (size_t index) const noexcept; // tc_working_set_by_index
-    std::optional<size_t> by_uuid (const std::string &index) const noexcept; // tc_working_set_by_uuid
+  size_t len() const noexcept;                                       // tc_working_set_len
+  size_t largest_index() const noexcept;                             // tc_working_set_largest_index
+  std::optional<std::string> by_index(size_t index) const noexcept;  // tc_working_set_by_index
+  std::optional<size_t> by_uuid(const std::string &index) const noexcept;  // tc_working_set_by_uuid
 
-  private:
-    unique_tcws_ptr inner;
-  };
-}
+ private:
+  unique_tcws_ptr inner;
+};
+}  // namespace tc
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

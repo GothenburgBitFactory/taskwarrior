@@ -25,19 +25,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
+// cmake.h include header must come first
+
 #include <stdlib.h>
 #include <unistd.h>
-#include "test.h"
+
+#include <iostream>
+
 #include "tc/Replica.h"
-#include "tc/WorkingSet.h"
 #include "tc/Task.h"
+#include "tc/WorkingSet.h"
 #include "tc/util.h"
+#include "test.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int, char**)
-{
-  UnitTest t (23);
+int main(int, char**) {
+  UnitTest t(23);
 
   // This function contains unit tests for the various bits of the wrappers for
   // taskchampion-lib (that is, for `src/tc/*.cpp`).
@@ -45,69 +48,69 @@ int main (int, char**)
   //// util
 
   {
-    auto s1 = std::string ("a\0string!");
-    auto stc = tc::string2tc (s1);
-    auto s2 = tc::tc2string (stc);
-    t.is (s1, s2, "round-trip to tc string and back (containing an embedded NUL)");
+    auto s1 = std::string("a\0string!");
+    auto stc = tc::string2tc(s1);
+    auto s2 = tc::tc2string(stc);
+    t.is(s1, s2, "round-trip to tc string and back (containing an embedded NUL)");
   }
 
   {
-    auto s1 = std::string ("62123ec9-c443-4f7e-919a-35362a8bef8d");
-    auto tcuuid = tc::uuid2tc (s1);
-    auto s2 = tc::tc2uuid (tcuuid);
+    auto s1 = std::string("62123ec9-c443-4f7e-919a-35362a8bef8d");
+    auto tcuuid = tc::uuid2tc(s1);
+    auto s2 = tc::tc2uuid(tcuuid);
     t.is(s1, s2, "round-trip to TCUuid and back");
   }
 
   //// Replica
 
-  auto rep = tc::Replica ();
-  t.pass ("replica constructed");
+  auto rep = tc::Replica();
+  t.pass("replica constructed");
 
   auto maybe_task = rep.get_task("24478a28-4609-4257-bc19-44ec51391431");
   t.notok(maybe_task.has_value(), "task with fixed uuid does not exist");
 
-  auto task = rep.new_task (tc::Status::Pending, "a test");
-  t.pass ("new task constructed");
-  t.is (task.get_description (), std::string ("a test"), "task description round-trip");
-  t.is (task.get_status (), tc::Status::Pending, "task status round-trip");
+  auto task = rep.new_task(tc::Status::Pending, "a test");
+  t.pass("new task constructed");
+  t.is(task.get_description(), std::string("a test"), "task description round-trip");
+  t.is(task.get_status(), tc::Status::Pending, "task status round-trip");
 
   auto uuid = task.get_uuid();
 
-  auto maybe_task2 = rep.get_task (uuid);
+  auto maybe_task2 = rep.get_task(uuid);
   t.ok(maybe_task2.has_value(), "task lookup by uuid finds task");
-  t.is ((*maybe_task2).get_description (), std::string ("a test"), "task description round-trip");
+  t.is((*maybe_task2).get_description(), std::string("a test"), "task description round-trip");
 
-  rep.rebuild_working_set (true);
-  t.pass ("rebuild_working_set");
+  rep.rebuild_working_set(true);
+  t.pass("rebuild_working_set");
 
-  auto tasks = rep.all_tasks ();
-  t.is ((int)tasks.size(), 1, "all_tasks returns one task");
+  auto tasks = rep.all_tasks();
+  t.is((int)tasks.size(), 1, "all_tasks returns one task");
 
   //// Task
-  
+
   task = std::move(tasks[0]);
 
-  t.is (task.get_uuid(), uuid, "returned task has correct uuid");
-  t.is (task.get_status(), tc::Status::Pending, "returned task is pending");
-  auto map = task.get_taskmap ();
-  t.is (map["description"], "a test", "task description in taskmap");
-  t.is (task.get_description(), "a test", "returned task has correct description");
-  t.is (task.is_waiting(), false, "task is not waiting");
-  t.is (task.is_active(), false, "task is not active");
+  t.is(task.get_uuid(), uuid, "returned task has correct uuid");
+  t.is(task.get_status(), tc::Status::Pending, "returned task is pending");
+  auto map = task.get_taskmap();
+  t.is(map["description"], "a test", "task description in taskmap");
+  t.is(task.get_description(), "a test", "returned task has correct description");
+  t.is(task.is_waiting(), false, "task is not waiting");
+  t.is(task.is_active(), false, "task is not active");
 
   //// WorkingSet
 
-  auto ws = rep.working_set ();
+  auto ws = rep.working_set();
 
-  t.is (ws.len (), (size_t)1, "WorkingSet::len");
-  t.is (ws.largest_index (), (size_t)1, "WorkingSet::largest_index");
-  t.is (ws.by_index (1).value(), uuid, "WorkingSet::by_index");
-  t.is (ws.by_index (2).has_value(), false, "WorkingSet::by_index for unknown index");
-  t.is (ws.by_uuid (uuid).value (), (size_t)1, "WorkingSet::by_uuid");
-  t.is (ws.by_uuid ("3e18a306-e3a8-4a53-a85c-fa7c057759a2").has_value (), false, "WorkingSet::by_uuid for unknown uuid");
+  t.is(ws.len(), (size_t)1, "WorkingSet::len");
+  t.is(ws.largest_index(), (size_t)1, "WorkingSet::largest_index");
+  t.is(ws.by_index(1).value(), uuid, "WorkingSet::by_index");
+  t.is(ws.by_index(2).has_value(), false, "WorkingSet::by_index for unknown index");
+  t.is(ws.by_uuid(uuid).value(), (size_t)1, "WorkingSet::by_uuid");
+  t.is(ws.by_uuid("3e18a306-e3a8-4a53-a85c-fa7c057759a2").has_value(), false,
+       "WorkingSet::by_uuid for unknown uuid");
 
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

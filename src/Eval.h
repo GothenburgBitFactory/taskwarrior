@@ -27,50 +27,51 @@
 #ifndef INCLUDED_EVAL
 #define INCLUDED_EVAL
 
-#include <vector>
-#include <string>
 #include <Lexer.h>
 #include <Variant.h>
 
-bool domSource (const std::string&, Variant&);
+#include <string>
+#include <vector>
 
-class Eval
-{
-public:
-  Eval ();
+bool domSource(const std::string &, Variant &);
 
-  void addSource (bool (*fn)(const std::string&, Variant&));
-  void evaluateInfixExpression (const std::string&, Variant&) const;
-  void evaluatePostfixExpression (const std::string&, Variant&) const;
-  void compileExpression (const std::vector <std::pair <std::string, Lexer::Type>>&);
-  void evaluateCompiledExpression (Variant&);
-  void debug (bool);
+class Eval {
+ public:
+  Eval();
 
-  static std::vector <std::string> getOperators ();
-  static std::vector <std::string> getBinaryOperators ();
+  void addSource(bool (*fn)(const std::string &, Variant &));
+  void evaluateInfixExpression(const std::string &, Variant &) const;
+  void evaluatePostfixExpression(const std::string &, Variant &) const;
+  void compileExpression(const std::vector<std::pair<std::string, Lexer::Type>> &);
+  void evaluateCompiledExpression(Variant &);
+  void debug(bool);
 
-private:
-  void evaluatePostfixStack (const std::vector <std::pair <std::string, Lexer::Type>>&, Variant&) const;
-  void infixToPostfix (std::vector <std::pair <std::string, Lexer::Type>>&) const;
-  void infixParse (std::vector <std::pair <std::string, Lexer::Type>>&) const;
-  bool parseLogical (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseRegex (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseEquality (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseComparative (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseArithmetic (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseGeometric (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseTag (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseUnary (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parseExponent (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool parsePrimitive (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
-  bool identifyOperator (const std::string&, char&, unsigned int&, char&) const;
+  static std::vector<std::string> getOperators();
+  static std::vector<std::string> getBinaryOperators();
 
-  std::string dump (std::vector <std::pair <std::string, Lexer::Type>>&) const;
+ private:
+  void evaluatePostfixStack(const std::vector<std::pair<std::string, Lexer::Type>> &,
+                            Variant &) const;
+  void infixToPostfix(std::vector<std::pair<std::string, Lexer::Type>> &) const;
+  void infixParse(std::vector<std::pair<std::string, Lexer::Type>> &) const;
+  bool parseLogical(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseRegex(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseEquality(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseComparative(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseArithmetic(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseGeometric(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseTag(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseUnary(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parseExponent(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool parsePrimitive(std::vector<std::pair<std::string, Lexer::Type>> &, unsigned int &) const;
+  bool identifyOperator(const std::string &, char &, unsigned int &, char &) const;
 
-private:
-  std::vector <bool (*)(const std::string&, Variant&)> _sources {};
-  bool _debug                                                   {false};
-  std::vector <std::pair <std::string, Lexer::Type>> _compiled  {};
+  std::string dump(std::vector<std::pair<std::string, Lexer::Type>> &) const;
+
+ private:
+  std::vector<bool (*)(const std::string &, Variant &)> _sources{};
+  bool _debug{false};
+  std::vector<std::pair<std::string, Lexer::Type>> _compiled{};
 };
 
 #endif

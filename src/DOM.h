@@ -27,49 +27,48 @@
 #ifndef INCLUDED_DOM
 #define INCLUDED_DOM
 
-#include <string>
-#include <Variant.h>
 #include <Task.h>
+#include <Variant.h>
+
+#include <string>
 
 // 2017-04-22 Deprecated, use DOM::get.
-bool getDOM (const std::string&, Variant&);
-bool getDOM (const std::string&, const Task*, Variant&);
+bool getDOM(const std::string&, Variant&);
+bool getDOM(const std::string&, const Task*, Variant&);
 
-class DOM
-{
-public:
-  ~DOM ();
-  void addSource (const std::string&, bool (*)(const std::string&, Variant&));
-  bool valid (const std::string&) const;
-/*
-  // TODO Task object should register a generic provider.
-  Variant get (const Task&, const std::string&) const;
-*/
-  Variant get (const std::string&) const;
-  int count () const;
-  static std::vector <std::string> decomposeReference (const std::string&);
-  std::string dump () const;
+class DOM {
+ public:
+  ~DOM();
+  void addSource(const std::string&, bool (*)(const std::string&, Variant&));
+  bool valid(const std::string&) const;
+  /*
+    // TODO Task object should register a generic provider.
+    Variant get (const Task&, const std::string&) const;
+  */
+  Variant get(const std::string&) const;
+  int count() const;
+  static std::vector<std::string> decomposeReference(const std::string&);
+  std::string dump() const;
 
-private:
-  class Node
-  {
-  public:
-    ~Node ();
-    void addSource (const std::string&, bool (*)(const std::string&, Variant&));
-    bool valid (const std::string&) const;
-    const DOM::Node* find (const std::string&) const;
-    int count () const;
-    std::string dumpNode (const DOM::Node*, int) const;
-    std::string dump () const;
+ private:
+  class Node {
+   public:
+    ~Node();
+    void addSource(const std::string&, bool (*)(const std::string&, Variant&));
+    bool valid(const std::string&) const;
+    const DOM::Node* find(const std::string&) const;
+    int count() const;
+    std::string dumpNode(const DOM::Node*, int) const;
+    std::string dump() const;
 
-  public:
-    std::string                                  _name     {"Unknown"};
-    bool (*_provider)(const std::string&, Variant&)        {nullptr};
-    std::vector <DOM::Node*>                     _branches {};
+   public:
+    std::string _name{"Unknown"};
+    bool (*_provider)(const std::string&, Variant&){nullptr};
+    std::vector<DOM::Node*> _branches{};
   };
 
-private:
-  DOM::Node* _node {nullptr};
+ private:
+  DOM::Node* _node{nullptr};
 };
 
 #endif

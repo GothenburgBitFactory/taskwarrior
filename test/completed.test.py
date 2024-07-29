@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -49,13 +50,14 @@ class TestCompleted(TestCase):
         self.t("2 delete", input="y\n")
 
         code, out, err = self.t("completed")
-        self.assertIn('one', out)
-        self.assertNotIn('two', out)
-        self.assertNotIn('three', out)
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

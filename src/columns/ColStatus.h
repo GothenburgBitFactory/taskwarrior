@@ -29,15 +29,14 @@
 
 #include <ColTypeString.h>
 
-class ColumnStatus : public ColumnTypeString
-{
-public:
-  ColumnStatus ();
-  void setStyle (const std::string&);
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnStatus : public ColumnTypeString {
+ public:
+  ColumnStatus();
+  void setStyle(const std::string&);
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-private:
+ private:
 };
 
 #endif

@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 import math
+
 # Ensure python finds the local simpletap and basetest modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -61,11 +62,11 @@ class TestCountdown(TestCase):
 
     def test_countdown_up(self):
         """Verify countdown sorting: ascending"""
-        self.t.config("report.up.description",    "countdown+ report")
-        self.t.config("report.up.columns",        "id,due.countdown,description")
-        self.t.config("report.up.labels",         "ID,Countdown,Description")
-        self.t.config("report.up.filter",         "status:pending")
-        self.t.config("report.up.sort",           "due+")
+        self.t.config("report.up.description", "countdown+ report")
+        self.t.config("report.up.columns", "id,due.countdown,description")
+        self.t.config("report.up.labels", "ID,Countdown,Description")
+        self.t.config("report.up.filter", "status:pending")
+        self.t.config("report.up.sort", "due+")
 
         code, out, err = self.t("up")
         self.assertRegex(out, " one\n.+ two\n")
@@ -85,11 +86,11 @@ class TestCountdown(TestCase):
 
     def test_countdown_down(self):
         """Verify countdown sorting: descending"""
-        self.t.config("report.down.description",  "countdown- report")
-        self.t.config("report.down.columns",      "id,due.countdown,description")
-        self.t.config("report.down.labels",       "ID,Countdown,Description")
-        self.t.config("report.down.filter",       "status:pending")
-        self.t.config("report.down.sort",         "due-")
+        self.t.config("report.down.description", "countdown- report")
+        self.t.config("report.down.columns", "id,due.countdown,description")
+        self.t.config("report.down.labels", "ID,Countdown,Description")
+        self.t.config("report.down.filter", "status:pending")
+        self.t.config("report.down.sort", "due-")
 
         code, out, err = self.t("down")
         self.assertRegex(out, " fifteen\n.+ fourteen\n")
@@ -143,7 +144,9 @@ class TestBug101(TestCase):
         self.short_description = "A_task_description_"
 
         # Generate long string
-        self.long_description = self.short_description * int(math.ceil(float(self.width)/len(self.short_description)))
+        self.long_description = self.short_description * int(
+            math.ceil(float(self.width) / len(self.short_description))
+        )
 
     def test_short_no_count(self):
         """101: Check short description with no annotations"""
@@ -164,7 +167,7 @@ class TestBug101(TestCase):
         """101: Check long description with no annotations"""
         self.t(("add", self.long_description))
         code, out, err = self.t("bug101")
-        expected = self.long_description[:(self.width - 3)] + "..."
+        expected = self.long_description[: (self.width - 3)] + "..."
         self.assertIn(expected, out)
 
     def test_long_with_count(self):
@@ -172,7 +175,7 @@ class TestBug101(TestCase):
         self.t(("add", self.long_description))
         self.t("1 annotate 'A task annotation'")
         code, out, err = self.t("bug101")
-        expected = self.long_description[:(self.width - 7)] + "... [1]"
+        expected = self.long_description[: (self.width - 7)] + "... [1]"
         self.assertIn(expected, out)
 
     def test_long_with_double_digit_count(self):
@@ -181,12 +184,13 @@ class TestBug101(TestCase):
         for i in range(10):
             self.t("1 annotate 'A task annotation'")
         code, out, err = self.t("bug101")
-        expected = self.long_description[:(self.width - 8)] + "... [10]"
+        expected = self.long_description[: (self.width - 8)] + "... [10]"
         self.assertIn(expected, out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

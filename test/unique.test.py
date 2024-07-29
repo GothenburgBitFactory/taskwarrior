@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -67,18 +68,18 @@ class TestUnique(TestCase):
     def test_unique_status(self):
         """Verify that unique status values are correctly counted"""
         code, out, err = self.t("_unique status")
-        self.assertIn("pending",   out)
+        self.assertIn("pending", out)
         self.assertIn("completed", out)
-        self.assertIn("deleted",   out)
+        self.assertIn("deleted", out)
 
     def test_unique_description(self):
         """Verify that unique description values are correctly counted"""
         code, out, err = self.t("_unique description")
-        self.assertIn("one",   out)
-        self.assertIn("two",   out)
+        self.assertIn("one", out)
+        self.assertIn("two", out)
         self.assertIn("three", out)
-        self.assertIn("four",  out)
-        self.assertIn("five",  out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
 
     def test_unique_id(self):
         """Verify that unique id values are correctly counted"""
@@ -92,6 +93,7 @@ class TestUnique(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

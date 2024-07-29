@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDDELETE
 #define INCLUDED_CMDDELETE
 
-#include <string>
 #include <Command.h>
 
-class CmdDelete : public Command
-{
-public:
-  CmdDelete ();
-  int execute (std::string&);
+#include <string>
+
+class CmdDelete : public Command {
+ public:
+  CmdDelete();
+  int execute(std::string&);
 };
 
 #endif

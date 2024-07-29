@@ -25,98 +25,93 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdVersion.h>
-#include <sstream>
-#include <stdlib.h>
-#include <Datetime.h>
 #include <Context.h>
+#include <Datetime.h>
 #include <Table.h>
+#include <stdlib.h>
+
+#include <sstream>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
-#include <shared.h>
 #include <format.h>
+#include <shared.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdVersion::CmdVersion ()
-{
-  _keyword               = "version";
-  _usage                 = "task          version";
-  _description           = "Shows the Taskwarrior version number";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdVersion::CmdVersion() {
+  _keyword = "version";
+  _usage = "task          version";
+  _description = "Shows the Taskwarrior version number";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::misc;
+  _category = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdVersion::execute (std::string& output)
-{
+int CmdVersion::execute(std::string& output) {
   std::stringstream out;
 
   // Create a table for the disclaimer.
-  int width = Context::getContext ().getWidth ();
+  int width = Context::getContext().getWidth();
   Table disclaimer;
-  disclaimer.width (width);
-  disclaimer.add ("");
-  disclaimer.set (disclaimer.addRow (), 0, "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit.");
+  disclaimer.width(width);
+  disclaimer.add("");
+  disclaimer.set(disclaimer.addRow(), 0,
+                 "Taskwarrior may be copied only under the terms of the MIT license, which may be "
+                 "found in the Taskwarrior source kit.");
 
   // Create a table for the URL.
   Table link;
-  link.width (width);
-  link.add ("");
-  link.set (link.addRow (), 0, "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at https://taskwarrior.org");
+  link.width(width);
+  link.add("");
+  link.set(link.addRow(), 0,
+           "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man "
+           "task-color', 'man task-sync' or at https://taskwarrior.org");
 
   Datetime now;
 
   Color bold;
-  if (Context::getContext ().color ())
-    bold = Color ("bold");
+  if (Context::getContext().color()) bold = Color("bold");
 
   out << '\n'
-      << format ("{1} {2} built for ", bold.colorize (PACKAGE), bold.colorize (VERSION))
-      << osName ()
+      << format("{1} {2} built for ", bold.colorize(PACKAGE), bold.colorize(VERSION)) << osName()
       << '\n'
-      << "Copyright (C) 2006 - " << now.year () << " T. Babej, P. Beckingham, F. Hernandez."
+      << "Copyright (C) 2006 - " << now.year() << " T. Babej, P. Beckingham, F. Hernandez." << '\n'
       << '\n'
-      << '\n'
-      << disclaimer.render ()
-      << '\n'
-      << link.render ()
-      << '\n';
+      << disclaimer.render() << '\n'
+      << link.render() << '\n';
 
-  output = out.str ();
+  output = out.str();
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdCompletionVersion::CmdCompletionVersion ()
-{
-  _keyword               = "_version";
-  _usage                 = "task          _version";
-  _description           = "Shows only the Taskwarrior version number";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdCompletionVersion::CmdCompletionVersion() {
+  _keyword = "_version";
+  _usage = "task          _version";
+  _description = "Shows only the Taskwarrior version number";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionVersion::execute (std::string& output)
-{
+int CmdCompletionVersion::execute(std::string& output) {
 #ifdef HAVE_COMMIT
-  output = std::string (VERSION)
-         + std::string (" (")
-         + std::string (COMMIT)
-         + std::string (")");
+  output = std::string(VERSION) + std::string(" (") + std::string(COMMIT) + std::string(")");
 #else
   output = VERSION;
 #endif

@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,40 +58,57 @@ class TestUnderline(TestCase):
     # * When isatty (fileno (stdout)) is false, color is automatically disabled.
 
     def test_nocolor_noforce_nounderline(self):
-        code, out, err = self.t("1 info rc.color:off rc._forcecolor:off rc.fontunderline:off")
+        code, out, err = self.t(
+            "1 info rc.color:off rc._forcecolor:off rc.fontunderline:off"
+        )
         self.assertIn("--------", out)
 
     def test_nocolor_noforce_underline(self):
-        code, out, err = self.t("1 info rc.color:off rc._forcecolor:off rc.fontunderline:on")
+        code, out, err = self.t(
+            "1 info rc.color:off rc._forcecolor:off rc.fontunderline:on"
+        )
         self.assertIn("--------", out)
 
     def test_nocolor_force_nounderline(self):
-        code, out, err = self.t("1 info rc.color:off rc._forcecolor:on rc.fontunderline:off")
+        code, out, err = self.t(
+            "1 info rc.color:off rc._forcecolor:on rc.fontunderline:off"
+        )
         self.assertIn("--------", out)
 
     def test_nocolor_force_underline(self):
-        code, out, err = self.t("1 info rc.color:off rc._forcecolor:on rc.fontunderline:on")
+        code, out, err = self.t(
+            "1 info rc.color:off rc._forcecolor:on rc.fontunderline:on"
+        )
         self.assertNotIn("--------", out)
 
     def test_color_noforce_nounderline(self):
-        code, out, err = self.t("1 info rc.color:on rc._forcecolor:off rc.fontunderline:off")
+        code, out, err = self.t(
+            "1 info rc.color:on rc._forcecolor:off rc.fontunderline:off"
+        )
         self.assertIn("--------", out)
 
     def test_color_noforce_underline(self):
-        code, out, err = self.t("1 info rc.color:on rc._forcecolor:off rc.fontunderline:on")
+        code, out, err = self.t(
+            "1 info rc.color:on rc._forcecolor:off rc.fontunderline:on"
+        )
         self.assertIn("--------", out)
 
     def test_color_force_nounderline(self):
-        code, out, err = self.t("1 info rc.color:on rc._forcecolor:on rc.fontunderline:off")
+        code, out, err = self.t(
+            "1 info rc.color:on rc._forcecolor:on rc.fontunderline:off"
+        )
         self.assertIn("--------", out)
 
     def test_color_force_underline(self):
-        code, out, err = self.t("1 info rc.color:on rc._forcecolor:on rc.fontunderline:on")
+        code, out, err = self.t(
+            "1 info rc.color:on rc._forcecolor:on rc.fontunderline:on"
+        )
         self.assertNotIn("--------", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

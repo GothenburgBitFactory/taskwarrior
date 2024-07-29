@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -58,11 +59,11 @@ class TestAdd(TestCase):
     def test_floating_point_preservation(self):
         """924: Verify that floating point numbers are unmolested
 
-           Bug 924: '1.0' --> '1.0000'
+        Bug 924: '1.0' --> '1.0000'
         """
         self.t("add release 1.0")
         self.t("add 'release 2.0'")
-        self.t("add \\\"release 3.0\\\"")
+        self.t('add \\"release 3.0\\"')
 
         code, out, err = self.t("_get 1.description")
         self.assertEqual(out, "release 1.0\n")
@@ -76,19 +77,19 @@ class TestAdd(TestCase):
     def test_escaped_quotes_are_preserved(self):
         """917: Verify that escaped quotes are preserved
 
-           Bug 917: escaping runs amok
+        Bug 917: escaping runs amok
         """
         self.t("add one \\'two\\' three")
-        self.t("add four \\\"five\\\" six")
+        self.t('add four \\"five\\" six')
 
         code, out, err = self.t("list")
         self.assertIn("one 'two' three", out)
-        self.assertIn("four \"five\" six", out)
+        self.assertIn('four "five" six', out)
 
     def test_extra_space_in_path(self):
         """884: Test that path-like args are preserved
 
-           Bug 884: Extra space in path name.
+        Bug 884: Extra space in path name.
         """
         self.t("add /one/two/three/")
         self.t("add '/four/five/six/'")
@@ -100,9 +101,9 @@ class TestAdd(TestCase):
     def test_parentheses_and_spaces_preserved(self):
         """819: Test parentheses and spacing is preserved on add
 
-           Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
+        Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
         """
-        self.t("add foo\\\'s bar")
+        self.t("add foo\\'s bar")
         self.t("add foo (bar)")
         self.t("add 'baz (qux)'")
 
@@ -114,11 +115,11 @@ class TestAdd(TestCase):
     def test_single_quote_preserved(self):
         """1642: Test single quote in a terminated multi-word string is preserved
 
-           TW-1642: After "--", an apostrophe unexpectedly ends the task description
+        TW-1642: After "--", an apostrophe unexpectedly ends the task description
         """
-        self.t("add -- \"Return Randy's stuff\"")
+        self.t('add -- "Return Randy\'s stuff"')
 
-        code, out, err = self.t ("_get 1.description")
+        code, out, err = self.t("_get 1.description")
         self.assertIn("Return Randy's stuff\n", out)
 
 
@@ -190,7 +191,7 @@ class Test1549(TestCase):
         """
 
         # This command will hang and therefore timeout in 2.4.1.
-        code, out, err = self.t('rc.verbose:new-id add 1e x')
+        code, out, err = self.t("rc.verbose:new-id add 1e x")
         self.assertIn("Created task 1.", out)
 
 
@@ -202,7 +203,7 @@ class TestBug1612(TestCase):
     def test_spurious_whitespace(self):
         """1612: ensure that extra whitespace does not get added.
 
-           tw-1612: Spurious whitespace added in task descriptions around certain symbols
+        tw-1612: Spurious whitespace added in task descriptions around certain symbols
         """
         self.t("add 'foo-bar (http://baz.org/)'")
         self.t("add 'spam (foo bar)'")
@@ -232,8 +233,8 @@ class TestBug1719(TestCase):
 
     def test_improper_ordinals(self):
         """1719: Description cannot contain improper ordinals"""
-        self.t("add one 1th");
-        self.t("add two 23rd");
+        self.t("add one 1th")
+        self.t("add two 23rd")
 
         code, out, err = self.t("_get 1.description")
         self.assertEqual("one 1th\n", out)
@@ -244,6 +245,7 @@ class TestBug1719(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

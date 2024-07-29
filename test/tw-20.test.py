@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -48,7 +49,7 @@ class TestBug20(TestCase):
         self.t.env["VISUAL"] = self.editor
 
     def test_annotate_edit_does_not_delete(self):
-        """ edit annotation should not delete then add untouched annotations """
+        """edit annotation should not delete then add untouched annotations"""
         self.t("add tw-20")
 
         self.t("1 annotate 1st annotation")
@@ -62,8 +63,8 @@ class TestBug20(TestCase):
         code, _timestamp1b, err = self.t("_get 1.annotations.1.entry")
         code, _timestamp2b, err = self.t("_get 1.annotations.2.entry")
 
-        self.assertEqual( _timestamp1a, _timestamp1b )
-        self.assertEqual( _timestamp2a, _timestamp2b )
+        self.assertEqual(_timestamp1a, _timestamp1b)
+        self.assertEqual(_timestamp2a, _timestamp2b)
 
         code, out, err = self.t("info")
 
@@ -73,6 +74,7 @@ class TestBug20(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

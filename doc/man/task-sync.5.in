@@ -101,7 +101,7 @@ Then configure Taskwarrior with:
     $ task config sync.gcp.bucket               <bucket-name>
 .fi
 
-However you can bring your own service account credentials if your 
+However you can bring your own service account credentials if your
 `application-default` is already being used by some other application
 
 To begin, navigate to the "IAM and Admin" section in the Navigation Menu, then select "Roles."
@@ -112,8 +112,8 @@ Provide an appropriate name and description for the new role.
 Add permissions to your new role using the filter "Service:storage" (not the "Filter permissions by role" input box).
 Select the following permissions:
 
-    - storage.buckets.create    
-    - storage.buckets.get    
+    - storage.buckets.create
+    - storage.buckets.get
     - storage.buckets.update
     - storage.objects.create
     - storage.objects.delete

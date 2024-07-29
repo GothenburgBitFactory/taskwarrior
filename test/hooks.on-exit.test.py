@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,7 +43,7 @@ class TestHooksOnExit(TestCase):
 
     def test_onexit_builtin_good(self):
         """on-exit-good - a well-behaved, successful, on-exit hook."""
-        hookname = 'on-exit-good'
+        hookname = "on-exit-good"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("version")
@@ -57,7 +58,7 @@ class TestHooksOnExit(TestCase):
 
     def test_onexit_builtin_good_gets_changed_tasks(self):
         """on-exit-good - a well-behaved, successful, on-exit hook."""
-        hookname = 'on-exit-good'
+        hookname = "on-exit-good"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
@@ -73,7 +74,7 @@ class TestHooksOnExit(TestCase):
 
     def test_onexit_builtin_bad(self):
         """on-exit-bad - a well-behaved, failing, on-exit hook."""
-        hookname = 'on-exit-bad'
+        hookname = "on-exit-bad"
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
@@ -89,7 +90,7 @@ class TestHooksOnExit(TestCase):
 
     def test_onexit_builtin_misbehave1(self):
         """on-exit-misbehave1 - Does not consume input."""
-        hookname = 'on-exit-misbehave1'
+        hookname = "on-exit-misbehave1"
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
@@ -105,7 +106,7 @@ class TestHooksOnExit(TestCase):
 
     def test_onexit_builtin_misbehave2(self):
         """on-exit-misbehave2 - Emits unexpected JSON."""
-        hookname = 'on-exit-misbehave2'
+        hookname = "on-exit-misbehave2"
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
@@ -119,8 +120,10 @@ class TestHooksOnExit(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

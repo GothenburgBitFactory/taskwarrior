@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDSTATS
 #define INCLUDED_CMDSTATS
 
-#include <string>
 #include <Command.h>
 
-class CmdStats : public Command
-{
-public:
-  CmdStats ();
-  int execute (std::string&);
+#include <string>
+
+class CmdStats : public Command {
+ public:
+  CmdStats();
+  int execute(std::string&);
 };
 
 #endif

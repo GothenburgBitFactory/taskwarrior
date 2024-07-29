@@ -25,49 +25,50 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColID.h>
-#include <math.h>
 #include <format.h>
+#include <math.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnID::ColumnID ()
-{
-  _name       = "id";
-  _style      = "number";
-  _label      = "ID";
+ColumnID::ColumnID() {
+  _name = "id";
+  _style = "number";
+  _label = "ID";
   _modifiable = false;
-  _styles     = {"number"};
-  _examples   = {"123"};
+  _styles = {"number"};
+  _examples = {"123"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnID::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
+void ColumnID::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   int length;
 
-       if (task.id < 10)     length = 1;                                  // Fast
-  else if (task.id < 100)    length = 2;                                  // Fast
-  else if (task.id < 1000)   length = 3;                                  // Fast
-  else if (task.id < 10000)  length = 4;                                  // Fast
-  else if (task.id < 100000) length = 5;                                  // Fast
-  else                       length = 1 + (int) log10 ((double) task.id); // Slow
+  if (task.id < 10)
+    length = 1;  // Fast
+  else if (task.id < 100)
+    length = 2;  // Fast
+  else if (task.id < 1000)
+    length = 3;  // Fast
+  else if (task.id < 10000)
+    length = 4;  // Fast
+  else if (task.id < 100000)
+    length = 5;  // Fast
+  else
+    length = 1 + (int)log10((double)task.id);  // Slow
 
   minimum = maximum = length;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnID::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-   // Completed and deleted tasks have no ID.
+void ColumnID::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+  // Completed and deleted tasks have no ID.
   if (task.id)
-    renderInteger (lines, width, color, task.id);
+    renderInteger(lines, width, color, task.id);
   else
-    renderStringRight (lines, width, color, "-");
+    renderStringRight(lines, width, color, "-");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -29,6 +29,7 @@ import string
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -81,9 +82,9 @@ class TestDependencies(TestCase):
 
     def test_circular_5(self):
         """Check circular dependencies are caught, using 5 tasks"""
-        self.t("add three") 
-        self.t("add four") 
-        self.t("add five") 
+        self.t("add three")
+        self.t("add four")
+        self.t("add five")
         self.t("5 modify dep:4")
         self.t("4 modify dep:3")
         self.t("3 modify dep:2")
@@ -116,9 +117,9 @@ class TestDependencies(TestCase):
 
     def test_modify_multiple(self):
         """Check circular dependencies are caught, using 5 tasks"""
-        self.t("add three") 
-        self.t("add four") 
-        self.t("add five") 
+        self.t("add three")
+        self.t("add four")
+        self.t("add five")
         code, out, err = self.t("1 modify dep:2,3,4")
         self.assertIn("Modified 1 task.", out)
 
@@ -235,18 +236,18 @@ class TestBug697(TestCase):
     def test_blocking_to_recurring(self):
         """697: Verify that making a blocking task into a recurring task breaks dependencies
 
-           Bug 697: Making a blocking task recur breaks dependency.
-             1. Create 2 tasks: "foo" and "bar".
-             2. Give "bar" a due date.
-             3. Make "foo" depend on "bar".
-             4. Make "bar" recur yearly.
+        Bug 697: Making a blocking task recur breaks dependency.
+          1. Create 2 tasks: "foo" and "bar".
+          2. Give "bar" a due date.
+          3. Make "foo" depend on "bar".
+          4. Make "bar" recur yearly.
         """
         self.t("add one")
         self.t("add two")
         self.t("2 modify due:eom")
         self.t("1 modify depends:2")
         self.t("2 modify recur:yearly")
-        self.t("list") # GC/handleRecurrence
+        self.t("list")  # GC/handleRecurrence
 
         # The problem is that although 1 --> 2, 2 is now a recurring parent, and as 1
         # depends on the parent UUID, it is not something transferred to the child on
@@ -332,21 +333,21 @@ class TestFeature725(TestCase):
 class Test1481(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t('add parent')
-        self.t('add child')
-        self.t('add child2')
-        self.child1_uuid = self.t.export_one(2)['uuid']
-        self.child2_uuid = self.t.export_one(3)['uuid']
+        self.t("add parent")
+        self.t("add child")
+        self.t("add child2")
+        self.child1_uuid = self.t.export_one(2)["uuid"]
+        self.child2_uuid = self.t.export_one(3)["uuid"]
 
     def test_set_dependency_on_first_completed_task(self):
         """1481: Sets dependency on task which has been just completed."""
-        self.t('2 done')
+        self.t("2 done")
 
         # Trigger the GC to clear up IDs
-        self.t('next')
+        self.t("next")
 
         # Set the dependency
-        self.t('1 modify depends:%s' % self.child1_uuid)
+        self.t("1 modify depends:%s" % self.child1_uuid)
 
     def test_set_dependency_on_second_completed_task(self):
         """
@@ -354,26 +355,25 @@ class Test1481(TestCase):
         before most recently completed task.
         """
 
-        self.t('2 done')
-        self.t('3 done')
+        self.t("2 done")
+        self.t("3 done")
 
         # Trigger the GC to clear up IDs
-        self.t('next')
+        self.t("next")
 
         # Set the dependencies
-        self.t('1 modify depends:%s' % self.child2_uuid)
+        self.t("1 modify depends:%s" % self.child2_uuid)
 
     def test_set_dependency_on_two_completed_tasks(self):
-        """ 1481: Sets dependency on two most recent completed tasks. """
-        self.t('2 done')
-        self.t('3 done')
+        """1481: Sets dependency on two most recent completed tasks."""
+        self.t("2 done")
+        self.t("3 done")
 
         # Trigger the GC to clear up IDs
-        self.t('next')
+        self.t("next")
 
         # Set the dependencies
-        self.t('1 modify depends:%s,%s' % (self.child1_uuid,
-                                           self.child2_uuid))
+        self.t("1 modify depends:%s,%s" % (self.child1_uuid, self.child2_uuid))
 
 
 # TODO - test dependency.confirmation config variable
@@ -385,6 +385,7 @@ class Test1481(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 from datetime import datetime
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -52,6 +53,7 @@ from basetest import Task, TestCase
 #     self.assertRegex(t, r)
 #     self.assertNotRegex(t, r)
 #     self.tap("")
+
 
 class TestBugNumber(TestCase):
     @classmethod
@@ -80,16 +82,16 @@ class TestBugNumber(TestCase):
     def test_faketime(self):
         """Running tests using libfaketime
 
-           WARNING:
-             faketime version 0.9.6 and later correctly propagates non-zero
-             exit codes.  Please don't combine faketime tests and
-             self.t.runError().
+        WARNING:
+          faketime version 0.9.6 and later correctly propagates non-zero
+          exit codes.  Please don't combine faketime tests and
+          self.t.runError().
 
-             https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=750721
+          https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=750721
         """
         self.t.faketime("-2y")
 
-        command = ("add Testing")
+        command = "add Testing"
         self.t(command)
 
         # Remove FAKETIME settings
@@ -188,12 +190,12 @@ sys.exit(0)
         self.assertIn("/Hello/Greetings/", logs["calls"][0]["args"])
 
         # Some message output from the hook
-        self.assertEqual(logs["output"]["msgs"][0],
-                         "Hello from the template hook")
+        self.assertEqual(logs["output"]["msgs"][0], "Hello from the template hook")
 
         # This is what taskwarrior received
-        self.assertEqual(logs["output"]["json"][0]["description"],
-                         "This is an example modify hook")
+        self.assertEqual(
+            logs["output"]["json"][0]["description"], "This is an example modify hook"
+        )
 
     def test_onmodify_bad_builtin_with_log(self):
         """Testing a builtin hook and keeping track of its input/output
@@ -216,16 +218,17 @@ sys.exit(0)
         hook.assertExitcode(1)
 
         # Some message output from the hook
-        self.assertEqual(logs["output"]["msgs"][0],
-                         "Hello from the template hook")
+        self.assertEqual(logs["output"]["msgs"][0], "Hello from the template hook")
 
         # This is what taskwarrior would have used if hook finished cleanly
-        self.assertEqual(logs["output"]["json"][0]["description"],
-                         "This is an example modify hook")
+        self.assertEqual(
+            logs["output"]["json"][0]["description"], "This is an example modify hook"
+        )
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

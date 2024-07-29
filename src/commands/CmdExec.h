@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDEXEC
 #define INCLUDED_CMDEXEC
 
-#include <string>
 #include <Command.h>
 
-class CmdExec : public Command
-{
-public:
-  CmdExec ();
-  int execute (std::string&);
+#include <string>
+
+class CmdExec : public Command {
+ public:
+  CmdExec();
+  int execute(std::string&);
 };
 
 #endif

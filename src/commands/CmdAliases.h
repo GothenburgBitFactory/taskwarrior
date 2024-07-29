@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDALIASES
 #define INCLUDED_CMDALIASES
 
-#include <string>
 #include <Command.h>
 
-class CmdCompletionAliases : public Command
-{
-public:
-  CmdCompletionAliases ();
-  int execute (std::string&);
+#include <string>
+
+class CmdCompletionAliases : public Command {
+ public:
+  CmdCompletionAliases();
+  int execute(std::string&);
 };
 
 #endif

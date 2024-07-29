@@ -25,29 +25,29 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdUndo.h>
 #include <Context.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdUndo::CmdUndo ()
-{
-  _keyword               = "undo";
-  _usage                 = "task          undo";
-  _description           = "Reverts the most recent change to a task";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdUndo::CmdUndo() {
+  _keyword = "undo";
+  _usage = "task          undo";
+  _description = "Reverts the most recent change to a task";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::operation;
+  _category = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdUndo::execute (std::string&)
-{
-  Context::getContext ().tdb2.revert ();
+int CmdUndo::execute(std::string&) {
+  Context::getContext().tdb2.revert();
   return 0;
 }
 

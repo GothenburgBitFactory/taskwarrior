@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -54,19 +55,23 @@ class TestEnpassantMultiple(BaseTestEnpassant):
         code, out, err = self.t((id, "info"))
 
         self.assertRegex(
-            out, "Status +Completed",
+            out,
+            "Status +Completed",
             msg="enpassant {0} status change".format(id),
         )
         self.assertRegex(
-            out, "Priority +H",
+            out,
+            "Priority +H",
             msg="enpassant {0} priority change".format(id),
         )
         self.assertRegex(
-            out, "Tags +tag",
+            out,
+            "Tags +tag",
             msg="enpassant {0} tag change".format(id),
         )
         self.assertRegex(
-            out, "Description +{0}".format(desc),
+            out,
+            "Description +{0}".format(desc),
             msg="enpassant {0} description change".format(id),
         )
 
@@ -94,28 +99,33 @@ class TestEnpassant(BaseTestEnpassant):
     def perform_action(self, action):
         self.t(("1", action, "oneanno"))
         code, out, err = self.t("1 info")
-        self.assertRegex(out, "Description +one\n[0-9: -]+ oneanno",
-                                 msg="{0} enpassant annotation".format(action))
+        self.assertRegex(
+            out,
+            "Description +one\n[0-9: -]+ oneanno",
+            msg="{0} enpassant annotation".format(action),
+        )
 
         self.t(("2", action, "/two/TWO/"))
         code, out, err = self.t("2 info")
-        self.assertRegex(out, "Description +TWO",
-                                 msg="{0} enpassant modify".format(action))
+        self.assertRegex(
+            out, "Description +TWO", msg="{0} enpassant modify".format(action)
+        )
 
         self.t(("3", action, "+threetag"))
         code, out, err = self.t("3 info")
-        self.assertRegex(out, "Tags +threetag",
-                                 msg="{0} enpassant tag".format(action))
+        self.assertRegex(out, "Tags +threetag", msg="{0} enpassant tag".format(action))
 
         self.t(("4", action, "pri:H"))
         code, out, err = self.t("4 info")
-        self.assertRegex(out, "Priority +H",
-                                 msg="{0} enpassant priority".format(action))
+        self.assertRegex(
+            out, "Priority +H", msg="{0} enpassant priority".format(action)
+        )
 
         self.t(("5", action, "pro:PROJ"))
         code, out, err = self.t("5 info")
-        self.assertRegex(out, "Project +PROJ",
-                                 msg="{0} enpassant project".format(action))
+        self.assertRegex(
+            out, "Project +PROJ", msg="{0} enpassant project".format(action)
+        )
 
     def test_done(self):
         """Test 'done' with en-passant changes"""
@@ -138,6 +148,7 @@ class TestEnpassant(BaseTestEnpassant):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

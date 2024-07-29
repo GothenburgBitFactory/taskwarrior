@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
@@ -39,7 +40,7 @@ class TestBug295(TestCase):
 
     def test_subst_with_slashes(self):
         """Test substitution containing slashes"""
-        self.t('add -- one/two/three')
+        self.t("add -- one/two/three")
 
         # Python string contains \\\\, converts to internal \\.
         # Something in the command processing converts \\ --> \.
@@ -49,12 +50,14 @@ class TestBug295(TestCase):
         # code, out, err = self.t('rc.debug.parser=2 1 modify /\\\\/two\\\\//TWO/')
         # self.tap(err)
 
-        self.t('1 modify /\\\\/two\\\\//TWO/')
-        code, out, err = self.t('list')
-        self.assertIn('oneTWOthree', out)
+        self.t("1 modify /\\\\/two\\\\//TWO/")
+        code, out, err = self.t("list")
+        self.assertIn("oneTWOthree", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -27,64 +27,60 @@
 #ifndef INCLUDED_COLUDA
 #define INCLUDED_COLUDA
 
-#include <ColTypeString.h>
-#include <ColTypeNumeric.h>
 #include <ColTypeDate.h>
 #include <ColTypeDuration.h>
+#include <ColTypeNumeric.h>
+#include <ColTypeString.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-class ColumnUDAString : public ColumnTypeString
-{
-public:
-  ColumnUDAString ();
-  bool validate (const std::string&) const;
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnUDAString : public ColumnTypeString {
+ public:
+  ColumnUDAString();
+  bool validate(const std::string&) const;
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-public:
-  std::vector <std::string> _values;
+ public:
+  std::vector<std::string> _values;
 
-private:
+ private:
   bool _hyphenate;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-class ColumnUDANumeric : public ColumnTypeNumeric
-{
-public:
-  ColumnUDANumeric ();
-  bool validate (const std::string&) const;
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnUDANumeric : public ColumnTypeNumeric {
+ public:
+  ColumnUDANumeric();
+  bool validate(const std::string&) const;
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-public:
-  std::vector <std::string> _values;
+ public:
+  std::vector<std::string> _values;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-class ColumnUDADate : public ColumnTypeDate
-{
-public:
-  ColumnUDADate ();
-  bool validate (const std::string&) const;
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnUDADate : public ColumnTypeDate {
+ public:
+  ColumnUDADate();
+  bool validate(const std::string&) const;
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-public:
-  std::vector <std::string> _values;
+ public:
+  std::vector<std::string> _values;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-class ColumnUDADuration : public ColumnTypeDuration
-{
-public:
-  ColumnUDADuration ();
-  bool validate (const std::string&) const;
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnUDADuration : public ColumnTypeDuration {
+ public:
+  ColumnUDADuration();
+  bool validate(const std::string&) const;
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-public:
-  std::vector <std::string> _values;
+ public:
+  std::vector<std::string> _values;
 };
 
 #endif

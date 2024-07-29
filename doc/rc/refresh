@@ -6,4 +6,3 @@ do
   echo $locale
   ../../scripts/add-ons/update-holidays.pl --locale $locale --file holidays.${locale}.rc
 done
-

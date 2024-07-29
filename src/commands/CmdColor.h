@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDCOLOR
 #define INCLUDED_CMDCOLOR
 
-#include <string>
 #include <Command.h>
 
-class CmdColor : public Command
-{
-public:
-  CmdColor ();
-  int execute (std::string&);
+#include <string>
+
+class CmdColor : public Command {
+ public:
+  CmdColor();
+  int execute(std::string&);
 };
 
 #endif

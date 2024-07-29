@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -64,7 +65,7 @@ class TestBug1575(TestCase):
     def test_spurious_whitespace_in_url(self):
         """1575: ensure that extra whitespace does not get inserted into a URL.
 
-           tw-1575: `task log` mangles URLs when quoted
+        tw-1575: `task log` mangles URLs when quoted
         """
         self.t("log testing123 https://foo.example.com")
 
@@ -74,6 +75,7 @@ class TestBug1575(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

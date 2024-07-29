@@ -9,6 +9,7 @@
 
 ## Install Optional Dependencies:
  * python 3 (for running the test suite)
+ * pre-commit (for applying formatting changes locally)
  * clangd or ccls (for C++ integration in many editors)
  * rust-analyzer (for Rust integration in many editors)
 

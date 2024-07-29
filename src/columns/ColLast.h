@@ -29,14 +29,13 @@
 
 #include <ColTypeNumeric.h>
 
-class ColumnLast : public ColumnTypeNumeric
-{
-public:
-  ColumnLast ();
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnLast : public ColumnTypeNumeric {
+ public:
+  ColumnLast();
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-private:
+ private:
 };
 
 #endif

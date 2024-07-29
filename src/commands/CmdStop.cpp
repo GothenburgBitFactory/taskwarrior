@@ -25,91 +25,81 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdStop.h>
-#include <iostream>
 #include <Context.h>
 #include <Filter.h>
-#include <main.h>
 #include <format.h>
+#include <main.h>
+
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdStop::CmdStop ()
-{
-  _keyword               = "stop";
-  _usage                 = "task <filter> stop <mods>";
-  _description           = "Removes the 'start' time from a task";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = true;
-  _accepts_filter        = true;
+CmdStop::CmdStop() {
+  _keyword = "stop";
+  _usage = "task <filter> stop <mods>";
+  _description = "Removes the 'start' time from a task";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = true;
+  _accepts_filter = true;
   _accepts_modifications = true;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::operation;
+  _category = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdStop::execute (std::string&)
-{
+int CmdStop::execute(std::string&) {
   int rc = 0;
   int count = 0;
 
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
-  if (filtered.size () == 0)
-  {
-    Context::getContext ().footnote ("No tasks specified.");
+  std::vector<Task> filtered;
+  filter.subset(filtered);
+  if (filtered.size() == 0) {
+    Context::getContext().footnote("No tasks specified.");
     return 1;
   }
 
   // Accumulated project change notifications.
-  std::map <std::string, std::string> projectChanges;
+  std::map<std::string, std::string> projectChanges;
 
-  if(filtered.size() > 1) {
+  if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
-  for (auto& task : filtered)
-  {
-    if (task.has ("start"))
-    {
-      Task before (task);
+  for (auto& task : filtered) {
+    if (task.has("start")) {
+      Task before(task);
 
       // Stop the specified task.
-      std::string question = format ("Stop task {1} '{2}'?",
-                                     task.identifier (true),
-                                     task.get ("description"));
+      std::string question =
+          format("Stop task {1} '{2}'?", task.identifier(true), task.get("description"));
 
-      task.modify (Task::modAnnotate);
-      task.remove ("start");
+      task.modify(Task::modAnnotate);
+      task.remove("start");
 
-      if (Context::getContext ().config.getBoolean ("journal.time"))
-        task.addAnnotation (Context::getContext ().config.get ("journal.time.stop.annotation"));
+      if (Context::getContext().config.getBoolean("journal.time"))
+        task.addAnnotation(Context::getContext().config.get("journal.time.stop.annotation"));
 
-      if (permission (before.diff (task) + question, filtered.size ()))
-      {
-        updateRecurrenceMask (task);
-        Context::getContext ().tdb2.modify (task);
+      if (permission(before.diff(task) + question, filtered.size())) {
+        updateRecurrenceMask(task);
+        Context::getContext().tdb2.modify(task);
         ++count;
-        feedback_affected ("Stopping task {1} '{2}'.", task);
-        dependencyChainOnStart (task);
-        if (Context::getContext ().verbose ("project"))
-          projectChanges[task.get ("project")] = onProjectChange (task, false);
-      }
-      else
-      {
+        feedback_affected("Stopping task {1} '{2}'.", task);
+        dependencyChainOnStart(task);
+        if (Context::getContext().verbose("project"))
+          projectChanges[task.get("project")] = onProjectChange(task, false);
+      } else {
         std::cout << "Task not stopped.\n";
         rc = 1;
-        if (_permission_quit)
-          break;
+        if (_permission_quit) break;
       }
-    }
-    else
-    {
-      std::cout << format ("Task {1} '{2}' not started.",
-                           task.identifier (true),
-                           task.get ("description"))
+    } else {
+      std::cout << format("Task {1} '{2}' not started.", task.identifier(true),
+                          task.get("description"))
                 << '\n';
       rc = 1;
     }
@@ -117,10 +107,9 @@ int CmdStop::execute (std::string&)
 
   // Now list the project changes.
   for (auto& change : projectChanges)
-    if (change.first != "")
-      Context::getContext ().footnote (change.second);
+    if (change.first != "") Context::getContext().footnote(change.second);
 
-  feedback_affected (count == 1 ?  "Stopped {1} task." : "Stopped {1} tasks.", count);
+  feedback_affected(count == 1 ? "Stopped {1} task." : "Stopped {1} tasks.", count);
   return rc;
 }
 

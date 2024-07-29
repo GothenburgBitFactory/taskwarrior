@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDADD
 #define INCLUDED_CMDADD
 
-#include <string>
 #include <Command.h>
 
-class CmdAdd : public Command
-{
-public:
-  CmdAdd ();
-  int execute (std::string&);
+#include <string>
+
+class CmdAdd : public Command {
+ public:
+  CmdAdd();
+  int execute(std::string&);
 };
 
 #endif

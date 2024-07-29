@@ -25,25 +25,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColDue.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnDue::ColumnDue ()
-{
-  _name       = "due";
+ColumnDue::ColumnDue() {
+  _name = "due";
   _modifiable = true;
-  _label      = "Due";
+  _label = "Due";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
-void ColumnDue::setStyle (const std::string& value)
-{
-  Column::setStyle (value);
+void ColumnDue::setStyle(const std::string& value) {
+  Column::setStyle(value);
 
-  if (_style == "countdown" && _label == "Due")
-    _label = "Count";
+  if (_style == "countdown" && _label == "Due") _label = "Count";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

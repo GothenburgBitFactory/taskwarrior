@@ -25,18 +25,21 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <DOM.h>
-#include <sstream>
-#include <map>
-#include <stdlib.h>
-#include <Variant.h>
-#include <Lexer.h>
+// cmake.h include header must come first
+
 #include <Context.h>
+#include <DOM.h>
 #include <Datetime.h>
 #include <Duration.h>
-#include <shared.h>
+#include <Lexer.h>
+#include <Variant.h>
 #include <format.h>
+#include <shared.h>
+#include <stdlib.h>
 #include <util.h>
+
+#include <map>
+#include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
@@ -60,23 +63,18 @@
 //   system.version
 //   system.os
 //
-bool getDOM (const std::string& name, Variant& value)
-{
+bool getDOM(const std::string& name, Variant& value) {
   // Special case, blank refs cause problems.
-  if (name == "")
-    return false;
+  if (name == "") return false;
 
-  auto len = name.length ();
+  auto len = name.length();
 
   // rc. --> context.config
-  if (len > 3 &&
-      ! name.compare (0, 3, "rc.", 3))
-  {
-    auto key = name.substr (3);
-    auto c = Context::getContext ().config.find (key);
-    if (c != Context::getContext ().config.end ())
-    {
-      value = Variant (c->second);
+  if (len > 3 && !name.compare(0, 3, "rc.", 3)) {
+    auto key = name.substr(3);
+    auto c = Context::getContext().config.find(key);
+    if (c != Context::getContext().config.end()) {
+      value = Variant(c->second);
       return true;
     }
 
@@ -84,55 +82,41 @@ bool getDOM (const std::string& name, Variant& value)
   }
 
   // tw.*
-  if (len > 3 &&
-      ! name.compare (0, 3, "tw.", 3))
-  {
-    if (name == "tw.syncneeded")
-    {
-      value = Variant (0);
-      if (Context::getContext ().tdb2.num_local_changes () > 0) {
-        value = Variant (1);
+  if (len > 3 && !name.compare(0, 3, "tw.", 3)) {
+    if (name == "tw.syncneeded") {
+      value = Variant(0);
+      if (Context::getContext().tdb2.num_local_changes() > 0) {
+        value = Variant(1);
       }
 
       return true;
-    }
-    else if (name == "tw.program")
-    {
-      value = Variant (Context::getContext ().cli2.getBinary ());
+    } else if (name == "tw.program") {
+      value = Variant(Context::getContext().cli2.getBinary());
       return true;
-    }
-    else if (name == "tw.args")
-    {
+    } else if (name == "tw.args") {
       std::string commandLine;
-      for (auto& arg : Context::getContext ().cli2._original_args)
-      {
-        if (commandLine != "")
-           commandLine += ' ';
+      for (auto& arg : Context::getContext().cli2._original_args) {
+        if (commandLine != "") commandLine += ' ';
 
         commandLine += arg.attribute("raw");
       }
 
-      value = Variant (commandLine);
+      value = Variant(commandLine);
       return true;
-    }
-    else if (name == "tw.width")
-    {
-      value = Variant (static_cast<int> (Context::getContext ().terminal_width
-                                           ? Context::getContext ().terminal_width
-                                           : Context::getContext ().getWidth ()));
+    } else if (name == "tw.width") {
+      value = Variant(static_cast<int>(Context::getContext().terminal_width
+                                           ? Context::getContext().terminal_width
+                                           : Context::getContext().getWidth()));
       return true;
-    }
-    else if (name == "tw.height")
-    {
-      value = Variant (static_cast<int> (Context::getContext ().terminal_height
-                                           ? Context::getContext ().terminal_height
-                                           : Context::getContext ().getHeight ()));
+    } else if (name == "tw.height") {
+      value = Variant(static_cast<int>(Context::getContext().terminal_height
+                                           ? Context::getContext().terminal_height
+                                           : Context::getContext().getHeight()));
       return true;
     }
 
-    else if (name == "tw.version")
-    {
-      value = Variant (VERSION);
+    else if (name == "tw.version") {
+      value = Variant(VERSION);
       return true;
     }
 
@@ -140,40 +124,29 @@ bool getDOM (const std::string& name, Variant& value)
   }
 
   // context.*
-  if (len > 8 &&
-      ! name.compare (0, 8, "context.", 8))
-  {
-    if (name == "context.program")
-    {
-      value = Variant (Context::getContext ().cli2.getBinary ());
+  if (len > 8 && !name.compare(0, 8, "context.", 8)) {
+    if (name == "context.program") {
+      value = Variant(Context::getContext().cli2.getBinary());
       return true;
-    }
-    else if (name == "context.args")
-    {
+    } else if (name == "context.args") {
       std::string commandLine;
-      for (auto& arg : Context::getContext ().cli2._original_args)
-      {
-        if (commandLine != "")
-           commandLine += ' ';
+      for (auto& arg : Context::getContext().cli2._original_args) {
+        if (commandLine != "") commandLine += ' ';
 
         commandLine += arg.attribute("raw");
       }
 
-      value = Variant (commandLine);
+      value = Variant(commandLine);
       return true;
-    }
-    else if (name == "context.width")
-    {
-      value = Variant (static_cast<int> (Context::getContext ().terminal_width
-                                           ? Context::getContext ().terminal_width
-                                           : Context::getContext ().getWidth ()));
+    } else if (name == "context.width") {
+      value = Variant(static_cast<int>(Context::getContext().terminal_width
+                                           ? Context::getContext().terminal_width
+                                           : Context::getContext().getWidth()));
       return true;
-    }
-    else if (name == "context.height")
-    {
-      value = Variant (static_cast<int> (Context::getContext ().terminal_height
-                                           ? Context::getContext ().terminal_height
-                                           : Context::getContext ().getHeight ()));
+    } else if (name == "context.height") {
+      value = Variant(static_cast<int>(Context::getContext().terminal_height
+                                           ? Context::getContext().terminal_height
+                                           : Context::getContext().getHeight()));
       return true;
     }
 
@@ -181,20 +154,16 @@ bool getDOM (const std::string& name, Variant& value)
   }
 
   // system. --> Implement locally.
-  if (len > 7 &&
-      ! name.compare (0, 7, "system.", 7))
-  {
+  if (len > 7 && !name.compare(0, 7, "system.", 7)) {
     // Taskwarrior version number.
-    if (name == "system.version")
-    {
-      value = Variant (VERSION);
+    if (name == "system.version") {
+      value = Variant(VERSION);
       return true;
     }
 
     // OS type.
-    else if (name == "system.os")
-    {
-      value = Variant (osName ());
+    else if (name == "system.os") {
+      value = Variant(osName());
       return true;
     }
 
@@ -237,210 +206,192 @@ bool getDOM (const std::string& name, Variant& value)
 //
 // If task is NULL, then the contextual task will be determined from the DOM
 // string, if any exists.
-bool getDOM (const std::string& name, const Task* task, Variant& value)
-{
+bool getDOM(const std::string& name, const Task* task, Variant& value) {
   // Special case, blank refs cause problems.
-  if (name == "")
-    return false;
+  if (name == "") return false;
 
   // Quickly deal with the most common cases.
-  if (task && name == "id")
-  {
-    value = Variant (static_cast<int> (task->id));
+  if (task && name == "id") {
+    value = Variant(static_cast<int>(task->id));
     return true;
   }
 
-  if (task && name == "urgency")
-  {
-    value = Variant (task->urgency_c ());
+  if (task && name == "urgency") {
+    value = Variant(task->urgency_c());
     return true;
   }
 
   // split name on '.'
-  auto elements = split (name, '.');
+  auto elements = split(name, '.');
   Task loaded_task;
 
   // decide whether the reference is going to be the passed
   // "task" or whether it's going to be a newly loaded task (if id/uuid was
   // given).
   const Task* ref = task;
-  Lexer lexer (elements[0]);
+  Lexer lexer(elements[0]);
   std::string token;
   Lexer::Type type;
 
   // If this can be ID/UUID reference (the name contains '.'),
   // lex it to figure out. Otherwise don't lex, as lexing can be slow.
-  if ((elements.size() > 1) and lexer.token (token, type))
-  {
+  if ((elements.size() > 1) and lexer.token(token, type)) {
     bool reloaded = false;
 
-    if (type == Lexer::Type::uuid &&
-        token.length () == elements[0].length ())
-    {
-      if (!task || token != task->get ("uuid"))
-      {
-        if (Context::getContext ().tdb2.get (token, loaded_task))
-          reloaded = true;
+    if (type == Lexer::Type::uuid && token.length() == elements[0].length()) {
+      if (!task || token != task->get("uuid")) {
+        if (Context::getContext().tdb2.get(token, loaded_task)) reloaded = true;
       }
 
       // Eat elements[0]/UUID.
-      elements.erase (elements.begin ());
-    }
-    else if (type == Lexer::Type::number &&
-             token.find ('.') == std::string::npos)
-    {
-      auto id = strtol (token.c_str (), nullptr, 10);
-      if (id && (!task || id != task->id))
-      {
-        if (Context::getContext ().tdb2.get (id, loaded_task))
-          reloaded = true;
+      elements.erase(elements.begin());
+    } else if (type == Lexer::Type::number && token.find('.') == std::string::npos) {
+      auto id = strtol(token.c_str(), nullptr, 10);
+      if (id && (!task || id != task->id)) {
+        if (Context::getContext().tdb2.get(id, loaded_task)) reloaded = true;
       }
 
       // Eat elements[0]/ID.
-      elements.erase (elements.begin ());
+      elements.erase(elements.begin());
     }
 
-    if (reloaded)
-      ref = &loaded_task;
+    if (reloaded) ref = &loaded_task;
   }
-
 
   // The remainder of this method requires a contextual task, so if we do not
   // have one, delegate to the two-argument getDOM
-  if (!ref)
-    return getDOM (name, value);
+  if (!ref) return getDOM(name, value);
 
-  auto size = elements.size ();
+  auto size = elements.size();
 
   std::string canonical;
-  if ((size == 1 || size == 2) && Context::getContext ().cli2.canonicalize (canonical, "attribute", elements[0]))
-  {
+  if ((size == 1 || size == 2) &&
+      Context::getContext().cli2.canonicalize(canonical, "attribute", elements[0])) {
     // Now that 'ref' is the contextual task, and any ID/UUID is chopped off the
     // elements vector, DOM resolution is now simple.
-    if (size == 1 && canonical == "id")
-    {
-      value = Variant (static_cast<int> (ref->id));
+    if (size == 1 && canonical == "id") {
+      value = Variant(static_cast<int>(ref->id));
       return true;
     }
 
-    if (size == 1 && canonical == "urgency")
-    {
-      value = Variant (ref->urgency_c ());
+    if (size == 1 && canonical == "urgency") {
+      value = Variant(ref->urgency_c());
       return true;
     }
 
     // Special handling of status required for virtual waiting status
     // implementation. Remove in 3.0.0.
-    if (size == 1 && canonical == "status")
-    {
-      value = Variant (ref->statusToText (ref->getStatus ()));
+    if (size == 1 && canonical == "status") {
+      value = Variant(ref->statusToText(ref->getStatus()));
       return true;
     }
 
-    Column* column = Context::getContext ().columns[canonical];
+    Column* column = Context::getContext().columns[canonical];
 
-    if (size == 1 && column)
-    {
-      if (column->is_uda () && ! ref->has (canonical))
-      {
-        value = Variant ("");
+    if (size == 1 && column) {
+      if (column->is_uda() && !ref->has(canonical)) {
+        value = Variant("");
         return true;
       }
 
-      if (column->type () == "date")
-      {
-        auto numeric = ref->get_date (canonical);
+      if (column->type() == "date") {
+        auto numeric = ref->get_date(canonical);
         if (numeric == 0)
-          value = Variant ("");
+          value = Variant("");
         else
-          value = Variant (numeric, Variant::type_date);
-      }
-      else if (column->type () == "duration" || canonical == "recur")
-      {
-        auto period = ref->get (canonical);
+          value = Variant(numeric, Variant::type_date);
+      } else if (column->type() == "duration" || canonical == "recur") {
+        auto period = ref->get(canonical);
 
         Duration iso;
         std::string::size_type cursor = 0;
-        if (iso.parse (period, cursor))
-          value = Variant (iso.toTime_t (), Variant::type_duration);
+        if (iso.parse(period, cursor))
+          value = Variant(iso.toTime_t(), Variant::type_duration);
         else
-          value = Variant (Duration (ref->get (canonical)).toTime_t (), Variant::type_duration);
-      }
-      else if (column->type () == "numeric")
-        value = Variant (ref->get_float (canonical));
+          value = Variant(Duration(ref->get(canonical)).toTime_t(), Variant::type_duration);
+      } else if (column->type() == "numeric")
+        value = Variant(ref->get_float(canonical));
       else
-        value = Variant (ref->get (canonical));
+        value = Variant(ref->get(canonical));
 
       return true;
     }
 
-    if (size == 2 && canonical == "tags")
-    {
-      value = Variant (ref->hasTag (elements[1]) ? elements[1] : "");
+    if (size == 2 && canonical == "tags") {
+      value = Variant(ref->hasTag(elements[1]) ? elements[1] : "");
       return true;
     }
 
-    if (size == 2 && column && column->type () == "date")
-    {
-      Datetime date (ref->get_date (canonical));
-           if (elements[1] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
-      else if (elements[1] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
-      else if (elements[1] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
-      else if (elements[1] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
-      else if (elements[1] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
-      else if (elements[1] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
-      else if (elements[1] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
-      else if (elements[1] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
-      else if (elements[1] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
+    if (size == 2 && column && column->type() == "date") {
+      Datetime date(ref->get_date(canonical));
+      if (elements[1] == "year") {
+        value = Variant(static_cast<int>(date.year()));
+        return true;
+      } else if (elements[1] == "month") {
+        value = Variant(static_cast<int>(date.month()));
+        return true;
+      } else if (elements[1] == "day") {
+        value = Variant(static_cast<int>(date.day()));
+        return true;
+      } else if (elements[1] == "week") {
+        value = Variant(static_cast<int>(date.week()));
+        return true;
+      } else if (elements[1] == "weekday") {
+        value = Variant(static_cast<int>(date.dayOfWeek()));
+        return true;
+      } else if (elements[1] == "julian") {
+        value = Variant(static_cast<int>(date.dayOfYear()));
+        return true;
+      } else if (elements[1] == "hour") {
+        value = Variant(static_cast<int>(date.hour()));
+        return true;
+      } else if (elements[1] == "minute") {
+        value = Variant(static_cast<int>(date.minute()));
+        return true;
+      } else if (elements[1] == "second") {
+        value = Variant(static_cast<int>(date.second()));
+        return true;
+      }
     }
   }
 
-  if (size == 2 && elements[0] == "annotations" && elements[1] == "count")
-  {
-    value = Variant (static_cast<int> (ref->getAnnotationCount ()));
+  if (size == 2 && elements[0] == "annotations" && elements[1] == "count") {
+    value = Variant(static_cast<int>(ref->getAnnotationCount()));
     return true;
   }
 
-  if (size == 3 && elements[0] == "annotations")
-  {
-    auto annos = ref->getAnnotations ();
+  if (size == 3 && elements[0] == "annotations") {
+    auto annos = ref->getAnnotations();
 
-    int a = strtol (elements[1].c_str (), nullptr, 10);
+    int a = strtol(elements[1].c_str(), nullptr, 10);
     int count = 0;
 
     // Count off the 'a'th annotation.
-    for (const auto& i : annos)
-    {
-      if (++count == a)
-      {
-        if (elements[2] == "entry")
-        {
+    for (const auto& i : annos) {
+      if (++count == a) {
+        if (elements[2] == "entry") {
           // annotation_1234567890
           // 0          ^11
-          value = Variant ((time_t) strtoll (i.first.substr (11).c_str (), NULL, 10), Variant::type_date);
+          value =
+              Variant((time_t)strtoll(i.first.substr(11).c_str(), NULL, 10), Variant::type_date);
           return true;
-        }
-        else if (elements[2] == "description")
-        {
-          value = Variant (i.second);
+        } else if (elements[2] == "description") {
+          value = Variant(i.second);
           return true;
         }
       }
     }
   }
 
-  if (size == 4 && elements[0] == "annotations" && elements[2] == "entry")
-  {
-    auto annos = ref->getAnnotations ();
+  if (size == 4 && elements[0] == "annotations" && elements[2] == "entry") {
+    auto annos = ref->getAnnotations();
 
-    int a = strtol (elements[1].c_str (), nullptr, 10);
+    int a = strtol(elements[1].c_str(), nullptr, 10);
     int count = 0;
 
     // Count off the 'a'th annotation.
-    for (const auto& i : annos)
-    {
-      if (++count == a)
-      {
+    for (const auto& i : annos) {
+      if (++count == a) {
         // <annotations>.<N>.entry.year
         // <annotations>.<N>.entry.month
         // <annotations>.<N>.entry.day
@@ -450,22 +401,41 @@ bool getDOM (const std::string& name, const Task* task, Variant& value)
         // <annotations>.<N>.entry.hour
         // <annotations>.<N>.entry.minute
         // <annotations>.<N>.entry.second
-        Datetime date (i.first.substr (11));
-             if (elements[3] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
-        else if (elements[3] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
-        else if (elements[3] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
-        else if (elements[3] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
-        else if (elements[3] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
-        else if (elements[3] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
-        else if (elements[3] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
-        else if (elements[3] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
-        else if (elements[3] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
+        Datetime date(i.first.substr(11));
+        if (elements[3] == "year") {
+          value = Variant(static_cast<int>(date.year()));
+          return true;
+        } else if (elements[3] == "month") {
+          value = Variant(static_cast<int>(date.month()));
+          return true;
+        } else if (elements[3] == "day") {
+          value = Variant(static_cast<int>(date.day()));
+          return true;
+        } else if (elements[3] == "week") {
+          value = Variant(static_cast<int>(date.week()));
+          return true;
+        } else if (elements[3] == "weekday") {
+          value = Variant(static_cast<int>(date.dayOfWeek()));
+          return true;
+        } else if (elements[3] == "julian") {
+          value = Variant(static_cast<int>(date.dayOfYear()));
+          return true;
+        } else if (elements[3] == "hour") {
+          value = Variant(static_cast<int>(date.hour()));
+          return true;
+        } else if (elements[3] == "minute") {
+          value = Variant(static_cast<int>(date.minute()));
+          return true;
+        } else if (elements[3] == "second") {
+          value = Variant(static_cast<int>(date.second()));
+          return true;
+        }
       }
     }
   }
 
   // Delegate to the context-free version of DOM::get.
-  return getDOM (name, value);
+  return getDOM(name, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -511,41 +481,28 @@ bool getDOM (const std::string& name, const Task* task, Variant& value)
 // This makes the DOM class a reusible object.
 
 ////////////////////////////////////////////////////////////////////////////////
-DOM::~DOM ()
-{
-  delete _node;
+DOM::~DOM() { delete _node; }
+
+////////////////////////////////////////////////////////////////////////////////
+void DOM::addSource(const std::string& reference, bool (*provider)(const std::string&, Variant&)) {
+  if (_node == nullptr) _node = new DOM::Node();
+
+  _node->addSource(reference, provider);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void DOM::addSource (
-  const std::string& reference,
-  bool (*provider)(const std::string&, Variant&))
-{
-  if (_node == nullptr)
-    _node = new DOM::Node ();
-
-  _node->addSource (reference, provider);
+bool DOM::valid(const std::string& reference) const {
+  return _node && _node->find(reference) != nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool DOM::valid (const std::string& reference) const
-{
-  return _node && _node->find (reference) != nullptr;
-}
+Variant DOM::get(const std::string& reference) const {
+  Variant v("");
 
-////////////////////////////////////////////////////////////////////////////////
-Variant DOM::get (const std::string& reference) const
-{
-  Variant v ("");
-
-  if (_node)
-  {
-    auto node = _node->find (reference);
-    if (node            != nullptr &&
-        node->_provider != nullptr)
-    {
-      if (node->_provider (reference, v))
-        return v;
+  if (_node) {
+    auto node = _node->find(reference);
+    if (node != nullptr && node->_provider != nullptr) {
+      if (node->_provider(reference, v)) return v;
     }
   }
 
@@ -553,60 +510,47 @@ Variant DOM::get (const std::string& reference) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int DOM::count () const
-{
-  if (_node)
-    return _node->count ();
+int DOM::count() const {
+  if (_node) return _node->count();
 
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> DOM::decomposeReference (const std::string& reference)
-{
-  return split (reference, '.');
+std::vector<std::string> DOM::decomposeReference(const std::string& reference) {
+  return split(reference, '.');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string DOM::dump () const
-{
-  if (_node)
-    return _node->dump ();
+std::string DOM::dump() const {
+  if (_node) return _node->dump();
 
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-DOM::Node::~Node ()
-{
-  for (auto& branch : _branches)
-    delete branch;
+DOM::Node::~Node() {
+  for (auto& branch : _branches) delete branch;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void DOM::Node::addSource (
-  const std::string& reference,
-  bool (*provider)(const std::string&, Variant&))
-{
+void DOM::Node::addSource(const std::string& reference,
+                          bool (*provider)(const std::string&, Variant&)) {
   auto cursor = this;
-  for (const auto& element : DOM::decomposeReference (reference))
-  {
-    auto found {false};
-    for (auto& branch : cursor->_branches)
-    {
-      if (branch->_name == element)
-      {
+  for (const auto& element : DOM::decomposeReference(reference)) {
+    auto found{false};
+    for (auto& branch : cursor->_branches) {
+      if (branch->_name == element) {
         cursor = branch;
         found = true;
         break;
       }
     }
 
-    if (! found)
-    {
-      auto branch = new DOM::Node ();
+    if (!found) {
+      auto branch = new DOM::Node();
       branch->_name = element;
-      cursor->_branches.push_back (branch);
+      cursor->_branches.push_back(branch);
       cursor = branch;
     }
   }
@@ -616,85 +560,66 @@ void DOM::Node::addSource (
 
 ////////////////////////////////////////////////////////////////////////////////
 // A valid reference is one that has a provider function.
-bool DOM::Node::valid (const std::string& reference) const
-{
-  return find (reference) != nullptr;
-}
+bool DOM::Node::valid(const std::string& reference) const { return find(reference) != nullptr; }
 
 ////////////////////////////////////////////////////////////////////////////////
-const DOM::Node* DOM::Node::find (const std::string& reference) const
-{
+const DOM::Node* DOM::Node::find(const std::string& reference) const {
   auto cursor = this;
-  for (const auto& element : DOM::decomposeReference (reference))
-  {
-    auto found {false};
-    for (auto& branch : cursor->_branches)
-    {
-      if (branch->_name == element)
-      {
+  for (const auto& element : DOM::decomposeReference(reference)) {
+    auto found{false};
+    for (auto& branch : cursor->_branches) {
+      if (branch->_name == element) {
         cursor = branch;
         found = true;
         break;
       }
     }
 
-    if (! found)
-      break;
+    if (!found) break;
   }
 
-  if (reference.length () && cursor != this)
-    return cursor;
+  if (reference.length() && cursor != this) return cursor;
 
   return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int DOM::Node::count () const
-{
+int DOM::Node::count() const {
   // Recurse and count the branches.
-  int total {0};
-  for (auto& branch : _branches)
-  {
-    if (branch->_provider)
-      ++total;
-    total += branch->count ();
+  int total{0};
+  for (auto& branch : _branches) {
+    if (branch->_provider) ++total;
+    total += branch->count();
   }
 
   return total;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string DOM::Node::dumpNode (
-  const DOM::Node* node,
-  int depth) const
-{
+std::string DOM::Node::dumpNode(const DOM::Node* node, int depth) const {
   std::stringstream out;
 
   // Indent.
-  out << std::string (depth * 2, ' ');
+  out << std::string(depth * 2, ' ');
 
   out << "\033[31m" << node->_name << "\033[0m";
 
-  if (node->_provider)
-    out << " 0x" << std::hex << (long long) (void*) node->_provider;
+  if (node->_provider) out << " 0x" << std::hex << (long long)(void*)node->_provider;
 
   out << '\n';
 
   // Recurse for branches.
-  for (auto& b : node->_branches)
-    out << dumpNode (b, depth + 1);
+  for (auto& b : node->_branches) out << dumpNode(b, depth + 1);
 
-  return out.str ();
+  return out.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string DOM::Node::dump () const
-{
+std::string DOM::Node::dump() const {
   std::stringstream out;
-  out << "DOM::Node (" << count () << " nodes)\n"
-      << dumpNode (this, 1);
+  out << "DOM::Node (" << count() << " nodes)\n" << dumpNode(this, 1);
 
-  return out.str ();
+  return out.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

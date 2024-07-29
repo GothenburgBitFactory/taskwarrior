@@ -25,39 +25,37 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdExec.h>
-#include <stdlib.h>
 #include <Context.h>
 #include <shared.h>
+#include <stdlib.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdExec::CmdExec ()
-{
-  _keyword               = "execute";
-  _usage                 = "task          execute <external command>";
-  _description           = "Executes external commands and scripts";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdExec::CmdExec() {
+  _keyword = "execute";
+  _usage = "task          execute <external command>";
+  _description = "Executes external commands and scripts";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = true;
-  _category              = Command::Category::misc;
+  _category = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (std::string&)
-{
-  std::string command = join (" ", Context::getContext ().cli2.getWords ());
+int CmdExec::execute(std::string&) {
+  std::string command = join(" ", Context::getContext().cli2.getWords());
 
-  if (command.empty())
-  {
-    Context::getContext ().error ("Cannot execute an empty command.");
+  if (command.empty()) {
+    Context::getContext().error("Cannot execute an empty command.");
     return 1;
-  }
-  else
-    return system (command.c_str ());
+  } else
+    return system(command.c_str());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

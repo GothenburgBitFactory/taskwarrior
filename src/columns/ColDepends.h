@@ -29,17 +29,16 @@
 
 #include <ColTypeString.h>
 
-class ColumnDepends : public ColumnTypeString
-{
-public:
-  ColumnDepends ();
+class ColumnDepends : public ColumnTypeString {
+ public:
+  ColumnDepends();
 
-  void setStyle (const std::string&);
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
-  void modify (Task&, const std::string&);
+  void setStyle(const std::string&);
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
+  void modify(Task&, const std::string&);
 
-private:
+ private:
   bool _hyphenate;
 };
 

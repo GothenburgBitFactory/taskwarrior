@@ -27,27 +27,27 @@
 #ifndef INCLUDED_TASK
 #define INCLUDED_TASK
 
-#include <vector>
-#include <map>
-#include <string>
-#include <stdio.h>
-#include <time.h>
+#include <Datetime.h>
 #include <JSON.h>
 #include <Table.h>
-#include <Datetime.h>
+#include <stdio.h>
 #include <tc/Task.h>
+#include <time.h>
 
-class Task
-{
-public:
+#include <map>
+#include <string>
+#include <vector>
+
+class Task {
+ public:
   static std::string defaultProject;
   static std::string defaultDue;
   static std::string defaultScheduled;
   static bool searchCaseSensitive;
   static bool regex;
-  static std::map <std::string, std::string> attributes;  // name -> type
-  static std::map <std::string, float> coefficients;
-  static std::map <std::string, std::vector <std::string>> customOrder;
+  static std::map<std::string, std::string> attributes;  // name -> type
+  static std::map<std::string, float> coefficients;
+  static std::map<std::string, std::vector<std::string>> customOrder;
   static float urgencyProjectCoefficient;
   static float urgencyActiveCoefficient;
   static float urgencyScheduledCoefficient;
@@ -60,159 +60,159 @@ public:
   static float urgencyAgeCoefficient;
   static float urgencyAgeMax;
 
-public:
-  Task () = default;
-  bool operator== (const Task&);
-  bool operator!= (const Task&);
-  Task (const std::string&);
-  Task (const json::object*);
-  Task (tc::Task);
+ public:
+  Task() = default;
+  bool operator==(const Task&);
+  bool operator!=(const Task&);
+  Task(const std::string&);
+  Task(const json::object*);
+  Task(tc::Task);
 
-  void parse (const std::string&);
-  std::string composeJSON (bool decorate = false) const;
+  void parse(const std::string&);
+  std::string composeJSON(bool decorate = false) const;
 
   // Status values.
-  enum status {pending, completed, deleted, recurring, waiting};
+  enum status { pending, completed, deleted, recurring, waiting };
 
   // Date state values.
-  enum dateState {dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday};
+  enum dateState { dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday };
 
   // Public data.
-  int id                                   {0};
-  float urgency_value                      {0.0};
-  bool recalc_urgency                      {true};
-  bool is_blocked                          {false};
-  bool is_blocking                         {false};
-  int annotation_count                     {0};
+  int id{0};
+  float urgency_value{0.0};
+  bool recalc_urgency{true};
+  bool is_blocked{false};
+  bool is_blocking{false};
+  int annotation_count{0};
 
   // Series of helper functions.
-  static status textToStatus (const std::string&);
-  static std::string statusToText (status);
-  static tc::Status status2tc (const Task::status);
-  static Task::status tc2status (const tc::Status);
+  static status textToStatus(const std::string&);
+  static std::string statusToText(status);
+  static tc::Status status2tc(const Task::status);
+  static Task::status tc2status(const tc::Status);
 
-  void setAsNow (const std::string&);
-  bool has (const std::string&) const;
-  std::vector <std::string> all () const;
-  const std::string identifier (bool shortened = false) const;
-  const std::string get (const std::string&) const;
-  const std::string& get_ref (const std::string&) const;
-  int get_int (const std::string&) const;
-  unsigned long get_ulong (const std::string&) const;
-  float get_float (const std::string&) const;
-  time_t get_date (const std::string&) const;
-  void set (const std::string&, const std::string&);
-  void set (const std::string&, long long);
-  void remove (const std::string&);
+  void setAsNow(const std::string&);
+  bool has(const std::string&) const;
+  std::vector<std::string> all() const;
+  const std::string identifier(bool shortened = false) const;
+  const std::string get(const std::string&) const;
+  const std::string& get_ref(const std::string&) const;
+  int get_int(const std::string&) const;
+  unsigned long get_ulong(const std::string&) const;
+  float get_float(const std::string&) const;
+  time_t get_date(const std::string&) const;
+  void set(const std::string&, const std::string&);
+  void set(const std::string&, long long);
+  void remove(const std::string&);
 
-  bool is_empty () const;
-
-#ifdef PRODUCT_TASKWARRIOR
-  bool is_ready () const;
-  bool is_due () const;
-  bool is_dueyesterday () const;
-  bool is_duetoday () const;
-  bool is_duetomorrow () const;
-  bool is_dueweek () const;
-  bool is_duemonth () const;
-  bool is_duequarter () const;
-  bool is_dueyear () const;
-  bool is_overdue () const;
-  bool is_udaPresent () const;
-  bool is_orphanPresent () const;
-
-  static bool isTagAttr (const std::string&);
-  static bool isDepAttr (const std::string&);
-  static bool isAnnotationAttr (const std::string&);
-#endif
-  bool is_waiting () const;
-
-  status getStatus () const;
-  void setStatus (status);
+  bool is_empty() const;
 
 #ifdef PRODUCT_TASKWARRIOR
-  dateState getDateState (const std::string&) const;
+  bool is_ready() const;
+  bool is_due() const;
+  bool is_dueyesterday() const;
+  bool is_duetoday() const;
+  bool is_duetomorrow() const;
+  bool is_dueweek() const;
+  bool is_duemonth() const;
+  bool is_duequarter() const;
+  bool is_dueyear() const;
+  bool is_overdue() const;
+  bool is_udaPresent() const;
+  bool is_orphanPresent() const;
+
+  static bool isTagAttr(const std::string&);
+  static bool isDepAttr(const std::string&);
+  static bool isAnnotationAttr(const std::string&);
 #endif
+  bool is_waiting() const;
 
-  int getTagCount () const;
-  bool hasTag (const std::string&) const;
-  void addTag (const std::string&);
-  void setTags (const std::vector <std::string>&);
-  std::vector <std::string> getTags () const;
-  void removeTag (const std::string&);
-
-  int getAnnotationCount () const;
-  bool hasAnnotations () const;
-  std::map <std::string, std::string> getAnnotations () const;
-  void setAnnotations (const std::map <std::string, std::string>&);
-  void addAnnotation (const std::string&);
-  void removeAnnotations ();
+  status getStatus() const;
+  void setStatus(status);
 
 #ifdef PRODUCT_TASKWARRIOR
-  void addDependency (int);
-#endif
-  void addDependency (const std::string&);
-#ifdef PRODUCT_TASKWARRIOR
-  void removeDependency (int);
-  void removeDependency (const std::string&);
-  bool hasDependency (const std::string&) const;
-  std::vector <int>         getDependencyIDs () const;
-  std::vector <std::string> getDependencyUUIDs () const;
-  std::vector <Task>        getBlockedTasks () const;
-  std::vector <Task>        getDependencyTasks () const;
-
-  std::vector <std::string> getUDAOrphans () const;
-
-  void substitute (const std::string&, const std::string&, const std::string&);
+  dateState getDateState(const std::string&) const;
 #endif
 
-  void validate (bool applyDefault = true);
+  int getTagCount() const;
+  bool hasTag(const std::string&) const;
+  void addTag(const std::string&);
+  void setTags(const std::vector<std::string>&);
+  std::vector<std::string> getTags() const;
+  void removeTag(const std::string&);
 
-  float urgency_c () const;
-  float urgency ();
+  int getAnnotationCount() const;
+  bool hasAnnotations() const;
+  std::map<std::string, std::string> getAnnotations() const;
+  void setAnnotations(const std::map<std::string, std::string>&);
+  void addAnnotation(const std::string&);
+  void removeAnnotations();
 
 #ifdef PRODUCT_TASKWARRIOR
-  enum modType {modReplace, modPrepend, modAppend, modAnnotate};
-  void modify (modType, bool text_required = false);
+  void addDependency(int);
+#endif
+  void addDependency(const std::string&);
+#ifdef PRODUCT_TASKWARRIOR
+  void removeDependency(int);
+  void removeDependency(const std::string&);
+  bool hasDependency(const std::string&) const;
+  std::vector<int> getDependencyIDs() const;
+  std::vector<std::string> getDependencyUUIDs() const;
+  std::vector<Task> getBlockedTasks() const;
+  std::vector<Task> getDependencyTasks() const;
+
+  std::vector<std::string> getUDAOrphans() const;
+
+  void substitute(const std::string&, const std::string&, const std::string&);
 #endif
 
-  std::string diff (const Task& after) const;
-  std::string diffForInfo (const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp) const; 
-  Table diffForUndoSide (const Task& after) const;
-  Table diffForUndoPatch (const Task& after, const Datetime& lastChange) const;
+  void validate(bool applyDefault = true);
 
+  float urgency_c() const;
+  float urgency();
 
-private:
-  int determineVersion (const std::string&);
-  void parseJSON (const std::string&);
-  void parseJSON (const json::object*);
-  void parseTC (const tc::Task&);
-  void parseLegacy (const std::string&);
-  void validate_before (const std::string&, const std::string&);
-  const std::string encode (const std::string&) const;
-  const std::string decode (const std::string&) const;
-  const std::string tag2Attr (const std::string&) const;
-  const std::string attr2Tag (const std::string&) const;
-  const std::string dep2Attr (const std::string&) const;
-  const std::string attr2Dep (const std::string&) const;
-  void fixDependsAttribute ();
-  void fixTagsAttribute ();
+#ifdef PRODUCT_TASKWARRIOR
+  enum modType { modReplace, modPrepend, modAppend, modAnnotate };
+  void modify(modType, bool text_required = false);
+#endif
 
-protected:
-  std::map <std::string, std::string> data {};
+  std::string diff(const Task& after) const;
+  std::string diffForInfo(const Task& after, const std::string& dateformat, long& last_timestamp,
+                          const long current_timestamp) const;
+  Table diffForUndoSide(const Task& after) const;
+  Table diffForUndoPatch(const Task& after, const Datetime& lastChange) const;
 
-public:
-  float urgency_project     () const;
-  float urgency_active      () const;
-  float urgency_scheduled   () const;
-  float urgency_waiting     () const;
-  float urgency_blocked     () const;
-  float urgency_inherit     () const;
-  float urgency_annotations () const;
-  float urgency_tags        () const;
-  float urgency_due         () const;
-  float urgency_blocking    () const;
-  float urgency_age         () const;
+ private:
+  int determineVersion(const std::string&);
+  void parseJSON(const std::string&);
+  void parseJSON(const json::object*);
+  void parseTC(const tc::Task&);
+  void parseLegacy(const std::string&);
+  void validate_before(const std::string&, const std::string&);
+  const std::string encode(const std::string&) const;
+  const std::string decode(const std::string&) const;
+  const std::string tag2Attr(const std::string&) const;
+  const std::string attr2Tag(const std::string&) const;
+  const std::string dep2Attr(const std::string&) const;
+  const std::string attr2Dep(const std::string&) const;
+  void fixDependsAttribute();
+  void fixTagsAttribute();
+
+ protected:
+  std::map<std::string, std::string> data{};
+
+ public:
+  float urgency_project() const;
+  float urgency_active() const;
+  float urgency_scheduled() const;
+  float urgency_waiting() const;
+  float urgency_blocked() const;
+  float urgency_inherit() const;
+  float urgency_annotations() const;
+  float urgency_tags() const;
+  float urgency_due() const;
+  float urgency_blocking() const;
+  float urgency_age() const;
 };
 
 #endif

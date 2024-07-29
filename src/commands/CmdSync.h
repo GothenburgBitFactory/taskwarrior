@@ -27,15 +27,15 @@
 #ifndef INCLUDED_CMDSYNC
 #define INCLUDED_CMDSYNC
 
-#include <string>
 #include <Command.h>
 #include <Msg.h>
 
-class CmdSync : public Command
-{
-public:
-  CmdSync ();
-  int execute (std::string&);
+#include <string>
+
+class CmdSync : public Command {
+ public:
+  CmdSync();
+  int execute(std::string&);
 };
 
 #endif

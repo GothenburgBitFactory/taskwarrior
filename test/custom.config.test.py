@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,10 +42,12 @@ class TestCustomConfig(TestCase):
         self.t.config("alias.xyzzyx", "status:waiting")
         self.t.config("imnotrecognized", "kai")
 
-        self.DIFFER_MSG = ("Some of your .taskrc variables differ from the "
-                           "default values.")
-        self.NOT_RECOG_MSG = ("Your .taskrc file contains these unrecognized "
-                              "variables:")
+        self.DIFFER_MSG = (
+            "Some of your .taskrc variables differ from the " "default values."
+        )
+        self.NOT_RECOG_MSG = (
+            "Your .taskrc file contains these unrecognized " "variables:"
+        )
 
     def test_show_alias(self):
         """task show <filter> - warns when non-default values are matched
@@ -89,6 +92,7 @@ class TestCustomConfig(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

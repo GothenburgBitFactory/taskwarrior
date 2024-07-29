@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDURGENCY
 #define INCLUDED_CMDURGENCY
 
-#include <string>
 #include <Command.h>
 
-class CmdUrgency : public Command
-{
-public:
-  CmdUrgency ();
-  int execute (std::string&);
+#include <string>
+
+class CmdUrgency : public Command {
+ public:
+  CmdUrgency();
+  int execute(std::string&);
 };
 
 #endif

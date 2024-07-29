@@ -25,75 +25,78 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <Eval.h>
-#include <DOM.h>
-#include <map>
-#include <time.h>
-#include <Context.h>
-#include <Task.h>
+// cmake.h include header must come first
+
 #include <Color.h>
-#include <shared.h>
+#include <Context.h>
+#include <DOM.h>
+#include <Eval.h>
+#include <Task.h>
 #include <format.h>
+#include <shared.h>
+#include <time.h>
+
+#include <map>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Supported operators, borrowed from C++, particularly the precedence.
 // Note: table is sorted by length of operator string, so searches match
 //       longest first.
-static struct
-{
+static struct {
   std::string op;
-  int         precedence;
-  char        type;                  // b=binary, u=unary, c=circumfix
-  char        associativity;         // l=left, r=right, _=?
-} operators[] =
-{
-  // Operator   Precedence  Type  Associativity
-  {  "^",        16,         'b',  'r' },    // Exponent
+  int precedence;
+  char type;           // b=binary, u=unary, c=circumfix
+  char associativity;  // l=left, r=right, _=?
+} operators[] = {
+    // Operator   Precedence  Type  Associativity
+    {"^", 16, 'b', 'r'},  // Exponent
 
-  {  "!",        15,         'u',  'r' },    // Unary not
-  {  "_neg_",    15,         'u',  'r' },    // Unary minus
-  {  "_pos_",    15,         'u',  'r' },    // Unary plus
+    {"!", 15, 'u', 'r'},      // Unary not
+    {"_neg_", 15, 'u', 'r'},  // Unary minus
+    {"_pos_", 15, 'u', 'r'},  // Unary plus
 
-  {  "_hastag_", 14,         'b',  'l'},     // +tag  [Pseudo-op]
-  {  "_notag_",  14,         'b',  'l'},     // -tag  [Pseudo-op]
+    {"_hastag_", 14, 'b', 'l'},  // +tag  [Pseudo-op]
+    {"_notag_", 14, 'b', 'l'},   // -tag  [Pseudo-op]
 
-  {  "*",        13,         'b',  'l' },    // Multiplication
-  {  "/",        13,         'b',  'l' },    // Division
-  {  "%",        13,         'b',  'l' },    // Modulus
+    {"*", 13, 'b', 'l'},  // Multiplication
+    {"/", 13, 'b', 'l'},  // Division
+    {"%", 13, 'b', 'l'},  // Modulus
 
-  {  "+",        12,         'b',  'l' },    // Addition
-  {  "-",        12,         'b',  'l' },    // Subtraction
+    {"+", 12, 'b', 'l'},  // Addition
+    {"-", 12, 'b', 'l'},  // Subtraction
 
-  {  "<=",       10,         'b',  'l' },    // Less than or equal
-  {  ">=",       10,         'b',  'l' },    // Greater than or equal
-  {  ">",        10,         'b',  'l' },    // Greater than
-  {  "<",        10,         'b',  'l' },    // Less than
+    {"<=", 10, 'b', 'l'},  // Less than or equal
+    {">=", 10, 'b', 'l'},  // Greater than or equal
+    {">", 10, 'b', 'l'},   // Greater than
+    {"<", 10, 'b', 'l'},   // Less than
 
-  {  "=",         9,         'b',  'l' },    // Equal (partial)
-  {  "==",        9,         'b',  'l' },    // Equal (exact)
-  {  "!=",        9,         'b',  'l' },    // Inequal (partial)
-  {  "!==",       9,         'b',  'l' },    // Inequal (exact)
+    {"=", 9, 'b', 'l'},    // Equal (partial)
+    {"==", 9, 'b', 'l'},   // Equal (exact)
+    {"!=", 9, 'b', 'l'},   // Inequal (partial)
+    {"!==", 9, 'b', 'l'},  // Inequal (exact)
 
-  {  "~",         8,         'b',  'l' },    // Regex match
-  {  "!~",        8,         'b',  'l' },    // Regex non-match
+    {"~", 8, 'b', 'l'},   // Regex match
+    {"!~", 8, 'b', 'l'},  // Regex non-match
 
-  {  "and",       5,         'b',  'l' },    // Conjunction
-  {  "or",        4,         'b',  'l' },    // Disjunction
-  {  "xor",       3,         'b',  'l' },    // Disjunction
+    {"and", 5, 'b', 'l'},  // Conjunction
+    {"or", 4, 'b', 'l'},   // Disjunction
+    {"xor", 3, 'b', 'l'},  // Disjunction
 
-  {  "(",         0,         'c',  '_' },    // Precedence start
-  {  ")",         0,         'c',  '_' },    // Precedence end
+    {"(", 0, 'c', '_'},  // Precedence start
+    {")", 0, 'c', '_'},  // Precedence end
 };
 
-#define NUM_OPERATORS (sizeof (operators) / sizeof (operators[0]))
+#define NUM_OPERATORS (sizeof(operators) / sizeof(operators[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
 // Built-in support for some named constants.
-static bool namedConstants (const std::string& name, Variant& value)
-{
-       if (name == "true")  value = Variant (true);
-  else if (name == "false") value = Variant (false);
-  else if (name == "pi")    value = Variant (3.14159165);
+static bool namedConstants(const std::string& name, Variant& value) {
+  if (name == "true")
+    value = Variant(true);
+  else if (name == "false")
+    value = Variant(false);
+  else if (name == "pi")
+    value = Variant(3.14159165);
   else
     return false;
 
@@ -102,11 +105,9 @@ static bool namedConstants (const std::string& name, Variant& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Support for evaluating DOM references (add with `e.AddSource(domSource)`)
-bool domSource (const std::string& identifier, Variant& value)
-{
-  if (getDOM (identifier, Context::getContext ().currentTask, value))
-  {
-    value.source (identifier);
+bool domSource(const std::string& identifier, Variant& value) {
+  if (getDOM(identifier, Context::getContext().currentTask, value)) {
+    value.source(identifier);
     return true;
   }
 
@@ -114,300 +115,273 @@ bool domSource (const std::string& identifier, Variant& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Eval::Eval ()
-{
-  addSource (namedConstants);
-}
+Eval::Eval() { addSource(namedConstants); }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Eval::addSource (bool (*source)(const std::string&, Variant&))
-{
-  _sources.push_back (source);
-}
+void Eval::addSource(bool (*source)(const std::string&, Variant&)) { _sources.push_back(source); }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
-{
+void Eval::evaluateInfixExpression(const std::string& e, Variant& v) const {
   // Reduce e to a vector of tokens.
-  Lexer l (e);
-  std::vector <std::pair <std::string, Lexer::Type>> tokens;
+  Lexer l(e);
+  std::vector<std::pair<std::string, Lexer::Type>> tokens;
   std::string token;
   Lexer::Type type;
-  while (l.token (token, type))
-    tokens.emplace_back (token, type);
+  while (l.token(token, type)) tokens.emplace_back(token, type);
 
   // Parse for syntax checking and operator replacement.
-  if (_debug)
-    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix        " + dump (tokens));
-  infixParse (tokens);
-  if (_debug)
-    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix parsed " + dump (tokens));
+  if (_debug) Context::getContext().debug("[1;37;42mFILTER[0m Infix        " + dump(tokens));
+  infixParse(tokens);
+  if (_debug) Context::getContext().debug("[1;37;42mFILTER[0m Infix parsed " + dump(tokens));
 
   // Convert infix --> postfix.
-  infixToPostfix (tokens);
-  if (_debug)
-    Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
+  infixToPostfix(tokens);
+  if (_debug) Context::getContext().debug("[1;37;42mFILTER[0m Postfix      " + dump(tokens));
 
   // Call the postfix evaluator.
-  evaluatePostfixStack (tokens, v);
+  evaluatePostfixStack(tokens, v);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
-{
+void Eval::evaluatePostfixExpression(const std::string& e, Variant& v) const {
   // Reduce e to a vector of tokens.
-  Lexer l (e);
-  std::vector <std::pair <std::string, Lexer::Type>> tokens;
+  Lexer l(e);
+  std::vector<std::pair<std::string, Lexer::Type>> tokens;
   std::string token;
   Lexer::Type type;
-  while (l.token (token, type))
-    tokens.emplace_back (token, type);
+  while (l.token(token, type)) tokens.emplace_back(token, type);
 
-  if (_debug)
-    Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
+  if (_debug) Context::getContext().debug("[1;37;42mFILTER[0m Postfix      " + dump(tokens));
 
   // Call the postfix evaluator.
-  evaluatePostfixStack (tokens, v);
+  evaluatePostfixStack(tokens, v);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Eval::compileExpression (
-  const std::vector <std::pair <std::string, Lexer::Type>>& precompiled)
-{
+void Eval::compileExpression(const std::vector<std::pair<std::string, Lexer::Type>>& precompiled) {
   _compiled = precompiled;
 
   // Parse for syntax checking and operator replacement.
-  if (_debug)
-    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix        " + dump (_compiled));
-  infixParse (_compiled);
-  if (_debug)
-    Context::getContext ().debug ("[1;37;42mFILTER[0m Infix parsed " + dump (_compiled));
+  if (_debug) Context::getContext().debug("[1;37;42mFILTER[0m Infix        " + dump(_compiled));
+  infixParse(_compiled);
+  if (_debug) Context::getContext().debug("[1;37;42mFILTER[0m Infix parsed " + dump(_compiled));
 
   // Convert infix --> postfix.
-  infixToPostfix (_compiled);
-  if (_debug)
-    Context::getContext ().debug ("[1;37;42mFILTER[0m Postfix      " + dump (_compiled));
+  infixToPostfix(_compiled);
+  if (_debug) Context::getContext().debug("[1;37;42mFILTER[0m Postfix      " + dump(_compiled));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Eval::evaluateCompiledExpression (Variant& v)
-{
+void Eval::evaluateCompiledExpression(Variant& v) {
   // Call the postfix evaluator.
-  evaluatePostfixStack (_compiled, v);
+  evaluatePostfixStack(_compiled, v);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Eval::debug (bool value)
-{
-  _debug = value;
-}
+void Eval::debug(bool value) { _debug = value; }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static.
-std::vector <std::string> Eval::getOperators ()
-{
-  std::vector <std::string> all;
+std::vector<std::string> Eval::getOperators() {
+  std::vector<std::string> all;
   all.reserve(NUM_OPERATORS);
-  for (const auto &opr : operators)
-    all.push_back (opr.op);
+  for (const auto& opr : operators) all.push_back(opr.op);
 
   return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static.
-std::vector <std::string> Eval::getBinaryOperators ()
-{
-  std::vector <std::string> all;
-  for (const auto &opr : operators)
-    if (opr.type == 'b')
-      all.push_back (opr.op);
+std::vector<std::string> Eval::getBinaryOperators() {
+  std::vector<std::string> all;
+  for (const auto& opr : operators)
+    if (opr.type == 'b') all.push_back(opr.op);
 
   return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Eval::evaluatePostfixStack (
-  const std::vector <std::pair <std::string, Lexer::Type>>& tokens,
-  Variant& result) const
-{
-  if (tokens.size () == 0)
-    throw std::string ("No expression to evaluate.");
+void Eval::evaluatePostfixStack(const std::vector<std::pair<std::string, Lexer::Type>>& tokens,
+                                Variant& result) const {
+  if (tokens.size() == 0) throw std::string("No expression to evaluate.");
 
   // This is stack used by the postfix evaluator.
-  std::vector <Variant> values;
+  std::vector<Variant> values;
   values.reserve(tokens.size());
 
-  for (const auto& token : tokens)
-  {
+  for (const auto& token : tokens) {
     // Unary operators.
-    if (token.second == Lexer::Type::op &&
-        token.first == "!")
-    {
-      if (values.size () < 1)
-        throw std::string ("The expression could not be evaluated.");
+    if (token.second == Lexer::Type::op && token.first == "!") {
+      if (values.size() < 1) throw std::string("The expression could not be evaluated.");
 
-      Variant right = values.back ();
-      values.pop_back ();
-      Variant result = ! right;
-      values.push_back (result);
+      Variant right = values.back();
+      values.pop_back();
+      Variant result = !right;
+      values.push_back(result);
       if (_debug)
-        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
-    }
-    else if (token.second == Lexer::Type::op &&
-             token.first == "_neg_")
-    {
-      if (values.size () < 1)
-        throw std::string ("The expression could not be evaluated.");
+        Context::getContext().debug(format("Eval {1} ↓'{2}' → ↑'{3}'", token.first,
+                                           (std::string)right, (std::string)result));
+    } else if (token.second == Lexer::Type::op && token.first == "_neg_") {
+      if (values.size() < 1) throw std::string("The expression could not be evaluated.");
 
-      Variant right = values.back ();
-      values.pop_back ();
+      Variant right = values.back();
+      values.pop_back();
 
-      Variant result (0);
+      Variant result(0);
       result -= right;
-      values.push_back (result);
+      values.push_back(result);
 
       if (_debug)
-        Context::getContext ().debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token.first, (std::string) right, (std::string) result));
-    }
-    else if (token.second == Lexer::Type::op &&
-             token.first == "_pos_")
-    {
+        Context::getContext().debug(format("Eval {1} ↓'{2}' → ↑'{3}'", token.first,
+                                           (std::string)right, (std::string)result));
+    } else if (token.second == Lexer::Type::op && token.first == "_pos_") {
       // The _pos_ operator is a NOP.
       if (_debug)
-        Context::getContext ().debug (format ("[{1}] eval op {2} NOP", values.size (), token.first));
+        Context::getContext().debug(format("[{1}] eval op {2} NOP", values.size(), token.first));
     }
 
     // Binary operators.
-    else if (token.second == Lexer::Type::op)
-    {
-      if (values.size () < 2)
-        throw std::string ("The expression could not be evaluated.");
+    else if (token.second == Lexer::Type::op) {
+      if (values.size() < 2) throw std::string("The expression could not be evaluated.");
 
-      Variant right = values.back ();
-      values.pop_back ();
+      Variant right = values.back();
+      values.pop_back();
 
-      Variant left = values.back ();
-      values.pop_back ();
+      Variant left = values.back();
+      values.pop_back();
 
-      auto contextTask = Context::getContext ().currentTask;
+      auto contextTask = Context::getContext().currentTask;
 
       // Ordering these by anticipation frequency of use is a good idea.
       Variant result;
-           if (token.first == "and")      result = left && right;
-      else if (token.first == "or")       result = left || right;
-      else if (token.first == "&&")       result = left && right;
-      else if (token.first == "||")       result = left || right;
-      else if (token.first == "<")        result = left < right;
-      else if (token.first == "<=")       result = left <= right;
-      else if (token.first == ">")        result = left > right;
-      else if (token.first == ">=")       result = left >= right;
-      else if (token.first == "==")       result = left.operator== (right);
-      else if (token.first == "!==")      result = left.operator!= (right);
-      else if (token.first == "=")        result = left.operator_partial (right);
-      else if (token.first == "!=")       result = left.operator_nopartial (right);
-      else if (token.first == "+")        result = left + right;
-      else if (token.first == "-")        result = left - right;
-      else if (token.first == "*")        result = left * right;
-      else if (token.first == "/")        result = left / right;
-      else if (token.first == "^")        result = left ^ right;
-      else if (token.first == "%")        result = left % right;
-      else if (token.first == "xor")      result = left.operator_xor (right);
+      if (token.first == "and")
+        result = left && right;
+      else if (token.first == "or")
+        result = left || right;
+      else if (token.first == "&&")
+        result = left && right;
+      else if (token.first == "||")
+        result = left || right;
+      else if (token.first == "<")
+        result = left < right;
+      else if (token.first == "<=")
+        result = left <= right;
+      else if (token.first == ">")
+        result = left > right;
+      else if (token.first == ">=")
+        result = left >= right;
+      else if (token.first == "==")
+        result = left.operator==(right);
+      else if (token.first == "!==")
+        result = left.operator!=(right);
+      else if (token.first == "=")
+        result = left.operator_partial(right);
+      else if (token.first == "!=")
+        result = left.operator_nopartial(right);
+      else if (token.first == "+")
+        result = left + right;
+      else if (token.first == "-")
+        result = left - right;
+      else if (token.first == "*")
+        result = left * right;
+      else if (token.first == "/")
+        result = left / right;
+      else if (token.first == "^")
+        result = left ^ right;
+      else if (token.first == "%")
+        result = left % right;
+      else if (token.first == "xor")
+        result = left.operator_xor(right);
       else if (contextTask) {
-             if (token.first == "~")        result = left.operator_match (right, *contextTask);
-        else if (token.first == "!~")       result = left.operator_nomatch (right, *contextTask);
-        else if (token.first == "_hastag_") result = left.operator_hastag (right, *contextTask);
-        else if (token.first == "_notag_")  result = left.operator_notag (right, *contextTask);
+        if (token.first == "~")
+          result = left.operator_match(right, *contextTask);
+        else if (token.first == "!~")
+          result = left.operator_nomatch(right, *contextTask);
+        else if (token.first == "_hastag_")
+          result = left.operator_hastag(right, *contextTask);
+        else if (token.first == "_notag_")
+          result = left.operator_notag(right, *contextTask);
         else
-          throw format ("Unsupported operator '{1}'.", token.first);
-      }
-      else
-        throw format ("Unsupported operator '{1}'.", token.first);
+          throw format("Unsupported operator '{1}'.", token.first);
+      } else
+        throw format("Unsupported operator '{1}'.", token.first);
 
-      values.push_back (result);
+      values.push_back(result);
 
       if (_debug)
-        Context::getContext ().debug (format ("Eval ↓'{1}' {2} ↓'{3}' → ↑'{4}'", (std::string) left, token.first, (std::string) right, (std::string) result));
+        Context::getContext().debug(format("Eval ↓'{1}' {2} ↓'{3}' → ↑'{4}'", (std::string)left,
+                                           token.first, (std::string)right, (std::string)result));
     }
 
     // Literals and identifiers.
-    else
-    {
-      Variant v (token.first);
-      switch (token.second)
-      {
-      case Lexer::Type::number:
-        if (Lexer::isAllDigits (token.first))
-        {
-          v.cast (Variant::type_integer);
-          if (_debug)
-            Context::getContext ().debug (format ("Eval literal number ↑'{1}'", (std::string) v));
-        }
-        else
-        {
-          v.cast (Variant::type_real);
-          if (_debug)
-            Context::getContext ().debug (format ("Eval literal decimal ↑'{1}'", (std::string) v));
-        }
-        break;
+    else {
+      Variant v(token.first);
+      switch (token.second) {
+        case Lexer::Type::number:
+          if (Lexer::isAllDigits(token.first)) {
+            v.cast(Variant::type_integer);
+            if (_debug)
+              Context::getContext().debug(format("Eval literal number ↑'{1}'", (std::string)v));
+          } else {
+            v.cast(Variant::type_real);
+            if (_debug)
+              Context::getContext().debug(format("Eval literal decimal ↑'{1}'", (std::string)v));
+          }
+          break;
 
-      case Lexer::Type::op:
-        throw std::string ("Operator expected.");
-        break;
+        case Lexer::Type::op:
+          throw std::string("Operator expected.");
+          break;
 
-      case Lexer::Type::dom:
-      case Lexer::Type::identifier:
-        {
+        case Lexer::Type::dom:
+        case Lexer::Type::identifier: {
           bool found = false;
-          for (const auto& source : _sources)
-          {
-            if (source (token.first, v))
-            {
+          for (const auto& source : _sources) {
+            if (source(token.first, v)) {
               if (_debug)
-                Context::getContext ().debug (format ("Eval identifier source '{1}' → ↑'{2}'", token.first, (std::string) v));
+                Context::getContext().debug(
+                    format("Eval identifier source '{1}' → ↑'{2}'", token.first, (std::string)v));
               found = true;
               break;
             }
           }
 
           // An identifier that fails lookup is a string.
-          if (! found)
-          {
-            v.cast (Variant::type_string);
+          if (!found) {
+            v.cast(Variant::type_string);
             if (_debug)
-              Context::getContext ().debug (format ("Eval identifier source failed '{1}'", token.first));
+              Context::getContext().debug(
+                  format("Eval identifier source failed '{1}'", token.first));
           }
-        }
-        break;
+        } break;
 
-      case Lexer::Type::date:
-        v.cast (Variant::type_date);
-        if (_debug)
-          Context::getContext ().debug (format ("Eval literal date ↑'{1}'", (std::string) v));
-        break;
+        case Lexer::Type::date:
+          v.cast(Variant::type_date);
+          if (_debug)
+            Context::getContext().debug(format("Eval literal date ↑'{1}'", (std::string)v));
+          break;
 
-      case Lexer::Type::duration:
-        v.cast (Variant::type_duration);
-        if (_debug)
-          Context::getContext ().debug (format ("Eval literal duration ↑'{1}'", (std::string) v));
-        break;
+        case Lexer::Type::duration:
+          v.cast(Variant::type_duration);
+          if (_debug)
+            Context::getContext().debug(format("Eval literal duration ↑'{1}'", (std::string)v));
+          break;
 
-      // Nothing to do.
-      case Lexer::Type::string:
-      default:
-        if (_debug)
-          Context::getContext ().debug (format ("Eval literal string ↑'{1}'", (std::string) v));
-        break;
+        // Nothing to do.
+        case Lexer::Type::string:
+        default:
+          if (_debug)
+            Context::getContext().debug(format("Eval literal string ↑'{1}'", (std::string)v));
+          break;
       }
 
-      values.push_back (v);
+      values.push_back(v);
     }
   }
 
   // If there is more than one variant left on the stack, then the original
   // expression was not valid.
-  if (values.size () != 1)
-    throw std::string ("The value is not an expression.");
+  if (values.size() != 1) throw std::string("The value is not an expression.");
 
   result = values[0];
 }
@@ -426,31 +400,20 @@ void Eval::evaluatePostfixStack (
 //   Exponent    --> Primitive ["^" Primitive]
 //   Primitive   --> "(" Logical ")" | Variant
 //
-void Eval::infixParse (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix) const
-{
+void Eval::infixParse(std::vector<std::pair<std::string, Lexer::Type>>& infix) const {
   unsigned int i = 0;
-  parseLogical (infix, i);
+  parseLogical(infix, i);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Logical     --> Regex {( "and" | "or" | "xor" ) Regex}
-bool Eval::parseLogical (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size () &&
-      parseRegex (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           (infix[i].first == "and"  ||
-            infix[i].first == "or"   ||
-            infix[i].first == "xor"))
-    {
+bool Eval::parseLogical(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                        unsigned int& i) const {
+  if (i < infix.size() && parseRegex(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op &&
+           (infix[i].first == "and" || infix[i].first == "or" || infix[i].first == "xor")) {
       ++i;
-      if (! parseRegex (infix, i))
-        return false;
+      if (!parseRegex(infix, i)) return false;
     }
 
     return true;
@@ -461,21 +424,13 @@ bool Eval::parseLogical (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Regex       --> Equality {( "~" | "!~" ) Equality}
-bool Eval::parseRegex (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size () &&
-      parseEquality (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           (infix[i].first == "~" ||
-            infix[i].first == "!~"))
-    {
+bool Eval::parseRegex(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                      unsigned int& i) const {
+  if (i < infix.size() && parseEquality(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op &&
+           (infix[i].first == "~" || infix[i].first == "!~")) {
       ++i;
-      if (! parseEquality (infix, i))
-        return false;
+      if (!parseEquality(infix, i)) return false;
     }
 
     return true;
@@ -486,23 +441,14 @@ bool Eval::parseRegex (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Equality    --> Comparative {( "==" | "=" | "!==" | "!=" ) Comparative}
-bool Eval::parseEquality (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size () &&
-      parseComparative (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           (infix[i].first == "=="  ||
-            infix[i].first == "="   ||
-            infix[i].first == "!==" ||
-            infix[i].first == "!="))
-    {
+bool Eval::parseEquality(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                         unsigned int& i) const {
+  if (i < infix.size() && parseComparative(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op &&
+           (infix[i].first == "==" || infix[i].first == "=" || infix[i].first == "!==" ||
+            infix[i].first == "!=")) {
       ++i;
-      if (! parseComparative (infix, i))
-        return false;
+      if (!parseComparative(infix, i)) return false;
     }
 
     return true;
@@ -513,23 +459,14 @@ bool Eval::parseEquality (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Comparative --> Arithmetic {( "<=" | "<" | ">=" | ">" ) Arithmetic}
-bool Eval::parseComparative (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size () &&
-      parseArithmetic (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           (infix[i].first == "<=" ||
-            infix[i].first == "<"  ||
-            infix[i].first == ">=" ||
-            infix[i].first == ">"))
-    {
+bool Eval::parseComparative(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                            unsigned int& i) const {
+  if (i < infix.size() && parseArithmetic(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op &&
+           (infix[i].first == "<=" || infix[i].first == "<" || infix[i].first == ">=" ||
+            infix[i].first == ">")) {
       ++i;
-      if (! parseArithmetic (infix, i))
-        return false;
+      if (!parseArithmetic(infix, i)) return false;
     }
 
     return true;
@@ -540,21 +477,13 @@ bool Eval::parseComparative (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Arithmetic  --> Geometric {( "+" | "-" ) Geometric}
-bool Eval::parseArithmetic (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size () &&
-      parseGeometric (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           (infix[i].first == "+" ||
-            infix[i].first == "-"))
-    {
+bool Eval::parseArithmetic(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                           unsigned int& i) const {
+  if (i < infix.size() && parseGeometric(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op &&
+           (infix[i].first == "+" || infix[i].first == "-")) {
       ++i;
-      if (! parseGeometric (infix, i))
-        return false;
+      if (!parseGeometric(infix, i)) return false;
     }
 
     return true;
@@ -565,22 +494,13 @@ bool Eval::parseArithmetic (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Geometric   --> Tag {( "*" | "/" | "%" ) Tag}
-bool Eval::parseGeometric (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size () &&
-      parseTag (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           (infix[i].first == "*" ||
-            infix[i].first == "/" ||
-            infix[i].first == "%"))
-    {
+bool Eval::parseGeometric(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                          unsigned int& i) const {
+  if (i < infix.size() && parseTag(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op &&
+           (infix[i].first == "*" || infix[i].first == "/" || infix[i].first == "%")) {
       ++i;
-      if (! parseTag (infix, i))
-        return false;
+      if (!parseTag(infix, i)) return false;
     }
 
     return true;
@@ -591,21 +511,13 @@ bool Eval::parseGeometric (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tag         --> Unary {( "_hastag_" | "_notag_" ) Unary}
-bool Eval::parseTag (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size () &&
-      parseUnary (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           (infix[i].first == "_hastag_" ||
-            infix[i].first == "_notag_"))
-    {
+bool Eval::parseTag(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                    unsigned int& i) const {
+  if (i < infix.size() && parseUnary(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op &&
+           (infix[i].first == "_hastag_" || infix[i].first == "_notag_")) {
       ++i;
-      if (! parseUnary (infix, i))
-        return false;
+      if (!parseUnary(infix, i)) return false;
     }
 
     return true;
@@ -616,47 +528,31 @@ bool Eval::parseTag (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Unary       --> [( "-" | "+" | "!" )] Exponent
-bool Eval::parseUnary (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size ())
-  {
-    if (infix[i].first == "-")
-    {
+bool Eval::parseUnary(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                      unsigned int& i) const {
+  if (i < infix.size()) {
+    if (infix[i].first == "-") {
       infix[i].first = "_neg_";
       ++i;
-    }
-    else if (infix[i].first == "+")
-    {
+    } else if (infix[i].first == "+") {
       infix[i].first = "_pos_";
       ++i;
-    }
-    else if (infix[i].first == "!")
-    {
+    } else if (infix[i].first == "!") {
       ++i;
     }
   }
 
-  return parseExponent (infix, i);
+  return parseExponent(infix, i);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Exponent    --> Primitive ["^" Primitive]
-bool Eval::parseExponent (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int& i) const
-{
-  if (i < infix.size () &&
-      parsePrimitive (infix, i))
-  {
-    while (i < infix.size () &&
-           infix[i].second == Lexer::Type::op &&
-           infix[i].first == "^")
-    {
+bool Eval::parseExponent(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                         unsigned int& i) const {
+  if (i < infix.size() && parsePrimitive(infix, i)) {
+    while (i < infix.size() && infix[i].second == Lexer::Type::op && infix[i].first == "^") {
       ++i;
-      if (! parsePrimitive (infix, i))
-        return false;
+      if (!parsePrimitive(infix, i)) return false;
     }
 
     return true;
@@ -667,46 +563,31 @@ bool Eval::parseExponent (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Primitive   --> "(" Logical ")" | Variant
-bool Eval::parsePrimitive (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix,
-  unsigned int &i) const
-{
-  if (i < infix.size ())
-  {
-    if (infix[i].first == "(")
-    {
+bool Eval::parsePrimitive(std::vector<std::pair<std::string, Lexer::Type>>& infix,
+                          unsigned int& i) const {
+  if (i < infix.size()) {
+    if (infix[i].first == "(") {
       ++i;
-      if (i < infix.size () &&
-          parseLogical (infix, i))
-      {
-        if (i < infix.size () &&
-            infix[i].first == ")")
-        {
+      if (i < infix.size() && parseLogical(infix, i)) {
+        if (i < infix.size() && infix[i].first == ")") {
           ++i;
           return true;
         }
       }
-    }
-    else
-    {
+    } else {
       bool found = false;
-      for (const auto& source : _sources)
-      {
+      for (const auto& source : _sources) {
         Variant v;
-        if (source (infix[i].first, v))
-        {
+        if (source(infix[i].first, v)) {
           found = true;
           break;
         }
       }
 
-      if (found)
-      {
+      if (found) {
         ++i;
         return true;
-      }
-      else if (infix[i].second != Lexer::Type::op)
-      {
+      } else if (infix[i].second != Lexer::Type::op) {
         ++i;
         return true;
       }
@@ -748,95 +629,71 @@ bool Eval::parsePrimitive (
 //       Pop the operator onto the output queue.
 //   Exit.
 //
-void Eval::infixToPostfix (
-  std::vector <std::pair <std::string, Lexer::Type>>& infix) const
-{
+void Eval::infixToPostfix(std::vector<std::pair<std::string, Lexer::Type>>& infix) const {
   // Short circuit.
-  if (infix.size () == 1)
-    return;
+  if (infix.size() == 1) return;
 
   // Result.
-  std::vector <std::pair <std::string, Lexer::Type>> postfix;
+  std::vector<std::pair<std::string, Lexer::Type>> postfix;
 
   // Shunting yard.
-  std::vector <std::pair <std::string, Lexer::Type>> op_stack;
+  std::vector<std::pair<std::string, Lexer::Type>> op_stack;
 
   // Operator characteristics.
   char type;
   unsigned int precedence;
   char associativity;
 
-  for (auto& token : infix)
-  {
-    if (token.second == Lexer::Type::op &&
-        token.first == "(")
-    {
-      op_stack.push_back (token);
-    }
-    else if (token.second == Lexer::Type::op &&
-             token.first == ")")
-    {
-      while (op_stack.size () &&
-             op_stack.back ().first != "(")
-      {
-        postfix.push_back (op_stack.back ());
-        op_stack.pop_back ();
+  for (auto& token : infix) {
+    if (token.second == Lexer::Type::op && token.first == "(") {
+      op_stack.push_back(token);
+    } else if (token.second == Lexer::Type::op && token.first == ")") {
+      while (op_stack.size() && op_stack.back().first != "(") {
+        postfix.push_back(op_stack.back());
+        op_stack.pop_back();
       }
 
-      if (op_stack.size ())
-        op_stack.pop_back ();
+      if (op_stack.size())
+        op_stack.pop_back();
       else
-        throw std::string ("Mismatched parentheses in expression");
-    }
-    else if (token.second == Lexer::Type::op &&
-             identifyOperator (token.first, type, precedence, associativity))
-    {
+        throw std::string("Mismatched parentheses in expression");
+    } else if (token.second == Lexer::Type::op &&
+               identifyOperator(token.first, type, precedence, associativity)) {
       char type2;
       unsigned int precedence2;
       char associativity2;
-      while (op_stack.size () > 0 &&
-             identifyOperator (op_stack.back ().first, type2, precedence2, associativity2) &&
+      while (op_stack.size() > 0 &&
+             identifyOperator(op_stack.back().first, type2, precedence2, associativity2) &&
              ((associativity == 'l' && precedence <= precedence2) ||
-              (associativity == 'r' && precedence <  precedence2)))
-      {
-        postfix.push_back (op_stack.back ());
-        op_stack.pop_back ();
+              (associativity == 'r' && precedence < precedence2))) {
+        postfix.push_back(op_stack.back());
+        op_stack.pop_back();
       }
 
-      op_stack.push_back (token);
-    }
-    else
-    {
-      postfix.push_back (token);
+      op_stack.push_back(token);
+    } else {
+      postfix.push_back(token);
     }
   }
 
-  while (op_stack.size ())
-  {
-    if (op_stack.back ().first == "(" ||
-        op_stack.back ().first == ")")
-      throw std::string ("Mismatched parentheses in expression");
+  while (op_stack.size()) {
+    if (op_stack.back().first == "(" || op_stack.back().first == ")")
+      throw std::string("Mismatched parentheses in expression");
 
-    postfix.push_back (op_stack.back ());
-    op_stack.pop_back ();
+    postfix.push_back(op_stack.back());
+    op_stack.pop_back();
   }
 
   infix = postfix;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Eval::identifyOperator (
-  const std::string& op,
-  char& type,
-  unsigned int& precedence,
-  char& associativity) const
-{
-  for (const auto& opr : operators)
-  {
-    if (opr.op == op)
-    {
-      type          = opr.type;
-      precedence    = opr.precedence;
+bool Eval::identifyOperator(const std::string& op, char& type, unsigned int& precedence,
+                            char& associativity) const {
+  for (const auto& opr : operators) {
+    if (opr.op == op) {
+      type = opr.type;
+      precedence = opr.precedence;
       associativity = opr.associativity;
       return true;
     }
@@ -846,33 +703,29 @@ bool Eval::identifyOperator (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Eval::dump (
-  std::vector <std::pair <std::string, Lexer::Type>>& tokens) const
-{
+std::string Eval::dump(std::vector<std::pair<std::string, Lexer::Type>>& tokens) const {
   // Set up a color mapping.
-  std::map <Lexer::Type, Color> color_map;
-  color_map[Lexer::Type::op]         = Color ("gray14 on gray6");
-  color_map[Lexer::Type::number]     = Color ("rgb530 on gray6");
-  color_map[Lexer::Type::hex]        = Color ("rgb303 on gray6");
-  color_map[Lexer::Type::string]     = Color ("rgb550 on gray6");
-  color_map[Lexer::Type::dom]        = Color ("rgb045 on gray6");
-  color_map[Lexer::Type::identifier] = Color ("rgb035 on gray6");
-  color_map[Lexer::Type::date]       = Color ("rgb150 on gray6");
-  color_map[Lexer::Type::duration]   = Color ("rgb531 on gray6");
+  std::map<Lexer::Type, Color> color_map;
+  color_map[Lexer::Type::op] = Color("gray14 on gray6");
+  color_map[Lexer::Type::number] = Color("rgb530 on gray6");
+  color_map[Lexer::Type::hex] = Color("rgb303 on gray6");
+  color_map[Lexer::Type::string] = Color("rgb550 on gray6");
+  color_map[Lexer::Type::dom] = Color("rgb045 on gray6");
+  color_map[Lexer::Type::identifier] = Color("rgb035 on gray6");
+  color_map[Lexer::Type::date] = Color("rgb150 on gray6");
+  color_map[Lexer::Type::duration] = Color("rgb531 on gray6");
 
   std::string output;
-  for (auto i = tokens.begin (); i != tokens.end (); ++i)
-  {
-    if (i != tokens.begin ())
-      output += ' ';
+  for (auto i = tokens.begin(); i != tokens.end(); ++i) {
+    if (i != tokens.begin()) output += ' ';
 
     Color c;
-    if (color_map[i->second].nontrivial ())
+    if (color_map[i->second].nontrivial())
       c = color_map[i->second];
     else
-      c = Color ("rgb000 on gray6");
+      c = Color("rgb000 on gray6");
 
-    output += c.colorize (i->first);
+    output += c.colorize(i->first);
   }
 
   return output;

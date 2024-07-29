@@ -25,40 +25,40 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdAttributes.h>
-#include <sstream>
-#include <algorithm>
-#include <Context.h>
 #include <Command.h>
+#include <Context.h>
+
+#include <algorithm>
+#include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdZshAttributes::CmdZshAttributes ()
-{
-  _keyword               = "_zshattributes";
-  _usage                 = "task          _zshattributes";
-  _description           = "Generates a list of all attributes, for zsh autocompletion purposes";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdZshAttributes::CmdZshAttributes() {
+  _keyword = "_zshattributes";
+  _usage = "task          _zshattributes";
+  _description = "Generates a list of all attributes, for zsh autocompletion purposes";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdZshAttributes::execute (std::string& output)
-{
+int CmdZshAttributes::execute(std::string& output) {
   // Get a list of all columns, sort them.
-  auto columns = Context::getContext ().getColumns ();
-  std::sort (columns.begin (), columns.end ());
+  auto columns = Context::getContext().getColumns();
+  std::sort(columns.begin(), columns.end());
 
   std::stringstream out;
-  for (const auto& col : columns)
-    out << col << ':' << col << '\n';
+  for (const auto& col : columns) out << col << ':' << col << '\n';
 
-  output = out.str ();
+  output = out.str();
   return 0;
 }
 

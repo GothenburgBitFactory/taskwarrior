@@ -77,7 +77,7 @@
 #define EXTERN_C extern "C"
 #else
 #define EXTERN_C
-#endif // __cplusplus
+#endif  // __cplusplus
 
 // ***** TCResult *****
 //
@@ -85,15 +85,15 @@
 // the associated object's `tc_.._error` method will return an error message.
 enum TCResult
 #ifdef __cplusplus
-  : int32_t
-#endif // __cplusplus
+    : int32_t
+#endif  // __cplusplus
 {
   TC_RESULT_ERROR = -1,
   TC_RESULT_OK = 0,
 };
 #ifndef __cplusplus
 typedef int32_t TCResult;
-#endif // __cplusplus
+#endif  // __cplusplus
 
 // ***** TCString *****
 //
@@ -135,10 +135,10 @@ typedef int32_t TCResult;
 //
 // TCString is not threadsafe.
 typedef struct TCString {
-  void *ptr;   // opaque, but may be checked for NULL
-  size_t _u1;  // reserved
-  size_t _u2;  // reserved
-  uint8_t _u3; // reserved
+  void *ptr;    // opaque, but may be checked for NULL
+  size_t _u1;   // reserved
+  size_t _u2;   // reserved
+  uint8_t _u3;  // reserved
 } TCString;
 
 // Create a new TCString referencing the given C string.  The C string must remain valid and
@@ -214,8 +214,8 @@ typedef struct TCStringList {
   struct TCString *items;
 } TCStringList;
 
-// Free a TCStringList instance.  The instance, and all TCStringList it contains, must not be used after
-// this call.
+// Free a TCStringList instance.  The instance, and all TCStringList it contains, must not be used
+// after this call.
 //
 // When this call returns, the `items` pointer will be NULL, signalling an invalid TCStringList.
 EXTERN_C void tc_string_list_free(struct TCStringList *tcstrings);
@@ -310,8 +310,8 @@ typedef struct TCAnnotationList {
   struct TCAnnotation *items;
 } TCAnnotationList;
 
-// Free a TCAnnotationList instance.  The instance, and all TCAnnotations it contains, must not be used after
-// this call.
+// Free a TCAnnotationList instance.  The instance, and all TCAnnotations it contains, must not be
+// used after this call.
 //
 // When this call returns, the `items` pointer will be NULL, signalling an invalid TCAnnotationList.
 EXTERN_C void tc_annotation_list_free(struct TCAnnotationList *tcanns);
@@ -390,10 +390,10 @@ EXTERN_C void tc_kv_list_free(struct TCKVList *tckvs);
 // The status of a task, as defined by the task data model.
 #ifdef __cplusplus
 typedef enum TCStatus : int32_t {
-#else // __cplusplus
+#else   // __cplusplus
 typedef int32_t TCStatus;
 enum TCStatus {
-#endif // __cplusplus
+#endif  // __cplusplus
   TC_STATUS_PENDING = 0,
   TC_STATUS_COMPLETED = 1,
   TC_STATUS_DELETED = 2,
@@ -403,9 +403,9 @@ enum TCStatus {
   TC_STATUS_UNKNOWN = -1,
 #ifdef __cplusplus
 } TCStatus;
-#else // __cplusplus
+#else   // __cplusplus
 };
-#endif // __cplusplus
+#endif  // __cplusplus
 
 // ***** TCServer *****
 //
@@ -424,7 +424,8 @@ typedef struct TCServer TCServer;
 // returned.  The caller must free this string.
 //
 // The server must be freed after it is used - tc_replica_sync does not automatically free it.
-EXTERN_C struct TCServer *tc_server_new_local(struct TCString server_dir, struct TCString *error_out);
+EXTERN_C struct TCServer *tc_server_new_local(struct TCString server_dir,
+                                              struct TCString *error_out);
 
 // Create a new TCServer that connects to a remote server.  See the TaskChampion docs for the
 // description of the arguments.
@@ -433,10 +434,9 @@ EXTERN_C struct TCServer *tc_server_new_local(struct TCString server_dir, struct
 // returned.  The caller must free this string.
 //
 // The server must be freed after it is used - tc_replica_sync does not automatically free it.
-EXTERN_C struct TCServer *tc_server_new_sync(struct TCString url,
-                                      struct TCUuid client_id,
-                                      struct TCString encryption_secret,
-                                      struct TCString *error_out);
+EXTERN_C struct TCServer *tc_server_new_sync(struct TCString url, struct TCUuid client_id,
+                                             struct TCString encryption_secret,
+                                             struct TCString *error_out);
 
 // Create a new TCServer that connects to the Google Cloud Platform.  See the TaskChampion docs
 // for the description of the arguments.
@@ -445,10 +445,9 @@ EXTERN_C struct TCServer *tc_server_new_sync(struct TCString url,
 // returned.  The caller must free this string.
 //
 // The server must be freed after it is used - tc_replica_sync does not automatically free it.
-EXTERN_C struct TCServer *tc_server_new_gcp(struct TCString bucket,
-                                      struct TCString credential_path,
-                                      struct TCString encryption_secret,
-                                      struct TCString *error_out);
+EXTERN_C struct TCServer *tc_server_new_gcp(struct TCString bucket, struct TCString credential_path,
+                                            struct TCString encryption_secret,
+                                            struct TCString *error_out);
 
 // Free a server.  The server may not be used after this function returns and must not be freed
 // more than once.
@@ -483,31 +482,31 @@ typedef struct TCReplica TCReplica;
 // ***** TCReplicaOpType *****
 enum TCReplicaOpType
 #ifdef __cplusplus
-  : uint32_t
-#endif // __cplusplus
+    : uint32_t
+#endif  // __cplusplus
 {
-    Create = 0,
-    Delete = 1,
-    Update = 2,
-    UndoPoint = 3,
+  Create = 0,
+  Delete = 1,
+  Update = 2,
+  UndoPoint = 3,
 };
 #ifndef __cplusplus
 typedef uint32_t TCReplicaOpType;
-#endif // __cplusplus
+#endif  // __cplusplus
 
 // ***** TCReplicaOp *****
 struct TCReplicaOp {
-    TCReplicaOpType operation_type;
-    void* inner;
+  TCReplicaOpType operation_type;
+  void *inner;
 };
 
 typedef struct TCReplicaOp TCReplicaOp;
 
 // ***** TCReplicaOpList *****
 struct TCReplicaOpList {
-    struct TCReplicaOp *items;
-    size_t len;
-    size_t capacity;
+  struct TCReplicaOp *items;
+  size_t len;
+  size_t capacity;
 };
 
 typedef struct TCReplicaOpList TCReplicaOpList;
@@ -519,9 +518,8 @@ EXTERN_C struct TCReplica *tc_replica_new_in_memory(void);
 // Create a new TCReplica with an on-disk database having the given filename.  On error, a string
 // is written to the error_out parameter (if it is not NULL) and NULL is returned.  The caller
 // must free this string.
-EXTERN_C struct TCReplica *tc_replica_new_on_disk(struct TCString path,
-                                         bool create_if_missing,
-                                         struct TCString *error_out);
+EXTERN_C struct TCReplica *tc_replica_new_on_disk(struct TCString path, bool create_if_missing,
+                                                  struct TCString *error_out);
 
 // Add an UndoPoint, if one has not already been added by this Replica.  This occurs automatically
 // when a change is made.  The `force` flag allows forcing a new UndoPoint even if one has already
@@ -545,7 +543,8 @@ EXTERN_C struct TCTaskList tc_replica_all_tasks(struct TCReplica *rep);
 //
 // If undone_out is not NULL, then on success it is set to 1 if operations were undone, or 0 if
 // there are no operations that can be done.
-EXTERN_C TCResult tc_replica_commit_undo_ops(struct TCReplica *rep, TCReplicaOpList tc_undo_ops, int32_t *undone_out);
+EXTERN_C TCResult tc_replica_commit_undo_ops(struct TCReplica *rep, TCReplicaOpList tc_undo_ops,
+                                             int32_t *undone_out);
 
 // Delete a task.  The task must exist.  Note that this is different from setting status to
 // Deleted; this is the final purge of the task.
@@ -582,14 +581,14 @@ EXTERN_C TCReplicaOpList tc_replica_get_undo_ops(struct TCReplica *rep);
 // Create a new task.  The task must not already exist.
 //
 // Returns the task, or NULL on error.
-EXTERN_C struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep, struct TCUuid tcuuid);
+EXTERN_C struct TCTask *tc_replica_import_task_with_uuid(struct TCReplica *rep,
+                                                         struct TCUuid tcuuid);
 
 // Create a new task.  The task must not already exist.
 //
 // Returns the task, or NULL on error.
-EXTERN_C struct TCTask *tc_replica_new_task(struct TCReplica *rep,
-                                   enum TCStatus status,
-                                   struct TCString description);
+EXTERN_C struct TCTask *tc_replica_new_task(struct TCReplica *rep, enum TCStatus status,
+                                            struct TCString description);
 
 // Get the number of local, un-synchronized operations (not including undo points), or -1 on
 // error.
@@ -606,7 +605,8 @@ EXTERN_C TCResult tc_replica_rebuild_working_set(struct TCReplica *rep, bool ren
 // Synchronize this replica with a server.
 //
 // The `server` argument remains owned by the caller, and must be freed explicitly.
-EXTERN_C TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server, bool avoid_snapshots);
+EXTERN_C TCResult tc_replica_sync(struct TCReplica *rep, struct TCServer *server,
+                                  bool avoid_snapshots);
 
 // Get the current working set for this replica.  The resulting value must be freed
 // with tc_working_set_free.
@@ -636,8 +636,8 @@ EXTERN_C struct TCString tc_replica_op_get_uuid(struct TCReplicaOp *op);
 // Return value field of ReplicaOp.
 EXTERN_C struct TCString tc_replica_op_get_value(struct TCReplicaOp *op);
 
-// Free a vector of ReplicaOp.  The vector may not be used after this function returns and must not be freed
-// more than once.
+// Free a vector of ReplicaOp.  The vector may not be used after this function returns and must not
+// be freed more than once.
 EXTERN_C void tc_replica_op_list_free(struct TCReplicaOpList *oplist);
 
 // ***** TCTask *****
@@ -719,7 +719,8 @@ EXTERN_C struct TCKVList tc_task_get_taskmap(struct TCTask *task);
 // Get the named UDA from the task.
 //
 // Returns a TCString with NULL ptr field if the UDA does not exist.
-EXTERN_C struct TCString tc_task_get_uda(struct TCTask *task, struct TCString ns, struct TCString key);
+EXTERN_C struct TCString tc_task_get_uda(struct TCTask *task, struct TCString ns,
+                                         struct TCString key);
 
 // Get all UDAs for this task.
 //
@@ -809,7 +810,8 @@ EXTERN_C TCResult tc_task_set_description(struct TCTask *task, struct TCString d
 EXTERN_C TCResult tc_task_set_entry(struct TCTask *task, time_t entry);
 
 // Set a legacy UDA on a mutable task.
-EXTERN_C TCResult tc_task_set_legacy_uda(struct TCTask *task, struct TCString key, struct TCString value);
+EXTERN_C TCResult tc_task_set_legacy_uda(struct TCTask *task, struct TCString key,
+                                         struct TCString value);
 
 // Set a mutable task's modified timestamp.  The value cannot be zero.
 EXTERN_C TCResult tc_task_set_modified(struct TCTask *task, time_t modified);
@@ -818,13 +820,12 @@ EXTERN_C TCResult tc_task_set_modified(struct TCTask *task, time_t modified);
 EXTERN_C TCResult tc_task_set_status(struct TCTask *task, enum TCStatus status);
 
 // Set a UDA on a mutable task.
-EXTERN_C TCResult tc_task_set_uda(struct TCTask *task,
-                         struct TCString ns,
-                         struct TCString key,
-                         struct TCString value);
+EXTERN_C TCResult tc_task_set_uda(struct TCTask *task, struct TCString ns, struct TCString key,
+                                  struct TCString value);
 
 // Set a mutable task's property value by name.  If value.ptr is NULL, the property is removed.
-EXTERN_C TCResult tc_task_set_value(struct TCTask *task, struct TCString property, struct TCString value);
+EXTERN_C TCResult tc_task_set_value(struct TCTask *task, struct TCString property,
+                                    struct TCString value);
 
 // Set a mutable task's wait timestamp.  Pass wait=0 to unset the wait field.
 EXTERN_C TCResult tc_task_set_wait(struct TCTask *task, time_t wait);
@@ -916,7 +917,8 @@ typedef struct TCWorkingSet TCWorkingSet;
 
 // Get the UUID for the task at the given index.  Returns true if the UUID exists in the working
 // set.  If not, returns false and does not change uuid_out.
-EXTERN_C bool tc_working_set_by_index(struct TCWorkingSet *ws, size_t index, struct TCUuid *uuid_out);
+EXTERN_C bool tc_working_set_by_index(struct TCWorkingSet *ws, size_t index,
+                                      struct TCUuid *uuid_out);
 
 // Get the working set index for the task with the given UUID.  Returns 0 if the task is not in
 // the working set.

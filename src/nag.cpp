@@ -24,9 +24,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <cmake.h>
+
+#include <algorithm>
+// cmake.h include header must come first
+
 #include <Context.h>
+
 #include <iterator>
 #include <unordered_set>
 #include <utility>
@@ -34,23 +38,17 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Generates a nag message when there are READY tasks of a higher urgency.
-void nag (std::vector <Task>& tasks)
-{
-  auto msg = Context::getContext ().config.get ("nag");
-  if (msg == "")
-      return;
+void nag(std::vector<Task>& tasks) {
+  auto msg = Context::getContext().config.get("nag");
+  if (msg == "") return;
 
-  auto pending = Context::getContext ().tdb2.pending_tasks ();
+  auto pending = Context::getContext().tdb2.pending_tasks();
   for (auto& t1 : tasks) {
-    if (t1.hasTag ("nonag"))
-      continue;
+    if (t1.hasTag("nonag")) continue;
 
     for (auto& t2 : pending) {
-      if (t1.get ("uuid") != t2.get ("uuid") &&
-        t2.hasTag ("READY")                  &&
-        t1.urgency () < t2.urgency ())
-      {
-        Context::getContext ().footnote (msg);
+      if (t1.get("uuid") != t2.get("uuid") && t2.hasTag("READY") && t1.urgency() < t2.urgency()) {
+        Context::getContext().footnote(msg);
         return;
       }
     }

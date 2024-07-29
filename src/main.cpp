@@ -25,53 +25,46 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
+#include <Context.h>
+
+#include <cstring>
 #include <iostream>
 #include <new>
-#include <cstring>
-#include <Context.h>
 #include <regex>
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, const char** argv)
-{
-  int status {0};
+int main(int argc, const char** argv) {
+  int status{0};
 
   Context globalContext;
-  Context::setContext (&globalContext);
+  Context::setContext(&globalContext);
 
   // Lightweight version checking that doesn't require initialization or any I/O.
-  if (argc == 2 && !strcmp (argv[1], "--version"))
-  {
+  if (argc == 2 && !strcmp(argv[1], "--version")) {
     std::cout << VERSION << "\n";
-  }
-  else
-  {
-    try
-    {
-      status = Context::getContext ().initialize (argc, argv);
-      if (status == 0)
-        status = Context::getContext ().run ();
+  } else {
+    try {
+      status = Context::getContext().initialize(argc, argv);
+      if (status == 0) status = Context::getContext().run();
     }
 
-    catch (const std::string& error)
-    {
+    catch (const std::string& error) {
       std::cerr << error << "\n";
       status = -1;
     }
 
-    catch (std::bad_alloc& error)
-    {
-      std::cerr << "Error: Memory allocation failed: " << error.what () << "\n";
+    catch (std::bad_alloc& error) {
+      std::cerr << "Error: Memory allocation failed: " << error.what() << "\n";
       status = -3;
     }
 
-    catch (const std::regex_error& e)
-    {
+    catch (const std::regex_error& e) {
       std::cout << "regex_error caught: " << e.what() << '\n';
     }
 
-    catch (...)
-    {
+    catch (...) {
       std::cerr << "Unknown error. Please report.\n";
       status = -2;
     }

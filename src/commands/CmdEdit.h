@@ -27,26 +27,26 @@
 #ifndef INCLUDED_CMDEDIT
 #define INCLUDED_CMDEDIT
 
-#include <string>
 #include <Command.h>
 #include <Task.h>
 
-class CmdEdit : public Command
-{
-public:
-  CmdEdit ();
-  int execute (std::string&);
+#include <string>
 
-private:
-  std::string findValue (const std::string&, const std::string&);
-  std::string findMultilineValue (const std::string&, const std::string&, const std::string&);
-  std::vector <std::string> findValues (const std::string&, const std::string&);
-  std::string formatDate (Task&, const std::string&, const std::string&);
-  std::string formatDuration (Task&, const std::string&);
-  std::string formatTask (Task, const std::string&);
-  void parseTask (Task&, const std::string&, const std::string&);
+class CmdEdit : public Command {
+ public:
+  CmdEdit();
+  int execute(std::string&);
+
+ private:
+  std::string findValue(const std::string&, const std::string&);
+  std::string findMultilineValue(const std::string&, const std::string&, const std::string&);
+  std::vector<std::string> findValues(const std::string&, const std::string&);
+  std::string formatDate(Task&, const std::string&, const std::string&);
+  std::string formatDuration(Task&, const std::string&);
+  std::string formatTask(Task, const std::string&);
+  void parseTask(Task&, const std::string&, const std::string&);
   enum class editResult { error, changes, nochanges };
-  editResult editFile (Task&);
+  editResult editFile(Task&);
   static const std::string ANNOTATION_EDIT_MARKER;
 };
 

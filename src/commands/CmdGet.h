@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDGET
 #define INCLUDED_CMDGET
 
-#include <string>
 #include <Command.h>
 
-class CmdGet : public Command
-{
-public:
-  CmdGet ();
-  int execute (std::string&);
+#include <string>
+
+class CmdGet : public Command {
+ public:
+  CmdGet();
+  int execute(std::string&);
 };
 
 #endif

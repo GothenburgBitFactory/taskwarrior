@@ -27,19 +27,19 @@
 #ifndef INCLUDED_CMDCUSTOM
 #define INCLUDED_CMDCUSTOM
 
-#include <string>
 #include <Command.h>
 
-class CmdCustom : public Command
-{
-public:
-  CmdCustom (const std::string&, const std::string&, const std::string&);
-  bool uses_context () const override;
-  int execute (std::string&) override;
+#include <string>
 
-private:
-  void validateReportColumns (std::vector <std::string>&);
-  void validateSortColumns (std::vector <std::string>&);
+class CmdCustom : public Command {
+ public:
+  CmdCustom(const std::string&, const std::string&, const std::string&);
+  bool uses_context() const override;
+  int execute(std::string&) override;
+
+ private:
+  void validateReportColumns(std::vector<std::string>&);
+  void validateSortColumns(std::vector<std::string>&);
 };
 
 #endif

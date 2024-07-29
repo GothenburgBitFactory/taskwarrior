@@ -25,86 +25,82 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColStatus.h>
 #include <format.h>
 #include <utf8.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnStatus::ColumnStatus ()
-{
-  _name     = "status";
-  _style    = "long";
-  _label    = "Status";
-  _styles   = {"long", "short"};
-  _examples = {"Pending",
-               "P"};
+ColumnStatus::ColumnStatus() {
+  _name = "status";
+  _style = "long";
+  _label = "Status";
+  _styles = {"long", "short"};
+  _examples = {"Pending", "P"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
-void ColumnStatus::setStyle (const std::string& value)
-{
-  Column::setStyle (value);
+void ColumnStatus::setStyle(const std::string& value) {
+  Column::setStyle(value);
 
-  if (_style == "short" && _label == "Status")
-    _label = "St";
+  if (_style == "short" && _label == "Status") _label = "St";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnStatus::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
-  Task::status status = task.getStatus ();
+void ColumnStatus::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+  Task::status status = task.getStatus();
 
-  if (_style == "default" ||
-      _style == "long")
-  {
+  if (_style == "default" || _style == "long") {
     if (status == Task::pending)
-      minimum = maximum = utf8_width ("Pending");
+      minimum = maximum = utf8_width("Pending");
     else if (status == Task::deleted)
-      minimum = maximum = utf8_width ("Deleted");
+      minimum = maximum = utf8_width("Deleted");
     else if (status == Task::waiting)
-      minimum = maximum = utf8_width ("Waiting");
+      minimum = maximum = utf8_width("Waiting");
     else if (status == Task::completed)
-      minimum = maximum = utf8_width ("Completed");
+      minimum = maximum = utf8_width("Completed");
     else if (status == Task::recurring)
-      minimum = maximum = utf8_width ("Recurring");
-  }
-  else if (_style == "short")
+      minimum = maximum = utf8_width("Recurring");
+  } else if (_style == "short")
     minimum = maximum = 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnStatus::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  Task::status status = task.getStatus ();
+void ColumnStatus::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+  Task::status status = task.getStatus();
   std::string value;
 
-  if (_style == "default" ||
-      _style == "long")
-  {
-         if (status == Task::pending)   value = "Pending";
-    else if (status == Task::completed) value = "Completed";
-    else if (status == Task::deleted)   value = "Deleted";
-    else if (status == Task::waiting)   value = "Waiting";
-    else if (status == Task::recurring) value = "Recurring";
+  if (_style == "default" || _style == "long") {
+    if (status == Task::pending)
+      value = "Pending";
+    else if (status == Task::completed)
+      value = "Completed";
+    else if (status == Task::deleted)
+      value = "Deleted";
+    else if (status == Task::waiting)
+      value = "Waiting";
+    else if (status == Task::recurring)
+      value = "Recurring";
   }
 
-  else if (_style == "short")
-  {
-         if (status == Task::pending)   value = "P";
-    else if (status == Task::completed) value = "C";
-    else if (status == Task::deleted)   value = "D";
-    else if (status == Task::waiting)   value = "W";
-    else if (status == Task::recurring) value = "R";
+  else if (_style == "short") {
+    if (status == Task::pending)
+      value = "P";
+    else if (status == Task::completed)
+      value = "C";
+    else if (status == Task::deleted)
+      value = "D";
+    else if (status == Task::waiting)
+      value = "W";
+    else if (status == Task::recurring)
+      value = "R";
   }
 
-  renderStringLeft (lines, width, color, value);
+  renderStringLeft(lines, width, color, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

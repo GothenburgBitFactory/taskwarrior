@@ -27,16 +27,16 @@
 #ifndef INCLUDED_COLTYPEDURATION
 #define INCLUDED_COLTYPEDURATION
 
-#include <string>
 #include <Column.h>
 #include <Task.h>
 
-class ColumnTypeDuration : public Column
-{
-public:
-  ColumnTypeDuration ();
-  virtual bool validate (const std::string&) const;
-  virtual void modify (Task&, const std::string&);
+#include <string>
+
+class ColumnTypeDuration : public Column {
+ public:
+  ColumnTypeDuration();
+  virtual bool validate(const std::string&) const;
+  virtual void modify(Task&, const std::string&);
 };
 
 #endif

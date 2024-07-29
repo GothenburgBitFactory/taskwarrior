@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,7 +43,7 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_builtin_accept(self):
         """on-modify-accept - a well-behaved, successful, on-modify hook."""
-        hookname = 'on-modify-accept'
+        hookname = "on-modify-accept"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
@@ -61,7 +62,7 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_builtin_reject(self):
         """on-modify-reject - a well-behaved, failing, on-modify hook."""
-        hookname = 'on-modify-reject'
+        hookname = "on-modify-reject"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
@@ -76,7 +77,7 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_builtin_misbehave2(self):
         """on-modify-misbehave2 - does not emit JSON."""
-        hookname = 'on-modify-misbehave2'
+        hookname = "on-modify-misbehave2"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
@@ -92,7 +93,7 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_builtin_misbehave3(self):
         """on-modify-misbehave3 - emits additional JSON."""
-        hookname = 'on-modify-misbehave3'
+        hookname = "on-modify-misbehave3"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
@@ -108,7 +109,7 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_builtin_misbehave4(self):
         """on-modify-misbehave4 - emits different task JSON."""
-        hookname = 'on-modify-misbehave4'
+        hookname = "on-modify-misbehave4"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
@@ -124,12 +125,12 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_builtin_misbehave5(self):
         """on-modify-misbehave5 - emits syntactically wrong JSON."""
-        hookname = 'on-modify-misbehave5'
+        hookname = "on-modify-misbehave5"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
         code, out, err = self.t.runError("1 modify +tag")
-        self.assertIn("Hook Error: JSON syntax error in: {\"}", err)
+        self.assertIn('Hook Error: JSON syntax error in: {"}', err)
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
@@ -140,12 +141,15 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_builtin_misbehave6(self):
         """on-modify-misbehave6 - emits incomplete JSON."""
-        hookname = 'on-modify-misbehave6'
+        hookname = "on-modify-misbehave6"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
         code, out, err = self.t.runError("1 modify +tag")
-        self.assertIn("Hook Error: JSON Object missing 'uuid' attribute from hook script: on-modify-misbehave6", err)
+        self.assertIn(
+            "Hook Error: JSON Object missing 'uuid' attribute from hook script: on-modify-misbehave6",
+            err,
+        )
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
@@ -156,7 +160,7 @@ class TestHooksOnModify(TestCase):
 
     def test_onmodify_revert_changes(self):
         """on-modify-revert - revert all user modifications."""
-        hookname = 'on-modify-revert'
+        hookname = "on-modify-revert"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("add foo")
@@ -172,8 +176,10 @@ class TestHooksOnModify(TestCase):
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -27,59 +27,59 @@
 #ifndef INCLUDED_TC_SERVER
 #define INCLUDED_TC_SERVER
 
-#include <string>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <string>
 #include <vector>
+
 #include "tc/ffi.h"
 
 namespace tc {
-  // a unique_ptr to a TCServer which will automatically free the value when
-  // it goes out of scope.
-  using unique_tcserver_ptr = std::unique_ptr<
-    tc::ffi::TCServer,
-    std::function<void(tc::ffi::TCServer*)>>;
+// a unique_ptr to a TCServer which will automatically free the value when
+// it goes out of scope.
+using unique_tcserver_ptr =
+    std::unique_ptr<tc::ffi::TCServer, std::function<void(tc::ffi::TCServer *)>>;
 
-  // Server wraps the TCServer type, managing its memory, errors, and so on.
-  //
-  // Except as noted, method names match the suffix to `tc_server_..`.
-  class Server
-  {
-  public:
-    // Construct a null server
-    Server () = default;
+// Server wraps the TCServer type, managing its memory, errors, and so on.
+//
+// Except as noted, method names match the suffix to `tc_server_..`.
+class Server {
+ public:
+  // Construct a null server
+  Server() = default;
 
-    // Construct a local server (tc_server_new_local).
-    static Server new_local (const std::string& server_dir);
+  // Construct a local server (tc_server_new_local).
+  static Server new_local(const std::string &server_dir);
 
-    // Construct a remote server (tc_server_new_sync).
-    static Server new_sync (const std::string &url, const std::string &client_id, const std::string &encryption_secret);
+  // Construct a remote server (tc_server_new_sync).
+  static Server new_sync(const std::string &url, const std::string &client_id,
+                         const std::string &encryption_secret);
 
-    // Construct a GCP server (tc_server_new_gcp).
-    static Server new_gcp (const std::string &bucket, const std::string &credential_path, const std::string &encryption_secret);
+  // Construct a GCP server (tc_server_new_gcp).
+  static Server new_gcp(const std::string &bucket, const std::string &credential_path,
+                        const std::string &encryption_secret);
 
-    // This object "owns" inner, so copy is not allowed.
-    Server (const Server &) = delete;
-    Server &operator=(const Server &) = delete;
+  // This object "owns" inner, so copy is not allowed.
+  Server(const Server &) = delete;
+  Server &operator=(const Server &) = delete;
 
-    // Explicit move constructor and assignment
-    Server (Server &&) noexcept;
-    Server &operator=(Server &&) noexcept;
+  // Explicit move constructor and assignment
+  Server(Server &&) noexcept;
+  Server &operator=(Server &&) noexcept;
 
-  protected:
-    Server (unique_tcserver_ptr inner) : inner(std::move(inner)) {};
+ protected:
+  Server(unique_tcserver_ptr inner) : inner(std::move(inner)) {};
 
-    unique_tcserver_ptr inner;
+  unique_tcserver_ptr inner;
 
-    // Replica accesses the inner pointer to call tc_replica_sync
-    friend class Replica;
+  // Replica accesses the inner pointer to call tc_replica_sync
+  friend class Replica;
 
-    // construct an error message from the given string.
-    std::string server_error (tc::ffi::TCString string);
-  };
-}
-
+  // construct an error message from the given string.
+  std::string server_error(tc::ffi::TCString string);
+};
+}  // namespace tc
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

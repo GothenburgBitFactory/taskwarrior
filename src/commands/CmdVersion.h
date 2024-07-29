@@ -27,21 +27,20 @@
 #ifndef INCLUDED_CMDVERSION
 #define INCLUDED_CMDVERSION
 
-#include <string>
 #include <Command.h>
 
-class CmdVersion : public Command
-{
-public:
-  CmdVersion ();
-  int execute (std::string&);
+#include <string>
+
+class CmdVersion : public Command {
+ public:
+  CmdVersion();
+  int execute(std::string&);
 };
 
-class CmdCompletionVersion : public Command
-{
-public:
-  CmdCompletionVersion ();
-  int execute (std::string&);
+class CmdCompletionVersion : public Command {
+ public:
+  CmdCompletionVersion();
+  int execute(std::string&);
 };
 
 #endif

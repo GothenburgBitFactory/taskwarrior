@@ -29,10 +29,9 @@
 
 #include <ColTypeDate.h>
 
-class ColumnUntil : public ColumnTypeDate
-{
-public:
-  ColumnUntil ();
+class ColumnUntil : public ColumnTypeDate {
+ public:
+  ColumnUntil();
 };
 
 #endif

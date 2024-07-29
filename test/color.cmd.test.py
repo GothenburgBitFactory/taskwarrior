@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 import platform
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -45,12 +46,12 @@ class TestColorCommand(TestCase):
         self.t = Task()
 
     def test_colors_off(self):
-        """ Verify 'task colors' shows an error with color:off"""
+        """Verify 'task colors' shows an error with color:off"""
         code, out, err = self.t.runError("colors")
         self.assertIn("Color is currently turned off", out)
 
     def test_colors_all(self):
-        """ Verify 'task colors' shows all colors"""
+        """Verify 'task colors' shows all colors"""
         code, out, err = self.t("colors rc._forcecolor:on")
         self.assertIn("Basic colors", out)
         self.assertIn("Effects", out)
@@ -60,12 +61,12 @@ class TestColorCommand(TestCase):
         self.assertIn("Try running 'task color white on red'.", out)
 
     def test_colors_sample(self):
-        """ Verify 'task colors red' shows a sample"""
+        """Verify 'task colors red' shows a sample"""
         code, out, err = self.t("colors rc._forcecolor:on red")
         self.assertRegex(out, "Your sample:\n\n  .\\[31mtask color red.\\[0m")
 
     def test_colors_legend(self):
-        """ Verify 'task colors legend' shows theme colors"""
+        """Verify 'task colors legend' shows theme colors"""
         code, out, err = self.t("colors rc._forcecolor:on legend")
         self.assertRegex(out, r"color.debug\s+.\[0m\s.\[38;5;4mcolor4\s+.\[0m")
 
@@ -74,8 +75,10 @@ class TestColorCommand(TestCase):
         code, out, err = self.t("colors rc._forcecolor:on rc.color.debug:red legend")
         self.assertRegex(out, r"color.debug\s+.\[0m\s.\[31mred\s+.\[0m")
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

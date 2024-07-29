@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
@@ -67,6 +68,7 @@ class TestRecurrenceProblems(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

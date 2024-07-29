@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,15 +42,13 @@ class TestTags(TestCase):
         self.t = Task()
 
     def split_tags(self, tags):
-        return sorted(tags.strip().split(','))
+        return sorted(tags.strip().split(","))
 
     def test_tag_manipulation(self):
         """Test addition and removal of tags"""
         self.t("add +one This +two is a test +three")
         code, out, err = self.t("_get 1.tags")
-        self.assertEqual(
-            sorted(["one", "two", "three"]),
-            self.split_tags(out))
+        self.assertEqual(sorted(["one", "two", "three"]), self.split_tags(out))
 
         # Remove tags.
         self.t("1 modify -three -two -one")
@@ -59,9 +58,7 @@ class TestTags(TestCase):
         # Add tags.
         self.t("1 modify +four +five +six")
         code, out, err = self.t("_get 1.tags")
-        self.assertEqual(
-            sorted(["four", "five", "six"]),
-            self.split_tags(out))
+        self.assertEqual(sorted(["four", "five", "six"]), self.split_tags(out))
 
         # Remove tags.
         self.t("1 modify -four -five -six")
@@ -81,9 +78,7 @@ class TestTags(TestCase):
         """2655: Test bulk removal of tags"""
         self.t("add +one This +two is a test +three")
         code, out, err = self.t("_get 1.tags")
-        self.assertEqual(
-            sorted(["one", "two", "three"]),
-            self.split_tags(out))
+        self.assertEqual(sorted(["one", "two", "three"]), self.split_tags(out))
 
         # Remove all tags in bulk
         self.t("1 modify tags:")
@@ -432,7 +427,7 @@ class TestVirtualTagUDA(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t.config("uda.animal.type",  "string")
+        self.t.config("uda.animal.type", "string")
         self.t.config("uda.animal.label", "Animal")
         self.t("add one animal:donkey")
         self.t("add two")
@@ -448,7 +443,9 @@ class TestVirtualTagORPHAN(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t("add one rc.uda.animal.type:string rc.uda.animal.label:Animal animal:donkey")
+        self.t(
+            "add one rc.uda.animal.type:string rc.uda.animal.label:Animal animal:donkey"
+        )
         self.t("add two")
 
     def test_virtual_tag_ORPHAN(self):
@@ -473,13 +470,13 @@ class Test285(TestCase):
         # due:1month      -       -       -    -       -      -    -     ?
         # due:1year       -       -       -    -       -      -    -     -
 
-        cls.t('add due_last_week     due:-1week')
-        cls.t('add due_yesterday     due:-1day')
-        cls.t('add due_earlier_today due:today')
-        cls.t('add due_later_today   due:tomorrow')
-        cls.t('add due_three_days    due:3days')
-        cls.t('add due_next_month    due:1month')
-        cls.t('add due_next_year     due:1year')
+        cls.t("add due_last_week     due:-1week")
+        cls.t("add due_yesterday     due:-1day")
+        cls.t("add due_earlier_today due:today")
+        cls.t("add due_later_today   due:tomorrow")
+        cls.t("add due_three_days    due:3days")
+        cls.t("add due_next_month    due:1month")
+        cls.t("add due_next_year     due:1year")
 
     def test_overdue(self):
         """285: +OVERDUE"""
@@ -537,8 +534,8 @@ class TestListAllTags(TestCase):
     def test_list_all_tags(self):
         """Verify the 'tags' command obeys 'rc.list.all.tags'
 
-           Create a data set of two tasks, with unique tags, one
-           pending, one completed.
+        Create a data set of two tasks, with unique tags, one
+        pending, one completed.
         """
         self.t("add +t1 one")
         self.t("add +t2 two")
@@ -570,6 +567,7 @@ class TestBug1700(TestCase):
         self.assertNotIn("tag1", out)
         self.assertIn("tag2,tag3", out)
 
+
 class TestBug818(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -599,6 +597,7 @@ class TestBug818(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

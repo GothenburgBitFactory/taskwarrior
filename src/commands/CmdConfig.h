@@ -27,23 +27,22 @@
 #ifndef INCLUDED_CMDCONFIG
 #define INCLUDED_CMDCONFIG
 
-#include <string>
 #include <Command.h>
 
-class CmdConfig : public Command
-{
-public:
-  CmdConfig ();
-  static bool setConfigVariable (const std::string&, const std::string&, bool confirmation = false);
-  static int unsetConfigVariable (const std::string&, bool confirmation = false);
-  int execute (std::string&);
+#include <string>
+
+class CmdConfig : public Command {
+ public:
+  CmdConfig();
+  static bool setConfigVariable(const std::string&, const std::string&, bool confirmation = false);
+  static int unsetConfigVariable(const std::string&, bool confirmation = false);
+  int execute(std::string&);
 };
 
-class CmdCompletionConfig : public Command
-{
-public:
-  CmdCompletionConfig ();
-  int execute (std::string&);
+class CmdCompletionConfig : public Command {
+ public:
+  CmdCompletionConfig();
+  int execute(std::string&);
 };
 
 #endif

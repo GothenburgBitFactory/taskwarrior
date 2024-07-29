@@ -24,66 +24,75 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <cmake.h>
-#include <stdlib.h>
+
+#include <iostream>
+// cmake.h include header must come first
+
 #include <main.h>
+#include <stdlib.h>
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int, char**)
-{
-  UnitTest test (12);
+int main(int, char**) {
+  UnitTest test(12);
 
   // Ensure environment has no influence.
-  unsetenv ("TASKDATA");
-  unsetenv ("TASKRC");
+  unsetenv("TASKDATA");
+  unsetenv("TASKRC");
 
   // Inform Task about the attributes in the JSON below
   Task::attributes["depends"] = "string";
   Task::attributes["uuid"] = "string";
 
   // depends in [..] string from a taskserver (issue#2689)
-  auto sample = "{"
-           "\"depends\":\"[\\\"92a40a34-37f3-4785-8ca1-ff89cfbfd105\\\",\\\"e08e35fa-e42b-4de0-acc4-518fca8f6365\\\"]\","
-           "\"uuid\":\"00000000-0000-0000-0000-000000000000\""
-           "}";
-  auto json = Task (sample);
-  auto value = json.get ("uuid");
-  test.is (value, "00000000-0000-0000-0000-000000000000", "json [..] uuid");
-  value = json.get ("depends");
-  test.is (value, "92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365", "json [..] depends");
-  test.ok (json.has ("dep_92a40a34-37f3-4785-8ca1-ff89cfbfd105"), "json [..] dep attr");
-  test.ok (json.has ("dep_e08e35fa-e42b-4de0-acc4-518fca8f6365"), "json [..] dep attr");
+  auto sample =
+      "{"
+      "\"depends\":\"[\\\"92a40a34-37f3-4785-8ca1-ff89cfbfd105\\\",\\\"e08e35fa-e42b-4de0-acc4-"
+      "518fca8f6365\\\"]\","
+      "\"uuid\":\"00000000-0000-0000-0000-000000000000\""
+      "}";
+  auto json = Task(sample);
+  auto value = json.get("uuid");
+  test.is(value, "00000000-0000-0000-0000-000000000000", "json [..] uuid");
+  value = json.get("depends");
+  test.is(value, "92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365",
+          "json [..] depends");
+  test.ok(json.has("dep_92a40a34-37f3-4785-8ca1-ff89cfbfd105"), "json [..] dep attr");
+  test.ok(json.has("dep_e08e35fa-e42b-4de0-acc4-518fca8f6365"), "json [..] dep attr");
 
   // depends in comma-delimited string from a taskserver (deprecated format)
-  sample = "{"
-           "\"depends\":\"92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365\","
-           "\"uuid\":\"00000000-0000-0000-0000-000000000000\""
-           "}";
-  json = Task (sample);
-  value = json.get ("uuid");
-  test.is (value, "00000000-0000-0000-0000-000000000000", "json comma-separated uuid");
-  value = json.get ("depends");
-  test.is (value, "92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365", "json comma-separated depends");
-  test.ok (json.has ("dep_92a40a34-37f3-4785-8ca1-ff89cfbfd105"), "json comma-separated dep attr");
-  test.ok (json.has ("dep_e08e35fa-e42b-4de0-acc4-518fca8f6365"), "json comma-separated dep attr");
+  sample =
+      "{"
+      "\"depends\":\"92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365\","
+      "\"uuid\":\"00000000-0000-0000-0000-000000000000\""
+      "}";
+  json = Task(sample);
+  value = json.get("uuid");
+  test.is(value, "00000000-0000-0000-0000-000000000000", "json comma-separated uuid");
+  value = json.get("depends");
+  test.is(value, "92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365",
+          "json comma-separated depends");
+  test.ok(json.has("dep_92a40a34-37f3-4785-8ca1-ff89cfbfd105"), "json comma-separated dep attr");
+  test.ok(json.has("dep_e08e35fa-e42b-4de0-acc4-518fca8f6365"), "json comma-separated dep attr");
 
   // depends in a JSON array from a taskserver
-  sample = "{"
-           "\"depends\":[\"92a40a34-37f3-4785-8ca1-ff89cfbfd105\",\"e08e35fa-e42b-4de0-acc4-518fca8f6365\"],"
-           "\"uuid\":\"00000000-0000-0000-0000-000000000000\""
-           "}";
-  json = Task (sample);
-  value = json.get ("uuid");
-  test.is (value, "00000000-0000-0000-0000-000000000000", "json array uuid");
-  value = json.get ("depends");
-  test.is (value, "92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365", "json array depends");
-  test.ok (json.has ("dep_92a40a34-37f3-4785-8ca1-ff89cfbfd105"), "json array dep attr");
-  test.ok (json.has ("dep_e08e35fa-e42b-4de0-acc4-518fca8f6365"), "json array dep attr");
+  sample =
+      "{"
+      "\"depends\":[\"92a40a34-37f3-4785-8ca1-ff89cfbfd105\",\"e08e35fa-e42b-4de0-acc4-"
+      "518fca8f6365\"],"
+      "\"uuid\":\"00000000-0000-0000-0000-000000000000\""
+      "}";
+  json = Task(sample);
+  value = json.get("uuid");
+  test.is(value, "00000000-0000-0000-0000-000000000000", "json array uuid");
+  value = json.get("depends");
+  test.is(value, "92a40a34-37f3-4785-8ca1-ff89cfbfd105,e08e35fa-e42b-4de0-acc4-518fca8f6365",
+          "json array depends");
+  test.ok(json.has("dep_92a40a34-37f3-4785-8ca1-ff89cfbfd105"), "json array dep attr");
+  test.ok(json.has("dep_e08e35fa-e42b-4de0-acc4-518fca8f6365"), "json array dep attr");
 
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

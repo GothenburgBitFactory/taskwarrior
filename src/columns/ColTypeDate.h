@@ -27,20 +27,20 @@
 #ifndef INCLUDED_COLTYPEDATE
 #define INCLUDED_COLTYPEDATE
 
-#include <vector>
-#include <string>
-#include <Column.h>
 #include <Color.h>
+#include <Column.h>
 #include <Task.h>
 
-class ColumnTypeDate : public Column
-{
-public:
-  ColumnTypeDate ();
-  virtual void measure (Task&, unsigned int&, unsigned int&);
-  virtual void render (std::vector <std::string>&, Task&, int, Color&);
-  virtual bool validate (const std::string&) const;
-  virtual void modify (Task&, const std::string&);
+#include <string>
+#include <vector>
+
+class ColumnTypeDate : public Column {
+ public:
+  ColumnTypeDate();
+  virtual void measure(Task&, unsigned int&, unsigned int&);
+  virtual void render(std::vector<std::string>&, Task&, int, Color&);
+  virtual bool validate(const std::string&) const;
+  virtual void modify(Task&, const std::string&);
 };
 
 #endif

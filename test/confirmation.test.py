@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -44,7 +45,7 @@ class TestConfirmation(TestCase):
         self.t.config("confirmation", "on")
 
         # Create some playthings.
-        for id in range(1,11):
+        for id in range(1, 11):
             self.t("add foo")
 
         # Test the various forms of "Yes".
@@ -87,7 +88,9 @@ class TestBug1438(TestCase):
         code, out, err = self.t("list")
         self.assertIn("Sometimes", out)
 
-        code, out, err = self.t("rc.confirmation=off rc.recurrence.confirmation=off 2 mod /Sometimes/Everytime/")
+        code, out, err = self.t(
+            "rc.confirmation=off rc.recurrence.confirmation=off 2 mod /Sometimes/Everytime/"
+        )
         self.assertIn("Modified 1 task", out)
         code, out, err = self.t("list")
         self.assertIn("Everytime", out)
@@ -95,6 +98,7 @@ class TestBug1438(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

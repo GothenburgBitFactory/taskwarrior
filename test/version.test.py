@@ -30,6 +30,7 @@ import os
 import unittest
 import re
 from datetime import datetime
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -58,7 +59,7 @@ class TestVersion(TestCase):
 
     def slurp(self, file=os.path.join(SOURCE_DIR, "CMakeLists.txt")):
         number = "\.".join(["[0-9]+"] * 3)
-        ver = re.compile("^ *VERSION ({0}[^\"]*)$".format(number))
+        ver = re.compile('^ *VERSION ({0}[^"]*)$'.format(number))
         with open(file) as fh:
             for line in fh:
                 match = ver.match(line)
@@ -85,12 +86,11 @@ class TestVersion(TestCase):
 
         # If we are within a git repository, check the tag version
         if os.path.exists("../.git"):
-          if 2 >= len(version) > 0:
-              git = version[1]
-              self.assertRegex(git, r'\([a-f0-9]*\)')
-          else:
-              raise ValueError("Unexpected output from _version '{0}'".format(
-                  out))
+            if 2 >= len(version) > 0:
+                git = version[1]
+                self.assertRegex(git, r"\([a-f0-9]*\)")
+            else:
+                raise ValueError("Unexpected output from _version '{0}'".format(out))
 
         ver = version[0]
         ver_expected = self.slurp()
@@ -102,11 +102,12 @@ class TestVersion(TestCase):
     def test_version_option(self):
         """Verify that  'task --version' returns something valid"""
         code, out, err = self.t("--version")
-        self.assertRegex(out, r'^\d\.\d+\.\d+(\.\w+)?$')
+        self.assertRegex(out, r"^\d\.\d+\.\d+(\.\w+)?$")
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

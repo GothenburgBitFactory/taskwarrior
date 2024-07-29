@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 from datetime import datetime, timedelta
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -37,6 +38,7 @@ from basetest import Task, TestCase
 
 def timestamp_in_holiday_format(time):
     return time.strftime("%Y%m%d")
+
 
 class TestCalendarCommandLine(TestCase):
     def setUp(self):
@@ -56,7 +58,9 @@ class TestCalendarCommandLine(TestCase):
 
     def test_basic_command_offset(self):
         """Verify 'calendar rc.calendar.offset:on rc.calendar.offset.value:1' does not fail"""
-        code, out, err = self.t("calendar rc.calendar.offset:on rc.calendar.offset.value:1")
+        code, out, err = self.t(
+            "calendar rc.calendar.offset:on rc.calendar.offset.value:1"
+        )
         self.assertIn("Su Mo Tu We Th Fr Sa", out)
 
     def test_basic_command(self):
@@ -72,13 +76,17 @@ class TestCalendarCommandLine(TestCase):
     def test_basic_command_details(self):
         """Verify 'calendar rc.calendar.details:full rc.calendar.details.report:list' does not fail"""
         self.t("add task_with_due_date due:tomorrow")
-        code, out, err = self.t("calendar rc.calendar.details:full rc.calendar.details.report:list")
+        code, out, err = self.t(
+            "calendar rc.calendar.details:full rc.calendar.details.report:list"
+        )
         self.assertIn("task_with_due_date", out)
 
     def test_basic_command_details_color(self):
         """Verify 'calendar rc.calendar.details:full rc.calendar.details.report:list rc._forcecolor:on' does not fail"""
         self.t("add task_with_due_date due:tomorrow")
-        code, out, err = self.t("calendar rc.calendar.details:full rc.calendar.details.report:list rc._forcecolor:on")
+        code, out, err = self.t(
+            "calendar rc.calendar.details:full rc.calendar.details.report:list rc._forcecolor:on"
+        )
         self.assertIn("task_with_due_date", out)
 
     def test_basic_command_holidays(self):
@@ -88,29 +96,37 @@ class TestCalendarCommandLine(TestCase):
 
     def test_basic_command_single_holiday(self):
         """Verify 'calendar rc.holiday.test.name:donkeyday rc.holiday.test.date:[tomorrws date] rc.calendar.holidays:full' does not fail"""
-        code, out, err = self.t("calendar rc.holiday.test.name:donkeyday rc.holliday.test.date:{0} rc.calendar.holidays:full".format(self.tomorrow))
+        code, out, err = self.t(
+            "calendar rc.holiday.test.name:donkeyday rc.holliday.test.date:{0} rc.calendar.holidays:full".format(
+                self.tomorrow
+            )
+        )
         self.assertRegex(out, "Date +Holiday")
 
     def test_basic_command_multiday_holiday(self):
         """Verify 'calendar rc.holiday.test.name:donkeyday rc.holiday.test.start:[tomorrws date] rc.holiday.test.end:[date a month later] rc.calendar.holidays:full' does not fail"""
-        code, out, err = self.t("calendar rc.holiday.test.name:donkeyday rc.holiday.test.start:{0} rc.holiday.test.end:{1} rc.calendar.holidays:full".format(self.tomorrow, self.next_month))
+        code, out, err = self.t(
+            "calendar rc.holiday.test.name:donkeyday rc.holiday.test.start:{0} rc.holiday.test.end:{1} rc.calendar.holidays:full".format(
+                self.tomorrow, self.next_month
+            )
+        )
         self.assertRegex(out, "Date +Holiday")
 
     def test_y_argument(self):
         """Verify 'calendar y' does not fail"""
         code, out, err = self.t("calendar y")
-        self.assertIn("January",   out)
-        self.assertIn("February",  out)
-        self.assertIn("March",     out)
-        self.assertIn("April",     out)
-        self.assertIn("May",       out)
-        self.assertIn("June",      out)
-        self.assertIn("July",      out)
-        self.assertIn("August",    out)
+        self.assertIn("January", out)
+        self.assertIn("February", out)
+        self.assertIn("March", out)
+        self.assertIn("April", out)
+        self.assertIn("May", out)
+        self.assertIn("June", out)
+        self.assertIn("July", out)
+        self.assertIn("August", out)
         self.assertIn("September", out)
-        self.assertIn("October",   out)
-        self.assertIn("November",  out)
-        self.assertIn("December",  out)
+        self.assertIn("October", out)
+        self.assertIn("November", out)
+        self.assertIn("December", out)
         self.assertNotIn("Could not recognize argument", err)
 
     def test_due_argument(self):
@@ -249,6 +265,7 @@ class TestCalendarCommandLine(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

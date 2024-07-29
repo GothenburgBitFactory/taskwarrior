@@ -25,48 +25,43 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColTypeNumeric.h>
 #include <Context.h>
 #include <Eval.h>
-#include <Variant.h>
 #include <Filter.h>
+#include <Variant.h>
 #include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnTypeNumeric::ColumnTypeNumeric ()
-{
-  _type = "numeric";
+ColumnTypeNumeric::ColumnTypeNumeric() { _type = "numeric"; }
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeNumeric::validate(const std::string& input) const {
+  return input.length() ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnTypeNumeric::validate (const std::string& input) const
-{
-  return input.length () ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnTypeNumeric::modify (Task& task, const std::string& value)
-{
+void ColumnTypeNumeric::modify(Task& task, const std::string& value) {
   // Try to evaluate 'value'.  It might work.
   Variant evaluatedValue;
-  try
-  {
+  try {
     Eval e;
-    e.addSource (domSource);
-    e.evaluateInfixExpression (value, evaluatedValue);
+    e.addSource(domSource);
+    e.evaluateInfixExpression(value, evaluatedValue);
   }
 
-  catch (...)
-  {
-    evaluatedValue = Variant (value);
+  catch (...) {
+    evaluatedValue = Variant(value);
   }
 
   std::string label = "  [1;37;43mMODIFICATION[0m ";
-  Context::getContext ().debug (label + _name + " <-- '" + evaluatedValue.get_string () + "' <-- '" + value + '\'');
+  Context::getContext().debug(label + _name + " <-- '" + evaluatedValue.get_string() + "' <-- '" +
+                              value + '\'');
 
   // Convert the value of the expression to the correct type if needed
-  switch (evaluatedValue.type ())
-  {
+  switch (evaluatedValue.type()) {
     // Expected variants - no conversion
     case Variant::type_integer:
     case Variant::type_real:
@@ -74,16 +69,16 @@ void ColumnTypeNumeric::modify (Task& task, const std::string& value)
     // Convertible variants - convert to int
     case Variant::type_date:
     case Variant::type_duration:
-      evaluatedValue.cast (Variant::type_integer);
+      evaluatedValue.cast(Variant::type_integer);
       break;
     // Non-convertible variants
     case Variant::type_string:
-      throw format ("The value '{1}' is not a valid numeric value.", evaluatedValue.get_string ());
+      throw format("The value '{1}' is not a valid numeric value.", evaluatedValue.get_string());
     default:
-      throw format ("Unexpected variant type: '{1}'", evaluatedValue.type ());
+      throw format("Unexpected variant type: '{1}'", evaluatedValue.type());
   }
 
-  task.set (_name, evaluatedValue);
+  task.set(_name, evaluatedValue);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

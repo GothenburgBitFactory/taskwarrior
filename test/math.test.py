@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 from datetime import datetime
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -51,64 +52,66 @@ class TestMath(TestCase):
         cls.t("add three 'due:eoy-10days'")
         cls.t("add four  due:'eoy - 10days'")
         cls.t("add five  'due:eoy - 10days'")
-        cls.t("add six   'due:{}-12-31T23:59:59 - 10days'".format (datetime.now().year))
+        cls.t("add six   'due:{}-12-31T23:59:59 - 10days'".format(datetime.now().year))
 
     def test_compact_unquoted(self):
         """compact unquoted"""
-        code, out, err = self.t('_get 1.due')
+        code, out, err = self.t("_get 1.due")
         self.assertEqual(out, self.when)
 
     def test_compact_value_quoted(self):
         """compact value quoted"""
-        code, out, err = self.t('_get 2.due')
+        code, out, err = self.t("_get 2.due")
         self.assertEqual(out, self.when)
 
     def test_compact_arg_quoted(self):
         """compact arg quoted"""
-        code, out, err = self.t('_get 3.due')
+        code, out, err = self.t("_get 3.due")
         self.assertEqual(out, self.when)
 
     def test_sparse_value_quoted(self):
         """sparse value quoted"""
-        code, out, err = self.t('_get 4.due')
+        code, out, err = self.t("_get 4.due")
         self.assertEqual(out, self.when)
 
     def test_sparse_arg_quoted(self):
         """sparse arg quoted"""
-        code, out, err = self.t('_get 5.due')
+        code, out, err = self.t("_get 5.due")
         self.assertEqual(out, self.when)
 
     def test_sparse_arg_quoted_literal(self):
         """sparse arg quoted literal"""
-        code, out, err = self.t('_get 6.due')
+        code, out, err = self.t("_get 6.due")
         self.assertEqual(out, self.when)
+
 
 class TestBug851(TestCase):
     @classmethod
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t('add past due:-2days')
-        cls.t('add future due:2days')
+        cls.t("add past due:-2days")
+        cls.t("add future due:2days")
 
     def setUp(self):
         """Executed before each test in the class"""
 
     def test_attribute_before_with_math(self):
         """851: Test due.before:now+1d"""
-        code, out, err = self.t('due.before:now+1day ls')
+        code, out, err = self.t("due.before:now+1day ls")
         self.assertIn("past", out)
         self.assertNotIn("future", out)
 
     def test_attribute_after_with_math(self):
         """851: Test due.after:now+1d"""
-        code, out, err = self.t('due.after:now+1day ls')
+        code, out, err = self.t("due.after:now+1day ls")
         self.assertNotIn("past", out)
         self.assertIn("future", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

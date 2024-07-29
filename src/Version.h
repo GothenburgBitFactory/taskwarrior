@@ -31,7 +31,7 @@
 
 // A utility class for handling Taskwarrior versions.
 class Version {
-public:
+ public:
   // Parse a version from a string. This must be of the format
   // digits.digits.digits.
   explicit Version(std::string version);
@@ -60,9 +60,9 @@ public:
   // Convert back to a string.
   operator std::string() const;
 
-  friend std::ostream& operator<<(std::ostream& os, const Version& version);
+  friend std::ostream &operator<<(std::ostream &os, const Version &version);
 
-private:
+ private:
   int major = -1;
   int minor = -1;
   int patch = -1;

@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -44,27 +45,33 @@ class TestArgs(TestCase):
         self.t("add project:p pri:H +tag foo")
 
         code, out, err = self.t("_get 1.description")
-        self.assertIn("foo\n", out, msg='add project:p pri:H +tag foo')
+        self.assertIn("foo\n", out, msg="add project:p pri:H +tag foo")
 
         self.t("1 modify project:p pri:H +tag -- foo")
         code, out, err = self.t("_get 1.description")
-        self.assertIn("foo\n", out, msg='add project:p pri:H +tag -- foo')
+        self.assertIn("foo\n", out, msg="add project:p pri:H +tag -- foo")
 
         self.t("1 modify project:p pri:H -- +tag foo")
         code, out, err = self.t("_get 1.description")
-        self.assertIn("+tag foo\n", out, msg='add project:p pri:H -- +tag foo')
+        self.assertIn("+tag foo\n", out, msg="add project:p pri:H -- +tag foo")
 
         self.t("1 modify project:p -- pri:H +tag foo")
         code, out, err = self.t("_get 1.description")
-        self.assertIn("pri:H +tag foo\n", out, msg='add project:p -- pri:H +tag foo')
+        self.assertIn("pri:H +tag foo\n", out, msg="add project:p -- pri:H +tag foo")
 
         self.t("1 modify -- project:p pri:H +tag foo")
         code, out, err = self.t("_get 1.description")
-        self.assertIn("project:p pri:H +tag foo\n", out, msg='add -- project:p pri:H +tag foo')
+        self.assertIn(
+            "project:p pri:H +tag foo\n", out, msg="add -- project:p pri:H +tag foo"
+        )
 
         self.t("1 modify -- project:p pri:H +tag foo --")
         code, out, err = self.t("_get 1.description")
-        self.assertIn("project:p pri:H +tag foo --\n", out, msg='add -- project:p pri:H +tag foo --')
+        self.assertIn(
+            "project:p pri:H +tag foo --\n",
+            out,
+            msg="add -- project:p pri:H +tag foo --",
+        )
 
 
 class TestIDPosition(TestCase):
@@ -94,6 +101,7 @@ class TestIDPosition(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

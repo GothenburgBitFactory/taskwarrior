@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -124,34 +125,35 @@ class TestBug1436(TestCase):
 
     def test_backslashes(self):
         """1436: Prove to the reader that backslashes are eaten twice (which means
-           two backslashes to one) once by Python, and once more by some mystery process
-           launch thing.
+        two backslashes to one) once by Python, and once more by some mystery process
+        launch thing.
 
-           This problem is entirely testing artifact, and not Taskwarrior.
+        This problem is entirely testing artifact, and not Taskwarrior.
         """
         self.echo = Task(taskw=utils.binary_location("echo", USE_PATH=True))
 
         # One level of backshashes gets eaten by bash
         # Verify with: $ echo xxx \\\\yyy zzz
-        code, out, err = self.echo(r"xxx \\\\yyy zzz")       # Shows as 'xxx \\yyy zzz'
-        code, out, err = self.echo(r"xxx \\yyy zzz")         # Shows as 'xxx \yyy zzz'
-        code, out, err = self.echo(r"xxx \yyy zzz")          # Shows as 'xxx yyy zzz'
+        code, out, err = self.echo(r"xxx \\\\yyy zzz")  # Shows as 'xxx \\yyy zzz'
+        code, out, err = self.echo(r"xxx \\yyy zzz")  # Shows as 'xxx \yyy zzz'
+        code, out, err = self.echo(r"xxx \yyy zzz")  # Shows as 'xxx yyy zzz'
 
         # If single quotes are used, the backslashes are not eaten
         # Verify with: $ echo xxx '\\\\yyy' zzz
-        code, out, err = self.echo(r"xxx '\\\\yyy' zzz")       # Shows as 'xxx \\\\yyy zzz'
-        code, out, err = self.echo(r"xxx '\\yyy' zzz")         # Shows as 'xxx \\yyy zzz'
-        code, out, err = self.echo(r"xxx '\yyy' zzz")          # Shows as 'xxx \yyy zzz'
+        code, out, err = self.echo(r"xxx '\\\\yyy' zzz")  # Shows as 'xxx \\\\yyy zzz'
+        code, out, err = self.echo(r"xxx '\\yyy' zzz")  # Shows as 'xxx \\yyy zzz'
+        code, out, err = self.echo(r"xxx '\yyy' zzz")  # Shows as 'xxx \yyy zzz'
 
         # If double quotes are used, the backslashes are eaten
         # Verify with: $ echo xxx "\\\\yyy" zzz
-        code, out, err = self.echo(r'xxx "\\\\yyy" zzz')       # Shows as 'xxx \\\\yyy zzz'
-        code, out, err = self.echo(r'xxx "\\yyy" zzz')         # Shows as 'xxx \\yyy zzz'
-        code, out, err = self.echo(r'xxx "\yyy" zzz')          # Shows as 'xxx \yyy zzz'
+        code, out, err = self.echo(r'xxx "\\\\yyy" zzz')  # Shows as 'xxx \\\\yyy zzz'
+        code, out, err = self.echo(r'xxx "\\yyy" zzz')  # Shows as 'xxx \\yyy zzz'
+        code, out, err = self.echo(r'xxx "\yyy" zzz')  # Shows as 'xxx \yyy zzz'
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

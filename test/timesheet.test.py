@@ -30,6 +30,7 @@ import re
 import sys
 import unittest
 from time import time
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -53,8 +54,8 @@ class TestTimesheet(TestCase):
         #   C0   completed, this week
         #   C1   completed, last week
         #   C2   completed, 2wks ago
-        now      = int(time())
-        seven    = now -  7 * 86400
+        now = int(time())
+        seven = now - 7 * 86400
         fourteen = now - 14 * 86400
 
         cls.t("add P0 entry:{0}".format(fourteen))
@@ -76,13 +77,17 @@ class TestTimesheet(TestCase):
         expected = re.compile(
             "Started.+PS2.+Completed.+C2.+"
             "Started.+PS1.+Completed.+C1.+"
-            "Started.+PS0.+Completed.+C0", re.DOTALL)
+            "Started.+PS0.+Completed.+C0",
+            re.DOTALL,
+        )
         self.assertRegex(out, expected)
 
     def test_one_week(self):
         """One week of started and completed"""
         # This is the default filter, reduced from 4 weeks to 1.
-        code, out, err = self.t("timesheet (+PENDING and start.after:now-1wk) or (+COMPLETED and end.after:now-1wk)")
+        code, out, err = self.t(
+            "timesheet (+PENDING and start.after:now-1wk) or (+COMPLETED and end.after:now-1wk)"
+        )
 
         expected = re.compile("Started.+PS0.+Completed.+C0", re.DOTALL)
         self.assertRegex(out, expected)
@@ -91,8 +96,10 @@ class TestTimesheet(TestCase):
         self.assertNotIn("C1", out)
         self.assertNotIn("C2", out)
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

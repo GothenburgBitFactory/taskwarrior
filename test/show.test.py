@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -68,7 +69,9 @@ class TestShowCommand(TestCase):
         """Verify show command lists all with no arg provided"""
         self.t.config("foo", "bar")
         code, out, err = self.t("show")
-        self.assertIn("Your .taskrc file contains these unrecognized variables:\n  foo", out)
+        self.assertIn(
+            "Your .taskrc file contains these unrecognized variables:\n  foo", out
+        )
 
 
 class TestShowHelperCommand(TestCase):
@@ -85,6 +88,7 @@ class TestShowHelperCommand(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

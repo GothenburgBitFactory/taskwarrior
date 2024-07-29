@@ -29,6 +29,7 @@ import sys
 import os
 import platform
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,11 +39,11 @@ from basetest import Task, TestCase
 class TestDiagnostics(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t.config("editor",            "edlin")
+        self.t.config("editor", "edlin")
 
     @unittest.skipIf(
-        getattr(platform, 'dist', None) == None or 'xenial' == platform.dist()[-1],
-        'Skipping diagnostics test on Ubuntu 16.04, as it lacks full C++17 support'
+        getattr(platform, "dist", None) == None or "xenial" == platform.dist()[-1],
+        "Skipping diagnostics test on Ubuntu 16.04, as it lacks full C++17 support",
     )
     def test_diagnostics(self):
         """Task diag output, so we can monitor platforms"""
@@ -60,6 +61,7 @@ class TestDiagnostics(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

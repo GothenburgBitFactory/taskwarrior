@@ -27,52 +27,47 @@
 #ifndef INCLUDED_CMDIDS
 #define INCLUDED_CMDIDS
 
-#include <string>
 #include <Command.h>
 
-class CmdIDs : public Command
-{
-public:
-  CmdIDs ();
-  int execute (std::string&);
+#include <string>
 
-private:
-  std::string compressIds (const std::vector <int>&);
+class CmdIDs : public Command {
+ public:
+  CmdIDs();
+  int execute(std::string&);
+
+ private:
+  std::string compressIds(const std::vector<int>&);
 };
 
-class CmdCompletionIds : public Command
-{
-public:
-  CmdCompletionIds ();
-  int execute (std::string&);
+class CmdCompletionIds : public Command {
+ public:
+  CmdCompletionIds();
+  int execute(std::string&);
 };
 
-class CmdZshCompletionIds : public Command
-{
-public:
-  CmdZshCompletionIds ();
-  int execute (std::string&);
+class CmdZshCompletionIds : public Command {
+ public:
+  CmdZshCompletionIds();
+  int execute(std::string&);
 };
 
-class CmdUUIDs : public Command
-{
-public:
-  CmdUUIDs ();
-  int execute (std::string&);
+class CmdUUIDs : public Command {
+ public:
+  CmdUUIDs();
+  int execute(std::string&);
 };
 
-class CmdCompletionUuids : public Command
-{
-public:
-  CmdCompletionUuids ();
-  int execute (std::string&);
+class CmdCompletionUuids : public Command {
+ public:
+  CmdCompletionUuids();
+  int execute(std::string&);
 };
 
-class CmdZshCompletionUuids : public Command
-{
-public:
-  CmdZshCompletionUuids ();
-  int execute (std::string&);
+class CmdZshCompletionUuids : public Command {
+ public:
+  CmdZshCompletionUuids();
+  int execute(std::string&);
 };
 
 #endif

@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDSTOP
 #define INCLUDED_CMDSTOP
 
-#include <string>
 #include <Command.h>
 
-class CmdStop : public Command
-{
-public:
-  CmdStop ();
-  int execute (std::string&);
+#include <string>
+
+class CmdStop : public Command {
+ public:
+  CmdStop();
+  int execute(std::string&);
 };
 
 #endif

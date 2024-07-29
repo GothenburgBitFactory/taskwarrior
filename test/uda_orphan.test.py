@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -47,7 +48,9 @@ class TestUDAOrphans(TestCase):
         """Verify that orphans are preserved during various operations"""
 
         self.t("rc.uda.extra.type:string rc.uda.extra.label:Extra add one extra:foo")
-        code, out, err = self.t("rc.uda.extra.type:string rc.uda.extra.label:Extra _get 1.extra")
+        code, out, err = self.t(
+            "rc.uda.extra.type:string rc.uda.extra.label:Extra _get 1.extra"
+        )
         self.assertEqual("foo\n", out)
 
         # DOM access for orphans is not supported.
@@ -97,11 +100,12 @@ class TestUDAOrphans(TestCase):
 
         # Only the first task should be identified as orphan
         code, out, err = self.t("udas")
-        self.assertRegex(out, r'extra\s+1\s+1 Orphan UDA')
+        self.assertRegex(out, r"extra\s+1\s+1 Orphan UDA")
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

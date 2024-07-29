@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,89 +39,89 @@ class TestUDACustomSort(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.t = Task()
-        cls.t.config('uda.foo.type', 'string')
-        cls.t.config('uda.foo.label', 'Foo')
-        cls.t.config('uda.foo.values', 'H,M,L,')
-        cls.t.config('report.list.columns', 'id,description,foo')
-        cls.t.config('report.list.labels', 'ID,Desc,Foo')
-        cls.t('add four foo:H')
-        cls.t('add three foo:M')
-        cls.t('add two foo:L')
-        cls.t('add one')
+        cls.t.config("uda.foo.type", "string")
+        cls.t.config("uda.foo.label", "Foo")
+        cls.t.config("uda.foo.values", "H,M,L,")
+        cls.t.config("report.list.columns", "id,description,foo")
+        cls.t.config("report.list.labels", "ID,Desc,Foo")
+        cls.t("add four foo:H")
+        cls.t("add three foo:M")
+        cls.t("add two foo:L")
+        cls.t("add one")
 
     def test_ascending(self):
         """Ascending custom sort order"""
-        self.t.config('uda.foo.values', 'H,M,L,')
-        code, out, err = self.t('rc.report.list.sort:foo+ list')
+        self.t.config("uda.foo.values", "H,M,L,")
+        code, out, err = self.t("rc.report.list.sort:foo+ list")
 
-        one   = out.find('one')
-        two   = out.find('two')
-        three = out.find('three')
-        four  = out.find('four')
+        one = out.find("one")
+        two = out.find("two")
+        three = out.find("three")
+        four = out.find("four")
 
-        self.assertTrue(one   < two)
-        self.assertTrue(two   < three)
+        self.assertTrue(one < two)
+        self.assertTrue(two < three)
         self.assertTrue(three < four)
 
     def test_descending(self):
         """Descending custom sort order"""
-        self.t.config('uda.foo.values', 'H,M,L,')
-        code, out, err = self.t('rc.report.list.sort:foo- list')
+        self.t.config("uda.foo.values", "H,M,L,")
+        code, out, err = self.t("rc.report.list.sort:foo- list")
 
-        one   = out.find('one')
-        two   = out.find('two')
-        three = out.find('three')
-        four  = out.find('four')
+        one = out.find("one")
+        two = out.find("two")
+        three = out.find("three")
+        four = out.find("four")
 
-        self.assertTrue(four  < three)
+        self.assertTrue(four < three)
         self.assertTrue(three < two)
-        self.assertTrue(two   < one)
+        self.assertTrue(two < one)
 
     def test_ridiculous(self):
         """Ridiculous custom sort order"""
-        self.t.config('uda.foo.values', 'H,M,,L')
-        code, out, err = self.t('rc.report.list.sort:foo- list')
+        self.t.config("uda.foo.values", "H,M,,L")
+        code, out, err = self.t("rc.report.list.sort:foo- list")
 
-        one   = out.find('one')
-        two   = out.find('two')
-        three = out.find('three')
-        four  = out.find('four')
+        one = out.find("one")
+        two = out.find("two")
+        three = out.find("three")
+        four = out.find("four")
 
-        self.assertTrue(four  < three)
+        self.assertTrue(four < three)
         self.assertTrue(three < one)
-        self.assertTrue(one   < two)
+        self.assertTrue(one < two)
 
 
 class TestUDADefaultSort(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.t = Task()
-        cls.t.config('uda.foo.type', 'string')
-        cls.t.config('uda.foo.label', 'Foo')
-        cls.t.config('report.list.columns', 'id,description,foo')
-        cls.t.config('report.list.labels', 'ID,Desc,Foo')
-        cls.t('add one foo:A')
-        cls.t('add three')
-        cls.t('add two foo:B')
+        cls.t.config("uda.foo.type", "string")
+        cls.t.config("uda.foo.label", "Foo")
+        cls.t.config("report.list.columns", "id,description,foo")
+        cls.t.config("report.list.labels", "ID,Desc,Foo")
+        cls.t("add one foo:A")
+        cls.t("add three")
+        cls.t("add two foo:B")
 
     def test_ascending(self):
         """Ascending default sort order"""
-        code, out, err = self.t('rc.report.list.sort:foo+ list')
+        code, out, err = self.t("rc.report.list.sort:foo+ list")
 
-        one   = out.find('one')
-        two   = out.find('two')
-        three = out.find('three')
+        one = out.find("one")
+        two = out.find("two")
+        three = out.find("three")
 
         self.assertTrue(one < two)
         self.assertTrue(two < three)
 
     def test_descending(self):
         """Descending default sort order"""
-        code, out, err = self.t('rc.report.list.sort:foo- list')
+        code, out, err = self.t("rc.report.list.sort:foo- list")
 
-        one   = out.find('one')
-        two   = out.find('two')
-        three = out.find('three')
+        one = out.find("one")
+        two = out.find("two")
+        three = out.find("three")
 
         self.assertTrue(one < three)
         self.assertTrue(two < one)
@@ -133,12 +134,12 @@ class TestBug1319(TestCase):
 
     def test_uda_sorting(self):
         """1319: Verify that UDAs are sorted according to defined order"""
-        self.t.config("uda.when.type",      "string")
-        self.t.config("uda.when.values",    "night,evening,noon,morning")
+        self.t.config("uda.when.type", "string")
+        self.t.config("uda.when.values", "night,evening,noon,morning")
 
         self.t.config("report.foo.columns", "id,when,description")
-        self.t.config("report.foo.labels",  "ID,WHEN,DESCRIPTION")
-        self.t.config("report.foo.sort",    "when+")
+        self.t.config("report.foo.labels", "ID,WHEN,DESCRIPTION")
+        self.t.config("report.foo.sort", "when+")
 
         self.t("add one when:night")
         self.t("add two when:evening")
@@ -146,11 +147,15 @@ class TestBug1319(TestCase):
         self.t("add four when:morning")
 
         code, out, err = self.t("rc.verbose:nothing foo")
-        self.assertRegex(out, r"4\s+morning\s+four\s+3\s+noon\s+three\s+2\s+evening\s+two\s+1\s+night\s+one")
+        self.assertRegex(
+            out,
+            r"4\s+morning\s+four\s+3\s+noon\s+three\s+2\s+evening\s+two\s+1\s+night\s+one",
+        )
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

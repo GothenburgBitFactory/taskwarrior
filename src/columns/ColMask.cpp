@@ -25,38 +25,31 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColMask.h>
 #include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnMask::ColumnMask ()
-{
-  _name       = "mask";
-  _style      = "default";
-  _label      = "Mask";
+ColumnMask::ColumnMask() {
+  _name = "mask";
+  _style = "default";
+  _label = "Mask";
   _modifiable = false;
-  _styles     = {"default"};
-  _examples   = {"++++---"};
+  _styles = {"default"};
+  _examples = {"++++---"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnMask::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
+void ColumnMask::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
-  if (task.has (_name))
-    minimum = maximum = task.get (_name).length ();
+  if (task.has(_name)) minimum = maximum = task.get(_name).length();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnMask::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  if (task.has (_name))
-    renderStringLeft (lines, width, color, task.get (_name));
+void ColumnMask::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+  if (task.has(_name)) renderStringLeft(lines, width, color, task.get(_name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

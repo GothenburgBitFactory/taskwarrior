@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -77,8 +78,7 @@ class TestBug262(TestCase):
         self._check_expectation(" (project.isnt:tw)")
 
     def test_proj_isnt_parenthesis_space_leading_double(self):
-        """project.isnt works within parenthesis after a double leading space
-        """
+        """project.isnt works within parenthesis after a double leading space"""
         self._check_expectation(" ( project.isnt:tw)")
 
     def test_proj_isnt_parenthesis_space_trailing(self):
@@ -86,8 +86,7 @@ class TestBug262(TestCase):
         self._check_expectation("(project.isnt:tw) ")
 
     def test_proj_isnt_parenthesis_space_trailing_double(self):
-        """project.isnt works within parenthesis after a double trailing space
-        """
+        """project.isnt works within parenthesis after a double trailing space"""
         self._check_expectation("(project.isnt:tw ) ")
 
     def test_proj_isnt_spaces_parenthesis(self):
@@ -98,8 +97,10 @@ class TestBug262(TestCase):
         """project.isnt works within parenthesis and double spaces"""
         self._check_expectation(" ( project.isnt:tw ) ")
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

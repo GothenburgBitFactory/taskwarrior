@@ -50,4 +50,3 @@ $TASK rc.debug:1 rc:perf.rc import ${CMAKE_SOURCE_DIR}/performance/export.json 2
 
 echo 'End'
 exit 0
-

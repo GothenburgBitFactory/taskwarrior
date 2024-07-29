@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,8 +39,10 @@ class TestProjects(TestCase):
     def setUp(self):
         self.t = Task()
 
-        self.STATUS = (r"The project '{0}' has changed\.  "
-                       r"Project '{0}' is {1} complete \({2} remaining\)\.")
+        self.STATUS = (
+            r"The project '{0}' has changed\.  "
+            r"Project '{0}' is {1} complete \({2} remaining\)\."
+        )
 
     def test_project_summary_count(self):
         """'task projects' shouldn't consider deleted tasks in summary.
@@ -58,46 +61,37 @@ class TestProjects(TestCase):
         """project status/progress is shown and is up-to-date"""
 
         code, out, err = self.t("add one pro:foo")
-        self.assertRegex(err, self.STATUS.format("foo", "0%",
-                                                         "1 task"))
+        self.assertRegex(err, self.STATUS.format("foo", "0%", "1 task"))
 
         code, out, err = self.t("add two pro:foo")
-        self.assertRegex(err, self.STATUS.format("foo", "0%",
-                                                         "2 of 2 tasks"))
+        self.assertRegex(err, self.STATUS.format("foo", "0%", "2 of 2 tasks"))
 
         code, out, err = self.t("add three pro:foo")
-        self.assertRegex(err, self.STATUS.format("foo", "0%",
-                                                         "3 of 3 tasks"))
+        self.assertRegex(err, self.STATUS.format("foo", "0%", "3 of 3 tasks"))
 
         code, out, err = self.t("add four pro:foo")
-        self.assertRegex(err, self.STATUS.format("foo", "0%",
-                                                         "4 of 4 tasks"))
+        self.assertRegex(err, self.STATUS.format("foo", "0%", "4 of 4 tasks"))
 
         code, out, err = self.t("1 done")
-        self.assertRegex(err, self.STATUS.format("foo", "25%",
-                                                         "3 of 4 tasks"))
+        self.assertRegex(err, self.STATUS.format("foo", "25%", "3 of 4 tasks"))
 
         code, out, err = self.t("2 delete", input="y\n")
-        self.assertRegex(err, self.STATUS.format("foo", "33%",
-                                                         "2 of 3 tasks"))
+        self.assertRegex(err, self.STATUS.format("foo", "33%", "2 of 3 tasks"))
 
         code, out, err = self.t("3 modify pro:bar")
-        self.assertRegex(err, self.STATUS.format("foo", "50%",
-                                                         "1 of 2 tasks"))
-        self.assertRegex(err, self.STATUS.format("bar", "0%",
-                                                         "1 task"))
+        self.assertRegex(err, self.STATUS.format("foo", "50%", "1 of 2 tasks"))
+        self.assertRegex(err, self.STATUS.format("bar", "0%", "1 task"))
 
     def test_project_spaces(self):
         """projects with spaces are handled correctly"""
 
         self.t("add hello pro:bob")
         code, out, err = self.t('1 mod pro:"foo bar"')
-        self.assertRegex(err, self.STATUS.format("foo bar", "0%",
-                                                         "1 task"))
+        self.assertRegex(err, self.STATUS.format("foo bar", "0%", "1 task"))
 
         # Ensure filtering for project with spaces works
         code, out, err = self.t('pro:"foo bar" count')
-        self.assertEqual(out.strip(), '1')
+        self.assertEqual(out.strip(), "1")
 
     def test_project_spaces(self):
         """TW #2386: Filter for project:someday"""
@@ -105,8 +99,8 @@ class TestProjects(TestCase):
         self.t("add hello pro:someday")
 
         # Ensure filtering for project with numeric date works
-        code, out, err = self.t('pro:someday count')
-        self.assertEqual(out.strip(), '1')
+        code, out, err = self.t("pro:someday count")
+        self.assertEqual(out.strip(), "1")
 
     def add_tasks(self):
         self.t("add testing project:existingParent")
@@ -120,7 +114,7 @@ class TestProjects(TestCase):
         order = (
             ".myProject ",
             ".myProject. ",
-            "abstractParent",   # No space at EOL because this line in the summary ends here.
+            "abstractParent",  # No space at EOL because this line in the summary ends here.
             "  kid ",
             "existingParent ",
             "  child ",
@@ -136,8 +130,10 @@ class TestProjects(TestCase):
 
             self.assertTrue(
                 lines[pos].startswith(proj),
-                msg=("Project '{0}' is not in line #{1} or has an unexpected "
-                     "indentation.{2}".format(proj, pos, out))
+                msg=(
+                    "Project '{0}' is not in line #{1} or has an unexpected "
+                    "indentation.{2}".format(proj, pos, out)
+                ),
             )
 
     def test_project_indentation(self):
@@ -321,7 +317,7 @@ class TestBug906(TestCase):
     def test_project_hierarchy_filter(self):
         """906: Test project hierarchy filters
 
-           Bug 906
+        Bug 906
         """
         self.t("add zero")
         self.t("add one pro:a.b")
@@ -355,7 +351,7 @@ class TestBug856(TestCase):
     def test_project_hierarchy_filter(self):
         """856: Test project.none: works
 
-           Bug 856: "task list project.none:" does not work.
+        Bug 856: "task list project.none:" does not work.
         """
         self.t("add assigned project:X")
         self.t("add floating")
@@ -364,7 +360,7 @@ class TestBug856(TestCase):
         self.assertIn("floating", out)
         self.assertNotIn("assigned", out)
 
-        code, out, err = self.t("project:\'\' ls")
+        code, out, err = self.t("project:'' ls")
         self.assertIn("floating", out)
         self.assertNotIn("assigned", out)
 
@@ -380,7 +376,7 @@ class TestBug1511(TestCase):
     def test_project_hierarchy_filter(self):
         """1511: Test project:one-two can be added and queried
 
-           Bug 1511: Project titles not properly parsed if they contain hyphens
+        Bug 1511: Project titles not properly parsed if they contain hyphens
         """
         self.t("add zero")
         self.t("add one project:two-three")
@@ -396,7 +392,7 @@ class TestBug1455(TestCase):
     def test_project_hierarchy_filter(self):
         """1455: Test project:school)
 
-           Bug 1455: Filter parser does not properly handle parentheses in attributes
+        Bug 1455: Filter parser does not properly handle parentheses in attributes
         """
         self.t("add zero")
         self.t("add one project:two)")
@@ -431,16 +427,14 @@ class TestBug1267(TestCase):
         self.t = Task()
 
     def test_add_task_no_project_with_default(self):
-        """1267: Add a task without a project using direct rc change
-        """
+        """1267: Add a task without a project using direct rc change"""
         project = "MakePudding"
         self.t("rc.default.project={0} add proj: 'Add cream'".format(project))
         code, out, err = self.t("ls")
         self.assertNotIn(project, out)
 
     def test_add_task_no_project_with_default_rcfile(self):
-        """1267: Add a task without a project writing to rc file
-        """
+        """1267: Add a task without a project writing to rc file"""
         project = "MakePudding"
         self.t.config("default.project", project)
         self.t("add proj: 'Add cream'")
@@ -514,9 +508,7 @@ class TestBug1904(TestCase):
         self.t("add pro:a.b test2")
 
     def validate_order(self, out):
-        order = ("a",
-                 "  b",
-                 "a-b")
+        order = ("a", "  b", "a-b")
 
         lines = out.splitlines(True)
         # position where project names start on the lines list
@@ -527,8 +519,10 @@ class TestBug1904(TestCase):
 
             self.assertTrue(
                 lines[pos].startswith(proj),
-                msg=("Project '{0}' is not in line #{1} or has an unexpected "
-                     "indentation.{2}".format(proj, pos, out))
+                msg=(
+                    "Project '{0}' is not in line #{1} or has an unexpected "
+                    "indentation.{2}".format(proj, pos, out)
+                ),
             )
 
     def test_project_eval(self):
@@ -540,6 +534,7 @@ class TestBug1904(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

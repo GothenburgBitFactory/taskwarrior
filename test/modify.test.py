@@ -28,9 +28,11 @@
 import sys
 import os
 import unittest
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
+
 
 class TestBug1306(TestCase):
     def setUp(self):
@@ -42,6 +44,7 @@ class TestBug1306(TestCase):
         code, out, err = self.t("1 info")
         self.assertIn("PROJ", out)
 
+
 class TestBug1763(TestCase):
     def setUp(self):
         self.t = Task()
@@ -52,8 +55,10 @@ class TestBug1763(TestCase):
         code, out, err = self.t("1 modify due:")
         self.assertIn("Modified 0 tasks.", out)
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

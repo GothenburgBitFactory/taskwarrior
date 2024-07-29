@@ -25,42 +25,41 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <ViewTask.h>
-#include <numeric>
+// cmake.h include header must come first
+
 #include <Context.h>
+#include <ViewTask.h>
 #include <format.h>
-#include <util.h>
-#include <utf8.h>
 #include <main.h>
+#include <utf8.h>
+#include <util.h>
+
+#include <numeric>
 
 ////////////////////////////////////////////////////////////////////////////////
-ViewTask::ViewTask ()
-: _width (0)
-, _left_margin (0)
-, _header (0)
-, _sort_header (0)
-, _odd (0)
-, _even (0)
-, _intra_padding (1)
-, _intra_odd (0)
-, _intra_even (0)
-, _extra_padding (0)
-, _extra_odd (0)
-, _extra_even (0)
-, _truncate_lines (0)
-, _truncate_rows (0)
-, _lines (0)
-, _rows (0)
-{
-}
+ViewTask::ViewTask()
+    : _width(0),
+      _left_margin(0),
+      _header(0),
+      _sort_header(0),
+      _odd(0),
+      _even(0),
+      _intra_padding(1),
+      _intra_odd(0),
+      _intra_even(0),
+      _extra_padding(0),
+      _extra_odd(0),
+      _extra_even(0),
+      _truncate_lines(0),
+      _truncate_rows(0),
+      _lines(0),
+      _rows(0) {}
 
 ////////////////////////////////////////////////////////////////////////////////
-ViewTask::~ViewTask ()
-{
-  for (auto& col : _columns)
-    delete col;
+ViewTask::~ViewTask() {
+  for (auto& col : _columns) delete col;
 
-  _columns.clear ();
+  _columns.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,64 +105,55 @@ ViewTask::~ViewTask ()
 //       the larger fields.  If the widest field is W0, and the second widest
 //       field is W1, then a solution may be achievable by reducing W0 --> W1.
 //
-std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& sequence)
-{
+std::string ViewTask::render(std::vector<Task>& data, std::vector<int>& sequence) {
   Timer timer;
 
-  bool const obfuscate           = Context::getContext ().config.getBoolean ("obfuscate");
-  bool const print_empty_columns = Context::getContext ().config.getBoolean ("print.empty.columns");
-  std::vector <Column*> nonempty_columns;
-  std::vector <bool> nonempty_sort;
+  bool const obfuscate = Context::getContext().config.getBoolean("obfuscate");
+  bool const print_empty_columns = Context::getContext().config.getBoolean("print.empty.columns");
+  std::vector<Column*> nonempty_columns;
+  std::vector<bool> nonempty_sort;
 
   // Determine minimal, ideal column widths.
-  std::vector <int> minimal;
-  std::vector <int> ideal;
+  std::vector<int> minimal;
+  std::vector<int> ideal;
 
-  for (unsigned int i = 0; i < _columns.size (); ++i)
-  {
+  for (unsigned int i = 0; i < _columns.size(); ++i) {
     // Headers factor in to width calculations.
     unsigned int global_min = 0;
     unsigned int global_ideal = global_min;
 
-    for (unsigned int s = 0; s < sequence.size (); ++s)
-    {
-      if ((int)s >= _truncate_lines && _truncate_lines != 0)
-        break;
+    for (unsigned int s = 0; s < sequence.size(); ++s) {
+      if ((int)s >= _truncate_lines && _truncate_lines != 0) break;
 
-      if ((int)s >= _truncate_rows && _truncate_rows != 0)
-        break;
+      if ((int)s >= _truncate_rows && _truncate_rows != 0) break;
 
       // Determine minimum and ideal width for this column.
       unsigned int min = 0;
       unsigned int ideal = 0;
-      _columns[i]->measure (data[sequence[s]], min, ideal);
+      _columns[i]->measure(data[sequence[s]], min, ideal);
 
-      if (min   > global_min)   global_min   = min;
+      if (min > global_min) global_min = min;
       if (ideal > global_ideal) global_ideal = ideal;
 
       // If a fixed-width column was just measured, there is no point repeating
       // the measurement for all tasks.
-      if (_columns[i]->is_fixed_width ())
-        break;
+      if (_columns[i]->is_fixed_width()) break;
     }
 
-    if (print_empty_columns || global_min != 0)
-    {
-      unsigned int label_length = utf8_width (_columns[i]->label ());
-      if (label_length > global_min)   global_min   = label_length;
+    if (print_empty_columns || global_min != 0) {
+      unsigned int label_length = utf8_width(_columns[i]->label());
+      if (label_length > global_min) global_min = label_length;
       if (label_length > global_ideal) global_ideal = label_length;
-      minimal.push_back (global_min);
-      ideal.push_back (global_ideal);
+      minimal.push_back(global_min);
+      ideal.push_back(global_ideal);
     }
 
-    if (! print_empty_columns)
-    {
-      if (global_min != 0) // Column is nonempty
+    if (!print_empty_columns) {
+      if (global_min != 0)  // Column is nonempty
       {
-        nonempty_columns.push_back (_columns[i]);
-        nonempty_sort.push_back (_sort[i]);
-      }
-      else                 // Column is empty, drop it
+        nonempty_columns.push_back(_columns[i]);
+        nonempty_sort.push_back(_sort[i]);
+      } else  // Column is empty, drop it
       {
         // Note: This is safe to do because we set _columns = nonempty_columns
         // after iteration over _columns is finished.
@@ -172,51 +162,40 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     }
   }
 
-  if (! print_empty_columns)
-  {
+  if (!print_empty_columns) {
     _columns = nonempty_columns;
     _sort = nonempty_sort;
   }
 
-  int all_extra = _left_margin
-                + (2 * _extra_padding)
-                + ((_columns.size () - 1) * _intra_padding);
+  int all_extra = _left_margin + (2 * _extra_padding) + ((_columns.size() - 1) * _intra_padding);
 
   // Sum the widths.
-  int sum_minimal = std::accumulate (minimal.begin (), minimal.end (), 0);
-  int sum_ideal   = std::accumulate (ideal.begin (),   ideal.end (),   0);
+  int sum_minimal = std::accumulate(minimal.begin(), minimal.end(), 0);
+  int sum_ideal = std::accumulate(ideal.begin(), ideal.end(), 0);
 
   // Calculate final column widths.
   int overage = _width - sum_minimal - all_extra;
-  Context::getContext ().debug (format ("ViewTask::render min={1} ideal={2} overage={3} width={4}", 
-                                        sum_minimal + all_extra,
-                                        sum_ideal + all_extra,
-                                        overage,
-                                        _width));
+  Context::getContext().debug(format("ViewTask::render min={1} ideal={2} overage={3} width={4}",
+                                     sum_minimal + all_extra, sum_ideal + all_extra, overage,
+                                     _width));
 
-  std::vector <int> widths;
+  std::vector<int> widths;
 
   // Ideal case.  Everything fits.
-  if (_width == 0 || sum_ideal + all_extra <= _width)
-  {
+  if (_width == 0 || sum_ideal + all_extra <= _width) {
     widths = ideal;
   }
 
   // Not enough for minimum. Decrease certain columns.
-  else if (overage < 0)
-  {
+  else if (overage < 0) {
     // Determine which columns are the longest.
     unsigned int longest = 0;
     unsigned int second_longest = 0;
-    for (unsigned int j = 0; j < minimal.size(); j++)
-    {
-      if (minimal[j] > minimal[longest])
-      {
+    for (unsigned int j = 0; j < minimal.size(); j++) {
+      if (minimal[j] > minimal[longest]) {
         second_longest = longest;
         longest = j;
-      }
-      else if (minimal[j] > minimal[second_longest])
-      {
+      } else if (minimal[j] > minimal[second_longest]) {
         second_longest = j;
       }
     }
@@ -224,53 +203,46 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     // Case 1: Shortening longest column still keeps it longest. Let it bear
     //         all the shortening.
     widths = minimal;
-    if (minimal[longest] + overage >= minimal[second_longest])
-      widths[longest] += overage;
+    if (minimal[longest] + overage >= minimal[second_longest]) widths[longest] += overage;
 
     // Case 2: Shorten the longest column to second longest length. Try to
     //         split shortening them evenly.
-    else
-    {
+    else {
       int decrease = minimal[second_longest] - minimal[longest];
       widths[longest] += decrease;
       overage = overage - decrease;
 
       // Attempt to decrease the two longest columns (at most to two characters)
-      if (-overage <= widths[longest] + widths[second_longest] - 4)
-      {
+      if (-overage <= widths[longest] + widths[second_longest] - 4) {
         // Compute half of the overage, rounding up
         int half_overage = overage / 2 + overage % 2;
 
         // Decrease both larges columns by this amount
         widths[longest] += half_overage;
         widths[second_longest] += half_overage;
-      }
-      else
+      } else
         // If reducing two of the longest solumns to 2 characters is not sufficient, then give up.
-        Context::getContext ().error (format ("The report has a minimum width of {1} and does not fit in the available width of {2}.", sum_minimal + all_extra, _width));
+        Context::getContext().error(format(
+            "The report has a minimum width of {1} and does not fit in the available width of {2}.",
+            sum_minimal + all_extra, _width));
     }
   }
 
   // Perfect minimal width.
-  else if (overage == 0)
-  {
+  else if (overage == 0) {
     widths = minimal;
   }
 
   // Extra space to share.
-  else if (overage > 0)
-  {
+  else if (overage > 0) {
     widths = minimal;
 
     // Spread 'overage' among columns where width[i] < ideal[i]
     bool needed = true;
-    while (overage && needed)
-    {
+    while (overage && needed) {
       needed = false;
-      for (unsigned int i = 0; i < _columns.size () && overage; ++i)
-      {
-        if (widths[i] < ideal[i])
-        {
+      for (unsigned int i = 0; i < _columns.size() && overage; ++i) {
+        if (widths[i] < ideal[i]) {
           ++widths[i];
           --overage;
           needed = true;
@@ -281,39 +253,34 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
   // Compose column headers.
   unsigned int max_lines = 0;
-  std::vector <std::vector <std::string>> headers;
-  for (unsigned int c = 0; c < _columns.size (); ++c)
-  {
-    headers.emplace_back ();
-    _columns[c]->renderHeader (headers[c], widths[c], _sort[c] ? _sort_header : _header);
+  std::vector<std::vector<std::string>> headers;
+  for (unsigned int c = 0; c < _columns.size(); ++c) {
+    headers.emplace_back();
+    _columns[c]->renderHeader(headers[c], widths[c], _sort[c] ? _sort_header : _header);
 
-    if (headers[c].size () > max_lines)
-      max_lines = headers[c].size ();
+    if (headers[c].size() > max_lines) max_lines = headers[c].size();
   }
 
   // Render column headers.
-  std::string left_margin = std::string (_left_margin, ' ');
-  std::string extra       = std::string (_extra_padding, ' ');
-  std::string intra       = std::string (_intra_padding, ' ');
+  std::string left_margin = std::string(_left_margin, ' ');
+  std::string extra = std::string(_extra_padding, ' ');
+  std::string intra = std::string(_intra_padding, ' ');
 
-  std::string extra_odd   = Context::getContext ().color () ? _extra_odd.colorize  (extra) : extra;
-  std::string extra_even  = Context::getContext ().color () ? _extra_even.colorize (extra) : extra;
-  std::string intra_odd   = Context::getContext ().color () ? _intra_odd.colorize  (intra) : intra;
-  std::string intra_even  = Context::getContext ().color () ? _intra_even.colorize (intra) : intra;
+  std::string extra_odd = Context::getContext().color() ? _extra_odd.colorize(extra) : extra;
+  std::string extra_even = Context::getContext().color() ? _extra_even.colorize(extra) : extra;
+  std::string intra_odd = Context::getContext().color() ? _intra_odd.colorize(intra) : intra;
+  std::string intra_even = Context::getContext().color() ? _intra_even.colorize(intra) : intra;
 
   std::string out;
   _lines = 0;
-  for (unsigned int i = 0; i < max_lines; ++i)
-  {
+  for (unsigned int i = 0; i < max_lines; ++i) {
     out += left_margin + extra;
 
-    for (unsigned int c = 0; c < _columns.size (); ++c)
-    {
-      if (c)
-        out += intra;
+    for (unsigned int c = 0; c < _columns.size(); ++c) {
+      if (c) out += intra;
 
-      if (headers[c].size () < max_lines - i)
-        out += _header.colorize (std::string (widths[c], ' '));
+      if (headers[c].size() < max_lines - i)
+        out += _header.colorize(std::string(widths[c], ' '));
       else
         out += headers[c][i];
     }
@@ -321,60 +288,50 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     out += extra;
 
     // Trim right.
-    out.erase (out.find_last_not_of (' ') + 1);
+    out.erase(out.find_last_not_of(' ') + 1);
     out += "\n";
 
     // Stop if the line limit is exceeded.
-    if (++_lines >= _truncate_lines && _truncate_lines != 0)
-    {
-      Context::getContext ().time_render_us += timer.total_us ();
+    if (++_lines >= _truncate_lines && _truncate_lines != 0) {
+      Context::getContext().time_render_us += timer.total_us();
       return out;
     }
   }
 
   // Compose, render columns, in sequence.
   _rows = 0;
-  std::vector <std::vector <std::string>> cells;
-  for (unsigned int s = 0; s < sequence.size (); ++s)
-  {
+  std::vector<std::vector<std::string>> cells;
+  for (unsigned int s = 0; s < sequence.size(); ++s) {
     max_lines = 0;
 
     // Apply color rules to task.
     Color rule_color;
-    autoColorize (data[sequence[s]], rule_color);
+    autoColorize(data[sequence[s]], rule_color);
 
     // Alternate rows based on |s % 2|
     bool odd = (s % 2) ? true : false;
     Color row_color;
-    if (Context::getContext ().color ())
-    {
+    if (Context::getContext().color()) {
       row_color = odd ? _odd : _even;
-      row_color.blend (rule_color);
+      row_color.blend(rule_color);
     }
 
-    for (unsigned int c = 0; c < _columns.size (); ++c)
-    {
-      cells.emplace_back ();
-      _columns[c]->render (cells[c], data[sequence[s]], widths[c], row_color);
+    for (unsigned int c = 0; c < _columns.size(); ++c) {
+      cells.emplace_back();
+      _columns[c]->render(cells[c], data[sequence[s]], widths[c], row_color);
 
-      if (cells[c].size () > max_lines)
-        max_lines = cells[c].size ();
+      if (cells[c].size() > max_lines) max_lines = cells[c].size();
 
       if (obfuscate)
-        if (_columns[c]->type () == "string")
-          for (auto& line : cells[c])
-            line = obfuscateText (line);
+        if (_columns[c]->type() == "string")
+          for (auto& line : cells[c]) line = obfuscateText(line);
     }
 
     // Listing breaks are simply blank lines inserted when a column value
     // changes.
-    if (s > 0 &&
-        _breaks.size () > 0)
-    {
-      for (const auto& b : _breaks)
-      {
-        if (data[sequence[s - 1]].get (b) != data[sequence[s]].get (b))
-        {
+    if (s > 0 && _breaks.size() > 0) {
+      for (const auto& b : _breaks) {
+        if (data[sequence[s - 1]].get(b) != data[sequence[s]].get(b)) {
           out += "\n";
           ++_lines;
 
@@ -384,51 +341,46 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       }
     }
 
-    for (unsigned int i = 0; i < max_lines; ++i)
-    {
+    for (unsigned int i = 0; i < max_lines; ++i) {
       out += left_margin + (odd ? extra_odd : extra_even);
 
-      for (unsigned int c = 0; c < _columns.size (); ++c)
-      {
-        if (c)
-        {
-          if (row_color.nontrivial ())
-            row_color._colorize (out, intra);
+      for (unsigned int c = 0; c < _columns.size(); ++c) {
+        if (c) {
+          if (row_color.nontrivial())
+            row_color._colorize(out, intra);
           else
             out += (odd ? intra_odd : intra_even);
         }
 
-        if (i < cells[c].size ())
+        if (i < cells[c].size())
           out += cells[c][i];
         else
-          row_color._colorize (out, std::string (widths[c], ' '));
+          row_color._colorize(out, std::string(widths[c], ' '));
       }
 
       out += (odd ? extra_odd : extra_even);
 
       // Trim right.
-      out.erase (out.find_last_not_of (' ') + 1);
+      out.erase(out.find_last_not_of(' ') + 1);
       out += "\n";
 
       // Stop if the line limit is exceeded.
-      if (++_lines >= _truncate_lines && _truncate_lines != 0)
-      {
-        Context::getContext ().time_render_us += timer.total_us ();
+      if (++_lines >= _truncate_lines && _truncate_lines != 0) {
+        Context::getContext().time_render_us += timer.total_us();
         return out;
       }
     }
 
-    cells.clear ();
+    cells.clear();
 
     // Stop if the row limit is exceeded.
-    if (++_rows >= _truncate_rows && _truncate_rows != 0)
-    {
-      Context::getContext ().time_render_us += timer.total_us ();
+    if (++_rows >= _truncate_rows && _truncate_rows != 0) {
+      Context::getContext().time_render_us += timer.total_us();
       return out;
     }
   }
 
-  Context::getContext ().time_render_us += timer.total_us ();
+  Context::getContext().time_render_us += timer.total_us();
   return out;
 }
 

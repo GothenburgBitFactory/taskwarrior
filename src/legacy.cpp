@@ -25,16 +25,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <cstddef>
-#include <sstream>
+// cmake.h include header must come first
+
 #include <Context.h>
 #include <format.h>
+
+#include <cstddef>
+#include <sstream>
 
 #define STRING_LEGACY_PRIORITY "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 ////////////////////////////////////////////////////////////////////////////////
-void legacyColumnMap (std::string& name)
-{
+void legacyColumnMap(std::string& name) {
   // 2014-01-26: priority_long        --> priority.long        Mapping removed
   // 2014-01-26: entry_time           --> entry                Mapping removed
   // 2014-01-26: start_time           --> start                Mapping removed
@@ -49,20 +51,18 @@ void legacyColumnMap (std::string& name)
   // 2014-01-26: description_only     --> description.desc     Mapping removed
 
   // One-time initialization, on demand.
-  static std::map <std::string, std::string> legacyMap {{"priority.", "priority"}};
+  static std::map<std::string, std::string> legacyMap{{"priority.", "priority"}};
 
   // If a legacy column was used, complain about it, but modify it anyway.
-  auto found = legacyMap.find (name);
-  if (found != legacyMap.end ())
-  {
-    Context::getContext ().footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
+  auto found = legacyMap.find(name);
+  if (found != legacyMap.end()) {
+    Context::getContext().footnote(format(STRING_LEGACY_PRIORITY, name, found->second));
     name = found->second;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void legacySortColumnMap (std::string& name)
-{
+void legacySortColumnMap(std::string& name) {
   // 2014-01-26: priority_long        --> priority             Mapping removed
   // 2014-01-26: entry_time           --> entry                Mapping removed
   // 2014-01-26: start_time           --> start                Mapping removed
@@ -77,97 +77,83 @@ void legacySortColumnMap (std::string& name)
   // 2014-01-26: description_only     --> description          Mapping removed
 
   // One-time initialization, on demand.
-  static std::map <std::string, std::string> legacyMap {{"priority.", "priority"}};
+  static std::map<std::string, std::string> legacyMap{{"priority.", "priority"}};
 
   // If a legacy column was used, complain about it, but modify it anyway.
-  auto found = legacyMap.find (name);
-  if (found != legacyMap.end ())
-  {
-    Context::getContext ().footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
+  auto found = legacyMap.find(name);
+  if (found != legacyMap.end()) {
+    Context::getContext().footnote(format(STRING_LEGACY_PRIORITY, name, found->second));
     name = found->second;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string legacyCheckForDeprecatedVariables ()
-{
-  std::vector <std::string> deprecated;
-  for (auto& it : Context::getContext ().config)
-  {
+std::string legacyCheckForDeprecatedVariables() {
+  std::vector<std::string> deprecated;
+  for (auto& it : Context::getContext().config) {
     // 2014-07-04: report.*.limit removed.
     // 2016-02-24: alias._query removed.
 
     // Deprecated in 2.5.0.
     // report.*.annotations
-    if (it.first.length () > 19 &&
-        it.first.substr (0, 7) == "report." &&
-        it.first.substr (it.first.length () - 12) == ".annotations")
-      deprecated.push_back (it.first);
+    if (it.first.length() > 19 && it.first.substr(0, 7) == "report." &&
+        it.first.substr(it.first.length() - 12) == ".annotations")
+      deprecated.push_back(it.first);
 
     // Deprecated in 2.5.0.
-    if (it.first == "next"              ||
-        it.first == "annotations"       ||
-        it.first == "export.ical.class")
-      deprecated.push_back (it.first);
+    if (it.first == "next" || it.first == "annotations" || it.first == "export.ical.class")
+      deprecated.push_back(it.first);
 
     // Deprecated in 2.5.0.
-    if (it.first == "urgency.inherit.coefficient")
-        deprecated.push_back (it.first);
+    if (it.first == "urgency.inherit.coefficient") deprecated.push_back(it.first);
   }
 
   std::stringstream out;
-  if (deprecated.size ())
-  {
+  if (deprecated.size()) {
     out << "Your .taskrc file contains variables that are deprecated:\n";
 
-    for (const auto& dep : deprecated)
-      out << "  " << dep << "\n";
+    for (const auto& dep : deprecated) out << "  " << dep << "\n";
 
     out << "\n";
   }
 
-  return out.str ();
+  return out.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string legacyCheckForDeprecatedColumns ()
-{
-  std::vector <std::string> deprecated;
-  for (auto& it : Context::getContext ().config)
-  {
-    if (it.first.find ("report") == 0)
-    {
+std::string legacyCheckForDeprecatedColumns() {
+  std::vector<std::string> deprecated;
+  for (auto& it : Context::getContext().config) {
+    if (it.first.find("report") == 0) {
       // Deprecated in 2.0.0
-      std::string value = Context::getContext ().config.get (it.first);
-      if (value.find ("entry_time") != std::string::npos ||
-          value.find ("start_time") != std::string::npos ||
-          value.find ("end_time")   != std::string::npos)
-        deprecated.push_back (it.first);
+      std::string value = Context::getContext().config.get(it.first);
+      if (value.find("entry_time") != std::string::npos ||
+          value.find("start_time") != std::string::npos ||
+          value.find("end_time") != std::string::npos)
+        deprecated.push_back(it.first);
     }
   }
 
   std::stringstream out;
   out << "\n";
 
-  if (deprecated.size ())
-  {
-    out << "Your .taskrc file contains reports with deprecated columns.  Please check for entry_time, start_time or end_time in:\n";
+  if (deprecated.size()) {
+    out << "Your .taskrc file contains reports with deprecated columns.  Please check for "
+           "entry_time, start_time or end_time in:\n";
 
     for (const auto& dep : deprecated)
-      out << "  " << dep << "=" << Context::getContext ().config.get (dep) << "\n";
+      out << "  " << dep << "=" << Context::getContext().config.get(dep) << "\n";
 
     out << "\n";
   }
 
-  return out.str ();
+  return out.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void legacyAttributeMap (std::string& name)
-{
+void legacyAttributeMap(std::string& name) {
   // TW-1274, 2.4.0
-  if (name == "modification")
-    name = "modified";
+  if (name == "modification") name = "modified";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

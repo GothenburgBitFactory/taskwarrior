@@ -25,12 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColUntil.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnUntil::ColumnUntil ()
-{
-  _name  = "until";
+ColumnUntil::ColumnUntil() {
+  _name = "until";
   _label = "Until";
 }
 

@@ -25,62 +25,58 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
+#include <Context.h>
+#include <format.h>
+#include <main.h>
+#include <shared.h>
+
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <stack>
-#include <Context.h>
-#include <format.h>
-#include <shared.h>
-#include <main.h>
 
-#define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
+#define STRING_DEPEND_BLOCKED "Task {1} is blocked by:"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns true if the supplied task adds a cycle to the dependency chain.
-bool dependencyIsCircular (const Task& task)
-{
+bool dependencyIsCircular(const Task& task) {
   // A new task has no UUID assigned yet, and therefore cannot be part of any
   // dependency chain.
-  if (task.has ("uuid"))
-  {
-    auto task_uuid = task.get ("uuid");
+  if (task.has("uuid")) {
+    auto task_uuid = task.get("uuid");
 
-    std::stack <Task> s;
-    s.push (task);
+    std::stack<Task> s;
+    s.push(task);
 
-    std::unordered_set <std::string> visited;
-    visited.insert (task_uuid);
+    std::unordered_set<std::string> visited;
+    visited.insert(task_uuid);
 
-    while (! s.empty ())
-    {
-      Task& current = s.top ();
-      auto deps_current = current.getDependencyUUIDs ();
+    while (!s.empty()) {
+      Task& current = s.top();
+      auto deps_current = current.getDependencyUUIDs();
 
       // This is a basic depth first search that always terminates given the
       // fact that we do not visit any task twice
-      for (const auto& dep : deps_current)
-      {
-        if (Context::getContext ().tdb2.get (dep, current))
-        {
-          auto current_uuid = current.get ("uuid");
+      for (const auto& dep : deps_current) {
+        if (Context::getContext().tdb2.get(dep, current)) {
+          auto current_uuid = current.get("uuid");
 
-          if (task_uuid == current_uuid)
-          {
+          if (task_uuid == current_uuid) {
             // Cycle found, initial task reached for the second time!
             return true;
           }
 
-          if (visited.find (current_uuid) == visited.end ())
-          {
+          if (visited.find(current_uuid) == visited.end()) {
             // Push the task to the stack, if it has not been processed yet
-            s.push (current);
-            visited.insert (current_uuid);
+            s.push(current);
+            visited.insert(current_uuid);
           }
         }
       }
 
-      s.pop ();
+      s.pop();
     }
   }
 
@@ -116,76 +112,61 @@ bool dependencyIsCircular (const Task& task)
 //                                          1 dep:3,5
 //                                          4 dep:3,5
 //
-void dependencyChainOnComplete (Task& task)
-{
-  auto blocking = task.getDependencyTasks ();
+void dependencyChainOnComplete(Task& task) {
+  auto blocking = task.getDependencyTasks();
 
   // If the task is anything but the tail end of a dependency chain.
-  if (blocking.size ())
-  {
-    auto blocked = task.getBlockedTasks ();
+  if (blocking.size()) {
+    auto blocked = task.getBlockedTasks();
 
     // Nag about broken chain.
-    if (Context::getContext ().config.getBoolean ("dependency.reminder"))
-    {
-      std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
-                << '\n';
+    if (Context::getContext().config.getBoolean("dependency.reminder")) {
+      std::cout << format(STRING_DEPEND_BLOCKED, task.identifier()) << '\n';
 
       for (const auto& b : blocking)
-        std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
+        std::cout << "  " << b.id << ' ' << b.get("description") << '\n';
     }
 
     // If there are both blocking and blocked tasks, the chain is broken.
-    if (blocked.size ())
-    {
-      if (Context::getContext ().config.getBoolean ("dependency.reminder"))
-      {
+    if (blocked.size()) {
+      if (Context::getContext().config.getBoolean("dependency.reminder")) {
         std::cout << "and is blocking:\n";
 
         for (const auto& b : blocked)
-          std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
+          std::cout << "  " << b.id << ' ' << b.get("description") << '\n';
       }
 
-      if (!Context::getContext ().config.getBoolean ("dependency.confirmation") ||
-          confirm ("Would you like the dependency chain fixed?"))
-      {
+      if (!Context::getContext().config.getBoolean("dependency.confirmation") ||
+          confirm("Would you like the dependency chain fixed?")) {
         // Repair the chain - everything in blocked should now depend on
         // everything in blocking, instead of task.id.
-        for (auto& left : blocked)
-        {
-          left.removeDependency (task.id);
+        for (auto& left : blocked) {
+          left.removeDependency(task.id);
 
-          for (const auto& right : blocking)
-            left.addDependency (right.id);
+          for (const auto& right : blocking) left.addDependency(right.id);
         }
 
         // Now update TDB2, now that the updates have all occurred.
-        for (auto& left : blocked)
-          Context::getContext ().tdb2.modify (left);
+        for (auto& left : blocked) Context::getContext().tdb2.modify(left);
 
-        for (auto& right : blocking)
-          Context::getContext ().tdb2.modify (right);
+        for (auto& right : blocking) Context::getContext().tdb2.modify(right);
       }
     }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void dependencyChainOnStart (Task& task)
-{
-  if (Context::getContext ().config.getBoolean ("dependency.reminder"))
-  {
-    auto blocking = task.getDependencyTasks ();
+void dependencyChainOnStart(Task& task) {
+  if (Context::getContext().config.getBoolean("dependency.reminder")) {
+    auto blocking = task.getDependencyTasks();
 
     // If the task is anything but the tail end of a dependency chain, nag about
     // broken chain.
-    if (blocking.size ())
-    {
-      std::cout << format (STRING_DEPEND_BLOCKED, task.identifier ())
-                << '\n';
+    if (blocking.size()) {
+      std::cout << format(STRING_DEPEND_BLOCKED, task.identifier()) << '\n';
 
       for (const auto& b : blocking)
-        std::cout << "  " << b.id << ' ' << b.get ("description") << '\n';
+        std::cout << "  " << b.id << ' ' << b.get("description") << '\n';
     }
   }
 }

@@ -25,34 +25,36 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdDiagnostics.h>
-#include <iomanip>
-#include <sstream>
-#include <algorithm>
+#include <Context.h>
+#include <RX.h>
+#include <format.h>
+#include <shared.h>
 #include <stdlib.h>
 #include <time.h>
-#include <RX.h>
-#include <Context.h>
-#include <shared.h>
-#include <format.h>
+
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdDiagnostics::CmdDiagnostics ()
-{
-  _keyword               = "diagnostics";
-  _usage                 = "task          diagnostics";
-  _description           = "Platform, build and environment details";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdDiagnostics::CmdDiagnostics() {
+  _keyword = "diagnostics";
+  _usage = "task          diagnostics";
+  _description = "Platform, build and environment details";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::misc;
+  _category = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,26 +62,19 @@ CmdDiagnostics::CmdDiagnostics ()
 //
 // Although this will change over time, initially this command will answer the
 // kind of questions we always have to ask whenever something is wrong.
-int CmdDiagnostics::execute (std::string& output)
-{
+int CmdDiagnostics::execute(std::string& output) {
   Color bold;
-  if (Context::getContext ().color ())
-    bold = Color ("bold");
+  if (Context::getContext().color()) bold = Color("bold");
 
   std::stringstream out;
-  out << '\n'
-      << bold.colorize (PACKAGE_STRING)
-      << '\n';
+  out << '\n' << bold.colorize(PACKAGE_STRING) << '\n';
 
-  out << "   Platform: " << osName ()
-      << "\n\n";
+  out << "   Platform: " << osName() << "\n\n";
 
   // Compiler.
-  out << bold.colorize ("Compiler")
-      << '\n'
+  out << bold.colorize("Compiler") << '\n'
 #ifdef __VERSION__
-      << "    Version: "
-      << __VERSION__ << '\n'
+      << "    Version: " << __VERSION__ << '\n'
 #endif
       << "       Caps:"
 #ifdef __STDC__
@@ -103,20 +98,13 @@ int CmdDiagnostics::execute (std::string& output)
 #ifdef _LP64
       << " +LP64"
 #endif
-      << " +c"      << 8 * sizeof (char)
-      << " +i"      << 8 * sizeof (int)
-      << " +l"      << 8 * sizeof (long)
-      << " +vp"     << 8 * sizeof (void*)
-      << " +time_t" << 8 * sizeof (time_t)
-      << '\n';
+      << " +c" << 8 * sizeof(char) << " +i" << 8 * sizeof(int) << " +l" << 8 * sizeof(long)
+      << " +vp" << 8 * sizeof(void*) << " +time_t" << 8 * sizeof(time_t) << '\n';
 
   // Compiler compliance level.
-  out << " Compliance: "
-      << cppCompliance ()
-      << "\n\n";
+  out << " Compliance: " << cppCompliance() << "\n\n";
 
-  out << bold.colorize ("Build Features")
-      << '\n'
+  out << bold.colorize("Build Features") << '\n'
 
 #ifdef HAVE_COMMIT
       << "     Commit: " << COMMIT << '\n'
@@ -140,205 +128,146 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n\n";
 
   // Config: .taskrc found, readable, writable
-  File rcFile (Context::getContext ().config.file ());
-  out << bold.colorize ("Configuration")
-      << '\n'
-      << "       File: " << rcFile._data << ' '
-      << (rcFile.exists ()
-           ? "(found)"
-           : "(missing)")
-      << ", " << rcFile.size () << ' ' << "bytes"
-      << ", mode "
-      << std::setbase (8)
-      << rcFile.mode ()
-      << '\n';
+  File rcFile(Context::getContext().config.file());
+  out << bold.colorize("Configuration") << '\n'
+      << "       File: " << rcFile._data << ' ' << (rcFile.exists() ? "(found)" : "(missing)")
+      << ", " << rcFile.size() << ' ' << "bytes"
+      << ", mode " << std::setbase(8) << rcFile.mode() << '\n';
 
   // Config: data.location found, readable, writable
-  File location (Context::getContext ().config.get ("data.location"));
-  out << "       Data: " << location._data << ' '
-      << (location.exists ()
-           ? "(found)"
-           : "(missing)")
-      << ", " << (location.is_directory () ? "dir" : "?")
-      << ", mode "
-      << std::setbase (8)
-      << location.mode ()
-      << '\n';
+  File location(Context::getContext().config.get("data.location"));
+  out << "       Data: " << location._data << ' ' << (location.exists() ? "(found)" : "(missing)")
+      << ", " << (location.is_directory() ? "dir" : "?") << ", mode " << std::setbase(8)
+      << location.mode() << '\n';
 
-  char* env = getenv ("TASKRC");
-  if (env)
-    out << "     TASKRC: "
-        << env
-        << '\n';
+  char* env = getenv("TASKRC");
+  if (env) out << "     TASKRC: " << env << '\n';
 
-  env = getenv ("TASKDATA");
-  if (env)
-    out << "   TASKDATA: "
-        << env
-        << '\n';
+  env = getenv("TASKDATA");
+  if (env) out << "   TASKDATA: " << env << '\n';
 
-  out << "         GC: "
-      << (Context::getContext ().config.getBoolean ("gc")
-           ? "Enabled"
-           : "Disabled")
+  out << "         GC: " << (Context::getContext().config.getBoolean("gc") ? "Enabled" : "Disabled")
       << '\n';
 
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
-  if (Context::getContext ().config.get ("editor") != "")
-    out << "  rc.editor: " << Context::getContext ().config.get ("editor") << '\n';
-  else if ((peditor = getenv ("VISUAL")) != nullptr)
+  if (Context::getContext().config.get("editor") != "")
+    out << "  rc.editor: " << Context::getContext().config.get("editor") << '\n';
+  else if ((peditor = getenv("VISUAL")) != nullptr)
     out << "    $VISUAL: " << peditor << '\n';
-  else if ((peditor = getenv ("EDITOR")) != nullptr)
+  else if ((peditor = getenv("EDITOR")) != nullptr)
     out << "    $EDITOR: " << peditor << '\n';
 
   // Display hook status.
   Path hookLocation;
-  if (Context::getContext ().config.has ("hooks.location"))
-  {
-    hookLocation = Path (Context::getContext ().config.get ("hooks.location"));
-  }
-  else
-  {
-    hookLocation = Path (Context::getContext ().config.get ("data.location"));
+  if (Context::getContext().config.has("hooks.location")) {
+    hookLocation = Path(Context::getContext().config.get("hooks.location"));
+  } else {
+    hookLocation = Path(Context::getContext().config.get("data.location"));
     hookLocation += "hooks";
   }
 
-  out << bold.colorize ("Hooks")
-      << '\n'
+  out << bold.colorize("Hooks") << '\n'
       << "     System: "
-      << (Context::getContext ().config.getBoolean ("hooks") ? "Enabled" : "Disabled")
-      << '\n'
-      << "   Location: "
-      << static_cast <std::string> (hookLocation)
-      << '\n';
+      << (Context::getContext().config.getBoolean("hooks") ? "Enabled" : "Disabled") << '\n'
+      << "   Location: " << static_cast<std::string>(hookLocation) << '\n';
 
-  auto hooks = Context::getContext ().hooks.list ();
-  if (hooks.size ())
-  {
+  auto hooks = Context::getContext().hooks.list();
+  if (hooks.size()) {
     unsigned int longest = 0;
     for (auto& hook : hooks)
-      if (hook.length () > longest)
-        longest = hook.length ();
-    longest -= hookLocation._data.length () + 1;
+      if (hook.length() > longest) longest = hook.length();
+    longest -= hookLocation._data.length() + 1;
 
     out << "     Active: ";
     int count = 0;
-    for (auto& hook : hooks)
-    {
-      Path p (hook);
-      if (! p.is_directory ())
-      {
-        auto name = p.name ();
+    for (auto& hook : hooks) {
+      Path p(hook);
+      if (!p.is_directory()) {
+        auto name = p.name();
 
-        if (p.executable () &&
-            (name.substr (0, 6) == "on-add"    ||
-             name.substr (0, 9) == "on-modify" ||
-             name.substr (0, 9) == "on-launch" ||
-             name.substr (0, 7) == "on-exit"))
-        {
+        if (p.executable() &&
+            (name.substr(0, 6) == "on-add" || name.substr(0, 9) == "on-modify" ||
+             name.substr(0, 9) == "on-launch" || name.substr(0, 7) == "on-exit")) {
           out << (count++ ? "             " : "");
 
-          out.width (longest);
-          out << std::left << name
-              << " (executable)"
-              << (p.is_link () ? " (symlink)" : "")
-              << '\n';
+          out.width(longest);
+          out << std::left << name << " (executable)" << (p.is_link() ? " (symlink)" : "") << '\n';
         }
       }
     }
 
-    if (! count)
-      out << '\n';
+    if (!count) out << '\n';
 
     out << "   Inactive: ";
     count = 0;
-    for (auto& hook : hooks)
-    {
-      Path p (hook);
-      if (! p.is_directory ())
-      {
-        auto name = p.name ();
+    for (auto& hook : hooks) {
+      Path p(hook);
+      if (!p.is_directory()) {
+        auto name = p.name();
 
-        if (! p.executable () ||
-            (name.substr (0, 6) != "on-add"    &&
-             name.substr (0, 9) != "on-modify" &&
-             name.substr (0, 9) != "on-launch" &&
-             name.substr (0, 7) != "on-exit"))
-        {
+        if (!p.executable() ||
+            (name.substr(0, 6) != "on-add" && name.substr(0, 9) != "on-modify" &&
+             name.substr(0, 9) != "on-launch" && name.substr(0, 7) != "on-exit")) {
           out << (count++ ? "             " : "");
 
-          out.width (longest);
-          out << std::left << name
-              << (p.executable () ? " (executable)" : " (not executable)")
-              << (p.is_link () ? " (symlink)" : "")
-              << ((name.substr (0, 6) == "on-add" ||
-                   name.substr (0, 9) == "on-modify" ||
-                   name.substr (0, 9) == "on-launch" ||
-                   name.substr (0, 7) == "on-exit") ? "" : "unrecognized hook name")
+          out.width(longest);
+          out << std::left << name << (p.executable() ? " (executable)" : " (not executable)")
+              << (p.is_link() ? " (symlink)" : "")
+              << ((name.substr(0, 6) == "on-add" || name.substr(0, 9) == "on-modify" ||
+                   name.substr(0, 9) == "on-launch" || name.substr(0, 7) == "on-exit")
+                      ? ""
+                      : "unrecognized hook name")
               << '\n';
         }
       }
     }
 
-    if (! count)
-      out << '\n';
-  }
-  else
+    if (!count) out << '\n';
+  } else
     out << "             (-none-)\n";
 
   out << '\n';
 
   // Verify UUIDs are all unique.
-  out << bold.colorize ("Tests")
-      << '\n';
+  out << bold.colorize("Tests") << '\n';
 
   // Report terminal dimensions.
-  out << "   Terminal: "
-      << Context::getContext ().getWidth ()
-      << 'x'
-      << Context::getContext ().getHeight ()
-      << '\n';
+  out << "   Terminal: " << Context::getContext().getWidth() << 'x'
+      << Context::getContext().getHeight() << '\n';
 
   // Check all the UUID references
-  auto all = Context::getContext ().tdb2.all_tasks ();
+  auto all = Context::getContext().tdb2.all_tasks();
 
   bool noBrokenRefs = true;
-  out << " Broken ref: "
-      << format ("Scanned {1} tasks for broken references:", all.size ())
-      << '\n';
+  out << " Broken ref: " << format("Scanned {1} tasks for broken references:", all.size()) << '\n';
 
-  for (auto& task : all)
-  {
+  for (auto& task : all) {
     // Check dependencies
-    for (auto& uuid : task.getDependencyUUIDs ())
-    {
-      if (! Context::getContext ().tdb2.has (uuid))
-      {
+    for (auto& uuid : task.getDependencyUUIDs()) {
+      if (!Context::getContext().tdb2.has(uuid)) {
         out << "             "
-            << format ("Task {1} depends on nonexistent task: {2}", task.get ("uuid"), uuid)
-            << '\n';
+            << format("Task {1} depends on nonexistent task: {2}", task.get("uuid"), uuid) << '\n';
         noBrokenRefs = false;
       }
     }
 
     // Check recurrence parent
-    auto parentUUID = task.get ("parent");
+    auto parentUUID = task.get("parent");
 
-    if (parentUUID != "" && ! Context::getContext ().tdb2.has (parentUUID))
-    {
+    if (parentUUID != "" && !Context::getContext().tdb2.has(parentUUID)) {
       out << "             "
-          << format ("Task {1} has nonexistent recurrence template {2}", task.get ("uuid"), parentUUID)
+          << format("Task {1} has nonexistent recurrence template {2}", task.get("uuid"),
+                    parentUUID)
           << '\n';
       noBrokenRefs = false;
     }
   }
 
-  if (noBrokenRefs)
-    out << "             No broken references found\n";
+  if (noBrokenRefs) out << "             No broken references found\n";
 
   out << '\n';
-  output = out.str ();
+  output = out.str();
   return 0;
 }
 

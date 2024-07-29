@@ -29,36 +29,35 @@
 
 #include <string>
 
-class UnitTest
-{
-public:
-  UnitTest ();
-  UnitTest (int);
-  ~UnitTest ();
+class UnitTest {
+ public:
+  UnitTest();
+  UnitTest(int);
+  ~UnitTest();
 
-  void plan (int);
-  void planMore (int);
-  void ok (bool, const std::string&, bool expfail = false);
-  void notok (bool, const std::string&, bool expfail = false);
-  void is (bool, bool, const std::string&, bool expfail = false);
-  void is (size_t, size_t, const std::string&, bool expfail = false);
-  void is (int, int, const std::string&, bool expfail = false);
-  void is (double, double, const std::string&, bool expfail = false);
-  void is (double, double, double, const std::string&, bool expfail = false);
-  void is (unsigned char, unsigned char, const std::string&, bool expfail = false);
-  void is (const std::string&, const std::string&, const std::string&, bool expfail = false);
-  void is (const char*, const char*, const std::string&, bool expfail = false);
-  void diag (const std::string&);
-  void pass (const std::string&);
-  void fail (const std::string&);
-  void skip (const std::string&);
+  void plan(int);
+  void planMore(int);
+  void ok(bool, const std::string&, bool expfail = false);
+  void notok(bool, const std::string&, bool expfail = false);
+  void is(bool, bool, const std::string&, bool expfail = false);
+  void is(size_t, size_t, const std::string&, bool expfail = false);
+  void is(int, int, const std::string&, bool expfail = false);
+  void is(double, double, const std::string&, bool expfail = false);
+  void is(double, double, double, const std::string&, bool expfail = false);
+  void is(unsigned char, unsigned char, const std::string&, bool expfail = false);
+  void is(const std::string&, const std::string&, const std::string&, bool expfail = false);
+  void is(const char*, const char*, const std::string&, bool expfail = false);
+  void diag(const std::string&);
+  void pass(const std::string&);
+  void fail(const std::string&);
+  void skip(const std::string&);
 
-private:
-  std::string red (const std::string&);
-  std::string green (const std::string&);
-  std::string yellow (const std::string&);
+ private:
+  std::string red(const std::string&);
+  std::string green(const std::string&);
+  std::string yellow(const std::string&);
 
-private:
+ private:
   int _planned;
   int _counter;
   int _passed;

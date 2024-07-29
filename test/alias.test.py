@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 from datetime import datetime
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -55,28 +56,25 @@ class TestAlias(TestCase):
 
         # Sanity check that _projects command outputs the "Home" project
         code, out, err = self.t("_projects")
-        self.assertIn(expected, out,
-                      msg="task _projects -> Home")
+        self.assertIn(expected, out, msg="task _projects -> Home")
 
         # Check that foo command outputs the "Home" project
         code, out, err = self.t("foo")
-        self.assertIn(expected, out,
-                      msg="task foo -> _projects > Home")
+        self.assertIn(expected, out, msg="task foo -> _projects > Home")
 
         # Check that bar command outputs the "Home" project
         code, out, err = self.t("bar")
-        self.assertIn(expected, out,
-                      msg="task bar -> foo > _projects > Home")
+        self.assertIn(expected, out, msg="task bar -> foo > _projects > Home")
 
         # Check that baz command outputs the "Home" project
         code, out, err = self.t("baz")
-        self.assertIn(expected, out,
-                      msg="task baz -> bar > foo > _projects > Home")
+        self.assertIn(expected, out, msg="task baz -> bar > foo > _projects > Home")
 
         # Check that qux command outputs the "Home" project
         code, out, err = self.t("qux")
-        self.assertIn(expected, out,
-                      msg="task qux -> baz > bar > foo > _projects > Home")
+        self.assertIn(
+            expected, out, msg="task qux -> baz > bar > foo > _projects > Home"
+        )
 
     def test_alias_with_implicit_filter(self):
         """Test alias containing simple filter string"""
@@ -91,17 +89,17 @@ class TestAlias(TestCase):
         # Sanity check that _projects command outputs
         # both the "Home" and "Work" projects
         code, out, err = self.t("_projects")
-        self.assertIn("Home", out,
-                      msg="task _projects -> Home")
-        self.assertIn("Work", out,
-                      msg="task _projects -> Work")
+        self.assertIn("Home", out, msg="task _projects -> Home")
+        self.assertIn("Work", out, msg="task _projects -> Work")
 
         # Check that foo command outputs the "Home" project
         code, out, err = self.t("foofilter")
-        self.assertIn("Home", out,
-                msg="task foofilter -> project:Home _projects > Home")
-        self.assertNotIn("Work", out,
-                msg="task foofilter -> project:Home _projects > Work")
+        self.assertIn(
+            "Home", out, msg="task foofilter -> project:Home _projects > Home"
+        )
+        self.assertNotIn(
+            "Work", out, msg="task foofilter -> project:Home _projects > Work"
+        )
 
     def test_alias_with_implicit_complex_filter(self):
         """Test alias containing filter string with conjuction"""
@@ -116,20 +114,28 @@ class TestAlias(TestCase):
 
         # Check that hometoday command outputs the "Home urgent task"
         code, out, err = self.t("hometoday")
-        self.assertIn("Home urgent task", out,
-                msg="task hometoday -> project:Home and due:today minimal > "
-                    "Home urgent task")
+        self.assertIn(
+            "Home urgent task",
+            out,
+            msg="task hometoday -> project:Home and due:today minimal > "
+            "Home urgent task",
+        )
 
         # It should not output "Home task", as that one is not due:today
-        self.assertNotIn("Home task", out,
-                msg="task hometoday -> project:Home and due:today minimal > "
-                    "Home task")
+        self.assertNotIn(
+            "Home task",
+            out,
+            msg="task hometoday -> project:Home and due:today minimal > " "Home task",
+        )
 
         # It should not output "Work task" either, it has entirely wrong
         # project
-        self.assertNotIn("Work task", out,
-                msg="task hometoday -> project:Home and due:today minimal > "
-                    "Work task")
+        self.assertNotIn(
+            "Work task",
+            out,
+            msg="task hometoday -> project:Home and due:today minimal > " "Work task",
+        )
+
 
 class TestAliasesCommand(TestCase):
     def setUp(self):
@@ -141,6 +147,7 @@ class TestAliasesCommand(TestCase):
         self.t.config("alias.foo", "bar")
         code, out, err = self.t("_aliases")
         self.assertIn("foo", out)
+
 
 class TestBug1652(TestCase):
     def setUp(self):
@@ -155,6 +162,7 @@ class TestBug1652(TestCase):
         code, out, err = self.t("1 rm")
         self.assertIn("Deleted 1 task.", out)
         self.assertNotIn("No matches.", err)
+
 
 class TestBug1031(TestCase):
     def setUp(self):
@@ -196,23 +204,24 @@ class Test1445(TestCase):
 
     def test_alias_single_word(self):
         """1445: Verify single-word aliases"""
-        self.t.config('alias.when', 'execute date')
-        code, out, err = self.t('when')
+        self.t.config("alias.when", "execute date")
+        code, out, err = self.t("when")
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
         self.assertIn(str(datetime.now().year), out)
 
     def test_alias_multi_word(self):
         """1445: Verify multi-word aliases"""
-        self.t.config('alias.worktasks', 'list +work')
-        self.t('add one +work')
-        self.t('add two')
-        code, out, err = self.t('worktasks')
+        self.t.config("alias.worktasks", "list +work")
+        self.t("add one +work")
+        self.t("add two")
+        code, out, err = self.t("worktasks")
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
-        self.assertIn('one', out)
+        self.assertIn("one", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -27,16 +27,15 @@
 #ifndef INCLUDED_COMMAND
 #define INCLUDED_COMMAND
 
-#include <map>
-#include <vector>
-#include <string>
 #include <Task.h>
 
-class Command
-{
-public:
-  enum class Category
-  {
+#include <map>
+#include <string>
+#include <vector>
+
+class Command {
+ public:
+  enum class Category {
     unassigned,
     // In presentation ("usefulness") order: frequently-used categories first.
     metadata,
@@ -52,46 +51,46 @@ public:
     // Whenever you extend this enum, update categoryNames.
   };
 
-  Command ();
-  virtual ~Command () = default;
+  Command();
+  virtual ~Command() = default;
 
-  static void factory (std::map <std::string, Command*>&);
+  static void factory(std::map<std::string, Command*>&);
 
-  std::string keyword () const;
-  std::string usage () const;
-  std::string description () const;
-  bool read_only () const;
-  bool displays_id () const;
-  bool needs_gc () const;
-  virtual bool uses_context () const;
-  bool accepts_filter () const;
-  bool accepts_modifications () const;
-  bool accepts_miscellaneous () const;
-  Category category () const;
-  virtual int execute (std::string&) = 0;
+  std::string keyword() const;
+  std::string usage() const;
+  std::string description() const;
+  bool read_only() const;
+  bool displays_id() const;
+  bool needs_gc() const;
+  virtual bool uses_context() const;
+  bool accepts_filter() const;
+  bool accepts_modifications() const;
+  bool accepts_miscellaneous() const;
+  Category category() const;
+  virtual int execute(std::string&) = 0;
 
-protected:
-  bool permission (const std::string&, unsigned int);
-  static const std::map <Command::Category, std::string> categoryNames;
+ protected:
+  bool permission(const std::string&, unsigned int);
+  static const std::map<Command::Category, std::string> categoryNames;
 
-protected:
+ protected:
   std::string _keyword;
   std::string _usage;
   std::string _description;
-  bool        _read_only;
-  bool        _displays_id;
-  bool        _needs_confirm;
-  bool        _needs_gc;
-  bool        _uses_context;
-  bool        _accepts_filter;
-  bool        _accepts_modifications;
-  bool        _accepts_miscellaneous;
-  Category    _category;
+  bool _read_only;
+  bool _displays_id;
+  bool _needs_confirm;
+  bool _needs_gc;
+  bool _uses_context;
+  bool _accepts_filter;
+  bool _accepts_modifications;
+  bool _accepts_miscellaneous;
+  Category _category;
 
   // Permission support
-  bool        _permission_quit;
-  bool        _permission_all;
-  bool        _first_iteration;
+  bool _permission_quit;
+  bool _permission_all;
+  bool _first_iteration;
 };
 
 #endif

@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,7 +39,6 @@ class TestPrintEmptyColumns(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-
 
     def test_empty_columns_feature(self):
         """Verify rc.print.empty.columns:yes shows more nothing than rc.print.empty.columns:no"""
@@ -64,6 +64,7 @@ class TestPrintEmptyColumns(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

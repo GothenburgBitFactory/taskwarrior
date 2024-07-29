@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,24 +42,24 @@ class TestUndo(TestCase):
 
     def test_add_undo(self):
         """'add' then 'undo'"""
-        self.t('add one')
-        code, out, err = self.t('_get 1.status')
-        self.assertEqual(out.strip(), 'pending')
-        self.t('undo', input="y\n")
-        code, out, err = self.t('_get 1.status')
-        self.assertEqual(out.strip(), '')
+        self.t("add one")
+        code, out, err = self.t("_get 1.status")
+        self.assertEqual(out.strip(), "pending")
+        self.t("undo", input="y\n")
+        code, out, err = self.t("_get 1.status")
+        self.assertEqual(out.strip(), "")
 
     def test_add_done_undo(self):
         """'add' then 'done' then 'undo'"""
-        self.t('add two')
-        code, out, err = self.t('_get 1.status')
-        self.assertEqual(out.strip(), 'pending')
-        self.t('1 done')
-        code, out, err = self.t('_get 1.status')
-        self.assertEqual(out.strip(), 'completed')
-        self.t('undo', input="y\n")
-        code, out, err = self.t('_get 1.status')
-        self.assertEqual(out.strip(), 'pending')
+        self.t("add two")
+        code, out, err = self.t("_get 1.status")
+        self.assertEqual(out.strip(), "pending")
+        self.t("1 done")
+        code, out, err = self.t("_get 1.status")
+        self.assertEqual(out.strip(), "completed")
+        self.t("undo", input="y\n")
+        code, out, err = self.t("_get 1.status")
+        self.assertEqual(out.strip(), "pending")
 
     def test_undo_en_passant(self):
         """Verify that en-passant changes during undo are an error"""
@@ -73,7 +74,7 @@ class TestUndoStyle(TestCase):
         self.t("add one project:foo priority:H")
         self.t("1 modify +tag project:bar priority:")
 
-    @unittest.expectedFailure # undo diffs are not supported
+    @unittest.expectedFailure  # undo diffs are not supported
     def test_undo_side_style(self):
         """Test that 'rc.undo.style:side' generates the right output"""
         self.t.config("undo.style", "side")
@@ -81,7 +82,7 @@ class TestUndoStyle(TestCase):
         self.assertNotRegex(out, "-tags:\\s*\n\\+tags:\\s+tag")
         self.assertRegex(out, r"tags\s+tag\s*")
 
-    @unittest.expectedFailure # undo diffs are not supported
+    @unittest.expectedFailure  # undo diffs are not supported
     def test_undo_diff_style(self):
         """Test that 'rc.undo.style:diff' generates the right output"""
         self.t.config("undo.style", "diff")
@@ -114,11 +115,12 @@ class TestBug634(TestCase):
         # If a prompt happens, the test will timeout on input (exitcode != 0)
         code, out, err = self.t("rc.confirmation=off undo")
         code, out, err = self.t("_get 1.description")
-        self.assertEqual(out.strip(), '') # task is gone
+        self.assertEqual(out.strip(), "")  # task is gone
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -29,10 +29,9 @@
 
 #include <ColTypeDate.h>
 
-class ColumnWait : public ColumnTypeDate
-{
-public:
-  ColumnWait ();
+class ColumnWait : public ColumnTypeDate {
+ public:
+  ColumnWait();
 };
 
 #endif

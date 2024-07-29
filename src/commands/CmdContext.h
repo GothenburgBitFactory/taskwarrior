@@ -27,31 +27,30 @@
 #ifndef INCLUDED_CMDCONTEXT
 #define INCLUDED_CMDCONTEXT
 
-#include <string>
-#include <Command.h>
 #include <CLI2.h>
+#include <Command.h>
 
-class CmdContext : public Command
-{
-public:
-  CmdContext ();
-  int execute (std::string&);
-  std::string joinWords (const std::vector <std::string>&, unsigned int, unsigned int = 0);
-  bool validateWriteContext (const std::vector <A2>&, std::string&);
-  static std::vector <std::string> getContexts ();
-  void defineContext (const std::vector <std::string>&, std::stringstream&);
-  void deleteContext (const std::vector <std::string>&, std::stringstream&);
-  void listContexts (std::stringstream&);
-  void setContext (const std::vector <std::string>&, std::stringstream&);
-  void showContext (std::stringstream&);
-  void unsetContext (std::stringstream&);
+#include <string>
+
+class CmdContext : public Command {
+ public:
+  CmdContext();
+  int execute(std::string&);
+  std::string joinWords(const std::vector<std::string>&, unsigned int, unsigned int = 0);
+  bool validateWriteContext(const std::vector<A2>&, std::string&);
+  static std::vector<std::string> getContexts();
+  void defineContext(const std::vector<std::string>&, std::stringstream&);
+  void deleteContext(const std::vector<std::string>&, std::stringstream&);
+  void listContexts(std::stringstream&);
+  void setContext(const std::vector<std::string>&, std::stringstream&);
+  void showContext(std::stringstream&);
+  void unsetContext(std::stringstream&);
 };
 
-class CmdCompletionContext : public Command
-{
-public:
-  CmdCompletionContext ();
-  int execute (std::string&);
+class CmdCompletionContext : public Command {
+ public:
+  CmdCompletionContext();
+  int execute(std::string&);
 };
 
 #endif

@@ -25,12 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColModified.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnModified::ColumnModified ()
-{
-  _name  = "modified";
+ColumnModified::ColumnModified() {
+  _name = "modified";
   _label = "Modified";
 }
 

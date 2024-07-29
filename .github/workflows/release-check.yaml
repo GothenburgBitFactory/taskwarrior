@@ -25,4 +25,3 @@ jobs:
           cd task-*.*.* &&
           cmake -S. -Bbuild &&
           cmake --build build --target task_executable
-

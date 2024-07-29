@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDDIAGNOSTICS
 #define INCLUDED_CMDDIAGNOSTICS
 
-#include <string>
 #include <Command.h>
 
-class CmdDiagnostics : public Command
-{
-public:
-  CmdDiagnostics ();
-  int execute (std::string&);
+#include <string>
+
+class CmdDiagnostics : public Command {
+ public:
+  CmdDiagnostics();
+  int execute(std::string&);
 };
 
 #endif

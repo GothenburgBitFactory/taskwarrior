@@ -25,47 +25,43 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColUUID.h>
 #include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnUUID::ColumnUUID ()
-{
-  _name       = "uuid";
-  _style      = "long";
-  _label      = "UUID";
+ColumnUUID::ColumnUUID() {
+  _name = "uuid";
+  _style = "long";
+  _label = "UUID";
   _modifiable = false;
-  _styles     = {"long", "short"};
-  _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
+  _styles = {"long", "short"};
+  _examples = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUUID::measure (Task&, unsigned int& minimum, unsigned int& maximum)
-{
+void ColumnUUID::measure(Task&, unsigned int& minimum, unsigned int& maximum) {
   // Mandatory attribute, no need to check the value.
 
-       if (_style == "default" || _style == "long") minimum = maximum = 36;
-  else if (_style == "short")                       minimum = maximum = 8;
+  if (_style == "default" || _style == "long")
+    minimum = maximum = 36;
+  else if (_style == "short")
+    minimum = maximum = 8;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUUID::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
+void ColumnUUID::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
   // No need to check the presence of UUID - all tasks have one.
 
   // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
   // f30cb9c3                              short
-  if (_style == "default" ||
-      _style == "long")
-    renderStringLeft (lines, width, color, task.get (_name));
+  if (_style == "default" || _style == "long")
+    renderStringLeft(lines, width, color, task.get(_name));
 
   else if (_style == "short")
-    renderStringLeft (lines, width, color, task.get (_name).substr (0, 8));
+    renderStringLeft(lines, width, color, task.get(_name).substr(0, 8));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

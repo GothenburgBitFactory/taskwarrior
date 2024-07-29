@@ -25,67 +25,56 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColTypeString.h>
 #include <Context.h>
 #include <Eval.h>
-#include <Variant.h>
 #include <Filter.h>
+#include <Variant.h>
 #include <format.h>
 
-#define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
+#define STRING_INVALID_MOD "The '{1}' attribute does not allow a value of '{2}'."
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnTypeString::ColumnTypeString ()
-{
-  _type = "string";
+ColumnTypeString::ColumnTypeString() { _type = "string"; }
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeString::validate(const std::string& input) const {
+  return input.length() ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnTypeString::validate (const std::string& input) const
-{
-  return input.length () ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnTypeString::modify (Task& task, const std::string& value)
-{
+void ColumnTypeString::modify(Task& task, const std::string& value) {
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   // Only if it's a DOM ref, eval it first.
-  Lexer lexer (value);
+  Lexer lexer(value);
   std::string domRef;
   Lexer::Type type;
-  if (lexer.token (domRef, type) &&
-      type == Lexer::Type::dom &&
+  if (lexer.token(domRef, type) && type == Lexer::Type::dom &&
       // Ensure 'value' contains only the DOM reference and no other tokens
       // The lexer.token returns false for end-of-string.
       // This works as long as all the DOM references we should support consist
       // only of a single token.
-      lexer.token (domRef, type) == false)
-  {
+      lexer.token(domRef, type) == false) {
     Eval e;
-    e.addSource (domSource);
+    e.addSource(domSource);
 
     Variant v;
-    e.evaluateInfixExpression (value, v);
-    std::string strValue = (std::string) v;
-    if (validate (strValue))
-    {
-      task.set (_name, strValue);
-      Context::getContext ().debug (label + _name + " <-- '" + strValue + "' <-- '" + value + '\'');
-    }
-    else
-      throw format (STRING_INVALID_MOD, _name, value);
-  }
-  else
-  {
-    if (validate (value))
-    {
-      task.set (_name, value);
-      Context::getContext ().debug (label + _name + " <-- '" + value + '\'');
-    }
-    else
-      throw format (STRING_INVALID_MOD, _name, value);
+    e.evaluateInfixExpression(value, v);
+    std::string strValue = (std::string)v;
+    if (validate(strValue)) {
+      task.set(_name, strValue);
+      Context::getContext().debug(label + _name + " <-- '" + strValue + "' <-- '" + value + '\'');
+    } else
+      throw format(STRING_INVALID_MOD, _name, value);
+  } else {
+    if (validate(value)) {
+      task.set(_name, value);
+      Context::getContext().debug(label + _name + " <-- '" + value + '\'');
+    } else
+      throw format(STRING_INVALID_MOD, _name, value);
   }
 }
 

@@ -27,20 +27,20 @@
 #ifndef INCLUDED_CMDIMPORT
 #define INCLUDED_CMDIMPORT
 
-#include <string>
 #include <Command.h>
 #include <JSON.h>
 
-class CmdImport : public Command
-{
-public:
-  CmdImport ();
-  int execute (std::string&);
+#include <string>
 
-private:
+class CmdImport : public Command {
+ public:
+  CmdImport();
+  int execute(std::string&);
+
+ private:
   std::unordered_map<std::string, unsigned int> uuid_occurrences;
-  int import (const std::string&);
-  void importSingleTask (json::object*);
+  int import(const std::string&);
+  void importSingleTask(json::object*);
 };
 
 #endif

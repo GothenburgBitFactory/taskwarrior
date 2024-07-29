@@ -27,16 +27,16 @@
 #ifndef INCLUDED_COLTYPENUMERIC
 #define INCLUDED_COLTYPENUMERIC
 
-#include <string>
 #include <Column.h>
 #include <Task.h>
 
-class ColumnTypeNumeric : public Column
-{
-public:
-  ColumnTypeNumeric ();
-  virtual bool validate (const std::string&) const;
-  virtual void modify (Task&, const std::string&);
+#include <string>
+
+class ColumnTypeNumeric : public Column {
+ public:
+  ColumnTypeNumeric();
+  virtual bool validate(const std::string&) const;
+  virtual void modify(Task&, const std::string&);
 };
 
 #endif

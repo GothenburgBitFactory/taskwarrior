@@ -27,17 +27,17 @@
 #ifndef INCLUDED_CMDHELP
 #define INCLUDED_CMDHELP
 
-#include <string>
 #include <Command.h>
 
-class CmdHelp : public Command
-{
-public:
-  CmdHelp ();
-  int execute (std::string&);
+#include <string>
 
-private:
-  std::string composeUsage () const;
+class CmdHelp : public Command {
+ public:
+  CmdHelp();
+  int execute(std::string&);
+
+ private:
+  std::string composeUsage() const;
 };
 
 #endif

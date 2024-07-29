@@ -29,10 +29,13 @@ def parse_perf(input):
         tests[command] = []
 
         # Parse concatenated run_perf output
-        for i in re.findall("^  - task %s\\.\\.\\.\n"
-                            "Perf task ([^ ]+) ([^ ]+) ([^ ]+) (.+)$"
-                            % command, input, re.MULTILINE):
-            info = i[0:3] + ({k:v for k, v in (i.split(":") for i in i[-1].split())},)
+        for i in re.findall(
+            "^  - task %s\\.\\.\\.\n"
+            "Perf task ([^ ]+) ([^ ]+) ([^ ]+) (.+)$" % command,
+            input,
+            re.MULTILINE,
+        ):
+            info = i[0:3] + ({k: v for k, v in (i.split(":") for i in i[-1].split())},)
             pt = TaskPerf(*info)
             tests[command].append(pt)
     return tests
@@ -61,8 +64,14 @@ with open(sys.argv[2], "r") as fh:
     tests_cur = parse_perf(fh.read())
     best_cur = get_best(tests_cur)
 
-print("Previous: %s (%s)" % (tests_prev[COMMANDS[0]][0].version, tests_prev[COMMANDS[0]][0].commit))
-print("Current:  %s (%s)" % (tests_cur[COMMANDS[0]][0].version, tests_cur[COMMANDS[0]][0].commit))
+print(
+    "Previous: %s (%s)"
+    % (tests_prev[COMMANDS[0]][0].version, tests_prev[COMMANDS[0]][0].commit)
+)
+print(
+    "Current:  %s (%s)"
+    % (tests_cur[COMMANDS[0]][0].version, tests_cur[COMMANDS[0]][0].commit)
+)
 
 for test in COMMANDS:
     print("# %s:" % test)
@@ -76,7 +85,9 @@ for test in COMMANDS:
         else:
             percentage = "0%"
 
-        pad = max(map(len, (k, best_prev[test][k], best_cur[test][k], diff, percentage)))
+        pad = max(
+            map(len, (k, best_prev[test][k], best_cur[test][k], diff, percentage))
+        )
         out[0] += " %s" % k.rjust(pad)
         out[1] += " %s" % best_prev[test][k].rjust(pad)
         out[2] += " %s" % best_cur[test][k].rjust(pad)

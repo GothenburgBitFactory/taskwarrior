@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,10 +43,10 @@ class TestZshAttributes(TestCase):
     def test_zsh_attributes_helper(self):
         """Ensure the _zshattributes command returns the expected format"""
         code, out, err = self.t("_zshattributes")
-        for line in out.split('\n'):
-           if line != '':
-             fields = line.split(':')
-             self.assertEqual(fields[0], fields[1])
+        for line in out.split("\n"):
+            if line != "":
+                fields = line.split(":")
+                self.assertEqual(fields[0], fields[1])
 
 
 class TestZshCompletion(TestCase):
@@ -69,6 +70,7 @@ class TestAliasesCompletion(TestCase):
     """Aliases should be listed by '_aliases' not '_commands' or '_zshcommands'
     reported as bug 1043
     """
+
     def setUp(self):
         self.t = Task()
         self.t.config("alias.samplealias", "long")
@@ -131,6 +133,7 @@ class TestBug956(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

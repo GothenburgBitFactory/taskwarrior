@@ -27,21 +27,20 @@
 #ifndef INCLUDED_CMDPROJECTS
 #define INCLUDED_CMDPROJECTS
 
-#include <string>
 #include <Command.h>
 
-class CmdProjects : public Command
-{
-public:
-  CmdProjects ();
-  int execute (std::string&);
+#include <string>
+
+class CmdProjects : public Command {
+ public:
+  CmdProjects();
+  int execute(std::string&);
 };
 
-class CmdCompletionProjects : public Command
-{
-public:
-  CmdCompletionProjects ();
-  int execute (std::string&);
+class CmdCompletionProjects : public Command {
+ public:
+  CmdCompletionProjects();
+  int execute(std::string&);
 };
 
 #endif

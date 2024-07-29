@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 from contextlib import contextmanager
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -66,16 +67,18 @@ def prepare_tasksh(t):
 
             tasksh.append(line)
 
-    tasksh.extend([
-        'COMP_WORDS=("$@")',
-        'COMP_CWORD=$(($#-1))',
-        '_task',
-        'for reply_iter in "${COMPREPLY[@]}"; do',
-        '  echo $reply_iter',
-        'done',
-    ])
+    tasksh.extend(
+        [
+            'COMP_WORDS=("$@")',
+            "COMP_CWORD=$(($#-1))",
+            "_task",
+            'for reply_iter in "${COMPREPLY[@]}"; do',
+            "  echo $reply_iter",
+            "done",
+        ]
+    )
 
-    return '\n'.join(tasksh)
+    return "\n".join(tasksh)
 
 
 class TestBashCompletionBase(TestCase):
@@ -88,7 +91,7 @@ class TestBashCompletionBase(TestCase):
 
         self.t.tasksh_script = os.path.join(self.t.datadir, "task.sh")
 
-        with open(self.t.tasksh_script, 'w') as tasksh:
+        with open(self.t.tasksh_script, "w") as tasksh:
             tasksh.write(prepare_tasksh(self.t))
 
 
@@ -170,6 +173,7 @@ class TestProject(TestBashCompletionBase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

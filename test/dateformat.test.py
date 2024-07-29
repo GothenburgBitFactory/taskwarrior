@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,8 +41,8 @@ class TestDateformat(TestCase):
         """Executed once before any test in the class"""
         cls.t = Task()
         cls.t.config("report.xxx.columns", "id,due")
-        cls.t.config("report.xxx.labels",  "ID,DUE")
-        cls.t.config("report.xxx.sort",    "id")
+        cls.t.config("report.xxx.labels", "ID,DUE")
+        cls.t.config("report.xxx.sort", "id")
 
     def setUp(self):
         """Executed before each test in the class"""
@@ -55,6 +56,7 @@ class TestDateformat(TestCase):
         code, out, err = self.t("xxx rc.dateformat:YMDTHNS")
         self.assertEqual(out.count("20150704T000000"), 3)
 
+
 class TestBug886(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -63,12 +65,12 @@ class TestBug886(TestCase):
     def test_invalid_day(self):
         """886: Test invalid day synonym
 
-           Bug 886: tw doesn't warn the user if, e.g., a weekday cannot be resolved properly
+        Bug 886: tw doesn't warn the user if, e.g., a weekday cannot be resolved properly
         """
-        code, out, err =self.t("add one due:sun")
+        code, out, err = self.t("add one due:sun")
         self.assertIn("Created task 1.", out)
 
-        code, out, err =self.t.runError("add two due:donkey")
+        code, out, err = self.t.runError("add two due:donkey")
         self.assertIn("'donkey' is not a valid date", err)
 
 
@@ -79,32 +81,35 @@ class TestBug986(TestCase):
 
     def test_dateformat_precedence(self):
         """986: Verify rc.dateformat.info takes precedence over rc.dateformat"""
-        self.t('add test')
-        self.t('1 start')
+        self.t("add test")
+        self.t("1 start")
 
-        code, out, err = self.t('1 info rc.dateformat:XX rc.dateformat.info:__')
-        self.assertIn('__', out)
-        self.assertNotIn('XX', out)
+        code, out, err = self.t("1 info rc.dateformat:XX rc.dateformat.info:__")
+        self.assertIn("__", out)
+        self.assertNotIn("XX", out)
 
-        code, out, err = self.t('1 info rc.dateformat:__ rc.dateformat.info:')
-        self.assertIn('__', out)
+        code, out, err = self.t("1 info rc.dateformat:__ rc.dateformat.info:")
+        self.assertIn("__", out)
 
 
 class TestBug1620(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t.config('dateformat', 'YMD-HN')
+        self.t.config("dateformat", "YMD-HN")
 
     def test_dateformat_overrides_iso(self):
         """1620: Verify that a defined dateformat overrides the ISO interpretation"""
-        code, out, err = self.t ('add pro:vorhaben due:20150601-1415 tatusmeeting vorbereiten')
+        code, out, err = self.t(
+            "add pro:vorhaben due:20150601-1415 tatusmeeting vorbereiten"
+        )
 
-        code, out, err = self.t ('_get 1.due')
+        code, out, err = self.t("_get 1.due")
         self.assertEqual(out, "2015-06-01T14:15:00\n")
 
-        code, out, err = self.t ('long')
+        code, out, err = self.t("long")
         self.assertIn("20150601-1415", out)
+
 
 class TestCapitalizedDays(TestCase):
     """Make sure capitalized names such as 'Friday' work.
@@ -124,28 +129,30 @@ class TestCapitalizedDays(TestCase):
     def test_dateformat_capitalized(self):
         """Verify upper case days and months work"""
         # Lower case:
-        code, out, err = self.t('add sometask due:mon')
-        code, out, err = self.t('add sometask due:monday')
-        code, out, err = self.t('add sometask due:jan')
-        code, out, err = self.t('add sometask due:january')
+        code, out, err = self.t("add sometask due:mon")
+        code, out, err = self.t("add sometask due:monday")
+        code, out, err = self.t("add sometask due:jan")
+        code, out, err = self.t("add sometask due:january")
         # Upper case days of the week
-        code, out, err = self.t('add sometask due:Tue')
-        code, out, err = self.t('add sometask due:Tuesday')
-        code, out, err = self.t('add sometask due:Thu')
-        code, out, err = self.t('add sometask due:Thursday')
+        code, out, err = self.t("add sometask due:Tue")
+        code, out, err = self.t("add sometask due:Tuesday")
+        code, out, err = self.t("add sometask due:Thu")
+        code, out, err = self.t("add sometask due:Thursday")
         # Upper case months:
-        code, out, err = self.t('add sometask due:Jan')
-        code, out, err = self.t('add sometask due:January')
-        code, out, err = self.t('add sometask due:Jun')
-        code, out, err = self.t('add sometask due:June')
-        code, out, err = self.t('add sometask due:May')
+        code, out, err = self.t("add sometask due:Jan")
+        code, out, err = self.t("add sometask due:January")
+        code, out, err = self.t("add sometask due:Jun")
+        code, out, err = self.t("add sometask due:June")
+        code, out, err = self.t("add sometask due:May")
 
         # Incorrect:
-        code, out, err = self.t.runError('add sometask due:Yo')
-        code, out, err = self.t.runError('add sometask due:TU')
+        code, out, err = self.t.runError("add sometask due:Yo")
+        code, out, err = self.t.runError("add sometask due:TU")
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

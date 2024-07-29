@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDCOUNT
 #define INCLUDED_CMDCOUNT
 
-#include <string>
 #include <Command.h>
 
-class CmdCount : public Command
-{
-public:
-  CmdCount ();
-  int execute (std::string&);
+#include <string>
+
+class CmdCount : public Command {
+ public:
+  CmdCount();
+  int execute(std::string&);
 };
 
 #endif

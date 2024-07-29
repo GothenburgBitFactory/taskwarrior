@@ -27,21 +27,20 @@
 #ifndef INCLUDED_CMDUDAS
 #define INCLUDED_CMDUDAS
 
-#include <string>
 #include <Command.h>
 
-class CmdUDAs : public Command
-{
-public:
-  CmdUDAs ();
-  int execute (std::string&);
+#include <string>
+
+class CmdUDAs : public Command {
+ public:
+  CmdUDAs();
+  int execute(std::string&);
 };
 
-class CmdCompletionUDAs : public Command
-{
-public:
-  CmdCompletionUDAs ();
-  int execute (std::string&);
+class CmdCompletionUDAs : public Command {
+ public:
+  CmdCompletionUDAs();
+  int execute(std::string&);
 };
 
 #endif

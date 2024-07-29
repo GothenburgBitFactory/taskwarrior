@@ -27,28 +27,26 @@
 #ifndef INCLUDED_CMDBURNDOWN
 #define INCLUDED_CMDBURNDOWN
 
-#include <string>
 #include <Command.h>
 
-class CmdBurndownMonthly : public Command
-{
-public:
-  CmdBurndownMonthly ();
-  int execute (std::string&);
+#include <string>
+
+class CmdBurndownMonthly : public Command {
+ public:
+  CmdBurndownMonthly();
+  int execute(std::string&);
 };
 
-class CmdBurndownWeekly : public Command
-{
-public:
-  CmdBurndownWeekly ();
-  int execute (std::string&);
+class CmdBurndownWeekly : public Command {
+ public:
+  CmdBurndownWeekly();
+  int execute(std::string&);
 };
 
-class CmdBurndownDaily : public Command
-{
-public:
-  CmdBurndownDaily ();
-  int execute (std::string&);
+class CmdBurndownDaily : public Command {
+ public:
+  CmdBurndownDaily();
+  int execute(std::string&);
 };
 
 #endif

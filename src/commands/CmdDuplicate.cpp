@@ -25,120 +25,112 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdDuplicate.h>
-#include <iostream>
 #include <Context.h>
 #include <Filter.h>
 #include <format.h>
-#include <util.h>
 #include <main.h>
+#include <util.h>
+
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdDuplicate::CmdDuplicate ()
-{
-  _keyword               = "duplicate";
-  _usage                 = "task <filter> duplicate <mods>";
-  _description           = "Duplicates the specified tasks";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = true;
-  _accepts_filter        = true;
+CmdDuplicate::CmdDuplicate() {
+  _keyword = "duplicate";
+  _usage = "task <filter> duplicate <mods>";
+  _description = "Duplicates the specified tasks";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = true;
+  _accepts_filter = true;
   _accepts_modifications = true;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::operation;
+  _category = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDuplicate::execute (std::string&)
-{
+int CmdDuplicate::execute(std::string&) {
   auto rc = 0;
   auto count = 0;
 
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
-  if (filtered.size () == 0)
-  {
-    Context::getContext ().footnote ("No tasks specified.");
+  std::vector<Task> filtered;
+  filter.subset(filtered);
+  if (filtered.size() == 0) {
+    Context::getContext().footnote("No tasks specified.");
     return 1;
   }
 
   // Accumulated project change notifications.
-  std::map <std::string, std::string> projectChanges;
+  std::map<std::string, std::string> projectChanges;
 
-  for (auto& task : filtered)
-  {
+  for (auto& task : filtered) {
     // Duplicate the specified task.
-    Task dup (task);
-    dup.id = 0;                    // Reset, and TDB2::add will set.
-    dup.set ("uuid", uuid ());     // Needs a new UUID.
-    dup.remove ("start");          // Does not inherit start date.
-    dup.remove ("end");            // Does not inherit end date.
-    dup.remove ("entry");          // Does not inherit entry date.
+    Task dup(task);
+    dup.id = 0;               // Reset, and TDB2::add will set.
+    dup.set("uuid", uuid());  // Needs a new UUID.
+    dup.remove("start");      // Does not inherit start date.
+    dup.remove("end");        // Does not inherit end date.
+    dup.remove("entry");      // Does not inherit entry date.
 
     // When duplicating a child task, downgrade it to a plain task.
-    if (dup.has ("parent"))
-    {
-      dup.remove ("parent");
-      dup.remove ("recur");
-      dup.remove ("until");
-      dup.remove ("imask");
-      std::cout << format ("Note: task {1} was a recurring task.  The duplicated task is not.", task.identifier ())
-          << '\n';
+    if (dup.has("parent")) {
+      dup.remove("parent");
+      dup.remove("recur");
+      dup.remove("until");
+      dup.remove("imask");
+      std::cout << format("Note: task {1} was a recurring task.  The duplicated task is not.",
+                          task.identifier())
+                << '\n';
     }
 
     // When duplicating a parent task, create a new parent task.
-    else if (dup.getStatus () == Task::recurring)
-    {
-      dup.remove ("mask");
-      std::cout << format ("Note: task {1} was a parent recurring task.  The duplicated task is too.", task.identifier ())
-          << '\n';
+    else if (dup.getStatus() == Task::recurring) {
+      dup.remove("mask");
+      std::cout << format(
+                       "Note: task {1} was a parent recurring task.  The duplicated task is too.",
+                       task.identifier())
+                << '\n';
     }
 
-    dup.setStatus (Task::pending); // Does not inherit status.
+    dup.setStatus(Task::pending);  // Does not inherit status.
                                    // Must occur after Task::recurring check.
 
-    dup.modify (Task::modAnnotate);
+    dup.modify(Task::modAnnotate);
 
-    if (permission (format ("Duplicate task {1} '{2}'?",
-                            task.identifier (true),
-                            task.get ("description")),
-                    filtered.size ()))
-    {
-      Context::getContext ().tdb2.add (dup);
+    if (permission(
+            format("Duplicate task {1} '{2}'?", task.identifier(true), task.get("description")),
+            filtered.size())) {
+      Context::getContext().tdb2.add(dup);
       ++count;
-      feedback_affected ("Duplicated task {1} '{2}'.", task);
+      feedback_affected("Duplicated task {1} '{2}'.", task);
 
-      auto status = dup.getStatus ();
-      if (Context::getContext ().verbose ("new-id") &&
-          (status == Task::pending ||
-           status == Task::waiting))
-        std::cout << format ("Created task {1}.\n", dup.id);
+      auto status = dup.getStatus();
+      if (Context::getContext().verbose("new-id") &&
+          (status == Task::pending || status == Task::waiting))
+        std::cout << format("Created task {1}.\n", dup.id);
 
-      else if (Context::getContext ().verbose ("new-uuid") &&
-               status != Task::recurring)
-        std::cout << format ("Created task {1}.\n", dup.get ("uuid"));
+      else if (Context::getContext().verbose("new-uuid") && status != Task::recurring)
+        std::cout << format("Created task {1}.\n", dup.get("uuid"));
 
-      if (Context::getContext ().verbose ("project"))
-        projectChanges[task.get ("project")] = onProjectChange (task);
-    }
-    else
-    {
+      if (Context::getContext().verbose("project"))
+        projectChanges[task.get("project")] = onProjectChange(task);
+    } else {
       std::cout << "Task not duplicated.\n";
       rc = 1;
-      if (_permission_quit)
-        break;
+      if (_permission_quit) break;
     }
   }
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
-      Context::getContext ().footnote (change.second);
+    if (change.first != "") Context::getContext().footnote(change.second);
 
-  feedback_affected (count == 1 ? "Duplicated {1} task." : "Duplicated {1} tasks.", count);
+  feedback_affected(count == 1 ? "Duplicated {1} task." : "Duplicated {1} tasks.", count);
 
   return rc;
 }

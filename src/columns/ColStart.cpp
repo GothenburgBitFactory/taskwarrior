@@ -25,63 +25,53 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <ColStart.h>
 #include <Context.h>
 #include <utf8.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnStart::ColumnStart ()
-{
-  _name  = "start";
+ColumnStart::ColumnStart() {
+  _name = "start";
   _label = "Started";
 
-  _styles.push_back ("active");
-  _examples.push_back (Context::getContext ().config.get ("active.indicator"));
+  _styles.push_back("active");
+  _examples.push_back(Context::getContext().config.get("active.indicator"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
-void ColumnStart::setStyle (const std::string& value)
-{
-  Column::setStyle (value);
+void ColumnStart::setStyle(const std::string& value) {
+  Column::setStyle(value);
 
-  if (_style == "active" && _label == "Started")
-    _label = "A";
+  if (_style == "active" && _label == "Started") _label = "A";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
+void ColumnStart::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
-  if (task.has (_name))
-  {
+  if (task.has(_name)) {
     if (_style == "active")
-      minimum = maximum = utf8_width (Context::getContext ().config.get ("active.indicator"));
+      minimum = maximum = utf8_width(Context::getContext().config.get("active.indicator"));
     else
-      ColumnTypeDate::measure (task, minimum, maximum);
+      ColumnTypeDate::measure(task, minimum, maximum);
 
     // TODO Throw on bad format.
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnStart::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  if (task.has (_name))
-  {
-    if (_style == "active")
-    {
-      if (! task.has ("end"))
-        renderStringRight (lines, width, color, Context::getContext ().config.get ("active.indicator"));
-    }
-    else
-      ColumnTypeDate::render (lines, task, width, color);
+void ColumnStart::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+  if (task.has(_name)) {
+    if (_style == "active") {
+      if (!task.has("end"))
+        renderStringRight(lines, width, color,
+                          Context::getContext().config.get("active.indicator"));
+    } else
+      ColumnTypeDate::render(lines, task, width, color);
   }
 }
 

@@ -25,21 +25,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <format.h>
+
+#include <iostream>
+
 #include "tc/Replica.h"
-#include "tc/Task.h"
 #include "tc/Server.h"
+#include "tc/Task.h"
 #include "tc/WorkingSet.h"
 #include "tc/util.h"
-#include <iostream>
 
 using namespace tc::ffi;
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::ReplicaGuard::ReplicaGuard (Replica &replica, Task &task) :
-  replica(replica),
-  task(task)
-{
+tc::ReplicaGuard::ReplicaGuard(Replica &replica, Task &task) : replica(replica), task(task) {
   // "steal" the reference from the Replica and store it locally, so that any
   // attempt to use the Replica will fail
   tcreplica = replica.inner.release();
@@ -47,228 +48,196 @@ tc::ReplicaGuard::ReplicaGuard (Replica &replica, Task &task) :
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::ReplicaGuard::~ReplicaGuard ()
-{
+tc::ReplicaGuard::~ReplicaGuard() {
   task.to_immut();
   // return the reference to the Replica.
   replica.inner.reset(tcreplica);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Replica::Replica ()
-{
-  inner = unique_tcreplica_ptr (
-      tc_replica_new_in_memory (),
-      [](TCReplica* rep) { tc_replica_free (rep); });
+tc::Replica::Replica() {
+  inner = unique_tcreplica_ptr(tc_replica_new_in_memory(),
+                               [](TCReplica *rep) { tc_replica_free(rep); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Replica::Replica (Replica &&other) noexcept
-{
+tc::Replica::Replica(Replica &&other) noexcept {
   // move inner from other
-  inner = unique_tcreplica_ptr (
-      other.inner.release (),
-      [](TCReplica* rep) { tc_replica_free (rep); });
+  inner = unique_tcreplica_ptr(other.inner.release(), [](TCReplica *rep) { tc_replica_free(rep); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Replica& tc::Replica::operator= (Replica &&other) noexcept
-{
+tc::Replica &tc::Replica::operator=(Replica &&other) noexcept {
   if (this != &other) {
     // move inner from other
-    inner = unique_tcreplica_ptr (
-        other.inner.release (),
-        [](TCReplica* rep) { tc_replica_free (rep); });
+    inner =
+        unique_tcreplica_ptr(other.inner.release(), [](TCReplica *rep) { tc_replica_free(rep); });
   }
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Replica::Replica (const std::string& dir, bool create_if_missing)
-{
-  TCString path = tc_string_borrow (dir.c_str ());
+tc::Replica::Replica(const std::string &dir, bool create_if_missing) {
+  TCString path = tc_string_borrow(dir.c_str());
   TCString error;
-  auto tcreplica = tc_replica_new_on_disk (path, create_if_missing, &error);
+  auto tcreplica = tc_replica_new_on_disk(path, create_if_missing, &error);
   if (!tcreplica) {
-    auto errmsg = format ("Could not create replica at {1}: {2}", dir, tc_string_content (&error));
-    tc_string_free (&error);
+    auto errmsg = format("Could not create replica at {1}: {2}", dir, tc_string_content(&error));
+    tc_string_free(&error);
     throw errmsg;
   }
-  inner = unique_tcreplica_ptr (
-      tcreplica,
-      [](TCReplica* rep) { tc_replica_free (rep); });
+  inner = unique_tcreplica_ptr(tcreplica, [](TCReplica *rep) { tc_replica_free(rep); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::WorkingSet tc::Replica::working_set ()
-{
-  TCWorkingSet *tcws = tc_replica_working_set (&*inner);
+tc::WorkingSet tc::Replica::working_set() {
+  TCWorkingSet *tcws = tc_replica_working_set(&*inner);
   if (!tcws) {
-    throw replica_error ();
+    throw replica_error();
   }
-  return WorkingSet {tcws};
+  return WorkingSet{tcws};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::optional<tc::Task> tc::Replica::get_task (const std::string &uuid)
-{
-  TCTask *tctask = tc_replica_get_task (&*inner, uuid2tc (uuid));
+std::optional<tc::Task> tc::Replica::get_task(const std::string &uuid) {
+  TCTask *tctask = tc_replica_get_task(&*inner, uuid2tc(uuid));
   if (!tctask) {
-    auto error = tc_replica_error (&*inner);
+    auto error = tc_replica_error(&*inner);
     if (error.ptr) {
-      throw replica_error (error);
+      throw replica_error(error);
     } else {
       return std::nullopt;
     }
   }
-  return std::make_optional (Task (tctask));
+  return std::make_optional(Task(tctask));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Task tc::Replica::new_task (tc::Status status, const std::string &description)
-{
-  TCTask *tctask = tc_replica_new_task (&*inner, (tc::ffi::TCStatus)status, string2tc (description));
+tc::Task tc::Replica::new_task(tc::Status status, const std::string &description) {
+  TCTask *tctask = tc_replica_new_task(&*inner, (tc::ffi::TCStatus)status, string2tc(description));
   if (!tctask) {
-    throw replica_error ();
+    throw replica_error();
   }
-  return Task (tctask);
+  return Task(tctask);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Task tc::Replica::import_task_with_uuid (const std::string &uuid)
-{
-  TCTask *tctask = tc_replica_import_task_with_uuid (&*inner, uuid2tc (uuid));
+tc::Task tc::Replica::import_task_with_uuid(const std::string &uuid) {
+  TCTask *tctask = tc_replica_import_task_with_uuid(&*inner, uuid2tc(uuid));
   if (!tctask) {
-    throw replica_error ();
+    throw replica_error();
   }
-  return Task (tctask);
+  return Task(tctask);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::delete_task (const std::string &uuid)
-{
-  auto res = tc_replica_delete_task (&*inner, uuid2tc (uuid));
+void tc::Replica::delete_task(const std::string &uuid) {
+  auto res = tc_replica_delete_task(&*inner, uuid2tc(uuid));
   if (res != TC_RESULT_OK) {
-    throw replica_error ();
+    throw replica_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::expire_tasks ()
-{
-  auto res = tc_replica_expire_tasks (&*inner);
+void tc::Replica::expire_tasks() {
+  auto res = tc_replica_expire_tasks(&*inner);
   if (res != TC_RESULT_OK) {
-    throw replica_error ();
+    throw replica_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::sync (Server server, bool avoid_snapshots)
-{
+void tc::Replica::sync(Server server, bool avoid_snapshots) {
   // The server remains owned by this function, per tc_replica_sync docs.
-  auto res = tc_replica_sync (&*inner, server.inner.get(), avoid_snapshots);
+  auto res = tc_replica_sync(&*inner, server.inner.get(), avoid_snapshots);
   if (res != TC_RESULT_OK) {
-    throw replica_error ();
+    throw replica_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TCReplicaOpList tc::Replica::get_undo_ops ()
-{
-  return tc_replica_get_undo_ops(&*inner);
-}
+TCReplicaOpList tc::Replica::get_undo_ops() { return tc_replica_get_undo_ops(&*inner); }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::commit_undo_ops (TCReplicaOpList tc_undo_ops, int32_t *undone_out)
-{
-  auto res = tc_replica_commit_undo_ops (&*inner, tc_undo_ops, undone_out);
+void tc::Replica::commit_undo_ops(TCReplicaOpList tc_undo_ops, int32_t *undone_out) {
+  auto res = tc_replica_commit_undo_ops(&*inner, tc_undo_ops, undone_out);
   if (res != TC_RESULT_OK) {
-    throw replica_error ();
+    throw replica_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::free_replica_ops (TCReplicaOpList tc_undo_ops)
-{
+void tc::Replica::free_replica_ops(TCReplicaOpList tc_undo_ops) {
   tc_replica_op_list_free(&tc_undo_ops);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::get_op_uuid(TCReplicaOp &tc_replica_op) const
-{
+std::string tc::Replica::get_op_uuid(TCReplicaOp &tc_replica_op) const {
   TCString uuid = tc_replica_op_get_uuid(&tc_replica_op);
   return tc2string(uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::get_op_property(TCReplicaOp &tc_replica_op) const
-{
+std::string tc::Replica::get_op_property(TCReplicaOp &tc_replica_op) const {
   TCString property = tc_replica_op_get_property(&tc_replica_op);
   return tc2string(property);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::get_op_value(TCReplicaOp &tc_replica_op) const
-{
+std::string tc::Replica::get_op_value(TCReplicaOp &tc_replica_op) const {
   TCString value = tc_replica_op_get_value(&tc_replica_op);
   return tc2string(value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::get_op_old_value(TCReplicaOp &tc_replica_op) const
-{
+std::string tc::Replica::get_op_old_value(TCReplicaOp &tc_replica_op) const {
   TCString old_value = tc_replica_op_get_old_value(&tc_replica_op);
   return tc2string(old_value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::get_op_timestamp(TCReplicaOp &tc_replica_op) const
-{
+std::string tc::Replica::get_op_timestamp(TCReplicaOp &tc_replica_op) const {
   TCString timestamp = tc_replica_op_get_timestamp(&tc_replica_op);
   return tc2string(timestamp);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::get_op_old_task_description(TCReplicaOp &tc_replica_op) const
-{
+std::string tc::Replica::get_op_old_task_description(TCReplicaOp &tc_replica_op) const {
   TCString description = tc_replica_op_get_old_task_description(&tc_replica_op);
   return tc2string(description);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int64_t tc::Replica::num_local_operations ()
-{
-  auto num = tc_replica_num_local_operations (&*inner);
+int64_t tc::Replica::num_local_operations() {
+  auto num = tc_replica_num_local_operations(&*inner);
   if (num < 0) {
-    throw replica_error ();
+    throw replica_error();
   }
   return num;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int64_t tc::Replica::num_undo_points ()
-{
-  auto num = tc_replica_num_undo_points (&*inner);
+int64_t tc::Replica::num_undo_points() {
+  auto num = tc_replica_num_undo_points(&*inner);
   if (num < 0) {
-    throw replica_error ();
+    throw replica_error();
   }
   return num;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<tc::Task> tc::Replica::all_tasks ()
-{
-  TCTaskList tasks = tc_replica_all_tasks (&*inner);
+std::vector<tc::Task> tc::Replica::all_tasks() {
+  TCTaskList tasks = tc_replica_all_tasks(&*inner);
   if (!tasks.items) {
-    throw replica_error ();
+    throw replica_error();
   }
 
-  std::vector <Task> all;
-  all.reserve (tasks.len);
+  std::vector<Task> all;
+  all.reserve(tasks.len);
   for (size_t i = 0; i < tasks.len; i++) {
-    auto tctask = tc_task_list_take (&tasks, i);
+    auto tctask = tc_task_list_take(&tasks, i);
     if (tctask) {
-      all.push_back (Task (tctask));
+      all.push_back(Task(tctask));
     }
   }
 
@@ -276,33 +245,28 @@ std::vector<tc::Task> tc::Replica::all_tasks ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Replica::rebuild_working_set (bool force)
-{
-  auto res = tc_replica_rebuild_working_set (&*inner, force);
+void tc::Replica::rebuild_working_set(bool force) {
+  auto res = tc_replica_rebuild_working_set(&*inner, force);
   if (res != TC_RESULT_OK) {
-    throw replica_error ();
+    throw replica_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::ReplicaGuard tc::Replica::mutate_task (tc::Task &task) {
-  return ReplicaGuard(*this, task);
-}
+tc::ReplicaGuard tc::Replica::mutate_task(tc::Task &task) { return ReplicaGuard(*this, task); }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::replica_error () {
-  return replica_error (tc_replica_error (&*inner));
-}
+std::string tc::Replica::replica_error() { return replica_error(tc_replica_error(&*inner)); }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Replica::replica_error (TCString error) {
+std::string tc::Replica::replica_error(TCString error) {
   std::string errmsg;
   if (!error.ptr) {
-    errmsg = std::string ("Unknown TaskChampion error");
+    errmsg = std::string("Unknown TaskChampion error");
   } else {
-    errmsg = std::string (tc_string_content (&error));
+    errmsg = std::string(tc_string_content(&error));
   }
-  tc_string_free (&error);
+  tc_string_free(&error);
   return errmsg;
 }
 

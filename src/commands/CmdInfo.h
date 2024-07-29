@@ -27,18 +27,18 @@
 #ifndef INCLUDED_CMDINFO
 #define INCLUDED_CMDINFO
 
-#include <string>
 #include <Command.h>
 #include <Table.h>
 
-class CmdInfo : public Command
-{
-public:
-  CmdInfo ();
-  int execute (std::string&);
+#include <string>
 
-private:
-  void urgencyTerm (Table&, const std::string&, float, float) const;
+class CmdInfo : public Command {
+ public:
+  CmdInfo();
+  int execute(std::string&);
+
+ private:
+  void urgencyTerm(Table&, const std::string&, float, float) const;
 };
 
 #endif

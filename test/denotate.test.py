@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -68,7 +69,9 @@ class TestDenotate(TestCase):
 
         # Failed partial match, one annotation
         code, out, err = self.t.runError("rc.search.case.sensitive=yes 2 denotate AL")
-        self.assertIn("Did not find any matching annotation to be deleted for 'AL'.", out)
+        self.assertIn(
+            "Did not find any matching annotation to be deleted for 'AL'.", out
+        )
 
         # Exact match, two annotations
         code, out, err = self.t("1 denotate beta")
@@ -91,6 +94,7 @@ class TestDenotate(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

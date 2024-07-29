@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDDENOTATE
 #define INCLUDED_CMDDENOTATE
 
-#include <string>
 #include <Command.h>
 
-class CmdDenotate : public Command
-{
-public:
-  CmdDenotate ();
-  int execute (std::string&);
+#include <string>
+
+class CmdDenotate : public Command {
+ public:
+  CmdDenotate();
+  int execute(std::string&);
 };
 
 #endif

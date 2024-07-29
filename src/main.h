@@ -27,66 +27,69 @@
 #ifndef INCLUDED_MAIN
 #define INCLUDED_MAIN
 
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <list>
-#include <map>
-#include <sys/types.h>
+#include <Color.h>
 #include <Context.h>
 #include <Datetime.h>
-#include <Color.h>
+#include <sys/types.h>
+
+#include <algorithm>
+#include <list>
+#include <map>
+#include <string>
+#include <vector>
 
 // recur.cpp
-void handleRecurrence ();
-void handleUntil ();
-Datetime getNextRecurrence (Datetime&, std::string&);
-bool generateDueDates (Task&, std::vector <Datetime>&);
-void updateRecurrenceMask (Task&);
+void handleRecurrence();
+void handleUntil();
+Datetime getNextRecurrence(Datetime&, std::string&);
+bool generateDueDates(Task&, std::vector<Datetime>&);
+void updateRecurrenceMask(Task&);
 
 // recur2.cpp
-void handleRecurrence2 ();
+void handleRecurrence2();
 
 // nag.cpp
-void nag (std::vector <Task>&);
+void nag(std::vector<Task>&);
 
 // rules.cpp
-void initializeColorRules ();
-void autoColorize (Task&, Color&);
-std::string colorizeHeader (const std::string&);
-std::string colorizeFootnote (const std::string&);
-std::string colorizeError (const std::string&);
-std::string colorizeDebug (const std::string&);
+void initializeColorRules();
+void autoColorize(Task&, Color&);
+std::string colorizeHeader(const std::string&);
+std::string colorizeFootnote(const std::string&);
+std::string colorizeError(const std::string&);
+std::string colorizeDebug(const std::string&);
 
 // dependency.cpp
-bool dependencyIsCircular (const Task&);
-void dependencyChainOnComplete (Task&);
-void dependencyChainOnStart (Task&);
+bool dependencyIsCircular(const Task&);
+void dependencyChainOnComplete(Task&);
+void dependencyChainOnStart(Task&);
 
 // feedback.cpp
-std::string renderAttribute (const std::string&, const std::string&, const std::string& format = "");
-void feedback_affected (const std::string&);
-void feedback_affected (const std::string&, int);
-void feedback_affected (const std::string&, const Task&);
-void feedback_reserved_tags (const std::string&);
-void feedback_special_tags (const Task&, const std::string&);
-void feedback_unblocked (const Task&);
-void feedback_backlog ();
-std::string onProjectChange (Task&, bool scope = true);
-std::string onProjectChange (Task&, Task&);
-std::string onExpiration (Task&);
+std::string renderAttribute(const std::string&, const std::string&, const std::string& format = "");
+void feedback_affected(const std::string&);
+void feedback_affected(const std::string&, int);
+void feedback_affected(const std::string&, const Task&);
+void feedback_reserved_tags(const std::string&);
+void feedback_special_tags(const Task&, const std::string&);
+void feedback_unblocked(const Task&);
+void feedback_backlog();
+std::string onProjectChange(Task&, bool scope = true);
+std::string onProjectChange(Task&, Task&);
+std::string onExpiration(Task&);
 
 // sort.cpp
-void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);
-void sort_projects (std::list <std::pair <std::string, int>>& sorted, std::map <std::string, int>& allProjects);
-void sort_projects (std::list <std::pair <std::string, int>>& sorted, std::map <std::string, bool>& allProjects);
+void sort_tasks(std::vector<Task>&, std::vector<int>&, const std::string&);
+void sort_projects(std::list<std::pair<std::string, int>>& sorted,
+                   std::map<std::string, int>& allProjects);
+void sort_projects(std::list<std::pair<std::string, int>>& sorted,
+                   std::map<std::string, bool>& allProjects);
 
 // legacy.cpp
-void legacyColumnMap (std::string&);
-void legacySortColumnMap (std::string&);
-std::string legacyCheckForDeprecatedVariables ();
-std::string legacyCheckForDeprecatedColumns ();
-void legacyAttributeMap (std::string&);
+void legacyColumnMap(std::string&);
+void legacySortColumnMap(std::string&);
+std::string legacyCheckForDeprecatedVariables();
+std::string legacyCheckForDeprecatedColumns();
+void legacyAttributeMap(std::string&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

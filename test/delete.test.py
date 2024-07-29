@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -46,7 +47,7 @@ class TestDelete(TestCase):
         uuid = out.strip()
 
         self.t("1 delete", input="y\n")
-        self.t.runError("list") # GC/handleRecurrence
+        self.t.runError("list")  # GC/handleRecurrence
         code, out, err = self.t("_get 1.status")
         self.assertEqual("\n", out)
 
@@ -77,7 +78,7 @@ class TestDelete(TestCase):
         code, out, err = self.t("1 done")
         self.assertIn("Completed 1 task.", out)
 
-        self.t("all") # GC/handleRecurrence
+        self.t("all")  # GC/handleRecurrence
 
         code, out, err = self.t("%s delete" % uuid, input="y\n")
         self.assertIn("Deleted 1 task.", out)
@@ -141,6 +142,7 @@ class TestDelete(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

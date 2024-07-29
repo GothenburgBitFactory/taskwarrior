@@ -15,4 +15,3 @@ echo 'FEEDBACK'
 # - non-0: JSON ignored, non-JSON is error.
 kill -9 $$
 exit 0
-

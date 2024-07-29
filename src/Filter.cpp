@@ -25,145 +25,132 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <Filter.h>
-#include <algorithm>
+// cmake.h include header must come first
+
 #include <Context.h>
-#include <Timer.h>
 #include <DOM.h>
 #include <Eval.h>
+#include <Filter.h>
+#include <Timer.h>
 #include <Variant.h>
 #include <format.h>
 #include <shared.h>
 
+#include <algorithm>
+
 ////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
-void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
-{
+void Filter::subset(const std::vector<Task>& input, std::vector<Task>& output) {
   Timer timer;
-  _startCount = (int) input.size ();
+  _startCount = (int)input.size();
 
-  Context::getContext ().cli2.prepareFilter ();
+  Context::getContext().cli2.prepareFilter();
 
-  std::vector <std::pair <std::string, Lexer::Type>> precompiled;
-  for (auto& a : Context::getContext ().cli2._args)
-    if (a.hasTag ("FILTER"))
-      precompiled.emplace_back (a.getToken (), a._lextype);
+  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
+  for (auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
 
-  if (precompiled.size ())
-  {
+  if (precompiled.size()) {
     Eval eval;
-    eval.addSource (domSource);
+    eval.addSource(domSource);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
-    eval.compileExpression (precompiled);
+    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3 ? true : false);
+    eval.compileExpression(precompiled);
 
-    for (auto& task : input)
-    {
+    for (auto& task : input) {
       // Set up context for any DOM references.
-      auto currentTask = Context::getContext ().withCurrentTask(&task);
+      auto currentTask = Context::getContext().withCurrentTask(&task);
 
       Variant var;
-      eval.evaluateCompiledExpression (var);
-      if (var.get_bool ())
-        output.push_back (task);
+      eval.evaluateCompiledExpression(var);
+      if (var.get_bool()) output.push_back(task);
     }
 
-    eval.debug (false);
-  }
-  else
+    eval.debug(false);
+  } else
     output = input;
 
-  _endCount = (int) output.size ();
-  Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
-  Context::getContext ().time_filter_us += timer.total_us ();
+  _endCount = (int)output.size();
+  Context::getContext().debug(
+      format("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
+  Context::getContext().time_filter_us += timer.total_us();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
-void Filter::subset (std::vector <Task>& output)
-{
+void Filter::subset(std::vector<Task>& output) {
   Timer timer;
-  Context::getContext ().cli2.prepareFilter ();
+  Context::getContext().cli2.prepareFilter();
 
-  std::vector <std::pair <std::string, Lexer::Type>> precompiled;
-  for (auto& a : Context::getContext ().cli2._args)
-    if (a.hasTag ("FILTER"))
-      precompiled.emplace_back (a.getToken (), a._lextype);
+  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
+  for (auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
 
   // Shortcut indicates that only pending.data needs to be loaded.
   bool shortcut = false;
 
-  if (precompiled.size ())
-  {
+  if (precompiled.size()) {
     Timer timer_pending;
-    auto pending = Context::getContext ().tdb2.pending_tasks ();
-    Context::getContext ().time_filter_us -= timer_pending.total_us ();
-    _startCount = (int) pending.size ();
+    auto pending = Context::getContext().tdb2.pending_tasks();
+    Context::getContext().time_filter_us -= timer_pending.total_us();
+    _startCount = (int)pending.size();
 
     Eval eval;
-    eval.addSource (domSource);
+    eval.addSource(domSource);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (Context::getContext ().config.getInteger ("debug.parser") >= 3 ? true : false);
-    eval.compileExpression (precompiled);
+    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3 ? true : false);
+    eval.compileExpression(precompiled);
 
-    output.clear ();
-    for (auto& task : pending)
-    {
+    output.clear();
+    for (auto& task : pending) {
       // Set up context for any DOM references.
-      auto currentTask = Context::getContext ().withCurrentTask(&task);
+      auto currentTask = Context::getContext().withCurrentTask(&task);
 
       Variant var;
-      eval.evaluateCompiledExpression (var);
-      if (var.get_bool ())
-        output.push_back (task);
+      eval.evaluateCompiledExpression(var);
+      if (var.get_bool()) output.push_back(task);
     }
 
-    shortcut = pendingOnly ();
-    if (! shortcut)
-    {
+    shortcut = pendingOnly();
+    if (!shortcut) {
       Timer timer_completed;
-      auto completed = Context::getContext ().tdb2.completed_tasks ();
-      Context::getContext ().time_filter_us -= timer_completed.total_us ();
-      _startCount += (int) completed.size ();
+      auto completed = Context::getContext().tdb2.completed_tasks();
+      Context::getContext().time_filter_us -= timer_completed.total_us();
+      _startCount += (int)completed.size();
 
-      for (auto& task : completed)
-      {
+      for (auto& task : completed) {
         // Set up context for any DOM references.
-        auto currentTask = Context::getContext ().withCurrentTask(&task);
+        auto currentTask = Context::getContext().withCurrentTask(&task);
 
         Variant var;
-        eval.evaluateCompiledExpression (var);
-        if (var.get_bool ())
-          output.push_back (task);
+        eval.evaluateCompiledExpression(var);
+        if (var.get_bool()) output.push_back(task);
       }
     }
 
-    eval.debug (false);
-  }
-  else
-  {
-    safety ();
+    eval.debug(false);
+  } else {
+    safety();
 
     Timer pending_completed;
-    output = Context::getContext ().tdb2.all_tasks ();
-    Context::getContext ().time_filter_us -= pending_completed.total_us ();
+    output = Context::getContext().tdb2.all_tasks();
+    Context::getContext().time_filter_us -= pending_completed.total_us();
   }
 
-  _endCount = (int) output.size ();
-  Context::getContext ().debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
-  Context::getContext ().time_filter_us += timer.total_us ();
+  _endCount = (int)output.size();
+  Context::getContext().debug(format("Filtered {1} tasks --> {2} tasks [{3}]", _startCount,
+                                     _endCount, (shortcut ? "pending only" : "all tasks")));
+  Context::getContext().time_filter_us += timer.total_us();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Filter::hasFilter () const
-{
-  for (const auto& a : Context::getContext ().cli2._args)
-    if (a.hasTag ("FILTER"))
-      return true;
+bool Filter::hasFilter() const {
+  for (const auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) return true;
 
   return false;
 }
@@ -172,11 +159,9 @@ bool Filter::hasFilter () const
 // If the filter contains no 'or', 'xor' or 'not' operators, and only includes
 // status values 'pending', 'waiting' or 'recurring', then the filter is
 // guaranteed to only need data from pending.data.
-bool Filter::pendingOnly () const
-{
+bool Filter::pendingOnly() const {
   // When GC is off, there are no shortcuts.
-  if (! Context::getContext ().config.getBoolean ("gc"))
-    return false;
+  if (!Context::getContext().config.getBoolean("gc")) return false;
 
   // To skip loading completed.data, there should be:
   // - 'status' in filter
@@ -184,61 +169,51 @@ bool Filter::pendingOnly () const
   // - no 'deleted'
   // - no 'xor'
   // - no 'or'
-  int countStatus    = 0;
-  int countPending   = 0;
-  int countWaiting   = 0;
+  int countStatus = 0;
+  int countPending = 0;
+  int countWaiting = 0;
   int countRecurring = 0;
-  int countId        = (int) Context::getContext ().cli2._id_ranges.size ();
-  int countUUID      = (int) Context::getContext ().cli2._uuid_list.size ();
-  int countOr        = 0;
-  int countXor       = 0;
-  int countNot       = 0;
+  int countId = (int)Context::getContext().cli2._id_ranges.size();
+  int countUUID = (int)Context::getContext().cli2._uuid_list.size();
+  int countOr = 0;
+  int countXor = 0;
+  int countNot = 0;
   bool pendingTag = false;
-  bool activeTag  = false;
+  bool activeTag = false;
 
-  for (const auto& a : Context::getContext ().cli2._args)
-  {
-    if (a.hasTag ("FILTER"))
-    {
-      std::string raw       = a.attribute ("raw");
-      std::string canonical = a.attribute ("canonical");
+  for (const auto& a : Context::getContext().cli2._args) {
+    if (a.hasTag("FILTER")) {
+      std::string raw = a.attribute("raw");
+      std::string canonical = a.attribute("canonical");
 
-      if (a._lextype == Lexer::Type::op  && raw == "or")           ++countOr;
-      if (a._lextype == Lexer::Type::op  && raw == "xor")          ++countXor;
-      if (a._lextype == Lexer::Type::op  && raw == "not")          ++countNot;
+      if (a._lextype == Lexer::Type::op && raw == "or") ++countOr;
+      if (a._lextype == Lexer::Type::op && raw == "xor") ++countXor;
+      if (a._lextype == Lexer::Type::op && raw == "not") ++countNot;
       if (a._lextype == Lexer::Type::dom && canonical == "status") ++countStatus;
-      if (                                  raw == "pending")      ++countPending;
-      if (                                  raw == "waiting")      ++countWaiting;
-      if (                                  raw == "recurring")    ++countRecurring;
+      if (raw == "pending") ++countPending;
+      if (raw == "waiting") ++countWaiting;
+      if (raw == "recurring") ++countRecurring;
     }
   }
 
-  for (const auto& word : Context::getContext ().cli2._original_args)
-  {
-    if (word.attribute ("raw") == "+PENDING") pendingTag = true;
-    if (word.attribute ("raw") == "+ACTIVE")  activeTag = true;
+  for (const auto& word : Context::getContext().cli2._original_args) {
+    if (word.attribute("raw") == "+PENDING") pendingTag = true;
+    if (word.attribute("raw") == "+ACTIVE") activeTag = true;
   }
 
+  if (countUUID) return false;
 
-  if (countUUID)
-    return false;
+  if (countOr || countXor || countNot) return false;
 
-  if (countOr || countXor || countNot)
-    return false;
+  if (pendingTag || activeTag) return true;
 
-  if (pendingTag || activeTag)
-    return true;
-
-  if (countStatus)
-  {
-    if (!countPending && !countWaiting && !countRecurring)
-      return false;
+  if (countStatus) {
+    if (!countPending && !countWaiting && !countRecurring) return false;
 
     return true;
   }
 
-  if (countId)
-    return true;
+  if (countId) return true;
 
   return false;
 }
@@ -246,43 +221,35 @@ bool Filter::pendingOnly () const
 ////////////////////////////////////////////////////////////////////////////////
 // Disaster avoidance mechanism. If a !READONLY has no filter, then it can cause
 // all tasks to be modified. This is usually not intended.
-void Filter::safety () const
-{
-  if (_safety)
-  {
+void Filter::safety() const {
+  if (_safety) {
     bool readonly = true;
     bool filter = false;
-    for (const auto& a : Context::getContext ().cli2._args)
-    {
-      if (a.hasTag ("CMD") &&
-          ! a.hasTag ("READONLY"))
-        readonly = false;
+    for (const auto& a : Context::getContext().cli2._args) {
+      if (a.hasTag("CMD") && !a.hasTag("READONLY")) readonly = false;
 
-      if (a.hasTag ("FILTER"))
-        filter = true;
+      if (a.hasTag("FILTER")) filter = true;
     }
 
-    if (! readonly &&
-        ! filter)
-    {
-      if (! Context::getContext ().config.getBoolean ("allow.empty.filter"))
-         throw std::string ("You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken.");
+    if (!readonly && !filter) {
+      if (!Context::getContext().config.getBoolean("allow.empty.filter"))
+        throw std::string(
+            "You did not specify a filter, and with the 'allow.empty.filter' value, no action is "
+            "taken.");
 
       // If user is willing to be asked, this can be avoided.
-      if (Context::getContext ().config.getBoolean ("confirmation") &&
-          confirm ("This command has no filter, and will modify all (including completed and deleted) tasks.  Are you sure?"))
+      if (Context::getContext().config.getBoolean("confirmation") &&
+          confirm("This command has no filter, and will modify all (including completed and "
+                  "deleted) tasks.  Are you sure?"))
         return;
 
       // Sound the alarm.
-      throw std::string ("Command prevented from running.");
+      throw std::string("Command prevented from running.");
     }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Filter::disableSafety ()
-{
-  _safety = false;
-}
+void Filter::disableSafety() { _safety = false; }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -25,96 +25,88 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdLogo.h>
 #include <Context.h>
 #include <util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdLogo::CmdLogo ()
-{
-  _keyword               = "logo";
-  _usage                 = "task          logo";
-  _description           = "Displays the Taskwarrior logo";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdLogo::CmdLogo() {
+  _keyword = "logo";
+  _usage = "task          logo";
+  _description = "Displays the Taskwarrior logo";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::misc;
+  _category = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdLogo::execute (std::string& output)
-{
-  static const char* data[] =
-  {
-    ".........ABDEF",
-    ".......BDILNMM",
-    ".....ACJNLHFEE",
-    "....AFMMFDEEEE",
-    "...AFOIDEEEEDD",
-    "..AFOHDEEEDIOR",
-    "..DMIDEEEEOXXX",
-    ".BJMDEEEDMXXXX",
-    ".ENFEEEEFVXXXX",
-    "BILDEEEEJXXXXX",
-    "DLHEEEEDLXXXXX",
-    "GMFEEEEDKXXXXX",
-    "GMEEEEEEGTIKOR",
-    "GMEEEEEEETODDD",
-    "GMEEEEEEETXRGE",
-    "GMEEEEEEFVXXSE",
-    "ENFEEEEEHWXXUE",
-    "CLHEEEEDLXXXUE",
-    "AILDEEEDRXXXUE",
-    ".DNFEEEEPXXXUE",
-    ".BJMDEEEEPXXUE",
-    "..DMIDEEEDLXUE",
-    "..AFOHDEEEDHME",
-    "...AFOIDEEEEDE",
-    "....AFMMFDEEEE",
-    ".....ACJNLHFEE",
-    ".......BDILNMM",
-    ".........ABDEF",
-    ""
-  };
+int CmdLogo::execute(std::string& output) {
+  static const char* data[] = {".........ABDEF",
+                               ".......BDILNMM",
+                               ".....ACJNLHFEE",
+                               "....AFMMFDEEEE",
+                               "...AFOIDEEEEDD",
+                               "..AFOHDEEEDIOR",
+                               "..DMIDEEEEOXXX",
+                               ".BJMDEEEDMXXXX",
+                               ".ENFEEEEFVXXXX",
+                               "BILDEEEEJXXXXX",
+                               "DLHEEEEDLXXXXX",
+                               "GMFEEEEDKXXXXX",
+                               "GMEEEEEEGTIKOR",
+                               "GMEEEEEEETODDD",
+                               "GMEEEEEEETXRGE",
+                               "GMEEEEEEFVXXSE",
+                               "ENFEEEEEHWXXUE",
+                               "CLHEEEEDLXXXUE",
+                               "AILDEEEDRXXXUE",
+                               ".DNFEEEEPXXXUE",
+                               ".BJMDEEEEPXXUE",
+                               "..DMIDEEEDLXUE",
+                               "..AFOHDEEEDHME",
+                               "...AFOIDEEEEDE",
+                               "....AFMMFDEEEE",
+                               ".....ACJNLHFEE",
+                               ".......BDILNMM",
+                               ".........ABDEF",
+                               ""};
 
-  if (! Context::getContext ().color ())
-    throw std::string ("The logo command requires that color support is enabled.");
+  if (!Context::getContext().color())
+    throw std::string("The logo command requires that color support is enabled.");
 
-  std::string indent (Context::getContext ().config.getInteger ("indent.report"), ' ');
-  output += optionalBlankLine ();
+  std::string indent(Context::getContext().config.getInteger("indent.report"), ' ');
+  output += optionalBlankLine();
 
-  for (int line = 0; data[line][0]; ++line)
-  {
+  for (int line = 0; data[line][0]; ++line) {
     output += indent;
 
-    for (int c = 0; c < 14; ++c)
-    {
-      int value = (int) data[line][c];
+    for (int c = 0; c < 14; ++c) {
+      int value = (int)data[line][c];
       if (value == '.')
         output += "  ";
-      else
-      {
+      else {
         value += 167;
-        char block [24];
-        snprintf (block, 24, "\033[48;5;%dm  \033[0m", value);
+        char block[24];
+        snprintf(block, 24, "\033[48;5;%dm  \033[0m", value);
         output += block;
       }
     }
 
-    for (int c = 13; c >= 0; --c)
-    {
+    for (int c = 13; c >= 0; --c) {
       int value = data[line][c];
       if (value == '.')
         output += "  ";
-      else
-      {
+      else {
         value += 167;
-        char block [24];
-        snprintf (block, 24, "\033[48;5;%dm  \033[0m", value);
+        char block[24];
+        snprintf(block, 24, "\033[48;5;%dm  \033[0m", value);
         output += block;
       }
     }
@@ -122,7 +114,7 @@ int CmdLogo::execute (std::string& output)
     output += '\n';
   }
 
-  output += optionalBlankLine ();
+  output += optionalBlankLine();
   return 0;
 }
 

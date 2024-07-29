@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,7 +43,7 @@ class TestHooksOnLaunch(TestCase):
 
     def test_onlaunch_builtin_good(self):
         """on-launch-good - a well-behaved, successful, on-launch hook."""
-        hookname = 'on-launch-good'
+        hookname = "on-launch-good"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("version")
@@ -57,7 +58,7 @@ class TestHooksOnLaunch(TestCase):
 
     def test_onlaunch_builtin_bad(self):
         """on-launch-bad - a well-behaved, failing, on-launch hook."""
-        hookname = 'on-launch-bad'
+        hookname = "on-launch-bad"
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
@@ -73,7 +74,7 @@ class TestHooksOnLaunch(TestCase):
 
     def test_onlaunch_builtin_misbehave1(self):
         """on-launch-misbehave1 - Hook kills itself."""
-        hookname = 'on-launch-misbehave1'
+        hookname = "on-launch-misbehave1"
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
@@ -89,7 +90,7 @@ class TestHooksOnLaunch(TestCase):
 
     def test_onlaunch_builtin_misbehave2(self):
         """on-launch-misbehave2 - Hook emits unexpected JSON."""
-        hookname = 'on-launch-misbehave2'
+        hookname = "on-launch-misbehave2"
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
@@ -103,8 +104,10 @@ class TestHooksOnLaunch(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

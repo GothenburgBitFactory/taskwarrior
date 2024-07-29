@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -81,9 +82,9 @@ class TestStart(TestCase):
 
     def test_journal_annotations(self):
         """Verify journal start/stop annotations are used"""
-        self.t.config("journal.time",                  "1")
+        self.t.config("journal.time", "1")
         self.t.config("journal.time.start.annotation", "Nu kör vi")
-        self.t.config("journal.time.stop.annotation",  "Nu stannar vi")
+        self.t.config("journal.time.stop.annotation", "Nu stannar vi")
 
         self.t("add one")
         self.t("1 start")
@@ -97,7 +98,7 @@ class TestStart(TestCase):
     def test_start_remove_end(self):
         """Verify that starting a task removes end timestamp"""
         self.t("add one")
-        uuid = self.t('_get 1.uuid')[1].strip()
+        uuid = self.t("_get 1.uuid")[1].strip()
 
         self.t("1 done")
         task = self.t.export()[0]
@@ -129,7 +130,7 @@ class TestActiveTaskHandling(TestCase):
 
     def test_start_nothing(self):
         """Verify error message when no tasks are specified"""
-        code, out, err = self.t.runError ("999 start")
+        code, out, err = self.t.runError("999 start")
         self.assertIn("No tasks specified.", err)
 
     def test_start_started(self):
@@ -160,6 +161,7 @@ class TestFeature608(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

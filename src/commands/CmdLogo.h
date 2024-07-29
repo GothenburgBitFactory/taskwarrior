@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDLOGO
 #define INCLUDED_CMDLOGO
 
-#include <string>
 #include <Command.h>
 
-class CmdLogo : public Command
-{
-public:
-  CmdLogo ();
-  int execute (std::string&);
+#include <string>
+
+class CmdLogo : public Command {
+ public:
+  CmdLogo();
+  int execute(std::string&);
 };
 
 #endif

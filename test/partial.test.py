@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,17 +42,18 @@ class TestPartialMatch(TestCase):
 
     def test_partial_date_match_spaced(self):
         """Partial match for dates: today = now --> true"""
-        code, out, err = self.t('calc today = now')
-        self.assertIn('true', out)
+        code, out, err = self.t("calc today = now")
+        self.assertIn("true", out)
 
     def test_exact_date_match_spaced(self):
         """Exact match for dates: today == now --> false"""
-        code, out, err = self.t('calc today == now')
-        self.assertIn('false', out)
+        code, out, err = self.t("calc today == now")
+        self.assertIn("false", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

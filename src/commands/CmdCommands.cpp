@@ -25,146 +25,131 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdCommands.h>
-#include <sstream>
-#include <algorithm>
-#include <stdlib.h>
+#include <Command.h>
 #include <Context.h>
 #include <Table.h>
-#include <Command.h>
+#include <stdlib.h>
 #include <util.h>
 
+#include <algorithm>
+#include <sstream>
+
 ////////////////////////////////////////////////////////////////////////////////
-CmdCommands::CmdCommands ()
-{
-  _keyword               = "commands";
-  _usage                 = "task          commands";
-  _description           = "Generates a list of all commands, with behavior details";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdCommands::CmdCommands() {
+  _keyword = "commands";
+  _usage = "task          commands";
+  _description = "Generates a list of all commands, with behavior details";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::metadata;
+  _category = Command::Category::metadata;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCommands::execute (std::string& output)
-{
+int CmdCommands::execute(std::string& output) {
   Table view;
-  view.width (Context::getContext ().getWidth ());
-  view.add ("Command");
-  view.add ("Category");
-  view.add ("R/W",     false);
-  view.add ("ID",      false);
-  view.add ("GC",      false);
-  view.add ("Context", false);
-  view.add ("Filter",  false);
-  view.add ("Mods",    false);
-  view.add ("Misc",    false);
-  view.add ("Description");
-  view.leftMargin (Context::getContext ().config.getInteger ("indent.report"));
-  view.extraPadding (Context::getContext ().config.getInteger ("row.padding"));
-  view.intraPadding (Context::getContext ().config.getInteger ("column.padding"));
-  setHeaderUnderline (view);
+  view.width(Context::getContext().getWidth());
+  view.add("Command");
+  view.add("Category");
+  view.add("R/W", false);
+  view.add("ID", false);
+  view.add("GC", false);
+  view.add("Context", false);
+  view.add("Filter", false);
+  view.add("Mods", false);
+  view.add("Misc", false);
+  view.add("Description");
+  view.leftMargin(Context::getContext().config.getInteger("indent.report"));
+  view.extraPadding(Context::getContext().config.getInteger("row.padding"));
+  view.intraPadding(Context::getContext().config.getInteger("column.padding"));
+  setHeaderUnderline(view);
 
-  for (auto& command : Context::getContext ().commands)
-  {
-    auto row = view.addRow ();
-    view.set (row, 0, command.first);
-    view.set (row, 1, Command::categoryNames.at (command.second->category ()));
+  for (auto& command : Context::getContext().commands) {
+    auto row = view.addRow();
+    view.set(row, 0, command.first);
+    view.set(row, 1, Command::categoryNames.at(command.second->category()));
 
-    if (command.second->read_only ())
-      view.set (row, 2, "RO");
+    if (command.second->read_only())
+      view.set(row, 2, "RO");
     else
-      view.set (row, 2, "RW");
+      view.set(row, 2, "RW");
 
-    if (command.second->displays_id ())
-      view.set (row, 3, "ID");
+    if (command.second->displays_id()) view.set(row, 3, "ID");
 
-    if (command.second->needs_gc ())
-      view.set (row, 4, "GC");
+    if (command.second->needs_gc()) view.set(row, 4, "GC");
 
-    if (command.second->uses_context ())
-      view.set (row, 5, "Ctxt");
+    if (command.second->uses_context()) view.set(row, 5, "Ctxt");
 
-    if (command.second->accepts_filter ())
-      view.set (row, 6, "Filt");
+    if (command.second->accepts_filter()) view.set(row, 6, "Filt");
 
-    if (command.second->accepts_modifications ())
-      view.set (row, 7, "Mods");
+    if (command.second->accepts_modifications()) view.set(row, 7, "Mods");
 
-    if (command.second->accepts_miscellaneous ())
-      view.set (row, 8, "Misc");
+    if (command.second->accepts_miscellaneous()) view.set(row, 8, "Misc");
 
-    view.set (row, 9, command.second->description ());
+    view.set(row, 9, command.second->description());
   }
 
-  output = optionalBlankLine ()
-         + view.render ()
-         + optionalBlankLine ()
-         + '\n';
+  output = optionalBlankLine() + view.render() + optionalBlankLine() + '\n';
 
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdCompletionCommands::CmdCompletionCommands ()
-{
-  _keyword               = "_commands";
-  _usage                 = "task          _commands";
-  _description           = "Generates a list of all commands, for autocompletion purposes";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdCompletionCommands::CmdCompletionCommands() {
+  _keyword = "_commands";
+  _usage = "task          _commands";
+  _description = "Generates a list of all commands, for autocompletion purposes";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionCommands::execute (std::string& output)
-{
+int CmdCompletionCommands::execute(std::string& output) {
   // Get a list of all commands.
-  std::vector <std::string> commands;
-  for (const auto& command : Context::getContext ().commands)
-    commands.push_back (command.first);
+  std::vector<std::string> commands;
+  for (const auto& command : Context::getContext().commands) commands.push_back(command.first);
 
   // Sort alphabetically.
-  std::sort (commands.begin (), commands.end ());
+  std::sort(commands.begin(), commands.end());
 
   std::stringstream out;
-  for (const auto& c : commands)
-    out << c << '\n';
+  for (const auto& c : commands) out << c << '\n';
 
-  output = out.str ();
+  output = out.str();
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdZshCommands::CmdZshCommands ()
-{
-  _keyword               = "_zshcommands";
-  _usage                 = "task          _zshcommands";
-  _description           = "Generates a list of all commands, for zsh autocompletion purposes";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdZshCommands::CmdZshCommands() {
+  _keyword = "_zshcommands";
+  _usage = "task          _zshcommands";
+  _description = "Generates a list of all commands, for zsh autocompletion purposes";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-struct ZshCommand
-{
-  bool operator< (const struct ZshCommand&) const;
+struct ZshCommand {
+  bool operator<(const struct ZshCommand&) const;
 
   Command::Category _category;
   std::string _command;
@@ -172,49 +157,40 @@ struct ZshCommand
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ZshCommand::operator< (const struct ZshCommand& other) const
-{
+bool ZshCommand::operator<(const struct ZshCommand& other) const {
   // Lexicographical comparison.
-  if (_category != other._category)
-    return (_category < other._category);
+  if (_category != other._category) return (_category < other._category);
 
-  if (_command != other._command)
-    return (_command < other._command);
+  if (_command != other._command) return (_command < other._command);
 
-  if (_description != other._description)
-    return (_description < other._description);
+  if (_description != other._description) return (_description < other._description);
 
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdZshCommands::execute (std::string& output)
-{
+int CmdZshCommands::execute(std::string& output) {
   // Get a list of all command descriptions, sorted by category and then
   // alphabetically by command name.
 
   // Since not all supported compilers support tuples, we use a least common
   // denominator alternative: a custom struct type.
 
-  std::vector <ZshCommand> commands;
-  for (auto& command : Context::getContext ().commands)
-  {
-    ZshCommand zshCommand {command.second->category (),
-                           command.first,
-                           command.second->description ()};
-    commands.push_back (zshCommand);
+  std::vector<ZshCommand> commands;
+  for (auto& command : Context::getContext().commands) {
+    ZshCommand zshCommand{command.second->category(), command.first, command.second->description()};
+    commands.push_back(zshCommand);
   }
 
-  std::sort (commands.begin (), commands.end ());
+  std::sort(commands.begin(), commands.end());
 
   // Emit the commands in order.
   std::stringstream out;
   for (const auto& zc : commands)
-    out << zc._command << ':'
-        << Command::categoryNames.at (zc._category) << ':'
-        << zc._description << '\n';
+    out << zc._command << ':' << Command::categoryNames.at(zc._category) << ':' << zc._description
+        << '\n';
 
-  output = out.str ();
+  output = out.str();
   return 0;
 }
 

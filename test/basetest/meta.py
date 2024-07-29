@@ -7,6 +7,7 @@ class MetaTest(type):
     Creates test_methods in the TestCase class dynamically named after the
     arguments used.
     """
+
     @staticmethod
     def make_function(classname, *args, **kwargs):
         def test(self):
@@ -34,5 +35,6 @@ class MetaTest(type):
             dct[func.__name__] = func
 
         return super(MetaTest, meta).__new__(meta, classname, bases, dct)
+
 
 # vim: ai sts=4 et sw=4

@@ -25,52 +25,52 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+// cmake.h include header must come first
+
 #include <CmdIDs.h>
-#include <sstream>
-#include <algorithm>
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
 #include <shared.h>
 
+#include <algorithm>
+#include <sstream>
+
 std::string zshColonReplacement = ",";
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdIDs::CmdIDs ()
-{
-  _keyword               = "ids";
-  _usage                 = "task <filter> ids";
-  _description           = "Shows the IDs of matching tasks, as a range";
-  _read_only             = true;
-  _displays_id           = true;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdIDs::CmdIDs() {
+  _keyword = "ids";
+  _usage = "task <filter> ids";
+  _description = "Shows the IDs of matching tasks, as a range";
+  _read_only = true;
+  _displays_id = true;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::metadata;
+  _category = Command::Category::metadata;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdIDs::execute (std::string& output)
-{
+int CmdIDs::execute(std::string& output) {
   // Apply filter.
-  handleUntil ();
-  handleRecurrence ();
+  handleUntil();
+  handleRecurrence();
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
   // Find number of matching tasks.
-  std::vector <int> ids;
+  std::vector<int> ids;
   for (auto& task : filtered)
-    if (task.id)
-      ids.push_back (task.id);
+    if (task.id) ids.push_back(task.id);
 
-  std::sort (ids.begin (), ids.end ());
-  output = compressIds (ids) + '\n';
+  std::sort(ids.begin(), ids.end());
+  output = compressIds(ids) + '\n';
 
-  Context::getContext ().headers.clear ();
+  Context::getContext().headers.clear();
   return 0;
 }
 
@@ -86,35 +86,25 @@ int CmdIDs::execute (std::string& output)
 //
 //   1,3-4,6-9,11
 //
-std::string CmdIDs::compressIds (const std::vector <int>& ids)
-{
+std::string CmdIDs::compressIds(const std::vector<int>& ids) {
   std::stringstream result;
 
   auto range_start = 0;
   auto range_end = 0;
 
-  for (unsigned int i = 0; i < ids.size (); ++i)
-  {
-    if (i + 1 == ids.size ())
-    {
-      if (result.str ().length ())
-        result << ' ';
+  for (unsigned int i = 0; i < ids.size(); ++i) {
+    if (i + 1 == ids.size()) {
+      if (result.str().length()) result << ' ';
 
       if (range_start < range_end)
         result << ids[range_start] << '-' << ids[range_end];
       else
         result << ids[range_start];
-    }
-    else
-    {
-      if (ids[range_end] + 1 == ids[i + 1])
-      {
+    } else {
+      if (ids[range_end] + 1 == ids[i + 1]) {
         ++range_end;
-      }
-      else
-      {
-        if (result.str ().length ())
-          result << ' ';
+      } else {
+        if (result.str().length()) result << ' ';
 
         if (range_start < range_end)
           result << ids[range_start] << '-' << ids[range_end];
@@ -126,201 +116,183 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
     }
   }
 
-  return result.str ();
+  return result.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdCompletionIds::CmdCompletionIds ()
-{
-  _keyword               = "_ids";
-  _usage                 = "task <filter> _ids";
-  _description           = "Shows the IDs of matching tasks, in the form of a list";
-  _read_only             = true;
-  _displays_id           = true;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdCompletionIds::CmdCompletionIds() {
+  _keyword = "_ids";
+  _usage = "task <filter> _ids";
+  _description = "Shows the IDs of matching tasks, in the form of a list";
+  _read_only = true;
+  _displays_id = true;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionIds::execute (std::string& output)
-{
+int CmdCompletionIds::execute(std::string& output) {
   // Apply filter.
-  handleUntil ();
-  handleRecurrence ();
+  handleUntil();
+  handleRecurrence();
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
-  std::vector <int> ids;
+  std::vector<int> ids;
   for (auto& task : filtered)
-    if (task.getStatus () != Task::deleted &&
-        task.getStatus () != Task::completed)
-      ids.push_back (task.id);
+    if (task.getStatus() != Task::deleted && task.getStatus() != Task::completed)
+      ids.push_back(task.id);
 
-  std::sort (ids.begin (), ids.end ());
-  output = join ("\n", ids) + '\n';
+  std::sort(ids.begin(), ids.end());
+  output = join("\n", ids) + '\n';
 
-  Context::getContext ().headers.clear ();
+  Context::getContext().headers.clear();
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdZshCompletionIds::CmdZshCompletionIds ()
-{
-  _keyword               = "_zshids";
-  _usage                 = "task <filter> _zshids";
-  _description           = "Shows the IDs and descriptions of matching tasks";
-  _read_only             = true;
-  _displays_id           = true;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdZshCompletionIds::CmdZshCompletionIds() {
+  _keyword = "_zshids";
+  _usage = "task <filter> _zshids";
+  _description = "Shows the IDs and descriptions of matching tasks";
+  _read_only = true;
+  _displays_id = true;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdZshCompletionIds::execute (std::string& output)
-{
+int CmdZshCompletionIds::execute(std::string& output) {
   // Apply filter.
-  handleUntil ();
-  handleRecurrence ();
+  handleUntil();
+  handleRecurrence();
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
   std::stringstream out;
   for (auto& task : filtered)
-    if (task.getStatus () != Task::deleted &&
-        task.getStatus () != Task::completed)
-      out << task.id
-          << ':'
-          << str_replace(task.get ("description"), ":", zshColonReplacement)
+    if (task.getStatus() != Task::deleted && task.getStatus() != Task::completed)
+      out << task.id << ':' << str_replace(task.get("description"), ":", zshColonReplacement)
           << '\n';
 
-  output = out.str ();
+  output = out.str();
 
-  Context::getContext ().headers.clear ();
+  Context::getContext().headers.clear();
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdUUIDs::CmdUUIDs ()
-{
-  _keyword               = "uuids";
-  _usage                 = "task <filter> uuids";
-  _description           = "Shows the UUIDs of matching tasks, as a space-separated list";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdUUIDs::CmdUUIDs() {
+  _keyword = "uuids";
+  _usage = "task <filter> uuids";
+  _description = "Shows the UUIDs of matching tasks, as a space-separated list";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::metadata;
+  _category = Command::Category::metadata;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdUUIDs::execute (std::string& output)
-{
+int CmdUUIDs::execute(std::string& output) {
   // Apply filter.
-  handleUntil ();
-  handleRecurrence ();
+  handleUntil();
+  handleRecurrence();
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
-  std::vector <std::string> uuids;
+  std::vector<std::string> uuids;
   uuids.reserve(filtered.size());
-  for (auto& task : filtered)
-    uuids.push_back (task.get ("uuid"));
+  for (auto& task : filtered) uuids.push_back(task.get("uuid"));
 
-  std::sort (uuids.begin (), uuids.end ());
-  output = join (" ", uuids) + '\n';
+  std::sort(uuids.begin(), uuids.end());
+  output = join(" ", uuids) + '\n';
 
-  Context::getContext ().headers.clear ();
+  Context::getContext().headers.clear();
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdCompletionUuids::CmdCompletionUuids ()
-{
-  _keyword               = "_uuids";
-  _usage                 = "task <filter> _uuids";
-  _description           = "Shows the UUIDs of matching tasks, as a list";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdCompletionUuids::CmdCompletionUuids() {
+  _keyword = "_uuids";
+  _usage = "task <filter> _uuids";
+  _description = "Shows the UUIDs of matching tasks, as a list";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionUuids::execute (std::string& output)
-{
+int CmdCompletionUuids::execute(std::string& output) {
   // Apply filter.
-  handleUntil ();
-  handleRecurrence ();
+  handleUntil();
+  handleRecurrence();
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
-  std::vector <std::string> uuids;
+  std::vector<std::string> uuids;
   uuids.reserve(filtered.size());
-  for (auto& task : filtered)
-    uuids.push_back (task.get ("uuid"));
+  for (auto& task : filtered) uuids.push_back(task.get("uuid"));
 
-  std::sort (uuids.begin (), uuids.end ());
-  output = join ("\n", uuids) + '\n';
+  std::sort(uuids.begin(), uuids.end());
+  output = join("\n", uuids) + '\n';
 
-  Context::getContext ().headers.clear ();
+  Context::getContext().headers.clear();
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdZshCompletionUuids::CmdZshCompletionUuids ()
-{
-  _keyword               = "_zshuuids";
-  _usage                 = "task <filter> _zshuuids";
-  _description           = "Shows the UUIDs and descriptions of matching tasks";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdZshCompletionUuids::CmdZshCompletionUuids() {
+  _keyword = "_zshuuids";
+  _usage = "task <filter> _zshuuids";
+  _description = "Shows the UUIDs and descriptions of matching tasks";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdZshCompletionUuids::execute (std::string& output)
-{
+int CmdZshCompletionUuids::execute(std::string& output) {
   // Apply filter.
-  handleUntil ();
-  handleRecurrence ();
+  handleUntil();
+  handleRecurrence();
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
   std::stringstream out;
   for (auto& task : filtered)
-    out << task.get ("uuid")
-        << ':'
-        << str_replace (task.get ("description"), ":", zshColonReplacement)
+    out << task.get("uuid") << ':' << str_replace(task.get("description"), ":", zshColonReplacement)
         << '\n';
 
-  output = out.str ();
+  output = out.str();
 
-  Context::getContext ().headers.clear ();
+  Context::getContext().headers.clear();
   return 0;
 }
 
