@@ -29,14 +29,13 @@
 
 #include <ColTypeString.h>
 
-class ColumnDescription : public ColumnTypeString
-{
-public:
-  ColumnDescription ();
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnDescription : public ColumnTypeString {
+ public:
+  ColumnDescription();
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-private:
+ private:
   bool _hyphenate;
   std::string _dateformat;
   int _indent;

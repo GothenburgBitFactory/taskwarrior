@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,9 +39,9 @@ class TestSugar(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t('add one')
-        self.t('add two')
-        self.t('add three')
+        self.t("add one")
+        self.t("add two")
+        self.t("add three")
 
     def test_empty_conjunction(self):
         """Test syntax that mathematicians find sane and expected"""
@@ -70,6 +71,7 @@ class TestSugar(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDSUMMARY
 #define INCLUDED_CMDSUMMARY
 
-#include <string>
 #include <Command.h>
 
-class CmdSummary : public Command
-{
-public:
-  CmdSummary ();
-  int execute (std::string&);
+#include <string>
+
+class CmdSummary : public Command {
+ public:
+  CmdSummary();
+  int execute(std::string&);
 };
 
 #endif

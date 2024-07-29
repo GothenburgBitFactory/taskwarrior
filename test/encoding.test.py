@@ -29,6 +29,7 @@ import sys
 import os
 import re
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -77,6 +78,7 @@ class TestUtf8(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

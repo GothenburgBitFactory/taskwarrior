@@ -44,10 +44,10 @@ class BaseDateTimeNegativeTest(TestCase):
         self.t = Task()
 
     def assertInvalidDatetimeFormat(self, value):
-        self.t.runError('add due:{0} test1'.format(value))
-        self.t.runError('add scheduled:{0} test2'.format(value))
-        self.t.runError('add wait:{0} test3'.format(value))
-        self.t.runError('add until:{0} test4'.format(value))
+        self.t.runError("add due:{0} test1".format(value))
+        self.t.runError("add scheduled:{0} test2".format(value))
+        self.t.runError("add wait:{0} test3".format(value))
+        self.t.runError("add until:{0} test4".format(value))
 
 
 class TestIncorrectDate(BaseDateTimeNegativeTest):
@@ -58,60 +58,60 @@ class TestIncorrectDate(BaseDateTimeNegativeTest):
     """
 
     def test_set_incorrect_datetime_randomstring(self):
-        self.assertInvalidDatetimeFormat('random')
+        self.assertInvalidDatetimeFormat("random")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_in_YYYY_MM_DD(self):
-        self.assertInvalidDatetimeFormat('-2014-07-07')
+        self.assertInvalidDatetimeFormat("-2014-07-07")
 
     def test_set_incorrect_datetime_missing_day_in_YYYY_MM_DD(self):
-        self.assertInvalidDatetimeFormat('2014-07-')
+        self.assertInvalidDatetimeFormat("2014-07-")
 
     def test_set_incorrect_datetime_month_zero_in_YYYY_MM_DD(self):
-        self.assertInvalidDatetimeFormat('2014-0-12')
+        self.assertInvalidDatetimeFormat("2014-0-12")
 
     def test_set_incorrect_datetime_invalid_characters_in_YYYY_MM_DD(self):
-        self.assertInvalidDatetimeFormat('abcd-ab-ab')
+        self.assertInvalidDatetimeFormat("abcd-ab-ab")
 
     def test_set_incorrect_datetime_day_as_zeros_in_YYYY_DDD(self):
-        self.assertInvalidDatetimeFormat('2014-000')
+        self.assertInvalidDatetimeFormat("2014-000")
 
     def test_set_incorrect_datetime_overlap_day_in_nonoverlap_year_in_YYYY_DDD(self):
-        self.assertInvalidDatetimeFormat('2014-366')
+        self.assertInvalidDatetimeFormat("2014-366")
 
     def test_set_incorrect_datetime_medium_overlap_day_in_YYYY_DDD(self):
-        self.assertInvalidDatetimeFormat('2014-999')
+        self.assertInvalidDatetimeFormat("2014-999")
 
     def test_set_incorrect_datetime_huge_overlap_day_in_YYYY_DDD(self):
-        self.assertInvalidDatetimeFormat('2014-999999999')
+        self.assertInvalidDatetimeFormat("2014-999999999")
 
     def test_set_incorrect_datetime_week_with_the_number_zero_in_YYYY_Www(self):
-        self.assertInvalidDatetimeFormat('2014-W00')
+        self.assertInvalidDatetimeFormat("2014-W00")
 
     def test_set_incorrect_datetime_overflow_in_week_in_YYYY_Www(self):
-        self.assertInvalidDatetimeFormat('2014-W54')
+        self.assertInvalidDatetimeFormat("2014-W54")
 
     # Unsupported non-extended form.
     def test_set_incorrect_datetime_day_zero_in_YYYY_WwwD(self):
-        self.assertInvalidDatetimeFormat('2014-W240')
+        self.assertInvalidDatetimeFormat("2014-W240")
 
     # Unsupported non-extended form.
     def test_set_incorrect_datetime_day_eight_in_YYYY_WwwD(self):
-        self.assertInvalidDatetimeFormat('2014-W248')
+        self.assertInvalidDatetimeFormat("2014-W248")
 
     # Unsupported non-extended form.
     def test_set_incorrect_datetime_day_two_hundred_in_YYYY_WwwD(self):
-        self.assertInvalidDatetimeFormat('2014-W24200')
+        self.assertInvalidDatetimeFormat("2014-W24200")
 
     # Disabled: Looks like 'hhmm-hh'
-    #def test_set_incorrect_datetime_month_zero_in_YYYY_MM(self):
+    # def test_set_incorrect_datetime_month_zero_in_YYYY_MM(self):
     #    self.assertInvalidDatetimeFormat('2014-00')
 
     def test_set_incorrect_datetime_overflow_month_in_YYYY_MM(self):
-        self.assertInvalidDatetimeFormat('2014-13')
+        self.assertInvalidDatetimeFormat("2014-13")
 
     def test_set_incorrect_datetime_huge_overflow_month_in_YYYY_MM(self):
-        self.assertInvalidDatetimeFormat('2014-99')
+        self.assertInvalidDatetimeFormat("2014-99")
 
 
 class TestIncorrectTime(BaseDateTimeNegativeTest):
@@ -121,276 +121,276 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     """
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('25:00')
+        self.assertInvalidDatetimeFormat("25:00")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('99:00')
+        self.assertInvalidDatetimeFormat("99:00")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:60')
+        self.assertInvalidDatetimeFormat("12:60")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:99')
+        self.assertInvalidDatetimeFormat("12:99")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:ab')
+        self.assertInvalidDatetimeFormat("12:ab")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:12')
+        self.assertInvalidDatetimeFormat("ab:12")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:cd')
+        self.assertInvalidDatetimeFormat("ab:cd")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('-12:12')
+        self.assertInvalidDatetimeFormat("-12:12")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:-12')
+        self.assertInvalidDatetimeFormat("12:-12")
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('25:00Z')
+        self.assertInvalidDatetimeFormat("25:00Z")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('99:00Z')
+        self.assertInvalidDatetimeFormat("99:00Z")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('12:60Z')
+        self.assertInvalidDatetimeFormat("12:60Z")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('12:99Z')
+        self.assertInvalidDatetimeFormat("12:99Z")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('12:abZ')
+        self.assertInvalidDatetimeFormat("12:abZ")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('ab:12Z')
+        self.assertInvalidDatetimeFormat("ab:12Z")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('ab:cdZ')
+        self.assertInvalidDatetimeFormat("ab:cdZ")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('-12:12Z')
+        self.assertInvalidDatetimeFormat("-12:12Z")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mmZ(self):
-        self.assertInvalidDatetimeFormat('12:-12Z')
+        self.assertInvalidDatetimeFormat("12:-12Z")
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('25:00+01:00')
+        self.assertInvalidDatetimeFormat("25:00+01:00")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('99:00+01:00')
+        self.assertInvalidDatetimeFormat("99:00+01:00")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:60+01:00')
+        self.assertInvalidDatetimeFormat("12:60+01:00")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:99+01:00')
+        self.assertInvalidDatetimeFormat("12:99+01:00")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:ab+01:00')
+        self.assertInvalidDatetimeFormat("12:ab+01:00")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:12+01:00')
+        self.assertInvalidDatetimeFormat("ab:12+01:00")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:cd+01:00')
+        self.assertInvalidDatetimeFormat("ab:cd+01:00")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('-12:12+01:00')
+        self.assertInvalidDatetimeFormat("-12:12+01:00")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mm_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:-12+01:00')
+        self.assertInvalidDatetimeFormat("12:-12+01:00")
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('25:00-01:00')
+        self.assertInvalidDatetimeFormat("25:00-01:00")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('99:00-01:00')
+        self.assertInvalidDatetimeFormat("99:00-01:00")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:60-01:00')
+        self.assertInvalidDatetimeFormat("12:60-01:00")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:99-01:00')
+        self.assertInvalidDatetimeFormat("12:99-01:00")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:ab-01:00')
+        self.assertInvalidDatetimeFormat("12:ab-01:00")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:12-01:00')
+        self.assertInvalidDatetimeFormat("ab:12-01:00")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:cd-01:00')
+        self.assertInvalidDatetimeFormat("ab:cd-01:00")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('-12:12-01:00')
+        self.assertInvalidDatetimeFormat("-12:12-01:00")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mm_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:-12-01:00')
+        self.assertInvalidDatetimeFormat("12:-12-01:00")
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('25:00:00')
+        self.assertInvalidDatetimeFormat("25:00:00")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('99:00:00')
+        self.assertInvalidDatetimeFormat("99:00:00")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:60:00')
+        self.assertInvalidDatetimeFormat("12:60:00")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:99:00')
+        self.assertInvalidDatetimeFormat("12:99:00")
 
     def test_set_incorrect_datetime_second_overflow_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:12:60')
+        self.assertInvalidDatetimeFormat("12:12:60")
 
     def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:12:99')
+        self.assertInvalidDatetimeFormat("12:12:99")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:ab:00')
+        self.assertInvalidDatetimeFormat("12:ab:00")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('ab:12:00')
+        self.assertInvalidDatetimeFormat("ab:12:00")
 
     def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:12:ab')
+        self.assertInvalidDatetimeFormat("12:12:ab")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('ab:cd:ef')
+        self.assertInvalidDatetimeFormat("ab:cd:ef")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('-12:12:12')
+        self.assertInvalidDatetimeFormat("-12:12:12")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:-12:12')
+        self.assertInvalidDatetimeFormat("12:-12:12")
 
     def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ss(self):
-        self.assertInvalidDatetimeFormat('12:12:-12')
+        self.assertInvalidDatetimeFormat("12:12:-12")
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('25:00:00Z')
+        self.assertInvalidDatetimeFormat("25:00:00Z")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('99:00:00Z')
+        self.assertInvalidDatetimeFormat("99:00:00Z")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:60:00Z')
+        self.assertInvalidDatetimeFormat("12:60:00Z")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:99:00Z')
+        self.assertInvalidDatetimeFormat("12:99:00Z")
 
     def test_set_incorrect_datetime_second_overflow_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:12:60Z')
+        self.assertInvalidDatetimeFormat("12:12:60Z")
 
     def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:12:99Z')
+        self.assertInvalidDatetimeFormat("12:12:99Z")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:ab:00Z')
+        self.assertInvalidDatetimeFormat("12:ab:00Z")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('ab:12:00Z')
+        self.assertInvalidDatetimeFormat("ab:12:00Z")
 
     def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:12:abZ')
+        self.assertInvalidDatetimeFormat("12:12:abZ")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('ab:cd:efZ')
+        self.assertInvalidDatetimeFormat("ab:cd:efZ")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('-12:12:12Z')
+        self.assertInvalidDatetimeFormat("-12:12:12Z")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:-12:12Z')
+        self.assertInvalidDatetimeFormat("12:-12:12Z")
 
     def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ssZ(self):
-        self.assertInvalidDatetimeFormat('12:12:-12Z')
+        self.assertInvalidDatetimeFormat("12:12:-12Z")
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('25:00:00+01:00')
+        self.assertInvalidDatetimeFormat("25:00:00+01:00")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('95:00:00+01:00')
+        self.assertInvalidDatetimeFormat("95:00:00+01:00")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:60:00+01:00')
+        self.assertInvalidDatetimeFormat("12:60:00+01:00")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:99:00+01:00')
+        self.assertInvalidDatetimeFormat("12:99:00+01:00")
 
     def test_set_incorrect_datetime_second_overflow_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:60+01:00')
+        self.assertInvalidDatetimeFormat("12:12:60+01:00")
 
     def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:99+01:00')
+        self.assertInvalidDatetimeFormat("12:12:99+01:00")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:ab:00+01:00')
+        self.assertInvalidDatetimeFormat("12:ab:00+01:00")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:12:00+01:00')
+        self.assertInvalidDatetimeFormat("ab:12:00+01:00")
 
     def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:ab+01:00')
+        self.assertInvalidDatetimeFormat("12:12:ab+01:00")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:cd:ef+01:00')
+        self.assertInvalidDatetimeFormat("ab:cd:ef+01:00")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('-12:12:12+01:00')
+        self.assertInvalidDatetimeFormat("-12:12:12+01:00")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:-12:12+01:00')
+        self.assertInvalidDatetimeFormat("12:-12:12+01:00")
 
     def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:-12+01:00')
+        self.assertInvalidDatetimeFormat("12:12:-12+01:00")
 
     def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('25:00:00-01:00')
+        self.assertInvalidDatetimeFormat("25:00:00-01:00")
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('95:00:00-01:00')
+        self.assertInvalidDatetimeFormat("95:00:00-01:00")
 
     def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:60:00-01:00')
+        self.assertInvalidDatetimeFormat("12:60:00-01:00")
 
     def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:99:00-01:00')
+        self.assertInvalidDatetimeFormat("12:99:00-01:00")
 
     def test_set_incorrect_datetime_second_overflow_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:60-01:00')
+        self.assertInvalidDatetimeFormat("12:12:60-01:00")
 
     def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:99-01:00')
+        self.assertInvalidDatetimeFormat("12:12:99-01:00")
 
     def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:ab:00-01:00')
+        self.assertInvalidDatetimeFormat("12:ab:00-01:00")
 
     def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:12:00-01:00')
+        self.assertInvalidDatetimeFormat("ab:12:00-01:00")
 
     def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:ab-01:00')
+        self.assertInvalidDatetimeFormat("12:12:ab-01:00")
 
     def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('ab:cd:ef-01:00')
+        self.assertInvalidDatetimeFormat("ab:cd:ef-01:00")
 
     @unittest.skip  # see #2996
     def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('-12:12:12-01:00')
+        self.assertInvalidDatetimeFormat("-12:12:12-01:00")
 
     def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:-12:12-01:00')
+        self.assertInvalidDatetimeFormat("12:-12:12-01:00")
 
     def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('12:12:-12-01:00')
+        self.assertInvalidDatetimeFormat("12:12:-12-01:00")
 
     # There were a group of tests that failed for the wrong reason, and these
     # have been removed.
@@ -434,8 +434,10 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     #   12:12+03:2
     #   12:12+3:2
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -27,8 +27,9 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <format.h>
 #include <assert.h>
+#include <format.h>
+
 #include "tc/Replica.h"
 #include "tc/Task.h"
 
@@ -36,48 +37,43 @@ using namespace tc::ffi;
 
 namespace tc {
 ////////////////////////////////////////////////////////////////////////////////
-TCString string2tc (const std::string& str)
-{
-  return tc_string_clone_with_len (str.data (), str.size ());
+TCString string2tc(const std::string& str) {
+  return tc_string_clone_with_len(str.data(), str.size());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc2string_clone (const TCString& str)
-{
+std::string tc2string_clone(const TCString& str) {
   size_t len;
-  auto ptr = tc_string_content_with_len (&str, &len);
-  auto rv = std::string (ptr, len);
+  auto ptr = tc_string_content_with_len(&str, &len);
+  auto rv = std::string(ptr, len);
   return rv;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc2string (TCString& str)
-{
+std::string tc2string(TCString& str) {
   auto rv = tc2string_clone(str);
-  tc_string_free (&str);
+  tc_string_free(&str);
   return rv;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TCUuid uuid2tc(const std::string& str)
-{
+TCUuid uuid2tc(const std::string& str) {
   TCString tcstr = tc_string_borrow(str.c_str());
   TCUuid rv;
   if (TC_RESULT_OK != tc_uuid_from_str(tcstr, &rv)) {
-    throw std::string ("invalid UUID");
+    throw std::string("invalid UUID");
   }
   return rv;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc2uuid (TCUuid& uuid)
-{
+std::string tc2uuid(TCUuid& uuid) {
   char s[TC_UUID_STRING_BYTES];
-  tc_uuid_to_buf (uuid, s);
+  tc_uuid_to_buf(uuid, s);
   std::string str;
-  str.assign (s, TC_UUID_STRING_BYTES);
+  str.assign(s, TC_UUID_STRING_BYTES);
   return str;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-}
+}  // namespace tc

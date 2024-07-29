@@ -27,27 +27,27 @@
 #ifndef INCLUDED_CMDHISTORY
 #define INCLUDED_CMDHISTORY
 
-#include <string>
 #include <Command.h>
-#include <Table.h>
 #include <Datetime.h>
+#include <Table.h>
 
-template<class HistoryStrategy>
-class CmdHistoryBase : public Command
-{
-public:
-  CmdHistoryBase ();
-  int execute (std::string&);
+#include <string>
 
-private:
-  std::map <time_t, int> groups;          // Represents any timeinterval with data
-  std::map <time_t, int> addedGroup;      // Additions by timeinterval
-  std::map <time_t, int> completedGroup;  // Completions by timeinterval
-  std::map <time_t, int> deletedGroup;    // Deletions by timeinterval
+template <class HistoryStrategy>
+class CmdHistoryBase : public Command {
+ public:
+  CmdHistoryBase();
+  int execute(std::string&);
+
+ private:
+  std::map<time_t, int> groups;          // Represents any timeinterval with data
+  std::map<time_t, int> addedGroup;      // Additions by timeinterval
+  std::map<time_t, int> completedGroup;  // Completions by timeinterval
+  std::map<time_t, int> deletedGroup;    // Deletions by timeinterval
   int rc;
 
-  void outputTabular (std::string&);
-  void outputGraphical (std::string&);
+  void outputTabular(std::string&);
+  void outputGraphical(std::string&);
 };
 
 // Forward-declare strategies implemented in CmdHistory.cpp
@@ -61,13 +61,13 @@ class AnnualHistoryStrategy;
 class AnnualGHistoryStrategy;
 
 // typedef the templates to nice names to be used outside this class
-typedef CmdHistoryBase<DailyHistoryStrategy>    CmdHistoryDaily;
-typedef CmdHistoryBase<DailyGHistoryStrategy>   CmdGHistoryDaily;
-typedef CmdHistoryBase<WeeklyHistoryStrategy>   CmdHistoryWeekly;
-typedef CmdHistoryBase<WeeklyGHistoryStrategy>  CmdGHistoryWeekly;
-typedef CmdHistoryBase<MonthlyHistoryStrategy>  CmdHistoryMonthly;
+typedef CmdHistoryBase<DailyHistoryStrategy> CmdHistoryDaily;
+typedef CmdHistoryBase<DailyGHistoryStrategy> CmdGHistoryDaily;
+typedef CmdHistoryBase<WeeklyHistoryStrategy> CmdHistoryWeekly;
+typedef CmdHistoryBase<WeeklyGHistoryStrategy> CmdGHistoryWeekly;
+typedef CmdHistoryBase<MonthlyHistoryStrategy> CmdHistoryMonthly;
 typedef CmdHistoryBase<MonthlyGHistoryStrategy> CmdGHistoryMonthly;
-typedef CmdHistoryBase<AnnualHistoryStrategy>   CmdHistoryAnnual;
-typedef CmdHistoryBase<AnnualGHistoryStrategy>  CmdGHistoryAnnual;
+typedef CmdHistoryBase<AnnualHistoryStrategy> CmdHistoryAnnual;
+typedef CmdHistoryBase<AnnualGHistoryStrategy> CmdGHistoryAnnual;
 
 #endif

@@ -28,70 +28,57 @@
 // cmake.h include header must come first
 
 #include <format.h>
-#include "tc/WorkingSet.h"
+
 #include "tc/Task.h"
+#include "tc/WorkingSet.h"
 #include "tc/util.h"
 
 using namespace tc::ffi;
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::WorkingSet::WorkingSet (WorkingSet &&other) noexcept
-{
+tc::WorkingSet::WorkingSet(WorkingSet&& other) noexcept {
   // move inner from other
-  inner = unique_tcws_ptr (
-      other.inner.release (),
-      [](TCWorkingSet* ws) { tc_working_set_free (ws); });
+  inner = unique_tcws_ptr(other.inner.release(), [](TCWorkingSet* ws) { tc_working_set_free(ws); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::WorkingSet& tc::WorkingSet::operator= (WorkingSet &&other) noexcept
-{
+tc::WorkingSet& tc::WorkingSet::operator=(WorkingSet&& other) noexcept {
   if (this != &other) {
     // move inner from other
-    inner = unique_tcws_ptr (
-        other.inner.release (),
-        [](TCWorkingSet* ws) { tc_working_set_free (ws); });
+    inner =
+        unique_tcws_ptr(other.inner.release(), [](TCWorkingSet* ws) { tc_working_set_free(ws); });
   }
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::WorkingSet::WorkingSet (tc::ffi::TCWorkingSet* tcws)
-{
-  inner = unique_tcws_ptr (
-      tcws,
-      [](TCWorkingSet* ws) { tc_working_set_free (ws); });
+tc::WorkingSet::WorkingSet(tc::ffi::TCWorkingSet* tcws) {
+  inner = unique_tcws_ptr(tcws, [](TCWorkingSet* ws) { tc_working_set_free(ws); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-size_t tc::WorkingSet::len () const noexcept
-{
-  return tc_working_set_len (&*inner);
+size_t tc::WorkingSet::len() const noexcept { return tc_working_set_len(&*inner); }
+
+////////////////////////////////////////////////////////////////////////////////
+size_t tc::WorkingSet::largest_index() const noexcept {
+  return tc_working_set_largest_index(&*inner);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-size_t tc::WorkingSet::largest_index () const noexcept
-{
-  return tc_working_set_largest_index (&*inner);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::optional<std::string> tc::WorkingSet::by_index (size_t index) const noexcept
-{
+std::optional<std::string> tc::WorkingSet::by_index(size_t index) const noexcept {
   TCUuid uuid;
-  if (tc_working_set_by_index (&*inner, index, &uuid)) {
-    return std::make_optional (tc2uuid (uuid));
+  if (tc_working_set_by_index(&*inner, index, &uuid)) {
+    return std::make_optional(tc2uuid(uuid));
   } else {
     return std::nullopt;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::optional<size_t> tc::WorkingSet::by_uuid (const std::string &uuid) const noexcept
-{
-  auto index = tc_working_set_by_uuid (&*inner, uuid2tc (uuid));
+std::optional<size_t> tc::WorkingSet::by_uuid(const std::string& uuid) const noexcept {
+  auto index = tc_working_set_by_uuid(&*inner, uuid2tc(uuid));
   if (index > 0) {
-    return std::make_optional (index);
+    return std::make_optional(index);
   } else {
     return std::nullopt;
   }

@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,10 +40,10 @@ class TestCustomReports(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
         self.t.config("report.foo.description", "DESC")
-        self.t.config("report.foo.labels",      "ID,DESCRIPTION")
-        self.t.config("report.foo.columns",     "id,description")
-        self.t.config("report.foo.sort",        "id+")
-        self.t.config("report.foo.filter",      "project:A")
+        self.t.config("report.foo.labels", "ID,DESCRIPTION")
+        self.t.config("report.foo.columns", "id,description")
+        self.t.config("report.foo.sort", "id+")
+        self.t.config("report.foo.filter", "project:A")
 
     def test_custom_report_help(self):
         """Verify custom report description is shown in help"""
@@ -72,19 +73,23 @@ class TestCustomReports(TestCase):
         code, out, err = self.t("foo rc._forcecolor:on rc.report.foo.filter:")
         self.assertIn("[44m", out)
 
+
 class TestCustomErrorHandling(TestCase):
     def setUp(self):
         self.t = Task()
 
     def test_size_mismatch(self):
         self.t.config("report.foo.columns", "id,description")
-        self.t.config("report.foo.labels",  "id")
+        self.t.config("report.foo.labels", "id")
         code, out, err = self.t.runError("foo")
-        self.assertIn("There are different numbers of columns and labels for report 'foo'.", err)
+        self.assertIn(
+            "There are different numbers of columns and labels for report 'foo'.", err
+        )
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

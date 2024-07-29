@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDLOG
 #define INCLUDED_CMDLOG
 
-#include <string>
 #include <Command.h>
 
-class CmdLog : public Command
-{
-public:
-  CmdLog ();
-  int execute (std::string&);
+#include <string>
+
+class CmdLog : public Command {
+ public:
+  CmdLog();
+  int execute(std::string&);
 };
 
 #endif

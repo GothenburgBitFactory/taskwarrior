@@ -30,9 +30,8 @@
 #include <ColModified.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnModified::ColumnModified ()
-{
-  _name  = "modified";
+ColumnModified::ColumnModified() {
+  _name = "modified";
   _label = "Modified";
 }
 

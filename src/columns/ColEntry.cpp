@@ -30,23 +30,19 @@
 #include <ColEntry.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnEntry::ColumnEntry ()
-{
-  _name       = "entry";
+ColumnEntry::ColumnEntry() {
+  _name = "entry";
   _modifiable = true;
-  _label      = "Added";
+  _label = "Added";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
-void ColumnEntry::setStyle (const std::string& value)
-{
-  Column::setStyle (value);
+void ColumnEntry::setStyle(const std::string& value) {
+  Column::setStyle(value);
 
-  if (_style == "age" &&
-      _label == "Added")
-    _label = "Age";
+  if (_style == "age" && _label == "Added") _label = "Age";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

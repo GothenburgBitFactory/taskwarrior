@@ -31,39 +31,32 @@
 #include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnUrgency::ColumnUrgency ()
-{
-  _name       = "urgency";
-  _style      = "real";
-  _label      = "Urgency";
+ColumnUrgency::ColumnUrgency() {
+  _name = "urgency";
+  _style = "real";
+  _label = "Urgency";
   _modifiable = false;
-  _styles     = {"real", "integer"};
-  _examples   = {"4.6", "4"};
+  _styles = {"real", "integer"};
+  _examples = {"4.6", "4"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
+void ColumnUrgency::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   if (_style == "default" || _style == "real")
-    minimum = maximum = format (task.urgency (), 4, 3).length ();
+    minimum = maximum = format(task.urgency(), 4, 3).length();
 
   else if (_style == "integer")
-    minimum = maximum = format ((int)task.urgency ()).length ();
+    minimum = maximum = format((int)task.urgency()).length();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUrgency::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
+void ColumnUrgency::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
   if (_style == "default" || _style == "real")
-    renderDouble (lines, width, color, task.urgency ());
+    renderDouble(lines, width, color, task.urgency());
 
   else if (_style == "integer")
-    renderInteger (lines, width, color, static_cast <int> (task.urgency ()));
+    renderInteger(lines, width, color, static_cast<int>(task.urgency()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

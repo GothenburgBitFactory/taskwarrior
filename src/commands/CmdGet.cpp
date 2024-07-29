@@ -28,27 +28,26 @@
 // cmake.h include header must come first
 
 #include <CmdGet.h>
-#include <Variant.h>
 #include <Context.h>
 #include <DOM.h>
+#include <Variant.h>
+#include <format.h>
 #include <main.h>
 #include <shared.h>
-#include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdGet::CmdGet ()
-{
-  _keyword               = "_get";
-  _usage                 = "task          _get <DOM> [<DOM> ...]";
-  _description           = "DOM Accessor";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdGet::CmdGet() {
+  _keyword = "_get";
+  _usage = "task          _get <DOM> [<DOM> ...]";
+  _description = "DOM Accessor";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = true;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,39 +56,32 @@ CmdGet::CmdGet ()
 //
 // It is an error to specify no DOM references.
 // It is not an error for a DOM reference to resolve to a blank value.
-int CmdGet::execute (std::string& output)
-{
-  std::vector <std::string> results;
-  for (auto& arg : Context::getContext ().cli2._args)
-  {
-    switch (arg._lextype)
-    {
-    case Lexer::Type::dom:
-      {
+int CmdGet::execute(std::string& output) {
+  std::vector<std::string> results;
+  for (auto& arg : Context::getContext().cli2._args) {
+    switch (arg._lextype) {
+      case Lexer::Type::dom: {
         Variant result;
-        if (getDOM (arg.attribute ("raw"), NULL, result))
-          results.emplace_back (result);
+        if (getDOM(arg.attribute("raw"), NULL, result))
+          results.emplace_back(result);
         else
-          results.emplace_back ("");
-      }
-      break;
+          results.emplace_back("");
+      } break;
 
-    // Look for non-refs to complain about.
-    case Lexer::Type::word:
-    case Lexer::Type::identifier:
-      if (! arg.hasTag ("BINARY") &&
-          ! arg.hasTag ("CMD"))
-        throw format ("'{1}' is not a DOM reference.", arg.attribute ("raw"));
+      // Look for non-refs to complain about.
+      case Lexer::Type::word:
+      case Lexer::Type::identifier:
+        if (!arg.hasTag("BINARY") && !arg.hasTag("CMD"))
+          throw format("'{1}' is not a DOM reference.", arg.attribute("raw"));
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 
-  if (results.size () == 0)
-    throw std::string ("No DOM reference specified.");
+  if (results.size() == 0) throw std::string("No DOM reference specified.");
 
-  output = join (" ", results);
+  output = join(" ", results);
   output += '\n';
   return 0;
 }

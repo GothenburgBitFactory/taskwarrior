@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDATTRIBUTES
 #define INCLUDED_CMDATTRIBUTES
 
-#include <string>
 #include <Command.h>
 
-class CmdZshAttributes : public Command
-{
-public:
-  CmdZshAttributes ();
-  int execute (std::string&);
+#include <string>
+
+class CmdZshAttributes : public Command {
+ public:
+  CmdZshAttributes();
+  int execute(std::string&);
 };
 
 #endif

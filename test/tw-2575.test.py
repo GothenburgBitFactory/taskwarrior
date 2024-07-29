@@ -40,10 +40,41 @@ class TestExport(TestCase):
 
         self.assertEqual(len(out), 4)
 
-        self.assertTaskEqual(out[0], {"id": 1, "description": "one", "status": "pending", "urgency": 0})
-        self.assertTaskEqual(out[1], {"id": 2, "description": "two", "project": "strange", "status": "pending", "urgency": 1})
-        self.assertTaskEqual(out[2], {"id": 3, "description": "task1", "status": "pending", "project": "A", "tags": ["home"], "urgency": 16.8})
-        self.assertTaskEqual(out[3], {"id": 4, "description": "task2", "status": "pending", "project": "A", "tags": ["work"], "urgency": 1.8})
+        self.assertTaskEqual(
+            out[0], {"id": 1, "description": "one", "status": "pending", "urgency": 0}
+        )
+        self.assertTaskEqual(
+            out[1],
+            {
+                "id": 2,
+                "description": "two",
+                "project": "strange",
+                "status": "pending",
+                "urgency": 1,
+            },
+        )
+        self.assertTaskEqual(
+            out[2],
+            {
+                "id": 3,
+                "description": "task1",
+                "status": "pending",
+                "project": "A",
+                "tags": ["home"],
+                "urgency": 16.8,
+            },
+        )
+        self.assertTaskEqual(
+            out[3],
+            {
+                "id": 4,
+                "description": "task2",
+                "status": "pending",
+                "project": "A",
+                "tags": ["work"],
+                "urgency": 1.8,
+            },
+        )
 
     def test_exports_filter(self):
         """Verify exports with filter work"""
@@ -52,7 +83,9 @@ class TestExport(TestCase):
 
         self.assertEqual(len(out), 1)
 
-        self.assertTaskEqual(out[0], {"id": 1, "description": "one", "status": "pending", "urgency": 0})
+        self.assertTaskEqual(
+            out[0], {"id": 1, "description": "one", "status": "pending", "urgency": 0}
+        )
 
     def test_exports_with_limits_and_filter(self):
         """Verify exports with limits and filter work"""
@@ -61,15 +94,45 @@ class TestExport(TestCase):
 
         self.assertEqual(len(out), 2)
 
-        self.assertTaskEqual(out[0], {"id": 3, "description": "task1", "status": "pending", "project": "A", "tags": ["home"], "urgency": 16.8})
-        self.assertTaskEqual(out[1], {"id": 4, "description": "task2", "status": "pending", "project": "A", "tags": ["work"], "urgency": 1.8})
+        self.assertTaskEqual(
+            out[0],
+            {
+                "id": 3,
+                "description": "task1",
+                "status": "pending",
+                "project": "A",
+                "tags": ["home"],
+                "urgency": 16.8,
+            },
+        )
+        self.assertTaskEqual(
+            out[1],
+            {
+                "id": 4,
+                "description": "task2",
+                "status": "pending",
+                "project": "A",
+                "tags": ["work"],
+                "urgency": 1.8,
+            },
+        )
 
         code, out, err = self.t("task limit:1 export")
         out = json.loads(out)
 
         self.assertEqual(len(out), 1)
 
-        self.assertTaskEqual(out[0], {"id": 3, "description": "task1", "status": "pending", "project": "A", "tags": ["home"], "urgency": 16.8})
+        self.assertTaskEqual(
+            out[0],
+            {
+                "id": 3,
+                "description": "task1",
+                "status": "pending",
+                "project": "A",
+                "tags": ["home"],
+                "urgency": 16.8,
+            },
+        )
 
     def test_exports_report(self):
         """Verify exports with report work"""
@@ -78,8 +141,28 @@ class TestExport(TestCase):
 
         self.assertEqual(len(out), 2)
 
-        self.assertTaskEqual(out[0], {"id": 4, "description": "task2", "status": "pending", "project": "A", "tags": ["work"], "urgency": 1.8})
-        self.assertTaskEqual(out[1], {"id": 3, "description": "task1", "status": "pending", "project": "A", "tags": ["home"], "urgency": 16.8})
+        self.assertTaskEqual(
+            out[0],
+            {
+                "id": 4,
+                "description": "task2",
+                "status": "pending",
+                "project": "A",
+                "tags": ["work"],
+                "urgency": 1.8,
+            },
+        )
+        self.assertTaskEqual(
+            out[1],
+            {
+                "id": 3,
+                "description": "task1",
+                "status": "pending",
+                "project": "A",
+                "tags": ["home"],
+                "urgency": 16.8,
+            },
+        )
 
 
 if __name__ == "__main__":

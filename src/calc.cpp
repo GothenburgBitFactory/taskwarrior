@@ -27,57 +27,53 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <iostream>
-#include <string>
-#include <stdlib.h>
-#include <string.h>
-#include <Eval.h>
 #include <Context.h>
-#include <Task.h>
 #include <Datetime.h>
 #include <Duration.h>
-#include <shared.h>
+#include <Eval.h>
+#include <Task.h>
 #include <format.h>
+#include <shared.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <iostream>
+#include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants.
-bool get (const std::string&, Variant&)
-{
-/*
-  // An example, although a bad one because this is supported by default.
-  if (name == "pi") {value = Variant (3.14159165); return true;}
-*/
+bool get(const std::string&, Variant&) {
+  /*
+    // An example, although a bad one because this is supported by default.
+    if (name == "pi") {value = Variant (3.14159165); return true;}
+  */
 
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
-{
+int main(int argc, char** argv) {
   int status = 0;
 
-  try
-  {
+  try {
     Context globalContext;
-    Context::setContext (&globalContext);
+    Context::setContext(&globalContext);
 
     // Same operating parameters as Context::staticInitialization.
-    Datetime::standaloneDateEnabled    = false;
-    Datetime::standaloneTimeEnabled    = false;
+    Datetime::standaloneDateEnabled = false;
+    Datetime::standaloneTimeEnabled = false;
     Duration::standaloneSecondsEnabled = false;
 
-    bool infix {true};
+    bool infix{true};
 
     // Add a source for constants.
     Eval e;
-    e.addSource (get);
+    e.addSource(get);
 
     // Combine all the arguments into one expression string.
     std::string expression;
-    for (int i = 1; i < argc; i++)
-    {
-      if (!strcmp (argv[i], "-h") || ! strcmp (argv[i], "--help"))
-      {
+    for (int i = 1; i < argc; i++) {
+      if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
         std::cout << '\n'
                   << "Usage: " << argv[0] << " [options] '<expression>'\n"
                   << '\n'
@@ -87,56 +83,47 @@ int main (int argc, char** argv)
                   << "  -i|--infix        Infix expression (default)\n"
                   << "  -p|--postfix      Postfix expression\n"
                   << '\n';
-        exit (1);
-      }
-      else if (!strcmp (argv[i], "-v") || !strcmp (argv[i], "--version"))
-      {
+        exit(1);
+      } else if (!strcmp(argv[i], "-v") || !strcmp(argv[i], "--version")) {
         std::cout << '\n'
-                  << format ("calc {1} built for ", VERSION)
-                  << osName ()
+                  << format("calc {1} built for ", VERSION) << osName() << '\n'
+                  << "Copyright (C) 2006 - 2021 T. Babej, P. Beckingham, F. Hernandez." << '\n'
                   << '\n'
-                  << "Copyright (C) 2006 - 2021 T. Babej, P. Beckingham, F. Hernandez."
-                  << '\n'
-                  << '\n'
-                  << "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit."
+                  << "Taskwarrior may be copied only under the terms of the MIT license, which may "
+                     "be found in the Taskwarrior source kit."
                   << '\n'
                   << '\n';
 
-        exit (1);
-      }
-      else if (!strcmp (argv[i], "-d") || !strcmp (argv[i], "--debug"))
-        e.debug (true);
-      else if (!strcmp (argv[i], "-i") || !strcmp (argv[i], "--infix"))
+        exit(1);
+      } else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug"))
+        e.debug(true);
+      else if (!strcmp(argv[i], "-i") || !strcmp(argv[i], "--infix"))
         infix = true;
-      else if (!strcmp (argv[i], "-p") || !strcmp (argv[i], "--postfix"))
+      else if (!strcmp(argv[i], "-p") || !strcmp(argv[i], "--postfix"))
         infix = false;
       else
-        expression += std::string (argv[i]) + ' ';
+        expression += std::string(argv[i]) + ' ';
     }
 
     Variant result;
     if (infix)
-      e.evaluateInfixExpression (expression, result);
+      e.evaluateInfixExpression(expression, result);
     else
-      e.evaluatePostfixExpression (expression, result);
+      e.evaluatePostfixExpression(expression, result);
 
     // Show any debug output.
-    for (const auto& i : Context::getContext ().debugMessages)
-      std::cout << i << '\n';
+    for (const auto& i : Context::getContext().debugMessages) std::cout << i << '\n';
 
     // Show the result in string form.
-    std::cout << (std::string) result
-              << '\n';
+    std::cout << (std::string)result << '\n';
   }
 
-  catch (const std::string& error)
-  {
+  catch (const std::string& error) {
     std::cerr << error << '\n';
     status = -1;
   }
 
-  catch (...)
-  {
+  catch (...) {
     std::cerr << "Unknown error occured.  Oops.\n";
     status = -2;
   }

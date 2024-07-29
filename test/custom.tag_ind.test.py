@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,9 +41,9 @@ class TestCustomTagIndicator(TestCase):
         """Executed once before any test in the class"""
         cls.t = Task()
         cls.t.config("report.foo.description", "DESC")
-        cls.t.config("report.foo.columns",     "id,tags.indicator")
-        cls.t.config("report.foo.labels",      "ID,T")
-        cls.t.config("report.foo.sort",        "id+")
+        cls.t.config("report.foo.columns", "id,tags.indicator")
+        cls.t.config("report.foo.labels", "ID,T")
+        cls.t.config("report.foo.sort", "id+")
 
         cls.t("add foo +tag")
         cls.t("add bar")
@@ -61,6 +62,7 @@ class TestCustomTagIndicator(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

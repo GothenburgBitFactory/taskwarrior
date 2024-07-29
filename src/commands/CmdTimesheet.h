@@ -27,15 +27,15 @@
 #ifndef INCLUDED_CMDTIMESHEET
 #define INCLUDED_CMDTIMESHEET
 
-#include <string>
 #include <Command.h>
 
-class CmdTimesheet : public Command
-{
-public:
-  CmdTimesheet ();
-  int execute (std::string&) override;
-  bool uses_context () const override;
+#include <string>
+
+class CmdTimesheet : public Command {
+ public:
+  CmdTimesheet();
+  int execute(std::string&) override;
+  bool uses_context() const override;
 };
 
 #endif

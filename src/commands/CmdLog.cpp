@@ -33,44 +33,40 @@
 #include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdLog::CmdLog ()
-{
-  _keyword               = "log";
-  _usage                 = "task          log <mods>";
-  _description           = "Adds a new task that is already completed";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = true;
-  _accepts_filter        = false;
+CmdLog::CmdLog() {
+  _keyword = "log";
+  _usage = "task          log <mods>";
+  _description = "Adds a new task that is already completed";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = true;
+  _accepts_filter = false;
   _accepts_modifications = true;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::operation;
+  _category = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdLog::execute (std::string& output)
-{
+int CmdLog::execute(std::string& output) {
   // Apply the command line modifications to the new task.
   Task task;
-  task.modify (Task::modReplace, true);
-  task.setStatus (Task::completed);
+  task.modify(Task::modReplace, true);
+  task.setStatus(Task::completed);
 
   // Cannot log recurring tasks.
-  if (task.has ("recur"))
-    throw std::string ("You cannot log recurring tasks.");
+  if (task.has("recur")) throw std::string("You cannot log recurring tasks.");
 
   // Cannot log waiting tasks.
-  if (task.has ("wait"))
-    throw std::string ("You cannot log waiting tasks.");
+  if (task.has("wait")) throw std::string("You cannot log waiting tasks.");
 
-  Context::getContext ().tdb2.add (task);
+  Context::getContext().tdb2.add(task);
 
-  if (Context::getContext ().verbose ("project"))
-    Context::getContext ().footnote (onProjectChange (task));
+  if (Context::getContext().verbose("project"))
+    Context::getContext().footnote(onProjectChange(task));
 
-  if (Context::getContext ().verbose ("new-uuid"))
-    output = format ("Logged task {1}.\n", task.get ("uuid"));
+  if (Context::getContext().verbose("new-uuid"))
+    output = format("Logged task {1}.\n", task.get("uuid"));
 
   return 0;
 }

@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDUNIQUE
 #define INCLUDED_CMDUNIQUE
 
-#include <string>
 #include <Command.h>
 
-class CmdUnique : public Command
-{
-public:
-  CmdUnique ();
-  int execute (std::string&);
+#include <string>
+
+class CmdUnique : public Command {
+ public:
+  CmdUnique();
+  int execute(std::string&);
 };
 
 #endif

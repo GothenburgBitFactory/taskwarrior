@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -72,9 +73,7 @@ class TestBug1904(TestCase):
         self.t("add pro:a.b test2")
 
     def validate_order(self, out):
-        order = ("a-b",
-                 "a",
-                 "  b")
+        order = ("a-b", "a", "  b")
 
         lines = out.splitlines(True)
         # position where project names start on the lines list
@@ -85,8 +84,10 @@ class TestBug1904(TestCase):
 
             self.assertTrue(
                 lines[pos].startswith(proj),
-                msg=("Project '{0}' is not in line #{1} or has an unexpected "
-                     "indentation.{2}".format(proj, pos, out))
+                msg=(
+                    "Project '{0}' is not in line #{1} or has an unexpected "
+                    "indentation.{2}".format(proj, pos, out)
+                ),
             )
 
     def test_project_eval(self):
@@ -98,6 +99,7 @@ class TestBug1904(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

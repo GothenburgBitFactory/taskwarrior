@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -77,27 +78,45 @@ class TestAnnotate(TestCase):
         # NOTE: Use 'rrr' to guarantee a unique report name.  Using 'r'
         # conflicts with 'recurring'.
         self.t.config("report.rrr.description", "rrr")
-        self.t.config("report.rrr.columns",     "id,description")
-        self.t.config("report.rrr.sort",        "id+")
-        self.t.config("dateformat",             "m/d/Y")
-        self.t.config("color",                  "0")
+        self.t.config("report.rrr.columns", "id,description")
+        self.t.config("report.rrr.sort", "id+")
+        self.t.config("dateformat", "m/d/Y")
+        self.t.config("color", "0")
 
         code, out, err = self.t("rrr")
 
         self.assertTasksExist(out)
 
-        self.assertRegex(out, "one\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+foo1",
-                                 msg='full - first  annotation task 1')
-        self.assertRegex(out, "foo1\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+foo2",
-                                 msg='full - first  annotation task 1')
-        self.assertRegex(out, "foo2\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+foo3",
-                                 msg='full - first  annotation task 1')
-        self.assertRegex(out, "two\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+bar1",
-                                 msg='full - first  annotation task 1')
-        self.assertRegex(out, "bar1\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+bar2",
-                                 msg='full - first  annotation task 1')
-        self.assertRegex(out, "three\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+baz1",
-                                 msg='full - first  annotation task 1')
+        self.assertRegex(
+            out,
+            "one\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+foo1",
+            msg="full - first  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "foo1\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+foo2",
+            msg="full - first  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "foo2\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+foo3",
+            msg="full - first  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "two\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+bar1",
+            msg="full - first  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "bar1\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+bar2",
+            msg="full - first  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "three\n.+\\d{1,2}/\\d{1,2}/\\d{4}\\s+baz1",
+            msg="full - first  annotation task 1",
+        )
 
     def test_annotate_dateformat(self):
         """Testing annotations in reports using dateformat.annotation"""
@@ -105,26 +124,45 @@ class TestAnnotate(TestCase):
         # NOTE: Use 'rrr' to guarantee a unique report name.  Using 'r'
         # conflicts with 'recurring'.
         self.t.config("report.rrr.description", "rrr")
-        self.t.config("report.rrr.columns",     "id,description")
-        self.t.config("report.rrr.sort",        "id+")
-        self.t.config("dateformat.annotation",  "yMD HNS")
+        self.t.config("report.rrr.columns", "id,description")
+        self.t.config("report.rrr.sort", "id+")
+        self.t.config("dateformat.annotation", "yMD HNS")
 
         code, out, err = self.t("rrr")
 
         self.assertTasksExist(out)
 
-        self.assertRegex(out, "one\n.+\\d{1,6}\\s+\\d{1,6}\\s+foo1",
-                                 msg="dateformat - first  annotation task 1")
-        self.assertRegex(out, "foo1\n.+\\d{1,6}\\s+\\d{1,6}\\s+foo2",
-                                 msg="dateformat - second  annotation task 1")
-        self.assertRegex(out, "foo2\n.+\\d{1,6}\\s+\\d{1,6}\\s+foo3",
-                                 msg="dateformat - third  annotation task 1")
-        self.assertRegex(out, "two\n.+\\d{1,6}\\s+\\d{1,6}\\s+bar1",
-                                 msg="dateformat - first  annotation task 2")
-        self.assertRegex(out, "bar1\n.+\\d{1,6}\\s+\\d{1,6}\\s+bar2",
-                                 msg="dateformat - second  annotation task 2")
-        self.assertRegex(out, "three\n.+\\d{1,6}\\s+\\d{1,6}\\s+baz1",
-                                 msg="dateformat - first  annotation task 3")
+        self.assertRegex(
+            out,
+            "one\n.+\\d{1,6}\\s+\\d{1,6}\\s+foo1",
+            msg="dateformat - first  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "foo1\n.+\\d{1,6}\\s+\\d{1,6}\\s+foo2",
+            msg="dateformat - second  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "foo2\n.+\\d{1,6}\\s+\\d{1,6}\\s+foo3",
+            msg="dateformat - third  annotation task 1",
+        )
+        self.assertRegex(
+            out,
+            "two\n.+\\d{1,6}\\s+\\d{1,6}\\s+bar1",
+            msg="dateformat - first  annotation task 2",
+        )
+        self.assertRegex(
+            out,
+            "bar1\n.+\\d{1,6}\\s+\\d{1,6}\\s+bar2",
+            msg="dateformat - second  annotation task 2",
+        )
+        self.assertRegex(
+            out,
+            "three\n.+\\d{1,6}\\s+\\d{1,6}\\s+baz1",
+            msg="dateformat - first  annotation task 3",
+        )
+
 
 class TestAnnotationPropagation(TestCase):
     def setUp(self):
@@ -138,7 +176,7 @@ class TestAnnotationPropagation(TestCase):
     def test_annotate_recurring(self):
         """Test propagation of annotation to recurring siblings"""
         self.t("add foo due:eom recur:weekly")
-        self.t("list") # GC/handleRecurrence
+        self.t("list")  # GC/handleRecurrence
         self.t("2 annotate bar", input="y\n")
         code, out, err = self.t("all rc.verbose:nothing")
 
@@ -194,6 +232,7 @@ class TestBug495(TestCase):
         code, out, err = self.t("_get 1.annotations.1.description")
         self.assertEqual("This is -- a -- test\n", out)
 
+
 class TestBug694(TestCase):
     def setUp(self):
         self.t = Task()
@@ -211,6 +250,7 @@ class TestBug694(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

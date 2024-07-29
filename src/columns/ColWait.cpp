@@ -30,9 +30,8 @@
 #include <ColWait.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnWait::ColumnWait ()
-{
-  _name  = "wait";
+ColumnWait::ColumnWait() {
+  _name = "wait";
   _label = "Wait";
 }
 

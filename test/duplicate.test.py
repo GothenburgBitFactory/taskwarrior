@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -64,7 +65,10 @@ class TestDuplication(TestCase):
     def test_duplication_showing_uuid(self):
         """Verify duplicate can show uuid"""
         code, out, err = self.t("1 duplicate rc.verbose:new-uuid")
-        self.assertRegex(out, "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+        self.assertRegex(
+            out,
+            "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+        )
 
 
 class TestDuplication2(TestCase):
@@ -75,7 +79,7 @@ class TestDuplication2(TestCase):
     def test_duplication_recurrence(self):
         """Verify that recurring tasks are properly duplicated"""
         self.t("add R due:tomorrow recur:weekly")
-        self.t("list")   # To force handleRecurrence().
+        self.t("list")  # To force handleRecurrence().
 
         code, out, err = self.t("1 duplicate")
         self.assertIn("The duplicated task is too", out)
@@ -83,7 +87,7 @@ class TestDuplication2(TestCase):
         code, out, err = self.t("2 duplicate")
         self.assertIn("The duplicated task is not", out)
 
-        self.t("list")   # To force handleRecurrence().
+        self.t("list")  # To force handleRecurrence().
         code, out, err = self.t("1 export")
         self.assertIn('"status":"recurring"', out)
 
@@ -105,6 +109,7 @@ class TestDuplication2(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

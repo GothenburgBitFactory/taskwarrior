@@ -65,7 +65,7 @@ color.due.today=on rgb353
 color.overdue=on rgb544
 
 # Report: burndown
-color.burndown.pending=on rgb411 
+color.burndown.pending=on rgb411
 color.burndown.started=on rgb550
 color.burndown.done=on rgb151
 
@@ -95,4 +95,3 @@ color.sync.rejected=red
 # Command: undo
 color.undo.before=yellow
 color.undo.after=green
-

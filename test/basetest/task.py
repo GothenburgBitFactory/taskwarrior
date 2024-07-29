@@ -21,6 +21,7 @@ class Task(object):
 
     A taskw client should not be used after being destroyed.
     """
+
     DEFAULT_TASK = task_binary_location()
 
     def __init__(self, taskw=DEFAULT_TASK):
@@ -43,11 +44,13 @@ class Task(object):
 
         self.reset_env()
 
-        with open(self.taskrc, 'w') as rc:
-            rc.write("data.location={0}\n"
-                     "hooks=off\n"
-                     "news.version=2.6.0\n"
-                     "".format(self.datadir))
+        with open(self.taskrc, "w") as rc:
+            rc.write(
+                "data.location={0}\n"
+                "hooks=off\n"
+                "news.version=2.6.0\n"
+                "".format(self.datadir)
+            )
 
         # Hooks disabled until requested
         self.hooks = None
@@ -61,14 +64,12 @@ class Task(object):
         return self.runSuccess(*args, **kwargs)
 
     def activate_hooks(self):
-        """Enable self.hooks functionality and activate hooks on config
-        """
+        """Enable self.hooks functionality and activate hooks on config"""
         self.config("hooks", "1")
         self.hooks = Hooks(self.datadir)
 
     def reset_env(self):
-        """Set a new environment derived from the one used to launch the test
-        """
+        """Set a new environment derived from the one used to launch the test"""
         # Copy all env variables to avoid clashing subprocess environments
         self.env = os.environ.copy()
 
@@ -78,15 +79,13 @@ class Task(object):
         self.env["TASKRC"] = self.taskrc
 
     def config(self, var, value):
-        """Run setup `var` as `value` in taskd config
-        """
+        """Run setup `var` as `value` in taskd config"""
         # Add -- to avoid misinterpretation of - in things like UUIDs
         cmd = (self.taskw, "config", "--", var, value)
         return run_cmd_wait(cmd, env=self.env, input="y\n")
 
     def del_config(self, var):
-        """Remove `var` from taskd config
-        """
+        """Remove `var` from taskd config"""
         cmd = (self.taskw, "config", var)
         return run_cmd_wait(cmd, env=self.env, input="y\n")
 
@@ -104,8 +103,9 @@ class Task(object):
         if export_filter is None:
             export_filter = ""
 
-        code, out, err = self.runSuccess("rc.json.array=1 {0} export"
-                                         "".format(export_filter))
+        code, out, err = self.runSuccess(
+            "rc.json.array=1 {0} export" "".format(export_filter)
+        )
 
         return json.loads(out)
 
@@ -118,16 +118,16 @@ class Task(object):
         result = self.export(export_filter=export_filter)
 
         if len(result) != 1:
-            descriptions = [task.get('description') or '[description-missing]'
-                            for task in result]
+            descriptions = [
+                task.get("description") or "[description-missing]" for task in result
+            ]
 
             raise ValueError(
                 "One task should match the '{0}' filter, '{1}' "
                 "matches:\n    {2}".format(
-                    export_filter or '',
-                    len(result),
-                    '\n    '.join(descriptions)
-                ))
+                    export_filter or "", len(result), "\n    ".join(descriptions)
+                )
+            )
 
         return result[0]
 
@@ -146,8 +146,7 @@ class Task(object):
 
         return args
 
-    def runSuccess(self, args="", input=None, merge_streams=False,
-                   timeout=5):
+    def runSuccess(self, args="", input=None, merge_streams=False, timeout=5):
         """Invoke task with given arguments and fail if exit code != 0
 
         Use runError if you want exit_code to be tested automatically and
@@ -171,10 +170,9 @@ class Task(object):
         args = self._split_string_args_if_string(args)
         command.extend(args)
 
-        output = run_cmd_wait_nofail(command, input,
-                                     merge_streams=merge_streams,
-                                     env=self.env,
-                                     timeout=timeout)
+        output = run_cmd_wait_nofail(
+            command, input, merge_streams=merge_streams, env=self.env, timeout=timeout
+        )
 
         if output[0] != 0:
             raise CommandError(command, *output)
@@ -205,10 +203,9 @@ class Task(object):
         args = self._split_string_args_if_string(args)
         command.extend(args)
 
-        output = run_cmd_wait_nofail(command, input,
-                                     merge_streams=merge_streams,
-                                     env=self.env,
-                                     timeout=timeout)
+        output = run_cmd_wait_nofail(
+            command, input, merge_streams=merge_streams, env=self.env, timeout=timeout
+        )
 
         # output[0] is the exit code
         if output[0] == 0 or output[0] is None:
@@ -217,8 +214,7 @@ class Task(object):
         return output
 
     def destroy(self):
-        """Cleanup the data folder and release server port for other instances
-        """
+        """Cleanup the data folder and release server port for other instances"""
         try:
             shutil.rmtree(self.datadir)
         except OSError as e:
@@ -237,8 +233,10 @@ class Task(object):
         self.destroy = lambda: None
 
     def __destroyed(self, *args, **kwargs):
-        raise AttributeError("Task instance has been destroyed. "
-                             "Create a new instance if you need a new client.")
+        raise AttributeError(
+            "Task instance has been destroyed. "
+            "Create a new instance if you need a new client."
+        )
 
     def diag(self, merge_streams_with=None):
         """Run task diagnostics.
@@ -301,5 +299,6 @@ class Task(object):
         if faketime is not None:
             # Use advanced time format
             self._command = [cmd, "-f", faketime] + self._command
+
 
 # vim: ai sts=4 et sw=4

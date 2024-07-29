@@ -29,72 +29,60 @@
 
 #include <ColRType.h>
 #include <Context.h>
-#include <shared.h>
 #include <format.h>
+#include <shared.h>
+
 #include <cctype>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnRType::ColumnRType ()
-{
-  _name       = "rtype";
-  _style      = "default";
-  _label      = "Recurrence type";
+ColumnRType::ColumnRType() {
+  _name = "rtype";
+  _style = "default";
+  _label = "Recurrence type";
   _modifiable = false;
-  _styles     = {"default", "indicator"};
-  _examples   = {"periodic", "chained"};
+  _styles = {"default", "indicator"};
+  _examples = {"periodic", "chained"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
-void ColumnRType::setStyle (const std::string& value)
-{
-  Column::setStyle (value);
+void ColumnRType::setStyle(const std::string& value) {
+  Column::setStyle(value);
 
   if (_style == "indicator" && _label == "Recurrence type")
-    _label = _label.substr (0, Context::getContext ().config.get ("rtype.indicator").length ());
+    _label = _label.substr(0, Context::getContext().config.get("rtype.indicator").length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnRType::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
+void ColumnRType::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
-  if (task.has (_name))
-  {
+  if (task.has(_name)) {
     if (_style == "default")
-      minimum = maximum = task.get (_name).length ();
+      minimum = maximum = task.get(_name).length();
     else if (_style == "indicator")
       minimum = maximum = 1;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnRType::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  if (task.has (_name))
-  {
+void ColumnRType::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+  if (task.has(_name)) {
     if (_style == "default")
-      renderStringRight (lines, width, color, task.get (_name));
+      renderStringRight(lines, width, color, task.get(_name));
 
-    else if (_style == "indicator")
-    {
-      std::string value {" "};
-      value[0] = toupper (task.get (_name)[0]);
-      renderStringRight (lines, width, color, value);
+    else if (_style == "indicator") {
+      std::string value{" "};
+      value[0] = toupper(task.get(_name)[0]);
+      renderStringRight(lines, width, color, value);
     }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnRType::validate (const std::string& input) const
-{
-  return input == "periodic" ||
-         input == "chained";
+bool ColumnRType::validate(const std::string& input) const {
+  return input == "periodic" || input == "chained";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

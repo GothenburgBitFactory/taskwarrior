@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,13 +42,13 @@ class TestDateSort(TestCase):
 
     def test_datesort(self):
         """Verify dates sort properly with a report date format that hides date details"""
-        self.t.config("verbose",                       "nothing")
-        self.t.config("dateformat",                    "YMD")
-        self.t.config("report.small_list.columns",     "due,description")
-        self.t.config("report.small_list.labels",      "Due,Description")
-        self.t.config("report.small_list.sort",        "due+")
-        self.t.config("report.small_list.filter",      "status:pending")
-        self.t.config("report.small_list.dateformat",  "D")
+        self.t.config("verbose", "nothing")
+        self.t.config("dateformat", "YMD")
+        self.t.config("report.small_list.columns", "due,description")
+        self.t.config("report.small_list.labels", "Due,Description")
+        self.t.config("report.small_list.sort", "due+")
+        self.t.config("report.small_list.filter", "status:pending")
+        self.t.config("report.small_list.dateformat", "D")
 
         self.t("add one due:20150101")
         self.t("add two due:20150201")
@@ -65,6 +66,7 @@ class TestDateSort(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

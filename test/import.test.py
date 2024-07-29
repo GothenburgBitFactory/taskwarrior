@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 import json
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -179,7 +180,7 @@ class TestImport(TestCase):
     def test_import_newlines_whitespace(self):
         """JSON array with whitespace before and after names and values"""
         _data = """[
-{ "uuid":"a0000000-a000-a000-a000-a00000000000" ,  "description"  :  "zero" ,"project":"A", "status":"pending","entry":"1234567889" } ,   
+{ "uuid":"a0000000-a000-a000-a000-a00000000000" ,  "description"  :  "zero" ,"project":"A", "status":"pending","entry":"1234567889" } ,
 { "uuid":"a1111111-a111-a111-a111-a11111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},     {"uuid":"a2222222-a222-a222-a222-a22222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690" }
 ]"""
         code, out, err = self.t("import", input=_data)
@@ -210,15 +211,20 @@ class TestImport(TestCase):
         self.t("import", input=_data)
         _t = self.t.export("a0000000-a000-a000-a000-a00000000000")[0]
 
-        for _uuid in ["a1111111-a111-a111-a111-a11111111111","a2222222-a222-a222-a222-a22222222222"]:
+        for _uuid in [
+            "a1111111-a111-a111-a111-a11111111111",
+            "a2222222-a222-a222-a222-a22222222222",
+        ]:
             self.assertTrue((_t["depends"][0] == _uuid) or (_t["depends"][1] == _uuid))
 
     def test_import_same_task_twice(self):
         """Test import same task twice"""
-        _data = """{"uuid":"a1111111-a222-a333-a444-a55555555555","description":"data4"}"""
+        _data = (
+            """{"uuid":"a1111111-a222-a333-a444-a55555555555","description":"data4"}"""
+        )
         self.t("import", input=_data)
         code, out1, err = self.t("export")
-        self.t.faketime('+1s')
+        self.t.faketime("+1s")
         self.t("import", input=_data)
         code, out2, err = self.t("export")
         self.assertEqual(out1, out2)
@@ -230,7 +236,9 @@ class TestImport(TestCase):
 {"uuid":"a0000000-a000-a000-a000-a00000000000","description":"second description"}
 ]"""
         _, _, err = self.t("import", input=_data)
-        self.assertIn("Input contains UUID 'a0000000-a000-a000-a000-a00000000000' 2 times", err)
+        self.assertIn(
+            "Input contains UUID 'a0000000-a000-a000-a000-a00000000000' 2 times", err
+        )
 
 
 class TestImportExportRoundtrip(TestCase):
@@ -239,8 +247,8 @@ class TestImportExportRoundtrip(TestCase):
         self.t2 = Task()
 
         for client in (self.t1, self.t2):
-            client.config("dateformat",   "m/d/Y")
-            client.config("verbose",      "0")
+            client.config("dateformat", "m/d/Y")
+            client.config("verbose", "0")
             client.config("defaultwidth", "100")
 
     def _validate_data(self, client):
@@ -277,7 +285,7 @@ class TestImportValidate(TestCase):
 
     def test_import_empty_json(self):
         """Verify empty JSON is caught"""
-        j = '{}'
+        j = "{}"
         code, out, err = self.t.runError("import", input=j)
         self.assertIn("A task must have a description.", err)
 
@@ -343,6 +351,7 @@ class TestBug1441(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

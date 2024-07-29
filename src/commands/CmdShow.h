@@ -27,21 +27,20 @@
 #ifndef INCLUDED_CMDSHOW
 #define INCLUDED_CMDSHOW
 
-#include <string>
 #include <Command.h>
 
-class CmdShow : public Command
-{
-public:
-  CmdShow ();
-  int execute (std::string&);
+#include <string>
+
+class CmdShow : public Command {
+ public:
+  CmdShow();
+  int execute(std::string&);
 };
 
-class CmdShowRaw : public Command
-{
-public:
-  CmdShowRaw ();
-  int execute (std::string&);
+class CmdShowRaw : public Command {
+ public:
+  CmdShowRaw();
+  int execute(std::string&);
 };
 
 #endif

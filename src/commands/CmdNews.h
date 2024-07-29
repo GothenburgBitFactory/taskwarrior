@@ -27,14 +27,15 @@
 #ifndef INCLUDED_CMDNEWS
 #define INCLUDED_CMDNEWS
 
-#include <string>
-#include <Command.h>
 #include <CmdConfig.h>
 #include <CmdContext.h>
+#include <Command.h>
 #include <Version.h>
 
+#include <string>
+
 class NewsItem {
-public:
+ public:
   Version _version;
   std::string _title;
   std::string _bg_title;
@@ -44,31 +45,23 @@ public:
   std::string _reasoning;
   std::string _actions;
 
-  void render ();
+  void render();
 
   static std::vector<NewsItem> all();
-  static void version2_6_0 (std::vector<NewsItem>&);
-  static void version3_0_0 (std::vector<NewsItem>&);
-  static void version3_1_0 (std::vector<NewsItem>&);
+  static void version2_6_0(std::vector<NewsItem>&);
+  static void version3_0_0(std::vector<NewsItem>&);
+  static void version3_1_0(std::vector<NewsItem>&);
 
-private:
-  NewsItem (
-    Version,
-    const std::string&,
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = "",
-    const std::string& = ""
-  );
+ private:
+  NewsItem(Version, const std::string&, const std::string& = "", const std::string& = "",
+           const std::string& = "", const std::string& = "", const std::string& = "",
+           const std::string& = "");
 };
 
-class CmdNews : public Command
-{
-public:
-  CmdNews ();
-  int execute (std::string&);
+class CmdNews : public Command {
+ public:
+  CmdNews();
+  int execute(std::string&);
 };
 
 #endif

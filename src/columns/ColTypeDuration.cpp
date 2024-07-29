@@ -30,50 +30,42 @@
 #include <ColTypeDuration.h>
 #include <Context.h>
 #include <Eval.h>
-#include <Variant.h>
 #include <Filter.h>
+#include <Variant.h>
 #include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnTypeDuration::ColumnTypeDuration ()
-{
-  _type = "duration";
+ColumnTypeDuration::ColumnTypeDuration() { _type = "duration"; }
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTypeDuration::validate(const std::string& input) const {
+  return input.length() ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnTypeDuration::validate (const std::string& input) const
-{
-  return input.length () ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnTypeDuration::modify (Task& task, const std::string& value)
-{
+void ColumnTypeDuration::modify(Task& task, const std::string& value) {
   // Try to evaluate 'value'.  It might work.
   Variant evaluatedValue;
-  try
-  {
+  try {
     Eval e;
-    e.addSource (domSource);
-    e.evaluateInfixExpression (value, evaluatedValue);
+    e.addSource(domSource);
+    e.evaluateInfixExpression(value, evaluatedValue);
   }
 
-  catch (...)
-  {
-    evaluatedValue = Variant (value);
+  catch (...) {
+    evaluatedValue = Variant(value);
   }
 
   // The duration is stored in raw form, but it must still be valid,
   // and therefore is parsed first.
   std::string label = "  [1;37;43mMODIFICATION[0m ";
-  if (evaluatedValue.type () == Variant::type_duration)
-  {
+  if (evaluatedValue.type() == Variant::type_duration) {
     // Store the raw value, for 'recur'.
-    Context::getContext ().debug (label + _name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + '\'');
-    task.set (_name, evaluatedValue);
-  }
-  else
-    throw format ("The duration value '{1}' is not supported.", value);
+    Context::getContext().debug(label + _name + " <-- " + (std::string)evaluatedValue + " <-- '" +
+                                value + '\'');
+    task.set(_name, evaluatedValue);
+  } else
+    throw format("The duration value '{1}' is not supported.", value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

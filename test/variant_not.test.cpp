@@ -27,51 +27,51 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <iostream>
-#include <test.h>
 #include <Variant.h>
+#include <test.h>
+
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int, char**)
-{
-  UnitTest t (14);
+int main(int, char**) {
+  UnitTest t(14);
 
-  Variant v0 (true);
-  Variant v1 (42);
-  Variant v2 (3.14);
-  Variant v3 ("foo");
-  Variant v4 (1234567890, Variant::type_date);
-  Variant v5 (1200, Variant::type_duration);
+  Variant v0(true);
+  Variant v1(42);
+  Variant v2(3.14);
+  Variant v3("foo");
+  Variant v4(1234567890, Variant::type_date);
+  Variant v5(1200, Variant::type_duration);
 
   // Truth table.
-  Variant vFalse (false);
-  Variant vTrue (true);
-  t.is (!vFalse, true,  "!false --> true");
-  t.is (!vTrue,  false, "!true --> false");
+  Variant vFalse(false);
+  Variant vTrue(true);
+  t.is(!vFalse, true, "!false --> true");
+  t.is(!vTrue, false, "!true --> false");
 
-  Variant v00 = ! v0;
-  t.is (v00.type (), Variant::type_boolean, "! true --> boolean");
-  t.is (v00.get_bool (), false,             "! true --> false");
+  Variant v00 = !v0;
+  t.is(v00.type(), Variant::type_boolean, "! true --> boolean");
+  t.is(v00.get_bool(), false, "! true --> false");
 
-  Variant v01 = ! v1;
-  t.is (v01.type (), Variant::type_boolean, "! 42 --> boolean");
-  t.is (v01.get_bool (), false,             "! 42 --> false");
+  Variant v01 = !v1;
+  t.is(v01.type(), Variant::type_boolean, "! 42 --> boolean");
+  t.is(v01.get_bool(), false, "! 42 --> false");
 
-  Variant v02 = ! v2;
-  t.is (v02.type (), Variant::type_boolean, "! 3.14 --> boolean");
-  t.is (v02.get_bool (), false,             "! 3.14 --> false");
+  Variant v02 = !v2;
+  t.is(v02.type(), Variant::type_boolean, "! 3.14 --> boolean");
+  t.is(v02.get_bool(), false, "! 3.14 --> false");
 
-  Variant v03 = ! v3;
-  t.is (v03.type (), Variant::type_boolean, "! foo --> boolean");
-  t.is (v03.get_bool (), false,             "! foo --> false");
+  Variant v03 = !v3;
+  t.is(v03.type(), Variant::type_boolean, "! foo --> boolean");
+  t.is(v03.get_bool(), false, "! foo --> false");
 
-  Variant v04 = ! v4;
-  t.is (v04.type (), Variant::type_boolean, "! 1234567890 --> boolean");
-  t.is (v04.get_bool (), false,             "! 1234567890 --> false");
+  Variant v04 = !v4;
+  t.is(v04.type(), Variant::type_boolean, "! 1234567890 --> boolean");
+  t.is(v04.get_bool(), false, "! 1234567890 --> false");
 
-  Variant v05 = ! v5;
-  t.is (v05.type (), Variant::type_boolean, "! 1200 --> boolean");
-  t.is (v05.get_bool (), false,             "! 1200 --> false");
+  Variant v05 = !v5;
+  t.is(v05.type(), Variant::type_boolean, "! 1200 --> boolean");
+  t.is(v05.get_bool(), false, "! 1200 --> false");
 
   return 0;
 }

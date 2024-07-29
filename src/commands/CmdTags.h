@@ -27,21 +27,20 @@
 #ifndef INCLUDED_CMDTAGS
 #define INCLUDED_CMDTAGS
 
-#include <string>
 #include <Command.h>
 
-class CmdTags : public Command
-{
-public:
-  CmdTags ();
-  int execute (std::string&);
+#include <string>
+
+class CmdTags : public Command {
+ public:
+  CmdTags();
+  int execute(std::string&);
 };
 
-class CmdCompletionTags : public Command
-{
-public:
-  CmdCompletionTags ();
-  int execute (std::string&);
+class CmdCompletionTags : public Command {
+ public:
+  CmdCompletionTags();
+  int execute(std::string&);
 };
 
 #endif

@@ -67,38 +67,32 @@ bool Version::is_valid() const { return major >= 0; }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Version::operator<(const Version &other) const {
-  return std::tie(major, minor, patch) <
-         std::tie(other.major, other.minor, other.patch);
+  return std::tie(major, minor, patch) < std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Version::operator<=(const Version &other) const {
-  return std::tie(major, minor, patch) <=
-         std::tie(other.major, other.minor, other.patch);
+  return std::tie(major, minor, patch) <= std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Version::operator>(const Version &other) const {
-  return std::tie(major, minor, patch) >
-         std::tie(other.major, other.minor, other.patch);
+  return std::tie(major, minor, patch) > std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Version::operator>=(const Version &other) const {
-  return std::tie(major, minor, patch) >=
-         std::tie(other.major, other.minor, other.patch);
+  return std::tie(major, minor, patch) >= std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Version::operator==(const Version &other) const {
-  return std::tie(major, minor, patch) ==
-         std::tie(other.major, other.minor, other.patch);
+  return std::tie(major, minor, patch) == std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Version::operator!=(const Version &other) const {
-  return std::tie(major, minor, patch) !=
-         std::tie(other.major, other.minor, other.patch);
+  return std::tie(major, minor, patch) != std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

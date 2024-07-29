@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,8 +41,8 @@ class TestCMD(TestCase):
         cls.t = Task()
         cls.t.config("default.command", "list")
 
-        cls.t('add one')
-        cls.t('add two')
+        cls.t("add one")
+        cls.t("add two")
 
     def test_default_command(self):
         """default command"""
@@ -51,8 +52,8 @@ class TestCMD(TestCase):
 
     def test_info_command(self):
         """info command"""
-        code, out, err = self.t('1')
-        self.assertRegex(out, r'Description\s+one')
+        code, out, err = self.t("1")
+        self.assertRegex(out, r"Description\s+one")
 
 
 class TestDefaults(TestCase):
@@ -60,11 +61,11 @@ class TestDefaults(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t.config("default.command",      "list")
-        cls.t.config("default.project",      "PROJECT")
+        cls.t.config("default.command", "list")
+        cls.t.config("default.project", "PROJECT")
         cls.t.config("uda.priority.default", "M")
-        cls.t.config("default.due",          "eom")
-        cls.t.config("default.scheduled",    "eom")
+        cls.t.config("default.due", "eom")
+        cls.t.config("default.scheduled", "eom")
 
     def test_all_defaults(self):
         """Verify all defaults are employed"""
@@ -125,6 +126,7 @@ class TestBug1377(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

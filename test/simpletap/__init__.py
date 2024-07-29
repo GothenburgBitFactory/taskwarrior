@@ -80,8 +80,7 @@ class TAPTestResult(unittest.result.TestResult):
         pass
 
     def _restoreStdout(self):
-        """Restore sys.stdout and sys.stderr, don't merge buffered output yet
-        """
+        """Restore sys.stdout and sys.stderr, don't merge buffered output yet"""
         if self.buffer:
             sys.stdout = self._original_stdout
             sys.stderr = self._original_stderr
@@ -99,12 +98,11 @@ class TAPTestResult(unittest.result.TestResult):
             else:
                 stream.write("# " + line)
 
-        if not line.endswith('\n'):
-            stream.write('\n')
+        if not line.endswith("\n"):
+            stream.write("\n")
 
     def _mergeStdout(self):
-        """Merge buffered output with main streams
-        """
+        """Merge buffered output with main streams"""
 
         if self.buffer:
             output = self._stdout_buffer.getvalue()
@@ -154,25 +152,33 @@ class TAPTestResult(unittest.result.TestResult):
         if status:
 
             if status == "SKIP":
-                self.stream.writeln("{0} {1} - {2}: {3} # skip".format(
-                    color("ok", "yellow"), self.testsRun, filename, desc)
+                self.stream.writeln(
+                    "{0} {1} - {2}: {3} # skip".format(
+                        color("ok", "yellow"), self.testsRun, filename, desc
+                    )
                 )
             elif status == "EXPECTED_FAILURE":
-                self.stream.writeln("{0} {1} - {2}: {3} # TODO".format(
-                    color("not ok", "yellow"), self.testsRun, filename, desc)
+                self.stream.writeln(
+                    "{0} {1} - {2}: {3} # TODO".format(
+                        color("not ok", "yellow"), self.testsRun, filename, desc
+                    )
                 )
             elif status == "UNEXPECTED_SUCCESS":
-                self.stream.writeln("{0} {1} - {2}: {3} # FIXED".format(
-                    color("not ok", "yellow"), self.testsRun, filename, desc)
+                self.stream.writeln(
+                    "{0} {1} - {2}: {3} # FIXED".format(
+                        color("not ok", "yellow"), self.testsRun, filename, desc
+                    )
                 )
             else:
-                self.stream.writeln("{0} {1} - {2}: {3}".format(
-                    color("not ok", "red"), self.testsRun, filename, desc)
+                self.stream.writeln(
+                    "{0} {1} - {2}: {3}".format(
+                        color("not ok", "red"), self.testsRun, filename, desc
+                    )
                 )
 
             if exception_name:
-                self.stream.writeln("# {0}: {1}{2}:".format(
-                    status, exception_name, trace_msg)
+                self.stream.writeln(
+                    "# {0}: {1}{2}:".format(status, exception_name, trace_msg)
                 )
             else:
                 self.stream.writeln("# {0}:".format(status))
@@ -185,8 +191,10 @@ class TAPTestResult(unittest.result.TestResult):
                 line = line.replace("\\n", "\n# ")
                 self.stream.writeln("#{0}{1}".format(padding, line))
         else:
-            self.stream.writeln("{0} {1} - {2}: {3}".format(
-                color("ok", "green"), self.testsRun, filename, desc)
+            self.stream.writeln(
+                "{0} {1} - {2}: {3}".format(
+                    color("ok", "green"), self.testsRun, filename, desc
+                )
             )
 
         # Flush all buffers to stdout
@@ -223,6 +231,7 @@ class TAPTestRunner(unittest.runner.TextTestRunner):
 
     Inherits from TextTestRunner the default runner.
     """
+
     resultclass = TAPTestResult
 
     def __init__(self, stream=sys.stdout, *args, **kwargs):

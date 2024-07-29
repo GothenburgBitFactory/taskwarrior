@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDUNDO
 #define INCLUDED_CMDUNDO
 
-#include <string>
 #include <Command.h>
 
-class CmdUndo : public Command
-{
-public:
-  CmdUndo ();
-  int execute (std::string&);
+#include <string>
+
+class CmdUndo : public Command {
+ public:
+  CmdUndo();
+  int execute(std::string&);
 };
 
 #endif

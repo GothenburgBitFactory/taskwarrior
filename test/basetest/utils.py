@@ -9,11 +9,13 @@ import atexit
 import tempfile
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
+
 try:
     from Queue import Queue, Empty
 except ImportError:
     from queue import Queue, Empty
 from time import sleep
+
 try:
     import simplejson as json
 except ImportError:
@@ -21,15 +23,13 @@ except ImportError:
 from .exceptions import CommandError, TimeoutWaitingFor
 
 USED_PORTS = set()
-ON_POSIX = 'posix' in sys.builtin_module_names
+ON_POSIX = "posix" in sys.builtin_module_names
 
 # Directory relative to basetest module location
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Location of binary files (usually the src/ folder)
-BIN_PREFIX = os.path.abspath(
-    os.path.join("${CMAKE_BINARY_DIR}","src")
-)
+BIN_PREFIX = os.path.abspath(os.path.join("${CMAKE_BINARY_DIR}", "src"))
 
 # Default location of test hooks
 DEFAULT_HOOK_PATH = os.path.abspath(
@@ -45,7 +45,7 @@ TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
 # Environment flags to control use of PATH or in-tree binaries
 TASK_USE_PATH = os.environ.get("TASK_USE_PATH", False)
 
-UUID_REGEXP = ("[0-9A-Fa-f]{8}-" + ("[0-9A-Fa-f]{4}-" * 3) + "[0-9A-Fa-f]{12}")
+UUID_REGEXP = "[0-9A-Fa-f]{8}-" + ("[0-9A-Fa-f]{4}-" * 3) + "[0-9A-Fa-f]{12}"
 
 
 def task_binary_location(cmd="task"):
@@ -65,9 +65,8 @@ def binary_location(cmd, USE_PATH=False):
         return os.path.join(BIN_PREFIX, cmd)
 
 
-def wait_condition(cond, timeout=10, sleeptime=.01):
-    """Wait for condition to return anything other than None
-    """
+def wait_condition(cond, timeout=10, sleeptime=0.01):
+    """Wait for condition to return anything other than None"""
     # NOTE Increasing sleeptime can dramatically increase testsuite runtime
     # It also reduces CPU load significantly
     if timeout is None:
@@ -92,8 +91,8 @@ def wait_condition(cond, timeout=10, sleeptime=.01):
 
 
 def wait_process(pid, timeout=None):
-    """Wait for process to finish
-    """
+    """Wait for process to finish"""
+
     def process():
         try:
             os.kill(pid, 0)
@@ -120,13 +119,18 @@ def _queue_output(arguments, pidq, outputq):
         # pid None is read by the main thread as a crash of the process
         pidq.put(None)
 
-        outputq.put((
-            "",
-            ("Unexpected exception caught during execution of taskw: '{0}' . "
-             "If you are running out-of-tree tests set TASK_USE_PATH=1 "
-             "in shell env before execution and add the "
-             "location of the task(d) binary to the PATH".format(e)),
-            255))  # false exitcode
+        outputq.put(
+            (
+                "",
+                (
+                    "Unexpected exception caught during execution of taskw: '{0}' . "
+                    "If you are running out-of-tree tests set TASK_USE_PATH=1 "
+                    "in shell env before execution and add the "
+                    "location of the task(d) binary to the PATH".format(e)
+                ),
+                255,
+            )
+        )  # false exitcode
 
         return
 
@@ -137,15 +141,14 @@ def _queue_output(arguments, pidq, outputq):
     out, err = proc.communicate(input_data)
 
     if sys.version_info > (3,):
-        out, err = out.decode('utf-8'), err.decode('utf-8')
+        out, err = out.decode("utf-8"), err.decode("utf-8")
 
     # Give the output back to the caller
     outputq.put((out, err, proc.returncode))
 
 
 def _retrieve_output(thread, timeout, queue, thread_error):
-    """Fetch output from taskw subprocess queues
-    """
+    """Fetch output from taskw subprocess queues"""
     # Try to join the thread on failure abort
     thread.join(timeout)
     if thread.is_alive():
@@ -184,16 +187,16 @@ def _get_output(arguments, timeout=None):
 
     # Process crashed or timed out for some reason
     if pid is None:
-        return _retrieve_output(t, output_timeout, outputq,
-                                "TaskWarrior to start")
+        return _retrieve_output(t, output_timeout, outputq, "TaskWarrior to start")
 
     # Wait for process to finish (normal execution)
     state = wait_process(pid, timeout)
 
     if state:
         # Process finished
-        return _retrieve_output(t, output_timeout, outputq,
-                                "TaskWarrior thread to join")
+        return _retrieve_output(
+            t, output_timeout, outputq, "TaskWarrior thread to join"
+        )
 
     # If we reach this point we assume the process got stuck or timed out
     for sig in (signal.SIGABRT, signal.SIGTERM, signal.SIGKILL):
@@ -210,15 +213,21 @@ def _get_output(arguments, timeout=None):
 
         if state:
             # Process finished
-            return _retrieve_output(t, output_timeout, outputq,
-                                    "TaskWarrior to die")
+            return _retrieve_output(t, output_timeout, outputq, "TaskWarrior to die")
 
     # This should never happen but in case something goes really bad
     raise OSError("TaskWarrior stopped responding and couldn't be killed")
 
 
-def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
-                 merge_streams=False, env=os.environ, timeout=None):
+def run_cmd_wait(
+    cmd,
+    input=None,
+    stdout=PIPE,
+    stderr=PIPE,
+    merge_streams=False,
+    env=os.environ,
+    timeout=None,
+):
     "Run a subprocess and wait for it to finish"
 
     if input is None:
@@ -265,8 +274,7 @@ def run_cmd_wait_nofail(*args, **kwargs):
 
 
 def memoize(obj):
-    """Keep an in-memory cache of function results given its inputs
-    """
+    """Keep an in-memory cache of function results given its inputs"""
     cache = obj.cache = {}
 
     @functools.wraps(obj)
@@ -275,11 +283,13 @@ def memoize(obj):
         if key not in cache:
             cache[key] = obj(*args, **kwargs)
         return cache[key]
+
     return memoizer
 
 
 try:
     from shutil import which
+
     which = memoize(which)
 except ImportError:
     # NOTE: This is shutil.which backported from python-3.3.3
@@ -294,12 +304,12 @@ except ImportError:
         path.
 
         """
+
         # Check that a given file can be accessed with the correct mode.
         # Additionally check that `file` is not a directory, as on Windows
         # directories pass the os.access check.
         def _access_check(fn, mode):
-            return (os.path.exists(fn) and os.access(fn, mode) and
-                    not os.path.isdir(fn))
+            return os.path.exists(fn) and os.access(fn, mode) and not os.path.isdir(fn)
 
         # If we're given a path with a directory part, look it up directly
         # rather than referring to PATH directories. This includes checking
@@ -348,16 +358,15 @@ except ImportError:
 
 
 def parse_datafile(file):
-    """Parse .data files on the client and server treating files as JSON
-    """
+    """Parse .data files on the client and server treating files as JSON"""
     data = []
     with open(file) as fh:
         for line in fh:
             line = line.rstrip("\n")
 
             # Turn [] strings into {} to be treated properly as JSON hashes
-            if line.startswith('[') and line.endswith(']'):
-                line = '{' + line[1:-1] + '}'
+            if line.startswith("[") and line.endswith("]"):
+                line = "{" + line[1:-1] + "}"
 
             if line.startswith("{"):
                 data.append(json.loads(line))
@@ -370,6 +379,7 @@ def mkstemp(data):
     """
     Create a temporary file that is removed at process exit
     """
+
     def rmtemp(name):
         try:
             os.remove(name)
@@ -377,7 +387,7 @@ def mkstemp(data):
             pass
 
     f = tempfile.NamedTemporaryFile(delete=False)
-    f.write(data.encode('utf-8') if not isinstance(data, bytes) else data)
+    f.write(data.encode("utf-8") if not isinstance(data, bytes) else data)
     f.close()
 
     # Ensure removal at end of python session
@@ -387,11 +397,11 @@ def mkstemp(data):
 
 
 def mkstemp_exec(data):
-    """Create a temporary executable file that is removed at process exit
-    """
+    """Create a temporary executable file that is removed at process exit"""
     name = mkstemp(data)
     os.chmod(name, 0o755)
 
     return name
+
 
 # vim: ai sts=4 et sw=4

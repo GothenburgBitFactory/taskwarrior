@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,94 +40,94 @@ class TestUrgency(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t.config("urgency.uda.priority.H.coefficient",       "10")
-        cls.t.config("urgency.uda.priority.M.coefficient",       "6.5")
-        cls.t.config("urgency.uda.priority.L.coefficient",       "3")
-        cls.t.config("urgency.active.coefficient",               "10")
-        cls.t.config("urgency.project.coefficient",              "10")
-        cls.t.config("urgency.due.coefficient",                  "10")
-        cls.t.config("urgency.blocking.coefficient",             "10")
-        cls.t.config("urgency.blocked.coefficient",              "10")
-        cls.t.config("urgency.annotations.coefficient",          "10")
-        cls.t.config("urgency.tags.coefficient",                 "10")
-        cls.t.config("urgency.waiting.coefficient",              "-10")
-        cls.t.config("urgency.user.tag.next.coefficient",        "10")
+        cls.t.config("urgency.uda.priority.H.coefficient", "10")
+        cls.t.config("urgency.uda.priority.M.coefficient", "6.5")
+        cls.t.config("urgency.uda.priority.L.coefficient", "3")
+        cls.t.config("urgency.active.coefficient", "10")
+        cls.t.config("urgency.project.coefficient", "10")
+        cls.t.config("urgency.due.coefficient", "10")
+        cls.t.config("urgency.blocking.coefficient", "10")
+        cls.t.config("urgency.blocked.coefficient", "10")
+        cls.t.config("urgency.annotations.coefficient", "10")
+        cls.t.config("urgency.tags.coefficient", "10")
+        cls.t.config("urgency.waiting.coefficient", "-10")
+        cls.t.config("urgency.user.tag.next.coefficient", "10")
         cls.t.config("urgency.user.project.PROJECT.coefficient", "10")
-        cls.t.config("urgency.user.tag.TAG.coefficient",         "10")
-        cls.t.config("confirmation",                             "0")
+        cls.t.config("urgency.user.tag.TAG.coefficient", "10")
+        cls.t.config("confirmation", "0")
 
-        cls.t("add control")                     # 1
+        cls.t("add control")  # 1
 
-        cls.t("add 1a pri:H")                    # 2
-        cls.t("add 1b pri:M")                    # 3
-        cls.t("add 1c pri:L")                    # 4
+        cls.t("add 1a pri:H")  # 2
+        cls.t("add 1b pri:M")  # 3
+        cls.t("add 1c pri:L")  # 4
 
-        cls.t("add 2a project:P")                # 5
+        cls.t("add 2a project:P")  # 5
 
-        cls.t("add 3a")                          # 6
+        cls.t("add 3a")  # 6
         cls.t("6 start")
 
-        cls.t("add 4a +next")                    # 7
+        cls.t("add 4a +next")  # 7
 
-        cls.t("add 5a +one")                     # 8
-        cls.t("add 5b +one +two")                # 9
-        cls.t("add 5c +one +two +three")         # 10
-        cls.t("add 5d +one +two +three +four")   # 11
+        cls.t("add 5a +one")  # 8
+        cls.t("add 5b +one +two")  # 9
+        cls.t("add 5c +one +two +three")  # 10
+        cls.t("add 5d +one +two +three +four")  # 11
 
-        cls.t("add 6a")                          # 12
+        cls.t("add 6a")  # 12
         cls.t("12 annotate A")
-        cls.t("add 6b")                          # 13
+        cls.t("add 6b")  # 13
         cls.t("13 annotate A")
         cls.t("13 annotate B")
-        cls.t("add 6c")                          # 14
+        cls.t("add 6c")  # 14
         cls.t("14 annotate A")
         cls.t("14 annotate B")
         cls.t("14 annotate C")
-        cls.t("add 6d")                          # 15
+        cls.t("add 6d")  # 15
 
         cls.t("15 annotate A")
         cls.t("15 annotate B")
         cls.t("15 annotate C")
         cls.t("15 annotate D")
 
-        cls.t("add 7a wait:10y")                 # 16
+        cls.t("add 7a wait:10y")  # 16
 
-        cls.t("add 8a")                          # 17
-        cls.t("add 8b depends:17")               # 18
+        cls.t("add 8a")  # 17
+        cls.t("add 8b depends:17")  # 18
 
-        cls.t("add 9a due:-10d")                 # 19
-        cls.t("add 9b due:-7d")                  # 20
-        cls.t("add 9c due:-6d")                  # 21
-        cls.t("add 9d due:-5d")                  # 22
-        cls.t("add 9e due:-4d")                  # 23
-        cls.t("add 9f due:-3d")                  # 24
-        cls.t("add 9g due:-2d")                  # 25
-        cls.t("add 9h due:-1d")                  # 26
-        cls.t("add 9i due:now")                  # 27
-        cls.t("add 9j due:25h")                  # 28
-        cls.t("add 9k due:49h")                  # 29
-        cls.t("add 9l due:73h")                  # 30
-        cls.t("add 9m due:97h")                  # 31
-        cls.t("add 9n due:121h")                 # 32
-        cls.t("add 9o due:145h")                 # 33
-        cls.t("add 9p due:169h")                 # 34
-        cls.t("add 9q due:193h")                 # 35
-        cls.t("add 9r due:217h")                 # 36
-        cls.t("add 9s due:241h")                 # 37
-        cls.t("add 9t due:265h")                 # 38
-        cls.t("add 9u due:289h")                 # 39
-        cls.t("add 9v due:313h")                 # 40
-        cls.t("add 9w due:337h")                 # 41
-        cls.t("add 9x due:361h")                 # 42
+        cls.t("add 9a due:-10d")  # 19
+        cls.t("add 9b due:-7d")  # 20
+        cls.t("add 9c due:-6d")  # 21
+        cls.t("add 9d due:-5d")  # 22
+        cls.t("add 9e due:-4d")  # 23
+        cls.t("add 9f due:-3d")  # 24
+        cls.t("add 9g due:-2d")  # 25
+        cls.t("add 9h due:-1d")  # 26
+        cls.t("add 9i due:now")  # 27
+        cls.t("add 9j due:25h")  # 28
+        cls.t("add 9k due:49h")  # 29
+        cls.t("add 9l due:73h")  # 30
+        cls.t("add 9m due:97h")  # 31
+        cls.t("add 9n due:121h")  # 32
+        cls.t("add 9o due:145h")  # 33
+        cls.t("add 9p due:169h")  # 34
+        cls.t("add 9q due:193h")  # 35
+        cls.t("add 9r due:217h")  # 36
+        cls.t("add 9s due:241h")  # 37
+        cls.t("add 9t due:265h")  # 38
+        cls.t("add 9u due:289h")  # 39
+        cls.t("add 9v due:313h")  # 40
+        cls.t("add 9w due:337h")  # 41
+        cls.t("add 9x due:361h")  # 42
 
-        cls.t("add 10a project:PROJECT")         # 43
+        cls.t("add 10a project:PROJECT")  # 43
 
-        cls.t("add 11a +TAG")                    # 44
+        cls.t("add 11a +TAG")  # 44
 
-        cls.t("add 12a scheduled:30d")           # 45
-        cls.t("add 12b scheduled:yesterday")     # 46
+        cls.t("add 12a scheduled:30d")  # 45
+        cls.t("add 12b scheduled:yesterday")  # 46
 
-        cls.t("add 13 pri:H")                    # 47
+        cls.t("add 13 pri:H")  # 47
 
     def assertApproximately(self, target, value):
         """Verify that the number in 'value' is within the range"""
@@ -263,7 +264,9 @@ class TestUrgency(TestCase):
 
     def test_urgency_coefficient_override(self):
         """Verify urgency coefficient override"""
-        code, out, err = self.t("rc.urgency.uda.priority.H.coefficient:0.01234 _get 47.urgency")
+        code, out, err = self.t(
+            "rc.urgency.uda.priority.H.coefficient:0.01234 _get 47.urgency"
+        )
         self.assertApproximately(0.01234, out)
 
     def test_urgency_no_task(self):
@@ -297,13 +300,13 @@ class TestBug837(TestCase):
     def test_unblocked_urgency(self):
         """837: Verify urgency goes to zero after unblocking
 
-           Bug 837: When a task is completed, tasks that depended upon it do not
-                    have the correct urgency and depend on 0 when edited
+        Bug 837: When a task is completed, tasks that depended upon it do not
+                 have the correct urgency and depend on 0 when edited
         """
 
         self.t("add one")
         self.t("add two dep:1")
-        self.t("list") # GC/handleRecurrence
+        self.t("list")  # GC/handleRecurrence
 
         code, out, err = self.t("_get 1.urgency")
         self.assertEqual("8\n", out)
@@ -312,7 +315,7 @@ class TestBug837(TestCase):
         self.assertEqual("-5\n", out)
 
         self.t("1 done")
-        self.t("list") # GC/handleRecurrence
+        self.t("list")  # GC/handleRecurrence
 
         code, out, err = self.t("_get 1.urgency")
         self.assertEqual("0\n", out)
@@ -320,6 +323,7 @@ class TestBug837(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -29,11 +29,10 @@
 
 #include <ColTypeDate.h>
 
-class ColumnEntry : public ColumnTypeDate
-{
-public:
-  ColumnEntry ();
-  void setStyle (const std::string&);
+class ColumnEntry : public ColumnTypeDate {
+ public:
+  ColumnEntry();
+  void setStyle(const std::string&);
 };
 
 #endif

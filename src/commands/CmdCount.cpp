@@ -29,38 +29,37 @@
 
 #include <CmdCount.h>
 #include <Filter.h>
-#include <main.h>
 #include <format.h>
+#include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdCount::CmdCount ()
-{
-  _keyword               = "count";
-  _usage                 = "task <filter> count";
-  _description           = "Counts matching tasks";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = true;
-  _uses_context          = true;
-  _accepts_filter        = true;
+CmdCount::CmdCount() {
+  _keyword = "count";
+  _usage = "task <filter> count";
+  _description = "Counts matching tasks";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = true;
+  _uses_context = true;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::metadata;
+  _category = Command::Category::metadata;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCount::execute (std::string& output)
-{
+int CmdCount::execute(std::string& output) {
   // Apply filter.
-  handleUntil ();
-  handleRecurrence ();
+  handleUntil();
+  handleRecurrence();
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
+  std::vector<Task> filtered;
+  filter.subset(filtered);
 
   // Find number of matching tasks.  Skip recurring parent tasks.
-  int count = std::count_if(filtered.begin(), filtered.end(), [](const auto& task){ return task.getStatus () != Task::recurring; });
-  output = format (count) + '\n';
+  int count = std::count_if(filtered.begin(), filtered.end(),
+                            [](const auto& task) { return task.getStatus() != Task::recurring; });
+  output = format(count) + '\n';
   return 0;
 }
 

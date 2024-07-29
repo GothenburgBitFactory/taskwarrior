@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDDONE
 #define INCLUDED_CMDDONE
 
-#include <string>
 #include <Command.h>
 
-class CmdDone : public Command
-{
-public:
-  CmdDone ();
-  int execute (std::string&);
+#include <string>
+
+class CmdDone : public Command {
+ public:
+  CmdDone();
+  int execute(std::string&);
 };
 
 #endif

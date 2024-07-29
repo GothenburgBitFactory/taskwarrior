@@ -29,6 +29,7 @@ import sys
 import os
 import re
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -179,8 +180,7 @@ class TestUdaDuration(TestBaseUda):
         """Add tasks with an invalid UDA duration"""
         code, out, err = self.t.runError("add bad extra:bad_duration")
         self.assertNotIn("Created task", out)
-        self.assertIn("The duration value 'bad_duration' is not supported",
-                      err)
+        self.assertIn("The duration value 'bad_duration' is not supported", err)
 
 
 class TestUdaNumeric(TestBaseUda):
@@ -254,8 +254,7 @@ class TestUdaValue(TestBaseUda):
         self.assertIn("Created task", out)
 
         code, out, err = self.t.runError("add two extra:toxic")
-        self.assertIn("The 'extra' attribute does not allow a value of "
-                      "'toxic'", err)
+        self.assertIn("The 'extra' attribute does not allow a value of " "'toxic'", err)
 
         code, out, err = self.t("uda")
         self.assertRegex(out, r"1\s+strong\s+one")
@@ -299,8 +298,8 @@ class TestBug21(TestCase):
 
     def test_almost_UDA(self):
         """21: do not match a UDA if not followed by colon"""
-        self.t.config('uda.foo.type', 'string')
-        self.t.config('uda.foo.label', 'FOO')
+        self.t.config("uda.foo.type", "string")
+        self.t.config("uda.foo.label", "FOO")
 
         self.t("add this is a foo bar")
         code, out, err = self.t("1 info")
@@ -314,12 +313,12 @@ class Test1447(TestCase):
 
     def test_filter_uda(self):
         """1447: Verify ability to filter on empty UDA that resembles named date"""
-        self.t.config('uda.sep.type', 'string')
-        self.t('add one')
-        self.t('add two sep:foo')
-        code, out, err = self.t('sep: list')
+        self.t.config("uda.sep.type", "string")
+        self.t("add one")
+        self.t("add two sep:foo")
+        code, out, err = self.t("sep: list")
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
-        self.assertIn('one', out)
+        self.assertIn("one", out)
 
 
 class Test1542(TestCase):
@@ -333,18 +332,18 @@ class Test1542(TestCase):
         1542: Make sure the numeric UDA value 1187962 does not get converted to
         scientific notation on export.
         """
-        self.t('add large bugid:1187962')
-        code, out, err = self.t('1 export')
-        self.assertIn("\"bugid\":1187962,", out)
+        self.t("add large bugid:1187962")
+        code, out, err = self.t("1 export")
+        self.assertIn('"bugid":1187962,', out)
 
     def test_small_numeric_uda_retains_value(self):
         """
         1542: Make sure the numeric UDA value 43.21 does not get converted to
         integer on export.
         """
-        self.t('add small bugid:43.21')
-        code, out, err = self.t('1 export')
-        self.assertIn("\"bugid\":43.21", out)
+        self.t("add small bugid:43.21")
+        code, out, err = self.t("1 export")
+        self.assertIn('"bugid":43.21', out)
 
 
 class TestBug1622(TestCase):
@@ -363,6 +362,7 @@ class TestBug1622(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -29,6 +29,7 @@ import sys
 import os
 import unittest
 import time
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -133,7 +134,7 @@ class TestDelete(TestCase):
         self.assertIn("Purged 4 tasks.", out)
 
         code, out, err = self.t("uuids")
-        self.assertEqual('\n', out)
+        self.assertEqual("\n", out)
 
     def test_purge_children_fail_pending(self):
         """Purge aborts if task has pending children"""
@@ -154,7 +155,7 @@ class TestDelete(TestCase):
 
         # Check that nothing was purged
         code, out, err = self.t("count")
-        self.assertEqual('4\n', out)
+        self.assertEqual("4\n", out)
 
     def test_purge_children_fail_confirm(self):
         """Purge aborts if user does not agree with it affecting child tasks"""
@@ -173,7 +174,7 @@ class TestDelete(TestCase):
 
         # Check that nothing was purged
         code, out, err = self.t("count")
-        self.assertEqual('4\n', out)
+        self.assertEqual("4\n", out)
 
     def test_purge_children(self):
         """Purge command removes dependencies on indirectly purged tasks"""
@@ -202,8 +203,10 @@ class TestDelete(TestCase):
         dependencies = self.t("_get 1.depends")[1].strip()
         self.assertEqual("", dependencies)
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

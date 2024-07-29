@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,11 +39,11 @@ class TestCaseless(TestCase):
     @classmethod
     def setUpClass(cls):
         """Executed once before any test in the class"""
-        cls.t = Task ()
+        cls.t = Task()
         cls.t.config("report.ls.columns", "id,project,priority,description")
-        cls.t.config("report.ls.labels",  "ID,Proj,Pri,Description")
-        cls.t.config("report.ls.sort",    "priority-,project+")
-        cls.t.config("report.ls.filter",  "status:pending")
+        cls.t.config("report.ls.labels", "ID,Proj,Pri,Description")
+        cls.t.config("report.ls.sort", "priority-,project+")
+        cls.t.config("report.ls.filter", "status:pending")
 
     def setUp(self):
         """Executed before each test in the class"""
@@ -102,21 +103,30 @@ class TestCaseless(TestCase):
 
     def test_annotation_filter(self):
         """Verify annotation filter with and without case sensitivity"""
-        code, out, err = self.t.runError("rc.search.case.sensitive:yes ls description.contains:Three")
+        code, out, err = self.t.runError(
+            "rc.search.case.sensitive:yes ls description.contains:Three"
+        )
         self.assertNotIn("one two three", out)
 
-        code, out, err = self.t("rc.search.case.sensitive:no ls description.contains:Three")
+        code, out, err = self.t(
+            "rc.search.case.sensitive:no ls description.contains:Three"
+        )
         self.assertIn("one two three", out)
 
-        code, out, err = self.t.runError("rc.search.case.sensitive:yes ls description.contains:Six")
+        code, out, err = self.t.runError(
+            "rc.search.case.sensitive:yes ls description.contains:Six"
+        )
         self.assertNotIn("one two three", out)
 
-        code, out, err = self.t("rc.search.case.sensitive:no ls description.contains:Six")
+        code, out, err = self.t(
+            "rc.search.case.sensitive:no ls description.contains:Six"
+        )
         self.assertIn("one two three", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

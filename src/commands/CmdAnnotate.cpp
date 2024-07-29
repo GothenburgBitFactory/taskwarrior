@@ -28,111 +28,100 @@
 // cmake.h include header must come first
 
 #include <CmdAnnotate.h>
-#include <iostream>
 #include <Context.h>
 #include <Filter.h>
+#include <format.h>
 #include <main.h>
 #include <shared.h>
-#include <format.h>
+
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdAnnotate::CmdAnnotate ()
-{
-  _keyword               = "annotate";
-  _usage                 = "task <filter> annotate <mods>";
-  _description           = "Adds an annotation to an existing task";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdAnnotate::CmdAnnotate() {
+  _keyword = "annotate";
+  _usage = "task <filter> annotate <mods>";
+  _description = "Adds an annotation to an existing task";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = true;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::operation;
+  _category = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdAnnotate::execute (std::string&)
-{
+int CmdAnnotate::execute(std::string&) {
   int rc = 0;
   int count = 0;
 
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
-  if (filtered.size () == 0)
-  {
-    Context::getContext ().footnote ("No tasks specified.");
+  std::vector<Task> filtered;
+  filter.subset(filtered);
+  if (filtered.size() == 0) {
+    Context::getContext().footnote("No tasks specified.");
     return 1;
   }
 
   // TODO Complain when no modifications are specified.
 
   // Accumulated project change notifications.
-  std::map <std::string, std::string> projectChanges;
+  std::map<std::string, std::string> projectChanges;
 
-  if(filtered.size() > 1) {
+  if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
-  for (auto& task : filtered)
-  {
-    Task before (task);
+  for (auto& task : filtered) {
+    Task before(task);
 
     // Annotate the specified task.
-    std::string question = format ("Annotate task {1} '{2}'?",
-                                   task.identifier (true),
-                                   task.get ("description"));
+    std::string question =
+        format("Annotate task {1} '{2}'?", task.identifier(true), task.get("description"));
 
-    task.modify (Task::modAnnotate, true);
+    task.modify(Task::modAnnotate, true);
 
-    if (permission (before.diff (task) + question, filtered.size ()))
-    {
-      Context::getContext ().tdb2.modify (task);
+    if (permission(before.diff(task) + question, filtered.size())) {
+      Context::getContext().tdb2.modify(task);
       ++count;
-      feedback_affected ("Annotating task {1} '{2}'.", task);
-      if (Context::getContext ().verbose ("project"))
-        projectChanges[task.get ("project")] = onProjectChange (task, false);
+      feedback_affected("Annotating task {1} '{2}'.", task);
+      if (Context::getContext().verbose("project"))
+        projectChanges[task.get("project")] = onProjectChange(task, false);
 
       // Annotate siblings.
-      if (task.has ("parent"))
-      {
-        if ((Context::getContext ().config.get ("recurrence.confirmation") == "prompt"
-             && confirm ("This is a recurring task.  Do you want to annotate all pending recurrences of this same task?")) ||
-            Context::getContext ().config.getBoolean ("recurrence.confirmation"))
-        {
-          auto siblings = Context::getContext ().tdb2.siblings (task);
-          for (auto& sibling : siblings)
-          {
-            sibling.modify (Task::modAnnotate, true);
-            Context::getContext ().tdb2.modify (sibling);
+      if (task.has("parent")) {
+        if ((Context::getContext().config.get("recurrence.confirmation") == "prompt" &&
+             confirm("This is a recurring task.  Do you want to annotate all pending recurrences "
+                     "of this same task?")) ||
+            Context::getContext().config.getBoolean("recurrence.confirmation")) {
+          auto siblings = Context::getContext().tdb2.siblings(task);
+          for (auto& sibling : siblings) {
+            sibling.modify(Task::modAnnotate, true);
+            Context::getContext().tdb2.modify(sibling);
             ++count;
-            feedback_affected ("Annotating recurring task {1} '{2}'.", sibling);
+            feedback_affected("Annotating recurring task {1} '{2}'.", sibling);
           }
 
           // Annotate the parent
           Task parent;
-          Context::getContext ().tdb2.get (task.get ("parent"), parent);
-          parent.modify (Task::modAnnotate, true);
-          Context::getContext ().tdb2.modify (parent);
+          Context::getContext().tdb2.get(task.get("parent"), parent);
+          parent.modify(Task::modAnnotate, true);
+          Context::getContext().tdb2.modify(parent);
         }
       }
-    }
-    else
-    {
+    } else {
       std::cout << "Task not annotated.\n";
       rc = 1;
-      if (_permission_quit)
-        break;
+      if (_permission_quit) break;
     }
   }
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
-      Context::getContext ().footnote (change.second);
+    if (change.first != "") Context::getContext().footnote(change.second);
 
-  feedback_affected (count == 1 ? "Annotated {1} task." : "Annotated {1} tasks.", count);
+  feedback_affected(count == 1 ? "Annotated {1} task." : "Annotated {1} tasks.", count);
   return rc;
 }
 

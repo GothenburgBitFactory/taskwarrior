@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -58,8 +59,8 @@ class TestConfiguration(TestCase):
     def test_config_completion(self):
         """verify that the '_config' command generates a full list"""
         code, out, err = self.t("_config")
-        self.assertIn("_forcecolor", out) # first
-        self.assertIn("xterm.title", out) # last
+        self.assertIn("_forcecolor", out)  # first
+        self.assertIn("xterm.title", out)  # last
 
     def test_config_nothing(self):
         """Verify error handling with no args"""
@@ -94,6 +95,7 @@ class TestBug1475(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -27,20 +27,20 @@
 #ifndef INCLUDED_CMDCALENDAR
 #define INCLUDED_CMDCALENDAR
 
-#include <string>
-#include <vector>
+#include <Command.h>
 #include <Datetime.h>
 #include <Task.h>
-#include <Command.h>
 
-class CmdCalendar : public Command
-{
-public:
-  CmdCalendar ();
-  int execute (std::string&);
+#include <string>
+#include <vector>
 
-private:
-  std::string renderMonths (int, int, const Datetime&, std::vector <Task>&, int);
+class CmdCalendar : public Command {
+ public:
+  CmdCalendar();
+  int execute(std::string&);
+
+ private:
+  std::string renderMonths(int, int, const Datetime&, std::vector<Task>&, int);
 };
 
 #endif

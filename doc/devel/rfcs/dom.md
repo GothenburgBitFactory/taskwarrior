@@ -227,14 +227,14 @@ An example is to make two reports share the same description:
 
     $ task config -- report.ls.description rc.report.list.description
 
-This sets the description for the `ls` report to be a reference to the description of the `list` report. 
+This sets the description for the `ls` report to be a reference to the description of the `list` report.
 This reference is not evaluated when the entry is written, but is evaluated every time the value is read, thus providing late-bound behavior.
 Then if the description of the `list` report changes, so does that of the `ls` report automatically.
 
 
 ## Implementation Details
 
-These notes list a series of anticipated changes to the codebase.  
+These notes list a series of anticipated changes to the codebase.
 
 -   The `src/columns/Col*` objects will implement type-specific and attribute-specific DOM support.
     DOM reference lookup will defer to the column objects first.

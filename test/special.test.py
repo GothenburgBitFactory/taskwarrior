@@ -28,10 +28,12 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
+
 
 class TestSpecialTags(TestCase):
     @classmethod
@@ -39,13 +41,13 @@ class TestSpecialTags(TestCase):
         """Executed once before any test in the class"""
         cls.t = Task()
         cls.t.config("color.keyword.red", "red")
-        cls.t.config("color.alternate",   "")
-        cls.t.config("color.tagged",      "")
-        cls.t.config("color.pri.H",       "")
-        cls.t.config("color.completed",   "")
-        cls.t.config("nag",               "NAG")
-        cls.t.config("color",             "1")
-        cls.t.config("_forcecolor",       "1")
+        cls.t.config("color.alternate", "")
+        cls.t.config("color.tagged", "")
+        cls.t.config("color.pri.H", "")
+        cls.t.config("color.completed", "")
+        cls.t.config("nag", "NAG")
+        cls.t.config("color", "1")
+        cls.t.config("_forcecolor", "1")
 
     def test_nocolor(self):
         self.t("add should have no red +nocolor priority:H")
@@ -63,6 +65,7 @@ class TestSpecialTags(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

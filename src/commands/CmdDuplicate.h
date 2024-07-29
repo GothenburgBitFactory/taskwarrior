@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDDUPLICATE
 #define INCLUDED_CMDDUPLICATE
 
-#include <string>
 #include <Command.h>
 
-class CmdDuplicate : public Command
-{
-public:
-  CmdDuplicate ();
-  int execute (std::string&);
+#include <string>
+
+class CmdDuplicate : public Command {
+ public:
+  CmdDuplicate();
+  int execute(std::string&);
 };
 
 #endif

@@ -29,118 +29,102 @@
 
 #include <CmdImport.h>
 #include <CmdModify.h>
-#include <iostream>
 #include <Context.h>
 #include <format.h>
 #include <shared.h>
 #include <util.h>
+
+#include <iostream>
 #include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdImport::CmdImport ()
-{
-  _keyword               = "import";
-  _usage                 = "task          import [<file> ...]";
-  _description           = "Imports JSON files";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdImport::CmdImport() {
+  _keyword = "import";
+  _usage = "task          import [<file> ...]";
+  _description = "Imports JSON files";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = true;
-  _category              = Command::Category::migration;
+  _category = Command::Category::migration;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdImport::execute (std::string&)
-{
+int CmdImport::execute(std::string&) {
   auto rc = 0;
   auto count = 0;
 
   // Get filenames from command line arguments.
-  auto words = Context::getContext ().cli2.getWords ();
-  if (! words.size () ||
-      (words.size () == 1 && words[0] == "-"))
-  {
-    std::cout << format ("Importing '{1}'\n", "STDIN");
+  auto words = Context::getContext().cli2.getWords();
+  if (!words.size() || (words.size() == 1 && words[0] == "-")) {
+    std::cout << format("Importing '{1}'\n", "STDIN");
 
     std::string json;
     std::string line;
-    while (std::getline (std::cin, line))
-      json += line + '\n';
+    while (std::getline(std::cin, line)) json += line + '\n';
 
-    if (nontrivial (json))
-      count = import (json);
-  }
-  else
-  {
+    if (nontrivial(json)) count = import(json);
+  } else {
     // Import tasks from all specified files.
-    for (auto& word : words)
-    {
-      File incoming (word);
-      if (! incoming.exists ())
-        throw format ("File '{1}' not found.", word);
+    for (auto& word : words) {
+      File incoming(word);
+      if (!incoming.exists()) throw format("File '{1}' not found.", word);
 
-      std::cout << format ("Importing '{1}'\n", word);
+      std::cout << format("Importing '{1}'\n", word);
 
       // Load the file.
       std::string json;
-      incoming.read (json);
-      if (nontrivial (json))
-        count += import (json);
+      incoming.read(json);
+      if (nontrivial(json)) count += import(json);
     }
   }
 
-  Context::getContext ().footnote (format ("Imported {1} tasks.", count));
+  Context::getContext().footnote(format("Imported {1} tasks.", count));
 
   // Warn the user about multiple occurrences of the same UUID.
   auto duplicates = false;
-  for (const auto& [uuid, occurrences] : uuid_occurrences)
-  {
-    if (occurrences > 1)
-    {
+  for (const auto& [uuid, occurrences] : uuid_occurrences) {
+    if (occurrences > 1) {
       duplicates = true;
-      Context::getContext ().footnote (format ("Input contains UUID '{1}' {2} times.", uuid, occurrences));
+      Context::getContext().footnote(
+          format("Input contains UUID '{1}' {2} times.", uuid, occurrences));
     }
   }
   if (duplicates)
-    Context::getContext ().footnote ("Tasks with the same UUID have been merged. Please check the results.");
+    Context::getContext().footnote(
+        "Tasks with the same UUID have been merged. Please check the results.");
 
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdImport::import (const std::string& input)
-{
+int CmdImport::import(const std::string& input) {
   auto count = 0;
-  try
-  {
-    json::value* root = json::parse (input);
-    if (root)
-    {
+  try {
+    json::value* root = json::parse(input);
+    if (root) {
       // Single object parse. Input looks like:
       //   { ... }
-      if (root->type () == json::j_object)
-      {
+      if (root->type() == json::j_object) {
         // For each object element...
         auto root_obj = (json::object*)root;
-        importSingleTask (root_obj);
+        importSingleTask(root_obj);
         ++count;
       }
 
       // Multiple object array. Input looks like:
       //   [ { ... } , { ... } ]
-      else if (root->type () == json::j_array)
-      {
+      else if (root->type() == json::j_array) {
         auto root_arr = (json::array*)root;
 
         // For each object element...
-        for (auto& element : root_arr->_data)
-        {
+        for (auto& element : root_arr->_data) {
           // For each object element...
           auto root_obj = (json::object*)element;
-          importSingleTask (root_obj);
+          importSingleTask(root_obj);
           ++count;
         }
       }
@@ -157,8 +141,7 @@ int CmdImport::import (const std::string& input)
   // Input looks like:
   //   { ... }
   //   { ... }
-  catch (std::string& e)
-  {
+  catch (std::string& e) {
     // Make a very cursory check for the old-style format.
     if (input[0] != '{') {
       throw e;
@@ -166,21 +149,19 @@ int CmdImport::import (const std::string& input)
 
     // Read the entire file, so that errors do not result in a partial import.
     std::vector<std::unique_ptr<json::object>> objects;
-    for (auto& line : split (input, '\n'))
-    {
-      if (line.length ())
-      {
-        json::value* root = json::parse (line);
-        if (root && root->type () == json::j_object)
-          objects.push_back (std::unique_ptr<json::object> ((json::object *)root));
+    for (auto& line : split(input, '\n')) {
+      if (line.length()) {
+        json::value* root = json::parse(line);
+        if (root && root->type() == json::j_object)
+          objects.push_back(std::unique_ptr<json::object>((json::object*)root));
         else
-          throw format ("Invalid JSON: {1}", line);
+          throw format("Invalid JSON: {1}", line);
       }
     }
 
     // Import the tasks.
     for (auto& root : objects) {
-      importSingleTask (root.get());
+      importSingleTask(root.get());
       ++count;
     }
   }
@@ -189,24 +170,22 @@ int CmdImport::import (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CmdImport::importSingleTask (json::object* obj)
-{
+void CmdImport::importSingleTask(json::object* obj) {
   // Parse the whole thing, validate the data.
-  Task task (obj);
+  Task task(obj);
 
-  auto hasGeneratedEntry = not task.has ("entry");
-  auto hasExplicitEnd = task.has ("end");
+  auto hasGeneratedEntry = not task.has("entry");
+  auto hasExplicitEnd = task.has("end");
 
-  task.validate ();
+  task.validate();
 
-  auto hasGeneratedEnd = not hasExplicitEnd and task.has ("end");
+  auto hasGeneratedEnd = not hasExplicitEnd and task.has("end");
 
   // Check whether the imported task is new or a modified existing task.
   Task before;
   auto uuid = task.get("uuid");
   uuid_occurrences[uuid]++;
-  if (Context::getContext ().tdb2.get (uuid, before))
-  {
+  if (Context::getContext().tdb2.get(uuid, before)) {
     // We need to neglect updates from attributes with dynamic defaults
     // unless they have been explicitly specified on import.
     //
@@ -218,38 +197,28 @@ void CmdImport::importSingleTask (json::object* obj)
     // The 'modified' attribute is ignored in any case, since if it
     // were the only difference between the tasks, it would have been
     // neglected anyway, since it is bumped on each modification.
-    task.set ("modified", before.get ("modified"));
+    task.set("modified", before.get("modified"));
 
     // Other generated values are replaced by values from existing task,
     // so that they are ignored on comparison.
-    if (hasGeneratedEntry)
-      task.set ("entry", before.get ("entry"));
+    if (hasGeneratedEntry) task.set("entry", before.get("entry"));
 
-    if (hasGeneratedEnd)
-      task.set ("end", before.get ("end"));
+    if (hasGeneratedEnd) task.set("end", before.get("end"));
 
-    if (before != task)
-    {
+    if (before != task) {
       CmdModify modHelper;
-      modHelper.checkConsistency (before, task);
-      modHelper.modifyAndUpdate (before, task);
+      modHelper.checkConsistency(before, task);
+      modHelper.modifyAndUpdate(before, task);
       std::cout << " mod  ";
-    }
-    else
-    {
+    } else {
       std::cout << " skip ";
     }
-  }
-  else
-  {
-    Context::getContext ().tdb2.add (task);
+  } else {
+    Context::getContext().tdb2.add(task);
     std::cout << " add  ";
   }
 
-  std::cout << task.get ("uuid")
-            << ' '
-            << task.get ("description")
-            << '\n';
+  std::cout << task.get("uuid") << ' ' << task.get("description") << '\n';
 }
 
 ////////////////////////////////////////////////////////////////////////////////

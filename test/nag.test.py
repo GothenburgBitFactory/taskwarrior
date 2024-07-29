@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -76,16 +77,16 @@ class TestNagging(TestCase):
 
     def test_nagging_ready(self):
         """Verify that nagging occurs when there are READY tasks of higher urgency"""
-        self.t("add one")                                # low urgency
-        self.t("add two due:10days scheduled:yesterday") # medium urgency, ready
+        self.t("add one")  # low urgency
+        self.t("add two due:10days scheduled:yesterday")  # medium urgency, ready
 
         code, out, err = self.t("1 done")
         self.assertIn("NAG", err)
 
     def test_nagging_not_ready(self):
         """Verify that nagging does not occur when there are unREADY tasks of higher urgency"""
-        self.t("add one")                             # low urgency
-        self.t("add two due:10days scheduled:10days") # medium urgency, not ready
+        self.t("add one")  # low urgency
+        self.t("add two due:10days scheduled:10days")  # medium urgency, not ready
 
         code, out, err = self.t("1 done")
         self.assertNotIn("NAG", err)
@@ -156,6 +157,7 @@ class TestNagging(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

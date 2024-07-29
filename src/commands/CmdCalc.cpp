@@ -24,53 +24,49 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <Context.h>
 #include <CmdCalc.h>
-#include <Filter.h>
+#include <Context.h>
 #include <Eval.h>
+#include <Filter.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdCalc::CmdCalc ()
-{
-  _keyword               = "calc";
-  _usage                 = "task          calc <expression>";
-  _description           = "Calculator";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = false;
-  _accepts_filter        = false;
+CmdCalc::CmdCalc() {
+  _keyword = "calc";
+  _usage = "task          calc <expression>";
+  _description = "Calculator";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = false;
+  _accepts_filter = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = true;
-  _category              = Command::Category::misc;
+  _category = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCalc::execute (std::string& output)
-{
+int CmdCalc::execute(std::string& output) {
   // Configurable infix/postfix
-  bool infix {true};
-  if (Context::getContext ().config.get ("expressions") == "postfix")
-    infix = false;
+  bool infix{true};
+  if (Context::getContext().config.get("expressions") == "postfix") infix = false;
 
   // Create an evaluator with DOM access.
   Eval e;
-  e.addSource (domSource);
-  e.debug (Context::getContext ().config.getBoolean ("debug"));
+  e.addSource(domSource);
+  e.debug(Context::getContext().config.getBoolean("debug"));
 
   // Compile all the args into one expression.
   std::string expression;
-  for (const auto& word : Context::getContext ().cli2.getWords ())
-    expression += word + ' ';
+  for (const auto& word : Context::getContext().cli2.getWords()) expression += word + ' ';
 
   // Evaluate according to preference.
   Variant result;
   if (infix)
-    e.evaluateInfixExpression (expression, result);
+    e.evaluateInfixExpression(expression, result);
   else
-    e.evaluatePostfixExpression (expression, result);
+    e.evaluatePostfixExpression(expression, result);
 
-  output = (std::string) result + '\n';
+  output = (std::string)result + '\n';
   return 0;
 }
 

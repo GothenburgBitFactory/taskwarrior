@@ -27,20 +27,20 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <iostream>
-#include <test.h>
 #include <Variant.h>
+#include <test.h>
+
+#include <iostream>
 
 #define EPSILON 0.001
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int, char**)
-{
-  UnitTest t (1);
+int main(int, char**) {
+  UnitTest t(1);
 
-  Variant v0 (10.0);
-  v0.sqrt ();
-  t.is (v0.get_real (), 3.1622, EPSILON, "math sqrt 10 -> 3.1622");
+  Variant v0(10.0);
+  v0.sqrt();
+  t.is(v0.get_real(), 3.1622, EPSILON, "math sqrt 10 -> 3.1622");
 
   return 0;
 }

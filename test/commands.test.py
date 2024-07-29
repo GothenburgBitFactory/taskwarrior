@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,19 +43,24 @@ class TestCommands(TestCase):
         """Verify 'add', 'modify', 'list' dna"""
         code, out, err = self.t("commands")
         self.assertRegex(out, r"add\s+operation\s+RW\s+Ctxt\s+Mods\s+Adds a new task")
-        self.assertRegex(out, r"list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of")
+        self.assertRegex(
+            out, r"list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of"
+        )
         self.assertRegex(out, r"modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
 
     def test_command_dna_color(self):
         """Verify 'add', 'modify', 'list' dna"""
         code, out, err = self.t("commands rc._forcecolor:on")
         self.assertRegex(out, r"add\s+operation\s+RW\s+Ctxt\s+Mods\s+Adds a new task")
-        self.assertRegex(out, r"list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of")
+        self.assertRegex(
+            out, r"list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of"
+        )
         self.assertRegex(out, r"modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

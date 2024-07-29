@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDSTART
 #define INCLUDED_CMDSTART
 
-#include <string>
 #include <Command.h>
 
-class CmdStart : public Command
-{
-public:
-  CmdStart ();
-  int execute (std::string&);
+#include <string>
+
+class CmdStart : public Command {
+ public:
+  CmdStart();
+  int execute(std::string&);
 };
 
 #endif

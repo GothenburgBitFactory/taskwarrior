@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -88,10 +89,11 @@ class TestAbbreviation(TestCase):
 
 class TestBug1006(TestCase):
     """Bug with expansion of abbreviation "des" in task descriptions and annotations.
-       It happens for all the shortcuts for column attributes that are automatically
-       completed. This is because DOM elements are checked before standard words
-       when strings are tokenized.
+    It happens for all the shortcuts for column attributes that are automatically
+    completed. This is because DOM elements are checked before standard words
+    when strings are tokenized.
     """
+
     def setUp(self):
         self.t = Task()
         self.t.config("verbose", "affected")
@@ -158,6 +160,7 @@ class TestBug1687(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

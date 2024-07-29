@@ -23,4 +23,3 @@ echo $6
 # - 0:     JSON ignored, non-JSON is feedback.
 # - non-0: JSON ignored, non-JSON is error.
 exit 0
-

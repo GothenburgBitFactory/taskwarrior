@@ -27,16 +27,17 @@
 #ifndef INCLUDED_CMDEXPORT
 #define INCLUDED_CMDEXPORT
 
-#include <string>
 #include <Command.h>
 
-class CmdExport : public Command
-{
-public:
-  CmdExport ();
-  int execute (std::string&);
-private:
-  void validateSortColumns (std::vector <std::string>&);
+#include <string>
+
+class CmdExport : public Command {
+ public:
+  CmdExport();
+  int execute(std::string&);
+
+ private:
+  void validateSortColumns(std::vector<std::string>&);
 };
 
 #endif

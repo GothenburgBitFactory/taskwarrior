@@ -29,6 +29,7 @@ import sys
 import os
 import re
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -67,11 +68,14 @@ class TestFeature559(TestCase):
         code, out, err = self.t.runError("rc.data.location=locationdoesnotexist list")
         self.assertNotIn("footask", out)
         self.assertNotIn("Error", out)
-        self.assertRegex(err, re.compile("Could not.+unable to open database file", re.DOTALL))
+        self.assertRegex(
+            err, re.compile("Could not.+unable to open database file", re.DOTALL)
+        )
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

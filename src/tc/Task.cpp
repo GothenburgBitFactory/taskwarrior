@@ -28,72 +28,55 @@
 // cmake.h include header must come first
 
 #include <assert.h>
+
 #include "tc/Task.h"
 #include "tc/util.h"
 
 using namespace tc::ffi;
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Task::Task (TCTask *tctask)
-{
-  inner = unique_tctask_ptr(
-      tctask,
-      [](TCTask* task) { tc_task_free(task); });
+tc::Task::Task(TCTask* tctask) {
+  inner = unique_tctask_ptr(tctask, [](TCTask* task) { tc_task_free(task); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Task::Task (Task &&other) noexcept
-{
+tc::Task::Task(Task&& other) noexcept {
   // move inner from other
-  inner = unique_tctask_ptr(
-      other.inner.release(),
-      [](TCTask* task) { tc_task_free(task); });
+  inner = unique_tctask_ptr(other.inner.release(), [](TCTask* task) { tc_task_free(task); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Task& tc::Task::operator= (Task &&other) noexcept
-{
+tc::Task& tc::Task::operator=(Task&& other) noexcept {
   if (this != &other) {
     // move inner from other
-    inner = unique_tctask_ptr(
-        other.inner.release(),
-        [](TCTask* task) { tc_task_free(task); });
+    inner = unique_tctask_ptr(other.inner.release(), [](TCTask* task) { tc_task_free(task); });
   }
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Task::to_mut (TCReplica *replica)
-{
-  tc_task_to_mut(&*inner, replica);
-}
+void tc::Task::to_mut(TCReplica* replica) { tc_task_to_mut(&*inner, replica); }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Task::to_immut ()
-{
-  tc_task_to_immut(&*inner);
-}
+void tc::Task::to_immut() { tc_task_to_immut(&*inner); }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Task::get_uuid () const
-{
+std::string tc::Task::get_uuid() const {
   auto uuid = tc_task_get_uuid(&*inner);
   return tc2uuid(uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-tc::Status tc::Task::get_status () const
-{
+tc::Status tc::Task::get_status() const {
   auto status = tc_task_get_status(&*inner);
   return tc::Status(status);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::map <std::string, std::string> tc::Task::get_taskmap () const
-{
-  TCKVList kv = tc_task_get_taskmap (&*inner);
+std::map<std::string, std::string> tc::Task::get_taskmap() const {
+  TCKVList kv = tc_task_get_taskmap(&*inner);
   if (!kv.items) {
-    throw task_error ();
+    throw task_error();
   }
 
   std::map<std::string, std::string> taskmap;
@@ -107,89 +90,72 @@ std::map <std::string, std::string> tc::Task::get_taskmap () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Task::get_description () const
-{
+std::string tc::Task::get_description() const {
   auto desc = tc_task_get_description(&*inner);
   return tc2string(desc);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::optional<std::string> tc::Task::get_value (std::string property) const
-{
-  auto maybe_desc = tc_task_get_value (&*inner, string2tc(property));
+std::optional<std::string> tc::Task::get_value(std::string property) const {
+  auto maybe_desc = tc_task_get_value(&*inner, string2tc(property));
   if (maybe_desc.ptr == NULL) {
     return std::nullopt;
   }
   return std::make_optional(tc2string(maybe_desc));
 }
 
-bool tc::Task::is_waiting () const
-{
-  return tc_task_is_waiting (&*inner);
-}
+bool tc::Task::is_waiting() const { return tc_task_is_waiting(&*inner); }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool tc::Task::is_active () const
-{
-  return tc_task_is_active (&*inner);
-}
+bool tc::Task::is_active() const { return tc_task_is_active(&*inner); }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool tc::Task::is_blocked () const
-{
-  return tc_task_is_blocked (&*inner);
-}
+bool tc::Task::is_blocked() const { return tc_task_is_blocked(&*inner); }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool tc::Task::is_blocking () const
-{
-  return tc_task_is_blocking (&*inner);
-}
+bool tc::Task::is_blocking() const { return tc_task_is_blocking(&*inner); }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Task::set_status (tc::Status status)
-{
-  TCResult res = tc_task_set_status (&*inner, (TCStatus)status);
+void tc::Task::set_status(tc::Status status) {
+  TCResult res = tc_task_set_status(&*inner, (TCStatus)status);
   if (res != TC_RESULT_OK) {
-    throw task_error ();
+    throw task_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Task::set_value (std::string property, std::optional<std::string> value)
-{
+void tc::Task::set_value(std::string property, std::optional<std::string> value) {
   TCResult res;
   if (value.has_value()) {
-    res = tc_task_set_value (&*inner, string2tc(property), string2tc(value.value()));
+    res = tc_task_set_value(&*inner, string2tc(property), string2tc(value.value()));
   } else {
     TCString nullstr;
     nullstr.ptr = NULL;
-    res = tc_task_set_value (&*inner, string2tc(property), nullstr);
+    res = tc_task_set_value(&*inner, string2tc(property), nullstr);
   }
   if (res != TC_RESULT_OK) {
-    throw task_error ();
+    throw task_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void tc::Task::set_modified (time_t modified)
-{
-  TCResult res = tc_task_set_modified (&*inner, modified);
+void tc::Task::set_modified(time_t modified) {
+  TCResult res = tc_task_set_modified(&*inner, modified);
   if (res != TC_RESULT_OK) {
-    throw task_error ();
+    throw task_error();
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string tc::Task::task_error () const {
-  TCString error = tc_task_error (&*inner);
+std::string tc::Task::task_error() const {
+  TCString error = tc_task_error(&*inner);
   std::string errmsg;
   if (!error.ptr) {
-    errmsg = std::string ("Unknown TaskChampion error");
+    errmsg = std::string("Unknown TaskChampion error");
   } else {
-    errmsg = std::string (tc_string_content (&error));
+    errmsg = std::string(tc_string_content(&error));
   }
-  tc_string_free (&error);
+  tc_string_free(&error);
   return errmsg;
 }
 

@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDPREPEND
 #define INCLUDED_CMDPREPEND
 
-#include <string>
 #include <Command.h>
 
-class CmdPrepend : public Command
-{
-public:
-  CmdPrepend ();
-  int execute (std::string&);
+#include <string>
+
+class CmdPrepend : public Command {
+ public:
+  CmdPrepend();
+  int execute(std::string&);
 };
 
 #endif

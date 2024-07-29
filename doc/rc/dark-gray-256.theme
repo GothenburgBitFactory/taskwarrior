@@ -95,4 +95,3 @@ color.sync.rejected=gray5 on gray23
 # Command: undo
 color.undo.before=white on black
 color.undo.after=black on white
-

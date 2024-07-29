@@ -30,21 +30,18 @@
 #include <ColScheduled.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnScheduled::ColumnScheduled ()
-{
-  _name  = "scheduled";
+ColumnScheduled::ColumnScheduled() {
+  _name = "scheduled";
   _label = "Scheduled";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
-void ColumnScheduled::setStyle (const std::string& value)
-{
-  Column::setStyle (value);
+void ColumnScheduled::setStyle(const std::string& value) {
+  Column::setStyle(value);
 
-  if (_style == "countdown" && _label == "Scheduled")
-    _label = "Count";
+  if (_style == "countdown" && _label == "Scheduled") _label = "Count";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -52,199 +53,201 @@ class TestDOM(TestCase):
         cls.t("3 annotate note")
 
         # Add task containing UDA attributes
-        cls.t("add ticket task "
-              "ticketdate:2015-09-04 "
-              "ticketest:hour "
-              "ticketnote:comment "
-              "ticketnum:47")
+        cls.t(
+            "add ticket task "
+            "ticketdate:2015-09-04 "
+            "ticketest:hour "
+            "ticketnote:comment "
+            "ticketnum:47"
+        )
 
     def test_dom_no_ref(self):
-        """ DOM missing reference """
+        """DOM missing reference"""
         code, out, err = self.t.runError("_get")
         self.assertEqual("No DOM reference specified.\n", err)
 
     def test_dom_bad_ref(self):
-        """ DOM bad reference """
+        """DOM bad reference"""
         code, out, err = self.t.runError("_get donkey")
         self.assertEqual("'donkey' is not a DOM reference.\n", err)
 
     def test_dom_task_ref(self):
-        """ DOM reference to other task """
+        """DOM reference to other task"""
         code, out, err = self.t("_get 2.due")
         self.assertIn("2011-09-01T00:00:00", out)
 
     def test_dom_cli_ref(self):
-        """ DOM reference to current command line """
+        """DOM reference to current command line"""
         code, out, err = self.t("_get 3.wait")
         self.assertIn("2011-09-01T00:00:00", out)
 
     def test_dom_id_uuid_roundtrip(self):
-        """ DOM id/uuid roundtrip """
+        """DOM id/uuid roundtrip"""
         code, out, err = self.t("_get 1.uuid")
         uuid = out.strip()
         code, out, err = self.t("_get {0}.id".format(uuid))
         self.assertEqual("1\n", out)
 
     def test_dom_fail(self):
-        """ DOM lookup of missing item """
+        """DOM lookup of missing item"""
         code, out, err = self.t("_get 5.description")
         self.assertEqual("\n", out)
 
     def test_dom_tags(self):
-        """ DOM 3.tags """
+        """DOM 3.tags"""
         code, out, err = self.t("_get 3.tags")
         self.assertEqual("tag1,tag2\n", out)
 
     def test_dom_tags_tag1(self):
-        """ DOM 3.tags.tag1 """
+        """DOM 3.tags.tag1"""
         code, out, err = self.t("_get 3.tags.tag1")
         self.assertEqual("tag1\n", out)
 
     def test_dom_tags_OVERDUE(self):
-        """ DOM 3.tags.OVERDUE """
+        """DOM 3.tags.OVERDUE"""
         code, out, err = self.t("_get 3.tags.OVERDUE")
         self.assertEqual("OVERDUE\n", out)
 
     def test_dom_due_year(self):
-        """ DOM 3.due.year """
+        """DOM 3.due.year"""
         code, out, err = self.t("_get 3.due.year")
         self.assertEqual("2011\n", out)
 
     def test_dom_due_month(self):
-        """ DOM 3.due.month """
+        """DOM 3.due.month"""
         code, out, err = self.t("_get 3.due.month")
         self.assertEqual("9\n", out)
 
     def test_dom_due_day(self):
-        """ DOM 3.due.day """
+        """DOM 3.due.day"""
         code, out, err = self.t("_get 3.due.day")
         self.assertEqual("1\n", out)
 
     def test_dom_due_week(self):
-        """ DOM 3.due.week """
+        """DOM 3.due.week"""
         code, out, err = self.t("_get 3.due.week")
         self.assertEqual("35\n", out)
 
     def test_dom_due_weekday(self):
-        """ DOM 3.due.weekday """
+        """DOM 3.due.weekday"""
         code, out, err = self.t("_get 3.due.weekday")
         self.assertEqual("4\n", out)
 
     def test_dom_due_hour(self):
-        """ DOM 3.due.hour """
+        """DOM 3.due.hour"""
         code, out, err = self.t("_get 3.due.hour")
         self.assertEqual("0\n", out)
 
     def test_dom_due_minute(self):
-        """ DOM 3.due.minute """
+        """DOM 3.due.minute"""
         code, out, err = self.t("_get 3.due.minute")
         self.assertEqual("0\n", out)
 
     def test_dom_due_second(self):
-        """ DOM 3.due.second """
+        """DOM 3.due.second"""
         code, out, err = self.t("_get 3.due.second")
         self.assertEqual("0\n", out)
 
     def test_dom_annotation_count_1(self):
-        """ DOM 1.annotation.count """
+        """DOM 1.annotation.count"""
         code, out, err = self.t("_get 1.annotations.count")
         self.assertEqual("0\n", out)
 
     def test_dom_annotation_count_3(self):
-        """ DOM 3.annotation.count """
+        """DOM 3.annotation.count"""
         code, out, err = self.t("_get 3.annotations.count")
         self.assertEqual("1\n", out)
 
     def test_dom_annotation_entry(self):
-        """ DOM 3.annotations.1.entry """
+        """DOM 3.annotations.1.entry"""
         code, out, err = self.t("_get 3.annotations.1.entry")
         self.assertRegex(out, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
 
     def test_dom_annotation_entry_second(self):
-        """ DOM 3.annotations.1.entry """
+        """DOM 3.annotations.1.entry"""
         code, out, err = self.t("_get 3.annotations.1.entry.second")
         self.assertRegex(out, r"\d{1,2}")
 
     def test_dom_annotation_description(self):
-        """ DOM 3.annotations.1.description """
+        """DOM 3.annotations.1.description"""
         code, out, err = self.t("_get 3.annotations.1.description")
         self.assertIn("note\n", out)
 
     def test_dom_system_version(self):
-        """ DOM system.version """
+        """DOM system.version"""
         code, out, err = self.t("_get system.version")
         self.assertEqual(code, 0)
         self.assertRegex(out, r"\d\.\d+\.\d+")
 
     def test_dom_system_os(self):
-        """ DOM system.os """
+        """DOM system.os"""
         code, out, err = self.t("_get system.os")
         self.assertEqual(code, 0)
         self.assertEqual(len(out) > 4, True)
         self.assertNotIn("<unknown>", out)
 
     def test_dom_tw_program(self):
-        """ DOM tw.program """
+        """DOM tw.program"""
         code, out, err = self.t("_get tw.program")
         self.assertEqual(code, 0)
         self.assertIn("task", out)
 
     def test_dom_tw_args(self):
-        """ DOM tw.args """
+        """DOM tw.args"""
         code, out, err = self.t("_get tw.args")
         self.assertEqual(code, 0)
         self.assertIn("task _get tw.args", out)
 
     def test_dom_tw_width(self):
-        """ DOM tw.width """
+        """DOM tw.width"""
         code, out, err = self.t("_get tw.width")
         self.assertEqual(code, 0)
         self.assertRegex(out, r"\d+")
 
     def test_dom_tw_height(self):
-        """ DOM tw.height """
+        """DOM tw.height"""
         code, out, err = self.t("_get tw.height")
         self.assertEqual(code, 0)
         self.assertRegex(out, r"\d+")
 
     def test_dom_tw_version(self):
-        """ DOM tw.version """
+        """DOM tw.version"""
         code, out, err = self.t("_get tw.version")
         self.assertEqual(code, 0)
         self.assertRegex(out, r"\d\.\d+\.\d+")
 
     def test_dom_context_program(self):
-        """ DOM context.program """
+        """DOM context.program"""
         code, out, err = self.t("_get context.program")
         self.assertEqual(code, 0)
         self.assertIn("task", out)
 
     def test_dom_context_args(self):
-        """ DOM context.args """
+        """DOM context.args"""
         code, out, err = self.t("_get context.args")
         self.assertEqual(code, 0)
         self.assertIn("task _get context.args", out)
 
     def test_dom_context_width(self):
-        """ DOM context.width """
+        """DOM context.width"""
         code, out, err = self.t("_get context.width")
         self.assertEqual(code, 0)
         self.assertRegex(out, r"\d+")
 
     def test_dom_context_height(self):
-        """ DOM context.height """
+        """DOM context.height"""
         code, out, err = self.t("_get context.height")
         self.assertEqual(code, 0)
         self.assertRegex(out, r"\d+")
 
     def test_dom_rc_name(self):
-        """ DOM rc.dateformat """
+        """DOM rc.dateformat"""
         code, out, err = self.t("_get rc.dateformat")
         self.assertEqual(code, 0)
         self.assertIn("YMD", out)
 
     def test_dom_rc_missing(self):
-        """ DOM rc.missing """
+        """DOM rc.missing"""
         code, out, err = self.t("_get rc.missing")
         self.assertEqual("\n", out)
 
@@ -274,9 +277,10 @@ class TestDOM(TestCase):
         self.assertIn("2015-09-04T00:00:00", out)
 
     def test_dom_uda_date_year(self):
-        """ DOM 3.due.year """
+        """DOM 3.due.year"""
         code, out, err = self.t("_get 4.ticketdate.year")
         self.assertEqual("2015\n", out)
+
 
 class TestDOMSync(TestCase):
     """
@@ -288,14 +292,14 @@ class TestDOMSync(TestCase):
         self.t = Task()
 
     def test_dom_tw_syncneeded_false(self):
-        """ DOM tw.syncneeded --> false """
+        """DOM tw.syncneeded --> false"""
         code, out, err = self.t("_get tw.syncneeded")
         self.assertEqual(code, 0)
         self.assertIn("0", out)
         self.assertNotIn("1k", out)
 
     def test_dom_tw_syncneeded_true(self):
-        """ DOM tw.syncneeded --> true """
+        """DOM tw.syncneeded --> true"""
         self.t("add foo")
         code, out, err = self.t("_get tw.syncneeded")
         self.assertEqual(code, 0)
@@ -339,83 +343,83 @@ class TestDOMDirectReferencesOnAddition(TestCase):
         cls.t("1 annotate Second annotation")
 
     def test_dom_reference_due(self):
-        """ DOM reference on due in add command """
+        """DOM reference on due in add command"""
         self.t("add test_due due:1.due")
         latest = self.t.latest
 
-        self.assertEqual("test_due", latest['description'])
-        self.assertEqual("20150901T080000Z", latest['due'])
+        self.assertEqual("test_due", latest["description"])
+        self.assertEqual("20150901T080000Z", latest["due"])
 
     def test_dom_reference_project(self):
-        """ DOM reference on project in add command """
+        """DOM reference on project in add command"""
         self.t("add test_project project:1.project")
         latest = self.t.latest
 
-        self.assertEqual("test_project", latest['description'])
-        self.assertEqual("baseproject", latest['project'])
+        self.assertEqual("test_project", latest["description"])
+        self.assertEqual("baseproject", latest["project"])
 
     def test_dom_reference_tags_all(self):
-        """ DOM reference on tags in add command """
+        """DOM reference on tags in add command"""
         self.t("add test_tags_all tags:1.tags")
         latest = self.t.latest
 
-        self.assertEqual("test_tags_all", latest['description'])
-        self.assertEqual(["tag1","tag2"], latest['tags'])
+        self.assertEqual("test_tags_all", latest["description"])
+        self.assertEqual(["tag1", "tag2"], latest["tags"])
 
     def test_dom_reference_tags_single(self):
-        """ DOM reference on specific tag in add command """
+        """DOM reference on specific tag in add command"""
         self.t("add test_tags_single tags:1.tags.tag1")
         latest = self.t.latest
 
-        self.assertEqual("test_tags_single", latest['description'])
-        self.assertEqual(["tag1"], latest['tags'])
+        self.assertEqual("test_tags_single", latest["description"])
+        self.assertEqual(["tag1"], latest["tags"])
 
     def test_dom_reference_annotation(self):
-        """ DOM reference on annotation description in add command """
+        """DOM reference on annotation description in add command"""
         self.t("add description:1.annotations.2.description")
         latest = self.t.latest
 
-        self.assertEqual("Second annotation", latest['description'])
+        self.assertEqual("Second annotation", latest["description"])
 
     def test_dom_reference_numeric_uda(self):
-        """ DOM reference on numeric UDA in add command """
+        """DOM reference on numeric UDA in add command"""
         self.t("add test_numeric_uda ticketnum:1.ticketnum")
         latest = self.t.latest
 
-        self.assertEqual("test_numeric_uda", latest['description'])
-        self.assertEqual(42, latest['ticketnum'])
+        self.assertEqual("test_numeric_uda", latest["description"])
+        self.assertEqual(42, latest["ticketnum"])
 
     def test_dom_reference_date_uda(self):
-        """ DOM reference on date UDA in add command """
+        """DOM reference on date UDA in add command"""
         self.t("add test_date_uda ticketdate:1.ticketdate")
         latest = self.t.latest
 
-        self.assertEqual("test_date_uda", latest['description'])
-        self.assertEqual("20150903T080000Z", latest['ticketdate'])
+        self.assertEqual("test_date_uda", latest["description"])
+        self.assertEqual("20150903T080000Z", latest["ticketdate"])
 
     def test_dom_reference_string_uda(self):
-        """ DOM reference on string UDA in add command """
+        """DOM reference on string UDA in add command"""
         self.t("add test_string_uda ticketnote:1.ticketnote")
         latest = self.t.latest
 
-        self.assertEqual("test_string_uda", latest['description'])
-        self.assertEqual("This is awesome", latest['ticketnote'])
+        self.assertEqual("test_string_uda", latest["description"])
+        self.assertEqual("This is awesome", latest["ticketnote"])
 
     def test_dom_reference_string_value_uda(self):
-        """ DOM reference on string with limited values UDA in add command """
+        """DOM reference on string with limited values UDA in add command"""
         self.t("add test_string_value_uda ticketflag:1.ticketflag")
         latest = self.t.latest
 
-        self.assertEqual("test_string_value_uda", latest['description'])
-        self.assertEqual("B", latest['ticketflag'])
+        self.assertEqual("test_string_value_uda", latest["description"])
+        self.assertEqual("B", latest["ticketflag"])
 
     def test_dom_reference_duration_uda(self):
-        """ DOM reference on duration UDA in add command """
+        """DOM reference on duration UDA in add command"""
         self.t("add test_duration_uda ticketest:1.ticketest")
         latest = self.t.latest
 
-        self.assertEqual("test_duration_uda", latest['description'])
-        self.assertEqual("PT1H", latest['ticketest'])
+        self.assertEqual("test_duration_uda", latest["description"])
+        self.assertEqual("PT1H", latest["ticketest"])
 
 
 class TestDOMDirectReferencesFiltering(TestCase):
@@ -455,44 +459,44 @@ class TestDOMDirectReferencesFiltering(TestCase):
         cls.t("add non matching task")
 
     def test_dom_filter_reference_due(self):
-        """ DOM reference on due in filter """
+        """DOM reference on due in filter"""
         result = self.t.export_one("due:1.due")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
     def test_dom_filter_reference_project(self):
-        """ DOM reference on project in filter """
+        """DOM reference on project in filter"""
         result = self.t.export_one("project:1.project")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
     def test_dom_filter_reference_tags_all(self):
-        """ DOM reference on tags in filter """
+        """DOM reference on tags in filter"""
         result = self.t.export_one("tags:1.tags")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
     def test_dom_filter_reference_numeric_uda(self):
-        """ DOM reference on numeric UDA in filter """
+        """DOM reference on numeric UDA in filter"""
         result = self.t.export_one("ticketnum:1.ticketnum")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
     def test_dom_filter_reference_date_uda(self):
-        """ DOM reference on date UDA in filter """
+        """DOM reference on date UDA in filter"""
         result = self.t.export_one("ticketdate:1.ticketdate")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
     def test_dom_filter_reference_string_uda(self):
-        """ DOM reference on string UDA in filter """
+        """DOM reference on string UDA in filter"""
         result = self.t.export_one("ticketnote:1.ticketnote")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
     def test_dom_filter_reference_string_value_uda(self):
-        """ DOM reference on string with limited values UDA in filter """
+        """DOM reference on string with limited values UDA in filter"""
         result = self.t.export_one("ticketflag:1.ticketflag")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
     def test_dom_filter_reference_duration_uda(self):
-        """ DOM reference on duration UDA in filter """
+        """DOM reference on duration UDA in filter"""
         result = self.t.export_one("ticketest:1.ticketest")
-        self.assertEqual("matching task", result['description'])
+        self.assertEqual("matching task", result["description"])
 
 
 class TestBug1300(TestCase):
@@ -501,18 +505,17 @@ class TestBug1300(TestCase):
         cls.t = Task()
 
     def test_dom_exit_status_good(self):
-        """1300: If the DOM recognizes a reference, it should return '0'
-        """
+        """1300: If the DOM recognizes a reference, it should return '0'"""
         self.t("_get context.program")
 
     def test_dom_exit_status_bad(self):
-        """1300: If the DOM does not recognize a reference, it should return '1'
-        """
+        """1300: If the DOM does not recognize a reference, it should return '1'"""
         self.t.runError("_get XYZ")
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

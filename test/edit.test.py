@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -86,7 +87,9 @@ class TestTaskEdit(TestCase):
         self.t.config("uda.uorphan.type", "string")
         self.t.config("uda.uorphan.label", "uorphan")
 
-        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy udate:now uduration:1day ustring:Hi unumeric:42 uorphan:Annie")
+        self.t(
+            "add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy udate:now uduration:1day ustring:Hi unumeric:42 uorphan:Annie"
+        )
         self.t("1 annotate bar", input="n\n")
 
         # Make the orphan.
@@ -99,6 +102,7 @@ class TestTaskEdit(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

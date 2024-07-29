@@ -31,34 +31,25 @@
 #include <format.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnIMask::ColumnIMask ()
-{
-  _name       = "imask";
-  _style      = "number";
-  _label      = "Mask Index";
+ColumnIMask::ColumnIMask() {
+  _name = "imask";
+  _style = "number";
+  _label = "Mask Index";
   _modifiable = false;
-  _styles     = {"number"};
-  _examples   = {"12"};
+  _styles = {"number"};
+  _examples = {"12"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnIMask::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
+void ColumnIMask::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
-  if (task.has (_name))
-    minimum = maximum = task.get (_name).length ();
+  if (task.has(_name)) minimum = maximum = task.get(_name).length();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnIMask::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  if (task.has (_name))
-    renderStringRight (lines, width, color, task.get (_name));
+void ColumnIMask::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+  if (task.has(_name)) renderStringRight(lines, width, color, task.get(_name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

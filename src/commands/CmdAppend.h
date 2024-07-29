@@ -27,14 +27,14 @@
 #ifndef INCLUDED_CMDAPPEND
 #define INCLUDED_CMDAPPEND
 
-#include <string>
 #include <Command.h>
 
-class CmdAppend : public Command
-{
-public:
-  CmdAppend ();
-  int execute (std::string&);
+#include <string>
+
+class CmdAppend : public Command {
+ public:
+  CmdAppend();
+  int execute(std::string&);
 };
 
 #endif

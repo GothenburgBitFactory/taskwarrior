@@ -29,10 +29,9 @@
 
 #include <ColTypeDate.h>
 
-class ColumnModified : public ColumnTypeDate
-{
-public:
-  ColumnModified ();
+class ColumnModified : public ColumnTypeDate {
+ public:
+  ColumnModified();
 };
 
 #endif

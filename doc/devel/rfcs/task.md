@@ -466,4 +466,3 @@ Given that the configuration is not present in the JSON format of a task, any fi
 This means that if a task contains a UDA, unless the meaning of it is understood, it MUST be preserved.
 
 UDAs may have one of four types: string, numeric, date and duration.
-

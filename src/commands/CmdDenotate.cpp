@@ -28,143 +28,124 @@
 // cmake.h include header must come first
 
 #include <CmdDenotate.h>
-#include <iostream>
 #include <Context.h>
 #include <Filter.h>
-#include <shared.h>
 #include <format.h>
-#include <util.h>
 #include <main.h>
+#include <shared.h>
+#include <util.h>
 
-#define STRING_CMD_DENO_NO           "Task not denotated."
-#define STRING_CMD_DENO_1            "Denotated {1} task."
-#define STRING_CMD_DENO_N            "Denotated {1} tasks."
+#include <iostream>
+
+#define STRING_CMD_DENO_NO "Task not denotated."
+#define STRING_CMD_DENO_1 "Denotated {1} task."
+#define STRING_CMD_DENO_N "Denotated {1} tasks."
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdDenotate::CmdDenotate ()
-{
-  _keyword               = "denotate";
-  _usage                 = "task <filter> denotate <pattern>";
-  _description           = "Deletes an annotation";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = true;
-  _accepts_filter        = true;
+CmdDenotate::CmdDenotate() {
+  _keyword = "denotate";
+  _usage = "task <filter> denotate <pattern>";
+  _description = "Deletes an annotation";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = true;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = true;
-  _category              = Command::Category::operation;
+  _category = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDenotate::execute (std::string&)
-{
+int CmdDenotate::execute(std::string&) {
   auto rc = 0;
   auto count = 0;
-  auto sensitive = Context::getContext ().config.getBoolean ("search.case.sensitive");
+  auto sensitive = Context::getContext().config.getBoolean("search.case.sensitive");
 
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
-  if (filtered.size () == 0)
-  {
-    Context::getContext ().footnote ("No tasks specified.");
+  std::vector<Task> filtered;
+  filter.subset(filtered);
+  if (filtered.size() == 0) {
+    Context::getContext().footnote("No tasks specified.");
     return 1;
   }
 
   // Extract all the ORIGINAL MODIFICATION args as simple text patterns.
   std::string pattern = "";
-  for (auto& a : Context::getContext ().cli2._args)
-  {
-    if (a.hasTag ("MISCELLANEOUS"))
-    {
-      if (pattern != "")
-        pattern += ' ';
+  for (auto& a : Context::getContext().cli2._args) {
+    if (a.hasTag("MISCELLANEOUS")) {
+      if (pattern != "") pattern += ' ';
 
-      pattern += a.attribute ("raw");
+      pattern += a.attribute("raw");
     }
   }
 
   // Accumulated project change notifications.
-  std::map <std::string, std::string> projectChanges;
+  std::map<std::string, std::string> projectChanges;
 
-  if(filtered.size() > 1) {
+  if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
-  for (auto& task : filtered)
-  {
-    Task before (task);
+  for (auto& task : filtered) {
+    Task before(task);
 
-    auto annotations = task.getAnnotations ();
+    auto annotations = task.getAnnotations();
 
-    if (annotations.size () == 0)
-      throw std::string ("The specified task has no annotations that can be deleted.");
+    if (annotations.size() == 0)
+      throw std::string("The specified task has no annotations that can be deleted.");
 
     std::string anno;
     auto match = false;
-    for (auto i = annotations.begin (); i != annotations.end (); ++i)
-    {
-      if (i->second == pattern)
-      {
+    for (auto i = annotations.begin(); i != annotations.end(); ++i) {
+      if (i->second == pattern) {
         match = true;
         anno = i->second;
-        annotations.erase (i);
-        task.setAnnotations (annotations);
+        annotations.erase(i);
+        task.setAnnotations(annotations);
         break;
       }
     }
 
-    if (! match)
-    {
-      for (auto i = annotations.begin (); i != annotations.end (); ++i)
-      {
-        auto loc = find (i->second, pattern, sensitive);
-        if (loc != std::string::npos)
-        {
+    if (!match) {
+      for (auto i = annotations.begin(); i != annotations.end(); ++i) {
+        auto loc = find(i->second, pattern, sensitive);
+        if (loc != std::string::npos) {
           anno = i->second;
-          annotations.erase (i);
-          task.setAnnotations (annotations);
+          annotations.erase(i);
+          task.setAnnotations(annotations);
           break;
         }
       }
     }
 
-    if (before.getAnnotations () != task.getAnnotations ())
-    {
-      auto question = format ("Denotate task {1} '{2}'?",
-                              task.identifier (true),
-                              task.get ("description"));
+    if (before.getAnnotations() != task.getAnnotations()) {
+      auto question =
+          format("Denotate task {1} '{2}'?", task.identifier(true), task.get("description"));
 
-      if (permission (before.diff (task) + question, filtered.size ()))
-      {
+      if (permission(before.diff(task) + question, filtered.size())) {
         ++count;
-        Context::getContext ().tdb2.modify (task);
-        feedback_affected (format ("Found annotation '{1}' and deleted it.", anno));
-        if (Context::getContext ().verbose ("project"))
-          projectChanges[task.get ("project")] = onProjectChange (task, false);
-      }
-      else
-      {
+        Context::getContext().tdb2.modify(task);
+        feedback_affected(format("Found annotation '{1}' and deleted it.", anno));
+        if (Context::getContext().verbose("project"))
+          projectChanges[task.get("project")] = onProjectChange(task, false);
+      } else {
         std::cout << STRING_CMD_DENO_NO << '\n';
         rc = 1;
-        if (_permission_quit)
-          break;
+        if (_permission_quit) break;
       }
-    }
-    else
-    {
-      std::cout << format ("Did not find any matching annotation to be deleted for '{1}'.\n", pattern);
+    } else {
+      std::cout << format("Did not find any matching annotation to be deleted for '{1}'.\n",
+                          pattern);
       rc = 1;
     }
   }
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
-      Context::getContext ().footnote (change.second);
+    if (change.first != "") Context::getContext().footnote(change.second);
 
-  feedback_affected (count == 1 ? STRING_CMD_DENO_1 : STRING_CMD_DENO_N, count);
+  feedback_affected(count == 1 ? STRING_CMD_DENO_1 : STRING_CMD_DENO_N, count);
   return rc;
 }
 

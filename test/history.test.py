@@ -28,10 +28,12 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
+
 
 class TestHistoryDaily(TestCase):
     def setUp(self):
@@ -65,6 +67,7 @@ class TestHistoryDaily(TestCase):
         code, out, err = self.t("ghistory.daily")
         self.assertRegex(out, r"2015\s+January\s+2\s+\++X+\s")
         self.assertRegex(out, r"\s+February\s+2\s+\++X+\-+")
+
 
 class TestHistoryWeekly(TestCase):
     def setUp(self):
@@ -171,8 +174,10 @@ class TestHistoryAnnual(TestCase):
         self.assertRegex(out, r"2014\s+\++X+\s")
         self.assertRegex(out, r"2015\s+\++X+\-+")
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -86,19 +87,19 @@ class Test1486(TestCase):
 
     def test_waiting(self):
         """1486: Verify waiting report shows waiting tasks"""
-        self.t('add regular')
-        self.t('add waited and pending wait:later')
-        self.t('add waited but deleted wait:later')
-        self.t('add waited but done wait:later')
-        self.t('rc.confirmation=off 3 delete')
-        self.t('4 done')
+        self.t("add regular")
+        self.t("add waited and pending wait:later")
+        self.t("add waited but deleted wait:later")
+        self.t("add waited but done wait:later")
+        self.t("rc.confirmation=off 3 delete")
+        self.t("4 done")
 
-        code, out, err = self.t('waiting')
+        code, out, err = self.t("waiting")
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
-        self.assertIn('waited and pending', out)
-        self.assertNotIn('waited but deleted', out)
-        self.assertNotIn('waited but done', out)
-        self.assertNotIn('regular', out)
+        self.assertIn("waited and pending", out)
+        self.assertNotIn("waited but deleted", out)
+        self.assertNotIn("waited but done", out)
+        self.assertNotIn("regular", out)
 
 
 class TestFeature2563(TestCase):
@@ -129,6 +130,7 @@ class TestFeature2563(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

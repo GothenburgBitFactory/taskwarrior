@@ -29,14 +29,13 @@
 
 #include <ColTypeString.h>
 
-class ColumnMask : public ColumnTypeString
-{
-public:
-  ColumnMask ();
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnMask : public ColumnTypeString {
+ public:
+  ColumnMask();
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-private:
+ private:
 };
 
 #endif

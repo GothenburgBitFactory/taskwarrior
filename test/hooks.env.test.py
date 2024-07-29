@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,28 +43,30 @@ class TestHooksOnLaunch(TestCase):
 
     def test_onlaunch_builtin_env(self):
         """on-launch-env - a well-behaved, successful, on-launch hook that echoes its env."""
-        hookname = 'on-launch-good-env'
+        hookname = "on-launch-good-env"
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t("version")    # Arbitrary command that generates output.
+        code, out, err = self.t("version")  # Arbitrary command that generates output.
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
         logs = hook.get_logs()
-        taskenv = {k:v for k, v in (line.split(":", 1) for line in logs["output"]["msgs"])}
+        taskenv = {
+            k: v for k, v in (line.split(":", 1) for line in logs["output"]["msgs"])
+        }
 
-        self.assertEqual('api'     in taskenv, True, 'api:...')
-        self.assertEqual('args'    in taskenv, True, 'args:...')
-        self.assertEqual('command' in taskenv, True, 'command:...')
-        self.assertEqual('rc'      in taskenv, True, 'rc:...')
-        self.assertEqual('data'    in taskenv, True, 'data:...')
-        self.assertEqual('version' in taskenv, True, 'version:...')
+        self.assertEqual("api" in taskenv, True, "api:...")
+        self.assertEqual("args" in taskenv, True, "args:...")
+        self.assertEqual("command" in taskenv, True, "command:...")
+        self.assertEqual("rc" in taskenv, True, "rc:...")
+        self.assertEqual("data" in taskenv, True, "data:...")
+        self.assertEqual("version" in taskenv, True, "version:...")
 
     def test_onlaunch_builtin_env_diag(self):
         """Verify that 'diagnostics' can see hook details"""
-        hookname = 'on-launch-good-env'
+        hookname = "on-launch-good-env"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("diagnostics")
@@ -71,7 +74,7 @@ class TestHooksOnLaunch(TestCase):
 
     def test_onlaunch_builtin_env_debug(self):
         """Verify that 'debug.hooks' shows hook details"""
-        hookname = 'on-launch-good-env'
+        hookname = "on-launch-good-env"
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("version rc.debug.hooks:2")
@@ -84,6 +87,7 @@ class TestHooksOnLaunch(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

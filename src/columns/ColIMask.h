@@ -29,14 +29,13 @@
 
 #include <ColTypeNumeric.h>
 
-class ColumnIMask : public ColumnTypeNumeric
-{
-public:
-  ColumnIMask ();
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnIMask : public ColumnTypeNumeric {
+ public:
+  ColumnIMask();
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 
-private:
+ private:
 };
 
 #endif

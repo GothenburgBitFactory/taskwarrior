@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,7 +60,9 @@ class TestInfoCommand(TestCase):
         self.t.config("urgency.user.keyword.foo.coefficient", "1.0")
         self.t.config("urgency.uda.u_one.coefficient", "1.0")
 
-        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy u_one:now u_two:1day")
+        self.t(
+            "add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy u_one:now u_two:1day"
+        )
         self.t("1 annotate bar", input="n\n")
         code, out, err = self.t("1 info")
 
@@ -88,7 +91,10 @@ class TestInfoCommand(TestCase):
         self.assertIn("YEAR", out)
         self.assertIn("UDA", out)
 
-        self.assertRegex(out, r"UUID\s+[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+        self.assertRegex(
+            out,
+            r"UUID\s+[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+        )
         self.assertRegex(out, r"Urgency\s+\d+(\.\d+)?")
         self.assertRegex(out, r"Priority\s+H")
 
@@ -105,6 +111,7 @@ class TestInfoCommand(TestCase):
         self.assertRegex(out, r"U_ONE\s+\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
         self.assertRegex(out, r"U_TWO\s+P1D")
 
+
 class TestBug425(TestCase):
     def setUp(self):
         self.t = Task()
@@ -120,6 +127,7 @@ class TestBug425(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

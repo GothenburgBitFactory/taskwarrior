@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,26 +42,27 @@ class TestCustomRecurIndicator(TestCase):
 
     def test_recurrence_indicator(self):
         """Add a recurring and non-recurring task, look for the indicator."""
-        self.t.config("report.foo.columns",     "id,recur.indicator")
-        self.t.config("report.foo.labels",      "ID,R")
-        self.t.config("report.foo.sort",        "id+")
-        self.t.config("verbose",                "nothing")
+        self.t.config("report.foo.columns", "id,recur.indicator")
+        self.t.config("report.foo.labels", "ID,R")
+        self.t.config("report.foo.sort", "id+")
+        self.t.config("verbose", "nothing")
 
         self.t("add foo due:tomorrow recur:weekly")
         self.t("add bar")
         code, out, err = self.t("foo")
         self.assertIn(" 1 R", out)
-        self.assertIn(" 2",   out)
+        self.assertIn(" 2", out)
         self.assertIn(" 3 R", out)
 
         code, out, err = self.t("foo rc.recurrence.indicator=RE")
         self.assertIn(" 1 RE", out)
-        self.assertIn(" 2",   out)
+        self.assertIn(" 2", out)
         self.assertIn(" 3 RE", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

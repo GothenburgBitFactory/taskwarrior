@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,7 +58,10 @@ class TestSequences(TestCase):
         """Test sequences in start/stop"""
         self.t("1,2 start")
         code, out, err = self.t("_get 1.start 2.start")
-        self.assertRegex(out, "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2} \\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\n")
+        self.assertRegex(
+            out,
+            "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2} \\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\n",
+        )
 
         self.t("1,2 stop")
         code, out, err = self.t("_get 1.start 2.start")
@@ -84,12 +88,15 @@ class TestSequences(TestCase):
     def test_sequence_annotate(self):
         """Test sequences in annotate"""
         self.t("1,2 annotate note")
-        code, out, err = self.t("_get 1.annotations.1.description 2.annotations.1.description")
+        code, out, err = self.t(
+            "_get 1.annotations.1.description 2.annotations.1.description"
+        )
         self.assertEqual("note note\n", out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

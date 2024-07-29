@@ -28,24 +28,25 @@
 #define INCLUDED_TC_UTIL
 
 #include <string>
+
 #include "tc/ffi.h"
 
 namespace tc {
-  // convert a std::string into a TCString, copying the contained data
-  tc::ffi::TCString string2tc(const std::string&);
+// convert a std::string into a TCString, copying the contained data
+tc::ffi::TCString string2tc(const std::string&);
 
-  // convert a TCString into a std::string, leaving the TCString as-is
-  std::string tc2string_clone(const tc::ffi::TCString&);
+// convert a TCString into a std::string, leaving the TCString as-is
+std::string tc2string_clone(const tc::ffi::TCString&);
 
-  // convert a TCString into a std::string, freeing the TCString
-  std::string tc2string(tc::ffi::TCString&);
+// convert a TCString into a std::string, freeing the TCString
+std::string tc2string(tc::ffi::TCString&);
 
-  // convert a TCUuid into a std::string
-  std::string tc2uuid(tc::ffi::TCUuid&);
+// convert a TCUuid into a std::string
+std::string tc2uuid(tc::ffi::TCUuid&);
 
-  // parse a std::string into a TCUuid (throwing if parse fails)
-  tc::ffi::TCUuid uuid2tc(const std::string&);
-}
+// parse a std::string into a TCUuid (throwing if parse fails)
+tc::ffi::TCUuid uuid2tc(const std::string&);
+}  // namespace tc
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

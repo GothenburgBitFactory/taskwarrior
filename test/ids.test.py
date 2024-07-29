@@ -29,6 +29,7 @@ import sys
 import os
 import tempfile
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,9 +43,9 @@ class TestIDs(TestCase):
         self.t = Task()
 
         self.t("add one   +A +B")
-        self.t("add two   +A"   )
+        self.t("add two   +A")
         self.t("add three +A +B")
-        self.t("add four"       )
+        self.t("add four")
         self.t("add five  +A +B")
 
     def test_ids_count_A(self):
@@ -86,7 +87,8 @@ class TestIDs(TestCase):
         """_zshuuids +A"""
         code, out, err = self.t("_zshuuids +A")
         self.assertRegex(
-            out, "{0}:one\n{0}:two\n{0}:three\n{0}:five".format(UUID_REGEXP))
+            out, "{0}:one\n{0}:two\n{0}:three\n{0}:five".format(UUID_REGEXP)
+        )
 
     def test_ids_ranges(self):
         """Verify consecutive IDs are compressed into a range"""
@@ -107,8 +109,8 @@ class TestIDMisParse(TestCase):
 
     def test_parse_numbers_as_ids_not_patterns(self):
         """Verify that numbers are parsed as IDs"""
-        self.t("add 2 two")    # ID 1
-        self.t("add 1 one")    # ID 2
+        self.t("add 2 two")  # ID 1
+        self.t("add 1 one")  # ID 2
         self.t("add 3 three")  # ID 3
 
         code, out, err = self.t("2 ls rc.verbose:nothing")
@@ -124,11 +126,13 @@ class TestIDRangeParsing(TestCase):
 
     def generate_tasks(self, n):
         """Generates n tasks for testing purposes"""
-        with tempfile.NamedTemporaryFile(mode='w') as f:
-            f.write('\n'.join([f'{{"description": "test task {i+1}"}}' for i in range(n)]))
+        with tempfile.NamedTemporaryFile(mode="w") as f:
+            f.write(
+                "\n".join([f'{{"description": "test task {i+1}"}}' for i in range(n)])
+            )
             f.flush()
             # use a long timeout here, because import is quite slow
-            code, out, err = self.t(f'import {f.name}', timeout=100)
+            code, out, err = self.t(f"import {f.name}", timeout=100)
 
     def test_single_digit_range(self):
         """Test that parsing single digit ID range works"""
@@ -167,6 +171,7 @@ class TestIDRangeParsing(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

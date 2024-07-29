@@ -28,118 +28,102 @@
 // cmake.h include header must come first
 
 #include <CmdDone.h>
-#include <iostream>
 #include <Context.h>
 #include <Filter.h>
-#include <util.h>
 #include <format.h>
 #include <main.h>
+#include <util.h>
+
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdDone::CmdDone ()
-{
-  _keyword               = "done";
-  _usage                 = "task <filter> done <mods>";
-  _description           = "Marks the specified task as completed";
-  _read_only             = false;
-  _displays_id           = false;
-  _needs_gc              = false;
-  _uses_context          = true;
-  _accepts_filter        = true;
+CmdDone::CmdDone() {
+  _keyword = "done";
+  _usage = "task <filter> done <mods>";
+  _description = "Marks the specified task as completed";
+  _read_only = false;
+  _displays_id = false;
+  _needs_gc = false;
+  _uses_context = true;
+  _accepts_filter = true;
   _accepts_modifications = true;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::operation;
+  _category = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDone::execute (std::string&)
-{
+int CmdDone::execute(std::string&) {
   auto rc = 0;
   auto count = 0;
 
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (filtered);
-  if (filtered.size () == 0)
-  {
-    Context::getContext ().footnote ("No tasks specified.");
+  std::vector<Task> filtered;
+  filter.subset(filtered);
+  if (filtered.size() == 0) {
+    Context::getContext().footnote("No tasks specified.");
     return 1;
   }
 
   // Accumulated project change notifications.
-  std::map <std::string, std::string> projectChanges;
+  std::map<std::string, std::string> projectChanges;
 
-  if(filtered.size() > 1) {
+  if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
 
-  std::vector <Task> modified;
-  for (auto& task : filtered)
-  {
-    Task before (task);
+  std::vector<Task> modified;
+  for (auto& task : filtered) {
+    Task before(task);
 
-    if (task.getStatus () == Task::pending ||
-        task.getStatus () == Task::waiting)
-    {
+    if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting) {
       // Complete the specified task.
-      std::string question = format ("Complete task {1} '{2}'?",
-                                     task.identifier (true),
-                                     task.get ("description"));
+      std::string question =
+          format("Complete task {1} '{2}'?", task.identifier(true), task.get("description"));
 
-      task.modify (Task::modAnnotate);
-      task.setStatus (Task::completed);
-      if (! task.has ("end"))
-        task.setAsNow ("end");
+      task.modify(Task::modAnnotate);
+      task.setStatus(Task::completed);
+      if (!task.has("end")) task.setAsNow("end");
 
       // Stop the task, if started.
-      if (task.has ("start"))
-      {
-        task.remove ("start");
-        if (Context::getContext ().config.getBoolean ("journal.time"))
-          task.addAnnotation (Context::getContext ().config.get ("journal.time.stop.annotation"));
+      if (task.has("start")) {
+        task.remove("start");
+        if (Context::getContext().config.getBoolean("journal.time"))
+          task.addAnnotation(Context::getContext().config.get("journal.time.stop.annotation"));
       }
 
-      if (permission (before.diff (task) + question, filtered.size ()))
-      {
-        updateRecurrenceMask (task);
-        Context::getContext ().tdb2.modify (task);
+      if (permission(before.diff(task) + question, filtered.size())) {
+        updateRecurrenceMask(task);
+        Context::getContext().tdb2.modify(task);
         ++count;
-        feedback_affected ("Completed task {1} '{2}'.", task);
-        feedback_unblocked (task);
-        dependencyChainOnComplete (task);
-        if (Context::getContext ().verbose ("project"))
-          projectChanges[task.get ("project")] = onProjectChange (task);
+        feedback_affected("Completed task {1} '{2}'.", task);
+        feedback_unblocked(task);
+        dependencyChainOnComplete(task);
+        if (Context::getContext().verbose("project"))
+          projectChanges[task.get("project")] = onProjectChange(task);
 
         // Save unmodified task for potential nagging later
         modified.push_back(before);
-      }
-      else
-      {
+      } else {
         std::cout << "Task not completed.\n";
         rc = 1;
-        if (_permission_quit)
-          break;
+        if (_permission_quit) break;
       }
-    }
-    else
-    {
-      std::cout << format ("Task {1} '{2}' is neither pending nor waiting.",
-                           task.identifier (true),
-                           task.get ("description"))
+    } else {
+      std::cout << format("Task {1} '{2}' is neither pending nor waiting.", task.identifier(true),
+                          task.get("description"))
                 << '\n';
       rc = 1;
     }
   }
 
-  nag (modified);
+  nag(modified);
 
   // Now list the project changes.
   for (const auto& change : projectChanges)
-    if (change.first != "")
-      Context::getContext ().footnote (change.second);
+    if (change.first != "") Context::getContext().footnote(change.second);
 
-  feedback_affected (count == 1 ? "Completed {1} task." : "Completed {1} tasks.", count);
+  feedback_affected(count == 1 ? "Completed {1} task." : "Completed {1} tasks.", count);
   return rc;
 }
 

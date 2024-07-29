@@ -30,6 +30,7 @@ import os
 import re
 import time
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,12 +42,12 @@ class TestRecurrenceSorting(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t.config("report.asc.columns",  "id,recur,description")
-        cls.t.config("report.asc.sort",     "recur+")
-        cls.t.config("report.asc.filter",   "status:pending")
+        cls.t.config("report.asc.columns", "id,recur,description")
+        cls.t.config("report.asc.sort", "recur+")
+        cls.t.config("report.asc.filter", "status:pending")
         cls.t.config("report.desc.columns", "id,recur,description")
-        cls.t.config("report.desc.sort",    "recur-")
-        cls.t.config("report.desc.filter",  "status:pending")
+        cls.t.config("report.desc.sort", "recur-")
+        cls.t.config("report.desc.filter", "status:pending")
 
         cls.t("add one   due:tomorrow recur:daily")
         cls.t("add two   due:tomorrow recur:weekly")
@@ -205,6 +206,7 @@ class TestRecurrenceTasks(TestCase):
         code, out, err = self.t("3 delete", input="y\n")
         self.assertIn("Deleted 1 task.", out)
 
+
 class TestBug972(TestCase):
     def setUp(self):
         """972: Executed before each test in the class"""
@@ -212,7 +214,7 @@ class TestBug972(TestCase):
 
     def test_interpretation_of_seven(self):
         """Bug 972: A recurrence period of "7" is interpreted as "7s", not "7d"
-           as intended.
+        as intended.
         """
         code, out, err = self.t.runError("add one due:now recur:2")
         self.assertIn("The duration value '2' is not supported.", err)
@@ -226,7 +228,7 @@ class TestDeletionRecurrence(TestCase):
     def test_delete_parent(self):
         """Delete a parent with child tasks"""
         self.t("add one due:eom recur:daily")
-        self.t("list") # GC/handleRecurrence
+        self.t("list")  # GC/handleRecurrence
         code, out, err = self.t("1 delete", input="y\ny\n")
         self.assertIn("Deleted 2 tasks.", out)
 
@@ -237,7 +239,7 @@ class TestDeletionRecurrence(TestCase):
         """Delete a child with sibling tasks"""
         self.t("add one due:eom recur:daily")
         self.t("list rc.recurrence.limit:5")
-        code, out, err = self.t("list rc.verbose:nothing") # GC/handleRecurrence
+        code, out, err = self.t("list rc.verbose:nothing")  # GC/handleRecurrence
         self.assertEqual(out.count("one"), 5)
 
         code, out, err = self.t("2 delete", input="y\ny\n")
@@ -252,7 +254,7 @@ class TestAppendPrependRecurrence(TestCase):
     def test_append_propagate(self):
         """Append and propagate"""
         self.t("add one due:eom recur:daily")
-        self.t("list rc.recurrence.limit:2") # GC/handleRecurrence
+        self.t("list rc.recurrence.limit:2")  # GC/handleRecurrence
 
         code, out, err = self.t("2 append APP", input="y\n")
         self.assertIn("Appended 2 tasks.", out)
@@ -260,7 +262,7 @@ class TestAppendPrependRecurrence(TestCase):
     def test_prepend_propagate(self):
         """Prepend and propagate"""
         self.t("add one due:eom recur:daily")
-        self.t("list rc.recurrence.limit:2") # GC/handleRecurrence
+        self.t("list rc.recurrence.limit:2")  # GC/handleRecurrence
 
         code, out, err = self.t("2 prepend PRE", input="y\n")
         self.assertIn("Prepended 2 tasks.", out)
@@ -359,10 +361,11 @@ class TestBug955(TestCase):
         self.assertIn("Deleted 2 tasks", out)
 
         code, out, err = self.t.runError("all status:recurring")
-        self.assertIn("No matches", err) 
+        self.assertIn("No matches", err)
 
         code, out, err = self.t.runError("ls")
         self.assertIn("No matches", err)
+
 
 class TestUpgradeToRecurring(TestCase):
     def setUp(self):
@@ -383,6 +386,7 @@ class TestUpgradeToRecurring(TestCase):
         code, out, err = self.t.runError("1 modify recur:weekly")
         self.assertIn("You cannot specify a recurring task without a due date.", err)
 
+
 class TestRecurrenceNotification(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -399,6 +403,7 @@ class TestRecurrenceNotification(TestCase):
         code, out, err = self.t("list")
         self.assertNotIn("Creating recurring task instance 'foo'", err)
 
+
 class BaseTestBug360(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -407,10 +412,10 @@ class BaseTestBug360(TestCase):
         # This command forces a handleRecurrence() call to generate synthetic tasks.
         self.t("ls")
 
+
 class TestBug360RemovalError(BaseTestBug360):
     def test_modify_recursive_project(self):
-        """360: Modifying a recursive task by adding project: also modifies parent
-        """
+        """360: Modifying a recursive task by adding project: also modifies parent"""
         code, out, err = self.t("1 modify project:bar", input="y\n")
 
         expected = "Modified 2 tasks."
@@ -419,8 +424,7 @@ class TestBug360RemovalError(BaseTestBug360):
         self.assertNotIn(expected, err)
 
     def test_cannot_remove_recurrence(self):
-        """360: Cannot remove recurrence from recurring task
-        """
+        """360: Cannot remove recurrence from recurring task"""
         # TODO Removing recur: from a recurring task should also remove imask
         # and parent.
 
@@ -432,8 +436,7 @@ class TestBug360RemovalError(BaseTestBug360):
         self.assertIn(expected, err)
 
     def test_cannot_remove_due_date(self):
-        """360: Cannot remove due date from recurring task
-        """
+        """360: Cannot remove due date from recurring task"""
         # TODO Removing due: from a recurring task should also remove recur,
         # imask and parent
         code, out, err = self.t.runError("2 modify due:")
@@ -470,6 +473,7 @@ class TestBug360AllowedChanges(BaseTestBug360):
         expected = "You cannot remove the due date from a recurring task."
         self.assertNotIn(expected, err)
 
+
 class TestBug649(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -482,6 +486,7 @@ class TestBug649(TestCase):
         self.assertIn("is neither pending nor waiting", out)
         self.assertNotIn("Completed 1", out)
 
+
 class TestBugC001(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -492,6 +497,7 @@ class TestBugC001(TestCase):
         code, out, err = self.t("add one due:tomorrow recur:daily")
         code, out, err = self.t("add two due:tomorrow recur:daily")
 
+
 class TestBug839(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -501,7 +507,10 @@ class TestBug839(TestCase):
         """839: Verify that importing a legacy recurrence value is ok"""
         # use a recent timestamp to avoid slowly iterating over large number of tasks
         justnow = int(time.time()) - 120
-        json = '{"description":"one","due":"%s","recur":"1m","status":"recurring","uuid":"ebeeab00-ccf8-464b-8b58-f7f2d606edfb"}' % justnow
+        json = (
+            '{"description":"one","due":"%s","recur":"1m","status":"recurring","uuid":"ebeeab00-ccf8-464b-8b58-f7f2d606edfb"}'
+            % justnow
+        )
         self.t("import -", input=json)
 
         code, out, err = self.t("list")
@@ -519,75 +528,76 @@ class TestPeriod(TestCase):
         self.t = Task()
 
     def test_recurrence_periods(self):
-       """Verify recurrence period special-case support
+        """Verify recurrence period special-case support
 
-       Date getNextRecurrence (Date& current, std::string& period)
+        Date getNextRecurrence (Date& current, std::string& period)
 
-       Confirmed:
-         getNextRecurrence  convertDuration
-         -----------------  ---------------
-                            daily
-                            day
-                            weekly
-                            sennight
-                            biweekly
-                            fortnight
-         monthly            monthly
-         quarterly          quarterly
-         semiannual         semiannual
-         bimonthly          bimonthly
-         biannual           biannual
-         biyearly           biyearly
-                            annual
-                            yearly
-         *m                 *m
-         *q                 *q
-                            *d
-                            *w
-                            *y
-       """
+        Confirmed:
+          getNextRecurrence  convertDuration
+          -----------------  ---------------
+                             daily
+                             day
+                             weekly
+                             sennight
+                             biweekly
+                             fortnight
+          monthly            monthly
+          quarterly          quarterly
+          semiannual         semiannual
+          bimonthly          bimonthly
+          biannual           biannual
+          biyearly           biyearly
+                             annual
+                             yearly
+          *m                 *m
+          *q                 *q
+                             *d
+                             *w
+                             *y
+        """
 
-       self.t("add daily due:tomorrow recur:daily")
-       self.t("add 1day due:tomorrow recur:1day")
-       self.t("add weekly due:tomorrow recur:weekly")
-       self.t("add 1sennight due:tomorrow recur:1sennight")
-       self.t("add biweekly due:tomorrow recur:biweekly")
-       self.t("add fortnight due:tomorrow recur:fortnight")
-       self.t("add monthly due:tomorrow recur:monthly")
-       self.t("add quarterly due:tomorrow recur:quarterly")
-       self.t("add semiannual due:tomorrow recur:semiannual")
-       self.t("add bimonthly due:tomorrow recur:bimonthly")
-       self.t("add biannual due:tomorrow recur:biannual")
-       self.t("add biyearly due:tomorrow recur:biyearly")
-       self.t("add annual due:tomorrow recur:annual")
-       self.t("add yearly due:tomorrow recur:yearly")
-       self.t("add 2d due:tomorrow recur:2d")
-       self.t("add 2w due:tomorrow recur:2w")
-       self.t("add 2mo due:tomorrow recur:2mo")
-       self.t("add 2q due:tomorrow recur:2q")
-       self.t("add 2y due:tomorrow recur:2y")
+        self.t("add daily due:tomorrow recur:daily")
+        self.t("add 1day due:tomorrow recur:1day")
+        self.t("add weekly due:tomorrow recur:weekly")
+        self.t("add 1sennight due:tomorrow recur:1sennight")
+        self.t("add biweekly due:tomorrow recur:biweekly")
+        self.t("add fortnight due:tomorrow recur:fortnight")
+        self.t("add monthly due:tomorrow recur:monthly")
+        self.t("add quarterly due:tomorrow recur:quarterly")
+        self.t("add semiannual due:tomorrow recur:semiannual")
+        self.t("add bimonthly due:tomorrow recur:bimonthly")
+        self.t("add biannual due:tomorrow recur:biannual")
+        self.t("add biyearly due:tomorrow recur:biyearly")
+        self.t("add annual due:tomorrow recur:annual")
+        self.t("add yearly due:tomorrow recur:yearly")
+        self.t("add 2d due:tomorrow recur:2d")
+        self.t("add 2w due:tomorrow recur:2w")
+        self.t("add 2mo due:tomorrow recur:2mo")
+        self.t("add 2q due:tomorrow recur:2q")
+        self.t("add 2y due:tomorrow recur:2y")
 
-       # Verify that the recurring task instances were created.  One of each.
-       code, out, err = self.t("list")
-       self.assertIn(" daily ",      out);
-       self.assertIn(" 1day ",       out);
-       self.assertIn(" weekly ",     out);
-       self.assertIn(" 1sennight ",  out);
-       self.assertIn(" biweekly ",   out);
-       self.assertIn(" fortnight ",  out);
-       self.assertIn(" monthly ",    out);
-       self.assertIn(" quarterly ",  out);
-       self.assertIn(" semiannual ", out);
-       self.assertIn(" bimonthly ",  out);
-       self.assertIn(" biannual ",   out);
-       self.assertIn(" biyearly ",   out);
-       self.assertIn(" annual ",     out);
-       self.assertIn(" yearly ",     out);
-       self.assertIn(" 2d ",         out);
-       self.assertIn(" 2w ",         out);
-       self.assertIn(" 2mo ",        out);
-       self.assertIn(" 2q ",         out);
-       self.assertIn(" 2y ",         out);
+        # Verify that the recurring task instances were created.  One of each.
+        code, out, err = self.t("list")
+        self.assertIn(" daily ", out)
+        self.assertIn(" 1day ", out)
+        self.assertIn(" weekly ", out)
+        self.assertIn(" 1sennight ", out)
+        self.assertIn(" biweekly ", out)
+        self.assertIn(" fortnight ", out)
+        self.assertIn(" monthly ", out)
+        self.assertIn(" quarterly ", out)
+        self.assertIn(" semiannual ", out)
+        self.assertIn(" bimonthly ", out)
+        self.assertIn(" biannual ", out)
+        self.assertIn(" biyearly ", out)
+        self.assertIn(" annual ", out)
+        self.assertIn(" yearly ", out)
+        self.assertIn(" 2d ", out)
+        self.assertIn(" 2w ", out)
+        self.assertIn(" 2mo ", out)
+        self.assertIn(" 2q ", out)
+        self.assertIn(" 2y ", out)
+
 
 class TestBugAnnual(TestCase):
     def setUp(self):
@@ -596,11 +606,11 @@ class TestBugAnnual(TestCase):
 
     def test_annual_creep(self):
         """Verify 'annual' recurring tasks don't creep"""
-        self.t.config("dateformat",            "YMD")
-        self.t.config("report.annual.labels",  "ID,Due")
+        self.t.config("dateformat", "YMD")
+        self.t.config("report.annual.labels", "ID,Due")
         self.t.config("report.annual.columns", "id,due")
-        self.t.config("report.annual.filter",  "status:pending")
-        self.t.config("report.annual.sort",    "due+")
+        self.t.config("report.annual.filter", "status:pending")
+        self.t.config("report.annual.sort", "due+")
 
         # If a task is added with a due date ten years ago, with an annual recurrence,
         # then the synthetic tasks in between then and now have a due date that creeps.
@@ -647,6 +657,7 @@ class TestBugAnnual(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

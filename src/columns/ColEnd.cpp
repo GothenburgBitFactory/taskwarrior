@@ -30,9 +30,8 @@
 #include <ColEnd.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnEnd::ColumnEnd ()
-{
-  _name  = "end";
+ColumnEnd::ColumnEnd() {
+  _name = "end";
   _label = "Completed";
 }
 

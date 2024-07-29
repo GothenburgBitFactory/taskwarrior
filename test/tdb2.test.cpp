@@ -27,114 +27,108 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <iostream>
-#include <stdlib.h>
-#include <unistd.h>
 #include <main.h>
+#include <stdlib.h>
 #include <test.h>
+#include <unistd.h>
+
+#include <iostream>
 
 Context context;
 
-void cleardb ()
-{
-    // Remove any residual test files.
-    rmdir ("./extensions");
-    unlink ("./taskchampion.sqlite3");
+void cleardb() {
+  // Remove any residual test files.
+  rmdir("./extensions");
+  unlink("./taskchampion.sqlite3");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int, char**)
-{
-  UnitTest t (12);
+int main(int, char**) {
+  UnitTest t(12);
   Context context;
   Context::setContext(&context);
 
   // Ensure environment has no influence.
-  unsetenv ("TASKDATA");
-  unsetenv ("TASKRC");
+  unsetenv("TASKDATA");
+  unsetenv("TASKRC");
 
-  try
-  {
-    cleardb ();
+  try {
+    cleardb();
 
     // Set the context to allow GC.
-    context.config.set ("gc", 1);
-    context.config.set ("debug", 1);
+    context.config.set("gc", 1);
+    context.config.set("debug", 1);
 
-    context.tdb2.open_replica (".", true);
+    context.tdb2.open_replica(".", true);
 
     // Try reading an empty database.
-    std::vector <Task> pending          = context.tdb2.pending_tasks ();
-    std::vector <Task> completed        = context.tdb2.completed_tasks ();
-    int num_reverts_possible            = context.tdb2.num_reverts_possible ();
-    int num_local_changes               = context.tdb2.num_local_changes ();
+    std::vector<Task> pending = context.tdb2.pending_tasks();
+    std::vector<Task> completed = context.tdb2.completed_tasks();
+    int num_reverts_possible = context.tdb2.num_reverts_possible();
+    int num_local_changes = context.tdb2.num_local_changes();
 
-    t.is ((int) pending.size (),      0, "TDB2 Read empty pending");
-    t.is ((int) completed.size (),    0, "TDB2 Read empty completed");
-    t.is ((int) num_reverts_possible, 0, "TDB2 Read empty undo");
-    t.is ((int) num_local_changes,    0, "TDB2 Read empty backlog");
+    t.is((int)pending.size(), 0, "TDB2 Read empty pending");
+    t.is((int)completed.size(), 0, "TDB2 Read empty completed");
+    t.is((int)num_reverts_possible, 0, "TDB2 Read empty undo");
+    t.is((int)num_local_changes, 0, "TDB2 Read empty backlog");
 
     // Add a task.
-    Task task (R"([description:"description" name:"value"])");
-    context.tdb2.add (task);
+    Task task(R"([description:"description" name:"value"])");
+    context.tdb2.add(task);
 
-    pending              = context.tdb2.pending_tasks ();
-    completed            = context.tdb2.completed_tasks ();
-    num_reverts_possible = context.tdb2.num_reverts_possible ();
-    num_local_changes    = context.tdb2.num_local_changes ();
+    pending = context.tdb2.pending_tasks();
+    completed = context.tdb2.completed_tasks();
+    num_reverts_possible = context.tdb2.num_reverts_possible();
+    num_local_changes = context.tdb2.num_local_changes();
 
-    t.is ((int) pending.size (),      1, "TDB2 after add, 1 pending task");
-    t.is ((int) completed.size (),    0, "TDB2 after add, 0 completed tasks");
-    t.is ((int) num_reverts_possible, 1, "TDB2 after add, 1 revert possible");
-    t.is ((int) num_local_changes,    6, "TDB2 after add, 6 local changes");
+    t.is((int)pending.size(), 1, "TDB2 after add, 1 pending task");
+    t.is((int)completed.size(), 0, "TDB2 after add, 0 completed tasks");
+    t.is((int)num_reverts_possible, 1, "TDB2 after add, 1 revert possible");
+    t.is((int)num_local_changes, 6, "TDB2 after add, 6 local changes");
 
-    task.set ("description", "This is a test");
-    context.tdb2.modify (task);
+    task.set("description", "This is a test");
+    context.tdb2.modify(task);
 
-    pending              = context.tdb2.pending_tasks ();
-    completed            = context.tdb2.completed_tasks ();
-    num_reverts_possible = context.tdb2.num_reverts_possible ();
-    num_local_changes    = context.tdb2.num_local_changes ();
+    pending = context.tdb2.pending_tasks();
+    completed = context.tdb2.completed_tasks();
+    num_reverts_possible = context.tdb2.num_reverts_possible();
+    num_local_changes = context.tdb2.num_local_changes();
 
-    t.is ((int) pending.size (),      1, "TDB2 after set, 1 pending task");
-    t.is ((int) completed.size (),    0, "TDB2 after set, 0 completed tasks");
-    t.is ((int) num_reverts_possible, 1, "TDB2 after set, 1 revert possible");
+    t.is((int)pending.size(), 1, "TDB2 after set, 1 pending task");
+    t.is((int)completed.size(), 0, "TDB2 after set, 0 completed tasks");
+    t.is((int)num_reverts_possible, 1, "TDB2 after set, 1 revert possible");
 
     // At this point, there may be 7 or 8 local changes, depending on whether
     // the `modified` property changed between the `add` and `modify`
     // invocation. That only happens if the clock ticks over to the next second
     // between those invocations.
-    t.ok (num_local_changes == 7 || num_local_changes == 8,
-          "TDB2 after set, 7 or 8 local changes");
+    t.ok(num_local_changes == 7 || num_local_changes == 8, "TDB2 after set, 7 or 8 local changes");
 
     // Reset for reuse.
-    cleardb ();
-    context.tdb2.open_replica (".", true);
+    cleardb();
+    context.tdb2.open_replica(".", true);
 
     // TODO complete a task
     // TODO gc
   }
 
-  catch (const std::string& error)
-  {
-    t.diag (error);
+  catch (const std::string& error) {
+    t.diag(error);
     return -1;
   }
 
-  catch (...)
-  {
-    t.diag ("Unknown error.");
+  catch (...) {
+    t.diag("Unknown error.");
     return -2;
   }
 
-  rmdir ("./extensions");
-  unlink ("./pending.data");
-  unlink ("./completed.data");
-  unlink ("./undo.data");
-  unlink ("./backlog.data");
+  rmdir("./extensions");
+  unlink("./pending.data");
+  unlink("./completed.data");
+  unlink("./undo.data");
+  unlink("./backlog.data");
 
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

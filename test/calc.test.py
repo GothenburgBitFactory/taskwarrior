@@ -30,6 +30,7 @@ import os
 import re
 import signal
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,8 +40,9 @@ from basetest.utils import BIN_PREFIX, run_cmd_wait, run_cmd_wait_nofail
 CALC = os.path.join(BIN_PREFIX, "calc")
 
 
-@unittest.skipIf(not os.path.isfile(CALC),
-                 "calc binary not available in {0}".format(CALC))
+@unittest.skipIf(
+    not os.path.isfile(CALC), "calc binary not available in {0}".format(CALC)
+)
 class TestCalc(TestCase):
     def test_regular_math(self):
         """regular math"""
@@ -56,7 +58,9 @@ class TestCalc(TestCase):
 
     def test_postfix_math(self):
         """postfix math"""
-        code, out, err = run_cmd_wait((CALC, "--debug", "--postfix", "12 3600 * 34 60 * 56 + +"))
+        code, out, err = run_cmd_wait(
+            (CALC, "--debug", "--postfix", "12 3600 * 34 60 * 56 + +")
+        )
 
         self.assertIn("Eval literal number ↑'12'", out)
         self.assertIn("Eval literal number ↑'3600'", out)
@@ -122,18 +126,17 @@ class TestBug1254(TestCase):
         self.assertEqual(expected, code, "Exit code was non-zero ({0})".format(code))
 
     def test_no_segmentation_fault_calc_negative_multiplication(self):
-        """1254: calc can multiply zero and negative numbers
-        """
+        """1254: calc can multiply zero and negative numbers"""
         self.run_command("calc 0*-1")
 
     def test_calc_positive_multiplication(self):
-        """1254: calc can multiply negative zero and positive
-        """
+        """1254: calc can multiply negative zero and positive"""
         self.run_command("calc 0*1")
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

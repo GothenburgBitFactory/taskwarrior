@@ -1,4 +1,4 @@
-" Vim support file to detect Taskwarrior data and configuration files and 
+" Vim support file to detect Taskwarrior data and configuration files and
 " single task edits
 "
 " Maintainer:   John Florian <jflorian@doubledog.org>

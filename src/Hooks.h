@@ -27,37 +27,39 @@
 #ifndef INCLUDED_HOOKS
 #define INCLUDED_HOOKS
 
-#include <vector>
-#include <string>
 #include <Task.h>
 
-class Hooks
-{
-public:
-  Hooks () = default;
-  void initialize ();
-  bool enable (bool);
-  void onLaunch () const;
-  void onExit () const;
-  void onAdd (Task&) const;
-  void onModify (const Task&, Task&) const;
-  std::vector <std::string> list () const;
+#include <string>
+#include <vector>
 
-private:
-  std::vector <std::string> scripts (const std::string&) const;
-  void separateOutput (const std::vector <std::string>&, std::vector <std::string>&, std::vector <std::string>&) const;
-  bool isJSON (const std::string&) const;
-  void assertValidJSON (const std::vector <std::string>&, const std::string&) const;
-  void assertNTasks (const std::vector <std::string>&, unsigned int, const std::string&) const;
-  void assertSameTask (const std::vector <std::string>&, const Task&, const std::string&) const;
-  void assertFeedback (const std::vector <std::string>&, const std::string&) const;
-  std::vector <std::string>& buildHookScriptArgs (std::vector <std::string>&) const;
-  int callHookScript (const std::string&, const std::vector <std::string>&, std::vector <std::string>&) const;
+class Hooks {
+ public:
+  Hooks() = default;
+  void initialize();
+  bool enable(bool);
+  void onLaunch() const;
+  void onExit() const;
+  void onAdd(Task&) const;
+  void onModify(const Task&, Task&) const;
+  std::vector<std::string> list() const;
 
-private:
-  bool                      _enabled {true};
-  int                       _debug   {0};
-  std::vector <std::string> _scripts {};
+ private:
+  std::vector<std::string> scripts(const std::string&) const;
+  void separateOutput(const std::vector<std::string>&, std::vector<std::string>&,
+                      std::vector<std::string>&) const;
+  bool isJSON(const std::string&) const;
+  void assertValidJSON(const std::vector<std::string>&, const std::string&) const;
+  void assertNTasks(const std::vector<std::string>&, unsigned int, const std::string&) const;
+  void assertSameTask(const std::vector<std::string>&, const Task&, const std::string&) const;
+  void assertFeedback(const std::vector<std::string>&, const std::string&) const;
+  std::vector<std::string>& buildHookScriptArgs(std::vector<std::string>&) const;
+  int callHookScript(const std::string&, const std::vector<std::string>&,
+                     std::vector<std::string>&) const;
+
+ private:
+  bool _enabled{true};
+  int _debug{0};
+  std::vector<std::string> _scripts{};
 };
 
 #endif

@@ -57,14 +57,16 @@ class TestVerbosity(TestCase):
     def test_verbosity_new_uuid(self):
         """Verbosity new-uuid"""
         code, out, err = self.t(("rc.verbose:new-uuid", "add", "Sample1"))
-        self.assertRegex(out, r"Created task [0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+        self.assertRegex(
+            out,
+            r"Created task [0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+        )
 
     def test_verbosity_label(self):
         """Verbosity label"""
         code, out, err = self.t("rc.verbose:label ls")
         self.assertRegex(
-            out,
-            "ID.+A.+D.+Project.+Tags.+R.+Wait.+S.+Due.+Until.+Description"
+            out, "ID.+A.+D.+Project.+Tags.+R.+Wait.+S.+Due.+Until.+Description"
         )
 
     def test_verbosity_affected(self):
@@ -86,14 +88,17 @@ class TestVerbosity(TestCase):
         """Verbosity special"""
         code, out, err = self.t("rc.verbose:special 1 mod +next")
 
-        self.assertIn("The 'next' special tag will boost the urgency of this "
-                      "task so it appears on the 'next' report.", out)
+        self.assertIn(
+            "The 'next' special tag will boost the urgency of this "
+            "task so it appears on the 'next' report.",
+            out,
+        )
 
     def test_verbosity_blank(self):
         """Verbosity blank"""
 
         def count_blank_lines(x):
-            return x.splitlines().count('')
+            return x.splitlines().count("")
 
         code, out, err = self.t("rc.verbose:nothing ls")
         self.assertEqual(count_blank_lines(out), 0)
@@ -142,6 +147,7 @@ class TestVerbosity(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

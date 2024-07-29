@@ -29,6 +29,7 @@ import sys
 import os
 import signal
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -138,7 +139,9 @@ class TestBulk(TestCase):
         self.assertNotIn("Deleting task", out)
 
         # Test with 3 tasks, denying delete.
-        code, out, err = self.t.runError("1-3 delete rc.confirmation:1", input="n\nn\nn\n")
+        code, out, err = self.t.runError(
+            "1-3 delete rc.confirmation:1", input="n\nn\nn\n"
+        )
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertNotIn("Deleted task 1", out)
@@ -208,6 +211,7 @@ class TestBugBulk(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

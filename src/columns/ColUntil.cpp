@@ -30,9 +30,8 @@
 #include <ColUntil.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnUntil::ColumnUntil ()
-{
-  _name  = "until";
+ColumnUntil::ColumnUntil() {
+  _name = "until";
   _label = "Until";
 }
 

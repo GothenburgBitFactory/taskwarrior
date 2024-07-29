@@ -28,200 +28,184 @@
 // cmake.h include header must come first
 
 #include <CmdTags.h>
-#include <sstream>
-#include <vector>
-#include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
 #include <Table.h>
 #include <format.h>
+#include <stdlib.h>
 #include <util.h>
 
+#include <sstream>
+#include <vector>
+
 ////////////////////////////////////////////////////////////////////////////////
-CmdTags::CmdTags ()
-{
-  _keyword               = "tags";
-  _usage                 = "task <filter> tags";
-  _description           = "Shows a list of all tags used";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = true;
-  _uses_context          = true;
-  _accepts_filter        = true;
+CmdTags::CmdTags() {
+  _keyword = "tags";
+  _usage = "task <filter> tags";
+  _description = "Shows a list of all tags used";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = true;
+  _uses_context = true;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::metadata;
+  _category = Command::Category::metadata;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdTags::execute (std::string& output)
-{
+int CmdTags::execute(std::string& output) {
   int rc = 0;
   std::stringstream out;
 
   // Get all the tasks.
-  auto tasks = Context::getContext ().tdb2.pending_tasks ();
+  auto tasks = Context::getContext().tdb2.pending_tasks();
 
-  if (Context::getContext ().config.getBoolean ("list.all.tags"))
-    for (auto& task : Context::getContext ().tdb2.completed_tasks ())
-      tasks.push_back (task);
+  if (Context::getContext().config.getBoolean("list.all.tags"))
+    for (auto& task : Context::getContext().tdb2.completed_tasks()) tasks.push_back(task);
 
-  int quantity = tasks.size ();
+  int quantity = tasks.size();
 
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (tasks, filtered);
+  std::vector<Task> filtered;
+  filter.subset(tasks, filtered);
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
-  std::map <std::string, int> unique;
-  for (auto& task : filtered)
-  {
-    for (auto& tag : task.getTags ())
-      if (unique.find (tag) != unique.end ())
+  std::map<std::string, int> unique;
+  for (auto& task : filtered) {
+    for (auto& tag : task.getTags())
+      if (unique.find(tag) != unique.end())
         unique[tag]++;
       else
         unique[tag] = 1;
   }
 
-  if (unique.size ())
-  {
+  if (unique.size()) {
     // Render a list of tags names from the map.
     Table view;
-    view.width (Context::getContext ().getWidth ());
-    view.add ("Tag");
-    view.add ("Count", false);
-    setHeaderUnderline (view);
+    view.width(Context::getContext().getWidth());
+    view.add("Tag");
+    view.add("Count", false);
+    setHeaderUnderline(view);
 
     Color bold;
-    if (Context::getContext ().color ())
-      bold = Color ("bold");
+    if (Context::getContext().color()) bold = Color("bold");
 
     bool special = false;
-    for (auto& i : unique)
-    {
+    for (auto& i : unique) {
       // Highlight the special tags.
-      special = (Context::getContext ().color () &&
-                 (i.first == "nocolor" ||
-                  i.first == "nonag"   ||
-                  i.first == "nocal"   ||
-                  i.first == "next")) ? true : false;
+      special = (Context::getContext().color() && (i.first == "nocolor" || i.first == "nonag" ||
+                                                   i.first == "nocal" || i.first == "next"))
+                    ? true
+                    : false;
 
-      int row = view.addRow ();
-      view.set (row, 0, i.first,  special ? bold : Color ());
-      view.set (row, 1, i.second, special ? bold : Color ());
+      int row = view.addRow();
+      view.set(row, 0, i.first, special ? bold : Color());
+      view.set(row, 1, i.second, special ? bold : Color());
     }
 
-    out << optionalBlankLine ()
-        << view.render ()
-        << optionalBlankLine ();
+    out << optionalBlankLine() << view.render() << optionalBlankLine();
 
-    if (unique.size () == 1)
-      Context::getContext ().footnote ("1 tag");
+    if (unique.size() == 1)
+      Context::getContext().footnote("1 tag");
     else
-      Context::getContext ().footnote (format ("{1} tags", unique.size ()));
+      Context::getContext().footnote(format("{1} tags", unique.size()));
 
     if (quantity == 1)
-      Context::getContext ().footnote ("(1 task)");
+      Context::getContext().footnote("(1 task)");
     else
-      Context::getContext ().footnote (format ("({1} tasks)", quantity));
+      Context::getContext().footnote(format("({1} tasks)", quantity));
 
     out << '\n';
-  }
-  else
-  {
-    Context::getContext ().footnote ("No tags.");
+  } else {
+    Context::getContext().footnote("No tags.");
     rc = 1;
   }
 
-  output = out.str ();
+  output = out.str();
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdCompletionTags::CmdCompletionTags ()
-{
-  _keyword               = "_tags";
-  _usage                 = "task <filter> _tags";
-  _description           = "Shows only a list of all tags used, for autocompletion purposes";
-  _read_only             = true;
-  _displays_id           = false;
-  _needs_gc              = true;
-  _uses_context          = false;
-  _accepts_filter        = true;
+CmdCompletionTags::CmdCompletionTags() {
+  _keyword = "_tags";
+  _usage = "task <filter> _tags";
+  _description = "Shows only a list of all tags used, for autocompletion purposes";
+  _read_only = true;
+  _displays_id = false;
+  _needs_gc = true;
+  _uses_context = false;
+  _accepts_filter = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::internal;
+  _category = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionTags::execute (std::string& output)
-{
+int CmdCompletionTags::execute(std::string& output) {
   // Get all the tasks.
-  auto tasks = Context::getContext ().tdb2.pending_tasks ();
+  auto tasks = Context::getContext().tdb2.pending_tasks();
 
-  if (Context::getContext ().config.getBoolean ("complete.all.tags"))
-    for (auto& task : Context::getContext ().tdb2.completed_tasks ())
-      tasks.push_back (task);
+  if (Context::getContext().config.getBoolean("complete.all.tags"))
+    for (auto& task : Context::getContext().tdb2.completed_tasks()) tasks.push_back(task);
 
   // Apply filter.
   Filter filter;
-  std::vector <Task> filtered;
-  filter.subset (tasks, filtered);
+  std::vector<Task> filtered;
+  filter.subset(tasks, filtered);
 
   // Scan all the tasks for their tags, building a map using tag
   // names as keys.
-  std::map <std::string, int> unique;
+  std::map<std::string, int> unique;
   for (auto& task : filtered)
-    for (auto& tag : task.getTags ())
-      unique[tag] = 0;
+    for (auto& tag : task.getTags()) unique[tag] = 0;
 
   // Add built-in tags to map.
-  unique["nocolor"]   = 0;
-  unique["nonag"]     = 0;
-  unique["nocal"]     = 0;
-  unique["next"]      = 0;
-  unique["ACTIVE"]    = 0;
+  unique["nocolor"] = 0;
+  unique["nonag"] = 0;
+  unique["nocal"] = 0;
+  unique["next"] = 0;
+  unique["ACTIVE"] = 0;
   unique["ANNOTATED"] = 0;
-  unique["BLOCKED"]   = 0;
-  unique["BLOCKING"]  = 0;
-  unique["CHILD"]     = 0;     // 2017-01-07: Deprecated in 2.6.0
+  unique["BLOCKED"] = 0;
+  unique["BLOCKING"] = 0;
+  unique["CHILD"] = 0;  // 2017-01-07: Deprecated in 2.6.0
   unique["COMPLETED"] = 0;
-  unique["DELETED"]   = 0;
-  unique["DUE"]       = 0;
-  unique["DUETODAY"]  = 0;     // 2016-03-29: Deprecated in 2.6.0
-  unique["INSTANCE"]  = 0;
-  unique["LATEST"]    = 0;
-  unique["MONTH"]     = 0;
-  unique["ORPHAN"]    = 0;
-  unique["OVERDUE"]   = 0;
-  unique["PARENT"]    = 0;     // 2017-01-07: Deprecated in 2.6.0
-  unique["PENDING"]   = 0;
-  unique["PRIORITY"]  = 0;
-  unique["PROJECT"]   = 0;
-  unique["QUARTER"]   = 0;
-  unique["READY"]     = 0;
+  unique["DELETED"] = 0;
+  unique["DUE"] = 0;
+  unique["DUETODAY"] = 0;  // 2016-03-29: Deprecated in 2.6.0
+  unique["INSTANCE"] = 0;
+  unique["LATEST"] = 0;
+  unique["MONTH"] = 0;
+  unique["ORPHAN"] = 0;
+  unique["OVERDUE"] = 0;
+  unique["PARENT"] = 0;  // 2017-01-07: Deprecated in 2.6.0
+  unique["PENDING"] = 0;
+  unique["PRIORITY"] = 0;
+  unique["PROJECT"] = 0;
+  unique["QUARTER"] = 0;
+  unique["READY"] = 0;
   unique["SCHEDULED"] = 0;
-  unique["TAGGED"]    = 0;
-  unique["TEMPLATE"]  = 0;
-  unique["TODAY"]     = 0;
-  unique["TOMORROW"]  = 0;
-  unique["UDA"]       = 0;
+  unique["TAGGED"] = 0;
+  unique["TEMPLATE"] = 0;
+  unique["TODAY"] = 0;
+  unique["TOMORROW"] = 0;
+  unique["UDA"] = 0;
   unique["UNBLOCKED"] = 0;
-  unique["UNTIL"]     = 0;
-  unique["WAITING"]   = 0;
-  unique["WEEK"]      = 0;
-  unique["YEAR"]      = 0;
+  unique["UNTIL"] = 0;
+  unique["WAITING"] = 0;
+  unique["WEEK"] = 0;
+  unique["YEAR"] = 0;
   unique["YESTERDAY"] = 0;
 
   // If you update the above list, update src/commands/CmdInfo.cpp and src/Task.cpp as well.
 
   std::stringstream out;
-  for (auto& it : unique)
-    out << it.first << '\n';
+  for (auto& it : unique) out << it.first << '\n';
 
-  output = out.str ();
+  output = out.str();
   return 0;
 }
 

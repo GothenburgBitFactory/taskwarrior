@@ -30,10 +30,11 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
+#include <sys/types.h>
+
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <sys/types.h>
 #if defined(FREEBSD) || defined(OPENBSD)
 #include <uuid.h>
 #else
@@ -42,30 +43,26 @@
 #include <Table.h>
 
 // util.cpp
-int confirm4 (const std::string&);
+int confirm4(const std::string&);
 
 #ifndef HAVE_UUID_UNPARSE_LOWER
-void uuid_unparse_lower (uuid_t uu, char *out);
+void uuid_unparse_lower(uuid_t uu, char* out);
 #endif
-const std::string uuid ();
+const std::string uuid();
 
-const std::string indentProject (
-  const std::string&,
-  const std::string& whitespace = "  ",
-  char delimiter = '.');
+const std::string indentProject(const std::string&, const std::string& whitespace = "  ",
+                                char delimiter = '.');
 
-const std::vector <std::string> extractParents (
-  const std::string&,
-  const char& delimiter = '.');
+const std::vector<std::string> extractParents(const std::string&, const char& delimiter = '.');
 
 #ifndef HAVE_TIMEGM
-  time_t timegm (struct tm *tm);
+time_t timegm(struct tm* tm);
 #endif
 
-bool nontrivial (const std::string&);
-const char* optionalBlankLine ();
-void setHeaderUnderline (Table&);
-bool extractLongInteger (const std::string&, long&);
+bool nontrivial(const std::string&);
+const char* optionalBlankLine();
+void setHeaderUnderline(Table&);
+bool extractLongInteger(const std::string&, long&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

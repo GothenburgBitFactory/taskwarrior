@@ -27,16 +27,16 @@
 #ifndef INCLUDED_COLTYPESTRING
 #define INCLUDED_COLTYPESTRING
 
-#include <string>
 #include <Column.h>
 #include <Task.h>
 
-class ColumnTypeString : public Column
-{
-public:
-  ColumnTypeString ();
-  virtual bool validate (const std::string&) const;
-  virtual void modify (Task&, const std::string&);
+#include <string>
+
+class ColumnTypeString : public Column {
+ public:
+  ColumnTypeString();
+  virtual bool validate(const std::string&) const;
+  virtual void modify(Task&, const std::string&);
 };
 
 #endif

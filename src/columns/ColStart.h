@@ -29,13 +29,12 @@
 
 #include <ColTypeDate.h>
 
-class ColumnStart : public ColumnTypeDate
-{
-public:
-  ColumnStart ();
-  void setStyle (const std::string&);
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
+class ColumnStart : public ColumnTypeDate {
+ public:
+  ColumnStart();
+  void setStyle(const std::string&);
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
 };
 
 #endif

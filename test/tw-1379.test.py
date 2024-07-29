@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
@@ -39,7 +40,7 @@ class TestBug1379(TestCase):
     def setUp(self):
         self.t = Task()
         # Themes are a special case that cannot be set via "task config"
-        with open(self.t.taskrc, 'a') as fh:
+        with open(self.t.taskrc, "a") as fh:
             fh.write("include " + REPO_DIR + "/../doc/rc/no-color.theme\n")
 
         self.t.config("color.alternate", "")
@@ -157,8 +158,10 @@ class TestBug1379(TestCase):
         code, out, err = self.t("all +DELETED")
         self.assertRegex(out, self.RED + r".*Delete.*" + self.CLEAR)
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

@@ -27,21 +27,20 @@
 #ifndef INCLUDED_CMDCOLUMNS
 #define INCLUDED_CMDCOLUMNS
 
-#include <string>
 #include <Command.h>
 
-class CmdColumns : public Command
-{
-public:
-  CmdColumns ();
-  int execute (std::string&);
+#include <string>
+
+class CmdColumns : public Command {
+ public:
+  CmdColumns();
+  int execute(std::string&);
 };
 
-class CmdCompletionColumns : public Command
-{
-public:
-  CmdCompletionColumns ();
-  int execute (std::string&);
+class CmdCompletionColumns : public Command {
+ public:
+  CmdCompletionColumns();
+  int execute(std::string&);
 };
 
 #endif

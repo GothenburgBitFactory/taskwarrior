@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -35,8 +36,8 @@ from basetest import Task, TestCase
 
 
 class TestDefaultProject(TestCase):
-    """Bug 1023: rc.default.project gets applied during modify, and should not
-    """
+    """Bug 1023: rc.default.project gets applied during modify, and should not"""
+
     def setUp(self):
         self.t = Task()
 
@@ -45,8 +46,7 @@ class TestDefaultProject(TestCase):
         self.t.config("default.project", self.default_project)
 
     def test_with_project(self):
-        """default.project not applied when specified nor on attribute removal
-        """
+        """default.project not applied when specified nor on attribute removal"""
         self.set_default_project()
 
         self.t("add foobar project:garden")
@@ -152,7 +152,7 @@ class TestDefaultProject(TestCase):
         self.set_default_project()
 
         DESC = "foobar"
-        self.t(('add', 'recur:daily', 'due:today', DESC))
+        self.t(("add", "recur:daily", "due:today", DESC))
         self.t()  # Ensure creation of recurring children
         code, out, err = self.t("1 info")
 
@@ -172,8 +172,10 @@ class TestDefaultProject(TestCase):
         try:
             id = int(id)
         except ValueError:
-            raise ValueError("Unexpected output when running 'task count', "
-                             "expected int, got '{0}'".format(id))
+            raise ValueError(
+                "Unexpected output when running 'task count', "
+                "expected int, got '{0}'".format(id)
+            )
         else:
             # parent task is not considered when counting
             id = str(id + 1)
@@ -188,7 +190,7 @@ class TestDefaultProject(TestCase):
         """no project is applied on recurring tasks"""
         # NOTE - reported on TW-1279
         DESC = "foobar"
-        self.t(('add', 'recur:daily', 'due:today', DESC))
+        self.t(("add", "recur:daily", "due:today", DESC))
         code, out, err = self.t()
 
         self.assertIn(DESC, out)
@@ -204,13 +206,12 @@ class TestDefaultProject(TestCase):
         self.assertNotIn("Project", out)
 
     def test_recurring_with_project_and_default_project(self):
-        """default.project is not applied to children if parent has a project
-        """
+        """default.project is not applied to children if parent has a project"""
         # NOTE - reported on TW-1279
         self.set_default_project()
 
         DESC = "foobar"
-        self.t(('add', 'recur:daily', 'due:today', 'project:HELLO', DESC))
+        self.t(("add", "recur:daily", "due:today", "project:HELLO", DESC))
         code, out, err = self.t()
 
         self.assertIn(DESC, out)
@@ -227,6 +228,7 @@ class TestDefaultProject(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

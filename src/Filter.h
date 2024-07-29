@@ -27,28 +27,27 @@
 #ifndef INCLUDED_FILTER
 #define INCLUDED_FILTER
 
-#include <string>
-#include <vector>
 #include <Task.h>
 #include <Variant.h>
 
-class Filter
-{
-public:
-  Filter () = default;
+#include <string>
+#include <vector>
 
-  void subset (const std::vector <Task>&, std::vector <Task>&);
-  void subset (std::vector <Task>&);
-  bool hasFilter () const;
-  bool pendingOnly () const;
-  void safety () const;
-  void disableSafety ();
+class Filter {
+ public:
+  Filter() = default;
 
-private:
-  int  _startCount {0};
-  int  _endCount   {0};
-  bool _safety     {true};
+  void subset(const std::vector<Task>&, std::vector<Task>&);
+  void subset(std::vector<Task>&);
+  bool hasFilter() const;
+  bool pendingOnly() const;
+  void safety() const;
+  void disableSafety();
+
+ private:
+  int _startCount{0};
+  int _endCount{0};
+  bool _safety{true};
 };
 
 #endif
-

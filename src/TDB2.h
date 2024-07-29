@@ -27,71 +27,71 @@
 #ifndef INCLUDED_TDB2
 #define INCLUDED_TDB2
 
-#include <map>
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
-#include <string>
-#include <stdio.h>
 #include <FS.h>
 #include <Task.h>
-#include <tc/WorkingSet.h>
+#include <stdio.h>
 #include <tc/Replica.h>
+#include <tc/WorkingSet.h>
+
+#include <map>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 namespace tc {
 class Server;
 }
 
 // TDB2 Class represents all the files in the task database.
-class TDB2
-{
-public:
+class TDB2 {
+ public:
   static bool debug_mode;
 
-  TDB2 ();
+  TDB2();
 
-  void open_replica (const std::string&, bool create_if_missing);
-  void add (Task&);
-  void modify (Task&);
-  void purge (Task&);
-  void get_changes (std::vector <Task>&);
-  void revert ();
-  void gc ();
-  void expire_tasks ();
-  int  latest_id ();
+  void open_replica(const std::string &, bool create_if_missing);
+  void add(Task &);
+  void modify(Task &);
+  void purge(Task &);
+  void get_changes(std::vector<Task> &);
+  void revert();
+  void gc();
+  void expire_tasks();
+  int latest_id();
 
   // Generalized task accessors.
-  const std::vector <Task> all_tasks ();
-  const std::vector <Task> pending_tasks ();
-  const std::vector <Task> completed_tasks ();
-  bool get (int, Task&);
-  bool get (const std::string&, Task&);
-  bool has (const std::string&);
-  const std::vector <Task> siblings (Task&);
-  const std::vector <Task> children (Task&);
+  const std::vector<Task> all_tasks();
+  const std::vector<Task> pending_tasks();
+  const std::vector<Task> completed_tasks();
+  bool get(int, Task &);
+  bool get(const std::string &, Task &);
+  bool has(const std::string &);
+  const std::vector<Task> siblings(Task &);
+  const std::vector<Task> children(Task &);
 
   // ID <--> UUID mapping.
-  std::string uuid (int);
-  int id (const std::string&);
+  std::string uuid(int);
+  int id(const std::string &);
 
-  int num_local_changes ();
-  int num_reverts_possible ();
+  int num_local_changes();
+  int num_reverts_possible();
 
-  void dump ();
+  void dump();
 
-  void sync (tc::Server server, bool avoid_snapshots);
+  void sync(tc::Server server, bool avoid_snapshots);
   bool confirm_revert(struct tc::ffi::TCReplicaOpList);
 
-private:
+ private:
   tc::Replica replica;
   std::optional<tc::WorkingSet> _working_set;
 
   // UUID -> Task containing all tasks modified in this invocation.
   std::map<std::string, Task> changes;
 
-  const tc::WorkingSet &working_set ();
-  static std::string option_string (std::string input);
-  static void show_diff (const std::string&, const std::string&, const std::string&);
+  const tc::WorkingSet &working_set();
+  static std::string option_string(std::string input);
+  static void show_diff(const std::string &, const std::string &, const std::string &);
 };
 
 #endif

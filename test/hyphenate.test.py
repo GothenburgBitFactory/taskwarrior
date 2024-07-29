@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,8 +40,8 @@ class TestHyphenation(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
         self.t.config("defaultwidth", "20")
-        self.t.config("detection",    "0")
-        self.t.config("verbose",      "nothing")
+        self.t.config("detection", "0")
+        self.t.config("verbose", "nothing")
 
     def test_hyphenation_on_space(self):
         """Split on space instead of hyphenating"""
@@ -54,6 +55,7 @@ class TestHyphenation(TestCase):
         code, out, err = self.t("ls")
         self.assertIn(" 1 AAAAAAAAAABBBBBB-\n", out)
 
+
 class TestBug804(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -61,10 +63,10 @@ class TestBug804(TestCase):
 
     def test_hyphenation(self):
         """Verify hyphenation is controllable"""
-        self.t.config("print.empty.columns",     "1")
-        self.t.config("report.unittest.labels",  "ID,Project,Pri,Description")
+        self.t.config("print.empty.columns", "1")
+        self.t.config("report.unittest.labels", "ID,Project,Pri,Description")
         self.t.config("report.unittest.columns", "id,project,priority,description")
-        self.t.config("report.unittest.filter",  "status:pending")
+        self.t.config("report.unittest.filter", "status:pending")
 
         # Setup: Add a tasks, annotate with long word.
         self.t("add one")
@@ -83,6 +85,7 @@ class TestBug804(TestCase):
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

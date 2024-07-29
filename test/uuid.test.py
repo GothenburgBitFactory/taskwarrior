@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,7 +41,9 @@ class TestUUID(TestCase):
 
         self.t.config("dateformat", "m/d/Y")
 
-        self.t("import -", input="""[
+        self.t(
+            "import -",
+            input="""[
         {"description":"one", "entry":"1315260230", "status":"pending", "uuid":"9deed7ca-843d-4259-b2c4-40ce73e8e4f3"},
         {"description":"two", "entry":"1315260230", "status":"pending", "uuid":"0f4c83d2-552f-4108-ae3f-ccc7959f84a3"},
         {"description":"three", "entry":"1315260230", "status":"pending", "uuid":"aa4abef1-1dc5-4a43-b6a0-7872df3094bb"},
@@ -51,7 +54,8 @@ class TestUUID(TestCase):
         {"description":"seven", "end":"1315338826", "entry":"1315338726", "status":"completed", "uuid":"abcdefab-abcd-abcd-abcd-abcdefabcdef"},
         {"description":"eenndd", "end":"1315335841", "entry":"1315335841", "start":"1315338516", "status":"completed", "uuid":"727baa6c-65b8-485e-a810-e133e3cd83dc"},
         {"description":"UUNNDDOO", "end":"1315338626", "entry":"1315338626", "status":"completed", "uuid":"c1361003-948e-43e8-85c8-15d28dc3c71c"}
-        ]""")
+        ]""",
+        )
 
     def _config_unittest_report(self):
         self.t.config("report.unittest.columns", "id,entry,start,description")
@@ -210,18 +214,19 @@ class TestFeature891(TestCase):
 
     def test_uuid_filter(self):
         """891: Test that a task is addressable using UUIDs of length 7 - 36"""
-        for i in range(35,7,-1):
+        for i in range(35, 7, -1):
             code, out, err = self.t(self.uuid[0:i] + " list")
             self.assertIn("one", out)
             self.assertNotIn("two", out)
 
         # TODO This should fail because a 7-character UUID is not a UUID, but
         #      instead it blindly does nothing, and succeeds. Voodoo.
-        #code, out, err = self.t(self.uuid[0:6] + " list")
+        # code, out, err = self.t(self.uuid[0:6] + " list")
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4 ft=python

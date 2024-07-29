@@ -29,10 +29,9 @@
 
 #include <ColTypeDate.h>
 
-class ColumnEnd : public ColumnTypeDate
-{
-public:
-  ColumnEnd ();
+class ColumnEnd : public ColumnTypeDate {
+ public:
+  ColumnEnd();
 };
 
 #endif

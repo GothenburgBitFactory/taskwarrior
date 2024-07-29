@@ -29,16 +29,15 @@
 
 #include <ColTypeString.h>
 
-class ColumnRType : public ColumnTypeString
-{
-public:
-  ColumnRType ();
-  void setStyle (const std::string&);
-  void measure (Task&, unsigned int&, unsigned int&);
-  void render (std::vector <std::string>&, Task&, int, Color&);
-  bool validate (const std::string&) const;
+class ColumnRType : public ColumnTypeString {
+ public:
+  ColumnRType();
+  void setStyle(const std::string&);
+  void measure(Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, Task&, int, Color&);
+  bool validate(const std::string&) const;
 
-private:
+ private:
 };
 
 #endif
