@@ -33,11 +33,11 @@
 
 #include <iostream>
 
-Task task;
-
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest t(120);
+
+  Task task;
 
   Variant vs0("untrue");   // !~ true
   Variant vs1(8421);       // !~ 42

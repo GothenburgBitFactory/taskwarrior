@@ -35,7 +35,7 @@
 #define EPSILON 0.001
 
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest t(81);
 
   time_t now = time(nullptr);

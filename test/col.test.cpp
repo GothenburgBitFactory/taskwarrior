@@ -33,7 +33,7 @@
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest test(12);
 
   // Ensure environment has no influence.

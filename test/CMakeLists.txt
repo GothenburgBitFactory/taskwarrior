@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.22)
 
+# -- C++ tests
+
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
@@ -8,7 +10,7 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/test
                      ${TASK_INCLUDE_DIRS})
 
-set (test_SRCS
+set(test_SRCS
   col.test.cpp
   dom.test.cpp
   eval.test.cpp
@@ -42,22 +44,38 @@ set (test_SRCS
   view.test.cpp
   )
 
-add_custom_target (build_tests DEPENDS ${test_SRCS}
-                               WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
+# Build a `test_main.cpp` based on `test_SRCS`
+add_custom_command(
+    OUTPUT  test_main.cpp
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_main_generator.sh
+              ${test_SRCS}
+              > ${CMAKE_CURRENT_BINARY_DIR}/test_main.cpp
+    DEPENDS test_main_generator.sh
+)
 
-foreach (src_FILE ${test_SRCS})
-  add_executable (${src_FILE} ${src_FILE} test.cpp)
-  target_link_libraries (${src_FILE} task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
-  add_dependencies (${src_FILE} task_executable)
-  if (DARWIN)
-    target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security -framework SystemConfiguration")
-  endif (DARWIN)
+# Build `test_runner` containing all CPP tests, linked once.
+add_executable(test_runner
+  test.cpp
+  test_main.cpp
+  ${test_SRCS}
+)
+target_link_libraries (test_runner task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
+if (DARWIN)
+  target_link_libraries (test_runner "-framework CoreFoundation -framework Security -framework SystemConfiguration")
+endif (DARWIN)
 
-  add_test(NAME ${src_FILE}
-    COMMAND ${src_FILE}
+foreach (test_FILE ${test_SRCS})
+  # Test_NAME is the name of the test with `.` replaced by `_`.
+  string(REGEX REPLACE "[^a-zA-Z0-9]" _ test_NAME ${test_FILE})
+  # Tell the source file what its own name is
+  set_source_files_properties(${test_FILE} PROPERTIES COMPILE_FLAGS -DTEST_NAME=${test_NAME})
+  add_test(NAME ${test_FILE}
+    COMMAND test_runner ${test_NAME}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-endforeach (src_FILE)
+  )
+endforeach (test_FILE)
+
+# -- Python tests
 
 add_subdirectory(basetest)
 add_subdirectory(simpletap)

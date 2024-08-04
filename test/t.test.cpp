@@ -32,7 +32,7 @@
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest test(48);
   Context context;
   Context::setContext(&context);

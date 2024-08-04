@@ -35,7 +35,7 @@
 #define EPSILON 0.0001
 
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest t(40);
 
   Variant v0(true);

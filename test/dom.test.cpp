@@ -31,6 +31,8 @@
 #include <Variant.h>
 #include <test.h>
 
+namespace {
+
 ////////////////////////////////////////////////////////////////////////////////
 bool providerString(const std::string& path, Variant& var) {
   if (path == "name") {
@@ -50,8 +52,10 @@ bool providerString(const std::string& path, Variant& var) {
   return false;
 }
 
+}  // namespace
+
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest t(12);
 
   DOM dom;

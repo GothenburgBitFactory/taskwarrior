@@ -31,6 +31,8 @@
 #include <Eval.h>
 #include <test.h>
 
+namespace {
+
 ////////////////////////////////////////////////////////////////////////////////
 // A few hard-coded symbols.
 bool get(const std::string& name, Variant& value) {
@@ -42,8 +44,10 @@ bool get(const std::string& name, Variant& value) {
   return true;
 }
 
+}  // namespace
+
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest t(52);
   Context context;
   Context::setContext(&context);

@@ -34,7 +34,7 @@
 
 #include <iostream>
 
-Context context;
+namespace {
 
 void cleardb() {
   // Remove any residual test files.
@@ -42,8 +42,10 @@ void cleardb() {
   unlink("./taskchampion.sqlite3");
 }
 
+}  // namespace
+
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME() {
   UnitTest t(12);
   Context context;
   Context::setContext(&context);
