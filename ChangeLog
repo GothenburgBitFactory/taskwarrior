@@ -1,12 +1,46 @@
 ------ current release ---------------------------
 
+3.1.0 -
+
+ - Support for `task purge` has been restored, and new support added for automatically
+   expiring old tasks. (#3540, #3546, #3556)
+ - `task news` is now better behaved, and can be completely disabled.
+ - Multiple imports of the same UUID will now generate a warning. (#3560)
+ - The `sync.server.url` config replaces `sync.server.origin` and allows a URL
+   containing a path. (#3423)
+ - The new `bubblegum-256.theme` has improved legibility and contrast over
+   others. (#3505)
+ - Warnings regarding `.data` files are only show for reports. (#3473)
+ - Inherited urgency is correctly calculated to make parents more urgent than
+   children (#2941)
+ - Task completion commands no longer trigger hooks (#3133)
+
+Thanks to the following people for contributions to this release:
+
+ - Adrian Galilea
+ - Adrian Sadłocha
+ - Andonome
+ - Christian Clauss
+ - Dominik Rehák
+ - Dustin J. Mitchell
+ - Felix Schurk
+ - Hector Dearman
+ - Joseph Coffa
+ - koleesch
+ - Maarten Aertsen
+ - mattsmida
+ - Philipp Oberdiek
+ - Sebastian Carlos
+ - sleepy_nols
+ - Steve Dondley
+ - Will R S Hansen
+
+------ old releases ------------------------------
+
 3.0.2 -
 
 - Fix an accidentally-included debug print which polluted output of
   reports with the Taskwarrior version (#3389)
-
------- old releases ------------------------------
-
 
 3.0.1 -
 

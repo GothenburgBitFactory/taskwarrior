@@ -470,25 +470,34 @@ void NewsItem::version3_0_0(std::vector<NewsItem>& items) {
 
 void NewsItem::version3_1_0(std::vector<NewsItem>& items) {
   Version version("3.1.0");
-  NewsItem sync{
+  NewsItem purge{
       version,
       /*title=*/"Purging Tasks, Manually or Automatically",
       /*bg_title=*/"",
       /*background=*/"",
       /*punchline=*/
-      "Support for `task purge` has been restored, and new support added for automatically "
-      "expiring\n"
-      "old tasks.\n\n"
+      "Support for `task purge` has been restored, and new support added for automatically\n"
+      "expiring old tasks.\n\n",
       /*update=*/
-      "The `task purge` command removes tasks entirely, in contrast to `task delete` which merely "
-      "sets\n"
-      "the task status to 'Deleted'. This functionality existed in versions 2.x but was "
-      "temporarily\n"
-      "removed in 3.0.\n\n"
+      "The `task purge` command removes tasks entirely, in contrast to `task delete` which merely\n"
+      "sets the task status to 'Deleted'. This functionality existed in versions 2.x but was\n"
+      "temporarily removed in 3.0.\n\n"
       "The new `purge.on-sync` configuration parameter controls automatic purging of old tasks.\n"
       "An old task is one with status 'Deleted' that has not been modified in 180 days. This\n"
       "functionality is optional and not enabled by default."};
-  items.push_back(sync);
+  items.push_back(purge);
+  NewsItem news{
+      version,
+      /*title=*/"Improved 'task news'",
+      /*bg_title=*/"",
+      /*background=*/"",
+      /*punchline=*/
+      "The news you are reading now is improved.\n\n",
+      /*update=*/
+      "The `task news` command now always shows all new information, not just 'major' news,\n"
+      "and will only show that news once. New installs will assume all news has been read.\n"
+      "Finally, news can be completely hidden by removing 'news' from the 'verbose' config."};
+  items.push_back(news);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -555,7 +564,6 @@ int CmdNews::execute(std::string& output) {
 
   // Set a mark in the config to remember which version's release notes were displayed
   if (news_version != current_version) {
-    std::cout << "UPDATING\n";
     CmdConfig::setConfigVariable("news.version", std::string(current_version), false);
 
     // Revert back to default signal handling after displaying the outro
