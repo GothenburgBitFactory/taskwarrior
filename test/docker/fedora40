@@ -26,5 +26,5 @@ RUN cmake --install build
 RUN task --version
 
 # Setup tests
-RUN cmake --build build --target build_tests -j 8
+RUN cmake --build build --target test_runner -j 8
 CMD ctest --test-dir build -j 8 --output-on-failure --rerun-failed
