@@ -254,8 +254,9 @@ mod ffi {
         /// Get the index for the given uuid, or zero if it is not in the working set.
         fn by_uuid(&self, uuid: Uuid) -> usize;
 
-        /// Get the entire working set, using ids as indices into the vector. Empty indices have
-        /// the nil UUID.
+        /// Get the entire working set, as a vector indexed by each task's id. For example, the
+        /// UUID for task 5 will be at `all_uuids()[5]`. All elements of the vector not corresponding
+        /// to a task contain the nil UUID.
         fn all_uuids(&self) -> Vec<Uuid>;
     }
 }

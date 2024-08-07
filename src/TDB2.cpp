@@ -230,11 +230,12 @@ void TDB2::revert() {
     return;
   }
   if (confirm_revert(undo_ops)) {
+    // Note that commit_reversed_operations rebuilds the working set, so that
+    // need not be done here.
     if (!replica()->commit_reversed_operations(std::move(undo_ops))) {
       std::cout << "Could not undo: other operations have occurred.";
     }
   }
-  // Note that commit_reversed_operations rebuilds the working set.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,7 +253,18 @@ bool TDB2::confirm_revert(rust::Vec<tc::Operation>& undo_ops) {
     if (op.is_create()) {
       std::cout << "Create " << uuid;
     } else if (op.is_delete()) {
-      std::cout << "Delete " << uuid;
+      std::cout << "Delete ";
+      auto old_task = op.get_old_task();
+      bool found_description = false;
+      for (auto& pv : old_task) {
+        if (static_cast<std::string>(pv.prop) == "description") {
+          std::cout << static_cast<std::string>(pv.value) << " (" << uuid << ")";
+          found_description = true;
+        }
+      }
+      if (!found_description) {
+        std::cout << uuid;
+      }
     } else if (op.is_update()) {
       std::cout << "Update " << uuid << "\n";
       std::string property;
