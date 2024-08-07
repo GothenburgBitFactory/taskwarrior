@@ -8,13 +8,7 @@ function bashtap_on_error {
     # $bashtap_line contains the last executed line, or an error.
     echo -n "$bashtap_output"
 
-    # Determine if this failure was expected
-    if [[ ! -z "$EXPFAIL" ]]
-    then
-        todo_suffix=" # TODO"
-    fi
-
-    echo "not ok 1 - ${bashtap_line}${todo_suffix}"
+    echo "not ok 1 - ${bashtap_line}"
     bashtap_clean_tmpdir
 }
 
@@ -81,41 +75,35 @@ function bashtap_get_absolute_path {
 bashtap_org_pwd=$(pwd)
 bashtap_org_script=$(bashtap_get_absolute_path "$0")
 
-if [ "${0:(-2)}" == ".t" ] || [ "$1" == "-t" ]; then
-    # Make sure any failing commands are caught.
-    set -e
-    set -o pipefail
+# Make sure any failing commands are caught.
+set -e
+set -o pipefail
 
-    # TAP header. Hardcoded number of tests, 1.
-    echo "1..1"
+# TAP header. Hardcoded number of tests, 1.
+echo "1..1"
 
-    # Output TAP failure on early exit.
-    trap bashtap_on_error EXIT
+# Output TAP failure on early exit.
+trap bashtap_on_error EXIT
 
-    # The different calls to mktemp are necessary for OSX compatibility.
-    bashtap_tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'bash_tap')
-    if [ ! -z "$bashtap_tmpdir" ]; then
-        cd "$bashtap_tmpdir"
-    else
-        bashtap_line="Unable to create temporary directory."
-        exit 1
-    fi
-
-    # Scripts sourced before bash_tap.sh may declare this function.
-    if declare -f bashtap_setup >/dev/null; then
-        bashtap_setup
-    fi
-
-    # Run test file interpreting failing commands as a test failure.
-    bashtap_run_testcase && echo "ok 1"
-
-    # Since we're in a sourced file and just ran the parent script,
-    # exit without running it a second time.
-    trap - EXIT
-    bashtap_clean_tmpdir
-    exit
+# The different calls to mktemp are necessary for OSX compatibility.
+bashtap_tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'bash_tap')
+if [ ! -z "$bashtap_tmpdir" ]; then
+    cd "$bashtap_tmpdir"
 else
-    if declare -f bashtap_setup >/dev/null; then
-        bashtap_setup
-    fi
+    bashtap_line="Unable to create temporary directory."
+    exit 1
 fi
+
+# Scripts sourced before bash_tap.sh may declare this function.
+if declare -f bashtap_setup >/dev/null; then
+    bashtap_setup
+fi
+
+# Run test file interpreting failing commands as a test failure.
+bashtap_run_testcase && echo "ok 1"
+
+# Since we're in a sourced file and just ran the parent script,
+# exit without running it a second time.
+trap - EXIT
+bashtap_clean_tmpdir
+exit

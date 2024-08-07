@@ -60,9 +60,6 @@ foreach (src_FILE ${test_SRCS})
     )
 endforeach (src_FILE)
 
-configure_file(bash_tap.sh bash_tap.sh COPYONLY)
-configure_file(bash_tap_tw.sh bash_tap_tw.sh COPYONLY)
-
 add_subdirectory(basetest)
 add_subdirectory(simpletap)
 
@@ -198,3 +195,40 @@ foreach (python_Test ${pythonTests})
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 endforeach(python_Test)
+
+# -- Shell tests
+
+set (shell_SRCS
+  tw-1637.test.sh
+  tw-1643.test.sh
+  tw-1688.test.sh
+  tw-1715.test.sh
+  tw-1718.test.sh
+  tw-1804.test.sh
+  tw-1883.test.sh
+  tw-1895.test.sh
+  tw-1938.test.sh
+  tw-2124.test.sh
+  tw-2189.test.sh
+  tw-2257.test.sh
+  tw-2386.test.sh
+  tw-2392.test.sh
+  tw-2429.test.sh
+  tw-2451.test.sh
+  tw-2514.test.sh
+  tw-2530.test.sh
+  tw-2550.test.sh
+  tw-2581.test.sh
+  tw-3102.test.sh
+  tw-3109.test.sh
+)
+
+configure_file(bash_tap.sh bash_tap.sh COPYONLY)
+configure_file(bash_tap_tw.sh bash_tap_tw.sh COPYONLY)
+
+foreach (shell_Test ${shell_SRCS})
+  add_test(NAME ${shell_Test}
+    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/${shell_Test}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+endforeach(shell_Test)
