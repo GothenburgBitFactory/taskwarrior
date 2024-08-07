@@ -226,9 +226,9 @@ set (shell_SRCS
 configure_file(bash_tap.sh bash_tap.sh COPYONLY)
 configure_file(bash_tap_tw.sh bash_tap_tw.sh COPYONLY)
 
-foreach (test ${shell_SRCS})
-  add_test(NAME ${test}
-    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/${test}
+foreach (shell_Test ${shell_SRCS})
+  add_test(NAME ${shell_Test}
+    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/${shell_Test}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
-endforeach(test)
+endforeach(shell_Test)
