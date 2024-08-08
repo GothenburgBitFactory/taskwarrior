@@ -45,7 +45,7 @@ void cleardb() {
 }  // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
   UnitTest t(12);
   Context context;
   Context::setContext(&context);

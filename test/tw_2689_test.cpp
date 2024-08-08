@@ -34,7 +34,7 @@
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
   UnitTest test(12);
 
   // Ensure environment has no influence.

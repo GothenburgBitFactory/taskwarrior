@@ -33,7 +33,7 @@
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
   UnitTest t(38);
 
   Variant v0(true);

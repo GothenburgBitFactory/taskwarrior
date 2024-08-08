@@ -47,7 +47,7 @@ bool get(const std::string& name, Variant& value) {
 }  // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
   UnitTest t(52);
   Context context;
   Context::setContext(&context);

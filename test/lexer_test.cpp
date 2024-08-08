@@ -37,7 +37,7 @@
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
 #ifdef PRODUCT_TASKWARRIOR
   UnitTest t(1255);
 #else

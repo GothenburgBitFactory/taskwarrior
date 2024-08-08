@@ -34,7 +34,7 @@
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
   UnitTest t(120);
 
   Task task;

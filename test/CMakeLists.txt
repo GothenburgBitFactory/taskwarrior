@@ -10,54 +10,47 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/test
                      ${TASK_INCLUDE_DIRS})
 
+# All C++ test files. Note that the portion before `.cpp` must be a valid,
+# unique C++ identifier.
 set(test_SRCS
-  col.test.cpp
-  dom.test.cpp
-  eval.test.cpp
-  lexer.test.cpp
-  t.test.cpp
-  tw-2689.test.cpp
-  tdb2.test.cpp
-  tc.test.cpp
-  util.test.cpp
-  variant_add.test.cpp
-  variant_and.test.cpp
-  variant_cast.test.cpp
-  variant_divide.test.cpp
-  variant_equal.test.cpp
-  variant_exp.test.cpp
-  variant_gt.test.cpp
-  variant_gte.test.cpp
-  variant_inequal.test.cpp
-  variant_lt.test.cpp
-  variant_lte.test.cpp
-  variant_match.test.cpp
-  variant_math.test.cpp
-  variant_modulo.test.cpp
-  variant_multiply.test.cpp
-  variant_nomatch.test.cpp
-  variant_not.test.cpp
-  variant_or.test.cpp
-  variant_partial.test.cpp
-  variant_subtract.test.cpp
-  variant_xor.test.cpp
-  view.test.cpp
+  col_test.cpp
+  dom_test.cpp
+  eval_test.cpp
+  lexer_test.cpp
+  t_test.cpp
+  tw_2689_test.cpp
+  tdb2_test.cpp
+  tc_cpp_test.cpp
+  util_test.cpp
+  variant_add_test.cpp
+  variant_and_test.cpp
+  variant_cast_test.cpp
+  variant_divide_test.cpp
+  variant_equal_test.cpp
+  variant_exp_test.cpp
+  variant_gt_test.cpp
+  variant_gte_test.cpp
+  variant_inequal_test.cpp
+  variant_lt_test.cpp
+  variant_lte_test.cpp
+  variant_match_test.cpp
+  variant_math_test.cpp
+  variant_modulo_test.cpp
+  variant_multiply_test.cpp
+  variant_nomatch_test.cpp
+  variant_not_test.cpp
+  variant_or_test.cpp
+  variant_partial_test.cpp
+  variant_subtract_test.cpp
+  variant_xor_test.cpp
+  view_test.cpp
   )
 
-# Build a `test_main.cpp` based on `test_SRCS`
-add_custom_command(
-    OUTPUT  test_main.cpp
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_main_generator.sh
-              ${test_SRCS}
-              > ${CMAKE_CURRENT_BINARY_DIR}/test_main.cpp
-    DEPENDS test_main_generator.sh
-)
-
 # Build `test_runner` containing all CPP tests, linked once.
+create_test_sourcelist (cpp_test_SRCS cpp_tests.cpp ${test_SRCS})
 add_executable(test_runner
   test.cpp
-  test_main.cpp
-  ${test_SRCS}
+  ${cpp_test_SRCS}
 )
 target_link_libraries (test_runner task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
 if (DARWIN)
@@ -65,8 +58,7 @@ if (DARWIN)
 endif (DARWIN)
 
 foreach (test_FILE ${test_SRCS})
-  # Test_NAME is the name of the test with `.` replaced by `_`.
-  string(REGEX REPLACE "[^a-zA-Z0-9]" _ test_NAME ${test_FILE})
+  get_filename_component (test_NAME ${test_FILE} NAME_WE)
   # Tell the source file what its own name is
   set_source_files_properties(${test_FILE} PROPERTIES COMPILE_FLAGS -DTEST_NAME=${test_NAME})
   add_test(NAME ${test_FILE}

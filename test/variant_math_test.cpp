@@ -27,67 +27,20 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <DOM.h>
 #include <Variant.h>
 #include <test.h>
 
-namespace {
+#include <iostream>
+
+#define EPSILON 0.001
 
 ////////////////////////////////////////////////////////////////////////////////
-bool providerString(const std::string& path, Variant& var) {
-  if (path == "name") {
-    var = Variant("value");
-    return true;
-  } else if (path == "name.next") {
-    var = Variant("value.next");
-    return true;
-  } else if (path == "foo") {
-    var = Variant("bar");
-    return true;
-  } else if (path == "name.size") {
-    var = Variant(6);
-    return true;
-  }
+int TEST_NAME(int, char**) {
+  UnitTest t(1);
 
-  return false;
-}
-
-}  // namespace
-
-////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
-  UnitTest t(12);
-
-  DOM dom;
-  t.is(dom.count(), 0, "DOM empty count is zero");
-
-  dom.addSource("name", &providerString);
-  dom.addSource("name.next", &providerString);
-  dom.addSource("name.size", &providerString);
-  dom.addSource("foo", &providerString);
-  t.diag(dom.dump());
-  t.is(dom.count(), 4, "DOM now contains 4 nodes");
-
-  t.ok(dom.valid("name"), "DOM 'name' valid");
-  t.ok(dom.valid("name.next"), "DOM 'name.next' valid");
-  t.ok(dom.valid("name.size"), "DOM 'name.size' valid");
-  t.ok(dom.valid("foo"), "DOM 'foo' valid");
-  t.notok(dom.valid("missing"), "DOM 'missing' not valid");
-
-  auto v = dom.get("name");
-  t.is(v.get_string(), "value", "DOM get 'name' --> 'value'");
-
-  v = dom.get("name.next");
-  t.is(v.get_string(), "value.next", "DOM get 'name.next' --> 'value.next'");
-
-  v = dom.get("name.size");
-  t.is(v.get_integer(), 6, "DOM get 'name.size' --> 6");
-
-  v = dom.get("foo");
-  t.is(v.get_string(), "bar", "DOM get 'name.size' --> 6");
-
-  v = dom.get("missing");
-  t.is(v.get_string(), "", "DOM get 'missing' --> ''");
+  Variant v0(10.0);
+  v0.sqrt();
+  t.is(v0.get_real(), 3.1622, EPSILON, "math sqrt 10 -> 3.1622");
 
   return 0;
 }

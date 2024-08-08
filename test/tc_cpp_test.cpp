@@ -41,7 +41,7 @@ std::string uuid2str(tc::Uuid uuid) { return static_cast<std::string>(uuid.to_st
 // Tests for the basic cxxbridge functionality. This focuses on the methods with
 // complex cxxbridge implementations, rather than those with complex Rust
 // implementations but simple APIs, like sync.
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
   UnitTest t;
   std::string str;
 

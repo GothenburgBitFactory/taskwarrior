@@ -35,7 +35,7 @@
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-int TEST_NAME() {
+int TEST_NAME(int, char**) {
   UnitTest t(19);
   Context context;
   Context::setContext(&context);
