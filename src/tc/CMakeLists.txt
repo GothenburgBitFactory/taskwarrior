@@ -1,6 +1,11 @@
 cmake_minimum_required (VERSION 3.22)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/tc/corrosion)
+OPTION(SYSTEM_CORROSION "Use system provided corrosion instead of vendored version" OFF)
+if(SYSTEM_CORROSION)
+  find_package(Corrosion REQUIRED)
+else()
+  add_subdirectory(${CMAKE_SOURCE_DIR}/src/tc/corrosion)
+endif()
 
 # Import taskchampion-lib as a CMake library.
 corrosion_import_crate(
