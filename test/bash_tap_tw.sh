@@ -13,7 +13,7 @@
 
 function setup_taskrc {
     # Configuration
-    for i in pending.data completed.data undo.data backlog.data taskrc; do
+    for i in taskchampion.sqlite3 taskrc; do
        if [ -f "$i" ]; then
            rm "$i" 2>&1 >/dev/null
        fi
@@ -26,6 +26,7 @@ function setup_taskrc {
     echo 'color.header=rgb025'            >> taskrc
     echo 'color.footer=rgb025'            >> taskrc
     echo 'color.error=bold white on red'  >> taskrc
+    echo 'news.version=99.0.0'            >> taskrc
 }
 
 function find_task_binary {
