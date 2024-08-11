@@ -138,7 +138,7 @@ Task::Task(const json::object* obj) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Task::Task(tc::Task obj) {
+Task::Task(rust::Box<tc::TaskData> obj) {
   id = 0;
   urgency_value = 0.0;
   recalc_urgency = true;
@@ -146,7 +146,7 @@ Task::Task(tc::Task obj) {
   is_blocking = false;
   annotation_count = 0;
 
-  parseTC(obj);
+  parseTC(std::move(obj));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -717,8 +717,12 @@ void Task::parseJSON(const json::object* root_obj) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Note that all fields undergo encode/decode.
-void Task::parseTC(const tc::Task& task) {
-  data = task.get_taskmap();
+void Task::parseTC(rust::Box<tc::TaskData> task) {
+  auto items = task->items();
+  data.clear();
+  for (auto& item : items) {
+    data[static_cast<std::string>(item.prop)] = static_cast<std::string>(item.value);
+  }
 
   // count annotations
   annotation_count = 0;
@@ -728,11 +732,8 @@ void Task::parseTC(const tc::Task& task) {
     }
   }
 
-  data["uuid"] = task.get_uuid();
+  data["uuid"] = static_cast<std::string>(task->get_uuid().to_string());
   id = Context::getContext().tdb2.id(data["uuid"]);
-
-  is_blocking = task.is_blocking();
-  is_blocked = task.is_blocked();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1600,40 +1601,6 @@ const std::string Task::decode(const std::string& value) const {
 
   auto modified = str_replace(value, "&open;", "[");
   return str_replace(modified, "&close;", "]");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-tc::Status Task::status2tc(const Task::status status) {
-  switch (status) {
-    case Task::pending:
-      return tc::Status::Pending;
-    case Task::completed:
-      return tc::Status::Completed;
-    case Task::deleted:
-      return tc::Status::Deleted;
-    case Task::waiting:
-      return tc::Status::Pending;  // waiting is no longer a status
-    case Task::recurring:
-      return tc::Status::Recurring;
-    default:
-      return tc::Status::Unknown;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Task::status Task::tc2status(const tc::Status status) {
-  switch (status) {
-    case tc::Status::Pending:
-      return Task::pending;
-    case tc::Status::Completed:
-      return Task::completed;
-    case tc::Status::Deleted:
-      return Task::deleted;
-    case tc::Status::Recurring:
-      return Task::recurring;
-    default:
-      return Task::pending;
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -61,39 +61,3 @@ jobs:
         with:
           command: fmt
           args: --all -- --check
-
-  codegen:
-    runs-on: ubuntu-latest
-    name: "codegen"
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Cache cargo registry
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache cargo build
-        uses: actions/cache@v4
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: "1.73.0" # MSRV
-          override: true
-
-      - uses: actions-rs/cargo@v1.0.3
-        with:
-          command: xtask
-          args: codegen
-
-      - name: check for changes
-        run: |
-          if ! git diff; then
-            echo "Generated code not up-to-date;
-            run `cargo run --package xtask -- codegen` and commit the result";
-            exit 1;
-          fi

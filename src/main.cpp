@@ -28,6 +28,7 @@
 // cmake.h include header must come first
 
 #include <Context.h>
+#include <rust/cxx.h>
 
 #include <cstring>
 #include <iostream>
@@ -52,6 +53,11 @@ int main(int argc, const char** argv) {
 
     catch (const std::string& error) {
       std::cerr << error << "\n";
+      status = -1;
+    }
+
+    catch (rust::Error& err) {
+      std::cerr << err.what() << "\n";
       status = -1;
     }
 

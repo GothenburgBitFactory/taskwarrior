@@ -1,0 +1,15 @@
+[package]
+name = "taskchampion-lib"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+taskchampion = "0.7.0"
+cxx = "1.0.124"
+
+[build-dependencies]
+cxx-build = "1.0"

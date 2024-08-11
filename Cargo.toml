@@ -1,8 +1,7 @@
 [workspace]
 
 members = [
-    "src/tc/lib",
-    "xtask",
+    "src/taskchampion-cpp",
 ]
 
 resolver = "2"
