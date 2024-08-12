@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.22)
 
+# -- C++ tests
+
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
@@ -8,56 +10,64 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/test
                      ${TASK_INCLUDE_DIRS})
 
-set (test_SRCS
-  col.test.cpp
-  dom.test.cpp
-  eval.test.cpp
-  lexer.test.cpp
-  t.test.cpp
-  tw-2689.test.cpp
-  tdb2.test.cpp
-  tc.test.cpp
-  util.test.cpp
-  variant_add.test.cpp
-  variant_and.test.cpp
-  variant_cast.test.cpp
-  variant_divide.test.cpp
-  variant_equal.test.cpp
-  variant_exp.test.cpp
-  variant_gt.test.cpp
-  variant_gte.test.cpp
-  variant_inequal.test.cpp
-  variant_lt.test.cpp
-  variant_lte.test.cpp
-  variant_match.test.cpp
-  variant_math.test.cpp
-  variant_modulo.test.cpp
-  variant_multiply.test.cpp
-  variant_nomatch.test.cpp
-  variant_not.test.cpp
-  variant_or.test.cpp
-  variant_partial.test.cpp
-  variant_subtract.test.cpp
-  variant_xor.test.cpp
-  view.test.cpp
+# All C++ test files. Note that the portion before `.cpp` must be a valid,
+# unique C++ identifier.
+set(test_SRCS
+  col_test.cpp
+  dom_test.cpp
+  eval_test.cpp
+  lexer_test.cpp
+  t_test.cpp
+  tw_2689_test.cpp
+  tdb2_test.cpp
+  tc_cpp_test.cpp
+  util_test.cpp
+  variant_add_test.cpp
+  variant_and_test.cpp
+  variant_cast_test.cpp
+  variant_divide_test.cpp
+  variant_equal_test.cpp
+  variant_exp_test.cpp
+  variant_gt_test.cpp
+  variant_gte_test.cpp
+  variant_inequal_test.cpp
+  variant_lt_test.cpp
+  variant_lte_test.cpp
+  variant_match_test.cpp
+  variant_math_test.cpp
+  variant_modulo_test.cpp
+  variant_multiply_test.cpp
+  variant_nomatch_test.cpp
+  variant_not_test.cpp
+  variant_or_test.cpp
+  variant_partial_test.cpp
+  variant_subtract_test.cpp
+  variant_xor_test.cpp
+  view_test.cpp
   )
 
-add_custom_target (build_tests DEPENDS ${test_SRCS}
-                               WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
+# Build `test_runner` containing all CPP tests, linked once.
+create_test_sourcelist (cpp_test_SRCS cpp_tests.cpp ${test_SRCS})
+add_executable(test_runner
+  test.cpp
+  ${cpp_test_SRCS}
+)
+target_link_libraries (test_runner task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
+if (DARWIN)
+  target_link_libraries (test_runner "-framework CoreFoundation -framework Security -framework SystemConfiguration")
+endif (DARWIN)
 
-foreach (src_FILE ${test_SRCS})
-  add_executable (${src_FILE} ${src_FILE} test.cpp)
-  target_link_libraries (${src_FILE} task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
-  add_dependencies (${src_FILE} task_executable)
-  if (DARWIN)
-    target_link_libraries (${src_FILE} "-framework CoreFoundation -framework Security -framework SystemConfiguration")
-  endif (DARWIN)
-
-  add_test(NAME ${src_FILE}
-    COMMAND ${src_FILE}
+foreach (test_FILE ${test_SRCS})
+  get_filename_component (test_NAME ${test_FILE} NAME_WE)
+  # Tell the source file what its own name is
+  set_source_files_properties(${test_FILE} PROPERTIES COMPILE_FLAGS -DTEST_NAME=${test_NAME})
+  add_test(NAME ${test_FILE}
+    COMMAND test_runner ${test_NAME}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-endforeach (src_FILE)
+  )
+endforeach (test_FILE)
+
+# -- Python tests
 
 add_subdirectory(basetest)
 add_subdirectory(simpletap)

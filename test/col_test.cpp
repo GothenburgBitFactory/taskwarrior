@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2013 - 2021, Göteborg Bit Factory.
+// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,51 +27,53 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <Variant.h>
+#include <columns/ColID.h>
+#include <main.h>
+#include <stdlib.h>
 #include <test.h>
 
-#include <iostream>
-
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
-  UnitTest t(14);
+int TEST_NAME(int, char**) {
+  UnitTest test(12);
 
-  Variant v0(true);
-  Variant v1(42);
-  Variant v2(3.14);
-  Variant v3("foo");
-  Variant v4(1234567890, Variant::type_date);
-  Variant v5(1200, Variant::type_duration);
+  // Ensure environment has no influence.
+  unsetenv("TASKDATA");
+  unsetenv("TASKRC");
 
-  // Truth table.
-  Variant vFalse(false);
-  Variant vTrue(true);
-  t.is(!vFalse, true, "!false --> true");
-  t.is(!vTrue, false, "!true --> false");
+  ColumnID columnID;
+  unsigned int minimum = 0;
+  unsigned int maximum = 0;
 
-  Variant v00 = !v0;
-  t.is(v00.type(), Variant::type_boolean, "! true --> boolean");
-  t.is(v00.get_bool(), false, "! true --> false");
+  Task t1;
+  t1.id = 3;
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 1, "id:3 --> ColID::measure minimum 1");
+  test.is((int)maximum, 1, "id:3 --> ColID::measure maximum 1");
 
-  Variant v01 = !v1;
-  t.is(v01.type(), Variant::type_boolean, "! 42 --> boolean");
-  t.is(v01.get_bool(), false, "! 42 --> false");
+  t1.id = 33;
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 2, "id:33 --> ColID::measure minimum 2");
+  test.is((int)maximum, 2, "id:33 --> ColID::measure maximum 2");
 
-  Variant v02 = !v2;
-  t.is(v02.type(), Variant::type_boolean, "! 3.14 --> boolean");
-  t.is(v02.get_bool(), false, "! 3.14 --> false");
+  t1.id = 333;
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 3, "id:333 --> ColID::measure minimum 3");
+  test.is((int)maximum, 3, "id:333 --> ColID::measure maximum 3");
 
-  Variant v03 = !v3;
-  t.is(v03.type(), Variant::type_boolean, "! foo --> boolean");
-  t.is(v03.get_bool(), false, "! foo --> false");
+  t1.id = 3333;
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 4, "id:3333 --> ColID::measure minimum 4");
+  test.is((int)maximum, 4, "id:3333 --> ColID::measure maximum 4");
 
-  Variant v04 = !v4;
-  t.is(v04.type(), Variant::type_boolean, "! 1234567890 --> boolean");
-  t.is(v04.get_bool(), false, "! 1234567890 --> false");
+  t1.id = 33333;
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 5, "id:33333 --> ColID::measure minimum 5");
+  test.is((int)maximum, 5, "id:33333 --> ColID::measure maximum 5");
 
-  Variant v05 = !v5;
-  t.is(v05.type(), Variant::type_boolean, "! 1200 --> boolean");
-  t.is(v05.get_bool(), false, "! 1200 --> false");
+  t1.id = 333333;
+  columnID.measure(t1, minimum, maximum);
+  test.is((int)minimum, 6, "id:333333 --> ColID::measure minimum 6");
+  test.is((int)maximum, 6, "id:333333 --> ColID::measure maximum 6");
 
   return 0;
 }

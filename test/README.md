@@ -1,7 +1,7 @@
 ## Running Tests
 Do this to run all tests:
 ```shell
-cmake --build build --target build_tests
+cmake --build build --target test_runner --target task_executable
 ctest --test-dir build
 ```
 

@@ -43,7 +43,7 @@ Context context;
 extern std::string configurationDefaults;
 
 ////////////////////////////////////////////////////////////////////////////////
-int main(int, char**) {
+int TEST_NAME(int, char**) {
   UnitTest t(1);
   Context context;
   Context::setContext(&context);
