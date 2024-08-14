@@ -242,7 +242,16 @@ void TDB2::revert() {
 bool TDB2::confirm_revert(rust::Vec<tc::Operation>& undo_ops) {
   // TODO Use show_diff rather than this basic listing of operations, though
   // this might be a worthy undo.style itself.
-  std::cout << "The following " << undo_ops.size() << " operations would be reverted:\n";
+
+  // Count non-undo operations
+  int ops_count = 0;
+  for (auto& op : undo_ops) {
+    if (!op.is_undo_point()) {
+      ops_count++;
+    }
+  }
+
+  std::cout << "The following " << ops_count << " operations would be reverted:\n";
   for (auto& op : undo_ops) {
     if (op.is_undo_point()) {
       continue;
