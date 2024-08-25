@@ -5,13 +5,3 @@ members = [
 ]
 
 resolver = "2"
-
-# All Rust dependencies are defined here, and then referenced by the
-# Cargo.toml's in the members with `foo.workspace = true`.
-[workspace.dependencies]
-anyhow = "1.0"
-ffizz-header = "0.5"
-libc = "0.2.136"
-pretty_assertions = "1"
-regex = "^1.10.2"
-taskchampion = "0.6"
