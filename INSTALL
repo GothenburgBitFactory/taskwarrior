@@ -33,7 +33,7 @@ Briefly, these shell commands will unpack, build and install Taskwarrior:
   $ cd task-X.Y.Z                                    [2]
   $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release . [3]
   $ cmake --build build                              [4]
-  $ sudo make -C build install                       [5]
+  $ sudo cmake --install build                       [5]
   $ cd .. ; rm -r task-X.Y.Z                         [6]
 
 These commands are explained below:
