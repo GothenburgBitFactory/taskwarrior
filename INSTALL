@@ -21,18 +21,20 @@ You will need a C++ compiler that supports full C++17, which includes:
 You will need the following libraries:
   - libuuid (not needed for OSX)
 
+You will need a Rust toolchain of the Minimum Supported Rust Version (MSRV):
+  - rust 1.73.0
 
 Basic Installation
 ------------------
 
 Briefly, these shell commands will unpack, build and install Taskwarrior:
 
-  $ tar xzf task-X.Y.Z.tar.gz                   [1]
-  $ cd task-X.Y.Z                               [2]
-  $ cmake -DCMAKE_BUILD_TYPE=release .          [3]
-  $ make                                        [4]
-  $ sudo make install                           [5]
-  $ cd .. ; rm -r task-X.Y.Z                    [6]
+  $ tar xzf task-X.Y.Z.tar.gz                        [1]
+  $ cd task-X.Y.Z                                    [2]
+  $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release . [3]
+  $ cmake --build build                              [4]
+  $ sudo make -C build install                       [5]
+  $ cd .. ; rm -r task-X.Y.Z                         [6]
 
 These commands are explained below:
 
