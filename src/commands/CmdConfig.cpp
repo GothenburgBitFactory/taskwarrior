@@ -95,7 +95,9 @@ bool CmdConfig::setConfigVariable(const std::string& name, const std::string& va
     change = true;
   }
 
-  if (change) File::write(Context::getContext().config.file(), contents);
+  if (change)
+    if (!File::write(Context::getContext().config.file(), contents))
+      throw format("Could not write to '{1}'.", Context::getContext().config.file());
 
   return change;
 }
@@ -133,7 +135,9 @@ int CmdConfig::unsetConfigVariable(const std::string& name, bool confirmation /*
     if (!lineDeleted) line++;
   }
 
-  if (change) File::write(Context::getContext().config.file(), contents);
+  if (change)
+    if (!File::write(Context::getContext().config.file(), contents))
+      throw format("Could not write to '{1}'.", Context::getContext().config.file());
 
   if (change && found)
     return 0;
