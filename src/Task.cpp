@@ -1474,7 +1474,10 @@ void Task::validate(bool applyDefault /* = true */) {
     setAsNow("end");
 
   // Pending tasks cannot have an end date, remove if present
-  if ((status == Task::pending) && (get("end") != "")) remove("end");
+  if ((status == Task::pending) && (get("end") != "")) {
+    remove("end");
+    throw format("Could not modify task {1}. You cannot set an end date on a pending task.", this->id);
+  }
 
   // Provide a modified date unless user already specified one.
   if (!has("modified") || get("modified") == "") setAsNow("modified");
