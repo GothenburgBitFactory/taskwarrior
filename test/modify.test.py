@@ -56,6 +56,20 @@ class TestBug1763(TestCase):
         self.assertIn("Modified 0 tasks.", out)
 
 
+class TestBug3584(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_mod_pending_task_end_date(self):
+        """Adding end date for a pending task throws an error"""
+        self.t("add foo")
+        code, out, err = self.t.runError("1 modify end:1d")
+        self.assertIn(
+            "Could not modify task 1. You cannot set an end date on a pending task.",
+            err,
+        )
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
 
