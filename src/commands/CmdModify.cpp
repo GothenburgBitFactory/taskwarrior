@@ -116,6 +116,11 @@ void CmdModify::checkConsistency(Task &before, Task &after) {
 
   if (before.has("recur") && (!after.has("recur") || after.get("recur") == ""))
     throw std::string("You cannot remove the recurrence from a recurring task.");
+
+  if ((before.getStatus() == Task::pending) && (after.getStatus() == Task::pending) &&
+      (after.get("end") != ""))
+    throw format("Could not modify task {1}. You cannot set an end date on a pending task.",
+                 before.identifier(true));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
