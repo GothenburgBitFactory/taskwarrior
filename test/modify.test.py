@@ -55,6 +55,7 @@ class TestBug1763(TestCase):
         code, out, err = self.t("1 modify due:")
         self.assertIn("Modified 0 tasks.", out)
 
+
 class TestBug3584(TestCase):
     def setUp(self):
         self.t = Task()
@@ -63,7 +64,10 @@ class TestBug3584(TestCase):
         """Adding the end date for a pending task throws an error"""
         self.t("add foo")
         code, out, err = self.t.runError("1 modify end:1d")
-        self.assertIn("Could not modify task 1. You cannot set an end date on a pending task.", err)
+        self.assertIn(
+            "Could not modify task 1. You cannot set an end date on a pending task.",
+            err,
+        )
 
 
 if __name__ == "__main__":
