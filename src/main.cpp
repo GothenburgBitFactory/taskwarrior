@@ -29,6 +29,7 @@
 
 #include <Context.h>
 #include <rust/cxx.h>
+#include <signal.h>
 
 #include <cstring>
 #include <iostream>
@@ -38,6 +39,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, const char** argv) {
   int status{0};
+
+  // Ignore SIGPIPE from writes to network sockets after the remote end has hung
+  // up. Rust code expects this, and the Rust runtime ignores this signal at startup.
+  signal(SIGPIPE, SIG_IGN);
 
   Context globalContext;
   Context::setContext(&globalContext);
