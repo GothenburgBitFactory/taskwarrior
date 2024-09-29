@@ -358,7 +358,7 @@ const std::vector<Task> TDB2::all_tasks() {
 
   dependency_scan(all);
 
-  Context::getContext ().time_load_us += timer.total_us ();
+  Context::getContext().time_load_us += timer.total_us();
   return all;
 }
 
@@ -382,7 +382,7 @@ const std::vector<Task> TDB2::pending_tasks() {
 
     dependency_scan(result);
 
-    Context::getContext ().time_load_us += timer.total_us ();
+    Context::getContext().time_load_us += timer.total_us();
     _pending_tasks = result;
   }
 
