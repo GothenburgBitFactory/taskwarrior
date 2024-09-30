@@ -23,7 +23,7 @@ jobs:
         run: ctest --test-dir build -j 8 --output-on-failure
 
       - name: Generate a code coverage report
-        uses: threeal/gcovr-action@v1.0.0
+        uses: threeal/gcovr-action@v1.1.0
         with:
           coveralls-out: coverage.coveralls.json
           excludes: |
