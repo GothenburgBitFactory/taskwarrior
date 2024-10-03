@@ -226,7 +226,7 @@ void TDB2::get_changes(std::vector<Task>& changes) {
 void TDB2::revert() {
   rust::Vec<tc::Operation> undo_ops = replica()->get_undo_operations();
   if (undo_ops.size() == 0) {
-    std::cout << "No operations to undo.";
+    std::cout << "No operations to undo.\n";
     return;
   }
   if (confirm_revert(undo_ops)) {
