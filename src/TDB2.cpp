@@ -348,6 +348,7 @@ int TDB2::latest_id() {
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector<Task> TDB2::all_tasks() {
+  Timer timer;
   auto all_tctasks = replica()->all_task_data();
   std::vector<Task> all;
   for (auto& maybe_tctask : all_tctasks) {
@@ -357,12 +358,14 @@ const std::vector<Task> TDB2::all_tasks() {
 
   dependency_scan(all);
 
+  Context::getContext().time_load_us += timer.total_us();
   return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector<Task> TDB2::pending_tasks() {
   if (!_pending_tasks) {
+    Timer timer;
     auto& ws = working_set();
     auto largest_index = ws->largest_index();
 
@@ -379,6 +382,7 @@ const std::vector<Task> TDB2::pending_tasks() {
 
     dependency_scan(result);
 
+    Context::getContext().time_load_us += timer.total_us();
     _pending_tasks = result;
   }
 
