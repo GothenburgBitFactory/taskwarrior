@@ -1409,6 +1409,21 @@ void Task::substitute(const std::string& from, const std::string& to, const std:
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+// Validate a task for addition, raising user-visible errors for inconsistent or
+// incorrect inputs. This is called before `Task::validate`.
+void Task::validate_add() {
+  // There is no fixing a missing description.
+  if (!has("description"))
+    throw std::string("A task must have a description.");
+  else if (get("description") == "")
+    throw std::string("Cannot add a task that is blank.");
+
+  // Cannot have an old-style recur frequency with no due date - when would it recur?
+  if (has("recur") && (!has("due") || get("due") == ""))
+    throw std::string("A recurring task must also have a 'due' date.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // The purpose of Task::validate is three-fold:
 //   1) To provide missing attributes where possible
 //   2) To provide suitable warnings about odd states
@@ -1431,8 +1446,7 @@ void Task::validate(bool applyDefault /* = true */) {
     Lexer::Type type;
     // `uuid` is not a property in the TaskChampion model, so an invalid UUID is
     // actually an error.
-    if (!lex.isUUID(token, type, true))
-      throw format("Not a valid UUID '{1}'.", uid);
+    if (!lex.isUUID(token, type, true)) throw format("Not a valid UUID '{1}'.", uid);
   } else
     set("uuid", uuid());
 
