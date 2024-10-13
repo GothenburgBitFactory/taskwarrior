@@ -17,6 +17,9 @@ jobs:
           toolchain: "stable"
           override: true
 
+      - name: Install uuid-dev
+        run: sudo apt install uuid-dev
+
       - name: make a release tarball and build from it
         run: |
           cmake -S. -Bbuild &&
