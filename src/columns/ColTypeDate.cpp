@@ -190,7 +190,11 @@ void ColumnTypeDate::modify(Task& task, const std::string& value) {
   if (value != "" && evaluatedValue.get_date() == 0)
     throw format("'{1}' is not a valid date in the '{2}' format.", value, Variant::dateFormat);
 
-  task.set(_name, evaluatedValue.get_date());
+  time_t epoch = evaluatedValue.get_date();
+  if (epoch < EPOCH_MIN_VALUE || epoch >= EPOCH_MAX_VALUE) {
+    throw format("'{1}' is not a valid date.", value);
+  }
+  task.set(_name, epoch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
