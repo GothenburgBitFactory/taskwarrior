@@ -8,7 +8,7 @@ publish = false
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion = "0.7.0"
+taskchampion = "0.8.0"
 cxx = "1.0.124"
 
 [build-dependencies]
