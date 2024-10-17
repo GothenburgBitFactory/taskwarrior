@@ -404,12 +404,7 @@ int CmdCalendar::execute(std::string& output) {
 std::string CmdCalendar::renderMonths(int firstMonth, int firstYear, const Datetime& today,
                                       std::vector<Task>& all, int monthsPerLine) {
   auto& config = Context::getContext().config;
-
-  // What day of the week does the user consider the first?
-  auto weekStart = Datetime::dayOfWeek(config.get("weekstart"));
-  if (weekStart != 0 && weekStart != 1)
-    throw std::string(
-        "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'.");
+  auto weekStart = Datetime::weekstart;
 
   // Build table for the number of months to be displayed.
   Table view;
