@@ -1105,6 +1105,11 @@ void Context::staticInitialization() {
   Task::regex = Variant::searchUsingRegex = config.getBoolean("regex");
   Lexer::dateFormat = Variant::dateFormat = config.get("dateformat");
 
+  auto weekStart = Datetime::dayOfWeek(config.get("weekstart"));
+  if (weekStart != 0 && weekStart != 1)
+    throw std::string(
+        "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'.");
+  Datetime::weekstart = weekStart;
   Datetime::isoEnabled = config.getBoolean("date.iso");
   Datetime::standaloneDateEnabled = false;
   Datetime::standaloneTimeEnabled = false;
