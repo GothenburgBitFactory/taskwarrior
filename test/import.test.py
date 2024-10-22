@@ -284,10 +284,10 @@ class TestImportValidate(TestCase):
         self.t = Task()
 
     def test_import_empty_json(self):
-        """Verify empty JSON is caught"""
+        """Verify empty JSON is ignored"""
         j = "{}"
         code, out, err = self.t.runError("import", input=j)
-        self.assertIn("A task must have a description.", err)
+        self.assertIn("Cannot import an empty task.", err)
 
     def test_import_invalid_uuid(self):
         """Verify invalid UUID is caught"""

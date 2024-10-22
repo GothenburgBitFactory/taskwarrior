@@ -164,6 +164,7 @@ class Task {
   void substitute(const std::string&, const std::string&, const std::string&);
 #endif
 
+  void validate_add();
   void validate(bool applyDefault = true);
 
   float urgency_c() const;

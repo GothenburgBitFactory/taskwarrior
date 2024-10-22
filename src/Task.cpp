@@ -1409,12 +1409,28 @@ void Task::substitute(const std::string& from, const std::string& to, const std:
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+// Validate a task for addition, raising user-visible errors for inconsistent or
+// incorrect inputs. This is called before `Task::validate`.
+void Task::validate_add() {
+  // There is no fixing a missing description.
+  if (!has("description"))
+    throw std::string("A task must have a description.");
+  else if (get("description") == "")
+    throw std::string("Cannot add a task that is blank.");
+
+  // Cannot have an old-style recur frequency with no due date - when would it recur?
+  if (has("recur") && (!has("due") || get("due") == ""))
+    throw std::string("A recurring task must also have a 'due' date.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // The purpose of Task::validate is three-fold:
 //   1) To provide missing attributes where possible
 //   2) To provide suitable warnings about odd states
-//   3) To generate errors when the inconsistencies are not fixable
-//   4) To update status depending on other attributes
+//   3) To update status depending on other attributes
 //
+// As required by TaskChampion, no combination of properties and values is an
+// error. This function will try to make sensible defaults and resolve inconsistencies.
 // Critically, note that despite the name this is not a read-only function.
 //
 void Task::validate(bool applyDefault /* = true */) {
@@ -1428,6 +1444,8 @@ void Task::validate(bool applyDefault /* = true */) {
     Lexer lex(uid);
     std::string token;
     Lexer::Type type;
+    // `uuid` is not a property in the TaskChampion model, so an invalid UUID is
+    // actually an error.
     if (!lex.isUUID(token, type, true)) throw format("Not a valid UUID '{1}'.", uid);
   } else
     set("uuid", uuid());
@@ -1543,27 +1561,27 @@ void Task::validate(bool applyDefault /* = true */) {
   validate_before("scheduled", "due");
   validate_before("scheduled", "end");
 
-  // 3) To generate errors when the inconsistencies are not fixable
+  if (!has("description") || get("description") == "")
+    Context::getContext().footnote(format("Warning: task has no description."));
 
-  // There is no fixing a missing description.
-  if (!has("description"))
-    throw std::string("A task must have a description.");
-  else if (get("description") == "")
-    throw std::string("Cannot add a task that is blank.");
+  // Cannot have an old-style recur frequency with no due date - when would it recur?
+  if (has("recur") && (!has("due") || get("due") == "")) {
+    Context::getContext().footnote(format("Warning: recurring task has no due date."));
+    remove("recur");
+  }
 
-  // Cannot have a recur frequency with no due date - when would it recur?
-  if (has("recur") && (!has("due") || get("due") == ""))
-    throw std::string("A recurring task must also have a 'due' date.");
-
-  // Recur durations must be valid.
+  // Old-style recur durations must be valid.
   if (has("recur")) {
     std::string value = get("recur");
     if (value != "") {
       Duration p;
       std::string::size_type i = 0;
-      if (!p.parse(value, i))
+      if (!p.parse(value, i)) {
         // TODO Ideal location to map unsupported old recurrence periods to supported values.
-        throw format("The recurrence value '{1}' is not valid.", value);
+        Context::getContext().footnote(
+            format("Warning: The recurrence value '{1}' is not valid.", value));
+        remove("recur");
+      }
     }
   }
 }
