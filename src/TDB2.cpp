@@ -370,18 +370,12 @@ const std::vector<Task> TDB2::all_tasks() {
 const std::vector<Task> TDB2::pending_tasks() {
   if (!_pending_tasks) {
     Timer timer;
-    auto& ws = working_set();
-    auto largest_index = ws->largest_index();
 
+    auto pending_tctasks = replica()->pending_task_data();
     std::vector<Task> result;
-    for (size_t i = 0; i <= largest_index; i++) {
-      auto uuid = ws->by_index(i);
-      if (!uuid.is_nil()) {
-        auto maybe_task = replica()->get_task_data(uuid);
-        if (maybe_task.is_some()) {
-          result.push_back(Task(maybe_task.take()));
-        }
-      }
+    for (auto& maybe_tctask : pending_tctasks) {
+      auto tctask = maybe_tctask.take();
+      result.push_back(Task(std::move(tctask)));
     }
 
     dependency_scan(result);

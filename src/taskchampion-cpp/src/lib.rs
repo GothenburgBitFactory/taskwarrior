@@ -114,12 +114,15 @@ mod ffi {
         fn commit_reversed_operations(&mut self, ops: Vec<Operation>) -> Result<bool>;
 
         /// Get `TaskData` values for all tasks in the replica.
-
+        ///
         /// This contains `OptionTaskData` to allow C++ to `take` values out of the vector and use
         /// them as `rust::Box<TaskData>`. Cxx does not support `Vec<Box<_>>`. Cxx also does not
         /// handle `HashMap`, so the result is not a map from uuid to task. The returned Vec is
         /// fully populated, so it is safe to call `take` on each value in the returned Vec once .
         fn all_task_data(&mut self) -> Result<Vec<OptionTaskData>>;
+
+        /// Simiar to all_task_data, but returing only pending tasks (those in the working set).
+        fn pending_task_data(&mut self) -> Result<Vec<OptionTaskData>>;
 
         /// Get the UUIDs of all tasks.
         fn all_task_uuids(&mut self) -> Result<Vec<Uuid>>;
@@ -500,6 +503,15 @@ impl Replica {
             .collect())
     }
 
+    fn pending_task_data(&mut self) -> Result<Vec<ffi::OptionTaskData>, CppError> {
+        Ok(self
+            .0
+            .pending_task_data()?
+            .drain(..)
+            .map(|t| Some(t).into())
+            .collect())
+    }
+
     fn all_task_uuids(&mut self) -> Result<Vec<ffi::Uuid>, CppError> {
         Ok(self
             .0
@@ -870,10 +882,14 @@ mod test {
         add_undo_point(&mut operations);
         create_task(uuid_v4(), &mut operations);
         create_task(uuid_v4(), &mut operations);
-        create_task(uuid_v4(), &mut operations);
+        let mut t = create_task(uuid_v4(), &mut operations);
+        cxx::let_cxx_string!(status = "status");
+        cxx::let_cxx_string!(pending = "pending");
+        t.update(&status, &pending, &mut operations);
         rep.commit_operations(operations).unwrap();
 
         assert_eq!(rep.all_task_data().unwrap().len(), 3);
+        assert_eq!(rep.pending_task_data().unwrap().len(), 1);
         assert_eq!(rep.all_task_uuids().unwrap().len(), 3);
     }
 
