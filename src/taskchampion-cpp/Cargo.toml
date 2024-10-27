@@ -11,5 +11,9 @@ crate-type = ["staticlib"]
 taskchampion = "0.8.0"
 cxx = "1.0.124"
 
+[features]
+# use native CA roots, instead of bundled
+tls-native-roots = ["taskchampion/tls-native-roots"]
+
 [build-dependencies]
 cxx-build = "1.0"
