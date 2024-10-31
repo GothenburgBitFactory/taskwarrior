@@ -1405,9 +1405,9 @@ dependencies = [
 
 [[package]]
 name = "taskchampion"
-version = "0.8.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1f199799caef799e37d56743d39fa247ace2f08546c372dc588555e7ec53138"
+checksum = "5719b8204660c0f5efc5777bd82e012a45ec36ab7315965c73b32526db2a7eb4"
 dependencies = [
  "anyhow",
  "byteorder",
@@ -1689,9 +1689,9 @@ checksum = "daf8dba3b7eb870caf1ddeed7bc9d2a049f3cfdfae7cb521b087cc33ae4c49da"
 
 [[package]]
 name = "uuid"
-version = "1.10.0"
+version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81dfa00651efa65069b0b6b651f4aaa31ba9e3c3ce0137aaad053604ee7e0314"
+checksum = "f8c5f0a0af699448548ad1a2fbf920fb4bee257eae39953ba95cb84891a0446a"
 dependencies = [
  "getrandom",
  "serde",
