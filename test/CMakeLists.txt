@@ -174,6 +174,7 @@ set (pythonTests
   timesheet.test.py
   tw-1379.test.py
   tw-1837.test.py
+  tw-1999.test.py
   tw-20.test.py
   tw-2575.test.py
   tw-262.test.py

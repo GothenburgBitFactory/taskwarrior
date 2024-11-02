@@ -33,13 +33,16 @@
 #include <Duration.h>
 #include <Filter.h>
 #include <Lexer.h>
+#include <Operation.h>
 #include <format.h>
 #include <main.h>
 #include <math.h>
 #include <shared.h>
 #include <stdlib.h>
+#include <taskchampion-cpp/lib.h>
 #include <util.h>
 
+#include <algorithm>
 #include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -477,9 +480,68 @@ int CmdInfo::execute(std::string& output) {
       urgencyDetails.set(row, 5, rightJustify(format(task.urgency(), 4, 4), 6));
     }
 
+    // Create a third table, containing undo log change details.
+    Table journal;
+    setHeaderUnderline(journal);
+
+    if (Context::getContext().config.getBoolean("obfuscate")) journal.obfuscate();
+    if (Context::getContext().config.getBoolean("color")) journal.forceColor();
+
+    journal.width(Context::getContext().getWidth());
+    journal.add("Date");
+    journal.add("Modification");
+
+    if (Context::getContext().config.getBoolean("journal.info")) {
+      auto& replica = Context::getContext().tdb2.replica();
+      tc::Uuid tcuuid = tc::uuid_from_string(uuid);
+      auto tcoperations = replica->get_task_operations(tcuuid);
+      auto operations = Operation::operations(tcoperations);
+
+      // Sort by type (Create < Update < Delete < UndoPoint) and then by timestamp.
+      std::sort(operations.begin(), operations.end());
+
+      long last_timestamp = 0;
+      for (size_t i = 0; i < operations.size(); i++) {
+        auto& op = operations[i];
+
+        // Only display updates -- creation and deletion aren't interesting.
+        if (!op.is_update()) {
+          continue;
+        }
+
+        // Group operations that occur within 1s of this one. This is a heuristic
+        // for operations performed in the same `task` invocation, and allows e.g.,
+        // `task done end:-2h` to take the updated `end` value into account. It also
+        // groups these events into a single "row" of the table for better layout.
+        size_t group_start = i;
+        for (i++; i < operations.size(); i++) {
+          auto& op2 = operations[i];
+          if (!op2.is_update() || op2.get_timestamp() - op.get_timestamp() > 1) {
+            break;
+          }
+        }
+        size_t group_end = i;
+        i--;
+
+        std::optional<std::string> msg =
+            formatForInfo(operations, group_start, group_end, dateformat, last_timestamp);
+
+        if (!msg) {
+          continue;
+        }
+
+        int row = journal.addRow();
+        Datetime timestamp(op.get_timestamp());
+        journal.set(row, 0, timestamp.toString(dateformat));
+        journal.set(row, 1, *msg);
+      }
+    }
+
     out << optionalBlankLine() << view.render() << '\n';
 
     if (urgencyDetails.rows() > 0) out << urgencyDetails.render() << '\n';
+
+    if (journal.rows() > 0) out << journal.render() << '\n';
   }
 
   output = out.str();
@@ -499,6 +561,108 @@ void CmdInfo::urgencyTerm(Table& view, const std::string& label, float measure,
     view.set(row, 4, "=");
     view.set(row, 5, rightJustify(format(value, 5, 3), 6));
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::optional<std::string> CmdInfo::formatForInfo(const std::vector<Operation>& operations,
+                                                  size_t group_start, size_t group_end,
+                                                  const std::string& dateformat, long& last_start) {
+  std::stringstream out;
+  for (auto i = group_start; i < group_end; i++) {
+    auto& operation = operations[i];
+    assert(operation.is_update());
+
+    // Extract the parts of the Update operation.
+    std::string prop = operation.get_property();
+    std::optional<std::string> value = operation.get_value();
+    std::optional<std::string> old_value = operation.get_old_value();
+    Datetime timestamp(operation.get_timestamp());
+
+    // Never care about modifying the modification time, or the legacy properties `depends` and
+    // `tags`.
+    if (prop == "modified" || prop == "depends" || prop == "tags") {
+      continue;
+    }
+
+    // Handle property deletions
+    if (!value && old_value) {
+      if (Task::isAnnotationAttr(prop)) {
+        out << format("Annotation '{1}' deleted.\n", *old_value);
+      } else if (Task::isTagAttr(prop)) {
+        out << format("Tag '{1}' deleted.\n", Task::attr2Tag(prop));
+      } else if (Task::isDepAttr(prop)) {
+        out << format("Dependency on '{1}' deleted.\n", Task::attr2Dep(prop));
+      } else if (prop == "start") {
+        Datetime started(last_start);
+        Datetime stopped = timestamp;
+
+        // If any update in this group sets the `end` property, use that instead of the
+        // timestamp deleting the `start` property as the stop time.
+        // See https://github.com/GothenburgBitFactory/taskwarrior/issues/2514
+        for (auto i = group_start; i < group_end; i++) {
+          auto& op = operations[i];
+          assert(op.is_update());
+          if (op.get_property() == "end") {
+            try {
+              stopped = op.get_value().value();
+            } catch (std::string) {
+              // Fall back to the 'start' timestamp if its value is un-parseable.
+              stopped = op.get_timestamp();
+            }
+          }
+        }
+
+        out << format("{1} deleted (duration: {2}).", Lexer::ucFirst(prop),
+                      Duration(stopped - started).format())
+            << "\n";
+      } else {
+        out << format("{1} deleted.\n", Lexer::ucFirst(prop));
+      }
+    }
+
+    // Handle property additions.
+    if (value && !old_value) {
+      if (Task::isAnnotationAttr(prop)) {
+        out << format("Annotation of '{1}' added.\n", *value);
+      } else if (Task::isTagAttr(prop)) {
+        out << format("Tag '{1}' added.\n", Task::attr2Tag(prop));
+      } else if (Task::isDepAttr(prop)) {
+        out << format("Dependency on '{1}' added.\n", Task::attr2Dep(prop));
+      } else {
+        // Record the last start time for later duration calculation.
+        if (prop == "start") {
+          last_start = Datetime(value.value()).toEpoch();
+        }
+
+        out << format("{1} set to '{2}'.", Lexer::ucFirst(prop),
+                      renderAttribute(prop, *value, dateformat))
+            << "\n";
+      }
+    }
+
+    // Handle property changes.
+    if (value && old_value) {
+      if (Task::isTagAttr(prop) || Task::isDepAttr(prop)) {
+        // Dependencies and tags do not have meaningful values.
+      } else if (Task::isAnnotationAttr(prop)) {
+        out << format("Annotation changed to '{1}'.\n", *value);
+      } else {
+        // Record the last start time for later duration calculation.
+        if (prop == "start") {
+          last_start = Datetime(value.value()).toEpoch();
+        }
+
+        out << format("{1} changed from '{2}' to '{3}'.", Lexer::ucFirst(prop),
+                      renderAttribute(prop, *old_value, dateformat),
+                      renderAttribute(prop, *value, dateformat))
+            << "\n";
+      }
+    }
+  }
+
+  if (out.str().length() == 0) return std::nullopt;
+
+  return out.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

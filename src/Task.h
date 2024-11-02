@@ -164,6 +164,11 @@ class Task {
   void substitute(const std::string&, const std::string&, const std::string&);
 #endif
 
+  static std::string tag2Attr(const std::string&);
+  static std::string attr2Tag(const std::string&);
+  static std::string dep2Attr(const std::string&);
+  static std::string attr2Dep(const std::string&);
+
   void validate_add();
   void validate(bool applyDefault = true);
 
@@ -176,8 +181,6 @@ class Task {
 #endif
 
   std::string diff(const Task& after) const;
-  std::string diffForInfo(const Task& after, const std::string& dateformat, long& last_timestamp,
-                          const long current_timestamp) const;
   Table diffForUndoSide(const Task& after) const;
   Table diffForUndoPatch(const Task& after, const Datetime& lastChange) const;
 
@@ -190,10 +193,6 @@ class Task {
   void validate_before(const std::string&, const std::string&);
   const std::string encode(const std::string&) const;
   const std::string decode(const std::string&) const;
-  const std::string tag2Attr(const std::string&) const;
-  const std::string attr2Tag(const std::string&) const;
-  const std::string dep2Attr(const std::string&) const;
-  const std::string attr2Dep(const std::string&) const;
   void fixDependsAttribute();
   void fixTagsAttribute();
 

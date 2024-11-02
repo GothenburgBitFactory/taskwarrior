@@ -98,6 +98,9 @@ class TestInfoCommand(TestCase):
         self.assertRegex(out, r"Urgency\s+\d+(\.\d+)?")
         self.assertRegex(out, r"Priority\s+H")
 
+        self.assertRegex(out, r"Annotation of 'bar' added\.")
+        self.assertRegex(out, r"Tag 'tag' added\.")
+        self.assertRegex(out, r"tatus set to 'recurring'\.")
         self.assertIn("project", out)
         self.assertIn("active", out)
         self.assertIn("annotations", out)

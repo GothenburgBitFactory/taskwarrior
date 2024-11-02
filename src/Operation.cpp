@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2024, Tomas Babej, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,29 +24,50 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CMDINFO
-#define INCLUDED_CMDINFO
+#include <cmake.h>
+// cmake.h include header must come first
 
-#include <Command.h>
 #include <Operation.h>
-#include <Table.h>
 #include <taskchampion-cpp/lib.h>
 
-#include <string>
 #include <vector>
 
-class CmdInfo : public Command {
- public:
-  CmdInfo();
-  int execute(std::string&);
+////////////////////////////////////////////////////////////////////////////////
+Operation::Operation(const tc::Operation& op) : op(&op) {}
 
- private:
-  void urgencyTerm(Table&, const std::string&, float, float) const;
-  // Format a group of update operations for display in `task info`.
-  std::optional<std::string> formatForInfo(const std::vector<Operation>& operations,
-                                           size_t group_start, size_t group_end,
-                                           const std::string& dateformat, long& last_start);
-};
+////////////////////////////////////////////////////////////////////////////////
+std::vector<Operation> Operation::operations(const rust::Vec<tc::Operation>& operations) {
+  return {operations.begin(), operations.end()};
+}
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+Operation& Operation::operator=(const Operation& other) {
+  op = other.op;
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Operation::operator<(Operation& other) const {
+  if (is_create()) {
+    return !other.is_create();
+  } else if (is_update()) {
+    if (other.is_create()) {
+      return false;
+    } else if (other.is_update()) {
+      return get_timestamp() < other.get_timestamp();
+    } else {
+      return true;
+    }
+  } else if (is_delete()) {
+    if (other.is_create() || other.is_update() || other.is_delete()) {
+      return false;
+    } else {
+      return true;
+    }
+  } else if (is_undo_point()) {
+    return !other.is_undo_point();
+  }
+  return false;  // not reachable
+}
+
 ////////////////////////////////////////////////////////////////////////////////

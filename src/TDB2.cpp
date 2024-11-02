@@ -244,8 +244,7 @@ void TDB2::revert() {
 
 ////////////////////////////////////////////////////////////////////////////////
 bool TDB2::confirm_revert(rust::Vec<tc::Operation>& undo_ops) {
-  // TODO Use show_diff rather than this basic listing of operations, though
-  // this might be a worthy undo.style itself.
+  // TODO: convert to Operation and use that type for display, similar to CmdInfo.
 
   // Count non-undo operations
   int ops_count = 0;
