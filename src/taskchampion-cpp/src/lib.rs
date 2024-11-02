@@ -133,6 +133,9 @@ mod ffi {
         /// Get an existing task by its UUID.
         fn get_task_data(&mut self, uuid: Uuid) -> Result<OptionTaskData>;
 
+        /// Get the operations for a task task by its UUID.
+        fn get_task_operations(&mut self, uuid: Uuid) -> Result<Vec<Operation>>;
+
         /// Return the operations back to and including the last undo point, or since the last sync if
         /// no undo point is found.
         fn get_undo_operations(&mut self) -> Result<Vec<Operation>>;
@@ -529,6 +532,10 @@ impl Replica {
         Ok(self.0.get_task_data(uuid.into())?.into())
     }
 
+    fn get_task_operations(&mut self, uuid: ffi::Uuid) -> Result<Vec<Operation>, CppError> {
+        Ok(from_tc_operations(self.0.get_task_operations(uuid.into())?))
+    }
+
     fn get_undo_operations(&mut self) -> Result<Vec<Operation>, CppError> {
         Ok(from_tc_operations(self.0.get_undo_operations()?))
     }
@@ -919,6 +926,26 @@ mod test {
         let mut t = rep.get_task_data(uuid).unwrap();
         assert!(t.is_some());
         assert_eq!(t.take().get_uuid(), uuid);
+    }
+
+    #[test]
+    fn get_task_operations() {
+        cxx::let_cxx_string!(prop = "prop");
+        cxx::let_cxx_string!(value = "value");
+        let mut rep = new_replica_in_memory().unwrap();
+
+        let uuid = uuid_v4();
+        assert!(rep.get_task_operations(uuid).unwrap().is_empty());
+
+        let mut operations = new_operations();
+        let mut t = create_task(uuid, &mut operations);
+        t.update(&prop, &value, &mut operations);
+        rep.commit_operations(operations).unwrap();
+
+        let ops = rep.get_task_operations(uuid).unwrap();
+        assert_eq!(ops.len(), 2);
+        assert!(ops[0].is_create());
+        assert!(ops[1].is_update());
     }
 
     #[test]
