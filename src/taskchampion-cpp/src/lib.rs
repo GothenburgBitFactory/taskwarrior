@@ -943,7 +943,7 @@ mod test {
 
         assert_eq!(t.properties(), vec!["prop".to_string()]);
         assert_eq!(
-            t.iter(),
+            t.items(),
             vec![ffi::PropValuePair {
                 prop: "prop".into(),
                 value: "value".into(),
