@@ -29,8 +29,8 @@
 
 #include <taskchampion-cpp/lib.h>
 
-#include <vector>
 #include <optional>
+#include <vector>
 
 // Representation of a TaskChampion operation.
 //
