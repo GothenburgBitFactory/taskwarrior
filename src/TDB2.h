@@ -51,7 +51,6 @@ class TDB2 {
   void modify(Task &);
   void purge(Task &);
   void get_changes(std::vector<Task> &);
-  void revert();
   void gc();
   void expire_tasks();
   int latest_id();
@@ -75,8 +74,6 @@ class TDB2 {
 
   void dump();
 
-  bool confirm_revert(rust::Vec<tc::Operation> &);
-
   rust::Box<tc::Replica> &replica();
 
  private:
@@ -93,7 +90,6 @@ class TDB2 {
 
   const rust::Box<tc::WorkingSet> &working_set();
   void maybe_add_undo_point(rust::Vec<tc::Operation> &);
-  static void show_diff(const std::string &, const std::string &, const std::string &);
 };
 
 #endif

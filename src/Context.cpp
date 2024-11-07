@@ -127,7 +127,6 @@ std::string configurationDefaults =
     "dependency.indicator=D                         # What to show as a dependency indicator\n"
     "recurrence.indicator=R                         # What to show as a task recurrence indicator\n"
     "recurrence.limit=1                             # Number of future recurring pending tasks\n"
-    "undo.style=side                                # Undo style - can be 'side', or 'diff'\n"
     "regex=1                                        # Assume all search/filter strings are "
     "regexes\n"
     "xterm.title=0                                  # Sets xterm title for some commands\n"

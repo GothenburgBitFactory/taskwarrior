@@ -181,8 +181,6 @@ class Task {
 #endif
 
   std::string diff(const Task& after) const;
-  Table diffForUndoSide(const Task& after) const;
-  Table diffForUndoPatch(const Task& after, const Datetime& lastChange) const;
 
  private:
   int determineVersion(const std::string&);

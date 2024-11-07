@@ -509,15 +509,6 @@ is set to 2, then a report will list 2 pending recurring tasks, one for tomorrow
 and one for a week from tomorrow.
 
 .TP
-.B undo.style=side
-When the 'undo' command is run, Taskwarrior presents a before and after
-comparison of the data. This can be in either the 'side' style, which compares
-values side-by-side in a table, or 'diff' style, which uses a format similar to
-the 'diff' command.
-
-Currently not supported.
-
-.TP
 .B abbreviation.minimum=2
 Minimum length of any abbreviated command/value. This means that "ve", "ver",
 "vers", "versi", "versio" will all equate to "version", but "v" will not.

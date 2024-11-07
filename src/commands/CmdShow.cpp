@@ -202,7 +202,6 @@ int CmdShow::execute(std::string& output) {
       " sync.server.url"
       " sync.server.origin"
       " tag.indicator"
-      " undo.style"
       " urgency.active.coefficient"
       " urgency.scheduled.coefficient"
       " urgency.annotations.coefficient"
