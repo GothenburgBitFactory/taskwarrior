@@ -78,9 +78,9 @@ class TestUndoStyle(TestCase):
         """Test that 'task undo' generates the right output"""
         code, out, err = self.t("undo", input="n\n")
         self.assertNotRegex(out, "-tags:\\s*\n\\+tags:\\s+tag")
-        self.assertRegex(out, r"Delete property 'priority'");
-        self.assertRegex(out, r"Update property 'project'");
-        self.assertRegex(out, r"Add tag 'tag'");
+        self.assertRegex(out, r"Delete property 'priority'")
+        self.assertRegex(out, r"Update property 'project'")
+        self.assertRegex(out, r"Add tag 'tag'")
 
 
 class TestBug634(TestCase):
