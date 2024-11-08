@@ -1171,6 +1171,7 @@ void Context::createDefaultConfig() {
              << "\n# Color theme (uncomment one to use)\n"
              << "#include light-16.theme\n"
              << "#include light-256.theme\n"
+             << "#include bubblegum-256.theme\n"
              << "#include dark-16.theme\n"
              << "#include dark-256.theme\n"
              << "#include dark-red-256.theme\n"
