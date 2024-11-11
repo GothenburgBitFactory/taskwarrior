@@ -51,6 +51,7 @@ class NewsItem {
   static void version2_6_0(std::vector<NewsItem>&);
   static void version3_0_0(std::vector<NewsItem>&);
   static void version3_1_0(std::vector<NewsItem>&);
+  static void version3_2_0(std::vector<NewsItem>&);
 
  private:
   NewsItem(Version, const std::string&, const std::string& = "", const std::string& = "",

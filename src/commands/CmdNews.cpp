@@ -158,6 +158,7 @@ std::vector<NewsItem> NewsItem::all() {
   version2_6_0(items);
   version3_0_0(items);
   version3_1_0(items);
+  version3_2_0(items);
   return items;
 }
 
@@ -498,6 +499,20 @@ void NewsItem::version3_1_0(std::vector<NewsItem>& items) {
       "and will only show that news once. New installs will assume all news has been read.\n"
       "Finally, news can be completely hidden by removing 'news' from the 'verbose' config."};
   items.push_back(news);
+}
+
+void NewsItem::version3_2_0(std::vector<NewsItem>& items) {
+  Version version("3.2.0");
+  NewsItem info{
+      version,
+      /*title=*/"`task info` Journal Restored",
+      /*bg_title=*/"",
+      /*background=*/"",
+      /*punchline=*/"",
+      /*update=*/
+      "Support for the \"journal\" output in `task info` has been restored. The command now\n"
+      "displays a list of changes made to the task, with timestamps.\n\n"};
+  items.push_back(info);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,30 @@
 ------ current release ---------------------------
 
+3.2.0 -
+
+ - Support for the journal in `task info` has been restored (#3671) and the
+   task info output no longer contains `tag_` values (#3619).
+ - The `rc.weekstart` value now affects calculation of week numbers in
+   expressions like `2013-W49` (#2654).
+ - Build-time flag `ENABLE_TLS_NATIVE_ROOTS` will cause `task sync` to use the
+   system TLS roots instead of its built-in roots to authenticate the server (#3660).
+ - The output from `task undo` is now more human-readable. The `undo.style`
+   configuraiton option, which has had no effect since 3.0.0, is now removed (3672).
+ - Fetching pending tasks is now more efficient (#3661).
+
+Thanks to the following people for contributions to this release:
+
+ - Denis Zh.
+ - Dustin J. Mitchell
+ - Fredrik Lanker
+ - Gagan Nagaraj
+ - Jan Christian Grünhage
+ - Scott Mcdermott
+ - Thomas Lauf
+ - Tobias Predel
+
+------ old releases ------------------------------
+
 3.1.0 -
 
  - Support for `task purge` has been restored, and new support added for automatically
@@ -34,8 +59,6 @@ Thanks to the following people for contributions to this release:
  - sleepy_nols
  - Steve Dondley
  - Will R S Hansen
-
------- old releases ------------------------------
 
 3.0.2 -
 
