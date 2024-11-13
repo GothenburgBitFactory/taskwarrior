@@ -47,7 +47,7 @@ Operation& Operation::operator=(const Operation& other) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Operation::operator<(Operation& other) const {
+bool Operation::operator<(const Operation& other) const {
   if (is_create()) {
     return !other.is_create();
   } else if (is_update()) {

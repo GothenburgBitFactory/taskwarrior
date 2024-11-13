@@ -78,7 +78,7 @@ class Operation {
   // Define a partial order on Operations:
   //  - Create < Update < Delete < UndoPoint
   //  - Given two updates, sort by timestamp
-  bool operator<(Operation &other) const;
+  bool operator<(const Operation &other) const;
 
  private:
   const tc::Operation *op;
