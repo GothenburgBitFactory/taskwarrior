@@ -134,9 +134,9 @@ jobs:
           - name: "Fedora 40"
             runner: ubuntu-latest
             dockerfile: fedora40
-          - name: "Fedora 39"
+          - name: "Fedora 41"
             runner: ubuntu-latest
-            dockerfile: fedora39
+            dockerfile: fedora41
           - name: "Debian Testing"
             runner: ubuntu-latest
             dockerfile: debiantesting
