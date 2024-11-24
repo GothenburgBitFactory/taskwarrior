@@ -8,10 +8,10 @@ services:
     security_opt:
       - label=type:container_runtime_t
     tty: true
-  test-fedora39:
+  test-fedora41:
     build:
         context: .
-        dockerfile: test/docker/fedora39
+        dockerfile: test/docker/fedora41
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
