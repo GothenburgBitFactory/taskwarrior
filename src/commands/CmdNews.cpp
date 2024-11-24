@@ -615,3 +615,28 @@ int CmdNews::execute(std::string& output) {
 
   return 0;
 }
+
+bool CmdNews::should_nag() {
+  if (!Context::getContext().verbose("news")) {
+    return false;
+  }
+
+  Version news_version(Context::getContext().config.get("news.version"));
+  if (!news_version.is_valid()) news_version = Version("2.6.0");
+
+  Version current_version = Version::Current();
+
+  if (news_version == current_version) {
+    return true;
+  }
+
+  // Check if there are actually any interesting news items to show.
+  std::vector<NewsItem> items = NewsItem::all();
+  for (auto& item : items) {
+    if (item._version > news_version) {
+      return true;
+    }
+  }
+
+  return false;
+}

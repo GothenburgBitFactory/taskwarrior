@@ -28,6 +28,7 @@
 // cmake.h include header must come first
 
 #include <CmdCustom.h>
+#include <CmdNews.h>
 #include <Context.h>
 #include <Filter.h>
 #include <Lexer.h>
@@ -222,11 +223,9 @@ int CmdCustom::execute(std::string& output) {
   }
 
   // Inform user about the new release highlights if not presented yet
-  Version news_version(Context::getContext().config.get("news.version"));
-  Version current_version = Version::Current();
-  auto should_nag = news_version != current_version && Context::getContext().verbose("news");
-  if (should_nag) {
+  if (CmdNews::should_nag()) {
     std::ostringstream notice;
+    Version current_version = Version::Current();
     notice << "Recently upgraded to " << current_version
            << ". "
               "Please run 'task news' to read highlights about the new release.";

@@ -63,6 +63,8 @@ class CmdNews : public Command {
  public:
   CmdNews();
   int execute(std::string&);
+
+  static bool should_nag();
 };
 
 #endif
