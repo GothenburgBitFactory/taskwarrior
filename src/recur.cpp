@@ -47,7 +47,27 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
+#include <optional>
 #include <sstream>
+
+namespace {
+
+// Add a `time_t` delta to a Datetime, checking for and returning nullopt on integer overflow.
+std::optional<Datetime> checked_add(Datetime& base, time_t delta) {
+  // Datetime::operator+ takes an integer delta, so chek that range
+  if (static_cast<time_t>(std::numeric_limits<int>::max()) < delta) {
+    return std::nullopt;
+  }
+
+  // Check for time_t overflow in the Datetime.
+  if (std::numeric_limits<time_t>::max() - base.toEpoch() < delta) {
+    return std::nullopt;
+  }
+  return base + delta;
+}
+
+}  // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
 // Scans all tasks, and for any recurring tasks, determines whether any new
@@ -95,7 +115,12 @@ void handleRecurrence() {
             Datetime old_wait(t.get_date("wait"));
             Datetime old_due(t.get_date("due"));
             Datetime due(d);
-            rec.set("wait", format((due + (old_wait - old_due)).toEpoch()));
+            auto wait = checked_add(due, old_wait - old_due);
+            if (wait) {
+              rec.set("wait", format(wait->toEpoch()));
+            } else {
+              rec.remove("wait");
+            }
             rec.setStatus(Task::waiting);
             mask += 'W';
           } else {
@@ -148,7 +173,8 @@ bool generateDueDates(Task& parent, std::vector<Datetime>& allDue) {
   auto recurrence_limit = Context::getContext().config.getInteger("recurrence.limit");
   int recurrence_counter = 0;
   Datetime now;
-  for (Datetime i = due;; i = getNextRecurrence(i, recur)) {
+  Datetime i = due;
+  while (1) {
     allDue.push_back(i);
 
     if (specificEnd && i > until) {
@@ -164,13 +190,23 @@ bool generateDueDates(Task& parent, std::vector<Datetime>& allDue) {
     if (i > now) ++recurrence_counter;
 
     if (recurrence_counter >= recurrence_limit) return true;
+    auto next = getNextRecurrence(i, recur);
+    if (next) {
+      i = *next;
+    } else {
+      return true;
+    }
   }
 
   return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Datetime getNextRecurrence(Datetime& current, std::string& period) {
+/// Determine the next recurrence of the given period.
+///
+/// If no such date can be calculated, such as with a very large period, returns
+/// nullopt.
+std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period) {
   auto m = current.month();
   auto d = current.day();
   auto y = current.year();
@@ -201,7 +237,7 @@ Datetime getNextRecurrence(Datetime& current, std::string& period) {
     else
       days = 1;
 
-    return current + (days * 86400);
+    return checked_add(current, days * 86400);
   }
 
   else if (unicodeLatinDigit(period[0]) && period[period.length() - 1] == 'm') {
@@ -317,7 +353,7 @@ Datetime getNextRecurrence(Datetime& current, std::string& period) {
   if (!p.parse(period, idx))
     throw std::string(format("The recurrence value '{1}' is not valid.", period));
 
-  return current + p.toTime_t();
+  return checked_add(current, p.toTime_t());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -35,13 +35,14 @@
 #include <algorithm>
 #include <list>
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 
 // recur.cpp
 void handleRecurrence();
 void handleUntil();
-Datetime getNextRecurrence(Datetime&, std::string&);
+std::optional<Datetime> getNextRecurrence(Datetime&, std::string&);
 bool generateDueDates(Task&, std::vector<Datetime>&);
 void updateRecurrenceMask(Task&);
 
