@@ -34,6 +34,7 @@
 #include <Table.h>
 #include <format.h>
 #include <main.h>
+#include <rust/cxx.h>
 #include <shared.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -51,7 +52,11 @@ static void dependency_scan(std::vector<Task>&);
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::open_replica(const std::string& location, bool create_if_missing) {
-  _replica = tc::new_replica_on_disk(location, create_if_missing);
+  try {
+    _replica = tc::new_replica_on_disk(location, create_if_missing);
+  } catch (rust::Error& err) {
+    throw format("Could not open replica at {1}: {2}", location, err.what());
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
