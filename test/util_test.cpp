@@ -33,6 +33,7 @@
 #include <util.h>
 
 #include <iostream>
+#include <limits>
 
 ////////////////////////////////////////////////////////////////////////////////
 int TEST_NAME(int, char**) {
@@ -90,6 +91,12 @@ int TEST_NAME(int, char**) {
   t.ok(nontrivial("a   "), "nontrivial 'a   ' -> true");
   t.ok(nontrivial("  \t\ta"), "nontrivial '  \\t\\ta' -> true");
   t.ok(nontrivial("a\t\t  "), "nontrivial 'a\\t\\t  ' -> true");
+
+  Datetime dt(1234526400);
+  Datetime max(std::numeric_limits<time_t>::max());
+  t.ok(checked_add_datetime(dt, 10).has_value(), "small delta");
+  t.ok(!checked_add_datetime(dt, 0x100000000).has_value(), "delta > 32bit");
+  t.ok(!checked_add_datetime(max, 1).has_value(), "huge base time");
 
   return 0;
 }

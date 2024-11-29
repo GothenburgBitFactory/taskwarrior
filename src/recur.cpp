@@ -51,11 +51,9 @@
 #include <optional>
 #include <sstream>
 
-namespace {
-
 // Add a `time_t` delta to a Datetime, checking for and returning nullopt on integer overflow.
-std::optional<Datetime> checked_add(Datetime& base, time_t delta) {
-  // Datetime::operator+ takes an integer delta, so chek that range
+std::optional<Datetime> checked_add_datetime(Datetime& base, time_t delta) {
+  // Datetime::operator+ takes an integer delta, so check that range
   if (static_cast<time_t>(std::numeric_limits<int>::max()) < delta) {
     return std::nullopt;
   }
@@ -66,8 +64,6 @@ std::optional<Datetime> checked_add(Datetime& base, time_t delta) {
   }
   return base + delta;
 }
-
-}  // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
 // Scans all tasks, and for any recurring tasks, determines whether any new
@@ -115,7 +111,7 @@ void handleRecurrence() {
             Datetime old_wait(t.get_date("wait"));
             Datetime old_due(t.get_date("due"));
             Datetime due(d);
-            auto wait = checked_add(due, old_wait - old_due);
+            auto wait = checked_add_datetime(due, old_wait - old_due);
             if (wait) {
               rec.set("wait", format(wait->toEpoch()));
             } else {
@@ -237,7 +233,7 @@ std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period
     else
       days = 1;
 
-    return checked_add(current, days * 86400);
+    return checked_add_datetime(current, days * 86400);
   }
 
   else if (unicodeLatinDigit(period[0]) && period[period.length() - 1] == 'm') {
@@ -353,7 +349,7 @@ std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period
   if (!p.parse(period, idx))
     throw std::string(format("The recurrence value '{1}' is not valid.", period));
 
-  return checked_add(current, p.toTime_t());
+  return checked_add_datetime(current, p.toTime_t());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
