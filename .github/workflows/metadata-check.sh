@@ -19,41 +19,7 @@ get_msrv() {
   jq -r '.packages[] | select(.name == "'"${package}"'") | .rust_version' "${META}"
 }
 
-# check that the cxx packages all have the same version
-check_cxx_versions() {
-  local cxx_version=$(get_version "cxx")
-  local cxx_build_version=$(get_version "cxx-build")
-  local cxxbridge_cmd_version=$(get_version "cxx-build")
-  local cxxbridge_flags_version=$(get_version "cxxbridge-flags")
-  local cxxbridge_macro_version=$(get_version "cxxbridge-macro")
-
-  ok=true
-  echo "Found cxx version ${cxx_version}"
-  if [ "${cxx_version}" != "${cxx_build_version}" ]; then
-    echo "Found differing cxx-build version ${cxx_build_version}"
-    ok = false
-  fi
-  if [ "${cxx_version}" != "${cxxbridge_cmd_version}" ]; then
-    echo "Found differing cxxbridge-cmd version ${cxxbridge_cmd_version}"
-    ok = false
-  fi
-  if [ "${cxx_version}" != "${cxxbridge_flags_version}" ]; then
-    echo "Found differing cxxbridge-flags version ${cxxbridge_flags_version}"
-    ok = false
-  fi
-  if [ "${cxx_version}" != "${cxxbridge_macro_version}" ]; then
-    echo "Found differing cxxbridge-macro version ${cxxbridge_macro_version}"
-    ok = false
-  fi
-
-  if ! $ok; then
-    echo "All cxx packages must be at the same version. Fix this in src/taskchampion-cpp/Cargo.toml."
-    exit 1
-  else
-    echo "✓ All cxx packages are at the same version."
-  fi
-}
-
+# Check that the MSRVs match
 check_msrv() {
   local taskchampion_msrv=$(get_msrv taskchampion)
   local taskchampion_lib_msrv=$(get_msrv taskchampion-lib)
@@ -69,5 +35,4 @@ check_msrv() {
   fi
 }
 
-check_cxx_versions
 check_msrv
