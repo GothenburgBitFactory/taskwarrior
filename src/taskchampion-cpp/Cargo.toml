@@ -10,21 +10,11 @@ crate-type = ["staticlib"]
 
 [dependencies]
 taskchampion = "0.9.0"
-# All three cxx* dependencies must have precisely the same version.
-cxx = "=1.0.124"
+cxx = "1.0.133"
 
 [features]
 # use native CA roots, instead of bundled
 tls-native-roots = ["taskchampion/tls-native-roots"]
 
 [build-dependencies]
-# All three cxx* dependencies must have precisely the same version.
-cxx-build = "=1.0.124"
-
-# Include cxxbridge-cmd in Cargo.lock along with the others. This gives a
-# warning "ignoring invalid dependency `cxxbridge-cmd` which is missing a lib
-# target" but this can be safely ignored.
-# See https://github.com/dtolnay/cxx/issues/1407#issuecomment-2509136343
-[target.'cfg(any())'.dependencies]
-# All three cxx* dependencies must have precisely the same version.
-cxxbridge-cmd = "=1.0.124"
+cxx-build = "1.0.133"
