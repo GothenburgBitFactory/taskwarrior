@@ -64,3 +64,19 @@ jobs:
         with:
           command: fmt
           args: --all -- --check
+
+  cargo-metadata:
+    runs-on: ubuntu-latest
+    name: "Cargo Metadata"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          components: rustfmt
+          toolchain: stable
+          override: true
+
+      - name: "Check metadata"
+        run: ".github/workflows/metadata-check.sh"

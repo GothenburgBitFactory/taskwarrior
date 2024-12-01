@@ -118,6 +118,7 @@ jobs:
           # If this version is old enough to cause errors, or older than the
           # TaskChampion MSRV, bump it to the MSRV of the currently-required
           # TaskChampion package; if necessary, bump that version as well.
+          # This should match the MSRV in `src/taskchampion-cpp/Cargo.toml`.
           toolchain: "1.73.0" # MSRV
           override: true
 
