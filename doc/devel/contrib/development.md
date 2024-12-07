@@ -94,3 +94,13 @@ They can be found in the [ctest](https://cmake.org/cmake/help/latest/manual/ctes
 Note that any development should be performed using a git clone, and the current development branch.
 The source tarballs do not reflect HEAD, and do not contain the test suite.
 Follow the [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow) for creating a pull request.
+
+## Using a Custom Version of TaskChampion
+
+To build against a different version of Taskchampion, modify the requirement in `src/taskchampion-cpp/Cargo.toml`.
+
+To build from a local checkout, replace the version with a [path dependency](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#specifying-path-dependencies), giving the path to the directory containing TaskChampion's `Cargo.toml`:
+
+```toml
+taskchampion = { path = "path/to/taskchampion" }
+```
