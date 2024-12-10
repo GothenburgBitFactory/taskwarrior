@@ -22,7 +22,7 @@ You will need the following libraries:
   - libuuid (not needed for OSX)
 
 You will need a Rust toolchain of the Minimum Supported Rust Version (MSRV):
-  - rust 1.73.0
+  - rust 1.78.0
 
 Basic Installation
 ------------------
