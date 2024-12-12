@@ -164,6 +164,36 @@ mod ffi {
             avoid_snapshots: bool,
         ) -> Result<()>;
 
+        /// Sync with a server created from `ServerConfig::Aws` using `AwsCredentials::Profile`.
+        fn sync_to_aws_with_profile(
+            &mut self,
+            region: String,
+            bucket: String,
+            profile_name: String,
+            encryption_secret: &CxxString,
+            avoid_snapshots: bool,
+        ) -> Result<()>;
+
+        /// Sync with a server created from `ServerConfig::Aws` using `AwsCredentials::AccessKey`.
+        fn sync_to_aws_with_access_key(
+            &mut self,
+            region: String,
+            bucket: String,
+            access_key_id: String,
+            secret_access_key: String,
+            encryption_secret: &CxxString,
+            avoid_snapshots: bool,
+        ) -> Result<()>;
+
+        /// Sync with a server created from `ServerConfig::Aws` using `AwsCredentials::Default`.
+        fn sync_to_aws_with_default_creds(
+            &mut self,
+            region: String,
+            bucket: String,
+            encryption_secret: &CxxString,
+            avoid_snapshots: bool,
+        ) -> Result<()>;
+
         /// Sync with a server created from `ServerConfig::Gcp`.
         ///
         /// An empty value for `credential_path` is converted to `Option::None`.
@@ -574,6 +604,63 @@ impl Replica {
         let mut server = tc::server::ServerConfig::Remote {
             url,
             client_id: client_id.into(),
+            encryption_secret: encryption_secret.as_bytes().to_vec(),
+        }
+        .into_server()?;
+        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+    }
+
+    fn sync_to_aws_with_profile(
+        &mut self,
+        region: String,
+        bucket: String,
+        profile_name: String,
+        encryption_secret: &CxxString,
+        avoid_snapshots: bool,
+    ) -> Result<(), CppError> {
+        let mut server = tc::server::ServerConfig::Aws {
+            region,
+            bucket,
+            credentials: tc::server::AwsCredentials::Profile { profile_name },
+            encryption_secret: encryption_secret.as_bytes().to_vec(),
+        }
+        .into_server()?;
+        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+    }
+
+    fn sync_to_aws_with_access_key(
+        &mut self,
+        region: String,
+        bucket: String,
+        access_key_id: String,
+        secret_access_key: String,
+        encryption_secret: &CxxString,
+        avoid_snapshots: bool,
+    ) -> Result<(), CppError> {
+        let mut server = tc::server::ServerConfig::Aws {
+            region,
+            bucket,
+            credentials: tc::server::AwsCredentials::AccessKey {
+                access_key_id,
+                secret_access_key,
+            },
+            encryption_secret: encryption_secret.as_bytes().to_vec(),
+        }
+        .into_server()?;
+        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+    }
+
+    fn sync_to_aws_with_default_creds(
+        &mut self,
+        region: String,
+        bucket: String,
+        encryption_secret: &CxxString,
+        avoid_snapshots: bool,
+    ) -> Result<(), CppError> {
+        let mut server = tc::server::ServerConfig::Aws {
+            region,
+            bucket,
+            credentials: tc::server::AwsCredentials::Default,
             encryption_secret: encryption_secret.as_bytes().to_vec(),
         }
         .into_server()?;

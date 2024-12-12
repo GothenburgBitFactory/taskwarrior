@@ -65,12 +65,11 @@ int CmdSync::execute(std::string& output) {
   bool avoid_snapshots = false;
   bool verbose = Context::getContext().verbose("sync");
 
-  // If no server is set up, quit.
   std::string origin = Context::getContext().config.get("sync.server.origin");
   std::string url = Context::getContext().config.get("sync.server.url");
   std::string server_dir = Context::getContext().config.get("sync.local.server_dir");
   std::string client_id = Context::getContext().config.get("sync.server.client_id");
-  std::string gcp_credential_path = Context::getContext().config.get("sync.gcp.credential_path");
+  std::string aws_bucket = Context::getContext().config.get("sync.aws.bucket");
   std::string gcp_bucket = Context::getContext().config.get("sync.gcp.bucket");
   std::string encryption_secret = Context::getContext().config.get("sync.encryption_secret");
 
@@ -85,7 +84,53 @@ int CmdSync::execute(std::string& output) {
       out << format("Syncing with {1}", server_dir) << '\n';
     }
     replica->sync_to_local(server_dir, avoid_snapshots);
+  } else if (aws_bucket != "") {
+    std::string aws_region = Context::getContext().config.get("sync.aws.region");
+    std::string aws_profile = Context::getContext().config.get("sync.aws.profile");
+    std::string aws_access_key_id = Context::getContext().config.get("sync.aws.access_key_id");
+    std::string aws_secret_access_key =
+        Context::getContext().config.get("sync.aws.secret_access_key");
+    std::string aws_default_credentials =
+        Context::getContext().config.get("sync.aws.default_credentials");
+    if (aws_region == "") {
+      throw std::string("sync.aws.region is required");
+    }
+    if (encryption_secret == "") {
+      throw std::string("sync.encryption_secret is required");
+    }
+
+    bool using_profile = false;
+    bool using_creds = false;
+    bool using_default = false;
+    if (aws_profile != "") {
+      using_profile = true;
+    } else if (aws_access_key_id != "" && aws_secret_access_key != "") {
+      using_creds = true;
+    } else if (aws_default_credentials != "") {
+      using_default = true;
+    }
+
+    if (!using_profile && !using_creds && !using_default) {
+      throw std::string("configuration for AWS credentials is required");
+    }
+
+    if (verbose) {
+      out << format("Syncing with AWS bucket {1}", aws_bucket) << '\n';
+    }
+
+    if (using_profile) {
+      replica->sync_to_aws_with_profile(aws_region, aws_bucket, aws_profile, encryption_secret,
+                                        avoid_snapshots);
+    } else if (using_creds) {
+      replica->sync_to_aws_with_access_key(aws_region, aws_bucket, aws_access_key_id,
+                                           aws_secret_access_key, encryption_secret,
+                                           avoid_snapshots);
+    } else {
+      replica->sync_to_aws_with_default_creds(aws_region, aws_bucket, encryption_secret,
+                                              avoid_snapshots);
+    }
   } else if (gcp_bucket != "") {
+    std::string gcp_credential_path = Context::getContext().config.get("sync.gcp.credential_path");
     if (encryption_secret == "") {
       throw std::string("sync.encryption_secret is required");
     }

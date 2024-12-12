@@ -139,6 +139,85 @@ Then configure Taskwarrior with:
     $ task config sync.gcp.credential_path      <absolute-path-to-downloaded-credentials>
 .fi
 
+.SS Amazon Web Services
+
+To synchronize your tasks to AWS, select a region near you and use the AWS
+console to create a new S3 bucket. The default settings for the bucket are
+adequate.
+
+You will also need an AWS IAM user with the following policy, where BUCKETNAME
+is the name of the bucket. The same user can be configured for multiple
+Taskwarrior instances.
+
+.nf
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "TaskChampion",
+                "Effect": "Allow",
+                "Action": [
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:DeleteObject"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::BUCKETNAME",
+                    "arn:aws:s3:::BUCKETNAME/*"
+                ]
+            }
+        ]
+    }
+.fi
+
+To create such a user, create a new policy in the IAM console, select the JSON
+option in the policy editor, and paste the policy. Click "Next" and give the
+policy a name such as "TaskwarriorSync". Next, create a new user, with a name
+of your choosing, select "Attach Policies Directly", and then choose the
+newly-created policy.
+
+You will need access keys configured for the new user. Find the user in the
+user list, open the "Security Credentials" tab, then click "Create access key"
+and follow the steps.
+
+At this point, you can either set up an AWS profile with the AWS CLI tool, or
+configure the credentials directly in the Taskwarrior configuration. To set up
+the profile:
+
+.nf
+    $ aws configure --profile <profile-name>
+.fi
+
+with a suitable profile name. Enter the access key ID and secret access key.
+The default region and format are not important. Then configure Taskwarrior
+with:
+
+.nf
+    $ task config sync.aws.region              <region>
+    $ task config sync.aws.bucket              <bucket-name>
+    $ task config sync.aws.profile             <profile-name>
+.fi
+
+Alternately, configure the credentials directly in the Taskwarrior
+configuration:
+
+.nf
+    $ task config sync.aws.region              <region>
+    $ task config sync.aws.bucket              <bucket-name>
+    $ task config sync.aws.access_key_id       <access-key-id>
+    $ task config sync.aws.secret_access_key   <secret-access-key>
+.fi
+
+Finally, to use AWS's default credential sources, such as environment
+variables, the default profile, or an instance profile, set
+
+.nf
+    $ task config sync.aws.region              <region>
+    $ task config sync.aws.bucket              <bucket-name>
+    $ task config sync.aws.default_credentials true
+.fi
+
 .SS Local Synchronization
 
 In order to take advantage of synchronization's side effect of saving disk

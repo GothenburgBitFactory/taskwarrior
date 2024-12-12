@@ -9,7 +9,7 @@ rust-version = "1.78.0"  # MSRV
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion = "1.0.0"
+taskchampion = "=1.0.2"
 cxx = "1.0.133"
 
 [features]
