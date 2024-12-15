@@ -66,6 +66,7 @@
 #include <CmdHistory.h>
 #include <CmdIDs.h>
 #include <CmdImport.h>
+#include <CmdImportV2.h>
 #include <CmdInfo.h>
 #include <CmdLog.h>
 #include <CmdLogo.h>
@@ -187,6 +188,8 @@ void Command::factory(std::map<std::string, Command*>& all) {
   c = new CmdIDs();
   all[c->keyword()] = c;
   c = new CmdImport();
+  all[c->keyword()] = c;
+  c = new CmdImportV2();
   all[c->keyword()] = c;
   c = new CmdInfo();
   all[c->keyword()] = c;

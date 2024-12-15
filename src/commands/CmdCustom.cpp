@@ -241,7 +241,8 @@ int CmdCustom::execute(std::string& output) {
     Color warning = Color(Context::getContext().config.get("color.warning"));
     std::cerr << warning.colorize(format("Found existing '*.data' files in {1}", location)) << "\n";
     std::cerr << "  Taskwarrior's storage format changed in 3.0, requiring a manual migration.\n";
-    std::cerr << "  See https://taskwarrior.org/docs/upgrade-3/\n";
+    std::cerr << "  See https://taskwarrior.org/docs/upgrade-3/. Run `task import-v2` to import\n";
+    std::cerr << "  the tasks into the Taskwarrior-3.x format\n";
   }
 
   feedback_backlog();

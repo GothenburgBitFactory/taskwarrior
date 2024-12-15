@@ -14,6 +14,7 @@ add_library (task STATIC CLI2.cpp CLI2.h
                   Hooks.cpp Hooks.h
                   Lexer.cpp Lexer.h
                   Operation.cpp Operation.h
+                  TF2.cpp TF2.h
                   TDB2.cpp TDB2.h
                   Task.cpp Task.h
                   Variant.cpp Variant.h

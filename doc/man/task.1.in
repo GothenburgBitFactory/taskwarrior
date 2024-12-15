@@ -415,6 +415,11 @@ few example scripts, such as:
 .fi
 
 .TP
+.B task import-v2
+Imports tasks from the Taskwarrior v2.x format. This is used when upgrading from
+version 2.x to version 3.x.
+
+.TP
 .B task log <mods>
 Adds a new task that is already completed, to the task list. It is affected by
 the currently set context.
