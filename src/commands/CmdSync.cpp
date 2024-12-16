@@ -38,6 +38,7 @@
 #include <taskchampion-cpp/lib.h>
 #include <util.h>
 
+#include <iostream>
 #include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,19 +100,30 @@ int CmdSync::execute(std::string& output) {
       throw std::string("sync.encryption_secret is required");
     }
 
+    int num_cred_methods = 0;
     bool using_profile = false;
     bool using_creds = false;
     bool using_default = false;
     if (aws_profile != "") {
       using_profile = true;
-    } else if (aws_access_key_id != "" && aws_secret_access_key != "") {
+      num_cred_methods++;
+    }
+    if (aws_access_key_id != "" || aws_secret_access_key != "") {
       using_creds = true;
-    } else if (aws_default_credentials != "") {
+      num_cred_methods++;
+    }
+    if (aws_default_credentials != "") {
       using_default = true;
+      num_cred_methods++;
     }
 
     if (!using_profile && !using_creds && !using_default) {
       throw std::string("configuration for AWS credentials is required");
+    }
+
+    std::cout << "num_cred_method " << num_cred_methods << "\n";
+    if (num_cred_methods > 1) {
+      throw std::string("only one method of specifying AWS credentials is allowed");
     }
 
     if (verbose) {

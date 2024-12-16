@@ -147,7 +147,7 @@ adequate.
 
 You will also need an AWS IAM user with the following policy, where BUCKETNAME
 is the name of the bucket. The same user can be configured for multiple
-Taskwarrior instances.
+Taskwarrior clients.
 
 .nf
     {
@@ -181,26 +181,8 @@ You will need access keys configured for the new user. Find the user in the
 user list, open the "Security Credentials" tab, then click "Create access key"
 and follow the steps.
 
-At this point, you can either set up an AWS profile with the AWS CLI tool, or
-configure the credentials directly in the Taskwarrior configuration. To set up
-the profile:
-
-.nf
-    $ aws configure --profile <profile-name>
-.fi
-
-with a suitable profile name. Enter the access key ID and secret access key.
-The default region and format are not important. Then configure Taskwarrior
-with:
-
-.nf
-    $ task config sync.aws.region              <region>
-    $ task config sync.aws.bucket              <bucket-name>
-    $ task config sync.aws.profile             <profile-name>
-.fi
-
-Alternately, configure the credentials directly in the Taskwarrior
-configuration:
+At this point, you can choose how to provide those credentials to Taskwarrior.
+The simplest is to include them in the Taskwarrior configuration:
 
 .nf
     $ task config sync.aws.region              <region>
@@ -209,8 +191,24 @@ configuration:
     $ task config sync.aws.secret_access_key   <secret-access-key>
 .fi
 
-Finally, to use AWS's default credential sources, such as environment
-variables, the default profile, or an instance profile, set
+Alternatively, you can set up an AWS CLI profile, using a profile name of your
+choosing such as "taskwarrior-creds":
+
+.nf
+    $ aws configure --profile taskwarrior-creds
+.fi
+
+Enter the access key ID and secret access key. The default region and format
+are not important. Then configure Taskwarrior with:
+
+.nf
+    $ task config sync.aws.region              <region>
+    $ task config sync.aws.bucket              <bucket-name>
+    $ task config sync.aws.profile             taskwarrior-creds
+.fi
+
+To use AWS's default credential sources, such as environment variables, the
+default profile, or an instance profile, set
 
 .nf
     $ task config sync.aws.region              <region>
