@@ -69,7 +69,7 @@ class TestImport(TestCase):
         code, out, err = self.t("completed")
         self.assertNotIn("bing", out)
         self.assertNotIn("baz", out)
-        self.assertNotIn("foo", out) # deleted, not in the completed report
+        self.assertNotIn("foo", out)  # deleted, not in the completed report
         self.assertIn("bar", out)
 
 
