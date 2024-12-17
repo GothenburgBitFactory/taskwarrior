@@ -136,6 +136,7 @@ set (pythonTests
   hyphenate.test.py
   ids.test.py
   import.test.py
+  import-v2.test.py
   info.test.py
   limit.test.py
   list.all.projects.test.py
