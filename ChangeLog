@@ -1,5 +1,25 @@
 ------ current release ---------------------------
 
+- Sync now supports AWS S3 as a backend.
+- A new `task import-v2` command allows importing Taskwarrior-2.x
+  data files directly.
+
+3.3.0 -
+
+Thanks to the following people for contributions to this release:
+
+ - Chongyun Lee
+ - David Tolnay
+ - Dustin J. Mitchell
+ - Felix Schurk
+ - geoffpaulsen
+ - Kalle Kietäväinen
+ - Kursat Aktas
+ - Scott Mcdermott
+ - Thomas Lauf
+
+------ old releases ------------------------------
+
 3.2.0 -
 
  - Support for the journal in `task info` has been restored (#3671) and the
@@ -22,8 +42,6 @@ Thanks to the following people for contributions to this release:
  - Scott Mcdermott
  - Thomas Lauf
  - Tobias Predel
-
------- old releases ------------------------------
 
 3.1.0 -
 

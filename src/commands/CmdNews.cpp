@@ -159,6 +159,7 @@ std::vector<NewsItem> NewsItem::all() {
   version3_0_0(items);
   version3_1_0(items);
   version3_2_0(items);
+  version3_3_0(items);
   return items;
 }
 
@@ -512,6 +513,20 @@ void NewsItem::version3_2_0(std::vector<NewsItem>& items) {
       /*update=*/
       "Support for the \"journal\" output in `task info` has been restored. The command now\n"
       "displays a list of changes made to the task, with timestamps.\n\n"};
+  items.push_back(info);
+}
+
+void NewsItem::version3_3_0(std::vector<NewsItem>& items) {
+  Version version("3.3.0");
+  NewsItem info{
+      version,
+      /*title=*/"AWS S3 Sync",
+      /*bg_title=*/"",
+      /*background=*/"",
+      /*punchline=*/"Use an AWS S3 bucket to sync Taskwarrior",
+      /*update=*/
+      "Taskwarrior now supports AWS as a backend for sync, in addition to existing support\n"
+    "for GCP and taskchampion-sync-server. See `man task-sync` for details.\n\n"};
   items.push_back(info);
 }
 
