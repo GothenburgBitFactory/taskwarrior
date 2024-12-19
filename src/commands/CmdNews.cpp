@@ -526,7 +526,7 @@ void NewsItem::version3_3_0(std::vector<NewsItem>& items) {
       /*punchline=*/"Use an AWS S3 bucket to sync Taskwarrior",
       /*update=*/
       "Taskwarrior now supports AWS as a backend for sync, in addition to existing support\n"
-    "for GCP and taskchampion-sync-server. See `man task-sync` for details.\n\n"};
+      "for GCP and taskchampion-sync-server. See `man task-sync` for details.\n\n"};
   items.push_back(info);
 }
 
