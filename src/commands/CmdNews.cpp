@@ -642,7 +642,7 @@ bool CmdNews::should_nag() {
   Version current_version = Version::Current();
 
   if (news_version == current_version) {
-    return true;
+    return false;
   }
 
   // Check if there are actually any interesting news items to show.
