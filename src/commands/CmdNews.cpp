@@ -593,7 +593,7 @@ int CmdNews::execute(std::string& output) {
   std::cout << outro.str();
 
   // Set a mark in the config to remember which version's release notes were displayed
-  if (news_version != current_version) {
+  if (news_version < current_version) {
     CmdConfig::setConfigVariable("news.version", std::string(current_version), false);
 
     // Revert back to default signal handling after displaying the outro
@@ -641,7 +641,7 @@ bool CmdNews::should_nag() {
 
   Version current_version = Version::Current();
 
-  if (news_version == current_version) {
+  if (news_version >= current_version) {
     return false;
   }
 
