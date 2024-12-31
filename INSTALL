@@ -115,7 +115,7 @@ Offline Build Notes
 
 It is common for packaging systems (e.g. NixOS, FreeBSD Ports Collection, pkgsrc, etc)
 to disable networking during builds.  This restriction requires all distribution files
-to be prepositioned after checksum version as a prerequisite for the build.  The
+to be prepositioned after checksum verification as a prerequisite for the build.  The
 following steps have been successful in allowing Taskwarrior to be built in this
 environment:
 
