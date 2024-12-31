@@ -110,6 +110,43 @@ If Taskwarrior will not build on your system, first take a look at the Operating
 System notes below.  If this doesn't help, then go to the Troubleshooting
 section, which includes instructions on how to contact us for help.
 
+Offline Build Notes 
+-------------------
+
+It is common for packaging systems (e.g. NixOS, FreeBSD Ports Collection, pkgsrc, etc)
+to disable networking during builds.  This restriction requires all distribution files
+to be prepositioned after checksum version as a prerequisite for the build.  The
+following steps have been successful in allowing Taskwarrior to be built in this
+environment:
+
+1. Extract all crates in a known location, e.g. ${WRKDIR}/cargo-crates
+This includes crates needed for corrosion (search for Cargo.lock files)
+
+2. Create .cargo-checksum.json for each crate
+For example:
+printf '{"package":"%s","files":{}}' $(sha256 -q ${DISTDIR}/rayon-core-1.12.1.tar.gz) \
+        > ${WRKDIR}/cargo-crates/rayon-core-1.12.1/.cargo-checksum.json
+
+3. Create a custom config.toml file
+For example, ${WRKDIR}/.cargo/config.toml
+[source.cargo]
+directory = '${WRKDIR}/cargo-crates'
+[source.crates-io]
+replace-with = 'cargo'
+
+4. After running cmake, configure cargo
+For example:
+cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} ${CARGO_ENV} \
+  /usr/local/bin/cargo update \
+  --manifest-path ${WRKDIR}/.cargo/config.toml \
+  --verbose
+
+5. Set CARGO_HOME in environment
+For example
+CARGO_HOME=${WRKDIR}/.cargo
+
+The build and installation steps should be the same as a standard build
+at this point.
 
 Operating System Notes
 ----------------------
