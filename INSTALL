@@ -110,7 +110,7 @@ If Taskwarrior will not build on your system, first take a look at the Operating
 System notes below.  If this doesn't help, then go to the Troubleshooting
 section, which includes instructions on how to contact us for help.
 
-Offline Build Notes 
+Offline Build Notes
 -------------------
 
 It is common for packaging systems (e.g. NixOS, FreeBSD Ports Collection, pkgsrc, etc)
