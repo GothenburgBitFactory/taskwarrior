@@ -89,6 +89,11 @@ get absolute installation directories:
   CMAKE_INSTALL_PREFIX/TASK_MAN1DIR  /usr/local/share/man/man1
   CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
 
+The following variables control aspects of the build process:
+
+  SYSTEM_CORROSION - Use system provided corrosion instead of vendored version
+  ENABLE_TLS_NATIVE_ROOTS - Use the system's TLS root certificates
+
 
 Uninstallation
 --------------
