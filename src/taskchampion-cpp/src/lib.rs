@@ -494,6 +494,7 @@ fn new_replica_on_disk(
     let storage = tc::StorageConfig::OnDisk {
         taskdb_dir: PathBuf::from(taskdb_dir),
         create_if_missing,
+        access_mode: tc::storage::AccessMode::ReadWrite,
     }
     .into_storage()?;
     Ok(Box::new(tc::Replica::new(storage).into()))

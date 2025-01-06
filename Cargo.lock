@@ -2553,9 +2553,9 @@ dependencies = [
 
 [[package]]
 name = "taskchampion"
-version = "1.0.2"
+version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4e41712ec2dd9cb5e7f4f20daf13a8e0937a927fb886153f2523a6686c35983"
+checksum = "830bb062bb2d89bdee0063d7c02d1e24ee0a1702c683f394eb0520fb88dc4a5c"
 dependencies = [
  "anyhow",
  "aws-config",

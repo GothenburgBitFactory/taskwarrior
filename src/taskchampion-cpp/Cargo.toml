@@ -3,13 +3,13 @@ name = "taskchampion-lib"
 version = "0.1.0"
 edition = "2021"
 publish = false
-rust-version = "1.78.0"  # MSRV
+rust-version = "1.81.0"  # MSRV
 
 [lib]
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion = "=1.0.2"
+taskchampion = "=2.0.2"
 cxx = "1.0.133"
 
 [features]
