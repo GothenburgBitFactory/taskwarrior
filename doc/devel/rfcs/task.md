@@ -25,7 +25,7 @@ In brief: "MUST" (or "REQUIRED") means that the item is an absolute requirement 
 
 ## General Format
 
-The format is JSON, specifically a JSON object as a single line of text, terminated by a newline (U+000D).
+The format is JSON, specifically a JSON object as a single line of text, terminated by a line feed (U+000A).
 
 The JSON looks like this:
 
