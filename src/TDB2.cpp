@@ -451,11 +451,6 @@ int TDB2::num_local_changes() { return (int)replica()->num_local_operations(); }
 int TDB2::num_reverts_possible() { return (int)replica()->num_undo_points(); }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::dump() {
-  // TODO
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // For any task that has depenencies, follow the chain of dependencies until the
 // end.  Along the way, update the Task::is_blocked and Task::is_blocking data
 // cache.

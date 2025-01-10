@@ -72,8 +72,6 @@ class TDB2 {
   int num_local_changes();
   int num_reverts_possible();
 
-  void dump();
-
   rust::Box<tc::Replica> &replica();
 
  private:
