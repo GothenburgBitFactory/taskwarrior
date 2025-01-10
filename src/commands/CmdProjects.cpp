@@ -47,6 +47,7 @@ CmdProjects::CmdProjects() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -59,8 +60,6 @@ int CmdProjects::execute(std::string& output) {
   int rc = 0;
 
   // Get all the tasks.
-  handleUntil();
-  handleRecurrence();
   auto tasks = Context::getContext().tdb2.pending_tasks();
 
   if (Context::getContext().config.getBoolean("list.all.projects"))
@@ -141,6 +140,7 @@ CmdCompletionProjects::CmdCompletionProjects() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -151,8 +151,6 @@ CmdCompletionProjects::CmdCompletionProjects() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionProjects::execute(std::string& output) {
   // Get all the tasks.
-  handleUntil();
-  handleRecurrence();
   auto tasks = Context::getContext().tdb2.pending_tasks();
 
   if (Context::getContext().config.getBoolean("list.all.projects"))

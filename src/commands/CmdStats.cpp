@@ -49,6 +49,7 @@ CmdStats::CmdStats() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = false;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;

@@ -40,6 +40,7 @@ CmdCount::CmdCount() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -50,8 +51,6 @@ CmdCount::CmdCount() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCount::execute(std::string& output) {
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);

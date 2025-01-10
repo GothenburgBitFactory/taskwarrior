@@ -46,6 +46,7 @@ CmdIDs::CmdIDs() {
   _read_only = true;
   _displays_id = true;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -56,8 +57,6 @@ CmdIDs::CmdIDs() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdIDs::execute(std::string& output) {
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
@@ -127,6 +126,7 @@ CmdCompletionIds::CmdCompletionIds() {
   _read_only = true;
   _displays_id = true;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -163,6 +163,7 @@ CmdZshCompletionIds::CmdZshCompletionIds() {
   _read_only = true;
   _displays_id = true;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -199,6 +200,7 @@ CmdUUIDs::CmdUUIDs() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -234,6 +236,7 @@ CmdCompletionUuids::CmdCompletionUuids() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -269,6 +272,7 @@ CmdZshCompletionUuids::CmdZshCompletionUuids() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;

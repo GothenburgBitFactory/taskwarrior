@@ -48,6 +48,7 @@ CmdTimesheet::CmdTimesheet() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = false;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -90,8 +91,6 @@ int CmdTimesheet::execute(std::string& output) {
   }
 
   // Apply filter to get a set of tasks.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);

@@ -45,6 +45,7 @@ CmdCommands::CmdCommands() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = false;
+  _needs_recur_update = false;
   _uses_context = false;
   _accepts_filter = false;
   _accepts_modifications = false;
@@ -61,6 +62,7 @@ int CmdCommands::execute(std::string& output) {
   view.add("R/W", false);
   view.add("ID", false);
   view.add("GC", false);
+  view.add("Recur", false);
   view.add("Context", false);
   view.add("Filter", false);
   view.add("Mods", false);
@@ -85,15 +87,17 @@ int CmdCommands::execute(std::string& output) {
 
     if (command.second->needs_gc()) view.set(row, 4, "GC");
 
-    if (command.second->uses_context()) view.set(row, 5, "Ctxt");
+    if (command.second->needs_recur_update()) view.set(row, 5, "Recur");
 
-    if (command.second->accepts_filter()) view.set(row, 6, "Filt");
+    if (command.second->uses_context()) view.set(row, 6, "Ctxt");
 
-    if (command.second->accepts_modifications()) view.set(row, 7, "Mods");
+    if (command.second->accepts_filter()) view.set(row, 7, "Filt");
 
-    if (command.second->accepts_miscellaneous()) view.set(row, 8, "Misc");
+    if (command.second->accepts_modifications()) view.set(row, 8, "Mods");
 
-    view.set(row, 9, command.second->description());
+    if (command.second->accepts_miscellaneous()) view.set(row, 9, "Misc");
+
+    view.set(row, 10, command.second->description());
   }
 
   output = optionalBlankLine() + view.render() + optionalBlankLine() + '\n';
