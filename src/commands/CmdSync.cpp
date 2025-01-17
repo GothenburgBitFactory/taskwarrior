@@ -85,6 +85,8 @@ int CmdSync::execute(std::string& output) {
       out << format("Syncing with {1}", server_dir) << '\n';
     }
     replica->sync_to_local(server_dir, avoid_snapshots);
+
+    out << format("Synced with {1}", server_dir) << '\n';
   } else if (aws_bucket != "") {
     std::string aws_region = Context::getContext().config.get("sync.aws.region");
     std::string aws_profile = Context::getContext().config.get("sync.aws.profile");
@@ -132,6 +134,8 @@ int CmdSync::execute(std::string& output) {
       replica->sync_to_aws_with_default_creds(aws_region, aws_bucket, encryption_secret,
                                               avoid_snapshots);
     }
+
+    out << format("Synced with AWS bucket {1}", aws_bucket) << '\n';
   } else if (gcp_bucket != "") {
     std::string gcp_credential_path = Context::getContext().config.get("sync.gcp.credential_path");
     if (encryption_secret == "") {
@@ -141,6 +145,8 @@ int CmdSync::execute(std::string& output) {
       out << format("Syncing with GCP bucket {1}", gcp_bucket) << '\n';
     }
     replica->sync_to_gcp(gcp_bucket, gcp_credential_path, encryption_secret, avoid_snapshots);
+
+    out << format("Synced with GCP bucket {1}", gcp_bucket) << '\n';
   } else if (server_url != "") {
     if (client_id == "" || encryption_secret == "") {
       throw std::string("sync.server.client_id and sync.encryption_secret are required");
@@ -150,6 +156,8 @@ int CmdSync::execute(std::string& output) {
     }
     replica->sync_to_remote(server_url, tc::uuid_from_string(client_id), encryption_secret,
                             avoid_snapshots);
+
+    out << format("Synced with sync server at {1}", server_url) << '\n';
   } else {
     throw std::string("No sync.* settings are configured. See task-sync(5).");
   }
