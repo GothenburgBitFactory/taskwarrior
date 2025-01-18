@@ -44,7 +44,7 @@ class TestCommands(TestCase):
         code, out, err = self.t("commands")
         self.assertRegex(out, r"add\s+operation\s+RW\s+Ctxt\s+Mods\s+Adds a new task")
         self.assertRegex(
-            out, r"list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of"
+            out, r"list\s+report\s+RO\s+ID\s+GC\s+Recur\s+Ctxt\s+Filt\s+Most details of"
         )
         self.assertRegex(out, r"modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
 
@@ -53,7 +53,7 @@ class TestCommands(TestCase):
         code, out, err = self.t("commands rc._forcecolor:on")
         self.assertRegex(out, r"add\s+operation\s+RW\s+Ctxt\s+Mods\s+Adds a new task")
         self.assertRegex(
-            out, r"list\s+report\s+RO\s+ID\s+GC\s+Ctxt\s+Filt\s+Most details of"
+            out, r"list\s+report\s+RO\s+ID\s+GC\s+Recur\s+Ctxt\s+Filt\s+Most details of"
         )
         self.assertRegex(out, r"modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
 

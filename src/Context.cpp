@@ -852,7 +852,7 @@ int Context::dispatch(std::string& out) {
     Command* c = commands[command];
     assert(c);
 
-    // The command know whether they need a GC.
+    // The command know whether they need a GC or recurrence update.
     if (c->needs_gc()) {
       tdb2.gc();
     }
@@ -868,6 +868,11 @@ int Context::dispatch(std::string& out) {
     // tree.
     if (config.getBoolean("debug") && config.getInteger("debug.parser") == 1)
       debug(cli2.dump("Parse Tree (before command-specifіc processing)"));
+
+    if (c->needs_recur_update()) {
+      handleUntil();
+      handleRecurrence();
+    }
 
     return c->execute(out);
   }

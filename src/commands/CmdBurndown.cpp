@@ -767,6 +767,7 @@ CmdBurndownMonthly::CmdBurndownMonthly() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -779,8 +780,6 @@ int CmdBurndownMonthly::execute(std::string& output) {
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
@@ -801,6 +800,7 @@ CmdBurndownWeekly::CmdBurndownWeekly() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -813,8 +813,6 @@ int CmdBurndownWeekly::execute(std::string& output) {
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
@@ -835,6 +833,7 @@ CmdBurndownDaily::CmdBurndownDaily() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -847,8 +846,6 @@ int CmdBurndownDaily::execute(std::string& output) {
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);

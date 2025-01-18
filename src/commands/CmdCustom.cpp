@@ -55,6 +55,7 @@ CmdCustom::CmdCustom(const std::string& keyword, const std::string& usage,
   _read_only = true;
   _displays_id = true;
   _needs_gc = true;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -99,10 +100,6 @@ int CmdCustom::execute(std::string& output) {
 
   // Add the report filter to any existing filter.
   if (reportFilter != "") Context::getContext().cli2.addFilter(reportFilter);
-
-  // Make sure reccurent tasks are generated.
-  handleUntil();
-  handleRecurrence();
 
   // Apply filter.
   Filter filter;
