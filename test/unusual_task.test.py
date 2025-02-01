@@ -193,6 +193,7 @@ class TestUnusualTasks(TestCase):
         )
         _, out, _ = self.t(f"{uuid} export")
 
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
 
