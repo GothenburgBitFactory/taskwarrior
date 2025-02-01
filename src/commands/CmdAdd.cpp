@@ -56,6 +56,11 @@ int CmdAdd::execute(std::string& output) {
   // the task is empty, but DOM references can refer to earlier parts of the
   // command line, e.g., `task add due:20110101 wait:due`.
   task.modify(Task::modReplace, true);
+
+  // Validate a task for addition. This is stricter than `task.validate`, as any
+  // inconsistency is probably user error.
+  task.validate_add();
+
   Context::getContext().tdb2.add(task);
 
   // Do not display ID 0, users cannot query by that

@@ -321,8 +321,8 @@ void Task::setStatus(Task::status status) {
 ////////////////////////////////////////////////////////////////////////////////
 // Determines status of a date attribute.
 Task::dateState Task::getDateState(const std::string& name) const {
-  std::string value = get(name);
-  if (value.length()) {
+  time_t value = get_date(name);
+  if (value > 0) {
     Datetime reference(value);
     Datetime now;
     Datetime today("today");
@@ -804,13 +804,16 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
 
     // Date fields are written as ISO 8601.
     if (type == "date") {
-      Datetime d(i.second);
-      out << '"' << (i.first == "modification" ? "modified" : i.first)
-          << "\":\""
-          // Date was deleted, do not export parsed empty string
-          << (i.second == "" ? "" : d.toISO()) << '"';
+      time_t epoch = get_date(i.first);
+      if (epoch != 0) {
+        Datetime d(i.second);
+        out << '"' << (i.first == "modification" ? "modified" : i.first)
+            << "\":\""
+            // Date was deleted, do not export parsed empty string
+            << (i.second == "" ? "" : d.toISO()) << '"';
 
-      ++attributes_written;
+        ++attributes_written;
+      }
     }
 
     /*

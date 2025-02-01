@@ -28,8 +28,11 @@ ON_POSIX = "posix" in sys.builtin_module_names
 # Directory relative to basetest module location
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# From the CMAKE value of the same name. This is substituted at configure.
+CMAKE_BINARY_DIR = os.path.abspath("${CMAKE_BINARY_DIR}")
+
 # Location of binary files (usually the src/ folder)
-BIN_PREFIX = os.path.abspath(os.path.join("${CMAKE_BINARY_DIR}", "src"))
+BIN_PREFIX = os.path.abspath(os.path.join(CMAKE_BINARY_DIR, "src"))
 
 # Default location of test hooks
 DEFAULT_HOOK_PATH = os.path.abspath(

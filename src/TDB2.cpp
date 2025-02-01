@@ -57,10 +57,6 @@ void TDB2::open_replica(const std::string& location, bool create_if_missing) {
 ////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the replica.
 void TDB2::add(Task& task) {
-  // Validate a task for addition. This is stricter than `task.validate`, as any
-  // inconsistency is probably user error.
-  task.validate_add();
-
   // Ensure the task is consistent, and provide defaults if necessary.
   // bool argument to validate() is "applyDefault", to apply default values for
   // properties not otherwise given.

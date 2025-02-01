@@ -188,6 +188,7 @@ set (pythonTests
   undo.test.py
   unicode.test.py
   unique.test.py
+  unusual_task.test.py
   upgrade.test.py
   urgency.test.py
   urgency_inherit.test.py
@@ -206,6 +207,15 @@ foreach (python_Test ${pythonTests})
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 endforeach(python_Test)
+
+# Create a `make_tc_task` binary, used for unusual_task.test.py. In order to build this
+# for the tests, it's added as a dependency of `test_runner`.
+add_executable (make_tc_task make_tc_task.cpp)
+target_link_libraries (make_tc_task task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
+if (DARWIN)
+  target_link_libraries (make_tc_task "-framework CoreFoundation -framework Security -framework SystemConfiguration")
+endif (DARWIN)
+add_dependencies(test_runner make_tc_task)
 
 # -- Shell tests
 

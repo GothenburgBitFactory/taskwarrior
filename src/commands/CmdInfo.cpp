@@ -120,9 +120,11 @@ int CmdInfo::execute(std::string& output) {
       description += '\n' + std::string(indent, ' ') +
                      Datetime(anno.first.substr(11)).toString(dateformatanno) + ' ' + anno.second;
 
-    row = view.addRow();
-    view.set(row, 0, "Description");
-    view.set(row, 1, description, c);
+    if (task.has("description")) {
+      row = view.addRow();
+      view.set(row, 0, "Description");
+      view.set(row, 1, description, c);
+    }
 
     // status
     row = view.addRow();
@@ -215,64 +217,76 @@ int CmdInfo::execute(std::string& output) {
     }
 
     // entry
-    row = view.addRow();
-    view.set(row, 0, "Entered");
-    Datetime dt(task.get_date("entry"));
-    std::string entry = dt.toString(dateformat);
+    if (task.has("entry") && task.get_date("entry")) {
+      row = view.addRow();
+      view.set(row, 0, "Entered");
+      Datetime dt(task.get_date("entry"));
+      std::string entry = dt.toString(dateformat);
 
-    std::string age;
-    auto created = task.get("entry");
-    if (created.length()) {
-      Datetime dt(strtoll(created.c_str(), nullptr, 10));
-      age = Duration(now - dt).formatVague();
+      std::string age;
+      auto created = task.get("entry");
+      if (created.length()) {
+        Datetime dt(strtoll(created.c_str(), nullptr, 10));
+        age = Duration(now - dt).formatVague();
+      }
+
+      view.set(row, 1, entry + " (" + age + ')');
     }
 
-    view.set(row, 1, entry + " (" + age + ')');
+    auto validDate = [&](const char* prop) {
+      if (!task.has(prop)) {
+        return false;
+      }
+      if (task.get_date(prop) == 0) {
+        return false;
+      }
+      return true;
+    };
 
     // wait
-    if (task.has("wait")) {
+    if (validDate("wait")) {
       row = view.addRow();
       view.set(row, 0, "Waiting until");
       view.set(row, 1, Datetime(task.get_date("wait")).toString(dateformat));
     }
 
     // scheduled
-    if (task.has("scheduled")) {
+    if (validDate("scheduled")) {
       row = view.addRow();
       view.set(row, 0, "Scheduled");
       view.set(row, 1, Datetime(task.get_date("scheduled")).toString(dateformat));
     }
 
     // start
-    if (task.has("start")) {
+    if (validDate("start")) {
       row = view.addRow();
       view.set(row, 0, "Start");
       view.set(row, 1, Datetime(task.get_date("start")).toString(dateformat));
     }
 
     // due (colored)
-    if (task.has("due")) {
+    if (validDate("due")) {
       row = view.addRow();
       view.set(row, 0, "Due");
       view.set(row, 1, Datetime(task.get_date("due")).toString(dateformat));
     }
 
     // end
-    if (task.has("end")) {
+    if (validDate("end")) {
       row = view.addRow();
       view.set(row, 0, "End");
       view.set(row, 1, Datetime(task.get_date("end")).toString(dateformat));
     }
 
     // until
-    if (task.has("until")) {
+    if (validDate("until")) {
       row = view.addRow();
       view.set(row, 0, "Until");
       view.set(row, 1, Datetime(task.get_date("until")).toString(dateformat));
     }
 
     // modified
-    if (task.has("modified")) {
+    if (validDate("modified")) {
       row = view.addRow();
       view.set(row, 0, "Last modified");
 
@@ -632,7 +646,11 @@ std::optional<std::string> CmdInfo::formatForInfo(const std::vector<Operation>& 
       } else {
         // Record the last start time for later duration calculation.
         if (prop == "start") {
-          last_start = Datetime(value.value()).toEpoch();
+          try {
+            last_start = Datetime(value.value()).toEpoch();
+          } catch (std::string) {
+            // ignore invalid dates
+          }
         }
 
         out << format("{1} set to '{2}'.", Lexer::ucFirst(prop),
