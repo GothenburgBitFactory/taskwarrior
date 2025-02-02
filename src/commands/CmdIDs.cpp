@@ -137,8 +137,6 @@ CmdCompletionIds::CmdCompletionIds() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionIds::execute(std::string& output) {
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
@@ -174,8 +172,6 @@ CmdZshCompletionIds::CmdZshCompletionIds() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdZshCompletionIds::execute(std::string& output) {
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
@@ -211,8 +207,6 @@ CmdUUIDs::CmdUUIDs() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdUUIDs::execute(std::string& output) {
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
@@ -247,8 +241,6 @@ CmdCompletionUuids::CmdCompletionUuids() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionUuids::execute(std::string& output) {
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
@@ -283,8 +275,6 @@ CmdZshCompletionUuids::CmdZshCompletionUuids() {
 ////////////////////////////////////////////////////////////////////////////////
 int CmdZshCompletionUuids::execute(std::string& output) {
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);

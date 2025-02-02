@@ -64,7 +64,7 @@ CmdEdit::CmdEdit() {
   _read_only = false;
   _displays_id = false;
   _needs_gc = false;
-  _needs_recur_update = false;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -78,8 +78,6 @@ CmdEdit::CmdEdit() {
 // wrench.  To be used sparingly.
 int CmdEdit::execute(std::string&) {
   // Filter the tasks.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);
