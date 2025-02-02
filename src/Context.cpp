@@ -869,7 +869,7 @@ int Context::dispatch(std::string& out) {
     if (config.getBoolean("debug") && config.getInteger("debug.parser") == 1)
       debug(cli2.dump("Parse Tree (before command-specifіc processing)"));
 
-    if (c->needs_recur_update()) {
+    if (c->needs_recur_update() && Context::getContext().config.getBoolean("gc")) {
       handleUntil();
       handleRecurrence();
     }
