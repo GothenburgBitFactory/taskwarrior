@@ -682,9 +682,9 @@ int Context::initialize(int argc, const char** argv) {
 
     // We must allow writes if either 'gc' is enabled and the command performs GC, or the command
     // itself is read-write.
-    bool read_write = (config.getBoolean("gc") && (c->needs_gc() || c->needs_recur_update())) || !c->read_only();
+    bool read_write =
+        (config.getBoolean("gc") && (c->needs_gc() || c->needs_recur_update())) || !c->read_only();
     tdb2.open_replica(data_dir, create_if_missing, read_write);
-
 
     ////////////////////////////////////////////////////////////////////////////
     //

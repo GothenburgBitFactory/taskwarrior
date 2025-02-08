@@ -43,8 +43,8 @@ class TestReadOnly(TestCase):
         self.t("add foo")
 
         # set the mtime of the taskdb to an hour ago, so we can see any changes
-        self.taskdb = self.t.datadir + '/taskchampion.sqlite3'
-        os.utime(self.taskdb, (time.time() - 3600,)*2)
+        self.taskdb = self.t.datadir + "/taskchampion.sqlite3"
+        os.utime(self.taskdb, (time.time() - 3600,) * 2)
 
     def assertNotModified(self):
         self.assertLess(os.stat(self.taskdb).st_mtime, time.time() - 1800)
@@ -73,7 +73,6 @@ class TestReadOnly(TestCase):
         self.t.config("gc", "0")
         code, out, err = self.t("burndown")
         self.assertNotModified()
-
 
 
 if __name__ == "__main__":
