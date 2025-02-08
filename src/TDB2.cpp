@@ -50,9 +50,12 @@ bool TDB2::debug_mode = false;
 static void dependency_scan(std::vector<Task>&);
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::open_replica(const std::string& location, bool create_if_missing) {
-  _replica = tc::new_replica_on_disk(location, create_if_missing);
+void TDB2::open_replica(const std::string& location, bool create_if_missing, bool read_write) {
+  _replica = tc::new_replica_on_disk(location, create_if_missing, read_write);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::open_replica_in_memory() { _replica = tc::new_replica_in_memory(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the replica.
@@ -190,11 +193,8 @@ void TDB2::purge(Task& task) {
 
 ////////////////////////////////////////////////////////////////////////////////
 rust::Box<tc::Replica>& TDB2::replica() {
-  // Create a replica in-memory if `open_replica` has not been called. This
-  // occurs in tests.
-  if (!_replica) {
-    _replica = tc::new_replica_in_memory();
-  }
+  // One of the open_replica_ methods must be called before this one.
+  assert(_replica);
   return _replica.value();
 }
 

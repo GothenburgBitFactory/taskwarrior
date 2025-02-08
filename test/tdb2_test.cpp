@@ -61,7 +61,7 @@ int TEST_NAME(int, char**) {
     context.config.set("gc", 1);
     context.config.set("debug", 1);
 
-    context.tdb2.open_replica(".", true);
+    context.tdb2.open_replica(".", /*create_if_missing=*/true, /*read_write=*/true);
 
     // Try reading an empty database.
     std::vector<Task> pending = context.tdb2.pending_tasks();
@@ -108,7 +108,7 @@ int TEST_NAME(int, char**) {
 
     // Reset for reuse.
     cleardb();
-    context.tdb2.open_replica(".", true);
+    context.tdb2.open_replica(".", /*create_if_missing=*/true, /*read_write=*/true);
 
     // TODO complete a task
     // TODO gc

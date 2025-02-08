@@ -157,6 +157,7 @@ set (pythonTests
   purge.test.py
   quotes.test.py
   rc.override.test.py
+  read-only.test.py
   recurrence.test.py
   reports.test.py
   search.test.py

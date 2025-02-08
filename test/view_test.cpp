@@ -47,6 +47,7 @@ int TEST_NAME(int, char**) {
   UnitTest t(1);
   Context context;
   Context::setContext(&context);
+  context.tdb2.open_replica_in_memory();
 
   // Ensure environment has no influence.
   unsetenv("TASKDATA");

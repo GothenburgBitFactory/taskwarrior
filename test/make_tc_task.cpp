@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
   }
   char *datadir = *++argv;
 
-  auto replica = tc::new_replica_on_disk(datadir, true);
+  auto replica = tc::new_replica_on_disk(datadir, /*create_if_missing=*/true, /*read_write=*/true);
   auto uuid = tc::uuid_v4();
   auto operations = tc::new_operations();
   auto task = tc::create_task(uuid, operations);

@@ -46,7 +46,8 @@ class TDB2 {
 
   TDB2() = default;
 
-  void open_replica(const std::string &, bool create_if_missing);
+  void open_replica(const std::string &, bool create_if_missing, bool read_write);
+  void open_replica_in_memory();
   void add(Task &);
   void modify(Task &);
   void purge(Task &);
