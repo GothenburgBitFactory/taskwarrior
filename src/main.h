@@ -32,7 +32,6 @@
 #include <Datetime.h>
 #include <sys/types.h>
 
-#include <algorithm>
 #include <list>
 #include <map>
 #include <optional>
