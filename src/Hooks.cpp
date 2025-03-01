@@ -44,7 +44,6 @@
 #include <Variant.h>
 #include <format.h>
 #include <shared.h>
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
