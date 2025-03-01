@@ -33,15 +33,7 @@
 #include <format.h>
 #include <main.h>
 #include <shared.h>
-#include <signal.h>
-#include <stdlib.h>
 #include <util.h>
-
-#include <algorithm>
-#include <iostream>
-#include <list>
-#include <set>
-#include <sstream>
 
 #define STRING_TDB2_REVERTED "Modified task reverted."
 
