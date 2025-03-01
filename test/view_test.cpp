@@ -31,9 +31,9 @@
 #include <Context.h>
 #include <Task.h>
 #include <ViewTask.h>
+#include <sort.h>
 #include <stdio.h>
 #include <test.h>
-#include <sort.h>
 #include <unistd.h>
 
 #include <iostream>
