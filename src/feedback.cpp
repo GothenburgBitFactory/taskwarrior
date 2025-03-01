@@ -32,12 +32,10 @@
 #include <Duration.h>
 #include <Lexer.h>
 #include <format.h>
-#include <inttypes.h>
 #include <main.h>
 #include <shared.h>
 #include <stdlib.h>
 
-#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
