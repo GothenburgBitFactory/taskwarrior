@@ -32,9 +32,7 @@
 #include <main.h>
 #include <shared.h>
 
-#include <algorithm>
 #include <iostream>
-#include <sstream>
 #include <stack>
 
 #define STRING_DEPEND_BLOCKED "Task {1} is blocked by:"
