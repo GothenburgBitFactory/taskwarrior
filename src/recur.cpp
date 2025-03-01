@@ -32,24 +32,17 @@
 #include <Duration.h>
 #include <Lexer.h>
 #include <format.h>
-#include <inttypes.h>
 #include <main.h>
 #include <pwd.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/types.h>
 #include <time.h>
 #include <unicode.h>
 #include <unistd.h>
 #include <util.h>
 
-#include <fstream>
-#include <iomanip>
-#include <iostream>
 #include <limits>
 #include <optional>
-#include <sstream>
 
 // Add a `time_t` delta to a Datetime, checking for and returning nullopt on integer overflow.
 std::optional<Datetime> checked_add_datetime(Datetime& base, time_t delta) {
