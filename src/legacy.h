@@ -33,8 +33,6 @@
 
 #include <string>
 
-#define STRING_LEGACY_PRIORITY "Legacy attribute found.  Please change '{1}' to '{2}'."
-
 void legacyColumnMap(std::string& name);
 void legacySortColumnMap(std::string& name);
 std::string legacyCheckForDeprecatedVariables();

@@ -35,34 +35,7 @@
 #include <Datetime.h>
 #include <shared.h>
 
-static std::map<std::string, Color> gsColor;
-static std::vector<std::string> gsPrecedence;
-static Datetime now;
-
 void initializeColorRules();
-static void applyColor(const Color& base, Color& c, bool merge);
-static void colorizeBlocked(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeBlocking(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeTagged(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeActive(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeScheduled(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeUntil(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeTag(Task& task, const std::string& rule, const Color& base, Color& c,
-                        bool merge);
-static void colorizeProject(Task& task, const std::string& rule, const Color& base, Color& c,
-                            bool merge);
-static void colorizeProjectNone(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeTagNone(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeKeyword(Task& task, const std::string& rule, const Color& base, Color& c,
-                            bool merge);
-static void colorizeUDA(Task& task, const std::string& rule, const Color& base, Color& c,
-                        bool merge);
-static void colorizeDue(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeDueToday(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeOverdue(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeRecurring(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeCompleted(Task& task, const Color& base, Color& c, bool merge);
-static void colorizeDeleted(Task& task, const Color& base, Color& c, bool merge);
 void autoColorize(Task& task, Color& c);
 std::string colorizeHeader(const std::string& input);
 std::string colorizeFootnote(const std::string& input);

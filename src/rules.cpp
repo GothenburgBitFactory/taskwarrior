@@ -32,6 +32,10 @@
 #include <rules.h>
 #include <shared.h>
 
+static std::map<std::string, Color> gsColor;
+static std::vector<std::string> gsPrecedence;
+static Datetime now;
+
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules() {
   // If color is not enable/supported, short circuit.

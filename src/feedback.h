@@ -36,7 +36,6 @@
 #include <string>
 #include <vector>
 
-static void countTasks(const std::vector<Task>&, const std::string&, int&, int&);
 std::string renderAttribute(const std::string& name, const std::string& value,
                             const std::string& format = "");
 void feedback_affected(const std::string& effect);
@@ -49,8 +48,6 @@ void feedback_backlog();
 std::string onProjectChange(Task& task, bool scope = true);
 std::string onProjectChange(Task& task1, Task& task2);
 std::string onExpiration(Task& task);
-static void countTasks(const std::vector<Task>& all, const std::string& project, int& count_pending,
-                       int& count_done);
 
 #endif
 

@@ -38,9 +38,6 @@
 #include <string>
 #include <vector>
 
-static std::vector<Task>* global_data = nullptr;
-static std::vector<std::string> global_keys;
-static bool sort_compare(int, int);
 void sort_tasks(std::vector<Task>& data, std::vector<int>& order, const std::string& keys);
 
 void sort_projects(std::list<std::pair<std::string, int>>& sorted,
@@ -48,7 +45,6 @@ void sort_projects(std::list<std::pair<std::string, int>>& sorted,
 
 void sort_projects(std::list<std::pair<std::string, int>>& sorted,
                    std::map<std::string, bool>& allProjects);
-static bool sort_compare(int left, int right);
 
 #endif
 
