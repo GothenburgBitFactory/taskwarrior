@@ -32,7 +32,6 @@
 #include <DOM.h>
 #include <Variant.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -29,12 +29,8 @@
 
 #include <Context.h>
 #include <Datetime.h>
-#include <main.h>
+#include <rules.h>
 #include <shared.h>
-
-static std::map<std::string, Color> gsColor;
-static std::vector<std::string> gsPrecedence;
-static Datetime now;
 
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules() {

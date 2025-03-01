@@ -34,8 +34,8 @@
 #ifdef FREEBSD
 #define _WITH_GETLINE
 #endif
+#include <Context.h>
 #include <Lexer.h>
-#include <main.h>
 #include <pwd.h>
 #include <signal.h>
 #include <stdlib.h>

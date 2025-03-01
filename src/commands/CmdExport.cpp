@@ -31,8 +31,9 @@
 #include <Context.h>
 #include <Filter.h>
 #include <format.h>
-#include <main.h>
+#include <legacy.h>
 #include <shared.h>
+#include <sort.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdExport::CmdExport() {

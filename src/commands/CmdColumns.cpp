@@ -31,7 +31,6 @@
 #include <Color.h>
 #include <Context.h>
 #include <Table.h>
-#include <main.h>
 #include <shared.h>
 #include <util.h>
 

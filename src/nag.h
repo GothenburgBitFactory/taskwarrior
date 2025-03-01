@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2025, Dustin J. Mitchell
+// Copyright 2006 - 2025, Tomas Babej, Paul Beckingham, Federico Hernandez,
+// 						  Tobias Predel.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,53 +25,20 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef INCLUDED_NAG
+#define INCLUDED_NAG
+
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <CmdInfo.h>
-#include <stdlib.h>
-#include <taskchampion-cpp/lib.h>
-#include <test.h>
-#include <util.h>
+#include <Task.h>
 
-#include <iostream>
-
-namespace {
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
-int usage() {
-  std::cerr << "USAGE: make_tc_task DATADIR KEY=VALUE ..\n";
-  return 1;
-}
+// Generates a nag message when there are READY tasks of a higher urgency.
+void nag(std::vector<Task>& tasks);
 
-}  // namespace
-
-////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv) {
-  if (!--argc) {
-    return usage();
-  }
-  char *datadir = *++argv;
-
-  auto replica = tc::new_replica_on_disk(datadir, /*create_if_missing=*/true, /*read_write=*/true);
-  auto uuid = tc::uuid_v4();
-  auto operations = tc::new_operations();
-  auto task = tc::create_task(uuid, operations);
-
-  while (--argc) {
-    std::string arg = *++argv;
-    size_t eq_idx = arg.find('=');
-    if (eq_idx == std::string::npos) {
-      return usage();
-    }
-    std::string property = arg.substr(0, eq_idx);
-    std::string value = arg.substr(eq_idx + 1);
-    task->update(property, value, operations);
-  }
-  replica->commit_operations(std::move(operations));
-
-  std::cout << static_cast<std::string>(uuid.to_string()) << "\n";
-  return 0;
-}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////

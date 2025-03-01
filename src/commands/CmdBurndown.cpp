@@ -33,7 +33,6 @@
 #include <Duration.h>
 #include <Filter.h>
 #include <format.h>
-#include <main.h>
 #include <math.h>
 #include <shared.h>
 #include <string.h>

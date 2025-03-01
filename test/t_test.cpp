@@ -27,9 +27,10 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <main.h>
 #include <stdlib.h>
 #include <test.h>
+
+#include "Context.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 int TEST_NAME(int, char**) {

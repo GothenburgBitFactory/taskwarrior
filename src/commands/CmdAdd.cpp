@@ -29,8 +29,8 @@
 
 #include <CmdAdd.h>
 #include <Context.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdAdd::CmdAdd() {

@@ -34,9 +34,9 @@
 #include <Filter.h>
 #include <Lexer.h>
 #include <Operation.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
-#include <math.h>
+#include <rules.h>
 #include <shared.h>
 #include <stdlib.h>
 #include <taskchampion-cpp/lib.h>

@@ -26,11 +26,9 @@
 
 #include <cmake.h>
 
-#include <iostream>
 // cmake.h include header must come first
 
-#include <main.h>
-#include <stdlib.h>
+#include <Task.h>
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////

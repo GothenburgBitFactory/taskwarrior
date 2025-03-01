@@ -50,9 +50,7 @@
 #include <CmdEdit.h>
 #include <Command.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
-#include <stdlib.h>
 #include <util.h>
 
 #include <iostream>

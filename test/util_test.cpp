@@ -27,12 +27,11 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <main.h>
-#include <stdlib.h>
+#include <Context.h>
+#include <recur.h>
 #include <test.h>
 #include <util.h>
 
-#include <iostream>
 #include <limits>
 
 ////////////////////////////////////////////////////////////////////////////////

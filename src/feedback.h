@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2025, Dustin J. Mitchell
+// Copyright 2006 - 2025, Tomas Babej, Paul Beckingham, Federico Hernandez,
+//                        Tobias Predel.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,53 +25,38 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef INCLUDED_FEEDBACK
+#define INCLUDED_FEEDBACK
+
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <CmdInfo.h>
-#include <stdlib.h>
-#include <taskchampion-cpp/lib.h>
-#include <test.h>
-#include <util.h>
+#include <Context.h>
+#include <Datetime.h>
+#include <Duration.h>
+#include <Lexer.h>
+#include <format.h>
+#include <shared.h>
 
-#include <iostream>
+#include <string>
+#include <vector>
 
-namespace {
+static void countTasks(const std::vector<Task>&, const std::string&, int&, int&);
+std::string renderAttribute(const std::string& name, const std::string& value,
+                            const std::string& format = "");
+void feedback_affected(const std::string& effect);
+void feedback_affected(const std::string& effect, int quantity);
+void feedback_affected(const std::string& effect, const Task& task);
+void feedback_reserved_tags(const std::string& tag);
+void feedback_special_tags(const Task& task, const std::string& tag);
+void feedback_unblocked(const Task& task);
+void feedback_backlog();
+std::string onProjectChange(Task& task, bool scope = true);
+std::string onProjectChange(Task& task1, Task& task2);
+std::string onExpiration(Task& task);
+static void countTasks(const std::vector<Task>& all, const std::string& project, int& count_pending,
+                       int& count_done);
 
-////////////////////////////////////////////////////////////////////////////////
-int usage() {
-  std::cerr << "USAGE: make_tc_task DATADIR KEY=VALUE ..\n";
-  return 1;
-}
-
-}  // namespace
-
-////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv) {
-  if (!--argc) {
-    return usage();
-  }
-  char *datadir = *++argv;
-
-  auto replica = tc::new_replica_on_disk(datadir, /*create_if_missing=*/true, /*read_write=*/true);
-  auto uuid = tc::uuid_v4();
-  auto operations = tc::new_operations();
-  auto task = tc::create_task(uuid, operations);
-
-  while (--argc) {
-    std::string arg = *++argv;
-    size_t eq_idx = arg.find('=');
-    if (eq_idx == std::string::npos) {
-      return usage();
-    }
-    std::string property = arg.substr(0, eq_idx);
-    std::string value = arg.substr(eq_idx + 1);
-    task->update(property, value, operations);
-  }
-  replica->commit_operations(std::move(operations));
-
-  std::cout << static_cast<std::string>(uuid.to_string()) << "\n";
-  return 0;
-}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////

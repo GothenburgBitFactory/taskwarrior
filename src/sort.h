@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2025, Dustin J. Mitchell
+// Copyright 2006 - 2025, Tomas Babej, Paul Beckingham, Federico Hernandez,
+//                        Tobias Predel.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,53 +25,36 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef INCLUDED_SORT
+#define INCLUDED_SORT
+
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <CmdInfo.h>
-#include <stdlib.h>
-#include <taskchampion-cpp/lib.h>
-#include <test.h>
+#include <Context.h>
+#include <Duration.h>
+#include <Task.h>
+#include <format.h>
+#include <shared.h>
 #include <util.h>
 
-#include <iostream>
+#include <list>
+#include <map>
+#include <string>
+#include <vector>
 
-namespace {
+static std::vector<Task>* global_data = nullptr;
+static std::vector<std::string> global_keys;
+static bool sort_compare(int, int);
+void sort_tasks(std::vector<Task>& data, std::vector<int>& order, const std::string& keys);
 
-////////////////////////////////////////////////////////////////////////////////
-int usage() {
-  std::cerr << "USAGE: make_tc_task DATADIR KEY=VALUE ..\n";
-  return 1;
-}
+void sort_projects(std::list<std::pair<std::string, int>>& sorted,
+                   std::map<std::string, int>& allProjects);
 
-}  // namespace
+void sort_projects(std::list<std::pair<std::string, int>>& sorted,
+                   std::map<std::string, bool>& allProjects);
+static bool sort_compare(int left, int right);
 
-////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv) {
-  if (!--argc) {
-    return usage();
-  }
-  char *datadir = *++argv;
-
-  auto replica = tc::new_replica_on_disk(datadir, /*create_if_missing=*/true, /*read_write=*/true);
-  auto uuid = tc::uuid_v4();
-  auto operations = tc::new_operations();
-  auto task = tc::create_task(uuid, operations);
-
-  while (--argc) {
-    std::string arg = *++argv;
-    size_t eq_idx = arg.find('=');
-    if (eq_idx == std::string::npos) {
-      return usage();
-    }
-    std::string property = arg.substr(0, eq_idx);
-    std::string value = arg.substr(eq_idx + 1);
-    task->update(property, value, operations);
-  }
-  replica->commit_operations(std::move(operations));
-
-  std::cout << static_cast<std::string>(uuid.to_string()) << "\n";
-  return 0;
-}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////

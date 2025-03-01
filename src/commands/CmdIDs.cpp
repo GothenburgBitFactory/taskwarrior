@@ -30,7 +30,6 @@
 #include <CmdIDs.h>
 #include <Context.h>
 #include <Filter.h>
-#include <main.h>
 #include <shared.h>
 
 #include <algorithm>

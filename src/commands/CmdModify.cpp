@@ -30,8 +30,9 @@
 #include <CmdModify.h>
 #include <Context.h>
 #include <Filter.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
+#include <recur.h>
 #include <shared.h>
 
 #include <iostream>

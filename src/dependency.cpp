@@ -28,8 +28,8 @@
 // cmake.h include header must come first
 
 #include <Context.h>
+#include <dependency.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 
 #include <iostream>

@@ -31,7 +31,9 @@
 #include <Table.h>
 #include <cmake.h>
 #include <format.h>
-#include <main.h>
+#ifdef PRODUCT_TASKWARRIOR
+#include <legacy.h>
+#endif
 #include <shared.h>
 #include <util.h>
 

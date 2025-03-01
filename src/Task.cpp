@@ -58,7 +58,8 @@
 #include <Eval.h>
 #include <Filter.h>
 #include <Variant.h>
-#include <main.h>
+#include <dependency.h>
+#include <feedback.h>
 
 #define APPROACHING_INFINITY 1000  // Close enough.  This isn't rocket surgery.
 

@@ -34,15 +34,15 @@
 #include <Lexer.h>
 #include <Version.h>
 #include <ViewTask.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
+#include <legacy.h>
 #include <shared.h>
-#include <stdlib.h>
+#include <sort.h>
 #include <util.h>
 
 #include <algorithm>
 #include <iostream>
-#include <map>
 #include <sstream>
 #include <vector>
 

@@ -30,8 +30,10 @@
 #include <CmdDelete.h>
 #include <Context.h>
 #include <Filter.h>
+#include <dependency.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
+#include <recur.h>
 #include <shared.h>
 
 #include <iostream>

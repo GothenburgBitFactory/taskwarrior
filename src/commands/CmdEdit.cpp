@@ -36,7 +36,6 @@
 #include <Lexer.h>
 #include <Pig.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 #include <unistd.h>
 #include <util.h>

@@ -31,11 +31,10 @@
 #include <Context.h>
 #include <Operation.h>
 #include <Task.h>
+#include <shared.h>
 
 #include <iostream>
 #include <sstream>
-
-#include "shared.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdUndo::CmdUndo() {

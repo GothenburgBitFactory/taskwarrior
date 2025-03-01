@@ -31,9 +31,7 @@
 #include <Context.h>
 #include <Task.h>
 #include <ViewTask.h>
-#include <main.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <test.h>
 #include <unistd.h>
 

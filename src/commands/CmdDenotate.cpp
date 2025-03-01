@@ -30,8 +30,8 @@
 #include <CmdDenotate.h>
 #include <Context.h>
 #include <Filter.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 #include <util.h>
 

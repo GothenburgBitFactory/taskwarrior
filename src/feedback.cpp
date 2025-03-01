@@ -31,8 +31,8 @@
 #include <Datetime.h>
 #include <Duration.h>
 #include <Lexer.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 #include <stdlib.h>
 
@@ -222,8 +222,8 @@ std::string onProjectChange(Task& task, bool scope /* = true */) {
 std::string onProjectChange(Task& task1, Task& task2) {
   if (task1.get("project") == task2.get("project")) return onProjectChange(task1, false);
 
-  std::string messages1 = onProjectChange(task1);
-  std::string messages2 = onProjectChange(task2);
+  std::string messages1 = onProjectChange(task1, true);
+  std::string messages2 = onProjectChange(task2, true);
 
   if (messages1.length() && messages2.length()) return messages1 + '\n' + messages2;
 

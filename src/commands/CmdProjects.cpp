@@ -32,10 +32,9 @@
 #include <Filter.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
+#include <sort.h>
 #include <util.h>
 
-#include <algorithm>
 #include <list>
 #include <sstream>
 

@@ -36,7 +36,8 @@
 #include <Version.h>
 #include <assert.h>
 #include <format.h>
-#include <main.h>
+#include <recur.h>
+#include <rules.h>
 #include <rust/cxx.h>
 #include <shared.h>
 #include <stdlib.h>

@@ -33,7 +33,6 @@
 #include <Filter.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
 #include <util.h>
 
 #include <sstream>

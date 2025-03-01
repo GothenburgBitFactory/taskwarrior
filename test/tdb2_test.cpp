@@ -27,12 +27,10 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <main.h>
-#include <stdlib.h>
 #include <test.h>
 #include <unistd.h>
 
-#include <iostream>
+#include "Context.h"
 
 namespace {
 
