@@ -30,7 +30,6 @@
 #include <Datetime.h>
 #include <JSON.h>
 #include <Table.h>
-#include <stdio.h>
 #include <taskchampion-cpp/lib.h>
 #include <time.h>
 
