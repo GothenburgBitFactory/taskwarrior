@@ -38,10 +38,7 @@
 #include <main.h>
 #include <pwd.h>
 #include <signal.h>
-#include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -51,11 +48,7 @@
 #include <utf8.h>
 #include <util.h>
 
-#include <algorithm>
-#include <cstring>
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
 
