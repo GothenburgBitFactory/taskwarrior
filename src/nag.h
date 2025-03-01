@@ -30,7 +30,6 @@
 
 #include <cmake.h>
 // cmake.h include header must come first
-
 #include <Task.h>
 
 #include <vector>

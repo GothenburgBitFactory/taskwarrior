@@ -27,7 +27,6 @@
 #ifndef INCLUDED_TDB2
 #define INCLUDED_TDB2
 
-#include <FS.h>
 #include <Task.h>
 #include <taskchampion-cpp/lib.h>
 

@@ -31,9 +31,7 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <Context.h>
-#include <format.h>
-#include <shared.h>
+#include <Task.h>
 
 #define STRING_DEPEND_BLOCKED "Task {1} is blocked by:"
 bool dependencyIsCircular(const Task& task);

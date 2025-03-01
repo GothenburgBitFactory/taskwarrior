@@ -31,12 +31,7 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <Context.h>
-#include <Datetime.h>
-#include <Duration.h>
-#include <Lexer.h>
-#include <format.h>
-#include <shared.h>
+#include <Task.h>
 
 #include <string>
 #include <vector>

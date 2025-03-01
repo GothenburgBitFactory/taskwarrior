@@ -31,8 +31,7 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <Context.h>
-#include <format.h>
+#include <string>
 
 #define STRING_LEGACY_PRIORITY "Legacy attribute found.  Please change '{1}' to '{2}'."
 
