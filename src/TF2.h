@@ -29,12 +29,9 @@
 
 #include <FS.h>
 #include <Task.h>
-#include <stdio.h>
 
 #include <map>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 // TF2 Class represents a single 2.x-style file in the task database.
