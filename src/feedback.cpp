@@ -222,8 +222,8 @@ std::string onProjectChange(Task& task, bool scope /* = true */) {
 std::string onProjectChange(Task& task1, Task& task2) {
   if (task1.get("project") == task2.get("project")) return onProjectChange(task1, false);
 
-  std::string messages1 = onProjectChange(task1, true);
-  std::string messages2 = onProjectChange(task2, true);
+  std::string messages1 = onProjectChange(task1);
+  std::string messages2 = onProjectChange(task2);
 
   if (messages1.length() && messages2.length()) return messages1 + '\n' + messages2;
 
