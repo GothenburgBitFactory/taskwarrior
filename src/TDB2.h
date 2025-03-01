@@ -29,7 +29,6 @@
 
 #include <FS.h>
 #include <Task.h>
-#include <stdio.h>
 #include <taskchampion-cpp/lib.h>
 
 #include <map>
