@@ -31,7 +31,6 @@
 #include <Datetime.h>
 #include <main.h>
 #include <shared.h>
-#include <stdlib.h>
 
 static std::map<std::string, Color> gsColor;
 static std::vector<std::string> gsPrecedence;
