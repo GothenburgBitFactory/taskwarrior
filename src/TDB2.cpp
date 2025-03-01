@@ -35,14 +35,11 @@
 #include <format.h>
 #include <main.h>
 #include <shared.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <util.h>
 
 #include <algorithm>
 #include <iostream>
-#include <list>
-#include <sstream>
 #include <unordered_set>
 #include <vector>
 
