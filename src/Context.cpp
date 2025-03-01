@@ -40,12 +40,10 @@
 #include <rust/cxx.h>
 #include <shared.h>
 #include <stdlib.h>
-#include <string.h>
 #include <taskchampion-cpp/lib.h>
 #include <unistd.h>
 
 #include <algorithm>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <regex>
@@ -55,7 +53,6 @@
 #include <commit.h>
 #endif
 
-#include <stdio.h>
 #include <sys/ioctl.h>
 
 #ifdef SOLARIS
