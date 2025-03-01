@@ -36,8 +36,6 @@
 #include <format.h>
 #include <shared.h>
 
-#include <algorithm>
-
 ////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
 void Filter::subset(const std::vector<Task>& input, std::vector<Task>& output) {
