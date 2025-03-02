@@ -6,20 +6,20 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src/libshared/src
                      ${TASK_INCLUDE_DIRS})
 
-add_library (task STATIC CLI2.cpp CLI2.h
-                  Context.cpp Context.h
-                  DOM.cpp DOM.h
-                  Eval.cpp Eval.h
-                  Filter.cpp Filter.h
-                  Hooks.cpp Hooks.h
-                  Lexer.cpp Lexer.h
-                  Operation.cpp Operation.h
-                  TF2.cpp TF2.h
-                  TDB2.cpp TDB2.h
-                  Task.cpp Task.h
-                  Variant.cpp Variant.h
-                  Version.cpp Version.h
-                  ViewTask.cpp ViewTask.h
+add_library (task STATIC CLI2.cpp
+                  Context.cpp
+                  DOM.cpp
+                  Eval.cpp
+                  Filter.cpp
+                  Hooks.cpp
+                  Lexer.cpp
+                  Operation.cpp
+                  TF2.cpp
+                  TDB2.cpp
+                  Task.cpp
+                  Variant.cpp
+                  Version.cpp
+                  ViewTask.cpp
                   dependency.cpp
                   feedback.cpp
                   legacy.cpp
@@ -27,7 +27,7 @@ add_library (task STATIC CLI2.cpp CLI2.h
                   recur.cpp
                   rules.cpp
                   sort.cpp
-                  util.cpp util.h)
+                  util.cpp)
 target_link_libraries(task taskchampion-cpp)
 
 add_library (libshared STATIC libshared/src/Color.cpp         libshared/src/Color.h
