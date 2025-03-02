@@ -32,13 +32,10 @@
 #include <Context.h>
 #include <Filter.h>
 #include <format.h>
-#include <inttypes.h>
 #include <shared.h>
-#include <signal.h>
 #include <taskchampion-cpp/lib.h>
 #include <util.h>
 
-#include <iostream>
 #include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////

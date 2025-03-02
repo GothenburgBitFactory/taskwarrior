@@ -31,7 +31,6 @@
 #include <JSON.h>
 
 #include <string>
-#include <unordered_map>
 
 class CmdImportV2 : public Command {
  public:

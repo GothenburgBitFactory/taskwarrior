@@ -32,7 +32,6 @@
 #include <Filter.h>
 #include <Table.h>
 #include <format.h>
-#include <stdlib.h>
 #include <util.h>
 
 #include <sstream>
