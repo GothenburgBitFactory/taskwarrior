@@ -798,8 +798,6 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
     // If value is an empty string, do not ever output it
     if (i.second == "") continue;
 
-    if (attributes_written) out << ',';
-
     std::string type = Task::attributes[i.first];
     if (type == "") type = "string";
 
@@ -808,6 +806,8 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
       time_t epoch = get_date(i.first);
       if (epoch != 0) {
         Datetime d(i.second);
+        if (attributes_written) out << ',';
+
         out << '"' << (i.first == "modification" ? "modified" : i.first)
             << "\":\""
             // Date was deleted, do not export parsed empty string
@@ -824,6 +824,8 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
         }
     */
     else if (type == "numeric") {
+      if (attributes_written) out << ',';
+
       out << '"' << i.first << "\":" << i.second;
 
       ++attributes_written;
@@ -831,6 +833,8 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
 
     // Everything else is a quoted value.
     else {
+      if (attributes_written) out << ',';
+
       out << '"' << i.first << "\":\"" << (type == "string" ? json::encode(i.second) : i.second)
           << '"';
 

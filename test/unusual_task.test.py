@@ -29,6 +29,7 @@ import sys
 import os
 import re
 import time
+import json
 import unittest
 
 # Ensure python finds the local simpletap module
@@ -192,6 +193,7 @@ class TestUnusualTasks(TestCase):
             modified="modified",
         )
         _, out, _ = self.t(f"{uuid} export")
+        json.loads(out)
 
 
 if __name__ == "__main__":
