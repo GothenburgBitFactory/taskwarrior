@@ -1037,7 +1037,7 @@ modifier requires that the attribute contain the whole word specified, such
 that this:
 
 .nf
-    task description.word:bar list
+    task description.word:foo list
 .fi
 
 Will match the description 'foo bar baz' but does not match 'dog food'.
