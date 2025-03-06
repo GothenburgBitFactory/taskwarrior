@@ -24,3 +24,6 @@ To release Taskwarrior, follow this process:
   - Add a new item in `content/news`
   - Update `data/projects.json` with the latest version and a fake next version for "devel"
   - Update `data/releases.json` with the new version, and copy the tarball into `content/download`.
+- Update various things, in a new PR:
+  - `cargo update`
+  - `git submodule update --remote --merge`
