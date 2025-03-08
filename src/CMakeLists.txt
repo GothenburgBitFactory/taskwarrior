@@ -30,23 +30,22 @@ add_library (task STATIC CLI2.cpp
                   util.cpp)
 target_link_libraries(task taskchampion-cpp)
 
-add_library (libshared STATIC libshared/src/Color.cpp         libshared/src/Color.h
-                       libshared/src/Configuration.cpp libshared/src/Configuration.h
-                       libshared/src/Datetime.cpp      libshared/src/Datetime.h
-                       libshared/src/Duration.cpp      libshared/src/Duration.h
-                       libshared/src/FS.cpp            libshared/src/FS.h
-                       libshared/src/JSON.cpp          libshared/src/JSON.h
-                       libshared/src/Msg.cpp           libshared/src/Msg.h
-                       libshared/src/Pig.cpp           libshared/src/Pig.h
-                       libshared/src/RX.cpp            libshared/src/RX.h
-                       libshared/src/Table.cpp         libshared/src/Table.h
-                       libshared/src/Timer.cpp         libshared/src/Timer.h
-                       libshared/src/format.cpp        libshared/src/format.h
+add_library (libshared STATIC libshared/src/Color.cpp
+                       libshared/src/Configuration.cpp
+                       libshared/src/Datetime.cpp
+                       libshared/src/Duration.cpp
+                       libshared/src/FS.cpp
+                       libshared/src/JSON.cpp
+                       libshared/src/Msg.cpp
+                       libshared/src/Pig.cpp
+                       libshared/src/RX.cpp
+                       libshared/src/Table.cpp
+                       libshared/src/Timer.cpp
+                       libshared/src/format.cpp
                        libshared/src/ip.cpp
-                       libshared/src/shared.cpp        libshared/src/shared.h
-                       libshared/src/unicode.cpp       libshared/src/unicode.h
-                       libshared/src/utf8.cpp          libshared/src/utf8.h
-                                                       libshared/src/wcwidth.h)
+                       libshared/src/shared.cpp
+                       libshared/src/unicode.cpp
+                       libshared/src/utf8.cpp)
 
 add_executable (task_executable main.cpp)
 add_executable (calc_executable calc.cpp)
