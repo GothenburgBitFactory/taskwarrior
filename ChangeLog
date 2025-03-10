@@ -1,10 +1,31 @@
 ------ current release ---------------------------
 
+3.4.0 -
+
+- Where possible, the task DB is now opened in read-only mode, which improves
+  performance. This is the case for reports (task lists) only when the `gc`
+  config is false.
+- An updated version of corrosion fixes build errors trying to find the Rust
+  toolchain.
+
+Thanks to the following people for contributions to this release:
+
+ - Dustin J. Mitchell
+ - Kalle Kietäväinen
+ - Karl
+ - Matthew
+ - Tejada-Omar
+ - Tobias Predel
+ - Yong Li
+ - jrmarino
+
+------ old releases ------------------------------
+
+3.3.0 -
+
 - Sync now supports AWS S3 as a backend.
 - A new `task import-v2` command allows importing Taskwarrior-2.x
   data files directly.
-
-3.3.0 -
 
 Thanks to the following people for contributions to this release:
 
@@ -17,8 +38,6 @@ Thanks to the following people for contributions to this release:
  - Kursat Aktas
  - Scott Mcdermott
  - Thomas Lauf
-
------- old releases ------------------------------
 
 3.2.0 -
 

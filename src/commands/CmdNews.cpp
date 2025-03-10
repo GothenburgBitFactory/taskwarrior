@@ -160,6 +160,7 @@ std::vector<NewsItem> NewsItem::all() {
   version3_1_0(items);
   version3_2_0(items);
   version3_3_0(items);
+  version3_4_0(items);
   return items;
 }
 
@@ -527,6 +528,22 @@ void NewsItem::version3_3_0(std::vector<NewsItem>& items) {
       /*update=*/
       "Taskwarrior now supports AWS as a backend for sync, in addition to existing support\n"
       "for GCP and taskchampion-sync-server. See `man task-sync` for details.\n\n"};
+  items.push_back(info);
+}
+
+void NewsItem::version3_4_0(std::vector<NewsItem>& items) {
+  Version version("3.4.0");
+  NewsItem info{
+      version,
+      /*title=*/"Read-Only Access",
+      /*bg_title=*/"",
+      /*background=*/"",
+      /*punchline=*/"Some Taskwarrior commands operate faster in read-only mode",
+      /*update=*/
+      "Some commands do not need to write to the DB, so can open it in read-only\n"
+      "mode and thus more quickly. This does not include reports (task lists),\n"
+      "unless the `gc` config is false. Use `rc.gc=0` in command-lines to allow\n"
+      "read-only access.\n\n"};
   items.push_back(info);
 }
 
