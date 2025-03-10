@@ -302,13 +302,10 @@ int TEST_NAME(int, char**) {
   }
 
   // duration / duration -> duration
-  try {
-    Variant v55 = v5 / v5;
-    t.fail("1200 / 1200 --> error");
-  } catch (...) {
-    t.pass("1200 / 1200 --> error");
-  }
-
+  Variant v55 = v5 / v5;
+  t.is(v55.type(), Variant::type_real, "1200 / 1200 --> real");
+  t.is(v55.get_real(), 1.0, "1200 / 1200 --> 1.0");
+  t.is((v5 / v52).get_real(), 3.14136, EPSILON, "1200 / 382 --> 3.14136");
   return 0;
 }
 

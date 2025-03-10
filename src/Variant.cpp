@@ -75,7 +75,6 @@
 #define STRING_VARIANT_DIV_DUR_BOOL "Cannot divide duration by Boolean"
 #define STRING_VARIANT_DIV_DUR_STR "Cannot divide durations by strings"
 #define STRING_VARIANT_DIV_DUR_DATE "Cannot divide durations by dates"
-#define STRING_VARIANT_DIV_DUR_DUR "Cannot divide durations by durations"
 #define STRING_VARIANT_MOD_BOOL "Cannot modulo Booleans"
 #define STRING_VARIANT_MOD_DATE "Cannot modulo date values"
 #define STRING_VARIANT_MOD_DUR "Cannot modulo duration values"
@@ -1760,7 +1759,9 @@ Variant& Variant::operator/=(const Variant& other) {
           throw std::string(STRING_VARIANT_DIV_DUR_DATE);
 
         case type_duration:
-          throw std::string(STRING_VARIANT_DIV_DUR_DUR);
+          _type = type_real;
+          _real = static_cast<double>(_duration) / static_cast<double>(right._duration);
+          break;
       }
       break;
   }
