@@ -588,6 +588,11 @@ int CmdNews::execute(std::string& output) {
   }
   wait_for_enter();
 
+  // Set a mark in the config to remember which version's release notes were displayed
+  if (news_version < current_version) {
+    CmdConfig::setConfigVariable("news.version", std::string(current_version), false);
+  }
+
   return 0;
 }
 
