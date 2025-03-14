@@ -1,5 +1,11 @@
 ------ current release ---------------------------
 
+3.4.1 -
+
+- The nagging to read `task news` has been fixed.
+
+------ old releases ------------------------------
+
 3.4.0 -
 
 - Where possible, the task DB is now opened in read-only mode, which improves
@@ -18,8 +24,6 @@ Thanks to the following people for contributions to this release:
  - Tobias Predel
  - Yong Li
  - jrmarino
-
------- old releases ------------------------------
 
 3.3.0 -
 
