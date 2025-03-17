@@ -293,7 +293,10 @@ int TEST_NAME(int, char**) {
        "'wonder'+0 : 'prowonderbread'+3 --> 6");
 
 // Test all Lexer types.
-#define NO {"", Lexer::Type::word}
+#define NO                \
+  {                       \
+    "", Lexer::Type::word \
+  }
   struct {
     const char* input;
     struct {
