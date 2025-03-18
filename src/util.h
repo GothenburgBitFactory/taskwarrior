@@ -35,19 +35,19 @@
 
 // Platform-specific UUID handling
 #ifdef _WIN32
-  #include <windows.h>
-  #include <rpc.h>
-  // Define uuid_t for Windows compatibility
-  typedef UUID uuid_t;
-  #ifndef uuid_unparse_lower
-    void uuid_unparse_lower(uuid_t uu, char* out);
-  #endif
+#include <rpc.h>
+#include <windows.h>
+// Define uuid_t for Windows compatibility
+typedef UUID uuid_t;
+#ifndef uuid_unparse_lower
+void uuid_unparse_lower(uuid_t uu, char* out);
+#endif
 #elif defined(FREEBSD) || defined(OPENBSD)
-  #include <sys/types.h>
-  #include <uuid.h>
+#include <sys/types.h>
+#include <uuid.h>
 #else
-  #include <sys/types.h>
-  #include <uuid/uuid.h>
+#include <sys/types.h>
+#include <uuid/uuid.h>
 #endif
 
 // util.cpp

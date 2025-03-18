@@ -39,18 +39,17 @@
 
 // Platform-specific includes
 #ifdef _WIN32
-  #include <windows.h>
-  // Windows-specific user info implementation will be needed
-  // Create a pwd.h equivalent for Windows
+#include <windows.h>
+// Windows-specific user info implementation will be needed
+// Create a pwd.h equivalent for Windows
 #else
-  #include <pwd.h>
-  #include <sys/types.h>
-  #include <unistd.h>
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif
 
 #include <time.h>
 #include <unicode.h>
-
 #include <util.h>
 
 #include <optional>
