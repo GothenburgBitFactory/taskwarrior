@@ -1999,7 +1999,7 @@ void Task::modify(modType type, bool text_required /* = false */) {
           // Delegate modification to the column object or their base classes.
           if (name == "depends" || name == "tags" || name == "recur" || column->type() == "date" ||
               column->type() == "duration" || column->type() == "numeric" ||
-              column->type() == "string") {
+              column->type() == "string" || column->type() == "uuid") {
             column->modify(*this, value);
             mods = true;
           }

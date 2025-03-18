@@ -1384,7 +1384,7 @@ if you define a UDA named 'estimate', Taskwarrior will not know that this value
 is weeks, hours, minutes, money, or some other resource count.
 
 .TP
-.B uda.<name>.type=string|numeric|date|duration
+.B uda.<name>.type=string|numeric|uuid|date|duration
 .RS
 Defines a UDA called '<name>', of the specified type.
 .RE

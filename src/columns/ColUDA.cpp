@@ -297,3 +297,23 @@ void ColumnUDADuration::render(std::vector<std::string>& lines, Task& task, int 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ColumnUDAUUID::ColumnUDAUUID() {
+  _name = "<uda>";
+  _type = "uuid";
+  _style = "long";
+  _label = "";
+  _modifiable = true;
+  _uda = true;
+  _styles = {"long", "short"};
+  _examples = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnUDAUUID::validate(const std::string& input) const {
+  Lexer lex(input);
+  std::string token;
+  Lexer::Type type;
+  return lex.isUUID(token, type, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////

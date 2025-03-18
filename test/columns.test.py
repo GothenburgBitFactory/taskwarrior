@@ -482,6 +482,45 @@ start       active*           ✓
         """
 
 
+class TestUDAUUIDFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("verbose", "nothing")
+        cls.t.config("uda.uda_uuid.label", "uda_uuid")
+        cls.t.config("uda.uda_uuid.type", "uuid")
+        cls.t.config("report.xxx.columns", "uda_uuid")
+
+        cls.t("add zero")
+        code, out, err = cls.t("_get 1.uuid")
+        cls.t("add uda_uuid:{} one".format(out.strip()))
+        code, out, err = cls.t("_get 2.uda_uuid")
+        cls.uda_uuid = out.strip()
+
+    def test_uda_uuid_invalid_fails(self):
+        """Verify adding invalid uuid fails"""
+        code, out, err = self.t.runError("add uda_uuid:shrek three")
+        self.assertNotEqual(code, 0)
+        self.assertIn("uda_uuid", err.strip())
+        self.assertIn("shrek", err.strip())
+
+    def test_uda_uuid_long(self):
+        """Verify formatting of 'uda_uuid.long' column"""
+        code, out, err = self.t("2 xxx rc.report.xxx.columns:uda_uuid.long")
+        self.assertEqual(self.uda_uuid, out.strip())
+
+    def test_uda_uuid_short(self):
+        """Verify formatting of 'uda_uuid.short' column"""
+        code, out, err = self.t("2 xxx rc.report.xxx.columns:uda_uuid.short")
+        self.assertEqual(self.uda_uuid[:8], out.strip())
+
+    def test_uda_uuid_format_unrecognized(self):
+        """Verify uda_uuid.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,uda_uuid.donkey")
+        self.assertEqual(err, "Unrecognized column format 'uda_uuid.donkey'\n")
+
+
 class TestFeature1061(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
