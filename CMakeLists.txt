@@ -75,10 +75,17 @@ check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
 check_struct_has_member ("struct stat" st_birthtime "sys/types.h;sys/stat.h" HAVE_ST_BIRTHTIME)
 
 message ("-- Looking for libuuid")
-if (DARWIN OR FREEBSD OR OPENBSD)
+if (WINDOWS)
+  # Windows has built-in UUID functionality via RPC API
+  message ("-- Windows detected, using Windows UUID API")
+  # Add the required Windows libraries for UUID support
+  set (TASK_LIBRARIES ${TASK_LIBRARIES} rpcrt4)
+  set (HAVE_UUID_UNPARSE_LOWER TRUE)
+  # No need to add include dirs as Windows headers are already available
+elseif (DARWIN OR FREEBSD OR OPENBSD)
   # Apple and FreeBSD include the uuid functions in their libc, rather than libuuid
   check_function_exists (uuid_unparse_lower HAVE_UUID_UNPARSE_LOWER)
-else (DARWIN OR FREEBSD OR OPENBSD)
+else (WINDOWS)
   find_path    (UUID_INCLUDE_DIR   uuid/uuid.h)
   find_library (UUID_LIBRARY NAMES uuid)
   if (UUID_INCLUDE_DIR AND UUID_LIBRARY)
@@ -91,7 +98,7 @@ else (DARWIN OR FREEBSD OR OPENBSD)
   else (UUID_INCLUDE_DIR AND UUID_LIBRARY)
     message (FATAL_ERROR "-- libuuid not found.")
   endif (UUID_INCLUDE_DIR AND UUID_LIBRARY)
-endif (DARWIN OR FREEBSD OR OPENBSD)
+endif (WINDOWS)
 
 if (HAVE_UUID_UNPARSE_LOWER)
   message ("-- Found libuuid")

@@ -30,16 +30,25 @@
 #include <cmake.h>
 // cmake.h include header must come first
 
-#include <sys/types.h>
-
 #include <string>
 #include <vector>
-#if defined(FREEBSD) || defined(OPENBSD)
-#include <uuid.h>
+
+// Platform-specific UUID handling
+#ifdef _WIN32
+  #include <windows.h>
+  #include <rpc.h>
+  // Define uuid_t for Windows compatibility
+  typedef UUID uuid_t;
+  #ifndef uuid_unparse_lower
+    void uuid_unparse_lower(uuid_t uu, char* out);
+  #endif
+#elif defined(FREEBSD) || defined(OPENBSD)
+  #include <sys/types.h>
+  #include <uuid.h>
 #else
-#include <uuid/uuid.h>
+  #include <sys/types.h>
+  #include <uuid/uuid.h>
 #endif
-#include <Table.h>
 
 // util.cpp
 int confirm4(const std::string&);

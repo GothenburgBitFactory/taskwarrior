@@ -3,14 +3,23 @@ message ("-- System: ${CMAKE_SYSTEM_NAME}")
 
 include (CheckCXXCompilerFlag)
 
-CHECK_CXX_COMPILER_FLAG("-std=c++17"   _HAS_CXX17)
+# Check for MSVC compiler to use the correct flag
+if(MSVC)
+  set(_HAS_CXX17 ON)  # MSVC 2019 supports C++17 by default
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+else()
+  # For GCC, Clang, etc.
+  CHECK_CXX_COMPILER_FLAG("-std=c++17" _HAS_CXX17)
 
-if (_HAS_CXX17)
-  set (CMAKE_CXX_STANDARD 17)
-  set (CMAKE_CXX_EXTENSIONS OFF)
-else (_HAS_CXX17)
- message (FATAL_ERROR "C++17 support missing. Try upgrading your C++ compiler. If you have a good reason for using an outdated compiler, please let us know at support@gothenburgbitfactory.org.")
-endif (_HAS_CXX17)
+  if (_HAS_CXX17)
+    set (CMAKE_CXX_STANDARD 17)
+    set (CMAKE_CXX_EXTENSIONS OFF)
+  else (_HAS_CXX17)
+    message (FATAL_ERROR "C++17 support missing. Try upgrading your C++ compiler. If you have a good reason for using an outdated compiler, please let us know at support@gothenburgbitfactory.org.")
+  endif (_HAS_CXX17)
+endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (LINUX true)
@@ -34,9 +43,15 @@ elseif (${CMAKE_SYSTEM_NAME} STREQUAL "GNU")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "CYGWIN")
   set (CYGWIN true)
   set (CMAKE_CXX_EXTENSIONS ON)
-else (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set (WINDOWS true)
+  # Add Windows-specific flags if needed
+else ()
   set (UNKNOWN true)
-endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+endif ()
 
-set (CMAKE_CXX_FLAGS "${_CXX14_FLAGS} ${CMAKE_CXX_FLAGS}")
-set (CMAKE_CXX_FLAGS "-Wall -Wextra -Wsign-compare -Wreturn-type ${CMAKE_CXX_FLAGS}")
+if(NOT MSVC)
+  # These flags are not applicable to MSVC
+  set (CMAKE_CXX_FLAGS "${_CXX14_FLAGS} ${CMAKE_CXX_FLAGS}")
+  set (CMAKE_CXX_FLAGS "-Wall -Wextra -Wsign-compare -Wreturn-type ${CMAKE_CXX_FLAGS}")
+endif()
