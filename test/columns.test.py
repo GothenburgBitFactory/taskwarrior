@@ -109,29 +109,26 @@ class TestUUIDFormats(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t.config("report.xxx.columns", "id,uuid")
+        cls.t.config("report.xxx.columns", "uuid")
         cls.t.config("verbose", "nothing")
 
         cls.t("add zero")
         code, out, err = cls.t("_get 1.uuid")
         cls.uuid = out.strip()
 
-    def setUp(self):
-        """Executed before each test in the class"""
-
     def test_uuid_long(self):
         """Verify formatting of 'uuid.long' column"""
-        code, out, err = self.t("xxx rc.report.xxx.columns:id,uuid.long")
-        self.assertIn(self.uuid, out)
+        code, out, err = self.t("xxx rc.report.xxx.columns:uuid.long")
+        self.assertEqual(self.uuid, out.strip())
 
     def test_uuid_short(self):
         """Verify formatting of 'uuid.short' column"""
-        code, out, err = self.t("xxx rc.report.xxx.columns:id,uuid.short")
-        self.assertIn(self.uuid[:7], out)
+        code, out, err = self.t("xxx rc.report.xxx.columns:uuid.short")
+        self.assertEqual(self.uuid[:8], out.strip())
 
     def test_uuid_format_unrecognized(self):
         """Verify uuid.donkey formatting fails"""
-        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,uuid.donkey")
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:uuid.donkey")
         self.assertEqual(err, "Unrecognized column format 'uuid.donkey'\n")
 
 
