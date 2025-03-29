@@ -218,7 +218,7 @@ void CmdContext::defineContext(const std::vector<std::string>& words, std::strin
     if (!valid_write_context) {
       std::stringstream warning;
       warning
-          << format("The filter '{1}' is not a valid modification string, because it contains {2}.",
+          << format("The filter '{1}' is not a valid modification string, because it {2}.",
                     value, reason)
           << "\nAs such, value for the write context cannot be set (context will not apply on task "
              "add / task log).\n\n"
