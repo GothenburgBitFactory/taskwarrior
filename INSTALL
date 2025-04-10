@@ -105,7 +105,7 @@ file that was generated when you built Taskwarrior.
 
 ```sh
 cd task-X.Y.Z
-sudo xargs rm < build/install_manifest.txt 
+sudo xargs rm < build/install_manifest.txt
 ```
 
 If you want to uninstall this way, you will need to omit step [6] above and
