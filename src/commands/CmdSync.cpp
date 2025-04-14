@@ -80,7 +80,7 @@ int CmdSync::execute(std::string& output) {
   }
 
   // redact credentials from `server_url`, if present
-  std::regex remove_creds_regex("(https?://.+):(.+)@(.+)");
+  std::regex remove_creds_regex("^(https?://.+):(.+)@(.+)");
   std::string safe_server_url = std::regex_replace(server_url, remove_creds_regex, "$1:****@$3");
 
   if (server_dir != "") {
