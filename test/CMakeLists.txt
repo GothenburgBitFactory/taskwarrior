@@ -171,7 +171,6 @@ set (pythonTests
   substitute.test.py
   sugar.test.py
   summary.test.py
-  #sync_message.test.py # fails in CI
   tag.test.py
   taskrc.test.py
   timesheet.test.py
