@@ -36,6 +36,7 @@
 #include <taskchampion-cpp/lib.h>
 #include <util.h>
 
+#include <regex>
 #include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,6 +78,10 @@ int CmdSync::execute(std::string& output) {
   if (origin != "") {
     out << "sync.server.origin is deprecated. Use sync.server.url instead.\n";
   }
+
+  // redact credentials from `server_url`, if present
+  std::regex remove_creds_regex("(https?://.+):(.+)@(.+)");
+  std::string safe_server_url = std::regex_replace(server_url, remove_creds_regex, "$1:****@$3");
 
   if (server_dir != "") {
     if (verbose) {
@@ -144,7 +149,7 @@ int CmdSync::execute(std::string& output) {
       throw std::string("sync.server.client_id and sync.encryption_secret are required");
     }
     if (verbose) {
-      out << format("Syncing with sync server at {1}", server_url) << '\n';
+      out << format("Syncing with sync server at {1}", safe_server_url) << '\n';
     }
     replica->sync_to_remote(server_url, tc::uuid_from_string(client_id), encryption_secret,
                             avoid_snapshots);
