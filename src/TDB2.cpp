@@ -354,8 +354,7 @@ bool TDB2::get(const std::string& uuid, Task& task) {
 ////////////////////////////////////////////////////////////////////////////////
 // Locate task by UUID, wherever it is.
 bool TDB2::has(const std::string& uuid) {
-  Task task;
-  return get(uuid, task);
+  return replica()->get_task_data(tc::uuid_from_string(uuid)).is_some();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
