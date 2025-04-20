@@ -521,6 +521,31 @@ class TestUDAUUIDFormats(TestCase):
         self.assertEqual(err, "Unrecognized column format 'uda_uuid.donkey'\n")
 
 
+class TestUDAUUIDReconfiguredFromString(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("verbose", "nothing")
+        cls.t.config("uda.uda_uuid.label", "uda_uuid")
+        cls.t.config("report.xxx.columns", "uda_uuid")
+
+        cls.t.config("uda.uda_uuid.type", "string")
+        cls.expected_str = 3 * "littlepigs"
+        cls.t("add uda_uuid:{} one".format(cls.expected_str))
+        cls.t.config("uda.uda_uuid.type", "uuid")
+
+    def test_uda_uuid_long(self):
+        """Verify formatting of 'uda_uuid.long' column"""
+        code, out, err = self.t("1 xxx rc.report.xxx.columns:uda_uuid.long")
+        self.assertEqual(self.expected_str, out.strip())
+
+    def test_uda_uuid_short(self):
+        """Verify formatting of 'uda_uuid.short' column"""
+        code, out, err = self.t("1 xxx rc.report.xxx.columns:uda_uuid.short")
+        self.assertEqual(self.expected_str[:8], out.strip())
+
+
 class TestFeature1061(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
