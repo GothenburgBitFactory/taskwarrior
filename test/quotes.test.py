@@ -67,21 +67,23 @@ class TestBug268(TestCase):
         self.assertIn("a/b or c", out)
 
 
-class TestBug880(TestCase):
+class TestBug3858(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
 
     def test_backslash_at_eol(self):
-        """880: Backslash at end of description/annotation causes problems"""
+        """880: Backslashes at end of description/annotation are handled correctly"""
         self.t(r"add one\\")
         code, out, err = self.t("_get 1.description")
         self.assertEqual("one\\\n", out)
 
-        self.t(r"1 annotate 'two\\'")
+        self.t(r"1 annotate 'two\'")
+        self.t(r"1 annotate 'three\\'")
         code, out, err = self.t("info rc.verbose:nothing")
         self.assertIn("one\\\n", out)
         self.assertIn("two\\\n", out)
+        self.assertIn("three\\\\\n", out)
 
 
 class TestBug1436(TestCase):
