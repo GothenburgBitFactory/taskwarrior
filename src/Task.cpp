@@ -894,7 +894,7 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
 
 #ifdef PRODUCT_TASKWARRIOR
   // Include urgency.
-  if (decorate) out << ',' << "\"urgency\":" << urgency_c();
+  if (decorate) out << ',' << "\"urgency\":" << urgency();
 #endif
 
   out << '}';
