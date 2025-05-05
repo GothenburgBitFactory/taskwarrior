@@ -777,7 +777,7 @@ void Task::parseLegacy(const std::string& line) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Task::composeJSON(bool decorate /*= false*/) const {
+std::string Task::composeJSON(bool decorate /*= false*/) {
   std::stringstream out;
   out << '{';
 

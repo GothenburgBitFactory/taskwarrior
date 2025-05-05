@@ -40,7 +40,7 @@ class Hooks {
   void onLaunch() const;
   void onExit() const;
   void onAdd(Task&) const;
-  void onModify(const Task&, Task&) const;
+  void onModify(Task&, Task&) const;
   std::vector<std::string> list() const;
 
  private:

@@ -68,7 +68,7 @@ class Task {
   Task(rust::Box<tc::TaskData>);
 
   void parse(const std::string&);
-  std::string composeJSON(bool decorate = false) const;
+  std::string composeJSON(bool decorate = false);
 
   // Status values.
   enum status { pending, completed, deleted, recurring, waiting };

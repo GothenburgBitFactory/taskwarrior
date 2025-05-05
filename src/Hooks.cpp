@@ -275,7 +275,7 @@ void Hooks::onAdd(Task& task) const {
 // - all emitted non-JSON lines are considered feedback or error messages
 //   depending on the status code.
 //
-void Hooks::onModify(const Task& before, Task& after) const {
+void Hooks::onModify(Task& before, Task& after) const {
   if (!_enabled) return;
 
   Timer timer;
