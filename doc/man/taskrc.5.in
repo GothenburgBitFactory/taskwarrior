@@ -212,6 +212,9 @@ This is a path to the hook scripts directory. By default it is ~/.task/hooks.
 .TP
 .B gc=1
 Can be used to temporarily suspend rebuilding, so that task IDs don't change.
+Rebuilding requires read/write access to the database, so disabling `gc` may
+result in better performance.
+
 Note that this should be used in the form of a command line override (task
 rc.gc=0 ...), and not permanently used in the .taskrc file, as this
 significantly affects performance in the long term.
@@ -1381,7 +1384,7 @@ if you define a UDA named 'estimate', Taskwarrior will not know that this value
 is weeks, hours, minutes, money, or some other resource count.
 
 .TP
-.B uda.<name>.type=string|numeric|date|duration
+.B uda.<name>.type=string|numeric|uuid|date|duration
 .RS
 Defines a UDA called '<name>', of the specified type.
 .RE

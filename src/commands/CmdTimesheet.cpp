@@ -33,8 +33,7 @@
 #include <Filter.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
-#include <stdlib.h>
+#include <rules.h>
 #include <util.h>
 
 #include <algorithm>

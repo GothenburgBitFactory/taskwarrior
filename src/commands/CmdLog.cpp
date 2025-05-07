@@ -29,8 +29,8 @@
 
 #include <CmdLog.h>
 #include <Context.h>
+#include <feedback.h>
 #include <format.h>
-#include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdLog::CmdLog() {

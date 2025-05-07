@@ -32,7 +32,6 @@
 #include <Lexer.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 #include <stdlib.h>
 #include <utf8.h>

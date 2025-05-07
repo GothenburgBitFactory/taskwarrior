@@ -31,13 +31,11 @@
 #include <Datetime.h>
 #include <Duration.h>
 #include <Lexer.h>
+#include <feedback.h>
 #include <format.h>
-#include <inttypes.h>
-#include <main.h>
 #include <shared.h>
 #include <stdlib.h>
 
-#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -51,7 +49,12 @@ std::string renderAttribute(const std::string& name, const std::string& value,
   if (Context::getContext().columns.find(name) != Context::getContext().columns.end()) {
     Column* col = Context::getContext().columns[name];
     if (col && col->type() == "date" && value != "") {
-      Datetime d((time_t)strtoll(value.c_str(), nullptr, 10));
+      int64_t epoch = strtoll(value.c_str(), nullptr, 10);
+      // Do not try to render an un-parseable value.
+      if (epoch == 0) {
+        return value;
+      }
+      Datetime d((time_t)epoch);
       if (format == "") return d.toString(Context::getContext().config.get("dateformat"));
 
       return d.toString(format);

@@ -44,7 +44,6 @@
 #include <Variant.h>
 #include <format.h>
 #include <shared.h>
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -276,7 +275,7 @@ void Hooks::onAdd(Task& task) const {
 // - all emitted non-JSON lines are considered feedback or error messages
 //   depending on the status code.
 //
-void Hooks::onModify(const Task& before, Task& after) const {
+void Hooks::onModify(Task& before, Task& after) const {
   if (!_enabled) return;
 
   Timer timer;

@@ -31,6 +31,7 @@
 #include <ColTypeDuration.h>
 #include <ColTypeNumeric.h>
 #include <ColTypeString.h>
+#include <ColUUID.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 class ColumnUDAString : public ColumnTypeString {
@@ -81,6 +82,13 @@ class ColumnUDADuration : public ColumnTypeDuration {
 
  public:
   std::vector<std::string> _values;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class ColumnUDAUUID : public ColumnUUID {
+ public:
+  ColumnUDAUUID();
+  bool validate(const std::string&) const;
 };
 
 #endif

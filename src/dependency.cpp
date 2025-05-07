@@ -28,13 +28,11 @@
 // cmake.h include header must come first
 
 #include <Context.h>
+#include <dependency.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 
-#include <algorithm>
 #include <iostream>
-#include <sstream>
 #include <stack>
 
 #define STRING_DEPEND_BLOCKED "Task {1} is blocked by:"

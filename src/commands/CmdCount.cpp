@@ -30,7 +30,6 @@
 #include <CmdCount.h>
 #include <Filter.h>
 #include <format.h>
-#include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCount::CmdCount() {

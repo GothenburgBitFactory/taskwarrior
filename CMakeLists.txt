@@ -4,7 +4,7 @@ enable_testing()
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project (task
-  VERSION 3.3.0
+  VERSION 3.4.1
   DESCRIPTION "Taskwarrior - a command-line TODO list manager"
   HOMEPAGE_URL https://taskwarrior.org/)
 
@@ -162,6 +162,6 @@ endforeach (doc_FILE)
 
 set (CPACK_SOURCE_GENERATOR "TGZ")
 set (CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
-set (CPACK_SOURCE_IGNORE_FILES  "build" "test" "misc/*" "performance" "swp$" "src/lex$" "task-.*.tar.gz"
+set (CPACK_SOURCE_IGNORE_FILES  "build" "target" "test" "misc/*" "performance" "swp$" "src/lex$" "task-.*.tar.gz"
                                 "commit.h" "cmake.h$" "\\\\.gitmodules" "src/libshared/\\\\.git" ".github/" ".*\\\\.gitignore$" "docker-compose.yml" "\\\\.git/")
 include (CPack)

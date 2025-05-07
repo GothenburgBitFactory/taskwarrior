@@ -30,7 +30,6 @@
 #include <Context.h>
 #include <format.h>
 
-#include <cstddef>
 #include <sstream>
 
 #define STRING_LEGACY_PRIORITY "Legacy attribute found.  Please change '{1}' to '{2}'."

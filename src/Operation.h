@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2006 - 2024, Tomas Babej, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2025, Tomas Babej, Paul Beckingham, Federico Hernandez,
+//                        Tobias Predel.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_OPERATIOn
-#define INCLUDED_OPERATIOn
+#ifndef INCLUDED_OPERATION
+#define INCLUDED_OPERATION
 
 #include <taskchampion-cpp/lib.h>
 

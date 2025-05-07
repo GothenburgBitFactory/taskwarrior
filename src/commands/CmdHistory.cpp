@@ -33,7 +33,6 @@
 #include <Filter.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
 #include <util.h>
 
 #include <sstream>
@@ -55,7 +54,7 @@ CmdHistoryBase<HistoryStrategy>::CmdHistoryBase() {
   _read_only = true;
   _displays_id = false;
   _needs_gc = false;
-  _needs_recur_update = false;
+  _needs_recur_update = true;
   _uses_context = true;
   _accepts_filter = true;
   _accepts_modifications = false;
@@ -294,8 +293,6 @@ int CmdHistoryBase<HistoryStrategy>::execute(std::string& output) {
   completedGroup.clear();
 
   // Apply filter.
-  handleUntil();
-  handleRecurrence();
   Filter filter;
   std::vector<Task> filtered;
   filter.subset(filtered);

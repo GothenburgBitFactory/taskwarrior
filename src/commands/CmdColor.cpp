@@ -32,7 +32,6 @@
 #include <Context.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 
 #include <sstream>

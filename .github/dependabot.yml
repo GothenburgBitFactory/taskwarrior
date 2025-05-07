@@ -5,6 +5,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+  # Enable version updates for git submodules
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "daily"
   # Enable updates for Rust packages
   - package-ecosystem: "cargo"
     directory: "/" # Location of package manifests

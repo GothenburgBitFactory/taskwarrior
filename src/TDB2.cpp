@@ -33,16 +33,11 @@
 #include <TDB2.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <util.h>
 
 #include <algorithm>
-#include <iostream>
-#include <list>
-#include <sstream>
 #include <unordered_set>
 #include <vector>
 
@@ -50,17 +45,16 @@ bool TDB2::debug_mode = false;
 static void dependency_scan(std::vector<Task>&);
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::open_replica(const std::string& location, bool create_if_missing) {
-  _replica = tc::new_replica_on_disk(location, create_if_missing);
+void TDB2::open_replica(const std::string& location, bool create_if_missing, bool read_write) {
+  _replica = tc::new_replica_on_disk(location, create_if_missing, read_write);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::open_replica_in_memory() { _replica = tc::new_replica_in_memory(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the replica.
 void TDB2::add(Task& task) {
-  // Validate a task for addition. This is stricter than `task.validate`, as any
-  // inconsistency is probably user error.
-  task.validate_add();
-
   // Ensure the task is consistent, and provide defaults if necessary.
   // bool argument to validate() is "applyDefault", to apply default values for
   // properties not otherwise given.
@@ -194,11 +188,8 @@ void TDB2::purge(Task& task) {
 
 ////////////////////////////////////////////////////////////////////////////////
 rust::Box<tc::Replica>& TDB2::replica() {
-  // Create a replica in-memory if `open_replica` has not been called. This
-  // occurs in tests.
-  if (!_replica) {
-    _replica = tc::new_replica_in_memory();
-  }
+  // One of the open_replica_ methods must be called before this one.
+  assert(_replica);
   return _replica.value();
 }
 
@@ -363,8 +354,7 @@ bool TDB2::get(const std::string& uuid, Task& task) {
 ////////////////////////////////////////////////////////////////////////////////
 // Locate task by UUID, wherever it is.
 bool TDB2::has(const std::string& uuid) {
-  Task task;
-  return get(uuid, task);
+  return replica()->get_task_data(tc::uuid_from_string(uuid)).is_some();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

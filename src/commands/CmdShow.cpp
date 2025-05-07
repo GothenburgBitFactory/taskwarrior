@@ -32,7 +32,7 @@
 #include <FS.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
+#include <legacy.h>
 #include <util.h>
 
 #include <algorithm>

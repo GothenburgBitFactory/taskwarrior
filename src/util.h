@@ -32,7 +32,6 @@
 
 #include <sys/types.h>
 
-#include <map>
 #include <string>
 #include <vector>
 #if defined(FREEBSD) || defined(OPENBSD)

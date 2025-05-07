@@ -143,7 +143,9 @@ Then configure Taskwarrior with:
 
 To synchronize your tasks to AWS, select a region near you and use the AWS
 console to create a new S3 bucket. The default settings for the bucket are
-adequate.
+adequate. In particular, ensure that no lifecycle policies are enabled, as they
+may automatically delete or transition objects, potentially impacting data
+availability.
 
 You will also need an AWS IAM user with the following policy, where BUCKETNAME
 is the name of the bucket. The same user can be configured for multiple

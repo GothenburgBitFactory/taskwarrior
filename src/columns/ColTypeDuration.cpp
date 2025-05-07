@@ -56,11 +56,9 @@ void ColumnTypeDuration::modify(Task& task, const std::string& value) {
     evaluatedValue = Variant(value);
   }
 
-  // The duration is stored in raw form, but it must still be valid,
-  // and therefore is parsed first.
+  // The duration is first parsed, then stored inside the variant as a `time_t`
   std::string label = "  [1;37;43mMODIFICATION[0m ";
   if (evaluatedValue.type() == Variant::type_duration) {
-    // Store the raw value, for 'recur'.
     Context::getContext().debug(label + _name + " <-- " + (std::string)evaluatedValue + " <-- '" +
                                 value + '\'');
     task.set(_name, evaluatedValue);

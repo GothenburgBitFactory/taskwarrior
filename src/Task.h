@@ -30,7 +30,6 @@
 #include <Datetime.h>
 #include <JSON.h>
 #include <Table.h>
-#include <stdio.h>
 #include <taskchampion-cpp/lib.h>
 #include <time.h>
 
@@ -69,7 +68,7 @@ class Task {
   Task(rust::Box<tc::TaskData>);
 
   void parse(const std::string&);
-  std::string composeJSON(bool decorate = false) const;
+  std::string composeJSON(bool decorate = false);
 
   // Status values.
   enum status { pending, completed, deleted, recurring, waiting };

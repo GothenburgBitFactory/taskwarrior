@@ -28,9 +28,7 @@
 #define INCLUDED_VARIANT
 
 #include <Task.h>
-#include <time.h>
 
-#include <map>
 #include <string>
 
 class Variant {

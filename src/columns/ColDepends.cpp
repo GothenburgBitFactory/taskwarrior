@@ -30,13 +30,10 @@
 #include <ColDepends.h>
 #include <Context.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
-#include <stdlib.h>
 #include <utf8.h>
 #include <util.h>
 
-#include <algorithm>
 #include <regex>
 
 #define STRING_COLUMN_LABEL_DEP "Depends"

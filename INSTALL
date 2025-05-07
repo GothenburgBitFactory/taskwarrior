@@ -34,7 +34,7 @@ Briefly, these shell commands will unpack, build and install Taskwarrior:
   $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release . [3]
   $ cmake --build build                              [4]
   $ sudo cmake --install build                       [5]
-  $ cd .. ; rm -r task-X.Y.Z                         [6]
+  $ cd .. ; rm -r task-X.Y.Z                         [6] (see: Uninstallation)
 
 These commands are explained below:
 
@@ -103,6 +103,13 @@ There is no uninstall option in CMake makefiles. This is a manual process.
 To uninstall Taskwarrior, remove the files listed in the install_manifest.txt
 file that was generated when you built Taskwarrior.
 
+```sh
+cd task-X.Y.Z
+sudo xargs rm < build/install_manifest.txt
+```
+
+If you want to uninstall this way, you will need to omit step [6] above and
+retain the source folder after installation.
 
 Taskwarrior Build Notes
 -----------------------

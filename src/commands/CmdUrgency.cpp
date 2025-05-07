@@ -32,8 +32,6 @@
 #include <Filter.h>
 #include <Lexer.h>
 #include <format.h>
-#include <main.h>
-#include <stdlib.h>
 
 #include <sstream>
 

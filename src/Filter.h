@@ -30,7 +30,6 @@
 #include <Task.h>
 #include <Variant.h>
 
-#include <string>
 #include <vector>
 
 class Filter {

@@ -31,7 +31,6 @@
 #include <Context.h>
 #include <Datetime.h>
 #include <Table.h>
-#include <stdlib.h>
 
 #include <sstream>
 #ifdef HAVE_COMMIT

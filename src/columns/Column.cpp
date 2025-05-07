@@ -246,9 +246,15 @@ Column* Column::uda(const std::string& name) {
     c->_label = label;
     if (values != "") c->_values = split(values, ',');
     return c;
+  } else if (type == "uuid") {
+    auto c = new ColumnUDAUUID();
+    c->_name = name;
+    c->_label = label;
+    return c;
   } else if (type != "")
     throw std::string(
-        "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'.");
+        "User defined attributes may only be of type 'string', 'uuid', date', 'duration' or "
+        "'numeric'.");
 
   return nullptr;
 }

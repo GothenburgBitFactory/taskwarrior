@@ -27,9 +27,7 @@
 #ifndef INCLUDED_TDB2
 #define INCLUDED_TDB2
 
-#include <FS.h>
 #include <Task.h>
-#include <stdio.h>
 #include <taskchampion-cpp/lib.h>
 
 #include <map>
@@ -46,7 +44,8 @@ class TDB2 {
 
   TDB2() = default;
 
-  void open_replica(const std::string &, bool create_if_missing);
+  void open_replica(const std::string &, bool create_if_missing, bool read_write);
+  void open_replica_in_memory();
   void add(Task &);
   void modify(Task &);
   void purge(Task &);

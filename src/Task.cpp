@@ -58,7 +58,8 @@
 #include <Eval.h>
 #include <Filter.h>
 #include <Variant.h>
-#include <main.h>
+#include <dependency.h>
+#include <feedback.h>
 
 #define APPROACHING_INFINITY 1000  // Close enough.  This isn't rocket surgery.
 
@@ -321,8 +322,8 @@ void Task::setStatus(Task::status status) {
 ////////////////////////////////////////////////////////////////////////////////
 // Determines status of a date attribute.
 Task::dateState Task::getDateState(const std::string& name) const {
-  std::string value = get(name);
-  if (value.length()) {
+  time_t value = get_date(name);
+  if (value > 0) {
     Datetime reference(value);
     Datetime now;
     Datetime today("today");
@@ -776,7 +777,7 @@ void Task::parseLegacy(const std::string& line) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Task::composeJSON(bool decorate /*= false*/) const {
+std::string Task::composeJSON(bool decorate /*= false*/) {
   std::stringstream out;
   out << '{';
 
@@ -797,20 +798,23 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
     // If value is an empty string, do not ever output it
     if (i.second == "") continue;
 
-    if (attributes_written) out << ',';
-
     std::string type = Task::attributes[i.first];
     if (type == "") type = "string";
 
     // Date fields are written as ISO 8601.
     if (type == "date") {
-      Datetime d(i.second);
-      out << '"' << (i.first == "modification" ? "modified" : i.first)
-          << "\":\""
-          // Date was deleted, do not export parsed empty string
-          << (i.second == "" ? "" : d.toISO()) << '"';
+      time_t epoch = get_date(i.first);
+      if (epoch != 0) {
+        Datetime d(i.second);
+        if (attributes_written) out << ',';
 
-      ++attributes_written;
+        out << '"' << (i.first == "modification" ? "modified" : i.first)
+            << "\":\""
+            // Date was deleted, do not export parsed empty string
+            << (i.second == "" ? "" : d.toISO()) << '"';
+
+        ++attributes_written;
+      }
     }
 
     /*
@@ -820,6 +824,8 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
         }
     */
     else if (type == "numeric") {
+      if (attributes_written) out << ',';
+
       out << '"' << i.first << "\":" << i.second;
 
       ++attributes_written;
@@ -827,6 +833,8 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
 
     // Everything else is a quoted value.
     else {
+      if (attributes_written) out << ',';
+
       out << '"' << i.first << "\":\"" << (type == "string" ? json::encode(i.second) : i.second)
           << '"';
 
@@ -886,7 +894,7 @@ std::string Task::composeJSON(bool decorate /*= false*/) const {
 
 #ifdef PRODUCT_TASKWARRIOR
   // Include urgency.
-  if (decorate) out << ',' << "\"urgency\":" << urgency_c();
+  if (decorate) out << ',' << "\"urgency\":" << urgency();
 #endif
 
   out << '}';
@@ -920,7 +928,7 @@ void Task::addAnnotation(const std::string& description) {
     ++now;
   } while (has(key));
 
-  data[key] = json::decode(description);
+  data[key] = description;
   ++annotation_count;
   recalc_urgency = true;
 }
@@ -1991,7 +1999,7 @@ void Task::modify(modType type, bool text_required /* = false */) {
           // Delegate modification to the column object or their base classes.
           if (name == "depends" || name == "tags" || name == "recur" || column->type() == "date" ||
               column->type() == "duration" || column->type() == "numeric" ||
-              column->type() == "string") {
+              column->type() == "string" || column->type() == "uuid") {
             column->modify(*this, value);
             mods = true;
           }

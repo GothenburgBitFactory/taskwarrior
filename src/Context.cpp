@@ -36,16 +36,15 @@
 #include <Version.h>
 #include <assert.h>
 #include <format.h>
-#include <main.h>
+#include <recur.h>
+#include <rules.h>
 #include <rust/cxx.h>
 #include <shared.h>
 #include <stdlib.h>
-#include <string.h>
 #include <taskchampion-cpp/lib.h>
 #include <unistd.h>
 
 #include <algorithm>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <regex>
@@ -55,7 +54,6 @@
 #include <commit.h>
 #endif
 
-#include <stdio.h>
 #include <sys/ioctl.h>
 
 #ifdef SOLARIS
@@ -598,9 +596,6 @@ int Context::initialize(int argc, const char** argv) {
 
     createDefaultConfig();
 
-    bool create_if_missing = !config.getBoolean("exit.on.missing.db");
-    tdb2.open_replica(data_dir, create_if_missing);
-
     ////////////////////////////////////////////////////////////////////////////
     //
     // [3] Instantiate Command objects and capture command entities.
@@ -673,6 +668,21 @@ int Context::initialize(int argc, const char** argv) {
 
       if (foundAssumed) header("No command specified - assuming 'information'.");
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [7.5] Open the Replica.
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    bool create_if_missing = !config.getBoolean("exit.on.missing.db");
+    Command* c = commands[cli2.getCommand()];
+
+    // We must allow writes if either 'gc' is enabled and the command performs GC, or the command
+    // itself is read-write.
+    bool read_write =
+        (config.getBoolean("gc") && (c->needs_gc() || c->needs_recur_update())) || !c->read_only();
+    tdb2.open_replica(data_dir, create_if_missing, read_write);
 
     ////////////////////////////////////////////////////////////////////////////
     //
@@ -869,7 +879,7 @@ int Context::dispatch(std::string& out) {
     if (config.getBoolean("debug") && config.getInteger("debug.parser") == 1)
       debug(cli2.dump("Parse Tree (before command-specifіc processing)"));
 
-    if (c->needs_recur_update()) {
+    if (c->needs_recur_update() && Context::getContext().config.getBoolean("gc")) {
       handleUntil();
       handleRecurrence();
     }

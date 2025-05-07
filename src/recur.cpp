@@ -31,25 +31,19 @@
 #include <Datetime.h>
 #include <Duration.h>
 #include <Lexer.h>
+#include <feedback.h>
 #include <format.h>
-#include <inttypes.h>
-#include <main.h>
 #include <pwd.h>
-#include <stdio.h>
+#include <recur.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/types.h>
 #include <time.h>
 #include <unicode.h>
 #include <unistd.h>
 #include <util.h>
 
-#include <fstream>
-#include <iomanip>
-#include <iostream>
 #include <limits>
 #include <optional>
-#include <sstream>
 
 // Add a `time_t` delta to a Datetime, checking for and returning nullopt on integer overflow.
 std::optional<Datetime> checked_add_datetime(Datetime& base, time_t delta) {
@@ -288,9 +282,11 @@ std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period
   else if (unicodeLatinDigit(period[0]) && period[period.length() - 1] == 'q') {
     int increment = strtol(period.substr(0, period.length() - 1).c_str(), nullptr, 10);
 
-    if (increment <= 0)
-      throw format("Recurrence period '{1}' is equivalent to {2} and hence invalid.", period,
-                   increment);
+    if (increment <= 0) {
+      Context::getContext().footnote(format(
+          "Recurrence period '{1}' is equivalent to {2} and hence invalid.", period, increment));
+      return std::nullopt;
+    }
 
     m += 3 * increment;
     while (m > 12) {
@@ -346,8 +342,11 @@ std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period
   // Add the period to current, and we're done.
   std::string::size_type idx = 0;
   Duration p;
-  if (!p.parse(period, idx))
-    throw std::string(format("The recurrence value '{1}' is not valid.", period));
+  if (!p.parse(period, idx)) {
+    Context::getContext().footnote(
+        format("Warning: The recurrence value '{1}' is not valid.", period));
+    return std::nullopt;
+  }
 
   return checked_add_datetime(current, p.toTime_t());
 }

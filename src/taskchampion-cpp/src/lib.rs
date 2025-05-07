@@ -104,8 +104,11 @@ mod ffi {
         fn new_replica_in_memory() -> Result<Box<Replica>>;
 
         /// Create a new replica stored on-disk.
-        fn new_replica_on_disk(taskdb_dir: String, create_if_missing: bool)
-            -> Result<Box<Replica>>;
+        fn new_replica_on_disk(
+            taskdb_dir: String,
+            create_if_missing: bool,
+            read_write: bool,
+        ) -> Result<Box<Replica>>;
 
         /// Commit the given operations to the replica.
         fn commit_operations(&mut self, ops: Vec<Operation>) -> Result<()>;
@@ -490,11 +493,14 @@ impl From<tc::Replica> for Replica {
 fn new_replica_on_disk(
     taskdb_dir: String,
     create_if_missing: bool,
+    read_write: bool,
 ) -> Result<Box<Replica>, CppError> {
+    use tc::storage::AccessMode::*;
+    let access_mode = if read_write { ReadWrite } else { ReadOnly };
     let storage = tc::StorageConfig::OnDisk {
         taskdb_dir: PathBuf::from(taskdb_dir),
         create_if_missing,
-        access_mode: tc::storage::AccessMode::ReadWrite,
+        access_mode,
     }
     .into_storage()?;
     Ok(Box::new(tc::Replica::new(storage).into()))

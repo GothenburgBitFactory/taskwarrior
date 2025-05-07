@@ -28,8 +28,6 @@
 // cmake.h include header must come first
 
 #include <columns/ColID.h>
-#include <main.h>
-#include <stdlib.h>
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////

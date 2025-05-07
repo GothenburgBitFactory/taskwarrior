@@ -31,9 +31,8 @@
 #include <Context.h>
 #include <Task.h>
 #include <ViewTask.h>
-#include <main.h>
+#include <sort.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <test.h>
 #include <unistd.h>
 
@@ -47,6 +46,7 @@ int TEST_NAME(int, char**) {
   UnitTest t(1);
   Context context;
   Context::setContext(&context);
+  context.tdb2.open_replica_in_memory();
 
   // Ensure environment has no influence.
   unsetenv("TASKDATA");

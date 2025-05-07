@@ -30,7 +30,7 @@
 #include <Context.h>
 #include <ViewTask.h>
 #include <format.h>
-#include <main.h>
+#include <rules.h>
 #include <utf8.h>
 #include <util.h>
 

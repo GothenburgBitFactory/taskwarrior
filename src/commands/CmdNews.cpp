@@ -33,7 +33,6 @@
 #include <Duration.h>
 #include <Table.h>
 #include <format.h>
-#include <main.h>
 #include <shared.h>
 #include <util.h>
 
@@ -161,6 +160,7 @@ std::vector<NewsItem> NewsItem::all() {
   version3_1_0(items);
   version3_2_0(items);
   version3_3_0(items);
+  version3_4_0(items);
   return items;
 }
 
@@ -531,6 +531,21 @@ void NewsItem::version3_3_0(std::vector<NewsItem>& items) {
   items.push_back(info);
 }
 
+void NewsItem::version3_4_0(std::vector<NewsItem>& items) {
+  Version version("3.4.0");
+  NewsItem info{version,
+                /*title=*/"Read-Only Access",
+                /*bg_title=*/"",
+                /*background=*/"",
+                /*punchline=*/"Some Taskwarrior commands operate faster in read-only mode",
+                /*update=*/
+                "Some commands do not need to write to the DB, so can open it in read-only\n"
+                "mode and thus more quickly. This does not include reports (task lists),\n"
+                "unless the `gc` config is false. Use `rc.gc=0` in command-lines to allow\n"
+                "read-only access.\n\n"};
+  items.push_back(info);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 int CmdNews::execute(std::string& output) {
   auto words = Context::getContext().cli2.getWords();
@@ -573,61 +588,10 @@ int CmdNews::execute(std::string& output) {
   }
   wait_for_enter();
 
-  // Display outro
-  Datetime now;
-  Datetime beginning(2006, 11, 29);
-  Duration development_time = Duration(now - beginning);
-
-  Color underline = Color("underline");
-
-  std::stringstream outro;
-  outro << underline.colorize(bold.colorize("Taskwarrior crowdfunding\n"));
-  outro << format(
-      "Taskwarrior has been in development for {1} years but its survival\n"
-      "depends on your support!\n\n"
-      "Please consider joining our {2} fundraiser to help us fund maintenance\n"
-      "and development of new features:\n\n",
-      std::lround(static_cast<float>(development_time.days()) / 365.25), now.year());
-  outro << bold.colorize("    https://github.com/sponsors/GothenburgBitFactory/\n\n");
-  outro << "Perks are available for our sponsors.\n";
-
-  std::cout << outro.str();
-
   // Set a mark in the config to remember which version's release notes were displayed
   if (news_version < current_version) {
     CmdConfig::setConfigVariable("news.version", std::string(current_version), false);
-
-    // Revert back to default signal handling after displaying the outro
-    signal(SIGINT, SIG_DFL);
-
-    std::string question = format(
-        "\nWould you like to open Taskwarrior {1} fundraising campaign to read more?", now.year());
-
-    std::vector<std::string> options{"yes", "no"};
-    std::vector<std::string> matches;
-
-    std::cout << question << " (YES/no) ";
-
-    std::string answer;
-    std::getline(std::cin, answer);
-
-    if (std::cin.eof() || trim(answer).empty())
-      answer = "yes";
-    else
-      lowerCase(trim(answer));
-
-    autoComplete(answer, options, matches, 1);  // Hard-coded 1.
-
-    if (matches.size() == 1 && matches[0] == "yes")
-#if defined(DARWIN)
-      system("open 'https://github.com/sponsors/GothenburgBitFactory/'");
-#else
-      system("xdg-open 'https://github.com/sponsors/GothenburgBitFactory/'");
-#endif
-
-    std::cout << std::endl;
-  } else
-    wait_for_enter();  // Do not display the outro and footnote at once
+  }
 
   return 0;
 }
