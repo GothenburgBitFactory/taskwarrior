@@ -83,6 +83,8 @@ int CmdSync::execute(std::string& output) {
   std::regex remove_creds_regex("^(https?://.+):(.+)@(.+)");
   std::string safe_server_url = std::regex_replace(server_url, remove_creds_regex, "$1:****@$3");
 
+  auto num_local_operations = replica->num_local_operations();
+
   if (server_dir != "") {
     if (verbose) {
       out << format("Syncing with {1}", server_dir) << '\n';
@@ -165,8 +167,12 @@ int CmdSync::execute(std::string& output) {
   }
 
   if (verbose) {
-    out << format("Successfully synchronized {1} operations", replica->num_local_operations())
-        << '\n';
+    out << "Success!\n";
+    // Taskchampion does not provide a measure of the number of operations received from
+    // the server, but we can give some indication of the number sent.
+    if (num_local_operations) {
+      out << format("Sent {1} local operations to the server", num_local_operations) << '\n';
+    }
   }
 
   output = out.str();
