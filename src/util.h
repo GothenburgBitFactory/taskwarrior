@@ -54,10 +54,6 @@ const std::string indentProject(const std::string&, const std::string& whitespac
 
 const std::vector<std::string> extractParents(const std::string&, const char& delimiter = '.');
 
-#ifndef HAVE_TIMEGM
-time_t timegm(struct tm* tm);
-#endif
-
 bool nontrivial(const std::string&);
 const char* optionalBlankLine();
 void setHeaderUnderline(Table&);

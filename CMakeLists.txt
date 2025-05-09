@@ -67,7 +67,6 @@ SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the bi
 # rust libs require these
 set (TASK_LIBRARIES dl pthread)
 
-check_function_exists (timegm  HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
 check_function_exists (wordexp HAVE_WORDEXP)
 

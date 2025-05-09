@@ -41,9 +41,6 @@
 /* Found tm_gmtoff */
 #cmakedefine HAVE_TM_GMTOFF
 
-/* Found timegm */
-#cmakedefine HAVE_TIMEGM
-
 /* Found st.st_birthtime struct member */
 #cmakedefine HAVE_ST_BIRTHTIME
 

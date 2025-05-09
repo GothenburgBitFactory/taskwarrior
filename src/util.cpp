@@ -219,24 +219,6 @@ const std::vector<std::string> extractParents(const std::string& project,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef HAVE_TIMEGM
-time_t timegm(struct tm* tm) {
-  time_t ret;
-  char* tz;
-  tz = getenv("TZ");
-  setenv("TZ", "UTC", 1);
-  tzset();
-  ret = mktime(tm);
-  if (tz)
-    setenv("TZ", tz, 1);
-  else
-    unsetenv("TZ");
-  tzset();
-  return ret;
-}
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
 bool nontrivial(const std::string& input) {
   std::string::size_type i = 0;
   int character;
