@@ -317,7 +317,6 @@ void CmdEdit::parseTask(Task& task, const std::string& after, const std::string&
 
   // tags
   value = findValue(after, "\n  Tags:");
-  task.remove("tags");
   task.setTags(split(value, ' '));
 
   // description.
