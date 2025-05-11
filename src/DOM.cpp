@@ -286,6 +286,13 @@ bool getDOM(const std::string& name, const Task* task, Variant& value) {
       return true;
     }
 
+    // The "tags" property is deprecated, but it is documented as part of the DOM, so simulate it.
+    if (size == 1 && canonical == "tags") {
+      auto tags = ref->getTags();
+      value = Variant(join(",", tags));
+      return true;
+    }
+
     Column* column = Context::getContext().columns[canonical];
 
     if (size == 1 && column) {
