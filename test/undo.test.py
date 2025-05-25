@@ -27,6 +27,7 @@
 
 import sys
 import os
+import re
 import unittest
 
 # Ensure python finds the local simpletap module
@@ -60,6 +61,19 @@ class TestUndo(TestCase):
         self.t("undo", input="y\n")
         code, out, err = self.t("_get 1.status")
         self.assertEqual(out.strip(), "pending")
+
+    def test_modify_multiple_tasks(self):
+        """'add' then 'done' then 'undo'"""
+        self.t("add one")
+        self.t("add two")
+        self.t("add three")
+        self.t("rc.bulk=0 1,2,3 modify +sometag")
+        code, out, err = self.t("undo", input="y\n")
+        # This undo output should show one tag modification for each task, possibly with some
+        # modification-time updates if the modifications spanned a second boundary.
+        self.assertRegex(
+            out,
+            '\s+'.join([r"""[0-9a-f-]{36} (Update property 'modified' from\s+'[0-9]+' to '[0-9]+'\s+)?Add tag 'sometag'\s+Add property 'tags' with value 'sometag'"""] * 3))
 
     def test_undo_en_passant(self):
         """Verify that en-passant changes during undo are an error"""

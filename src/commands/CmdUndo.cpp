@@ -102,7 +102,7 @@ bool CmdUndo::confirm_revert(const std::vector<Operation>& undo_ops) {
         view.set(row, 1, mods.str());
       }
       last_uuid = op.get_uuid();
-      mods.clear();
+      mods = std::stringstream();
     }
 
     if (op.is_create()) {
