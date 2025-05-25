@@ -73,7 +73,13 @@ class TestUndo(TestCase):
         # modification-time updates if the modifications spanned a second boundary.
         self.assertRegex(
             out,
-            '\s+'.join([r"""[0-9a-f-]{36} (Update property 'modified' from\s+'[0-9]+' to '[0-9]+'\s+)?Add tag 'sometag'\s+Add property 'tags' with value 'sometag'"""] * 3))
+            "\s+".join(
+                [
+                    r"""[0-9a-f-]{36} (Update property 'modified' from\s+'[0-9]+' to '[0-9]+'\s+)?Add tag 'sometag'\s+Add property 'tags' with value 'sometag'"""
+                ]
+                * 3
+            ),
+        )
 
     def test_undo_en_passant(self):
         """Verify that en-passant changes during undo are an error"""
