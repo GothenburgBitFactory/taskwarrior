@@ -1173,6 +1173,13 @@ void Context::staticInitialization() {
 void Context::createDefaultConfig() {
   // Do we need to create a default rc?
   if (rc_file._data != "" && !rc_file.exists()) {
+    // If stdout is not a file, we are probably executing in a completion context and should not
+    // prompt (as the user won't see it) or modify the config (as completion functions are typically
+    // read-only).
+    if (!isatty(STDOUT_FILENO)) {
+      throw std::string("Cannot proceed without rc file.");
+    }
+
     if (config.getBoolean("confirmation") &&
         !confirm(format("A configuration file could not be found in {1}\n\nWould you like a sample "
                         "{2} created, so Taskwarrior can proceed?",
