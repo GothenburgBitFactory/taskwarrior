@@ -40,6 +40,7 @@ class TestTaskrc(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
 
+    @unittest.skip("taskrc generation requires a tty - see #3751")
     def test_default_taskrc(self):
         """Verify that a default .taskrc is generated"""
         os.remove(self.t.taskrc)
