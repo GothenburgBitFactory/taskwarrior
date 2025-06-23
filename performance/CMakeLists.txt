@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.22)
+cmake_minimum_required (VERSION 3.22...4.0)
 
 configure_file(compare_runs.py compare_runs.py COPYONLY)
 configure_file(load load)

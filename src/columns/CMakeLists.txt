@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.22)
+cmake_minimum_required (VERSION 3.22...4.0)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands

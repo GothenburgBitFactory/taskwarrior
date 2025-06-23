@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.22)
+cmake_minimum_required (VERSION 3.22...4.0)
 
 OPTION(SYSTEM_CORROSION "Use system provided corrosion instead of vendored version" OFF)
 if(SYSTEM_CORROSION)

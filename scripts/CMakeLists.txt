@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.22)
+cmake_minimum_required (VERSION 3.22...4.0)
 install (DIRECTORY bash fish vim hooks
          DESTINATION ${TASK_DOCDIR}/scripts)
 install (FILES zsh/_task
