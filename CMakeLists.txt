@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.22...4.0)
+cmake_minimum_required (VERSION 3.24...4.0)
 enable_testing()
 
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
