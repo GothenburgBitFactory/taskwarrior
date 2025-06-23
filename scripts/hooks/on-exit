@@ -10,7 +10,7 @@
 # - Optional feedback/error.
 
 n=0
-while read modified_task
+while read -r modified_task
 do
   n=$(($n + 1))
 done

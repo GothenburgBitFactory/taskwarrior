@@ -26,9 +26,9 @@ SHADOW_FILE=$(task _get rc.shadow.file)
 task $SHADOW_COMMAND rc.detection=off rc.gc=off rc.color=off rc.hooks=off > $SHADOW_FILE 2>/dev/null
 if [[ $? != 0 ]]
 then
-  echo Could not create $SHADOW_FILE
+  echo "Could not create $SHADOW_FILE"
   exit 1
 fi
 
-echo Shadow file $SHADOW_FILE updated.
+echo "Shadow file $SHADOW_FILE updated."
 exit 0
