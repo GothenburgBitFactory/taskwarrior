@@ -36,7 +36,6 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest.utils import run_cmd_wait, CMAKE_BINARY_DIR
 
 
 class TestUnusualTasks(TestCase):
@@ -49,18 +48,8 @@ class TestUnusualTasks(TestCase):
         )
         self.t.config("verbose", "nothing")
 
-    def make_task(self, **props):
-        make_tc_task = os.path.abspath(
-            os.path.join(CMAKE_BINARY_DIR, "test", "make_tc_task")
-        )
-        cmd = [make_tc_task, self.t.datadir]
-        for p, v in props.items():
-            cmd.append(f"{p}={v}")
-        _, out, _ = run_cmd_wait(cmd)
-        return out.strip()
-
     def test_empty_task_info(self):
-        uuid = self.make_task()
+        uuid = self.t.make_tc_task()
         _, out, _ = self.t(f"{uuid} info")
         self.assertNotIn("Entered", out)
         self.assertNotIn("Waiting", out)
@@ -72,20 +61,20 @@ class TestUnusualTasks(TestCase):
         self.assertRegex(out, r"Status\s+Pending")
 
     def test_modify_empty_task(self):
-        uuid = self.make_task()
+        uuid = self.t.make_tc_task()
         self.t(f"{uuid} modify a description +taggy due:tomorrow")
         _, out, _ = self.t(f"{uuid} info")
         self.assertRegex(out, r"Description\s+a description")
         self.assertRegex(out, r"Tags\s+taggy")
 
     def test_empty_task_recurring(self):
-        uuid = self.make_task(status="recurring")
+        uuid = self.t.make_tc_task(status="recurring")
         _, out, _ = self.t(f"{uuid} info")
         self.assertRegex(out, r"Status\s+Recurring")
         _, out, _ = self.t(f"{uuid} custom-report")
 
     def test_recurring_invalid_rtype(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             status="recurring", due=str(int(time.time())), rtype="occasional"
         )
         _, out, _ = self.t(f"{uuid} info")
@@ -94,7 +83,7 @@ class TestUnusualTasks(TestCase):
         _, out, _ = self.t(f"{uuid} custom-report")
 
     def test_recurring_invalid_recur(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             status="recurring",
             due=str(int(time.time())),
             rtype="periodic",
@@ -106,27 +95,27 @@ class TestUnusualTasks(TestCase):
         _, out, _ = self.t(f"{uuid} custom-report")
 
     def test_recurring_bad_quarters_rtype(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             status="recurring", due=str(int(time.time())), rtype="periodic", recur="9aq"
         )
         _, out, _ = self.t(f"{uuid} custom-report")
 
     def test_invalid_entry_info(self):
-        uuid = self.make_task(entry="abcdef")
+        uuid = self.t.make_tc_task(entry="abcdef")
         _, out, _ = self.t(f"{uuid} info")
         self.assertNotIn("Entered", out)
 
     def test_invalid_modified_info(self):
-        uuid = self.make_task(modified="abcdef")
+        uuid = self.t.make_tc_task(modified="abcdef")
         _, out, _ = self.t(f"{uuid} info")
         self.assertNotIn(r"Last modified", out)
 
     def test_invalid_start_info(self):
-        uuid = self.make_task(start="abcdef")
+        uuid = self.t.make_tc_task(start="abcdef")
         _, out, _ = self.t(f"{uuid} info")
 
     def test_invalid_dates_report(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             wait="wait",
             scheduled="scheduled",
             start="start",
@@ -138,7 +127,7 @@ class TestUnusualTasks(TestCase):
         _, out, _ = self.t(f"{uuid} custom-report")
 
     def test_invalid_dates_stop(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             wait="wait",
             scheduled="scheduled",
             start="start",
@@ -150,7 +139,7 @@ class TestUnusualTasks(TestCase):
         _, out, _ = self.t(f"{uuid} stop")
 
     def test_invalid_dates_modify(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             wait="wait",
             scheduled="scheduled",
             start="start",
@@ -162,7 +151,7 @@ class TestUnusualTasks(TestCase):
         _, out, _ = self.t(f"{uuid} mod a description +tag")
 
     def test_invalid_dates_info(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             wait="wait",
             scheduled="scheduled",
             start="start",
@@ -183,7 +172,7 @@ class TestUnusualTasks(TestCase):
         # (note that 'modified' is not shown in the journal)
 
     def test_invalid_dates_export(self):
-        uuid = self.make_task(
+        uuid = self.t.make_tc_task(
             wait="wait",
             scheduled="scheduled",
             start="start",

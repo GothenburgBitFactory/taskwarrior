@@ -8,7 +8,13 @@ import tempfile
 import unittest
 from .exceptions import CommandError
 from .hooks import Hooks
-from .utils import run_cmd_wait, run_cmd_wait_nofail, which, task_binary_location
+from .utils import (
+    run_cmd_wait,
+    run_cmd_wait_nofail,
+    which,
+    task_binary_location,
+    CMAKE_BINARY_DIR,
+)
 from .compat import STRING_TYPE
 
 
@@ -299,6 +305,22 @@ class Task(object):
         if faketime is not None:
             # Use advanced time format
             self._command = [cmd, "-f", faketime] + self._command
+
+    def make_tc_task(self, **props):
+        """Create a task directly in TaskChampion, bypassing TaskWarrior
+        entirely, and returning the UUID. The properties are not interpreted by
+        the shell.
+        """
+        # Generate the path to the `make_tc_task` binary, which is a dependency of the
+        # test runner.
+        make_tc_task = os.path.abspath(
+            os.path.join(CMAKE_BINARY_DIR, "test", "make_tc_task")
+        )
+        cmd = [make_tc_task, self.datadir]
+        for p, v in props.items():
+            cmd.append(f"{p}={v}")
+        _, out, _ = run_cmd_wait(cmd)
+        return out.strip()
 
 
 # vim: ai sts=4 et sw=4
