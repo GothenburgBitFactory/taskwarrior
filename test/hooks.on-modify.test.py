@@ -176,6 +176,34 @@ class TestHooksOnModify(TestCase):
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
+    def test_onmodify_escaped_backslash(self):
+        """on-modify-accept - a well-behaved, successful, on-modify hook."""
+        # Create a task with a slash-escaped tab in it, avoiding TaskWarrior to ensure
+        # the slash exists in the DB.
+        uuid = self.t.make_tc_task(description=r"tab\ttab", status="pending")
+
+        hookname = "on-modify-accept"
+        self.t.hooks.add_default(hookname, log=True)
+
+        # `task _get` shows the backslash-escape.
+        code, out, err = self.t(f"_get 1.description")
+        self.assertEqual(out.strip(), r"tab\ttab")
+
+        code, out, err = self.t(f"{uuid} append foo")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        for msg in logs["output"]["msgs"]:
+            print(msg)
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
+
+        # `task _get` still shows the backslash-escape.
+        code, out, err = self.t(f"_get 1.description")
+        self.assertEqual(out.strip(), r"tab\ttab foo")
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
