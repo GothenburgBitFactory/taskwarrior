@@ -6,8 +6,8 @@
 # Input:
 # - line of JSON for the original task
 # - line of JSON for the modified task, the diff being the modification
-read original_task
-read modified_task
+read -r original_task
+read -r modified_task
 
 # Output:
 # - JSON, modified or unmodified.

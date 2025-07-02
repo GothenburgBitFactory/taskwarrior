@@ -5,7 +5,7 @@
 
 # Input:
 # - Line of JSON for proposed new task.
-read new_task
+read -r new_task
 
 # Output:
 # - JSON, modified or unmodified.

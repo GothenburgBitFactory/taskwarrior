@@ -2,11 +2,11 @@
 
 read -r new_task
 
-if (echo "$new_task" | grep -qE '[tT]eh');
+if (printf "%s" "$new_task" | grep -qE '[tT]eh');
 then
-  new_task=$(echo "$new_task" | sed -r 's/([tT])eh/\1he/g')
+  new_task=$(printf "%s" "$new_task" | sed -r 's/([tT])eh/\1he/g')
   echo "Auto-corrected 'teh' --> 'the'"
 fi
 
-echo "$new_task"
+printf "%s" "$new_task"
 exit 0

@@ -10,7 +10,7 @@ read -r new_task
 # Output:
 # - JSON, modified or unmodified.
 # - Optional feedback/error.
-echo "$new_task"
+printf "%s\n" "$new_task"
 echo 'on-add'
 
 # Status:

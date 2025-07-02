@@ -12,8 +12,8 @@ read -r modified_task
 # Output:
 # - JSON, modified or unmodified.
 # - Optional feedback/error.
-echo "$modified_task"
-echo 'on-modify'
+printf "%s" "$modified_task"
+printf "%s" 'on-modify'
 
 # Status:
 # - 0:     JSON accepted, non-JSON is feedback.

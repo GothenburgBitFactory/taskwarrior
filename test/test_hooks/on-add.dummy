@@ -2,9 +2,9 @@
 
 echo "on-add executed"
 
-while read TASK; do
+while read -r TASK; do
     echo "New task $TASK"
-    echo $TASK
+    printf "%s\n" "$TASK"
 done
 
 exit 0

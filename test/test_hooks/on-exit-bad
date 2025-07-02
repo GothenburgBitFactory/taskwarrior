@@ -5,7 +5,7 @@
 
 # Input:
 # - Read-only line of JSON for each task added/modified
-while read modified_task
+while read -r modified_task
 do
   echo 'CHANGED TASK'
 done

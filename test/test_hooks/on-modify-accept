@@ -6,13 +6,13 @@
 # Input:
 # - line of JSON for the original task
 # - line of JSON for the modified task, the diff being the modification
-read original_task
-read modified_task
+read -r original_task
+read -r modified_task
 
 # Output:
 # - JSON, modified or unmodified.
 # - Optional feedback/error.
-echo $modified_task
+printf "%s\n" "$modified_task"
 echo 'FEEDBACK'
 
 # Status:

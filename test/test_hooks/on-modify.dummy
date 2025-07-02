@@ -2,9 +2,10 @@
 
 echo "on-modify executed"
 
-while read TASK MODTASK; do
-    echo "Existing task $TASK modified to $MODTASK"
-    echo $MODTASK
-done
+read -r TASK
+read -r MODTASK
+
+echo "Existing task $TASK modified to $MODTASK"
+printf "%s\n" "$MODTASK"
 
 exit 0

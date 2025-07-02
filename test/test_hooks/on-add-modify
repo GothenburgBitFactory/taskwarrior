@@ -2,17 +2,17 @@
 
 # Input:
 # - Line of JSON for proposed new task.
-read new_task
+read -r new_task
 
-if (echo $new_task | grep -qE '[tT]eh');
+if (printf "%s\n" "$new_task" | grep -qE '[tT]eh');
 then
-  new_task=$(echo $new_task | sed -r 's/([tT])eh/\1he/g')
+  new_task=$(printf "%s\n" "$new_task" | sed -r 's/([tT])eh/\1he/g')
 fi
 
 # Output:
 # - JSON, modified
 # - Optional feedback/error.
-echo $new_task
+printf "%s\n" "$new_task"
 echo 'FEEDBACK'
 
 # Status:
