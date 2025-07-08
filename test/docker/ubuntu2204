@@ -1,7 +1,14 @@
 FROM ubuntu:22.04
 
+RUN apt-get update && \
+    DEBIAN_FRONTEND="noninteractive" apt-get install -y gpg wget curl
+
+# add Kitware's CMake apt repo
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - > /usr/share/keyrings/kitware-archive-keyring.gpg && \
+    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' > /etc/apt/sources.list.d/kitware.list
+
 RUN apt-get update
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y build-essential cmake git uuid-dev faketime locales python3 curl
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y build-essential git uuid-dev faketime locales python3 cmake
 
 # Setup language environment
 RUN locale-gen en_US.UTF-8
