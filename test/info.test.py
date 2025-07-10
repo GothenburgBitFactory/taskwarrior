@@ -115,7 +115,6 @@ class TestInfoCommand(TestCase):
         self.assertRegex(out, r"U_ONE\s+\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
         self.assertRegex(out, r"U_TWO\s+P1D")
 
-
     def test_tags_without_tags_attribute(self):
         """Verify info command shows tags, even if the `tags` property is not present"""
         # Create a task directly with TC, avoiding TaskWarrior's creation of the deprecated
