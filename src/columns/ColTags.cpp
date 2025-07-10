@@ -66,28 +66,21 @@ void ColumnTags::setStyle(const std::string& value) {
 // Set the minimum and maximum widths for the value.
 void ColumnTags::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
-  if (task.has(_name)) {
+  if (task.getTagCount() > 0) {
     if (_style == "indicator") {
       minimum = maximum = utf8_width(Context::getContext().config.get("tag.indicator"));
     } else if (_style == "count") {
       minimum = maximum = 3;
     } else if (_style == "default" || _style == "list") {
-      std::string tags = task.get(_name);
+      auto tags = task.getTags();
 
-      // Find the widest tag.
-      if (tags.find(',') != std::string::npos) {
-        auto all = split(tags, ',');
-        for (const auto& tag : all) {
-          auto length = utf8_width(tag);
-          if (length > minimum) minimum = length;
-        }
-
-        maximum = utf8_width(tags);
+      // Find the widest tag (minimum) and width of all tags together (maximum)
+      maximum = tags.size() - 1;
+      for (const auto& tag : tags) {
+        auto length = utf8_width(tag);
+        maximum += length;
+        if (length > minimum) minimum = length;
       }
-
-      // No need to split a single tag.
-      else
-        minimum = maximum = utf8_width(tags);
     }
   }
 }

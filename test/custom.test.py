@@ -74,6 +74,30 @@ class TestCustomReports(TestCase):
         self.assertIn("[44m", out)
 
 
+class TestReportTags(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t.config("report.foo.description", "DESC")
+        self.t.config("report.foo.labels", "ID,TAGS")
+        self.t.config("report.foo.columns", "id,tags")
+        self.t.config("report.foo.sort", "id+")
+
+    def test_report_with_tags(self):
+        """Verify custom report includes tags even when `tags` property is not included"""
+        # Create a task directly with TC, avoiding TaskWarrior's creation of the deprecated
+        # `tags` property.
+        uuid = self.t.make_tc_task(
+            status="pending",
+            description="task with tags",
+            tag_tag1="x",
+            tag_tag2="x",
+        )
+        code, out, err = self.t("foo")
+        self.assertIn("tag1", out)
+        self.assertIn("tag2", out)
+
+
 class TestCustomErrorHandling(TestCase):
     def setUp(self):
         self.t = Task()

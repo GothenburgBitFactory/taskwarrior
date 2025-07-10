@@ -26,6 +26,7 @@
 ###############################################################################
 
 import sys
+import time
 import os
 import unittest
 
@@ -113,6 +114,22 @@ class TestInfoCommand(TestCase):
         # TW-#2060: Make sure UDA attributes are formatted
         self.assertRegex(out, r"U_ONE\s+\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
         self.assertRegex(out, r"U_TWO\s+P1D")
+
+
+    def test_tags_without_tags_attribute(self):
+        """Verify info command shows tags, even if the `tags` property is not present"""
+        # Create a task directly with TC, avoiding TaskWarrior's creation of the deprecated
+        # `tags` property.
+        uuid = self.t.make_tc_task(
+            status="pending",
+            description="task with tags",
+            due=str(int(time.time())),
+            tag_foo="x",
+            tag_bar="x",
+        )
+        code, out, err = self.t("1 info")
+        # Tags can occur in any order
+        self.assertRegex(out, r"Tags\s+(bar|foo)\s(foo|bar)")
 
 
 class TestBug425(TestCase):
