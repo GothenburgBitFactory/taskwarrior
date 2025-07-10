@@ -7,6 +7,9 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
+      - name: Update apt repos
+        run: sudo apt-get update -y
+
       - name: Install apt packages
         run: sudo apt-get install -y build-essential cmake git uuid-dev faketime locales python3 curl gcovr ninja-build
 

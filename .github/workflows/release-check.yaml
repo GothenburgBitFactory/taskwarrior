@@ -15,8 +15,11 @@ jobs:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ steps.toolchain.outputs.cachekey }}-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Update apt repos
+        run: sudo apt-get update -y
+
       - name: Install uuid-dev
-        run: sudo apt install uuid-dev
+        run: sudo apt-get install -y uuid-dev
 
       - name: make a release tarball and build from it
         run: |
