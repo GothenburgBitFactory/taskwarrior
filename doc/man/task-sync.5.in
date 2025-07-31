@@ -44,7 +44,7 @@ periodically, such as via
 Taskwarrior provides several options for synchronizing your tasks:
 
  - To a server specifically designed to handle Taskwarrior data.
- + To a cloud storage provider. Currently only GCP is supported.
+ + To a cloud storage provider. Currently both AWS and GCP are supported.
  - To a local, on-disk file.
 
 For most of these, you will need an encryption secret used to encrypt and
