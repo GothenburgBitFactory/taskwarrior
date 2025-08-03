@@ -175,6 +175,8 @@ mod ffi {
             profile_name: String,
             encryption_secret: &CxxString,
             avoid_snapshots: bool,
+            endpoint_url: String,
+            force_path_style: bool,
         ) -> Result<()>;
 
         /// Sync with a server created from `ServerConfig::Aws` using `AwsCredentials::AccessKey`.
@@ -186,6 +188,8 @@ mod ffi {
             secret_access_key: String,
             encryption_secret: &CxxString,
             avoid_snapshots: bool,
+            endpoint_url: String,
+            force_path_style: bool,
         ) -> Result<()>;
 
         /// Sync with a server created from `ServerConfig::Aws` using `AwsCredentials::Default`.
@@ -195,6 +199,8 @@ mod ffi {
             bucket: String,
             encryption_secret: &CxxString,
             avoid_snapshots: bool,
+            endpoint_url: String,
+            force_path_style: bool,
         ) -> Result<()>;
 
         /// Sync with a server created from `ServerConfig::Gcp`.
@@ -624,12 +630,24 @@ impl Replica {
         profile_name: String,
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
+        endpoint_url: String,
+        force_path_style: bool,
     ) -> Result<(), CppError> {
         let mut server = tc::server::ServerConfig::Aws {
-            region,
+            region: if region.is_empty() {
+                None
+            } else {
+                Some(region)
+            },
             bucket,
             credentials: tc::server::AwsCredentials::Profile { profile_name },
             encryption_secret: encryption_secret.as_bytes().to_vec(),
+            force_path_style: force_path_style,
+            endpoint_url: if endpoint_url.is_empty() {
+                None
+            } else {
+                Some(endpoint_url)
+            },
         }
         .into_server()?;
         Ok(self.0.sync(&mut server, avoid_snapshots)?)
@@ -643,15 +661,27 @@ impl Replica {
         secret_access_key: String,
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
+        endpoint_url: String,
+        force_path_style: bool,
     ) -> Result<(), CppError> {
         let mut server = tc::server::ServerConfig::Aws {
-            region,
+            region: if region.is_empty() {
+                None
+            } else {
+                Some(region)
+            },
             bucket,
             credentials: tc::server::AwsCredentials::AccessKey {
                 access_key_id,
                 secret_access_key,
             },
             encryption_secret: encryption_secret.as_bytes().to_vec(),
+            force_path_style: force_path_style,
+            endpoint_url: if endpoint_url.is_empty() {
+                None
+            } else {
+                Some(endpoint_url)
+            },
         }
         .into_server()?;
         Ok(self.0.sync(&mut server, avoid_snapshots)?)
@@ -663,12 +693,24 @@ impl Replica {
         bucket: String,
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
+        endpoint_url: String,
+        force_path_style: bool,
     ) -> Result<(), CppError> {
         let mut server = tc::server::ServerConfig::Aws {
-            region,
+            region: if region.is_empty() {
+                None
+            } else {
+                Some(region)
+            },
             bucket,
             credentials: tc::server::AwsCredentials::Default,
             encryption_secret: encryption_secret.as_bytes().to_vec(),
+            force_path_style: force_path_style,
+            endpoint_url: if endpoint_url.is_empty() {
+                None
+            } else {
+                Some(endpoint_url)
+            },
         }
         .into_server()?;
         Ok(self.0.sync(&mut server, avoid_snapshots)?)
