@@ -1,1 +1,7 @@
-target
+**/build/
+**/target/
+**/.cargo/
+**/.rustup/
+**/cmake-build-*
+**/*.log
+**/*.tmp
