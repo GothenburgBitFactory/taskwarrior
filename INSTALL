@@ -1,15 +1,11 @@
-Installation Instructions
--------------------------
+# Installation Instructions
 
-Please follow the instructions below to build and install Taskwarrior from
-source.
+Please follow the instructions below to build and install Taskwarrior from source.
 
+# Dependencies
 
-Dependencies
-------------
-
-You will need the CMake 3.0+ build system installed in order to build Taskwarrior
-from source. More information on CMake can be obtained at https://cmake.org
+You will need the CMake 3.0+ build system installed in order to build Taskwarrior from source.
+More information on CMake can be obtained at https://cmake.org
 
 You will also need:
   - make
@@ -24,202 +20,193 @@ You will need the following libraries:
 You will need a Rust toolchain of the Minimum Supported Rust Version (MSRV):
   - rust 1.81.0
 
-Basic Installation
-------------------
+# Basic Installation
 
 Briefly, these shell commands will unpack, build and install Taskwarrior:
-
-  $ tar xzf task-X.Y.Z.tar.gz                        [1]
-  $ cd task-X.Y.Z                                    [2]
-  $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release . [3]
-  $ cmake --build build                              [4]
-  $ sudo cmake --install build                       [5]
-  $ cd .. ; rm -r task-X.Y.Z                         [6] (see: Uninstallation)
-
+```
+$ tar xzf task-X.Y.Z.tar.gz                        [1]
+$ cd task-X.Y.Z                                    [2]
+$ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release   [3]
+$ cmake --build build                              [4]
+$ sudo cmake --install build                       [5]
+$ cd .. ; rm -r task-X.Y.Z                         [6] (see: Uninstallation)
+```
 These commands are explained below:
 
-  1. Unpacks the source tarball.  This creates the directory task-X.Y.Z,
-     containing all the code.
+  1. Unpacks the source tarball.
+     This creates the directory task-X.Y.Z, containing all the code.
 
   2. Change directory to the root of the distribution.
 
-  3. Invokes CMake to scan for dependencies and machine-specific details, then
-     generate the makefiles.  Requests an optimized build, which will run faster
-     and be more compact.  This may take a minute.
+  3. Invokes CMake to scan for dependencies and machine-specific details, then generate the makefiles.
+     Requests an optimized build, which will run faster and be more compact.
+     This may take a minute.
 
-  4. Builds Taskwarrior.  This may take a minute.
+  4. Builds Taskwarrior.
+     This may take a minute.
 
   5. Installs the program, documentation and other data files.
 
   6. Removes the temporary directory.
 
+# Build and configurations options
 
-Build and configurations options
---------------------------------
+You can customize the configuration run with CMake variables.
+This will modify the installation process:
 
-You can customize the configuration run with cmake variables. This will modify
-the installation process:
+To change the installation directory you use the following configuration variable:
 
-To change the installation directory you use the following configuration
-variable:
+```shell
+cmake -DCMAKE_INSTALL_PREFIX=<path-to-installation-dir> .
+```
 
-  $ cmake -DCMAKE_INSTALL_PREFIX=<path-to-installation-dir> .
+cmake configuration variables are applied with the -D option and consist of a <name> and a <value>:
 
-cmake configuration variables are applied with the -D option and consist of a
-<name> and a <value>:
+```shell
+cmake -D<name>=<value> .
+```
 
-  $ cmake -D<name>=<value> .
+Five more variables can customize the installation process.
+The following table lists them and their defaults, plus the `CMAKE_INSTALL_PREFIX`:
 
-Four more variables can customize the installation process. The following table
-lists them and their defaults plus the CMAKE_INSTALL_PREFIX:
+```
+CMAKE_INSTALL_PREFIX  /usr/local
+TASK_BINDIR           bin
+TASK_DOCDIR           share/doc/task
+TASK_RCDIR            share/doc/task/rc
+TASK_MAN1DIR          share/man/man1
+TASK_MAN5DIR          share/man/man5
+```
 
-  CMAKE_INSTALL_PREFIX  /usr/local
-  TASK_BINDIR           bin
-  TASK_DOCDIR           share/doc/task
-  TASK_RCDIR            share/doc/task/rc
-  TASK_MAN1DIR          share/man/man1
-  TASK_MAN5DIR          share/man/man5
+The corresponding `TASK_*` variables will be combined with `CMAKE_INSTALL_PREFIX` to get absolute installation directories:
 
-The corresponding TASK_* variables will be combined with CMAKE_INSTALL_PREFIX to
-get absolute installation directories:
-
-  CMAKE_INSTALL_PREFIX/TASK_BINDIR   /usr/local/bin
-  CMAKE_INSTALL_PREFIX/TASK_DOCDIR   /usr/local/share/doc/task
-  CMAKE_INSTALL_PREFIX/TASK_RCDIR    /usr/local/share/doc/task/rc
-  CMAKE_INSTALL_PREFIX/TASK_MAN1DIR  /usr/local/share/man/man1
-  CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
+```
+CMAKE_INSTALL_PREFIX/TASK_BINDIR   /usr/local/bin
+CMAKE_INSTALL_PREFIX/TASK_DOCDIR   /usr/local/share/doc/task
+CMAKE_INSTALL_PREFIX/TASK_RCDIR    /usr/local/share/doc/task/rc
+CMAKE_INSTALL_PREFIX/TASK_MAN1DIR  /usr/local/share/man/man1
+CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
+```
 
 The following variables control aspects of the build process:
 
-  SYSTEM_CORROSION - Use system provided corrosion instead of vendored version
-  ENABLE_TLS_NATIVE_ROOTS - Use the system's TLS root certificates
+```
+SYSTEM_CORROSION - Use system provided corrosion instead of vendored version
+ENABLE_TLS_NATIVE_ROOTS - Use the system's TLS root certificates
+```
 
+# Uninstallation
 
-Uninstallation
---------------
+There is no uninstall option in CMake makefiles.
+This is a manual process.
 
-There is no uninstall option in CMake makefiles. This is a manual process.
+To uninstall Taskwarrior, remove the files listed in the `install_manifest.txt` file that was generated when you built Taskwarrior.
 
-To uninstall Taskwarrior, remove the files listed in the install_manifest.txt
-file that was generated when you built Taskwarrior.
-
-```sh
+```shell
 cd task-X.Y.Z
 sudo xargs rm < build/install_manifest.txt
 ```
 
-If you want to uninstall this way, you will need to omit step [6] above and
-retain the source folder after installation.
+If you want to uninstall this way, you will need to omit step [6] above and retain the source folder after installation.
 
-Taskwarrior Build Notes
------------------------
+# Taskwarrior Build Notes
 
-Taskwarrior has dependencies that are detected by CMake in almost all cases, but
-there are situations and operating systems that mean you will need to offer a
-little help.
+Taskwarrior has dependencies that are detected by CMake in almost all cases, but there are situations and operating systems that mean you will need to offer a little help.
 
-If Taskwarrior will not build on your system, first take a look at the Operating
-System notes below.  If this doesn't help, then go to the Troubleshooting
-section, which includes instructions on how to contact us for help.
+If Taskwarrior does not build on your system, first take a look at the Operating System notes below.
+If this doesn't help, then go to the Troubleshooting section, which includes instructions on how to contact us for help.
 
-Offline Build Notes
--------------------
+# Offline Build Notes
 
-It is common for packaging systems (e.g. NixOS, FreeBSD Ports Collection, pkgsrc, etc)
-to disable networking during builds.  This restriction requires all distribution files
-to be prepositioned after checksum verification as a prerequisite for the build.  The
-following steps have been successful in allowing Taskwarrior to be built in this
-environment:
+It is common for packaging systems (e.g. NixOS, FreeBSD Ports Collection, pkgsrc, etc) to disable networking during builds.
+This restriction requires all distribution files to be prepositioned after checksum verification as a prerequisite for the build.
+The following steps have been successful in allowing Taskwarrior to be built in this environment:
 
-1. Extract all crates in a known location, e.g. ${WRKDIR}/cargo-crates
-This includes crates needed for corrosion (search for Cargo.lock files)
+1. Extract all crates in a known location, e.g. `${WRKDIR}/cargo-crates`
+   This includes crates needed for corrosion (search for Cargo.lock files)
 
-2. Create .cargo-checksum.json for each crate
-For example:
-printf '{"package":"%s","files":{}}' $(sha256 -q ${DISTDIR}/rayon-core-1.12.1.tar.gz) \
-        > ${WRKDIR}/cargo-crates/rayon-core-1.12.1/.cargo-checksum.json
-
+2. Create `.cargo-checksum.json` for each crate
+   For example:
+   ```shell
+   printf '{"package":"%s","files":{}}' $(sha256 -q ${DISTDIR}/rayon-core-1.12.1.tar.gz) \
+          > ${WRKDIR}/cargo-crates/rayon-core-1.12.1/.cargo-checksum.json
+   ```
 3. Create a custom config.toml file
-For example, ${WRKDIR}/.cargo/config.toml
-[source.cargo]
-directory = '${WRKDIR}/cargo-crates'
-[source.crates-io]
-replace-with = 'cargo'
-
-4. After running cmake, configure cargo
-For example:
-cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} ${CARGO_ENV} \
-  /usr/local/bin/cargo update \
-  --manifest-path ${WRKDIR}/.cargo/config.toml \
-  --verbose
-
+   For example, ${WRKDIR}/.cargo/config.toml
+   ```ini
+   [source.cargo]
+   directory = '${WRKDIR}/cargo-crates'
+   [source.crates-io]
+   replace-with = 'cargo'
+   ```
+4. After running CMake, configure cargo
+   For example:
+   ```shell
+   cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} ${CARGO_ENV} \
+     /usr/local/bin/cargo update \
+     --manifest-path ${WRKDIR}/.cargo/config.toml \
+     --verbose
+   ```
 5. Set CARGO_HOME in environment
-For example
-CARGO_HOME=${WRKDIR}/.cargo
+   For example
+   ```
+   CARGO_HOME=${WRKDIR}/.cargo
+   ```
 
-The build and installation steps should be the same as a standard build
-at this point.
+The build and installation steps should be the same as a standard build at this point.
 
-Operating System Notes
-----------------------
+# Operating System Notes
 
-Cygwin
-  If 'make install' fails when writing to the /usr/local/share/ directory,
-  this may be because your current login doesn't have permission to write
-  to the Windows directory containing your Cygwin installation. Either
-  login to Windows as an Administrator and try the 'make install' process
-  again, or reinstall Cygwin under your normal Windows login.
+## Cygwin
+If `make install` fails when writing to the `/usr/local/share/` directory, this may be because your current login doesn't have permission to write to the Windows directory containing your Cygwin installation.
+Either login to Windows as an Administrator and try the `make install` process again, or reinstall Cygwin under your normal Windows login.
 
+## Darwin, 32bit
+Taskwarrior needs to be built from source, and use this configure command:
 
-Darwin, 32bit
-  Taskwarrior needs to be built from source, and use this configure command:
+```shell
+cmake -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 .
+```
 
-    cmake -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 .
+See:
+ - https://taskwarrior.org/issues/817
+ - https://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
+ - https://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
+ - https://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
 
-  See:
-    https://taskwarrior.org/issues/817
-    https://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
-    https://stackoverflow.com/questions/2617508/cmake-gcc-cuda-and-m32-wtf
-    https://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
+## OpenBSD
+In order to build Taskwarrior 2.4.2+, you might need to install a newer GCC version from ports or packages.
 
+Afterward, run
 
-OpenBSD
-  In order to build Taskwarrior 2.4.2+, you might need to install a newer GCC
-  version from ports or packages.
+```shell
+cmake -DCMAKE_CXX_COMPILER=eg++ .
+```
 
-  Afterwards, run
-    cmake -DCMAKE_CXX_COMPILER=eg++ .
+and build normally.
 
-  and build normally.
+See: https://github.com/GothenburgBitFactory/taskwarrior/issues/1605
 
-  See: https://github.com/GothenburgBitFactory/taskwarrior/issues/1605
+## WASM
+Using the Emscripten compiler, you can achieve it like this:
 
-WASM
-  Using the Emscripten compiler, you can achieve it like this:
+```shell
+cmake -DCMAKE_CXX_COMPILER=emcc -DCMAKE_BUILD_TYPE=release -DENABLE_WASM=ON \
+      -DCMAKE_EXE_LINKER_FLAGS="-m32 -s NO_DYNAMIC_EXECUTION=1 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s INVOKE_RUN=0" \
+      -DCMAKE_CXX_FLAGS_RELEASE="-O2 -m32"
+```
 
-    cmake -DCMAKE_CXX_COMPILER=emcc -DCMAKE_BUILD_TYPE=release -DENABLE_WASM=ON \
-          -DCMAKE_EXE_LINKER_FLAGS="-m32 -s NO_DYNAMIC_EXECUTION=1 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s INVOKE_RUN=0" \
-          -DCMAKE_CXX_FLAGS_RELEASE="-O2 -m32"
+This will produce an optimized WASM with a main() that is callable multiple times.
 
-  This will produce an optimized WASM with a main() that is callable multiple times.
+# Troubleshooting
 
-Troubleshooting
----------------
+If you've recently made changes to dependencies (by reinstalling them, for example) be sure to rerun `cmake .` before trying to execute `make` again.
 
-If you've recently made changes to dependencies (by reinstalling them, for
-example) be sure to rerun 'cmake .' before trying to execute 'make' again.
+CMake will run and locate all the necessary pieces for the build, and create a Makefile.
+There may be errors and warnings when running CMake, or there may be compiler errors and warnings when running `make`.
+Sometimes you will run CMake with no reported problems, and the build will fail later.
+This is almost always because CMake is mistaken about some assumption.
 
-CMake will run and locate all the necessary pieces for the build, and create
-a Makefile.  There may be errors and warnings when running CMake, or there
-may be compiler errors and warnings when running 'make'.  Sometimes you will run
-CMake with no reported problems, and the build will fail later.  This is
-almost always because CMake is mistaken about some assumption.
+If a build does not succeed, please send the contents of the `CMakeCache.txt` and `CMakeFiles/CMakeOutput.log` files to support@gothenburgbitfactory.org.
 
-If a build does not succeed, please send the contents of the 'CMakeCache.txt'
-and 'CMakeFiles/CMakeOutput.log' files to support@gothenburgbitfactory.org.
-
-If CMake runs but Taskwarrior does not build, please send the contents of the
-above files as well as a transcript from the build, which is not written to a
-file and must be captured from the terminal.
-
----
+If CMake runs but Taskwarrior does not build, please send the contents of the above files as well as a transcript from the build, which is not written to a file and must be captured from the terminal.
