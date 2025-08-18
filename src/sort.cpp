@@ -36,13 +36,16 @@
 #include <util.h>
 
 #include <algorithm>
+#include <functional>
 #include <list>
 #include <map>
+#include <random>
 #include <string>
 #include <vector>
 
 static std::vector<Task>* global_data = nullptr;
 static std::vector<std::string> global_keys;
+static unsigned int sort_random_seed = 0;
 static bool sort_compare(int, int);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +55,19 @@ void sort_tasks(std::vector<Task>& data, std::vector<int>& order, const std::str
 
   // Split the key defs.
   global_keys = split(keys, ',');
+
+  // Generate a random seend for sorting by "random".
+  if (sort_random_seed == 0) {
+    // For testing purposes, allow the seed to be specified in an undocumented configuration
+    // setting.
+    std::string seed_str = Context::getContext().config.get("debug.random.seed");
+    if (seed_str.empty()) {
+      std::random_device rd;
+      sort_random_seed = rd();
+    } else {
+      sort_random_seed = std::stoul(seed_str);
+    }
+  }
 
   // Only sort if necessary.
   if (order.size()) std::stable_sort(order.begin(), order.end(), sort_compare);
@@ -110,8 +126,25 @@ static bool sort_compare(int left, int right) {
   for (auto& k : global_keys) {
     Context::getContext().decomposeSortField(k, field, ascending, breakIndicator);
 
+    // Random.
+    if (field == "random") {
+      // For "random" sort, we produce a stable number for each task based on a hash of its
+      // UUID plus the random seed.
+      std::string left_uuid = (*global_data)[left].get("uuid");
+      std::string right_uuid = (*global_data)[right].get("uuid");
+
+      std::string left_scrambled =
+          std::to_string(std::hash<std::string>{}(left_uuid + std::to_string(sort_random_seed)));
+      std::string right_scrambled =
+          std::to_string(std::hash<std::string>{}(right_uuid + std::to_string(sort_random_seed)));
+
+      if (left_scrambled == right_scrambled) continue;
+
+      return ascending ? (left_scrambled < right_scrambled) : (left_scrambled > right_scrambled);
+    }
+
     // Urgency.
-    if (field == "urgency") {
+    else if (field == "urgency") {
       left_real = (*global_data)[left].urgency();
       right_real = (*global_data)[right].urgency();
 

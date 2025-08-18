@@ -1279,6 +1279,10 @@ grouping.
 A special sort value of "none" indicates that no sorting is required, and tasks
 will be presented in the order (if any) in which they are selected.
 
+A special sort value of "random" indicates that the tasks will be sorted in a
+random order. Each time a report with 'sort:random' is run, a new random
+order will be generated.
+
 .TP
 .B report.X.filter
 This adds a filter to the report X so that only tasks matching the filter
