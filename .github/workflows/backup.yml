@@ -1,0 +1,58 @@
+name: backup
+
+on:
+  schedule:
+    # Mondays are backup days
+    - cron: '0 0 * * 1'
+
+jobs:
+  # This job runs `backup-github-repo` which captures all issues and pull requests,
+  # including their comments. Note that this does not capture discussions or releases.
+  repo-issues:
+    runs-on: ubuntu-latest
+    name: "Backup Repo Issues"
+    permissions:
+      contents: write
+      actions: read
+      attestations: read
+      checks: read
+      deployments: read
+      issues: read
+      models: read
+      discussions: read
+      packages: read
+      pages: read
+      pull-requests: read
+      security-events: read
+      statuses: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Install backup-github-repo"
+        run: npm install -g backup-github-repo
+
+      - name: "Configure backup-github-repo"
+        run: |
+          echo "{\"token\":\"${GH_TOKEN}\"}" > .backup-github-repo
+          echo 	.backup-github-repo >> .git/info/exclude
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Run backup-github-repo"
+        run: backup-github-repo
+
+      - name: "Remove unnecessary HTML"
+        run: rm -rf repo-backup/html
+
+      - name: "Push the results"
+        run: |
+          git config --global user.name 'Backup Job'
+          git config --global user.email 'taskwarrior@noreply.github.com'
+          git add repo-backup
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git commit -am "Update Repo Backup"
+            git push
+          else
+            echo "No changes; not making a commit"
+          fi
