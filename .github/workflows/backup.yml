@@ -27,7 +27,7 @@ jobs:
       statuses: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: "Install backup-github-repo"
         run: npm install -g backup-github-repo
