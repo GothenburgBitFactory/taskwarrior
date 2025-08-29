@@ -34,6 +34,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 
+
 class TestRandomSort(TestCase):
     def setUp(self):
         self.t = Task()
@@ -46,20 +47,40 @@ class TestRandomSort(TestCase):
     def test_random_sort_deterministic(self):
         """Verify that 'sort:random' with different seeds produces different orderings."""
         # With a fixed seed, the order is always the same.
-        code, out1_seed1, err = self.t("rc.debug.random.seed=123 all rc.report.all.sort:random")
-        code, out2_seed1, err = self.t("rc.debug.random.seed=123 all rc.report.all.sort:random")
-        self.assertEqual(out1_seed1, out2_seed1, "Random sort with the same seed should produce the same order")
+        code, out1_seed1, err = self.t(
+            "rc.debug.random.seed=123 all rc.report.all.sort:random"
+        )
+        code, out2_seed1, err = self.t(
+            "rc.debug.random.seed=123 all rc.report.all.sort:random"
+        )
+        self.assertEqual(
+            out1_seed1,
+            out2_seed1,
+            "Random sort with the same seed should produce the same order",
+        )
 
         # With a different fixed seed, the order is different.
-        code, out1_seed2, err = self.t("rc.debug.random.seed=456 all rc.report.all.sort:random")
-        self.assertNotEqual(out1_seed1, out1_seed2, "Random sort with different seeds should produce different orders")
+        code, out1_seed2, err = self.t(
+            "rc.debug.random.seed=456 all rc.report.all.sort:random"
+        )
+        self.assertNotEqual(
+            out1_seed1,
+            out1_seed2,
+            "Random sort with different seeds should produce different orders",
+        )
 
     def test_random_and_id_sort(self):
         """Verify that 'sort:random,id' is not the same as 'sort:id'."""
         code, out_id, err = self.t("all rc.report.all.sort:id")
-        code, out_random_id, err = self.t("rc.debug.random.seed=123 all rc.report.all.sort:random,id")
-        self.assertNotEqual(out_id, out_random_id, "random,id sort should be different from id sort")
+        code, out_random_id, err = self.t(
+            "rc.debug.random.seed=123 all rc.report.all.sort:random,id"
+        )
+        self.assertNotEqual(
+            out_id, out_random_id, "random,id sort should be different from id sort"
+        )
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+
     unittest.main(testRunner=TAPTestRunner())
