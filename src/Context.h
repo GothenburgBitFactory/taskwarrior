@@ -46,36 +46,36 @@ class Context {
   Context() = default;  // Default constructor
   ~Context();           // Destructor
 
-  Context(const Context &);
-  Context &operator=(const Context &);
+  Context(const Context&);
+  Context& operator=(const Context&);
 
-  static Context &getContext();
-  static void setContext(Context *);
+  static Context& getContext();
+  static void setContext(Context*);
 
-  int initialize(int, const char **);  // all startup
+  int initialize(int, const char**);  // all startup
   int run();
-  int dispatch(std::string &);  // command handler dispatch
+  int dispatch(std::string&);  // command handler dispatch
 
   int getWidth();   // determine terminal width
   int getHeight();  // determine terminal height
 
-  std::string getTaskContext(const std::string &, std::string, bool fallback = true);
+  std::string getTaskContext(const std::string&, std::string, bool fallback = true);
 
   const std::vector<std::string> getColumns() const;
-  void getLimits(int &, int &);
+  void getLimits(int&, int&);
 
-  bool color();                       // TTY or <other>?
-  bool verbose(const std::string &);  // Verbosity control
+  bool color();                      // TTY or <other>?
+  bool verbose(const std::string&);  // Verbosity control
 
-  void header(const std::string &);    // Header message sink
-  void footnote(const std::string &);  // Footnote message sink
-  void debug(const std::string &);     // Debug message sink
-  void error(const std::string &);     // Error message sink - non-maskable
+  void header(const std::string&);    // Header message sink
+  void footnote(const std::string&);  // Footnote message sink
+  void debug(const std::string&);     // Debug message sink
+  void error(const std::string&);     // Error message sink - non-maskable
 
-  void decomposeSortField(const std::string &, std::string &, bool &, bool &);
-  void debugTiming(const std::string &, const Timer &);
+  void decomposeSortField(const std::string&, std::string&, bool&, bool&);
+  void debugTiming(const std::string&, const Timer&);
 
-  CurrentTask withCurrentTask(const Task *);
+  CurrentTask withCurrentTask(const Task*);
   friend class CurrentTask;
 
  private:
@@ -86,7 +86,7 @@ class Context {
   void loadAliases();
   void propagateDebug();
 
-  static Context *context;
+  static Context* context;
 
  public:
   CLI2 cli2{};
@@ -104,8 +104,8 @@ class Context {
   std::vector<std::string> footnotes{};
   std::vector<std::string> errors{};
   std::vector<std::string> debugMessages{};
-  std::map<std::string, Command *> commands{};
-  std::map<std::string, Column *> columns{};
+  std::map<std::string, Command*> commands{};
+  std::map<std::string, Column*> columns{};
   int terminal_width{0};
   int terminal_height{0};
 
@@ -121,7 +121,7 @@ class Context {
   long time_hooks_us{0};
 
   // the current task for DOM references, or NULL if there is no task
-  const Task *currentTask{NULL};
+  const Task* currentTask{NULL};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,10 +132,10 @@ class CurrentTask {
   ~CurrentTask();
 
  private:
-  CurrentTask(Context &context, const Task *previous);
+  CurrentTask(Context& context, const Task* previous);
 
-  Context &context;
-  const Task *previous;
+  Context& context;
+  const Task* previous;
 
   friend class Context;
 };

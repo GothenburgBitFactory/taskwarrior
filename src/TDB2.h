@@ -44,12 +44,12 @@ class TDB2 {
 
   TDB2() = default;
 
-  void open_replica(const std::string &, bool create_if_missing, bool read_write);
+  void open_replica(const std::string&, bool create_if_missing, bool read_write);
   void open_replica_in_memory();
-  void add(Task &);
-  void modify(Task &);
-  void purge(Task &);
-  void get_changes(std::vector<Task> &);
+  void add(Task&);
+  void modify(Task&);
+  void purge(Task&);
+  void get_changes(std::vector<Task>&);
   void gc();
   void expire_tasks();
   int latest_id();
@@ -58,20 +58,20 @@ class TDB2 {
   const std::vector<Task> all_tasks();
   const std::vector<Task> pending_tasks();
   const std::vector<Task> completed_tasks();
-  bool get(int, Task &);
-  bool get(const std::string &, Task &);
-  bool has(const std::string &);
-  const std::vector<Task> siblings(Task &);
-  const std::vector<Task> children(Task &);
+  bool get(int, Task&);
+  bool get(const std::string&, Task&);
+  bool has(const std::string&);
+  const std::vector<Task> siblings(Task&);
+  const std::vector<Task> children(Task&);
 
   // ID <--> UUID mapping.
   std::string uuid(int);
-  int id(const std::string &);
+  int id(const std::string&);
 
   int num_local_changes();
   int num_reverts_possible();
 
-  rust::Box<tc::Replica> &replica();
+  rust::Box<tc::Replica>& replica();
 
  private:
   std::optional<rust::Box<tc::Replica>> _replica;
@@ -85,8 +85,8 @@ class TDB2 {
   // UUID -> Task containing all tasks modified in this invocation.
   std::map<std::string, Task> changes;
 
-  const rust::Box<tc::WorkingSet> &working_set();
-  void maybe_add_undo_point(rust::Vec<tc::Operation> &);
+  const rust::Box<tc::WorkingSet>& working_set();
+  void maybe_add_undo_point(rust::Vec<tc::Operation>&);
 };
 
 #endif

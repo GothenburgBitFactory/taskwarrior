@@ -34,14 +34,14 @@
 class CmdModify : public Command {
  public:
   CmdModify();
-  int execute(std::string &);
-  void checkConsistency(Task &before, Task &after);
-  int modifyAndUpdate(Task &before, Task &after,
-                      std::map<std::string, std::string> *projectChanges = nullptr);
-  int modifyRecurrenceSiblings(Task &task,
-                               std::map<std::string, std::string> *projectChanges = nullptr);
-  int modifyRecurrenceParent(Task &task,
-                             std::map<std::string, std::string> *projectChanges = nullptr);
+  int execute(std::string&);
+  void checkConsistency(Task& before, Task& after);
+  int modifyAndUpdate(Task& before, Task& after,
+                      std::map<std::string, std::string>* projectChanges = nullptr);
+  int modifyRecurrenceSiblings(Task& task,
+                               std::map<std::string, std::string>* projectChanges = nullptr);
+  int modifyRecurrenceParent(Task& task,
+                             std::map<std::string, std::string>* projectChanges = nullptr);
 };
 
 #endif

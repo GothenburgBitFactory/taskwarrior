@@ -35,10 +35,10 @@
 class CmdImportV2 : public Command {
  public:
   CmdImportV2();
-  int execute(std::string &);
+  int execute(std::string&);
 
  private:
-  int import(const std::vector<std::map<std::string, std::string>> &task_data);
+  int import(const std::vector<std::map<std::string, std::string>>& task_data);
 };
 
 #endif

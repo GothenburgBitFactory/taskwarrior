@@ -39,10 +39,10 @@ class Version {
   // Create an invalid version.
   Version() = default;
 
-  Version(const Version &other) = default;
-  Version(Version &&other) = default;
-  Version &operator=(const Version &) = default;
-  Version &operator=(Version &&) = default;
+  Version(const Version& other) = default;
+  Version(Version&& other) = default;
+  Version& operator=(const Version&) = default;
+  Version& operator=(Version&&) = default;
 
   // Return a version representing the release being built.
   static Version Current();
@@ -50,17 +50,17 @@ class Version {
   bool is_valid() const;
 
   // Compare versions.
-  bool operator<(const Version &) const;
-  bool operator<=(const Version &) const;
-  bool operator>(const Version &) const;
-  bool operator>=(const Version &) const;
-  bool operator==(const Version &) const;
-  bool operator!=(const Version &) const;
+  bool operator<(const Version&) const;
+  bool operator<=(const Version&) const;
+  bool operator>(const Version&) const;
+  bool operator>=(const Version&) const;
+  bool operator==(const Version&) const;
+  bool operator!=(const Version&) const;
 
   // Convert back to a string.
   operator std::string() const;
 
-  friend std::ostream &operator<<(std::ostream &os, const Version &version);
+  friend std::ostream& operator<<(std::ostream& os, const Version& version);
 
  private:
   int major = -1;

@@ -36,10 +36,10 @@
 class CmdUndo : public Command {
  public:
   CmdUndo();
-  int execute(std::string &);
+  int execute(std::string&);
 
  private:
-  bool confirm_revert(const std::vector<Operation> &);
+  bool confirm_revert(const std::vector<Operation>&);
 };
 
 #endif

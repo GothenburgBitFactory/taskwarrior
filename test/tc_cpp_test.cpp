@@ -41,7 +41,7 @@ std::string uuid2str(tc::Uuid uuid) { return static_cast<std::string>(uuid.to_st
 // Tests for the basic cxxbridge functionality. This focuses on the methods with
 // complex cxxbridge implementations, rather than those with complex Rust
 // implementations but simple APIs, like sync.
-int TEST_NAME(int, char **) {
+int TEST_NAME(int, char**) {
   UnitTest t;
   std::string str;
 
@@ -94,7 +94,7 @@ int TEST_NAME(int, char **) {
   auto old_task = ops[5].get_old_task();
   // old_task is in arbitrary order, so just check that status is in there.
   bool found = false;
-  for (auto &pv : old_task) {
+  for (auto& pv : old_task) {
     std::string p = static_cast<std::string>(pv.prop);
     if (p == "status") {
       std::string v = static_cast<std::string>(pv.value);
@@ -131,7 +131,7 @@ int TEST_NAME(int, char **) {
 
   auto all_tasks = replica->all_task_data();
   t.is(all_tasks.size(), (size_t)2, "now there are 2 tasks");
-  for (auto &maybe_task : all_tasks) {
+  for (auto& maybe_task : all_tasks) {
     t.ok(maybe_task.is_some(), "all_tasks is fully populated");
     auto task = maybe_task.take();
     if (task->get_uuid() == uuid) {
@@ -144,7 +144,7 @@ int TEST_NAME(int, char **) {
   try {
     replica->sync_to_local("/does/not/exist", false);
     // tc::new_replica_on_disk("/does/not/exist", false);
-  } catch (rust::Error &err) {
+  } catch (rust::Error& err) {
     t.is(err.what(),
          "unable to open database file: /does/not/exist/taskchampion-local-sync-server.sqlite3: "
          "Error code 14: Unable to open the database file",

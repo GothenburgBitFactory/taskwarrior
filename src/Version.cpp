@@ -66,32 +66,32 @@ Version Version::Current() { return Version(PACKAGE_VERSION); }
 bool Version::is_valid() const { return major >= 0; }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Version::operator<(const Version &other) const {
+bool Version::operator<(const Version& other) const {
   return std::tie(major, minor, patch) < std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Version::operator<=(const Version &other) const {
+bool Version::operator<=(const Version& other) const {
   return std::tie(major, minor, patch) <= std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Version::operator>(const Version &other) const {
+bool Version::operator>(const Version& other) const {
   return std::tie(major, minor, patch) > std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Version::operator>=(const Version &other) const {
+bool Version::operator>=(const Version& other) const {
   return std::tie(major, minor, patch) >= std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Version::operator==(const Version &other) const {
+bool Version::operator==(const Version& other) const {
   return std::tie(major, minor, patch) == std::tie(other.major, other.minor, other.patch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Version::operator!=(const Version &other) const {
+bool Version::operator!=(const Version& other) const {
   return std::tie(major, minor, patch) != std::tie(other.major, other.minor, other.patch);
 }
 
@@ -107,7 +107,7 @@ Version::operator std::string() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::ostream &operator<<(std::ostream &os, const Version &version) {
+std::ostream& operator<<(std::ostream& os, const Version& version) {
   os << std::string(version);
   return os;
 }

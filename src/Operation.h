@@ -39,14 +39,14 @@
 // type.
 class Operation {
  public:
-  explicit Operation(const tc::Operation &);
+  explicit Operation(const tc::Operation&);
 
-  Operation(const Operation &other) = default;
-  Operation &operator=(const Operation &other);
+  Operation(const Operation& other) = default;
+  Operation& operator=(const Operation& other);
 
   // Create a vector of Operations given the result of `Replica::get_undo_operations` or
   // `Replica::get_task_operations`. The resulting vector must not outlive the input `rust::Vec`.
-  static std::vector<Operation> operations(const rust::Vec<tc::Operation> &);
+  static std::vector<Operation> operations(const rust::Vec<tc::Operation>&);
 
   // Methods from the underlying `tc::Operation`.
   bool is_create() const { return op->is_create(); }
@@ -79,10 +79,10 @@ class Operation {
   // Define a partial order on Operations:
   //  - Create < Update < Delete < UndoPoint
   //  - Given two updates, sort by timestamp
-  bool operator<(const Operation &other) const;
+  bool operator<(const Operation& other) const;
 
  private:
-  const tc::Operation *op;
+  const tc::Operation* op;
 };
 
 #endif

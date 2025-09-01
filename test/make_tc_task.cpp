@@ -46,11 +46,11 @@ int usage() {
 }  // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   if (!--argc) {
     return usage();
   }
-  char *datadir = *++argv;
+  char* datadir = *++argv;
 
   auto replica = tc::new_replica_on_disk(datadir, /*create_if_missing=*/true, /*read_write=*/true);
   auto uuid = tc::uuid_v4();
