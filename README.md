@@ -6,7 +6,6 @@
 [![Release](https://img.shields.io/github/v/release/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
 [![Release date](https://img.shields.io/github/release-date/GothenburgBitFactory/taskwarrior)](https://github.com/GothenburgBitFactory/taskwarrior/releases/latest)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/GothenburgBitFactory?color=green)](https://github.com/sponsors/GothenburgBitFactory/)
-[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20Taskwarrior%20Guru-006BFF)](https://gurubase.io/g/taskwarrior)
 </br>
 </div>
 
