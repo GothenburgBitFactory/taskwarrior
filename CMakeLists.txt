@@ -152,7 +152,7 @@ if (EXISTS ${CMAKE_SOURCE_DIR}/performance)
   add_subdirectory (performance EXCLUDE_FROM_ALL)
 endif (EXISTS ${CMAKE_SOURCE_DIR}/performance)
 
-set (doc_FILES ChangeLog README.md INSTALL AUTHORS COPYING LICENSE)
+set (doc_FILES ChangeLog README.md INSTALL AUTHORS LICENSE)
 foreach (doc_FILE ${doc_FILES})
   install (FILES ${doc_FILE}  DESTINATION ${TASK_DOCDIR})
 endforeach (doc_FILE)

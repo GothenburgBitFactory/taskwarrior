@@ -7,7 +7,7 @@
 " Copyright 2009 - 2021 John Florian
 "
 " This file is available under the MIT license.
-" For the full text of this license, see COPYING.
+" For the full text of this license, see LICENSE.
 
 
 " Taskwarrior data files
