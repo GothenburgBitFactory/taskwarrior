@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 for theme in $PWD/../../rc/solarized-light-256.theme
 do

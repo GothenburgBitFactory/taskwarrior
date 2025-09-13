@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 for theme in $PWD/../../rc/light-16.theme \
              $PWD/../../rc/light-256.theme
