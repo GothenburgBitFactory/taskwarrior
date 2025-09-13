@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 ################################################################################
 ##
 ## Copyright 2006 - 2021, Tomas Babej, Paul Beckingham, Federico Hernandez.
