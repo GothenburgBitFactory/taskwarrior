@@ -772,7 +772,16 @@ task 1,4-10,19 delete
 .TP
 .B +tag|-tag
 Tags are arbitrary words associated with a task. Use + to add a tag and - to
-remove a tag from a task. A task can have any quantity of tags.
+remove a tag from a task. A task can have any quantity of tags.  Tags cannot
+contain whitespace, and cannot start with any of the special characters:
+
+.ig
+    see also taskwarrior:src/Lexer.cpp isSingleCharOperator()
+    see also taskchampion:src/task/task.rs INVALID_TAG_CHARACTERS
+..
+.nf
+    +-*/()<>^!%=~
+.fi
 
 Certain tags (called 'special tags'), can be used to affect the way tasks are
 treated.  For example, if a task has the special tag 'nocolor', then it is

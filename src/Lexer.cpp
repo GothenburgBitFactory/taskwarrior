@@ -708,7 +708,7 @@ bool Lexer::isSet(std::string& token, Lexer::Type& type) {
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::tag
 //   ^ | '(' | ')' | <unicodeWhitespace>
-//     [ +|- ] <isIdentifierStart> [ <isIdentifierNext> ]*
+//     [ +|- ] <isIdentifierStart> [ <word> ]
 bool Lexer::isTag(std::string& token, Lexer::Type& type) {
   std::size_t marker = _cursor;
 
@@ -721,14 +721,12 @@ bool Lexer::isTag(std::string& token, Lexer::Type& type) {
     ++marker;
 
     if (isIdentifierStart(_text[marker])) {
-      utf8_next_char(_text, marker);
-
-      while (isIdentifierNext(_text[marker])) utf8_next_char(_text, marker);
-
-      token = _text.substr(_cursor, marker - _cursor);
-      type = Lexer::Type::tag;
-      _cursor = marker;
-      return true;
+      if (readWord(_text, marker, token)) {
+        token = _text.substr(_cursor, marker - _cursor);
+        type = Lexer::Type::tag;
+        _cursor = marker;
+        return true;
+      }
     }
   }
 

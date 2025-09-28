@@ -595,6 +595,33 @@ class TestBug818(TestCase):
         self.assertIn("four", out)
 
 
+class TestIssue3957(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_tag_dashes_and_utf8_glyphs(self):
+        """
+        - All non-whitespace valid if not first char
+        - Single char tags work
+        - UTF-8 can work as first/only chars too
+        """
+        crabglyph = "\U0001f980"
+        testtags = ["", "this-test", "that-test.foo", f"foo-{crabglyph}"]
+
+        self.t(f"add{' +'.join(testtags)} one")
+        code, out, err = self.t("_get 1.tags")
+        self.assertEqual(sorted(testtags[1:]), sorted(out.strip().split(",")))
+
+        self.t("add +x two")
+        code, out, err = self.t("_get 2.tags")
+        self.assertEqual("x\n", out)
+
+        self.t(f"add +{crabglyph} three")
+        code, out, err = self.t("_get 3.tags")
+        self.assertEqual(f"{crabglyph}\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
 
