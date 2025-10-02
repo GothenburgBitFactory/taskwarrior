@@ -48,10 +48,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static std::string wrapWithPrefixes(const std::string& text,
-                                    size_t width,
-                                    const std::string& prefixFirst,
-                                    const std::string& prefixCont) {
+static std::string wrapWithPrefixes(const std::string& text, size_t width,
+                                    const std::string& prefixFirst, const std::string& prefixCont) {
   if (width == 0) return prefixFirst + text;
 
   std::ostringstream out;
@@ -59,11 +57,11 @@ static std::string wrapWithPrefixes(const std::string& text,
   std::string word, line;
   bool firstLine = true;
 
-  auto safeSub = [](size_t a, size_t b){ return (a > b) ? (a - b) : 0u; };
+  auto safeSub = [](size_t a, size_t b) { return (a > b) ? (a - b) : 0u; };
   const size_t effFirst = safeSub(width, prefixFirst.size());
-  const size_t effCont  = safeSub(width, prefixCont.size());
+  const size_t effCont = safeSub(width, prefixCont.size());
 
-  auto flush = [&](bool isFirst){
+  auto flush = [&](bool isFirst) {
     if (!line.empty()) {
       out << (isFirst ? prefixFirst : prefixCont) << line << '\n';
       line.clear();
@@ -161,25 +159,26 @@ int CmdInfo::execute(std::string& output) {
     auto indent = Context::getContext().config.getInteger("indent.annotation");
 
     {
-  const size_t termWidth = Context::getContext().getWidth();
-  const size_t approxNameCol = 20; // conservative; covers labels like "Last modified"
-  const size_t valueWidth = termWidth > approxNameCol ? termWidth - approxNameCol : termWidth;
+      const size_t termWidth = Context::getContext().getWidth();
+      const size_t approxNameCol = 20;  // conservative; covers labels like "Last modified"
+      const size_t valueWidth = termWidth > approxNameCol ? termWidth - approxNameCol : termWidth;
 
-  for (const auto& anno : task.getAnnotations()) {
-    // first line looks exactly like before: <indent><timestamp><space>
-    const std::string firstPrefix =
-      std::string(indent, ' ') +
-      Datetime(anno.first.substr(11)).toString(dateformatanno) + ' ';
+      for (const auto& anno : task.getAnnotations()) {
+        // first line looks exactly like before: <indent><timestamp><space>
+        const std::string firstPrefix = std::string(indent, ' ') +
+                                        Datetime(anno.first.substr(11)).toString(dateformatanno) +
+                                        ' ';
 
-    // continuation lines: same width, all spaces
-    const std::string contPrefix(firstPrefix.size(), ' ');
+        // continuation lines: same width, all spaces
+        const std::string contPrefix(firstPrefix.size(), ' ');
 
-    // wrap just the annotation body with our prefixes
-    const std::string wrapped = wrapWithPrefixes(anno.second, valueWidth, firstPrefix, contPrefix);
+        // wrap just the annotation body with our prefixes
+        const std::string wrapped =
+            wrapWithPrefixes(anno.second, valueWidth, firstPrefix, contPrefix);
 
-    description += '\n' + wrapped;
-  }
-}
+        description += '\n' + wrapped;
+      }
+    }
 
     if (task.has("description")) {
       row = view.addRow();
