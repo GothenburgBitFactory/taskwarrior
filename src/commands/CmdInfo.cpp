@@ -44,8 +44,52 @@
 
 #include <algorithm>
 #include <sstream>
+#include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
+
+static std::string wrapWithPrefixes(const std::string& text,
+                                    size_t width,
+                                    const std::string& prefixFirst,
+                                    const std::string& prefixCont) {
+  if (width == 0) return prefixFirst + text;
+
+  std::ostringstream out;
+  std::istringstream is(text);
+  std::string word, line;
+  bool firstLine = true;
+
+  auto safeSub = [](size_t a, size_t b){ return (a > b) ? (a - b) : 0u; };
+  const size_t effFirst = safeSub(width, prefixFirst.size());
+  const size_t effCont  = safeSub(width, prefixCont.size());
+
+  auto flush = [&](bool isFirst){
+    if (!line.empty()) {
+      out << (isFirst ? prefixFirst : prefixCont) << line << '\n';
+      line.clear();
+    }
+  };
+
+  while (is >> word) {
+    size_t eff = firstLine ? effFirst : effCont;
+    if (line.empty()) {
+      line = word;
+    } else if (line.size() + 1 + word.size() <= eff) {
+      line += ' ';
+      line += word;
+    } else {
+      flush(firstLine);
+      firstLine = false;
+      line = word;
+    }
+  }
+  flush(firstLine);
+
+  std::string s = out.str();
+  if (!s.empty() && s.back() == '\n') s.pop_back();
+  return s;
+}
+
 CmdInfo::CmdInfo() {
   _keyword = "information";
   _usage = "task <filter> information";
@@ -116,9 +160,26 @@ int CmdInfo::execute(std::string& output) {
     auto description = task.get("description");
     auto indent = Context::getContext().config.getInteger("indent.annotation");
 
-    for (auto& anno : task.getAnnotations())
-      description += '\n' + std::string(indent, ' ') +
-                     Datetime(anno.first.substr(11)).toString(dateformatanno) + ' ' + anno.second;
+    {
+  const size_t termWidth = Context::getContext().getWidth();
+  const size_t approxNameCol = 20; // conservative; covers labels like "Last modified"
+  const size_t valueWidth = termWidth > approxNameCol ? termWidth - approxNameCol : termWidth;
+
+  for (const auto& anno : task.getAnnotations()) {
+    // first line looks exactly like before: <indent><timestamp><space>
+    const std::string firstPrefix =
+      std::string(indent, ' ') +
+      Datetime(anno.first.substr(11)).toString(dateformatanno) + ' ';
+
+    // continuation lines: same width, all spaces
+    const std::string contPrefix(firstPrefix.size(), ' ');
+
+    // wrap just the annotation body with our prefixes
+    const std::string wrapped = wrapWithPrefixes(anno.second, valueWidth, firstPrefix, contPrefix);
+
+    description += '\n' + wrapped;
+  }
+}
 
     if (task.has("description")) {
       row = view.addRow();
