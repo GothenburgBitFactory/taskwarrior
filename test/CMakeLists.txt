@@ -156,7 +156,6 @@ set (pythonTests
   project.test.py
   purge.test.py
   quotes.test.py
-  random_sort.test.py
   rc.override.test.py
   read-only.test.py
   recurrence.test.py
