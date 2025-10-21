@@ -21,11 +21,11 @@ check_msrv() {
   echo "Found taskchampion MSRV ${taskchampion_msrv}"
   echo "Found taskchampion-lib MSRV ${taskchampion_lib_msrv}"
 
-  if [ "${taskchampion_msrv}" != "${taskchampion_lib_msrv}" ]; then
-    echo "Those MSRVs should be the same (or taskchampion-lib should be greater, in which case adjust this script)"
+  if dpkg --compare-versions "${taskchampion_msrv}" gt "${taskchampion_lib_msrv}"; then
+    echo "Those MSRVs should be the same, or taskchampion-lib should be greater"
     exit 1
   else
-    echo "✓ MSRVs are at the same version."
+    echo "✓ MSRVs are compatible."
   fi
 }
 
