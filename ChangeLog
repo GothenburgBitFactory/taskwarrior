@@ -1,10 +1,21 @@
 ------ current release ---------------------------
 
+3.4.2 -
+
+- Sorting task lists randomly is now supported with configuration such as
+  `report.<report-name>.sort = random` (#3940)
+- Handling for tags in a "tags" column after `task edit` is fixed (#3911)
+- `tags.none:` works correctly (#3877)
+- Non-interactive invocations of `task`, such as for shell completion, no
+  longer prompts to create `.taskrc`. (#3888)
+- `task sync` now describes what it has done (#3758)
+- UDAs can now have type "UUID" (#3827)
+
+------ old releases ------------------------------
+
 3.4.1 -
 
 - The nagging to read `task news` has been fixed.
-
------- old releases ------------------------------
 
 3.4.0 -
 
