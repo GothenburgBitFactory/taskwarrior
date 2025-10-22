@@ -36,16 +36,15 @@ if(SYSTEM_CORROSION)
   set(CMAKE_REQUIRE_FIND_PACKAGE_Corrosion ON)
 endif()
 
-FetchContent_Declare(Corrosion
-    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
-    GIT_TAG        ${TASK_CORROSION_VERSION}
-    FIND_PACKAGE_ARGS CONFIG
-)
-FetchContent_MakeAvailable(Corrosion)
-
 if(SYSTEM_CORROSION)
   find_package(Corrosion REQUIRED)
 else()
+  FetchContent_Declare(Corrosion
+      GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+      GIT_TAG        ${TASK_CORROSION_VERSION}
+      FIND_PACKAGE_ARGS CONFIG
+  )
+  FetchContent_MakeAvailable(Corrosion)
   add_subdirectory(${CMAKE_SOURCE_DIR}/src/taskchampion-cpp/corrosion)
 endif()
 
