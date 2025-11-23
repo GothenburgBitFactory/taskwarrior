@@ -30,7 +30,8 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: "Install backup-github-repo"
-        run: npm install -g backup-github-repo
+        # Uses the fork in https://github.com/maxlath/backup-github-repo/pull/13
+        run: npm install -g https://github.com/djmitche/backup-github-repo#no-html
 
       - name: "Configure backup-github-repo"
         run: |
@@ -40,7 +41,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Run backup-github-repo"
-        run: backup-github-repo
+        run: backup-github-repo --no-html
 
       - name: "Remove unnecessary HTML"
         run: rm -rf repo-backup/html
