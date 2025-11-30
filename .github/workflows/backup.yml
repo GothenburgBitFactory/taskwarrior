@@ -35,10 +35,10 @@ jobs:
 
       - name: "Configure backup-github-repo"
         run: |
-          echo "{\"token\":\"${GH_TOKEN}\"}" > .backup-github-repo
+          echo "{\"token\":\"${GITHUB_TOKEN}\"}" > .backup-github-repo
           echo 	.backup-github-repo >> .git/info/exclude
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Run backup-github-repo"
         run: backup-github-repo --no-html
