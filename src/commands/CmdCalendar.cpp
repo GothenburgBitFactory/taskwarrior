@@ -345,6 +345,7 @@ int CmdCalendar::execute(std::string& output) {
       holTable.width(Context::getContext().getWidth());
       holTable.add("Date");
       holTable.add("Holiday");
+      holTable.withColor(Context::getContext().color());
       setHeaderUnderline(holTable);
 
       auto dateFormat = config.get("dateformat.holiday");
@@ -408,6 +409,7 @@ std::string CmdCalendar::renderMonths(int firstMonth, int firstYear, const Datet
   Table view;
   setHeaderUnderline(view);
   view.width(Context::getContext().getWidth());
+  view.withColor(Context::getContext().color());
   for (int i = 0; i < (monthsPerLine * 8); i += 8) {
     if (weekStart == 1) {
       view.add("", false);

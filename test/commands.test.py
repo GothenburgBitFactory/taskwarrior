@@ -51,11 +51,61 @@ class TestCommands(TestCase):
     def test_command_dna_color(self):
         """Verify 'add', 'modify', 'list' dna"""
         code, out, err = self.t("commands rc._forcecolor:on")
-        self.assertRegex(out, r"add\s+operation\s+RW\s+Ctxt\s+Mods\s+Adds a new task")
-        self.assertRegex(
-            out, r"list\s+report\s+RO\s+ID\s+GC\s+Recur\s+Ctxt\s+Filt\s+Most details of"
+
+        columns = [
+            "add",
+            "operation",
+            "RW",
+            "",
+            "",
+            "",
+            "Ctxt",
+            "",
+            "Mods",
+            "",
+            "Adds a new task",
+        ]
+        col_regex = r"\s*\x1b\[0m\x1b\[48;5;234m \x1b\[0m\x1b\[48;5;234m\s*".join(
+            columns
         )
-        self.assertRegex(out, r"modify\s+operation\s+RW\s+Filt\s+Mods\s+Modifies the")
+        expected_regex = r"\x1b\[48;5;234m" + col_regex + r"\s*\x1b\[0m"
+        self.assertRegex(out, expected_regex)
+
+        columns = [
+            "list",
+            "report",
+            "RO",
+            "ID",
+            "GC",
+            "Recur",
+            "Ctxt",
+            "Filt",
+            "Most details of",
+        ]
+        col_regex = r"\s*(\x1b\[0m\x1b\[48;5;234m)? (\x1b\[0m\x1b\[48;5;234m)?\s*".join(
+            columns
+        )
+        expected_regex = r"(\x1b\[48;5;234m)?" + col_regex + r"\s*(\x1b\[0m)?"
+        self.assertRegex(out, expected_regex)
+
+        columns = [
+            "modify",
+            "operation",
+            "RW",
+            "",
+            "",
+            "",
+            "",
+            "Filt",
+            "Mods",
+            "",
+            "Modifies the",
+        ]
+        col_regex = r"\s*(\x1b\[0m\x1b\[48;5;234m)? (\x1b\[0m\x1b\[48;5;234m)?\s*".join(
+            columns
+        )
+        expected_regex = r"(\x1b\[48;5;234m)?" + col_regex + r"\s*(\x1b\[0m)?"
+        self.assertRegex(out, expected_regex)
 
 
 if __name__ == "__main__":

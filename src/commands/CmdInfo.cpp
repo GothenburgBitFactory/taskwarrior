@@ -96,7 +96,7 @@ int CmdInfo::execute(std::string& output) {
     Table view;
     view.width(Context::getContext().getWidth());
     if (Context::getContext().config.getBoolean("obfuscate")) view.obfuscate();
-    if (Context::getContext().color()) view.forceColor();
+    view.withColor(Context::getContext().color());
     view.add("Name");
     view.add("Value");
     setHeaderUnderline(view);
@@ -411,7 +411,7 @@ int CmdInfo::execute(std::string& output) {
       }
 
       if (Context::getContext().config.getBoolean("obfuscate")) urgencyDetails.obfuscate();
-      if (Context::getContext().config.getBoolean("color")) view.forceColor();
+      urgencyDetails.withColor(Context::getContext().config.getBoolean("color"));
 
       urgencyDetails.width(Context::getContext().getWidth());
       urgencyDetails.add("");  // Attribute
@@ -500,7 +500,7 @@ int CmdInfo::execute(std::string& output) {
     setHeaderUnderline(journal);
 
     if (Context::getContext().config.getBoolean("obfuscate")) journal.obfuscate();
-    if (Context::getContext().config.getBoolean("color")) journal.forceColor();
+    journal.withColor(Context::getContext().config.getBoolean("color"));
 
     journal.width(Context::getContext().getWidth());
     journal.add("Date");

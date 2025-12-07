@@ -71,7 +71,7 @@ int CmdColor::execute(std::string& output) {
 
       Table view;
       view.width(Context::getContext().getWidth());
-      if (Context::getContext().config.getBoolean("color")) view.forceColor();
+      view.withColor(Context::getContext().config.getBoolean("color"));
       view.add("Color");
       view.add("Definition");
 

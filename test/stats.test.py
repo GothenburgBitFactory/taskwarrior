@@ -54,7 +54,10 @@ class TestStatisticsCommand(TestCase):
         self.assertRegex(out, "Total\\s+3\n")
 
         code, out, err = self.t("stats rc._forcecolor:on")
-        self.assertRegex(out, "Pending\\s+1\n")
+        self.assertRegex(
+            out,
+            r"\x1b\[48;5;234mPending\s+\x1b\[0m\x1b\[48;5;234m  \x1b\[0m\x1b\[48;5;234m1\s+\x1b\[0m",
+        )
 
 
 if __name__ == "__main__":

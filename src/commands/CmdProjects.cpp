@@ -101,6 +101,7 @@ int CmdProjects::execute(std::string& output) {
     view.width(Context::getContext().getWidth());
     view.add("Project");
     view.add("Tasks", false);
+    view.withColor(Context::getContext().color());
     setHeaderUnderline(view);
 
     // create sorted list of table entries

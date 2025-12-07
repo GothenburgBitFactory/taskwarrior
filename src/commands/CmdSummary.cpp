@@ -130,6 +130,8 @@ int CmdSummary::execute(std::string& output) {
 
   Color bar_color;
   Color bg_color;
+  view.withColor(Context::getContext().color());
+
   if (Context::getContext().color()) {
     bar_color = Color(Context::getContext().config.get("color.summary.bar"));
     bg_color = Color(Context::getContext().config.get("color.summary.background"));

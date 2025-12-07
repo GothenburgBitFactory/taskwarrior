@@ -144,6 +144,7 @@ int CmdStats::execute(std::string& output) {
   // Create a table for output.
   Table view;
   view.width(Context::getContext().getWidth());
+  view.withColor(Context::getContext().color());
   view.intraPadding(2);
   view.add("Category");
   view.add("Data");

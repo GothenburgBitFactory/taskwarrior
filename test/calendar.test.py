@@ -95,7 +95,7 @@ class TestCalendarCommandLine(TestCase):
         self.assertIn("Date Holiday", out)
 
     def test_basic_command_single_holiday(self):
-        """Verify 'calendar rc.holiday.test.name:donkeyday rc.holiday.test.date:[tomorrws date] rc.calendar.holidays:full' does not fail"""
+        """Verify 'calendar rc.holiday.test.name:donkeyday rc.holiday.test.date:[tomorrow's date] rc.calendar.holidays:full' does not fail"""
         code, out, err = self.t(
             "calendar rc.holiday.test.name:donkeyday rc.holliday.test.date:{0} rc.calendar.holidays:full".format(
                 self.tomorrow
