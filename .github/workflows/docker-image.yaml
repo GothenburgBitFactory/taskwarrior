@@ -28,7 +28,7 @@ jobs:
           GHCR_REPOSITORY="${{ github.repository_owner }}"
           echo "REPOSITORY=${GHCR_REPOSITORY,,}" >> ${GITHUB_ENV}
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: "recursive"
 

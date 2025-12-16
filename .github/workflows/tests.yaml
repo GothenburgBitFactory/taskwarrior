@@ -14,7 +14,7 @@ jobs:
         run: sudo apt-get install -y build-essential cmake git uuid-dev faketime locales python3 curl gcovr ninja-build
 
       - name: Check out this repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Configure project
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage
@@ -44,7 +44,7 @@ jobs:
     if: false # see #3242
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: dtolnay/rust-toolchain@stable
         id: toolchain
@@ -71,7 +71,7 @@ jobs:
     if: false # see #3242
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: dtolnay/rust-toolchain@stable
         id: toolchain
@@ -98,7 +98,7 @@ jobs:
     name: "Cargo Test"
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: dtolnay/rust-toolchain@master
         id: toolchain
@@ -154,7 +154,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     continue-on-error: ${{ matrix.continue-on-error == true }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Build ${{ matrix.name }}
         env:
