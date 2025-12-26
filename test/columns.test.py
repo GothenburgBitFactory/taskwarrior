@@ -582,6 +582,14 @@ class TestUDADurationFormats(TestCase):
             self.assertRegex(out, r"3\s+P60D")
             self.assertRegex(out, r"4\s+P30DT10H3M2S")
 
+    def test_uda_duration_format_age(self):
+        """Verify uda_duration.age formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,uda_duration.age")
+        self.assertRegex(out, r"1\s+")
+        self.assertRegex(out, r"2\s+[0-9]+[wmin]+")
+        self.assertRegex(out, r"3\s+[0-9]+[wmin]+")
+        self.assertRegex(out, r"4\s+[0-9]+[wmin]+")
+
 
 class TestFeature1061(TestCase):
     def setUp(self):
