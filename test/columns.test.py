@@ -590,6 +590,14 @@ class TestUDADurationFormats(TestCase):
         self.assertRegex(out, r"3\s+[0-9]+[wmin]+")
         self.assertRegex(out, r"4\s+[0-9]+[wmin]+")
 
+    def test_uda_duration_format_countdown(self):
+        """Verify uda_duration.countdown formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,uda_duration.countdown")
+        self.assertRegex(out, r"1\s+")
+        self.assertRegex(out, r"2\s+(\d+d )?\d+:\d{2}:\d{2}")
+        self.assertRegex(out, r"3\s+(\d+d )?\d+:\d{2}:\d{2}")
+        self.assertRegex(out, r"4\s+(\d+d )?\d+:\d{2}:\d{2}")
+
 
 class TestFeature1061(TestCase):
     def setUp(self):

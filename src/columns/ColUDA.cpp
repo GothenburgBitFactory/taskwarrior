@@ -243,8 +243,8 @@ ColumnUDADuration::ColumnUDADuration() {
   _style = "default";
   _label = "";
   _uda = true;
-  _styles = {_style, "indicator", "age", "iso"};
-  _examples = {"P30D", "U", "4w", "P30D"};
+  _styles = {_style, "indicator", "age", "countdown", "iso"};
+  _examples = {"P30D", "U", "4w", "30d 0:00:00", "P30D"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -272,6 +272,9 @@ void ColumnUDADuration::measure(Task& task, unsigned int& minimum, unsigned int&
     } else if (_style == "age") {
       auto value = task.get(_name);
       if (value != "") minimum = maximum = Duration(value).formatVague(true).length();
+    } else if (_style == "countdown") {
+      auto value = task.get(_name);
+      if (value != "") minimum = maximum = Duration(value).format().length();
     } else if (_style == "indicator") {
       if (task.has(_name)) {
         auto indicator = Context::getContext().config.get("uda." + _name + ".indicator");
@@ -294,6 +297,9 @@ void ColumnUDADuration::render(std::vector<std::string>& lines, Task& task, int 
     } else if (_style == "age") {
       auto value = task.get(_name);
       renderStringRight(lines, width, color, Duration(value).formatVague(true));
+    } else if (_style == "countdown") {
+      auto value = task.get(_name);
+      renderStringRight(lines, width, color, Duration(value).format());
     } else if (_style == "indicator") {
       auto indicator = Context::getContext().config.get("uda." + _name + ".indicator");
       if (indicator == "") indicator = "U";
