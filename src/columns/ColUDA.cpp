@@ -243,7 +243,8 @@ ColumnUDADuration::ColumnUDADuration() {
   _style = "default";
   _label = "";
   _uda = true;
-  _styles = {_style, "indicator"};
+  _styles = {_style, "indicator", "iso"};
+  _examples = {"P30D", "U", "P30D"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +266,7 @@ bool ColumnUDADuration::validate(const std::string& value) const {
 void ColumnUDADuration::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
-    if (_style == "default") {
+    if (_style == "default" || _style == "iso") {
       auto value = task.get(_name);
       if (value != "") minimum = maximum = Duration(value).formatISO().length();
     } else if (_style == "indicator") {
@@ -284,7 +285,7 @@ void ColumnUDADuration::measure(Task& task, unsigned int& minimum, unsigned int&
 void ColumnUDADuration::render(std::vector<std::string>& lines, Task& task, int width,
                                Color& color) {
   if (task.has(_name)) {
-    if (_style == "default") {
+    if (_style == "default" || _style == "iso") {
       auto value = task.get(_name);
       renderStringRight(lines, width, color, Duration(value).formatISO());
     } else if (_style == "indicator") {
