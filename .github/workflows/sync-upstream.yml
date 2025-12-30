@@ -1,0 +1,71 @@
+name: Sync Upstream Stable Branch
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: stable
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/GothenburgBitFactory/taskwarrior.git || true
+          git remote -v
+
+      - name: Fetch upstream
+        run: git fetch upstream stable
+
+      - name: Check for changes
+        id: check
+        run: |
+          LOCAL=$(git rev-parse stable)
+          REMOTE=$(git rev-parse upstream/stable)
+          echo "local=$LOCAL" >> $GITHUB_OUTPUT
+          echo "remote=$REMOTE" >> $GITHUB_OUTPUT
+          if [ "$LOCAL" != "$REMOTE" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Changes detected - will sync"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes - already up to date"
+          fi
+
+      - name: Merge upstream changes
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git merge upstream/stable --ff-only || {
+            echo "Fast-forward merge failed. This fork may have diverged from upstream."
+            echo "Manual intervention required."
+            exit 1
+          }
+
+      - name: Push changes
+        if: steps.check.outputs.changed == 'true'
+        run: git push origin stable
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          echo "### Sync Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Synced from upstream/stable:" >> $GITHUB_STEP_SUMMARY
+          echo "- Previous: ${{ steps.check.outputs.local }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Current: ${{ steps.check.outputs.remote }}" >> $GITHUB_STEP_SUMMARY

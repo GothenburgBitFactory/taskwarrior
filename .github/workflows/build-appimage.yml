@@ -1,0 +1,115 @@
+name: Build AppImage
+
+on:
+  push:
+    branches:
+      - stable
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  build-appimage:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            git \
+            uuid-dev \
+            curl \
+            wget \
+            file \
+            libfuse2
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr
+
+      - name: Build project
+        run: cmake --build build
+
+      - name: Install to AppDir
+        run: |
+          DESTDIR=${{ github.workspace }}/AppDir cmake --install build
+
+      - name: Download linuxdeploy and AppImage plugin
+        run: |
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage
+
+      - name: Create AppImage desktop file
+        run: |
+          mkdir -p AppDir/usr/share/applications
+          cat > AppDir/usr/share/applications/taskwarrior.desktop << 'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=Taskwarrior
+          Comment=Command-line task list manager
+          Exec=task
+          Icon=taskwarrior
+          Terminal=true
+          Categories=Utility;ConsoleOnly;
+          EOF
+
+      - name: Create AppImage icon
+        run: |
+          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+          # Create a simple placeholder icon (you can replace this with an actual icon)
+          wget -q -O AppDir/usr/share/icons/hicolor/256x256/apps/taskwarrior.png \
+            https://avatars.githubusercontent.com/u/36100920?s=256 || \
+          echo "Icon download failed, continuing anyway"
+
+      - name: Build AppImage
+        run: |
+          ./linuxdeploy-x86_64.AppImage \
+            --appdir AppDir \
+            --output appimage \
+            --desktop-file=AppDir/usr/share/applications/taskwarrior.desktop \
+            --icon-file=AppDir/usr/share/icons/hicolor/256x256/apps/taskwarrior.png \
+            --executable=AppDir/usr/bin/task
+
+      - name: Rename AppImage
+        run: |
+          VERSION=$(grep "VERSION" build/CMakeCache.txt | grep PROJECT_VERSION | cut -d'=' -f2)
+          COMMIT=$(git rev-parse --short HEAD)
+          mv task-*.AppImage taskwarrior-${VERSION}-${COMMIT}-x86_64.AppImage || \
+          mv *.AppImage taskwarrior-x86_64.AppImage
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: taskwarrior-appimage
+          path: '*.AppImage'
+          if-no-files-found: error
+
+      - name: Summary
+        run: |
+          echo "### AppImage Build Completed :package:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "AppImage built successfully!" >> $GITHUB_STEP_SUMMARY
+          ls -lh *.AppImage >> $GITHUB_STEP_SUMMARY
