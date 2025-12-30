@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - stable
+  pull_request:
+    branches:
+      - stable
   workflow_dispatch:
     # Allow manual triggering
 
