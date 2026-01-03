@@ -2,6 +2,7 @@ use cxx::CxxString;
 use std::path::PathBuf;
 use std::pin::Pin;
 use taskchampion as tc;
+use taskchampion::SqliteStorage;
 
 // All Taskchampion FFI is contained in this module, due to issues with cxx and multiple modules
 // such as https://github.com/dtolnay/cxx/issues/1323.
@@ -99,9 +100,6 @@ mod ffi {
 
     extern "Rust" {
         type Replica;
-
-        /// Create a new in-memory replica, such as for testing.
-        fn new_replica_in_memory() -> Result<Box<Replica>>;
 
         /// Create a new replica stored on-disk.
         fn new_replica_on_disk(
@@ -309,6 +307,14 @@ impl From<tc::Error> for CppError {
     }
 }
 
+fn rt() -> tokio::runtime::Handle {
+    tokio::runtime::Builder::new_current_thread()
+        .build()
+        .unwrap()
+        .handle()
+        .clone()
+}
+
 impl std::fmt::Display for CppError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let tc::Error::Other(err) = &self.0 {
@@ -482,10 +488,10 @@ fn add_undo_point(ops: &mut Vec<Operation>) {
 
 // --- Replica
 
-struct Replica(tc::Replica);
+struct Replica(tc::Replica<SqliteStorage>);
 
-impl From<tc::Replica> for Replica {
-    fn from(inner: tc::Replica) -> Self {
+impl From<tc::Replica<SqliteStorage>> for Replica {
+    fn from(inner: tc::Replica<SqliteStorage>) -> Self {
         Replica(inner)
     }
 }
@@ -495,20 +501,13 @@ fn new_replica_on_disk(
     create_if_missing: bool,
     read_write: bool,
 ) -> Result<Box<Replica>, CppError> {
-    use tc::storage::AccessMode::*;
-    let access_mode = if read_write { ReadWrite } else { ReadOnly };
-    let storage = tc::StorageConfig::OnDisk {
-        taskdb_dir: PathBuf::from(taskdb_dir),
-        create_if_missing,
-        access_mode,
-    }
-    .into_storage()?;
-    Ok(Box::new(tc::Replica::new(storage).into()))
-}
-
-fn new_replica_in_memory() -> Result<Box<Replica>, CppError> {
-    let storage = tc::StorageConfig::InMemory.into_storage()?;
-    Ok(Box::new(tc::Replica::new(storage).into()))
+    rt().block_on(async {
+        use tc::storage::AccessMode::*;
+        let access_mode = if read_write { ReadWrite } else { ReadOnly };
+        let storage =
+            SqliteStorage::new(PathBuf::from(taskdb_dir), access_mode, create_if_missing).await?;
+        Ok(Box::new(tc::Replica::new(storage).into()))
+    })
 }
 
 /// Utility function for Replica methods using Operations.
@@ -527,78 +526,99 @@ fn from_tc_operations(ops: Vec<tc::Operation>) -> Vec<Operation> {
 
 impl Replica {
     fn commit_operations(&mut self, ops: Vec<Operation>) -> Result<(), CppError> {
-        Ok(self.0.commit_operations(to_tc_operations(ops))?)
+        rt().block_on(async { Ok(self.0.commit_operations(to_tc_operations(ops)).await?) })
     }
 
     fn commit_reversed_operations(&mut self, ops: Vec<Operation>) -> Result<bool, CppError> {
-        Ok(self.0.commit_reversed_operations(to_tc_operations(ops))?)
+        rt().block_on(async {
+            Ok(self
+                .0
+                .commit_reversed_operations(to_tc_operations(ops))
+                .await?)
+        })
     }
 
     fn all_task_data(&mut self) -> Result<Vec<ffi::OptionTaskData>, CppError> {
-        Ok(self
-            .0
-            .all_task_data()?
-            .drain()
-            .map(|(_, t)| Some(t).into())
-            .collect())
+        rt().block_on(async {
+            Ok(self
+                .0
+                .all_task_data()
+                .await?
+                .drain()
+                .map(|(_, t)| Some(t).into())
+                .collect())
+        })
     }
 
     fn pending_task_data(&mut self) -> Result<Vec<ffi::OptionTaskData>, CppError> {
-        Ok(self
-            .0
-            .pending_task_data()?
-            .drain(..)
-            .map(|t| Some(t).into())
-            .collect())
+        rt().block_on(async {
+            Ok(self
+                .0
+                .pending_task_data()
+                .await?
+                .drain(..)
+                .map(|t| Some(t).into())
+                .collect())
+        })
     }
 
     fn all_task_uuids(&mut self) -> Result<Vec<ffi::Uuid>, CppError> {
-        Ok(self
-            .0
-            .all_task_uuids()?
-            .into_iter()
-            .map(ffi::Uuid::from)
-            .collect())
+        rt().block_on(async {
+            Ok(self
+                .0
+                .all_task_uuids()
+                .await?
+                .into_iter()
+                .map(ffi::Uuid::from)
+                .collect())
+        })
     }
 
     fn expire_tasks(&mut self) -> Result<(), CppError> {
-        Ok(self.0.expire_tasks()?)
+        rt().block_on(async { Ok(self.0.expire_tasks().await?) })
     }
 
     fn get_task_data(&mut self, uuid: ffi::Uuid) -> Result<ffi::OptionTaskData, CppError> {
-        Ok(self.0.get_task_data(uuid.into())?.into())
+        rt().block_on(async { Ok(self.0.get_task_data(uuid.into()).await?.into()) })
     }
 
     fn get_task_operations(&mut self, uuid: ffi::Uuid) -> Result<Vec<Operation>, CppError> {
-        Ok(from_tc_operations(self.0.get_task_operations(uuid.into())?))
+        rt().block_on(async {
+            Ok(from_tc_operations(
+                self.0.get_task_operations(uuid.into()).await?,
+            ))
+        })
     }
 
     fn get_undo_operations(&mut self) -> Result<Vec<Operation>, CppError> {
-        Ok(from_tc_operations(self.0.get_undo_operations()?))
+        rt().block_on(async { Ok(from_tc_operations(self.0.get_undo_operations().await?)) })
     }
 
     fn num_local_operations(&mut self) -> Result<usize, CppError> {
-        Ok(self.0.num_local_operations()?)
+        rt().block_on(async { Ok(self.0.num_local_operations().await?) })
     }
 
     fn num_undo_points(&mut self) -> Result<usize, CppError> {
-        Ok(self.0.num_undo_points()?)
+        rt().block_on(async { Ok(self.0.num_undo_points().await?) })
     }
 
     fn rebuild_working_set(&mut self, renumber: bool) -> Result<(), CppError> {
-        Ok(self.0.rebuild_working_set(renumber)?)
+        rt().block_on(async { Ok(self.0.rebuild_working_set(renumber).await?) })
     }
 
     fn working_set(&mut self) -> Result<Box<WorkingSet>, CppError> {
-        Ok(Box::new(self.0.working_set()?.into()))
+        rt().block_on(async { Ok(Box::new(self.0.working_set().await?.into())) })
     }
 
     fn sync_to_local(&mut self, server_dir: String, avoid_snapshots: bool) -> Result<(), CppError> {
-        let mut server = tc::server::ServerConfig::Local {
-            server_dir: server_dir.into(),
-        }
-        .into_server()?;
-        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+        rt().block_on(async {
+            let mut server = tc::server::ServerConfig::Local {
+                server_dir: server_dir.into(),
+            }
+            .into_server()
+            .await?;
+            Ok(self.0.sync(&mut server, avoid_snapshots).await?)
+        })
     }
 
     fn sync_to_remote(
@@ -608,13 +628,16 @@ impl Replica {
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
-        let mut server = tc::server::ServerConfig::Remote {
-            url,
-            client_id: client_id.into(),
-            encryption_secret: encryption_secret.as_bytes().to_vec(),
-        }
-        .into_server()?;
-        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+        rt().block_on(async {
+            let mut server = tc::server::ServerConfig::Remote {
+                url,
+                client_id: client_id.into(),
+                encryption_secret: encryption_secret.as_bytes().to_vec(),
+            }
+            .into_server()
+            .await?;
+            Ok(self.0.sync(&mut server, avoid_snapshots).await?)
+        })
     }
 
     fn sync_to_aws_with_profile(
@@ -625,14 +648,19 @@ impl Replica {
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
-        let mut server = tc::server::ServerConfig::Aws {
-            region,
-            bucket,
-            credentials: tc::server::AwsCredentials::Profile { profile_name },
-            encryption_secret: encryption_secret.as_bytes().to_vec(),
-        }
-        .into_server()?;
-        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+        rt().block_on(async {
+            let mut server = tc::server::ServerConfig::Aws {
+                region: Some(region),
+                bucket,
+                credentials: tc::server::AwsCredentials::Profile { profile_name },
+                encryption_secret: encryption_secret.as_bytes().to_vec(),
+                endpoint_url: None,
+                force_path_style: false,
+            }
+            .into_server()
+            .await?;
+            Ok(self.0.sync(&mut server, avoid_snapshots).await?)
+        })
     }
 
     fn sync_to_aws_with_access_key(
@@ -644,17 +672,22 @@ impl Replica {
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
-        let mut server = tc::server::ServerConfig::Aws {
-            region,
-            bucket,
-            credentials: tc::server::AwsCredentials::AccessKey {
-                access_key_id,
-                secret_access_key,
-            },
-            encryption_secret: encryption_secret.as_bytes().to_vec(),
-        }
-        .into_server()?;
-        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+        rt().block_on(async {
+            let mut server = tc::server::ServerConfig::Aws {
+                region: Some(region),
+                bucket,
+                credentials: tc::server::AwsCredentials::AccessKey {
+                    access_key_id,
+                    secret_access_key,
+                },
+                encryption_secret: encryption_secret.as_bytes().to_vec(),
+                endpoint_url: None,
+                force_path_style: false,
+            }
+            .into_server()
+            .await?;
+            Ok(self.0.sync(&mut server, avoid_snapshots).await?)
+        })
     }
 
     fn sync_to_aws_with_default_creds(
@@ -664,14 +697,19 @@ impl Replica {
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
-        let mut server = tc::server::ServerConfig::Aws {
-            region,
-            bucket,
-            credentials: tc::server::AwsCredentials::Default,
-            encryption_secret: encryption_secret.as_bytes().to_vec(),
-        }
-        .into_server()?;
-        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+        rt().block_on(async {
+            let mut server = tc::server::ServerConfig::Aws {
+                region: Some(region),
+                bucket,
+                credentials: tc::server::AwsCredentials::Default,
+                encryption_secret: encryption_secret.as_bytes().to_vec(),
+                endpoint_url: None,
+                force_path_style: false,
+            }
+            .into_server()
+            .await?;
+            Ok(self.0.sync(&mut server, avoid_snapshots).await?)
+        })
     }
 
     fn sync_to_gcp(
@@ -681,17 +719,20 @@ impl Replica {
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
-        let mut server = tc::server::ServerConfig::Gcp {
-            bucket,
-            credential_path: if credential_path.is_empty() {
-                None
-            } else {
-                Some(credential_path)
-            },
-            encryption_secret: encryption_secret.as_bytes().to_vec(),
-        }
-        .into_server()?;
-        Ok(self.0.sync(&mut server, avoid_snapshots)?)
+        rt().block_on(async {
+            let mut server = tc::server::ServerConfig::Gcp {
+                bucket,
+                credential_path: if credential_path.is_empty() {
+                    None
+                } else {
+                    Some(credential_path)
+                },
+                encryption_secret: encryption_secret.as_bytes().to_vec(),
+            }
+            .into_server()
+            .await?;
+            Ok(self.0.sync(&mut server, avoid_snapshots).await?)
+        })
     }
 }
 
@@ -941,7 +982,9 @@ mod test {
 
     #[test]
     fn operation_counts() {
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
         let mut operations = new_operations();
         add_undo_point(&mut operations);
         create_task(uuid_v4(), &mut operations);
@@ -957,7 +1000,9 @@ mod test {
 
     #[test]
     fn undo_operations() {
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
         let mut operations = new_operations();
         let (uuid1, uuid2, uuid3) = (uuid_v4(), uuid_v4(), uuid_v4());
         add_undo_point(&mut operations);
@@ -978,7 +1023,9 @@ mod test {
 
     #[test]
     fn task_lists() {
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
         let mut operations = new_operations();
         add_undo_point(&mut operations);
         create_task(uuid_v4(), &mut operations);
@@ -996,7 +1043,9 @@ mod test {
 
     #[test]
     fn expire_tasks() {
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
         let mut operations = new_operations();
         add_undo_point(&mut operations);
         create_task(uuid_v4(), &mut operations);
@@ -1008,7 +1057,9 @@ mod test {
 
     #[test]
     fn get_task_data() {
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
 
         let uuid = uuid_v4();
         assert!(rep.get_task_data(uuid).unwrap().is_none());
@@ -1026,7 +1077,9 @@ mod test {
     fn get_task_operations() {
         cxx::let_cxx_string!(prop = "prop");
         cxx::let_cxx_string!(value = "value");
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
 
         let uuid = uuid_v4();
         assert!(rep.get_task_operations(uuid).unwrap().is_empty());
@@ -1048,7 +1101,9 @@ mod test {
         cxx::let_cxx_string!(prop2 = "prop2");
         cxx::let_cxx_string!(value = "value");
 
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
 
         let uuid = uuid_v4();
         let mut operations = new_operations();
@@ -1079,7 +1134,9 @@ mod test {
         cxx::let_cxx_string!(completed = "completed");
         let (uuid1, uuid2, uuid3) = (uuid_v4(), uuid_v4(), uuid_v4());
 
-        let mut rep = new_replica_in_memory().unwrap();
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let path = tmp_dir.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
 
         let mut operations = new_operations();
         let mut t = create_task(uuid1, &mut operations);

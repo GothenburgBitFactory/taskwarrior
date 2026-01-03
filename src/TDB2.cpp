@@ -50,9 +50,6 @@ void TDB2::open_replica(const std::string& location, bool create_if_missing, boo
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::open_replica_in_memory() { _replica = tc::new_replica_in_memory(); }
-
-////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the replica.
 void TDB2::add(Task& task) {
   // Ensure the task is consistent, and provide defaults if necessary.

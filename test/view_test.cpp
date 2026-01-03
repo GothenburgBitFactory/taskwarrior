@@ -33,6 +33,7 @@
 #include <ViewTask.h>
 #include <sort.h>
 #include <stdio.h>
+#include <tempdir.h>
 #include <test.h>
 #include <unistd.h>
 
@@ -43,10 +44,11 @@ extern std::string configurationDefaults;
 
 ////////////////////////////////////////////////////////////////////////////////
 int TEST_NAME(int, char**) {
+  TempDir tmp;
   UnitTest t(1);
   Context context;
   Context::setContext(&context);
-  context.tdb2.open_replica_in_memory();
+  context.tdb2.open_replica(tmp.path.string(), true, false);
 
   // Ensure environment has no influence.
   unsetenv("TASKDATA");

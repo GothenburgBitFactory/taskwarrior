@@ -30,10 +30,9 @@
 #include <rust/cxx.h>
 #include <stdlib.h>
 #include <taskchampion-cpp/lib.h>
+#include <tempdir.h>
 #include <test.h>
 #include <unistd.h>
-
-#include <iostream>
 
 std::string uuid2str(tc::Uuid uuid) { return static_cast<std::string>(uuid.to_string()); }
 
@@ -42,10 +41,11 @@ std::string uuid2str(tc::Uuid uuid) { return static_cast<std::string>(uuid.to_st
 // complex cxxbridge implementations, rather than those with complex Rust
 // implementations but simple APIs, like sync.
 int TEST_NAME(int, char**) {
+  TempDir tmp;
   UnitTest t;
   std::string str;
 
-  auto replica = tc::new_replica_in_memory();
+  auto replica = tc::new_replica_on_disk(tmp.path.string(), true, true);
   auto uuid = tc::uuid_v4();
   auto uuid2 = tc::uuid_v4();
   t.is(uuid2str(uuid).size(), (size_t)36, "uuid string is the right length");

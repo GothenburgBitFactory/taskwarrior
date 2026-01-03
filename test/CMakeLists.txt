@@ -49,7 +49,11 @@ set(test_SRCS
 # Build `test_runner` containing all CPP tests, linked once.
 create_test_sourcelist (cpp_test_SRCS cpp_tests.cpp ${test_SRCS})
 add_executable(test_runner
+  test.h
   test.cpp
+  tempdir.h
+  tempdir.cpp
+
   ${cpp_test_SRCS}
 )
 target_link_libraries (test_runner task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})

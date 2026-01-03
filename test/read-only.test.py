@@ -41,7 +41,16 @@ class TestReadOnly(TestCase):
     def setUp(self):
         self.t = Task()
         self.t("add foo")
+        self.resetTimestamp()
 
+    def add_garbage(self):
+        # generate some garbage to collect, so rc.gc=1 has something
+        # to change.
+        self.t("add bar")
+        self.t("1 done")
+        self.resetTimestamp()
+
+    def resetTimestamp(self):
         # set the mtime of the taskdb to an hour ago, so we can see any changes
         self.taskdb = self.t.datadir + "/taskchampion.sqlite3"
         os.utime(self.taskdb, (time.time() - 3600,) * 2)
@@ -53,14 +62,24 @@ class TestReadOnly(TestCase):
         self.assertGreater(os.stat(self.taskdb).st_mtime, time.time() - 1800)
 
     def test_read_only_command(self):
+        self.add_garbage()
         code, out, err = self.t("reports")
         self.assertNotModified()
 
+    @unittest.skip  # see https://github.com/GothenburgBitFactory/taskchampion/issues/660
     def test_report(self):
+        self.add_garbage()
         code, out, err = self.t("list")
         self.assertModified()
 
+    @unittest.skip  # see https://github.com/GothenburgBitFactory/taskchampion/issues/660
+    def test_add(self):
+        code, out, err = self.t("add foo")
+        self.assertModified()
+
+    @unittest.skip  # see https://github.com/GothenburgBitFactory/taskchampion/issues/660
     def test_burndown(self):
+        self.add_garbage()
         code, out, err = self.t("burndown")
         self.assertModified()
 
