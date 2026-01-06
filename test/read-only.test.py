@@ -66,18 +66,15 @@ class TestReadOnly(TestCase):
         code, out, err = self.t("reports")
         self.assertNotModified()
 
-    @unittest.skip  # see https://github.com/GothenburgBitFactory/taskchampion/issues/660
     def test_report(self):
         self.add_garbage()
         code, out, err = self.t("list")
         self.assertModified()
 
-    @unittest.skip  # see https://github.com/GothenburgBitFactory/taskchampion/issues/660
     def test_add(self):
         code, out, err = self.t("add foo")
         self.assertModified()
 
-    @unittest.skip  # see https://github.com/GothenburgBitFactory/taskchampion/issues/660
     def test_burndown(self):
         self.add_garbage()
         code, out, err = self.t("burndown")

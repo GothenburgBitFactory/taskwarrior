@@ -2233,9 +2233,9 @@ dependencies = [
 
 [[package]]
 name = "taskchampion"
-version = "3.0.0"
+version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65ab6ab13820742986908e3282aca9139ff007a90b09ef672e9822fb81cbeb7c"
+checksum = "66bd1ef31a18287d93273c73a87ebb3084628b1e30d7cf6361102a2292662118"
 dependencies = [
  "anyhow",
  "async-trait",
