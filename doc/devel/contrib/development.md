@@ -22,6 +22,8 @@ See the general CMake man pages or the [cmake-documentation](https://cmake.org/c
 ```sh
 git clone https://github.com/GothenburgBitFactory/taskwarrior
 cd taskwarrior
+git submodule init
+git submodule update
 cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build
 ```
