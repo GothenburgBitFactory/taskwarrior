@@ -28,7 +28,7 @@ There are three varieties of tests:
 
 All tests are named with the pattern '*.test.py', '*.test.sh', or '*.test.cpp',
 and any other forms are not run by the test harness.
-In the case of Python tests one can still run them manually by launching them with 'python testname.test.py' or simply './testname.test.py'.
+In the case of Python tests one can still run them manually after building by launching them with 'python ./build/testname.test.py' or simply './build/testname.test.py'. Modifying these files in the build directory can be handy for debugging and test development, but be sure to copy them into the source directory before rebuilding or cmake will revert your changes.
 
 If a test is failing and can not be fixed, it can be marked as `WILL_FAIL` in the `CMakeLists.txt` file.
 See the [WILL_FAIL](https://cmake.org/cmake/help/latest/prop_test/WILL_FAIL.html) documentation for more information.
