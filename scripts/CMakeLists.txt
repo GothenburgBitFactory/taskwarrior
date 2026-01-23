@@ -1,6 +1,13 @@
 cmake_minimum_required (VERSION 3.22...4.0)
 
-set(FISH_COMPLETIONSDIR share/fish/vendor_completions.d)
+find_package(PkgConfig)
+if(PkgConfig_FOUND)
+	pkg_get_variable(FISH_COMPLETIONSDIR fish completionsdir)
+endif()
+if(NOT FISH_COMPLETIONSDIR)
+	set(FISH_COMPLETIONSDIR share/fish/vendor_completions.d)
+	message(STATUS "fish pkgconfig module missing, assumed completions in ${FISH_COMPLETIONSDIR}")
+endif()
 
 install (DIRECTORY bash vim hooks
          DESTINATION ${TASK_DOCDIR}/scripts)
