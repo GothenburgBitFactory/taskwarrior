@@ -1,6 +1,11 @@
 cmake_minimum_required (VERSION 3.22...4.0)
-install (DIRECTORY bash fish vim hooks
+
+set(FISH_COMPLETIONSDIR share/fish/vendor_completions.d)
+
+install (DIRECTORY bash vim hooks
          DESTINATION ${TASK_DOCDIR}/scripts)
+install (FILES fish/task.fish
+         DESTINATION ${FISH_COMPLETIONSDIR})
 install (FILES zsh/_task
          DESTINATION share/zsh/site-functions)
 install (DIRECTORY add-ons
