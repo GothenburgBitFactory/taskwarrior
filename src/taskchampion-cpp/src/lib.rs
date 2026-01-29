@@ -309,6 +309,7 @@ impl From<tc::Error> for CppError {
 
 fn rt() -> tokio::runtime::Handle {
     tokio::runtime::Builder::new_current_thread()
+        .enable_time()
         .build()
         .unwrap()
         .handle()
