@@ -307,12 +307,17 @@ impl From<tc::Error> for CppError {
     }
 }
 
-fn rt() -> tokio::runtime::Handle {
-    tokio::runtime::Builder::new_current_thread()
-        .build()
-        .unwrap()
-        .handle()
-        .clone()
+use std::sync::OnceLock;
+
+static RUNTIME: OnceLock<tokio::runtime::Runtime> = OnceLock::new();
+
+fn rt() -> &'static tokio::runtime::Runtime {
+    RUNTIME.get_or_init(|| {
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap()
+    })
 }
 
 impl std::fmt::Display for CppError {
