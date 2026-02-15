@@ -48,7 +48,7 @@ else()
   add_subdirectory(${CMAKE_SOURCE_DIR}/src/taskchampion-cpp/corrosion)
 endif()
 
-option (ENABLE_TLS_NATIVE_ROOTS "Use the system's TLS root certificates" OFF)
+option (ENABLE_TLS_NATIVE_ROOTS "Use the system's TLS root certificates" ON)
 
 if (ENABLE_TLS_NATIVE_ROOTS)
   message ("Enabling native TLS roots")
