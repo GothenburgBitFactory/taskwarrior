@@ -58,11 +58,6 @@ class TestDependencies(TestCase):
         code, out, err = self.t.runError("99 modify dep:1")
         self.assertIn("No tasks specified.", err)
 
-    def test_add_dep_to_missing_task(self):
-        """Add a dependency to a missing task"""
-        code, out, err = self.t.runError("99 modify dep:1")
-        self.assertIn("No tasks specified.", err)
-
     def test_double_dep(self):
         """Check adding a dep twice is an error"""
         self.t("2 modify dep:1")
