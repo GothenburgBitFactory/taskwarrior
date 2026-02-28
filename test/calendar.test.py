@@ -63,7 +63,7 @@ class TestCalendarCommandLine(TestCase):
         )
         self.assertIn("Su Mo Tu We Th Fr Sa", out)
 
-    def test_basic_command(self):
+    def test_basic_command_weekstart_monday(self):
         """Verify 'calendar rc.weekstart:Monday' does not fail'"""
         code, out, err = self.t("calendar rc.weekstart:Monday")
         self.assertIn("Mo Tu We Th Fr Sa Su", out)
