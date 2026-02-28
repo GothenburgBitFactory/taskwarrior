@@ -202,7 +202,7 @@ class TestCalendarCommandLine(TestCase):
         """Verify 'calendar jan' does not fail"""
         code, out, err = self.t("calendar jan")
 
-    def test_2015_argument(self):
+    def test_2015_donkey_argument(self):
         """Verify 'calendar 2015 donkey' does fail"""
         code, out, err = self.t.runError("calendar 2015 donkey")
         self.assertIn("Could not recognize argument", err)
