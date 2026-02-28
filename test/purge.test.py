@@ -176,7 +176,7 @@ class TestDelete(TestCase):
         code, out, err = self.t("count")
         self.assertEqual("4\n", out)
 
-    def test_purge_children(self):
+    def test_purge_children_removes_dependencies(self):
         """Purge command removes dependencies on indirectly purged tasks"""
         self.t("add one recur:daily due:yesterday")
         uuid = self.t("_get 1.uuid")[1].strip()
