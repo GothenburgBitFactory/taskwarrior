@@ -93,7 +93,7 @@ class TestProjects(TestCase):
         code, out, err = self.t('pro:"foo bar" count')
         self.assertEqual(out.strip(), "1")
 
-    def test_project_spaces(self):
+    def test_project_someday_filter(self):
         """TW #2386: Filter for project:someday"""
 
         self.t("add hello pro:someday")
