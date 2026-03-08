@@ -13,6 +13,11 @@ updates:
   # Enable updates for Rust packages
   - package-ecosystem: "cargo"
     directory: "/" # Location of package manifests
+    cooldown:
+      default-days: 5
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
     schedule:
       interval: "daily"
     ignore:
