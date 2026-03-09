@@ -5,11 +5,17 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns: ["*"]
   # Enable version updates for git submodules
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      submodule:
+        patterns: ["*"]
   # Enable updates for Rust packages
   - package-ecosystem: "cargo"
     directory: "/" # Location of package manifests
@@ -20,9 +26,8 @@ updates:
       semver-patch-days: 3
     schedule:
       interval: "daily"
-    ignore:
-      # skip patch updates, as they can be quite noisy, but keep
-      # minor and major updates so that we don't fall too far
-      # behind
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+    groups:
+      cargo:
+        patterns: ["*"]
+        # leave major changes in their own PRs
+        update-types: ["minor", "patch"]
