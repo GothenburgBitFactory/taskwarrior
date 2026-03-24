@@ -178,7 +178,7 @@ void ColumnDescription::render(std::vector<std::string>& lines, Task& task, int 
   else if (_style == "truncated") {
     int len = utf8_width(description);
     if (len > width)
-      renderStringLeft(lines, width, color, description.substr(0, width - 3) + "...");
+      renderStringLeft(lines, width, color, utf8_truncate_to_width(description, width - 3) + "...");
     else
       renderStringLeft(lines, width, color, description);
   }
@@ -207,7 +207,7 @@ void ColumnDescription::render(std::vector<std::string>& lines, Task& task, int 
 
     if (len > width)
       renderStringLeft(lines, width, color,
-                       description.substr(0, width - len_annos - 3) + "..." + annos_count);
+                       utf8_truncate_to_width(description, width - len_annos - 3) + "..." + annos_count);
     else
       renderStringLeft(lines, width, color, description + annos_count);
   }
