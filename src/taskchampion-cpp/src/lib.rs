@@ -205,6 +205,21 @@ mod ffi {
             encryption_secret: &CxxString,
             avoid_snapshots: bool,
         ) -> Result<()>;
+
+        /// Sync with a server created from `ServerConfig::Git`.
+        ///
+        /// An empty value for `remote` is converted to `Option::None` (local-only mode).
+        /// An empty value for `git_path` uses "git" on `$PATH`.
+        fn sync_to_git(
+            &mut self,
+            local_path: String,
+            branch: String,
+            remote: String,
+            local_only: bool,
+            encryption_secret: &CxxString,
+            git_path: String,
+            avoid_snapshots: bool,
+        ) -> Result<()>;
     }
 
     // --- OptionTaskData
@@ -733,6 +748,35 @@ impl Replica {
                     Some(credential_path)
                 },
                 encryption_secret: encryption_secret.as_bytes().to_vec(),
+            }
+            .into_server()
+            .await?;
+            Ok(self.0.sync(&mut server, avoid_snapshots).await?)
+        })
+    }
+
+    fn sync_to_git(
+        &mut self,
+        local_path: String,
+        branch: String,
+        remote: String,
+        local_only: bool,
+        encryption_secret: &CxxString,
+        git_path: String,
+        avoid_snapshots: bool,
+    ) -> Result<(), CppError> {
+        rt().block_on(async {
+            let mut server = tc::server::ServerConfig::Git {
+                local_path: local_path.into(),
+                branch,
+                remote: if remote.is_empty() { None } else { Some(remote) },
+                local_only,
+                encryption_secret: encryption_secret.as_bytes().to_vec(),
+                git_path: if git_path.is_empty() {
+                    None
+                } else {
+                    Some(git_path.into())
+                },
             }
             .into_server()
             .await?;

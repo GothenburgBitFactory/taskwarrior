@@ -46,6 +46,7 @@ Taskwarrior provides several options for synchronizing your tasks:
  - To a server specifically designed to handle Taskwarrior data.
  + To a cloud storage provider. Currently both AWS and GCP are supported.
  - To a local, on-disk file.
+ - Via a git repository (local or remote).
 
 For most of these, you will need an encryption secret used to encrypt and
 decrypt your tasks. This can be any secret string, and must match for all
@@ -230,6 +231,45 @@ To configure local sync:
 
 The default configuration is to sync to a database in the task directory
 ("data.location").
+
+.SS Git Synchronization
+
+To synchronize your tasks using a git repository, configure the path to a local
+git repository and the branch to use:
+
+.nf
+    $ task config sync.git.local_path     /path/to/local/repo
+    $ task config sync.git.branch         taskchampion
+    $ task config sync.encryption_secret  <encryption_secret>
+.fi
+
+The repository will be created if it does not exist.
+If a dedicated TaskChampion branch is not used, it is strongly recommended
+to configure one to avoid conflicts with other content in the repository.
+
+For remote sync (push and pull), also configure a remote:
+
+.nf
+    $ task config sync.git.remote         origin
+.fi
+
+The remote can be a named remote such as "origin" or a full git URL such as
+"git@myserver.com:/path/to/repo.git".
+Authentication is handled entirely by the git credential system; for remote
+sync, "git push" and "git pull" must work without prompts (use SSH keys or a
+credential helper).
+
+To operate offline while keeping the remote configured, set:
+
+.nf
+    $ task config sync.git.local_only     true
+.fi
+
+If a non-standard git binary is needed, its path can be specified:
+
+.nf
+    $ task config sync.git.git_path       /path/to/git
+.fi
 
 .SH RUNNING TASKCHAMPION-SYNC-SERVER
 

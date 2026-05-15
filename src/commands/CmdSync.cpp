@@ -71,6 +71,7 @@ int CmdSync::execute(std::string& output) {
   std::string client_id = Context::getContext().config.get("sync.server.client_id");
   std::string aws_bucket = Context::getContext().config.get("sync.aws.bucket");
   std::string gcp_bucket = Context::getContext().config.get("sync.gcp.bucket");
+  std::string git_local_path = Context::getContext().config.get("sync.git.local_path");
   std::string encryption_secret = Context::getContext().config.get("sync.encryption_secret");
 
   // sync.server.origin is a deprecated synonym for sync.server.url
@@ -157,6 +158,27 @@ int CmdSync::execute(std::string& output) {
     }
     replica->sync_to_remote(server_url, tc::uuid_from_string(client_id), encryption_secret,
                             avoid_snapshots);
+
+  } else if (git_local_path != "") {
+    std::string git_branch = Context::getContext().config.get("sync.git.branch");
+    std::string git_remote = Context::getContext().config.get("sync.git.remote");
+    bool git_local_only = Context::getContext().config.getBoolean("sync.git.local_only");
+    std::string git_git_path = Context::getContext().config.get("sync.git.git_path");
+    if (git_branch == "") {
+      throw std::string("sync.git.branch is required");
+    }
+    if (encryption_secret == "") {
+      throw std::string("sync.encryption_secret is required");
+    }
+    if (verbose) {
+      if (git_remote != "") {
+        out << format("Syncing with git remote {1}", git_remote) << '\n';
+      } else {
+        out << format("Syncing with local git repository at {1}", git_local_path) << '\n';
+      }
+    }
+    replica->sync_to_git(git_local_path, git_branch, git_remote, git_local_only,
+                         encryption_secret, git_git_path, avoid_snapshots);
 
   } else {
     throw std::string("No sync.* settings are configured. See task-sync(5).");
