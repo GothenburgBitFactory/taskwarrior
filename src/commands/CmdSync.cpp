@@ -177,8 +177,8 @@ int CmdSync::execute(std::string& output) {
         out << format("Syncing with local git repository at {1}", git_local_path) << '\n';
       }
     }
-    replica->sync_to_git(git_local_path, git_branch, git_remote, git_local_only,
-                         encryption_secret, git_git_path, avoid_snapshots);
+    replica->sync_to_git(git_local_path, git_branch, git_remote, git_local_only, encryption_secret,
+                         git_git_path, avoid_snapshots);
 
   } else {
     throw std::string("No sync.* settings are configured. See task-sync(5).");
