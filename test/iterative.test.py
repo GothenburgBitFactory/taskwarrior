@@ -82,6 +82,17 @@ class TestIterativeTasks(TestCase):
         self.assertEqual(logged["parent"], orig_uuid)
         self.assertIn("end", logged)
 
+    def test_iterative_task_appears_in_list_and_next(self):
+        """Default report filters surface iterative tasks alongside pending."""
+        self.t("add iter:weekly iter_type:fixed 'rent'")
+        self.t("add 'plain'")
+        code, out, err = self.t("list")
+        self.assertIn("rent", out)
+        self.assertIn("plain", out)
+        code, out, err = self.t("next")
+        self.assertIn("rent", out)
+        self.assertIn("plain", out)
+
     def test_stats_reports_iterative_row(self):
         """`task stats` reports an Iterative row alongside the other statuses."""
         self.t("add one")

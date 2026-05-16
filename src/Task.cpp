@@ -360,7 +360,8 @@ bool Task::is_empty() const { return data.size() == 0; }
 // Ready means pending, not blocked and either not scheduled or scheduled before
 // now.
 bool Task::is_ready() const {
-  return getStatus() == Task::pending && !is_blocked &&
+  Task::status s = getStatus();
+  return (s == Task::pending || s == Task::iterative) && !is_blocked &&
          (!has("scheduled") || Datetime("now").operator>(get_date("scheduled")));
 }
 
