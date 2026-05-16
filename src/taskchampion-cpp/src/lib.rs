@@ -769,7 +769,11 @@ impl Replica {
             let mut server = tc::server::ServerConfig::Git {
                 local_path: local_path.into(),
                 branch,
-                remote: if remote.is_empty() { None } else { Some(remote) },
+                remote: if remote.is_empty() {
+                    None
+                } else {
+                    Some(remote)
+                },
                 local_only,
                 encryption_secret: encryption_secret.as_bytes().to_vec(),
                 git_path: if git_path.is_empty() {
