@@ -86,6 +86,7 @@ int CmdStats::execute(std::string& output) {
   int taggedT = 0;
   int annotationsT = 0;
   int recurringT = 0;
+  int iterativeT = 0;
   int blockingT = 0;
   int blockedT = 0;
   float daysPending = 0.0;
@@ -112,6 +113,9 @@ int CmdStats::execute(std::string& output) {
         break;
       case Task::waiting:
         ++waitingT;
+        break;
+      case Task::iterative:
+        ++iterativeT;
         break;
     }
 
@@ -161,6 +165,10 @@ int CmdStats::execute(std::string& output) {
   row = view.addRow();
   view.set(row, 0, "Recurring");
   view.set(row, 1, recurringT);
+
+  row = view.addRow();
+  view.set(row, 0, "Iterative");
+  view.set(row, 1, iterativeT);
 
   row = view.addRow();
   view.set(row, 0, "Completed");

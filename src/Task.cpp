@@ -160,6 +160,8 @@ Task::status Task::textToStatus(const std::string& input) {
     return Task::deleted;
   else if (input[0] == 'r')
     return Task::recurring;
+  else if (input[0] == 'i')
+    return Task::iterative;
   // for compatibility, parse `w` as pending; Task::getStatus will
   // apply the virtual waiting status if appropriate
   else if (input[0] == 'w')
@@ -180,6 +182,8 @@ std::string Task::statusToText(Task::status s) {
     return "completed";
   else if (s == Task::deleted)
     return "deleted";
+  else if (s == Task::iterative)
+    return "iterative";
 
   return "pending";
 }

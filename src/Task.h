@@ -71,7 +71,7 @@ class Task {
   std::string composeJSON(bool decorate = false);
 
   // Status values.
-  enum status { pending, completed, deleted, recurring, waiting };
+  enum status { pending, completed, deleted, recurring, waiting, iterative };
 
   // Date state values.
   enum dateState { dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday };
