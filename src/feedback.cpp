@@ -102,7 +102,7 @@ void feedback_reserved_tags(const std::string& tag) {
   if (tag == "ACTIVE" || tag == "ANNOTATED" || tag == "BLOCKED" || tag == "BLOCKING" ||
       tag == "CHILD" ||  // Deprecated 2.6.0
       tag == "COMPLETED" || tag == "DELETED" || tag == "DUE" || tag == "DUETODAY" ||
-      tag == "INSTANCE" || tag == "LATEST" || tag == "MONTH" || tag == "ORPHAN" ||
+      tag == "INSTANCE" || tag == "ITERATIVE" || tag == "LATEST" || tag == "MONTH" || tag == "ORPHAN" ||
       tag == "OVERDUE" || tag == "PARENT" ||  // Deprecated 2.6.0
       tag == "PENDING" || tag == "PRIORITY" || tag == "PROJECT" || tag == "QUARTER" ||
       tag == "READY" || tag == "SCHEDULED" || tag == "TAGGED" || tag == "TEMPLATE" ||
