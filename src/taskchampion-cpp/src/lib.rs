@@ -134,6 +134,16 @@ mod ffi {
         /// Get an existing task by its UUID.
         fn get_task_data(&mut self, uuid: Uuid) -> Result<OptionTaskData>;
 
+        /// Create a new `Task` with the given UUID. If a task with that
+        /// UUID already exists, the existing task is returned. Operations are appended
+        /// to `ops`. This uses the high-level TaskChampion `Task` rather than `TaskData`
+        /// so that TaskChampion's status hooks run.
+        fn create_task(&mut self, uuid: Uuid, ops: &mut Vec<Operation>) -> Result<Box<Task>>;
+
+        /// Get an existing `Task` by UUID. Returns None
+        /// (an empty `OptionTask`) if no task with that UUID exists.
+        fn get_task(&mut self, uuid: Uuid) -> Result<OptionTask>;
+
         /// Get the operations for a task task by its UUID.
         fn get_task_operations(&mut self, uuid: Uuid) -> Result<Vec<Operation>>;
 
@@ -260,6 +270,68 @@ mod ffi {
 
         /// Delete the task. The name is `delete_task` because `delete` is a C++ keyword.
         fn delete_task(&mut self, ops: &mut Vec<Operation>);
+    }
+
+    // --- Status
+
+    /// Mirror of `tc::Status` excluding the `Unknown(String)` variant. Used so
+    /// that taskmap strings don't have to cross the FFI.
+    #[repr(i32)]
+    enum Status {
+        Pending,
+        Completed,
+        Deleted,
+        Recurring,
+        Iterative,
+    }
+
+    // --- OptionTask
+
+    /// Wrapper around `Option<Box<Task>>`. Mirrors `OptionTaskData`.
+    ///
+    /// Note that if an `OptionTask` containing a task is dropped without calling `take`,
+    /// it will leak the contained task. C++ code should be careful to always take.
+    struct OptionTask {
+        maybe_task: *mut Task,
+    }
+
+    extern "Rust" {
+        /// Check if the value contains a task.
+        fn is_some(self: &OptionTask) -> bool;
+        /// Check if the value does not contain a task.
+        fn is_none(self: &OptionTask) -> bool;
+        /// Get the contained task, or panic if there is no task. The `OptionTask`
+        /// will be reset to contain None.
+        fn take(self: &mut OptionTask) -> Box<Task>;
+    }
+
+    // --- Task
+
+    extern "Rust" {
+        type Task;
+
+        /// Get the task's Uuid.
+        fn get_uuid(self: &Task) -> Uuid;
+
+        /// Set the given property to the given value via `tc::Task::set_value`.
+        /// This routes through TaskChampion's bookkeeping unlike `TaskData::update`.
+        fn set_value(
+            self: &mut Task,
+            property: &CxxString,
+            value: &CxxString,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+
+        /// Like `set_value`, but removes the property.
+        fn set_value_remove(
+            self: &mut Task,
+            property: &CxxString,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+
+        /// Set the task's status via `tc::Task::set_status`. This is the only way to
+        /// trigger TaskChampion's iterative-task hooks.
+        fn set_status(self: &mut Task, status: Status, ops: &mut Vec<Operation>) -> Result<()>;
     }
 
     // --- PropValuePair
@@ -587,6 +659,21 @@ impl Replica {
         rt().block_on(async { Ok(self.0.get_task_data(uuid.into()).await?.into()) })
     }
 
+    fn create_task(
+        &mut self,
+        uuid: ffi::Uuid,
+        ops: &mut Vec<Operation>,
+    ) -> Result<Box<Task>, CppError> {
+        rt().block_on(async {
+            let t = self.0.create_task(uuid.into(), operations_ref(ops)).await?;
+            Ok(Box::new(Task(t)))
+        })
+    }
+
+    fn get_task(&mut self, uuid: ffi::Uuid) -> Result<ffi::OptionTask, CppError> {
+        rt().block_on(async { Ok(self.0.get_task(uuid.into()).await?.into()) })
+    }
+
     fn get_task_operations(&mut self, uuid: ffi::Uuid) -> Result<Vec<Operation>, CppError> {
         rt().block_on(async {
             Ok(from_tc_operations(
@@ -847,6 +934,92 @@ impl TaskData {
 
     fn delete_task(&mut self, ops: &mut Vec<Operation>) {
         self.0.delete(operations_ref(ops))
+    }
+}
+
+// --- OptionTask
+
+impl From<Option<tc::Task>> for ffi::OptionTask {
+    fn from(value: Option<tc::Task>) -> Self {
+        let Some(t) = value else {
+            return ffi::OptionTask {
+                maybe_task: std::ptr::null_mut(),
+            };
+        };
+        ffi::OptionTask {
+            maybe_task: Box::into_raw(Box::new(Task(t))),
+        }
+    }
+}
+
+impl ffi::OptionTask {
+    fn is_some(&self) -> bool {
+        !self.maybe_task.is_null()
+    }
+
+    fn is_none(&self) -> bool {
+        self.maybe_task.is_null()
+    }
+
+    fn take(&mut self) -> Box<Task> {
+        let ptr = std::mem::replace(&mut self.maybe_task, std::ptr::null_mut());
+        if ptr.is_null() {
+            panic!("Cannot take an empty OptionTask");
+        }
+        // SAFETY: this value is not NULL and was created from `Box::into_raw` in the
+        // `From<Option<tc::Task>>` implementation above.
+        unsafe { Box::from_raw(ptr) }
+    }
+}
+
+// --- Task
+
+pub struct Task(tc::Task);
+
+impl Task {
+    fn get_uuid(&self) -> ffi::Uuid {
+        self.0.get_uuid().into()
+    }
+
+    fn set_value(
+        &mut self,
+        property: &CxxString,
+        value: &CxxString,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self.0.set_value(
+            property.to_string_lossy().into_owned(),
+            Some(value.to_string_lossy().into_owned()),
+            operations_ref(ops),
+        )?)
+    }
+
+    fn set_value_remove(
+        &mut self,
+        property: &CxxString,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self.0.set_value(
+            property.to_string_lossy().into_owned(),
+            None,
+            operations_ref(ops),
+        )?)
+    }
+
+    fn set_status(
+        &mut self,
+        status: ffi::Status,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        let status = match status {
+            ffi::Status::Pending => tc::Status::Pending,
+            ffi::Status::Completed => tc::Status::Completed,
+            ffi::Status::Deleted => tc::Status::Deleted,
+            ffi::Status::Recurring => tc::Status::Recurring,
+            ffi::Status::Iterative => tc::Status::Iterative,
+            _ => unreachable!("ffi::Status variants are exhaustive"),
+        };
+        Ok(self.0.set_status(status, operations_ref(ops))?)
     }
 }
 

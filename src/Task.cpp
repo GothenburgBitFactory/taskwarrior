@@ -1462,10 +1462,16 @@ void Task::validate(bool applyDefault /* = true */) {
   } else
     set("uuid", uuid());
 
+  // Iterative tasks get a special status when `iter` is set.
+  if (status == Task::pending && has("iter") && get("iter") != "" &&
+      (!has("parent") || get("parent") == "") && (!has("template") || get("template") == "")) {
+    status = Task::iterative;
+  }
+
   // TODO Obsolete remove for 3.0.0
   // Recurring tasks get a special status.
-  if (status == Task::pending && has("due") && has("recur") &&
-      (!has("parent") || get("parent") == "") && (!has("template") || get("template") == "")) {
+  else if (status == Task::pending && has("due") && has("recur") &&
+           (!has("parent") || get("parent") == "") && (!has("template") || get("template") == "")) {
     status = Task::recurring;
   }
   /*

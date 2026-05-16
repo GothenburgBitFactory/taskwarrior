@@ -80,7 +80,8 @@ int CmdDone::execute(std::string&) {
   for (auto& task : filtered) {
     Task before(task);
 
-    if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting) {
+    if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting ||
+        task.getStatus() == Task::iterative) {
       // Complete the specified task.
       std::string question =
           format("Complete task {1} '{2}'?", task.identifier(true), task.get("description"));

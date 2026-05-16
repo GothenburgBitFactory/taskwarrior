@@ -82,7 +82,8 @@ class TestUdaCommandOrphans(TestCase):
         self.t.del_config("uda.orphan.type")
 
         code, out, err = self.t("udas")
-        self.assertIn("1 UDA defined", out)
+        # 4 built-in UDAs: priority, iter, iter_type, rrule.
+        self.assertIn("4 UDAs defined", out)
         self.assertIn("1 Orphan UDA", out)
 
 
