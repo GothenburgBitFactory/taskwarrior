@@ -2597,9 +2597,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "sys-locale"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8eab9a99a024a169fe8a903cf9d4a3b3601109bcc13bd9e3c6fff259138626c4"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "taskchampion"
 version = "3.0.2-pre"
-source = "git+https://github.com/carmiac/taskchampion?rev=44c7687b4576d95e580e3666ab38d407e857a3eb#44c7687b4576d95e580e3666ab38d407e857a3eb"
+source = "git+https://github.com/carmiac/taskchampion?rev=87e44468aa8f60e1c686a0e73a3202c21e481229#87e44468aa8f60e1c686a0e73a3202c21e481229"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2626,6 +2635,7 @@ dependencies = [
  "serde_with",
  "strum",
  "strum_macros",
+ "text2rrule",
  "thiserror 2.0.18",
  "tokio",
  "url",
@@ -2665,6 +2675,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "06794f8f6c5c898b3275aebefa6b8a1cb24cd2c6c79397ab15774837a0bc5755"
 dependencies = [
  "winapi-util",
+]
+
+[[package]]
+name = "text2rrule"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d020d253c12fe1fa171516bf65cead04bed11f5890b97653f2dd18cff72da0f6"
+dependencies = [
+ "chrono",
+ "sys-locale",
+ "tracing",
 ]
 
 [[package]]
