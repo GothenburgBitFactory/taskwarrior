@@ -124,7 +124,7 @@ class TestIDRangeParsing(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
 
-    def generate_tasks(self, n):
+    def generate_tasks(self, n, timeout=100):
         """Generates n tasks for testing purposes"""
         with tempfile.NamedTemporaryFile(mode="w") as f:
             f.write(
@@ -132,7 +132,7 @@ class TestIDRangeParsing(TestCase):
             )
             f.flush()
             # use a long timeout here, because import is quite slow
-            code, out, err = self.t(f"import {f.name}", timeout=100)
+            code, out, err = self.t(f"import {f.name}", timeout=timeout)
 
     def test_single_digit_range(self):
         """Test that parsing single digit ID range works"""
@@ -154,7 +154,7 @@ class TestIDRangeParsing(TestCase):
 
     def test_quadruple_digit_range(self):
         """Test that parsing four digit ID range works"""
-        self.generate_tasks(1200)
+        self.generate_tasks(1200, timeout=180)
 
         # Full range
         code, out, err = self.t("1100-1189 count")

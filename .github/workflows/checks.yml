@@ -21,7 +21,7 @@ jobs:
           # If this version is old enough to cause errors, or older than the
           # TaskChampion MSRV, bump it to the MSRV of the currently-required
           # TaskChampion package; if necessary, bump that version as well.
-          toolchain: "1.88.0" # MSRV
+          toolchain: "1.91.1" # MSRV
 
       - name: Cache cargo registry
         uses: actions/cache@v5
