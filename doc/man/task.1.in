@@ -1283,6 +1283,19 @@ Every year or a number of years.
 .TP
 biannual, biyearly, 2yr
 Every two years.
+
+.TP
+.I Iterative tasks
+also support natural language frequencies, such as:
+
+.TP
+"the last friday of the month"
+"weekdays in june at 9:30 am"
+"every year on the last monday in may"
+
+You will need to wrap mulit-word descriptions in "".
+
+
 .RE
 
 .SH CONTEXT

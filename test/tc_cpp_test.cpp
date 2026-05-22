@@ -146,9 +146,9 @@ int TEST_NAME(int, char**) {
     // tc::new_replica_on_disk("/does/not/exist", false);
   } catch (rust::Error& err) {
     std::string msg = err.what();
-    t.ok(msg.rfind(
-             "unable to open database file: /does/not/exist/taskchampion-local-sync-server.sqlite3: Error code 14: ",
-             0) == 0,
+    t.ok(msg.rfind("unable to open database file: "
+                   "/does/not/exist/taskchampion-local-sync-server.sqlite3: Error code 14: ",
+                   0) == 0,
          "error message has full context");
     t.ok(msg.find("Unable to open the database file") != std::string::npos ||
              msg.find("unable to open database file") != std::string::npos,
