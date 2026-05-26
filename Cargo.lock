@@ -2608,7 +2608,7 @@ dependencies = [
 [[package]]
 name = "taskchampion"
 version = "3.0.2-pre"
-source = "git+https://github.com/carmiac/taskchampion?rev=87e44468aa8f60e1c686a0e73a3202c21e481229#87e44468aa8f60e1c686a0e73a3202c21e481229"
+source = "git+https://github.com/carmiac/taskchampion?rev=257cdc6a44c3b7158567f9669585d737c9cb98b4#257cdc6a44c3b7158567f9669585d737c9cb98b4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2679,9 +2679,9 @@ dependencies = [
 
 [[package]]
 name = "text2rrule"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d020d253c12fe1fa171516bf65cead04bed11f5890b97653f2dd18cff72da0f6"
+checksum = "91525d6ce517e51341955c5f99fb2a21aef3f1efafc60e619c343633374e8eee"
 dependencies = [
  "chrono",
  "sys-locale",

@@ -9,7 +9,7 @@ rust-version = "1.91.1"   # MSRV
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion = { git = "https://github.com/carmiac/taskchampion", rev = "798cec2b40f13c420ef6358e4d99b251e58249de", features = [
+taskchampion = { git = "https://github.com/carmiac/taskchampion", rev = "257cdc6a44c3b7158567f9669585d737c9cb98b4", features = [
   "server-git",
   "iterative-tasks",
 ] }
