@@ -259,8 +259,8 @@ sync, "git push" and "git pull" must work without prompts (use SSH keys or a
 credential helper).
 
 It is possible to operate offline while keeping the remote configured.
-WANRING: If another replica also syncs with the remote, you will not be able to
- go back to syncing from this replica. 
+WANRING: If another replica also syncs with the remote, you will not be able
+to go back to syncing from this replica.
 
 .nf
     $ task config sync.git.local_only     true
