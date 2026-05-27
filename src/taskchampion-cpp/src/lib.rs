@@ -210,6 +210,7 @@ mod ffi {
         ///
         /// An empty value for `remote` is converted to `Option::None` (local-only mode).
         /// An empty value for `git_path` uses "git" on `$PATH`.
+        #[allow(clippy::too_many_arguments)]
         fn sync_to_git(
             &mut self,
             local_path: String,
@@ -755,6 +756,7 @@ impl Replica {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sync_to_git(
         &mut self,
         local_path: String,

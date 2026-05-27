@@ -243,9 +243,8 @@ git repository and the branch to use:
     $ task config sync.encryption_secret  <encryption_secret>
 .fi
 
-The repository will be created if it does not exist.
-If a dedicated TaskChampion branch is not used, it is strongly recommended
-to configure one to avoid conflicts with other content in the repository.
+The repository will be created if it does not exist. It is recommended to use a
+dedicated branch.
 
 For remote sync (push and pull), also configure a remote:
 
@@ -259,7 +258,9 @@ Authentication is handled entirely by the git credential system; for remote
 sync, "git push" and "git pull" must work without prompts (use SSH keys or a
 credential helper).
 
-To operate offline while keeping the remote configured, set:
+It is possible to operate offline while keeping the remote configured.
+WANRING: If another replica also syncs with the remote, you will not be able to
+ go back to syncing from this replica. 
 
 .nf
     $ task config sync.git.local_only     true
