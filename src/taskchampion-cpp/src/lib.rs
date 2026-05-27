@@ -294,19 +294,30 @@ mod ffi {
 
         /// Delete the task. The name is `delete_task` because `delete` is a C++ keyword.
         fn delete_task(&mut self, ops: &mut Vec<Operation>);
+
     }
 
     // --- Status
 
-    /// Mirror of `tc::Status` excluding the `Unknown(String)` variant. Used so
-    /// that taskmap strings don't have to cross the FFI.
+    /// Mirror of `tc::Status`. Used so that taskmap strings don't have to cross the FFI.
     #[repr(i32)]
     enum Status {
         Pending,
         Completed,
         Deleted,
         Recurring,
-        Iterative,
+        Unknown,
+    }
+
+    // --- Annotation
+
+    /// An annotation for a task
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+    struct Annotation {
+        /// Time the annotation was made
+        entry: i64,
+        /// Content of the annotation
+        description: String,
     }
 
     // --- OptionTask
@@ -336,9 +347,58 @@ mod ffi {
 
         /// Get the task's Uuid.
         fn get_uuid(self: &Task) -> Uuid;
+        /// Get the task's status.
+        fn get_status(&self) -> Status;
+        /// Get the task's description.
+        fn get_description(&self) -> String;
+        /// Get the task's priority.
+        fn get_priority(&self) -> String;
+        /// Get the tasks's entry timestamp
+        fn get_entry(&self) -> i64;
+        /// Get the tasks's wait timestamp
+        fn get_wait(&self) -> i64;
+        /// Get the tasks's modifier timestamp
+        fn get_modified(&self) -> i64;
+        /// Get the tasks's due time
+        fn get_due(&self) -> i64;
+        /// Get the properties timestamp
+        fn get_timestamp(&self, property: &CxxString) -> i64;
+        /// True if task is waiting.
+        fn is_waiting(&self) -> bool;
+        /// True if task is active.
+        fn is_active(&self) -> bool;
+        /// True if task is blocked by another task.
+        fn is_blocked(&self) -> bool;
+        /// True if task is blocking another task.
+        fn is_blocking(&self) -> bool;
+        /// Get a property value.
+        fn get_value(&self, property: &CxxString, value_out: Pin<&mut CxxString>) -> bool;
+        /// Get the task's tags.
+        fn get_tags(&self) -> Vec<String>;
+        /// Get the tasks dependencies.
+        fn get_dependencies(&self) -> Vec<Uuid>;
+        /// Get the tasks annotations.
+        fn get_annotations(&self) -> Vec<Annotation>;
+        /// Get a UDA.
+        fn get_user_defined_attribute(
+            &self,
+            key: &CxxString,
+            mut value_out: Pin<&mut CxxString>,
+        ) -> bool;
+        /// Get all UDAs.
+        fn get_user_defined_attributes(&self) -> Vec<PropValuePair>;
+
+        // Mutators (each returns `Result<()>`, takes `&mut Vec<Operation>`):
+        // - `set_description`, `set_priority`
+        // - `set_entry`, `set_wait`, `set_modified`, `set_due`, `set_timestamp`
+        // - `start`, `stop`, `done`
+        // - `add_tag`, `remove_tag`
+        // - `add_annotation`, `remove_annotation`
+        // - `set_user_defined_attribute`, `remove_user_defined_attribute`
+        // - `add_dependency`, `remove_dependency`
 
         /// Set the given property to the given value via `tc::Task::set_value`.
-        /// This routes through TaskChampion's bookkeeping unlike `TaskData::update`.
+        /// This routes through TaskChampion's bookkeeping.
         fn set_value(
             self: &mut Task,
             property: &CxxString,
@@ -353,10 +413,10 @@ mod ffi {
             ops: &mut Vec<Operation>,
         ) -> Result<()>;
 
-        /// Set the task's status via `tc::Task::set_status`. This is the only way to
-        /// trigger TaskChampion's iterative-task hooks.
+        /// Set the task's status via `tc::Task::set_status`.
         fn set_status(self: &mut Task, status: Status, ops: &mut Vec<Operation>) -> Result<()>;
     }
+
     // --- PropValuePair
 
     #[derive(Debug, Eq, PartialEq)]
@@ -403,6 +463,8 @@ impl From<tc::Error> for CppError {
 }
 
 use std::sync::OnceLock;
+
+use crate::ffi::Status;
 
 static RUNTIME: OnceLock<tokio::runtime::Runtime> = OnceLock::new();
 
@@ -1057,6 +1119,120 @@ pub struct Task(tc::Task);
 impl Task {
     fn get_uuid(&self) -> ffi::Uuid {
         self.0.get_uuid().into()
+    }
+
+    fn get_status(&self) -> Status {
+        match self.0.get_status() {
+            taskchampion::Status::Pending => ffi::Status::Pending,
+            taskchampion::Status::Completed => ffi::Status::Completed,
+            taskchampion::Status::Deleted => ffi::Status::Deleted,
+            taskchampion::Status::Recurring => ffi::Status::Recurring,
+            taskchampion::Status::Unknown(_) => ffi::Status::Unknown,
+        }
+    }
+
+    fn get_description(&self) -> String {
+        self.0.get_description().into()
+    }
+
+    fn get_priority(&self) -> String {
+        self.0.get_priority().into()
+    }
+    fn get_entry(&self) -> i64 {
+        if let Some(t) = self.0.get_entry() {
+            t.timestamp()
+        } else {
+            0
+        }
+    }
+    fn get_wait(&self) -> i64 {
+        if let Some(t) = self.0.get_wait() {
+            t.timestamp()
+        } else {
+            0
+        }
+    }
+    fn get_modified(&self) -> i64 {
+        if let Some(t) = self.0.get_modified() {
+            t.timestamp()
+        } else {
+            0
+        }
+    }
+    fn get_due(&self) -> i64 {
+        if let Some(t) = self.0.get_due() {
+            t.timestamp()
+        } else {
+            0
+        }
+    }
+    fn get_timestamp(&self, property: &CxxString) -> i64 {
+        if let Some(t) = self.0.get_timestamp(property.to_string_lossy().as_ref()) {
+            t.timestamp()
+        } else {
+            0
+        }
+    }
+
+    fn is_waiting(&self) -> bool {
+        self.0.is_waiting()
+    }
+    fn is_active(&self) -> bool {
+        self.0.is_active()
+    }
+    fn is_blocked(&self) -> bool {
+        self.0.is_blocked()
+    }
+    fn is_blocking(&self) -> bool {
+        self.0.is_blocking()
+    }
+    fn get_value(&self, property: &CxxString, mut value_out: Pin<&mut CxxString>) -> bool {
+        let Some(value) = self.0.get_value(property.to_string_lossy()) else {
+            return false;
+        };
+        value_out.as_mut().clear();
+        value_out.as_mut().push_str(value);
+        true
+    }
+
+    fn get_tags(&self) -> Vec<String> {
+        self.0.get_tags().map(|t| t.to_string()).collect()
+    }
+    fn get_dependencies(&self) -> Vec<ffi::Uuid> {
+        self.0.get_dependencies().map(|d| d.into()).collect()
+    }
+    fn get_annotations(&self) -> Vec<ffi::Annotation> {
+        self.0
+            .get_annotations()
+            .map(|a| ffi::Annotation {
+                entry: a.entry.timestamp(),
+                description: a.description,
+            })
+            .collect()
+    }
+    fn get_user_defined_attribute(
+        &self,
+        key: &CxxString,
+        mut value_out: Pin<&mut CxxString>,
+    ) -> bool {
+        let Some(value) = self
+            .0
+            .get_user_defined_attribute(key.to_string_lossy().as_ref())
+        else {
+            return false;
+        };
+        value_out.as_mut().clear();
+        value_out.as_mut().push_str(value);
+        true
+    }
+    fn get_user_defined_attributes(&self) -> Vec<ffi::PropValuePair> {
+        self.0
+            .get_user_defined_attributes()
+            .map(|a| ffi::PropValuePair {
+                prop: a.0.to_string(),
+                value: a.1.to_string(),
+            })
+            .collect()
     }
 
     fn set_value(
