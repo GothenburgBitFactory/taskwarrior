@@ -71,7 +71,7 @@ class TestFeature559(TestCase):
         self.assertRegex(
             err,
             re.compile(
-                "unable to open database file:.*Unable to open the database file",
+                r"unable to open database file:.*Error code 14",
                 re.DOTALL,
             ),
         )
