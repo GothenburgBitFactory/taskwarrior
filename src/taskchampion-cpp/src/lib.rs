@@ -345,6 +345,7 @@ mod ffi {
     extern "Rust" {
         type Task;
 
+        // First the getters.
         /// Get the task's Uuid.
         fn get_uuid(self: &Task) -> Uuid;
         /// Get the task's status.
@@ -375,6 +376,8 @@ mod ffi {
         fn get_value(&self, property: &CxxString, value_out: Pin<&mut CxxString>) -> bool;
         /// Get the task's tags.
         fn get_tags(&self) -> Vec<String>;
+        /// True if the task has the given tag. Fails if the string is unparseable.
+        fn has_tag(&self, tag: &CxxString) -> Result<bool>;
         /// Get the tasks dependencies.
         fn get_dependencies(&self) -> Vec<Uuid>;
         /// Get the tasks annotations.
@@ -388,14 +391,78 @@ mod ffi {
         /// Get all UDAs.
         fn get_user_defined_attributes(&self) -> Vec<PropValuePair>;
 
-        // Mutators (each returns `Result<()>`, takes `&mut Vec<Operation>`):
-        // - `set_description`, `set_priority`
-        // - `set_entry`, `set_wait`, `set_modified`, `set_due`, `set_timestamp`
-        // - `start`, `stop`, `done`
-        // - `add_tag`, `remove_tag`
-        // - `add_annotation`, `remove_annotation`
-        // - `set_user_defined_attribute`, `remove_user_defined_attribute`
-        // - `add_dependency`, `remove_dependency`
+        // Then the setters. Each takes `ops: &mut Vec<Operation>` and returns `Result<()>`,
+        // routing through TaskChampion's bookkeeping.
+
+        /// Set the task's description.
+        fn set_description(
+            self: &mut Task,
+            description: &CxxString,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+        /// Set the task's priority.
+        fn set_priority(
+            self: &mut Task,
+            priority: &CxxString,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+
+        /// Set the task's entry timestamp. A value of `0` clears the timestamp.
+        fn set_entry(self: &mut Task, entry: i64, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Set the task's wait timestamp. A value of `0` clears the timestamp.
+        fn set_wait(self: &mut Task, wait: i64, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Set the task's modified timestamp.
+        fn set_modified(self: &mut Task, modified: i64, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Set the task's due timestamp. A value of `0` clears the timestamp.
+        fn set_due(self: &mut Task, due: i64, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Set the given timestamp property. A value of `0` clears the timestamp.
+        fn set_timestamp(
+            self: &mut Task,
+            property: &CxxString,
+            value: i64,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+
+        /// Mark the task as started.
+        fn start(self: &mut Task, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Mark the task as stopped.
+        fn stop(self: &mut Task, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Mark the task as completed.
+        fn done(self: &mut Task, ops: &mut Vec<Operation>) -> Result<()>;
+
+        /// Add a tag to the task. The tag is parsed from a string, so can fail.
+        fn add_tag(self: &mut Task, tag: &CxxString, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Remove a tag from the task. The tag is parsed from a, so can fail.
+        fn remove_tag(self: &mut Task, tag: &CxxString, ops: &mut Vec<Operation>) -> Result<()>;
+
+        /// Add an annotation, identified by its entry timestamp.
+        fn add_annotation(
+            self: &mut Task,
+            entry: i64,
+            description: &CxxString,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+        /// Remove an annotation, identified by its entry timestamp.
+        fn remove_annotation(self: &mut Task, entry: i64, ops: &mut Vec<Operation>) -> Result<()>;
+
+        /// Set a user-defined attribute (UDA).
+        fn set_user_defined_attribute(
+            self: &mut Task,
+            key: &CxxString,
+            value: &CxxString,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+        /// Remove a user-defined attribute (UDA).
+        fn remove_user_defined_attribute(
+            self: &mut Task,
+            key: &CxxString,
+            ops: &mut Vec<Operation>,
+        ) -> Result<()>;
+
+        /// Add a dependency on another task.
+        fn add_dependency(self: &mut Task, dep: Uuid, ops: &mut Vec<Operation>) -> Result<()>;
+        /// Remove a dependency on another task.
+        fn remove_dependency(self: &mut Task, dep: Uuid, ops: &mut Vec<Operation>) -> Result<()>;
 
         /// Set the given property to the given value via `tc::Task::set_value`.
         /// This routes through TaskChampion's bookkeeping.
@@ -1023,6 +1090,23 @@ fn operations_ref(ops: &mut Vec<Operation>) -> &mut Vec<tc::Operation> {
     unsafe { std::mem::transmute::<&mut Vec<Operation>, &mut Vec<tc::Operation>>(ops) }
 }
 
+/// Convert an `i64` timestamp from C++ into an `Option<Timestamp>`, where `0`
+/// means "unset".
+fn optional_timestamp(secs: i64) -> Option<tc::chrono::DateTime<tc::chrono::Utc>> {
+    if secs == 0 {
+        None
+    } else {
+        Some(tc::utc_timestamp(secs))
+    }
+}
+
+/// Parse a `tc::Tag` from a C++ string.
+fn parse_tag(tag: &CxxString) -> Result<tc::Tag, CppError> {
+    tag.to_string_lossy()
+        .parse::<tc::Tag>()
+        .map_err(|e| CppError(tc::Error::Other(e)))
+}
+
 fn create_task(uuid: ffi::Uuid, ops: &mut Vec<Operation>) -> Box<TaskData> {
     let t = tc::TaskData::create(uuid.into(), operations_ref(ops));
     Box::new(TaskData(t))
@@ -1198,6 +1282,10 @@ impl Task {
     fn get_tags(&self) -> Vec<String> {
         self.0.get_tags().map(|t| t.to_string()).collect()
     }
+    fn has_tag(&self, tag: &CxxString) -> Result<bool, CppError> {
+        let tag = parse_tag(tag)?;
+        Ok(self.0.has_tag(&tag))
+    }
     fn get_dependencies(&self) -> Vec<ffi::Uuid> {
         self.0.get_dependencies().map(|d| d.into()).collect()
     }
@@ -1273,6 +1361,141 @@ impl Task {
             _ => unreachable!("ffi::Status variants are exhaustive"),
         };
         Ok(self.0.set_status(status, operations_ref(ops))?)
+    }
+
+    fn set_description(
+        &mut self,
+        description: &CxxString,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self.0.set_description(
+            description.to_string_lossy().into_owned(),
+            operations_ref(ops),
+        )?)
+    }
+
+    fn set_priority(
+        &mut self,
+        priority: &CxxString,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self
+            .0
+            .set_priority(priority.to_string_lossy().into_owned(), operations_ref(ops))?)
+    }
+
+    fn set_entry(&mut self, entry: i64, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self
+            .0
+            .set_entry(optional_timestamp(entry), operations_ref(ops))?)
+    }
+
+    fn set_wait(&mut self, wait: i64, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self
+            .0
+            .set_wait(optional_timestamp(wait), operations_ref(ops))?)
+    }
+
+    fn set_modified(&mut self, modified: i64, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self
+            .0
+            .set_modified(tc::utc_timestamp(modified), operations_ref(ops))?)
+    }
+
+    fn set_due(&mut self, due: i64, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self
+            .0
+            .set_due(optional_timestamp(due), operations_ref(ops))?)
+    }
+
+    fn set_timestamp(
+        &mut self,
+        property: &CxxString,
+        value: i64,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self.0.set_timestamp(
+            property.to_string_lossy().as_ref(),
+            optional_timestamp(value),
+            operations_ref(ops),
+        )?)
+    }
+
+    fn start(&mut self, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self.0.start(operations_ref(ops))?)
+    }
+
+    fn stop(&mut self, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self.0.stop(operations_ref(ops))?)
+    }
+
+    fn done(&mut self, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self.0.done(operations_ref(ops))?)
+    }
+
+    fn add_tag(&mut self, tag: &CxxString, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        let tag = parse_tag(tag)?;
+        Ok(self.0.add_tag(&tag, operations_ref(ops))?)
+    }
+
+    fn remove_tag(&mut self, tag: &CxxString, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        let tag = parse_tag(tag)?;
+        Ok(self.0.remove_tag(&tag, operations_ref(ops))?)
+    }
+
+    fn add_annotation(
+        &mut self,
+        entry: i64,
+        description: &CxxString,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        let annotation = tc::Annotation {
+            entry: tc::utc_timestamp(entry),
+            description: description.to_string_lossy().into_owned(),
+        };
+        Ok(self.0.add_annotation(annotation, operations_ref(ops))?)
+    }
+
+    fn remove_annotation(&mut self, entry: i64, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self
+            .0
+            .remove_annotation(tc::utc_timestamp(entry), operations_ref(ops))?)
+    }
+
+    fn set_user_defined_attribute(
+        &mut self,
+        key: &CxxString,
+        value: &CxxString,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self.0.set_user_defined_attribute(
+            key.to_string_lossy().into_owned(),
+            value.to_string_lossy().into_owned(),
+            operations_ref(ops),
+        )?)
+    }
+
+    fn remove_user_defined_attribute(
+        &mut self,
+        key: &CxxString,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self.0.remove_user_defined_attribute(
+            key.to_string_lossy().into_owned(),
+            operations_ref(ops),
+        )?)
+    }
+
+    fn add_dependency(&mut self, dep: ffi::Uuid, ops: &mut Vec<Operation>) -> Result<(), CppError> {
+        Ok(self.0.add_dependency(dep.into(), operations_ref(ops))?)
+    }
+
+    fn remove_dependency(
+        &mut self,
+        dep: ffi::Uuid,
+        ops: &mut Vec<Operation>,
+    ) -> Result<(), CppError> {
+        Ok(self.0.remove_dependency(dep.into(), operations_ref(ops))?)
     }
 }
 // --- WorkingSet
@@ -1594,5 +1817,183 @@ mod test {
         assert_eq!(ws.by_index(100), tc::Uuid::nil().into());
         assert_eq!(ws.by_uuid(uuid3), 0);
         assert_eq!(ws.all_uuids(), vec![tc::Uuid::nil().into(), uuid1, uuid2]);
+    }
+
+    /// Create a replica with a single minimal task, and return both. The task
+    /// is re-read from the replica.
+    fn replica_with_task(tmp: &tempfile::TempDir) -> (Box<Replica>, Box<Task>) {
+        let path = tmp.path().to_str().unwrap().to_string();
+        let mut rep = new_replica_on_disk(path, true, true).unwrap();
+        let uuid = uuid_v4();
+        let mut ops = new_operations();
+        rep.create_task(uuid, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let task = rep.get_task(uuid).unwrap().take();
+        (rep, task)
+    }
+
+    #[test]
+    fn task_set_string_fields() {
+        cxx::let_cxx_string!(description = "a description");
+        cxx::let_cxx_string!(priority = "H");
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (mut rep, mut task) = replica_with_task(&tmp);
+
+        let mut ops = new_operations();
+        task.set_description(&description, &mut ops).unwrap();
+        task.set_priority(&priority, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+
+        let task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert_eq!(task.get_description(), "a description");
+        assert_eq!(task.get_priority(), "H");
+    }
+
+    #[test]
+    fn task_set_timestamps() {
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (mut rep, mut task) = replica_with_task(&tmp);
+
+        cxx::let_cxx_string!(scheduled = "scheduled");
+        let mut ops = new_operations();
+        task.set_entry(1000, &mut ops).unwrap();
+        task.set_wait(2000, &mut ops).unwrap();
+        task.set_modified(3000, &mut ops).unwrap();
+        task.set_due(4000, &mut ops).unwrap();
+        task.set_timestamp(&scheduled, 5000, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+
+        let mut task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert_eq!(task.get_entry(), 1000);
+        assert_eq!(task.get_wait(), 2000);
+        assert_eq!(task.get_modified(), 3000);
+        assert_eq!(task.get_due(), 4000);
+        assert_eq!(task.get_timestamp(&scheduled), 5000);
+
+        // A value of 0 clears the timestamp, which reads back as 0 ("unset").
+        let mut ops = new_operations();
+        task.set_due(0, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert_eq!(task.get_due(), 0);
+    }
+
+    #[test]
+    fn task_start_stop_done() {
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (mut rep, mut task) = replica_with_task(&tmp);
+
+        let mut ops = new_operations();
+        task.start(&mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let mut task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(task.is_active());
+
+        let mut ops = new_operations();
+        task.stop(&mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let mut task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(!task.is_active());
+
+        let mut ops = new_operations();
+        task.done(&mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(matches!(task.get_status(), ffi::Status::Completed));
+    }
+
+    #[test]
+    fn task_tags() {
+        cxx::let_cxx_string!(tag = "next");
+        cxx::let_cxx_string!(bad_tag = "not a valid tag");
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (mut rep, mut task) = replica_with_task(&tmp);
+
+        // Parsing an invalid tag is an error and does not panic.
+        let mut ops = new_operations();
+        assert!(task.add_tag(&bad_tag, &mut ops).is_err());
+
+        let mut ops = new_operations();
+        task.add_tag(&tag, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let mut task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(task.has_tag(&tag).unwrap());
+        // get_tags also returns synthetic tags (e.g. PENDING), so check membership.
+        assert!(task.get_tags().contains(&"next".to_string()));
+
+        let mut ops = new_operations();
+        task.remove_tag(&tag, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(!task.has_tag(&tag).unwrap());
+    }
+
+    #[test]
+    fn task_annotations() {
+        cxx::let_cxx_string!(description = "an annotation");
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (mut rep, mut task) = replica_with_task(&tmp);
+
+        let mut ops = new_operations();
+        task.add_annotation(1000, &description, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let mut task = rep.get_task(task.get_uuid()).unwrap().take();
+        let annotations = task.get_annotations();
+        assert_eq!(annotations.len(), 1);
+        assert_eq!(annotations[0].entry, 1000);
+        assert_eq!(annotations[0].description, "an annotation");
+
+        let mut ops = new_operations();
+        task.remove_annotation(1000, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(task.get_annotations().is_empty());
+    }
+
+    #[test]
+    fn task_user_defined_attributes() {
+        cxx::let_cxx_string!(key = "estimate");
+        cxx::let_cxx_string!(value = "3h");
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (mut rep, mut task) = replica_with_task(&tmp);
+
+        let mut ops = new_operations();
+        task.set_user_defined_attribute(&key, &value, &mut ops)
+            .unwrap();
+        rep.commit_operations(ops).unwrap();
+        let mut task = rep.get_task(task.get_uuid()).unwrap().take();
+        let udas = task.get_user_defined_attributes();
+        assert_eq!(
+            udas,
+            vec![ffi::PropValuePair {
+                prop: "estimate".into(),
+                value: "3h".into(),
+            }]
+        );
+
+        let mut ops = new_operations();
+        task.remove_user_defined_attribute(&key, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(task.get_user_defined_attributes().is_empty());
+    }
+
+    #[test]
+    fn task_dependencies() {
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (mut rep, mut task) = replica_with_task(&tmp);
+        let dep = uuid_v4();
+
+        let mut ops = new_operations();
+        task.add_dependency(dep, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let mut task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert_eq!(task.get_dependencies(), vec![dep]);
+
+        let mut ops = new_operations();
+        task.remove_dependency(dep, &mut ops).unwrap();
+        rep.commit_operations(ops).unwrap();
+        let task = rep.get_task(task.get_uuid()).unwrap().take();
+        assert!(task.get_dependencies().is_empty());
     }
 }
