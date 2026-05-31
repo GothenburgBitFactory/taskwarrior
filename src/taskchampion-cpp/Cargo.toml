@@ -3,15 +3,17 @@ name = "taskchampion-lib"
 version = "0.1.0"
 edition = "2021"
 publish = false
-rust-version = "1.91.1"  # MSRV
+rust-version = "1.91.1"   # MSRV
 
 [lib]
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion = { git = "https://github.com/GothenburgBitFactory/taskchampion", rev = "c864747a90f3da33528b9b863db8ad70c4a9f2a4", features = ["server-git"] }
+taskchampion = { git = "https://github.com/GothenburgBitFactory/taskchampion", tag = "v3.1.0", features = [
+  "server-git",
+] }
 cxx = "1.0.133"
-tokio = { version = "1", features = [ "rt" ] }
+tokio = { version = "1", features = ["rt"] }
 
 [features]
 # use native CA roots, instead of bundled

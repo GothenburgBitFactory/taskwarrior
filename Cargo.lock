@@ -2551,8 +2551,8 @@ dependencies = [
 
 [[package]]
 name = "taskchampion"
-version = "3.0.2-pre"
-source = "git+https://github.com/GothenburgBitFactory/taskchampion?rev=c864747a90f3da33528b9b863db8ad70c4a9f2a4#c864747a90f3da33528b9b863db8ad70c4a9f2a4"
+version = "3.1.0"
+source = "git+https://github.com/GothenburgBitFactory/taskchampion?tag=v3.1.0#ddb7029882d37af8800da3a7d745f8597940dec3"
 dependencies = [
  "anyhow",
  "async-trait",
