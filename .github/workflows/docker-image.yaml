@@ -36,7 +36,7 @@ jobs:
         uses: sigstore/cosign-installer@v4.1.2
 
       - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Build and push Taskwarrior Docker image
         id: build-and-push
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.2.0
         with:
           context: .
           file: "./docker/task.dockerfile"
