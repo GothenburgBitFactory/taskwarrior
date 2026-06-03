@@ -218,6 +218,13 @@ int CmdInfo::execute(std::string& output) {
       view.set(row, 1, task.get("rtype"));
     }
 
+    // iter_count
+    if (task.has("iter_count")) {
+      row = view.addRow();
+      view.set(row, 0, "Iter Count");
+      view.set(row, 1, task.get("iter_count"));
+    }
+
     // entry
     if (task.has("entry") && task.get_date("entry")) {
       row = view.addRow();
@@ -322,6 +329,7 @@ int CmdInfo::execute(std::string& output) {
       if (task.hasTag("DUE")) virtualTags += "DUE ";
       if (task.hasTag("DUETODAY")) virtualTags += "DUETODAY ";  // 2016-03-29: Deprecated in 2.6.0
       if (task.hasTag("INSTANCE")) virtualTags += "INSTANCE ";
+      if (task.hasTag("ITERATIVE")) virtualTags += "ITERATIVE ";
       if (task.hasTag("LATEST")) virtualTags += "LATEST ";
       if (task.hasTag("MONTH")) virtualTags += "MONTH ";
       if (task.hasTag("ORPHAN")) virtualTags += "ORPHAN ";

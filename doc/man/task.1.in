@@ -819,12 +819,13 @@ are:
     DELETED      Matches if the task has deleted status
     DUE          Matches if the task is due within the next 7 days (See rc.due)
     INSTANCE     Matches if the task is a recurrent instance
+    ITERATIVE    Matches if the task has iterative status
     LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
     ORPHAN       Matches if the task has any orphaned UDA values
     OVERDUE      Matches if the task is overdue
     PARENT       Matches if the task is a parent (deprecated in 2.6.0)
-    PENDING      Matches if the task has pending status
+    PENDING      Matches if the task has pending or iterative status
     PRIORITY     Matches if the task has a priority
     PROJECT      Matches if the task has a project
     QUARTER      Matches if the task is due this quarter
@@ -854,7 +855,7 @@ add or remove a virtual tag.
 Specifies the project to which a task is related to.
 
 .TP
-.B status:pending|deleted|completed|waiting|recurring
+.B status:pending|deleted|completed|waiting|recurring|iterative
 Specifies the state of the task.
 
 .TP
@@ -868,6 +869,20 @@ Specifies the due-date of a task.
 .TP
 .B recur:<frequency>
 Specifies the frequency of a recurrence of a task.
+
+.TP
+.B iter:<frequency>
+Makes the task iterative. Completing it creates the next occurrence with its
+dates advanced by the frequency. An iterative task also needs an iter_type and
+at least one of due, scheduled or wait, which the schedule is anchored on. The
+read-only iter_count attribute holds each occurrence's position in the series.
+
+.TP
+.B iter_type:fixed|fixed+|chained
+How the next occurrence of an iterative task is scheduled. fixed: the next
+date after the completed occurrence. fixed+: the next date after both now and
+the completed occurrence, skipping missed ones. chained: the next date after
+the completion time. Short forms fx, f+ or fp, and ch are also accepted.
 
 .TP
 .B scheduled:<ready-date>
@@ -1288,6 +1303,25 @@ Every year or a number of years.
 .TP
 biannual, biyearly, 2yr
 Every two years.
+
+.TP
+.I Iterative tasks
+accept the frequencies above, ISO-8601 durations, raw RRULE strings, and
+natural language such as:
+
+.TP
+"the last friday of the month"
+
+.TP
+"weekdays in june at 9:30 am"
+
+.TP
+"every year on the last monday in may"
+
+.TP
+You will need to wrap multi-word descriptions in "".
+
+
 .RE
 
 .SH CONTEXT
