@@ -554,8 +554,8 @@ impl std::fmt::Display for CppError {
             let entire_msg = err
                 .chain()
                 .skip(1)
-                .fold(err.to_string(), |a, b| format!("{}: {}", a, b));
-            write!(f, "{}", entire_msg)
+                .fold(err.to_string(), |a, b| format!("{a}: {b}"));
+            write!(f, "{entire_msg}")
         } else {
             self.0.fmt(f)
         }
@@ -598,7 +598,7 @@ fn uuid_v4() -> ffi::Uuid {
 
 fn uuid_from_string(uuid: Pin<&CxxString>) -> ffi::Uuid {
     let Ok(uuid) = tc::Uuid::parse_str(uuid.to_str().expect("invalid utf-8")) else {
-        panic!("{} is not a valid UUID", uuid);
+        panic!("{uuid} is not a valid UUID");
     };
     uuid.into()
 }
