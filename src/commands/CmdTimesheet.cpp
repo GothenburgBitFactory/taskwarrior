@@ -105,7 +105,7 @@ int CmdTimesheet::execute(std::string& output) {
       ++num_completed;
     }
 
-    if (task.getStatus() == Task::pending && task.has("start")) {
+    if (task.is_pending() && task.has("start")) {
       task.set("_key", task.get("start"));
       ++num_started;
     }

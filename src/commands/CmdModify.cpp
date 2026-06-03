@@ -119,8 +119,21 @@ void CmdModify::checkConsistency(Task& before, Task& after) {
   if (before.has("recur") && (!after.has("recur") || after.get("recur") == ""))
     throw std::string("You cannot remove the recurrence from a recurring task.");
 
-  if ((before.getStatus() == Task::pending) && (after.getStatus() == Task::pending) &&
-      (before.get("end") == "") && (after.get("end") != ""))
+  if (before.getStatus() == Task::iterative) {
+    if (after.get("iter") == "")
+      throw std::string("You cannot remove the iteration from an iterative task.");
+
+    if (after.get("iter_type") == "")
+      throw std::string("You cannot remove the iteration type from an iterative task.");
+
+    if (after.get("due") == "" && after.get("scheduled") == "" && after.get("wait") == "")
+      throw std::string(
+          "You cannot remove the last of the due, scheduled and wait dates from an iterative "
+          "task.");
+  }
+
+  if (before.is_pending() && after.is_pending() && (before.get("end") == "") &&
+      (after.get("end") != ""))
     throw format("Could not modify task {1}. You cannot set an end date on a pending task.",
                  before.identifier(true));
 }
