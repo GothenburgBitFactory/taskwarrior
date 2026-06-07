@@ -156,9 +156,10 @@ statement:
 By using include files you can divide your main configuration file into several
 ones containing just the relevant configuration data like colors, etc.
 
-There are two excellent uses of includes in your .taskrc, shown here:
+There are three excellent uses of includes in your .taskrc, shown here:
 
 .nf
+    include default.theme
     include holidays.en-US.rc
     include dark-16.theme
 .fi
@@ -813,9 +814,9 @@ terminal, can be obtained by running the command:
 .RE
 
 .RS
-Note that no default values are listed here - the defaults now correspond to the
-dark-256.theme (Linux) and dark-16.theme (other) theme values.
-The coloration rules are as follows:
+Note that core color configurations have been abstracted away from the main template file. 
+The system defaults now reference an include directive mapping directly to default.theme. 
+The basic coloration rules parsed through this modular setup are as follows:
 .RE
 
 .RS
