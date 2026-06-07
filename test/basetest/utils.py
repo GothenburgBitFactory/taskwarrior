@@ -36,11 +36,11 @@ BIN_PREFIX = os.path.abspath(os.path.join(CMAKE_BINARY_DIR, "src"))
 
 # Default location of test hooks
 DEFAULT_HOOK_PATH = os.path.abspath(
-    os.path.join("/home/joe/Contributions/taskwarrior", "test", "test_hooks")
+    os.path.join("${CMAKE_SOURCE_DIR}", "test", "test_hooks")
 )
 
 # Source directory
-SOURCE_DIR = os.path.abspath("/home/joe/Contributions/taskwarrior")
+SOURCE_DIR = os.path.abspath("${CMAKE_SOURCE_DIR}")
 
 
 # Environment flags to control skipping of task tests
