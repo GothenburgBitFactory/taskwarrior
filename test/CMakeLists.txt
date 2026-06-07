@@ -204,7 +204,6 @@ set (pythonTests
   hooks.on-exit.test.py
   )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../doc/rc/default.theme default.theme COPYONLY)
 foreach (python_Test ${pythonTests})
   configure_file(${python_Test} ${python_Test} COPYONLY)
 
