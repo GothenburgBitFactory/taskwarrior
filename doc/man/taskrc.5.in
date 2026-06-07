@@ -814,8 +814,8 @@ terminal, can be obtained by running the command:
 .RE
 
 .RS
-Note that core color configurations have been abstracted away from the main template file. 
-The system defaults now reference an include directive mapping directly to default.theme. 
+Note that core color configurations have been abstracted away from the main template file.
+The system defaults now reference an include directive mapping directly to default.theme.
 The basic coloration rules parsed through this modular setup are as follows:
 .RE
 
