@@ -197,7 +197,12 @@ std::string configurationDefaults =
     "\n"
     "# Color controls.\n"
     "color=1                                        # Enable color\n"
+#ifdef TASK_TEST_RCDIR
+    "include " TASK_TEST_RCDIR
+    "/default.theme\n"
+#else
     "include default.theme\n"
+#endif
     "\n"
     "# Here is the rule precedence order, highest to lowest.\n"
     "# Note that these are just the color rule names, without the leading 'color.'\n"
@@ -439,9 +444,6 @@ int Context::initialize(int argc, const char** argv) {
   home_dir = getenv("HOME");
 
   std::vector<std::string> searchPaths{TASK_RCDIR};
-#ifdef TASK_TEST_RCDIR
-  searchPaths.push_back(TASK_TEST_RCDIR);
-#endif
 
   try {
     ////////////////////////////////////////////////////////////////////////////
