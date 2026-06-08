@@ -438,7 +438,10 @@ int Context::initialize(int argc, const char** argv) {
   int rc = 0;
   home_dir = getenv("HOME");
 
-  std::vector<std::string> searchPaths{TASK_RCDIR, "doc/rc", "../doc/rc"};
+  std::vector<std::string> searchPaths{TASK_RCDIR};
+#ifdef TASK_TEST_RCDIR
+  searchPaths.push_back(TASK_TEST_RCDIR);
+#endif
 
   try {
     ////////////////////////////////////////////////////////////////////////////
