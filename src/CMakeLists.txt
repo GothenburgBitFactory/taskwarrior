@@ -74,7 +74,7 @@ set_property (TARGET lex_executable PROPERTY OUTPUT_NAME "lex")
 #SET(CMAKE_C_FLAGS_GCOV "--coverage")
 #SET(CMAKE_EXE_LINKER_FLAGS_GCOV "--coverage")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR NOT CMAKE_BUILD_TYPE)
-    target_compile_definitions(task PRIVATE 
+    target_compile_definitions(task PRIVATE
         -DTASK_TEST_RCDIR="${CMAKE_SOURCE_DIR}/doc/rc"
     )
 endif ()
