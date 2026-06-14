@@ -54,9 +54,11 @@ class TDB2 {
   int latest_id();
 
   // Generalized task accessors.
+  // We don't cache the all_tasks vector because no command accesses it more than once.
+  // Caching it would cause higher memory use and would require additional rewrites to make tests pass.
   const std::vector<Task> all_tasks();
-  const std::vector<Task> pending_tasks();
-  const std::vector<Task> completed_tasks();
+  const std::vector<Task>& pending_tasks();
+  const std::vector<Task>& completed_tasks();
   bool get(int, Task&);
   bool get(const std::string&, Task&);
   bool has(const std::string&);

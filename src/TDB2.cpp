@@ -253,12 +253,15 @@ const std::vector<Task> TDB2::all_tasks() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector<Task> TDB2::pending_tasks() {
+const std::vector<Task>& TDB2::pending_tasks() {
   if (!_pending_tasks) {
     Timer timer;
 
     auto pending_tctasks = replica()->pending_task_data();
     std::vector<Task> result;
+
+    result.reserve(pending_tctasks.size());
+
     for (auto& maybe_tctask : pending_tctasks) {
       auto tctask = maybe_tctask.take();
       result.push_back(Task(std::move(tctask)));
@@ -267,19 +270,22 @@ const std::vector<Task> TDB2::pending_tasks() {
     dependency_scan(result);
 
     Context::getContext().time_load_us += timer.total_us();
-    _pending_tasks = result;
+    _pending_tasks = std::move(result);
   }
 
   return *_pending_tasks;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector<Task> TDB2::completed_tasks() {
+const std::vector<Task>& TDB2::completed_tasks() {
   if (!_completed_tasks) {
     auto all_tctasks = replica()->all_task_data();
     auto& ws = working_set();
 
     std::vector<Task> result;
+
+    result.reserve(all_tctasks.size());
+
     for (auto& maybe_tctask : all_tctasks) {
       auto tctask = maybe_tctask.take();
       // if this task is _not_ in the working set, return it.
@@ -287,7 +293,7 @@ const std::vector<Task> TDB2::completed_tasks() {
         result.push_back(Task(std::move(tctask)));
       }
     }
-    _completed_tasks = result;
+    _completed_tasks = std::move(result);
   }
   return *_completed_tasks;
 }
