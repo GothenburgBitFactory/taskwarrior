@@ -64,7 +64,7 @@ void TDB2::add(Task& task) {
   rust::Vec<tc::Operation> ops;
   maybe_add_undo_point(ops);
 
-  auto uuid = task.get("uuid");
+  auto uuid = task.get_ref("uuid");
   changes[uuid] = task;
   tc::Uuid tcuuid = tc::uuid_from_string(uuid);
 
@@ -113,7 +113,7 @@ void TDB2::modify(Task& task) {
   // changes the user or hooks tried to apply to the "modified" attribute.
   task.setAsNow("modified");
   task.validate(false);
-  auto uuid = task.get("uuid");
+  auto uuid = task.get_ref("uuid");
 
   rust::Vec<tc::Operation> ops;
   maybe_add_undo_point(ops);
@@ -192,7 +192,7 @@ void TDB2::modify(Task& task) {
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::purge(Task& task) {
-  auto uuid = tc::uuid_from_string(task.get("uuid"));
+  auto uuid = tc::uuid_from_string(task.get_ref("uuid"));
   rust::Vec<tc::Operation> ops;
   auto maybe_tctask = replica()->get_task_data(uuid);
   if (maybe_tctask.is_some()) {
