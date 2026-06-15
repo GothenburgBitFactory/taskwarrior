@@ -37,6 +37,13 @@
 #include <unordered_set>
 #include <vector>
 
+// Adjacency maps for the dependency graph.
+// Index refers to the pending_tasks() vector.
+struct DependencyGraph {
+ std::unordered_map<std::string, std::vector<size_t>> dependents;
+ std::unordered_map<std::string, std::vector<size_t>> dependencies;
+};
+
 // TDB2 Class represents all the files in the task database.
 class TDB2 {
  public:
@@ -59,6 +66,8 @@ class TDB2 {
   const std::vector<Task> all_tasks();
   const std::vector<Task>& pending_tasks();
   const std::vector<Task>& completed_tasks();
+  // dependency_graph is built on first use from pending_tasks() and reused.
+  const DependencyGraph& dependency_graph();
   // Index of pending tasks by UUID.
   size_t pending_index_of(const std::string& uuid);
   bool get(int, Task&);
@@ -83,6 +92,8 @@ class TDB2 {
   std::optional<rust::Box<tc::WorkingSet>> _working_set;
   std::optional<std::vector<Task>> _pending_tasks;
   std::optional<std::vector<Task>> _completed_tasks;
+  // Dependency cache.
+  std::optional<DependencyGraph> _dependency_graph;
   // Lazily cache UUIDs within the pending set.
   std::optional<std::unordered_map<std::string, size_t>> _pending_index;
   void invalidate_cached_info();

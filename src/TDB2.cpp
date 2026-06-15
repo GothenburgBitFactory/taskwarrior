@@ -43,7 +43,10 @@
 #include <vector>
 
 bool TDB2::debug_mode = false;
-static void dependency_scan(std::vector<Task>&);
+static void dependency_scan(std::vector<Task>&, const std::unordered_map<std::string, size_t>&);
+
+// Build maps for dependency queries.
+static DependencyGraph build_dependency_graph(const std::vector<Task>&, const std::unordered_map<std::string, size_t>&);
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::open_replica(const std::string& location, bool create_if_missing, bool read_write) {
@@ -247,7 +250,14 @@ const std::vector<Task> TDB2::all_tasks() {
     all.push_back(Task(std::move(tctask)));
   }
 
-  dependency_scan(all);
+  // Build a temporary map so that dependency_scan can resolve references
+  // inside all_tasks.
+  std::unordered_map<std::string, size_t> all_index;
+  all_index.reserve(all.size());
+  for (size_t i = 0; i < all.size(); ++i)
+    all_index[all[i].get_ref("uuid")] = i;
+
+  dependency_scan(all, all_index);
 
   Context::getContext().time_load_us += timer.total_us();
   return all;
@@ -275,7 +285,7 @@ const std::vector<Task>& TDB2::pending_tasks() {
     for (size_t i = 0, n = result.size(); i < n; ++i)
       _pending_index->emplace(result[i].get_ref("uuid"), i);
 
-    dependency_scan(result);
+    dependency_scan(result, *_pending_index);
 
     Context::getContext().time_load_us += timer.total_us();
     _pending_tasks = std::move(result);
@@ -306,11 +316,24 @@ const std::vector<Task>& TDB2::completed_tasks() {
   return *_completed_tasks;
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// Build and return the dependency map for pending tasks.
+const DependencyGraph& TDB2::dependency_graph() {
+  if (!_dependency_graph) {
+    pending_tasks();
+    // reuse the UUID index
+    _dependency_graph = build_dependency_graph(*_pending_tasks, pending_index());
+  }
+
+  return *_dependency_graph;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::invalidate_cached_info() {
   _pending_tasks = std::nullopt;
   _completed_tasks = std::nullopt;
   _working_set = std::nullopt;
+  _dependency_graph = std::nullopt;
   _pending_index = std::nullopt;
 }
 
@@ -479,29 +502,50 @@ int TDB2::num_local_changes() { return (int)replica()->num_local_operations(); }
 int TDB2::num_reverts_possible() { return (int)replica()->num_undo_points(); }
 
 ////////////////////////////////////////////////////////////////////////////////
-// For any task that has depenencies, follow the chain of dependencies until the
-// end.  Along the way, update the Task::is_blocked and Task::is_blocking data
-// cache.
-static void dependency_scan(std::vector<Task>& tasks) {
-  for (auto& left : tasks) {
-    for (auto& dep : left.getDependencyUUIDs()) {
-      for (auto& right : tasks) {
-        if (right.get("uuid") == dep) {
-          // GC hasn't run yet, check both tasks for their current status
-          Task::status lstatus = left.getStatus();
-          Task::status rstatus = right.getStatus();
-          if (lstatus != Task::completed && lstatus != Task::deleted &&
-              rstatus != Task::completed && rstatus != Task::deleted) {
-            left.is_blocked = true;
-            right.is_blocking = true;
-          }
+// Set Task::is_blocked / Task::is_blocking flags using the pre-built UUID map
+static void dependency_scan(std::vector<Task>& tasks, const std::unordered_map<std::string, size_t>& uuid_index) {
+  for (size_t i = 0; i< tasks.size(); ++i) {
+    auto lstatus = tasks[i].getStatus();
+    for (const auto& dep : tasks[i].getDependencyUUIDs()) {
+      auto it = uuid_index.find(dep);
+      if (it == uuid_index.end())
+        continue;
 
-          // Only want to break out of the "right" loop.
-          break;
-        }
+      size_t j = it->second;
+      auto rstatus = tasks[j].getStatus();
+      if (lstatus != Task::completed && lstatus != Task::deleted &&
+          rstatus != Task::completed && rstatus != Task::deleted) {
+        tasks[i].is_blocked = true;
+        tasks[j].is_blocking = true;
       }
     }
   }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+// Build the full dependency map from the task vector.
+static DependencyGraph build_dependency_graph(const std::vector<Task>& tasks,
+                                              const std::unordered_map<std::string, size_t>& uuid_index) {
+  DependencyGraph graph;
+
+  for (size_t i = 0; i < tasks.size(); ++i) {
+    const auto& deps = tasks[i].getDependencyUUIDs();
+    if (deps.empty())
+      continue;
+
+    const auto& uuid = tasks[i].get_ref("uuid");
+
+    for (const auto& dep : deps) {
+      auto it = uuid_index.find(dep);
+      if (it == uuid_index.end())
+        continue;
+
+      graph.dependencies[uuid].push_back(it->second);
+      graph.dependents[dep].push_back(i);
+    }
+  }
+
+  return graph;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
