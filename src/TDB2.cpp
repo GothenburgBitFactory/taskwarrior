@@ -43,6 +43,7 @@
 #include <vector>
 
 bool TDB2::debug_mode = false;
+// This functions main job is to set Task::is_blocked / Task::is_blocking flags.
 static void dependency_scan(std::vector<Task>&, const std::unordered_map<std::string, size_t>&);
 
 // Build maps for dependency queries.
@@ -179,6 +180,7 @@ void TDB2::modify(Task& task) {
   }
 
   // If the task stayed in the set, we can edit the vector in-place.
+  // This speeds up modifications a lot relative to reloading and parsing from rust.
   if (_pending_tasks) {
     auto idx = pending_index_of(uuid);
     if (idx != SIZE_MAX)
@@ -186,7 +188,8 @@ void TDB2::modify(Task& task) {
   }
   // We have to drop the dependency map, in case modifications were made to those.
   _dependency_graph = std::nullopt;
-  // We also have to drop _completed_tasks.
+  // We also have to drop _completed_tasks. This probably isn't strictly necessary
+  // but it seems sensible for correctness reasons.
   _completed_tasks = std::nullopt;
 }
 
@@ -258,6 +261,7 @@ int TDB2::latest_id() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Not cached: callers read this once per process, and it can be very large.
 const std::vector<Task> TDB2::all_tasks() {
   Timer timer;
   auto all_tctasks = replica()->all_task_data();
@@ -281,6 +285,8 @@ const std::vector<Task> TDB2::all_tasks() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Load and cache pending tasks. The first call will build the UUID index,
+// after which it is reused.
 const std::vector<Task>& TDB2::pending_tasks() {
   if (!_pending_tasks) {
     Timer timer;
@@ -312,6 +318,9 @@ const std::vector<Task>& TDB2::pending_tasks() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Load and cache all completed tests by scanning all tasks,
+// and excluding those in the working set. We cache it to speed up those reports
+// which involve completed tasks.
 const std::vector<Task>& TDB2::completed_tasks() {
   if (!_completed_tasks) {
     auto all_tctasks = replica()->all_task_data();
@@ -335,6 +344,7 @@ const std::vector<Task>& TDB2::completed_tasks() {
 
 /////////////////////////////////////////////////////////////////////////////////
 // Build and return the dependency map for pending tasks.
+// We invalidate it whenever pending_tasks may have changed.
 const DependencyGraph& TDB2::dependency_graph() {
   if (!_dependency_graph) {
     pending_tasks();
@@ -343,15 +353,6 @@ const DependencyGraph& TDB2::dependency_graph() {
   }
 
   return *_dependency_graph;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::invalidate_cached_info() {
-  _pending_tasks = std::nullopt;
-  _completed_tasks = std::nullopt;
-  _working_set = std::nullopt;
-  _dependency_graph = std::nullopt;
-  _pending_index = std::nullopt;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -372,6 +373,15 @@ size_t TDB2::pending_index_of(const std::string& uuid) {
   auto& idx = pending_index();
   auto it = idx.find(uuid);
   return it != idx.end() ? it->second : SIZE_MAX;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::invalidate_cached_info() {
+  _pending_tasks = std::nullopt;
+  _completed_tasks = std::nullopt;
+  _working_set = std::nullopt;
+  _dependency_graph = std::nullopt;
+  _pending_index = std::nullopt;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

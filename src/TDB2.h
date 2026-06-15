@@ -43,6 +43,11 @@ struct DependencyGraph {
  std::unordered_map<std::string, std::vector<size_t>> dependents;
  std::unordered_map<std::string, std::vector<size_t>> dependencies;
 };
+// We adopt a caching strategy which lazily builds _pending_tasks,
+// _completed_tasks, _working_set, _dependency_graph from the Rust
+// replica whwnever its state may have changed. Callers receive const
+// refs to avoid silent copies of the whole vectors.
+
 
 // TDB2 Class represents all the files in the task database.
 class TDB2 {
@@ -64,12 +69,14 @@ class TDB2 {
   // We don't cache the all_tasks vector because no command accesses it more than once.
   // Caching it would cause higher memory use and would require additional rewrites to make tests pass.
   const std::vector<Task> all_tasks();
+  // pending and completed tasks are cached after first use.
   const std::vector<Task>& pending_tasks();
   const std::vector<Task>& completed_tasks();
   // dependency_graph is built on first use from pending_tasks() and reused.
+  // functions that use it are Task::getDependencyTasks(), getBlockedTasks()
+  // and urgency_inherit().
   const DependencyGraph& dependency_graph();
-  // Index of pending tasks by UUID.
-  size_t pending_index_of(const std::string& uuid);
+
   bool get(int, Task&);
   bool get(const std::string&, Task&);
   bool has(const std::string&);
@@ -80,6 +87,10 @@ class TDB2 {
   std::string uuid(int);
   int id(const std::string&);
 
+  // Index of pending tasks by UUID.
+  // Used by get() and modify().
+  size_t pending_index_of(const std::string& uuid);
+
   int num_local_changes();
   int num_reverts_possible();
 
@@ -89,12 +100,15 @@ class TDB2 {
   std::optional<rust::Box<tc::Replica>> _replica;
 
   // Cached information from the replica
+  // All caches are invalidated when state may have changed
+  // in the replica.
   std::optional<rust::Box<tc::WorkingSet>> _working_set;
   std::optional<std::vector<Task>> _pending_tasks;
   std::optional<std::vector<Task>> _completed_tasks;
   // Dependency cache.
   std::optional<DependencyGraph> _dependency_graph;
   // Lazily cache UUIDs within the pending set.
+  // Avoids scans of the vectors with get/modify..
   std::optional<std::unordered_map<std::string, size_t>> _pending_index;
   void invalidate_cached_info();
 
