@@ -59,6 +59,8 @@ class TDB2 {
   const std::vector<Task> all_tasks();
   const std::vector<Task>& pending_tasks();
   const std::vector<Task>& completed_tasks();
+  // Index of pending tasks by UUID.
+  size_t pending_index_of(const std::string& uuid);
   bool get(int, Task&);
   bool get(const std::string&, Task&);
   bool has(const std::string&);
@@ -81,7 +83,12 @@ class TDB2 {
   std::optional<rust::Box<tc::WorkingSet>> _working_set;
   std::optional<std::vector<Task>> _pending_tasks;
   std::optional<std::vector<Task>> _completed_tasks;
+  // Lazily cache UUIDs within the pending set.
+  std::optional<std::unordered_map<std::string, size_t>> _pending_index;
   void invalidate_cached_info();
+
+  // Return the full pending UUID map.
+  const std::unordered_map<std::string, size_t>& pending_index();
 
   // UUID -> Task containing all tasks modified in this invocation.
   std::map<std::string, Task> changes;

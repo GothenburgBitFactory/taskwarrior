@@ -38,6 +38,7 @@
 #include <util.h>
 
 #include <algorithm>
+#include <optional>
 #include <unordered_set>
 #include <vector>
 
@@ -267,6 +268,13 @@ const std::vector<Task>& TDB2::pending_tasks() {
       result.push_back(Task(std::move(tctask)));
     }
 
+    // Build a UUID map for use with get()/modify() and dependency_scan()
+    // while the pending vector is already in memory.
+    _pending_index.emplace();
+    _pending_index->reserve(result.size());
+    for (size_t i = 0, n = result.size(); i < n; ++i)
+      _pending_index->emplace(result[i].get_ref("uuid"), i);
+
     dependency_scan(result);
 
     Context::getContext().time_load_us += timer.total_us();
@@ -303,6 +311,27 @@ void TDB2::invalidate_cached_info() {
   _pending_tasks = std::nullopt;
   _completed_tasks = std::nullopt;
   _working_set = std::nullopt;
+  _pending_index = std::nullopt;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+// This builds and returns the UUID map if it is missing.
+const std::unordered_map<std::string, size_t>& TDB2::pending_index() {
+  if (!_pending_index) {
+    _pending_index.emplace();
+    _pending_index->reserve(_pending_tasks->size());
+    for (size_t i = 0, n = _pending_tasks->size(); i < n; ++i)
+      _pending_index->emplace((*_pending_tasks)[i].get_ref("uuid"), i);
+  }
+
+  return *_pending_index;
+}
+
+// Finds the UUID in the index. Returns SIZE_MAX if it isn't present.
+size_t TDB2::pending_index_of(const std::string& uuid) {
+  auto& idx = pending_index();
+  auto it = idx.find(uuid);
+  return it != idx.end() ? it->second : SIZE_MAX;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -312,14 +341,13 @@ bool TDB2::get(int id, Task& task) {
   const auto tcuuid = ws->by_index(id);
   if (!tcuuid.is_nil()) {
     std::string uuid = static_cast<std::string>(tcuuid.to_string());
-    // Load all pending tasks in order to get dependency data, and in particular
-    // `task.is_blocking` and `task.is_blocked`, set correctly.
-    std::vector<Task> pending = pending_tasks();
-    for (auto& pending_task : pending) {
-      if (pending_task.get("uuid") == uuid) {
-        task = pending_task;
-        return true;
-      }
+    // Load index of pending tasks.
+    pending_tasks();
+    // Lookup the UUID in the index instead of scanning the vector.
+    auto idx = pending_index_of(uuid);
+    if (idx != SIZE_MAX) {
+      task = (*_pending_tasks)[idx];
+      return true;
     }
   }
 
@@ -329,15 +357,22 @@ bool TDB2::get(int id, Task& task) {
 ////////////////////////////////////////////////////////////////////////////////
 // Locate task by UUID, including by partial ID, wherever it is.
 bool TDB2::get(const std::string& uuid, Task& task) {
-  // Load all pending tasks in order to get dependency data, and in particular
-  // `task.is_blocking` and `task.is_blocked`, set correctly.
-  std::vector<Task> pending = pending_tasks();
+  pending_tasks();
 
-  // try by raw uuid, if the length is right
-  for (auto& pending_task : pending) {
-    if (closeEnough(pending_task.get("uuid"), uuid, uuid.length())) {
-      task = pending_task;
-      return true;
+  // Try to match exact UUID within the index.
+  auto idx = pending_index_of(uuid);
+  if (idx != SIZE_MAX) {
+    task = (*_pending_tasks)[idx];
+    return true;
+  }
+
+  // try a partial match
+  if (uuid.length() < 36) {
+    for (const auto& pending_task : *_pending_tasks) {
+      if (closeEnough(pending_task.get_ref("uuid"), uuid, uuid.length())) {
+        task = pending_task;
+        return true;
+      }
     }
   }
 
