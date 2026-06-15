@@ -122,7 +122,7 @@ void TDB2::modify(Task& task) {
 
   // invoke the hook and allow it to modify the task before updating
   Task original;
-  get(uuid, original);
+  bool found_original = get(uuid, original);
   Context::getContext().hooks.onModify(original, task);
 
   tc::Uuid tcuuid = tc::uuid_from_string(uuid);
@@ -170,7 +170,24 @@ void TDB2::modify(Task& task) {
 
   replica()->commit_operations(std::move(ops));
 
-  invalidate_cached_info();
+  // If the task entered or left the pending set, we must invalidate the cache.
+  bool was_pending = found_original && (original.getStatus() == Task::pending);
+  bool now_pending = task.getStatus() == Task::pending;
+  if (was_pending != now_pending) {
+    invalidate_cached_info();
+    return;
+  }
+
+  // If the task stayed in the set, we can edit the vector in-place.
+  if (_pending_tasks) {
+    auto idx = pending_index_of(uuid);
+    if (idx != SIZE_MAX)
+      (*_pending_tasks)[idx] = task;
+  }
+  // We have to drop the dependency map, in case modifications were made to those.
+  _dependency_graph = std::nullopt;
+  // We also have to drop _completed_tasks.
+  _completed_tasks = std::nullopt;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
