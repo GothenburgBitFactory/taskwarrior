@@ -1057,41 +1057,52 @@ std::vector<int> Task::getDependencyIDs() const {
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> Task::getDependencyUUIDs() const {
   std::vector<std::string> uuids;
-  for (auto& attr : all()) {
-    if (!isDepAttr(attr)) continue;
-    auto dep = attr2Dep(attr);
-    uuids.push_back(dep);
+  for (auto& pair : data) {
+    if (!isDepAttr(pair.first)) continue;
+    uuids.push_back(attr2Dep(pair.first));
   }
 
   return uuids;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Uses the cached dependency map instead of scanning the vector.
 std::vector<Task> Task::getDependencyTasks() const {
-  auto uuids = getDependencyUUIDs();
+  const auto& uuid = get_ref("uuid");
 
-  // NOTE: this may seem inefficient, but note that `TDB2::get` performs a
-  // linear search on each invocation, so scanning *once* is quite a bit more
-  // efficient.
   std::vector<Task> blocking;
-  if (uuids.size() > 0)
-    for (auto& it : Context::getContext().tdb2.pending_tasks())
-      if (it.getStatus() != Task::completed && it.getStatus() != Task::deleted &&
-          std::find(uuids.begin(), uuids.end(), it.get("uuid")) != uuids.end())
-        blocking.push_back(it);
+
+  auto& graph = Context::getContext().tdb2.dependency_graph();
+  auto found = graph.dependencies.find(uuid);
+
+  if (found == graph.dependencies.end()) return blocking;
+
+  blocking.reserve(found->second.size());
+
+  const auto& tasks = Context::getContext().tdb2.pending_tasks();
+  for (auto idx : found->second)
+    if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted)
+      blocking.push_back(tasks[idx]);
 
   return blocking;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<Task> Task::getBlockedTasks() const {
-  auto uuid = get("uuid");
+  const auto& uuid = get_ref("uuid");
 
   std::vector<Task> blocked;
-  for (auto& it : Context::getContext().tdb2.pending_tasks())
-    if (it.getStatus() != Task::completed && it.getStatus() != Task::deleted &&
-        it.hasDependency(uuid))
-      blocked.push_back(it);
+  auto& graph = Context::getContext().tdb2.dependency_graph();
+  auto found = graph.dependents.find(uuid);
+
+  if (found == graph.dependents.end()) return blocked;
+
+  blocked.reserve(found->second.size());
+
+  const auto& tasks = Context::getContext().tdb2.pending_tasks();
+  for (auto idx : found->second)
+    if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted)
+      blocked.push_back(tasks[idx]);
 
   return blocked;
 }
