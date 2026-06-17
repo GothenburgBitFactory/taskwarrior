@@ -65,18 +65,22 @@ void ColumnDepends::setStyle(const std::string& value) {
 // Set the minimum and maximum widths for the value.
 void ColumnDepends::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
+
+  if (_style == "indicator") {
+    // We only need to know if the task has a dependency. We don't have to
+    // look at the whole list. The flags are set during cache construction.
+    if (task.is_blocked) {
+      minimum = maximum = utf8_width(Context::getContext().config.get("dependency.indicator"));
+    }
+    return;
+  }
+
   auto deptasks = task.getDependencyTasks();
 
   if (deptasks.size() > 0) {
-    if (_style == "indicator") {
-      minimum = maximum = utf8_width(Context::getContext().config.get("dependency.indicator"));
-    }
-
-    else if (_style == "count") {
+    if (_style == "count") {
       minimum = maximum = 2 + format((int)deptasks.size()).length();
-    }
-
-    else if (_style == "default" || _style == "list") {
+    } else if (_style == "default" || _style == "list") {
       minimum = maximum = 0;
 
       std::vector<int> blocking_ids;
@@ -97,19 +101,21 @@ void ColumnDepends::measure(Task& task, unsigned int& minimum, unsigned int& max
 
 ////////////////////////////////////////////////////////////////////////////////
 void ColumnDepends::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+  // We only need to know if the task has a dependency. We don't have to
+  // look at the whole list. The flags are set during cache construction.
+  if (_style == "indicator") {
+    if (task.is_blocked)
+      renderStringRight(lines, width, color,
+                        Context::getContext().config.get("dependency.indicator"));
+    return;
+  }
+
   auto deptasks = task.getDependencyTasks();
 
   if (deptasks.size() > 0) {
-    if (_style == "indicator") {
-      renderStringRight(lines, width, color,
-                        Context::getContext().config.get("dependency.indicator"));
-    }
-
-    else if (_style == "count") {
+    if (_style == "count") {
       renderStringRight(lines, width, color, '[' + format(static_cast<int>(deptasks.size())) + ']');
-    }
-
-    else if (_style == "default" || _style == "list") {
+    } else if (_style == "default" || _style == "list") {
       std::vector<int> blocking_ids;
       blocking_ids.reserve(deptasks.size());
       for (const auto& t : deptasks) blocking_ids.push_back(t.id);
