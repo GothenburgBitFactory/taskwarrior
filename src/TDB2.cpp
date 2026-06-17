@@ -448,15 +448,15 @@ bool TDB2::has(const std::string& uuid) {
 const std::vector<Task> TDB2::siblings(Task& task) {
   std::vector<Task> results;
   if (task.has("parent")) {
-    std::string parent = task.get("parent");
+    const auto& parent = task.get_ref("parent");
 
-    for (auto& i : this->pending_tasks()) {
+    for (const auto& i : pending_tasks()) {
       // Do not include self in results.
       if (i.id != task.id) {
         // Do not include completed or deleted tasks.
         if (i.getStatus() != Task::completed && i.getStatus() != Task::deleted) {
           // If task has the same parent, it is a sibling.
-          if (i.has("parent") && i.get("parent") == parent) {
+          if (i.has("parent") && i.get_ref("parent") == parent) {
             results.push_back(i);
           }
         }
@@ -468,39 +468,15 @@ const std::vector<Task> TDB2::siblings(Task& task) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Return the child tasks of a parent. Uses the _pending_tasks cache, to avoid
+// having to fetch this info from the Rust replica.
 const std::vector<Task> TDB2::children(Task& parent) {
-  // scan _pending_ tasks for those with `parent` equal to this task
   std::vector<Task> results;
-  std::string this_uuid = parent.get("uuid");
+  const auto& this_uuid = parent.get_ref("uuid");
 
-  auto& ws = working_set();
-  size_t end_idx = ws->largest_index();
-
-  for (size_t i = 0; i <= end_idx; i++) {
-    auto uuid = ws->by_index(i);
-    if (uuid.is_nil()) {
-      continue;
-    }
-
-    // skip self-references
-    if (uuid.to_string() == this_uuid) {
-      continue;
-    }
-
-    auto task_opt = replica()->get_task_data(uuid);
-    if (task_opt.is_none()) {
-      continue;
-    }
-    auto task = task_opt.take();
-
-    std::string parent_uuid;
-    if (!task->get("parent", parent_uuid)) {
-      continue;
-    }
-
-    if (parent_uuid == this_uuid) {
-      results.push_back(Task(std::move(task)));
-    }
+  for (const auto& i : pending_tasks()) {
+    if (i.get_ref("uuid") == this_uuid) continue;
+    if (i.has("parent") && i.get_ref("parent") == this_uuid) results.push_back(i);
   }
   return results;
 }
