@@ -75,24 +75,31 @@ void ColumnDepends::measure(Task& task, unsigned int& minimum, unsigned int& max
     return;
   }
 
-  auto deptasks = task.getDependencyTasks();
+  // We also don't need to call getDependencyTasks() anymore,
+  // which would copy the full objects from the cache just to read the ID
+  // field. Instead, we can use getDependencyUUIDs() and tdb2.id().
 
-  if (deptasks.size() > 0) {
+  auto dep_uuids = task.getDependencyUUIDs();
+
+  std::vector<int> blocking_ids;
+  blocking_ids.reserve(dep_uuids.size());
+  for (const auto& uuid : dep_uuids) {
+    int id = Context::getContext().tdb2.id(uuid);
+    if (id > 0) blocking_ids.push_back(id);
+  }
+
+  if (blocking_ids.size() > 0) {
     if (_style == "count") {
-      minimum = maximum = 2 + format((int)deptasks.size()).length();
+      minimum = maximum = 2 + format((int)blocking_ids.size()).length();
     } else if (_style == "default" || _style == "list") {
       minimum = maximum = 0;
-
-      std::vector<int> blocking_ids;
-      blocking_ids.reserve(deptasks.size());
-      for (auto& i : deptasks) blocking_ids.push_back(i.id);
 
       auto all = join(" ", blocking_ids);
       maximum = all.length();
 
       unsigned int length;
-      for (auto& i : deptasks) {
-        length = format(i.id).length();
+      for (auto& id : blocking_ids) {
+        length = format(id).length();
         if (length > minimum) minimum = length;
       }
     }
@@ -110,16 +117,20 @@ void ColumnDepends::render(std::vector<std::string>& lines, Task& task, int widt
     return;
   }
 
-  auto deptasks = task.getDependencyTasks();
+  // We use the same approach to look up UUIDs as for measure().
+  auto dep_uuids = task.getDependencyUUIDs();
 
-  if (deptasks.size() > 0) {
+  std::vector<int> blocking_ids;
+  blocking_ids.reserve(dep_uuids.size());
+  for (const auto& uuid : dep_uuids) {
+    int id = Context::getContext().tdb2.id(uuid);
+    if (id > 0) blocking_ids.push_back(id);
+  }
+
+  if (blocking_ids.size() > 0) {
     if (_style == "count") {
-      renderStringRight(lines, width, color, '[' + format(static_cast<int>(deptasks.size())) + ']');
+      renderStringRight(lines, width, color, '[' + format(static_cast<int>(blocking_ids.size())) + ']');
     } else if (_style == "default" || _style == "list") {
-      std::vector<int> blocking_ids;
-      blocking_ids.reserve(deptasks.size());
-      for (const auto& t : deptasks) blocking_ids.push_back(t.id);
-
       auto combined = join(" ", blocking_ids);
 
       std::vector<std::string> all;
