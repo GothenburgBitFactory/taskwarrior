@@ -1101,6 +1101,10 @@ void Context::staticInitialization() {
   for (auto& var : config.all())
     if (var.substr(0, 13) == "urgency.user." || var.substr(0, 12) == "urgency.uda.")
       Task::coefficients[var] = config.getReal(var);
+
+  // Pre-parse the coefficient keys, so urgency_c() doesn't have to re-parse for
+  // each task.
+  Task::setUrgencyCoefficients();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
