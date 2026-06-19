@@ -129,7 +129,8 @@ void ColumnDepends::render(std::vector<std::string>& lines, Task& task, int widt
 
   if (blocking_ids.size() > 0) {
     if (_style == "count") {
-      renderStringRight(lines, width, color, '[' + format(static_cast<int>(blocking_ids.size())) + ']');
+      renderStringRight(lines, width, color,
+                        '[' + format(static_cast<int>(blocking_ids.size())) + ']');
     } else if (_style == "default" || _style == "list") {
       auto combined = join(" ", blocking_ids);
 
@@ -169,9 +170,9 @@ void ColumnDepends::modify(Task& task, const std::string& value) {
         Task loaded_task;
         if (Context::getContext().tdb2.get(dep, loaded_task))
           if (removal)
-            task.removeDependency(loaded_task.get("uuid"));
+            task.removeDependency(loaded_task.get_ref("uuid"));
           else
-            task.addDependency(loaded_task.get("uuid"));
+            task.addDependency(loaded_task.get_ref("uuid"));
         else
           throw format("Dependency could not be set - task with UUID '{1}' does not exist.", dep);
       }
