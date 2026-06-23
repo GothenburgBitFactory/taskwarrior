@@ -87,9 +87,10 @@ class TDB2 {
   std::string uuid(int);
   int id(const std::string&);
 
-  // Index of pending tasks by UUID.
+  // Index of pending tasks by UUID. The ptr is stable until the
+  // cache is invalidated.
   // Used by get() and modify().
-  size_t pending_index_of(const std::string& uuid);
+  Task* find_pending(const std::string& uuid);
 
   int num_local_changes();
   int num_reverts_possible();

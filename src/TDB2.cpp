@@ -183,8 +183,9 @@ void TDB2::modify(Task& task) {
   // If the task stayed in the set, we can edit the vector in-place.
   // This speeds up modifications a lot relative to reloading and parsing from rust.
   if (_pending_tasks) {
-    auto idx = pending_index_of(uuid);
-    if (idx != SIZE_MAX) (*_pending_tasks)[idx] = task;
+    auto* pt = find_pending(uuid);
+    if (pt)
+      *pt = task;
   }
   // We have to drop the dependency map, in case modifications were made to those.
   _dependency_graph = std::nullopt;
@@ -367,11 +368,13 @@ const std::unordered_map<std::string, size_t>& TDB2::pending_index() {
   return *_pending_index;
 }
 
-// Finds the UUID in the index. Returns SIZE_MAX if it isn't present.
-size_t TDB2::pending_index_of(const std::string& uuid) {
+// Finds the UUID in the index. Returns nullptr if the task is not in the pending
+// set.
+Task* TDB2::find_pending(const std::string& uuid) {
   auto& idx = pending_index();
   auto it = idx.find(uuid);
-  return it != idx.end() ? it->second : SIZE_MAX;
+  if (it != idx.end()) return &(*_pending_tasks)[it->second];
+  return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -393,9 +396,9 @@ bool TDB2::get(int id, Task& task) {
     // Load index of pending tasks.
     pending_tasks();
     // Lookup the UUID in the index instead of scanning the vector.
-    auto idx = pending_index_of(uuid);
-    if (idx != SIZE_MAX) {
-      task = (*_pending_tasks)[idx];
+    auto* pt = find_pending(uuid);
+    if (pt) {
+      task = *pt;
       return true;
     }
   }
@@ -409,9 +412,9 @@ bool TDB2::get(const std::string& uuid, Task& task) {
   pending_tasks();
 
   // Try to match exact UUID within the index.
-  auto idx = pending_index_of(uuid);
-  if (idx != SIZE_MAX) {
-    task = (*_pending_tasks)[idx];
+  auto* pt = find_pending(uuid);
+  if (pt) {
+    task = *pt;
     return true;
   }
 
