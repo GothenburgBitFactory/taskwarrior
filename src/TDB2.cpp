@@ -175,7 +175,7 @@ void TDB2::modify(Task& task) {
   // If the task entered or left the pending set, we must invalidate the cache.
   bool was_pending = found_original && (original.getStatus() == Task::pending);
   bool now_pending = task.getStatus() == Task::pending;
-  if (was_pending != now_pending) {
+  if (was_pending != now_pending || !found_original) {
     invalidate_cached_info();
     return;
   }
