@@ -182,13 +182,22 @@ void TDB2::modify(Task& task) {
 
   // If the task stayed in the set, we can edit the vector in-place.
   // This speeds up modifications a lot relative to reloading and parsing from rust.
+  bool deps_changed = false;
   if (_pending_tasks) {
     auto* pt = find_pending(uuid);
-    if (pt)
+    if (pt) {
+      auto old_deps = pt->getDependencyUUIDs();
       *pt = task;
+      auto new_deps = task.getDependencyUUIDs();
+      if (old_deps != new_deps) {
+        deps_changed = true;
+        dependency_scan(*_pending_tasks, pending_index());
+      }
+    }
   }
   // We have to drop the dependency map, in case modifications were made to those.
-  _dependency_graph = std::nullopt;
+  // We only drop it if they actually changed.
+  if (deps_changed) _dependency_graph = std::nullopt;
   // We also have to drop _completed_tasks. This probably isn't strictly necessary
   // but it seems sensible for correctness reasons.
   _completed_tasks = std::nullopt;
@@ -510,6 +519,16 @@ int TDB2::num_reverts_possible() { return (int)replica()->num_undo_points(); }
 // Set Task::is_blocked / Task::is_blocking flags using the pre-built UUID map
 static void dependency_scan(std::vector<Task>& tasks,
                             const std::unordered_map<std::string, size_t>& uuid_index) {
+  // Reset all flags first. This is for safety reasons - if we don't do this
+  // dependency_scan() only sets them to true, so it can stay true (within the cache)
+  // even after we have changed a task's dependencies after a modify when
+  // dependency_scan() runs the second time - the flag will still be set to true!
+  // In many cases, this isn't user-visible - it's only visible in reports
+  // or filters that explicitly filter for +BLOCKING.
+  for (auto& task : tasks) {
+    task.is_blocking = false;
+    task.is_blocked = false;
+  }
   for (size_t i = 0; i < tasks.size(); ++i) {
     auto lstatus = tasks[i].getStatus();
     for (const auto& dep : tasks[i].getDependencyUUIDs()) {
