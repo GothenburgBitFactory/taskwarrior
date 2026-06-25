@@ -41,6 +41,7 @@
 #include <limits>
 #include <map>
 #include <sstream>
+#include <unordered_map>
 
 // Helper macro.
 #define LOC(y, x) (((y) * (_width + 1)) + (x))
@@ -114,6 +115,9 @@ Bar& Bar::operator=(const Bar& other) {
 //       30 31 01 02 03 04 05 06 07 08 09 10
 //       Oct   Nov
 //
+
+struct TaskEpochRange;
+
 class Chart {
  public:
   Chart(char);
@@ -121,14 +125,16 @@ class Chart {
   Chart& operator=(const Chart&);  // Unimplemented
   ~Chart() = default;
 
-  void scan(std::vector<Task>&);
-  void scanForPeak(std::vector<Task>&);
+  void accumulateTasks(const std::vector<Task>&, const std::vector<TaskEpochRange>&);
+  void generateBars();
+  void finalize();
+  void buildEpochRange(time_t, time_t);
   std::string render();
 
+  static Datetime quantize(const Datetime&, char);
+
  private:
-  void generateBars();
   void optimizeGrid();
-  Datetime quantize(const Datetime&, char);
 
   Datetime increment(const Datetime&, char);
   Datetime decrement(const Datetime&, char);
@@ -139,25 +145,29 @@ class Chart {
   unsigned burndown_size(unsigned);
 
  public:
-  int _width{};                   // Terminal width
-  int _height{};                  // Terminal height
-  int _graph_width{};             // Width of plot area
-  int _graph_height{};            // Height of plot area
-  int _max_value{0};              // Largest combined bar value
-  int _max_label{1};              // Longest y-axis label
-  std::vector<int> _labels{};     // Y-axis labels
-  int _estimated_bars{};          // Estimated bar count
-  int _actual_bars{0};            // Calculated bar count
-  std::map<time_t, Bar> _bars{};  // Epoch-indexed set of bars
-  Datetime _earliest{};           // Date of earliest estimated bar
-  int _carryover_done{0};         // Number of 'done' tasks prior to chart range
-  char _period{};                 // D, W, M
-  std::string _grid{};            // String representing grid of characters
-  time_t _peak_epoch{};           // Quantized (D) date of highest pending peak
-  int _peak_count{0};             // Corresponding peak pending count
-  int _current_count{0};          // Current pending count
-  float _net_fix_rate{0.0};       // Calculated fix rate
-  std::string _completion{};      // Estimated completion date
+  int _width{};                                       // Terminal width
+  int _height{};                                      // Terminal height
+  int _graph_width{};                                 // Width of plot area
+  int _graph_height{};                                // Height of plot area
+  int _max_value{0};                                  // Largest combined bar value
+  int _max_label{1};                                  // Longest y-axis label
+  std::vector<int> _labels{};                         // Y-axis labels
+  int _estimated_bars{};                              // Estimated bar count
+  int _actual_bars{0};                                // Calculated bar count
+  std::map<time_t, Bar> _bars{};                      // Epoch-indexed set of bars
+  Datetime _earliest{};                               // Date of earliest estimated bar
+  int _carryover_done{0};                             // Number of 'done' tasks prior to chart range
+  char _period{};                                     // D, W, M
+  std::string _grid{};                                // String representing grid of characters
+  std::vector<time_t> _epochs{};                      // All the epochs.
+  std::vector<int> _pending_counts{};                 // Pending counts by epoch.
+  std::unordered_map<time_t, size_t> _epoch_index{};  // A map from the bar epoch
+                                                      // to its index in _epochs/_pending_counts
+  time_t _peak_epoch{};                               // Date of highest pending peak.
+  int _peak_count{0};                                 // Corresponding peak pending count
+  int _current_count{0};                              // Current pending count
+  float _net_fix_rate{0.0};                           // Calculated fix rate
+  std::string _completion{};                          // Estimated completion date
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -179,130 +189,152 @@ Chart::Chart(char type) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scan all tasks, quantize the dates by day, and find the peak pending count
-// and corresponding epoch.
-void Chart::scanForPeak(std::vector<Task>& tasks) {
-  std::map<time_t, int> pending;
-  _current_count = 0;
+// Result of findTaskEpochRange. This includes the broad range of bars the task
+// can touch, as well as the quantized epochs (so we only have to quantize once.)
+struct TaskEpochRange {
+  time_t first_epoch;  // the leftmost bar this task touches
+  time_t last_epoch;   // the rightmost bar this task touches
+  time_t entry_epoch;  // the quantized date at which the task was added
+  time_t end_epoch;    // the quantized date at which the task was closed
+  bool has_end;
+};
 
-  for (auto& task : tasks) {
-    // The entry date is when the counting starts.
-    Datetime entry(task.get_date("entry"));
+/////////////////////////////////////////////////////////////////////////////////
+// Compute the epoch range and the quantized epochs for a given task. This is
+// used by scan epochs{} to size the global range, and by accumulateTasks() to
+// skip tasks which don't contribute to the chart.
+// Per-task counts are computed in accumulateTasks() from their entry_epoch and
+// end_epoch. last_epoch is a different thing, because in cumulative mode, it
+// must extend until today - hence the last epoch and end epoch are different -
+// end is the date at which the task was completed.
+static TaskEpochRange findTaskEpochRange(const Task& task, Datetime now_quantized, char period,
+                                         bool cumulative) {
+  time_t entry_epoch = Chart::quantize(Datetime(task.get_date("entry")), period).toEpoch();
+  Task::status status = task.getStatus();
 
-    Datetime end;
-    if (task.has("end"))
-      end = Datetime(task.get_date("end"));
-    else
-      ++_current_count;
-
-    while (entry < end) {
-      time_t epoch = quantize(entry.toEpoch(), 'D').toEpoch();
-      if (pending.find(epoch) != pending.end())
-        ++pending[epoch];
-      else
-        pending[epoch] = 1;
-
-      entry = increment(entry, 'D');
-    }
+  if (status == Task::pending || status == Task::waiting) {
+    // Pending tasks span entry-end/today. The today period is inclusive of the
+    // unquantized period, because 'today' will not be over at the point at which
+    // the report is ran.
+    bool has_end = task.has("end");
+    time_t last = has_end ? Chart::quantize(Datetime(task.get_date("end")), period).toEpoch()
+                          : now_quantized.toEpoch();
+    time_t end_epoch = has_end ? last : 0;
+    return {entry_epoch, last, entry_epoch, end_epoch, has_end};
   }
 
-  // Find the peak and peak date.
-  for (auto& count : pending) {
-    if (count.second > _peak_count) {
-      _peak_count = count.second;
-      _peak_epoch = count.first;
-    }
+  if (status == Task::completed) {
+    // The range for completed tasks also cover entry-end/today. We use min for
+    // the leftmost bar, and max for the rightmost. In cumulative mode, the
+    // rightmost epoch that is relevant is today, so this is included. In
+    // non-cumulative mode, the rightmost relevant bar is end.
+    // We also cover the case where there has been some kind of bug where
+    // the entry date is later than the end date. In this case, the leftmost
+    // relevant bar is the end date, and the rightmost is today in cumulative
+    // mode and entry in non-cumulative mode.
+    time_t end_epoch = Chart::quantize(Datetime(task.get_date("end")), period).toEpoch();
+    time_t leftmost = std::min(entry_epoch, end_epoch);
+    if (cumulative)
+      return {leftmost, std::max(end_epoch, now_quantized.toEpoch()), entry_epoch, end_epoch, true};
+    return {leftmost, std::max(end_epoch, entry_epoch), entry_epoch, end_epoch, true};
   }
+
+  // Deleted/recurring tasks are irrelevant.
+  return {1, 0, entry_epoch, 0, false};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Chart::scan(std::vector<Task>& tasks) {
-  generateBars();
-
-  // Not quantized, so that "while (xxx < now)" is inclusive.
+void Chart::accumulateTasks(const std::vector<Task>& tasks,
+                            const std::vector<TaskEpochRange>& ranges) {
   Datetime now;
-
-  time_t epoch;
+  Datetime now_quantized = quantize(now, _period);
   auto& config = Context::getContext().config;
-  bool cumulative;
-  if (config.has("burndown.cumulative")) {
-    cumulative = config.getBoolean("burndown.cumulative");
-  } else {
-    cumulative = true;
-  }
+  bool cumulative =
+      config.has("burndown.cumulative") ? config.getBoolean("burndown.cumulative") : true;
 
-  for (auto& task : tasks) {
-    // The entry date is when the counting starts.
-    Datetime from = quantize(Datetime(task.get_date("entry")), _period);
-    epoch = from.toEpoch();
+  for (size_t i = 0; i < tasks.size(); ++i) {
+    const auto& r = ranges[i];
+    const auto& task = tasks[i];
 
-    if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._added;
+    if (r.first_epoch > r.last_epoch) continue;
 
-    // e-->   e--s-->
-    // ppp>   pppsss>
+    if (!r.has_end) ++_current_count;
+
+    // This is the marker for entry dates.
+    auto added_bar = _bars.find(r.entry_epoch);
+    if (added_bar != _bars.end()) ++added_bar->second._added;
+
     Task::status status = task.getStatus();
     if (status == Task::pending || status == Task::waiting) {
+      // Looks up the task's entry/last epoch in the bar array. _epochs_index
+      // then maps this to the positions in _epochs/_pending_counts.
+      auto entry_idx = _epoch_index.find(r.entry_epoch);
+      if (entry_idx == _epoch_index.end()) continue;
+      auto last_idx = _epoch_index.find(r.last_epoch);
+      if (last_idx == _epoch_index.end()) continue;
+
+      // Count the task as pending for every bar through entry-last epoch,
+      // inclusive of the incomplete 'today' period.
+      for (auto i = entry_idx->second, last = last_idx->second; i <= last; ++i) {
+        ++_pending_counts[i];
+        _bars[_epochs[i]]._pending++;
+      }
+
+      // If the task has a start attribute, bars from that point through last_epoch
+      // are changed from pending to started.
       if (task.has("start")) {
-        Datetime start = quantize(Datetime(task.get_date("start")), _period);
-        while (from < start) {
-          epoch = from.toEpoch();
-          if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._pending;
-          from = increment(from, _period);
-        }
-
-        while (from < now) {
-          epoch = from.toEpoch();
-          if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._started;
-          from = increment(from, _period);
-        }
-      } else {
-        while (from < now) {
-          epoch = from.toEpoch();
-          if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._pending;
-          from = increment(from, _period);
+        time_t start_epoch = quantize(Datetime(task.get_date("start")), _period).toEpoch();
+        auto start_idx = _epoch_index.find(start_epoch);
+        if (start_idx != _epoch_index.end()) {
+          for (auto i = start_idx->second, last = last_idx->second; i <= last; ++i) {
+            // Removes it from the pending count, and counts it as started instead.
+            --_pending_counts[i];
+            _bars[_epochs[i]]._pending--;
+            ++_bars[_epochs[i]]._started;
+          }
         }
       }
-    }
+    } else if (status == Task::completed) {
+      auto entry_idx = _epoch_index.find(r.entry_epoch);
+      auto end_idx = _epoch_index.find(r.end_epoch);
 
-    // e--C   e--s--C
-    // pppd>  pppsssd>
-    else if (status == Task::completed) {
-      // Truncate history so it starts at 'earliest' for completed tasks.
-      Datetime end = quantize(Datetime(task.get_date("end")), _period);
-      epoch = end.toEpoch();
-
-      if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._removed;
-
-      while (from < end) {
-        epoch = from.toEpoch();
-        if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._pending;
-        from = increment(from, _period);
+      // We want to exclude the completion day as pending, otherwise it would
+      // double the count.
+      if (entry_idx != _epoch_index.end() && end_idx != _epoch_index.end()) {
+        for (auto i = entry_idx->second, end = end_idx->second; i < end; ++i) {
+          ++_pending_counts[i];
+          _bars[_epochs[i]]._pending++;
+        }
       }
+
+      // We remove tasks at the end_epoch.
+      auto removed_bar = _bars.find(r.end_epoch);
+      if (removed_bar != _bars.end()) ++removed_bar->second._removed;
 
       if (cumulative) {
-        while (from < now) {
-          epoch = from.toEpoch();
-          if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._done;
-          from = increment(from, _period);
+        // Just to restate: in cumulative mode, we have to extend to today.
+        auto now_idx = _epoch_index.find(now_quantized.toEpoch());
+        if (now_idx != _epoch_index.end()) {
+          time_t done_start_epoch = std::max(r.entry_epoch, r.end_epoch);
+          auto done_start_idx = _epoch_index.find(done_start_epoch);
+          if (done_start_idx != _epoch_index.end()) {
+            for (auto i = done_start_idx->second, now = now_idx->second; i <= now; ++i) {
+              ++_bars[_epochs[i]]._done;
+            }
+          }
         }
 
-        // Maintain a running total of 'done' tasks that are off the left of the
-        // chart.
-        if (end < _earliest) {
-          ++_carryover_done;
-          continue;
-        }
-      }
-
-      else {
-        epoch = from.toEpoch();
-        if (_bars.find(epoch) != _bars.end()) ++_bars[epoch]._done;
+        // Carry the count over if it's outside the visible chart.
+        if (end_idx == _epoch_index.end()) ++_carryover_done;
+      } else {
+        // Finally: in non-cumulative mode each done task gets only one point
+        // on the bar.
+        time_t done_epoch = std::max(r.entry_epoch, r.end_epoch);
+        auto done_bar = _bars.find(done_epoch);
+        if (done_bar != _bars.end()) ++done_bar->second._done;
       }
     }
   }
-
-  // Size the data.
-  maxima();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -372,15 +404,10 @@ std::string Chart::render() {
   _grid.replace(LOC(_height - 6, _max_label + 1), 1, "+");
   _grid.replace(LOC(_height - 6, _max_label + 2), _graph_width, std::string(_graph_width, '-'));
 
-  // Draw x-axis labels.
-  std::vector<time_t> bars_in_sequence;
-  for (auto& bar : _bars) bars_in_sequence.push_back(bar.first);
-
-  std::sort(bars_in_sequence.begin(), bars_in_sequence.end());
+  // Draw x-axis labels. _bars is a map where the keys are each epochs time_t, ie. we have
+  // already sorted.
   std::string _major_label;
-  for (auto& seq : bars_in_sequence) {
-    Bar bar = _bars[seq];
-
+  for (const auto& [epoch, bar] : _bars) {
     // If it fits within the allowed space.
     if (bar._offset < _actual_bars) {
       _grid.replace(LOC(_height - 5, _max_label + 3 + ((_actual_bars - bar._offset - 1) * 3)),
@@ -395,9 +422,7 @@ std::string Chart::render() {
   }
 
   // Draw bars.
-  for (auto& seq : bars_in_sequence) {
-    Bar bar = _bars[seq];
-
+  for (const auto& [epoch, bar] : _bars) {
     // If it fits within the allowed space.
     if (bar._offset < _actual_bars) {
       int pending = (bar._pending * _graph_height) / _labels[2];
@@ -490,6 +515,27 @@ Datetime Chart::quantize(const Datetime& input, char period) {
   return input;
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// We pre-compute every bar epoch between the earliest and last epoch, one period
+// at a time. We build three arrays indexed by their linear position.
+void Chart::buildEpochRange(time_t earliest_epoch, time_t latest_epoch) {
+  _epochs.clear();
+  _pending_counts.clear();
+  _epoch_index.clear();
+
+  Datetime cursor(earliest_epoch);
+  Datetime end(latest_epoch);
+  while (cursor <= end) {
+    time_t ep = cursor.toEpoch();
+    _epoch_index[ep] = _epochs.size();  // _epochs_index is a reverse lookup -
+                                        // given an epoch, give us its position.
+                                        // Used by accumulateTasks().
+    _epochs.push_back(ep);              // These are the epochs themselves in ascending order.
+    _pending_counts.push_back(0);       // This tracks the pending count per epoch.
+    cursor = increment(cursor, _period);
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 Datetime Chart::increment(const Datetime& input, char period) {
   // Move to the next period.
@@ -530,6 +576,9 @@ Datetime Chart::increment(const Datetime& input, char period) {
         m = 1;
         ++y;
       }
+      break;
+
+    default:
       break;
   }
 
@@ -641,6 +690,23 @@ void Chart::generateBars() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Once period data has been accumulated, we want to find the peak count.
+// We use this to size the bar for rendering.
+void Chart::finalize() {
+  _peak_count = 0;
+  _peak_epoch = 0;
+  for (size_t i = 0; i < _epochs.size(); ++i) {
+    if (_pending_counts[i] > _peak_count) {
+      _peak_count = _pending_counts[i];
+      _peak_epoch = _epochs[i];
+    }
+  }
+
+  maxima();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void Chart::maxima() {
   _max_value = 0;
   _max_label = 1;
@@ -758,6 +824,67 @@ unsigned Chart::burndown_size(unsigned ntasks) {
   return std::numeric_limits<unsigned>::max();
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// This combines the work from the old CmdBurndown functions into one main function.
+// period sets the chart granularity. output is the rendered chart.
+static int runBurndown(char period, std::string& output) {
+  // First we build the chart's time window. generateBars() populates _bars with
+  // epoch keys and labels. buildEpochRange() deals with tasks outside of the
+  // chart window.
+  Chart chart(period);
+  chart.generateBars();
+
+  // Detects if the user is using filters.
+  bool has_filter = false;
+  for (const auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) {
+      has_filter = true;
+      break;
+    }
+
+  // We determine the global window across all tasks that can contribute to the
+  // chart.
+  Datetime now_quantized = Chart::quantize(Datetime(), period);
+  time_t earliest = now_quantized.toEpoch();
+  time_t latest = 0;
+  bool cumulative;
+  auto& cfg = Context::getContext().config;
+  cumulative = cfg.has("burndown.cumulative") ? cfg.getBoolean("burndown.cumulative") : true;
+
+  auto scan_epochs = [&](const std::vector<Task>& tasks, std::vector<TaskEpochRange>& ranges) {
+    for (const auto& task : tasks) {
+      auto r = findTaskEpochRange(task, now_quantized, period, cumulative);
+      ranges.push_back(r);
+      if (r.first_epoch > r.last_epoch) continue;
+      if (r.first_epoch < earliest) earliest = r.first_epoch;
+      if (r.last_epoch > latest) latest = r.last_epoch;
+    }
+  };
+
+  if (has_filter) {
+    Filter filter;
+    std::vector<Task> filtered;
+    filter.subset(filtered);
+    std::vector<TaskEpochRange> ranges;
+    scan_epochs(filtered, ranges);
+    chart.buildEpochRange(earliest, latest);
+    chart.accumulateTasks(filtered, ranges);
+  } else {
+    const auto& pending = Context::getContext().tdb2.pending_tasks();
+    const auto& completed = Context::getContext().tdb2.completed_tasks();
+    std::vector<TaskEpochRange> pending_ranges, completed_ranges;
+    scan_epochs(pending, pending_ranges);
+    scan_epochs(completed, completed_ranges);
+    chart.buildEpochRange(earliest, latest);
+    chart.accumulateTasks(pending, pending_ranges);
+    chart.accumulateTasks(completed, completed_ranges);
+  }
+
+  chart.finalize();
+  output = chart.render();
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdBurndownMonthly::CmdBurndownMonthly() {
   _keyword = "burndown.monthly";
@@ -775,21 +902,7 @@ CmdBurndownMonthly::CmdBurndownMonthly() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdBurndownMonthly::execute(std::string& output) {
-  int rc = 0;
-
-  // Scan the pending tasks, applying any filter.
-  Filter filter;
-  std::vector<Task> filtered;
-  filter.subset(filtered);
-
-  // Create a chart, scan the tasks, then render.
-  Chart chart('M');
-  chart.scanForPeak(filtered);
-  chart.scan(filtered);
-  output = chart.render();
-  return rc;
-}
+int CmdBurndownMonthly::execute(std::string& output) { return runBurndown('M', output); }
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdBurndownWeekly::CmdBurndownWeekly() {
@@ -808,21 +921,7 @@ CmdBurndownWeekly::CmdBurndownWeekly() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdBurndownWeekly::execute(std::string& output) {
-  int rc = 0;
-
-  // Scan the pending tasks, applying any filter.
-  Filter filter;
-  std::vector<Task> filtered;
-  filter.subset(filtered);
-
-  // Create a chart, scan the tasks, then render.
-  Chart chart('W');
-  chart.scanForPeak(filtered);
-  chart.scan(filtered);
-  output = chart.render();
-  return rc;
-}
+int CmdBurndownWeekly::execute(std::string& output) { return runBurndown('W', output); }
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdBurndownDaily::CmdBurndownDaily() {
@@ -841,20 +940,6 @@ CmdBurndownDaily::CmdBurndownDaily() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdBurndownDaily::execute(std::string& output) {
-  int rc = 0;
-
-  // Scan the pending tasks, applying any filter.
-  Filter filter;
-  std::vector<Task> filtered;
-  filter.subset(filtered);
-
-  // Create a chart, scan the tasks, then render.
-  Chart chart('D');
-  chart.scanForPeak(filtered);
-  chart.scan(filtered);
-  output = chart.render();
-  return rc;
-}
+int CmdBurndownDaily::execute(std::string& output) { return runBurndown('D', output); }
 
 ////////////////////////////////////////////////////////////////////////////////
