@@ -166,6 +166,10 @@ the 'burndown.weekly' report. Is affected by the context.
 Shows a graphical burndown chart, by month. Is affected by the context.
 
 .TP
+.B task <filter> burndown.annual
+Shows a graphical burndown chart, by year. Is affected by the context.
+
+.TP
 .B task calendar [due|<month> <year>|<year>] [y]
 Shows a monthly calendar with due tasks marked.  Shows one horizontal line of
 months.  If the 'y' argument is provided, will show at least one complete year.

@@ -359,7 +359,11 @@ std::string Chart::render() {
   for (int i = 0; i < _height; ++i) grid += std::string(_width, ' ') + '\n';
 
   // Title.
-  std::string title = _period == 'D' ? "Daily" : _period == 'W' ? "Weekly" : "Monthly";
+  std::string title = _period == 'D'   ? "Daily"
+                      : _period == 'W' ? "Weekly"
+                      : _period == 'M' ? "Monthly"
+                      : _period == 'Y' ? "Annual"
+                                       : "Monthly";
   title += std::string(" Burndown");
   grid.replace(LOC(0, (_width - title.length()) / 2), title.length(), title);
 
@@ -499,6 +503,7 @@ Datetime quantize(const Datetime& input, char period) {
   if (period == 'D') return input.startOfDay();
   if (period == 'W') return input.startOfWeek();
   if (period == 'M') return input.startOfMonth();
+  if (period == 'Y') return input.startOfYear();
 
   return input;
 }
@@ -543,6 +548,12 @@ Datetime Chart::increment(const Datetime& input, char period) {
         m = 1;
         ++y;
       }
+      break;
+
+    case 'Y':
+      d = 1;
+      m = 1;
+      ++y;
       break;
 
     default:
@@ -610,6 +621,12 @@ Datetime Chart::decrement(const Datetime& input, char period) {
       }
       break;
 
+    case 'Y':
+      d = 1;
+      m = 1;
+      --y;
+      break;
+
     default:
       break;
   }
@@ -657,6 +674,12 @@ void Chart::generateBars() {
 
         snprintf(str, 12, "%02d", cursor.month());
         bar._minor_label = str;
+        break;
+
+      case 'Y':  // 2-digit year abbreviation
+        snprintf(str, 12, "%02d", cursor.year() % 100);
+        bar._minor_label = str;
+        bar._major_label = "";
         break;
     }
 
@@ -901,5 +924,6 @@ static int runBurndown(char period, std::string& output) {
 CMDBURNDOWN_CTOR(CmdBurndownMonthly, 'M', "monthly")
 CMDBURNDOWN_CTOR(CmdBurndownWeekly, 'W', "weekly")
 CMDBURNDOWN_CTOR(CmdBurndownDaily, 'D', "daily")
+CMDBURNDOWN_CTOR(CmdBurndownAnnual, 'Y', "annual")
 
 #undef CMDBURNDOWN_CTOR

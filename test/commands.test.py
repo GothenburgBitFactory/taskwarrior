@@ -80,6 +80,8 @@ class TestCommands(TestCase):
             "Recur",
             "Ctxt",
             "Filt",
+            "",
+            "",
             "Most details of",
         ]
         col_regex = r"\s*(\x1b\[0m\x1b\[48;5;234m)? (\x1b\[0m\x1b\[48;5;234m)?\s*".join(
