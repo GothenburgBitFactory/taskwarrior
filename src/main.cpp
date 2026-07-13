@@ -47,6 +47,9 @@ int main(int argc, const char** argv) {
   Context globalContext;
   Context::setContext(&globalContext);
 
+  // Support the conventional help option through the existing help command.
+  if (argc == 2 && !strcmp(argv[1], "--help")) argv[1] = "help";
+
   // Lightweight version checking that doesn't require initialization or any I/O.
   if (argc == 2 && !strcmp(argv[1], "--version")) {
     std::cout << VERSION << "\n";
