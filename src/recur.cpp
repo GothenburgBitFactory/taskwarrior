@@ -122,7 +122,11 @@ void handleRecurrence() {
             Datetime old_scheduled(t.get_date("scheduled"));
             Datetime old_due(t.get_date("due"));
             Datetime due(d);
-            rec.set("scheduled", format((due + (old_scheduled - old_due)).toEpoch()));
+            auto scheduled = checked_add_datetime(due, old_scheduled - old_due);
+            if (scheduled)
+              rec.set("scheduled", format(scheduled->toEpoch()));
+            else
+              rec.remove("scheduled");
           }
 
           rec.set("imask", i);
