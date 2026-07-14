@@ -41,9 +41,10 @@ class TestCommands(TestCase):
 
     def test_help_option(self):
         """Verify '--help' is equivalent to the help command"""
-        code, help_out, help_err = self.t("help")
-        code, option_out, option_err = self.t("--help")
+        _, help_out, help_err = self.t("help")
+        _, option_out, option_err = self.t("--help")
 
+        self.assertIn("Usage:", option_out)
         self.assertEqual(option_out, help_out)
         self.assertEqual(option_err, help_err)
 
