@@ -39,6 +39,15 @@ class TestCommands(TestCase):
     def setUp(self):
         self.t = Task()
 
+    def test_help_option(self):
+        """Verify '--help' is equivalent to the help command"""
+        _, help_out, help_err = self.t("help")
+        _, option_out, option_err = self.t("--help")
+
+        self.assertIn("Usage:", option_out)
+        self.assertEqual(option_out, help_out)
+        self.assertEqual(option_err, help_err)
+
     def test_command_dna(self):
         """Verify 'add', 'modify', 'list' dna"""
         code, out, err = self.t("commands")
