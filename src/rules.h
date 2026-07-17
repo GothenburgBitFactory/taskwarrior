@@ -36,7 +36,7 @@
 #include <shared.h>
 
 void initializeColorRules();
-void autoColorize(Task& task, Color& c);
+void autoColorize(const Task& task, Color& c);
 std::string colorizeHeader(const std::string& input);
 std::string colorizeFootnote(const std::string& input);
 std::string colorizeError(const std::string& input);

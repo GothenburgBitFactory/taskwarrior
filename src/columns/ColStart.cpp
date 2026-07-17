@@ -51,7 +51,7 @@ void ColumnStart::setStyle(const std::string& value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnStart::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnStart::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "active")
@@ -64,7 +64,8 @@ void ColumnStart::measure(Task& task, unsigned int& minimum, unsigned int& maxim
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnStart::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnStart::render(std::vector<std::string>& lines, const Task& task, int width,
+                         Color& color) {
   if (task.has(_name)) {
     if (_style == "active") {
       if (!task.has("end"))

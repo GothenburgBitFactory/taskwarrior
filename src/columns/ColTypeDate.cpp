@@ -58,7 +58,7 @@ ColumnTypeDate::ColumnTypeDate() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnTypeDate::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnTypeDate::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     Datetime date(task.get_date(_name));
@@ -102,7 +102,8 @@ void ColumnTypeDate::measure(Task& task, unsigned int& minimum, unsigned int& ma
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnTypeDate::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnTypeDate::render(std::vector<std::string>& lines, const Task& task, int width,
+                            Color& color) {
   if (task.has(_name)) {
     Datetime date(task.get_date(_name));
 

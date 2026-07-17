@@ -63,7 +63,7 @@ void ColumnDepends::setStyle(const std::string& value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnDepends::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnDepends::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
 
   if (_style == "indicator") {
@@ -107,7 +107,8 @@ void ColumnDepends::measure(Task& task, unsigned int& minimum, unsigned int& max
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnDepends::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnDepends::render(std::vector<std::string>& lines, const Task& task, int width,
+                           Color& color) {
   // We only need to know if the task has a dependency. We don't have to
   // look at the whole list. The flags are set during cache construction.
   if (_style == "indicator") {

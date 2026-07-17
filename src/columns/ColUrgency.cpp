@@ -42,7 +42,7 @@ ColumnUrgency::ColumnUrgency() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUrgency::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnUrgency::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   if (_style == "default" || _style == "real")
     minimum = maximum = format(task.urgency(), 4, 3).length();
 
@@ -51,7 +51,8 @@ void ColumnUrgency::measure(Task& task, unsigned int& minimum, unsigned int& max
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUrgency::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnUrgency::render(std::vector<std::string>& lines, const Task& task, int width,
+                           Color& color) {
   if (_style == "default" || _style == "real")
     renderDouble(lines, width, color, task.urgency());
 

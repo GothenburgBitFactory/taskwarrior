@@ -43,13 +43,13 @@
 #include <string>
 #include <vector>
 
-static std::vector<Task>* global_data = nullptr;
+static const std::vector<Task>* global_data = nullptr;
 static std::vector<std::string> global_keys;
 static unsigned int sort_random_seed = 0;
 static bool sort_compare(int, int);
 
 ////////////////////////////////////////////////////////////////////////////////
-void sort_tasks(std::vector<Task>& data, std::vector<int>& order, const std::string& keys) {
+void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const std::string& keys) {
   Timer timer;
   global_data = &data;
 
@@ -130,8 +130,8 @@ static bool sort_compare(int left, int right) {
     if (field == "random") {
       // For "random" sort, we produce a stable number for each task based on a hash of its
       // UUID plus the random seed.
-      std::string left_uuid = (*global_data)[left].get("uuid");
-      std::string right_uuid = (*global_data)[right].get("uuid");
+      const auto& left_uuid = (*global_data)[left].get_ref("uuid");
+      const auto& right_uuid = (*global_data)[right].get_ref("uuid");
 
       std::string left_scrambled =
           std::to_string(std::hash<std::string>{}(left_uuid + std::to_string(sort_random_seed)));

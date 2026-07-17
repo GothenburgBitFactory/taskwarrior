@@ -60,7 +60,7 @@ void ColumnRecur::setStyle(const std::string& value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnRecur::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnRecur::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default" || _style == "duration") {
@@ -72,7 +72,8 @@ void ColumnRecur::measure(Task& task, unsigned int& minimum, unsigned int& maxim
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnRecur::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnRecur::render(std::vector<std::string>& lines, const Task& task, int width,
+                         Color& color) {
   if (task.has(_name)) {
     if (_style == "default" || _style == "duration")
       renderStringRight(lines, width, color, Duration(task.get(_name)).formatISO());

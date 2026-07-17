@@ -42,7 +42,7 @@ ColumnTemplate::ColumnTemplate() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnTemplate::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnTemplate::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default" || _style == "long")
@@ -53,7 +53,8 @@ void ColumnTemplate::measure(Task& task, unsigned int& minimum, unsigned int& ma
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnTemplate::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnTemplate::render(std::vector<std::string>& lines, const Task& task, int width,
+                            Color& color) {
   if (task.has(_name)) {
     // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
     // f30cb9c3                              short

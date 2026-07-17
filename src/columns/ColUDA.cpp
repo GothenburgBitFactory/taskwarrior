@@ -63,7 +63,7 @@ bool ColumnUDAString::validate(const std::string& value) const {
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
-void ColumnUDAString::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnUDAString::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
@@ -83,7 +83,8 @@ void ColumnUDAString::measure(Task& task, unsigned int& minimum, unsigned int& m
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUDAString::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnUDAString::render(std::vector<std::string>& lines, const Task& task, int width,
+                             Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {
       std::string value = task.get(_name);
@@ -126,7 +127,7 @@ bool ColumnUDANumeric::validate(const std::string& value) const {
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
-void ColumnUDANumeric::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnUDANumeric::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
@@ -142,7 +143,7 @@ void ColumnUDANumeric::measure(Task& task, unsigned int& minimum, unsigned int& 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUDANumeric::render(std::vector<std::string>& lines, Task& task, int width,
+void ColumnUDANumeric::render(std::vector<std::string>& lines, const Task& task, int width,
                               Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {
@@ -183,7 +184,7 @@ bool ColumnUDADate::validate(const std::string& value) const {
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
-void ColumnUDADate::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnUDADate::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
@@ -210,7 +211,8 @@ void ColumnUDADate::measure(Task& task, unsigned int& minimum, unsigned int& max
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUDADate::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnUDADate::render(std::vector<std::string>& lines, const Task& task, int width,
+                           Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {
       auto value = task.get(_name);
@@ -262,7 +264,7 @@ bool ColumnUDADuration::validate(const std::string& value) const {
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
-void ColumnUDADuration::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnUDADuration::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
@@ -281,7 +283,7 @@ void ColumnUDADuration::measure(Task& task, unsigned int& minimum, unsigned int&
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUDADuration::render(std::vector<std::string>& lines, Task& task, int width,
+void ColumnUDADuration::render(std::vector<std::string>& lines, const Task& task, int width,
                                Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {

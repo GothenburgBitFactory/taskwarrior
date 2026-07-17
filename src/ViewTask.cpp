@@ -105,7 +105,7 @@ ViewTask::~ViewTask() {
 //       the larger fields.  If the widest field is W0, and the second widest
 //       field is W1, then a solution may be achievable by reducing W0 --> W1.
 //
-std::string ViewTask::render(std::vector<Task>& data, std::vector<int>& sequence) {
+std::string ViewTask::render(const std::vector<Task>& data, std::vector<int>& sequence) {
   Timer timer;
 
   bool const obfuscate = Context::getContext().config.getBoolean("obfuscate");

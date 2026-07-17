@@ -42,7 +42,7 @@ ColumnParent::ColumnParent() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnParent::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnParent::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default" || _style == "long")
@@ -53,7 +53,8 @@ void ColumnParent::measure(Task& task, unsigned int& minimum, unsigned int& maxi
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnParent::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnParent::render(std::vector<std::string>& lines, const Task& task, int width,
+                          Color& color) {
   if (task.has(_name)) {
     // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
     // f30cb9c3                              short
