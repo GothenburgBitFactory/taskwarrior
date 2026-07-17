@@ -145,6 +145,44 @@ void Filter::subset(std::vector<Task>& output) {
   Context::getContext().time_filter_us += timer.total_us();
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// Like subset(), but leverages the pending tasks cache.
+void Filter::subset_indices(const std::vector<Task>& pending, std::vector<int>& indices) {
+  Timer timer;
+  Context::getContext().cli2.prepareFilter();
+
+  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
+  for (auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
+
+  if (precompiled.empty()) {
+    safety();
+    indices.clear();
+    indices.reserve(pending.size());
+    for (int i = 0; i < (int)pending.size(); ++i) indices.push_back(i);
+    _startCount = (int)pending.size();
+  } else {
+    _startCount = (int)pending.size();
+    Eval eval;
+    eval.addSource(domSource);
+    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3);
+    eval.compileExpression(precompiled);
+    indices.clear();
+    for (int i = 0; i < (int)pending.size(); ++i) {
+      auto currentTask = Context::getContext().withCurrentTask(&pending[i]);
+      Variant var;
+      eval.evaluateCompiledExpression(var);
+      if (var.get_bool()) indices.push_back(i);
+    }
+    eval.debug(false);
+  }
+
+  _endCount = (int)indices.size();
+  Context::getContext().debug(
+      format("Filtered {1} tasks -> {2} tasks [pending cache]", _startCount, _endCount));
+  Context::getContext().time_filter_us += timer.total_us();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 bool Filter::hasFilter() const {
   for (const auto& a : Context::getContext().cli2._args)

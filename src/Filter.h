@@ -38,6 +38,7 @@ class Filter {
 
   void subset(const std::vector<Task>&, std::vector<Task>&);
   void subset(std::vector<Task>&);
+  void subset_indices(const std::vector<Task>& pending, std::vector<int>& indices);
   bool hasFilter() const;
   bool pendingOnly() const;
   void safety() const;
