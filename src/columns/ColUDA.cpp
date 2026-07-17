@@ -67,7 +67,7 @@ void ColumnUDAString::measure(const Task& task, unsigned int& minimum, unsigned 
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
-      std::string value = task.get(_name);
+      std::string value = task.get_ref(_name);
       if (value != "") {
         auto stripped = Color::strip(value);
         maximum = longestLine(stripped);
@@ -87,7 +87,7 @@ void ColumnUDAString::render(std::vector<std::string>& lines, const Task& task, 
                              Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {
-      std::string value = task.get(_name);
+      std::string value = task.get_ref(_name);
       std::vector<std::string> raw;
       wrapText(raw, value, width, _hyphenate);
 
@@ -131,7 +131,7 @@ void ColumnUDANumeric::measure(const Task& task, unsigned int& minimum, unsigned
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
-      auto value = task.get(_name);
+      auto value = task.get_ref(_name);
       if (value != "") minimum = maximum = value.length();
     } else if (_style == "indicator") {
       auto indicator = Context::getContext().config.get("uda." + _name + ".indicator");
@@ -147,7 +147,7 @@ void ColumnUDANumeric::render(std::vector<std::string>& lines, const Task& task,
                               Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {
-      auto value = task.get(_name);
+      auto value = task.get_ref(_name);
       renderStringRight(lines, width, color, value);
     } else if (_style == "indicator") {
       auto indicator = Context::getContext().config.get("uda." + _name + ".indicator");
@@ -188,7 +188,7 @@ void ColumnUDADate::measure(const Task& task, unsigned int& minimum, unsigned in
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
-      auto value = task.get(_name);
+      auto value = task.get_ref(_name);
       if (value != "") {
         // Determine the output date format, which uses a hierarchy of definitions.
         //   rc.report.<report>.dateformat
@@ -215,7 +215,7 @@ void ColumnUDADate::render(std::vector<std::string>& lines, const Task& task, in
                            Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {
-      auto value = task.get(_name);
+      auto value = task.get_ref(_name);
 
       // Determine the output date format, which uses a hierarchy of definitions.
       //   rc.report.<report>.dateformat
@@ -268,7 +268,7 @@ void ColumnUDADuration::measure(const Task& task, unsigned int& minimum, unsigne
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default") {
-      auto value = task.get(_name);
+      auto value = task.get_ref(_name);
       if (value != "") minimum = maximum = Duration(value).formatISO().length();
     } else if (_style == "indicator") {
       if (task.has(_name)) {
@@ -287,7 +287,7 @@ void ColumnUDADuration::render(std::vector<std::string>& lines, const Task& task
                                Color& color) {
   if (task.has(_name)) {
     if (_style == "default") {
-      auto value = task.get(_name);
+      auto value = task.get_ref(_name);
       renderStringRight(lines, width, color, Duration(value).formatISO());
     } else if (_style == "indicator") {
       auto indicator = Context::getContext().config.get("uda." + _name + ".indicator");

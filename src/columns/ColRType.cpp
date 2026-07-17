@@ -60,7 +60,7 @@ void ColumnRType::measure(const Task& task, unsigned int& minimum, unsigned int&
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default")
-      minimum = maximum = task.get(_name).length();
+      minimum = maximum = task.get_ref(_name).length();
     else if (_style == "indicator")
       minimum = maximum = 1;
   }
@@ -71,11 +71,11 @@ void ColumnRType::render(std::vector<std::string>& lines, const Task& task, int 
                          Color& color) {
   if (task.has(_name)) {
     if (_style == "default")
-      renderStringRight(lines, width, color, task.get(_name));
+      renderStringRight(lines, width, color, task.get_ref(_name));
 
     else if (_style == "indicator") {
       std::string value{" "};
-      value[0] = toupper(task.get(_name)[0]);
+      value[0] = toupper(task.get_ref(_name)[0]);
       renderStringRight(lines, width, color, value);
     }
   }

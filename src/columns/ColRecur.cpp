@@ -64,7 +64,7 @@ void ColumnRecur::measure(const Task& task, unsigned int& minimum, unsigned int&
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default" || _style == "duration") {
-      minimum = maximum = Duration(task.get(_name)).formatISO().length();
+      minimum = maximum = Duration(task.get_ref(_name)).formatISO().length();
     } else if (_style == "indicator") {
       minimum = maximum = utf8_width(Context::getContext().config.get("recurrence.indicator"));
     }
@@ -76,7 +76,7 @@ void ColumnRecur::render(std::vector<std::string>& lines, const Task& task, int 
                          Color& color) {
   if (task.has(_name)) {
     if (_style == "default" || _style == "duration")
-      renderStringRight(lines, width, color, Duration(task.get(_name)).formatISO());
+      renderStringRight(lines, width, color, Duration(task.get_ref(_name)).formatISO());
 
     else if (_style == "indicator")
       renderStringRight(lines, width, color,

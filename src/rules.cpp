@@ -129,7 +129,7 @@ static void colorizeProject(const Task& task, const std::string& rule, const Col
   // Observe the case sensitivity setting.
   bool sensitive = Context::getContext().config.getBoolean("search.case.sensitive");
 
-  auto project = task.get("project");
+  const auto& project = task.get_ref("project");
   auto rule_trunc = rule.substr(14);
 
   // Match project names leftmost.
@@ -156,7 +156,7 @@ static void colorizeKeyword(const Task& task, const std::string& rule, const Col
 
   // The easiest thing to check is the description, because it is just one
   // attribute.
-  if (find(task.get("description"), rule.substr(14), sensitive) != std::string::npos)
+  if (find(task.get_ref("description"), rule.substr(14), sensitive) != std::string::npos)
     applyColor(base, c, merge);
 
   // Failing the description check, look at all annotations, returning on the
@@ -181,7 +181,7 @@ static void colorizeUDA(const Task& task, const std::string& rule, const Color& 
   } else {
     auto uda = rule.substr(10, pos - 10);
     auto val = rule.substr(pos + 1);
-    if ((val == "none" && !task.has(uda)) || task.get(uda) == val) applyColor(base, c, merge);
+    if ((val == "none" && !task.has(uda)) || task.get_ref(uda) == val) applyColor(base, c, merge);
   }
 }
 
