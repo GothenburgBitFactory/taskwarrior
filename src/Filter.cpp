@@ -91,7 +91,7 @@ void Filter::subset(std::vector<Task>& output) {
 
   if (precompiled.size()) {
     Timer timer_pending;
-    auto pending = Context::getContext().tdb2.pending_tasks();
+    const auto& pending = Context::getContext().tdb2.pending_tasks();
     Context::getContext().time_filter_us -= timer_pending.total_us();
     _startCount = (int)pending.size();
 
@@ -116,7 +116,7 @@ void Filter::subset(std::vector<Task>& output) {
     shortcut = pendingOnly();
     if (!shortcut) {
       Timer timer_completed;
-      auto completed = Context::getContext().tdb2.completed_tasks();
+      const auto& completed = Context::getContext().tdb2.completed_tasks();
       Context::getContext().time_filter_us -= timer_completed.total_us();
       _startCount += (int)completed.size();
 
