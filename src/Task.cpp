@@ -1846,10 +1846,10 @@ float Task::urgency_c() const {
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency() const {
   if (recalc_urgency) {
-    urgency_value = urgency_c();
-
-    // Return the sum of all terms.
+    // We set the guard first to avoid infinite recursion. It will be 0.0 on
+    // first call and then the computed value will be reused.
     recalc_urgency = false;
+    urgency_value = urgency_c();
   }
 
   return urgency_value;
