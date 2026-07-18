@@ -95,6 +95,14 @@ class TestBurndownCommand(TestCase):
         self.assertIn("+", out)
         self.assertIn("X", out)
 
+    def test_burndown_annual(self):
+        """Ensure burndown.annual generates a chart"""
+        code, out, err = self.t("burndown.annual")
+        self.assertIn("Annual Burndown", out)
+        self.assertIn(".", out)
+        self.assertIn("+", out)
+        self.assertIn("X", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

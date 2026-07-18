@@ -31,6 +31,12 @@
 
 #include <string>
 
+class CmdBurndownAnnual : public Command {
+ public:
+  CmdBurndownAnnual();
+  int execute(std::string&);
+};
+
 class CmdBurndownMonthly : public Command {
  public:
   CmdBurndownMonthly();
