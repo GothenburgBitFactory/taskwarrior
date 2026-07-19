@@ -122,7 +122,7 @@ mod ffi {
         /// fully populated, so it is safe to call `take` on each value in the returned Vec once .
         fn all_task_data(&mut self) -> Result<Vec<OptionTaskData>>;
 
-        /// Simiar to all_task_data, but returing only pending tasks (those in the working set).
+        /// Similar to all_task_data, but returning only pending tasks (those in the working set).
         fn pending_task_data(&mut self) -> Result<Vec<OptionTaskData>>;
 
         /// Get the UUIDs of all tasks.
@@ -146,13 +146,11 @@ mod ffi {
 
         /// Get all `Task` values in the replica.
         ///
-        /// This contains `OptionTaskData` to allow C++ to `take` values out of the vector and use
-        /// them as `rust::Box<TaskData>`. Cxx does not support `Vec<Box<_>>`. Cxx also does not
-        /// handle `HashMap`, so the result is not a map from uuid to task. The returned Vec is
-        /// fully populated, so it is safe to call `take` on each value in the returned Vec once .
+        /// This contains `OptionTask` to allow C++ to `take` values out of the vector and use
+        /// them as `rust::Box<Task>`.
         fn all_tasks(&mut self) -> Result<Vec<OptionTask>>;
 
-        /// Simiar to all_task_data, but returing only pending tasks (those in the working set).
+        /// Similar to all_tasks, but returning only pending tasks (those in the working set).
         fn pending_tasks(&mut self) -> Result<Vec<OptionTask>>;
 
         /// Return the operations back to and including the last undo point, or since the last sync if
@@ -432,7 +430,7 @@ mod ffi {
 
         /// Add a tag to the task. The tag is parsed from a string, so can fail.
         fn add_tag(self: &mut Task, tag: &CxxString, ops: &mut Vec<Operation>) -> Result<()>;
-        /// Remove a tag from the task. The tag is parsed from a, so can fail.
+        /// Remove a tag from the task. The tag is parsed from a string, so can fail.
         fn remove_tag(self: &mut Task, tag: &CxxString, ops: &mut Vec<Operation>) -> Result<()>;
 
         /// Add an annotation, identified by its entry timestamp.
@@ -1100,6 +1098,12 @@ fn optional_timestamp(secs: i64) -> Option<tc::chrono::DateTime<tc::chrono::Utc>
     }
 }
 
+/// Convert an `Option<Timestamp>` into an `i64` for C++, where `0` means "unset".
+/// This is the inverse of `optional_timestamp`.
+fn timestamp_secs(ts: Option<tc::chrono::DateTime<tc::chrono::Utc>>) -> i64 {
+    ts.map_or(0, |t| t.timestamp())
+}
+
 /// Parse a `tc::Tag` from a C++ string.
 fn parse_tag(tag: &CxxString) -> Result<tc::Tag, CppError> {
     tag.to_string_lossy()
@@ -1223,39 +1227,19 @@ impl Task {
         self.0.get_priority().into()
     }
     fn get_entry(&self) -> i64 {
-        if let Some(t) = self.0.get_entry() {
-            t.timestamp()
-        } else {
-            0
-        }
+        timestamp_secs(self.0.get_entry())
     }
     fn get_wait(&self) -> i64 {
-        if let Some(t) = self.0.get_wait() {
-            t.timestamp()
-        } else {
-            0
-        }
+        timestamp_secs(self.0.get_wait())
     }
     fn get_modified(&self) -> i64 {
-        if let Some(t) = self.0.get_modified() {
-            t.timestamp()
-        } else {
-            0
-        }
+        timestamp_secs(self.0.get_modified())
     }
     fn get_due(&self) -> i64 {
-        if let Some(t) = self.0.get_due() {
-            t.timestamp()
-        } else {
-            0
-        }
+        timestamp_secs(self.0.get_due())
     }
     fn get_timestamp(&self, property: &CxxString) -> i64 {
-        if let Some(t) = self.0.get_timestamp(property.to_string_lossy().as_ref()) {
-            t.timestamp()
-        } else {
-            0
-        }
+        timestamp_secs(self.0.get_timestamp(property.to_string_lossy().as_ref()))
     }
 
     fn is_waiting(&self) -> bool {
@@ -1358,7 +1342,14 @@ impl Task {
             ffi::Status::Completed => tc::Status::Completed,
             ffi::Status::Deleted => tc::Status::Deleted,
             ffi::Status::Recurring => tc::Status::Recurring,
-            _ => unreachable!("ffi::Status variants are exhaustive"),
+            // `Status::Unknown` carries no value on this side of the FFI, so it cannot be
+            // round-tripped back into `tc::Status::Unknown(value)`.
+            _ => {
+                return Err(CppError(tc::Error::Usage(format!(
+                    "Cannot set task status to {}",
+                    status.repr
+                ))))
+            }
         };
         Ok(self.0.set_status(status, operations_ref(ops))?)
     }
@@ -1900,6 +1891,20 @@ mod test {
         rep.commit_operations(ops).unwrap();
         let task = rep.get_task(task.get_uuid()).unwrap().take();
         assert!(matches!(task.get_status(), ffi::Status::Completed));
+    }
+
+    #[test]
+    fn task_set_status_unknown_is_error() {
+        let tmp = tempfile::TempDir::new().unwrap();
+        let (_rep, mut task) = replica_with_task(&tmp);
+
+        // `Status::Unknown` cannot be round-tripped, so it is an error rather than a panic.
+        let mut ops = new_operations();
+        assert!(task.set_status(ffi::Status::Unknown, &mut ops).is_err());
+
+        // The same goes for a value C++ made up that matches no variant.
+        let mut ops = new_operations();
+        assert!(task.set_status(ffi::Status { repr: 99 }, &mut ops).is_err());
     }
 
     #[test]
