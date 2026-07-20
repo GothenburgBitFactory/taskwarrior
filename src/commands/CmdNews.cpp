@@ -546,6 +546,9 @@ void NewsItem::version3_4_0(std::vector<NewsItem>& items) {
   items.push_back(info);
 }
 
+// For the next version:
+//  - #4144 will likely break hooks that people have used to address the inconsistency.
+
 ////////////////////////////////////////////////////////////////////////////////
 int CmdNews::execute(std::string& output) {
   auto words = Context::getContext().cli2.getWords();
