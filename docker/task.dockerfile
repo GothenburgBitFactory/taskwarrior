@@ -36,7 +36,8 @@ RUN git clean -dfx && \
 FROM base AS runner
 
 # Install Taskwarrior
-COPY --from=builder /root/code/build/src/task /usr/local/bin
+COPY --from=builder /root/code/build/src/task        /usr/local/bin
+COPY --from=builder /root/code/doc/rc/default.theme  /usr/local/share/doc/task/rc/
 
 # Initialize Taskwarrior
-RUN ( echo "yes" | task ) || true
+RUN :> /root/.taskrc
