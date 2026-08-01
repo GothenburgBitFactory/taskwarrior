@@ -60,6 +60,11 @@
 #include <sys/termios.h>
 #endif
 
+#ifdef HAIKU
+#include <FindDirectory.h>
+#include <StorageDefs.h>
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // This string is parsed and used as default values for configuration.
 // Note: New configuration options should be added to the vim syntax file in
@@ -443,6 +448,19 @@ int Context::initialize(int argc, const char** argv) {
   int rc = 0;
   home_dir = getenv("HOME");
 
+#ifdef HAIKU
+  // Haiku uses non-standard config file locations, and provides an API for them.
+  std::string haiku_task_dir;
+  {
+    char path[B_PATH_NAME_LENGTH];
+    if (find_directory(B_USER_SETTINGS_DIRECTORY, -1, false, path, sizeof(path)) == B_OK) {
+      haiku_task_dir = std::string(path) + "/task";
+      rc_file = File(haiku_task_dir + "/taskrc");
+      data_dir = Path(haiku_task_dir + "/data");
+    }
+  }
+#endif
+
   std::vector<std::string> searchPaths{TASK_RCDIR};
 
   try {
@@ -494,6 +512,9 @@ int Context::initialize(int argc, const char** argv) {
     {
       Timer timer;
       config.parse(configurationDefaults, 1, searchPaths);
+#ifdef HAIKU
+      if (!haiku_task_dir.empty()) config.set("data.location", haiku_task_dir + "/data");
+#endif
       config.load(rc_file._data, 1, searchPaths);
       debugTiming(format("Config::load ({1})", rc_file._data), timer);
     }
@@ -1149,12 +1170,17 @@ void Context::createDefaultConfig() {
              << "#include no-color.theme\n"
              << '\n';
 
+    // Create the parent directory if needed, for platforms where ~/ isn't the
+    // default config directory.
+    Directory rc_parent(rc_file.parent());
+    if (!rc_parent.exists() && !rc_parent.create(0755))
+      throw format("Could not create directory '{1}'.", rc_parent._data);
     // Write out the new file.
     if (!File::write(rc_file._data, contents.str()))
       throw format("Could not write to '{1}'.", rc_file._data);
 
     // Load it so that it takes effect for this run.
-    config.load(rc_file);
+    config.load(rc_file._data, 1, {TASK_RCDIR});
   }
 }
 
