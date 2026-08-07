@@ -51,8 +51,8 @@ static DependencyGraph build_dependency_graph(const std::vector<Task>&,
                                               const std::unordered_map<std::string, size_t>&);
 
 ////////////////////////////////////////////////////////////////////////////////
-// Map the C++ on-disk status string to the typed `tc::Status` enum used by the
-// taskchampion-cpp bridge.
+// Map the C++ representation of status string to the typed `tc::Status` enum
+// used by the taskchampion-cpp bridge.
 static tc::Status statusFromString(const std::string& s) {
   if (s == "pending") return tc::Status::Pending;
   if (s == "completed") return tc::Status::Completed;
@@ -153,8 +153,7 @@ void TDB2::modify(Task& task) {
   }
   auto tctask = maybe_tctask.take();
 
-  std::string deferred_status;
-  bool deferred_status_changed = false;
+  std::optional<std::string> deferred_status;
   std::unordered_set<std::string> seen;
   for (auto k : task.all()) {
     // ignore task keys that aren't stored
@@ -167,7 +166,6 @@ void TDB2::modify(Task& task) {
     if (k == "status") {
       if (v_new != v_old) {
         deferred_status = v_new;
-        deferred_status_changed = true;
       }
       continue;
     }
@@ -188,8 +186,8 @@ void TDB2::modify(Task& task) {
     }
   }
 
-  if (deferred_status_changed) {
-    tctask->set_status(statusFromString(deferred_status), ops);
+  if (deferred_status) {
+    tctask->set_status(statusFromString(deferred_status.value()), ops);
   }
 
   replica()->commit_operations(std::move(ops));
