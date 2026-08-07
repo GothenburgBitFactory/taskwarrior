@@ -65,7 +65,11 @@ SET (TASK_RCDIR "${TASK_DOCDIR}/rc" CACHE STRING "Installation directory for con
 SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the binary")
 
 # rust libs require these
-set (TASK_LIBRARIES dl pthread)
+if (HAIKU)
+  set (TASK_LIBRARIES network be bsd gnu)
+else (HAIKU)
+  set (TASK_LIBRARIES dl pthread)
+endif (HAIKU)
 
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
 check_function_exists (wordexp HAVE_WORDEXP)

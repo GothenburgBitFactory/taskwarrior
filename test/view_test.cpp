@@ -56,7 +56,7 @@ int TEST_NAME(int, char**) {
 
   try {
     // Set up configuration.
-    context.config.parse(configurationDefaults);
+    context.config.parse(configurationDefaults, 0, {TASK_RCDIR});
     context.config.set("fontunderline", true);
     context.config.set("tag.indicator", "+");
     context.config.set("dependency.indicator", "D");
