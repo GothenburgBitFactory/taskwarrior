@@ -132,7 +132,7 @@ class TestIDRangeParsing(TestCase):
             )
             f.flush()
             # use a long timeout here, because import is quite slow
-            code, out, err = self.t(f"import {f.name}", timeout=100)
+            code, out, err = self.t(f"import {f.name}", timeout=300)
 
     def test_single_digit_range(self):
         """Test that parsing single digit ID range works"""
