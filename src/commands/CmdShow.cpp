@@ -81,6 +81,7 @@ int CmdShow::execute(std::string& output) {
       " abbreviation.minimum"
       " active.indicator"
       " allow.empty.filter"
+      " annotation.info"
       " avoidlastcolumn"
       " bulk"
       " calendar.details"
