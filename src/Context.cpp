@@ -115,6 +115,8 @@ std::string configurationDefaults =
     "recurring tasks (yes/no/prompt)\n"
     "allow.empty.filter=1                           # An empty filter gets a warning and requires "
     "confirmation\n"
+    "annotation.info=1                              # Display annotations below the description "
+    "with info\n"
     "indent.annotation=2                            # Indent spaces for annotations\n"
     "indent.report=0                                # Indent spaces for whole report\n"
     "row.padding=0                                  # Left and right padding for each row of "
