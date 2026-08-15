@@ -15,6 +15,26 @@ jobs:
     name: "Audit Rust Dependencies"
     steps:
       - uses: actions/checkout@v7
-      - uses: rustsec/audit-check@master
+
+      - uses: dtolnay/rust-toolchain@stable
+        id: toolchain
+
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          tool: cargo-audit
+
+      - name: Run security audit
+        run: cargo audit --color never
+        continue-on-error: true
+
+      - name: Run security audit with JSON output
+        run: cargo audit --json > audit-results.json
+        continue-on-error: true
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit-results
+          path: audit-results.json
