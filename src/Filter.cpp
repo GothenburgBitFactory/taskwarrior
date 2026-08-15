@@ -44,31 +44,7 @@ void Filter::subset(const std::vector<Task>& input, std::vector<Task>& output) {
 
   Context::getContext().cli2.prepareFilter();
 
-  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
-  for (auto& a : Context::getContext().cli2._args)
-    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
-
-  if (precompiled.size()) {
-    Eval eval;
-    eval.addSource(domSource);
-
-    // Debug output from Eval during compilation is useful.  During evaluation
-    // it is mostly noise.
-    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3 ? true : false);
-    eval.compileExpression(precompiled);
-
-    for (auto& task : input) {
-      // Set up context for any DOM references.
-      auto currentTask = Context::getContext().withCurrentTask(&task);
-
-      Variant var;
-      eval.evaluateCompiledExpression(var);
-      if (var.get_bool()) output.push_back(task);
-    }
-
-    eval.debug(false);
-  } else
-    output = input;
+  filter_to_tasks(input, output);
 
   _endCount = (int)output.size();
   Context::getContext().debug(
@@ -95,23 +71,9 @@ void Filter::subset(std::vector<Task>& output) {
     Context::getContext().time_filter_us -= timer_pending.total_us();
     _startCount = (int)pending.size();
 
-    Eval eval;
-    eval.addSource(domSource);
-
-    // Debug output from Eval during compilation is useful.  During evaluation
-    // it is mostly noise.
-    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3 ? true : false);
-    eval.compileExpression(precompiled);
-
     output.clear();
-    for (auto& task : pending) {
-      // Set up context for any DOM references.
-      auto currentTask = Context::getContext().withCurrentTask(&task);
 
-      Variant var;
-      eval.evaluateCompiledExpression(var);
-      if (var.get_bool()) output.push_back(task);
-    }
+    filter_to_tasks(pending, output);
 
     shortcut = pendingOnly();
     if (!shortcut) {
@@ -120,17 +82,8 @@ void Filter::subset(std::vector<Task>& output) {
       Context::getContext().time_filter_us -= timer_completed.total_us();
       _startCount += (int)completed.size();
 
-      for (auto& task : completed) {
-        // Set up context for any DOM references.
-        auto currentTask = Context::getContext().withCurrentTask(&task);
-
-        Variant var;
-        eval.evaluateCompiledExpression(var);
-        if (var.get_bool()) output.push_back(task);
-      }
+      filter_to_tasks(completed, output);
     }
-
-    eval.debug(false);
   } else {
     safety();
 
@@ -146,28 +99,30 @@ void Filter::subset(std::vector<Task>& output) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-// Like subset(), but leverages the pending tasks cache.
-void Filter::subset_indices(const std::vector<Task>& pending, std::vector<int>& indices) {
-  Timer timer;
-  Context::getContext().cli2.prepareFilter();
+bool Filter::hasFilter() const {
+  for (const auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) return true;
 
+  return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+// Evaluates a pre-parsed filter against a set of tasks and stores their indices
+// from the vector. The filter is parsed with prepareFilter(). This function does
+// not call safety(), it is assumed that callers do this themselves.
+void Filter::filter_to_indices(const std::vector<Task>& pending, std::vector<int>& indices) const {
   std::vector<std::pair<std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext().cli2._args)
     if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
 
   if (precompiled.empty()) {
-    safety();
-    indices.clear();
     indices.reserve(pending.size());
     for (int i = 0; i < (int)pending.size(); ++i) indices.push_back(i);
-    _startCount = (int)pending.size();
   } else {
-    _startCount = (int)pending.size();
     Eval eval;
     eval.addSource(domSource);
     eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3);
     eval.compileExpression(precompiled);
-    indices.clear();
     for (int i = 0; i < (int)pending.size(); ++i) {
       auto currentTask = Context::getContext().withCurrentTask(&pending[i]);
       Variant var;
@@ -177,18 +132,32 @@ void Filter::subset_indices(const std::vector<Task>& pending, std::vector<int>& 
     eval.debug(false);
   }
 
-  _endCount = (int)indices.size();
   Context::getContext().debug(
-      format("Filtered {1} tasks -> {2} tasks [pending cache]", _startCount, _endCount));
-  Context::getContext().time_filter_us += timer.total_us();
+      format("Filtered {1} tasks --> {2} tasks [pending only]", pending.size(), indices.size()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Filter::hasFilter() const {
-  for (const auto& a : Context::getContext().cli2._args)
-    if (a.hasTag("FILTER")) return true;
+// Like filter_to_indices, but copies matched tasks into the output.
+void Filter::filter_to_tasks(const std::vector<Task>& input, std::vector<Task>& output) const {
+  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
+  for (auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
 
-  return false;
+  if (precompiled.empty()) {
+    output = input;
+  } else {
+    Eval eval;
+    eval.addSource(domSource);
+    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3);
+    eval.compileExpression(precompiled);
+    for (auto& task : input) {
+      auto currentTask = Context::getContext().withCurrentTask(&task);
+      Variant var;
+      eval.evaluateCompiledExpression(var);
+      if (var.get_bool()) output.push_back(task);
+    }
+    eval.debug(false);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,9 +165,6 @@ bool Filter::hasFilter() const {
 // status values 'pending', 'waiting' or 'recurring', then the filter is
 // guaranteed to only need data from pending.data.
 bool Filter::pendingOnly() const {
-  // When GC is off, there are no shortcuts.
-  if (!Context::getContext().config.getBoolean("gc")) return false;
-
   // To skip loading completed.data, there should be:
   // - 'status' in filter
   // - no 'completed'
