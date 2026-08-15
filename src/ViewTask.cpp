@@ -331,7 +331,7 @@ std::string ViewTask::render(const std::vector<Task>& data, std::vector<int>& se
     // changes.
     if (s > 0 && _breaks.size() > 0) {
       for (const auto& b : _breaks) {
-        if (data[sequence[s - 1]].get_ref(b) != data[sequence[s]].get(b)) {
+        if (data[sequence[s - 1]].get_ref(b) != data[sequence[s]].get_ref(b)) {
           out += "\n";
           ++_lines;
 

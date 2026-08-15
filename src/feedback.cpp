@@ -154,9 +154,8 @@ void feedback_unblocked(const Task& task) {
         if (i.id)
           std::cout << format("Unblocked {1} '{2}'.", i.id, i.get_ref("description")) << "\n";
         else {
-          std::string uuid = i.get("uuid");
-          std::cout << format("Unblocked {1} '{2}'.", i.get("uuid"), i.get_ref("description"))
-                    << "\n";
+          const auto& uuid = i.get_ref("uuid");
+          std::cout << format("Unblocked {1} '{2}'.", uuid, i.get_ref("description")) << "\n";
         }
       }
     }
@@ -183,7 +182,7 @@ void feedback_backlog() {
 ///////////////////////////////////////////////////////////////////////////////
 std::string onProjectChange(Task& task, bool scope /* = true */) {
   std::stringstream msg;
-  std::string project = task.get_ref("project");
+  const auto& project = task.get_ref("project");
 
   if (project != "") {
     if (scope) msg << format("The project '{1}' has changed.", project) << "  ";
@@ -221,7 +220,7 @@ std::string onProjectChange(Task& task, bool scope /* = true */) {
 
 ///////////////////////////////////////////////////////////////////////////////
 std::string onProjectChange(Task& task1, Task& task2) {
-  if (task1.get_ref("project") == task2.get("project")) return onProjectChange(task1, false);
+  if (task1.get_ref("project") == task2.get_ref("project")) return onProjectChange(task1, false);
 
   std::string messages1 = onProjectChange(task1);
   std::string messages2 = onProjectChange(task2);

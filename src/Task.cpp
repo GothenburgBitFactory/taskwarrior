@@ -1089,10 +1089,12 @@ std::vector<Task> Task::getDependencyTasks() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Returns the pending tasks that depend on a given task.
 std::vector<Task> Task::getBlockedTasks() const {
   const auto& uuid = get_ref("uuid");
 
   std::vector<Task> blocked;
+
   auto& graph = Context::getContext().tdb2.dependency_graph();
   auto found = graph.dependents.find(uuid);
 
@@ -1847,7 +1849,7 @@ float Task::urgency_c() const {
 float Task::urgency() const {
   if (recalc_urgency) {
     // We set the guard first to avoid infinite recursion. It will be 0.0 on
-    // first call and then the computed value will be reused.
+    // first call and then the computed value will be reused from the cache..
     recalc_urgency = false;
     urgency_value = urgency_c();
   }

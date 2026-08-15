@@ -75,7 +75,7 @@ void ColumnDepends::measure(const Task& task, unsigned int& minimum, unsigned in
     return;
   }
 
-  // We also don't need to call getDependencyTasks() anymore,
+  // We also don't need to call getDependencyTasks(),
   // which would copy the full objects from the cache just to read the ID
   // field. Instead, we can use getDependencyUUIDs() and tdb2.id().
 
@@ -98,7 +98,7 @@ void ColumnDepends::measure(const Task& task, unsigned int& minimum, unsigned in
       maximum = all.length();
 
       unsigned int length;
-      for (auto& id : blocking_ids) {
+      for (auto id : blocking_ids) {
         length = format(id).length();
         if (length > minimum) minimum = length;
       }

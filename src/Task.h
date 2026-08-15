@@ -39,7 +39,7 @@
 
 class Task {
  public:
-  // A user/UDA coefficient where we pre-parse its key, so urgency_c()
+  // A user/UDA coefficient with a pre-parsed key, so urgency_c()
   // doesn't re-parse each time.
   struct UrgencyCoefficient {
     enum Kind { project, tag, keyword, uda, udaValue } kind;
