@@ -24,7 +24,7 @@ To release Taskwarrior, follow this process:
 - Update https://github.com/GothenburgBitFactory/tw.org (but see https://github.com/GothenburgBitFactory/tw.org/pull/1269)
   - Add a new item in `content/news`
   - Update `data/projects.json` with the latest version and a fake next version for "devel"
-  - Update `data/releases.json` with the new version, and copy the tarball into `content/download`.
+  - Update `data/releases.json` with the new version, linking to the GitHub release. Get the sha256 from the file you copied earlier.
 - Update various things, in a new PR:
   - `cargo update`
   - `git submodule update --remote --merge`
