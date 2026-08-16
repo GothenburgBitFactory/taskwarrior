@@ -1,5 +1,15 @@
 ------ current release ---------------------------
 
+3.5.0 -
+
+ - Hyphens are now allowed in tags, after the first character (#3961)
+ - Sync can now use a Git remote as a backend (#4111)
+ - Dependencies and the burndown report are now substantially faster (#4127, #4136)
+ - The default theme is now referenced from the generated `.taskrc`, rather than being embedded in it. (#4124)
+ - The `scheduled` attribute of recurring tasks now updates for each new instance (#4144)
+
+------ old releases ------------------------------
+
 3.4.2 -
 
 - Sorting task lists randomly is now supported with configuration such as
@@ -10,8 +20,6 @@
   longer prompts to create `.taskrc`. (#3888)
 - `task sync` now describes what it has done (#3758)
 - UDAs can now have type "UUID" (#3827)
-
------- old releases ------------------------------
 
 3.4.1 -
 
