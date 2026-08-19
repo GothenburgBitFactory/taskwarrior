@@ -99,6 +99,9 @@ int CmdSync::execute(std::string& output) {
         Context::getContext().config.get("sync.aws.secret_access_key");
     std::string aws_default_credentials =
         Context::getContext().config.get("sync.aws.default_credentials");
+    std::string aws_endpoint_url = Context::getContext().config.get("sync.aws.endpoint_url");
+    bool aws_force_path_style =
+        Context::getContext().config.getBoolean("sync.aws.force_path_style");
     if (aws_region == "") {
       throw std::string("sync.aws.region is required");
     }
@@ -128,14 +131,15 @@ int CmdSync::execute(std::string& output) {
     }
 
     if (using_profile) {
-      replica->sync_to_aws_with_profile(aws_region, aws_bucket, aws_profile, encryption_secret,
-                                        avoid_snapshots);
+      replica->sync_to_aws_with_profile(aws_region, aws_bucket, aws_profile, aws_endpoint_url,
+                                        aws_force_path_style, encryption_secret, avoid_snapshots);
     } else if (using_creds) {
-      replica->sync_to_aws_with_access_key(aws_region, aws_bucket, aws_access_key_id,
-                                           aws_secret_access_key, encryption_secret,
-                                           avoid_snapshots);
+      replica->sync_to_aws_with_access_key(
+          aws_region, aws_bucket, aws_access_key_id, aws_secret_access_key, aws_endpoint_url,
+          aws_force_path_style, encryption_secret, avoid_snapshots);
     } else {
-      replica->sync_to_aws_with_default_creds(aws_region, aws_bucket, encryption_secret,
+      replica->sync_to_aws_with_default_creds(aws_region, aws_bucket, aws_endpoint_url,
+                                              aws_force_path_style, encryption_secret,
                                               avoid_snapshots);
     }
 

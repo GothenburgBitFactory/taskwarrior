@@ -187,6 +187,8 @@ mod ffi {
             region: String,
             bucket: String,
             profile_name: String,
+            endpoint_url: String,
+            force_path_style: bool,
             encryption_secret: &CxxString,
             avoid_snapshots: bool,
         ) -> Result<()>;
@@ -198,6 +200,8 @@ mod ffi {
             bucket: String,
             access_key_id: String,
             secret_access_key: String,
+            endpoint_url: String,
+            force_path_style: bool,
             encryption_secret: &CxxString,
             avoid_snapshots: bool,
         ) -> Result<()>;
@@ -207,6 +211,8 @@ mod ffi {
             &mut self,
             region: String,
             bucket: String,
+            endpoint_url: String,
+            force_path_style: bool,
             encryption_secret: &CxxString,
             avoid_snapshots: bool,
         ) -> Result<()>;
@@ -909,6 +915,8 @@ impl Replica {
         region: String,
         bucket: String,
         profile_name: String,
+        endpoint_url: String,
+        force_path_style: bool,
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
@@ -918,8 +926,8 @@ impl Replica {
                 bucket,
                 credentials: tc::server::AwsCredentials::Profile { profile_name },
                 encryption_secret: encryption_secret.as_bytes().to_vec(),
-                endpoint_url: None,
-                force_path_style: false,
+                endpoint_url: (!endpoint_url.is_empty()).then_some(endpoint_url),
+                force_path_style,
             }
             .into_server()
             .await?;
@@ -933,6 +941,8 @@ impl Replica {
         bucket: String,
         access_key_id: String,
         secret_access_key: String,
+        endpoint_url: String,
+        force_path_style: bool,
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
@@ -945,8 +955,8 @@ impl Replica {
                     secret_access_key,
                 },
                 encryption_secret: encryption_secret.as_bytes().to_vec(),
-                endpoint_url: None,
-                force_path_style: false,
+                endpoint_url: (!endpoint_url.is_empty()).then_some(endpoint_url),
+                force_path_style,
             }
             .into_server()
             .await?;
@@ -958,6 +968,8 @@ impl Replica {
         &mut self,
         region: String,
         bucket: String,
+        endpoint_url: String,
+        force_path_style: bool,
         encryption_secret: &CxxString,
         avoid_snapshots: bool,
     ) -> Result<(), CppError> {
@@ -967,8 +979,8 @@ impl Replica {
                 bucket,
                 credentials: tc::server::AwsCredentials::Default,
                 encryption_secret: encryption_secret.as_bytes().to_vec(),
-                endpoint_url: None,
-                force_path_style: false,
+                endpoint_url: (!endpoint_url.is_empty()).then_some(endpoint_url),
+                force_path_style,
             }
             .into_server()
             .await?;

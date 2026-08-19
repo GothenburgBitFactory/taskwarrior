@@ -199,6 +199,8 @@ int CmdShow::execute(std::string& output) {
       " sync.aws.access_key_id"
       " sync.aws.bucket"
       " sync.aws.default_credentials"
+      " sync.aws.endpoint_url"
+      " sync.aws.force_path_style"
       " sync.aws.profile"
       " sync.aws.region"
       " sync.aws.secret_access_key"
