@@ -874,6 +874,7 @@ impl Replica {
         rt().block_on(async { Ok(Box::new(self.0.working_set().await?.into())) })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sync_to_local(&mut self, server_dir: String, avoid_snapshots: bool) -> Result<(), CppError> {
         rt().block_on(async {
             let mut server = tc::server::ServerConfig::Local {
@@ -885,6 +886,7 @@ impl Replica {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sync_to_remote(
         &mut self,
         url: String,
@@ -904,6 +906,7 @@ impl Replica {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sync_to_aws_with_profile(
         &mut self,
         region: String,
@@ -927,6 +930,7 @@ impl Replica {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sync_to_aws_with_access_key(
         &mut self,
         region: String,
@@ -954,6 +958,7 @@ impl Replica {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sync_to_aws_with_default_creds(
         &mut self,
         region: String,
@@ -976,6 +981,7 @@ impl Replica {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sync_to_gcp(
         &mut self,
         bucket: String,
