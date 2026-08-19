@@ -73,6 +73,16 @@ class TestShowCommand(TestCase):
             "Your .taskrc file contains these unrecognized variables:\n  foo", out
         )
 
+    def test_show_s3_compatible_settings(self):
+        """Verify S3-compatible storage settings are recognized"""
+        self.t.config("sync.aws.endpoint_url", "https://minio.example.test")
+        self.t.config("sync.aws.force_path_style", "true")
+        code, out, err = self.t("show sync.aws")
+        self.assertIn("sync.aws.endpoint_url", out)
+        self.assertIn("https://minio.example.test", out)
+        self.assertIn("sync.aws.force_path_style", out)
+        self.assertIn("true", out)
+
 
 class TestShowHelperCommand(TestCase):
     def setUp(self):

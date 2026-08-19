@@ -263,6 +263,8 @@ std::string configurationDefaults =
     "#sync.aws.secret_access_key                    # secret_access_key for AWS sync\n"
     "#sync.aws.profile                              # profile name for AWS sync\n"
     "#sync.aws.default_credentials                  # use default credentials for AWS sync\n"
+    "#sync.aws.endpoint_url                         # endpoint URL for S3-compatible sync\n"
+    "#sync.aws.force_path_style=0                   # use path-style S3 URLs\n"
     "#sync.gcp.credential_path                      # Path to JSON file containing credentials to "
     "authenticate GCP Sync\n"
     "#sync.gcp.bucket                               # Bucket for sync to GCP\n"
