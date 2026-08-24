@@ -400,6 +400,7 @@ const std::unordered_map<std::string, size_t>& TDB2::pending_index() {
 // Finds the UUID in the index. Returns nullptr if the task is not in the pending
 // set.
 Task* TDB2::find_pending(const std::string& uuid) {
+  pending_tasks();
   auto& idx = pending_index();
   auto it = idx.find(uuid);
   if (it != idx.end()) return &(*_pending_tasks)[it->second];
