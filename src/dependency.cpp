@@ -33,48 +33,44 @@
 #include <shared.h>
 
 #include <iostream>
-#include <stack>
+#include <vector>
 
 #define STRING_DEPEND_BLOCKED "Task {1} is blocked by:"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns true if the supplied task adds a cycle to the dependency chain.
+// Only dependencies within the pending task cache are traversed.
 bool dependencyIsCircular(const Task& task) {
   // A new task has no UUID assigned yet, and therefore cannot be part of any
   // dependency chain.
-  if (task.has("uuid")) {
-    auto task_uuid = task.get("uuid");
+  if (!task.has("uuid")) return false;
 
-    std::stack<Task> s;
-    s.push(task);
+  const auto& task_uuid = task.get_ref("uuid");
+  auto& tdb2 = Context::getContext().tdb2;
 
-    std::unordered_set<std::string> visited;
-    visited.insert(task_uuid);
+  std::unordered_set<std::string> visited{task_uuid};
+  std::vector<std::string> stack;
 
-    while (!s.empty()) {
-      Task& current = s.top();
-      auto deps_current = current.getDependencyUUIDs();
+  // We start with the current task, as it may contain changes which are not
+  // cached.
+  for (const auto& dep : task.getDependencyUUIDs()) {
+    if (dep == task_uuid) return true;
+    if (visited.insert(dep).second) stack.push_back(dep);
+  }
 
-      // This is a basic depth first search that always terminates given the
-      // fact that we do not visit any task twice
-      for (const auto& dep : deps_current) {
-        if (Context::getContext().tdb2.get(dep, current)) {
-          auto current_uuid = current.get("uuid");
+  while (!stack.empty()) {
+    std::string dep_uuid = std::move(stack.back());
+    stack.pop_back();
 
-          if (task_uuid == current_uuid) {
-            // Cycle found, initial task reached for the second time!
-            return true;
-          }
+    // Dependencies outside the pending task cache terminate the traversal.
+    // We do not load the full database.
+    auto* dep_task = tdb2.find_pending(dep_uuid);
+    if (!dep_task) continue;
 
-          if (visited.find(current_uuid) == visited.end()) {
-            // Push the task to the stack, if it has not been processed yet
-            s.push(current);
-            visited.insert(current_uuid);
-          }
-        }
-      }
-
-      s.pop();
+    // Marks UUIDs so each dependency is only checked once.
+    for (const auto& dep : dep_task->getDependencyUUIDs()) {
+      if (dep == task_uuid) return true;
+      if (visited.insert(dep).second) stack.push_back(dep);
     }
   }
 
