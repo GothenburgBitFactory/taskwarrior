@@ -96,6 +96,38 @@ class TestDependencies(TestCase):
         code, out, err = self.t("1 modify dep:2")
         self.assertNotIn("Circular dependency detected and disallowed.", err)
 
+    def test_completed_not_circular(self):
+        """Checks that completed tasks do not contribute to circularity check"""
+        self.t("2 modify dep:1")
+        completed_uuid = self.t.export_one(2)["uuid"]
+        self.t("2 done")
+        self.t("next")
+
+        self.t("1 modify dep:%s" % completed_uuid)
+        self.assertEqual([completed_uuid], self.t.export_one(1)["depends"])
+
+    def test_circular_with_visited_sibling(self):
+        """Checks that the branching logic in the check still catches after
+        visited siblings"""
+        self.t("add three")
+        self.t("add four")
+        a, b, x, root = sorted(task["uuid"] for task in self.t.export())
+        self.t("%s modify dep:%s" % (a, root))
+        self.t("%s modify dep:%s,%s" % (x, a, b))
+
+        code, out, err = self.t.runError("%s modify dep:%s,%s" % (root, b, x))
+        self.assertIn("Circular dependency detected and disallowed.", err)
+
+    def test_dependency_modify_with_cold_pending_cache(self):
+        """Checks the pending cache is initialized on dependency modifications"""
+        missing_uuid = "90000000-0000-0000-0000-000000000000"
+        self.t(
+            "rc.allow.empty.filter=1 rc.bulk=0 modify depends:%s" % missing_uuid,
+            input="yes\n",
+        )
+        for task in self.t.export():
+            self.assertEqual([missing_uuid], task["depends"])
+
     def test_blocked_blocking(self):
         """Check blocked/blocking status of two tasks"""
         self.t("2 modify dep:1")
