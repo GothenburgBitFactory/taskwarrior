@@ -41,12 +41,21 @@
 #include <map>
 #include <random>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 static const std::vector<Task>* global_data = nullptr;
 static std::vector<std::string> global_keys;
 static unsigned int sort_random_seed = 0;
 static bool sort_compare(int, int);
+
+// Pre-computed values to avoid repeated parsing. Duration fields are parsed
+// once into time_t and stored by field name (recur and duration UDAs).
+static std::unordered_map<std::string, std::vector<time_t>> global_durations;
+
+// UDA column details to avoid repeated lookups.
+static std::unordered_map<std::string, Column*> global_uda_columns;
+static std::unordered_map<std::string, std::string> global_uda_types;
 
 ////////////////////////////////////////////////////////////////////////////////
 void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const std::string& keys) {
@@ -55,6 +64,41 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
 
   // Split the key defs.
   global_keys = split(keys, ',');
+
+  // Pre-computing of sorting values.
+  global_durations.clear();
+  global_uda_columns.clear();
+  global_uda_types.clear();
+  for (auto& k : global_keys) {
+    std::string field;
+    bool ascending, breakIndicator;
+    Context::getContext().decomposeSortField(k, field, ascending, breakIndicator);
+
+    if (field == "recur") {
+      auto& cache = global_durations[field];
+      cache.resize(data.size(), 0);
+      for (size_t i = 0; i < data.size(); ++i) {
+        auto s = data[i].get_ref("recur");
+        if (!s.empty()) cache[i] = Duration(s).toTime_t();
+      }
+      continue;
+    }
+
+    auto col_it = Context::getContext().columns.find(field);
+    if (col_it != Context::getContext().columns.end()) {
+      Column* col = col_it->second;
+      global_uda_columns[field] = col;
+      global_uda_types[field] = col->type();
+      if (col->type() == "duration") {
+        auto& cache = global_durations[field];
+        cache.resize(data.size(), 0);
+        for (size_t i = 0; i < data.size(); ++i) {
+          auto s = data[i].get_ref(field);
+          if (!s.empty()) cache[i] = Duration(s).toTime_t();
+        }
+      }
+    }
+  }
 
   // Generate a random seend for sorting by "random".
   if (sort_random_seed == 0) {
@@ -117,7 +161,6 @@ static bool sort_compare(int left, int right) {
   std::string field;
   bool ascending;
   bool breakIndicator;
-  Column* column;
   int left_number;
   int right_number;
   float left_real;
@@ -215,19 +258,23 @@ static bool sort_compare(int left, int right) {
 
     // Duration.
     else if (field == "recur") {
-      auto left_string = (*global_data)[left].get_ref(field);
-      auto right_string = (*global_data)[right].get_ref(field);
-
-      if (left_string == right_string) continue;
-
-      Duration left_duration(left_string);
-      Duration right_duration(right_string);
-      return ascending ? (left_duration < right_duration) : (left_duration > right_duration);
+      auto it = global_durations.find(field);
+      if (it != global_durations.end()) {
+        auto left_dur = it->second[left];
+        auto right_dur = it->second[right];
+        if (left_dur == right_dur) continue;
+        return ascending ? (left_dur < right_dur) : (left_dur > right_dur);
+      }
     }
 
     // UDAs.
-    else if ((column = Context::getContext().columns[field]) != nullptr) {
-      std::string type = column->type();
+    else {
+      auto cuda = global_uda_columns.find(field);
+      if (cuda == global_uda_columns.end())
+        throw format("The '{1}' column is not a valid sort field.", field);
+
+      const std::string& type = global_uda_types[field];
+
       if (type == "numeric") {
         auto left_real = strtof(((*global_data)[left].get_ref(field)).c_str(), nullptr);
         auto right_real = strtof(((*global_data)[right].get_ref(field)).c_str(), nullptr);
@@ -271,17 +318,15 @@ static bool sort_compare(int left, int right) {
 
         return ascending ? (left_string < right_string) : (left_string > right_string);
       } else if (type == "duration") {
-        auto left_string = (*global_data)[left].get_ref(field);
-        auto right_string = (*global_data)[right].get_ref(field);
-
-        if (left_string == right_string) continue;
-
-        Duration left_duration(left_string);
-        Duration right_duration(right_string);
-        return ascending ? (left_duration < right_duration) : (left_duration > right_duration);
+        auto it = global_durations.find(field);
+        if (it != global_durations.end()) {
+          auto left_dur = it->second[left];
+          auto right_dur = it->second[right];
+          if (left_dur == right_dur) continue;
+          return ascending ? (left_dur < right_dur) : (left_dur > right_dur);
+        }
       }
-    } else
-      throw format("The '{1}' column is not a valid sort field.", field);
+    }
   }
 
   return false;
