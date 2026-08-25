@@ -53,6 +53,9 @@ static bool sort_compare(int, int);
 // once into time_t and stored by field name (recur and duration UDAs).
 static std::unordered_map<std::string, std::vector<time_t>> global_durations;
 
+// Pre-computed dependency UUIDs to avoid repeated sort calls.
+static std::vector<std::vector<std::string>> global_sorted_dep_uuids;
+
 // UDA column details to avoid repeated lookups.
 static std::unordered_map<std::string, Column*> global_uda_columns;
 static std::unordered_map<std::string, std::string> global_uda_types;
@@ -69,10 +72,20 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
   global_durations.clear();
   global_uda_columns.clear();
   global_uda_types.clear();
+  global_sorted_dep_uuids.clear();
   for (auto& k : global_keys) {
     std::string field;
     bool ascending, breakIndicator;
     Context::getContext().decomposeSortField(k, field, ascending, breakIndicator);
+
+    if (field == "depends") {
+      global_sorted_dep_uuids.resize(data.size());
+      for (size_t i = 0; i < data.size(); ++i) {
+        auto deps = data[i].getDependencyUUIDs();
+        std::sort(deps.begin(), deps.end());
+        global_sorted_dep_uuids[i] = std::move(deps);
+      }
+    }
 
     if (field == "recur") {
       auto& cache = global_durations[field];
@@ -234,12 +247,8 @@ static bool sort_compare(int left, int right) {
 
     // Depends string.
     else if (field == "depends") {
-      // Raw data is an un-sorted list of UUIDs.  We just need a stable
-      // sort, so we sort them lexically.
-      auto left_deps = (*global_data)[left].getDependencyUUIDs();
-      std::sort(left_deps.begin(), left_deps.end());
-      auto right_deps = (*global_data)[right].getDependencyUUIDs();
-      std::sort(right_deps.begin(), right_deps.end());
+      const auto& left_deps = global_sorted_dep_uuids[left];
+      const auto& right_deps = global_sorted_dep_uuids[right];
 
       if (left_deps == right_deps) continue;
 
