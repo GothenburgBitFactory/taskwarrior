@@ -40,8 +40,13 @@ class Filter {
   void subset(std::vector<Task>&);
   bool hasFilter() const;
   bool pendingOnly() const;
+
+  // These evaluate already-prepared filters (ie. caller calls
+  // cli2.prepareFilter() and safety()). filter_to_indices() stores matching
+  // indices, filter_to_tasks() copies task objects.
   void filter_to_indices(const std::vector<Task>&, std::vector<int>&) const;
   void filter_to_tasks(const std::vector<Task>&, std::vector<Task>&) const;
+
   void safety() const;
   void disableSafety();
 

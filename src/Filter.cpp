@@ -62,7 +62,7 @@ void Filter::subset(std::vector<Task>& output) {
   for (auto& a : Context::getContext().cli2._args)
     if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
 
-  // Shortcut indicates that only pending.data needs to be loaded.
+  // Shortcut indicates that only tasks in the working set are loaded.
   bool shortcut = false;
 
   if (precompiled.size()) {
@@ -108,8 +108,8 @@ bool Filter::hasFilter() const {
 
 /////////////////////////////////////////////////////////////////////////////////
 // Evaluates a pre-parsed filter against a set of tasks and stores their indices
-// from the vector. The filter is parsed with prepareFilter(). This function does
-// not call safety(), it is assumed that callers do this themselves.
+// from the vector. The filter is parsed with prepareFilter(), but this
+// function does not call that or safety() itself - callers are expected to do so.
 void Filter::filter_to_indices(const std::vector<Task>& pending, std::vector<int>& indices) const {
   std::vector<std::pair<std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext().cli2._args)
