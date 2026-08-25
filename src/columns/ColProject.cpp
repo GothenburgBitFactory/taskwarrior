@@ -53,17 +53,23 @@ ColumnProject::ColumnProject() {
 void ColumnProject::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
-    std::string project = task.get(_name);
+    if (_style == "full") {
+      const auto& project = task.get_ref(_name);
+      minimum = longestWord(project);
+      maximum = utf8_width(project);
+    } else {
+      std::string project = task.get(_name);
 
-    if (_style == "parent") {
-      auto period = project.find('.');
-      if (period != std::string::npos) project = project.substr(0, period);
-    } else if (_style == "indented") {
-      project = indentProject(project, "  ", '.');
+      if (_style == "parent") {
+        auto period = project.find('.');
+        if (period != std::string::npos) project = project.substr(0, period);
+      } else if (_style == "indented") {
+        project = indentProject(project, "  ", '.');
+      }
+
+      minimum = longestWord(project);
+      maximum = utf8_width(project);
     }
-
-    minimum = longestWord(project);
-    maximum = utf8_width(project);
   }
 }
 
@@ -71,18 +77,24 @@ void ColumnProject::measure(const Task& task, unsigned int& minimum, unsigned in
 void ColumnProject::render(std::vector<std::string>& lines, const Task& task, int width,
                            Color& color) {
   if (task.has(_name)) {
-    std::string project = task.get(_name);
-    if (_style == "parent") {
-      auto period = project.find('.');
-      if (period != std::string::npos) project = project.substr(0, period);
-    } else if (_style == "indented") {
-      project = indentProject(project, "  ", '.');
+    if (_style == "full") {
+      const auto& project = task.get_ref(_name);
+      std::vector<std::string> raw;
+      wrapText(raw, project, width, _hyphenate);
+      for (const auto& i : raw) renderStringLeft(lines, width, color, i);
+    } else {
+      std::string project = task.get(_name);
+      if (_style == "parent") {
+        auto period = project.find('.');
+        if (period != std::string::npos) project = project.substr(0, period);
+      } else if (_style == "indented") {
+        project = indentProject(project, "  ", '.');
+      }
+
+      std::vector<std::string> raw;
+      wrapText(raw, project, width, _hyphenate);
+      for (const auto& i : raw) renderStringLeft(lines, width, color, i);
     }
-
-    std::vector<std::string> raw;
-    wrapText(raw, project, width, _hyphenate);
-
-    for (const auto& i : raw) renderStringLeft(lines, width, color, i);
   }
 }
 

@@ -72,7 +72,7 @@ ColumnDescription::ColumnDescription() {
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnDescription::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
-  std::string description = task.get(_name);
+  const auto& description = task.get_ref(_name);
 
   // The text
   // <indent> <date> <anno>
@@ -132,6 +132,8 @@ void ColumnDescription::measure(const Task& task, unsigned int& minimum, unsigne
 ////////////////////////////////////////////////////////////////////////////////
 void ColumnDescription::render(std::vector<std::string>& lines, const Task& task, int width,
                                Color& color) {
+  // Unlike measure, we use get() here because this render function appends
+  // annotation counts or strings.
   std::string description = task.get(_name);
 
   // This is a description
