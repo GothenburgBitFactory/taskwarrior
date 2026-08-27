@@ -85,6 +85,19 @@ class TestDebugMode(TestCase):
         self.assertIn("Filtered 2 tasks --> 2 tasks [pending only]", err)
         self.assertIn("Perf task", err)
 
+    def test_status_filter_shortcut_ignores_other_filters(self):
+        """Checks that we aren't accidentally matching other filters
+        with the same keywords"""
+        self.t("1 modify description:pending")
+        self.t("1 done")
+
+        for filter_ in (
+            "status:completed description:pending",
+            "status.not:pending description:pending",
+        ):
+            code, out, err = self.t(f"{filter_} all")
+            self.assertIn("pending", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

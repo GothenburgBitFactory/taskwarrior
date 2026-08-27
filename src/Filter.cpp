@@ -164,62 +164,44 @@ void Filter::filter_to_tasks(const std::vector<Task>& input, std::vector<Task>& 
 // If the filter contains no 'or', 'xor' or 'not' operators, and only includes
 // status values 'pending', 'waiting' or 'recurring', then the filter is
 // guaranteed to only need data from pending.data.
+
 bool Filter::pendingOnly() const {
-  // To skip loading completed.data, there should be:
-  // - 'status' in filter
-  // - no 'completed'
-  // - no 'deleted'
-  // - no 'xor'
-  // - no 'or'
-  int countStatus = 0;
-  int countPending = 0;
-  int countWaiting = 0;
-  int countRecurring = 0;
-  int countId = (int)Context::getContext().cli2._id_ranges.size();
-  int countUUID = (int)Context::getContext().cli2._uuid_list.size();
-  int countOr = 0;
-  int countXor = 0;
-  int countNot = 0;
-  bool pendingTag = false;
-  bool activeTag = false;
-  bool readyTag = false;
-  bool waitingTag = false;
+  if (!Context::getContext().config.getBoolean("gc")) return false;
 
-  for (const auto& a : Context::getContext().cli2._args) {
-    if (a.hasTag("FILTER")) {
-      std::string raw = a.attribute("raw");
-      std::string canonical = a.attribute("canonical");
+  const auto& cli = Context::getContext().cli2;
+  if (!cli._uuid_list.empty()) return false;
 
-      if (a._lextype == Lexer::Type::op && raw == "or") ++countOr;
-      if (a._lextype == Lexer::Type::op && raw == "xor") ++countXor;
-      if (a._lextype == Lexer::Type::op && raw == "not") ++countNot;
-      if (a._lextype == Lexer::Type::dom && canonical == "status") ++countStatus;
-      if (raw == "pending") ++countPending;
-      if (raw == "waiting") ++countWaiting;
-      if (raw == "recurring") ++countRecurring;
-    }
+  std::vector<const A2*> filter_args;
+  for (const auto& arg : cli._args) {
+    if (!arg.hasTag("FILTER")) continue;
+
+    const auto& raw = arg.attribute("raw");
+    if (arg._lextype == Lexer::Type::op &&
+        (raw == "or" || raw == "xor" || raw == "!" || raw == "not"))
+      return false;
+
+    filter_args.push_back(&arg);
   }
 
-  for (const auto& word : Context::getContext().cli2._original_args) {
-    if (word.attribute("raw") == "+PENDING") pendingTag = true;
-    if (word.attribute("raw") == "+ACTIVE") activeTag = true;
-    if (word.attribute("raw") == "+READY") readyTag = true;
-    if (word.attribute("raw") == "+WAITING") waitingTag = true;
+  for (size_t i = 0; i + 2 < filter_args.size(); ++i) {
+    const auto& left = *filter_args[i];
+    const auto& op = *filter_args[i + 1];
+    const auto& right = *filter_args[i + 2];
+    const auto& value = right.attribute("raw");
+
+    if (left._lextype == Lexer::Type::dom && left.attribute("canonical") == "status" &&
+        op._lextype == Lexer::Type::op &&
+        (op.attribute("raw") == "=" || op.attribute("raw") == "==") &&
+        (value == "pending" || value == "waiting" || value == "recurring"))
+      return true;
+
+    if (left._lextype == Lexer::Type::dom && left.attribute("raw") == "tags" &&
+        op._lextype == Lexer::Type::op && op.attribute("raw") == "_hastag_" &&
+        (value == "PENDING" || value == "ACTIVE" || value == "READY" || value == "WAITING"))
+      return true;
   }
 
-  if (countUUID) return false;
-
-  if (countOr || countXor || countNot) return false;
-
-  if (pendingTag || activeTag || readyTag || waitingTag) return true;
-
-  if (countStatus) {
-    if (!countPending && !countWaiting && !countRecurring) return false;
-
-    return true;
-  }
-
-  if (countId) return true;
+  if (!cli._id_ranges.empty()) return true;
 
   return false;
 }
