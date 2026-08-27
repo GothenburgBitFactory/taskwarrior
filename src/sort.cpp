@@ -45,9 +45,15 @@
 #include <vector>
 
 static const std::vector<Task>* global_data = nullptr;
-static std::vector<std::string> global_keys;
 static unsigned int sort_random_seed = 0;
 static bool sort_compare(int, int);
+
+struct SortKey {
+  std::string field;
+  bool ascending;
+};
+
+static std::vector<SortKey> global_sort_keys;
 
 // Pre-computed values to avoid repeated parsing. Duration fields are parsed
 // once into time_t and stored by field name (recur and duration UDAs).
@@ -59,6 +65,7 @@ static std::vector<std::vector<std::string>> global_sorted_dep_uuids;
 // UDA column details to avoid repeated lookups.
 static std::unordered_map<std::string, Column*> global_uda_columns;
 static std::unordered_map<std::string, std::string> global_uda_types;
+static std::vector<std::string> global_random_keys;
 
 ////////////////////////////////////////////////////////////////////////////////
 void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const std::string& keys) {
@@ -66,17 +73,43 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
   global_data = &data;
 
   // Split the key defs.
-  global_keys = split(keys, ',');
+  auto key_defs = split(keys, ',');
 
   // Pre-computing of sorting values.
   global_durations.clear();
   global_uda_columns.clear();
   global_uda_types.clear();
   global_sorted_dep_uuids.clear();
-  for (auto& k : global_keys) {
+  global_random_keys.clear();
+  global_sort_keys.clear();
+  global_sort_keys.reserve(key_defs.size());
+  for (auto& k : key_defs) {
     std::string field;
     bool ascending, breakIndicator;
     Context::getContext().decomposeSortField(k, field, ascending, breakIndicator);
+    global_sort_keys.push_back({field, ascending});
+
+    // Generate a random seend for sorting by "random".
+    if (field == "random") {
+      if (sort_random_seed == 0) {
+        // For testing purposes, allow the seed to be specified in an undocumented configuration
+        // setting.
+        std::string seed_str = Context::getContext().config.get("debug.random.seed");
+        if (seed_str.empty()) {
+          std::random_device rd;
+          sort_random_seed = rd();
+        } else {
+          sort_random_seed = std::stoul(seed_str);
+        }
+      }
+
+      auto seed = std::to_string(sort_random_seed);
+      global_random_keys.resize(data.size());
+      for (size_t i = 0; i < data.size(); ++i) {
+        global_random_keys[i] =
+            std::to_string(std::hash<std::string>{}(data[i].get_ref("uuid") + seed));
+      }
+    }
 
     if (field == "depends") {
       global_sorted_dep_uuids.resize(data.size());
@@ -110,19 +143,6 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
           if (!s.empty()) cache[i] = Duration(s).toTime_t();
         }
       }
-    }
-  }
-
-  // Generate a random seend for sorting by "random".
-  if (sort_random_seed == 0) {
-    // For testing purposes, allow the seed to be specified in an undocumented configuration
-    // setting.
-    std::string seed_str = Context::getContext().config.get("debug.random.seed");
-    if (seed_str.empty()) {
-      std::random_device rd;
-      sort_random_seed = rd();
-    } else {
-      sort_random_seed = std::stoul(seed_str);
     }
   }
 
@@ -171,28 +191,19 @@ void sort_projects(std::list<std::pair<std::string, int>>& sorted,
 //
 // Essentially a static implementation of a dynamic operator<.
 static bool sort_compare(int left, int right) {
-  std::string field;
-  bool ascending;
-  bool breakIndicator;
   int left_number;
   int right_number;
   float left_real;
   float right_real;
 
-  for (auto& k : global_keys) {
-    Context::getContext().decomposeSortField(k, field, ascending, breakIndicator);
+  for (const auto& key : global_sort_keys) {
+    const auto& field = key.field;
+    bool ascending = key.ascending;
 
     // Random.
     if (field == "random") {
-      // For "random" sort, we produce a stable number for each task based on a hash of its
-      // UUID plus the random seed.
-      const auto& left_uuid = (*global_data)[left].get_ref("uuid");
-      const auto& right_uuid = (*global_data)[right].get_ref("uuid");
-
-      std::string left_scrambled =
-          std::to_string(std::hash<std::string>{}(left_uuid + std::to_string(sort_random_seed)));
-      std::string right_scrambled =
-          std::to_string(std::hash<std::string>{}(right_uuid + std::to_string(sort_random_seed)));
+      const auto& left_scrambled = global_random_keys[left];
+      const auto& right_scrambled = global_random_keys[right];
 
       if (left_scrambled == right_scrambled) continue;
 
@@ -222,8 +233,8 @@ static bool sort_compare(int left, int right) {
     // String.
     else if (field == "description" || field == "project" || field == "status" || field == "tags" ||
              field == "uuid" || field == "parent" || field == "imask" || field == "mask") {
-      auto left_string = (*global_data)[left].get_ref(field);
-      auto right_string = (*global_data)[right].get_ref(field);
+      const auto& left_string = (*global_data)[left].get_ref(field);
+      const auto& right_string = (*global_data)[right].get_ref(field);
 
       if (left_string == right_string) continue;
 
@@ -233,8 +244,8 @@ static bool sort_compare(int left, int right) {
     // Due Date.
     else if (field == "due" || field == "end" || field == "entry" || field == "start" ||
              field == "until" || field == "wait" || field == "modified" || field == "scheduled") {
-      auto left_string = (*global_data)[left].get_ref(field);
-      auto right_string = (*global_data)[right].get_ref(field);
+      const auto& left_string = (*global_data)[left].get_ref(field);
+      const auto& right_string = (*global_data)[right].get_ref(field);
 
       if (left_string != "" && right_string == "") return true;
 
@@ -292,8 +303,8 @@ static bool sort_compare(int left, int right) {
 
         return ascending ? (left_real < right_real) : (left_real > right_real);
       } else if (type == "string") {
-        auto left_string = (*global_data)[left].get_ref(field);
-        auto right_string = (*global_data)[right].get_ref(field);
+        const auto& left_string = (*global_data)[left].get_ref(field);
+        const auto& right_string = (*global_data)[right].get_ref(field);
 
         if (left_string == right_string) continue;
 
@@ -316,8 +327,8 @@ static bool sort_compare(int left, int right) {
       }
 
       else if (type == "date") {
-        auto left_string = (*global_data)[left].get_ref(field);
-        auto right_string = (*global_data)[right].get_ref(field);
+        const auto& left_string = (*global_data)[left].get_ref(field);
+        const auto& right_string = (*global_data)[right].get_ref(field);
 
         if (left_string != "" && right_string == "") return true;
 

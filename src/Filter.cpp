@@ -183,6 +183,7 @@ bool Filter::pendingOnly() const {
   bool pendingTag = false;
   bool activeTag = false;
   bool readyTag = false;
+  bool waitingTag = false;
 
   for (const auto& a : Context::getContext().cli2._args) {
     if (a.hasTag("FILTER")) {
@@ -203,13 +204,14 @@ bool Filter::pendingOnly() const {
     if (word.attribute("raw") == "+PENDING") pendingTag = true;
     if (word.attribute("raw") == "+ACTIVE") activeTag = true;
     if (word.attribute("raw") == "+READY") readyTag = true;
+    if (word.attribute("raw") == "+WAITING") waitingTag = true;
   }
 
   if (countUUID) return false;
 
   if (countOr || countXor || countNot) return false;
 
-  if (pendingTag || activeTag || readyTag) return true;
+  if (pendingTag || activeTag || readyTag || waitingTag) return true;
 
   if (countStatus) {
     if (!countPending && !countWaiting && !countRecurring) return false;
