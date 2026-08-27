@@ -39,6 +39,7 @@ syn match taskrcGoodKey '^\s*\Vabbreviation.minimum='he=e-1
 syn match taskrcGoodKey '^\s*\Vactive.indicator='he=e-1
 syn match taskrcGoodKey '^\s*\Valias.\S\{-}='he=e-1
 syn match taskrcGoodKey '^\s*\Vallow.empty.filter='he=e-1
+syn match taskrcGoodKey '^\s*\Vannotation.info='he=e-1
 syn match taskrcGoodKey '^\s*\Vavoidlastcolumn='he=e-1
 syn match taskrcGoodKey '^\s*\Vbulk='he=e-1
 syn match taskrcGoodKey '^\s*\Vburndown.cumulative='he=e-1

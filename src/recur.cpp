@@ -118,6 +118,17 @@ void handleRecurrence() {
             rec.setStatus(Task::pending);
           }
 
+          if (t.has("scheduled")) {
+            Datetime old_scheduled(t.get_date("scheduled"));
+            Datetime old_due(t.get_date("due"));
+            Datetime due(d);
+            auto scheduled = checked_add_datetime(due, old_scheduled - old_due);
+            if (scheduled)
+              rec.set("scheduled", format(scheduled->toEpoch()));
+            else
+              rec.remove("scheduled");
+          }
+
           rec.set("imask", i);
           rec.remove("mask");  // Remove the mask of the parent.
 

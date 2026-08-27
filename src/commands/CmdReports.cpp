@@ -65,6 +65,7 @@ int CmdReports::execute(std::string& output) {
   }
 
   // Add known reports.
+  reports.push_back("burndown.annual");
   reports.push_back("burndown.daily");
   reports.push_back("burndown.monthly");
   reports.push_back("burndown.weekly");

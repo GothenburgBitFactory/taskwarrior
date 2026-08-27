@@ -161,6 +161,7 @@ std::vector<NewsItem> NewsItem::all() {
   version3_2_0(items);
   version3_3_0(items);
   version3_4_0(items);
+  version3_5_0(items);
   return items;
 }
 
@@ -543,6 +544,22 @@ void NewsItem::version3_4_0(std::vector<NewsItem>& items) {
                 "mode and thus more quickly. This does not include reports (task lists),\n"
                 "unless the `gc` config is false. Use `rc.gc=0` in command-lines to allow\n"
                 "read-only access.\n\n"};
+  items.push_back(info);
+}
+
+void NewsItem::version3_5_0(std::vector<NewsItem>& items) {
+  Version version("3.5.0");
+  NewsItem info{
+      version,
+      /*title=*/"Scheduled attribute of recurring tasks",
+      /*bg_title=*/"",
+      /*background=*/"",
+      /*punchline=*/"The `scheduled` attribute is now updated for new instances of recurring tasks",
+      /*update=*/
+      "Previously, the value of `scheduled` for a recurring task was copied from the\n"
+      "parent task without modification. It is now offset from the recurrence time\n"
+      "just like `wait`. While this fixes a bug, it may interact poorly with any hooks\n"
+      "that assume the old behavior.\n\n"};
   items.push_back(info);
 }
 

@@ -60,6 +60,11 @@
 #include <sys/termios.h>
 #endif
 
+#ifdef HAIKU
+#include <FindDirectory.h>
+#include <StorageDefs.h>
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // This string is parsed and used as default values for configuration.
 // Note: New configuration options should be added to the vim syntax file in
@@ -110,6 +115,8 @@ std::string configurationDefaults =
     "recurring tasks (yes/no/prompt)\n"
     "allow.empty.filter=1                           # An empty filter gets a warning and requires "
     "confirmation\n"
+    "annotation.info=1                              # Display annotations below the description "
+    "with info\n"
     "indent.annotation=2                            # Indent spaces for annotations\n"
     "indent.report=0                                # Indent spaces for whole report\n"
     "row.padding=0                                  # Left and right padding for each row of "
@@ -256,6 +263,8 @@ std::string configurationDefaults =
     "#sync.aws.secret_access_key                    # secret_access_key for AWS sync\n"
     "#sync.aws.profile                              # profile name for AWS sync\n"
     "#sync.aws.default_credentials                  # use default credentials for AWS sync\n"
+    "#sync.aws.endpoint_url                         # endpoint URL for S3-compatible sync\n"
+    "#sync.aws.force_path_style=0                   # use path-style S3 URLs\n"
     "#sync.gcp.credential_path                      # Path to JSON file containing credentials to "
     "authenticate GCP Sync\n"
     "#sync.gcp.bucket                               # Bucket for sync to GCP\n"
@@ -443,6 +452,19 @@ int Context::initialize(int argc, const char** argv) {
   int rc = 0;
   home_dir = getenv("HOME");
 
+#ifdef HAIKU
+  // Haiku uses non-standard config file locations, and provides an API for them.
+  std::string haiku_task_dir;
+  {
+    char path[B_PATH_NAME_LENGTH];
+    if (find_directory(B_USER_SETTINGS_DIRECTORY, -1, false, path, sizeof(path)) == B_OK) {
+      haiku_task_dir = std::string(path) + "/task";
+      rc_file = File(haiku_task_dir + "/taskrc");
+      data_dir = Path(haiku_task_dir + "/data");
+    }
+  }
+#endif
+
   std::vector<std::string> searchPaths{TASK_RCDIR};
 
   try {
@@ -494,6 +516,9 @@ int Context::initialize(int argc, const char** argv) {
     {
       Timer timer;
       config.parse(configurationDefaults, 1, searchPaths);
+#ifdef HAIKU
+      if (!haiku_task_dir.empty()) config.set("data.location", haiku_task_dir + "/data");
+#endif
       config.load(rc_file._data, 1, searchPaths);
       debugTiming(format("Config::load ({1})", rc_file._data), timer);
     }
@@ -1153,12 +1178,17 @@ void Context::createDefaultConfig() {
              << "#include no-color.theme\n"
              << '\n';
 
+    // Create the parent directory if needed, for platforms where ~/ isn't the
+    // default config directory.
+    Directory rc_parent(rc_file.parent());
+    if (!rc_parent.exists() && !rc_parent.create(0755))
+      throw format("Could not create directory '{1}'.", rc_parent._data);
     // Write out the new file.
     if (!File::write(rc_file._data, contents.str()))
       throw format("Could not write to '{1}'.", rc_file._data);
 
     // Load it so that it takes effect for this run.
-    config.load(rc_file);
+    config.load(rc_file._data, 1, {TASK_RCDIR});
   }
 }
 

@@ -101,6 +101,8 @@ void Command::factory(std::map<std::string, Command*>& all) {
   all[c->keyword()] = c;
   c = new CmdAppend();
   all[c->keyword()] = c;
+  c = new CmdBurndownAnnual();
+  all[c->keyword()] = c;
   c = new CmdBurndownDaily();
   all[c->keyword()] = c;
   c = new CmdBurndownMonthly();

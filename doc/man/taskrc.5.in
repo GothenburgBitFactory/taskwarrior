@@ -362,6 +362,11 @@ Setting this to '0' means that it is an error to use a write command with no
 filter.
 
 .TP
+.B annotation.info=1
+Determines whether annotations are displayed below the description field by the
+'info' command. The default value is "1".
+
+.TP
 .B indent.annotation=2
 Controls the number of spaces to indent annotations when shown beneath the
 description field. The default value is "2".

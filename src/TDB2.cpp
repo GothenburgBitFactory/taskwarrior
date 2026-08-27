@@ -58,6 +58,17 @@ static DependencyGraph build_dependency_graph(const std::vector<Task>&,
                                               const std::unordered_map<std::string, size_t>&);
 
 ////////////////////////////////////////////////////////////////////////////////
+// Map the C++ representation of status string to the typed `tc::Status` enum
+// used by the taskchampion-cpp bridge.
+static tc::Status statusFromString(const std::string& s) {
+  if (s == "pending") return tc::Status::Pending;
+  if (s == "completed") return tc::Status::Completed;
+  if (s == "deleted") return tc::Status::Deleted;
+  if (s == "recurring") return tc::Status::Recurring;
+  throw format("Unknown task status value '{1}'.", s);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TDB2::open_replica(const std::string& location, bool create_if_missing, bool read_write) {
   _replica = tc::new_replica_on_disk(location, create_if_missing, read_write);
 }
@@ -80,16 +91,24 @@ void TDB2::add(Task& task) {
   // run hooks for this new task
   Context::getContext().hooks.onAdd(task);
 
-  auto taskdata = tc::create_task(tcuuid, ops);
+  auto tctask = replica()->create_task(tcuuid, ops);
 
-  // add the task attributes
+  // Add the task attributes, but defer `status` until after every other
+  // attribute so `tc::Task::set_status` sees complete input.
+  std::string deferred_status;
   for (auto& attr : task.all()) {
     // TaskChampion does not store uuid or id in the task data
     if (attr == "uuid" || attr == "id") {
       continue;
     }
-
-    taskdata->update(attr, task.get(attr), ops);
+    if (attr == "status") {
+      deferred_status = task.get(attr);
+      continue;
+    }
+    tctask->set_value(attr, task.get(attr), ops);
+  }
+  if (!deferred_status.empty()) {
+    tctask->set_status(statusFromString(deferred_status), ops);
   }
   replica()->commit_operations(std::move(ops));
 
@@ -144,14 +163,13 @@ void TDB2::modify(Task& task) {
   }
   Context::getContext().hooks.onModify(original, task);
 
-  auto maybe_tctask = replica()->get_task_data(tcuuid);
+  auto maybe_tctask = replica()->get_task(tcuuid);
   if (maybe_tctask.is_none()) {
     throw std::string("task no longer exists");
   }
   auto tctask = maybe_tctask.take();
 
-  // Perform the necessary `update` operations to set all keys in `tctask`
-  // equal to those in `task`.
+  std::optional<std::string> deferred_status;
   std::unordered_set<std::string> seen;
   for (auto k : task.all()) {
     // ignore task keys that aren't stored
@@ -159,31 +177,33 @@ void TDB2::modify(Task& task) {
       continue;
     }
     seen.insert(k);
-    bool update = false;
     auto v_new = task.get(k);
-    std::string v_tctask;
-    if (tctask->get(k, v_tctask)) {
-      update = v_tctask != v_new;
-    } else {
-      // tctask does not contain k, so update it
-      update = true;
-    }
-    if (update) {
-      // An empty string indicates the value should be removed.
-      if (v_new == "") {
-        tctask->update_remove(k, ops);
-      } else {
-        tctask->update(k, v_new, ops);
+    auto v_old = original.get(k);  // "" if missing
+    if (k == "status") {
+      if (v_new != v_old) {
+        deferred_status = v_new;
       }
+      continue;
+    }
+    if (v_new == v_old) continue;
+    // An empty string ->  removed.
+    if (v_new == "") {
+      tctask->set_value_remove(k, ops);
+    } else {
+      tctask->set_value(k, v_new, ops);
     }
   }
 
-  // we've now added and updated properties; but must find any deleted properties
-  for (auto k : tctask->properties()) {
-    auto kstr = static_cast<std::string>(k);
-    if (seen.find(kstr) == seen.end()) {
-      tctask->update_remove(kstr, ops);
+  // remove any deleted properties
+  for (auto k : original.all()) {
+    if (k == "uuid" || k == "status") continue;
+    if (seen.find(k) == seen.end()) {
+      tctask->set_value_remove(k, ops);
     }
+  }
+
+  if (deferred_status) {
+    tctask->set_status(statusFromString(deferred_status.value()), ops);
   }
 
   replica()->commit_operations(std::move(ops));
@@ -402,6 +422,7 @@ const std::unordered_map<std::string, size_t>& TDB2::pending_index() {
 // Finds the UUID in the index. Returns nullptr if the task is not in the pending
 // set.
 Task* TDB2::find_pending(const std::string& uuid) {
+  pending_tasks();
   auto& idx = pending_index();
   auto it = idx.find(uuid);
   if (it != idx.end()) return &(*_pending_tasks)[it->second];

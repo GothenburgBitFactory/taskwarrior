@@ -81,6 +81,7 @@ int CmdShow::execute(std::string& output) {
       " abbreviation.minimum"
       " active.indicator"
       " allow.empty.filter"
+      " annotation.info"
       " avoidlastcolumn"
       " bulk"
       " calendar.details"
@@ -198,6 +199,8 @@ int CmdShow::execute(std::string& output) {
       " sync.aws.access_key_id"
       " sync.aws.bucket"
       " sync.aws.default_credentials"
+      " sync.aws.endpoint_url"
+      " sync.aws.force_path_style"
       " sync.aws.profile"
       " sync.aws.region"
       " sync.aws.secret_access_key"
@@ -261,7 +264,7 @@ int CmdShow::execute(std::string& output) {
   // Find all the values that match the defaults, for highlighting.
   std::vector<std::string> default_values;
   Configuration default_config;
-  default_config.parse(configurationDefaults);
+  default_config.parse(configurationDefaults, 0, {TASK_RCDIR});
 
   for (auto& i : Context::getContext().config)
     if (i.second != default_config.get(i.first)) default_values.push_back(i.first);

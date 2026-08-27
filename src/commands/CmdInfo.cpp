@@ -114,11 +114,13 @@ int CmdInfo::execute(std::string& output) {
     Color c;
     autoColorize(task, c);
     auto description = task.get("description");
-    auto indent = Context::getContext().config.getInteger("indent.annotation");
+    if (Context::getContext().config.getBoolean("annotation.info")) {
+      auto indent = Context::getContext().config.getInteger("indent.annotation");
 
-    for (auto& anno : task.getAnnotations())
-      description += '\n' + std::string(indent, ' ') +
-                     Datetime(anno.first.substr(11)).toString(dateformatanno) + ' ' + anno.second;
+      for (auto& anno : task.getAnnotations())
+        description += '\n' + std::string(indent, ' ') +
+                       Datetime(anno.first.substr(11)).toString(dateformatanno) + ' ' + anno.second;
+    }
 
     if (task.has("description")) {
       row = view.addRow();

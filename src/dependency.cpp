@@ -33,12 +33,13 @@
 #include <shared.h>
 
 #include <iostream>
-#include <stack>
+#include <vector>
 
 #define STRING_DEPEND_BLOCKED "Task {1} is blocked by:"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns true if the supplied task adds a cycle to the dependency chain.
+// Only dependencies within the pending task cache are traversed.
 bool dependencyIsCircular(const Task& task) {
   // A new task has no UUID assigned yet, and therefore cannot be part of any
   // dependency chain.
@@ -48,29 +49,28 @@ bool dependencyIsCircular(const Task& task) {
   auto& tdb2 = Context::getContext().tdb2;
 
   std::unordered_set<std::string> visited{task_uuid};
+  std::vector<std::string> stack;
 
-  // Vector of dependency UUIDs. The initial set is taken from the task object,
-  // because there may have been a dependency added which is not yet in the cache.
-  // Subsequent searches use the _pending_tasks cache.
-  // This will always terminate as we do not return any UUID twice.
-  std::vector<std::string> to_visit;
+  // We start with the current task, as it may contain changes which are not
+  // cached.
   for (const auto& dep : task.getDependencyUUIDs()) {
     if (dep == task_uuid) return true;
-    if (visited.insert(dep).second) to_visit.push_back(dep);
+    if (visited.insert(dep).second) stack.push_back(dep);
   }
 
-  while (!to_visit.empty()) {
-    std::string dep_uuid = std::move(to_visit.back());
-    to_visit.pop_back();
+  while (!stack.empty()) {
+    std::string dep_uuid = std::move(stack.back());
+    stack.pop_back();
 
+    // Dependencies outside the pending task cache terminate the traversal.
+    // We do not load the full database.
     auto* dep_task = tdb2.find_pending(dep_uuid);
     if (!dep_task) continue;
 
-    const auto& deps = dep_task->getDependencyUUIDs();
-
-    for (const auto& dep : deps) {
+    // Marks UUIDs so each dependency is only checked once.
+    for (const auto& dep : dep_task->getDependencyUUIDs()) {
       if (dep == task_uuid) return true;
-      if (visited.insert(dep).second) to_visit.push_back(dep);
+      if (visited.insert(dep).second) stack.push_back(dep);
     }
   }
 
@@ -107,8 +107,6 @@ bool dependencyIsCircular(const Task& task) {
 //                                          4 dep:3,5
 //
 void dependencyChainOnComplete(Task& task) {
-  if (task.getDependencyUUIDs().empty() && !task.is_blocking) return;
-
   auto blocking = task.getDependencyTasks();
 
   // If the task is anything but the tail end of a dependency chain.
@@ -120,7 +118,7 @@ void dependencyChainOnComplete(Task& task) {
       std::cout << format(STRING_DEPEND_BLOCKED, task.identifier()) << '\n';
 
       for (const auto& b : blocking)
-        std::cout << "  " << b.id << ' ' << b.get_ref("description") << '\n';
+        std::cout << "  " << b.id << ' ' << b.get("description") << '\n';
     }
 
     // If there are both blocking and blocked tasks, the chain is broken.
@@ -129,7 +127,7 @@ void dependencyChainOnComplete(Task& task) {
         std::cout << "and is blocking:\n";
 
         for (const auto& b : blocked)
-          std::cout << "  " << b.id << ' ' << b.get_ref("description") << '\n';
+          std::cout << "  " << b.id << ' ' << b.get("description") << '\n';
       }
 
       if (!Context::getContext().config.getBoolean("dependency.confirmation") ||
@@ -162,7 +160,7 @@ void dependencyChainOnStart(Task& task) {
       std::cout << format(STRING_DEPEND_BLOCKED, task.identifier()) << '\n';
 
       for (const auto& b : blocking)
-        std::cout << "  " << b.id << ' ' << b.get_ref("description") << '\n';
+        std::cout << "  " << b.id << ' ' << b.get("description") << '\n';
     }
   }
 }

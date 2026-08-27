@@ -219,6 +219,26 @@ default profile, or an instance profile, set
     $ task config sync.aws.default_credentials true
 .fi
 
+.SS S3-Compatible Storage
+
+To synchronize with an S3-compatible storage service other than AWS, configure
+the service's endpoint URL in addition to the region, bucket, credentials, and
+encryption secret described above:
+
+.nf
+    $ task config sync.aws.endpoint_url        <endpoint-url>
+.fi
+
+Some S3-compatible services require path-style bucket URLs. To enable them, set:
+
+.nf
+    $ task config sync.aws.force_path_style    true
+.fi
+
+The endpoint URL must include the scheme, such as \(oqhttp://\(cq or
+\(oqhttps://\(cq. Consult the storage service's documentation for the region and
+URL style it requires.
+
 .SS Local Synchronization
 
 In order to take advantage of synchronization's side effect of saving disk
