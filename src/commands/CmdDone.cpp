@@ -101,7 +101,7 @@ int CmdDone::execute(std::string&) {
         Context::getContext().tdb2.modify(task);
         ++count;
         feedback_affected("Completed task {1} '{2}'.", task);
-        feedback_unblocked(task);
+        if (task.is_blocking) feedback_unblocked(task);
         dependencyChainOnComplete(task);
         if (Context::getContext().verbose("project"))
           projectChanges[task.get("project")] = onProjectChange(task);

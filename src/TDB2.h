@@ -111,6 +111,7 @@ class TDB2 {
   // Lazily cache UUIDs within the pending set.
   // Avoids scans of the vectors with get/modify..
   std::optional<std::unordered_map<std::string, size_t>> _pending_index;
+  std::optional<std::unordered_map<std::string, size_t>> _pending_dependency_counts;
   void invalidate_cached_info();
 
   // Return the full pending UUID map.

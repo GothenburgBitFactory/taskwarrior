@@ -44,7 +44,7 @@ void cleardb() {
 
 ////////////////////////////////////////////////////////////////////////////////
 int TEST_NAME(int, char**) {
-  UnitTest t(12);
+  UnitTest t(27);
   Context context;
   Context::setContext(&context);
 
@@ -108,6 +108,57 @@ int TEST_NAME(int, char**) {
     cleardb();
     context.tdb2.open_replica(".", /*create_if_missing=*/true, /*read_write=*/true);
 
+    Task blocker(R"([description:"blocking"])");
+    Task first(R"([description:"first"])");
+    Task second(R"([description:"second"])");
+
+    first.addDependency(blocker.get_ref("uuid"));
+    context.tdb2.modify(first);
+    second.addDependency(blocker.get_ref("uuid"));
+    context.tdb2.modify(second);
+
+    t.ok(context.tdb2.find_pending(blocker.get_ref("uuid"))->is_blocking,
+         "TDB2 dependency is blocking");
+    t.ok(context.tdb2.find_pending(first.get_ref("uuid"))->is_blocked,
+         "TDB2 first dependent is blocked");
+    t.ok(context.tdb2.find_pending(second.get_ref("uuid"))->is_blocked,
+         "TDB2 second dependent is blocked");
+    t.is((int)context.tdb2.dependency_graph().dependencies.size(), 2,
+         "TDB2 dependency graph contains two dependents");
+    t.is((int)context.tdb2.dependency_graph().dependents.at(blocker.get_ref("uuid")).size(), 2,
+         "TDB2 dependency map contains both edges");
+
+    first.removeDependency(blocker.get_ref("uuid"));
+    context.tdb2.modify(first);
+
+    t.ok(context.tdb2.find_pending(blocker.get_ref("uuid"))->is_blocking,
+         "TDB2 dependency remains blocking");
+    t.notok(context.tdb2.find_pending(first.get_ref("uuid"))->is_blocked,
+            "TDB2 first dependent is unblocked");
+    t.ok(context.tdb2.find_pending(second.get_ref("uuid"))->is_blocked,
+         "TDB2 second dependent remains blocked");
+    t.is((int)context.tdb2.dependency_graph().dependencies.size(), 1,
+         "TDB2 dependency map correctly removed the first dependent");
+    t.is((int)context.tdb2.dependency_graph().dependents.at(blocker.get_ref("uuid")).size(), 1,
+         "TDB2 dependency map contains the second edge");
+
+    second.removeDependency(blocker.get_ref("uuid"));
+    context.tdb2.modify(second);
+
+    t.notok(context.tdb2.find_pending(blocker.get_ref("uuid"))->is_blocking,
+            "TDB2 dependency no longer blocks tasks");
+    t.notok(context.tdb2.find_pending(second.get_ref("uuid"))->is_blocked,
+            "TDB2 second dependent is unblocked");
+    t.is((int)context.tdb2.pending_tasks().size(), 3,
+         "TDB2 dependency changes keep correct pending number");
+    t.is((int)context.tdb2.dependency_graph().dependencies.size(), 0,
+         "TDB2 dependency changes invalidated the old graph - dependencies");
+    t.is((int)context.tdb2.dependency_graph().dependents.size(), 0,
+         "TDB2 dependency changes remove dependents");
+
+    // Reset for reuse.
+    cleardb();
+    context.tdb2.open_replica(".", /*create_if_missing=*/true, /*read_write=*/true);
     // TODO complete a task
     // TODO gc
   }

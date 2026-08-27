@@ -141,7 +141,9 @@ Task::Task(const json::object* obj) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Task::Task(rust::Box<tc::TaskData> obj) {
+Task::Task(rust::Box<tc::TaskData> obj) : Task(std::move(obj), -1) {}
+
+Task::Task(rust::Box<tc::TaskData> obj, int known_id) {
   id = 0;
   urgency_value = 0.0;
   recalc_urgency = true;
@@ -149,7 +151,7 @@ Task::Task(rust::Box<tc::TaskData> obj) {
   is_blocking = false;
   annotation_count = 0;
 
-  parseTC(std::move(obj));
+  parseTC(std::move(obj), known_id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -720,7 +722,7 @@ void Task::parseJSON(const json::object* root_obj) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Note that all fields undergo encode/decode.
-void Task::parseTC(rust::Box<tc::TaskData> task) {
+void Task::parseTC(rust::Box<tc::TaskData> task, int known_id) {
   auto items = task->items();
   data.clear();
 
@@ -736,6 +738,7 @@ void Task::parseTC(rust::Box<tc::TaskData> task) {
 
   data["uuid"] = static_cast<std::string>(task->get_uuid().to_string());
   id = Context::getContext().tdb2.id(data["uuid"]);
+  id = known_id >= 0 ? known_id : Context::getContext().tdb2.id(data["uuid"]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

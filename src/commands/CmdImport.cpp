@@ -189,7 +189,8 @@ void CmdImport::importSingleTask(json::object* obj) {
   Task before;
   auto uuid = task.get("uuid");
   uuid_occurrences[uuid]++;
-  if (Context::getContext().tdb2.get(uuid, before)) {
+  auto& tdb2 = Context::getContext().tdb2;
+  if (tdb2.has(uuid) && tdb2.get(uuid, before)) {
     // We need to neglect updates from attributes with dynamic defaults
     // unless they have been explicitly specified on import.
     //
@@ -218,7 +219,7 @@ void CmdImport::importSingleTask(json::object* obj) {
       std::cout << " skip ";
     }
   } else {
-    Context::getContext().tdb2.add(task);
+    tdb2.add(task);
     std::cout << " add  ";
   }
 

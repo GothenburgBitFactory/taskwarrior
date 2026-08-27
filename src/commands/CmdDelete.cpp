@@ -96,7 +96,7 @@ int CmdDelete::execute(std::string&) {
         ++count;
         Context::getContext().tdb2.modify(task);
         feedback_affected("Deleting task {1} '{2}'.", task);
-        feedback_unblocked(task);
+        if (task.is_blocking) feedback_unblocked(task);
         dependencyChainOnComplete(task);
         if (Context::getContext().verbose("project"))
           projectChanges[task.get("project")] = onProjectChange(task);

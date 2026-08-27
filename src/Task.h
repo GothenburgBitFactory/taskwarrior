@@ -79,6 +79,7 @@ class Task {
   Task(const std::string&);
   Task(const json::object*);
   Task(rust::Box<tc::TaskData>);
+  Task(rust::Box<tc::TaskData>, int);
 
   void parse(const std::string&);
   std::string composeJSON(bool decorate = false);
@@ -202,7 +203,7 @@ class Task {
   int determineVersion(const std::string&);
   void parseJSON(const std::string&);
   void parseJSON(const json::object*);
-  void parseTC(rust::Box<tc::TaskData>);
+  void parseTC(rust::Box<tc::TaskData>, int);
   void parseLegacy(const std::string&);
   void validate_before(const std::string&, const std::string&);
   const std::string encode(const std::string&) const;

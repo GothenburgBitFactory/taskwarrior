@@ -107,6 +107,8 @@ bool dependencyIsCircular(const Task& task) {
 //                                          4 dep:3,5
 //
 void dependencyChainOnComplete(Task& task) {
+  if (task.getDependencyUUIDs().empty() && !task.is_blocking) return;
+
   auto blocking = task.getDependencyTasks();
 
   // If the task is anything but the tail end of a dependency chain.
