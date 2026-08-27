@@ -1088,6 +1088,9 @@ std::vector<Task> Task::getDependencyTasks() const {
     if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted)
       blocking.push_back(tasks[idx]);
 
+  std::sort(blocking.begin(), blocking.end(),
+            [](const Task& left, const Task& right) { return left.id < right.id; });
+
   return blocking;
 }
 
@@ -1109,6 +1112,9 @@ std::vector<Task> Task::getBlockedTasks() const {
   for (auto idx : found->second)
     if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted)
       blocked.push_back(tasks[idx]);
+
+  std::sort(blocked.begin(), blocked.end(),
+            [](const Task& left, const Task& right) { return left.id < right.id; });
 
   return blocked;
 }

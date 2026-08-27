@@ -34,6 +34,7 @@
 #include <utf8.h>
 #include <util.h>
 
+#include <algorithm>
 #include <regex>
 
 #define STRING_COLUMN_LABEL_DEP "Depends"
@@ -88,6 +89,8 @@ void ColumnDepends::measure(const Task& task, unsigned int& minimum, unsigned in
     if (id > 0) blocking_ids.push_back(id);
   }
 
+  std::sort(blocking_ids.begin(), blocking_ids.end());
+
   if (blocking_ids.size() > 0) {
     if (_style == "count") {
       minimum = maximum = 2 + format((int)blocking_ids.size()).length();
@@ -127,6 +130,8 @@ void ColumnDepends::render(std::vector<std::string>& lines, const Task& task, in
     int id = Context::getContext().tdb2.id(uuid);
     if (id > 0) blocking_ids.push_back(id);
   }
+
+  std::sort(blocking_ids.begin(), blocking_ids.end());
 
   if (blocking_ids.size() > 0) {
     if (_style == "count") {
