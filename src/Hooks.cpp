@@ -279,6 +279,9 @@ void Hooks::onModify(Task& before, Task& after) const {
   if (!_enabled) return;
 
   Timer timer;
+  const auto id = after.id;
+  const auto is_blocked = after.is_blocked;
+  const auto is_blocking = after.is_blocking;
 
   std::vector<std::string> matchingScripts = scripts("on-modify");
   if (matchingScripts.size()) {
@@ -314,6 +317,9 @@ void Hooks::onModify(Task& before, Task& after) const {
     }
 
     after = Task(input[1]);
+    after.id = id;
+    after.is_blocked = is_blocked;
+    after.is_blocking = is_blocking;
   }
 
   Context::getContext().time_hooks_us += timer.total_us();

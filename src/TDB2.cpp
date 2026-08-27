@@ -138,9 +138,9 @@ void TDB2::modify(Task& task) {
     if (maybe_original.is_some()) {
       original = Task{maybe_original.take(), task.id};
       found_original = true;
-    } else {
-      found_original = get(uuid, original);
     }
+  } else {
+    found_original = get(uuid, original);
   }
   Context::getContext().hooks.onModify(original, task);
 
@@ -210,6 +210,8 @@ void TDB2::modify(Task& task) {
         auto& index = pending_index();
         dependency_update(*_pending_tasks, index, *_pending_dependency_counts, index.at(uuid),
                           old_deps, new_deps);
+        task.is_blocked = pt->is_blocked;
+        task.is_blocking = pt->is_blocking;
       }
     }
   }
