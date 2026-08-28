@@ -44,7 +44,7 @@ void cleardb() {
 
 ////////////////////////////////////////////////////////////////////////////////
 int TEST_NAME(int, char**) {
-  UnitTest t(27);
+  UnitTest t(35);
   Context context;
   Context::setContext(&context);
 
@@ -84,7 +84,7 @@ int TEST_NAME(int, char**) {
     t.is((int)pending.size(), 1, "TDB2 after add, 1 pending task");
     t.is((int)completed.size(), 0, "TDB2 after add, 0 completed tasks");
     t.is((int)num_reverts_possible, 1, "TDB2 after add, 1 revert possible");
-    t.is((int)num_local_changes, 6, "TDB2 after add, 6 local changes");
+    t.is((int)num_local_changes, 7, "TDB2 after add, 7 local changes");
 
     task.set("description", "This is a test");
     context.tdb2.modify(task);
@@ -98,11 +98,11 @@ int TEST_NAME(int, char**) {
     t.is((int)completed.size(), 0, "TDB2 after set, 0 completed tasks");
     t.is((int)num_reverts_possible, 1, "TDB2 after set, 1 revert possible");
 
-    // At this point, there may be 7 or 8 local changes, depending on whether
+    // At this point, there may be 8 or 9 local changes, depending on whether
     // the `modified` property changed between the `add` and `modify`
     // invocation. That only happens if the clock ticks over to the next second
     // between those invocations.
-    t.ok(num_local_changes == 7 || num_local_changes == 8, "TDB2 after set, 7 or 8 local changes");
+    t.ok(num_local_changes == 8 || num_local_changes == 9, "TDB2 after set, 7 or 8 local changes");
 
     // Reset for reuse.
     cleardb();
@@ -158,7 +158,50 @@ int TEST_NAME(int, char**) {
 
     // Reset for reuse.
     cleardb();
+
     context.tdb2.open_replica(".", /*create_if_missing=*/true, /*read_write=*/true);
+
+    first.addDependency(blocker.get_ref("uuid"));
+    context.tdb2.modify(first);
+    second.addDependency(blocker.get_ref("uuid"));
+
+    Task waiting = *context.tdb2.find_pending(first.get_ref("uuid"));
+    waiting.set("wait", "20380118T000000Z");
+    context.tdb2.modify(waiting);
+
+    Task recurring = *context.tdb2.find_pending(second.get_ref("uuid"));
+    recurring.setStatus(Task::recurring);
+    context.tdb2.modify(recurring);
+
+    t.ok(context.tdb2.find_pending(first.get_ref("uuid"))->is_blocked,
+         "TDB2 waiting dependent is blocked");
+    t.ok(context.tdb2.find_pending(second.get_ref("uuid"))->is_blocked,
+         "TDB2 recurring dependent is blocked");
+    t.ok(context.tdb2.find_pending(blocker.get_ref("uuid"))->is_blocking,
+         "TDB2 active dependents keep the dependency as blocking");
+
+    waiting.setStatus(Task::completed);
+    context.tdb2.modify(waiting);
+
+    t.notok(context.tdb2.find_pending(first.get_ref("uuid"))->is_blocked,
+            "TDB2 completed waiting dependent is unblocked");
+    t.ok(context.tdb2.find_pending(second.get_ref("uuid"))->is_blocked,
+         "TDB2 recurring dependent stays blocked");
+    t.ok(context.tdb2.find_pending(blocker.get_ref("uuid"))->is_blocking,
+         "TDB2 active dependents keep the dependency as blocking - recurring tasks");
+
+    recurring.setStatus(Task::deleted);
+    context.tdb2.modify(recurring);
+
+    t.notok(context.tdb2.find_pending(second.get_ref("uuid"))->is_blocked,
+            "TDB2 deleted recurring dependent gets unblocked");
+    t.notok(context.tdb2.find_pending(blocker.get_ref("uuid"))->is_blocking,
+            "TDB2 inactive dependents cause dependency to clear blocking");
+
+    // Reset for reuse.
+    cleardb();
+    context.tdb2.open_replica(".", /*create_if_missing=*/true, /*read_write=*/true);
+
     // TODO complete a task
     // TODO gc
   }

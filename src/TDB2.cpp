@@ -52,6 +52,7 @@ static void dependency_scan(std::vector<Task>&, const std::unordered_map<std::st
 static void dependency_update(std::vector<Task>&, const std::unordered_map<std::string, size_t>&,
                               std::unordered_map<std::string, size_t>&, size_t,
                               const std::vector<std::string>&, const std::vector<std::string>&);
+static bool participates_in_dependency_graph(const Task&);
 
 // Build maps for dependency queries.
 static DependencyGraph build_dependency_graph(const std::vector<Task>&,
@@ -208,10 +209,11 @@ void TDB2::modify(Task& task) {
 
   replica()->commit_operations(std::move(ops));
 
-  // If the task entered or left the pending set, we must invalidate the cache.
-  bool was_pending = found_original && (original.getStatus() == Task::pending);
-  bool now_pending = task.getStatus() == Task::pending;
-  if (was_pending != now_pending || !found_original) {
+  // If the task entered or left the working set/dependency graph, we must
+  // invalidate the cache.
+  bool was_active = found_original && participates_in_dependency_graph(original);
+  bool now_active = participates_in_dependency_graph(task);
+  if (was_active != now_active || !found_original) {
     invalidate_cached_info();
     return;
   }
@@ -588,15 +590,13 @@ static void dependency_scan(std::vector<Task>& tasks,
     task.is_blocked = false;
   }
   for (size_t i = 0; i < tasks.size(); ++i) {
-    auto lstatus = tasks[i].getStatus();
+    if (!participates_in_dependency_graph(tasks[i])) continue;
     for (const auto& dep : tasks[i].getDependencyUUIDs()) {
       auto it = uuid_index.find(dep);
       if (it == uuid_index.end()) continue;
 
       size_t j = it->second;
-      auto rstatus = tasks[j].getStatus();
-      if (lstatus != Task::completed && lstatus != Task::deleted && rstatus != Task::completed &&
-          rstatus != Task::deleted) {
+      if (participates_in_dependency_graph(tasks[j])) {
         tasks[i].is_blocked = true;
         tasks[j].is_blocking = true;
         if (dependency_counts) ++(*dependency_counts)[dep];
@@ -616,8 +616,7 @@ static void dependency_update(std::vector<Task>& tasks,
   auto& task = tasks[task_index];
 
   task.is_blocked = false;
-  auto task_status = task.getStatus();
-  bool task_is_pending = task_status != Task::completed && task_status != Task::deleted;
+  bool task_is_active = participates_in_dependency_graph(task);
 
   for (const auto& dep : old_set) {
     if (new_set.find(dep) != new_set.end()) continue;
@@ -635,9 +634,8 @@ static void dependency_update(std::vector<Task>& tasks,
     auto target = uuid_index.find(dep);
     if (target == uuid_index.end()) continue;
 
-    auto target_status = tasks[target->second].getStatus();
-    bool target_is_pending = target_status != Task::completed && target_status != Task::deleted;
-    if (!task_is_pending || !target_is_pending) continue;
+    bool target_is_active = participates_in_dependency_graph(tasks[target->second]);
+    if (!task_is_active || !target_is_active) continue;
 
     task.is_blocked = true;
     if (old_set.find(dep) == old_set.end()) ++dependency_counts[dep];
@@ -646,6 +644,13 @@ static void dependency_update(std::vector<Task>& tasks,
 
   const auto& uuid = task.get_ref("uuid");
   task.is_blocking = dependency_counts.find(uuid) != dependency_counts.end();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// Defined here for reuse.
+static bool participates_in_dependency_graph(const Task& task) {
+  auto status = task.getStatus();
+  return status != Task::completed && status != Task::deleted;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
