@@ -62,8 +62,7 @@ static std::unordered_map<std::string, std::vector<time_t>> global_durations;
 // Pre-computed dependency UUIDs to avoid repeated sort calls.
 static std::vector<std::vector<std::string>> global_sorted_dep_uuids;
 
-// UDA column details to avoid repeated lookups.
-static std::unordered_map<std::string, Column*> global_uda_columns;
+// UDA types to avoid repeated lookups.
 static std::unordered_map<std::string, std::string> global_uda_types;
 static std::vector<std::string> global_random_keys;
 
@@ -77,7 +76,6 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
 
   // Pre-computing of sorting values.
   global_durations.clear();
-  global_uda_columns.clear();
   global_uda_types.clear();
   global_sorted_dep_uuids.clear();
   global_random_keys.clear();
@@ -132,10 +130,9 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
 
     auto col_it = Context::getContext().columns.find(field);
     if (col_it != Context::getContext().columns.end()) {
-      Column* col = col_it->second;
-      global_uda_columns[field] = col;
-      global_uda_types[field] = col->type();
-      if (col->type() == "duration") {
+      auto type = col_it->second->type();
+      global_uda_types[field] = type;
+      if (type == "duration") {
         auto& cache = global_durations[field];
         cache.resize(data.size(), 0);
         for (size_t i = 0; i < data.size(); ++i) {
@@ -191,11 +188,6 @@ void sort_projects(std::list<std::pair<std::string, int>>& sorted,
 //
 // Essentially a static implementation of a dynamic operator<.
 static bool sort_compare(int left, int right) {
-  int left_number;
-  int right_number;
-  float left_real;
-  float right_real;
-
   for (const auto& key : global_sort_keys) {
     const auto& field = key.field;
     bool ascending = key.ascending;
@@ -212,8 +204,8 @@ static bool sort_compare(int left, int right) {
 
     // Urgency.
     else if (field == "urgency") {
-      left_real = (*global_data)[left].urgency();
-      right_real = (*global_data)[right].urgency();
+      auto left_real = (*global_data)[left].urgency();
+      auto right_real = (*global_data)[right].urgency();
 
       if (left_real == right_real) continue;
 
@@ -222,8 +214,8 @@ static bool sort_compare(int left, int right) {
 
     // Number.
     else if (field == "id") {
-      left_number = (*global_data)[left].id;
-      right_number = (*global_data)[right].id;
+      auto left_number = (*global_data)[left].id;
+      auto right_number = (*global_data)[right].id;
 
       if (left_number == right_number) continue;
 
@@ -263,13 +255,13 @@ static bool sort_compare(int left, int right) {
 
       if (left_deps == right_deps) continue;
 
-      if (left_deps.size() == 0 && right_deps.size() > 0) return ascending;
+      if (left_deps.empty() && right_deps.empty()) return ascending;
 
-      if (left_deps.size() > 0 && right_deps.size() == 0) return !ascending;
+      if (!left_deps.empty() && right_deps.empty()) return !ascending;
 
       // Sort on the first dependency.
-      left_number = Context::getContext().tdb2.id(left_deps[0]);
-      right_number = Context::getContext().tdb2.id(right_deps[0]);
+      auto left_number = Context::getContext().tdb2.id(left_deps[0]);
+      auto right_number = Context::getContext().tdb2.id(right_deps[0]);
 
       if (left_number == right_number) continue;
 
@@ -289,11 +281,11 @@ static bool sort_compare(int left, int right) {
 
     // UDAs.
     else {
-      auto cuda = global_uda_columns.find(field);
-      if (cuda == global_uda_columns.end())
+      auto type_it = global_uda_types.find(field);
+      if (type_it == global_uda_types.end())
         throw format("The '{1}' column is not a valid sort field.", field);
 
-      const std::string& type = global_uda_types[field];
+      const auto& type = type_it->second;
 
       if (type == "numeric") {
         auto left_real = strtof(((*global_data)[left].get_ref(field)).c_str(), nullptr);
