@@ -76,20 +76,7 @@ void ColumnDepends::measure(const Task& task, unsigned int& minimum, unsigned in
     return;
   }
 
-  // We also don't need to call getDependencyTasks(),
-  // which would copy the full objects from the cache just to read the ID
-  // field. Instead, we can use getDependencyUUIDs() and tdb2.id().
-
-  auto dep_uuids = task.getDependencyUUIDs();
-
-  std::vector<int> blocking_ids;
-  blocking_ids.reserve(dep_uuids.size());
-  for (const auto& uuid : dep_uuids) {
-    int id = Context::getContext().tdb2.id(uuid);
-    if (id > 0) blocking_ids.push_back(id);
-  }
-
-  std::sort(blocking_ids.begin(), blocking_ids.end());
+  auto blocking_ids = task.getDependencyIDs();
 
   if (blocking_ids.size() > 0) {
     if (_style == "count") {
@@ -121,17 +108,7 @@ void ColumnDepends::render(std::vector<std::string>& lines, const Task& task, in
     return;
   }
 
-  // We use the same approach to look up UUIDs as for measure().
-  auto dep_uuids = task.getDependencyUUIDs();
-
-  std::vector<int> blocking_ids;
-  blocking_ids.reserve(dep_uuids.size());
-  for (const auto& uuid : dep_uuids) {
-    int id = Context::getContext().tdb2.id(uuid);
-    if (id > 0) blocking_ids.push_back(id);
-  }
-
-  std::sort(blocking_ids.begin(), blocking_ids.end());
+  auto blocking_ids = task.getDependencyIDs();
 
   if (blocking_ids.size() > 0) {
     if (_style == "count") {

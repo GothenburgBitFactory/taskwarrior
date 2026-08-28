@@ -87,6 +87,19 @@ class TestDependencies(TestCase):
         code, out, err = self.t.runError("1 modify dep:5")
         self.assertIn("Circular dependency detected and disallowed.", err)
 
+    def test_completed_dependency_is_not_rendered(self):
+        """Completed dependencies should not be listed even if working set is stale"""
+        self.t("2 modify dep:1")
+        self.t("1 done rc.gc=off")
+
+        self.assertIn("depends", self.t.export_one("rc.gc=off 2"))
+        code, out, err = self.t(
+            "2 list rc.gc=off rc.report.list.columns=id,depends "
+            "rc.report.list.labels=ID,Depends"
+        )
+
+        self.assertIn(["2"], [line.split() for line in out.splitlines()])
+
     def test_dag(self):
         """Check acyclic graph support"""
         self.t("add three")
