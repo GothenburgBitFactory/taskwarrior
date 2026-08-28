@@ -175,6 +175,7 @@ set (pythonTests
   substitute.test.py
   sugar.test.py
   summary.test.py
+  sync.test.py
   tag.test.py
   taskrc.test.py
   timesheet.test.py

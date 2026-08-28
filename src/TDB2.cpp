@@ -295,15 +295,39 @@ void TDB2::gc() {
   Timer timer;
 
   // Allowed as an override, but not recommended.
-  if (Context::getContext().config.getBoolean("gc")) {
+  if (Context::getContext().config.getBoolean("gc") && !working_set_is_clean()) {
     replica()->rebuild_working_set(true);
+    invalidate_cached_info();
   }
 
   Context::getContext().time_gc_us += timer.total_us();
 }
 
+bool TDB2::working_set_is_clean() {
+  const auto& ws = working_set();
+  const auto& tasks = pending_tasks();
+  const auto largest = ws->largest_index();
+
+  if (tasks.size() != largest) return false;
+
+  for (size_t i = 1; i <= largest; ++i) {
+    if (ws->by_index(i).is_nil()) return false;
+  }
+
+  return std::all_of(tasks.begin(), tasks.end(), [](const Task& task) {
+    const auto& status = task.get_ref("status");
+    return status == "pending" || status == "recurring" || status == "iterative";
+  });
+}
+
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::expire_tasks() { replica()->expire_tasks(); }
+void TDB2::expire_tasks() {
+  replica()->expire_tasks();
+  invalidate_cached_info();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::invalidate_cache() { invalidate_cached_info(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Latest ID is that of the last pending task.

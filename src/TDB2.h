@@ -62,6 +62,7 @@ class TDB2 {
   void get_changes(std::vector<Task>&);
   void gc();
   void expire_tasks();
+  void invalidate_cache();
   int latest_id();
 
   // Generalized task accessors.
@@ -121,6 +122,7 @@ class TDB2 {
   std::map<std::string, Task> changes;
 
   const rust::Box<tc::WorkingSet>& working_set();
+  bool working_set_is_clean();
   void maybe_add_undo_point(rust::Vec<tc::Operation>&);
 };
 

@@ -190,6 +190,8 @@ int CmdSync::execute(std::string& output) {
 
   if (context.config.getBoolean("purge.on-sync")) {
     context.tdb2.expire_tasks();
+  } else {
+    context.tdb2.invalidate_cache();
   }
 
   if (verbose) {
