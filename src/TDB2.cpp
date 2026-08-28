@@ -72,6 +72,8 @@ static tc::Status statusFromString(const std::string& s) {
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::open_replica(const std::string& location, bool create_if_missing, bool read_write) {
   _replica = tc::new_replica_on_disk(location, create_if_missing, read_write);
+  invalidate_cached_info();
+  changes.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -472,8 +474,6 @@ bool TDB2::get(int id, Task& task) {
   const auto tcuuid = ws->by_index(id);
   if (!tcuuid.is_nil()) {
     std::string uuid = static_cast<std::string>(tcuuid.to_string());
-    // Load index of pending tasks.
-    pending_tasks();
     // Lookup the UUID in the index instead of scanning the vector.
     auto* pt = find_pending(uuid);
     if (pt) {
@@ -488,8 +488,6 @@ bool TDB2::get(int id, Task& task) {
 ////////////////////////////////////////////////////////////////////////////////
 // Locate task by UUID, including by partial ID, wherever it is.
 bool TDB2::get(const std::string& uuid, Task& task) {
-  pending_tasks();
-
   // Try to match exact UUID within the index.
   auto* pt = find_pending(uuid);
   if (pt) {

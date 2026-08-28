@@ -44,7 +44,7 @@ void cleardb() {
 
 ////////////////////////////////////////////////////////////////////////////////
 int TEST_NAME(int, char**) {
-  UnitTest t(35);
+  UnitTest t(36);
   Context context;
   Context::setContext(&context);
 
@@ -107,6 +107,7 @@ int TEST_NAME(int, char**) {
     // Reset for reuse.
     cleardb();
     context.tdb2.open_replica(".", /*create_if_missing=*/true, /*read_write=*/true);
+    t.is((int)context.tdb2.pending_tasks().size(), 0, "Fresh invocation uses fresh cache");
 
     Task blocker(R"([description:"blocking"])");
     Task first(R"([description:"first"])");

@@ -729,7 +729,7 @@ void Task::parseTC(rust::Box<tc::TaskData> task, int known_id) {
   // count annotations
   annotation_count = 0;
   for (auto& item : items) {
-    const auto& key = static_cast<std::string>(item.prop);
+    auto key = static_cast<std::string>(item.prop);
     data[key] = static_cast<std::string>(item.value);
     if (isAnnotationAttr(key)) {
       ++annotation_count;
@@ -1865,7 +1865,8 @@ float Task::urgency_c() const {
 float Task::urgency() const {
   if (recalc_urgency) {
     // We set the guard first to avoid infinite recursion. It will be 0.0 on
-    // first call and then the computed value will be reused from the cache..
+    // first call and then the computed value will be reused from the cache.
+    urgency_value = 0.0;
     recalc_urgency = false;
     urgency_value = urgency_c();
   }
