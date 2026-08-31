@@ -74,7 +74,7 @@ int CmdDelete::execute(std::string&) {
   }
 
   // Accumulated project change notifications.
-  std::map<std::string, std::string> projectChanges;
+  std::map<std::string, Task> projectChanges;
 
   if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
@@ -99,7 +99,7 @@ int CmdDelete::execute(std::string&) {
         if (task.is_blocking) feedback_unblocked(task);
         dependencyChainOnComplete(task);
         if (Context::getContext().verbose("project"))
-          projectChanges[task.get("project")] = onProjectChange(task);
+          projectChanges.insert_or_assign(task.get("project"), task);
 
         // Delete siblings.
         if (task.has("parent")) {
@@ -163,8 +163,8 @@ int CmdDelete::execute(std::string&) {
   }
 
   // Now list the project changes.
-  for (const auto& change : projectChanges)
-    if (change.first != "") Context::getContext().footnote(change.second);
+  for (auto& change : projectChanges)
+    if (change.first != "") Context::getContext().footnote(onProjectChange(change.second));
 
   feedback_affected(count == 1 ? "Deleted {1} task." : "Deleted {1} tasks.", count);
 

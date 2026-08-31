@@ -70,7 +70,7 @@ int CmdDone::execute(std::string&) {
   }
 
   // Accumulated project change notifications.
-  std::map<std::string, std::string> projectChanges;
+  std::map<std::string, Task> projectChanges;
 
   if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
@@ -104,7 +104,7 @@ int CmdDone::execute(std::string&) {
         if (task.is_blocking) feedback_unblocked(task);
         dependencyChainOnComplete(task);
         if (Context::getContext().verbose("project"))
-          projectChanges[task.get("project")] = onProjectChange(task);
+          projectChanges.insert_or_assign(task.get("project"), task);
 
         // Save unmodified task for potential nagging later
         modified.push_back(before);
@@ -124,8 +124,8 @@ int CmdDone::execute(std::string&) {
   nag(modified);
 
   // Now list the project changes.
-  for (const auto& change : projectChanges)
-    if (change.first != "") Context::getContext().footnote(change.second);
+  for (auto& change : projectChanges)
+    if (change.first != "") Context::getContext().footnote(onProjectChange(change.second));
 
   feedback_affected(count == 1 ? "Completed {1} task." : "Completed {1} tasks.", count);
   return rc;
