@@ -107,6 +107,7 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
         global_random_keys[i] =
             std::to_string(std::hash<std::string>{}(data[i].get_ref("uuid") + seed));
       }
+      continue;
     }
 
     if (field == "depends") {
@@ -116,6 +117,7 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
         std::sort(deps.begin(), deps.end());
         global_sorted_dep_uuids[i] = std::move(deps);
       }
+      continue;
     }
 
     if (field == "recur") {
@@ -255,7 +257,7 @@ static bool sort_compare(int left, int right) {
 
       if (left_deps == right_deps) continue;
 
-      if (left_deps.empty() && right_deps.empty()) return ascending;
+      if (left_deps.empty() && !right_deps.empty()) return ascending;
 
       if (!left_deps.empty() && right_deps.empty()) return !ascending;
 
