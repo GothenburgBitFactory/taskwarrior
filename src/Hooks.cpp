@@ -329,6 +329,9 @@ void Hooks::onModify(Task& before, Task& after) const {
 std::vector<std::string> Hooks::list() const { return _scripts; }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Hooks::hasOnModify() const { return _enabled && !scripts("on-modify").empty(); }
+
+////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> Hooks::scripts(const std::string& event) const {
   std::vector<std::string> matching;
   for (const auto& i : _scripts) {

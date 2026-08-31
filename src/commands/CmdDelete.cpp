@@ -36,6 +36,7 @@
 #include <recur.h>
 #include <shared.h>
 
+#include <algorithm>
 #include <iostream>
 
 #define STRING_CMD_DELETE_TASK_R "Deleting recurring task {1} '{2}'."
@@ -76,6 +77,16 @@ int CmdDelete::execute(std::string&) {
   // Accumulated project change notifications.
   std::map<std::string, Task> projectChanges;
 
+  RecurrenceMaskUpdates recurrenceMaskUpdates;
+  const auto recurrenceConfirmation = Context::getContext().config.get("recurrence.confirmation");
+  const auto hasRecurringParent =
+      std::any_of(filtered.begin(), filtered.end(),
+                  [](const Task& task) { return task.getStatus() == Task::recurring; });
+  RecurrenceMaskUpdates* recurrenceMaskUpdatesPtr = nullptr;
+  if (!Context::getContext().hooks.hasOnModify() && recurrenceConfirmation != "prompt" &&
+      !Context::getContext().config.getBoolean("recurrence.confirmation") && !hasRecurringParent)
+    recurrenceMaskUpdatesPtr = &recurrenceMaskUpdates;
+
   if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
@@ -92,7 +103,7 @@ int CmdDelete::execute(std::string&) {
       if (!task.has("end")) task.setAsNow("end");
 
       if (permission(question, filtered.size())) {
-        updateRecurrenceMask(task);
+        updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
         ++count;
         Context::getContext().tdb2.modify(task);
         feedback_affected("Deleting task {1} '{2}'.", task);
@@ -112,7 +123,7 @@ int CmdDelete::execute(std::string&) {
               sibling.setStatus(Task::deleted);
               if (!sibling.has("end")) sibling.setAsNow("end");
 
-              updateRecurrenceMask(sibling);
+              updateRecurrenceMask(sibling, recurrenceMaskUpdatesPtr);
               Context::getContext().tdb2.modify(sibling);
               feedback_affected(STRING_CMD_DELETE_TASK_R, sibling);
               feedback_unblocked(sibling);
@@ -141,7 +152,7 @@ int CmdDelete::execute(std::string&) {
               child.setStatus(Task::deleted);
               if (!child.has("end")) child.setAsNow("end");
 
-              updateRecurrenceMask(child);
+              updateRecurrenceMask(child, recurrenceMaskUpdatesPtr);
               Context::getContext().tdb2.modify(child);
               feedback_affected(STRING_CMD_DELETE_TASK_R, child);
               feedback_unblocked(child);
@@ -161,6 +172,8 @@ int CmdDelete::execute(std::string&) {
       rc = 1;
     }
   }
+
+  commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
 
   // Now list the project changes.
   for (auto& change : projectChanges)

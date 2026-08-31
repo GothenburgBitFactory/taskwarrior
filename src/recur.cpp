@@ -365,33 +365,52 @@ std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period
 ////////////////////////////////////////////////////////////////////////////////
 // When the status of a recurring child task changes, the parent task must
 // update it's mask.
-void updateRecurrenceMask(Task& task) {
+static void updateRecurrenceMaskValue(Task& task, Task& parent) {
+  unsigned int index = strtol(task.get("imask").c_str(), nullptr, 10);
+  auto mask = parent.get("mask");
+  if (mask.length() > index) {
+    mask[index] = (task.getStatus() == Task::pending)     ? '-'
+                  : (task.getStatus() == Task::completed) ? '+'
+                  : (task.getStatus() == Task::deleted)   ? 'X'
+                  : (task.getStatus() == Task::waiting)   ? 'W'
+                                                          : '?';
+  } else {
+    mask.clear();
+    for (unsigned int i = 0; i < index; ++i) mask += "?";
+
+    mask += (task.getStatus() == Task::pending)     ? '-'
+            : (task.getStatus() == Task::completed) ? '+'
+            : (task.getStatus() == Task::deleted)   ? 'X'
+            : (task.getStatus() == Task::waiting)   ? 'W'
+                                                    : '?';
+  }
+  parent.set("mask", mask);
+}
+
+void updateRecurrenceMask(Task& task, RecurrenceMaskUpdates* updates) {
   auto uuid = task.get("parent");
-  Task parent;
+  if (uuid == "") return;
 
-  if (uuid != "" && Context::getContext().tdb2.get(uuid, parent)) {
-    unsigned int index = strtol(task.get("imask").c_str(), nullptr, 10);
-    auto mask = parent.get("mask");
-    if (mask.length() > index) {
-      mask[index] = (task.getStatus() == Task::pending)     ? '-'
-                    : (task.getStatus() == Task::completed) ? '+'
-                    : (task.getStatus() == Task::deleted)   ? 'X'
-                    : (task.getStatus() == Task::waiting)   ? 'W'
-                                                            : '?';
-    } else {
-      std::string mask;
-      for (unsigned int i = 0; i < index; ++i) mask += "?";
-
-      mask += (task.getStatus() == Task::pending)     ? '-'
-              : (task.getStatus() == Task::completed) ? '+'
-              : (task.getStatus() == Task::deleted)   ? 'X'
-              : (task.getStatus() == Task::waiting)   ? 'W'
-                                                      : '?';
+  if (updates) {
+    auto existing = updates->find(uuid);
+    if (existing == updates->end()) {
+      Task parent;
+      if (!Context::getContext().tdb2.get(uuid, parent)) return;
+      existing = updates->emplace(uuid, std::move(parent)).first;
     }
 
-    parent.set("mask", mask);
+    updateRecurrenceMaskValue(task, existing->second);
+  } else {
+    Task parent;
+    if (!Context::getContext().tdb2.get(uuid, parent)) return;
+    updateRecurrenceMaskValue(task, parent);
     Context::getContext().tdb2.modify(parent);
   }
+}
+
+void commitRecurrenceMaskUpdates(RecurrenceMaskUpdates& updates) {
+  for (auto& update : updates) Context::getContext().tdb2.modify(update.second);
+  updates.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -72,6 +72,10 @@ int CmdDone::execute(std::string&) {
   // Accumulated project change notifications.
   std::map<std::string, Task> projectChanges;
 
+  RecurrenceMaskUpdates recurrenceMaskUpdates;
+  auto* recurrenceMaskUpdatesPtr =
+      Context::getContext().hooks.hasOnModify() ? nullptr : &recurrenceMaskUpdates;
+
   if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
@@ -97,7 +101,7 @@ int CmdDone::execute(std::string&) {
       }
 
       if (permission(before.diff(task) + question, filtered.size())) {
-        updateRecurrenceMask(task);
+        updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
         Context::getContext().tdb2.modify(task);
         ++count;
         feedback_affected("Completed task {1} '{2}'.", task);
@@ -121,6 +125,7 @@ int CmdDone::execute(std::string&) {
     }
   }
 
+  commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
   nag(modified);
 
   // Now list the project changes.
