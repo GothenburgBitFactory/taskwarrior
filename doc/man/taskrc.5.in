@@ -370,6 +370,7 @@ Determines whether annotations are displayed below the description field by the
 .B indent.annotation=2
 Controls the number of spaces to indent annotations when shown beneath the
 description field. The default value is "2".
+Negative values are treated as zero in task list reports.
 
 .TP
 .B indent.report=0
