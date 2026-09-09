@@ -165,7 +165,7 @@ class TestHooksOnModify(TestCase):
 
         code, out, err = self.t("add foo")
         before = self.t.export()
-        self.t.faketime("+5s")
+        self.t.faketime("+5")
         code, out, err = self.t("1 modify bar")
         after = self.t.export()
 

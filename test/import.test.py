@@ -224,7 +224,7 @@ class TestImport(TestCase):
         )
         self.t("import", input=_data)
         code, out1, err = self.t("export")
-        self.t.faketime("+1s")
+        self.t.faketime("+1")
         self.t("import", input=_data)
         code, out2, err = self.t("export")
         self.assertEqual(out1, out2)

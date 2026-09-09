@@ -108,7 +108,7 @@ class TestExportCommand(TestCase):
 
     def test_export_end(self):
         self.t("1 start")
-        self.t.faketime("+5s")
+        self.t.faketime("+5")
         # After a task is "done" or "deleted", it does not have an ID by which
         # to filter it anymore. Add a tag to work around this.
         self.t("1 done +workaround")
