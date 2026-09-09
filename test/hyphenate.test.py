@@ -74,13 +74,22 @@ class TestBug804(TestCase):
 
         # List with rc.hyphenate=on.
         code, out, err = self.t("rc.defaultwidth:40 rc.hyphenate:on unittest")
-        self.assertIn("vwx-\n", out)
-        self.assertIn("tuv-\n", out)
+        # #3914: Continuations reserve the same annotation indent as the first line.
+        self.assertIn(
+            "                 abcdefghijklmnopqrstuv-\n"
+            "                 wxyzabcdefghijklmnopqr-\n"
+            "                 stuvwxyz\n",
+            out,
+        )
 
         # List with rc.hyphenate=off.
         code, out, err = self.t("rc.defaultwidth:40 rc.hyphenate:off unittest")
-        self.assertIn("vwxy\n", out)
-        self.assertIn("uvwx\n", out)
+        self.assertIn(
+            "                 abcdefghijklmnopqrstuvw\n"
+            "                 xyzabcdefghijklmnopqrst\n"
+            "                 uvwxyz\n",
+            out,
+        )
 
 
 if __name__ == "__main__":

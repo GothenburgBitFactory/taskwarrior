@@ -25,6 +25,8 @@
 #
 ###############################################################################
 
+import json
+import re
 import sys
 import os
 import unittest
@@ -162,6 +164,95 @@ class TestAnnotate(TestCase):
             "three\n.+\\d{1,6}\\s+\\d{1,6}\\s+baz1",
             msg="dateformat - first  annotation task 3",
         )
+
+
+class TestAnnotationWrapping(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t.env["TZ"] = "UTC"
+        for setting, value in {
+            "report.rrr.columns": "id,description",
+            "report.rrr.sort": "id+",
+            "dateformat.annotation": "Y-M-D",
+            "indent.annotation": "2",
+            "defaultwidth": "60",
+            "detection": "off",
+            "color": "off",
+            "verbose": "nothing",
+        }.items():
+            self.t.config(setting, value)
+
+        self.t(
+            "import -",
+            input=json.dumps(
+                [
+                    {
+                        "uuid": "11111111-1111-4111-8111-111111111111",
+                        "status": "pending",
+                        "entry": "20250908T120000Z",
+                        "description": "Task with annotations",
+                        "annotations": [
+                            {
+                                "entry": "20250908T120001Z",
+                                "description": "A short annotation.",
+                            },
+                            {
+                                "entry": "20250908T120002Z",
+                                "description": "This longer annotation should remain "
+                                "indented when it wraps across several lines in a narrow "
+                                "report. Each continuation belongs to the annotation above.",
+                            },
+                            {
+                                "entry": "20250908T120003Z",
+                                "description": "Another short annotation.",
+                            },
+                        ],
+                    },
+                    {
+                        "uuid": "22222222-2222-4222-8222-222222222222",
+                        "status": "pending",
+                        "entry": "20250908T120004Z",
+                        "description": "Task without annotations",
+                    },
+                ]
+            ),
+        )
+
+    def test_wrapped_annotation_indentation(self):
+        """3914: Keep every wrapped annotation line indented in reports"""
+        self.assertWrappedAnnotationIndentation("description")
+
+    def test_wrapped_annotation_combined(self):
+        """3914: Explicit combined style keeps wrapped annotations indented"""
+        self.assertWrappedAnnotationIndentation("description.combined")
+
+    def test_wrapped_annotation_color_and_padding(self):
+        """3914: Color and report padding preserve annotation indentation"""
+        report = "rrr rc.defaultwidth:64 rc.indent.report:2 rc.row.padding:1"
+        code, plain, err = self.t(report)
+        code, colored, err = self.t(
+            report + " rc._forcecolor:on rc.color.alternate:blue"
+        )
+        self.assertIn("\x1b[", colored)
+        visible = re.sub(r"\x1b\[[0-9;]*m", "", colored)
+        self.assertEqual(
+            [line.rstrip() for line in visible.splitlines()], plain.splitlines()
+        )
+        self.assertIn("\n        indented when it wraps", plain)
+
+    def assertWrappedAnnotationIndentation(self, column):
+        expected = (
+            " 1 Task with annotations\n"
+            "     2025-09-08 A short annotation.\n"
+            "     2025-09-08 This longer annotation should remain\n"
+            "     indented when it wraps across several lines in a narrow\n"
+            "     report. Each continuation belongs to the annotation\n"
+            "     above.\n"
+            "     2025-09-08 Another short annotation.\n"
+            " 2 Task without annotations\n"
+        )
+        code, out, err = self.t("rrr rc.report.rrr.columns:id," + column)
+        self.assertEqual(out, expected)
 
 
 class TestAnnotationPropagation(TestCase):
