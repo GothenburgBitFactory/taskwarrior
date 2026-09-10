@@ -2,7 +2,6 @@
 
 3.5.0 -
 
- - Wrapped annotation lines in task list reports now retain their indentation (#3914)
  - Hyphens are now allowed in tags, after the first character (#3961)
  - Sync can now use a Git remote as a backend (#4111)
  - Dependencies and the burndown report are now substantially faster (#4127, #4136)
