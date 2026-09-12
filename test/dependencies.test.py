@@ -100,6 +100,20 @@ class TestDependencies(TestCase):
 
         self.assertIn(["2"], [line.split() for line in out.splitlines()])
 
+    def test_completed_dependent_renders_active_dep(self):
+        """Completed tasks retain references to IDs for active dependencies"""
+        self.t("2 modify dep:1")
+        self.t("2 done rc.confirmation=off")
+
+        code, out, err = self.t(
+            "status:completed all rc.verbose=nothing "
+            "rc.report.all.columns=description,depends "
+            "rc.report.all.labels=Description,Depends "
+            "rc.report.all.sort=description+"
+        )
+
+        self.assertIn(["two", "1"], [line.split() for line in out.splitlines()])
+
     def test_dag(self):
         """Check acyclic graph support"""
         self.t("add three")

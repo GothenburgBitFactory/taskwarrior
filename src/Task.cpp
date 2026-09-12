@@ -1050,15 +1050,14 @@ bool Task::hasDependency(const std::string& uuid) const {
 std::vector<int> Task::getDependencyIDs() const {
   std::vector<int> ids;
 
-  const auto& graph = Context::getContext().tdb2.dependency_graph();
-  auto found = graph.dependencies.find(get_ref("uuid"));
-  if (found == graph.dependencies.end()) return ids;
-
-  const auto& tasks = Context::getContext().tdb2.pending_tasks();
-  ids.reserve(found->second.size());
-  for (auto idx : found->second)
-    if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted)
-      ids.push_back(tasks[idx].id);
+  auto dependencies = getDependencyUUIDs();
+  ids.reserve(dependencies.size());
+  for (const auto& dependency : dependencies) {
+    auto* task = Context::getContext().tdb2.find_pending(dependency);
+    if (!task) continue;
+    auto status = task->getStatus();
+    if (status != Task::completed && status != Task::deleted) ids.push_back(task->id);
+  }
 
   std::sort(ids.begin(), ids.end());
 
