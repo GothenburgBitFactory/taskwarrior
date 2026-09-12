@@ -42,6 +42,7 @@
 #include <unistd.h>
 #include <util.h>
 
+#include <charconv>
 #include <limits>
 #include <optional>
 
@@ -366,24 +367,20 @@ std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period
 // When the status of a recurring child task changes, the parent task must
 // update it's mask.
 static void updateRecurrenceMaskValue(Task& task, Task& parent) {
-  unsigned int index = strtol(task.get("imask").c_str(), nullptr, 10);
+  const auto& imask = task.get_ref("imask");
+  unsigned int index = 0;
+  auto parsed = std::from_chars(imask.data(), imask.data() + imask.size(), index);
+  if (parsed.ec != std::errc() || parsed.ptr != imask.data() + imask.size() ||
+      index == std::numeric_limits<unsigned int>::max())
+    return;
   auto mask = parent.get("mask");
-  if (mask.length() > index) {
-    mask[index] = (task.getStatus() == Task::pending)     ? '-'
-                  : (task.getStatus() == Task::completed) ? '+'
-                  : (task.getStatus() == Task::deleted)   ? 'X'
-                  : (task.getStatus() == Task::waiting)   ? 'W'
-                                                          : '?';
-  } else {
-    mask.clear();
-    for (unsigned int i = 0; i < index; ++i) mask += "?";
-
-    mask += (task.getStatus() == Task::pending)     ? '-'
-            : (task.getStatus() == Task::completed) ? '+'
-            : (task.getStatus() == Task::deleted)   ? 'X'
-            : (task.getStatus() == Task::waiting)   ? 'W'
-                                                    : '?';
-  }
+  auto value = (task.getStatus() == Task::pending)     ? '-'
+               : (task.getStatus() == Task::completed) ? '+'
+               : (task.getStatus() == Task::deleted)   ? 'X'
+               : (task.getStatus() == Task::waiting)   ? 'W'
+                                                       : '?';
+  if (mask.length() <= index) mask.resize(index + 1, '?');
+  mask[index] = value;
   parent.set("mask", mask);
 }
 
