@@ -33,6 +33,7 @@
 #include <taskchampion-cpp/lib.h>
 #include <time.h>
 
+#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
@@ -59,6 +60,7 @@ class Task {
   static std::vector<UrgencyCoefficient> userCoefficients;
   // Cached value of rc.urgency.inherit.
   static bool urgencyInherit;
+  static uint64_t urgencyGeneration;
   static std::map<std::string, std::vector<std::string>> customOrder;
   static float urgencyProjectCoefficient;
   static float urgencyActiveCoefficient;
@@ -76,6 +78,7 @@ class Task {
   Task() = default;
   bool operator==(const Task&);
   bool operator!=(const Task&);
+  void copyTransientState(const Task&);
   Task(const std::string&);
   Task(const json::object*);
   Task(rust::Box<tc::TaskData>);
@@ -94,6 +97,7 @@ class Task {
   int id{0};
   mutable float urgency_value{0.0};
   mutable bool recalc_urgency{true};
+  mutable uint64_t urgency_generation{0};
   bool is_blocked{false};
   bool is_blocking{false};
   int annotation_count{0};
@@ -105,6 +109,7 @@ class Task {
   // Parse coefficients into userCoefficients. This is called
   // after that map has been initialized.
   static void setUrgencyCoefficients();
+  static void invalidateUrgencyCaches();
 
   void setAsNow(const std::string&);
   bool has(const std::string&) const;

@@ -30,6 +30,7 @@
 #include <Hooks.h>
 
 #include <algorithm>
+#include <utility>
 // If <iostream> is included, put it after <stdio.h>, because it includes
 // <stdio.h>, and therefore would ignore the _WITH_GETLINE.
 #ifdef FREEBSD
@@ -279,9 +280,6 @@ void Hooks::onModify(Task& before, Task& after) const {
   if (!_enabled) return;
 
   Timer timer;
-  const auto id = after.id;
-  const auto is_blocked = after.is_blocked;
-  const auto is_blocking = after.is_blocking;
 
   std::vector<std::string> matchingScripts = scripts("on-modify");
   if (matchingScripts.size()) {
@@ -316,10 +314,9 @@ void Hooks::onModify(Task& before, Task& after) const {
       }
     }
 
-    after = Task(input[1]);
-    after.id = id;
-    after.is_blocked = is_blocked;
-    after.is_blocking = is_blocking;
+    Task updated(input[1]);
+    updated.copyTransientState(after);
+    after = std::move(updated);
   }
 
   Context::getContext().time_hooks_us += timer.total_us();

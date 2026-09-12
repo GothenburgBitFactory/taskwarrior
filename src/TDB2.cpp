@@ -219,6 +219,8 @@ void TDB2::modify(Task& task) {
     return;
   }
 
+  Task::invalidateUrgencyCaches();
+
   // If the task stayed in the set, we can edit the vector in-place.
   // This speeds up modifications a lot relative to reloading and parsing from rust.
   bool deps_changed = false;
@@ -226,6 +228,7 @@ void TDB2::modify(Task& task) {
     auto* pt = find_pending(uuid);
     if (pt) {
       auto old_deps = pt->getDependencyUUIDs();
+      task.copyTransientState(*pt);
       *pt = task;
       auto new_deps = task.getDependencyUUIDs();
       if (old_deps != new_deps) {
@@ -458,6 +461,7 @@ Task* TDB2::find_pending(const std::string& uuid) {
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::invalidate_cached_info() {
+  Task::invalidateUrgencyCaches();
   _pending_tasks = std::nullopt;
   _completed_tasks = std::nullopt;
   _working_set = std::nullopt;
@@ -643,6 +647,7 @@ static void dependency_update(std::vector<Task>& tasks,
     if (new_set.find(dep) != new_set.end()) continue;
     auto target = uuid_index.find(dep);
     if (target == uuid_index.end()) continue;
+    if (!task_is_active || !participates_in_dependency_graph(tasks[target->second])) continue;
 
     auto count = dependency_counts.find(dep);
     if (count != dependency_counts.end()) {

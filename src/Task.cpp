@@ -76,6 +76,7 @@ std::map<std::string, std::string> Task::attributes;
 std::map<std::string, float> Task::coefficients;
 std::vector<Task::UrgencyCoefficient> Task::userCoefficients;
 bool Task::urgencyInherit = false;
+uint64_t Task::urgencyGeneration = 1;
 float Task::urgencyProjectCoefficient = 0.0;
 float Task::urgencyActiveCoefficient = 0.0;
 float Task::urgencyScheduledCoefficient = 0.0;
@@ -115,6 +116,13 @@ bool Task::operator==(const Task& other) {
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::operator!=(const Task& other) { return !(*this == other); }
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::copyTransientState(const Task& other) {
+  id = other.id;
+  is_blocked = other.is_blocked;
+  is_blocking = other.is_blocking;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task(const std::string& input) {
@@ -1759,7 +1767,12 @@ void Task::setUrgencyCoefficients() {
             {UrgencyCoefficient::udaValue, uda.substr(0, dot), uda.substr(dot + 1), coeff});
     }
   }
+
+  invalidateUrgencyCaches();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::invalidateUrgencyCaches() { ++urgencyGeneration; }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Urgency is defined as a polynomial, the value of which is calculated in this
@@ -1867,6 +1880,7 @@ float Task::urgency() const {
     // first call and then the computed value will be reused from the cache.
     urgency_value = 0.0;
     recalc_urgency = false;
+    urgency_generation = urgencyGeneration;
     urgency_value = urgency_c();
   }
 
