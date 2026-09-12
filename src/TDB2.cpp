@@ -112,7 +112,7 @@ void TDB2::add(Task& task) {
   if (!deferred_status.empty()) {
     tctask->set_status(statusFromString(deferred_status), ops);
   }
-  replica()->commit_operations(std::move(ops));
+  commit_operations(std::move(ops));
 
   invalidate_cached_info();
 
@@ -207,7 +207,7 @@ void TDB2::modify(Task& task) {
     tctask->set_status(statusFromString(deferred_status.value()), ops);
   }
 
-  replica()->commit_operations(std::move(ops));
+  commit_operations(std::move(ops));
   changes[uuid] = task;
 
   // If the task entered or left the working set/dependency graph, we must
@@ -257,7 +257,7 @@ void TDB2::purge(Task& task) {
   if (maybe_tctask.is_some()) {
     auto tctask = maybe_tctask.take();
     tctask->delete_task(ops);
-    replica()->commit_operations(std::move(ops));
+    commit_operations(std::move(ops));
   }
 
   invalidate_cached_info();
@@ -268,6 +268,12 @@ rust::Box<tc::Replica>& TDB2::replica() {
   // One of the open_replica_ methods must be called before this one.
   assert(_replica);
   return _replica.value();
+}
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::commit_operations(rust::Vec<tc::Operation>&& ops) {
+  Timer timer;
+  replica()->commit_operations(std::move(ops));
+  Context::getContext().time_commit_us += timer.total_us();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -297,6 +303,7 @@ void TDB2::get_changes(std::vector<Task>& changes) {
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::gc() {
   Timer timer;
+  auto load_before = Context::getContext().time_load_us;
 
   // Allowed as an override, but not recommended.
   if (Context::getContext().config.getBoolean("gc") && !working_set_is_clean()) {
@@ -304,7 +311,8 @@ void TDB2::gc() {
     invalidate_cached_info();
   }
 
-  Context::getContext().time_gc_us += timer.total_us();
+  Context::getContext().time_gc_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
 }
 
 bool TDB2::working_set_is_clean() {
@@ -403,6 +411,7 @@ const std::vector<Task>& TDB2::pending_tasks() {
 // which involve completed tasks.
 const std::vector<Task>& TDB2::completed_tasks() {
   if (!_completed_tasks) {
+    Timer timer;
     auto all_tctasks = replica()->all_task_data();
     auto& ws = working_set();
 
@@ -418,6 +427,7 @@ const std::vector<Task>& TDB2::completed_tasks() {
       }
     }
     _completed_tasks = std::move(result);
+    Context::getContext().time_load_us += timer.total_us();
   }
   return *_completed_tasks;
 }
