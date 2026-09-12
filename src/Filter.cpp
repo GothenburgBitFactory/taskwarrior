@@ -90,6 +90,7 @@ void Filter::subset(std::vector<Task>& output) {
     Timer pending_completed;
     output = Context::getContext().tdb2.all_tasks();
     Context::getContext().time_filter_us -= pending_completed.total_us();
+    _startCount = (int)output.size();
   }
 
   _endCount = (int)output.size();
@@ -158,9 +159,9 @@ void Filter::filter_to_tasks(const std::vector<Task>& input, std::vector<Task>& 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// If the filter contains no 'or', 'xor' or 'not' operators, and only includes
-// status values 'pending', 'waiting' or 'recurring', then the filter is
-// guaranteed to only need data from pending.data.
+// We can use a shortcut for simple comparisons. More general expressions
+// cannot do not permit us to do this, because of things like
+// (status::pending) = false.
 
 bool Filter::pendingOnly() const {
   if (!Context::getContext().config.getBoolean("gc")) return false;
@@ -172,35 +173,47 @@ bool Filter::pendingOnly() const {
   for (const auto& arg : cli._args) {
     if (!arg.hasTag("FILTER")) continue;
 
-    const auto& raw = arg.attribute("raw");
-    if (arg._lextype == Lexer::Type::op &&
-        (raw == "or" || raw == "xor" || raw == "!" || raw == "not"))
-      return false;
-
     filter_args.push_back(&arg);
   }
 
-  for (size_t i = 0; i + 2 < filter_args.size(); ++i) {
+  bool pending_constraint = false;
+  for (size_t i = 0; i < filter_args.size();) {
     const auto& left = *filter_args[i];
+    const auto& raw = left.attribute("raw");
+    if (left._lextype == Lexer::Type::op && (raw == "(" || raw == ")" || raw == "and")) {
+      ++i;
+      continue;
+    }
+
+    if (i + 2 >= filter_args.size()) return false;
+
     const auto& op = *filter_args[i + 1];
+
     const auto& right = *filter_args[i + 2];
+    const auto& operation = op.attribute("raw");
+    if (left._lextype != Lexer::Type::dom || op._lextype != Lexer::Type::op ||
+        right._lextype == Lexer::Type::op ||
+        (operation != "=" && operation != "==" && operation != "!=" && operation != "!==" &&
+         operation != "<" && operation != "<=" && operation != ">" && operation != ">=" &&
+         operation != "~" && operation != "!~" && operation != "_hastag_" &&
+         operation != "_notag_"))
+      return false;
+    i += 3;
+
+    if (right._lextype != Lexer::Type::string) continue;
+
     const auto& value = right.attribute("raw");
 
-    if (left._lextype == Lexer::Type::dom && left.attribute("canonical") == "status" &&
-        op._lextype == Lexer::Type::op &&
-        (op.attribute("raw") == "=" || op.attribute("raw") == "==") &&
+    if (left.attribute("canonical") == "status" && (operation == "=" || operation == "==") &&
         (value == "pending" || value == "waiting" || value == "recurring"))
-      return true;
+      pending_constraint = true;
 
-    if (left._lextype == Lexer::Type::dom && left.attribute("raw") == "tags" &&
-        op._lextype == Lexer::Type::op && op.attribute("raw") == "_hastag_" &&
+    if (raw == "tags" && operation == "_hastag_" &&
         (value == "PENDING" || value == "ACTIVE" || value == "READY" || value == "WAITING"))
-      return true;
+      pending_constraint = true;
   }
 
-  if (!cli._id_ranges.empty()) return true;
-
-  return false;
+  return pending_constraint || !cli._id_ranges.empty();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
