@@ -88,7 +88,6 @@ void TDB2::add(Task& task) {
   maybe_add_undo_point(ops);
 
   auto uuid = task.get_ref("uuid");
-  changes[uuid] = task;
   tc::Uuid tcuuid = tc::uuid_from_string(uuid);
 
   // run hooks for this new task
@@ -122,6 +121,7 @@ void TDB2::add(Task& task) {
   if (id > 0) {
     task.id = id;
   }
+  changes[uuid] = task;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,8 +148,6 @@ void TDB2::modify(Task& task) {
 
   rust::Vec<tc::Operation> ops;
   maybe_add_undo_point(ops);
-
-  changes[uuid] = task;
 
   // invoke the hook and allow it to modify the task before updating
   Task original;
@@ -210,6 +208,7 @@ void TDB2::modify(Task& task) {
   }
 
   replica()->commit_operations(std::move(ops));
+  changes[uuid] = task;
 
   // If the task entered or left the working set/dependency graph, we must
   // invalidate the cache.
