@@ -81,48 +81,54 @@ int CmdDone::execute(std::string&) {
   }
 
   std::vector<Task> modified;
-  for (auto& task : filtered) {
-    Task before(task);
+  try {
+    for (auto& task : filtered) {
+      Task before(task);
 
-    if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting) {
-      // Complete the specified task.
-      std::string question =
-          format("Complete task {1} '{2}'?", task.identifier(true), task.get("description"));
+      if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting) {
+        // Complete the task
+        std::string question =
+            format("Complete task {1} '{2}'?", task.identifier(true), task.get("description"));
 
-      task.modify(Task::modAnnotate);
-      task.setStatus(Task::completed);
-      if (!task.has("end")) task.setAsNow("end");
+        task.modify(Task::modAnnotate);
+        task.setStatus(Task::completed);
+        if (!task.has("end")) task.setAsNow("end");
 
-      // Stop the task, if started.
-      if (task.has("start")) {
-        task.remove("start");
-        if (Context::getContext().config.getBoolean("journal.time"))
-          task.addAnnotation(Context::getContext().config.get("journal.time.stop.annotation"));
-      }
+        // Stop the task if it has a start time.
+        if (task.has("start")) {
+          task.remove("start");
+          if (Context::getContext().config.getBoolean("journal.time"))
+            task.addAnnotation(Context::getContext().config.get("journal.time.stop.annotation"));
+        }
 
-      if (permission(before.diff(task) + question, filtered.size())) {
-        updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
-        Context::getContext().tdb2.modify(task);
-        ++count;
-        feedback_affected("Completed task {1} '{2}'.", task);
-        if (task.is_blocking) feedback_unblocked(task);
-        dependencyChainOnComplete(task);
-        if (Context::getContext().verbose("project"))
-          projectChanges.insert_or_assign(task.get("project"), task);
+        if (permission(before.diff(task) + question, filtered.size())) {
+          if (!recurrenceMaskUpdatesPtr) updateRecurrenceMask(task);
+          Context::getContext().tdb2.modify(task);
+          if (recurrenceMaskUpdatesPtr) updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
+          ++count;
+          feedback_affected("Completed task {1} '{2}'.", task);
+          if (task.is_blocking) feedback_unblocked(task);
+          dependencyChainOnComplete(task);
+          if (Context::getContext().verbose("project"))
+            projectChanges.insert_or_assign(task.get("project"), task);
 
-        // Save unmodified task for potential nagging later
-        modified.push_back(before);
+          // Save unmodified task for nag.
+          modified.push_back(before);
+        } else {
+          std::cout << "Task not completed.\n";
+          rc = 1;
+          if (_permission_quit) break;
+        }
       } else {
-        std::cout << "Task not completed.\n";
+        std::cout << format("Task {1} '{2}' is neither pending nor waiting.", task.identifier(true),
+                            task.get("description"))
+                  << '\n';
         rc = 1;
-        if (_permission_quit) break;
       }
-    } else {
-      std::cout << format("Task {1} '{2}' is neither pending nor waiting.", task.identifier(true),
-                          task.get("description"))
-                << '\n';
-      rc = 1;
     }
+  } catch (...) {
+    commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
+    throw;
   }
 
   commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
