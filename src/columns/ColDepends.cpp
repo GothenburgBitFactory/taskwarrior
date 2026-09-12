@@ -39,6 +39,12 @@
 
 #define STRING_COLUMN_LABEL_DEP "Depends"
 
+static bool hasActiveDependency(const Task& task) {
+  if (task.is_blocked) return true;
+  const auto& status = task.get_ref("status");
+  return (status == "completed" || status == "deleted") && !task.getDependencyIDs().empty();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDepends::ColumnDepends() {
   _name = "depends";
@@ -68,11 +74,8 @@ void ColumnDepends::measure(const Task& task, unsigned int& minimum, unsigned in
   minimum = maximum = 0;
 
   if (_style == "indicator") {
-    // We only need to know if the task has a dependency. We don't have to
-    // look at the whole list. The flags are set during cache construction.
-    if (task.is_blocked) {
+    if (hasActiveDependency(task))
       minimum = maximum = utf8_width(Context::getContext().config.get("dependency.indicator"));
-    }
     return;
   }
 
@@ -102,7 +105,7 @@ void ColumnDepends::render(std::vector<std::string>& lines, const Task& task, in
   // We only need to know if the task has a dependency. We don't have to
   // look at the whole list. The flags are set during cache construction.
   if (_style == "indicator") {
-    if (task.is_blocked)
+    if (hasActiveDependency(task))
       renderStringRight(lines, width, color,
                         Context::getContext().config.get("dependency.indicator"));
     return;
