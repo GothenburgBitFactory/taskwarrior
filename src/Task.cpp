@@ -745,7 +745,6 @@ void Task::parseTC(rust::Box<tc::TaskData> task, int known_id) {
   }
 
   data["uuid"] = static_cast<std::string>(task->get_uuid().to_string());
-  id = Context::getContext().tdb2.id(data["uuid"]);
   id = known_id >= 0 ? known_id : Context::getContext().tdb2.id(data["uuid"]);
 }
 
@@ -1875,7 +1874,7 @@ float Task::urgency_c() const {
 
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency() const {
-  if (recalc_urgency) {
+  if (recalc_urgency || urgency_generation != urgencyGeneration) {
     // We set the guard first to avoid infinite recursion. It will be 0.0 on
     // first call and then the computed value will be reused from the cache.
     urgency_value = 0.0;
