@@ -36,6 +36,8 @@
 #include <utf8.h>
 #include <util.h>
 
+#include <algorithm>
+
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDescription::ColumnDescription() {
   _name = "description";
@@ -66,7 +68,7 @@ ColumnDescription::ColumnDescription() {
 
   _hyphenate = Context::getContext().config.getBoolean("hyphenate");
 
-  _indent = Context::getContext().config.getInteger("indent.annotation");
+  _indent = std::max(0, Context::getContext().config.getInteger("indent.annotation"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,17 +142,30 @@ void ColumnDescription::render(std::vector<std::string>& lines, const Task& task
   // <date> <anno>
   // ...
   if (_style == "default" || _style == "combined") {
-    if (task.annotation_count) {
-      for (const auto& i : task.getAnnotations()) {
-        Datetime dt(strtoll(i.first.substr(11).c_str(), nullptr, 10));
-        description += '\n' + std::string(_indent, ' ') + dt.toString(_dateformat) + ' ' + i.second;
-      }
-    }
+    if (width <= 0) return;
+
+    auto annotations = task.getAnnotations();
+    // Keep separator newlines so trailing blank lines survive wrapping each part separately.
+    if (!annotations.empty()) description += '\n';
 
     std::vector<std::string> raw;
     wrapText(raw, description, width, _hyphenate);
 
     for (const auto& i : raw) renderStringLeft(lines, width, color, i);
+
+    // Reports can shrink columns below their measured minimum. Leave room for text.
+    int indent = std::min(_indent, width - 1);
+    std::string prefix(indent, ' ');
+    auto remaining = annotations.size();
+    for (const auto& i : annotations) {
+      Datetime dt(strtoll(i.first.substr(11).c_str(), nullptr, 10));
+      std::string annotation = dt.toString(_dateformat) + ' ' + i.second;
+      if (--remaining) annotation += '\n';
+
+      raw.clear();
+      wrapText(raw, annotation, width - indent, _hyphenate);
+      for (const auto& line : raw) renderStringLeft(lines, width, color, prefix + line);
+    }
   }
 
   // This is a description
