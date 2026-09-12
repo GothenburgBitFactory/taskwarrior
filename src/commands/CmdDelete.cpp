@@ -104,10 +104,9 @@ int CmdDelete::execute(std::string&) {
         if (!task.has("end")) task.setAsNow("end");
 
         if (permission(question, filtered.size())) {
-          if (!recurrenceMaskUpdatesPtr) updateRecurrenceMask(task);
           ++count;
           Context::getContext().tdb2.modify(task);
-          if (recurrenceMaskUpdatesPtr) updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
+          updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
           feedback_affected("Deleting task {1} '{2}'.", task);
           if (task.is_blocking) feedback_unblocked(task);
           dependencyChainOnComplete(task);
@@ -125,8 +124,8 @@ int CmdDelete::execute(std::string&) {
                 sibling.setStatus(Task::deleted);
                 if (!sibling.has("end")) sibling.setAsNow("end");
 
-                updateRecurrenceMask(sibling, recurrenceMaskUpdatesPtr);
                 Context::getContext().tdb2.modify(sibling);
+                updateRecurrenceMask(sibling, recurrenceMaskUpdatesPtr);
                 feedback_affected(STRING_CMD_DELETE_TASK_R, sibling);
                 feedback_unblocked(sibling);
                 ++count;
@@ -151,8 +150,8 @@ int CmdDelete::execute(std::string&) {
                 child.setStatus(Task::deleted);
                 if (!child.has("end")) child.setAsNow("end");
 
-                updateRecurrenceMask(child, recurrenceMaskUpdatesPtr);
                 Context::getContext().tdb2.modify(child);
+                updateRecurrenceMask(child, recurrenceMaskUpdatesPtr);
                 feedback_affected(STRING_CMD_DELETE_TASK_R, child);
                 feedback_unblocked(child);
                 ++count;

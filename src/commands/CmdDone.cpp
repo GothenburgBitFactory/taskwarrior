@@ -102,9 +102,8 @@ int CmdDone::execute(std::string&) {
         }
 
         if (permission(before.diff(task) + question, filtered.size())) {
-          if (!recurrenceMaskUpdatesPtr) updateRecurrenceMask(task);
           Context::getContext().tdb2.modify(task);
-          if (recurrenceMaskUpdatesPtr) updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
+          updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
           ++count;
           feedback_affected("Completed task {1} '{2}'.", task);
           if (task.is_blocking) feedback_unblocked(task);

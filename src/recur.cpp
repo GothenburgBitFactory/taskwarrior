@@ -42,6 +42,7 @@
 #include <unistd.h>
 #include <util.h>
 
+#include <algorithm>
 #include <charconv>
 #include <limits>
 #include <optional>
@@ -370,8 +371,10 @@ static void updateRecurrenceMaskValue(Task& task, Task& parent) {
   const auto& imask = task.get_ref("imask");
   unsigned int index = 0;
   auto parsed = std::from_chars(imask.data(), imask.data() + imask.size(), index);
-  if (parsed.ec != std::errc() || parsed.ptr != imask.data() + imask.size() ||
-      index == std::numeric_limits<unsigned int>::max())
+  if (parsed.ec != std::errc() || index == std::numeric_limits<unsigned int>::max()) return;
+  const auto end = imask.data() + imask.size();
+  if (parsed.ptr != end && (*parsed.ptr != '.' || parsed.ptr + 1 == end ||
+                            !std::all_of(parsed.ptr + 1, end, [](char c) { return c == '0'; })))
     return;
   auto mask = parent.get("mask");
   auto value = (task.getStatus() == Task::pending)     ? '-'
