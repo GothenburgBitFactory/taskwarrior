@@ -157,9 +157,7 @@ void Filter::filter_to_tasks(const std::vector<Task>& input, std::vector<Task>& 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// We can use a shortcut for simple comparisons. More general expressions
-// cannot do not permit us to do this, because of things like
-// (status::pending) = false.
+// Recognizes pending only constraints that allow us to use the shortcut.
 
 bool Filter::pendingOnly() const {
   if (!Context::getContext().config.getBoolean("gc")) return false;
@@ -174,44 +172,61 @@ bool Filter::pendingOnly() const {
     filter_args.push_back(&arg);
   }
 
-  bool pending_constraint = false;
-  for (size_t i = 0; i < filter_args.size();) {
-    const auto& left = *filter_args[i];
-    const auto& raw = left.attribute("raw");
-    if (left._lextype == Lexer::Type::op && (raw == "(" || raw == ")" || raw == "and")) {
-      ++i;
-      continue;
+  const auto requires_pending = [&](const auto& self, size_t begin, size_t end) -> bool {
+    if (begin == end) return false;
+    int depth = 0;
+    size_t first_close = end;
+    std::vector<size_t> conjunctions;
+    for (size_t i = begin; i < end; ++i) {
+      const auto& arg = *filter_args[i];
+      if (arg._lextype != Lexer::Type::op) continue;
+      const auto& op = arg.attribute("raw");
+      if (op == "(") {
+        ++depth;
+      } else if (op == ")") {
+        if (--depth < 0) return false;
+        if (depth == 0 && first_close == end) first_close = i;
+      } else if (depth == 0) {
+        if (op == "or" || op == "xor") return false;
+        if (op == "and") conjunctions.push_back(i);
+      }
     }
 
-    if (i + 2 >= filter_args.size()) return false;
+    if (depth != 0) return false;
+    if (filter_args[begin]->_lextype == Lexer::Type::op &&
+        filter_args[begin]->attribute("raw") == "(" && first_close == end - 1)
+      return self(self, begin + 1, end - 1);
 
-    const auto& op = *filter_args[i + 1];
+    if (!conjunctions.empty()) {
+      bool required = false;
+      for (auto boundary : conjunctions) {
+        required |= self(self, begin, boundary);
+        begin = boundary + 1;
+      }
+      return self(self, begin, end) || required;
+    }
 
-    const auto& right = *filter_args[i + 2];
+    if (end - begin != 3) return false;
+    const auto& left = *filter_args[begin];
+    const auto& op = *filter_args[begin + 1];
+    const auto& right = *filter_args[begin + 2];
+    if (left._lextype != Lexer::Type::dom || op._lextype != Lexer::Type::op) return false;
     const auto& operation = op.attribute("raw");
-    if (left._lextype != Lexer::Type::dom || op._lextype != Lexer::Type::op ||
-        right._lextype == Lexer::Type::op ||
-        (operation != "=" && operation != "==" && operation != "!=" && operation != "!==" &&
-         operation != "<" && operation != "<=" && operation != ">" && operation != ">=" &&
-         operation != "~" && operation != "!~" && operation != "_hastag_" &&
-         operation != "_notag_"))
-      return false;
-    i += 3;
-
-    if (right._lextype != Lexer::Type::string) continue;
-
     const auto& value = right.attribute("raw");
 
-    if (left.attribute("canonical") == "status" && (operation == "=" || operation == "==") &&
-        (value == "pending" || value == "waiting" || value == "recurring"))
-      pending_constraint = true;
+    if (left.attribute("raw") == "id" && right._lextype == Lexer::Type::number &&
+        (operation == "=" || operation == "==" || operation == ">=") &&
+        value.find_first_not_of("0123456789") == std::string::npos &&
+        value.find_first_not_of('0') != std::string::npos)
+      return true;
+    if (right._lextype != Lexer::Type::string) return false;
+    return (left.attribute("canonical") == "status" && (operation == "=" || operation == "==") &&
+            (value == "pending" || value == "waiting" || value == "recurring")) ||
+           (left.attribute("raw") == "tags" && operation == "_hastag_" &&
+            (value == "PENDING" || value == "ACTIVE" || value == "READY" || value == "WAITING"));
+  };
 
-    if (raw == "tags" && operation == "_hastag_" &&
-        (value == "PENDING" || value == "ACTIVE" || value == "READY" || value == "WAITING"))
-      pending_constraint = true;
-  }
-
-  return pending_constraint || !cli._id_ranges.empty();
+  return requires_pending(requires_pending, 0, filter_args.size());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
