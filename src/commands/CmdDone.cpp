@@ -70,62 +70,72 @@ int CmdDone::execute(std::string&) {
   }
 
   // Accumulated project change notifications.
-  std::map<std::string, std::string> projectChanges;
+  std::map<std::string, Task> projectChanges;
+
+  RecurrenceMaskUpdates recurrenceMaskUpdates;
+  auto* recurrenceMaskUpdatesPtr =
+      Context::getContext().hooks.hasOnModify() ? nullptr : &recurrenceMaskUpdates;
 
   if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
 
   std::vector<Task> modified;
-  for (auto& task : filtered) {
-    Task before(task);
+  try {
+    for (auto& task : filtered) {
+      Task before(task);
 
-    if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting) {
-      // Complete the specified task.
-      std::string question =
-          format("Complete task {1} '{2}'?", task.identifier(true), task.get("description"));
+      if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting) {
+        // Complete the task
+        std::string question =
+            format("Complete task {1} '{2}'?", task.identifier(true), task.get("description"));
 
-      task.modify(Task::modAnnotate);
-      task.setStatus(Task::completed);
-      if (!task.has("end")) task.setAsNow("end");
+        task.modify(Task::modAnnotate);
+        task.setStatus(Task::completed);
+        if (!task.has("end")) task.setAsNow("end");
 
-      // Stop the task, if started.
-      if (task.has("start")) {
-        task.remove("start");
-        if (Context::getContext().config.getBoolean("journal.time"))
-          task.addAnnotation(Context::getContext().config.get("journal.time.stop.annotation"));
-      }
+        // Stop the task if it has a start time.
+        if (task.has("start")) {
+          task.remove("start");
+          if (Context::getContext().config.getBoolean("journal.time"))
+            task.addAnnotation(Context::getContext().config.get("journal.time.stop.annotation"));
+        }
 
-      if (permission(before.diff(task) + question, filtered.size())) {
-        updateRecurrenceMask(task);
-        Context::getContext().tdb2.modify(task);
-        ++count;
-        feedback_affected("Completed task {1} '{2}'.", task);
-        feedback_unblocked(task);
-        dependencyChainOnComplete(task);
-        if (Context::getContext().verbose("project"))
-          projectChanges[task.get("project")] = onProjectChange(task);
+        if (permission(before.diff(task) + question, filtered.size())) {
+          Context::getContext().tdb2.modify(task);
+          updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
+          ++count;
+          feedback_affected("Completed task {1} '{2}'.", task);
+          if (task.is_blocking) feedback_unblocked(task);
+          dependencyChainOnComplete(task);
+          if (Context::getContext().verbose("project"))
+            projectChanges.insert_or_assign(task.get("project"), task);
 
-        // Save unmodified task for potential nagging later
-        modified.push_back(before);
+          // Save unmodified task for nag.
+          modified.push_back(before);
+        } else {
+          std::cout << "Task not completed.\n";
+          rc = 1;
+          if (_permission_quit) break;
+        }
       } else {
-        std::cout << "Task not completed.\n";
+        std::cout << format("Task {1} '{2}' is neither pending nor waiting.", task.identifier(true),
+                            task.get("description"))
+                  << '\n';
         rc = 1;
-        if (_permission_quit) break;
       }
-    } else {
-      std::cout << format("Task {1} '{2}' is neither pending nor waiting.", task.identifier(true),
-                          task.get("description"))
-                << '\n';
-      rc = 1;
     }
+  } catch (...) {
+    commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
+    throw;
   }
 
+  commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
   nag(modified);
 
   // Now list the project changes.
-  for (const auto& change : projectChanges)
-    if (change.first != "") Context::getContext().footnote(change.second);
+  for (auto& change : projectChanges)
+    if (change.first != "") Context::getContext().footnote(onProjectChange(change.second));
 
   feedback_affected(count == 1 ? "Completed {1} task." : "Completed {1} tasks.", count);
   return rc;

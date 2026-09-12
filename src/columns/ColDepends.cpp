@@ -34,9 +34,16 @@
 #include <utf8.h>
 #include <util.h>
 
+#include <algorithm>
 #include <regex>
 
 #define STRING_COLUMN_LABEL_DEP "Depends"
+
+static bool hasActiveDependency(const Task& task) {
+  if (task.is_blocked) return true;
+  const auto& status = task.get_ref("status");
+  return (status == "completed" || status == "deleted") && !task.getDependencyIDs().empty();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDepends::ColumnDepends() {
@@ -63,32 +70,29 @@ void ColumnDepends::setStyle(const std::string& value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnDepends::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnDepends::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
-  auto deptasks = task.getDependencyTasks();
 
-  if (deptasks.size() > 0) {
-    if (_style == "indicator") {
+  if (_style == "indicator") {
+    if (hasActiveDependency(task))
       minimum = maximum = utf8_width(Context::getContext().config.get("dependency.indicator"));
-    }
+    return;
+  }
 
-    else if (_style == "count") {
-      minimum = maximum = 2 + format((int)deptasks.size()).length();
-    }
+  auto blocking_ids = task.getDependencyIDs();
 
-    else if (_style == "default" || _style == "list") {
+  if (blocking_ids.size() > 0) {
+    if (_style == "count") {
+      minimum = maximum = 2 + format((int)blocking_ids.size()).length();
+    } else if (_style == "default" || _style == "list") {
       minimum = maximum = 0;
-
-      std::vector<int> blocking_ids;
-      blocking_ids.reserve(deptasks.size());
-      for (auto& i : deptasks) blocking_ids.push_back(i.id);
 
       auto all = join(" ", blocking_ids);
       maximum = all.length();
 
       unsigned int length;
-      for (auto& i : deptasks) {
-        length = format(i.id).length();
+      for (auto id : blocking_ids) {
+        length = format(id).length();
         if (length > minimum) minimum = length;
       }
     }
@@ -96,24 +100,24 @@ void ColumnDepends::measure(Task& task, unsigned int& minimum, unsigned int& max
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnDepends::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
-  auto deptasks = task.getDependencyTasks();
-
-  if (deptasks.size() > 0) {
-    if (_style == "indicator") {
+void ColumnDepends::render(std::vector<std::string>& lines, const Task& task, int width,
+                           Color& color) {
+  // We only need to know if the task has a dependency. We don't have to
+  // look at the whole list. The flags are set during cache construction.
+  if (_style == "indicator") {
+    if (hasActiveDependency(task))
       renderStringRight(lines, width, color,
                         Context::getContext().config.get("dependency.indicator"));
-    }
+    return;
+  }
 
-    else if (_style == "count") {
-      renderStringRight(lines, width, color, '[' + format(static_cast<int>(deptasks.size())) + ']');
-    }
+  auto blocking_ids = task.getDependencyIDs();
 
-    else if (_style == "default" || _style == "list") {
-      std::vector<int> blocking_ids;
-      blocking_ids.reserve(deptasks.size());
-      for (const auto& t : deptasks) blocking_ids.push_back(t.id);
-
+  if (blocking_ids.size() > 0) {
+    if (_style == "count") {
+      renderStringRight(lines, width, color,
+                        '[' + format(static_cast<int>(blocking_ids.size())) + ']');
+    } else if (_style == "default" || _style == "list") {
       auto combined = join(" ", blocking_ids);
 
       std::vector<std::string> all;
@@ -152,9 +156,9 @@ void ColumnDepends::modify(Task& task, const std::string& value) {
         Task loaded_task;
         if (Context::getContext().tdb2.get(dep, loaded_task))
           if (removal)
-            task.removeDependency(loaded_task.get("uuid"));
+            task.removeDependency(loaded_task.get_ref("uuid"));
           else
-            task.addDependency(loaded_task.get("uuid"));
+            task.addDependency(loaded_task.get_ref("uuid"));
         else
           throw format("Dependency could not be set - task with UUID '{1}' does not exist.", dep);
       }

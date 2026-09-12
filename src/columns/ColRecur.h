@@ -35,8 +35,8 @@ class ColumnRecur : public ColumnTypeString {
  public:
   ColumnRecur();
   void setStyle(const std::string&);
-  void measure(Task&, unsigned int&, unsigned int&);
-  void render(std::vector<std::string>&, Task&, int, Color&);
+  void measure(const Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, const Task&, int, Color&);
   void modify(Task&, const std::string&);
 
  private:

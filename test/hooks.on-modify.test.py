@@ -204,6 +204,18 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t(f"_get 1.description")
         self.assertEqual(out.strip(), r"tab\ttab foo")
 
+    def test_onmodify_recurring_bulk_completion(self):
+        hookname = "on-modify-accept"
+        self.t("add one due:tomorrow recur:daily")
+        self.t("list rc.recurrence.limit:3 rc.verbose:nothing")
+        self.t.hooks.add_default(hookname, log=True)
+
+        self.t("2-4 done rc.bulk=0 rc.confirmation=off")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggeredCount(6)
+        self.assertEqual("+++", self.t.export_one("status:recurring")["mask"])
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

@@ -649,6 +649,23 @@ class TestBugAnnual(TestCase):
         self.assertIn("17 20150101", out)
 
 
+class TestBulkRecurrenceMask(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t("add one due:tomorrow recur:daily")
+        self.t("list rc.recurrence.limit:3 rc.verbose:nothing")
+
+    def test_done(self):
+        self.t("2-4 done rc.bulk=0 rc.confirmation=off")
+        self.assertEqual("+++", self.t.export_one("status:recurring")["mask"])
+
+    def test_delete(self):
+        self.t(
+            "2-4 delete rc.bulk=0 rc.confirmation=off rc.recurrence.confirmation=off"
+        )
+        self.assertEqual("XXX", self.t.export_one("status:recurring")["mask"])
+
+
 # TODO Wait a recurring task
 # TODO Downgrade a recurring task to a regular task
 # TODO Duplicate a recurring child task

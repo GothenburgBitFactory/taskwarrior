@@ -42,14 +42,15 @@ ColumnLast::ColumnLast() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnLast::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnLast::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
-  if (task.has(_name)) minimum = maximum = task.get(_name).length();
+  if (task.has(_name)) minimum = maximum = task.get_ref(_name).length();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnLast::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
-  if (task.has(_name)) renderStringRight(lines, width, color, task.get(_name));
+void ColumnLast::render(std::vector<std::string>& lines, const Task& task, int width,
+                        Color& color) {
+  if (task.has(_name)) renderStringRight(lines, width, color, task.get_ref(_name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

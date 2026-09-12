@@ -36,6 +36,7 @@
 #include <recur.h>
 #include <shared.h>
 
+#include <algorithm>
 #include <iostream>
 
 #define STRING_CMD_DELETE_TASK_R "Deleting recurring task {1} '{2}'."
@@ -74,97 +75,111 @@ int CmdDelete::execute(std::string&) {
   }
 
   // Accumulated project change notifications.
-  std::map<std::string, std::string> projectChanges;
+  std::map<std::string, Task> projectChanges;
+
+  RecurrenceMaskUpdates recurrenceMaskUpdates;
+  const auto recurrenceConfirmation = Context::getContext().config.get("recurrence.confirmation");
+  const auto hasRecurringParent =
+      std::any_of(filtered.begin(), filtered.end(),
+                  [](const Task& task) { return task.getStatus() == Task::recurring; });
+  RecurrenceMaskUpdates* recurrenceMaskUpdatesPtr = nullptr;
+  if (!Context::getContext().hooks.hasOnModify() && recurrenceConfirmation != "prompt" &&
+      !Context::getContext().config.getBoolean("recurrence.confirmation") && !hasRecurringParent)
+    recurrenceMaskUpdatesPtr = &recurrenceMaskUpdates;
 
   if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
   }
-  for (auto& task : filtered) {
-    Task before(task);
 
-    if (task.getStatus() != Task::deleted) {
-      // Delete the specified task.
-      std::string question;
-      question = format("Delete task {1} '{2}'?", task.identifier(true), task.get("description"));
+  try {
+    for (auto& task : filtered) {
+      Task before(task);
 
-      task.modify(Task::modAnnotate);
-      task.setStatus(Task::deleted);
-      if (!task.has("end")) task.setAsNow("end");
+      if (task.getStatus() != Task::deleted) {
+        std::string question;
+        question = format("Delete task {1} '{2}'?", task.identifier(true), task.get("description"));
 
-      if (permission(question, filtered.size())) {
-        updateRecurrenceMask(task);
-        ++count;
-        Context::getContext().tdb2.modify(task);
-        feedback_affected("Deleting task {1} '{2}'.", task);
-        feedback_unblocked(task);
-        dependencyChainOnComplete(task);
-        if (Context::getContext().verbose("project"))
-          projectChanges[task.get("project")] = onProjectChange(task);
+        task.modify(Task::modAnnotate);
+        task.setStatus(Task::deleted);
+        if (!task.has("end")) task.setAsNow("end");
 
-        // Delete siblings.
-        if (task.has("parent")) {
-          if ((Context::getContext().config.get("recurrence.confirmation") == "prompt" &&
-               confirm(STRING_CMD_DELETE_CONFIRM_R)) ||
-              Context::getContext().config.getBoolean("recurrence.confirmation")) {
-            std::vector<Task> siblings = Context::getContext().tdb2.siblings(task);
-            for (auto& sibling : siblings) {
-              sibling.modify(Task::modAnnotate);
-              sibling.setStatus(Task::deleted);
-              if (!sibling.has("end")) sibling.setAsNow("end");
+        if (permission(question, filtered.size())) {
+          ++count;
+          Context::getContext().tdb2.modify(task);
+          updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
+          feedback_affected("Deleting task {1} '{2}'.", task);
+          if (task.is_blocking) feedback_unblocked(task);
+          dependencyChainOnComplete(task);
+          if (Context::getContext().verbose("project"))
+            projectChanges.insert_or_assign(task.get("project"), task);
 
-              updateRecurrenceMask(sibling);
-              Context::getContext().tdb2.modify(sibling);
-              feedback_affected(STRING_CMD_DELETE_TASK_R, sibling);
-              feedback_unblocked(sibling);
-              ++count;
+          // Delete the siblings
+          if (task.has("parent")) {
+            if ((Context::getContext().config.get("recurrence.confirmation") == "prompt" &&
+                 confirm(STRING_CMD_DELETE_CONFIRM_R)) ||
+                Context::getContext().config.getBoolean("recurrence.confirmation")) {
+              std::vector<Task> siblings = Context::getContext().tdb2.siblings(task);
+              for (auto& sibling : siblings) {
+                sibling.modify(Task::modAnnotate);
+                sibling.setStatus(Task::deleted);
+                if (!sibling.has("end")) sibling.setAsNow("end");
+
+                Context::getContext().tdb2.modify(sibling);
+                updateRecurrenceMask(sibling, recurrenceMaskUpdatesPtr);
+                feedback_affected(STRING_CMD_DELETE_TASK_R, sibling);
+                feedback_unblocked(sibling);
+                ++count;
+              }
+
+              // Delete the parent
+              Task parent;
+              Context::getContext().tdb2.get(task.get("parent"), parent);
+              parent.setStatus(Task::deleted);
+              if (!parent.has("end")) parent.setAsNow("end");
+
+              Context::getContext().tdb2.modify(parent);
             }
+          } else {
+            std::vector<Task> children = Context::getContext().tdb2.children(task);
+            if (children.size() &&
+                ((Context::getContext().config.get("recurrence.confirmation") == "prompt" &&
+                  confirm(STRING_CMD_DELETE_CONFIRM_R)) ||
+                 Context::getContext().config.getBoolean("recurrence.confirmation"))) {
+              for (auto& child : children) {
+                child.modify(Task::modAnnotate);
+                child.setStatus(Task::deleted);
+                if (!child.has("end")) child.setAsNow("end");
 
-            // Delete the parent
-            Task parent;
-            Context::getContext().tdb2.get(task.get("parent"), parent);
-            parent.setStatus(Task::deleted);
-            if (!parent.has("end")) parent.setAsNow("end");
-
-            Context::getContext().tdb2.modify(parent);
-          }
-        }
-
-        // Task potentially has child tasks - optionally delete them.
-        else {
-          std::vector<Task> children = Context::getContext().tdb2.children(task);
-          if (children.size() &&
-              ((Context::getContext().config.get("recurrence.confirmation") == "prompt" &&
-                confirm(STRING_CMD_DELETE_CONFIRM_R)) ||
-               Context::getContext().config.getBoolean("recurrence.confirmation"))) {
-            for (auto& child : children) {
-              child.modify(Task::modAnnotate);
-              child.setStatus(Task::deleted);
-              if (!child.has("end")) child.setAsNow("end");
-
-              updateRecurrenceMask(child);
-              Context::getContext().tdb2.modify(child);
-              feedback_affected(STRING_CMD_DELETE_TASK_R, child);
-              feedback_unblocked(child);
-              ++count;
+                Context::getContext().tdb2.modify(child);
+                updateRecurrenceMask(child, recurrenceMaskUpdatesPtr);
+                feedback_affected(STRING_CMD_DELETE_TASK_R, child);
+                feedback_unblocked(child);
+                ++count;
+              }
             }
           }
+        } else {
+          std::cout << "Task not deleted.\n";
+          rc = 1;
+          if (_permission_quit) break;
         }
       } else {
-        std::cout << "Task not deleted.\n";
+        std::cout << format("Task {1} '{2}' is not deleteable.", task.identifier(true),
+                            task.get("description"))
+                  << '\n';
         rc = 1;
-        if (_permission_quit) break;
       }
-    } else {
-      std::cout << format("Task {1} '{2}' is not deletable.", task.identifier(true),
-                          task.get("description"))
-                << '\n';
-      rc = 1;
     }
+  } catch (...) {
+    commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
+    throw;
   }
 
+  commitRecurrenceMaskUpdates(recurrenceMaskUpdates);
+
   // Now list the project changes.
-  for (const auto& change : projectChanges)
-    if (change.first != "") Context::getContext().footnote(change.second);
+  for (auto& change : projectChanges)
+    if (change.first != "") Context::getContext().footnote(onProjectChange(change.second));
 
   feedback_affected(count == 1 ? "Deleted {1} task." : "Deleted {1} tasks.", count);
 

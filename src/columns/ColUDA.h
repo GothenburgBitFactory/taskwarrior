@@ -38,8 +38,8 @@ class ColumnUDAString : public ColumnTypeString {
  public:
   ColumnUDAString();
   bool validate(const std::string&) const;
-  void measure(Task&, unsigned int&, unsigned int&);
-  void render(std::vector<std::string>&, Task&, int, Color&);
+  void measure(const Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, const Task&, int, Color&);
 
  public:
   std::vector<std::string> _values;
@@ -53,8 +53,8 @@ class ColumnUDANumeric : public ColumnTypeNumeric {
  public:
   ColumnUDANumeric();
   bool validate(const std::string&) const;
-  void measure(Task&, unsigned int&, unsigned int&);
-  void render(std::vector<std::string>&, Task&, int, Color&);
+  void measure(const Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, const Task&, int, Color&);
 
  public:
   std::vector<std::string> _values;
@@ -65,8 +65,8 @@ class ColumnUDADate : public ColumnTypeDate {
  public:
   ColumnUDADate();
   bool validate(const std::string&) const;
-  void measure(Task&, unsigned int&, unsigned int&);
-  void render(std::vector<std::string>&, Task&, int, Color&);
+  void measure(const Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, const Task&, int, Color&);
 
  public:
   std::vector<std::string> _values;
@@ -77,8 +77,8 @@ class ColumnUDADuration : public ColumnTypeDuration {
  public:
   ColumnUDADuration();
   bool validate(const std::string&) const;
-  void measure(Task&, unsigned int&, unsigned int&);
-  void render(std::vector<std::string>&, Task&, int, Color&);
+  void measure(const Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, const Task&, int, Color&);
 
  public:
   std::vector<std::string> _values;

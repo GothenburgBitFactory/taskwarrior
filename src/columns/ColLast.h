@@ -32,8 +32,8 @@
 class ColumnLast : public ColumnTypeNumeric {
  public:
   ColumnLast();
-  void measure(Task&, unsigned int&, unsigned int&);
-  void render(std::vector<std::string>&, Task&, int, Color&);
+  void measure(const Task&, unsigned int&, unsigned int&);
+  void render(std::vector<std::string>&, const Task&, int, Color&);
 
  private:
 };

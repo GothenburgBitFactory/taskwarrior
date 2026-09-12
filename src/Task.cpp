@@ -74,6 +74,9 @@ bool Task::regex = false;
 std::map<std::string, std::string> Task::attributes;
 
 std::map<std::string, float> Task::coefficients;
+std::vector<Task::UrgencyCoefficient> Task::userCoefficients;
+bool Task::urgencyInherit = false;
+uint64_t Task::urgencyGeneration = 1;
 float Task::urgencyProjectCoefficient = 0.0;
 float Task::urgencyActiveCoefficient = 0.0;
 float Task::urgencyScheduledCoefficient = 0.0;
@@ -115,6 +118,13 @@ bool Task::operator==(const Task& other) {
 bool Task::operator!=(const Task& other) { return !(*this == other); }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Task::copyTransientState(const Task& other) {
+  id = other.id;
+  is_blocked = other.is_blocked;
+  is_blocking = other.is_blocking;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task::Task(const std::string& input) {
   id = 0;
   urgency_value = 0.0;
@@ -139,7 +149,9 @@ Task::Task(const json::object* obj) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Task::Task(rust::Box<tc::TaskData> obj) {
+Task::Task(rust::Box<tc::TaskData> obj) : Task(std::move(obj), -1) {}
+
+Task::Task(rust::Box<tc::TaskData> obj, int known_id) {
   id = 0;
   urgency_value = 0.0;
   recalc_urgency = true;
@@ -147,7 +159,7 @@ Task::Task(rust::Box<tc::TaskData> obj) {
   is_blocking = false;
   annotation_count = 0;
 
-  parseTC(std::move(obj));
+  parseTC(std::move(obj), known_id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,9 +203,9 @@ const std::string Task::identifier(bool shortened /* = false */) const {
   if (id != 0)
     return format(id);
   else if (shortened)
-    return get("uuid").substr(0, 8);
+    return get_ref("uuid").substr(0, 8);
   else
-    return get("uuid");
+    return get_ref("uuid");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -718,23 +730,22 @@ void Task::parseJSON(const json::object* root_obj) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Note that all fields undergo encode/decode.
-void Task::parseTC(rust::Box<tc::TaskData> task) {
+void Task::parseTC(rust::Box<tc::TaskData> task, int known_id) {
   auto items = task->items();
   data.clear();
-  for (auto& item : items) {
-    data[static_cast<std::string>(item.prop)] = static_cast<std::string>(item.value);
-  }
 
   // count annotations
   annotation_count = 0;
-  for (auto i : data) {
-    if (isAnnotationAttr(i.first)) {
+  for (auto& item : items) {
+    auto key = static_cast<std::string>(item.prop);
+    data[key] = static_cast<std::string>(item.value);
+    if (isAnnotationAttr(key)) {
       ++annotation_count;
     }
   }
 
   data["uuid"] = static_cast<std::string>(task->get_uuid().to_string());
-  id = Context::getContext().tdb2.id(data["uuid"]);
+  id = known_id >= 0 ? known_id : Context::getContext().tdb2.id(data["uuid"]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1045,11 +1056,17 @@ bool Task::hasDependency(const std::string& uuid) const {
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<int> Task::getDependencyIDs() const {
   std::vector<int> ids;
-  for (auto& attr : all()) {
-    if (!isDepAttr(attr)) continue;
-    auto dep = attr2Dep(attr);
-    ids.push_back(Context::getContext().tdb2.id(dep));
+
+  auto dependencies = getDependencyUUIDs();
+  ids.reserve(dependencies.size());
+  for (const auto& dependency : dependencies) {
+    auto* task = Context::getContext().tdb2.find_pending(dependency);
+    if (!task) continue;
+    auto status = task->getStatus();
+    if (status != Task::completed && status != Task::deleted) ids.push_back(task->id);
   }
+
+  std::sort(ids.begin(), ids.end());
 
   return ids;
 }
@@ -1057,41 +1074,54 @@ std::vector<int> Task::getDependencyIDs() const {
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> Task::getDependencyUUIDs() const {
   std::vector<std::string> uuids;
-  for (auto& attr : all()) {
-    if (!isDepAttr(attr)) continue;
-    auto dep = attr2Dep(attr);
-    uuids.push_back(dep);
+  for (auto& pair : data) {
+    if (!isDepAttr(pair.first)) continue;
+    uuids.push_back(attr2Dep(pair.first));
   }
 
   return uuids;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Return the pending task this task depends on using cached UUID lookup.
 std::vector<Task> Task::getDependencyTasks() const {
-  auto uuids = getDependencyUUIDs();
-
-  // NOTE: this may seem inefficient, but note that `TDB2::get` performs a
-  // linear search on each invocation, so scanning *once* is quite a bit more
-  // efficient.
   std::vector<Task> blocking;
-  if (uuids.size() > 0)
-    for (auto& it : Context::getContext().tdb2.pending_tasks())
-      if (it.getStatus() != Task::completed && it.getStatus() != Task::deleted &&
-          std::find(uuids.begin(), uuids.end(), it.get("uuid")) != uuids.end())
-        blocking.push_back(it);
+
+  auto dependencies = getDependencyUUIDs();
+  blocking.reserve(dependencies.size());
+  for (const auto& dependency : dependencies) {
+    auto* task = Context::getContext().tdb2.find_pending(dependency);
+    if (task && task->getStatus() != Task::completed && task->getStatus() != Task::deleted)
+      blocking.push_back(*task);
+  }
+
+  std::sort(blocking.begin(), blocking.end(),
+            [](const Task& left, const Task& right) { return left.id < right.id; });
 
   return blocking;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Returns the pending tasks that depend on a given task.
 std::vector<Task> Task::getBlockedTasks() const {
-  auto uuid = get("uuid");
+  const auto& uuid = get_ref("uuid");
 
   std::vector<Task> blocked;
-  for (auto& it : Context::getContext().tdb2.pending_tasks())
-    if (it.getStatus() != Task::completed && it.getStatus() != Task::deleted &&
-        it.hasDependency(uuid))
-      blocked.push_back(it);
+
+  auto& graph = Context::getContext().tdb2.dependency_graph();
+  auto found = graph.dependents.find(uuid);
+
+  if (found == graph.dependents.end()) return blocked;
+
+  blocked.reserve(found->second.size());
+
+  const auto& tasks = Context::getContext().tdb2.pending_tasks();
+  for (auto idx : found->second)
+    if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted)
+      blocked.push_back(tasks[idx]);
+
+  std::sort(blocked.begin(), blocked.end(),
+            [](const Task& left, const Task& right) { return left.id < right.id; });
 
   return blocked;
 }
@@ -1692,6 +1722,51 @@ int Task::determineVersion(const std::string& line) {
   return 0;
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// Pre-parse the user's UDA/urgency coefficient keys once, instead of reparsing
+// for every task in the report. The keys are static.
+void Task::setUrgencyCoefficients() {
+  urgencyInherit = Context::getContext().config.getBoolean("urgency.inherit");
+
+  userCoefficients.clear();
+  userCoefficients.reserve(coefficients.size());
+
+  for (const auto& var : coefficients) {
+    const std::string& key = var.first;
+    float coeff = var.second;
+    if (fabs(coeff) <= epsilon) continue;
+
+    auto end = key.find(".coefficient");
+    if (end == std::string::npos) continue;
+
+    if (!key.compare(0, 13, "urgency.user.", 13)) {
+      if (!key.compare(13, 8, "project.", 8))
+        userCoefficients.push_back(
+            {UrgencyCoefficient::project, key.substr(21, end - 21), "", coeff});
+      else if (!key.compare(13, 4, "tag.", 4))
+        userCoefficients.push_back({UrgencyCoefficient::tag, key.substr(17, end - 17), "", coeff});
+      else if (!key.compare(13, 8, "keyword.", 8))
+        userCoefficients.push_back(
+            {UrgencyCoefficient::keyword, key.substr(21, end - 21), "", coeff});
+    } else if (!key.compare(0, 12, "urgency.uda.", 12)) {
+      // covers both urgency.uda.<name>.coefficient and
+      // urgency.uda.<name>.<value>.coefficient
+      std::string uda = key.substr(12, end - 12);
+      auto dot = uda.find('.');
+      if (dot == std::string::npos)
+        userCoefficients.push_back({UrgencyCoefficient::uda, std::move(uda), "", coeff});
+      else
+        userCoefficients.push_back(
+            {UrgencyCoefficient::udaValue, uda.substr(0, dot), uda.substr(dot + 1), coeff});
+    }
+  }
+
+  invalidateUrgencyCaches();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::invalidateUrgencyCaches() { ++urgencyGeneration; }
+
 ////////////////////////////////////////////////////////////////////////////////
 // Urgency is defined as a polynomial, the value of which is calculated in this
 // function, according to:
@@ -1740,58 +1815,45 @@ float Task::urgency_c() const {
   value += fabsf(Task::urgencyAgeCoefficient) > epsilon
                ? (urgency_age() * Task::urgencyAgeCoefficient)
                : 0.0;
+  // Tag-, project-, keyword-, and UDA specific coefficients.
+  // We pre-parse with Task::userCoefficients so we can make
+  // per-task attribute lookups. We cache project and description
+  // across multiple coefficients of the same kind to avoid
+  // repeated lookups.
+  // The reason we do it with description, despite descriptions
+  // varying a large amount, is for the keyword coefficient.
+  // We don't do it with tag/UDAs because each refer to a unique one.
+  const std::string* projectName = nullptr;
+  const std::string* description = nullptr;
 
-  const std::string taskProjectName = get("project");
-  // Tag- and project-specific coefficients.
-  for (auto& var : Task::coefficients) {
-    if (fabs(var.second) > epsilon) {
-      if (!var.first.compare(0, 13, "urgency.user.", 13)) {
-        // urgency.user.project.<project>.coefficient
-        auto end = std::string::npos;
-        if (var.first.substr(13, 8) == "project." &&
-            (end = var.first.find(".coefficient")) != std::string::npos) {
-          std::string project = var.first.substr(21, end - 21);
-
-          if (taskProjectName == project || taskProjectName.find(project + '.') == 0) {
-            value += var.second;
-          }
-        }
-
-        // urgency.user.tag.<tag>.coefficient
-        if (var.first.substr(13, 4) == "tag." &&
-            (end = var.first.find(".coefficient")) != std::string::npos) {
-          std::string tag = var.first.substr(17, end - 17);
-
-          if (hasTag(tag)) value += var.second;
-        }
-
-        // urgency.user.keyword.<keyword>.coefficient
-        if (var.first.substr(13, 8) == "keyword." &&
-            (end = var.first.find(".coefficient")) != std::string::npos) {
-          std::string keyword = var.first.substr(21, end - 21);
-
-          if (get("description").find(keyword) != std::string::npos) value += var.second;
-        }
-      } else if (var.first.substr(0, 12) == "urgency.uda.") {
-        // urgency.uda.<name>.coefficient
-        // urgency.uda.<name>.<value>.coefficient
-        auto end = var.first.find(".coefficient");
-        if (end != std::string::npos) {
-          const std::string uda = var.first.substr(12, end - 12);
-          auto dot = uda.find('.');
-          if (dot == std::string::npos) {
-            // urgency.uda.<name>.coefficient
-            if (has(uda)) value += var.second;
-          } else {
-            // urgency.uda.<name>.<value>.coefficient
-            if (get(uda.substr(0, dot)) == uda.substr(dot + 1)) value += var.second;
-          }
-        }
+  for (const auto& uc : Task::userCoefficients) {
+    switch (uc.kind) {
+      case UrgencyCoefficient::project: {
+        if (projectName == nullptr) projectName = &get_ref("project");
+        // Match exact project or subproject prefix.
+        if (*projectName == uc.name || (projectName->size() > uc.name.size() &&
+                                        projectName->compare(0, uc.name.size(), uc.name) == 0 &&
+                                        (*projectName)[uc.name.size()] == '.'))
+          value += uc.coefficient;
+        break;
       }
+      case UrgencyCoefficient::tag:
+        if (hasTag(uc.name)) value += uc.coefficient;
+        break;
+      case UrgencyCoefficient::keyword:
+        if (description == nullptr) description = &get_ref("description");
+        if (description->find(uc.name) != std::string::npos) value += uc.coefficient;
+        break;
+      case UrgencyCoefficient::uda:
+        if (has(uc.name)) value += uc.coefficient;
+        break;
+      case UrgencyCoefficient::udaValue:
+        if (get_ref(uc.name) == uc.value) value += uc.coefficient;
+        break;
     }
   }
 
-  if (is_blocking && Context::getContext().config.getBoolean("urgency.inherit")) {
+  if (is_blocking && Task::urgencyInherit) {
     float prev = value;
     value = std::max(value, urgency_inherit());
 
@@ -1805,26 +1867,36 @@ float Task::urgency_c() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency() {
-  if (recalc_urgency) {
-    urgency_value = urgency_c();
-
-    // Return the sum of all terms.
+float Task::urgency() const {
+  if (recalc_urgency || urgency_generation != urgencyGeneration) {
+    // We set the guard first to avoid infinite recursion. It will be 0.0 on
+    // first call and then the computed value will be reused from the cache.
+    urgency_value = 0.0;
     recalc_urgency = false;
+    urgency_generation = urgencyGeneration;
+    urgency_value = urgency_c();
   }
 
   return urgency_value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Inherit urgency from the highest-urgency task dependent on this one. Uses
+// the dependency graph via TDB2::dependency_graph() instead of scanning.
 float Task::urgency_inherit() const {
   float v = -FLT_MAX;
 #ifdef PRODUCT_TASKWARRIOR
-  // Calling getBlockedTasks is rather expensive.
-  // It is called recursively for each dependency in the chain here.
-  for (auto& task : getBlockedTasks()) {
-    // Find highest urgency in all blocked tasks.
-    v = std::max(v, task.urgency());
+  auto& graph = Context::getContext().tdb2.dependency_graph();
+  const auto& uuid = get_ref("uuid");
+  auto found = graph.dependents.find(uuid);
+
+  if (found != graph.dependents.end()) {
+    const auto& tasks = Context::getContext().tdb2.pending_tasks();
+    for (auto idx : found->second) {
+      if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted) {
+        v = std::max(v, tasks[idx].urgency());
+      }
+    }
   }
 #endif
 

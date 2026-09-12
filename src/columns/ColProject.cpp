@@ -50,13 +50,13 @@ ColumnProject::ColumnProject() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnProject::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnProject::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     std::string project = task.get(_name);
 
     if (_style == "parent") {
-      auto period = project.find('.');
+      auto period = project.find(".");
       if (period != std::string::npos) project = project.substr(0, period);
     } else if (_style == "indented") {
       project = indentProject(project, "  ", '.');
@@ -68,7 +68,8 @@ void ColumnProject::measure(Task& task, unsigned int& minimum, unsigned int& max
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnProject::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnProject::render(std::vector<std::string>& lines, const Task& task, int width,
+                           Color& color) {
   if (task.has(_name)) {
     std::string project = task.get(_name);
     if (_style == "parent") {

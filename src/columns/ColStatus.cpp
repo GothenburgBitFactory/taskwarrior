@@ -51,7 +51,7 @@ void ColumnStatus::setStyle(const std::string& value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnStatus::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnStatus::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   Task::status status = task.getStatus();
 
   if (_style == "default" || _style == "long") {
@@ -70,7 +70,8 @@ void ColumnStatus::measure(Task& task, unsigned int& minimum, unsigned int& maxi
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnStatus::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnStatus::render(std::vector<std::string>& lines, const Task& task, int width,
+                          Color& color) {
   Task::status status = task.getStatus();
   std::string value;
 

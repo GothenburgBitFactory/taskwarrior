@@ -90,7 +90,7 @@ void feedback_affected(const std::string& effect, int quantity) {
 //    {2}    Description
 void feedback_affected(const std::string& effect, const Task& task) {
   if (Context::getContext().verbose("affected")) {
-    std::cout << format(effect, task.identifier(true), task.get("description")) << "\n";
+    std::cout << format(effect, task.identifier(true), task.get_ref("description")) << "\n";
   }
 }
 
@@ -152,10 +152,10 @@ void feedback_unblocked(const Task& task) {
       auto blocking = i.getDependencyTasks();
       if (blocking.size() == 0) {
         if (i.id)
-          std::cout << format("Unblocked {1} '{2}'.", i.id, i.get("description")) << "\n";
+          std::cout << format("Unblocked {1} '{2}'.", i.id, i.get_ref("description")) << "\n";
         else {
-          std::string uuid = i.get("uuid");
-          std::cout << format("Unblocked {1} '{2}'.", i.get("uuid"), i.get("description")) << "\n";
+          const auto& uuid = i.get_ref("uuid");
+          std::cout << format("Unblocked {1} '{2}'.", uuid, i.get_ref("description")) << "\n";
         }
       }
     }
@@ -182,7 +182,7 @@ void feedback_backlog() {
 ///////////////////////////////////////////////////////////////////////////////
 std::string onProjectChange(Task& task, bool scope /* = true */) {
   std::stringstream msg;
-  std::string project = task.get("project");
+  const auto& project = task.get_ref("project");
 
   if (project != "") {
     if (scope) msg << format("The project '{1}' has changed.", project) << "  ";
@@ -220,7 +220,7 @@ std::string onProjectChange(Task& task, bool scope /* = true */) {
 
 ///////////////////////////////////////////////////////////////////////////////
 std::string onProjectChange(Task& task1, Task& task2) {
-  if (task1.get("project") == task2.get("project")) return onProjectChange(task1, false);
+  if (task1.get_ref("project") == task2.get_ref("project")) return onProjectChange(task1, false);
 
   std::string messages1 = onProjectChange(task1);
   std::string messages2 = onProjectChange(task2);
@@ -236,7 +236,7 @@ std::string onExpiration(Task& task) {
 
   if (Context::getContext().verbose("affected"))
     msg << format("Task {1} '{2}' expired and was deleted.", task.identifier(true),
-                  task.get("description"));
+                  task.get_ref("description"));
 
   return msg.str();
 }
@@ -245,7 +245,7 @@ std::string onExpiration(Task& task) {
 static void countTasks(const std::vector<Task>& all, const std::string& project, int& count_pending,
                        int& count_done) {
   for (auto& it : all) {
-    if (it.get("project") == project) {
+    if (it.get_ref("project") == project) {
       switch (it.getStatus()) {
         case Task::pending:
         case Task::waiting:
