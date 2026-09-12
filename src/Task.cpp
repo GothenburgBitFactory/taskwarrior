@@ -1083,23 +1083,17 @@ std::vector<std::string> Task::getDependencyUUIDs() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Uses the cached dependency map instead of scanning the vector.
+// Return the pending task this task depends on using cached UUID lookup.
 std::vector<Task> Task::getDependencyTasks() const {
-  const auto& uuid = get_ref("uuid");
-
   std::vector<Task> blocking;
 
-  auto& graph = Context::getContext().tdb2.dependency_graph();
-  auto found = graph.dependencies.find(uuid);
-
-  if (found == graph.dependencies.end()) return blocking;
-
-  blocking.reserve(found->second.size());
-
-  const auto& tasks = Context::getContext().tdb2.pending_tasks();
-  for (auto idx : found->second)
-    if (tasks[idx].getStatus() != Task::completed && tasks[idx].getStatus() != Task::deleted)
-      blocking.push_back(tasks[idx]);
+  auto dependencies = getDependencyUUIDs();
+  blocking.reserve(dependencies.size());
+  for (const auto& dependency : dependencies) {
+    auto* task = Context::getContext().tdb2.find_pending(dependency);
+    if (task && task->getStatus() != Task::completed && task->getStatus() != Task::deleted)
+      blocking.push_back(*task);
+  }
 
   std::sort(blocking.begin(), blocking.end(),
             [](const Task& left, const Task& right) { return left.id < right.id; });
