@@ -69,6 +69,7 @@ static std::vector<std::string> global_random_keys;
 ////////////////////////////////////////////////////////////////////////////////
 void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const std::string& keys) {
   Timer timer;
+  const auto load_before = Context::getContext().time_load_us;
   global_data = &data;
 
   // Split the key defs.
@@ -148,7 +149,8 @@ void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const st
   // Only sort if necessary.
   if (order.size()) std::stable_sort(order.begin(), order.end(), sort_compare);
 
-  Context::getContext().time_sort_us += timer.total_us();
+  Context::getContext().time_sort_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
 }
 
 void sort_projects(std::list<std::pair<std::string, int>>& sorted,

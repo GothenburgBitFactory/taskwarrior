@@ -40,6 +40,7 @@
 // Take an input set of tasks and filter into a subset.
 void Filter::subset(const std::vector<Task>& input, std::vector<Task>& output) {
   Timer timer;
+  const auto load_before = Context::getContext().time_load_us;
   _startCount = (int)input.size();
 
   Context::getContext().cli2.prepareFilter();
@@ -49,13 +50,15 @@ void Filter::subset(const std::vector<Task>& input, std::vector<Task>& output) {
   _endCount = (int)output.size();
   Context::getContext().debug(
       format("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
-  Context::getContext().time_filter_us += timer.total_us();
+  Context::getContext().time_filter_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
 void Filter::subset(std::vector<Task>& output) {
   Timer timer;
+  const auto load_before = Context::getContext().time_load_us;
   Context::getContext().cli2.prepareFilter();
 
   std::vector<std::pair<std::string, Lexer::Type>> precompiled;
@@ -66,9 +69,7 @@ void Filter::subset(std::vector<Task>& output) {
   bool shortcut = false;
 
   if (precompiled.size()) {
-    Timer timer_pending;
     const auto& pending = Context::getContext().tdb2.pending_tasks();
-    Context::getContext().time_filter_us -= timer_pending.total_us();
     _startCount = (int)pending.size();
 
     output.clear();
@@ -77,9 +78,7 @@ void Filter::subset(std::vector<Task>& output) {
 
     shortcut = pendingOnly();
     if (!shortcut) {
-      Timer timer_completed;
       const auto& completed = Context::getContext().tdb2.completed_tasks();
-      Context::getContext().time_filter_us -= timer_completed.total_us();
       _startCount += (int)completed.size();
 
       filter_to_tasks(completed, output);
@@ -87,16 +86,15 @@ void Filter::subset(std::vector<Task>& output) {
   } else {
     safety();
 
-    Timer pending_completed;
     output = Context::getContext().tdb2.all_tasks();
-    Context::getContext().time_filter_us -= pending_completed.total_us();
     _startCount = (int)output.size();
   }
 
   _endCount = (int)output.size();
   Context::getContext().debug(format("Filtered {1} tasks --> {2} tasks [{3}]", _startCount,
                                      _endCount, (shortcut ? "pending only" : "all tasks")));
-  Context::getContext().time_filter_us += timer.total_us();
+  Context::getContext().time_filter_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
 }
 
 /////////////////////////////////////////////////////////////////////////////////

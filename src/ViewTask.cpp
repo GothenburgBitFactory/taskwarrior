@@ -107,6 +107,7 @@ ViewTask::~ViewTask() {
 //
 std::string ViewTask::render(const std::vector<Task>& data, std::vector<int>& sequence) {
   Timer timer;
+  const auto load_before = Context::getContext().time_load_us;
 
   bool const obfuscate = Context::getContext().config.getBoolean("obfuscate");
   bool const print_empty_columns = Context::getContext().config.getBoolean("print.empty.columns");
@@ -293,7 +294,8 @@ std::string ViewTask::render(const std::vector<Task>& data, std::vector<int>& se
 
     // Stop if the line limit is exceeded.
     if (++_lines >= _truncate_lines && _truncate_lines != 0) {
-      Context::getContext().time_render_us += timer.total_us();
+      Context::getContext().time_render_us +=
+          timer.total_us() - (Context::getContext().time_load_us - load_before);
       return out;
     }
   }
@@ -366,7 +368,8 @@ std::string ViewTask::render(const std::vector<Task>& data, std::vector<int>& se
 
       // Stop if the line limit is exceeded.
       if (++_lines >= _truncate_lines && _truncate_lines != 0) {
-        Context::getContext().time_render_us += timer.total_us();
+        Context::getContext().time_render_us +=
+            timer.total_us() - (Context::getContext().time_load_us - load_before);
         return out;
       }
     }
@@ -375,12 +378,14 @@ std::string ViewTask::render(const std::vector<Task>& data, std::vector<int>& se
 
     // Stop if the row limit is exceeded.
     if (++_rows >= _truncate_rows && _truncate_rows != 0) {
-      Context::getContext().time_render_us += timer.total_us();
+      Context::getContext().time_render_us +=
+          timer.total_us() - (Context::getContext().time_load_us - load_before);
       return out;
     }
   }
 
-  Context::getContext().time_render_us += timer.total_us();
+  Context::getContext().time_render_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
   return out;
 }
 
