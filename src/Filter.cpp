@@ -131,9 +131,6 @@ void Filter::filter_to_indices(const std::vector<Task>& pending, std::vector<int
     }
     eval.debug(false);
   }
-
-  Context::getContext().debug(
-      format("Filtered {1} tasks --> {2} tasks [pending only]", pending.size(), indices.size()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

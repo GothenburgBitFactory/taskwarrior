@@ -32,6 +32,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <Lexer.h>
+#include <Timer.h>
 #include <Version.h>
 #include <ViewTask.h>
 #include <feedback.h>
@@ -107,6 +108,9 @@ int CmdCustom::execute(std::string& output) {
   const std::vector<Task>* data = nullptr;
   std::vector<int> sequence;
   std::vector<Task> filtered;
+  Timer filterTimer;
+  double loadTime = 0;
+  size_t sourceCount = 0;
 
   // call prepareFilter() here so that filter_to_indices and filter_to_tasks
   // don't have to call it.
@@ -115,16 +119,27 @@ int CmdCustom::execute(std::string& output) {
   bool use_pending_indices = filter.pendingOnly();
 
   if (use_pending_indices) {
+    Timer loadTimer;
     const auto& pending = Context::getContext().tdb2.pending_tasks();
+    loadTime = loadTimer.total_us();
+    sourceCount = pending.size();
     filter.filter_to_indices(pending, sequence);
     data = &pending;
   } else {
+    Timer loadTimer;
     auto all = Context::getContext().tdb2.all_tasks();
+    loadTime = loadTimer.total_us();
+    sourceCount = all.size();
     filter.filter_to_tasks(all, filtered);
     sequence.clear();
     for (unsigned int i = 0; i < filtered.size(); ++i) sequence.push_back(i);
     data = &filtered;
   }
+
+  Context::getContext().debug(format("Filtered {1} tasks --> {2} tasks [{3}]", sourceCount,
+                                     sequence.size(),
+                                     use_pending_indices ? "pending only" : "all tasks"));
+  Context::getContext().time_filter_us += filterTimer.total_us() - loadTime;
 
   if (sortOrder.size() && sortOrder[0] == "none") {
     // If there is no sort order, we preserve the order they were specified
