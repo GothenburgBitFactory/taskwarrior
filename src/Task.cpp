@@ -2109,7 +2109,7 @@ std::string Task::diff(const Task& after) const {
     } else if (isTagAttr(name)) {
       out << "  - " << format("Tag {1} will be removed.", attr2Tag(name)) << "\n";
     } else if (isDepAttr(name)) {
-      out << "  - " << format("Depenency on {1} will be removed.", attr2Dep(name)) << "\n";
+      out << "  - " << format("Dependency on {1} will be removed.", attr2Dep(name)) << "\n";
     } else if (name == "depends" || name == "tags") {
       // do nothing for legacy attributes
     } else {
