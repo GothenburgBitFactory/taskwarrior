@@ -367,7 +367,7 @@ std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period
 ////////////////////////////////////////////////////////////////////////////////
 // When the status of a recurring child task changes, the parent task must
 // update it's mask.
-static void updateRecurrenceMaskValue(Task& task, Task& parent) {
+static void updateRecurrenceMaskValue(const Task& task, Task& parent) {
   const auto& imask = task.get_ref("imask");
   unsigned int index = 0;
   auto parsed = std::from_chars(imask.data(), imask.data() + imask.size(), index);
@@ -405,6 +405,21 @@ void updateRecurrenceMask(Task& task, RecurrenceMaskUpdates* updates) {
     if (!Context::getContext().tdb2.get(uuid, parent)) return;
     updateRecurrenceMaskValue(task, parent);
     Context::getContext().tdb2.modify(parent);
+  }
+}
+
+void modifyRecurringTask(Task& task, RecurrenceMaskUpdates* updates) {
+  if (updates) {
+    Context::getContext().tdb2.modify(task);
+    updateRecurrenceMask(task, updates);
+  } else {
+    Context::getContext().tdb2.modify(task, [](const Task& accepted) -> std::optional<Task> {
+      const auto& uuid = accepted.get_ref("parent");
+      Task parent;
+      if (uuid.empty() || !Context::getContext().tdb2.get(uuid, parent)) return std::nullopt;
+      updateRecurrenceMaskValue(accepted, parent);
+      return parent;
+    });
   }
 }
 

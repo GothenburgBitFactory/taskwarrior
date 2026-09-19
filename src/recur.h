@@ -54,6 +54,7 @@ bool generateDueDates(Task& parent, std::vector<Datetime>& allDue);
 std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period);
 void updateRecurrenceMask(Task& task, RecurrenceMaskUpdates* updates = nullptr);
 void commitRecurrenceMaskUpdates(RecurrenceMaskUpdates& updates);
+void modifyRecurringTask(Task& task, RecurrenceMaskUpdates* updates);
 void handleUntil();
 
 #endif

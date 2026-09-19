@@ -139,31 +139,30 @@ void TDB2::add(Task& task) {
 // this method. In this case, this method throws an error that will make sense
 // to the user. This is especially unlikely since tasks are only deleted when
 // they have been unmodified for a long time.
-void TDB2::modify(Task& task) {
+Task TDB2::prepare_modify(Task& task) {
   // All locally modified tasks are timestamped, implicitly overwriting any
   // changes the user or hooks tried to apply to the "modified" attribute.
   task.setAsNow("modified");
   task.validate(false);
   auto uuid = task.get_ref("uuid");
 
-  rust::Vec<tc::Operation> ops;
-  maybe_add_undo_point(ops);
-
   // invoke the hook and allow it to modify the task before updating
   Task original;
-  bool found_original = false;
   tc::Uuid tcuuid = tc::uuid_from_string(uuid);
   if (!_pending_tasks && task.id > 0) {
     auto maybe_original = replica()->get_task_data(tcuuid);
     if (maybe_original.is_some()) {
       original = Task{maybe_original.take(), task.id};
-      found_original = true;
     }
   } else {
-    found_original = get(uuid, original);
+    get(uuid, original);
   }
   Context::getContext().hooks.onModify(original, task);
+  return original;
+}
 
+void TDB2::append_modify(const Task& task, const Task& original, rust::Vec<tc::Operation>& ops) {
+  auto tcuuid = tc::uuid_from_string(task.get_ref("uuid"));
   auto maybe_tctask = replica()->get_task(tcuuid);
   if (maybe_tctask.is_none()) {
     throw std::string("task no longer exists");
@@ -206,12 +205,38 @@ void TDB2::modify(Task& task) {
   if (deferred_status) {
     tctask->set_status(statusFromString(deferred_status.value()), ops);
   }
+}
 
+void TDB2::modify(Task& task, const std::function<std::optional<Task>(const Task&)>& related) {
+  auto original = prepare_modify(task);
+  std::optional<Task> related_task;
+  std::optional<Task> related_task_original;
+
+  if (related) {
+    related_task = related(task);
+    if (related_task) {
+      if (related_task->get_ref("uuid") == task.get_ref("uuid"))
+        throw std::string("A related-task modification must refer to a different task.");
+      related_task_original = prepare_modify(*related_task);
+    }
+  }
+
+  rust::Vec<tc::Operation> ops;
+  maybe_add_undo_point(ops);
+  append_modify(task, original, ops);
+  if (related_task) append_modify(*related_task, *related_task_original, ops);
   commit_operations(std::move(ops));
+  const auto& uuid = task.get_ref("uuid");
   changes[uuid] = task;
+  if (related_task) {
+    changes[related_task->get_ref("uuid")] = *related_task;
+    invalidate_cached_info();
+    return;
+  }
 
   // If the task entered or left the working set/dependency graph, we must
   // invalidate the cache.
+  bool found_original = original.has("uuid");
   bool was_active = found_original && participates_in_dependency_graph(original);
   bool now_active = participates_in_dependency_graph(task);
   if (was_active != now_active || !found_original) {

@@ -104,9 +104,9 @@ int CmdDelete::execute(std::string&) {
         if (!task.has("end")) task.setAsNow("end");
 
         if (permission(question, filtered.size())) {
+          modifyRecurringTask(task, recurrenceMaskUpdatesPtr);
+          if (task.getStatus() != Task::deleted) continue;
           ++count;
-          Context::getContext().tdb2.modify(task);
-          updateRecurrenceMask(task, recurrenceMaskUpdatesPtr);
           feedback_affected("Deleting task {1} '{2}'.", task);
           if (task.is_blocking) feedback_unblocked(task);
           dependencyChainOnComplete(task);
@@ -119,19 +119,24 @@ int CmdDelete::execute(std::string&) {
                  confirm(STRING_CMD_DELETE_CONFIRM_R)) ||
                 Context::getContext().config.getBoolean("recurrence.confirmation")) {
               std::vector<Task> siblings = Context::getContext().tdb2.siblings(task);
+              bool all_deleted = true;
               for (auto& sibling : siblings) {
                 sibling.modify(Task::modAnnotate);
                 sibling.setStatus(Task::deleted);
                 if (!sibling.has("end")) sibling.setAsNow("end");
 
-                Context::getContext().tdb2.modify(sibling);
-                updateRecurrenceMask(sibling, recurrenceMaskUpdatesPtr);
+                modifyRecurringTask(sibling, recurrenceMaskUpdatesPtr);
+                if (sibling.getStatus() != Task::deleted) {
+                  all_deleted = false;
+                  continue;
+                }
                 feedback_affected(STRING_CMD_DELETE_TASK_R, sibling);
                 feedback_unblocked(sibling);
                 ++count;
               }
 
               // Delete the parent
+              if (!all_deleted) continue;
               Task parent;
               Context::getContext().tdb2.get(task.get("parent"), parent);
               parent.setStatus(Task::deleted);
@@ -150,8 +155,8 @@ int CmdDelete::execute(std::string&) {
                 child.setStatus(Task::deleted);
                 if (!child.has("end")) child.setAsNow("end");
 
-                Context::getContext().tdb2.modify(child);
-                updateRecurrenceMask(child, recurrenceMaskUpdatesPtr);
+                modifyRecurringTask(child, recurrenceMaskUpdatesPtr);
+                if (child.getStatus() != Task::deleted) continue;
                 feedback_affected(STRING_CMD_DELETE_TASK_R, child);
                 feedback_unblocked(child);
                 ++count;
