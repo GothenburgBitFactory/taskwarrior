@@ -64,7 +64,7 @@ void ColumnTags::setStyle(const std::string& value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnTags::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnTags::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.getTagCount() > 0) {
     if (_style == "indicator") {
@@ -86,7 +86,8 @@ void ColumnTags::measure(Task& task, unsigned int& minimum, unsigned int& maximu
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnTags::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnTags::render(std::vector<std::string>& lines, const Task& task, int width,
+                        Color& color) {
   auto all = task.getTags();
   if (all.size() > 0) {
     if (_style == "default" || _style == "list") {

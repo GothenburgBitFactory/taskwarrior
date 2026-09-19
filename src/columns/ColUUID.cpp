@@ -42,7 +42,7 @@ ColumnUUID::ColumnUUID() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUUID::measure(Task&, unsigned int& minimum, unsigned int& maximum) {
+void ColumnUUID::measure(const Task&, unsigned int& minimum, unsigned int& maximum) {
   // Mandatory attribute, no need to check the value.
 
   if (_style == "default" || _style == "long")
@@ -52,16 +52,17 @@ void ColumnUUID::measure(Task&, unsigned int& minimum, unsigned int& maximum) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUUID::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnUUID::render(std::vector<std::string>& lines, const Task& task, int width,
+                        Color& color) {
   // No need to check the presence of UUID - all tasks have one.
 
   // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
   // f30cb9c3                              short
   if (_style == "default" || _style == "long")
-    renderStringLeft(lines, width, color, task.get(_name));
+    renderStringLeft(lines, width, color, task.get_ref(_name));
 
   else if (_style == "short")
-    renderStringLeft(lines, width, color, task.get(_name).substr(0, 8));
+    renderStringLeft(lines, width, color, task.get_ref(_name).substr(0, 8));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

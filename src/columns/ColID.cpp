@@ -43,7 +43,7 @@ ColumnID::ColumnID() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnID::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnID::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   int length;
 
   if (task.id < 10)
@@ -63,7 +63,7 @@ void ColumnID::measure(Task& task, unsigned int& minimum, unsigned int& maximum)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnID::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnID::render(std::vector<std::string>& lines, const Task& task, int width, Color& color) {
   // Completed and deleted tasks have no ID.
   if (task.id)
     renderInteger(lines, width, color, task.id);

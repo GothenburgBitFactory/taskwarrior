@@ -61,6 +61,8 @@ int CmdUndo::execute(std::string&) {
     // need not be done here.
     if (!replica->commit_reversed_operations(std::move(undo_ops))) {
       std::cout << "Could not undo: other operations have occurred.";
+    } else {
+      Context::getContext().tdb2.invalidate_cache();
     }
   }
   return 0;

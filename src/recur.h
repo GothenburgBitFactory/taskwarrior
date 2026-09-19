@@ -43,13 +43,18 @@
 #include <unistd.h>
 #include <util.h>
 
+#include <map>
 #include <optional>
+
+using RecurrenceMaskUpdates = std::map<std::string, Task>;
 
 std::optional<Datetime> checked_add_datetime(Datetime& base, time_t delta);
 void handleRecurrence();
 bool generateDueDates(Task& parent, std::vector<Datetime>& allDue);
 std::optional<Datetime> getNextRecurrence(Datetime& current, std::string& period);
-void updateRecurrenceMask(Task& task);
+void updateRecurrenceMask(Task& task, RecurrenceMaskUpdates* updates = nullptr);
+void commitRecurrenceMaskUpdates(RecurrenceMaskUpdates& updates);
+void modifyRecurringTask(Task& task, RecurrenceMaskUpdates* updates);
 void handleUntil();
 
 #endif

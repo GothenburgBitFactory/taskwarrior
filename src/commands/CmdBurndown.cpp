@@ -244,6 +244,7 @@ void Chart::accumulateTasks(const std::vector<Task>& tasks,
     auto last_it = _peak_day_index.find(last_day);
     if (first_it == _peak_day_index.end() || last_it == _peak_day_index.end()) return;
     size_t fi = first_it->second, li = last_it->second;
+    if (fi > li) return;
     _peak_diff[fi]++;
     if (li + 1 < _peak_diff.size()) _peak_diff[li + 1]--;
   };
@@ -266,6 +267,7 @@ void Chart::accumulateTasks(const std::vector<Task>& tasks,
     // ranges is the taskEpochRange returned by findTaskEpochRange().
     const auto& r = ranges[i];
     const auto& task = tasks[i];
+    if (r.first_epoch > r.last_epoch) continue;
 
     // Peak and _current_count are made regardless of the task status.
     peak_add(r.peak_entry, r.peak_end);
@@ -872,6 +874,7 @@ static int runBurndown(char period, std::string& output) {
     for (const auto& task : tasks) {
       auto r = findTaskEpochRange(task, now_epoch, now_day_epoch, period, cumulative);
       result.ranges.push_back(r);
+      if (r.first_epoch > r.last_epoch) continue;
       if (r.peak_entry < result.earliest_day) result.earliest_day = r.peak_entry;
       if (r.peak_end > result.latest_day) result.latest_day = r.peak_end;
     }

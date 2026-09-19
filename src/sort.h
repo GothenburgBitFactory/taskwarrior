@@ -38,7 +38,7 @@
 #include <string>
 #include <vector>
 
-void sort_tasks(std::vector<Task>& data, std::vector<int>& order, const std::string& keys);
+void sort_tasks(const std::vector<Task>& data, std::vector<int>& order, const std::string& keys);
 
 void sort_projects(std::list<std::pair<std::string, int>>& sorted,
                    std::map<std::string, int>& allProjects);

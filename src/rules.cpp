@@ -85,51 +85,51 @@ static void applyColor(const Color& base, Color& c, bool merge) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeBlocked(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeBlocked(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.is_blocked) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeBlocking(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeBlocking(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.is_blocking) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeTagged(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeTagged(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.getTagCount()) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeActive(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeActive(const Task& task, const Color& base, Color& c, bool merge) {
   // TODO: Not consistent with the implementation of the +ACTIVE virtual tag
   if (task.has("start") && !task.has("end")) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeScheduled(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeScheduled(const Task& task, const Color& base, Color& c, bool merge) {
   // TODO: Not consistent with the implementation of the +SCHEDULED virtual tag
   if (task.has("scheduled") && Datetime(task.get_date("scheduled")) <= now)
     applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeUntil(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeUntil(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.has("until")) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeTag(Task& task, const std::string& rule, const Color& base, Color& c,
+static void colorizeTag(const Task& task, const std::string& rule, const Color& base, Color& c,
                         bool merge) {
   if (task.hasTag(rule.substr(10))) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeProject(Task& task, const std::string& rule, const Color& base, Color& c,
+static void colorizeProject(const Task& task, const std::string& rule, const Color& base, Color& c,
                             bool merge) {
   // Observe the case sensitivity setting.
   bool sensitive = Context::getContext().config.getBoolean("search.case.sensitive");
 
-  auto project = task.get("project");
+  const auto& project = task.get_ref("project");
   auto rule_trunc = rule.substr(14);
 
   // Match project names leftmost.
@@ -139,24 +139,24 @@ static void colorizeProject(Task& task, const std::string& rule, const Color& ba
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeProjectNone(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeProjectNone(const Task& task, const Color& base, Color& c, bool merge) {
   if (!task.has("project")) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeTagNone(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeTagNone(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.getTagCount() == 0) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeKeyword(Task& task, const std::string& rule, const Color& base, Color& c,
+static void colorizeKeyword(const Task& task, const std::string& rule, const Color& base, Color& c,
                             bool merge) {
   // Observe the case sensitivity setting.
   auto sensitive = Context::getContext().config.getBoolean("search.case.sensitive");
 
   // The easiest thing to check is the description, because it is just one
   // attribute.
-  if (find(task.get("description"), rule.substr(14), sensitive) != std::string::npos)
+  if (find(task.get_ref("description"), rule.substr(14), sensitive) != std::string::npos)
     applyColor(base, c, merge);
 
   // Failing the description check, look at all annotations, returning on the
@@ -172,7 +172,7 @@ static void colorizeKeyword(Task& task, const std::string& rule, const Color& ba
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeUDA(Task& task, const std::string& rule, const Color& base, Color& c,
+static void colorizeUDA(const Task& task, const std::string& rule, const Color& base, Color& c,
                         bool merge) {
   // Is the rule color.uda.name.value or color.uda.name?
   auto pos = rule.find('.', 10);
@@ -181,42 +181,42 @@ static void colorizeUDA(Task& task, const std::string& rule, const Color& base, 
   } else {
     auto uda = rule.substr(10, pos - 10);
     auto val = rule.substr(pos + 1);
-    if ((val == "none" && !task.has(uda)) || task.get(uda) == val) applyColor(base, c, merge);
+    if ((val == "none" && !task.has(uda)) || task.get_ref(uda) == val) applyColor(base, c, merge);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeDue(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeDue(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.is_due()) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeDueToday(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeDueToday(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.is_duetoday()) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeOverdue(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeOverdue(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.is_overdue()) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeRecurring(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeRecurring(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.has("recur")) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeCompleted(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeCompleted(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.getStatus() == Task::completed) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizeDeleted(Task& task, const Color& base, Color& c, bool merge) {
+static void colorizeDeleted(const Task& task, const Color& base, Color& c, bool merge) {
   if (task.getStatus() == Task::deleted) applyColor(base, c, merge);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void autoColorize(Task& task, Color& c) {
+void autoColorize(const Task& task, Color& c) {
   // The special tag 'nocolor' overrides all auto and specific colorization.
   if (!Context::getContext().color() || task.hasTag("nocolor")) {
     c = Color();

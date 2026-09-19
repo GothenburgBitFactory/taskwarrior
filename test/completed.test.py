@@ -54,6 +54,16 @@ class TestCompleted(TestCase):
         self.assertNotIn("two", out)
         self.assertNotIn("three", out)
 
+    def test_complete_with_empty_filter(self):
+        """Verify that you can complete all tasks with an empty filter,
+        this should be successful with cold pending set cache"""
+        self.t("add one")
+        self.t("add two")
+
+        code, out, err = self.t("rc.allow.empty.filter=1 rc.bulk=0 done", input="yes\n")
+        self.assertIn("Completed 2 tasks", out)
+        self.assertEqual([], self.t.export("status:pending"))
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

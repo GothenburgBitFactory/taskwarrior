@@ -68,7 +68,7 @@ int CmdStop::execute(std::string&) {
   }
 
   // Accumulated project change notifications.
-  std::map<std::string, std::string> projectChanges;
+  std::map<std::string, Task> projectChanges;
 
   if (filtered.size() > 1) {
     feedback_affected("This command will alter {1} tasks.", filtered.size());
@@ -94,7 +94,7 @@ int CmdStop::execute(std::string&) {
         feedback_affected("Stopping task {1} '{2}'.", task);
         dependencyChainOnStart(task);
         if (Context::getContext().verbose("project"))
-          projectChanges[task.get("project")] = onProjectChange(task, false);
+          projectChanges.insert_or_assign(task.get("project"), task);
       } else {
         std::cout << "Task not stopped.\n";
         rc = 1;
@@ -110,7 +110,7 @@ int CmdStop::execute(std::string&) {
 
   // Now list the project changes.
   for (auto& change : projectChanges)
-    if (change.first != "") Context::getContext().footnote(change.second);
+    if (change.first != "") Context::getContext().footnote(onProjectChange(change.second, false));
 
   feedback_affected(count == 1 ? "Stopped {1} task." : "Stopped {1} tasks.", count);
   return rc;

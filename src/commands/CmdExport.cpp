@@ -97,7 +97,7 @@ int CmdExport::execute(std::string& output) {
     sortOrder.clear();
     for (auto& i : Context::getContext().cli2._uuid_list)
       for (unsigned int t = 0; t < filtered.size(); ++t)
-        if (filtered[t].get("uuid") == i) sequence.push_back(t);
+        if (filtered[t].get_ref("uuid") == i) sequence.push_back(t);
   } else {
     // sort_tasks requires the order array initially be identity
     for (unsigned int i = 0; i < filtered.size(); ++i) sequence.push_back(i);
