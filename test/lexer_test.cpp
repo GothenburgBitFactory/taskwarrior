@@ -39,9 +39,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 int TEST_NAME(int, char**) {
 #ifdef PRODUCT_TASKWARRIOR
-  UnitTest t(1255);
+  UnitTest t(1291);
 #else
-  UnitTest t(1235);
+  UnitTest t(1271);
 #endif
 
   // Use same Datetime/Duraiton configuration as Context∴:staticInitialization.
@@ -436,6 +436,22 @@ int TEST_NAME(int, char**) {
       {
           "rc.foo",
           {{"rc.foo", Lexer::Type::dom}, NO, NO, NO, NO},
+      },
+      {
+          "rc.context.my-ctx",
+          {{"rc.context.my-ctx", Lexer::Type::dom}, NO, NO, NO, NO},
+      },
+      {
+          "rc.foo-",
+          {{"rc.foo", Lexer::Type::dom}, {"-", Lexer::Type::op}, NO, NO, NO},
+      },
+      {
+          "due-1d",
+          {{"due", Lexer::Type::dom},
+           {"-", Lexer::Type::op},
+           {"1d", Lexer::Type::duration},
+           NO,
+           NO},
       },
 
       // URL

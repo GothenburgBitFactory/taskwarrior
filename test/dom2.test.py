@@ -246,6 +246,13 @@ class TestDOM(TestCase):
         self.assertEqual(code, 0)
         self.assertIn("YMD", out)
 
+    def test_dom_rc_name_with_dash(self):
+        """DOM rc.context.<name> where the name contains a dash"""
+        self.t.config("context.my-ctx", "project:x")
+        code, out, err = self.t("_get rc.context.my-ctx")
+        self.assertEqual(code, 0)
+        self.assertEqual("project:x\n", out)
+
     def test_dom_rc_missing(self):
         """DOM rc.missing"""
         code, out, err = self.t("_get rc.missing")
