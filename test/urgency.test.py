@@ -292,6 +292,21 @@ class TestUrgency(TestCase):
         self.assertEqual("task 1 urgency 0\n", out)
 
 
+class TestUdaUrgencyForBuiltinAttribute(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_uda_urgency_ignored_for_tags(self):
+        """3726: urgency.uda.* coefficients are not applied to built-in attributes"""
+        self.t("add one +foo")
+        code, out, err = self.t("_get 1.urgency")
+        baseline = out
+
+        code, out, err = self.t("rc.urgency.uda.tags.foo.coefficient:10 _get 1.urgency")
+        self.assertEqual(baseline, out)
+
+
 class TestBug837(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
