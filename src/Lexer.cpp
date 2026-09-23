@@ -928,6 +928,16 @@ bool Lexer::isDOM(std::string& token, Lexer::Type& type) {
   std::string partialToken;
   Lexer::Type partialType;
   if (isLiteral("rc.", false, false) && isWord(partialToken, partialType)) {
+    // Configuration names may contain dashes, as in 'context.my-ctx', so keep
+    // consuming as long as a dash is followed by more of the name.
+    while (_text[_cursor] == '-') {
+      std::size_t dash = _cursor++;
+      if (!isWord(partialToken, partialType)) {
+        _cursor = dash;
+        break;
+      }
+    }
+
     token = _text.substr(marker, _cursor - marker);
     type = Lexer::Type::dom;
     return true;
