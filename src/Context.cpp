@@ -1123,9 +1123,17 @@ void Context::staticInitialization() {
   Task::urgencyAgeMax = config.getReal("urgency.age.max");
 
   // Tag- and project-specific coefficients.
-  for (auto& var : config.all())
+  for (auto& var : config.all()) {
+    // urgency.uda.<name>.* does not apply to built-in attributes such as tags;
+    // 'task show' reports these.
+    if (var.substr(0, 12) == "urgency.uda.") {
+      auto col = columns.find(var.substr(12, var.find('.', 12) - 12));
+      if (col != columns.end() && !col->second->is_uda()) continue;
+    }
+
     if (var.substr(0, 13) == "urgency.user." || var.substr(0, 12) == "urgency.uda.")
       Task::coefficients[var] = config.getReal(var);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

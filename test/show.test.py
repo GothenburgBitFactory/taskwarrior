@@ -73,6 +73,25 @@ class TestShowCommand(TestCase):
             "Your .taskrc file contains these unrecognized variables:\n  foo", out
         )
 
+    def test_show_uda_urgency_for_non_uda(self):
+        """Verify show warns about urgency.uda.* for attributes that are not UDAs"""
+        self.t.config("urgency.uda.tags.foo.coefficient", "10")
+        code, out, err = self.t("show")
+        self.assertIn(
+            "Your .taskrc file contains these unrecognized variables:\n"
+            "  urgency.uda.tags.foo.coefficient",
+            out,
+        )
+        self.assertIn("urgency.user.tag.<tag>.coefficient", out)
+
+    def test_show_uda_urgency_for_uda(self):
+        """Verify show accepts urgency.uda.* for defined UDAs, including priority"""
+        self.t.config("uda.ticket.type", "string")
+        self.t.config("urgency.uda.ticket.coefficient", "2")
+        self.t.config("urgency.uda.priority.H.coefficient", "7")
+        code, out, err = self.t("show")
+        self.assertNotIn("unrecognized variables", out)
+
     def test_show_s3_compatible_settings(self):
         """Verify S3-compatible storage settings are recognized"""
         self.t.config("sync.aws.endpoint_url", "https://minio.example.test")
