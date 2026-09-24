@@ -1197,26 +1197,26 @@ Day number with ordinal
 .fi
 
 .TP
-Start of current (work) week (Monday), calendar week (Sunday or Monday), month, quarter and year
+Start of current week or work week (Monday), month, quarter and year
 .nf
   task ... due:sow
   task ... due:soww
-  task ... due:socw
   task ... due:som
   task ... due:soq
   task ... due:soy
 .fi
 
 .TP
-End of current (work) week (Friday), calendar week (Saturday or Sunday), month, quarter and year
+End of current week (Sunday), work week (Friday), month, quarter and year
 .nf
   task ... due:eow
   task ... due:eoww
-  task ... due:eocw
   task ... due:eom
   task ... due:eoq
   task ... due:eoy
 .fi
+
+On a Sunday, soww and eoww refer to the work week that starts the next day.
 
 .TP
 At some point or later
