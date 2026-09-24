@@ -749,8 +749,9 @@ from tasks, or the system.  Supported DOM references are:
 Note that the 'rc.<name>' reference may need to be escaped using '--' to prevent
 the reference from being interpreted as an override.
 
-Note that if the DOM reference is not valid, or the reference evaluates to a
-missing value, the command exits with 1.
+Note that if the DOM reference is not valid, the command exits with 2.  If the
+reference evaluates to a missing value, such as an unset attribute or a task
+that does not exist, the output is empty and the command exits with 0.
 
 Additionally, some components of the attributes of particular types may be
 extracted by DOM references.
@@ -1103,15 +1104,14 @@ and
 respectively.  The negation operator is
 .IR ! .
 
-Note that the parentheses are required when using a logical operator other than
-the 'and' operator.  The reason is that some reports contain filters that must
-be combined with the command line.  Consider this example:
+Some reports contain filters that are combined with the command line filter.
+Consider this example:
 
 .nf
   task project:Home or project:Garden list
 .fi
 
-While this looks correct, it is not.  The 'list' report contains a filter of:
+The 'list' report contains a filter of:
 
 .nf
   task show report.list.filter
@@ -1121,29 +1121,25 @@ While this looks correct, it is not.  The 'list' report contains a filter of:
   report.list.filter status:pending
 .fi
 
-Which means the example is really:
-
-.nf
-  task status:pending project:Home or project:Garden list
-.fi
-
-The implied 'and' operator makes it:
-
-.nf
-  task status:pending and project:Home or project:Garden list
-.fi
-
-This is a precedence error - the 'and' and 'or' need to be grouped using
-parentheses, like this:
+Taskwarrior puts parentheses around the command line filter before combining
+it with the report filter, so the example is really:
 
 .nf
   task status:pending and ( project:Home or project:Garden ) list
 .fi
 
-The original example therefore must be entered as:
+No parentheses are needed here.  They are still needed when you mix 'and'
+and 'or' in your own filter, because 'and' binds more tightly than 'or'.
+This example lists all Home tasks, but only the Garden tasks tagged 'weekend':
 
 .nf
-  task '( project:Home or project:Garden )' list
+  task project:Home or project:Garden +weekend list
+.fi
+
+To list the 'weekend' tasks in either project, group the 'or':
+
+.nf
+  task '( project:Home or project:Garden )' +weekend list
 .fi
 
 This includes quotes to escape the parentheses, so that the shell doesn't
@@ -1201,7 +1197,7 @@ Day number with ordinal
 .fi
 
 .TP
-Start of next (work) week (Monday), calendar week (Sunday or Monday), month, quarter and year
+Start of current (work) week (Monday), calendar week (Sunday or Monday), month, quarter and year
 .nf
   task ... due:sow
   task ... due:soww
