@@ -389,13 +389,11 @@ set __fish_task_static_dates 'today:Today' \
                              'tomorrow:Tomorrow' \
                              'sow:Start of week' \
                              'soww:Start of work week' \
-                             'socw:Start of calendar week' \
                              'som:Start of month' \
                              'soq:Start of quarter' \
                              'soy:Start of year' \
                              'eow:End of week' \
                              'eoww:End of work week' \
-                             'eocw:End of calendar week' \
                              'eom:End of month' \
                              'eoq:End of quarter' \
                              'eoy:End of year' \
