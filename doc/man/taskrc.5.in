@@ -667,7 +667,11 @@ Enables ISO-8601 date support.  The default value is "1".
 .TP
 .B weekstart=Sunday
 Determines the day a week starts. Valid values are Sunday or Monday only. The
-default value is "Sunday".
+default value is "Sunday". This affects the layout of the "task calendar"
+command, week numbers, and the day that a week date such as 2026-W02 refers to.
+With Monday, week numbers follow ISO-8601. It does not affect named dates
+such as sow and eow, or the WEEK virtual tag, which always use a week from
+Monday to Sunday.
 
 .TP
 .B displayweeknumber=1
