@@ -33,12 +33,22 @@
 #include <taskchampion-cpp/lib.h>
 #include <time.h>
 
+#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
 
 class Task {
  public:
+  // A user/UDA coefficient with a pre-parsed key, so urgency_c()
+  // doesn't re-parse each time.
+  struct UrgencyCoefficient {
+    enum Kind { project, tag, keyword, uda, udaValue } kind;
+    std::string name;   // The name of the project/tag/keyword/UDA.
+    std::string value;  // only for udaValue
+    float coefficient;
+  };
+
   static std::string defaultProject;
   static std::string defaultDue;
   static std::string defaultScheduled;
@@ -46,6 +56,11 @@ class Task {
   static bool regex;
   static std::map<std::string, std::string> attributes;  // name -> type
   static std::map<std::string, float> coefficients;
+  // Parsed version of coefficients, built by setUrgencyCoefficients().
+  static std::vector<UrgencyCoefficient> userCoefficients;
+  // Cached value of rc.urgency.inherit.
+  static bool urgencyInherit;
+  static uint64_t urgencyGeneration;
   static std::map<std::string, std::vector<std::string>> customOrder;
   static float urgencyProjectCoefficient;
   static float urgencyActiveCoefficient;
@@ -63,9 +78,11 @@ class Task {
   Task() = default;
   bool operator==(const Task&);
   bool operator!=(const Task&);
+  void copyTransientState(const Task&);
   Task(const std::string&);
   Task(const json::object*);
   Task(rust::Box<tc::TaskData>);
+  Task(rust::Box<tc::TaskData>, int);
 
   void parse(const std::string&);
   std::string composeJSON(bool decorate = false);
@@ -78,8 +95,9 @@ class Task {
 
   // Public data.
   int id{0};
-  float urgency_value{0.0};
-  bool recalc_urgency{true};
+  mutable float urgency_value{0.0};
+  mutable bool recalc_urgency{true};
+  mutable uint64_t urgency_generation{0};
   bool is_blocked{false};
   bool is_blocking{false};
   int annotation_count{0};
@@ -87,6 +105,11 @@ class Task {
   // Series of helper functions.
   static status textToStatus(const std::string&);
   static std::string statusToText(status);
+
+  // Parse coefficients into userCoefficients. This is called
+  // after that map has been initialized.
+  static void setUrgencyCoefficients();
+  static void invalidateUrgencyCaches();
 
   void setAsNow(const std::string&);
   bool has(const std::string&) const;
@@ -172,7 +195,7 @@ class Task {
   void validate(bool applyDefault = true);
 
   float urgency_c() const;
-  float urgency();
+  float urgency() const;
 
 #ifdef PRODUCT_TASKWARRIOR
   enum modType { modReplace, modPrepend, modAppend, modAnnotate };
@@ -185,7 +208,7 @@ class Task {
   int determineVersion(const std::string&);
   void parseJSON(const std::string&);
   void parseJSON(const json::object*);
-  void parseTC(rust::Box<tc::TaskData>);
+  void parseTC(rust::Box<tc::TaskData>, int);
   void parseLegacy(const std::string&);
   void validate_before(const std::string&, const std::string&);
   const std::string encode(const std::string&) const;

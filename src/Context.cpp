@@ -738,12 +738,11 @@ int Context::run() {
 #endif
       << ' ' << Datetime().toISO()
 
-      << " init:" << time_init_us << " load:" << time_load_us
-      << " gc:" << (time_gc_us > 0 ? time_gc_us - time_load_us : time_gc_us)
+      << " init:" << time_init_us << " load:" << time_load_us << " gc:" << time_gc_us
       << " filter:" << time_filter_us << " commit:" << time_commit_us << " sort:" << time_sort_us
       << " render:" << time_render_us << " hooks:" << time_hooks_us << " other:"
-      << time_total_us - time_init_us - time_gc_us - time_filter_us - time_commit_us -
-             time_sort_us - time_render_us - time_hooks_us
+      << time_total_us - time_init_us - time_load_us - time_gc_us - time_filter_us -
+             time_commit_us - time_sort_us - time_render_us - time_hooks_us
       << " total:" << time_total_us << '\n';
     debug(s.str());
   }
@@ -1126,6 +1125,10 @@ void Context::staticInitialization() {
   for (auto& var : config.all())
     if (var.substr(0, 13) == "urgency.user." || var.substr(0, 12) == "urgency.uda.")
       Task::coefficients[var] = config.getReal(var);
+
+  // Pre-parse the coefficient keys, so urgency_c() doesn't have to re-parse for
+  // each task.
+  Task::setUrgencyCoefficients();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

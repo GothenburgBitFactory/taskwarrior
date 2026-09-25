@@ -66,7 +66,7 @@ class ViewTask {
   int rows() { return _rows; }
 
   // View rendering.
-  std::string render(std::vector<Task>&, std::vector<int>&);
+  std::string render(const std::vector<Task>&, std::vector<int>&);
 
  private:
   std::vector<Column*> _columns;

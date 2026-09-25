@@ -32,6 +32,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <Lexer.h>
+#include <Timer.h>
 #include <Version.h>
 #include <ViewTask.h>
 #include <feedback.h>
@@ -101,27 +102,55 @@ int CmdCustom::execute(std::string& output) {
   // Add the report filter to any existing filter.
   if (reportFilter != "") Context::getContext().cli2.addFilter(reportFilter);
 
-  // Apply filter.
+  // Apply filter. When the filter is pending only, we use indices with the pending
+  // cache. Otherwise we fall back to copying all tasks.
   Filter filter;
-  std::vector<Task> filtered;
-  filter.subset(filtered);
-
+  const std::vector<Task>* data = nullptr;
   std::vector<int> sequence;
-  if (sortOrder.size() && sortOrder[0] == "none") {
-    // Assemble a sequence vector that represents the tasks listed in
-    // Context::getContext ().cli2._uuid_ranges, in the order in which they appear. This
-    // equates to no sorting, just a specified order.
-    sortOrder.clear();
-    for (auto& i : Context::getContext().cli2._uuid_list)
-      for (unsigned int t = 0; t < filtered.size(); ++t)
-        if (filtered[t].get("uuid") == i) sequence.push_back(t);
-  } else {
-    // There is a sortOrder, so sorting will take place, which means the initial
-    // order of sequence is ascending.
-    for (unsigned int i = 0; i < filtered.size(); ++i) sequence.push_back(i);
+  std::vector<Task> filtered;
+  Timer filterTimer;
+  const auto load_before = Context::getContext().time_load_us;
+  size_t sourceCount = 0;
 
-    // Sort the tasks.
-    if (sortOrder.size()) sort_tasks(filtered, sequence, reportSort);
+  // call prepareFilter() here so that filter_to_indices and filter_to_tasks
+  // don't have to call it.
+  Context::getContext().cli2.prepareFilter();
+
+  bool use_pending_indices = filter.pendingOnly();
+
+  if (use_pending_indices) {
+    const auto& pending = Context::getContext().tdb2.pending_tasks();
+    sourceCount = pending.size();
+    filter.filter_to_indices(pending, sequence);
+    data = &pending;
+  } else {
+    auto all = Context::getContext().tdb2.all_tasks();
+    sourceCount = all.size();
+    filter.filter_to_tasks(all, filtered);
+    sequence.clear();
+    for (unsigned int i = 0; i < filtered.size(); ++i) sequence.push_back(i);
+    data = &filtered;
+  }
+
+  Context::getContext().debug(format("Filtered {1} tasks --> {2} tasks [{3}]", sourceCount,
+                                     sequence.size(),
+                                     use_pending_indices ? "pending only" : "all tasks"));
+  Context::getContext().time_filter_us +=
+      filterTimer.total_us() - (Context::getContext().time_load_us - load_before);
+
+  if (sortOrder.size() && sortOrder[0] == "none") {
+    // If there is no sort order, we preserve the order they were specified
+    // and rebuild the sequence using indices.
+    sortOrder.clear();
+    sequence.clear();
+    for (auto& i : Context::getContext().cli2._uuid_list)
+      for (unsigned int t = 0; t < data->size(); ++t)
+        if ((*data)[t].get_ref("uuid") == i) sequence.push_back(t);
+  } else {
+    if (sortOrder.size()) {
+      // If there is a sortOrder, sorting will reorder the indices.
+      sort_tasks(*data, sequence, reportSort);
+    }
   }
 
   // Configure the view.
@@ -197,19 +226,19 @@ int CmdCustom::execute(std::string& output) {
 
   // Render.
   std::stringstream out;
-  if (filtered.size()) {
+  if (sequence.size()) {
     view.truncateRows(maxrows);
     view.truncateLines(maxlines);
 
-    out << optionalBlankLine() << view.render(filtered, sequence) << optionalBlankLine();
+    out << optionalBlankLine() << view.render(*data, sequence) << optionalBlankLine();
 
     // Print the number of rendered tasks
     if (Context::getContext().verbose("affected")) {
-      out << (filtered.size() == 1 ? "1 task" : format("{1} tasks", filtered.size()));
+      out << (sequence.size() == 1 ? "1 task" : format("{1} tasks", sequence.size()));
 
-      if (maxrows && maxrows < (int)filtered.size()) out << ", " << format("{1} shown", maxrows);
+      if (maxrows && maxrows < (int)sequence.size()) out << ", " << format("{1} shown", maxrows);
 
-      if (maxlines && maxlines < (int)filtered.size())
+      if (maxlines && maxlines < (int)sequence.size())
         out << ", " << format("truncated to {1} lines", maxlines - table_header);
 
       out << '\n';

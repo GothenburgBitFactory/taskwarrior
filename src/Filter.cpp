@@ -40,112 +40,64 @@
 // Take an input set of tasks and filter into a subset.
 void Filter::subset(const std::vector<Task>& input, std::vector<Task>& output) {
   Timer timer;
+  const auto load_before = Context::getContext().time_load_us;
   _startCount = (int)input.size();
 
   Context::getContext().cli2.prepareFilter();
 
-  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
-  for (auto& a : Context::getContext().cli2._args)
-    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
-
-  if (precompiled.size()) {
-    Eval eval;
-    eval.addSource(domSource);
-
-    // Debug output from Eval during compilation is useful.  During evaluation
-    // it is mostly noise.
-    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3 ? true : false);
-    eval.compileExpression(precompiled);
-
-    for (auto& task : input) {
-      // Set up context for any DOM references.
-      auto currentTask = Context::getContext().withCurrentTask(&task);
-
-      Variant var;
-      eval.evaluateCompiledExpression(var);
-      if (var.get_bool()) output.push_back(task);
-    }
-
-    eval.debug(false);
-  } else
-    output = input;
+  filter_to_tasks(input, output);
 
   _endCount = (int)output.size();
   Context::getContext().debug(
       format("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
-  Context::getContext().time_filter_us += timer.total_us();
+  Context::getContext().time_filter_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
 void Filter::subset(std::vector<Task>& output) {
   Timer timer;
+  const auto load_before = Context::getContext().time_load_us;
   Context::getContext().cli2.prepareFilter();
 
   std::vector<std::pair<std::string, Lexer::Type>> precompiled;
   for (auto& a : Context::getContext().cli2._args)
     if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
 
-  // Shortcut indicates that only pending.data needs to be loaded.
+  // Shortcut indicates that only tasks in the working set are loaded.
   bool shortcut = false;
 
   if (precompiled.size()) {
-    Timer timer_pending;
-    auto pending = Context::getContext().tdb2.pending_tasks();
-    Context::getContext().time_filter_us -= timer_pending.total_us();
+    const auto& pending = Context::getContext().tdb2.pending_tasks();
     _startCount = (int)pending.size();
 
-    Eval eval;
-    eval.addSource(domSource);
-
-    // Debug output from Eval during compilation is useful.  During evaluation
-    // it is mostly noise.
-    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3 ? true : false);
-    eval.compileExpression(precompiled);
-
     output.clear();
-    for (auto& task : pending) {
-      // Set up context for any DOM references.
-      auto currentTask = Context::getContext().withCurrentTask(&task);
 
-      Variant var;
-      eval.evaluateCompiledExpression(var);
-      if (var.get_bool()) output.push_back(task);
-    }
+    filter_to_tasks(pending, output);
 
     shortcut = pendingOnly();
     if (!shortcut) {
-      Timer timer_completed;
-      auto completed = Context::getContext().tdb2.completed_tasks();
-      Context::getContext().time_filter_us -= timer_completed.total_us();
+      const auto& completed = Context::getContext().tdb2.completed_tasks();
       _startCount += (int)completed.size();
 
-      for (auto& task : completed) {
-        // Set up context for any DOM references.
-        auto currentTask = Context::getContext().withCurrentTask(&task);
-
-        Variant var;
-        eval.evaluateCompiledExpression(var);
-        if (var.get_bool()) output.push_back(task);
-      }
+      filter_to_tasks(completed, output);
     }
-
-    eval.debug(false);
   } else {
     safety();
 
-    Timer pending_completed;
     output = Context::getContext().tdb2.all_tasks();
-    Context::getContext().time_filter_us -= pending_completed.total_us();
+    _startCount = (int)output.size();
   }
 
   _endCount = (int)output.size();
   Context::getContext().debug(format("Filtered {1} tasks --> {2} tasks [{3}]", _startCount,
                                      _endCount, (shortcut ? "pending only" : "all tasks")));
-  Context::getContext().time_filter_us += timer.total_us();
+  Context::getContext().time_filter_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 bool Filter::hasFilter() const {
   for (const auto& a : Context::getContext().cli2._args)
     if (a.hasTag("FILTER")) return true;
@@ -153,67 +105,128 @@ bool Filter::hasFilter() const {
   return false;
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// Evaluates a pre-parsed filter against a set of tasks and stores their indices
+// from the vector. The filter is parsed with prepareFilter(), but this
+// function does not call that or safety() itself - callers are expected to do so.
+void Filter::filter_to_indices(const std::vector<Task>& pending, std::vector<int>& indices) const {
+  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
+  for (auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
+
+  if (precompiled.empty()) {
+    indices.reserve(pending.size());
+    for (int i = 0; i < (int)pending.size(); ++i) indices.push_back(i);
+  } else {
+    Eval eval;
+    eval.addSource(domSource);
+    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3);
+    eval.compileExpression(precompiled);
+    for (int i = 0; i < (int)pending.size(); ++i) {
+      auto currentTask = Context::getContext().withCurrentTask(&pending[i]);
+      Variant var;
+      eval.evaluateCompiledExpression(var);
+      if (var.get_bool()) indices.push_back(i);
+    }
+    eval.debug(false);
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
-// If the filter contains no 'or', 'xor' or 'not' operators, and only includes
-// status values 'pending', 'waiting' or 'recurring', then the filter is
-// guaranteed to only need data from pending.data.
+// Like filter_to_indices, but copies matched tasks into the output.
+void Filter::filter_to_tasks(const std::vector<Task>& input, std::vector<Task>& output) const {
+  std::vector<std::pair<std::string, Lexer::Type>> precompiled;
+  for (auto& a : Context::getContext().cli2._args)
+    if (a.hasTag("FILTER")) precompiled.emplace_back(a.getToken(), a._lextype);
+
+  if (precompiled.empty()) {
+    output = input;
+  } else {
+    Eval eval;
+    eval.addSource(domSource);
+    eval.debug(Context::getContext().config.getInteger("debug.parser") >= 3);
+    eval.compileExpression(precompiled);
+    for (auto& task : input) {
+      auto currentTask = Context::getContext().withCurrentTask(&task);
+      Variant var;
+      eval.evaluateCompiledExpression(var);
+      if (var.get_bool()) output.push_back(task);
+    }
+    eval.debug(false);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Recognizes pending only constraints that allow us to use the shortcut.
+
 bool Filter::pendingOnly() const {
-  // When GC is off, there are no shortcuts.
   if (!Context::getContext().config.getBoolean("gc")) return false;
 
-  // To skip loading completed.data, there should be:
-  // - 'status' in filter
-  // - no 'completed'
-  // - no 'deleted'
-  // - no 'xor'
-  // - no 'or'
-  int countStatus = 0;
-  int countPending = 0;
-  int countWaiting = 0;
-  int countRecurring = 0;
-  int countId = (int)Context::getContext().cli2._id_ranges.size();
-  int countUUID = (int)Context::getContext().cli2._uuid_list.size();
-  int countOr = 0;
-  int countXor = 0;
-  int countNot = 0;
-  bool pendingTag = false;
-  bool activeTag = false;
+  const auto& cli = Context::getContext().cli2;
+  if (!cli._uuid_list.empty()) return false;
 
-  for (const auto& a : Context::getContext().cli2._args) {
-    if (a.hasTag("FILTER")) {
-      std::string raw = a.attribute("raw");
-      std::string canonical = a.attribute("canonical");
+  std::vector<const A2*> filter_args;
+  for (const auto& arg : cli._args) {
+    if (!arg.hasTag("FILTER")) continue;
 
-      if (a._lextype == Lexer::Type::op && raw == "or") ++countOr;
-      if (a._lextype == Lexer::Type::op && raw == "xor") ++countXor;
-      if (a._lextype == Lexer::Type::op && raw == "not") ++countNot;
-      if (a._lextype == Lexer::Type::dom && canonical == "status") ++countStatus;
-      if (raw == "pending") ++countPending;
-      if (raw == "waiting") ++countWaiting;
-      if (raw == "recurring") ++countRecurring;
+    filter_args.push_back(&arg);
+  }
+
+  const auto requires_pending = [&](const auto& self, size_t begin, size_t end) -> bool {
+    if (begin == end) return false;
+    int depth = 0;
+    size_t first_close = end;
+    std::vector<size_t> conjunctions;
+    for (size_t i = begin; i < end; ++i) {
+      const auto& arg = *filter_args[i];
+      if (arg._lextype != Lexer::Type::op) continue;
+      const auto& op = arg.attribute("raw");
+      if (op == "(") {
+        ++depth;
+      } else if (op == ")") {
+        if (--depth < 0) return false;
+        if (depth == 0 && first_close == end) first_close = i;
+      } else if (depth == 0) {
+        if (op == "or" || op == "xor") return false;
+        if (op == "and") conjunctions.push_back(i);
+      }
     }
-  }
 
-  for (const auto& word : Context::getContext().cli2._original_args) {
-    if (word.attribute("raw") == "+PENDING") pendingTag = true;
-    if (word.attribute("raw") == "+ACTIVE") activeTag = true;
-  }
+    if (depth != 0) return false;
+    if (filter_args[begin]->_lextype == Lexer::Type::op &&
+        filter_args[begin]->attribute("raw") == "(" && first_close == end - 1)
+      return self(self, begin + 1, end - 1);
 
-  if (countUUID) return false;
+    if (!conjunctions.empty()) {
+      bool required = false;
+      for (auto boundary : conjunctions) {
+        required |= self(self, begin, boundary);
+        begin = boundary + 1;
+      }
+      return self(self, begin, end) || required;
+    }
 
-  if (countOr || countXor || countNot) return false;
+    if (end - begin != 3) return false;
+    const auto& left = *filter_args[begin];
+    const auto& op = *filter_args[begin + 1];
+    const auto& right = *filter_args[begin + 2];
+    if (left._lextype != Lexer::Type::dom || op._lextype != Lexer::Type::op) return false;
+    const auto& operation = op.attribute("raw");
+    const auto& value = right.attribute("raw");
 
-  if (pendingTag || activeTag) return true;
+    if (left.attribute("raw") == "id" && right._lextype == Lexer::Type::number &&
+        (operation == "=" || operation == "==" || operation == ">=") &&
+        value.find_first_not_of("0123456789") == std::string::npos &&
+        value.find_first_not_of('0') != std::string::npos)
+      return true;
+    if (right._lextype != Lexer::Type::string) return false;
+    return (left.attribute("canonical") == "status" && (operation == "=" || operation == "==") &&
+            (value == "pending" || value == "waiting" || value == "recurring")) ||
+           (left.attribute("raw") == "tags" && operation == "_hastag_" &&
+            (value == "PENDING" || value == "ACTIVE" || value == "READY" || value == "WAITING"));
+  };
 
-  if (countStatus) {
-    if (!countPending && !countWaiting && !countRecurring) return false;
-
-    return true;
-  }
-
-  if (countId) return true;
-
-  return false;
+  return requires_pending(requires_pending, 0, filter_args.size());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

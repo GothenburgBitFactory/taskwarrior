@@ -36,12 +36,13 @@ void nag(std::vector<Task>& tasks) {
   auto msg = Context::getContext().config.get("nag");
   if (msg == "") return;
 
-  auto pending = Context::getContext().tdb2.pending_tasks();
-  for (auto& t1 : tasks) {
+  const auto& pending = Context::getContext().tdb2.pending_tasks();
+  for (const auto& t1 : tasks) {
     if (t1.hasTag("nonag")) continue;
 
-    for (auto& t2 : pending) {
-      if (t1.get("uuid") != t2.get("uuid") && t2.hasTag("READY") && t1.urgency() < t2.urgency()) {
+    for (const auto& t2 : pending) {
+      if (t1.get_ref("uuid") != t2.get_ref("uuid") && t2.hasTag("READY") &&
+          t1.urgency() < t2.urgency()) {
         Context::getContext().footnote(msg);
         return;
       }

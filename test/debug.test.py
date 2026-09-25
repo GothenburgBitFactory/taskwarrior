@@ -85,6 +85,28 @@ class TestDebugMode(TestCase):
         self.assertIn("Filtered 2 tasks --> 2 tasks [pending only]", err)
         self.assertIn("Perf task", err)
 
+    def test_all_report_debug_filter_output(self):
+        """Verify reports that call all tasks instead of pending
+        retain the filter debug summary"""
+        self.t("1 done")
+
+        code, out, err = self.t("status:completed all rc.debug=1")
+
+        self.assertIn("Filtered 2 tasks --> 1 tasks [all tasks]", err)
+
+    def test_status_filter_shortcut_ignores_other_filters(self):
+        """Checks that we aren't accidentally matching other filters
+        with the same keywords"""
+        self.t("1 modify description:pending")
+        self.t("1 done")
+
+        for filter_ in (
+            "status:completed description:pending",
+            "status.not:pending description:pending",
+        ):
+            code, out, err = self.t(f"{filter_} all")
+            self.assertIn("pending", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

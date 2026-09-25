@@ -56,25 +56,26 @@ void ColumnRType::setStyle(const std::string& value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnRType::measure(Task& task, unsigned int& minimum, unsigned int& maximum) {
+void ColumnRType::measure(const Task& task, unsigned int& minimum, unsigned int& maximum) {
   minimum = maximum = 0;
   if (task.has(_name)) {
     if (_style == "default")
-      minimum = maximum = task.get(_name).length();
+      minimum = maximum = task.get_ref(_name).length();
     else if (_style == "indicator")
       minimum = maximum = 1;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnRType::render(std::vector<std::string>& lines, Task& task, int width, Color& color) {
+void ColumnRType::render(std::vector<std::string>& lines, const Task& task, int width,
+                         Color& color) {
   if (task.has(_name)) {
     if (_style == "default")
-      renderStringRight(lines, width, color, task.get(_name));
+      renderStringRight(lines, width, color, task.get_ref(_name));
 
     else if (_style == "indicator") {
       std::string value{" "};
-      value[0] = toupper(task.get(_name)[0]);
+      value[0] = toupper(task.get_ref(_name)[0]);
       renderStringRight(lines, width, color, value);
     }
   }

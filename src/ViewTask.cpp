@@ -105,8 +105,9 @@ ViewTask::~ViewTask() {
 //       the larger fields.  If the widest field is W0, and the second widest
 //       field is W1, then a solution may be achievable by reducing W0 --> W1.
 //
-std::string ViewTask::render(std::vector<Task>& data, std::vector<int>& sequence) {
+std::string ViewTask::render(const std::vector<Task>& data, std::vector<int>& sequence) {
   Timer timer;
+  const auto load_before = Context::getContext().time_load_us;
 
   bool const obfuscate = Context::getContext().config.getBoolean("obfuscate");
   bool const print_empty_columns = Context::getContext().config.getBoolean("print.empty.columns");
@@ -293,7 +294,8 @@ std::string ViewTask::render(std::vector<Task>& data, std::vector<int>& sequence
 
     // Stop if the line limit is exceeded.
     if (++_lines >= _truncate_lines && _truncate_lines != 0) {
-      Context::getContext().time_render_us += timer.total_us();
+      Context::getContext().time_render_us +=
+          timer.total_us() - (Context::getContext().time_load_us - load_before);
       return out;
     }
   }
@@ -331,7 +333,7 @@ std::string ViewTask::render(std::vector<Task>& data, std::vector<int>& sequence
     // changes.
     if (s > 0 && _breaks.size() > 0) {
       for (const auto& b : _breaks) {
-        if (data[sequence[s - 1]].get(b) != data[sequence[s]].get(b)) {
+        if (data[sequence[s - 1]].get_ref(b) != data[sequence[s]].get_ref(b)) {
           out += "\n";
           ++_lines;
 
@@ -366,7 +368,8 @@ std::string ViewTask::render(std::vector<Task>& data, std::vector<int>& sequence
 
       // Stop if the line limit is exceeded.
       if (++_lines >= _truncate_lines && _truncate_lines != 0) {
-        Context::getContext().time_render_us += timer.total_us();
+        Context::getContext().time_render_us +=
+            timer.total_us() - (Context::getContext().time_load_us - load_before);
         return out;
       }
     }
@@ -375,12 +378,14 @@ std::string ViewTask::render(std::vector<Task>& data, std::vector<int>& sequence
 
     // Stop if the row limit is exceeded.
     if (++_rows >= _truncate_rows && _truncate_rows != 0) {
-      Context::getContext().time_render_us += timer.total_us();
+      Context::getContext().time_render_us +=
+          timer.total_us() - (Context::getContext().time_load_us - load_before);
       return out;
     }
   }
 
-  Context::getContext().time_render_us += timer.total_us();
+  Context::getContext().time_render_us +=
+      timer.total_us() - (Context::getContext().time_load_us - load_before);
   return out;
 }
 

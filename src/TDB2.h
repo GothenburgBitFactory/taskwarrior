@@ -30,6 +30,7 @@
 #include <Task.h>
 #include <taskchampion-cpp/lib.h>
 
+#include <functional>
 #include <map>
 #include <optional>
 #include <string>
@@ -57,11 +58,14 @@ class TDB2 {
 
   void open_replica(const std::string&, bool create_if_missing, bool read_write);
   void add(Task&);
-  void modify(Task&);
+  // The optional related task change is taken after the first task's hooks have ran.
+  // Both tasks' hooks then finish before either modification is committed.
+  void modify(Task&, const std::function<std::optional<Task>(const Task&)>& related = {});
   void purge(Task&);
   void get_changes(std::vector<Task>&);
   void gc();
   void expire_tasks();
+  void invalidate_cache();
   int latest_id();
 
   // Generalized task accessors.
@@ -73,8 +77,7 @@ class TDB2 {
   const std::vector<Task>& pending_tasks();
   const std::vector<Task>& completed_tasks();
   // dependency_graph is built on first use from pending_tasks() and reused.
-  // functions that use it are Task::getDependencyTasks(), getBlockedTasks()
-  // and urgency_inherit().
+  // It is used by Task::getBlockedTasks() and urgency_inherit().
   const DependencyGraph& dependency_graph();
 
   bool get(int, Task&);
@@ -111,6 +114,7 @@ class TDB2 {
   // Lazily cache UUIDs within the pending set.
   // Avoids scans of the vectors with get/modify..
   std::optional<std::unordered_map<std::string, size_t>> _pending_index;
+  std::optional<std::unordered_map<std::string, size_t>> _pending_dependency_counts;
   void invalidate_cached_info();
 
   // Return the full pending UUID map.
@@ -120,6 +124,10 @@ class TDB2 {
   std::map<std::string, Task> changes;
 
   const rust::Box<tc::WorkingSet>& working_set();
+  Task prepare_modify(Task&);
+  void append_modify(const Task&, const Task&, rust::Vec<tc::Operation>&);
+  void commit_operations(rust::Vec<tc::Operation>&&);
+  bool working_set_is_clean();
   void maybe_add_undo_point(rust::Vec<tc::Operation>&);
 };
 
