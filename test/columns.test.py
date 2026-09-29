@@ -417,7 +417,7 @@ class TestDateFormats(TestCase):
         """Verify due.countdown formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.countdown")
         self.assertRegex(out, r"1\s+")
-        self.assertRegex(out, r"2\s+\d+\S+")
+        self.assertRegex(out, r"2\s+(\d+d )?\d+:\d{2}:\d{2}")
 
     def test_date_format_unrecognized(self):
         """Verify due.donkey formatting fails"""
@@ -541,6 +541,62 @@ class TestUDAUUIDReconfiguredFromString(TestCase):
         """Verify formatting of 'uda_uuid.short' column"""
         code, out, err = self.t("1 xxx rc.report.xxx.columns:uda_uuid.short")
         self.assertEqual(self.expected_str[:8], out.strip())
+
+
+class TestUDADurationFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("verbose", "nothing")
+        cls.t.config("uda.uda_duration.label", "uda_duration")
+        cls.t.config("uda.uda_duration.type", "duration")
+        cls.t.config("report.xxx.columns", "id,uda_duration")
+
+        # Test only nonnegative durations, since negative ones are not handled
+        # well. See https://github.com/GothenburgBitFactory/libshared/pull/110
+        cls.t("add one uda_duration:0min")
+        cls.t("add two uda_duration:1min")
+        cls.t("add thr uda_duration:60d")
+        cls.t("add four uda_duration:'30d + 10h + 3min + 2s'")
+
+    def test_uda_duration_format_indicator(self):
+        """Verify uda_duration.indicator formatting"""
+        code, out, err = self.t(f"xxx rc.report.xxx.columns:id,uda_duration.indicator")
+        # The indicator for UDAs is always U.
+        self.assertRegex(out, r"1\s+U")
+        self.assertRegex(out, r"2\s+U")
+        self.assertRegex(out, r"3\s+U")
+        self.assertRegex(out, r"4\s+U")
+
+    def test_uda_duration_format_iso(self):
+        """Verify uda_duration.iso formatting"""
+        for style in ["iso", "default"]:
+            code, out, err = self.t(
+                f"xxx rc.report.xxx.columns:id,uda_duration.{style}"
+            )
+            # The ISO format shouldn't change at all, so do exact matches rather than
+            # more flexible regexes.
+            self.assertRegex(out, r"1\s+PT0S")
+            self.assertRegex(out, r"2\s+PT1M")
+            self.assertRegex(out, r"3\s+P60D")
+            self.assertRegex(out, r"4\s+P30DT10H3M2S")
+
+    def test_uda_duration_format_age(self):
+        """Verify uda_duration.age formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,uda_duration.age")
+        self.assertRegex(out, r"1\s+")
+        self.assertRegex(out, r"2\s+[0-9]+[wmin]+")
+        self.assertRegex(out, r"3\s+[0-9]+[wmin]+")
+        self.assertRegex(out, r"4\s+[0-9]+[wmin]+")
+
+    def test_uda_duration_format_countdown(self):
+        """Verify uda_duration.countdown formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,uda_duration.countdown")
+        self.assertRegex(out, r"1\s+")
+        self.assertRegex(out, r"2\s+(\d+d )?\d+:\d{2}:\d{2}")
+        self.assertRegex(out, r"3\s+(\d+d )?\d+:\d{2}:\d{2}")
+        self.assertRegex(out, r"4\s+(\d+d )?\d+:\d{2}:\d{2}")
 
 
 class TestFeature1061(TestCase):

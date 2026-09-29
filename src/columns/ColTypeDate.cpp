@@ -75,7 +75,7 @@ void ColumnTypeDate::measure(Task& task, unsigned int& minimum, unsigned int& ma
       minimum = maximum = Datetime::length(format);
     } else if (_style == "countdown") {
       Datetime now;
-      minimum = maximum = Duration(date - now).formatVague(true).length();
+      if (date > now) minimum = maximum = Duration(date - now).format().length();
     } else if (_style == "julian") {
       minimum = maximum = format(date.toJulian(), 13, 12).length();
     } else if (_style == "epoch") {
@@ -120,7 +120,7 @@ void ColumnTypeDate::render(std::vector<std::string>& lines, Task& task, int wid
       renderStringLeft(lines, width, color, date.toString(format));
     } else if (_style == "countdown") {
       Datetime now;
-      renderStringRight(lines, width, color, Duration(date - now).formatVague(true));
+      if (date > now) renderStringRight(lines, width, color, Duration(date - now).format());
     } else if (_style == "julian")
       renderStringRight(lines, width, color, format(date.toJulian(), 13, 12));
 
