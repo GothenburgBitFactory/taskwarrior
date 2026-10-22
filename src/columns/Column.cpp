@@ -34,7 +34,9 @@
 #include <ColEntry.h>
 #include <ColID.h>
 #include <ColIMask.h>
+#include <ColIter.h>
 #include <ColIterCount.h>
+#include <ColIterType.h>
 #include <ColLast.h>
 #include <ColMask.h>
 #include <ColModified.h>
@@ -93,8 +95,12 @@ Column* Column::factory(const std::string& name, const std::string& report) {
     c = new ColumnID();
   else if (column_name == "imask")
     c = new ColumnIMask();
+  else if (column_name == "iter")
+    c = new ColumnIter();
   else if (column_name == "iter_count")
     c = new ColumnIterCount();
+  else if (column_name == "iter_type")
+    c = new ColumnIterType();
   else if (column_name == "last")
     c = new ColumnLast();
   else if (column_name == "mask")
@@ -159,7 +165,11 @@ void Column::factory(std::map<std::string, Column*>& all) {
   all[c->_name] = c;
   c = new ColumnIMask();
   all[c->_name] = c;
+  c = new ColumnIter();
+  all[c->_name] = c;
   c = new ColumnIterCount();
+  all[c->_name] = c;
+  c = new ColumnIterType();
   all[c->_name] = c;
   c = new ColumnLast();
   all[c->_name] = c;

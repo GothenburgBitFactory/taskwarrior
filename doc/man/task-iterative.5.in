@@ -1,0 +1,178 @@
+.TH task-iterative 5 2026-10-20 "${PACKAGE_STRING}" "User Manuals"
+
+.SH NAME
+task-iterative \- Iterative tasks for the Taskwarrior command line todo manager.
+
+.SH DESCRIPTION
+An iterative task repeats on a schedule. A series has one live task at a
+time. Completing it closes that task and creates the next one in the series,
+with its dates moved forward to the next interval.
+
+Iterative tasks are an alternative to recurring tasks. A task cannot be both
+recurring and iterative.
+
+.SH CREATING AN ITERATIVE TASK
+A task becomes iterative when it has all of:
+
+.TP
+.B iter:<interval>
+How often the task repeats. See INTERVALS below.
+
+.TP
+.B iter_type:fixed|fixed+|chained
+How the next date is chosen. See ITERATION TYPES below.
+
+.TP
+At least one of due, scheduled or wait
+The date the schedule is anchored on.
+
+.RE
+For example:
+
+.nf
+    $ task add Pay rent iter:monthly iter_type:fixed due:2026-11-20
+    $ task add Take out the bins iter:weekly iter_type:fixed+ due:friday
+    $ task add Haircut iter:6wk iter_type:chained scheduled:today
+.fi
+
+Adding iter and iter_type to an existing pending or waiting task makes it
+iterative.
+
+.SH ITERATION TYPES
+
+.TP
+.B fixed
+The next due date is the next interval from when the task was originally due.
+If rent is due on the 20th of the month, the next due date is the 20th of the
+next month, whether it was paid on the 15th, the 20th or the 25th.
+
+.TP
+.B fixed+
+The next due date is the next interval from when the task was originally due,
+on or after now. Missed intervals are skipped. If the garbage bins go out every
+week but two weeks were missed while on vacation, they do not need to go out
+several days in a row to catch up.
+
+.TP
+.B chained
+The next due date is the next interval from when the task was completed. If a
+haircut is due every six weeks and one was done today, the next is six weeks
+from today, even if this one was three weeks late or two days early.
+
+.RE
+Short forms are also accepted: fx for fixed, f+ or fp for fixed+, and ch for
+chained.
+
+.SH INTERVALS
+The iter value can be written in any of these forms. They are tried in this
+order:
+
+.TP
+Raw RRULE
+An RFC 5545 recurrence rule, such as "FREQ=WEEKLY;BYDAY=MO,TH".
+
+.TP
+Taskwarrior durations
+The same values accepted by recur, such as daily, weekdays, 3wk, fortnight
+or 2year. See
+.BR task (1).
+
+.TP
+ISO-8601 durations
+Such as P2W, P3D or PT12H. Months or years cannot be mixed with smaller units,
+and weeks cannot be combined with any other unit.
+
+.TP
+Natural language
+Such as "every monday", "every other tuesday", "the last friday of the month"
+or "every two weeks on friday". Multi-word values must be quoted.
+
+.SH DATES
+The anchor is the first of due, scheduled and wait that is set. When a task is
+completed, the next date is computed for the anchor, and due, scheduled, wait
+and until are all moved forward by the same amount, which keeps the spacing
+between them.
+
+The until date applies to a single task, not the series. To end a series on a
+date, use an RRULE with UNTIL.
+
+.SH SERIES POSITION
+Each task in a series has a read-only iter_count attribute holding its position
+in the series. The first task is 1 and each new task adds one. An RRULE with
+COUNT ends the series once iter_count reaches COUNT.
+
+Duplicating an iterative task starts a new series at position 1.
+
+.SH ENDING A SERIES
+A series ends on its own when an RRULE runs out through COUNT or UNTIL. The last
+task completes normally and no new task is created.
+
+To end a series early, either:
+
+.TP
+Delete the current task
+Deleting does not create a new task, so the series stops there.
+
+.TP
+Clear iter
+For example "task 1 modify iter:". The task becomes an ordinary pending task
+that can be completed or deleted like any other. Its iter_type and iter_count
+are removed, so adding iter again starts a new series at 1.
+
+.RE
+While a task is iterative, iter_type cannot be removed, and the last of due,
+scheduled and wait cannot be removed.
+
+.SH REPORTS AND FILTERS
+An iterative task appears in reports like a pending task. A future wait date
+hides it like any other waiting task.
+
+.TP
+.B status:iterative
+Matches iterative tasks.
+
+.TP
+.B +ITERATIVE
+Matches iterative tasks.
+
+.TP
+.B +PENDING
+Matches pending and iterative tasks that are not waiting.
+
+.SH SYNCHRONIZATION
+If the same task is completed on two replicas before they sync, both create the
+same next task, so the series does not end up with duplicates.
+
+The next date is computed in the local timezone of the replica that completes
+the task.
+
+.SH "CREDITS & COPYRIGHTS"
+Copyright (C) 2026 A. Milner.
+
+Taskwarrior is distributed under the MIT license. See
+https://www.opensource.org/licenses/mit-license.php for more information.
+
+.SH SEE ALSO
+.BR task(1),
+.BR taskrc(5),
+.BR task-color(5),
+.BR task-sync(5)
+
+For more information regarding Taskwarrior, see the following:
+
+.TP
+The official site at
+<https://taskwarrior.org>
+
+.TP
+The official code repository at
+<https://github.com/GothenburgBitFactory/taskwarrior>
+
+.TP
+You can contact the project by emailing
+<support@GothenburgBitFactory.org>
+
+.SH REPORTING BUGS
+.TP
+Bugs in Taskwarrior may be reported to the issue-tracker at
+<https://github.com/GothenburgBitFactory/taskwarrior/issues>

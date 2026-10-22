@@ -218,6 +218,20 @@ int CmdInfo::execute(std::string& output) {
       view.set(row, 1, task.get("rtype"));
     }
 
+    // iter
+    if (task.has("iter")) {
+      row = view.addRow();
+      view.set(row, 0, "Iter");
+      view.set(row, 1, task.get("iter"));
+    }
+
+    // iter_type
+    if (task.has("iter_type")) {
+      row = view.addRow();
+      view.set(row, 0, "Iter type");
+      view.set(row, 1, task.get("iter_type"));
+    }
+
     // iter_count
     if (task.has("iter_count")) {
       row = view.addRow();
