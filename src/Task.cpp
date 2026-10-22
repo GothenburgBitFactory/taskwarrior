@@ -1446,6 +1446,27 @@ void Task::validate_add() {
   // Cannot have an old-style recur frequency with no due date - when would it recur?
   if (has("recur") && (!has("due") || get("due") == ""))
     throw std::string("A recurring task must also have a 'due' date.");
+
+  checkIterative(Task());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Raise user-visible errors for iterative manualy edited iterative tasks.
+void Task::checkIterative(const Task& before) const {
+  if (get("iter") == "") return;
+
+  if (get("recur") != "" || get("parent") != "" || get("template") != "")
+    throw std::string("A task cannot be both recurring and iterative.");
+
+  if (before.getStatus() == Task::iterative) {
+    if (get("iter_type") == "")
+      throw std::string("You cannot remove the iteration type from an iterative task.");
+
+    if (get("due") == "" && get("scheduled") == "" && get("wait") == "")
+      throw std::string(
+          "You cannot remove the last of the due, scheduled and wait dates from an iterative "
+          "task.");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1475,9 +1496,18 @@ void Task::validate(bool applyDefault /* = true */) {
   } else
     set("uuid", uuid());
 
+  // Clearing `iter` on an existing series ends it and leaves a plain task.
+  // Only existing series have `iter_count`, so a new iterative task without
+  // `iter` still reaches TaskChampion and is rejected there. Removing
+  // `iter_count` lets a later `iter` start a new series at 1.
+  if (status == Task::iterative && get("iter") == "" && get("iter_count") != "") {
+    status = Task::pending;
+    remove("iter_type");
+    remove("iter_count");
+  }
+
   // Iterative tasks get a special status when `iter` is set.
-  if ((status == Task::pending || status == Task::waiting) && has("iter") && get("iter") != "" &&
-      (!has("parent") || get("parent") == "") && (!has("template") || get("template") == "")) {
+  if ((status == Task::pending || status == Task::waiting) && get("iter") != "") {
     status = Task::iterative;
   }
 

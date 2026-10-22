@@ -171,6 +171,7 @@ class Task {
   static std::string attr2Dep(const std::string&);
 
   void validate_add();
+  void checkIterative(const Task& before) const;
   void validate(bool applyDefault = true);
 
   float urgency_c() const;

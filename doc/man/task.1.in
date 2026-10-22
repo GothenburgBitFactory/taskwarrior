@@ -871,18 +871,18 @@ Specifies the due-date of a task.
 Specifies the frequency of a recurrence of a task.
 
 .TP
-.B iter:<frequency>
-Makes the task iterative. Completing it creates the next occurrence with its
-dates advanced by the frequency. An iterative task also needs an iter_type and
-at least one of due, scheduled or wait, which the schedule is anchored on. The
-read-only iter_count attribute holds each occurrence's position in the series.
+.B iter:<interval>
+Makes the task iterative. Completing it creates the next task in the series,
+with its dates moved forward by the interval. Needs an iter_type and at least
+one of due, scheduled or wait. See
+.BR task-iterative (5).
 
 .TP
 .B iter_type:fixed|fixed+|chained
-How the next occurrence of an iterative task is scheduled. fixed: the next
-date after the completed occurrence. fixed+: the next date after both now and
-the completed occurrence, skipping missed ones. chained: the next date after
-the completion time. Short forms fx, f+ or fp, and ch are also accepted.
+How the next date of an iterative task is chosen: the next interval from the
+original due date, the next interval on or after now, or the next interval from
+completion. See
+.BR task-iterative (5).
 
 .TP
 .B scheduled:<ready-date>
@@ -1306,21 +1306,8 @@ Every two years.
 
 .TP
 .I Iterative tasks
-accept the frequencies above, ISO-8601 durations, raw RRULE strings, and
-natural language such as:
-
-.TP
-"the last friday of the month"
-
-.TP
-"weekdays in june at 9:30 am"
-
-.TP
-"every year on the last monday in may"
-
-.TP
-You will need to wrap multi-word descriptions in "".
-
+accept these frequencies and other forms. See
+.BR task-iterative (5).
 
 .RE
 
@@ -1644,6 +1631,7 @@ https://www.opensource.org/licenses/mit-license.php for more information.
 .SH SEE ALSO
 .BR taskrc(5),
 .BR task-color(5),
+.BR task-iterative(5),
 .BR task-sync(5)
 
 For more information regarding Taskwarrior, see the following:

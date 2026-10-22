@@ -14,7 +14,9 @@ set (columns_SRCS Column.cpp Column.h
                   ColEntry.cpp ColEntry.h
                   ColID.cpp ColID.h
                   ColIMask.cpp ColIMask.h
+                  ColIter.cpp ColIter.h
                   ColIterCount.cpp ColIterCount.h
+                  ColIterType.cpp ColIterType.h
                   ColLast.cpp ColLast.h
                   ColMask.cpp ColMask.h
                   ColModified.cpp ColModified.h
