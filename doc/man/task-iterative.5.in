@@ -4,9 +4,10 @@
 task-iterative \- Iterative tasks for the Taskwarrior command line todo manager.
 
 .SH DESCRIPTION
-An iterative task repeats on a schedule. A series has one live task at a
-time. Completing it closes that task and creates the next one in the series,
-with its dates moved forward to the next interval.
+An iterative task repeats at an interval, such as weekly, every other Tuesday
+or six weeks after it was last done. Only one copy of the task exists at a
+time. Completing it creates the next one, with its dates moved forward to the
+next interval. How the next interval is chosen depends on the iteration type.
 
 Iterative tasks are an alternative to recurring tasks. A task cannot be both
 recurring and iterative.
@@ -24,7 +25,7 @@ How the next date is chosen. See ITERATION TYPES below.
 
 .TP
 At least one of due, scheduled or wait
-The date the schedule is anchored on.
+The date that moves forward each interval. See DATES below.
 
 .RE
 For example:
@@ -84,17 +85,70 @@ and weeks cannot be combined with any other unit.
 
 .TP
 Natural language
-Such as "every monday", "every other tuesday", "the last friday of the month"
-or "every two weeks on friday". Multi-word values must be quoted.
+English phrases, which are converted to an RRULE. See NATURAL LANGUAGE
+INTERVALS below. Multi-word values must be quoted.
+
+.SH NATURAL LANGUAGE INTERVALS
+These are the supported forms, with examples:
+
+.TP
+Simple frequencies
+daily, weekly, monthly, yearly, fortnightly, quarterly, semiannually,
+annually
+
+.TP
+Every N periods
+"every 3 weeks", "every other day", "every two weeks on friday"
+
+.TP
+Days of the week
+"every monday and wednesday", "every weekday", "weekends"
+
+.TP
+Days of the month
+"monthly on the 15th", "the 1st and 15th of every month"
+
+.TP
+Weekdays of the month
+"monthly on the third friday", "every last friday of the month"
+
+.TP
+Days of the year
+"every year on the 1st of june", "every year on the last monday of may"
+
+.TP
+A number of times
+"weekly on thursday three times"
+
+.TP
+Until a date
+"every day until March 6th, 2027"
+
+.RE
+Common abbreviations and misspellings are accepted, such as mon, tues, jan,
+wkdy and wknd.
+
+A number of times or an until date ends the series, the same as COUNT and
+UNTIL in an RRULE. See ENDING A SERIES below.
+
+For example:
+
+.nf
+    $ task add Standup iter:"every weekday" iter_type:fixed due:tomorrow
+    $ task add Physio iter:"weekly on thursday three times" iter_type:fixed due:thursday
+.fi
 
 .SH DATES
-The anchor is the first of due, scheduled and wait that is set. When a task is
-completed, the next date is computed for the anchor, and due, scheduled, wait
-and until are all moved forward by the same amount, which keeps the spacing
-between them.
+When an iterative task is completed, its due, scheduled, wait and until dates
+are all moved forward by the same amount of time, if they are set. That amount
+is calculated for the highest priority date, the anchor, and the other dates
+are moved forward by the same amount. This preserves the spacing between them.
+
+The anchor priority is due > scheduled > wait.
 
 The until date applies to a single task, not the series. To end a series on a
-date, use an RRULE with UNTIL.
+date, use an until phrase such as "every day until March 6th, 2027", or an
+RRULE with UNTIL.
 
 .SH SERIES POSITION
 Each task in a series has a read-only iter_count attribute holding its position
@@ -111,13 +165,14 @@ To end a series early, either:
 
 .TP
 Delete the current task
-Deleting does not create a new task, so the series stops there.
+Deleting does not create a new task, so the series ends.
 
 .TP
 Clear iter
 For example "task 1 modify iter:". The task becomes an ordinary pending task
 that can be completed or deleted like any other. Its iter_type and iter_count
-are removed, so adding iter again starts a new series at 1.
+are removed, so adding iter again starts a new series at 1. When confirmation
+is on, Taskwarrior asks before ending the series.
 
 .RE
 While a task is iterative, iter_type cannot be removed, and the last of due,

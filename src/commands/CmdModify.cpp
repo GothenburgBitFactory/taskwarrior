@@ -85,6 +85,16 @@ int CmdModify::execute(std::string&) {
       // Abort if change introduces inconsistencies.
       checkConsistency(before, task);
 
+      // Clearing `iter` ends the series, so confirm it like a delete.
+      if (before.getStatus() == Task::iterative && task.get("iter") == "" &&
+          Context::getContext().config.getBoolean("confirmation") &&
+          !confirm(format("End the iterative series for task {1} '{2}'?",
+                          task.identifier(true), task.get("description")))) {
+        std::cout << "Task not modified.\n";
+        rc = 1;
+        continue;
+      }
+
       auto question =
           format("Modify task {1} '{2}'?", task.identifier(true), task.get("description"));
 

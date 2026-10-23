@@ -235,7 +235,7 @@ int CmdInfo::execute(std::string& output) {
     // iter_count
     if (task.has("iter_count")) {
       row = view.addRow();
-      view.set(row, 0, "Iter Count");
+      view.set(row, 0, "Iter count");
       view.set(row, 1, task.get("iter_count"));
     }
 
