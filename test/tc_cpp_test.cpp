@@ -149,6 +149,9 @@ int TEST_NAME(int, char**) {
     t.ok(msg.find("/does/not/exist/taskchampion-local-sync-server.sqlite3") != std::string::npos &&
              msg.find("Error code 14") != std::string::npos,
          "error message has full context");
+    t.ok(msg.find("Unable to open the database file") != std::string::npos ||
+             msg.find("unable to open database file") != std::string::npos,
+         "error message contains sqlite text");
   }
 
   return 0;

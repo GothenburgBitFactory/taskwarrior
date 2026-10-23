@@ -175,8 +175,7 @@ int CmdCalendar::execute(std::string& output) {
     // Find the oldest pending due date.
     Datetime oldest(9999, 12, 31);
     for (auto& task : tasks) {
-      auto status = task.getStatus();
-      if (status == Task::pending || status == Task::waiting) {
+      if (task.is_open()) {
         if (task.has("due") && !task.hasTag("nocal")) {
           Datetime d(task.get("due"));
           if (d < oldest) oldest = d;
@@ -534,8 +533,7 @@ std::string CmdCalendar::renderMonths(int firstMonth, int firstYear, const Datet
           // takes precedence over the scheduled color
           bool coloredWithDue = false;
           for (auto& task : all) {
-            auto status = task.getStatus();
-            if ((status == Task::pending || status == Task::waiting) && !task.hasTag("nocal")) {
+            if (task.is_open() && !task.hasTag("nocal")) {
               if (task.has("scheduled") && !coloredWithDue) {
                 std::string scheduled = task.get("scheduled");
                 Datetime scheduleddmy(strtoll(scheduled.c_str(), nullptr, 10));

@@ -85,6 +85,16 @@ int CmdModify::execute(std::string&) {
       // Abort if change introduces inconsistencies.
       checkConsistency(before, task);
 
+      // Clearing `iter` ends the series, so confirm it like a delete.
+      if (before.getStatus() == Task::iterative && task.get("iter") == "" &&
+          Context::getContext().config.getBoolean("confirmation") &&
+          !confirm(format("End the iterative series for task {1} '{2}'?",
+                          task.identifier(true), task.get("description")))) {
+        std::cout << "Task not modified.\n";
+        rc = 1;
+        continue;
+      }
+
       auto question =
           format("Modify task {1} '{2}'?", task.identifier(true), task.get("description"));
 
@@ -119,8 +129,10 @@ void CmdModify::checkConsistency(Task& before, Task& after) {
   if (before.has("recur") && (!after.has("recur") || after.get("recur") == ""))
     throw std::string("You cannot remove the recurrence from a recurring task.");
 
-  if ((before.getStatus() == Task::pending) && (after.getStatus() == Task::pending) &&
-      (before.get("end") == "") && (after.get("end") != ""))
+  after.checkIterative(before);
+
+  if (before.is_pending() && after.is_pending() && (before.get("end") == "") &&
+      (after.get("end") != ""))
     throw format("Could not modify task {1}. You cannot set an end date on a pending task.",
                  before.identifier(true));
 }

@@ -65,6 +65,8 @@ void ColumnStatus::measure(Task& task, unsigned int& minimum, unsigned int& maxi
       minimum = maximum = utf8_width("Completed");
     else if (status == Task::recurring)
       minimum = maximum = utf8_width("Recurring");
+    else if (status == Task::iterative)
+      minimum = maximum = utf8_width("Iterative");
   } else if (_style == "short")
     minimum = maximum = 1;
 }
@@ -85,6 +87,8 @@ void ColumnStatus::render(std::vector<std::string>& lines, Task& task, int width
       value = "Waiting";
     else if (status == Task::recurring)
       value = "Recurring";
+    else if (status == Task::iterative)
+      value = "Iterative";
   }
 
   else if (_style == "short") {
@@ -98,6 +102,8 @@ void ColumnStatus::render(std::vector<std::string>& lines, Task& task, int width
       value = "W";
     else if (status == Task::recurring)
       value = "R";
+    else if (status == Task::iterative)
+      value = "I";
   }
 
   renderStringLeft(lines, width, color, value);
