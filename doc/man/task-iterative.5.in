@@ -141,10 +141,10 @@ For example:
 .SH DATES
 When an iterative task is completed, its due, scheduled, wait and until dates
 are all moved forward by the same amount of time, if they are set. That amount
-is calculated for the highest priority date, the anchor, and the other dates
+is calculated for the highest priority date and the other dates
 are moved forward by the same amount. This preserves the spacing between them.
 
-The anchor priority is due > scheduled > wait.
+The priority is due > scheduled > wait.
 
 The until date applies to a single task, not the series. To end a series on a
 date, use an until phrase such as "every day until March 6th, 2027", or an
