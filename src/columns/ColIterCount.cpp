@@ -34,7 +34,7 @@
 ColumnIterCount::ColumnIterCount() {
   _name = "iter_count";
   _style = "number";
-  _label = "Iter Count";
+  _label = "Iter count";
   _modifiable = false;
   _styles = {"number"};
   _examples = {"3"};

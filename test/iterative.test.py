@@ -142,7 +142,7 @@ class TestIterativeTasks(TestCase):
         task = json.loads(self.t("export")[1])[0]
         self.assertEqual(task["status"], "iterative")
         self.assertNotIn("due", task)
-        self.t("1 modify iter:")
+        self.t("rc.confirmation:off 1 modify iter:")
         task = json.loads(self.t("export")[1])[0]
         self.assertEqual(task["status"], "pending")
         self.assertNotIn("iter", task)
@@ -152,12 +152,35 @@ class TestIterativeTasks(TestCase):
         code, out, err = self.t("status.any: count")
         self.assertEqual(out.strip(), "1")
 
+    def test_clearing_iter_asks_for_confirmation(self):
+        """Clearing `iter` prompts when confirmation is on."""
+        self.t("add iter:weekly iter_type:fixed due:tomorrow 'rent'")
+        code, out, err = self.t.runError("1 modify iter:", input="n\n")
+        self.assertIn("End the iterative series for task 1 'rent'?", out)
+        self.assertIn("Task not modified.", out)
+        task = json.loads(self.t("export")[1])[0]
+        self.assertEqual(task["status"], "iterative")
+        self.assertEqual(task["iter"], "weekly")
+
+        self.t("1 modify iter:", input="y\n")
+        task = json.loads(self.t("export")[1])[0]
+        self.assertEqual(task["status"], "pending")
+        self.assertNotIn("iter", task)
+
+    def test_clearing_iter_without_confirmation(self):
+        """Clearing `iter` does not prompt when confirmation is off."""
+        self.t("add iter:weekly iter_type:fixed due:tomorrow 'rent'")
+        code, out, err = self.t("rc.confirmation:off 1 modify iter:")
+        self.assertNotIn("End the iterative series", out)
+        task = json.loads(self.t("export")[1])[0]
+        self.assertEqual(task["status"], "pending")
+
     def test_cleared_series_restarts_at_one(self):
         """Clearing `iter` on a later task and adding it back starts a new
         series at `iter_count` 1."""
         self.t("add iter:weekly iter_type:fixed due:tomorrow 'rent'")
         self.t("rc.confirmation:off 1 done")
-        self.t("+ITERATIVE modify iter:")
+        self.t("rc.confirmation:off +ITERATIVE modify iter:")
         self.t("+PENDING modify iter:weekly iter_type:fixed")
         task = json.loads(self.t("+ITERATIVE export")[1])[0]
         self.assertEqual(task["iter_count"], 1)
@@ -293,7 +316,7 @@ class TestIterativeTasks(TestCase):
         code, out, err = self.t("1 info")
         self.assertRegex(out, r"Iter\s+weekly")
         self.assertRegex(out, r"Iter type\s+fixed")
-        self.assertRegex(out, r"Iter Count\s+1")
+        self.assertRegex(out, r"Iter count\s+1")
         code, out, err = self.t("+ORPHAN count")
         self.assertEqual(out.strip(), "0")
 
