@@ -160,6 +160,8 @@ Task::status Task::textToStatus(const std::string& input) {
     return Task::deleted;
   else if (input[0] == 'r')
     return Task::recurring;
+  else if (input[0] == 'i')
+    return Task::iterative;
   // for compatibility, parse `w` as pending; Task::getStatus will
   // apply the virtual waiting status if appropriate
   else if (input[0] == 'w')
@@ -180,6 +182,8 @@ std::string Task::statusToText(Task::status s) {
     return "completed";
   else if (s == Task::deleted)
     return "deleted";
+  else if (s == Task::iterative)
+    return "iterative";
 
   return "pending";
 }
@@ -356,7 +360,7 @@ bool Task::is_empty() const { return data.size() == 0; }
 // Ready means pending, not blocked and either not scheduled or scheduled before
 // now.
 bool Task::is_ready() const {
-  return getStatus() == Task::pending && !is_blocked &&
+  return is_pending() && !is_blocked &&
          (!has("scheduled") || Datetime("now").operator>(get_date("scheduled")));
 }
 
@@ -505,13 +509,13 @@ bool Task::is_overdue() const {
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// Task is considered waiting if it's pending and the wait attribute is set as
-// future datetime value.
+// Task is considered waiting if it's pending or iterative and the wait attribute
+// is set as future datetime value.
 // While this is not consistent with other attribute-based virtual tags, such
 // as +BLOCKED, it is more backwards compatible with how +WAITING virtual tag
 // behaved in the past, when waiting had a dedicated status value.
 bool Task::is_waiting() const {
-  if (has("wait") && get("status") == "pending") {
+  if (has("wait") && (get("status") == "pending" || get("status") == "iterative")) {
     Datetime now;
     Datetime wait(get_date("wait"));
     if (wait > now) return true;
@@ -519,6 +523,18 @@ bool Task::is_waiting() const {
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Task is open if its stored status is pending or iterative. This includes
+// waiting tasks, which are stored as pending.
+bool Task::is_open() const {
+  auto status = has("status") ? textToStatus(get("status")) : Task::pending;
+  return status == Task::pending || status == Task::iterative;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Task is pending, in the +PENDING sense, if it is open and not waiting.
+bool Task::is_pending() const { return is_open() && !is_waiting(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Try a JSON parse.
@@ -1153,7 +1169,8 @@ bool Task::hasTag(const std::string& tag) const {
     if (tag == "PARENT") return has("mask") || has("last");  // 2017-01-07: Deprecated in 2.6.0
     if (tag == "TEMPLATE") return has("last") || has("mask");
     if (tag == "WAITING") return is_waiting();
-    if (tag == "PENDING") return getStatus() == Task::pending;
+    if (tag == "PENDING") return is_pending();
+    if (tag == "ITERATIVE") return getStatus() == Task::iterative;
     if (tag == "COMPLETED") return getStatus() == Task::completed;
     if (tag == "DELETED") return getStatus() == Task::deleted;
 #ifdef PRODUCT_TASKWARRIOR
@@ -1429,6 +1446,27 @@ void Task::validate_add() {
   // Cannot have an old-style recur frequency with no due date - when would it recur?
   if (has("recur") && (!has("due") || get("due") == ""))
     throw std::string("A recurring task must also have a 'due' date.");
+
+  checkIterative(Task());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Raise user-visible errors for iterative manualy edited iterative tasks.
+void Task::checkIterative(const Task& before) const {
+  if (get("iter") == "") return;
+
+  if (get("recur") != "" || get("parent") != "" || get("template") != "")
+    throw std::string("A task cannot be both recurring and iterative.");
+
+  if (before.getStatus() == Task::iterative) {
+    if (get("iter_type") == "")
+      throw std::string("You cannot remove the iteration type from an iterative task.");
+
+    if (get("due") == "" && get("scheduled") == "" && get("wait") == "")
+      throw std::string(
+          "You cannot remove the last of the due, scheduled and wait dates from an iterative "
+          "task.");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1458,10 +1496,25 @@ void Task::validate(bool applyDefault /* = true */) {
   } else
     set("uuid", uuid());
 
+  // Clearing `iter` on an existing series ends it and leaves a plain task.
+  // Only existing series have `iter_count`, so a new iterative task without
+  // `iter` still reaches TaskChampion and is rejected there. Removing
+  // `iter_count` lets a later `iter` start a new series at 1.
+  if (status == Task::iterative && get("iter") == "" && get("iter_count") != "") {
+    status = Task::pending;
+    remove("iter_type");
+    remove("iter_count");
+  }
+
+  // Iterative tasks get a special status when `iter` is set.
+  if ((status == Task::pending || status == Task::waiting) && get("iter") != "") {
+    status = Task::iterative;
+  }
+
   // TODO Obsolete remove for 3.0.0
   // Recurring tasks get a special status.
-  if (status == Task::pending && has("due") && has("recur") &&
-      (!has("parent") || get("parent") == "") && (!has("template") || get("template") == "")) {
+  else if (status == Task::pending && has("due") && has("recur") &&
+           (!has("parent") || get("parent") == "") && (!has("template") || get("template") == "")) {
     status = Task::recurring;
   }
   /*
@@ -1499,8 +1552,8 @@ void Task::validate(bool applyDefault /* = true */) {
   if ((status == Task::completed || status == Task::deleted) && (!has("end") || get("end") == ""))
     setAsNow("end");
 
-  // Pending tasks cannot have an end date, remove if present
-  if ((status == Task::pending) && (get("end") != "")) remove("end");
+  // Pending and iterative tasks cannot have an end date, remove if present
+  if ((status == Task::pending || status == Task::iterative) && (get("end") != "")) remove("end");
 
   // Provide a modified date unless user already specified one.
   if (!has("modified") || get("modified") == "") setAsNow("modified");

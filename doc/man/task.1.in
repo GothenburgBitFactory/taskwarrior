@@ -819,12 +819,13 @@ are:
     DELETED      Matches if the task has deleted status
     DUE          Matches if the task is due within the next 7 days (See rc.due)
     INSTANCE     Matches if the task is a recurrent instance
+    ITERATIVE    Matches if the task has iterative status
     LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
     ORPHAN       Matches if the task has any orphaned UDA values
     OVERDUE      Matches if the task is overdue
     PARENT       Matches if the task is a parent (deprecated in 2.6.0)
-    PENDING      Matches if the task has pending status
+    PENDING      Matches if the task has pending or iterative status
     PRIORITY     Matches if the task has a priority
     PROJECT      Matches if the task has a project
     QUARTER      Matches if the task is due this quarter
@@ -854,7 +855,7 @@ add or remove a virtual tag.
 Specifies the project to which a task is related to.
 
 .TP
-.B status:pending|deleted|completed|waiting|recurring
+.B status:pending|deleted|completed|waiting|recurring|iterative
 Specifies the state of the task.
 
 .TP
@@ -868,6 +869,20 @@ Specifies the due-date of a task.
 .TP
 .B recur:<frequency>
 Specifies the frequency of a recurrence of a task.
+
+.TP
+.B iter:<interval>
+Makes the task iterative. Completing it creates the next task in the series,
+with its dates moved forward by the interval. Needs an iter_type and at least
+one of due, scheduled or wait. See
+.BR task-iterative (5).
+
+.TP
+.B iter_type:fixed|fixed+|chained
+How the next date of an iterative task is chosen: the next interval from the
+original due date, the next interval on or after now, or the next interval from
+completion. See
+.BR task-iterative (5).
 
 .TP
 .B scheduled:<ready-date>
@@ -1288,6 +1303,12 @@ Every year or a number of years.
 .TP
 biannual, biyearly, 2yr
 Every two years.
+
+.TP
+.I Iterative tasks
+accept these frequencies and other forms. See
+.BR task-iterative (5).
+
 .RE
 
 .SH CONTEXT
@@ -1610,6 +1631,7 @@ https://www.opensource.org/licenses/mit-license.php for more information.
 .SH SEE ALSO
 .BR taskrc(5),
 .BR task-color(5),
+.BR task-iterative(5),
 .BR task-sync(5)
 
 For more information regarding Taskwarrior, see the following:
