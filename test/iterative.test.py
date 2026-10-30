@@ -212,6 +212,14 @@ class TestIterativeTasks(TestCase):
         code, out, err = self.t.runError("1 modify end:now")
         self.assertIn("You cannot set an end date on a pending task.", err)
 
+    def test_modify_cannot_set_pending_status_on_iterative(self):
+        """Setting pending status on an iterative task is rejected."""
+        self.t("add iter:weekly iter_type:fixed due:tomorrow 'rent'")
+        code, out, err = self.t.runError("1 modify status:pending")
+        self.assertIn("You cannot change the status of an iterative task.", err)
+        task = json.loads(self.t("export")[1])[0]
+        self.assertEqual(task["status"], "iterative")
+
     def test_import_drops_end_from_iterative(self):
         """An imported iterative task loses its end date."""
         self.t(

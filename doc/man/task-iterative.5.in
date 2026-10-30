@@ -175,8 +175,8 @@ are removed, so adding iter again starts a new series at 1. When confirmation
 is on, Taskwarrior asks before ending the series.
 
 .RE
-While a task is iterative, iter_type cannot be removed, and the last of due,
-scheduled and wait cannot be removed.
+While a task is iterative, iter_type cannot be removed, the last of due,
+scheduled and wait cannot be removed, and its status cannot be set to pending.
 
 .SH REPORTS AND FILTERS
 An iterative task appears in reports like a pending task. A future wait date
