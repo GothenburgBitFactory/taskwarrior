@@ -215,6 +215,8 @@ std::string CmdEdit::formatTask(Task task, const std::string& dateformat) {
          << "  Due:               " << formatDate(task, "due", dateformat) << '\n'
          << "  Until:             " << formatDate(task, "until", dateformat) << '\n'
          << "  Recur:             " << task.get("recur") << '\n'
+         << "  Iter:              " << task.get("iter") << '\n'
+         << "  Iter type:         " << task.get("iter_type") << '\n'
          << "  Wait until:        " << formatDate(task, "wait", dateformat) << '\n'
          << "# Modified:          " << formatDate(task, "modified", dateformat) << '\n'
          << "  Parent:            " << task.get("parent") << '\n';
@@ -462,6 +464,32 @@ void CmdEdit::parseTask(Task& task, const std::string& after, const std::string&
     }
   }
 
+  // iter
+  value = findValue(after, "\n  Iter:");
+  if (value != task.get("iter")) {
+    if (value != "") {
+      Context::getContext().footnote("Iteration modified.");
+      task.set("iter", value);
+    } else {
+      Context::getContext().footnote("Iteration removed.");
+      task.remove("iter");
+    }
+  }
+
+  // iter_type
+  value = findValue(after, "\n  Iter type:");
+  if (value != task.get("iter_type")) {
+    if (value != "") {
+      if (!Context::getContext().columns["iter_type"]->validate(value))
+        throw std::string("Not a valid iteration type.");
+      Context::getContext().footnote("Iteration type modified.");
+      task.set("iter_type", value);
+    } else {
+      Context::getContext().footnote("Iteration type removed.");
+      task.remove("iter_type");
+    }
+  }
+
   // wait
   value = findValue(after, "\n  Wait until:");
   if (value != "") {
@@ -627,6 +655,7 @@ CmdEdit::editResult CmdEdit::editFile(Task& task) {
   if (filepath.exists()) throw std::string("Task is already being edited.");
 
   // Format the contents, T -> text, write to a file.
+  Task original(task);
   auto before = formatTask(task, dateformat);
   auto before_orig = before;
   File::write(file.str(), before);
@@ -672,6 +701,7 @@ ARE_THESE_REALLY_HARMFUL:
 
     try {
       parseTask(task, after, dateformat);
+      task.checkIterative(original);
     }
 
     catch (const std::string& e) {

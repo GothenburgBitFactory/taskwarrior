@@ -58,6 +58,7 @@ static tc::Status statusFromString(const std::string& s) {
   if (s == "completed") return tc::Status::Completed;
   if (s == "deleted") return tc::Status::Deleted;
   if (s == "recurring") return tc::Status::Recurring;
+  if (s == "iterative") return tc::Status::Iterative;
   throw format("Unknown task status value '{1}'.", s);
 }
 
@@ -193,8 +194,8 @@ void TDB2::modify(Task& task) {
   replica()->commit_operations(std::move(ops));
 
   // If the task entered or left the pending set, we must invalidate the cache.
-  bool was_pending = found_original && (original.getStatus() == Task::pending);
-  bool now_pending = task.getStatus() == Task::pending;
+  bool was_pending = found_original && original.is_open();
+  bool now_pending = task.is_open();
   if (was_pending != now_pending || !found_original) {
     invalidate_cached_info();
     return;
