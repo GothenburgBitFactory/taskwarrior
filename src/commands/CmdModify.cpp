@@ -132,7 +132,7 @@ void CmdModify::checkConsistency(Task& before, Task& after) {
   after.checkIterative(before);
 
   if (before.getStatus() == Task::iterative && after.get("iter") != "" &&
-      Task::textToStatus(after.get("status")) == Task::pending)
+      Task::textToStatus(after.get("status")) != Task::iterative)
     throw std::string(
         "You cannot change the status of an iterative task. Clear iter to end the series "
         "instead.");

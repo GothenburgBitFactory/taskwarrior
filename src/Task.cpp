@@ -647,6 +647,11 @@ void Task::parseJSON(const json::object* root_obj) {
         for (const auto& uuid : uuids) addDependency(uuid);
       }
 
+      // JSON numbers dump as "1.000000", but iter_count must be an integer.
+      else if (i.first == "iter_count" && i.second->type() == json::j_number) {
+        set(i.first, std::to_string((long long)(double)*(json::number*)i.second));
+      }
+
       // Strings are decoded.
       else if (type == "string") {
         auto text = i.second->dump();
