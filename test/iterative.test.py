@@ -212,13 +212,17 @@ class TestIterativeTasks(TestCase):
         code, out, err = self.t.runError("1 modify end:now")
         self.assertIn("You cannot set an end date on a pending task.", err)
 
-    def test_modify_cannot_set_pending_status_on_iterative(self):
-        """Setting pending status on an iterative task is rejected."""
+    def test_modify_cannot_change_status_of_iterative(self):
+        """Changing the status of an iterative task is rejected."""
         self.t("add iter:weekly iter_type:fixed due:tomorrow 'rent'")
-        code, out, err = self.t.runError("1 modify status:pending")
-        self.assertIn("You cannot change the status of an iterative task.", err)
-        task = json.loads(self.t("export")[1])[0]
-        self.assertEqual(task["status"], "iterative")
+        for status in ("pending", "completed", "deleted", "recurring"):
+            with self.subTest(status=status):
+                code, out, err = self.t.runError(f"1 modify status:{status}")
+                self.assertIn(
+                    "You cannot change the status of an iterative task.", err
+                )
+                task = json.loads(self.t("export")[1])[0]
+                self.assertEqual(task["status"], "iterative")
 
     def test_import_drops_end_from_iterative(self):
         """An imported iterative task loses its end date."""
@@ -231,6 +235,18 @@ class TestIterativeTasks(TestCase):
         task = json.loads(self.t("export")[1])[0]
         self.assertEqual(task["status"], "iterative")
         self.assertNotIn("end", task)
+
+    def test_import_numeric_iter_count(self):
+        """A numeric iter_count from export imports as an integer."""
+        self.t(
+            "import",
+            input='{"uuid":"a0000000-0000-4000-8000-000000000002","status":"iterative",'
+            '"description":"rent","iter":"weekly","iter_type":"fixed",'
+            '"due":"20300615T000000Z","iter_count":3}',
+        )
+        self.t("rc.confirmation:off 1 done")
+        tasks = json.loads(self.t("export")[1])
+        self.assertEqual(sorted(t["iter_count"] for t in tasks), [3, 4])
 
     def test_iter_properties_are_builtin(self):
         """`iter` and `iter_type` are built-in columns, not UDAs."""
