@@ -68,3 +68,14 @@ corrosion_add_cxxbridge(taskchampion-cpp
   CRATE taskchampion_lib
   FILES lib.rs
 )
+
+# Setting the LIBSQLITE3_SYS_USE_PKG_CONFIG environment variable to anything
+# but 0 makes libsqlite3-sys link the system SQLite instead of building its
+# bundled copy, see:
+# https://github.com/rusqlite/rusqlite/blob/db83b9b08d9cab73f912501eefb8df7b100acd7d/libsqlite3-sys/build.rs#L53
+# The Rust static library then doesn't contain SQLite itself, so the dependency
+# has to be propagated to the C++ side that links taskchampion_lib-static.
+if(DEFINED ENV{LIBSQLITE3_SYS_USE_PKG_CONFIG} AND NOT "$ENV{LIBSQLITE3_SYS_USE_PKG_CONFIG}" STREQUAL "0")
+  find_package(SQLite3 REQUIRED)
+  target_link_libraries(taskchampion_lib-static INTERFACE ${SQLite3_LIBRARIES})
+endif()
