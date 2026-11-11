@@ -218,9 +218,7 @@ class TestIterativeTasks(TestCase):
         for status in ("pending", "completed", "deleted", "recurring"):
             with self.subTest(status=status):
                 code, out, err = self.t.runError(f"1 modify status:{status}")
-                self.assertIn(
-                    "You cannot change the status of an iterative task.", err
-                )
+                self.assertIn("You cannot change the status of an iterative task.", err)
                 task = json.loads(self.t("export")[1])[0]
                 self.assertEqual(task["status"], "iterative")
 
