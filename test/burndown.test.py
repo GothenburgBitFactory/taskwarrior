@@ -103,6 +103,19 @@ class TestBurndownCommand(TestCase):
         self.assertIn("+", out)
         self.assertIn("X", out)
 
+    def test_burndown_oversized_width(self):
+        """Reject oversized charts before generating out-of-range dates."""
+        for width in (0, 65536):
+            for period in ("daily", "weekly", "monthly", "annual"):
+                with self.subTest(width=width, period=period):
+                    code, out, err = self.t(
+                        "burndown.{} rc.defaultwidth:{} rc.detection:off".format(
+                            period, width
+                        )
+                    )
+                    self.assertEqual(code, 0)
+                    self.assertIn("Terminal window too large to draw a graph.", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
