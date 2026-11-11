@@ -640,6 +640,9 @@ Datetime Chart::decrement(const Datetime& input, char period) {
 // the leftmost bar's epoch, used for carrying over the done count in cumulative
 // mode.
 void Chart::generateBars() {
+  // render() rejects oversized charts; do not generate out-of-range dates first.
+  if (_graph_width > 1000) return;
+
   Bar bar;  // future contributor: if you change the logic used for counting,
             // such that this function changes the counts, be mindful:
             // because we copy the struct, your state would be carried through
