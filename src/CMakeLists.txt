@@ -77,7 +77,7 @@ set_property (TARGET lex_executable PROPERTY OUTPUT_NAME "lex")
 # For Debug builds, point to the source directory; for any other situation
 # (CMAKE_BUILD_TYPE is not always "Release" for releases), use the install
 # location.
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(task PRIVATE
         -DTASK_TEST_RCDIR="${CMAKE_SOURCE_DIR}/doc/rc"
     )
