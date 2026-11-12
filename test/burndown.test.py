@@ -116,6 +116,36 @@ class TestBurndownCommand(TestCase):
                     self.assertEqual(code, 0)
                     self.assertIn("Terminal window too large to draw a graph.", out)
 
+    def test_burndown_invalid_height(self):
+        """Reject invalid heights before generating out-of-range dates."""
+        task = Task()
+        task.faketime("2026-11-12 12:00:00")
+        task("add dimension test entry:2026-01-01")
+        for height, size in ((1, "small"), (0, "large"), (1009, "large")):
+            for period in ("daily", "weekly", "monthly", "annual"):
+                with self.subTest(height=height, period=period):
+                    code, out, err = task(
+                        "burndown.{} rc.defaultwidth:200 rc.defaultheight:{} "
+                        "rc.reserved.lines:0 rc.detection:off".format(period, height)
+                    )
+                    self.assertEqual(code, 0)
+                    self.assertIn(
+                        "Terminal window too {} to draw a graph.".format(size), out
+                    )
+
+    def test_burndown_height_boundaries(self):
+        """The minimum and maximum drawable graph heights still render."""
+        for height in (13, 1008):
+            for period in ("daily", "weekly", "monthly", "annual"):
+                with self.subTest(height=height, period=period):
+                    code, out, err = self.t(
+                        "burndown.{} rc.defaultwidth:80 rc.defaultheight:{} "
+                        "rc.reserved.lines:0 rc.detection:off".format(period, height)
+                    )
+                    self.assertEqual(code, 0)
+                    self.assertIn("Burndown", out)
+                    self.assertNotIn("Terminal window too", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
