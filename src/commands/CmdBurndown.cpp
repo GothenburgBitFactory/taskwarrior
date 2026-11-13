@@ -648,10 +648,13 @@ void Chart::generateBars() {
             // because we copy the struct, your state would be carried through
             // into each loop.
   Datetime cursor = quantize(Datetime(), _period);
+  int bar_count = _estimated_bars;
+  // Datetime's calendar constructor does not support years before 1969.
+  if (_period == 'Y') bar_count = std::min(bar_count, cursor.year() - 1969 + 1);
 
   // Iterate backwards from today, generating labels for each bar.
   char str[12];
-  for (int i = 0; i < _estimated_bars; ++i) {
+  for (int i = 0; i < bar_count; ++i) {
     // Create the major and minor labels.
     switch (_period) {
       case 'D':  // month/day
@@ -693,8 +696,8 @@ void Chart::generateBars() {
     // counts in cumulative mode.
     _earliest = cursor;
 
-    // Move to the previous period.
-    cursor = decrement(cursor, _period);
+    // Move to the previous period only if another bar is needed.
+    if (i + 1 < bar_count) cursor = decrement(cursor, _period);
   }
 }
 
