@@ -333,6 +333,7 @@ https://www.opensource.org/licenses/mit-license.php for more information.
 .SH SEE ALSO
 .BR task(1),
 .BR taskrc(5),
+.BR task-iterative(5),
 .BR task-sync(5)
 
 For more information regarding Taskwarrior, see the following:

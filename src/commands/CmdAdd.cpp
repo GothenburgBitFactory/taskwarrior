@@ -79,8 +79,7 @@ int CmdAdd::execute(std::string& output) {
             (status == Task::completed || status == Task::deleted)))
     output += format("Created task {1}.\n", task.get("uuid"));
 
-  else if (Context::getContext().verbose("new-id") &&
-           (status == Task::pending || status == Task::waiting))
+  else if (Context::getContext().verbose("new-id") && task.is_open())
     output += format("Created task {1}.\n", task.id);
 
   else if (Context::getContext().verbose("new-id") && status == Task::recurring)
