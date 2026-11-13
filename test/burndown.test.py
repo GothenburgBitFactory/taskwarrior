@@ -146,6 +146,24 @@ class TestBurndownCommand(TestCase):
                     self.assertIn("Burndown", out)
                     self.assertNotIn("Terminal window too", out)
 
+    def test_burndown_annual_date_boundary(self):
+        """Wide annual charts stop at the earliest supported year."""
+        task = Task()
+        for year in (1970, 2026):
+            task.faketime("{}-06-15 12:00:00".format(year))
+            for width in (80, 189, 200, 1015):
+                with self.subTest(year=year, width=width):
+                    code, out, err = task(
+                        "burndown.annual rc.defaultwidth:{} rc.defaultheight:24 "
+                        "rc.reserved.lines:0 rc.detection:off".format(width)
+                    )
+                    self.assertEqual(code, 0)
+                    self.assertIn("Annual Burndown", out)
+                    self.assertNotIn("Terminal window too", out)
+                    if year == 1970:
+                        self.assertRegex(out, r"\b69\b")
+                        self.assertRegex(out, r"\b70\b")
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
