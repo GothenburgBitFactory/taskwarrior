@@ -158,6 +158,25 @@ class ContextManagementTest(TestCase):
         context_line = "context.urgent=due:today or +next\n"
         self.assertNotIn(context_line, self.t.taskrc_content)
 
+    def test_context_define_quoted_or_is_not_a_write_context(self):
+        """A quoted context definition is checked for OR the same way as separate words."""
+        self.t.config("confirmation", "off")
+        code, out, err = self.t('context define mine "+personal or +home or +work"')
+        self.assertIn("Context 'mine' defined (read only).", out)
+        self.assertIn("contains the 'OR' operator", out)
+
+        context_line = "context.mine.read=+personal or +home or +work\n"
+        self.assertIn(context_line, self.t.taskrc_content)
+        self.assertEqual(self.t.taskrc_content.count(context_line), 1)
+
+        self.assertNotIn("context.mine.write=", self.t.taskrc_content)
+        self.assertNotIn("context.mine=", self.t.taskrc_content)
+
+        self.t("context mine")
+        self.t("add this is a test")
+        task = self.t.export_one()
+        self.assertEqual(task["description"], "this is a test")
+
     def test_context_define_invalid_for_write_due_to_tag_exclusion(self):
         """Test definition of a context that is not a valid write context because it contains a tag exclusion."""
         self.t.config("confirmation", "off")
