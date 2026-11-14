@@ -189,9 +189,7 @@ void CmdContext::defineContext(const std::vector<std::string>& words, std::strin
                    words[1]);
     }
 
-    // Lex the definition that will be stored. A quoted filter arrives as one
-    // command-line word, so getMiscellaneous() hides operators inside it, but
-    // those operators are applied when the write context is used.
+    // Lex the stored definition before the write-context check.
     std::vector<A2> lexedArgs;
     std::string lexeme;
     Lexer::Type type;
