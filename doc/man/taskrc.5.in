@@ -252,7 +252,7 @@ is '25'.
 .TP
 .B defaultwidth=80
 The width of output used when auto-detection support is not available. Defaults
-to 80. If set to 0, it is interpreted as infinite width, therefore with no
+to 80. If set to 0 or a negative value, it is interpreted as infinite width, therefore with no
 word-wrapping; this is useful when redirecting report output to a file for subsequent
 handling.
 

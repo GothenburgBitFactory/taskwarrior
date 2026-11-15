@@ -15,6 +15,7 @@ include_directories (${CMAKE_SOURCE_DIR}
 set(test_SRCS
   col_description_test.cpp
   col_test.cpp
+  context_width_test.cpp
   dom_test.cpp
   eval_test.cpp
   lexer_test.cpp

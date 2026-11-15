@@ -136,7 +136,8 @@ int TEST_NAME(int, char**) {
     view.add(Column::factory("due.countdown", report));
     view.add(Column::factory("start.active", report));
     view.add(Column::factory("urgency", report));
-    view.width(context.getWidth());
+    // Keep wrapping independent of the terminal running this test.
+    view.width(200);
     view.leftMargin(4);
     view.extraPadding(0);
     view.intraPadding(1);

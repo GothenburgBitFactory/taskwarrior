@@ -855,9 +855,6 @@ int Context::getWidth() {
   // Determine window size.
   auto width = config.getInteger("defaultwidth");
 
-  // A zero width value means 'infinity', which is approximated here by 2^16.
-  if (width == 0) return 65536;
-
   if (config.getBoolean("detection")) {
     if (terminal_width == 0 && terminal_height == 0) {
       unsigned short buff[4];
@@ -867,15 +864,19 @@ int Context::getWidth() {
       }
     }
 
-    width = terminal_width;
+    if (terminal_width > 0) {
+      width = terminal_width;
 
-    // Ncurses does this, and perhaps we need to as well, to avoid a problem on
-    // Cygwin where the display goes right up to the terminal width, and causes
-    // an odd color wrapping problem.
-    if (config.getBoolean("avoidlastcolumn")) --width;
+      // Ncurses does this, and perhaps we need to as well, to avoid a problem on
+      // Cygwin where the display goes right up to the terminal width, and causes
+      // an odd color wrapping problem.
+      if (config.getBoolean("avoidlastcolumn")) --width;
+      return width;
+    }
   }
 
-  return width;
+  // A nonpositive default means 'infinity', approximated here by 2^16.
+  return width > 0 ? width : 65536;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
