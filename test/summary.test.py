@@ -28,6 +28,7 @@
 import sys
 import os
 import unittest
+import re
 
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -95,6 +96,40 @@ class TestBug1904(TestCase):
         self.add_tasks()
         code, out, err = self.t("summary")
         self.validate_order(out)
+
+
+class TestSummaryHierarchy(TestCase):
+    def test_missing_parent_remains_in_its_subtree(self):
+        """4067: synthesized parents must not be appended after another branch."""
+        for descendant, children in (
+            ("stanford.cme295", ["    stanford", "      cme295"]),
+            (
+                "stanford.research.cme295",
+                ["    stanford", "      research", "        cme295"],
+            ),
+        ):
+            with self.subTest(descendant=descendant):
+                task = Task()
+                for project in (
+                    "learn.linkedin.ai-infra-gcp",
+                    "learn.youtube",
+                    "learn.youtube." + descendant,
+                ):
+                    task("add hierarchy-test project:" + project)
+                code, out, err = task(
+                    "summary rc.color:off rc.detection:off rc.defaultwidth:120"
+                )
+                rows = []
+                for line in out.splitlines():
+                    match = re.match(r"^( *\S+)\s+\d+\s", line)
+                    if match:
+                        rows.append(match.group(1))
+                self.assertEqual(
+                    rows,
+                    ["learn", "  youtube"]
+                    + children
+                    + ["  linkedin", "    ai-infra-gcp"],
+                )
 
 
 if __name__ == "__main__":

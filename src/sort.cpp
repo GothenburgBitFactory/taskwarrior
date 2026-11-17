@@ -37,6 +37,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <iterator>
 #include <list>
 #include <map>
 #include <random>
@@ -80,19 +81,19 @@ void sort_projects(std::list<std::pair<std::string, int>>& sorted,
   for (auto& project : allProjects) {
     const std::vector<std::string> parents = extractParents(project.first);
     if (parents.size()) {
-      // if parents exist: store iterator position of last parent
-      std::list<std::pair<std::string, int>>::iterator parent_pos;
+      auto insert_pos = sorted.end();
       for (auto& parent : parents) {
-        parent_pos = std::find_if(
+        auto parent_pos = std::find_if(
             sorted.begin(), sorted.end(),
             [&parent](const std::pair<std::string, int>& item) { return item.first == parent; });
 
-        // if parent does not exist yet: insert into sorted view
-        if (parent_pos == sorted.end()) sorted.emplace_back(parent, 1);
+        // Keep missing parents inside the subtree of their known ancestor.
+        if (parent_pos == sorted.end()) parent_pos = sorted.insert(insert_pos, {parent, 1});
+        insert_pos = std::next(parent_pos);
       }
 
       // insert new element below latest parent
-      sorted.insert((parent_pos == sorted.end()) ? parent_pos : ++parent_pos, project);
+      sorted.insert(insert_pos, project);
     } else {
       // if has no parents: simply push to end of list
       sorted.push_back(project);
