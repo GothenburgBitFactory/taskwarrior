@@ -12,6 +12,11 @@ next interval. How the next interval is chosen depends on the iteration type.
 Iterative tasks are an alternative to recurring tasks. A task cannot be both
 recurring and iterative.
 
+.SH EXPERIMENTAL
+The UI and behavior of iterative tasks are subject to change in minor versions
+based on user feedback. However, the database format is stable and we're
+confident this will replace the recurrence system in a future release.
+
 .SH CREATING AN ITERATIVE TASK
 A task becomes iterative when it has all of:
 

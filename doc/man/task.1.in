@@ -872,7 +872,7 @@ Specifies the frequency of a recurrence of a task.
 
 .TP
 .B iter:<interval>
-Makes the task iterative. Completing it creates the next task in the series,
+Makes the task iterative (experimental). Completing it creates the next task in the series,
 with its dates moved forward by the interval. Needs an iter_type and at least
 one of due, scheduled or wait. See
 .BR task-iterative (5).
