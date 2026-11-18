@@ -9,7 +9,7 @@ rust-version = "1.94.1"   # MSRV
 crate-type = ["staticlib"]
 
 [dependencies]
-taskchampion = { version = "3.1.0", features = [ "server-git" ] }
+taskchampion = { git = "https://github.com/GothenburgBitFactory/taskchampion", rev = "01cc8a45b7ad173c884a3664ad57b9765e5d648f", features = [ "server-git", "iterative-tasks" ] }
 cxx = "1.0.133"
 tokio = { version = "1", features = ["rt"] }
 

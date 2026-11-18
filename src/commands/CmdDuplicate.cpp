@@ -72,11 +72,12 @@ int CmdDuplicate::execute(std::string&) {
   for (auto& task : filtered) {
     // Duplicate the specified task.
     Task dup(task);
-    dup.id = 0;               // Reset, and TDB2::add will set.
-    dup.set("uuid", uuid());  // Needs a new UUID.
-    dup.remove("start");      // Does not inherit start date.
-    dup.remove("end");        // Does not inherit end date.
-    dup.remove("entry");      // Does not inherit entry date.
+    dup.id = 0;                // Reset, and TDB2::add will set.
+    dup.set("uuid", uuid());   // Needs a new UUID.
+    dup.remove("start");       // Does not inherit start date.
+    dup.remove("end");         // Does not inherit end date.
+    dup.remove("entry");       // Does not inherit entry date.
+    dup.remove("iter_count");  // Starts a new iterative series.
 
     // When duplicating a child task, downgrade it to a plain task.
     if (dup.has("parent")) {
@@ -111,8 +112,7 @@ int CmdDuplicate::execute(std::string&) {
       feedback_affected("Duplicated task {1} '{2}'.", task);
 
       auto status = dup.getStatus();
-      if (Context::getContext().verbose("new-id") &&
-          (status == Task::pending || status == Task::waiting))
+      if (Context::getContext().verbose("new-id") && dup.is_open())
         std::cout << format("Created task {1}.\n", dup.id);
 
       else if (Context::getContext().verbose("new-uuid") && status != Task::recurring)
