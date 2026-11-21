@@ -1456,7 +1456,7 @@ void Task::validate_add() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Raise user-visible errors for iterative manualy edited iterative tasks.
+// Raise user-visible errors for manually edited iterative tasks.
 void Task::checkIterative(const Task& before) const {
   if (get("iter") == "") return;
 

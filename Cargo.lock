@@ -1653,9 +1653,9 @@ checksum = "3eaf3ede3fee6db1a4c2ee091bf8a8b4dccdc6d17f656fb07896ee72867612f2"
 
 [[package]]
 name = "libsqlite3-sys"
-version = "0.38.2"
+version = "0.39.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1d20bef17f513b9b3004532233187769cd072d790971f4e4da0e346eb6401e8"
+checksum = "14a5f01b87b92705d07b433c06f96cbc764637d81a0bffb5734ce17cf0f9a2b3"
 dependencies = [
  "cc",
  "pkg-config",
@@ -2211,9 +2211,9 @@ dependencies = [
 
 [[package]]
 name = "rusqlite"
-version = "0.40.2"
+version = "0.41.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23f2a97da3e3873c73cb2a2e71b35c40ff95e0b1eefa8d72d8499a6928c3b5b3"
+checksum = "da9bba6f3506135e120a6586df05be18b48d18896600646a4bec8f993d91a594"
 dependencies = [
  "bitflags 2.13.1",
  "fallible-iterator",
@@ -2692,8 +2692,8 @@ dependencies = [
 
 [[package]]
 name = "taskchampion"
-version = "3.1.1-pre"
-source = "git+https://github.com/GothenburgBitFactory/taskchampion?rev=01cc8a45b7ad173c884a3664ad57b9765e5d648f#01cc8a45b7ad173c884a3664ad57b9765e5d648f"
+version = "3.2.0"
+source = "git+https://github.com/GothenburgBitFactory/taskchampion?tag=v3.2.0#79e88da16f43b26befe776fa58dd7b383aabe53c"
 dependencies = [
  "anyhow",
  "async-trait",
