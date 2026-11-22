@@ -72,8 +72,7 @@ int CmdSummary::execute(std::string& output) {
   // Generate unique list of project names from all pending tasks.
   std::map<std::string, bool> allProjects;
   for (auto& task : filtered)
-    if (showAllProjects || task.getStatus() == Task::pending)
-      allProjects[task.get("project")] = false;
+    if (showAllProjects || task.is_pending()) allProjects[task.get("project")] = false;
 
   // Initialize counts, sum.
   std::map<std::string, int> countPending;
@@ -98,7 +97,7 @@ int CmdSummary::execute(std::string& output) {
 
     for (auto& parent : projects) ++counter[parent];
 
-    if (task.getStatus() == Task::pending || task.getStatus() == Task::waiting) {
+    if (task.is_open()) {
       for (auto& parent : projects) {
         ++countPending[parent];
 

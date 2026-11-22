@@ -209,8 +209,8 @@ static TaskEpochRange findTaskEpochRange(const Task& task, time_t now_epoch, tim
 
   Task::status status = task.getStatus();
 
-  // Pending/waiting tasks extend to today if they lack an end.
-  if (status == Task::pending || status == Task::waiting) {
+  // Open tasks extend to today if they lack an end.
+  if (task.is_open()) {
     time_t last_epoch = end_epoch.value_or(now_epoch);
     return {entry_epoch, last_epoch, entry_epoch, end_epoch, peak_entry, peak_end, start_epoch};
   }
@@ -277,7 +277,7 @@ void Chart::accumulateTasks(const std::vector<Task>& tasks,
     // but make no contribution to the chart's bars.
     if (status == Task::deleted || status == Task::recurring) continue;
 
-    if (status == Task::pending || status == Task::waiting) {
+    if (task.is_open()) {
       // Pending tasks contribute to the pending bars through [entry, last],
       // inclusive of values equal to last. For pending tasks, last_epoch will be
       // either the now_epoch or end_epoch.

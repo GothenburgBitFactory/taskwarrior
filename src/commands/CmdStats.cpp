@@ -86,6 +86,7 @@ int CmdStats::execute(std::string& output) {
   int taggedT = 0;
   int annotationsT = 0;
   int recurringT = 0;
+  int iterativeT = 0;
   int blockingT = 0;
   int blockedT = 0;
   float daysPending = 0.0;
@@ -113,6 +114,9 @@ int CmdStats::execute(std::string& output) {
       case Task::waiting:
         ++waitingT;
         break;
+      case Task::iterative:
+        ++iterativeT;
+        break;
     }
 
     if (task.is_blocked) ++blockedT;
@@ -127,7 +131,8 @@ int CmdStats::execute(std::string& output) {
       daysPending += (end - entry) / 86400.0;
     }
 
-    if (status == Task::pending) daysPending += (now.toEpoch() - entry) / 86400.0;
+    if (status == Task::pending || status == Task::iterative)
+      daysPending += (now.toEpoch() - entry) / 86400.0;
 
     descLength += task.get("description").length();
     annotationsT += task.getAnnotations().size();
@@ -161,6 +166,10 @@ int CmdStats::execute(std::string& output) {
   row = view.addRow();
   view.set(row, 0, "Recurring");
   view.set(row, 1, recurringT);
+
+  row = view.addRow();
+  view.set(row, 0, "Iterative");
+  view.set(row, 1, iterativeT);
 
   row = view.addRow();
   view.set(row, 0, "Completed");
@@ -245,11 +254,12 @@ int CmdStats::execute(std::string& output) {
     view.set(row, 1, Duration((latest - earliest) / deletedT).formatVague());
   }
 
-  if (pendingT || completedT) {
+  if (pendingT || iterativeT || completedT) {
     row = view.addRow();
     view.set(row, 0, "Average time pending");
     view.set(row, 1,
-             Duration((int)((daysPending / (pendingT + completedT)) * 86400)).formatVague());
+             Duration((int)((daysPending / (pendingT + iterativeT + completedT)) * 86400))
+                 .formatVague());
   }
 
   if (totalT) {
