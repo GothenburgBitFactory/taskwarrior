@@ -71,7 +71,7 @@ This would run all the test in serial and might take some time.
 ctest --test-dir build -j <number-of-jobs>
 ```
 
-Further it is adviced to add the `--output-on-failure` option to `ctest`, to recieve a verbose output if a test is failing as well as the `--rerun-failed` flag, to invoke in subsequent runs only the failed ones.
+Further it is advised to add the `--output-on-failure` option to `ctest`, to receive a verbose output if a test is failing as well as the `--rerun-failed` flag, to invoke in subsequent runs only the failed ones.
 
 ### Running specific tests
 For this case one can use the `-R <regex>` or `--tests-regex <regex>`  option to run only the tests matching the regular expression.
