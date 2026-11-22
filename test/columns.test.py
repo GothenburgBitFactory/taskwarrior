@@ -73,6 +73,25 @@ class TestDescriptionFormats(TestCase):
         self.assertIn("annotation", out)
         self.assertNotIn("[1]", out)
 
+    def test_description_oneline_annotation_width(self):
+        """Annotations stay on one line when the report has enough space (#3652)."""
+        t = Task()
+        t.config("verbose", "nothing")
+        t("add first task")
+        t("1 annotate task one annotation one")
+        t("1 annotate task one annotation two")
+        code, out, err = t(
+            "next rc.report.next.columns:description.oneline "
+            "rc.report.next.labels:Description rc.dateformat.annotation:Y-M-D "
+            "rc.detection:off rc.defaultwidth:200 rc.color:off"
+        )
+        self.assertEqual(code, 0)
+        self.assertRegex(
+            out,
+            r"first task \d{4}-\d{2}-\d{2} task one annotation one "
+            r"\d{4}-\d{2}-\d{2} task one annotation two",
+        )
+
     def test_description_truncated(self):
         """Verify formatting of 'description.truncated' column"""
         code, out, err = self.t(
