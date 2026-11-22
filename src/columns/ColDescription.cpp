@@ -107,7 +107,7 @@ void ColumnDescription::measure(Task& task, unsigned int& minimum, unsigned int&
 
     if (task.annotation_count) {
       auto min_anno = Datetime::length(_dateformat);
-      for (auto& i : task.getAnnotations()) maximum += min_anno + 1 + utf8_width(i.second);
+      for (auto& i : task.getAnnotations()) maximum += min_anno + 2 + utf8_width(i.second);
     }
   }
 

@@ -98,7 +98,14 @@ int TEST_NAME(int, char**) {
        ""},
   };
 
-  UnitTest test(cases.size() * 2);
+  const std::vector<AnnotationCase> onelineCases = {
+      {"no annotations", 4, 0, "task", {}, {"task"}},
+      {"one annotation", 10, 0, "task", {"aa"}, {"task 08 aa"}},
+      {"two annotations", 16, 0, "task", {"aa", "bb"}, {"task 08 aa 08 bb"}},
+      {"Unicode annotation", 12, 0, "task", {"界界"}, {"task 08 界界"}},
+  };
+
+  UnitTest test(cases.size() * 2 + onelineCases.size() * 2);
   Context context;
   Context::setContext(&context);
   unsetenv("TASKDATA");
@@ -135,6 +142,29 @@ int TEST_NAME(int, char**) {
       test.diag("Expected:\n" + join("\n", item.expected));
       test.diag("Actual:\n" + join("\n", lines));
     }
+  }
+
+  context.config.set("dateformat.annotation", "D");
+  for (const auto& item : onelineCases) {
+    std::unique_ptr<Column> column(Column::factory("description.oneline", "rrr"));
+    Task task;
+    task.set("description", item.description);
+    std::map<std::string, std::string> annotations;
+    int timestamp = 1757332800;
+    for (const auto& annotation : item.annotations)
+      annotations["annotation_" + std::to_string(timestamp++)] = annotation;
+    task.setAnnotations(annotations);
+
+    unsigned int minimum = 0;
+    unsigned int maximum = 0;
+    column->measure(task, minimum, maximum);
+    test.is(maximum, item.width, item.name + ": oneline measured width");
+
+    Color color;
+    std::vector<std::string> lines;
+    column->render(lines, task, maximum, color);
+    for (auto& line : lines) line = rtrim(line);
+    test.ok(lines == item.expected, item.name + ": oneline renders at measured width");
   }
 
   return 0;
