@@ -162,6 +162,7 @@ std::vector<NewsItem> NewsItem::all() {
   version3_3_0(items);
   version3_4_0(items);
   version3_5_0(items);
+  version3_6_0(items);
   return items;
 }
 
@@ -560,6 +561,21 @@ void NewsItem::version3_5_0(std::vector<NewsItem>& items) {
       "parent task without modification. It is now offset from the recurrence time\n"
       "just like `wait`. While this fixes a bug, it may interact poorly with any hooks\n"
       "that assume the old behavior.\n\n"};
+  items.push_back(info);
+}
+
+void NewsItem::version3_6_0(std::vector<NewsItem>& items) {
+  Version version("3.6.0");
+  NewsItem info{
+      version,
+      /*title=*/"Iterative Tasks",
+      /*bg_title=*/"",
+      /*background=*/"",
+      /*punchline=*/"Iterative tasks are now available as an experimental feature",
+      /*update=*/
+      "Iterative tasks are the next generation recurrence system, offering features like chained\n"
+      "intervals and support for natural language durations. See task-iterative(5) for "
+      "details.\n\n"};
   items.push_back(info);
 }
 
