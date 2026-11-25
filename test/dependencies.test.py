@@ -212,6 +212,23 @@ class TestDependencies(TestCase):
         self.assertNotIn("Would you like the dependency chain fixed?", out)
         self.assertIn("Deleted 1 task", out)
 
+    def test_chain_repair_with_on_modify_hook(self):
+        """Repair dependencies even when a hook round-trips the task as JSON."""
+        self.t("add three")
+        self.t("2 modify dep:1")
+        self.t("3 modify dep:2")
+        predecessor = self.t.export_one(1)["uuid"]
+        middle = self.t.export_one(2)["uuid"]
+        successor = self.t.export_one(3)["uuid"]
+
+        self.t.activate_hooks()
+        self.t.hooks.add_default("on-modify-accept")
+
+        _, out, _ = self.t("2 done", input="y\n")
+        self.assertIn("Would you like the dependency chain fixed?", out)
+        self.assertEqual("completed", self.t.export_one(middle)["status"])
+        self.assertEqual([predecessor], self.t.export_one(successor)["depends"])
+
     def test_id_range_dep(self):
         """Check that an ID range can be used for deps"""
         self.t("add three")

@@ -133,9 +133,10 @@ void dependencyChainOnComplete(Task& task) {
       if (!Context::getContext().config.getBoolean("dependency.confirmation") ||
           confirm("Would you like the dependency chain fixed?")) {
         // Repair the chain - everything in blocked should now depend on
-        // everything in blocking, instead of task.id.
+        // everything in blocking, instead of the completed or deleted task.
+        // Use the UUID because on-modify hooks round-trip the task without its ID.
         for (auto& left : blocked) {
-          left.removeDependency(task.id);
+          left.removeDependency(task.get_ref("uuid"));
 
           for (const auto& right : blocking) left.addDependency(right.id);
         }
