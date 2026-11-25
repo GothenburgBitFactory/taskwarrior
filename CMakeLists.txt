@@ -166,6 +166,7 @@ endforeach (doc_FILE)
 
 set (CPACK_SOURCE_GENERATOR "TGZ")
 set (CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
-set (CPACK_SOURCE_IGNORE_FILES  "build" "target" "test" "misc/*" "performance" "swp$" "src/lex$" "task-.*.tar.gz"
+set (CPACK_SOURCE_IGNORE_FILES  "${CMAKE_SOURCE_DIR}/build/" "${CMAKE_SOURCE_DIR}/target/" "${CMAKE_SOURCE_DIR}/test/"
+                                "misc/*" "performance" "swp$" "src/lex$" "task-.*.tar.gz"
                                 "commit.h" "cmake.h$" "\\\\.gitmodules" "src/libshared/\\\\.git" ".github/" ".*\\\\.gitignore$" "docker-compose.yml" "\\\\.git/")
 include (CPack)
