@@ -4,4 +4,9 @@ members = [
     "src/taskchampion-cpp",
 ]
 
+exclude = ["vendor/ring"]
+
 resolver = "2"
+
+[patch.crates-io]
+ring = { path = "vendor/ring" }

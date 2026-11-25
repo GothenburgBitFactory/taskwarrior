@@ -1,0 +1,27 @@
+--- a/build.rs
++++ b/build.rs
+@@ -214 +214 @@
+-        oss: &[WINDOWS],
++        oss: &[WINDOWS, "cygwin"],
+@@ -459 +459 @@
+-                    && target.os == WINDOWS
++                    && (target.os == WINDOWS || target.os == "cygwin")
+--- a/include/ring-core/target.h
++++ b/include/ring-core/target.h
+@@ -60 +60 @@
+-#if defined(_WIN32)
++#if defined(_WIN32) || defined(__CYGWIN__)
+--- a/src/ec/curve25519/ops.rs
++++ b/src/ec/curve25519/ops.rs
+@@ -163 +163 @@
+-        if #[cfg(all(target_arch = "x86_64", not(target_os = "windows")))] {
++        if #[cfg(all(target_arch = "x86_64", not(any(target_os = "windows", target_os = "cygwin"))))] {
+--- a/src/ec/curve25519/x25519.rs
++++ b/src/ec/curve25519/x25519.rs
+@@ -125 +125 @@
+-        #[cfg(all(target_arch = "x86_64", not(target_os = "windows")))]
++        #[cfg(all(target_arch = "x86_64", not(any(target_os = "windows", target_os = "cygwin"))))]
+--- a/src/rand.rs
++++ b/src/rand.rs
+@@ -128,0 +129 @@
++    target_os = "cygwin",

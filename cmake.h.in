@@ -38,6 +38,9 @@
 #cmakedefine GNUHURD
 #cmakedefine UNKNOWN
 
+/* Found timegm(struct tm*) */
+#cmakedefine HAVE_TIMEGM
+
 /* Found tm_gmtoff */
 #cmakedefine HAVE_TM_GMTOFF
 

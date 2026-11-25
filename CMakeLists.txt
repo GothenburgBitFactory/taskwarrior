@@ -71,6 +71,7 @@ else (HAIKU)
   set (TASK_LIBRARIES dl pthread)
 endif (HAIKU)
 
+check_function_exists (timegm HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
 check_function_exists (wordexp HAVE_WORDEXP)
 
