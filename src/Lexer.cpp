@@ -241,7 +241,7 @@ bool Lexer::isEOS() const { return _cursor >= _eos; }
 //          '9'     -> 9
 //          'a'/'A' -> 10
 //          'f'/'F' -> 15
-int Lexer::hexToInt(int c) {
+int Lexer::hexToInt(char c) {
   if (c >= '0' && c <= '9')
     return (c - '0');
   else if (c >= 'a' && c <= 'f')
@@ -251,10 +251,10 @@ int Lexer::hexToInt(int c) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Lexer::hexToInt(int c0, int c1) { return (hexToInt(c0) << 4) + hexToInt(c1); }
+int Lexer::hexToInt(char c0, char c1) { return (hexToInt(c0) << 4) + hexToInt(c1); }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Lexer::hexToInt(int c0, int c1, int c2, int c3) {
+char32_t Lexer::hexToInt(char c0, char c1, char c2, char c3) {
   return (hexToInt(c0) << 12) + (hexToInt(c1) << 8) + (hexToInt(c2) << 4) + hexToInt(c3);
 }
 
