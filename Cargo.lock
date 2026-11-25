@@ -2693,7 +2693,8 @@ dependencies = [
 [[package]]
 name = "taskchampion"
 version = "3.2.0"
-source = "git+https://github.com/GothenburgBitFactory/taskchampion?tag=v3.2.0#79e88da16f43b26befe776fa58dd7b383aabe53c"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e606da750f8e430b0392469ed9dd05173005d5270d48e4a09c3276577ed3aa3b"
 dependencies = [
  "anyhow",
  "async-trait",

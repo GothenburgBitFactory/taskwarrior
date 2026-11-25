@@ -1,5 +1,19 @@
 ------ current release ---------------------------
 
+3.6.0 -
+
+ - Iterative tasks are now available as an experimental feature (#4210)
+ - Terminal width and the `rc.defaultwidth` are now handled better in task burndown (#4225, #4226, #4227, #4230)
+ - Annotations widths are handled correctly in reports (#4233)
+ - The task projects output now correctly nests projects (#4232)
+ - The OR operator is now rejected in contexts, as it behaves differently for read and write (#4229)
+ - Setting LIBSQLITE3_SYS_USE_PKG_CONFIG when building will link to the system SQLite library (#4223)
+ - Dashes are now allowed in rc.* DOM references (#4197)
+ - Wrapped annotation lines in task list reports now retain their indentation (#4189)
+ - S3-compatible storage backends can be used with the new rc.sync.aws.endpoint_url config (#4176)
+
+------ old releases ------------------------------
+
 3.5.0 -
 
  - Hyphens are now allowed in tags, after the first character (#3961)
@@ -7,8 +21,6 @@
  - Dependencies and the burndown report are now substantially faster (#4127, #4136)
  - The default theme is now referenced from the generated `.taskrc`, rather than being embedded in it. (#4124)
  - The `scheduled` attribute of recurring tasks now updates for each new instance (#4144)
-
------- old releases ------------------------------
 
 3.4.2 -
 
