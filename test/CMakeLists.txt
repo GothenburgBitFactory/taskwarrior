@@ -58,6 +58,11 @@ add_executable(test_runner
 
   ${cpp_test_SRCS}
 )
+if (CMAKE_SYSTEM_NAME STREQUAL "MSYS")
+  # Expose the POSIX functions used by the harness in strict C++17 mode.
+  target_compile_definitions(test_runner PRIVATE _POSIX_C_SOURCE=200809L)
+endif ()
+
 target_link_libraries (test_runner task commands columns libshared task commands columns libshared task commands columns libshared ${TASK_LIBRARIES})
 if (DARWIN)
   target_link_libraries (test_runner "-framework CoreFoundation -framework Security -framework SystemConfiguration")
