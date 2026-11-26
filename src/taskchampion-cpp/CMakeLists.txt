@@ -63,6 +63,16 @@ corrosion_import_crate(
   CRATES "taskchampion-lib"
   FEATURES "${TASKCHAMPION_FEATURES}")
 
+# Native ARM64 Termux builds need an API level for Cargo's C and C++ dependencies.
+if(NOT "$ENV{TERMUX_VERSION}" STREQUAL "" AND NOT CMAKE_CROSSCOMPILING
+    AND NOT Rust_CROSSCOMPILING AND Rust_CARGO_TARGET_CACHED STREQUAL "aarch64-linux-android")
+  foreach(flags IN ITEMS CFLAGS CXXFLAGS)
+    if(NOT DEFINED ENV{${flags}_aarch64_linux_android})
+      corrosion_set_env_vars(taskchampion_lib "${flags}_aarch64_linux_android=--target=aarch64-linux-android24")
+    endif()
+  endforeach()
+endif()
+
 # Set up `taskchampion-cpp`, the C++ side of the bridge.
 corrosion_add_cxxbridge(taskchampion-cpp
   CRATE taskchampion_lib
