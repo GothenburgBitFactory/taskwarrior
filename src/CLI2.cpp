@@ -373,8 +373,8 @@ void CLI2::lexArguments() {
 
       std::string::size_type cursor = 0;
       bool nextEscaped = false;
-      while (int num = utf8_next_char(_original_args[i].attribute("raw"), cursor)) {
-        std::string character = utf8_character(num);
+      while (char32_t codepoint = utf8_next_char(_original_args[i].attribute("raw"), cursor)) {
+        std::string character = utf8_character(codepoint);
         if (!nextEscaped && (character == "\\"))
           nextEscaped = true;
         else {

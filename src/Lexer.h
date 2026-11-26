@@ -90,9 +90,9 @@ class Lexer {
                             std::string&);
   static bool decomposeSubstitution(const std::string&, std::string&, std::string&, std::string&);
   static bool decomposePattern(const std::string&, std::string&, std::string&);
-  static int hexToInt(int);
-  static int hexToInt(int, int);
-  static int hexToInt(int, int, int, int);
+  static int hexToInt(char);
+  static int hexToInt(char, char);
+  static char32_t hexToInt(char, char, char, char);
   static std::string::size_type commonLength(const std::string&, const std::string&);
   static std::string::size_type commonLength(const std::string&, std::string::size_type,
                                              const std::string&, std::string::size_type);

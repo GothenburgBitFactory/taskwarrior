@@ -221,7 +221,7 @@ const std::vector<std::string> extractParents(const std::string& project,
 ////////////////////////////////////////////////////////////////////////////////
 bool nontrivial(const std::string& input) {
   std::string::size_type i = 0;
-  int character;
+  char32_t character;
   while ((character = utf8_next_char(input, i)))
     if (!unicodeWhitespace(character)) return true;
 
