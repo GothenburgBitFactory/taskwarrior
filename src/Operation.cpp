@@ -37,7 +37,14 @@ Operation::Operation(const tc::Operation& op) : op(&op) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<Operation> Operation::operations(const rust::Vec<tc::Operation>& operations) {
-  return {operations.begin(), operations.end()};
+  std::vector<Operation> result;
+  const auto count = operations.size();
+  result.reserve(count);
+  // Indexed access uses the Rust element size for these opaque operations.
+  for (std::size_t i = 0; i < count; ++i) {
+    result.emplace_back(operations[i]);
+  }
+  return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
