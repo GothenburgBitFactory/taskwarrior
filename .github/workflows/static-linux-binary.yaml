@@ -1,0 +1,58 @@
+## Build a static x86_64 Linux binary (musl, built on Alpine) and attach it to GitHub releases.
+## See .github/scripts/build-static-linux.sh for how it is built and why.
+name: static-linux-binary
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/static-linux-binary.yaml
+      - .github/scripts/build-static-linux.sh
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Static x86_64 Linux binary
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to attach the tarball to the release
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Build in Alpine
+        run: |
+          docker run --rm \
+            -v "$PWD":/src -w /src \
+            -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" \
+            rust:alpine sh .github/scripts/build-static-linux.sh
+
+      # Run it on the (glibc) runner, which is not the environment it was built in.
+      - name: Smoke test
+        run: |
+          set -eu
+          archive=$(ls dist/task-*-linux-x86_64-static.tar.gz)
+          name=$(basename "$archive" .tar.gz)
+          (cd dist && sha256sum -c "$name.tar.gz.sha256")
+
+          sudo tar -C /usr/local --strip-components=1 -xzf "$archive" "$name/bin" "$name/share"
+          file /usr/local/bin/task | tee /dev/stderr | grep -q 'statically linked'
+
+          export TASKRC="$RUNNER_TEMP/taskrc" TASKDATA="$RUNNER_TEMP/taskdata"
+          mkdir "$TASKDATA"
+          echo "data.location=$TASKDATA" > "$TASKRC"
+          task rc.confirmation=no add smoke test
+          task export | grep -q 'smoke test'
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" dist/*.tar.gz dist/*.sha256 --clobber
