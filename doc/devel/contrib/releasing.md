@@ -22,6 +22,9 @@ To release Taskwarrior, follow this process:
   - Give it a clever title if you can think of one; refer to previous releases
   - Include the tarball from earlier
   - Publish the release
+  - The `static-linux-binary` workflow then builds a static x86_64 Linux binary and attaches it
+    (with its `.sha256`) to the release. Check that the assets appear; if the job failed, fix the
+    cause and re-run it with "Re-run jobs" (assets are uploaded with `--clobber`).
 - Update https://github.com/GothenburgBitFactory/tw.org
   - Run `bin/tw-release vX.Y.Z` in that repository.
     It downloads the tarball from the published GitHub release and updates the relevant files accordingly
